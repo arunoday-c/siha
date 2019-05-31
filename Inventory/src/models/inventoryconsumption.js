@@ -82,8 +82,9 @@ module.exports = {
             .executeQuery({
               query:
                 "INSERT INTO `hims_f_inventory_consumption_header` (consumption_number,consumption_date,`year`, \
-                period,location_type,location_id,created_date,created_by,updated_date,updated_by,hospital_id) \
-              VALUE(?,?,?,?,?,?,?,?,?,?,?)",
+                period,location_type,location_id,provider_id,created_date,created_by,updated_date,\
+                updated_by,hospital_id) \
+              VALUE(?,?,?,?,?,?,?,?,?,?,?,?)",
               values: [
                 document_number,
                 today,
@@ -91,6 +92,7 @@ module.exports = {
                 period,
                 input.location_type,
                 input.location_id,
+                input.provider_id,
                 new Date(),
                 req.userIdentity.algaeh_d_app_user_id,
                 new Date(),

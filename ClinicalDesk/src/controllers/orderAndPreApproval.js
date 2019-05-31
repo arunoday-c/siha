@@ -16,7 +16,6 @@ export default () => {
   api.post(
     "/insertInvOrderedServices",
     insertInvOrderedServices,
-    updateIntoInvItemLocation,
     (req, res, next) => {
       const _records = req.records;
       res.status(utilities.httpStatus().ok).json({

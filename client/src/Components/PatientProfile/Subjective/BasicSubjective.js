@@ -755,7 +755,21 @@ class BasicSubjective extends Component {
                       {
                         <AlgaehLabel
                           label={{
-                            forceLabel: "Orders"
+                            forceLabel: "Order Investigation"
+                          }}
+                        />
+                      }
+                    </li>
+
+                    <li
+                      algaehtabs={"OrderConsumable"}
+                      className={"nav-item tab-button"}
+                      onClick={this.openTab.bind(this)}
+                    >
+                      {
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Order Consumable"
                           }}
                         />
                       }
@@ -792,7 +806,15 @@ class BasicSubjective extends Component {
 
                 <div className="grid-section">
                   {this.state.pageDisplay === "Orders" ? (
-                    <OrderedList vat_applicable={this.props.vat_applicable} />
+                    <OrderedList
+                      vat_applicable={this.props.vat_applicable}
+                      openData="Investigation"
+                    />
+                  ) : this.state.pageDisplay === "OrderConsumable" ? (
+                    <OrderedList
+                      vat_applicable={this.props.vat_applicable}
+                      openData="Consumable"
+                    />
                   ) : this.state.pageDisplay === "LabResults" ? (
                     <LabResults />
                   ) : this.state.pageDisplay === "RisResults" ? (

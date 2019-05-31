@@ -61,9 +61,54 @@ class OrderedList extends PureComponent {
   }
 
   ShowConsumableModel() {
-    this.setState({
-      isConsOpen: !this.state.isConsOpen
+    debugger;
+    algaehApiCall({
+      uri: "/department/get/subdepartment",
+      method: "GET",
+      module: "masterSettings",
+      onSuccess: response => {
+        if (response.data.success === true) {
+          debugger;
+          const Departmant_Location = _.filter(response.data.records, f => {
+            return (
+              f.hims_d_sub_department_id ===
+              this.props.patient_profile[0].sub_department_id
+            );
+          });
+          this.setState({
+            isConsOpen: !this.state.isConsOpen,
+            inventory_location_id: Departmant_Location[0].inventory_location_id
+          });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
     });
+  }
+
+  CloseConsumableModel(e) {
+    this.setState(
+      {
+        isConsOpen: !this.state.isConsOpen
+      },
+      () => {
+        this.props.getConsumableOrderList({
+          uri: "/orderAndPreApproval/getVisitConsumable",
+          method: "GET",
+          data: {
+            visit_id: Window.global["visit_id"]
+          },
+          redux: {
+            type: "ORDER_SERVICES_GET_DATA",
+            mappingName: "consumableorderedList"
+          }
+        });
+      }
+    );
   }
 
   ShowProcedureModel(row, e) {
@@ -181,8 +226,19 @@ class OrderedList extends PureComponent {
       redux: {
         type: "ORDER_SERVICES_GET_DATA",
         mappingName: "orderedList"
+      }
+    });
+
+    this.props.getConsumableOrderList({
+      uri: "/orderAndPreApproval/getVisitConsumable",
+      method: "GET",
+      data: {
+        visit_id: Window.global["visit_id"]
       },
-      afterSuccess: data => {}
+      redux: {
+        type: "ORDER_SERVICES_GET_DATA",
+        mappingName: "consumableorderedList"
+      }
     });
   }
 
@@ -193,195 +249,409 @@ class OrderedList extends PureComponent {
   }
 
   render() {
+    const openData = this.props.openData;
     let patient_date =
       this.props.patient_profile !== undefined
         ? this.props.patient_profile
         : [];
     return (
       <div className="hptl-phase1-ordering-services-form">
-        <div
-          className="col-lg-12"
-          style={{
-            textAlign: "right",
-            paddingTop: 10
-          }}
-        >
-          <button
-            className="btn btn-primary"
-            onClick={this.ShowModel.bind(this)}
-          >
-            Order Investigation
-          </button>
+        {openData === "Investigation" ? (
+          <div>
+            <div
+              className="col-lg-12"
+              style={{
+                textAlign: "right",
+                paddingTop: 10
+              }}
+            >
+              <button
+                className="btn btn-primary"
+                onClick={this.ShowModel.bind(this)}
+              >
+                Order Investigation
+              </button>
+            </div>
+            <div className="col-lg-12">
+              <div className="row">
+                <div className="col-md-10 col-lg-12" id="doctorOrder">
+                  <AlgaehDataGrid
+                    id="Orderd_list"
+                    columns={[
+                      {
+                        fieldName: "actions",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Details" }} />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <i
+                              style={{
+                                pointerEvents:
+                                  row.service_type_id === 2 ||
+                                  row.service_type_id === 14 ||
+                                  row.service_type_id === "2" ||
+                                  row.service_type_id === "14"
+                                    ? ""
+                                    : "none",
+                                opacity:
+                                  row.service_type_id === 2 ||
+                                  row.service_type_id === 14 ||
+                                  row.service_type_id === "2" ||
+                                  row.service_type_id === "14"
+                                    ? ""
+                                    : "0.1"
+                              }}
+                              className="fas fa-eye"
+                              onClick={this.ShowProcedureModel.bind(this, row)}
+                            />
+                          );
+                        },
+                        others: {
+                          fixed: "left"
+                        }
+                      },
+                      {
+                        fieldName: "created_date",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "created_date" }} />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>{this.dateFormater(row.created_date)}</span>
+                          );
+                        }
+                      },
+                      // {
+                      //   fieldName: "test_type",
+                      //   label: <AlgaehLabel label={{ fieldName: "test_type" }} />,
+                      //   displayTemplate: row => {
+                      //     return row.test_type === "S" ? "Stat" : "Routine";
+                      //   },
 
-          <button
-            className="btn btn-primary"
-            onClick={this.ShowConsumableModel.bind(this)}
-          >
-            Order Consumables
-          </button>
-        </div>
-        <div className="col-lg-12">
-          <div className="row">
-            <div className="col-md-10 col-lg-12" id="doctorOrder">
-              <AlgaehDataGrid
-                id="Orderd_list"
-                columns={[
-                  {
-                    fieldName: "actions",
-                    label: <AlgaehLabel label={{ forceLabel: "Details" }} />,
-                    displayTemplate: row => {
-                      return (
-                        <i
-                          style={{
-                            pointerEvents:
-                              row.service_type_id === 2 ||
-                              row.service_type_id === 14 ||
-                              row.service_type_id === "2" ||
-                              row.service_type_id === "14"
-                                ? ""
-                                : "none",
-                            opacity:
-                              row.service_type_id === 2 ||
-                              row.service_type_id === 14 ||
-                              row.service_type_id === "2" ||
-                              row.service_type_id === "14"
-                                ? ""
-                                : "0.1"
-                          }}
-                          className="fas fa-eye"
-                          onClick={this.ShowProcedureModel.bind(this, row)}
-                        />
-                      );
-                    },
-                    others: {
-                      fixed: "left"
-                    }
-                  },
-                  {
-                    fieldName: "created_date",
-                    label: (
-                      <AlgaehLabel label={{ fieldName: "created_date" }} />
-                    ),
-                    displayTemplate: row => {
-                      return <span>{this.dateFormater(row.created_date)}</span>;
-                    }
-                  },
-                  // {
-                  //   fieldName: "test_type",
-                  //   label: <AlgaehLabel label={{ fieldName: "test_type" }} />,
-                  //   displayTemplate: row => {
-                  //     return row.test_type === "S" ? "Stat" : "Routine";
-                  //   },
+                      //   disabled: true
+                      // },
+                      {
+                        fieldName: "service_type_id",
+                        label: (
+                          <AlgaehLabel
+                            label={{ fieldName: "service_type_id" }}
+                          />
+                        ),
+                        displayTemplate: row => {
+                          let display =
+                            this.props.servicetype === undefined
+                              ? []
+                              : this.props.servicetype.filter(
+                                  f =>
+                                    f.hims_d_service_type_id ===
+                                    row.service_type_id
+                                );
 
-                  //   disabled: true
-                  // },
-                  {
-                    fieldName: "service_type_id",
-                    label: (
-                      <AlgaehLabel label={{ fieldName: "service_type_id" }} />
-                    ),
-                    displayTemplate: row => {
-                      let display =
-                        this.props.servicetype === undefined
+                          return (
+                            <span>
+                              {display !== undefined && display.length !== 0
+                                ? display[0].service_type
+                                : ""}
+                            </span>
+                          );
+                        },
+                        others: {
+                          minWidth: 100,
+                          maxWidth: 500
+                        },
+
+                        disabled: true
+                      },
+                      {
+                        fieldName: "services_id",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "services_id" }} />
+                        ),
+                        displayTemplate: row => {
+                          let display =
+                            this.props.serviceslist === undefined
+                              ? []
+                              : this.props.serviceslist.filter(
+                                  f => f.hims_d_services_id === row.services_id
+                                );
+
+                          return (
+                            <span>
+                              {display !== null && display.length !== 0
+                                ? display[0].service_name
+                                : ""}
+                            </span>
+                          );
+                        },
+                        others: {
+                          minWidth: 200,
+                          maxWidth: 400
+                        },
+                        disabled: true
+                      },
+                      {
+                        fieldName: "item_notchargable",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Chargable/Not" }}
+                          />
+                        ),
+                        displayTemplate: row => {
+                          return row.item_notchargable === "Y"
+                            ? "Chargable"
+                            : "No";
+                        },
+                        disabled: true
+                      },
+                      {
+                        fieldName: "insurance_yesno",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "insurance" }} />
+                        ),
+                        displayTemplate: row => {
+                          return row.insurance_yesno === "Y"
+                            ? "Covered"
+                            : "Not Covered";
+                        },
+                        disabled: true
+                      },
+                      {
+                        fieldName: "pre_approval",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "pre_approval" }} />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {row.pre_approval === "Y"
+                                ? "Required"
+                                : "Not Required"}
+                            </span>
+                          );
+                        },
+                        disabled: true
+                      },
+                      {
+                        fieldName: "patient_payable",
+                        label: (
+                          <AlgaehLabel
+                            label={{ fieldName: "patient_payable" }}
+                          />
+                        ),
+                        disabled: true
+                      },
+                      {
+                        fieldName: "company_payble",
+                        label: (
+                          <AlgaehLabel
+                            label={{ fieldName: "company_payble" }}
+                          />
+                        ),
+                        disabled: true
+                      }
+                    ]}
+                    keyId="list_type_id"
+                    dataSource={{
+                      data:
+                        this.props.orderedList === undefined
                           ? []
-                          : this.props.servicetype.filter(
-                              f =>
-                                f.hims_d_service_type_id === row.service_type_id
-                            );
-
-                      return (
-                        <span>
-                          {display !== undefined && display.length !== 0
-                            ? display[0].service_type
-                            : ""}
-                        </span>
-                      );
-                    },
-                    others: {
-                      minWidth: 100,
-                      maxWidth: 500
-                    },
-
-                    disabled: true
-                  },
-                  {
-                    fieldName: "services_id",
-                    label: <AlgaehLabel label={{ fieldName: "services_id" }} />,
-                    displayTemplate: row => {
-                      let display =
-                        this.props.serviceslist === undefined
-                          ? []
-                          : this.props.serviceslist.filter(
-                              f => f.hims_d_services_id === row.services_id
-                            );
-
-                      return (
-                        <span>
-                          {display !== null && display.length !== 0
-                            ? display[0].service_name
-                            : ""}
-                        </span>
-                      );
-                    },
-                    others: {
-                      minWidth: 200,
-                      maxWidth: 400
-                    },
-                    disabled: true
-                  },
-                  {
-                    fieldName: "insurance_yesno",
-                    label: <AlgaehLabel label={{ fieldName: "insurance" }} />,
-                    displayTemplate: row => {
-                      return row.insurance_yesno === "Y"
-                        ? "Covered"
-                        : "Not Covered";
-                    },
-                    disabled: true
-                  },
-                  {
-                    fieldName: "pre_approval",
-                    label: (
-                      <AlgaehLabel label={{ fieldName: "pre_approval" }} />
-                    ),
-                    displayTemplate: row => {
-                      return (
-                        <span>
-                          {row.pre_approval === "Y"
-                            ? "Required"
-                            : "Not Required"}
-                        </span>
-                      );
-                    },
-                    disabled: true
-                  },
-                  {
-                    fieldName: "patient_payable",
-                    label: (
-                      <AlgaehLabel label={{ fieldName: "patient_payable" }} />
-                    ),
-                    disabled: true
-                  },
-                  {
-                    fieldName: "company_payble",
-                    label: (
-                      <AlgaehLabel label={{ fieldName: "company_payble" }} />
-                    ),
-                    disabled: true
-                  }
-                ]}
-                keyId="list_type_id"
-                dataSource={{
-                  data:
-                    this.props.orderedList === undefined
-                      ? []
-                      : this.props.orderedList
-                }}
-                paging={{ page: 0, rowsPerPage: 10 }}
-              />
+                          : this.props.orderedList
+                    }}
+                    paging={{ page: 0, rowsPerPage: 10 }}
+                  />
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <div>
+            <div
+              className="col-lg-12"
+              style={{
+                textAlign: "right",
+                paddingTop: 10
+              }}
+            >
+              <button
+                className="btn btn-primary"
+                onClick={this.ShowConsumableModel.bind(this)}
+              >
+                Order Consumables
+              </button>
+            </div>
+            <div className="col-lg-12">
+              <div className="row">
+                <div className="col-md-10 col-lg-12" id="doctorOrder">
+                  <AlgaehDataGrid
+                    id="Orderd_list"
+                    columns={[
+                      {
+                        fieldName: "actions",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Details" }} />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <i
+                              style={{
+                                pointerEvents:
+                                  row.service_type_id === 2 ||
+                                  row.service_type_id === 14 ||
+                                  row.service_type_id === "2" ||
+                                  row.service_type_id === "14"
+                                    ? ""
+                                    : "none",
+                                opacity:
+                                  row.service_type_id === 2 ||
+                                  row.service_type_id === 14 ||
+                                  row.service_type_id === "2" ||
+                                  row.service_type_id === "14"
+                                    ? ""
+                                    : "0.1"
+                              }}
+                              className="fas fa-eye"
+                              onClick={this.ShowProcedureModel.bind(this, row)}
+                            />
+                          );
+                        },
+                        others: {
+                          fixed: "left"
+                        }
+                      },
+                      {
+                        fieldName: "created_date",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "created_date" }} />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>{this.dateFormater(row.created_date)}</span>
+                          );
+                        }
+                      },
+
+                      {
+                        fieldName: "service_type_id",
+                        label: (
+                          <AlgaehLabel
+                            label={{ fieldName: "service_type_id" }}
+                          />
+                        ),
+                        displayTemplate: row => {
+                          let display =
+                            this.props.servicetype === undefined
+                              ? []
+                              : this.props.servicetype.filter(
+                                  f =>
+                                    f.hims_d_service_type_id ===
+                                    row.service_type_id
+                                );
+
+                          return (
+                            <span>
+                              {display !== undefined && display.length !== 0
+                                ? display[0].service_type
+                                : ""}
+                            </span>
+                          );
+                        },
+                        others: {
+                          minWidth: 100,
+                          maxWidth: 500
+                        },
+
+                        disabled: true
+                      },
+                      {
+                        fieldName: "services_id",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "services_id" }} />
+                        ),
+                        displayTemplate: row => {
+                          let display =
+                            this.props.serviceslist === undefined
+                              ? []
+                              : this.props.serviceslist.filter(
+                                  f => f.hims_d_services_id === row.services_id
+                                );
+
+                          return (
+                            <span>
+                              {display !== null && display.length !== 0
+                                ? display[0].service_name
+                                : ""}
+                            </span>
+                          );
+                        },
+                        others: {
+                          minWidth: 200,
+                          maxWidth: 400
+                        },
+                        disabled: true
+                      },
+                      {
+                        fieldName: "insurance_yesno",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "insurance" }} />
+                        ),
+                        displayTemplate: row => {
+                          return row.insurance_yesno === "Y"
+                            ? "Covered"
+                            : "Not Covered";
+                        },
+                        disabled: true
+                      },
+                      {
+                        fieldName: "pre_approval",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "pre_approval" }} />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {row.pre_approval === "Y"
+                                ? "Required"
+                                : "Not Required"}
+                            </span>
+                          );
+                        },
+                        disabled: true
+                      },
+                      {
+                        fieldName: "patient_payable",
+                        label: (
+                          <AlgaehLabel
+                            label={{ fieldName: "patient_payable" }}
+                          />
+                        ),
+                        disabled: true
+                      },
+                      {
+                        fieldName: "company_payble",
+                        label: (
+                          <AlgaehLabel
+                            label={{ fieldName: "company_payble" }}
+                          />
+                        ),
+                        disabled: true
+                      }
+                    ]}
+                    keyId="list_type_id"
+                    dataSource={{
+                      data:
+                        this.props.consumableorderedList === undefined
+                          ? []
+                          : this.props.consumableorderedList
+                    }}
+                    paging={{ page: 0, rowsPerPage: 10 }}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         <OrderingServices
           open={this.state.isOpen}
           onClose={this.CloseModel.bind(this)}
@@ -391,7 +661,7 @@ class OrderedList extends PureComponent {
 
         <OrderConsumables
           open={this.state.isConsOpen}
-          onClose={this.ShowConsumableModel.bind(this)}
+          onClose={this.CloseConsumableModel.bind(this)}
           vat_applicable={this.props.vat_applicable}
           inventory_location_id={this.state.inventory_location_id}
           addNew={true}
@@ -420,7 +690,8 @@ function mapStateToProps(state) {
     servicetype: state.servicetype,
     serviceslist: state.serviceslist,
     orderedList: state.orderedList,
-    patient_profile: state.patient_profile
+    patient_profile: state.patient_profile,
+    consumableorderedList: state.consumableorderedList
   };
 }
 
@@ -429,7 +700,8 @@ function mapDispatchToProps(dispatch) {
     {
       getServiceTypes: AlgaehActions,
       getServices: AlgaehActions,
-      getOrderList: AlgaehActions
+      getOrderList: AlgaehActions,
+      getConsumableOrderList: AlgaehActions
     },
     dispatch
   );

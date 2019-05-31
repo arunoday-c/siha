@@ -14,7 +14,10 @@ import {
   selectOrderServicesbyDoctor,
   getMedicationAprovalList,
   updateMedicinePreApproval,
-  updatePrescriptionDetail
+  updatePrescriptionDetail,
+  getVisitConsumable,
+  load_orders_for_bill,
+  insertInvOrderedServices
 } from "../model/orderAndPreApproval";
 import { insertRadOrderedServices } from "../model/radiology";
 import { insertLadOrderedServices } from "../model/laboratory";
@@ -107,8 +110,7 @@ export default ({ config, db }) => {
         records: result
       });
       next();
-    },
-    releaseConnection
+    }
   );
 
   //created by Nowshad :to get Ordered Services to Display
@@ -199,6 +201,45 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
+
+  //created by Nowshad :to get Ordered Services which to bill
+  api.get(
+    "/getVisitConsumable",
+    getVisitConsumable,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  api.post(
+    "/insertInvOrderedServices",
+    insertInvOrderedServices,
+    (req, res, next) => {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+  api.get("/load_orders_for_bill", load_orders_for_bill, (req, res, next) => {
+    if (req.records.invalid_input == true) {
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: req.records
+      });
+    } else {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  });
 
   return api;
 };

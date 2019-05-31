@@ -4,6 +4,7 @@ import { newReceiptData, addBillData } from "../models/billing";
 import {
   addOpBIlling,
   updateOrderedServicesBilled,
+  updateOrderedConsumablessBilled,
   selectBill,
   getPednigBills
 } from "../models/opBilling";
@@ -26,6 +27,7 @@ export default () => {
     newReceiptData,
     addBillData,
     updateOrderedServicesBilled,
+    updateOrderedConsumablessBilled,
     updateLabOrderedBilled,
     (req, res, next) => {
       if (req.records.LAB != null && req.records.LAB == true) {
