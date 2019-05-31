@@ -58,7 +58,7 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "DoctorCommission",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS * from hims_f_doctor_comission_header hospital_id=" +
+          "select SQL_CALC_FOUND_ROWS * from hims_f_doctor_comission_header where hospital_id=" +
           hospitalId,
         orderBy: "hims_f_doctor_comission_header_id desc"
       },
