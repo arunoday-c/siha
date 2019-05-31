@@ -1,5 +1,8 @@
 import algaehMysql from "algaeh-mysql";
 import moment from "moment";
+import algaehUtilities from "algaeh-utilities/utilities";
+import mysql from "mysql";
+
 module.exports = {
   getUomLocationStock: (req, res, next) => {
     const _mysql = new algaehMysql();
@@ -249,6 +252,81 @@ module.exports = {
         .catch(error => {
           _mysql.releaseConnection();
           next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+
+  updateItemMaster: (req, res, next) => {
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
+
+    const utilities = new algaehUtilities();
+    utilities.logger().log("updateItemMaster: ");
+
+    try {
+      let inputParam = req.body;
+      let execute_query = "";
+
+      new Promise((resolve, reject) => {
+        try {
+          for (let i = 0; i < inputParam.pharmacy_stock_detail.length; i++) {
+            _mysql
+              .executeQuery({
+                query:
+                  "select batch_no, item_code from `hims_d_item_master` WHERE `hims_d_item_master_id`=?",
+                values: [inputParam.pharmacy_stock_detail[i].item_id],
+                printQuery: true
+              })
+              .then(result => {
+                let batch_no = parseInt(result[0].batch_no) + 1;
+                let barcode = "B" + batch_no + "-" + result[0].item_code;
+                req.body.pharmacy_stock_detail[i].batchno = "B" + batch_no;
+                req.body.pharmacy_stock_detail[i].barcode = barcode;
+                utilities
+                  .logger()
+                  .log(
+                    "batch_no: ",
+                    req.body.pharmacy_stock_detail[i].batch_no
+                  );
+                execute_query += mysql.format(
+                  "UPDATE `hims_d_item_master` SET `batch_no`=? WHERE `hims_d_item_master_id`=?;",
+                  [batch_no, inputParam.pharmacy_stock_detail[i].item_id]
+                );
+                if (i == inputParam.pharmacy_stock_detail.length - 1) {
+                  resolve(result);
+                }
+              })
+              .catch(error => {
+                reject(error);
+              });
+          }
+        } catch (e) {
+          reject(e);
+        }
+      })
+        .then(result => {
+          _mysql
+            .executeQuery({
+              query: execute_query,
+              printQuery: true
+            })
+            .then(detailresult => {
+              req.records = detailresult;
+              next();
+            })
+            .catch(error => {
+              _mysql.releaseConnection();
+              next(error);
+              reject(error);
+            });
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+          reject(e);
         });
     } catch (e) {
       _mysql.releaseConnection();

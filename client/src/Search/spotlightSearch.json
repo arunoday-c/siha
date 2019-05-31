@@ -121,8 +121,8 @@
         "label": "Description"
       },
       {
-        "fieldName": "posted",
-        "label": "Posted"
+        "fieldName": "docdate",
+        "label": "Date"
       }
     ],
     "invintstock": [
@@ -135,8 +135,8 @@
         "label": "Description"
       },
       {
-        "fieldName": "posted",
-        "label": "Posted"
+        "fieldName": "docdate",
+        "label": "Date"
       }
     ]
   },
