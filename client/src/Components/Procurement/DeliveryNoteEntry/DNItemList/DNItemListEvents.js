@@ -314,7 +314,7 @@ const printBarcode = ($this, row, e) => {
       }
     },
     data: {
-      bar_code: row.item_code + "-" + row.batchno
+      bar_code: row.barcode
     }
   });
 };

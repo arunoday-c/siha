@@ -225,11 +225,11 @@ module.exports = {
     }
   },
 
-  updateItemMaster: (req, res, next) => {
+  updateInventoryItemMaster: (req, res, next) => {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
     const utilities = new algaehUtilities();
-    utilities.logger().log("updateItemMaster: ");
+    utilities.logger().log("updateInventoryItemMaster: ");
 
     try {
       let inputParam = req.body;
@@ -246,16 +246,14 @@ module.exports = {
                 printQuery: true
               })
               .then(result => {
+                utilities.logger().log("ItemMaster: ", result);
                 let batch_no = parseInt(result[0].batch_no) + 1;
                 let barcode = "B" + batch_no + "-" + result[0].item_code;
                 req.body.inventory_stock_detail[i].batchno = "B" + batch_no;
                 req.body.inventory_stock_detail[i].barcode = barcode;
-                utilities
-                  .logger()
-                  .log(
-                    "batch_no: ",
-                    req.body.inventory_stock_detail[i].batch_no
-                  );
+
+                utilities.logger().log("result: ");
+
                 execute_query += mysql.format(
                   "UPDATE `hims_d_inventory_item_master` SET `batch_no`=? WHERE `hims_d_inventory_item_master_id`=?;",
                   [batch_no, inputParam.inventory_stock_detail[i].item_id]

@@ -313,10 +313,10 @@ class DNItemList extends Component {
                             },
 
                             {
-                              fieldName: "batchno",
+                              fieldName: "vendor_batchno",
                               label: (
                                 <AlgaehLabel
-                                  label={{ forceLabel: "Batch  No." }}
+                                  label={{ forceLabel: "Vendor Batch  No." }}
                                 />
                               ),
                               editorTemplate: row => {
@@ -324,9 +324,9 @@ class DNItemList extends Component {
                                   <AlagehFormGroup
                                     div={{}}
                                     textBox={{
-                                      value: row.batchno,
+                                      value: row.vendor_batchno,
                                       className: "txt-fld",
-                                      name: "batchno",
+                                      name: "vendor_batchno",
                                       events: {
                                         onChange: onchangegridcol.bind(
                                           this,

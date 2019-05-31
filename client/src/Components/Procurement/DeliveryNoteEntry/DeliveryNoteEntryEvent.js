@@ -6,6 +6,7 @@ import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import DNEntry from "../../../Models/DNEntry";
 import Enumerable from "linq";
+import extend from "extend";
 
 let texthandlerInterval = null;
 
@@ -193,6 +194,11 @@ const PurchaseOrderSearch = ($this, e) => {
                 data.dataExitst = true;
                 data.purchase_order_id = data.hims_f_procurement_po_header_id;
                 for (let i = 0; i < data.po_entry_detail.length; i++) {
+                  debugger;
+                  data.po_entry_detail[i].item_id =
+                    data.po_entry_detail[i].phar_item_id ||
+                    data.po_entry_detail[i].inv_item_id;
+
                   data.po_entry_detail[i].po_quantity =
                     data.po_entry_detail[i].authorize_quantity;
 
@@ -250,15 +256,25 @@ const SaveDNEnrty = $this => {
     .toArray();
 
   const batchExpiryDate = Enumerable.from($this.state.receipt_entry_detail)
-    .where(w => w.batchno === null || w.expiry_date === null)
+    .where(w => w.expiry_date === null)
     .toArray();
+
+  debugger;
+  let InputObj = extend({}, $this.state);
+  if ($this.state.dn_from === "PHR") {
+    InputObj.pharmacy_stock_detail = $this.state.dn_entry_detail;
+    delete InputObj.dn_entry_detail;
+  } else {
+    InputObj.inventory_stock_detail = $this.state.dn_entry_detail;
+    delete InputObj.dn_entry_detail;
+  }
 
   if (dnQuantity.length === 0) {
     if (batchExpiryDate.length === 0) {
       algaehApiCall({
         uri: "/DeliveryNoteEntry/addDeliveryNoteEntry",
         module: "procurement",
-        data: $this.state,
+        data: InputObj,
         onSuccess: response => {
           if (response.data.success === true) {
             $this.setState({
