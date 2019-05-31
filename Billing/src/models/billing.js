@@ -138,8 +138,8 @@ module.exports = {
               , company_res, sec_company_res, patient_res, patient_payable, company_payable, sec_company_payable \
               , patient_tax, company_tax, sec_company_tax, net_tax, credit_amount, receiveable_amount,\
               balance_credit , created_by, created_date, updated_by, updated_date, copay_amount,\
-              deductable_amount,hospital_id, ordered_inventory_id, ordered_services_id)\
-               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+              deductable_amount,hospital_id)\
+               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
           values: [
             inputParam.patient_id,
             inputParam.visit_id,
@@ -179,9 +179,7 @@ module.exports = {
             new Date(),
             inputParam.copay_amount,
             inputParam.deductable_amount,
-            req.userIdentity.hospital_id,
-            inputParam.ordered_inventory_id,
-            inputParam.ordered_services_id
+            req.userIdentity.hospital_id
           ],
           printQuery: true
         })
@@ -264,6 +262,8 @@ module.exports = {
             "sec_copay_percntage",
             "sec_copay_amount",
             "teeth_number",
+            "ordered_services_id",
+            "ordered_inventory_id",
             "created_by",
             "created_date",
             "updated_by",
@@ -307,7 +307,9 @@ module.exports = {
                 created_by: req.userIdentity.algaeh_d_app_user_id,
                 created_date: new Date(),
                 updated_by: req.userIdentity.algaeh_d_app_user_id,
-                updated_date: new Date()
+                updated_date: new Date(),
+                ordered_services_id: s.ordered_services_id,
+                ordered_inventory_id: s.ordered_inventory_id
               };
             })
             .ToArray();
