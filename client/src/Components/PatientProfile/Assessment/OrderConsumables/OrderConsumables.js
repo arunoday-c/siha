@@ -74,7 +74,7 @@ class OrderConsumables extends Component {
       net_total: null,
       addNewService: false,
       inventory_location_id: this.props.inventory_location_id,
-      item_chargable: "N",
+      item_notchargable: "N",
       itemchargable: false
     };
   }
@@ -193,7 +193,7 @@ class OrderConsumables extends Component {
         sub_total_amount: null,
         discount_amount: null,
         net_total: null,
-        item_chargable: "N",
+        item_notchargable: "N",
         itemchargable: false
       },
       () => {
@@ -260,7 +260,7 @@ class OrderConsumables extends Component {
                   <label className="checkbox" style={{ color: "#212529" }}>
                     <input
                       type="checkbox"
-                      name="item_chargable"
+                      name="item_notchargable"
                       checked={this.state.itemchargable}
                       onChange={ItemChargable.bind(this, this)}
                     />

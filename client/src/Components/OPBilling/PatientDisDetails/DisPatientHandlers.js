@@ -72,7 +72,7 @@ const selectVisit = ($this, context, e) => {
       }
 
       algaehApiCall({
-        uri: "/orderAndPreApproval/selectOrderServices",
+        uri: "/orderAndPreApproval/load_orders_for_bill",
         method: "GET",
         data: {
           visit_id: $this.state.visit_id
@@ -84,7 +84,7 @@ const selectVisit = ($this, context, e) => {
             let data = response.data.records;
 
             if (data.length > 0) {
-              debugger
+              debugger;
               let pre_approval_Required = Enumerable.from(data)
                 .where(w => w.pre_approval === "Y" && w.apprv_status === "NR")
                 .toArray();
@@ -93,15 +93,14 @@ const selectVisit = ($this, context, e) => {
               }
 
               for (let j = 0; j < pre_approval_Required.length; j++) {
-                var index = data.indexOf(pre_approval_Required[j])
+                var index = data.indexOf(pre_approval_Required[j]);
                 data.splice(index, 1);
               }
 
-              if(data.length > 0){
+              if (data.length > 0) {
                 if (pre_approval_Required.length > 0) {
                   swalMessage({
-                    title:
-                      "Some of the service is Pre-Approval required.",
+                    title: "Some of the service is Pre-Approval required.",
                     type: "warning"
                   });
                 }
@@ -140,14 +139,13 @@ const selectVisit = ($this, context, e) => {
                     });
                   }
                 });
-              }else{
+              } else {
                 swalMessage({
                   title:
                     "All service is Pre-Approval required, Please wait for Approval.",
                   type: "warning"
                 });
               }
-
             } else {
               AlgaehLoader({ show: false });
               if (context !== null) {

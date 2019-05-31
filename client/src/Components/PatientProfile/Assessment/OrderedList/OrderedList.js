@@ -391,14 +391,16 @@ class OrderedList extends PureComponent {
                         disabled: true
                       },
                       {
-                        fieldName: "item_chargable",
+                        fieldName: "item_notchargable",
                         label: (
                           <AlgaehLabel
-                            label={{ forceLabel: "Item Chargable" }}
+                            label={{ forceLabel: "Chargable/Not" }}
                           />
                         ),
                         displayTemplate: row => {
-                          return row.item_chargable === "Y" ? "Yes" : "No";
+                          return row.item_notchargable === "Y"
+                            ? "Chargable"
+                            : "No";
                         },
                         disabled: true
                       },
