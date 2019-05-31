@@ -88,7 +88,7 @@
     "doccpmmission": [
       {
         "fieldName": "comission_code",
-        "label": "Comission Code"
+        "label": "Comission Number"
       },
 
       {

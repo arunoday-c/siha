@@ -55,16 +55,17 @@ let algaehSearchConfig = (searchName, req) => {
 				orderBy: 'pv.hims_f_patient_visit_id desc'
 			},
 
-			{
-				searchName: 'DoctorCommission',
-				searchQuery:
-					'select SQL_CALC_FOUND_ROWS * from hims_f_doctor_comission_header hospital_id=' + hospitalId,
-				orderBy: 'hims_f_doctor_comission_header_id desc'
-			},
-			{
-				searchName: 'initialstock',
-				searchQuery:
-					"select SQL_CALC_FOUND_ROWS * from hims_f_pharmacy_stock_header\
+      {
+        searchName: "DoctorCommission",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS * from hims_f_doctor_comission_header where hospital_id=" +
+          hospitalId,
+        orderBy: "hims_f_doctor_comission_header_id desc"
+      },
+      {
+        searchName: "initialstock",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS * from hims_f_pharmacy_stock_header\
           where record_status ='A' and  hospital_id=" +
 					hospitalId,
 				orderBy: 'hims_f_pharmacy_stock_header_id desc'
