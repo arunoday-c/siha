@@ -143,7 +143,7 @@ module.exports = {
             FROM hims_f_leave_application LA inner join hims_d_leave L on LA.leave_id=L.hims_d_leave_id\
             where (status= 'APR' or status= 'PEN' )AND   ((from_date>= ? and from_date <= ?) or\
           (to_date >= ? and to_date <= ?) or (from_date <= ? and to_date >= ?)); 
-          select hims_f_project_roster_id,employee_id,hospital_id,attendance_date,project_id ,abbreviation, project_desc,project_code,start_date,end_date
+          select hims_f_project_roster_id,employee_id,PR.hospital_id,attendance_date,project_id ,abbreviation, project_desc,project_code,start_date,end_date
         from hims_f_project_roster PR inner join hims_d_project P
         on PR.project_id = P.hims_d_project_id and P.record_status='A'
         where date(attendance_date) between date(?) and date(?)`,

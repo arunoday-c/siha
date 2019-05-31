@@ -379,11 +379,11 @@ module.exports = {
                                                   "month_name"
                                                 )
                                               ] = _.sumBy(item, s => {
-                                                return s.finalLeave;
+                                                return parseFloat(s.finalLeave);
                                               });
                                             })
                                             .value();
-                                         // debugLog("finalData:", finalData);
+                                       console.log("finalData:", finalData);
                           
                                       
 
