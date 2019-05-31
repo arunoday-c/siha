@@ -1,12 +1,15 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
 import {
+  generateNumber,
   getPharmacyInitialStock,
   addPharmacyInitialStock,
   updatePharmacyInitialStock
 } from "../models/initialstock";
 
 import { updateIntoItemLocation } from "../models/commonFunction";
+
+import { updateItemMaster } from "../models/pharmacyGlobal";
 
 export default () => {
   const api = Router();
@@ -23,7 +26,10 @@ export default () => {
 
   api.post(
     "/addPharmacyInitialStock",
+    generateNumber,
+    updateItemMaster,
     addPharmacyInitialStock,
+    updateIntoItemLocation,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,

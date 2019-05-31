@@ -66,6 +66,7 @@ const getItemUom = $this => {
 };
 
 const itemchangeText = ($this, e) => {
+  debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   getItemUom($this);
@@ -77,7 +78,9 @@ const itemchangeText = ($this, e) => {
     uom_id: e.selected.stocking_uom_id,
     sales_uom: e.selected.sales_uom_id,
     required_batchno: e.selected.required_batchno,
-    item_code: e.selected.item_code
+    item_code: e.selected.item_code,
+    item_code: e.selected.item_code,
+    batchno: "B" + e.selected.batch_no
   });
 };
 
@@ -114,14 +117,15 @@ const AddItems = $this => {
           item_id: $this.state.item_id,
           uom_id: $this.state.uom_id,
           sales_uom: $this.state.sales_uom,
-          batchno: $this.state.batchno,
+          vendor_batchno: $this.state.vendor_batchno,
+          // batchno: $this.state.batchno,
           expiry_date: $this.state.expiry_date,
           quantity: $this.state.quantity,
           unit_cost: $this.state.unit_cost,
           extended_cost: $this.state.extended_cost,
           conversion_factor: $this.state.conversion_factor,
           item_code: $this.state.item_code,
-          barcode: $this.state.item_code + "-" + $this.state.batchno,
+          // barcode: $this.state.batchno + "-" + $this.state.item_code,
           grn_number: $this.state.grn_number,
           noorecords: pharmacy_stock_detail.length + 1,
           required_batchno: $this.state.required_batchno
@@ -136,6 +140,7 @@ const AddItems = $this => {
           item_group_id: null,
           item_id: null,
           batchno: null,
+          vendor_batchno: null,
           expiry_date: null,
           quantity: 0,
           unit_cost: 0,
@@ -203,6 +208,20 @@ const getCtrlCode = ($this, docNumber) => {
 };
 
 const SaveInitialStock = $this => {
+  $this.state.posted = "Y";
+  $this.state.transaction_type = "INT";
+  $this.state.transaction_id = $this.state.hims_f_pharmacy_stock_header_id;
+  $this.state.transaction_date = $this.state.docdate;
+
+  for (let i = 0; i < $this.state.pharmacy_stock_detail.length; i++) {
+    $this.state.pharmacy_stock_detail[i].net_total =
+      $this.state.pharmacy_stock_detail[i].extended_cost;
+
+    $this.state.pharmacy_stock_detail[i].operation = "+";
+  }
+
+  debugger;
+
   algaehApiCall({
     uri: "/initialstock/addPharmacyInitialStock",
     module: "pharmacy",
@@ -250,6 +269,7 @@ const ClearData = $this => {
     item_group_id: null,
     item_id: null,
     batchno: null,
+    vendor_batchno: null,
     expiry_date: null,
     quantity: 0,
     unit_cost: 0,
@@ -273,9 +293,9 @@ const PostInitialStock = $this => {
       $this.state.pharmacy_stock_detail[i].extended_cost;
 
     $this.state.pharmacy_stock_detail[i].barcode =
-      $this.state.pharmacy_stock_detail[i].item_code +
+      $this.state.pharmacy_stock_detail[i].batchno +
       "-" +
-      $this.state.pharmacy_stock_detail[i].batchno;
+      $this.state.pharmacy_stock_detail[i].item_code;
     $this.state.pharmacy_stock_detail[i].operation = "+";
     // $this.state.pharmacy_stock_detail[i].operation = "+";
   }
