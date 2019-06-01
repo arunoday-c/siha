@@ -48,6 +48,7 @@ class AddInsuranceForm extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    debugger;
     this.setState(nextProps.PatRegIOputs);
   }
   imageDetails(context, type) {
@@ -59,6 +60,7 @@ class AddInsuranceForm extends Component {
     }
   }
   render() {
+    debugger;
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -218,7 +220,6 @@ class AddInsuranceForm extends Component {
                       />
                     </div>
                     <div className="row primary-box-container">
-
                       <AlagehAutoComplete
                         div={{ className: "col-3" }}
                         label={{
@@ -310,7 +311,7 @@ class AddInsuranceForm extends Component {
                       <AlagehFormGroup
                         div={{ className: "col-3" }}
                         label={{
-                          fieldName: "card_holder_name",
+                          fieldName: "card_holder_name"
                           // isImp: this.state.insuranceYes === true ? false : true
                         }}
                         textBox={{

@@ -22,7 +22,8 @@ import {
   CancelGrid,
   onchangegridcoldatehandle,
   changeDateFormat,
-  printBarcode
+  printBarcode,
+  onchhangeNumber
 } from "./DNItemListEvents";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 
@@ -411,6 +412,38 @@ class DNItemList extends Component {
                               ),
                               disabled: true
                             },
+                            {
+                              fieldName: "sales_price",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Sales Price" }}
+                                />
+                              ),
+                              editorTemplate: row => {
+                                return (
+                                  <AlagehFormGroup
+                                    div={{}}
+                                    textBox={{
+                                      number: {
+                                        allowNegative: false,
+                                        thousandSeparator: ","
+                                      },
+                                      value: row.sales_price,
+                                      className: "txt-fld",
+                                      name: "sales_price",
+                                      events: {
+                                        onChange: onchhangeNumber.bind(
+                                          this,
+                                          this,
+                                          row
+                                        )
+                                      }
+                                    }}
+                                  />
+                                );
+                              }
+                            },
+
                             {
                               fieldName: "dn_quantity",
                               label: (

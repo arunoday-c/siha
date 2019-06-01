@@ -123,6 +123,7 @@ class PosListItems extends Component {
   }
 
   render() {
+    const pharmacy_location_id = this.state.location_id;
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -151,22 +152,14 @@ class PosListItems extends Component {
                                         <small>{result.generic_name}</small>
                                         <small>{result.uom_description}</small>
                                       </div>
-                                      <div className="col-4">
+                                      {/*<div className="col-4">
                                         <h6 className="price">
-                                          {/* {result.standard_fee} */}
                                           {getAmountFormart(
                                             result.standard_fee
                                           )}
                                         </h6>
-                                      </div>
+                                      </div>*/}
                                     </div>
-                                    {/* <tr>
-                                      <td>{result.item_description}</td>
-                                      <td>{result.category_desc}</td>
-                                      <td>{result.generic_name}</td>
-                                      <td>{result.uom_description}</td>
-                                      <td>{result.standard_fee}</td>
-                                    </tr> */}
                                   </section>
                                 );
                               }}
@@ -174,8 +167,10 @@ class PosListItems extends Component {
                               columns={spotlightSearch.pharmacy.itemmaster}
                               displayField="item_description"
                               value={this.state.item_description}
-                              //extraParameters={{}}
                               searchName="itemmaster"
+                              extraParameters={{
+                                pharmacy_location_id: pharmacy_location_id
+                              }}
                               onClick={itemchangeText.bind(this, this, context)}
                               ref={attReg => {
                                 this.attReg = attReg;
@@ -509,8 +504,8 @@ class PosListItems extends Component {
                                       );
                                     },
                                     disabled: true,
-                                    others:{
-                                      minWidth:150
+                                    others: {
+                                      minWidth: 150
                                     }
                                   },
                                   {
@@ -523,8 +518,8 @@ class PosListItems extends Component {
                                       />
                                     ),
                                     disabled: true,
-                                    others:{
-                                      minWidth:90
+                                    others: {
+                                      minWidth: 90
                                     }
                                   },
                                   {
@@ -566,8 +561,8 @@ class PosListItems extends Component {
                                         row.quantity
                                       );
                                     },
-                                    others:{
-                                      minWidth:80
+                                    others: {
+                                      minWidth: 80
                                     }
                                   },
                                   {
@@ -599,7 +594,9 @@ class PosListItems extends Component {
                                       return row.pre_approval === "N" ? (
                                         <span>Not Required</span>
                                       ) : (
-                                        <span className="a-link">Required </span>
+                                        <span className="a-link">
+                                          Required{" "}
+                                        </span>
                                       );
                                     },
                                     disabled: true
@@ -649,8 +646,8 @@ class PosListItems extends Component {
                                         </span>
                                       );
                                     },
-                                    others:{
-                                      minWidth:80
+                                    others: {
+                                      minWidth: 80
                                     }
                                   },
                                   {
@@ -661,8 +658,8 @@ class PosListItems extends Component {
                                       />
                                     ),
                                     disabled: true,
-                                    others:{
-                                      minWidth:80
+                                    others: {
+                                      minWidth: 80
                                     }
                                   },
 
@@ -674,8 +671,8 @@ class PosListItems extends Component {
                                       />
                                     ),
                                     disabled: true,
-                                    others:{
-                                      minWidth:80
+                                    others: {
+                                      minWidth: 80
                                     }
                                   },
                                   {

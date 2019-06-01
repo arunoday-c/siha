@@ -72,7 +72,7 @@ const selectVisit = ($this, context, e) => {
       }
 
       algaehApiCall({
-        uri: "/orderAndPreApproval/load_orders_for_bill",
+        uri: "/orderAndPreApproval/selectOrderServices",
         method: "GET",
         data: {
           visit_id: $this.state.visit_id

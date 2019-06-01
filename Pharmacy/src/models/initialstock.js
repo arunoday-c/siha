@@ -155,7 +155,8 @@ module.exports = {
             "conversion_fact",
             "unit_cost",
             "extended_cost",
-            "comment"
+            "comment",
+            "sales_price"
           ];
 
           _mysql

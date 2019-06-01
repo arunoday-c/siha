@@ -36,6 +36,13 @@ const numberchangeTexts = ($this, e) => {
   $this.setState({ [name]: value, extended_cost: extended_cost });
 };
 
+const salesPriceEvent = ($this, e) => {
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+  $this.setState({ [name]: value });
+};
+
 const getItemUom = $this => {
   algaehApiCall({
     uri: "/pharmacy/getItemMasterAndItemUom",
@@ -70,6 +77,7 @@ const itemchangeText = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   getItemUom($this);
+  debugger;
 
   $this.setState({
     [name]: value,
@@ -79,7 +87,8 @@ const itemchangeText = ($this, e) => {
     sales_uom: e.selected.sales_uom_id,
     required_batchno: e.selected.required_batchno,
     item_code: e.selected.item_code,
-    item_code: e.selected.item_code,
+    unit_cost: e.selected.purchase_cost,
+    sales_price: e.selected.standard_fee,
     batchno: "B" + e.selected.batch_no
   });
 };
@@ -118,7 +127,7 @@ const AddItems = $this => {
           uom_id: $this.state.uom_id,
           sales_uom: $this.state.sales_uom,
           vendor_batchno: $this.state.vendor_batchno,
-          // batchno: $this.state.batchno,
+          sales_price: $this.state.sales_price,
           expiry_date: $this.state.expiry_date,
           quantity: $this.state.quantity,
           unit_cost: $this.state.unit_cost,
@@ -145,6 +154,7 @@ const AddItems = $this => {
           quantity: 0,
           unit_cost: 0,
           uom_id: null,
+          sales_price: 0,
           conversion_fact: null,
           extended_cost: 0,
           saveEnable: false,
@@ -352,5 +362,6 @@ export {
   deleteInitialStock,
   ClearData,
   PostInitialStock,
-  printBarcode
+  printBarcode,
+  salesPriceEvent
 };

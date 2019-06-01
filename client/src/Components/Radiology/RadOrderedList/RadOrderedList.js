@@ -47,7 +47,8 @@ class RadOrderedList extends Component {
       test_status: null,
       rad_test_list: [],
       selected_patient: null,
-      isOpen: false
+      isOpen: false,
+      proiorty: null
     };
   }
 

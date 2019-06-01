@@ -28,17 +28,21 @@ module.exports = {
             let strQuery = "";
             if (headerResult[0].po_from == "INV") {
               strQuery = mysql.format(
-                "select PD.`hims_f_procurement_po_detail_id`, PD.`procurement_header_id`, PD.`phar_item_category`, PD.`phar_item_group`, PD.`phar_item_id`, \
-                PD.`inv_item_category_id`, PD.`inv_item_group_id`, PD.`inv_item_id`, PD.`barcode`, PD.`order_quantity`, PD.`foc_quantity`, \
-                PD.`total_quantity`, PD.`pharmacy_uom_id`, PD.`inventory_uom_id`, PD.`unit_price`, PD.`extended_price`, PD.`sub_discount_percentage`, \
-                PD.`sub_discount_amount`, PD.`extended_cost`, PD.`unit_cost`, PD.`discount_percentage`, PD.`discount_amount`, PD.`net_extended_cost`, \
-                PD.`expected_arrival_date`, PD.`vendor_item_no`, PD.`manufacturer_item_code`, PD.`completed`, PD.`completed_date`, PD.`quantity_recieved`, \
-                PD.`quantity_outstanding`, PD.`pharmacy_requisition_id`, PD.`inventory_requisition_id`, PD.`authorize_quantity`, PD.`rejected_quantity`, \
-                PD.`tax_percentage`, PD.`tax_amount`, PD.`total_amount`, PD.`mrp_price`, PD.`calculate_tax_on`, PD.`tax_discount`, PD.`item_type`, \
-                IM.item_code, IM.item_description, IU.uom_description\
-                from hims_f_procurement_po_detail PD, hims_d_inventory_item_master IM ,hims_d_inventory_uom IU \
-                where PD.inv_item_id = IM.hims_d_inventory_item_master_id and PD.inventory_uom_id = IU.hims_d_inventory_uom_id \
-                and procurement_header_id=?",
+                "select PD.`hims_f_procurement_po_detail_id`, PD.`procurement_header_id`, PD.`phar_item_category`,\
+                   PD.`phar_item_group`, PD.`phar_item_id`, PD.`inv_item_category_id`, PD.`inv_item_group_id`,\
+                   PD.`inv_item_id`, PD.`barcode`, PD.`order_quantity`, PD.`foc_quantity`, PD.`total_quantity`,\
+                   PD.`pharmacy_uom_id`, PD.`inventory_uom_id`, PD.`unit_price`, PD.`extended_price`,\
+                   PD.`sub_discount_percentage`, PD.`sub_discount_amount`, PD.`extended_cost`, PD.`unit_cost`,\
+                   PD.`discount_percentage`, PD.`discount_amount`, PD.`net_extended_cost`,PD.`expected_arrival_date`,\
+                   PD.`vendor_item_no`, PD.`manufacturer_item_code`, PD.`completed`, PD.`completed_date`,\
+                   PD.`quantity_recieved`, PD.`quantity_outstanding`, PD.`pharmacy_requisition_id`,\
+                   PD.`inventory_requisition_id`, PD.`authorize_quantity`, PD.`rejected_quantity`, PD.`tax_percentage`,\
+                   PD.`tax_amount`, PD.`total_amount`, PD.`mrp_price`, PD.`calculate_tax_on`,\
+                   PD.`tax_discount`, PD.`item_type`, IM.item_code, IM.item_description, IU.uom_description,\
+                   S.standard_fee as sales_price from hims_f_procurement_po_detail PD, hims_d_inventory_item_master IM\
+                   ,hims_d_inventory_uom IU, hims_d_services S where PD.inv_item_id = IM.\
+                   and PD.inventory_uom_id = IU.hims_d_inventory_uom_id and IM.service_id = S.hims_d_services_id\
+                   and procurement_header_id=?",
                 [headerResult[0].hims_f_procurement_po_header_id]
               );
             } else if (headerResult[0].po_from == "PHR") {
@@ -50,10 +54,10 @@ module.exports = {
                 PD.`expected_arrival_date`, PD.`vendor_item_no`, PD.`manufacturer_item_code`, PD.`completed`, PD.`completed_date`, PD.`quantity_recieved`, \
                 PD.`quantity_outstanding`, PD.`pharmacy_requisition_id`, PD.`inventory_requisition_id`, PD.`authorize_quantity`, PD.`rejected_quantity`, \
                 PD.`tax_percentage`, PD.`tax_amount`, PD.`total_amount`, PD.`mrp_price`, PD.`calculate_tax_on`, PD.`tax_discount`, PD.`item_type`, \
-                IM.item_code, IM.item_description, PU.uom_description\
-                from hims_f_procurement_po_detail PD, hims_d_item_master IM ,hims_d_pharmacy_uom PU\
+                IM.item_code, IM.item_description, PU.uom_description, S.standard_fee as sales_price\
+                from hims_f_procurement_po_detail PD, hims_d_item_master IM ,hims_d_pharmacy_uom PU, hims_d_services S\
                 where PD.phar_item_id = IM.hims_d_item_master_id and PD.pharmacy_uom_id = PU.hims_d_pharmacy_uom_id \
-                and procurement_header_id=?",
+                and IM.service_id = S.hims_d_services_id and procurement_header_id=?",
                 [headerResult[0].hims_f_procurement_po_header_id]
               );
             }

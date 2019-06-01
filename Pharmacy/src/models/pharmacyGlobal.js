@@ -283,6 +283,9 @@ module.exports = {
               .then(result => {
                 let batch_no = parseInt(result[0].batch_no) + 1;
                 let barcode = "B" + batch_no + "-" + result[0].item_code;
+
+                console.log("batch_no", batch_no);
+                console.log("barcode", barcode);
                 req.body.pharmacy_stock_detail[i].batchno = "B" + batch_no;
                 req.body.pharmacy_stock_detail[i].barcode = barcode;
                 utilities

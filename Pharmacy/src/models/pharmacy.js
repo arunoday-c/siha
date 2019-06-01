@@ -1145,5 +1145,39 @@ module.exports = {
         next(e);
       });
     }
+  },
+
+  getItemMasterWithSalesPrice: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let _strQry = "";
+      let intValues = [];
+      if (req.query.hims_d_item_master_id != null) {
+        _strQry = "and hims_d_item_master_id=?";
+        intValues.push(req.query.hims_d_item_master_id);
+      }
+      _mysql
+        .executeQuery({
+          query:
+            "select * FROM hims_d_item_master IM left join hims_d_services S on \
+            IM.service_id=S.hims_d_services_id where IM.record_status='A' " +
+            _strQry +
+            " order by hims_d_item_master_id desc;",
+          values: intValues,
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
   }
 };

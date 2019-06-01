@@ -429,7 +429,8 @@ module.exports = {
                       "quantity_recieved",
                       "uom_recieved_id",
                       "unit_cost",
-                      "sales_uom"
+                      "sales_uom",
+                      "sales_price"
                     ];
 
                     _mysql

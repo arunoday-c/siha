@@ -162,7 +162,9 @@ const itemchangeText = ($this, context, e, ctrl) => {
           if (response.data.success) {
             let data = response.data.records;
             if (data.locationResult.length > 0) {
-              getUnitCost($this, context, e.service_id);
+              debugger;
+              getUnitCost($this, context, e.service_id, e.sale_price);
+
               $this.setState({
                 [name]: value,
                 item_category: e.category_id,
@@ -261,9 +263,22 @@ const itemchangeText = ($this, context, e, ctrl) => {
   }
 };
 
-const getUnitCost = ($this, context, serviceid) => {
+const getUnitCost = ($this, context, serviceid, sales_price) => {
   if ($this.state.insured === "N") {
-    $this.props.getServicesCost({
+    $this.setState({
+      unit_cost: sales_price,
+      Real_unit_cost: sales_price
+    });
+
+    if (context !== undefined) {
+      context.updateState({
+        unit_cost: sales_price,
+        Real_unit_cost: sales_price
+      });
+    }
+
+    {
+      /*$this.props.getServicesCost({
       uri: "/serviceType/getService",
       module: "masterSettings",
       method: "GET",
@@ -295,7 +310,8 @@ const getUnitCost = ($this, context, serviceid) => {
           });
         }
       }
-    });
+    });*/
+    }
   } else {
     $this.props.getInsuranceServicesCost({
       uri: "/insurance/getPriceList",
@@ -363,6 +379,7 @@ const AddItems = ($this, context) => {
           discount_percentage: $this.state.discount_percentage,
           insured: $this.state.insured,
           conversion_factor: $this.state.conversion_factor,
+          unit_cost: $this.state.unit_cost,
           vat_applicable: "Y",
           hims_d_services_id: $this.state.service_id,
           quantity: $this.state.quantity,
@@ -977,13 +994,22 @@ const CloseItemBatch = ($this, context, e) => {
         : $this.state.qtyhand
       : $this.state.qtyhand;
 
+  let sale_price =
+    e !== undefined
+      ? e.selected === true
+        ? e.sale_price
+        : $this.state.unit_cost
+      : $this.state.unit_cost;
+
+  debugger;
   $this.setState({
     ...$this.state,
     selectBatch: !$this.state.selectBatch,
     batchno: batchno,
     expiry_date: expiry_date,
     grn_no: grn_no,
-    qtyhand: qtyhand
+    qtyhand: qtyhand,
+    unit_cost: sale_price
   });
 
   if (context !== null) {
@@ -991,7 +1017,8 @@ const CloseItemBatch = ($this, context, e) => {
       batchno: batchno,
       expiry_date: expiry_date,
       grn_no: grn_no,
-      qtyhand: qtyhand
+      qtyhand: qtyhand,
+      unit_cost: sale_price
     });
   }
 };

@@ -28,7 +28,7 @@ const DeptselectedHandeler = ($this, context, e) => {
 
 const selectedHandeler = ($this, context, e) => {
   debugger;
-
+  let primary_policy_num = $this.state.primary_policy_num;
   SetBulkState({
     state: $this,
     callback: () => {
@@ -59,13 +59,15 @@ const selectedHandeler = ($this, context, e) => {
               {
                 [e.name]: e.value,
                 visittypeselect: false,
-                consultation: e.selected.consultation
+                consultation: e.selected.consultation,
+                primary_policy_num: primary_policy_num
               },
               () => {
                 debugger;
                 if (context !== null) {
                   context.updateState({
-                    ...$this.state
+                    ...$this.state,
+                    primary_policy_num: primary_policy_num
                   });
                 }
 
@@ -87,6 +89,13 @@ const selectedHandeler = ($this, context, e) => {
           $this.setState({
             [e.name]: null
           });
+          if (context !== null) {
+            context.updateState({
+              ...$this.state,
+              [e.name]: null,
+              primary_policy_num: primary_policy_num
+            });
+          }
         }
       });
     }
@@ -230,6 +239,11 @@ const doctorselectedHandeler = ($this, context, e) => {
         $this.setState({
           [e.name]: null
         });
+        if (context !== null) {
+          context.updateState({
+            [e.name]: e.value
+          });
+        }
         swalMessage({
           title: "No Service defined for the selected doctor.",
           type: "warning"
@@ -240,6 +254,11 @@ const doctorselectedHandeler = ($this, context, e) => {
     $this.setState({
       [e.name]: null
     });
+    if (context !== null) {
+      context.updateState({
+        [e.name]: e.value
+      });
+    }
     swalMessage({
       title: "Please select department.",
       type: "warning"

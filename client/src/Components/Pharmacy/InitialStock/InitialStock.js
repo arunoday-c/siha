@@ -25,7 +25,8 @@ import {
   deleteInitialStock,
   ClearData,
   PostInitialStock,
-  printBarcode
+  printBarcode,
+  salesPriceEvent
 } from "./InitialStockEvents";
 import "./InitialStock.css";
 import "../../../styles/site.css";
@@ -50,7 +51,7 @@ class InitialStock extends Component {
       quantity: 0,
       unit_cost: 0,
       docdate: new Date(),
-
+      sales_price: 0,
       uom_id: null,
       conversion_fact: null,
       extended_cost: 0,
@@ -68,7 +69,7 @@ class InitialStock extends Component {
     );
 
     this.props.getItems({
-      uri: "/pharmacy/getItemMaster",
+      uri: "/pharmacy/getItemMasterWithSalesPrice",
       module: "pharmacy",
       method: "GET",
       redux: {
@@ -400,6 +401,26 @@ class InitialStock extends Component {
                   <AlagehFormGroup
                     div={{ className: "col-3 form-group" }}
                     label={{
+                      forceLabel: "Sales Price",
+                      isImp: true
+                    }}
+                    textBox={{
+                      decimal: { allowNegative: false },
+                      value: this.state.sales_price,
+                      className: "txt-fld",
+                      name: "sales_price",
+                      events: {
+                        onChange: salesPriceEvent.bind(this, this)
+                      },
+                      others: {
+                        autoComplete: "off"
+                      }
+                    }}
+                  />
+
+                  <AlagehFormGroup
+                    div={{ className: "col-3 form-group" }}
+                    label={{
                       forceLabel: "Receipt Number(GRN)",
                       isImp: true
                     }}
@@ -582,6 +603,13 @@ class InitialStock extends Component {
                       fieldName: "unit_cost",
                       label: <AlgaehLabel label={{ forceLabel: "Unit Cost" }} />
                     },
+                    {
+                      fieldName: "sales_price",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Sales Price" }} />
+                      )
+                    },
+
                     {
                       fieldName: "extended_cost",
                       label: (

@@ -117,11 +117,11 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "TransferEntry",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS TH.*, FPL.location_description as from_location, \
+          "select SQL_CALC_FOUND_ROWS PH.*, FPL.location_description as from_location, \
           TPL.location_description as to_location \
-          from hims_f_pharmacy_transfer_header TH, hims_d_pharmacy_location FPL, hims_d_pharmacy_location TPL \
-          where FPL.hims_d_pharmacy_location_id = TH.from_location_id and  \
-          TH.to_location_id = TPL.hims_d_pharmacy_location_id ",
+          from hims_f_pharamcy_material_header PH, hims_d_pharmacy_location FPL, hims_d_pharmacy_location TPL \
+          where FPL.hims_d_pharmacy_location_id = PH.from_location_id and  \
+          PH.to_location_id = TPL.hims_d_pharmacy_location_id ",
         orderBy: "hims_f_pharmacy_transfer_header_id desc"
       },
       {
@@ -389,13 +389,16 @@ let algaehSearchConfig = (searchName, req) => {
         searchQuery:
           "select SQL_CALC_FOUND_ROWS IM.hims_d_item_master_id, IM.item_description, IM.category_id, IM.sales_uom_id,\
           IM.service_id, IM.group_id, IC.category_desc, IE.generic_name,\
-          IG.group_description, PU.uom_description,SR.standard_fee from hims_d_item_master IM, hims_d_item_category IC, \
-          hims_d_item_generic IE, hims_d_item_group IG, hims_d_pharmacy_uom PU, hims_d_services SR where \
+          IG.group_description, PU.uom_description,SR.standard_fee,IL.sale_price from hims_d_item_master IM,\
+          hims_d_item_category IC, hims_d_item_generic IE, hims_d_item_group IG, hims_d_pharmacy_uom PU,\
+          hims_d_services SR, hims_m_item_location IL where IL.item_id = IM.hims_d_item_master_id and\
           IM.category_id = IC.hims_d_item_category_id and IM.group_id = IG.hims_d_item_group_id and \
           IM.generic_id = IE.hims_d_item_generic_id and IM.sales_uom_id=PU.hims_d_pharmacy_uom_id and \
           IM.service_id= SR.hims_d_services_id  and IM.item_status='A' and IM.record_status='A' and \
-          IC.record_status='A' and IE.record_status='A' and IG.record_status='A' ",
-        orderBy: "IM.hims_d_item_master_id desc"
+          IC.record_status='A' and IE.record_status='A' and IG.record_status='A' and IL.pharmacy_location_id=? ",
+        orderBy: "IM.hims_d_item_master_id desc",
+        groupBy: " GROUP By hims_d_item_master_id",
+        inputSequence: ["pharmacy_location_id"]
       },
       {
         searchName: "PharConsEntry",
@@ -462,15 +465,16 @@ let algaehSearchConfig = (searchName, req) => {
         searchQuery:
           "select SQL_CALC_FOUND_ROWS hims_d_inventory_item_master_id, item_description, \
             service_id as services_id,'N' as covered,'N' as pre_approval,IL.batchno,\
-            IL.expirydt,IL.barcode,IL.qtyhand,IL.sales_uom,category_id,group_id,IL.grnno \
+            IL.expirydt,IL.barcode,IL.qtyhand,IL.sales_uom,category_id,group_id,IL.grnno,IL.sale_price \
             from hims_d_inventory_item_master I, hims_m_inventory_item_location IL \
             where service_id not in (SELECT services_id FROM hims_d_services_insurance where \
             insurance_id=? and {mapper}) and \
             I.hims_d_inventory_item_master_id = IL.item_id and {mapper} and IL.inventory_location_id=?\
             union \
-            SELECT IM.hims_d_inventory_item_master_id,service_name as item_description,services_id,covered,\
+            SELECT IM.hims_d_inventory_item_master_id,service_name as item_description,\
+            services_id,covered,\
             pre_approval, ITL.batchno, ITL.expirydt,ITL.barcode, ITL.qtyhand,ITL.sales_uom,\
-            category_id,group_id,ITL.grnno FROM \
+            category_id,group_id,ITL.grnno, ITL.sale_price FROM \
             hims_d_services_insurance INS, hims_d_inventory_item_master IM, hims_m_inventory_item_location \
             ITL where INS.services_id = IM.service_id and IM.hims_d_inventory_item_master_id = ITL.item_id and \
             insurance_id=? and {mapper} and service_type_id=4",

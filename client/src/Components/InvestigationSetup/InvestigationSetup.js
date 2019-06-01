@@ -136,6 +136,7 @@ class InvestigationSetup extends Component {
   }
 
   render() {
+    debugger;
     let _Investigations = Enumerable.from(this.props.investigationdetails)
       .groupBy("$.hims_d_investigation_test_id", null, (k, g) => {
         let firstRecordSet = Enumerable.from(g).firstOrDefault();

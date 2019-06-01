@@ -75,6 +75,7 @@ const datehandle = ($this, ctrl, e) => {
 };
 
 const getRadTestList = $this => {
+  debugger;
   let inputobj = {};
 
   if ($this.state.from_date !== null) {

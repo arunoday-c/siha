@@ -385,6 +385,15 @@ class ReceiptItemList extends Component {
                               disabled: true
                             },
                             {
+                              fieldName: "sales_price",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Sales Price" }}
+                                />
+                              ),
+                              disabled: true
+                            },
+                            {
                               fieldName: "recieved_quantity",
                               label: (
                                 <AlgaehLabel

@@ -191,7 +191,9 @@ module.exports = {
                 "batchno_expiry_required",
                 "batchno",
                 "expiry_date",
-                "vendor_batchno"
+                "vendor_batchno",
+                "barcode",
+                "sales_price"
               ];
 
               _mysql

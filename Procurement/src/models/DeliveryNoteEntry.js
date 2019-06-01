@@ -71,7 +71,7 @@ module.exports = {
                   DND.`unit_cost`, DND.`extended_cost`, DND.`discount_percentage`, DND.`discount_amount`, \
                   DND.`net_extended_cost`, DND.`vendor_item_no`, DND.`manufacturer_item_code`, DND.`quantity_recieved_todate`, \
                   DND.`quantity_outstanding`, DND.`tax_inclusive`, DND.`tax_amount`, DND.`total_amount`, DND.`mrp_price`, DND.vendor_batchno,\
-                  DND.`calculate_tax_on`, DND.`tax_percentage`, DND.`tax_discount`, DND.`item_type`, \
+                  DND.`calculate_tax_on`, DND.`tax_percentage`, DND.`tax_discount`, DND.`item_type`, DND.sales_price,\
                   DND.`batchno_expiry_required`, DND.`batchno`, DND.`expiry_date`, DND.`purchase_order_header_id`, \
                   DND.`purchase_order_detail_id`,IM.item_code, IM.item_description, IU.uom_description \
                   from hims_f_procurement_dn_detail DND, hims_d_inventory_item_master IM, hims_d_inventory_uom IU \
@@ -88,7 +88,7 @@ module.exports = {
                   DND.`unit_cost`, DND.`extended_cost`, DND.`discount_percentage`, DND.`discount_amount`, \
                   DND.`net_extended_cost`, DND.`vendor_item_no`, DND.`manufacturer_item_code`, DND.`quantity_recieved_todate`, \
                   DND.`quantity_outstanding`, DND.`tax_inclusive`, DND.`tax_amount`, DND.`total_amount`, DND.`mrp_price`, DND.vendor_batchno,\
-                  DND.`calculate_tax_on`, DND.`tax_percentage`, DND.`tax_discount`, DND.`item_type`, \
+                  DND.`calculate_tax_on`, DND.`tax_percentage`, DND.`tax_discount`, DND.`item_type`, DND.sales_price,\
                   DND.`batchno_expiry_required`, DND.`batchno`, DND.`expiry_date`, DND.`purchase_order_header_id`, \
                   DND.`purchase_order_detail_id`,IM.item_code, IM.item_description, PU.uom_description \
                   from hims_f_procurement_dn_detail DND, hims_d_item_master IM ,hims_d_pharmacy_uom PU \
@@ -219,7 +219,8 @@ module.exports = {
             "purchase_order_header_id",
             "purchase_order_detail_id",
             "vendor_batchno",
-            "barcode"
+            "barcode",
+            "sales_price"
           ];
 
           _mysql
