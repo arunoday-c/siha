@@ -41,27 +41,33 @@ class SearchModule extends Component {
   }
   componentDidMount() {
     document.addEventListener("keyup", this.handleKeyUp, false);
-
+    const that = this;
     this.getUserSelectedValue(
-      { searchName: this.props.searchName },
+      { searchName: that.props.searchName },
       response => {
-        let _searchBy = this.props.searchGrid.columns[0]["fieldName"];
-        let _name = this.props.searchGrid.columns[0]["label"];
+        const column = that.props.searchGrid.columns[0];
+        let _searchBy = column["fieldName"];
+        let _name = column["label"];
         if (response.data.success === true) {
           if (response.data.records !== undefined) {
-            _searchBy = response.data.records.selectedValue;
-            _name = response.data.records.name;
+            if (
+              response.data.records.selectedValue !== null &&
+              response.data.records.selectedValue !== undefined
+            ) {
+              _searchBy = response.data.records.selectedValue;
+              _name = response.data.records.name;
+            }
           }
         }
-        this.handleOnchnageSearchBy({
+        that.handleOnchnageSearchBy({
           target: {
             value: _searchBy,
             title: _name
           }
         });
-        this.setState({
-          open: this.props.model.open,
-          searchName: this.props.searchName,
+        that.setState({
+          open: that.props.model.open,
+          searchName: that.props.searchName,
           searchBy: _searchBy,
           isSpeakEnable: false,
           stop: false,
