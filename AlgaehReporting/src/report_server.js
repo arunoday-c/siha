@@ -10,7 +10,8 @@ import {
   getReport,
   getReportMultiPrint,
   merdgeTosingleReport,
-  getExcelReport
+  getExcelReport,
+  getRawReport
 } from "./report_generation";
 import algaehUtilities from "algaeh-utilities/utilities";
 const exec = require("child_process").exec;
@@ -89,7 +90,7 @@ app.use((req, res, next) => {
 });
 app.use("/api/v1/report", getReport);
 app.use("/api/v1/excelReport", getExcelReport);
-
+app.use("/api/v1/getRawReport", getRawReport);
 app.use(
   "/api/v1/multireports",
   getReportMultiPrint,
