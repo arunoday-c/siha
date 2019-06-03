@@ -36,6 +36,24 @@ export default [
         pageOrentation: "landscap", //"portrait",
         reportParameters: [
           {
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
             type: "dropdown",
             name: "sub_department_id",
             initialLoad: true,
@@ -100,24 +118,7 @@ export default [
               data: undefined
             }
           },
-          {
-            type: "date",
-            name: "from_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
-            }
-          },
-          {
-            type: "date",
-            name: "to_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
-            }
-          }
+         
         ]
       },
       {
@@ -1413,12 +1414,30 @@ export default [
     name: "Inventory",
     submenu: [
       {
-        subitem: "Doctor and Status wise report",
+        subitem: "Items Consumption Report",
         reportName: "departmentDoctorConsumption",
         pageSize: "A4",
         requireIframe:true,
         pageOrentation: "landscap", //"portrait",
         reportParameters: [
+          {
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
           {
             type: "dropdown",
             name: "sub_department_id",
@@ -1483,47 +1502,11 @@ export default [
               valueField: "hims_d_appointment_status_id",
               data: undefined
             }
-          },
-          {
-            type: "date",
-            name: "from_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
-            }
-          },
-          {
-            type: "date",
-            name: "to_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
-            }
           }
         ]
       },
       {
-        subitem: " Inventory of Retail Products",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Item Opening Stock Report",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Items Consumption Report",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Items Expiry Report",
+        subitem: "Items Stock Register - Category wise",
         template_name: "asset_war_exp",
         reportParameters: []
         //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
@@ -1541,145 +1524,7 @@ export default [
         //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
       },
       {
-        subitem: "Material Request Report ",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Material Request Report - Item Wise",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Material Request Report - Office Wise",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Pending Purchase Order Report",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Pending Purchase Order Report - Item Wise",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Product List",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Purchase Order Report",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Purchase Order Report - Item Wise  ",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Purchase Order Report - Supplier Wise",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Purchase Register Itemwise",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Purchase Report",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Purchase Report - Item Wise",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Stock Adjustments Report",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Stock Register",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Stock Register Report - Category Wise",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Stock Register Report - Department Wise",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Stock Remaining - Category Wise",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Stock Remaining - Department Wise",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Stock Transaction",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Supplier Discount Received - Invoice Wise ",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Supplier List",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Supplier Overdue - Ageing Report",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Supplier Wise Invoices",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Supplier Wise Invoices - Pending",
+        subitem: "Items Expiry Report",
         template_name: "asset_war_exp",
         reportParameters: []
         //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
@@ -1708,145 +1553,25 @@ export default [
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
-        subitem: "GP Statment Item wise Report",
+        subitem: "GP Statment ItemWise Report",
         template_name: "asset_war_exp",
         reportParameters: []
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
-        subitem: "Item Sales Report - Category Wise",
+        subitem: "List of Claims Generated",
         template_name: "asset_war_exp",
         reportParameters: []
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
-        subitem: "Item Sales Report - Customer Wise",
+        subitem: "List of Receipts",
         template_name: "asset_war_exp",
         reportParameters: []
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
-        subitem: "Item Sales Report - User Wise",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "List Of Claims Generated",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "List Of Receipts",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "List Of Sales Invoice",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Outstanding Invoices",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Prescribed/Dispensed Medicines Report",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Product Movement Report",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Sale Register - Date Wise",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Sales Collection Summary Report",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Sales Report - Bill Wise",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Sales Report - Credit Customer",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Sales Report - Date Wise",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Sales Report - Detailed",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Sales Report - Doctor Wise",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Sales Report - Product/Supplier Wise",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Sales Report - Summary",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Sales Report Detailed - Item Wise",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Sales Report Yearly - Month Wise",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Sales Return Report",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Stock Register - Item Stock Report",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Stock Summary - MRP/Purchase Rate",
+        subitem: "List of Sales Invoice",
         template_name: "asset_war_exp",
         reportParameters: []
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />

@@ -8,18 +8,26 @@
                 <thead>
                     <tr>
                         <th>Sl No.</th>
+                        <th>Industry Company</th>
                         <th>Date</th>
+                        <th>Voucher No.</th>
+                        <th>Barcode</th>
+                        <th>Batch No.</th>
                         <th>Item Code</th>
                         <th>Item Name</th>
-                        <th>Quantity</th>
-                        <th>Unit Price</th>
-                        <th>Amount</th>
+                        <th>Category</th>
+                        <th>Qty</th>
+                        <th>Cost Price</th>
+                        <th>Total Cost</th>
+                        <th>Sale Price</th>
+                        <th>Total Sale</th>
+                        <th>Expiry</th>
                     </tr>
                 </thead>
                 <tbody>
                     {{#each groupdetails}}
                     <tr>
-                        <td colspan="7" class="tableSubHdg">{{doctor_name}} | {{doctor_code}} <small style="float:right">Total - Checked
+                        <td colspan="15" class="tableSubHdg">{{doctor_name}} | {{doctor_code}} <small style="float:right">Total - Checked
                                 In:{{checked_in}} | Cancelled:{{cancel}} | No Show:{{no_show}}</small></td>
                     </tr>
                     {{#each details}}
