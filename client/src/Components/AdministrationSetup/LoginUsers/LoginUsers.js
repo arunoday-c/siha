@@ -160,7 +160,38 @@ class LoginUsers extends Component {
   }
 
   deleteLoginUser() {}
-  updateLoginUser() {}
+  updateLoginUser() {
+    AlgaehValidation({
+      alertTypeIcon: "warning",
+      onSuccess: () => {
+        algaehApiCall({
+          uri: "/algaehappuser/updateUser",
+          method: "PUT",
+          data: {
+            user_display_name: this.state.display_name,
+            algaeh_d_app_user_id: this.state.algaeh_d_app_user_id
+          },
+          onSuccess: response => {
+            if (response.data.success) {
+              swalMessage({
+                title: "Record added successfully",
+                type: "success"
+              });
+
+              this.getLoginUsers();
+              this.resetSaveState();
+            } else if (!response.data.success) {
+              swalMessage({
+                title: response.data.records.message,
+                type: "warning"
+              });
+            }
+          },
+          onError: error => {}
+        });
+      }
+    });
+  }
 
   deleteLoginUser(data) {
     swal({
@@ -508,8 +539,8 @@ class LoginUsers extends Component {
                                 div={{ className: "col" }}
                                 textBox={{
                                   className: "txt-fld",
-                                  name: "algaeh_d_app_user_id",
-                                  value: row.algaeh_d_app_user_id,
+                                  name: "username",
+                                  value: row.username,
                                   events: {
                                     onChange: this.changeGridEditors.bind(
                                       this,
@@ -533,7 +564,30 @@ class LoginUsers extends Component {
                               label={{ fieldName: "display_name" }}
                             />
                           ),
-                          disabled: true
+                          disabled: false,
+                          editorTemplate: row => {
+                            return (
+                              <AlagehFormGroup
+                                div={{ className: "col" }}
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "user_display_name",
+                                  value: row.user_display_name,
+                                  events: {
+                                    onChange: this.changeGridEditors.bind(
+                                      this,
+                                      row
+                                    )
+                                  },
+                                  others: {
+                                    errormessage:
+                                      " Description- cannot be blank",
+                                    required: true
+                                  }
+                                }}
+                              />
+                            );
+                          }
                         },
                         {
                           fieldName: "app_group_name",

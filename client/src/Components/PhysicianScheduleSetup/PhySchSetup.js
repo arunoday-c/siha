@@ -481,13 +481,39 @@ class PhySchSetup extends Component {
   }
 
   dropDownHandler(value) {
+
+    this.setState({ [value.name]: value.value });
     if (value.name === "month") {
       // let dateToday = this.state.year + this.state.month + "01";
+      // this.setState({
+      //   from_date: this.state.year + this.state.month + "01"
+      // });
+
+      let dateToday = moment().format("YYYY-MM-DD");
+      let startOf_mon = moment(this.state.year + "-" + value.value)
+        .startOf("month")
+        .format("YYYY-MM-DD");
+
+      console.log("dateToday:", dateToday);
+      console.log("state:", this.state.year + "-" + value.value);
+
+
+
+      let frm_date=dateToday > startOf_mon
+      ? new Date()
+      : moment(startOf_mon).format("MM-DD-YYYY");
+
+
+      let to_dte=moment(frm_date)
+      .endOf("month")
+      .format("MM-DD-YYYY")
+
       this.setState({
-        from_date: this.state.year + this.state.month + "01"
+        from_date:frm_date,          
+        to_date: to_dte
       });
     }
-    this.setState({ [value.name]: value.value });
+    
   }
 
   getDoctorScheduleToModify(header_id, provider_id) {
@@ -1606,7 +1632,7 @@ class PhySchSetup extends Component {
                         <AlagehFormGroup
                           div={{ className: "col" }}
                           label={{
-                            fieldName: "to_ime",
+                            fieldName: "to_time",
                             isImp: true
                           }}
                           textBox={{

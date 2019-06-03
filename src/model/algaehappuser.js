@@ -613,6 +613,60 @@ let changePassword = (req, res, next) => {
     next(e);
   }
 };
+//created by irfan: to
+let updateUser = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      if (
+        req.query.algaeh_d_app_user_id > 0 &&
+        req.query.user_display_name != null
+      ) {
+        connection.query(
+          "update algaeh_d_app_user set user_display_name=?,updated_date=?,updated_by=? where\
+          record_status='A' and algaeh_d_app_user_id=?",
+          [
+            req.body.user_display_name,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            req.body.algaeh_d_app_user_id
+          ],
+          (error, result) => {
+            if (error) {
+              releaseDBConnection(db, connection);
+              next(error);
+            }
+            releaseDBConnection(db, connection);
+
+            if (result.affectedRows > 0) {
+              req.records = result;
+            } else {
+              req.records = {
+                validUser: false,
+                message: "Please Provide valid user id"
+              };
+              next();
+            }
+          }
+        );
+
+        ///------------------
+      } else {
+        req.records = {
+          validUser: false,
+          message: "You are not a valid user id"
+        };
+        next();
+      }
+    });
+  } catch (e) {
+    next(e);
+  }
+};
 
 module.exports = {
   selectAppUsers,
@@ -621,7 +675,8 @@ module.exports = {
   selectRoles,
   createUserLogin,
   getLoginUserMaster,
-  changePassword
+  changePassword,
+  updateUser
 };
 
 function generatePwd() {
