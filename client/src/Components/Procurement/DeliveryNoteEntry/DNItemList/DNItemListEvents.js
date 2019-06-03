@@ -163,6 +163,15 @@ const dateFormater = ($this, value) => {
   }
 };
 
+const onchhangeNumber = ($this, row, e) => {
+  debugger;
+
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  row[name] = value;
+  row.update();
+};
+
 const onchhangegriddiscount = ($this, row, e) => {
   debugger;
   let discount_percentage = row.discount_percentage;
@@ -314,7 +323,7 @@ const printBarcode = ($this, row, e) => {
       }
     },
     data: {
-      bar_code: row.item_code + "-" + row.batchno
+      bar_code: row.barcode
     }
   });
 };
@@ -331,5 +340,6 @@ export {
   CancelGrid,
   onchangegridcoldatehandle,
   changeDateFormat,
-  printBarcode
+  printBarcode,
+  onchhangeNumber
 };

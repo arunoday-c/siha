@@ -46,6 +46,7 @@ class InvInitialStock extends Component {
       sales_uom: null,
       item_id: null,
       batchno: null,
+      vendor_batchno: null,
       expiry_date: null,
       quantity: 0,
       unit_cost: 0,
@@ -230,11 +231,10 @@ class InvInitialStock extends Component {
                       events: {
                         onChange: changeTexts.bind(this, this)
                       },
-              others:{
-                       autoComplete:"off"
-                    }
+                      others: {
+                        autoComplete: "off"
+                      }
                     }}
-                   
                   />
                 </div>
                 <div className="row" data-validate="InvIntialStock">
@@ -249,7 +249,7 @@ class InvInitialStock extends Component {
                         textField: "location_description",
                         valueField: "hims_d_inventory_location_id",
                         data: this.props.inventorylocations,
-                autoComplete: "off"
+                        autoComplete: "off"
                       },
 
                       onChange: LocationchangeTexts.bind(this, this),
@@ -282,7 +282,7 @@ class InvInitialStock extends Component {
                           uom_id: null
                         });
                       },
-                autoComplete: "off"
+                      autoComplete: "off"
                     }}
                   />
                   <AlagehAutoComplete
@@ -301,7 +301,7 @@ class InvInitialStock extends Component {
                         disabled: true
                       },
                       onChange: null,
-                autoComplete: "off"
+                      autoComplete: "off"
                     }}
                   />
 
@@ -321,7 +321,7 @@ class InvInitialStock extends Component {
                         disabled: true
                       },
                       onChange: null,
-                autoComplete: "off"
+                      autoComplete: "off"
                     }}
                   />
 
@@ -341,25 +341,24 @@ class InvInitialStock extends Component {
                         disabled: true
                       },
                       onChange: itemchangeText.bind(this, this),
-                autoComplete: "off"
+                      autoComplete: "off"
                     }}
                   />
                   <AlagehFormGroup
                     div={{ className: "col-lg-3 form-group" }}
                     label={{
-                      forceLabel: "Batch No.",
-                      isImp: true
+                      forceLabel: "Vendor Batch No."
                     }}
                     textBox={{
                       className: "txt-fld",
-                      name: "batchno",
-                      value: this.state.batchno,
+                      name: "vendor_batchno",
+                      value: this.state.vendor_batchno,
                       events: {
                         onChange: changeTexts.bind(this, this)
                       },
-              others:{
-                       autoComplete:"off"
-                    }
+                      others: {
+                        autoComplete: "off"
+                      }
                     }}
                   />
 
@@ -392,7 +391,8 @@ class InvInitialStock extends Component {
                         onChange: numberchangeTexts.bind(this, this)
                       },
                       others: {
-                        step: "1",  autoComplete:"off"
+                        step: "1",
+                        autoComplete: "off"
                       }
                     }}
                   />
@@ -410,8 +410,7 @@ class InvInitialStock extends Component {
                       events: {
                         onChange: numberchangeTexts.bind(this, this)
                       },
-                 others: { autoComplete:"off"
-                      }
+                      others: { autoComplete: "off" }
                     }}
                   />
 
@@ -428,8 +427,8 @@ class InvInitialStock extends Component {
                       events: {
                         onChange: changeTexts.bind(this, this)
                       },
-                 others: {
-                        autoComplete:"off"
+                      others: {
+                        autoComplete: "off"
                       }
                     }}
                   />
@@ -572,8 +571,12 @@ class InvInitialStock extends Component {
                       disabled: true
                     },
                     {
-                      fieldName: "batchno",
-                      label: <AlgaehLabel label={{ forceLabel: "Batch No." }} />
+                      fieldName: "vendor_batchno",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Vendor Batch No." }}
+                        />
+                      )
                     },
                     {
                       fieldName: "expiry_date",
@@ -646,19 +649,20 @@ class InvInitialStock extends Component {
                     />
                   </button>
 
-                  <button
-                    type="button"
-                    className="btn btn-other"
-                    onClick={PostInitialStock.bind(this, this)}
-                    disabled={this.state.postEnable}
-                  >
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Post",
-                        returnText: true
-                      }}
-                    />
-                  </button>
+                  {/*
+                    <button
+                      type="button"
+                      className="btn btn-other"
+                      onClick={PostInitialStock.bind(this, this)}
+                      disabled={this.state.postEnable}
+                    >
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Post",
+                          returnText: true
+                        }}
+                      />
+                    </button>*/}
                 </div>
               </div>
             </div>

@@ -146,6 +146,14 @@ const ClearData = ($this, e) => {
 
         $this.props.setSelectedInsurance({
           redux: {
+            type: "PRIMARY_INSURANCE_DATA",
+            mappingName: "existinsurance",
+            data: []
+          }
+        });
+
+        $this.props.setSelectedInsurance({
+          redux: {
             type: "SECONDARY_INSURANCE_DATA",
             mappingName: "secondaryinsurance",
             data: []

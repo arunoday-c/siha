@@ -10,7 +10,6 @@ module.exports = {
       let bill_cancel_number = "";
 
       inputParam.receipt_header_id = req.records.receipt_header_id;
-      inputParam.hospital_id = 1;
 
       _mysql
         .generateRunningNumber({
@@ -28,19 +27,18 @@ module.exports = {
             .executeQuery({
               query:
                 "INSERT INTO hims_f_bill_cancel_header ( bill_cancel_number, patient_id, visit_id, from_bill_id,receipt_header_id,\
-                    hospital_id,incharge_or_provider, bill_cancel_date, advance_amount,advance_adjust, discount_amount, sub_total_amount \
+                    incharge_or_provider, bill_cancel_date, advance_amount,advance_adjust, discount_amount, sub_total_amount \
                     , total_tax,  billing_status, sheet_discount_amount, sheet_discount_percentage, net_amount, net_total \
                     , company_res, sec_company_res, patient_res, patient_payable, company_payable, sec_company_payable \
                     , patient_tax, company_tax, sec_company_tax, net_tax, credit_amount, payable_amount \
                     , created_by, created_date, updated_by, updated_date, copay_amount, sec_copay_amount ,deductable_amount, sec_deductable_amount,hospital_id) \
-                    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
               values: [
                 bill_cancel_number,
                 inputParam.patient_id,
                 inputParam.visit_id,
                 inputParam.from_bill_id,
                 inputParam.receipt_header_id,
-                inputParam.hospital_id,
                 inputParam.incharge_or_provider,
                 inputParam.bill_cancel_date != null
                   ? new Date(inputParam.bill_cancel_date)

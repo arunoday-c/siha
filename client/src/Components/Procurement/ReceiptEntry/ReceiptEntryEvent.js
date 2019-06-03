@@ -251,7 +251,7 @@ const ClearData = ($this, e) => {
 
 const SaveReceiptEnrty = $this => {
   const batchExpiryDate = Enumerable.from($this.state.receipt_entry_detail)
-    .where(w => w.batchno === null || w.expiry_date === null)
+    .where(w => w.expiry_date === null)
     .toArray();
 
   if (batchExpiryDate.length === 0) {

@@ -96,6 +96,9 @@ const SaveTransferEntry = $this => {
     $this.state.pharmacy_stock_detail[i].uom_id =
       $this.state.pharmacy_stock_detail[i].uom_transferred_id;
 
+    $this.state.pharmacy_stock_detail[i].sales_price =
+      $this.state.pharmacy_stock_detail[i].sale_price;
+
     $this.state.pharmacy_stock_detail[i].quantity =
       $this.state.pharmacy_stock_detail[i].quantity_transfer;
 
@@ -126,7 +129,7 @@ const SaveTransferEntry = $this => {
   });
 
   $this.state.stock_detail = stock_detail;
-
+  debugger;
   algaehApiCall({
     uri: "/transferEntry/addtransferEntry",
     module: "pharmacy",
@@ -254,7 +257,7 @@ const RequisitionSearch = ($this, e) => {
               data.to_location_id = from_location_id;
               data.from_location_type = data.to_location_type;
               data.to_location_type = from_location_type;
-
+              debugger;
               for (let i = 0; i < data.stock_detail.length; i++) {
                 data.stock_detail[i].material_requisition_header_id =
                   data.hims_f_pharamcy_material_header_id;

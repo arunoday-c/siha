@@ -107,6 +107,12 @@ class ItemBatchs extends PureComponent {
                               label={{ forceLabel: "Quantity in Hand" }}
                             />
                           )
+                        },
+                        {
+                          fieldName: "sale_price",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Unit Cost" }} />
+                          )
                         }
                       ]}
                       keyId="item_id"

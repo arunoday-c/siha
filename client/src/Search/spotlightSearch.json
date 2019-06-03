@@ -88,7 +88,7 @@
     "doccpmmission": [
       {
         "fieldName": "comission_code",
-        "label": "Comission Code"
+        "label": "Comission Number"
       },
 
       {
@@ -121,8 +121,8 @@
         "label": "Description"
       },
       {
-        "fieldName": "posted",
-        "label": "Posted"
+        "fieldName": "docdate",
+        "label": "Date"
       }
     ],
     "invintstock": [
@@ -135,8 +135,8 @@
         "label": "Description"
       },
       {
-        "fieldName": "posted",
-        "label": "Posted"
+        "fieldName": "docdate",
+        "label": "Date"
       }
     ]
   },
@@ -189,6 +189,18 @@
       {
         "fieldName": "material_requisition_number",
         "label": "Requisition Number"
+      },
+      {
+        "fieldName": "requistion_date",
+        "label": "Requisition Date"
+      },
+      {
+        "fieldName": "from_location",
+        "label": "From Location"
+      },
+      {
+        "fieldName": "to_location",
+        "label": "To Location"
       }
     ]
   },

@@ -26,7 +26,9 @@ let updateIntoItemLocation = (req, res, next) => {
     let inputParam = req.body;
     let xmlQuery = "";
     const utilities = new algaehUtilities();
-    utilities.logger().log("updateIntoItemLocation: ");
+    utilities
+      .logger()
+      .log("updateIntoItemLocation: ", inputParam.pharmacy_stock_detail);
 
     new LINQ(inputParam.pharmacy_stock_detail)
       .Select(s => {
@@ -44,7 +46,7 @@ let updateIntoItemLocation = (req, res, next) => {
           last_purchase_cost: s.last_purchase_cost || 0,
           grn_id: s.grn_id || 0,
           grnno: s.grn_number,
-          sale_price: s.sale_price || 0,
+          sale_price: s.sales_price || 0,
           sales_uom: s.sales_uom,
           mrp_price: s.mrp_price || 0,
           transaction_type: req.body.transaction_type,
@@ -52,6 +54,7 @@ let updateIntoItemLocation = (req, res, next) => {
           transaction_date: req.body.transaction_date,
           from_location_id: s.location_id,
           from_location_type: s.location_type,
+          vendor_batchno: s.vendor_batchno || null,
           year: req.body.year,
           period: req.body.period,
           to_location_id: s.to_location_id || "~",
@@ -146,7 +149,7 @@ let updateIntoItemLocation = (req, res, next) => {
         _mysql.rollBackTransaction(() => {
           next(e);
         });
-      });    
+      });
   } catch (e) {
     _mysql.releaseConnection();
     next(e);

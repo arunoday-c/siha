@@ -164,8 +164,13 @@ class InvStockEnquiry extends Component {
                       forceLabel: "Total Quantity"
                     }}
                   />
-                  <h6>{this.state.item_id === null ? 0 :
-                      total_quantity ? total_quantity + " nos" : "0 nos"}</h6>
+                  <h6>
+                    {this.state.item_id === null
+                      ? 0
+                      : total_quantity
+                      ? total_quantity + " nos"
+                      : "0 nos"}
+                  </h6>
                 </div>
               </div>
             </div>
@@ -251,6 +256,10 @@ class InvStockEnquiry extends Component {
                     },
 
                     disabled: true
+                  },
+                  {
+                    fieldName: "barcode",
+                    label: <AlgaehLabel label={{ forceLabel: "Barcode" }} />
                   },
                   {
                     fieldName: "batchno",

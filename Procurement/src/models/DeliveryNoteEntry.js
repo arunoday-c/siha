@@ -5,6 +5,41 @@ import algaehUtilities from "algaeh-utilities/utilities";
 import mysql from "mysql";
 
 module.exports = {
+  generateNumber: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    try {
+      req.mySQl = _mysql;
+      //Bill
+      _mysql
+        .generateRunningNumber({
+          modules: ["DN_NUM"],
+          tableName: "hims_f_app_numgen",
+          identity: {
+            algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
+            hospital_id: req.userIdentity["x-branch"]
+          }
+        })
+        .then(generatedNumbers => {
+          req.connection = {
+            connection: _mysql.connection,
+            isTransactionConnection: _mysql.isTransactionConnection,
+            pool: _mysql.pool
+          };
+          req.body.delivery_note_number = generatedNumbers[0];
+          next();
+        })
+        .catch(e => {
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
+        });
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
+  },
   getDeliveryNoteEntry: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
@@ -35,8 +70,8 @@ module.exports = {
                   DND.`authorize_quantity`, DND.`rejected_quantity`, DND.`pharmacy_uom_id`, DND.`inventory_uom_id`, \
                   DND.`unit_cost`, DND.`extended_cost`, DND.`discount_percentage`, DND.`discount_amount`, \
                   DND.`net_extended_cost`, DND.`vendor_item_no`, DND.`manufacturer_item_code`, DND.`quantity_recieved_todate`, \
-                  DND.`quantity_outstanding`, DND.`tax_inclusive`, DND.`tax_amount`, DND.`total_amount`, DND.`mrp_price`, \
-                  DND.`calculate_tax_on`, DND.`tax_percentage`, DND.`tax_discount`, DND.`item_type`, \
+                  DND.`quantity_outstanding`, DND.`tax_inclusive`, DND.`tax_amount`, DND.`total_amount`, DND.`mrp_price`, DND.vendor_batchno,\
+                  DND.`calculate_tax_on`, DND.`tax_percentage`, DND.`tax_discount`, DND.`item_type`, DND.sales_price,\
                   DND.`batchno_expiry_required`, DND.`batchno`, DND.`expiry_date`, DND.`purchase_order_header_id`, \
                   DND.`purchase_order_detail_id`,IM.item_code, IM.item_description, IU.uom_description \
                   from hims_f_procurement_dn_detail DND, hims_d_inventory_item_master IM, hims_d_inventory_uom IU \
@@ -52,8 +87,8 @@ module.exports = {
                   DND.`authorize_quantity`, DND.`rejected_quantity`, DND.`pharmacy_uom_id`, DND.`inventory_uom_id`, \
                   DND.`unit_cost`, DND.`extended_cost`, DND.`discount_percentage`, DND.`discount_amount`, \
                   DND.`net_extended_cost`, DND.`vendor_item_no`, DND.`manufacturer_item_code`, DND.`quantity_recieved_todate`, \
-                  DND.`quantity_outstanding`, DND.`tax_inclusive`, DND.`tax_amount`, DND.`total_amount`, DND.`mrp_price`, \
-                  DND.`calculate_tax_on`, DND.`tax_percentage`, DND.`tax_discount`, DND.`item_type`, \
+                  DND.`quantity_outstanding`, DND.`tax_inclusive`, DND.`tax_amount`, DND.`total_amount`, DND.`mrp_price`, DND.vendor_batchno,\
+                  DND.`calculate_tax_on`, DND.`tax_percentage`, DND.`tax_discount`, DND.`item_type`, DND.sales_price,\
                   DND.`batchno_expiry_required`, DND.`batchno`, DND.`expiry_date`, DND.`purchase_order_header_id`, \
                   DND.`purchase_order_detail_id`,IM.item_code, IM.item_description, PU.uom_description \
                   from hims_f_procurement_dn_detail DND, hims_d_item_master IM ,hims_d_pharmacy_uom PU \
@@ -96,137 +131,124 @@ module.exports = {
   },
 
   addDeliveryNoteEntry: (req, res, next) => {
-    const _mysql = new algaehMysql();
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
     try {
-      let input = { ...req.body };
-      let delivery_note_number = "";
+      let input = req.body;
+
       const utilities = new algaehUtilities();
       utilities.logger().log("addDeliveryNoteEntry: ");
+
+      let today = moment().format("YYYY-MM-DD");
+
       _mysql
-        .generateRunningNumber({
-          modules: ["DN_NUM"],
-          tableName: "hims_f_app_numgen",
-          identity: {
-            algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-            hospital_id: req.userIdentity["x-branch"]
-          }
-        })
-        .then(generatedNumbers => {
-          delivery_note_number = generatedNumbers[0];
-
-          let today = moment().format("YYYY-MM-DD");
-
-          _mysql
-            .executeQuery({
-              query:
-                "INSERT INTO `hims_f_procurement_dn_header` (delivery_note_number,dn_date,dn_type,dn_from, pharmcy_location_id,\
+        .executeQuery({
+          query:
+            "INSERT INTO `hims_f_procurement_dn_header` (delivery_note_number,dn_date,dn_type,dn_from, pharmcy_location_id,\
                 inventory_location_id,location_type,vendor_id, purchase_order_id, from_multiple_purchase_orders, \
                 payment_terms, comment, sub_total, detail_discount, extended_total,sheet_level_discount_percent, \
                 sheet_level_discount_amount,description,net_total,total_tax, net_payable, created_by,created_date, \
                 updated_by,updated_date,hospital_id) \
               VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-              values: [
-                delivery_note_number,
-                today,
-                input.dn_type,
-                input.dn_from,
-                input.pharmcy_location_id,
-                input.inventory_location_id,
-                input.location_type,
-                input.vendor_id,
-                input.purchase_order_id,
-                input.from_multiple_purchase_orders,
-                input.payment_terms,
-                input.comment,
-                input.sub_total,
-                input.detail_discount,
-                input.extended_total,
-                input.sheet_level_discount_percent,
-                input.sheet_level_discount_amount,
-                input.description,
+          values: [
+            input.delivery_note_number,
+            today,
+            input.dn_type,
+            input.dn_from,
+            input.pharmcy_location_id,
+            input.inventory_location_id,
+            input.location_type,
+            input.vendor_id,
+            input.purchase_order_id,
+            input.from_multiple_purchase_orders,
+            input.payment_terms,
+            input.comment,
+            input.sub_total,
+            input.detail_discount,
+            input.extended_total,
+            input.sheet_level_discount_percent,
+            input.sheet_level_discount_amount,
+            input.description,
 
-                input.net_total,
-                input.total_tax,
-                input.net_payable,
+            input.net_total,
+            input.total_tax,
+            input.net_payable,
 
-                req.userIdentity.algaeh_d_app_user_id,
-                new Date(),
-                req.userIdentity.algaeh_d_app_user_id,
-                new Date(),
-                req.userIdentity.hospital_id
-              ],
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.userIdentity.hospital_id
+          ],
+          printQuery: true
+        })
+        .then(headerResult => {
+          let dn_entry_detail = [];
+          if (input.dn_from == "PHR") {
+            dn_entry_detail = input.pharmacy_stock_detail;
+          } else {
+            dn_entry_detail = input.inventory_stock_detail;
+          }
+
+          utilities.logger().log("headerResult: ", headerResult.insertId);
+          let IncludeValues = [
+            "phar_item_category",
+            "phar_item_group",
+            "phar_item_id",
+            "inv_item_category_id",
+            "inv_item_group_id",
+            "inv_item_id",
+            "po_quantity",
+            "dn_quantity",
+            "quantity_outstanding",
+            "pharmacy_uom_id",
+            "inventory_uom_id",
+            "unit_cost",
+            "extended_cost",
+            "discount_percentage",
+            "discount_amount",
+            "net_extended_cost",
+            "tax_percentage",
+            "tax_amount",
+            "total_amount",
+            "item_type",
+            "quantity_recieved_todate",
+            "batchno_expiry_required",
+            "batchno",
+            "expiry_date",
+            "purchase_order_header_id",
+            "purchase_order_detail_id",
+            "vendor_batchno",
+            "barcode",
+            "sales_price"
+          ];
+
+          _mysql
+            .executeQuery({
+              query: "INSERT INTO hims_f_procurement_dn_detail(??) VALUES ?",
+              values: dn_entry_detail,
+              includeValues: IncludeValues,
+              extraValues: {
+                hims_f_procurement_dn_header_id: headerResult.insertId
+              },
+              bulkInsertOrUpdate: true,
               printQuery: true
             })
-            .then(headerResult => {
-              req.connection = {
-                connection: _mysql.connection,
-                isTransactionConnection: _mysql.isTransactionConnection,
-                pool: _mysql.pool
+            .then(detailResult => {
+              utilities.logger().log("detailResult: ", detailResult);
+              // _mysql.commitTransaction(() => {
+              //   _mysql.releaseConnection();
+              req.records = {
+                delivery_note_number: input.delivery_note_number,
+                hims_f_procurement_dn_header_id: headerResult.insertId
               };
-
-              utilities.logger().log("headerResult: ", headerResult.insertId);
-              let IncludeValues = [
-                "phar_item_category",
-                "phar_item_group",
-                "phar_item_id",
-                "inv_item_category_id",
-                "inv_item_group_id",
-                "inv_item_id",
-                "po_quantity",
-                "dn_quantity",
-                "quantity_outstanding",
-                "pharmacy_uom_id",
-                "inventory_uom_id",
-                "unit_cost",
-                "extended_cost",
-                "discount_percentage",
-                "discount_amount",
-                "net_extended_cost",
-                "tax_percentage",
-                "tax_amount",
-                "total_amount",
-                "item_type",
-                "quantity_recieved_todate",
-                "batchno_expiry_required",
-                "batchno",
-                "expiry_date",
-                "purchase_order_header_id",
-                "purchase_order_detail_id"
-              ];
-
-              _mysql
-                .executeQuery({
-                  query:
-                    "INSERT INTO hims_f_procurement_dn_detail(??) VALUES ?",
-                  values: input.dn_entry_detail,
-                  includeValues: IncludeValues,
-                  extraValues: {
-                    hims_f_procurement_dn_header_id: headerResult.insertId
-                  },
-                  bulkInsertOrUpdate: true,
-                  printQuery: true
-                })
-                .then(detailResult => {
-                  utilities.logger().log("detailResult: ", detailResult);
-                  // _mysql.commitTransaction(() => {
-                  //   _mysql.releaseConnection();
-                  req.records = {
-                    delivery_note_number: delivery_note_number,
-                    hims_f_procurement_dn_header_id: headerResult.insertId
-                  };
-                  next();
-                  // });
-                })
-                .catch(error => {
-                  utilities.logger().log("erroe: ", error);
-                  _mysql.rollBackTransaction(() => {
-                    next(error);
-                  });
-                });
+              next();
+              // });
             })
-            .catch(e => {
+            .catch(error => {
+              utilities.logger().log("erroe: ", error);
               _mysql.rollBackTransaction(() => {
-                next(e);
+                next(error);
               });
             });
         })
@@ -330,7 +352,14 @@ module.exports = {
 
       let complete = "Y";
 
-      const partial_recived = new LINQ(inputParam.dn_entry_detail)
+      let dn_entry_detail = [];
+      if (inputParam.dn_from == "PHR") {
+        dn_entry_detail = inputParam.pharmacy_stock_detail;
+      } else {
+        dn_entry_detail = inputParam.inventory_stock_detail;
+      }
+
+      const partial_recived = new LINQ(dn_entry_detail)
         .Where(w => w.quantity_outstanding != 0)
         .ToArray();
 
@@ -355,7 +384,7 @@ module.exports = {
         .then(headerResult => {
           utilities.logger().log("headerResult: ");
           if (headerResult != null) {
-            let details = inputParam.dn_entry_detail;
+            let details = dn_entry_detail;
 
             let qry = "";
 

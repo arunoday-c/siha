@@ -22,7 +22,8 @@ import {
   CancelGrid,
   onchangegridcoldatehandle,
   changeDateFormat,
-  printBarcode
+  printBarcode,
+  onchhangeNumber
 } from "./DNItemListEvents";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 
@@ -313,10 +314,10 @@ class DNItemList extends Component {
                             },
 
                             {
-                              fieldName: "batchno",
+                              fieldName: "vendor_batchno",
                               label: (
                                 <AlgaehLabel
-                                  label={{ forceLabel: "Batch  No." }}
+                                  label={{ forceLabel: "Vendor Batch  No." }}
                                 />
                               ),
                               editorTemplate: row => {
@@ -324,9 +325,9 @@ class DNItemList extends Component {
                                   <AlagehFormGroup
                                     div={{}}
                                     textBox={{
-                                      value: row.batchno,
+                                      value: row.vendor_batchno,
                                       className: "txt-fld",
-                                      name: "batchno",
+                                      name: "vendor_batchno",
                                       events: {
                                         onChange: onchangegridcol.bind(
                                           this,
@@ -411,6 +412,38 @@ class DNItemList extends Component {
                               ),
                               disabled: true
                             },
+                            {
+                              fieldName: "sales_price",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Sales Price" }}
+                                />
+                              ),
+                              editorTemplate: row => {
+                                return (
+                                  <AlagehFormGroup
+                                    div={{}}
+                                    textBox={{
+                                      number: {
+                                        allowNegative: false,
+                                        thousandSeparator: ","
+                                      },
+                                      value: row.sales_price,
+                                      className: "txt-fld",
+                                      name: "sales_price",
+                                      events: {
+                                        onChange: onchhangeNumber.bind(
+                                          this,
+                                          this,
+                                          row
+                                        )
+                                      }
+                                    }}
+                                  />
+                                );
+                              }
+                            },
+
                             {
                               fieldName: "dn_quantity",
                               label: (

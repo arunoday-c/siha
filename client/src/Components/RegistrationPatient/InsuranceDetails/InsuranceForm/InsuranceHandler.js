@@ -92,8 +92,8 @@ const insurancehandle = ($this, context, e) => {
         primary_network_office_id:
           e.selected.hims_d_insurance_network_office_id,
         primary_card_number: e.selected.card_number,
-        primary_effective_start_date: e.selected.net_effective_start_date,
-        primary_effective_end_date: e.selected.net_effective_end_date,
+        primary_effective_start_date: e.selected.primary_effective_start_date,
+        primary_effective_end_date: e.selected.primary_effective_end_date,
         card_holder_name: e.selected.card_holder_name,
         ProcessInsure: ProcessInsure
       },
@@ -111,8 +111,8 @@ const insurancehandle = ($this, context, e) => {
         primary_network_id: e.selected.network_id,
         primary_policy_num: e.selected.policy_number,
         primary_card_number: e.selected.card_number,
-        primary_effective_start_date: e.selected.net_effective_start_date,
-        primary_effective_end_date: e.selected.net_effective_end_date,
+        primary_effective_start_date: e.selected.primary_effective_start_date,
+        primary_effective_end_date: e.selected.primary_effective_end_date,
         primary_network_office_id:
           e.selected.hims_d_insurance_network_office_id,
         card_holder_name: e.selected.card_holder_name,
@@ -241,9 +241,9 @@ const InsuranceDetails = ($this, context, e) => {
                 network_type: row.network_type,
 
                 policy_number: row.policy_number,
-                net_effective_start_date: row.net_effective_start_date,
-                net_effective_end_date: row.net_effective_end_date,
-                effective_end_date: row.effective_end_date
+                primary_effective_start_date: row.net_effective_start_date,
+                // primary_effective_end_date: row.net_effective_end_date,
+                primary_effective_end_date: row.effective_end_date
               };
 
               let insObj = $this.props.existinsurance || [];
@@ -275,8 +275,8 @@ const InsuranceDetails = ($this, context, e) => {
                       primary_network_office_id:
                         row.hims_d_insurance_network_office_id,
                       primary_effective_start_date:
-                        row.net_effective_start_date,
-                      primary_effective_end_date: row.net_effective_end_date,
+                        row.primary_effective_start_date,
+                      primary_effective_end_date: row.net_effective_start_date,
                       insurance_effective_end_date: row.effective_end_date,
                       ProcessInsure: ProcessInsure
                     },

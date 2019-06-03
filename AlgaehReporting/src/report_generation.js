@@ -21,15 +21,21 @@ if (!fs.existsSync(outputFolder)) {
 }
 
 const compile = async function(templateName, data) {
-  const filePath = path.join(
-    process.cwd(),
-    "algaeh_report_tool/templates",
-    `${templateName}.hbs`
-  );
-  const html = await fs.readFile(filePath, "utf-8");
-  const comp = await hbs.compile(html)(data);
-  //
-  return comp;
+  try {
+    const filePath = path.join(
+      process.cwd(),
+      "algaeh_report_tool/templates",
+      `${templateName}.hbs`
+    );
+    const html = await fs.readFile(filePath, "utf-8");
+    const comp = await hbs.compile(html)(data);
+    //
+    return comp;
+  } catch (error) {
+    console.log("Error in compile", compile);
+    return "";
+  }
+
   // return "رقم الفاتورة";
 };
 
@@ -888,5 +894,208 @@ module.exports = {
     //     fs.outputFileSync(excelOutput, data, { encoding: "binary" });
     //   }
     // });
+  },
+  getRawReport: async (req, res) => {
+    const input = req.query;
+    const _mysql = new algaehMysql();
+    try {
+      const _inputParam = JSON.parse(input.report);
+      _mysql
+        .executeQuery({
+          query:
+            "SELECT report_name_for_header,report_name,report_query,report_input_series,data_manupulation,\
+            report_header_file_name,report_footer_file_name from algaeh_d_reports where status='A' and report_name in (?);\
+            select H.hospital_name,H.hospital_address,H.arabic_hospital_name, \
+            O.organization_name,O.business_registration_number,O.legal_name,O.tax_number,O.address1,O.address2 ,\
+            O.email,O.phone1 from hims_d_hospital H,hims_d_organization O \
+            where O.hims_d_organization_id =H.organization_id and H.hims_d_hospital_id=?;",
+          values: [_inputParam.reportName, req.userIdentity["hospital_id"]],
+          printQuery: true
+        })
+        .then(data => {
+          _inputParam["hospital_id"] = req.userIdentity["hospital_id"];
+          const _reportCount = data[0].length;
+          if (_reportCount > 0) {
+            let _reportOutput = [];
+            for (let r = 0; r < _reportCount; r++) {
+              const _data = data[0][r];
+
+              const _inputOrders = eval(_data.report_input_series);
+
+              let _value = [];
+              for (var i = 0; i < _inputOrders.length; i++) {
+                const _params = _.find(
+                  _inputParam.reportParams,
+                  f => f.name == _inputOrders[i]
+                );
+                if (_params != undefined) {
+                  _value.push(_params.value);
+                }
+              }
+              let queryObject = {
+                query: _data.report_query,
+                values: _value,
+                printQuery: true
+              };
+              if (_data.report_query == null || _data.report_query == "") {
+                queryObject = {
+                  query: "select 1",
+                  printQuery: true
+                };
+              }
+              _mysql
+                .executeQuery(queryObject)
+                .then(result => {
+                  if (result.legth == 0) {
+                    res.writeHead(400, {
+                      "content-type": "text/plain"
+                    });
+                    res.write("No record");
+                    return;
+                  }
+
+                  const _supportingJS = path.join(
+                    process.cwd(),
+                    "algaeh_report_tool/templates",
+                    `${_data.report_name}.js`
+                  );
+                  const _header = req.headers;
+
+                  const startGenerate = async () => {
+                    const _pdfTemplating = {};
+                    if (
+                      _data.report_header_file_name != null &&
+                      _data.report_header_file_name != ""
+                    ) {
+                      const _header = await compile(
+                        _data.report_header_file_name,
+                        {
+                          reqHeader: _header,
+                          ...data[1][0],
+                          user_name: req.userIdentity["username"],
+                          report_name_for_header: _data.report_name_for_header
+                        }
+                      );
+                      _pdfTemplating["headerTemplate"] = _header;
+                      _pdfTemplating["margin"] = {
+                        top: "150px"
+                      };
+                    }
+                    if (
+                      _data.report_footer_file_name != null &&
+                      _data.report_footer_file_name != ""
+                    ) {
+                      _pdfTemplating["footerTemplate"] = await compile(
+                        _data.report_footer_file_name,
+                        {
+                          reqHeader: _header,
+                          ...data[1][0],
+                          report_name_for_header: _data.report_name_for_header
+                        }
+                      );
+                      _pdfTemplating["margin"] = {
+                        ..._pdfTemplating["margin"],
+                        bottom: "70px"
+                      };
+                    } else {
+                      _pdfTemplating[
+                        "footerTemplate"
+                      ] = `<style> .pdffooter { font-size: 8px;
+                    font-family: Arial, Helvetica, sans-serif; font-weight: bold; width: 100%; text-align: center; color: grey; padding-left: 10px; }
+                    .showreportname{float:left;padding-left:5px;font-size: 08px;}
+                    .showcompay{float:right;padding-right:5px;font-size: 08px;}
+                    </style>
+                    <div class="pdffooter">
+                    <span class="showreportname">${
+                      _data.report_name_for_header
+                    }</span>
+                    <span>Page </span>
+                    <span class="pageNumber"></span> / <span class="totalPages"></span>
+                    <span class="showcompay">Powered by Algaeh Techonologies.</span>
+                    </div>`;
+                      _pdfTemplating["margin"] = {
+                        ..._pdfTemplating["margin"],
+                        bottom: "50px"
+                      };
+                    }
+
+                    const reportRaw = await compile(_data.report_name, {
+                      ...result,
+                      reqHeader: _header
+                    });
+                    if (reportRaw != "") {
+                      res.writeHead(200, {
+                        "content-type": "text/html"
+                      });
+                      res.write(
+                        reportRaw + "~@" + JSON.stringify(_pdfTemplating)
+                      );
+                      res.end();
+                    } else {
+                      res.writeHead(400, {
+                        "content-type": "text/plain"
+                      });
+                      res.write("No record");
+                      res.end();
+                      return;
+                    }
+                  };
+
+                  if (fs.existsSync(_supportingJS)) {
+                    const { executePDF } = require(_supportingJS);
+                    executePDF({
+                      mysql: _mysql,
+                      inputs: _inputOrders,
+                      args: _inputParam,
+                      loadash: _,
+                      moment: moment,
+                      mainData: data[1],
+                      result: result
+                    })
+                      .then(resultReq => {
+                        result = resultReq;
+                        startGenerate();
+                      })
+                      .catch(error => {
+                        console.log("Error", error);
+                      });
+                  } else {
+                    if (
+                      _data.data_manupulation != null &&
+                      _data.data_manupulation != ""
+                    ) {
+                      const data_string = "`" + _data.data_manupulation + "`";
+                      const _resu = eval(data_string);
+                      result = JSON.parse(_resu);
+                    }
+                    startGenerate();
+                  }
+                })
+                .catch(error => {
+                  _mysql.releaseConnection();
+                  res.writeHead(400, { "Content-Type": "text/plain" });
+                  res.write(error);
+                  res.end();
+                });
+            }
+          } else {
+            res.writeHead(400, { "Content-Type": "text/plain" });
+            res.write(new Error("No such report exists"));
+            res.end();
+          }
+        })
+        .catch(error => {
+          console.log("Error Showing :", error);
+          _mysql.releaseConnection();
+          res.writeHead(400, { "Content-Type": "text/plain" });
+          res.write(error);
+          res.end();
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      res.writeHead(400, { "Content-Type": "text/plain" });
+      res.write(e);
+      res.end();
+    }
   }
 };

@@ -279,17 +279,16 @@ module.exports = {
                 })
                 .then(detailResult => {
                   utilities.logger().log("detailResult: ", detailResult);
-                  _mysql.commitTransaction(() => {
-                    _mysql.releaseConnection();
-                    req.records = {
-                      transfer_number: transfer_number,
-                      hims_f_inventory_transfer_header_id:
-                        headerResult.insertId,
-                      year: year,
-                      period: period
-                    };
-                    next();
-                  });
+                  // _mysql.commitTransaction(() => {
+                  //   _mysql.releaseConnection();
+                  req.records = {
+                    transfer_number: transfer_number,
+                    hims_f_inventory_transfer_header_id: headerResult.insertId,
+                    year: year,
+                    period: period
+                  };
+                  next();
+                  // });
                 })
                 .catch(error => {
                   _mysql.rollBackTransaction(() => {

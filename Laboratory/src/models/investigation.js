@@ -228,15 +228,15 @@ module.exports = {
     try {
       const utilities = new algaehUtilities();
       utilities.logger().log("updateInvestigationTest: ");
-      let inputParam = { ...req.body };
+      let inputParam = req.body;
 
       _mysql
         .executeQueryWithTransaction({
           query:
-            "UPDATE `hims_d_investigation_test`\
-            SET   short_description=?,description=?,investigation_type=?,lab_section_id=?,send_out_test=?,available_in_house=?,\
-            restrict_order=?,restrict_by=?,external_facility_required=?,facility_description=?,\
-            services_id=?,priority=?,cpt_id=?,category_id=?,film_category=?,screening_test=?,film_used=?,updated_date=?,updated_by=?\
+            "UPDATE `hims_d_investigation_test` SET short_description=?,description=?,investigation_type=?,\
+            lab_section_id=?, send_out_test=?,available_in_house=?,restrict_order=?,restrict_by=?,\
+            external_facility_required=?,facility_description=?,services_id=?,priority=?,cpt_id=?,\
+            category_id=?,film_category=?,screening_test=?,film_used=?,updated_date=?,updated_by=?\
             WHERE record_status='A' AND `hims_d_investigation_test_id`=?;",
           values: [
             inputParam.short_description,
@@ -264,12 +264,33 @@ module.exports = {
         })
         .then(result => {
           if (result != null && inputParam.investigation_type == "L") {
-            _mysql
-              .executeQueryWithTransaction({
+            let execute_query = {};
+            utilities
+              .logger()
+              .log(
+                "hims_m_lab_specimen_id: ",
+                inputParam.hims_m_lab_specimen_id
+              );
+            if (inputParam.hims_m_lab_specimen_id == null) {
+              execute_query = {
                 query:
-                  "UPDATE `hims_m_lab_specimen`\
-                SET  specimen_id=?,container_id=?,container_code=?,updated_date=?,updated_by=?\
-                WHERE record_status='A' AND `hims_m_lab_specimen_id`=?;",
+                  "insert into hims_m_lab_specimen(test_id,specimen_id,container_id,container_code,\
+                    created_by,updated_by) values(?,?,?,?,?,?)",
+                values: [
+                  inputParam.hims_d_investigation_test_id,
+                  inputParam.specimen_id,
+                  inputParam.container_id,
+                  inputParam.container_code,
+                  req.userIdentity.algaeh_d_app_user_id,
+                  req.userIdentity.algaeh_d_app_user_id
+                ],
+                printQuery: true
+              };
+            } else {
+              execute_query = {
+                query:
+                  "UPDATE `hims_m_lab_specimen` SET  specimen_id=?,container_id=?,container_code=?,\
+                  updated_date=?,updated_by=? WHERE record_status='A' AND `hims_m_lab_specimen_id`=?;",
                 values: [
                   inputParam.specimen_id,
                   inputParam.container_id,
@@ -279,8 +300,14 @@ module.exports = {
                   inputParam.hims_m_lab_specimen_id
                 ],
                 printQuery: true
-              })
+              };
+            }
+
+            utilities.logger().log("execute_query: ", execute_query);
+            _mysql
+              .executeQuery(execute_query)
               .then(resultSpc => {
+                utilities.logger().log("resultSpc: ", resultSpc);
                 new Promise((resolve, reject) => {
                   try {
                     if (inputParam.insert_analytes.length != 0) {
@@ -377,6 +404,7 @@ module.exports = {
                   });
               })
               .catch(e => {
+                utilities.logger().log("Error: ", e);
                 _mysql.rollBackTransaction(() => {
                   next(e);
                 });

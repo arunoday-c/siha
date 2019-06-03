@@ -9,7 +9,7 @@ import AlgaehLoader from "../../Wrapper/fullPageLoader";
 let texthandlerInterval = null;
 
 const texthandle = ($this, context, ctrl, e) => {
-  debugger
+  debugger;
   e = e || ctrl;
   let name = e.name || e.target.name;
   let value = e.value === "" ? "" : e.value || e.target.value;
@@ -414,7 +414,7 @@ const checkcardhandaler = ($this, context, e) => {
     {
       Cardchecked: Cardchecked,
       card_amount: 0,
-      card_check_number: null,
+      card_number: null,
       card_date: null
     },
     () => {
@@ -424,7 +424,7 @@ const checkcardhandaler = ($this, context, e) => {
   if (context !== undefined) {
     context.updateState({
       card_amount: 0,
-      card_check_number: null,
+      card_number: null,
       card_date: null,
       Cardchecked: Cardchecked
     });

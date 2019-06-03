@@ -433,6 +433,7 @@ const AddSelectedBatches = ($this, context) => {
 
       _pharmacy_stock_detail.push(
         ...batches.map((item, index) => {
+          item.sales_price = item.sale_price;
           return { ...item, ...details };
         })
       );
