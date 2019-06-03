@@ -142,7 +142,7 @@ class ItemDetails extends Component {
                   />
                   <AlagehAutoComplete
                     div={{
-                      className: "col-4 mandatory AutoCompleteRight form-group "
+                      className: "col-4 mandatory  form-group "
                     }}
                     label={{
                       fieldName: "category_id",
@@ -226,7 +226,7 @@ class ItemDetails extends Component {
                     }}
                   />
                   <AlagehAutoComplete
-                    div={{ className: "col-4 AutoCompleteRight form-group " }}
+                    div={{ className: "col-4  form-group " }}
                     label={{
                       fieldName: "storage_id"
                     }}

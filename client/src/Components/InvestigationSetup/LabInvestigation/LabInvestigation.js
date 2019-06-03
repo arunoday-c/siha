@@ -339,7 +339,7 @@ class LabInvestigation extends Component {
 
                   <div className="col-lg-1">
                     <button
-                      className="btn btn-primary"
+                      className="btn btn-primary" style={{marginTop:19}}
                       onClick={AddAnalytes.bind(this, this, context)}
                     >
                       Add
@@ -347,8 +347,8 @@ class LabInvestigation extends Component {
                   </div>
                 </div>
                 <div className="row">
-                  <div className="col-lg-12 form-details">
-                    <div className="analyte-section">
+                  <div className="col-12" id="analyte_grid_cntr">
+
                       <AlgaehDataGrid
                         id="analyte_grid"
                         columns={[
@@ -546,7 +546,6 @@ class LabInvestigation extends Component {
                           )
                         }}
                       />
-                    </div>
                   </div>
                 </div>
               </div>

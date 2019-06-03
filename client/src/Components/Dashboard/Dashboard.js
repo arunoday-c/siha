@@ -446,6 +446,8 @@ class Dashboard extends Component {
     // let margin = this.state.sidBarOpen ? "" : "";
     return (
       <div className="dashboard ">
+
+
         <div className="row card-deck">
           <div className="card animated fadeInUp faster">
             <div className="content">
