@@ -1785,6 +1785,32 @@ module.exports = {
         _mysql.releaseConnection();
         next(e);
       });
+  },
+  //created by irfan: to cancel patient appointment
+  deleteSchedule: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = req.body;
+
+    _mysql
+      .executeQuery({
+        query:
+          "update hims_d_appointment_schedule_header set record_status='I' ,updated_by=?,updated_date=?\
+          where hims_d_appointment_schedule_header_id=?;",
+        values: [
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          input.hims_d_appointment_schedule_header_id
+        ]
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
   }
 };
 //[0,1,2,3,4,5,6]

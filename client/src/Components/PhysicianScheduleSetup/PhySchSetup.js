@@ -99,6 +99,50 @@ class PhySchSetup extends Component {
     provider_array.length = 0;
   }
 
+  clearState() {
+    this.setState({
+      doctors: [],
+      scheduleList: [],
+      scheduleDoctors: [],
+      year: moment().year(),
+      month: moment().format("M"),
+      from_date: "",
+      to_date: "",
+      all: false,
+      monday: false,
+      tuesday: false,
+      wednesday: false,
+      thursday: false,
+      friday: false,
+      saturday: false,
+      sunday: false,     
+      department_error: false,
+      department_error_text: "",
+      openScheduler: false,
+      openModifier: false,
+      send_obj: {},
+      slot: "",
+      schedule_status: "Y",
+      from_work_hr: "",
+      to_work_hr: "",
+      work_break1: "",
+      work_break2: "",
+      from_break_hr1: "",
+      to_break_hr1: "",
+      from_break_hr2: "",
+      to_break_hr2: "",
+      disable: true,
+      description_error: false,
+      description_error_text: "",
+      description: "",
+      days: [],
+      selected_doctor: "",
+      modify: [],
+      scheduleDisable: true,
+      leave: false,
+      openEdit: false
+    });
+  }
   updateDoctorScheduleDateWise(data) {
     let send_data = {};
     if (data.hims_d_appointment_schedule_modify_id !== undefined) {
@@ -155,6 +199,51 @@ class PhySchSetup extends Component {
             type: "success"
           });
         }
+      }
+    });
+  }
+
+  deleteSchedule(data) {
+    console.log("dat:", data);
+    swal({
+      title: "Do you want to Delete " + data.description,
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willDelete => {
+      if (willDelete.value) {
+        algaehApiCall({
+          uri: "/appointment/deleteSchedule",
+          method: "DELETE",
+          module: "frontDesk",
+          data: {
+            hims_d_appointment_schedule_header_id:
+              data.hims_d_appointment_schedule_header_id
+          },
+          onSuccess: response => {
+            if (response.data.success) {
+              swalMessage({
+                title: "Record updated successfully",
+                type: "success"
+              });
+            }
+            this.clearState();
+          },
+          onFailure: error => {
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
+        });
+      } else {
+        swalMessage({
+          title: "Delete request cancelled",
+          type: "error"
+        });
       }
     });
   }
@@ -270,6 +359,43 @@ class PhySchSetup extends Component {
   }
 
   changeChecks(e) {
+    switch (e.target.name) {
+      case "sunday":
+        if (!e.target.checked) {
+          this.setState({ all: false });
+        }
+        break;
+      case "monday":
+        if (!e.target.checked) {
+          this.setState({ all: false });
+        }
+        break;
+      case "tuesday":
+        if (!e.target.checked) {
+          this.setState({ all: false });
+        }
+        break;
+      case "wednesday":
+        if (!e.target.checked) {
+          this.setState({ all: false });
+        }
+        break;
+      case "thursday":
+        if (!e.target.checked) {
+          this.setState({ all: false });
+        }
+        break;
+      case "friday":
+        if (!e.target.checked) {
+          this.setState({ all: false });
+        }
+        break;
+      case "saturday":
+        if (!e.target.checked) {
+          this.setState({ all: false });
+        }
+        break;
+    }
     if (e.target.name === "All") {
       this.setState(
         {
@@ -481,7 +607,6 @@ class PhySchSetup extends Component {
   }
 
   dropDownHandler(value) {
-
     this.setState({ [value.name]: value.value });
     if (value.name === "month") {
       // let dateToday = this.state.year + this.state.month + "01";
@@ -494,26 +619,20 @@ class PhySchSetup extends Component {
         .startOf("month")
         .format("YYYY-MM-DD");
 
-      console.log("dateToday:", dateToday);
-      console.log("state:", this.state.year + "-" + value.value);
+      let frm_date =
+        dateToday > startOf_mon
+          ? new Date()
+          : moment(startOf_mon).format("MM-DD-YYYY");
 
-
-
-      let frm_date=dateToday > startOf_mon
-      ? new Date()
-      : moment(startOf_mon).format("MM-DD-YYYY");
-
-
-      let to_dte=moment(frm_date)
-      .endOf("month")
-      .format("MM-DD-YYYY")
+      let to_dte = moment(frm_date)
+        .endOf("month")
+        .format("MM-DD-YYYY");
 
       this.setState({
-        from_date:frm_date,          
+        from_date: frm_date,
         to_date: to_dte
       });
     }
-    
   }
 
   getDoctorScheduleToModify(header_id, provider_id) {
@@ -1903,7 +2022,16 @@ class PhySchSetup extends Component {
                       <i className="fas fa-copy" />
                     </span>
                     <span className="btn btn-green btn-circle">
-                      <i className="fas fa-trash-alt" />
+                      <i
+                        onClick={() => {
+                          this.deleteSchedule({
+                            hims_d_appointment_schedule_header_id: this.state
+                              .hims_d_appointment_schedule_header_id,
+                            description: this.state.description
+                          });
+                        }}
+                        className="fas fa-trash-alt"
+                      />
                     </span>
                     <span className="btn btn-green btn-circle active">
                       <i
