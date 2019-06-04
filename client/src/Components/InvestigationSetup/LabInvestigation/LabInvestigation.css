@@ -8,11 +8,6 @@
     padding-bottom: 0px; }
   .hptl-phase1-add-lab-investigation-form .button {
     padding: 10px; }
-  .hptl-phase1-add-lab-investigation-form .analyte-section {
-    border: 1px solid #d3d3d3;
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-    border-top-right-radius: 5px; }
   .hptl-phase1-add-lab-investigation-form .Paper {
     background: #fff;
     padding: 10px;
@@ -26,3 +21,5 @@
     cursor: pointer;
     margin-bottom: -60px;
     margin-top: -30px; }
+  .hptl-phase1-add-lab-investigation-form #analyte_grid_cntr .ReactTable {
+    max-height: 30vh !important; }

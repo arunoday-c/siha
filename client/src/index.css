@@ -1168,6 +1168,8 @@
     .arabic_component .maternityRadio .customRadio .inline + .inline {
       margin-right: 10px !important;
       margin-left: 0 !important; }
+  .arabic_component .bk-bn {
+    left: 100px; }
 
 .ar_comp .algaeh-modal {
   direction: rtl;

@@ -24,7 +24,8 @@ import {
   updatePatientAppointment,
   getPatientAppointment,
   getEmployeeServiceID,
-  cancelPatientAppointment
+  cancelPatientAppointment,
+  deleteSchedule
 } from "../models/appointment";
 
 export default () => {
@@ -129,7 +130,6 @@ export default () => {
       });
     }
   });
-
 
   api.get(
     "/getDoctorsScheduledList",
@@ -261,5 +261,11 @@ export default () => {
       });
     }
   );
+  api.delete("/deleteSchedule", deleteSchedule, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
   return api;
 };

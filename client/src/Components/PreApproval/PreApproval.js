@@ -486,7 +486,8 @@ class PreApproval extends Component {
                   </div>
                 </div>
               </div>
-
+</div>
+            <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">Medication Approval List</h3>
