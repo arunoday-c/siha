@@ -4,6 +4,8 @@ import Enumerable from "linq";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 import Options from "../../../../Options.json";
 import AlgaehReport from "../../../Wrapper/printReports";
+import _ from "lodash";
+import extend from "extend";
 
 const assignDataandclear = ($this, context, stock_detail, assignData) => {
   let sub_total = Enumerable.from(stock_detail).sum(s =>
@@ -328,6 +330,214 @@ const printBarcode = ($this, row, e) => {
   });
 };
 
+const onChangeTextEventHandaler = ($this, context, e) => {
+  let item_details = $this.state.item_details;
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  item_details[name] = value;
+  $this.setState({
+    [name]: value,
+    item_details: item_details
+  });
+  context.updateState({
+    [name]: value,
+    item_details: item_details
+  });
+};
+
+const onDateTextEventHandaler = ($this, context, ctrl, e) => {
+  debugger;
+  let item_details = $this.state.item_details;
+
+  item_details[e] = moment(ctrl)._d;
+  if (Date.parse(moment(ctrl)._d) < Date.parse(new Date())) {
+    swalMessage({
+      title: "Expiry date cannot be past Date.",
+      type: "warning"
+    });
+  } else {
+    // row[e] = moment(ctrl)._d;
+    $this.setState({
+      [e]: moment(ctrl)._d,
+      append: !$this.state.append,
+      item_details: item_details
+    });
+  }
+};
+
+const OnChangeDeliveryQty = ($this, context, e) => {
+  let item_details = extend({}, $this.state.item_details);
+
+  let discount_percentage = item_details.discount_percentage;
+  let discount_amount = 0;
+  let extended_cost = 0;
+  let extended_price = 0;
+  let tax_amount = 0;
+
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+  let delivery_quantity = _.sumBy($this.state.dn_entry_detail, s =>
+    parseFloat(s.dn_quantity)
+  );
+
+  item_details.quantity_recieved_todate =
+    item_details.quantity_recieved_todate === 0
+      ? 0
+      : item_details.quantity_recieved_todate;
+  let quantity_recieved_todate =
+    item_details.quantity_recieved_todate + parseFloat(value);
+  if (value !== "") {
+    if (quantity_recieved_todate > parseFloat(item_details.po_quantity)) {
+      swalMessage({
+        title: " Delivery Note Quantity cannot be greater than PO Quantity.",
+        type: "warning"
+      });
+    } else if (parseFloat(value) < 0) {
+      swalMessage({
+        title: "Delivery Quantity cannot be less than Zero.",
+        type: "warning"
+      });
+    } else {
+      extended_price = parseFloat(item_details.unit_price) * parseFloat(value);
+      discount_amount = (extended_price * discount_percentage) / 100;
+
+      tax_amount =
+        (extended_cost * parseFloat(item_details.tax_percentage)) / 100;
+      extended_cost = extended_price - discount_amount;
+
+      extended_price = parseFloat(
+        getAmountFormart(extended_price, {
+          appendSymbol: false
+        })
+      );
+      discount_amount = getAmountFormart(discount_amount, {
+        appendSymbol: false
+      });
+      tax_amount = getAmountFormart(tax_amount, { appendSymbol: false });
+
+      item_details["quantity_outstanding"] =
+        parseFloat(item_details.po_quantity) -
+        parseFloat(item_details.quantity_recieved_todate) -
+        delivery_quantity -
+        parseFloat(value);
+
+      item_details["extended_price"] = parseFloat(extended_price);
+      item_details["extended_cost"] = parseFloat(extended_cost);
+      item_details["unit_cost"] = parseFloat(extended_cost) / parseFloat(value);
+
+      item_details["tax_amount"] = parseFloat(tax_amount);
+      item_details["total_amount"] =
+        parseFloat(tax_amount) + parseFloat(extended_cost);
+
+      item_details["discount_amount"] = parseFloat(discount_amount);
+      item_details["extended_cost"] = parseFloat(extended_cost);
+      item_details["net_extended_cost"] = parseFloat(extended_cost);
+      item_details["expiry_date"] = item_details["expiry_date"];
+      item_details[name] = value;
+      $this.setState({
+        [name]: value,
+        item_details: item_details
+      });
+      context.updateState({
+        [name]: value,
+        item_details: item_details
+      });
+    }
+  } else {
+    $this.setState({
+      [name]: value
+    });
+    context.updateState({
+      [name]: value
+    });
+  }
+};
+
+const AddtoList = ($this, context) => {
+  debugger;
+  let dn_entry_detail = $this.state.dn_entry_detail;
+
+  let item_details = extend({}, $this.state.item_details);
+  let _po_entry_detail = $this.state.po_entry_detail;
+
+  if (
+    $this.state.dn_quantity === 0 ||
+    $this.state.dn_quantity === "" ||
+    $this.state.dn_quantity === null
+  ) {
+    swalMessage({
+      title: "Enter Delivery Quantity.",
+      type: "warning"
+    });
+  } else if (
+    ($this.state.expiry_date === null ||
+      $this.state.expiry_date === undefined) &&
+    item_details.required_batchno_expiry === "N"
+  ) {
+    swalMessage({
+      title: "Expiry Date is mandatory.",
+      type: "warning"
+    });
+  } else {
+    dn_entry_detail.push($this.state.item_details);
+    let sub_total = Enumerable.from(dn_entry_detail).sum(s =>
+      parseFloat(s.extended_price)
+    );
+
+    let net_total = Enumerable.from(dn_entry_detail).sum(s =>
+      parseFloat(s.net_extended_cost)
+    );
+
+    let net_payable = Enumerable.from(dn_entry_detail).sum(s =>
+      parseFloat(s.total_amount)
+    );
+
+    let total_tax = Enumerable.from(dn_entry_detail).sum(s =>
+      parseFloat(s.tax_amount)
+    );
+
+    let detail_discount = Enumerable.from(dn_entry_detail).sum(s =>
+      parseFloat(s.discount_amount)
+    );
+
+    let delivery_quantity = _.sumBy(dn_entry_detail, s =>
+      parseFloat(s.dn_quantity)
+    );
+    item_details.dn_quantity = delivery_quantity;
+
+    _po_entry_detail[$this.state.selected_row_index] = item_details;
+
+    _po_entry_detail[$this.state.selected_row_index].dn_entry_detail = [
+      $this.state.item_details
+    ];
+
+    $this.setState({
+      dn_entry_detail: dn_entry_detail,
+      vendor_batchno: null,
+      expiry_date: null,
+      dn_quantity: null,
+      po_entry_detail: _po_entry_detail,
+      sub_total: sub_total,
+      net_total: net_total,
+      net_payable: net_payable,
+      total_tax: total_tax,
+      detail_discount: detail_discount
+    });
+    context.updateState({
+      dn_entry_detail: dn_entry_detail,
+      vendor_batchno: null,
+      expiry_date: null,
+      dn_quantity: null,
+      po_entry_detail: _po_entry_detail,
+      sub_total: sub_total,
+      net_total: net_total,
+      net_payable: net_payable,
+      total_tax: total_tax,
+      detail_discount: detail_discount
+    });
+  }
+};
 export {
   deleteDNDetail,
   updateDNDetail,
@@ -341,5 +551,9 @@ export {
   onchangegridcoldatehandle,
   changeDateFormat,
   printBarcode,
-  onchhangeNumber
+  onchhangeNumber,
+  onChangeTextEventHandaler,
+  onDateTextEventHandaler,
+  OnChangeDeliveryQty,
+  AddtoList
 };

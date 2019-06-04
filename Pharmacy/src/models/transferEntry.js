@@ -625,7 +625,7 @@ module.exports = {
                   inner join `hims_d_item_master` IM  on IM.hims_d_item_master_id=D.item_id \
                   inner join `hims_d_pharmacy_uom` PU  on PU.hims_d_pharmacy_uom_id=D.item_uom \
                   where   LOC.pharmacy_location_id=? and  D.pharmacy_header_id=? and  LOC.expirydt > CURDATE() \
-                  and LOC.qtyhand>0 and D.quantity_outstanding<>0  order by  LOC.expirydt ",
+                  and D.quantity_outstanding<>0  order by  LOC.expirydt ",
                 values: [
                   headerResult[0].to_location_id,
                   headerResult[0].hims_f_pharamcy_material_header_id
@@ -678,7 +678,7 @@ module.exports = {
                     .FirstOrDefault();
 
                   let batches = new LINQ(pharmacy_stock_detail)
-                    .Where(w => w.item_id == item_grp[i])
+                    .Where(w => w.item_id == item_grp[i] && w.qtyhand > 0)
                     .Select(s => {
                       return {
                         hims_m_item_location_id: s.hims_m_item_location_id,

@@ -16,6 +16,8 @@ export default {
       delivery_date: new Date(),
       purchase_order_id: null,
       dn_entry_detail: [],
+      po_entry_detail: [],
+      item_details: {},
       purchase_number: null,
 
       from_multiple_purchase_orders: "N",
@@ -42,7 +44,11 @@ export default {
       addItemButton: true,
       ReqData: true,
       ClearDisable: false,
-      saveEnable: true
+      saveEnable: true,
+
+      vendor_batchno: null,
+      expiry_date: null,
+      dn_quantity: null
     };
     return output;
   }

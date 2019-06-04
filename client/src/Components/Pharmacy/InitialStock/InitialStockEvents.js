@@ -85,7 +85,7 @@ const itemchangeText = ($this, e) => {
     item_group_id: e.selected.group_id,
     uom_id: e.selected.stocking_uom_id,
     sales_uom: e.selected.sales_uom_id,
-    required_batchno: e.selected.required_batchno,
+    required_batchno: e.selected.required_batchno_expiry,
     item_code: e.selected.item_code,
     unit_cost: e.selected.purchase_cost,
     sales_price: e.selected.standard_fee,
@@ -110,12 +110,15 @@ const AddItems = $this => {
           type: "warning"
         });
         document.querySelector("[name='unit_cost']").focus();
-      } else if ($this.state.expiry_date === null) {
+      } else if (
+        $this.state.expiry_date === null &&
+        $this.state.required_batchno === "N"
+      ) {
         swalMessage({
           title: "Select Expiry Date.",
           type: "warning"
         });
-        document.querySelector("[name='unit_cost']").focus();
+        document.querySelector("[name='expiry_date']").focus();
       } else {
         let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
         let itemObj = {

@@ -223,7 +223,8 @@ const PurchaseOrderSearch = ($this, e) => {
                   data.po_entry_detail[i].purchase_order_detail_id =
                     data.po_entry_detail[i].hims_f_procurement_po_detail_id;
                 }
-                data.dn_entry_detail = data.po_entry_detail;
+                debugger;
+                // data.purchase_detail = data.po_entry_detail;
                 $this.setState(data);
                 AlgaehLoader({ show: false });
               }
@@ -251,55 +252,111 @@ const ClearData = ($this, e) => {
 };
 
 const SaveDNEnrty = $this => {
-  const dnQuantity = Enumerable.from($this.state.dn_entry_detail)
-    .where(w => w.dn_quantity === 0)
-    .toArray();
-
   const batchExpiryDate = Enumerable.from($this.state.receipt_entry_detail)
     .where(w => w.expiry_date === null)
     .toArray();
 
   debugger;
   let InputObj = extend({}, $this.state);
-  if ($this.state.dn_from === "PHR") {
-    InputObj.pharmacy_stock_detail = $this.state.dn_entry_detail;
-    delete InputObj.dn_entry_detail;
-  } else {
-    InputObj.inventory_stock_detail = $this.state.dn_entry_detail;
-    delete InputObj.dn_entry_detail;
+  for (var i = 0; i < InputObj.po_entry_detail.length; i++) {
+    if ($this.state.dn_from === "PHR") {
+      InputObj.pharmacy_stock_detail =
+        InputObj.po_entry_detail[i].dn_entry_detail;
+      // delete InputObj.po_entry_detail[i].dn_entry_detail;
+    } else {
+      InputObj.inventory_stock_detail =
+        InputObj.po_entry_detail[i].dn_entry_detail;
+      // delete InputObj.po_entry_detail[i].dn_entry_detail;
+    }
+  }
+  debugger;
+
+  InputObj.posted = "Y";
+  InputObj.transaction_type = "DNA";
+  // $this.state.transaction_id = $this.state.hims_f_procurement_grn_header_id;
+  InputObj.transaction_date = $this.state.dn_date;
+
+  if (InputObj.dn_from === "PHR") {
+    for (let i = 0; i < InputObj.pharmacy_stock_detail.length; i++) {
+      InputObj.pharmacy_stock_detail[i].location_id =
+        InputObj.pharmcy_location_id;
+      InputObj.pharmacy_stock_detail[i].location_type = InputObj.location_type;
+
+      InputObj.pharmacy_stock_detail[i].quantity =
+        InputObj.pharmacy_stock_detail[i].dn_quantity;
+
+      InputObj.pharmacy_stock_detail[i].uom_id =
+        InputObj.pharmacy_stock_detail[i].pharmacy_uom_id;
+
+      InputObj.pharmacy_stock_detail[i].sales_uom =
+        InputObj.pharmacy_stock_detail[i].pharmacy_uom_id;
+      InputObj.pharmacy_stock_detail[i].item_id =
+        InputObj.pharmacy_stock_detail[i].phar_item_id;
+      InputObj.pharmacy_stock_detail[i].item_code_id =
+        InputObj.pharmacy_stock_detail[i].phar_item_id;
+      InputObj.pharmacy_stock_detail[i].grn_number = InputObj.grn_number;
+      InputObj.pharmacy_stock_detail[i].item_category_id =
+        InputObj.pharmacy_stock_detail[i].phar_item_category;
+      InputObj.pharmacy_stock_detail[i].item_group_id =
+        InputObj.pharmacy_stock_detail[i].phar_item_group;
+
+      InputObj.pharmacy_stock_detail[i].net_total =
+        InputObj.pharmacy_stock_detail[i].net_extended_cost;
+      InputObj.pharmacy_stock_detail[i].operation = "+";
+    }
+  } else if (InputObj.dn_from === "INV") {
+    for (let i = 0; i < InputObj.inventory_stock_detail.length; i++) {
+      InputObj.inventory_stock_detail[i].location_id =
+        InputObj.inventory_location_id;
+      InputObj.inventory_stock_detail[i].location_type = InputObj.location_type;
+
+      InputObj.inventory_stock_detail[i].quantity =
+        InputObj.inventory_stock_detail[i].dn_quantity;
+
+      InputObj.inventory_stock_detail[i].uom_id =
+        InputObj.inventory_stock_detail[i].inventory_uom_id;
+      InputObj.inventory_stock_detail[i].sales_uom =
+        InputObj.inventory_stock_detail[i].inventory_uom_id;
+      InputObj.inventory_stock_detail[i].item_id =
+        InputObj.inventory_stock_detail[i].inv_item_id;
+      InputObj.inventory_stock_detail[i].item_code_id =
+        InputObj.inventory_stock_detail[i].inv_item_id;
+      InputObj.inventory_stock_detail[i].grn_number = InputObj.grn_number;
+      InputObj.inventory_stock_detail[i].item_category_id =
+        InputObj.inventory_stock_detail[i].inv_item_category_id;
+      InputObj.inventory_stock_detail[i].item_group_id =
+        InputObj.inventory_stock_detail[i].inv_item_group_id;
+
+      InputObj.inventory_stock_detail[i].net_total =
+        InputObj.inventory_stock_detail[i].net_extended_cost;
+      InputObj.inventory_stock_detail[i].operation = "+";
+    }
   }
 
-  if (dnQuantity.length === 0) {
-    if (batchExpiryDate.length === 0) {
-      algaehApiCall({
-        uri: "/DeliveryNoteEntry/addDeliveryNoteEntry",
-        module: "procurement",
-        data: InputObj,
-        onSuccess: response => {
-          if (response.data.success === true) {
-            $this.setState({
-              delivery_note_number: response.data.records.delivery_note_number,
-              hims_f_procurement_dn_header_id:
-                response.data.records.hims_f_procurement_dn_header_id,
-              saveEnable: true
-            });
+  if (batchExpiryDate.length === 0) {
+    algaehApiCall({
+      uri: "/DeliveryNoteEntry/addDeliveryNoteEntry",
+      module: "procurement",
+      data: InputObj,
+      onSuccess: response => {
+        if (response.data.success === true) {
+          $this.setState({
+            delivery_note_number: response.data.records.delivery_note_number,
+            hims_f_procurement_dn_header_id:
+              response.data.records.hims_f_procurement_dn_header_id,
+            saveEnable: true
+          });
 
-            swalMessage({
-              type: "success",
-              title: "Saved successfully . ."
-            });
-          }
+          swalMessage({
+            type: "success",
+            title: "Saved successfully . ."
+          });
         }
-      });
-    } else {
-      swalMessage({
-        title: "Please enter Batch No. and Expiry Date.",
-        type: "warning"
-      });
-    }
+      }
+    });
   } else {
     swalMessage({
-      title: "Please enter Delivery Note Quantity.",
+      title: "Please enter Batch No. and Expiry Date.",
       type: "warning"
     });
   }

@@ -308,25 +308,6 @@ class DeliveryNoteEntry extends Component {
                     onClick={PurchaseOrderSearch.bind(this, this)}
                   />
                 </div>
-                {/* <AlagehAutoComplete
-                  div={{ className: "col-2" }}
-                  label={{ forceLabel: "Payment Terms" }}
-                  selector={{
-                    name: "payment_terms",
-                    className: "select-fld",
-                    value: this.state.payment_terms,
-                    dataSource: {
-                      textField: "name",
-                      valueField: "value",
-                      data: GlobalVariables.PAYMENT_TERMS
-                    },
-                    others: {
-                      disabled: this.state.dataExitst
-                    },
-                    onChange: texthandle.bind(this, this),
-                    onClear: texthandle.bind(this, this)
-                  }}
-                /> */}
 
                 <div className="col">
                   <AlgaehLabel label={{ forceLabel: "Payment Terms" }} />

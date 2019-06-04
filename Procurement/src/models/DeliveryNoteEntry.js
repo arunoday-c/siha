@@ -130,7 +130,221 @@ module.exports = {
     }
   },
 
+  //created by :irfan
   addDeliveryNoteEntry: (req, res, next) => {
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
+
+    try {
+      let input = req.body;
+
+      const utilities = new algaehUtilities();
+      utilities.logger().log("addDeliveryNoteEntry: ");
+
+      let year = moment().format("YYYY");
+      let today = moment().format("YYYY-MM-DD");
+      let month = moment().format("MM");
+      let period = month;
+
+      _mysql
+        .executeQuery({
+          query:
+            "INSERT INTO `hims_f_procurement_dn_header` (delivery_note_number,dn_date,dn_type,dn_from, pharmcy_location_id,\
+                  inventory_location_id,location_type,vendor_id, purchase_order_id, from_multiple_purchase_orders, \
+                  payment_terms, comment, sub_total, detail_discount, extended_total,sheet_level_discount_percent, \
+                  sheet_level_discount_amount,description,net_total,total_tax, net_payable, created_by,created_date, \
+                  updated_by,updated_date,hospital_id) \
+                VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+          values: [
+            input.delivery_note_number,
+            today,
+            input.dn_type,
+            input.dn_from,
+            input.pharmcy_location_id,
+            input.inventory_location_id,
+            input.location_type,
+            input.vendor_id,
+            input.purchase_order_id,
+            input.from_multiple_purchase_orders,
+            input.payment_terms,
+            input.comment,
+            input.sub_total,
+            input.detail_discount,
+            input.extended_total,
+            input.sheet_level_discount_percent,
+            input.sheet_level_discount_amount,
+            input.description,
+
+            input.net_total,
+            input.total_tax,
+            input.net_payable,
+
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.userIdentity.hospital_id
+          ],
+          printQuery: true
+        })
+        .then(headerResult => {
+          req.body.transaction_id = headerResult.insertId;
+          req.body.year = year;
+          req.body.period = period;
+          console.log("headerResult: ", headerResult.insertId);
+          console.log("po_entry_detail: ", input.po_entry_detail.length);
+          let dn_entry_detail = [];
+
+          for (let i = 0; i < input.po_entry_detail.length; i++) {
+            if (input.dn_from == "PHR") {
+              updateItemMaster({
+                pharmacy_stock_detail: input.po_entry_detail[i].dn_entry_detail,
+                _mysql: _mysql,
+                req: req,
+                next: next
+              });
+            } else {
+              updateInventoryItemMaster({
+                inventory_stock_detail:
+                  input.po_entry_detail[i].dn_entry_detail,
+                _mysql: _mysql,
+                req: req,
+                next: next
+              });
+            }
+            _mysql
+              .executeQuery({
+                query:
+                  "INSERT INTO hims_f_procurement_dn_detail ( phar_item_category,phar_item_group,phar_item_id,\
+                    inv_item_category_id,inv_item_group_id,inv_item_id,po_quantity,dn_quantity,quantity_outstanding,\
+                    pharmacy_uom_id,inventory_uom_id,unit_cost,extended_cost,discount_percentage,discount_amount,\
+                    net_extended_cost,tax_percentage,tax_amount,total_amount,item_type,quantity_recieved_todate,\
+                    batchno_expiry_required,batchno,expiry_date,purchase_order_header_id,purchase_order_detail_id,\
+                    vendor_batchno,barcode,sales_price,hims_f_procurement_dn_header_id) \
+                    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                values: [
+                  input.po_entry_detail[i]["phar_item_category"],
+                  input.po_entry_detail[i]["phar_item_group"],
+                  input.po_entry_detail[i]["phar_item_id"],
+                  input.po_entry_detail[i]["inv_item_category_id"],
+                  input.po_entry_detail[i]["inv_item_group_id"],
+                  input.po_entry_detail[i]["inv_item_id"],
+                  input.po_entry_detail[i]["po_quantity"],
+                  input.po_entry_detail[i]["dn_quantity"],
+                  input.po_entry_detail[i]["quantity_outstanding"],
+                  input.po_entry_detail[i]["pharmacy_uom_id"],
+                  input.po_entry_detail[i]["inventory_uom_id"],
+                  input.po_entry_detail[i]["unit_cost"],
+                  input.po_entry_detail[i]["extended_cost"],
+                  input.po_entry_detail[i]["discount_percentage"],
+                  input.po_entry_detail[i]["discount_amount"],
+                  input.po_entry_detail[i]["net_extended_cost"],
+                  input.po_entry_detail[i]["tax_percentage"],
+                  input.po_entry_detail[i]["tax_amount"],
+                  input.po_entry_detail[i]["total_amount"],
+                  input.po_entry_detail[i]["item_type"],
+                  input.po_entry_detail[i]["quantity_recieved_todate"],
+                  input.po_entry_detail[i]["batchno_expiry_required"],
+                  input.po_entry_detail[i]["batchno"],
+                  input.po_entry_detail[i]["expiry_date"],
+                  input.po_entry_detail[i]["purchase_order_header_id"],
+                  input.po_entry_detail[i]["purchase_order_detail_id"],
+                  input.po_entry_detail[i]["vendor_batchno"],
+                  input.po_entry_detail[i]["barcode"],
+                  input.po_entry_detail[i]["sales_price"],
+                  headerResult.insertId
+                ],
+
+                printQuery: false
+              })
+              .then(detailResult => {
+                console.log("detailResult: ", detailResult.insertId.length);
+                let IncludeSubValues = [
+                  "phar_item_category",
+                  "phar_item_group",
+                  "phar_item_id",
+                  "inv_item_category_id",
+                  "inv_item_group_id",
+                  "inv_item_id",
+                  "po_quantity",
+                  "dn_quantity",
+                  "quantity_outstanding",
+                  "pharmacy_uom_id",
+                  "inventory_uom_id",
+                  "unit_cost",
+                  "extended_cost",
+                  "discount_percentage",
+                  "discount_amount",
+                  "net_extended_cost",
+                  "tax_percentage",
+                  "tax_amount",
+                  "total_amount",
+                  "item_type",
+                  "quantity_recieved_todate",
+                  "batchno_expiry_required",
+                  "batchno",
+                  "expiry_date",
+                  "purchase_order_header_id",
+                  "purchase_order_detail_id",
+                  "vendor_batchno",
+                  "barcode",
+                  "sales_price"
+                ];
+
+                utilities.logger().log("dn_entry_detail: ", dn_entry_detail);
+                _mysql
+                  .executeQuery({
+                    query:
+                      "INSERT INTO hims_f_procurement_dn_batches(??) VALUES ?",
+                    values: input.po_entry_detail[i].dn_entry_detail,
+                    includeValues: IncludeSubValues,
+                    extraValues: {
+                      hims_f_procurement_dn_detail_id: detailResult.insertId
+                    },
+                    bulkInsertOrUpdate: true,
+                    printQuery: false
+                  })
+                  .then(subResult => {
+                    if (i == input.po_entry_detail.length - 1) {
+                      // req.connection = {
+                      //   connection: _mysql.connection,
+                      //   isTransactionConnection:
+                      //     _mysql.isTransactionConnection,
+                      //   pool: _mysql.pool
+                      // };
+                      // req.flag = 1;
+
+                      // _mysql.commitTransaction(() => {
+                      //   _mysql.releaseConnection();
+                      req.records = {
+                        delivery_note_number: input.delivery_note_number,
+                        hims_f_procurement_dn_header_id: headerResult.insertId
+                      };
+                      next();
+                      // });
+                    }
+                  });
+              })
+              .catch(error => {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                });
+              });
+          }
+        })
+        .catch(e => {
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
+        });
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
+  },
+
+  addDeliveryNoteEntryBackup: (req, res, next) => {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
     try {
@@ -404,11 +618,11 @@ module.exports = {
                 printQuery: true
               })
               .then(detailResult => {
-                _mysql.commitTransaction(() => {
-                  _mysql.releaseConnection();
-                  req.porecords = detailResult;
-                  next();
-                });
+                // _mysql.commitTransaction(() => {
+                //   _mysql.releaseConnection();
+                req.porecords = detailResult;
+                next();
+                // });
               })
               .catch(e => {
                 _mysql.rollBackTransaction(() => {
@@ -434,3 +648,135 @@ module.exports = {
     }
   }
 };
+
+function updateItemMaster(options) {
+  return new Promise((resolve, reject) => {
+    try {
+      let pharmacy_stock_detail = options.pharmacy_stock_detail;
+      let _mysql = options._mysql;
+      let req = options.req;
+
+      const utilities = new algaehUtilities();
+
+      let execute_query = "";
+
+      utilities.logger().log("updateItemMaster: ", pharmacy_stock_detail);
+
+      for (let i = 0; i < pharmacy_stock_detail.length; i++) {
+        _mysql
+          .executeQuery({
+            query:
+              "select  item_code from `hims_d_item_master` WHERE `hims_d_item_master_id`=?",
+            values: [pharmacy_stock_detail[i].item_id],
+            printQuery: true
+          })
+          .then(result => {
+            var date = new Date();
+            var hours = date.getHours();
+            var minutes = date.getMinutes();
+            var seconds = date.getSeconds();
+            var chars =
+              String(hours) +
+              String(minutes) +
+              String(seconds) +
+              "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            var length = 2;
+            var resultString = "";
+            for (var j = length; j > 0; --j)
+              resultString += chars[Math.floor(Math.random() * chars.length)];
+            resultString +=
+              req.userIdentity.algaeh_d_app_user_id +
+              req.userIdentity.hospital_id;
+
+            let batch_no = parseInt(result[0].batch_no) + 1;
+            let barcode = result[0].item_code + "B" + resultString;
+
+            console.log("batch_no", "B" + resultString);
+            console.log("barcode", barcode);
+
+            req.body.pharmacy_stock_detail[i].batchno = "B" + resultString;
+            req.body.pharmacy_stock_detail[i].barcode = barcode;
+            utilities
+              .logger()
+              .log("batch_no: ", req.body.pharmacy_stock_detail[i].batch_no);
+            if (i == pharmacy_stock_detail.length - 1) {
+              resolve();
+            }
+          })
+          .catch(e => {
+            reject(e);
+          });
+      }
+    } catch (e) {
+      reject(e);
+    }
+  }).catch(e => {
+    options.next(e);
+  });
+}
+
+function updateInventoryItemMaster(options) {
+  return new Promise((resolve, reject) => {
+    try {
+      let inventory_stock_detail = options.inventory_stock_detail;
+      let _mysql = options._mysql;
+      let req = options.req;
+
+      const utilities = new algaehUtilities();
+
+      let execute_query = "";
+
+      utilities.logger().log("updateItemMaster: ", inventory_stock_detail);
+
+      for (let i = 0; i < inventory_stock_detail.length; i++) {
+        _mysql
+          .executeQuery({
+            query:
+              "select batch_no, item_code from `hims_d_inventory_item_master` WHERE `hims_d_inventory_item_master_id`=?",
+            values: [inventory_stock_detail[i].item_id],
+            printQuery: true
+          })
+          .then(result => {
+            var date = new Date();
+            var hours = date.getHours();
+            var minutes = date.getMinutes();
+            var seconds = date.getSeconds();
+            var chars =
+              String(hours) +
+              String(minutes) +
+              String(seconds) +
+              "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            var length = 2;
+            var resultString = "";
+            for (var j = length; j > 0; --j)
+              resultString += chars[Math.floor(Math.random() * chars.length)];
+            resultString +=
+              req.userIdentity.algaeh_d_app_user_id +
+              req.userIdentity.hospital_id;
+
+            let batch_no = parseInt(result[0].batch_no) + 1;
+            let barcode = result[0].item_code + "B" + resultString;
+
+            console.log("batch_no", "B" + resultString);
+            console.log("barcode", barcode);
+
+            req.body.inventory_stock_detail[i].batchno = "B" + resultString;
+            req.body.inventory_stock_detail[i].barcode = barcode;
+            utilities
+              .logger()
+              .log("batch_no: ", req.body.inventory_stock_detail[i].batch_no);
+            if (i == inventory_stock_detail.length - 1) {
+              resolve();
+            }
+          })
+          .catch(error => {
+            reject(error);
+          });
+      }
+    } catch (e) {
+      reject(e);
+    }
+  }).catch(e => {
+    options.next(e);
+  });
+}

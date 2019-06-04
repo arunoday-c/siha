@@ -5,10 +5,18 @@ import { bindActionCreators } from "redux";
 import {
   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehAutoComplete
+  AlagehAutoComplete,
+  AlagehFormGroup,
+  AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
-import { changeTexts, dateFormater } from "./StockEnquiryEvents";
+import {
+  changeTexts,
+  dateFormater,
+  updateStockDetils,
+  datehandle,
+  texthandle
+} from "./StockEnquiryEvents";
 import "./StockEnquiry.css";
 import "../../../styles/site.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -45,10 +53,6 @@ class StockEnquiry extends Component {
       });
     }
 
-    // if (
-    //   this.props.locations === undefined ||
-    //   this.props.locations.length === 0
-    // ) {
     this.props.getLocation({
       uri: "/pharmacy/getPharmacyLocation",
       module: "pharmacy",
@@ -58,7 +62,7 @@ class StockEnquiry extends Component {
         mappingName: "locations"
       }
     });
-    // }
+
     if (this.props.itemuom === undefined || this.props.itemuom.length === 0) {
       this.props.getItemUOM({
         uri: "/pharmacy/getPharmacyUom",
@@ -166,13 +170,6 @@ class StockEnquiry extends Component {
           </div>
 
           <div className="portlet portlet-bordered margin-bottom-15">
-            {/* <div className="portlet-title">
-            <div className="caption">
-              <h3 className="caption-subject">Investigation Lists</h3>
-            </div>
-            <div className="actions">
-            </div>
-          </div> */}
             <div className="portlet-body" id="precriptionList_Cntr">
               <AlgaehDataGrid
                 id="initial_stock"
@@ -198,7 +195,24 @@ class StockEnquiry extends Component {
                         </span>
                       );
                     },
-                    disabled: true
+                    editorTemplate: row => {
+                      let display =
+                        this.props.locations === undefined
+                          ? []
+                          : this.props.locations.filter(
+                              f =>
+                                f.hims_d_pharmacy_location_id ===
+                                row.pharmacy_location_id
+                            );
+
+                      return (
+                        <span>
+                          {display !== undefined && display.length !== 0
+                            ? display[0].location_description
+                            : ""}
+                        </span>
+                      );
+                    }
                   },
 
                   {
@@ -220,7 +234,22 @@ class StockEnquiry extends Component {
                         </span>
                       );
                     },
-                    disabled: true
+                    editorTemplate: row => {
+                      let display =
+                        this.props.itemlist === undefined
+                          ? []
+                          : this.props.itemlist.filter(
+                              f => f.hims_d_item_master_id === row.item_id
+                            );
+
+                      return (
+                        <span>
+                          {display !== undefined && display.length !== 0
+                            ? display[0].item_description
+                            : ""}
+                        </span>
+                      );
+                    }
                   },
                   {
                     fieldName: "sales_uom",
@@ -241,16 +270,32 @@ class StockEnquiry extends Component {
                         </span>
                       );
                     },
+                    editorTemplate: row => {
+                      let display =
+                        this.props.itemuom === undefined
+                          ? []
+                          : this.props.itemuom.filter(
+                              f => f.hims_d_pharmacy_uom_id === row.sales_uom
+                            );
 
-                    disabled: true
+                      return (
+                        <span>
+                          {display !== null && display.length !== 0
+                            ? display[0].uom_description
+                            : ""}
+                        </span>
+                      );
+                    }
                   },
                   {
                     fieldName: "barcode",
-                    label: <AlgaehLabel label={{ forceLabel: "Barcode" }} />
+                    label: <AlgaehLabel label={{ forceLabel: "Barcode" }} />,
+                    disabled: true
                   },
                   {
                     fieldName: "batchno",
-                    label: <AlgaehLabel label={{ forceLabel: "Batch No." }} />
+                    label: <AlgaehLabel label={{ forceLabel: "Batch No." }} />,
+                    disabled: true
                   },
                   {
                     fieldName: "expirydt",
@@ -259,15 +304,55 @@ class StockEnquiry extends Component {
                     ),
                     displayTemplate: row => {
                       return <span>{dateFormater(this, row.expirydt)}</span>;
+                    },
+                    editorTemplate: row => {
+                      return (
+                        <AlgaehDateHandler
+                          div={{ className: "" }}
+                          textBox={{
+                            className: "txt-fld hidden",
+                            name: "expirydt"
+                          }}
+                          minDate={new Date()}
+                          events={{
+                            onChange: datehandle.bind(this, this, row)
+                          }}
+                          value={row.expirydt}
+                        />
+                      );
                     }
                   },
                   {
                     fieldName: "qtyhand",
-                    label: <AlgaehLabel label={{ forceLabel: "Quantity" }} />
+                    label: <AlgaehLabel label={{ forceLabel: "Quantity" }} />,
+                    disabled: true
                   },
                   {
                     fieldName: "avgcost",
-                    label: <AlgaehLabel label={{ forceLabel: "Avg. Cost" }} />
+                    label: <AlgaehLabel label={{ forceLabel: "Avg. Cost" }} />,
+                    disabled: true
+                  },
+                  {
+                    fieldName: "sale_price",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Sales Price" }} />
+                    ),
+                    editorTemplate: row => {
+                      return (
+                        <AlagehFormGroup
+                          div={{}}
+                          textBox={{
+                            decimal: { allowNegative: false },
+                            value: row.sale_price,
+                            className: "txt-fld",
+                            name: "sale_price",
+                            events: {
+                              onChange: texthandle.bind(this, this, row)
+                            }
+                          }}
+                        />
+                      );
+                    }
                   }
                 ]}
                 keyId="item_id"
@@ -275,12 +360,12 @@ class StockEnquiry extends Component {
                   data: this.state.ListItems
                 }}
                 noDataText="No Stock available for selected Item in the selected Location"
-                // isEditable={true}
+                isEditable={true}
                 paging={{ page: 0, rowsPerPage: 10 }}
                 events={{
-                  //   onDelete: deleteServices.bind(this, this),
-                  onEdit: row => {}
-                  // onDone: this.updateBillDetail.bind(this)
+                  // onDelete: deleteStock.bind(this, this),
+                  onEdit: row => {},
+                  onDone: updateStockDetils.bind(this, this)
                 }}
               />
             </div>

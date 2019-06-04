@@ -235,49 +235,49 @@ const updateUOM = ($this, context, row) => {
 };
 
 const deleteUOM = ($this, context, row, rowId) => {
-  if (row.hims_m_item_uom_id !== undefined) {
-    let detail_item_uom = $this.state.detail_item_uom;
-    let updateUomMapResult = $this.state.updateUomMapResult;
-    let insertItemUomMap = $this.state.insertItemUomMap;
-    if ($this.state.hims_d_item_master_id !== null) {
-      if (row.hims_m_item_uom_id !== undefined) {
-        let Updateobj = {
-          hims_m_item_uom_id: row.hims_m_item_uom_id,
-          item_master_id: row.hims_d_item_master_id,
-          uom_id: row.uom_id,
-          stocking_uom: row.stocking_uom,
-          conversion_factor: row.conversion_factor,
-          record_status: "I"
-        };
-        updateUomMapResult.push(Updateobj);
-      } else {
-        for (let k = 0; k < insertItemUomMap.length; k++) {
-          if (insertItemUomMap[k].uom_id === row.uom_id) {
-            insertItemUomMap.splice(k, 1);
-          }
+  debugger;
+
+  let detail_item_uom = $this.state.detail_item_uom;
+  let updateUomMapResult = $this.state.updateUomMapResult;
+  let insertItemUomMap = $this.state.insertItemUomMap;
+  if ($this.state.hims_d_item_master_id !== null) {
+    if (row.hims_m_item_uom_id !== undefined) {
+      let Updateobj = {
+        hims_m_item_uom_id: row.hims_m_item_uom_id,
+        item_master_id: row.hims_d_item_master_id,
+        uom_id: row.uom_id,
+        stocking_uom: row.stocking_uom,
+        conversion_factor: row.conversion_factor,
+        record_status: "I"
+      };
+      updateUomMapResult.push(Updateobj);
+    } else {
+      for (let k = 0; k < insertItemUomMap.length; k++) {
+        if (insertItemUomMap[k].uom_id === row.uom_id) {
+          insertItemUomMap.splice(k, 1);
         }
       }
     }
+  }
 
-    for (let x = 0; x < detail_item_uom.length; x++) {
-      if (detail_item_uom[x].uom_id === row.uom_id) {
-        detail_item_uom.splice(x, 1);
-      }
+  for (let x = 0; x < detail_item_uom.length; x++) {
+    if (detail_item_uom[x].uom_id === row.uom_id) {
+      detail_item_uom.splice(x, 1);
     }
+  }
 
-    $this.setState({
+  $this.setState({
+    detail_item_uom: detail_item_uom,
+    updateUomMapResult: updateUomMapResult,
+    insertItemUomMap: insertItemUomMap
+  });
+
+  if (context !== undefined) {
+    context.updateState({
       detail_item_uom: detail_item_uom,
       updateUomMapResult: updateUomMapResult,
       insertItemUomMap: insertItemUomMap
     });
-
-    if (context !== undefined) {
-      context.updateState({
-        detail_item_uom: detail_item_uom,
-        updateUomMapResult: updateUomMapResult,
-        insertItemUomMap: insertItemUomMap
-      });
-    }
   }
 };
 
