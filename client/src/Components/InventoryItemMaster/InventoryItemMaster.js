@@ -138,6 +138,7 @@ class InventoryItemMaster extends Component {
           item_type: firstRecordSet.item_type,
           purchase_cost: firstRecordSet.purchase_cost,
           addl_information: firstRecordSet.addl_information,
+          required_batchno_expiry: firstRecordSet.required_batchno_expiry,
           detail_item_uom: g.getSource()
         };
       })

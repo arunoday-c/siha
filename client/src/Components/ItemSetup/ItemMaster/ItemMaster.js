@@ -86,10 +86,6 @@ class ItemMaster extends Component {
     }
   }
 
-  handleClose = () => {
-    this.setState({ open: false });
-  };
-
   render() {
     debugger;
     return (
@@ -703,18 +699,20 @@ class ItemMaster extends Component {
                       }}
                       //forceUpdate={true}
                     />
-                    <AlagehFormGroup
-                      div={{ className: "col-4 mandatory form-group" }}
-                      label={{
-                        fieldName: "price"
-                      }}
-                      textBox={{
-                        decimal: { allowNegative: false },
-                        className: "txt-fld",
-                        name: "standard_fee",
-                        value: this.state.standard_fee
-                      }}
-                    />
+                    {this.state.hims_d_item_master_id === null ? (
+                      <AlagehFormGroup
+                        div={{ className: "col-4 mandatory form-group" }}
+                        label={{
+                          fieldName: "price"
+                        }}
+                        textBox={{
+                          decimal: { allowNegative: false },
+                          className: "txt-fld",
+                          name: "standard_fee",
+                          value: this.state.standard_fee
+                        }}
+                      />
+                    ) : null}
                   </div>
                 </div>
               </div>
