@@ -53,17 +53,15 @@ class ItemSetup extends Component {
       });
     }
 
-    if (this.props.itemuom === undefined || this.props.itemuom.length === 0) {
-      this.props.getItemUOM({
-        uri: "/pharmacy/getPharmacyUom",
-        module: "pharmacy",
-        method: "GET",
-        redux: {
-          type: "ITEM_UOM_GET_DATA",
-          mappingName: "itemuom"
-        }
-      });
-    }
+    this.props.getItemUOM({
+      uri: "/pharmacy/getPharmacyUom",
+      module: "pharmacy",
+      method: "GET",
+      redux: {
+        type: "ITEM_UOM_GET_DATA",
+        mappingName: "itemuom"
+      }
+    });
 
     if (
       this.props.itemgeneric === undefined ||
@@ -183,6 +181,7 @@ class ItemSetup extends Component {
           service_id: firstRecordSet.service_id,
           purchase_cost: firstRecordSet.purchase_cost,
           addl_information: firstRecordSet.addl_information,
+          required_batchno_expiry: firstRecordSet.required_batchno_expiry,
           detail_item_uom:
             firstRecordSet.hims_m_item_uom_id === null ? [] : g.getSource()
         };

@@ -176,8 +176,7 @@ module.exports = {
             })
             .then(stock_detail => {
               utilities.logger().log("stock_detail: ");
-              // _mysql.commitTransaction(() => {
-              //   _mysql.releaseConnection();
+
               req.records = {
                 document_number: input.document_number,
                 hims_f_pharmacy_stock_header_id: headerResult.insertId,
@@ -185,7 +184,6 @@ module.exports = {
                 period: period
               };
               next();
-              // });
             })
             .catch(error => {
               _mysql.rollBackTransaction(() => {

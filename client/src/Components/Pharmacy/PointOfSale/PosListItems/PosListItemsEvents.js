@@ -1026,16 +1026,9 @@ const CloseItemBatch = ($this, context, e) => {
 const onchangegridcol = ($this, context, row, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  if (value <= 0) {
-    swalMessage({
-      title: "Quantity cannot be less than or equal to Zero",
-      type: "warning"
-    });
-  } else {
-    row[name] = value;
-    // row.update();
-    calculateAmount($this, context, row, e);
-  }
+
+  row[name] = value;
+  calculateAmount($this, context, row, e);
 };
 
 const qtyonchangegridcol = ($this, context, row, e) => {

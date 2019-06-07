@@ -364,7 +364,10 @@ class InvInitialStock extends Component {
 
                   <AlgaehDateHandler
                     div={{ className: "col-lg-3 form-group" }}
-                    label={{ forceLabel: "Expiry Date", isImp: true }}
+                    label={{
+                      forceLabel: "Expiry Date",
+                      isImp: this.state.required_batchno === "N" ? true : false
+                    }}
                     textBox={{ className: "txt-fld", name: "expiry_date" }}
                     minDate={new Date()}
                     events={{

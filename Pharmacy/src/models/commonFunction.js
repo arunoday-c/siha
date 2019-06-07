@@ -37,7 +37,7 @@ let updateIntoItemLocation = (req, res, next) => {
           item_id: s.item_id,
           pharmacy_location_id: s.location_id,
           batchno: s.batchno,
-          expirydt: s.expiry_date,
+          expirydt: s.expiry_date || 0,
           barcode: s.barcode,
           qtyhand: s.quantity,
           qtypo: s.qtypo || 0,

@@ -5,10 +5,18 @@ import { bindActionCreators } from "redux";
 import {
   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehAutoComplete
+  AlagehAutoComplete,
+  AlagehFormGroup,
+  AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
-import { changeTexts, dateFormater } from "./InvStockEnquiryEvents";
+import {
+  changeTexts,
+  dateFormater,
+  updateStockDetils,
+  datehandle,
+  texthandle
+} from "./InvStockEnquiryEvents";
 import "./InvStockEnquiry.css";
 import "../../../styles/site.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -209,7 +217,24 @@ class InvStockEnquiry extends Component {
                         </span>
                       );
                     },
-                    disabled: true
+                    editorTemplate: row => {
+                      let display =
+                        this.props.inventorylocations === undefined
+                          ? []
+                          : this.props.inventorylocations.filter(
+                              f =>
+                                f.hims_d_inventory_location_id ===
+                                row.inventory_location_id
+                            );
+
+                      return (
+                        <span>
+                          {display !== undefined && display.length !== 0
+                            ? display[0].location_description
+                            : ""}
+                        </span>
+                      );
+                    }
                   },
 
                   {
@@ -233,7 +258,24 @@ class InvStockEnquiry extends Component {
                         </span>
                       );
                     },
-                    disabled: true
+                    editorTemplate: row => {
+                      let display =
+                        this.props.inventoryitemlist === undefined
+                          ? []
+                          : this.props.inventoryitemlist.filter(
+                              f =>
+                                f.hims_d_inventory_item_master_id ===
+                                row.item_id
+                            );
+
+                      return (
+                        <span>
+                          {display !== undefined && display.length !== 0
+                            ? display[0].item_description
+                            : ""}
+                        </span>
+                      );
+                    }
                   },
                   {
                     fieldName: "sales_uom",
@@ -255,15 +297,32 @@ class InvStockEnquiry extends Component {
                       );
                     },
 
-                    disabled: true
+                    editorTemplate: row => {
+                      let display =
+                        this.props.inventoryitemuom === undefined
+                          ? []
+                          : this.props.inventoryitemuom.filter(
+                              f => f.hims_d_inventory_uom_id === row.sales_uom
+                            );
+
+                      return (
+                        <span>
+                          {display !== null && display.length !== 0
+                            ? display[0].uom_description
+                            : ""}
+                        </span>
+                      );
+                    }
                   },
                   {
                     fieldName: "barcode",
-                    label: <AlgaehLabel label={{ forceLabel: "Barcode" }} />
+                    label: <AlgaehLabel label={{ forceLabel: "Barcode" }} />,
+                    disabled: true
                   },
                   {
                     fieldName: "batchno",
-                    label: <AlgaehLabel label={{ forceLabel: "Batch No." }} />
+                    label: <AlgaehLabel label={{ forceLabel: "Batch No." }} />,
+                    disabled: true
                   },
                   {
                     fieldName: "expirydt",
@@ -272,15 +331,55 @@ class InvStockEnquiry extends Component {
                     ),
                     displayTemplate: row => {
                       return <span>{dateFormater(this, row.expirydt)}</span>;
+                    },
+                    editorTemplate: row => {
+                      return (
+                        <AlgaehDateHandler
+                          div={{ className: "" }}
+                          textBox={{
+                            className: "txt-fld hidden",
+                            name: "expirydt"
+                          }}
+                          minDate={new Date()}
+                          events={{
+                            onChange: datehandle.bind(this, this, row)
+                          }}
+                          value={row.expirydt}
+                        />
+                      );
                     }
                   },
                   {
                     fieldName: "qtyhand",
-                    label: <AlgaehLabel label={{ forceLabel: "Quantity" }} />
+                    label: <AlgaehLabel label={{ forceLabel: "Quantity" }} />,
+                    disabled: true
                   },
                   {
                     fieldName: "avgcost",
-                    label: <AlgaehLabel label={{ forceLabel: "Avg. Cost" }} />
+                    label: <AlgaehLabel label={{ forceLabel: "Avg. Cost" }} />,
+                    disabled: true
+                  },
+                  {
+                    fieldName: "sale_price",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Sales Price" }} />
+                    ),
+                    editorTemplate: row => {
+                      return (
+                        <AlagehFormGroup
+                          div={{}}
+                          textBox={{
+                            decimal: { allowNegative: false },
+                            value: row.sale_price,
+                            className: "txt-fld",
+                            name: "sale_price",
+                            events: {
+                              onChange: texthandle.bind(this, this, row)
+                            }
+                          }}
+                        />
+                      );
+                    }
                   }
                 ]}
                 keyId="item_id"
@@ -288,12 +387,12 @@ class InvStockEnquiry extends Component {
                   data: this.state.ListItems
                 }}
                 noDataText="No Stock available for selected Item in the selected Location"
-                // isEditable={true}
+                isEditable={true}
                 paging={{ page: 0, rowsPerPage: 10 }}
                 events={{
                   //   onDelete: deleteServices.bind(this, this),
-                  onEdit: row => {}
-                  // onDone: this.updateBillDetail.bind(this)
+                  onEdit: row => {},
+                  onDone: updateStockDetils.bind(this, this)
                 }}
               />
             </div>

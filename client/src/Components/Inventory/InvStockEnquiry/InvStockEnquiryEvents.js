@@ -51,4 +51,26 @@ const getItemLocationStock = $this => {
   });
 };
 
-export { changeTexts, dateFormater, getItemLocationStock };
+const updateStockDetils = $this => {};
+
+const datehandle = ($this, row, ctrl, e) => {
+  row[e] = moment(ctrl)._d;
+  row.update();
+};
+
+const texthandle = ($this, row, e) => {
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+  row[name] = value;
+  row.update();
+};
+
+export {
+  changeTexts,
+  dateFormater,
+  getItemLocationStock,
+  updateStockDetils,
+  datehandle,
+  texthandle
+};

@@ -187,7 +187,9 @@ class TransferEntry extends Component {
                   />
                   <h6>
                     {this.state.from_location_type
-                      ? this.state.from_location_type === "MS"
+                      ? this.state.from_location_type === "WH"
+                        ? "Warehouse"
+                        : this.state.from_location_type === "MS"
                         ? "Main Store"
                         : "Sub Store"
                       : "From Location Type"}
@@ -283,7 +285,9 @@ class TransferEntry extends Component {
                   />
                   <h6>
                     {this.state.to_location_type
-                      ? this.state.to_location_type === "MS"
+                      ? this.state.to_location_type === "WH"
+                        ? "Warehouse"
+                        : this.state.to_location_type === "MS"
                         ? "Main Store"
                         : "Sub Store"
                       : "To Location Type"}

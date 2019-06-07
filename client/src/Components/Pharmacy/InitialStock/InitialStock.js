@@ -267,7 +267,7 @@ class InitialStock extends Component {
                         textField: "item_description",
                         valueField: "hims_d_item_master_id",
                         data: this.props.intitemlist,
-                        autoComplete: "off"
+                        autoComplete: "newPassword"
                       },
                       onChange: itemchangeText.bind(this, this)
                     }}
@@ -350,7 +350,10 @@ class InitialStock extends Component {
                   />
                   <AlgaehDateHandler
                     div={{ className: "col-3 form-group" }}
-                    label={{ forceLabel: "Expiry Date", isImp: true }}
+                    label={{
+                      forceLabel: "Expiry Date",
+                      isImp: this.state.required_batchno === "N" ? true : false
+                    }}
                     textBox={{ className: "txt-fld", name: "expiry_date" }}
                     minDate={new Date()}
                     events={{

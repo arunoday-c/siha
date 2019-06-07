@@ -70,7 +70,7 @@ const itemchangeText = ($this, e) => {
     item_group_id: e.selected.group_id,
     uom_id: e.selected.stocking_uom_id,
     sales_uom: e.selected.sales_uom_id,
-    required_batchno: e.selected.required_batchno,
+    required_batchno: e.selected.required_batchno_expiry,
     item_code: e.selected.item_code
   });
 };

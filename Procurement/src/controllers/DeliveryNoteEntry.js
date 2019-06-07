@@ -19,6 +19,14 @@ const { updateInventoryItemMaster } = algaehPath(
   "algaeh-inventory/src/models/inventoryGlobal"
 );
 
+const { updateIntoItemLocation } = algaehPath(
+  "algaeh-pharmacy/src/models/commonFunction"
+);
+
+const { updateIntoInvItemLocation } = algaehPath(
+  "algaeh-inventory/src/models/commonFunction"
+);
+
 export default () => {
   const api = Router();
   const utilities = new algaehUtilities();
@@ -32,24 +40,22 @@ export default () => {
   api.post(
     "/addDeliveryNoteEntry",
     generateNumber,
-    (req, res, next) => {
-      utilities.logger().log("dn_from: ", req.body.dn_from);
-      if (req.body.dn_from == "PHR") {
-        updateItemMaster(req, res, next);
-      } else {
-        next();
-      }
-    },
-    (req, res, next) => {
-      utilities.logger().log("dn_from: ", req.body.dn_from);
-      if (req.body.dn_from == "INV") {
-        updateInventoryItemMaster(req, res, next);
-      } else {
-        next();
-      }
-    },
     addDeliveryNoteEntry,
     updatePOEntry,
+    (req, res, next) => {
+      if (req.body.dn_from == "PHR") {
+        updateIntoItemLocation(req, res, next);
+      } else {
+        next();
+      }
+    },
+    (req, res, next) => {
+      if (req.body.dn_from == "INV") {
+        updateIntoInvItemLocation(req, res, next);
+      } else {
+        next();
+      }
+    },
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,

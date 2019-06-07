@@ -34,7 +34,9 @@ export default {
       purchase_cost: 0,
       markup_percent: 0,
       sales_price: 0,
-      addl_information: null
+      addl_information: null,
+      conversion_factor: 0,
+      convertEnable: false
     };
     return output;
   }
