@@ -11,3 +11,17 @@
   .hptl-phase1-requisition-form .go-button {
     cursor: pointer;
     margin-top: 2.5vh; }
+
+.globalSearchIconStyle {
+  margin-top: 20px;
+  padding: 0;
+  font-size: 20px;
+  border: 1px solid #ebebeb;
+  padding: 4px;
+  float: left;
+  margin-left: -15px;
+  border-radius: 0 4px 4px 0;
+  cursor: pointer; }
+
+.print_actions {
+  padding: 0; }
