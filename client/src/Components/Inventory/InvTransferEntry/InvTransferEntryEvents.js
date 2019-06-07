@@ -252,7 +252,8 @@ const RequisitionSearch = ($this, e) => {
           module: "inventory",
           method: "GET",
           data: {
-            material_requisition_number: row.material_requisition_number,
+            hims_f_inventory_material_header_id:
+              row.hims_f_inventory_material_header_id,
             from_location_id: $this.state.from_location_id
           },
 

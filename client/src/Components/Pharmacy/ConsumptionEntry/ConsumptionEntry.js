@@ -237,7 +237,9 @@ class ConsumptionEntry extends Component {
                   />
                   <h6>
                     {this.state.location_type
-                      ? this.state.location_type === "MS"
+                      ? this.state.location_type === "WH"
+                        ? "Warehouse"
+                        : this.state.location_type === "MS"
                         ? "Main Store"
                         : "Sub Store"
                       : "Location Type"}

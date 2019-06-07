@@ -1127,6 +1127,7 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
             servicesDetails.conversion_factor == undefined
               ? 0
               : servicesDetails.conversion_factor;
+          utilities.logger().log("conversion_factor: ", conversion_factor);
           let quantity =
             servicesDetails.quantity == undefined
               ? 1
@@ -1304,9 +1305,9 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                   unit_cost = unit_cost != 0 ? unit_cost : policydtls.gross_amt;
                 }
 
-                if (conversion_factor != 0) {
-                  unit_cost = unit_cost * conversion_factor;
-                }
+                // if (conversion_factor != 0) {
+                //   unit_cost = unit_cost * conversion_factor;
+                // }
                 gross_amount = quantity * unit_cost;
 
                 if (discount_amout > 0) {
@@ -1488,9 +1489,9 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                   unit_cost = unit_cost != 0 ? unit_cost : records.standard_fee;
                 }
 
-                if (conversion_factor != 0) {
-                  unit_cost = unit_cost * conversion_factor;
-                }
+                // if (conversion_factor != 0) {
+                //   unit_cost = unit_cost * conversion_factor;
+                // }
                 gross_amount = quantity * unit_cost;
 
                 if (discount_amout > 0) {

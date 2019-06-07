@@ -88,6 +88,7 @@ class ItemDetails extends Component {
   }
 
   render() {
+    debugger;
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -159,23 +160,18 @@ class ItemDetails extends Component {
                       }
                     }}
                   />
-                  <AlagehAutoComplete
+                  <AlagehFormGroup
                     div={{ className: "col-4 mandatory form-group" }}
                     label={{
-                      forceLabel: "Select SFDA",
+                      forceLabel: "SFDA",
                       isImp: true
                     }}
-                    selector={{
-                      name: "sfda_id",
-                      className: "select-fld",
-                      value: this.state.sfda_id,
-                      dataSource: {
-                        textField: "item_name",
-                        valueField: "hims_d_sfda_id",
-                        data: this.props.sfda
-                      }
+                    textBox={{
+                      className: "txt-fld",
+                      name: "sfda_code",
+                      value: this.state.sfda_code
                     }}
-                  />{" "}
+                  />
                   <AlagehAutoComplete
                     div={{ className: "col-4 mandatory form-group" }}
                     label={{
@@ -293,7 +289,7 @@ class ItemDetails extends Component {
                         <span>Not Required</span>
                       </label>
                     </div>
-                  </div>{" "}
+                  </div>
                   {this.state.hims_d_item_master_id === null ? (
                     <div className="col-12">
                       <div className="row">
@@ -373,7 +369,7 @@ class ItemDetails extends Component {
                         valueField: "hims_d_pharmacy_uom_id",
                         data: this.props.itemuom
                       },
-                      onChange: uomtexthandle.bind(this, this, context),
+                      // onChange: uomtexthandle.bind(this, this, context),
                       others: {
                         exclude: "true"
                       }
@@ -389,7 +385,7 @@ class ItemDetails extends Component {
                       name: "conversion_factor",
                       value: this.state.conversion_factor,
                       events: {
-                        onChange: texthandle.bind(this, this)
+                        // onChange: texthandle.bind(this, this, context)
                       },
                       others: {
                         disabled: this.state.convertEnable,
@@ -411,7 +407,7 @@ class ItemDetails extends Component {
                         valueField: "value",
                         data: GlobalVariables.FORMAT_YESNO
                       },
-                      onChange: stockingtexthandle.bind(this, this),
+                      onChange: stockingtexthandle.bind(this, this, context),
                       others: {
                         exclude: "true"
                       }

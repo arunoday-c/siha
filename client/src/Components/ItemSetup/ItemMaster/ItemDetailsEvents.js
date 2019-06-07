@@ -1,22 +1,80 @@
-import { swalMessage } from "../../../../utils/algaehApiCall";
+import AlgaehSearch from "../../Wrapper/globalSearch";
+import spotlightSearch from "../../../Search/spotlightSearch.json";
+import { swalMessage } from "../../../utils/algaehApiCall";
 import Enumerable from "linq";
-import { SetBulkState } from "../../../../utils/GlobalFunctions";
+import { SetBulkState } from "../../../utils/GlobalFunctions";
 
-const additionaleInfo = ($this, context, e) => {
-  let name = e.name || e.target.name;
-  let value = e.value || e.target.value;
-
-  $this.setState({
-    [name]: value
-  });
-
-  if (context !== undefined) {
-    context.updateState({
-      [name]: value
-    });
+const radioChange = ($this, e) => {
+  let radioActive = true;
+  let radioInactive = false;
+  let item_status = "A";
+  if (e.target.value === "Active") {
+    radioActive = true;
+    radioInactive = false;
+    item_status = "A";
+  } else if (e.target.value === "Inactive") {
+    radioActive = false;
+    radioInactive = true;
+    item_status = "I";
   }
+  $this.setState({
+    [e.target.name]: e.target.value,
+    radioInactive: radioInactive,
+    radioActive: radioActive,
+    item_status: item_status
+  });
 };
 
+const BatchExpRequired = $this => {
+  SetBulkState({
+    state: $this,
+    callback: () => {
+      let required_batchno_expiry = "N";
+      if (!$this.state.batchexpreq === true) {
+        required_batchno_expiry = "Y";
+      }
+      $this.setState({
+        required_batchno_expiry: required_batchno_expiry,
+        batchexpreq: !$this.state.batchexpreq,
+        ...$this.state
+      });
+    }
+  });
+};
+
+const CptCodesSearch = $this => {
+  AlgaehSearch({
+    searchGrid: {
+      columns: spotlightSearch.Services.CptCodes
+    },
+    searchName: "CptCodes",
+    uri: "/gloabelSearch/get",
+    onContainsChange: (text, serchBy, callBack) => {
+      callBack(text);
+    },
+    onRowSelect: row => {
+      $this.setState({
+        cpt_code: row.hims_d_cpt_code_id,
+        cpt_code_data: row.cpt_code
+      });
+    }
+  });
+};
+
+const VatAppilicable = ($this, e) => {
+  let name = e.target.name;
+  let value = e.target.value;
+  SetBulkState({
+    state: $this,
+    callback: () => {
+      $this.setState({
+        [name]: value,
+        vat_percent: 0,
+        ...$this.state
+      });
+    }
+  });
+};
 const texthandle = ($this, ctrl, e) => {
   e = e || ctrl;
   let name = e.name || e.target.name;
@@ -27,7 +85,16 @@ const texthandle = ($this, ctrl, e) => {
   });
 };
 
-const uomtexthandle = ($this, context, ctrl, e) => {
+const additionaleInfo = ($this, e) => {
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+  $this.setState({
+    [name]: value
+  });
+};
+
+const uomtexthandle = ($this, ctrl, e) => {
   e = e || ctrl;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -38,43 +105,34 @@ const uomtexthandle = ($this, context, ctrl, e) => {
   });
 };
 
-const stockingtexthandle = ($this, context, ctrl, e) => {
+const stockingtexthandle = ($this, e) => {
   debugger;
-  e = e || ctrl;
+
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  SetBulkState({
-    state: $this,
-    callback: () => {
+
+  debugger;
+
+  let conversion_factor = 0;
+  let convertEnable = false;
+  if (value === "Y") {
+    conversion_factor = 1;
+    convertEnable = true;
+  }
+
+  $this.setState(
+    {
+      [name]: value,
+      conversion_factor: conversion_factor,
+      convertEnable: convertEnable
+    },
+    () => {
       debugger;
-
-      let conversion_factor = 0;
-      let convertEnable = false;
-      if (value === "Y") {
-        conversion_factor = 1;
-        convertEnable = true;
-      }
-
-      $this.setState({
-        [name]: value,
-        conversion_factor: conversion_factor,
-        convertEnable: convertEnable,
-        ...$this.state
-      });
-
-      if (context !== undefined) {
-        context.updateState({
-          [name]: value,
-          conversion_factor: conversion_factor,
-          convertEnable: convertEnable,
-          ...$this.state
-        });
-      }
     }
-  });
+  );
 };
 
-const AddUom = ($this, context) => {
+const AddUom = $this => {
   let isError = false;
 
   let stocking_uom_id = null;
@@ -163,18 +221,6 @@ const AddUom = ($this, context) => {
             });
 
             $this.state.stocking_uom_id = stocking_uom_id;
-            if (context !== undefined) {
-              context.updateState({
-                detail_item_uom: detail_item_uom,
-                uom_description: $this.state.uom_description,
-                insertItemUomMap: insertItemUomMap,
-                stocking_uom_id: stocking_uom_id,
-                uom_id: null,
-                stocking_uom: null,
-                conversion_factor: null,
-                ...$this.state
-              });
-            }
           }
         });
       } else {
@@ -198,7 +244,7 @@ const AddUom = ($this, context) => {
   }
 };
 
-const updateUOM = ($this, context, row) => {
+const updateUOM = ($this, row) => {
   let detail_item_uom = $this.state.detail_item_uom;
   let updateUomMapResult = $this.state.updateUomMapResult;
 
@@ -243,16 +289,9 @@ const updateUOM = ($this, context, row) => {
     detail_item_uom: detail_item_uom,
     updateUomMapResult: updateUomMapResult
   });
-
-  if (context !== undefined) {
-    context.updateState({
-      detail_item_uom: detail_item_uom,
-      updateUomMapResult: updateUomMapResult
-    });
-  }
 };
 
-const deleteUOM = ($this, context, row, rowId) => {
+const deleteUOM = ($this, row, rowId) => {
   debugger;
 
   let detail_item_uom = $this.state.detail_item_uom;
@@ -289,17 +328,9 @@ const deleteUOM = ($this, context, row, rowId) => {
     updateUomMapResult: updateUomMapResult,
     insertItemUomMap: insertItemUomMap
   });
-
-  if (context !== undefined) {
-    context.updateState({
-      detail_item_uom: detail_item_uom,
-      updateUomMapResult: updateUomMapResult,
-      insertItemUomMap: insertItemUomMap
-    });
-  }
 };
 
-const stockonchangegridcol = ($this, context, row, e) => {
+const stockonchangegridcol = ($this, row, e) => {
   let StockingUnit = "N";
   let detail_item_uom = $this.state.detail_item_uom;
   let name = e.name || e.target.name;
@@ -325,16 +356,10 @@ const stockonchangegridcol = ($this, context, row, e) => {
     }
 
     $this.setState({ detail_item_uom: detail_item_uom });
-
-    if (context !== undefined) {
-      context.updateState({
-        detail_item_uom: detail_item_uom
-      });
-    }
   }
 };
 
-const onchangegridcol = ($this, context, row, e) => {
+const onchangegridcol = ($this, row, e) => {
   let detail_item_uom = $this.state.detail_item_uom;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -352,12 +377,6 @@ const onchangegridcol = ($this, context, row, e) => {
   }
 
   $this.setState({ detail_item_uom: detail_item_uom });
-
-  if (context !== undefined) {
-    context.updateState({
-      detail_item_uom: detail_item_uom
-    });
-  }
 };
 
 export {
@@ -369,5 +388,9 @@ export {
   uomtexthandle,
   stockingtexthandle,
   stockonchangegridcol,
-  additionaleInfo
+  additionaleInfo,
+  radioChange,
+  BatchExpRequired,
+  CptCodesSearch,
+  VatAppilicable
 };

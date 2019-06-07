@@ -610,8 +610,8 @@ module.exports = {
         .executeQuery({
           query:
             "SELECT * from  hims_f_inventory_material_header \
-          where material_requisition_number=?",
-          values: [inputParam.material_requisition_number],
+          where hims_f_inventory_material_header_id=?",
+          values: [inputParam.hims_f_inventory_material_header_id],
           printQuery: false
         })
         .then(headerResult => {
@@ -623,12 +623,9 @@ module.exports = {
                   inner join hims_m_inventory_item_location LOC  on D.item_id=LOC.item_id \
                   inner join `hims_d_inventory_item_master` IM  on IM.hims_d_inventory_item_master_id=D.item_id \
                   inner join `hims_d_inventory_uom` PU  on PU.hims_d_inventory_uom_id=D.item_uom \
-                  where  LOC.inventory_location_id=? and  D.inventory_header_id=? and  LOC.expirydt > CURDATE() \
+                  where D.inventory_header_id=? and  LOC.expirydt > CURDATE() \
                   and D.quantity_outstanding<>0 order by  LOC.expirydt ",
-                values: [
-                  headerResult[0].to_location_id,
-                  headerResult[0].hims_f_inventory_material_header_id
-                ],
+                values: [inputParam.hims_f_inventory_material_header_id],
                 printQuery: false
               })
               .then(inventory_stock_detail => {
@@ -672,7 +669,12 @@ module.exports = {
                     .FirstOrDefault();
 
                   let batches = new LINQ(inventory_stock_detail)
-                    .Where(w => w.item_id == item_grp[i] && w.qtyhand > 0)
+                    .Where(
+                      w =>
+                        w.item_id == item_grp[i] &&
+                        w.qtyhand > 0 &&
+                        w.inventory_location_id == inputParam.from_location_id
+                    )
                     .Select(s => {
                       return {
                         hims_m_inventory_item_location_id:

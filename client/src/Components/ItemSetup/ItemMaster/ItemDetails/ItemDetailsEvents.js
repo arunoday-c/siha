@@ -113,4 +113,10 @@ const texthandle = ($this, ctrl, e) => {
   });
 };
 
-export { radioChange, BatchExpRequired, CptCodesSearch, VatAppilicable, texthandle };
+export {
+  radioChange,
+  BatchExpRequired,
+  CptCodesSearch,
+  VatAppilicable,
+  texthandle
+};
