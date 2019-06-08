@@ -145,7 +145,7 @@ class ConsumptionEntry extends Component {
                 fileName: "spotlightSearch",
                 fieldName: "ConsumptionEntry.PharConsEntry"
               },
-              searchName: "InvREQEntry"
+              searchName: "PharConsEntry"
             }}
             userArea={
               <div className="row">

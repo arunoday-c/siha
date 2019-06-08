@@ -155,7 +155,7 @@
         "label": "Patient Code"
       },
       {
-        "fieldName": "posdate",
+        "fieldName": "pos_date",
         "label": "Pos Date"
       },
       {
@@ -211,7 +211,7 @@
         "label": "Sales Return Number"
       },
       {
-        "fieldName": "return_date",
+        "fieldName": "sales_return_date",
         "label": "Sales Return Date"
       }
     ]
@@ -574,18 +574,18 @@
         "label": "Consumption Number"
       },
       {
-        "fieldName": "consumption_number",
-        "label": "Consumption Number"
+        "fieldName": "consumption_date",
+        "label": "Consumption Date"
       }
     ],
     "InvConsEntry": [
       {
         "fieldName": "consumption_number",
-        "label": "Consumption Number"
+        "label": "Consumption Date"
       },
       {
-        "fieldName": "consumption_number",
-        "label": "Consumption Number"
+        "fieldName": "consumption_date",
+        "label": "Consumption Date"
       }
     ]
   },
