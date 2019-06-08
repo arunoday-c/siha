@@ -5,7 +5,6 @@ const executePDF = function executePDFMethod(options) {
   return new Promise(function(resolve, reject) {
     try {
       let inputs = {};
-      console.log("parameters", parameters);
       const internalParameters = parameters.reportParams;
       const headerID = _.find(
         internalParameters,

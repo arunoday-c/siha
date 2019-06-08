@@ -66,15 +66,15 @@ export default class FormGroup extends PureComponent {
     try {
       if (evt.keyCode === 69) return false;
 
-      if (!isNaN(evt.target.min) && !isNaN(evt.target.value)) {
+      if (evt.target.min !== "" && !isNaN(evt.target.value)) {
         if (parseFloat(evt.target.value) >= parseFloat(evt.target.min)) {
           if (evt.target.max === "") return true;
         } else {
-          if (evt.target.value !== "") evt.target.value = evt.target.min;
+          if (evt.target.value !== "") evt.target.value = "";
           return false;
         }
       }
-      if (!isNaN(evt.target.max) && !isNaN(evt.target.value)) {
+      if (evt.target.max !== "" && !isNaN(evt.target.value)) {
         if (parseFloat(evt.target.value) <= parseFloat(evt.target.max)) {
           return true;
         } else {
@@ -292,6 +292,8 @@ export default class FormGroup extends PureComponent {
           </div>
         );
       } else if (this.props.textBox.number !== undefined) {
+        const min =
+          this.props.textBox.number.allowNegative === false ? { min: 0 } : {};
         return (
           <Input
             type="number"
@@ -300,6 +302,7 @@ export default class FormGroup extends PureComponent {
             {..._onChange}
             {..._required}
             {..._disabled}
+            {...min}
             {...this.props.textBox.others}
             {..._class}
             pattern="\d+((\.|,)\d+)?"
