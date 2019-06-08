@@ -1,0 +1,46 @@
+
+{{{importStyle 'css/creditinvoice.css'}}}
+
+<body>
+    <div class="print-body">
+
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>Invoice No.</th>
+                        <th>Invoice Date</th>
+                        <th>Invoice Amt.</th>
+                        <th>Insurance Amt.</th>
+                        <th>Discount</th>
+                        <th>Amount Paid</th>
+                        <th>Due Amt</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each details}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                        <td>{{invoice_no}}</td>
+                        <td>{{invoice_date}}</td>
+                        <td>{{invoice_amt}}</td>
+                        <td>{{insurance_amt}}</td>
+                        <td>{{discount_amt}}</td>
+                        <td>{{amt.paid}}</td>
+                        <td>{{due_amt}}</td>
+                    </tr>
+                    {{/each }}
+                </tbody>
+            </table>
+            <table class="tableTotal">
+              <tr><td>Total Invoice Amount</td><td>{{total_gross_amount}}</td><td>الإجمالي قبل الضريبة المضافة</td></tr>
+                 <tr><td>Total Discount Amount</td><td>{{total_discount_amount}}</td><td>الخصم</td></tr>
+                      <tr><td>Total Insurance Payment</td><td>{{total_patient_share}}</td><td>نسبة التحمل</td></tr>
+                       <tr><td>Total Paid Amount</td><td>0.00</td><td>المبلغ المدفوع</td></tr>
+                        <tr><td>Total Due Amount</td><td>{{total_net_claim}}</td><td>المبلغ المتبقي</td></tr>
+            </table>
+        </section>
+        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+    </div>
+</body>
