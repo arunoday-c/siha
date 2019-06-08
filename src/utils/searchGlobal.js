@@ -119,7 +119,7 @@ let algaehSearchConfig = (searchName, req) => {
         searchQuery:
           "select SQL_CALC_FOUND_ROWS PH.*, FPL.location_description as from_location, \
           TPL.location_description as to_location \
-          from hims_f_pharamcy_material_header PH, hims_d_pharmacy_location FPL, hims_d_pharmacy_location TPL \
+          from hims_f_pharmacy_transfer_header PH, hims_d_pharmacy_location FPL, hims_d_pharmacy_location TPL \
           where FPL.hims_d_pharmacy_location_id = PH.from_location_id and  \
           PH.to_location_id = TPL.hims_d_pharmacy_location_id ",
         orderBy: "hims_f_pharmacy_transfer_header_id desc"

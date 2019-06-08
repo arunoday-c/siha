@@ -560,6 +560,10 @@
       {
         "fieldName": "generic_name",
         "label": "Generic Name"
+      },
+      {
+        "fieldName": "barcode",
+        "label": "Generic Name"
       }
     ]
   },
