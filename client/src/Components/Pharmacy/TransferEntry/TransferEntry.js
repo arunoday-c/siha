@@ -235,7 +235,7 @@ class TransferEntry extends Component {
 
                 <div className="col  print_actions">
                   <span
-                    className="fas fa-search"
+                    className="fas fa-search globalSearchIconStyle"
                     onClick={RequisitionSearch.bind(this, this)}
                   />
                 </div>
