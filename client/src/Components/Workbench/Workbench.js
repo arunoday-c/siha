@@ -18,6 +18,7 @@ class Desk extends Component {
   }
 
   routeComponents() {
+    debugger;
     setCookie("ScreenName", Window.global["EHR-STD"]);
     this.setState(
       {

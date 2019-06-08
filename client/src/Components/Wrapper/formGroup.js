@@ -63,16 +63,53 @@ export default class FormGroup extends PureComponent {
     return hasSecurity;
   }
   onKeyPressHandler(evt) {
-    const charCode = evt.which ? evt.which : evt.keyCode;
-    if (
-      charCode > 31 &&
-      (charCode < 48 || charCode > 57) &&
-      this.state.decimal_separator_code !== charCode &&
-      this.state.thousand_separator_code !== charCode
-    ) {
+    try {
+      if (evt.keyCode === 69) return false;
+
+      if (!isNaN(evt.target.min) && !isNaN(evt.target.value)) {
+        if (parseFloat(evt.target.value) >= parseFloat(evt.target.min)) {
+          if (evt.target.max === "") return true;
+        } else {
+          if (evt.target.value !== "") evt.target.value = evt.target.min;
+          return false;
+        }
+      }
+      if (!isNaN(evt.target.max) && !isNaN(evt.target.value)) {
+        if (parseFloat(evt.target.value) <= parseFloat(evt.target.max)) {
+          return true;
+        } else {
+          if (evt.target.value !== "") evt.target.value = evt.target.max;
+          return false;
+        }
+      }
+      return true;
+    } catch (e) {
       return false;
     }
-    return true;
+
+    // if (
+    //   charCode > 31 &&
+    //   (charCode < 48 || charCode > 57) &&
+    //   this.state.decimal_separator_code !== charCode &&
+    //   this.state.thousand_separator_code !== charCode
+    // ) {
+    //   if (!isNaN(evt.target.min) && !isNaN(evt.target.value)) {
+    //     if (parseFloat(evt.target.value) >= parseFloat(evt.target.min)) {
+    //       return false;
+    //     } else {
+    //       return true;
+    //     }
+    //   }
+    //   if (!isNaN(evt.target.max) && !isNaN(evt.target.value)) {
+    //     if (parseFloat(evt.target.value) <= parseFloat(evt.target.max)) {
+    //       return false;
+    //     } else {
+    //       return true;
+    //     }
+    //   }
+    //   return false;
+    // }
+    // return true;
   }
 
   getKeyCode(decimal) {
@@ -108,13 +145,16 @@ export default class FormGroup extends PureComponent {
       console.error(e);
     }
   }
+
   componentDidMount() {
     const _hasSecurity = this.getSecurityCheck();
     if (_hasSecurity) {
       this.setState({ hasSecurity: true });
       return;
     }
-    if (this.props.textBox.number !== undefined) this.getKeyCode(false);
+    if (this.props.textBox.number !== undefined) {
+      this.getKeyCode(false);
+    }
     if (this.props.textBox.decimal !== undefined) this.getKeyCode(true);
     this.setState({
       value: this.props.textBox.value,
@@ -262,7 +302,8 @@ export default class FormGroup extends PureComponent {
             {..._disabled}
             {...this.props.textBox.others}
             {..._class}
-            onKeyPress={this.onKeyPressHandler.bind(this)}
+            pattern="\d+((\.|,)\d+)?"
+            onKeyUp={this.onKeyPressHandler.bind(this)}
           />
         );
       } else if (this.props.textBox.mask !== undefined) {

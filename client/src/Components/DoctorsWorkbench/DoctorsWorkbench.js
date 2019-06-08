@@ -6,8 +6,7 @@ import {
   cancelRequest,
   swalMessage
 } from "../../utils/algaehApiCall";
-import { setGlobal,
-  getLabelFromLanguage } from "../../utils/GlobalFunctions";
+import { setGlobal, getLabelFromLanguage } from "../../utils/GlobalFunctions";
 import Enumerable from "linq";
 import moment from "moment";
 import algaehLoader from "../Wrapper/fullPageLoader";
@@ -237,7 +236,7 @@ class DoctorsWorkbench extends Component {
                   value={moment(this.state.selectedHDate).format("YYYY-MM")}
                   max={moment(new Date()).format("YYYY-MM")}
                 />
-              {/* <button
+                {/* <button
                         onClick={() => {
                           this.setState({
                             activeDateHeader: new Date()
@@ -409,7 +408,8 @@ class DoctorsWorkbench extends Component {
                                     visit_id: data.visit_id,
                                     encounter_id: data.encounter_id,
                                     provider_id: data.provider_id,
-                                    chart_type: data.chart_type
+                                    chart_type: data.chart_type,
+                                    gender: data.gender
                                   });
                                   document.getElementById("ehr-router").click();
                                 }}

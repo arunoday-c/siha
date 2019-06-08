@@ -202,7 +202,10 @@ class Vitals extends Component {
       }
     });
   }
-
+  checkMax(uom) {
+    const max = uom === "%" ? { max: 100 } : {};
+    return max;
+  }
   render() {
     const _department_viatals =
       this.props.department_vitals === undefined ||
@@ -445,9 +448,10 @@ class Vitals extends Component {
                               textBox={{
                                 className: "txt-fld",
                                 name: _name,
+                                number: true,
                                 others: {
-                                  type: "number",
                                   min: 0,
+                                  ...this.checkMax(item.uom),
                                   disabled: _disable,
                                   vitalid: item.hims_d_vitals_header_id,
                                   formula_value: String(item.uom).trim(),

@@ -56,12 +56,13 @@ class BasicSubjective extends Component {
       isPregnancy: true,
       hims_f_episode_chief_complaint_id: null
     };
+    this.isMale = String(Window["global"]["gender"]) === "Male" ? true : false;
     this.chiefComplaintMaxLength = 250;
     this.significantSignsLength = 250;
     this.otherConditionMaxLength = 250;
     this.getMasters();
     this.getPatientEncounterDetails();
-
+    this.complaintType = [];
     SubjectiveHandler().getPatientChiefComplaints(this);
   }
 
@@ -97,7 +98,6 @@ class BasicSubjective extends Component {
     }
   }
   dropDownHandler(value) {
-    debugger;
     this.setState({
       [value.name]: value.value
     });
@@ -181,7 +181,6 @@ class BasicSubjective extends Component {
       }
     });
   }
-
   componentWillUnmount() {
     const err = Validations(this);
     if (!err) {
@@ -309,7 +308,6 @@ class BasicSubjective extends Component {
   }
 
   showVitals() {
-    debugger;
     const err = Validations(this);
     if (!err) {
       if (this.state.hims_f_episode_chief_complaint_id === null) {
@@ -362,7 +360,15 @@ class BasicSubjective extends Component {
       });
     }
   }
-
+  componentDidMount() {
+    if (this.isMale) {
+      this.complaintType = Enumerable.from(GlobalVariables.COMPLAINT_TYPE)
+        .where(w => w["value"] !== "PREGNANCY")
+        .toArray();
+    } else {
+      this.complaintType = GlobalVariables.COMPLAINT_TYPE;
+    }
+  }
   render() {
     const _diagnosis =
       this.props.patient_diagnosis !== undefined
@@ -486,7 +492,13 @@ class BasicSubjective extends Component {
                             >
                               {this.state.chief_complaint}
                             </textarea>
-                            <small className="float-right">Max Char. {maxCharactersLeft(this.chiefComplaintMaxLength,this.state.chief_complaint)}/{this.chiefComplaintMaxLength}
+                            <small className="float-right">
+                              Max Char.{" "}
+                              {maxCharactersLeft(
+                                this.chiefComplaintMaxLength,
+                                this.state.chief_complaint
+                              )}
+                              /{this.chiefComplaintMaxLength}
                             </small>
                           </div>
                         </div>
@@ -558,29 +570,31 @@ class BasicSubjective extends Component {
                               dataSource: {
                                 textField: "name",
                                 valueField: "value",
-                                data: GlobalVariables.COMPLAINT_TYPE
+                                data: this.complaintType
                               },
                               onChange: this.dropDownHandler.bind(this)
                             }}
                           />
 
-                          <AlagehFormGroup
-                            div={{ className: "col-4" }}
-                            label={{
-                              forceLabel: "LMP (Days)",
-                              isImp: false
-                            }}
-                            textBox={{
-                              className: "txt-fld",
-                              name: "lmp_days",
-                              number: true,
-                              value: this.state.lmp_days,
-                              disabled: this.state.isPregnancy,
-                              events: {
-                                onChange: this.ChangeEventHandler.bind(this)
-                              }
-                            }}
-                          />
+                          {this.isMale ? null : (
+                            <AlagehFormGroup
+                              div={{ className: "col-4" }}
+                              label={{
+                                forceLabel: "LMP (Days)",
+                                isImp: false
+                              }}
+                              textBox={{
+                                className: "txt-fld",
+                                name: "lmp_days",
+                                number: true,
+                                value: this.state.lmp_days,
+                                disabled: this.state.isPregnancy,
+                                events: {
+                                  onChange: this.ChangeEventHandler.bind(this)
+                                }
+                              }}
+                            />
+                          )}
                         </div>
                       </div>
                     </div>
@@ -605,7 +619,13 @@ class BasicSubjective extends Component {
                         >
                           {this.state.significant_signs}
                         </textarea>
-                        <small className="float-right">Max Char. {maxCharactersLeft(this.significantSignsLength, this.state.significant_signs)}/{this.significantSignsLength}
+                        <small className="float-right">
+                          Max Char.{" "}
+                          {maxCharactersLeft(
+                            this.significantSignsLength,
+                            this.state.significant_signs
+                          )}
+                          /{this.significantSignsLength}
                         </small>
                       </div>
                     </div>
@@ -631,7 +651,14 @@ class BasicSubjective extends Component {
                         >
                           {this.state.other_signs}
                         </textarea>
-                        <small className="float-right">Max Char. {maxCharactersLeft(this.otherConditionMaxLength,this.state.other_signs)}/ {this.otherConditionMaxLength}</small>
+                        <small className="float-right">
+                          Max Char.{" "}
+                          {maxCharactersLeft(
+                            this.otherConditionMaxLength,
+                            this.state.other_signs
+                          )}
+                          / {this.otherConditionMaxLength}
+                        </small>
                       </div>
                     </div>
                   </div>

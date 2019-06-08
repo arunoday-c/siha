@@ -153,6 +153,10 @@ class PointOfSale extends Component {
             {
               name: "hims_f_pharmacy_pos_header_id",
               value: this.state.hims_f_pharmacy_pos_header_id
+            },
+            {
+              name: "pos_customer_type",
+              value: this.state.pos_customer_type
             }
           ],
           outputFileType: "PDF"

@@ -42,8 +42,8 @@ const saveExaminationDiagrams = (req, res, next) => {
           _req.employee_id,
           _req.sub_department_id,
           input.header_datetime,
-          new Date(),
-          req.userIdentity.hospital_id
+          req.userIdentity.hospital_id,
+          new Date()
         ],
         printQuery: true
       })
