@@ -36,7 +36,8 @@ export default {
       sales_price: 0,
       addl_information: null,
       conversion_factor: 0,
-      convertEnable: false
+      convertEnable: false,
+      sfda_code: null
     };
     return output;
   }

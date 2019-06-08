@@ -411,7 +411,7 @@ module.exports = {
             MIU.stocking_uom, MIU.conversion_factor,IM.hims_d_item_master_id, IM.item_code, IM.item_description,\
              IM.structure_id, IM.generic_id, IM.category_id,IM.group_id, IM.form_id, IM.storage_id, \
              IM.item_uom_id, IM.purchase_uom_id, IM.sales_uom_id, IM.stocking_uom_id, IM.item_status, \
-             IM.service_id , IM.purchase_cost,IM.addl_information, IM.required_batchno_expiry from  \
+             IM.service_id , IM.purchase_cost,IM.addl_information, IM.required_batchno_expiry, IM.sfda_code from  \
              hims_d_item_master IM left join hims_m_item_uom MIU on IM.hims_d_item_master_id=MIU.item_master_id\
              and IM.record_status='A' and MIU.record_status='A' left join hims_d_pharmacy_uom PH  on  \
              MIU.uom_id=PH.hims_d_pharmacy_uom_id " +

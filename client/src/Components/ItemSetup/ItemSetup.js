@@ -182,6 +182,7 @@ class ItemSetup extends Component {
           purchase_cost: firstRecordSet.purchase_cost,
           addl_information: firstRecordSet.addl_information,
           required_batchno_expiry: firstRecordSet.required_batchno_expiry,
+          sfda_code: firstRecordSet.sfda_code,
           detail_item_uom:
             firstRecordSet.hims_m_item_uom_id === null ? [] : g.getSource()
         };
