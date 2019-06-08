@@ -4,7 +4,7 @@
   "description": "Algaeh Reporting tool",
   "main": "dist",
   "scripts": {
-    "report_server": "cross-env PORT=3018 NODE_ENV=development nodemon -w src --exec \"babel-node src/report_server.js \"",
+    "report_server": "cross-env PORT=3018 NODE_ENV=development nodemon -w src -w algaeh_report_tool --exec \"babel-node src/report_server.js \"",
     "build": "babel src -s -D -d dist ",
     "dev": "npm run report_server",
     "start": "cross-env PORT=3018 NODE_ENV=production pm2 start  -i 2 report_server.js"
