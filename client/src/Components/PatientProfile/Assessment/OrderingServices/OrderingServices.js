@@ -110,7 +110,6 @@ class OrderingServices extends Component {
       });
     }
 
-    debugger;
     if (
       this.props.serviceslist === undefined ||
       this.props.serviceslist.length === 0
@@ -226,7 +225,6 @@ class OrderingServices extends Component {
     );
   };
   render() {
-    debugger;
     const insurance_id = this.state.insurance_provider_id;
     return (
       <div className="hptl-phase1-ordering-services-form">
