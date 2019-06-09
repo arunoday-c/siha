@@ -362,8 +362,13 @@ export default class ExaminationDiagram extends Component {
                 });
             })
             .catch(error => {
+              debugger;
+              const errorI = error.request;
               swalMessage({
-                title: error.request.responseText,
+                title:
+                  errorI !== undefined
+                    ? error.responseText
+                    : JSON.stringify(errorI),
                 type: "error"
               });
             });
@@ -811,7 +816,7 @@ export default class ExaminationDiagram extends Component {
           <div className="row diagramList">
             {this.state.exittingDetails.map((item, index) => (
               <div className="col-12 eachDiagram" key={index}>
-                {/* <AlgaehFile
+                <AlgaehFile
                   name={"attach_" + index}
                   accept="image/*"
                   noImage={true}
@@ -821,12 +826,7 @@ export default class ExaminationDiagram extends Component {
                     destinationName: item.image,
                     fileType: "DepartmentImages"
                   }}
-                />*/}
-                {this.isHttps() ? (
-                  <img src={"https://" + this.createUrl(item.image)} />
-                ) : (
-                  <img src={"http://" + this.createUrl(item.image)} />
-                )}
+                />
                 <p>
                   {item.remarks}
                   <small>
