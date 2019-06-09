@@ -426,7 +426,7 @@ class RegistrationPatient extends Component {
 
                       Promise.all(_arrayImages).then(result => {
                         AlgaehLoader({ show: false });
-                        debugger;
+
                         $this.setState({
                           patient_code: response.data.records.patient_code,
                           bill_number: response.data.records.bill_number,
@@ -566,7 +566,7 @@ class RegistrationPatient extends Component {
 
                       Promise.all(_arrayImages).then(result => {
                         AlgaehLoader({ show: false });
-                        debugger;
+
                         $this.setState({
                           bill_number: response.data.records.bill_number,
                           receipt_number: response.data.records.receipt_number,
@@ -703,7 +703,25 @@ class RegistrationPatient extends Component {
       }
     });
   }
-
+  printBarCodeHandler(e) {
+    AlgaehReport({
+      report: {
+        fileName: "patientRegistrationBarcode",
+        barcode: {
+          parameter: "patient_code",
+          options: {
+            format: "",
+            lineColor: "#0aa",
+            width: 4,
+            height: 40
+          }
+        }
+      },
+      data: {
+        patient_code: this.state.patient_code
+      }
+    });
+  }
   //Render Page Start Here
 
   render() {
@@ -775,25 +793,7 @@ class RegistrationPatient extends Component {
               {
                 label: "Print Bar Code",
                 events: {
-                  onClick: () => {
-                    AlgaehReport({
-                      report: {
-                        fileName: "patientRegistrationBarcode",
-                        barcode: {
-                          parameter: "patient_code",
-                          options: {
-                            format: "",
-                            lineColor: "#0aa",
-                            width: 4,
-                            height: 40
-                          }
-                        }
-                      },
-                      data: {
-                        patient_code: this.state.patient_code
-                      }
-                    });
-                  }
+                  onClick: this.printBarCodeHandler.bind(this)
                 }
               },
 
@@ -801,7 +801,6 @@ class RegistrationPatient extends Component {
                 label: "ID Card",
                 events: {
                   onClick: () => {
-                    debugger;
                     generateIdCard(this, this);
                   }
                 }
@@ -815,7 +814,6 @@ class RegistrationPatient extends Component {
             value={{
               state: this.state,
               updateState: obj => {
-                debugger;
                 this.setState({ ...obj });
               }
             }}

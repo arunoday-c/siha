@@ -31,7 +31,7 @@ import { AlgaehActions } from "../../../../actions/algaehActions";
 import { getCookie } from "../../../../utils/algaehApiCall";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
-
+import _ from "lodash";
 class OrderingServices extends Component {
   constructor(props) {
     super(props);
@@ -110,7 +110,6 @@ class OrderingServices extends Component {
       });
     }
 
-    debugger;
     if (
       this.props.serviceslist === undefined ||
       this.props.serviceslist.length === 0
@@ -226,7 +225,6 @@ class OrderingServices extends Component {
     );
   };
   render() {
-    debugger;
     const insurance_id = this.state.insurance_provider_id;
     return (
       <div className="hptl-phase1-ordering-services-form">
@@ -271,19 +269,17 @@ class OrderingServices extends Component {
                   id="service_id_search"
                   template={result => {
                     return (
-                      <section className="resultSecStyles">
-                        <div className="row">
-                          <div className="col-8">
-                            <h4 className="title">{result.service_name}</h4>
-                            <h5>{result.service_type}</h5>
-                            <small>
-                              Covered: {result.covered === "Y" ? "Yes" : "No"}
-                              Pre Approval:
-                              {result.pre_approval === "Y" ? "Yes" : "No"}
-                            </small>
-                          </div>
+                        <div className="row resultSecStyles">
+                          <div className="col-9 padd-10">
+                            <h6 className="title">{_.startCase(_.toLower(result.service_name))} <span className="service_type">({_.startCase(_.toLower(result.service_type))})</span></h6>
+                            <p className="service_type">{_.startCase(_.toLower(result.service_type))}</p>
+                          
                         </div>
-                      </section>
+                        <div className="col-3  padd-10">  <span className="insCovered">Ins. Covered <span className={result.covered === "Y"  ? "yesStyle" : "noStyle"}>{result.covered === "Y" ? "Yes" : "No"}</span></span>
+                            <span  className="insPreApp">Pre. Approval
+                              <span className={result.pre_approval === "Y" ? "noStyle" : "yesStyle" } > {result.pre_approval === "Y" ? "Yes" : "No"}</span>
+                          </span></div>
+                      </div>
                     );
                   }}
                   name="s_service"

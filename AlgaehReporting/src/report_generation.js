@@ -75,6 +75,10 @@ hbs.registerHelper("dateTime", function(value, type) {
     return "";
   }
   if (value != "") {
+    const dt = value instanceof Date && !isNaN(value);
+    if (!dt) {
+      return value;
+    }
     if (type == "date") {
       return moment(value).format("DD-MM-YYYY");
     } else {

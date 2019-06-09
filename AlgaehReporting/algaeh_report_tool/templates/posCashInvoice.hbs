@@ -59,13 +59,13 @@
             </table>  </table>  <table class="tableTotal">
               <tr><td>Total Amount before VAT</td><td>{{total_gross_amount}}</td><td>الإجمالي قبل الضريبة المضافة</td></tr>
                  <tr><td>Discount</td><td>{{total_discount_amount}}</td><td>الخصم</td></tr>
-                  <tr><td>VAT Amount 5%</td><td>{{total_company_tax}}</td><td>قيمة الضريبة المضافة %5</td></tr>
-                   <tr><td>Client VAT Amount</td><td>{{total_patient_tax}}</td><td>الضريبة المضافة على العميل</td></tr>
-                    <tr><td>Company VAT amount</td><td>{{total_company_tax}}</td><td>الضريبة المضافة على الشركة</td></tr>
-                     <tr><td>Net Total Including VAT</td><td>{{total_net_claim}}</td><td>الإجمالي بعد الضريبة المضافة</td></tr>
-                      <tr><td>Co Payment</td><td>{{total_patient_share}}</td><td>نسبة التحمل</td></tr>
+                  <tr><td>VAT Amount 5%</td><td>{{header.net_tax}}</td><td>قيمة الضريبة المضافة %5</td></tr>
+                   <tr><td>Client VAT Amount</td><td>{{header.patient_tax}}</td><td>الضريبة المضافة على العميل</td></tr>
+                    <tr><td>Company VAT amount</td><td>{{header.company_tax}}</td><td>الضريبة المضافة على الشركة</td></tr>
+                     <tr><td>Net Total Including VAT</td><td>{{header.net_total}}</td><td>الإجمالي بعد الضريبة المضافة</td></tr>
+                      <tr><td>Co Payment</td><td>{{header.patient_payable}}</td><td>نسبة التحمل</td></tr>
                        <tr><td>Paid Amount</td><td>0.00</td><td>المبلغ المدفوع</td></tr>
-                        <tr><td>Due Amount</td><td>{{total_net_claim}}</td><td>المبلغ المتبقي</td></tr>
+                        <tr><td>Due Amount</td><td>{{header.due_amout}}</td><td>المبلغ المتبقي</td></tr>
             </table>
         </section>
         {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}

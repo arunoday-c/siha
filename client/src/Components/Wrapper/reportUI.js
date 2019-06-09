@@ -211,56 +211,133 @@ export default class ReportUI extends Component {
       alertTypeIcon: "warning",
       pageState: this,
       onSuccess: that => {
-        const element = document.getElementById("report_generation_interface");
-        let parameters = [];
-        element.querySelectorAll("input").forEach(item => {
-          if (item.name !== undefined) {
-            let type = item.getAttribute("data_role");
-            let data =
-              type === "dropdownlist"
-                ? item.getAttribute("referencevalue")
-                : item.value;
+        if (
+          that.props.options !== undefined &&
+          that.props.options.report !== undefined &&
+          that.props.options.report.requireIframe === true
+        ) {
+          const element = document.getElementById(
+            "report_generation_interface"
+          );
+          let parameters = [];
+          element.querySelectorAll("input").forEach(item => {
+            if (item.name !== undefined) {
+              let type = item.getAttribute("data_role");
+              let data =
+                type === "dropdownlist"
+                  ? item.getAttribute("referencevalue")
+                  : item.value;
 
-            parameters.push({
-              name: item.name,
-              value: data
-            });
-          }
-        });
-        const reportProperties = that.props.options.report;
+              parameters.push({
+                name: item.name,
+                value: data
+              });
+            }
+          });
+          const reportProperties = that.props.options.report;
 
-        this.setState(
-          {
-            buttonDisable: true
-          },
-          () => {
-            algaehApiCall({
-              uri: "/report",
-              module: "reports",
-              method: "GET",
-              headers: {
-                Accept: "blob"
-              },
-              others: { responseType: "blob" },
-              data: {
-                report: {
-                  ...reportProperties,
-                  reportParams: parameters
+          this.setState(
+            {
+              buttonDisable: true
+            },
+            () => {
+              algaehApiCall({
+                uri: "/report",
+                module: "reports",
+                method: "GET",
+                headers: {
+                  Accept: "blob"
+                },
+                others: { responseType: "blob" },
+                data: {
+                  report: {
+                    ...reportProperties,
+                    reportParams: parameters
+                  }
+                },
+                onSuccess: response => {
+                  debugger;
+                  const url = URL.createObjectURL(response.data);
+
+                  that.setState({
+                    _htmlString: url,
+                    buttonDisable: false,
+                    report_name: reportProperties.reportName
+                  });
                 }
-              },
-              onSuccess: response => {
-                debugger;
-                const url = URL.createObjectURL(response.data);
+              });
+            }
+          );
+        } else {
+          const _reportQuery =
+            this.state.reportQuery !== undefined
+              ? this.state.reportQuery
+              : this.props.options.report.fileName;
 
-                that.setState({
-                  _htmlString: url,
-                  buttonDisable: false,
-                  report_name: reportProperties.reportName
+          let inputs = { ...this.state.parameterCollection };
+
+          inputs["reportName"] = _reportQuery;
+          let querString =
+            inputs.sub_department_id !== undefined
+              ? "S.sub_department_id=" + inputs.sub_department_id
+              : "";
+
+          const that = this;
+          let options = { ...this.props.options, ...{ getRaw: true } };
+
+          const uri =
+            typeof options.report.reportUri === "string"
+              ? options.report.reportUri
+              : "/generateReport/getReport";
+
+          const _module =
+            typeof options.report.module === "string"
+              ? { module: options.report.module }
+              : {};
+
+          algaehApiCall({
+            uri: uri,
+            data: inputs,
+            method: "GET",
+            inputs: querString,
+            ..._module,
+            onSuccess: response => {
+              let buttonDisable = true;
+              if (response.data.success === true) {
+                debugger;
+                new Promise((resolve, reject) => {
+                  resolve(response.data.records);
+                }).then(data => {
+                  debugger;
+                  if (Array.isArray(data)) {
+                    if (data.length > 0) {
+                      buttonDisable = false;
+                    }
+                  } else if (data !== null || data !== undefined) {
+                    buttonDisable = false;
+                  }
+                  options.inputData = that.state.parameterCollection;
+                  options.data = data;
+                  let _optionsFetch = options;
+
+                  let _htm = accessReport(_optionsFetch);
+                  let _hasTable =
+                    _htm !== undefined
+                      ? String(_htm).indexOf("algaeh-report-table") > -1
+                        ? true
+                        : false
+                      : false;
+
+                  that.setState({
+                    _htmlString: _htm,
+                    hasTable: _hasTable,
+                    buttonDisable: buttonDisable
+                  });
                 });
               }
-            });
-          }
-        );
+            }
+          });
+        }
       }
     });
   }
@@ -576,7 +653,7 @@ export default class ReportUI extends Component {
 
   render() {
     const _isBarcodeReport = this.props.isbarcodereport;
-    
+
     if (this.state.hasError) {
       return null;
     }
@@ -646,17 +723,22 @@ export default class ReportUI extends Component {
             >
               {/*}*/}
               {console.log("this.props", this.props)}
-{this.props.options.report !==undefined && this.props.options.report.requireIframe ===true?(<iframe
-                src={this.state._htmlString}
-                width="100%"
-                height="100%"
-                className="reportPDFIframe"
-              />):(<div
-                dangerouslySetInnerHTML={{
-                  __html: this.state._htmlString
-                }}
-              />)}
-              
+              {this.props.options !== undefined &&
+              this.props.options.report !== undefined &&
+              this.props.options.report.requireIframe === true ? (
+                <iframe
+                  src={this.state._htmlString}
+                  width="100%"
+                  height="100%"
+                  className="reportPDFIframe"
+                />
+              ) : (
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: this.state._htmlString
+                  }}
+                />
+              )}
 
               <div className="col-lg-12">
                 <div className="row">
