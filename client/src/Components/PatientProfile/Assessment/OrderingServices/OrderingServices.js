@@ -276,7 +276,6 @@ class OrderingServices extends Component {
                           <div className="col-8">
                             <h4 className="title">{result.service_name}</h4>
                             <h5>{result.service_type}</h5>
-
                             <small>
                               Covered: {result.covered === "Y" ? "Yes" : "No"}
                               Pre Approval:
@@ -323,7 +322,7 @@ class OrderingServices extends Component {
                 <div className="col-lg-3">
                   <button
                     className="btn btn-primary"
-                    style={{ marginTop: "24px" }}
+                    style={{ marginTop:19 }}
                     onClick={ProcessService.bind(this, this)}
                     disabled={this.state.addNewService}
                   >
