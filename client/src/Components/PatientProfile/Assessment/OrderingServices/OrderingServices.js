@@ -31,7 +31,7 @@ import { AlgaehActions } from "../../../../actions/algaehActions";
 import { getCookie } from "../../../../utils/algaehApiCall";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
-
+import _ from "lodash";
 class OrderingServices extends Component {
   constructor(props) {
     super(props);
@@ -274,14 +274,28 @@ class OrderingServices extends Component {
                       <section className="resultSecStyles">
                         <div className="row">
                           <div className="col-8">
-                            <h4 className="title">{result.service_name}</h4>
-                            <h5>{result.service_type}</h5>
-
-                            <small>
-                              Covered: {result.covered === "Y" ? "Yes" : "No"}
-                              Pre Approval:
-                              {result.pre_approval === "Y" ? "Yes" : "No"}
-                            </small>
+                            <h4 className="title">
+                              {_.startCase(_.toLower(result.service_name))}
+                            </h4>
+                            <div className="clearfix" />
+                            <h6>
+                              {_.startCase(_.toLower(result.service_type))}
+                              <small>
+                                Covered: {result.covered === "Y" ? "Yes" : "No"}
+                                <div className="clearfix" />
+                                Pre Approval:
+                                <span
+                                  style={{
+                                    color:
+                                      result.pre_approval === "y"
+                                        ? "orange"
+                                        : ""
+                                  }}
+                                >
+                                  {result.pre_approval === "Y" ? "Yes" : "No"}
+                                </span>
+                              </small>
+                            </h6>
                           </div>
                         </div>
                       </section>

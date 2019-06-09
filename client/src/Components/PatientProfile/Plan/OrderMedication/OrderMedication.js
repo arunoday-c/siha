@@ -246,6 +246,7 @@ class OrderMedication extends Component {
                   forceLabel: "Dosage"
                 }}
                 textBox={{
+                  number: true,
                   className: "txt-fld",
                   name: "dosage",
                   value: this.state.dosage,
@@ -253,6 +254,7 @@ class OrderMedication extends Component {
                     onChange: numberhandle.bind(this, this)
                   },
                   others: {
+                    min: 1,
                     onFocus: e => {
                       e.target.oldvalue = e.target.value;
                     }
