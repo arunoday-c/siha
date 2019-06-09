@@ -27,49 +27,49 @@
   margin-top: 0;
   font-size: 1.3rem; }
 
-.yesStyle {
+.customServiceSearch .yesStyle {
   background: #00a796;
   color: #fff;
   text-transform: initial; }
 
-.noStyle {
+.customServiceSearch .noStyle {
   background: #f58220;
   color: #fff;
   text-transform: initial; }
 
-.padd-10 {
+.customServiceSearch .padd-10 {
   padding-left: 10px;
   padding-right: 10px; }
 
-.results {
+.customServiceSearch .results {
   width: 200% !important;
   max-height: 65vh !important; }
 
-.result {
+.customServiceSearch .result {
   padding: 0.4rem 1rem !important; }
 
-.title {
+.customServiceSearch .title {
   font-size: 0.9rem; }
 
-.service_type {
+.customServiceSearch .service_type {
   font-size: 0.8rem;
   margin: 0; }
 
-.insCovered,
-.insPreApp {
+.customServiceSearch .insCovered,
+.customServiceSearch .insPreApp {
   font-weight: normal;
   font-style: italic;
   font-size: 0.7rem;
   margin-bottom: 3px;
   float: right;
   text-align: right; }
-  .insCovered span,
-  .insPreApp span {
+  .customServiceSearch .insCovered span,
+  .customServiceSearch .insPreApp span {
     font-weight: bold;
     font-size: 0.7rem;
     padding: 0 5px;
     margin-left: 2px;
     border-radius: 15px; }
 
-.insPreApp {
+.customServiceSearch .insPreApp {
   margin-bottom: 0; }

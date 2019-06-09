@@ -263,7 +263,7 @@ class OrderingServices extends Component {
                 */}
 
                 <AlgaehAutoSearch
-                  div={{ className: "col-3" }}
+                  div={{ className: "col-3 customServiceSearch" }}
                   label={{ forceLabel: "Select Service" }}
                   title="Search Services"
                   id="service_id_search"
