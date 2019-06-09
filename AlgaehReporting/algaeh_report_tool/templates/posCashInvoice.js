@@ -93,9 +93,11 @@ H.hims_f_pharmacy_pos_header_id=?;";
               parseFloat(s.patient_payable)
             )
           };
+          mysql.releaseConnection();
           resolve(result);
         })
         .catch(error => {
+          mysql.releaseConnection();
           reject(error);
         });
     } catch (e) {

@@ -32,7 +32,7 @@ export default [
         subitem: "Doctor and Status wise report",
         reportName: "departmentDoctorConsumption",
         pageSize: "A4",
-        requireIframe:true,
+        requireIframe: true,
         pageOrentation: "landscap", //"portrait",
         reportParameters: [
           {
@@ -102,7 +102,7 @@ export default [
               data: undefined
             }
           },
-        {
+          {
             type: "dropdown",
             name: "status_id",
             initialLoad: true,
@@ -117,8 +117,7 @@ export default [
               valueField: "hims_d_appointment_status_id",
               data: undefined
             }
-          },
-         
+          }
         ]
       },
       {
@@ -1417,7 +1416,7 @@ export default [
         subitem: "Items Consumption Report",
         reportName: "departmentDoctorConsumption",
         pageSize: "A4",
-        requireIframe:true,
+        requireIframe: true,
         pageOrentation: "landscap", //"portrait",
         reportParameters: [
           {
@@ -1487,7 +1486,7 @@ export default [
               data: undefined
             }
           },
-        {
+          {
             type: "dropdown",
             name: "status_id",
             initialLoad: true,
@@ -1576,7 +1575,7 @@ export default [
               data: undefined
             }
           },
-        {
+          {
             type: "dropdown",
             name: "status_id",
             initialLoad: true,
@@ -1591,7 +1590,8 @@ export default [
               valueField: "hims_d_appointment_status_id",
               data: undefined
             }
-          }]
+          }
+        ]
         //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
       },
       {
@@ -1621,7 +1621,7 @@ export default [
         subitem: "List of Receipts",
         template_name: "SalesReciptList",
         reportParameters: [
-{
+          {
             type: "date",
             name: "from_date",
             isImp: true,
@@ -1639,15 +1639,16 @@ export default [
               minDate: null
             }
           }
-          
-          
         ]
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
         subitem: "List of Sales Invoice",
+        reportName: "SalesInvoiceList",
         template_name: "SalesInvoiceList",
-        reportParameters: [{
+        requireIframe: true,
+        reportParameters: [
+          {
             type: "date",
             name: "from_date",
             isImp: true,
@@ -1664,7 +1665,8 @@ export default [
               maxDate: new Date(),
               minDate: null
             }
-          }]
+          }
+        ]
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {

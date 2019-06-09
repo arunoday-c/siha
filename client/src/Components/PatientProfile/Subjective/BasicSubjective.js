@@ -57,7 +57,7 @@ class BasicSubjective extends Component {
       hims_f_episode_chief_complaint_id: null
     };
     this.isMale = String(Window["global"]["gender"]) === "Male" ? true : false;
-    this.chiefComplaintMaxLength = 250;
+    this.chiefComplaintMaxLength = 200;
     this.significantSignsLength = 250;
     this.otherConditionMaxLength = 250;
     this.getMasters();
