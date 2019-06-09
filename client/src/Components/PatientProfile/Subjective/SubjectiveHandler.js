@@ -10,12 +10,16 @@ import { setGlobal } from "../../../utils/GlobalFunctions";
 export default function SubjectiveHandler() {
   return {
     dataLevelUpdate: ($this, e) => {
+      debugger;
       e = e.name === undefined ? e.currentTarget : e;
       let name = e.name || e.target.name;
       let value = "";
       // row[name] = value;
       if (name === "duration") {
         value = parseFloat(e.value);
+        if (value < 0) {
+          return;
+        }
         const _duration_Date_Interval =
           $this.state.interval !== null
             ? durationToDateAndInterval(value, $this.state.interval)

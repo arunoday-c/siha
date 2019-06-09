@@ -15,6 +15,7 @@ import addNew from "../../../assets/images/add-new-diagram.jpg";
 import { swalMessage } from "../../../utils/algaehApiCall";
 import AlgaehFile from "../../Wrapper/algaehFileUpload";
 import moment from "moment";
+import Swal from "sweetalert2";
 export default class ExaminationDiagram extends Component {
   constructor(props) {
     super(props);
@@ -151,6 +152,7 @@ export default class ExaminationDiagram extends Component {
                 fileType: "DepartmentImages"
               }}
             />
+
             <span>{item.diagram_desc}</span>
             <span>{item.last_update}</span>
           </div>
@@ -193,8 +195,7 @@ export default class ExaminationDiagram extends Component {
     });
   }
   newDiagramLabelClickHandler(item, data) {
-    
-    if(item !==undefined){
+    if (item !== undefined) {
       if (item.currentTarget.getAttribute("image_desc") !== "Blank") {
         const _src = item.currentTarget.querySelector("img").src;
         this.setState({
@@ -202,7 +203,6 @@ export default class ExaminationDiagram extends Component {
         });
       }
     }
-    
   }
   newDiagramHandler(item) {
     if (
@@ -509,40 +509,73 @@ export default class ExaminationDiagram extends Component {
     }
   }
   onClickDeleteDiagram(item, e) {
-    examination()
-      .deleteDetaiDiagram({
-        examination_diagrams_id: item.examination_diagrams_id,
-        unique: item.image
-      })
-      .then(reu => {
+    debugger;
+    const image = e.target.offsetParent.querySelector("img");
+    image.style.width = "100px";
+    image.style.height = "100px";
+    Swal({
+      title: "Are you sure you want to delete this diagram?",
+      //  type: "warning",
+      html: image.outerHTML,
+      buttons: true,
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(confirm => {
+      if (confirm.value) {
         examination()
-          .getExistingDetail(item.hims_f_examination_diagram_header_id)
-          .then(result => {
-            this.setState(
-              {
-                exittingDetails: result,
-                showUpload: true,
-                showCam: true,
-                showSave: true
-              },
-              () => {
-                swalMessage({
-                  title: reu,
-                  type: "success"
-                });
-              }
-            );
+          .deleteDetaiDiagram({
+            examination_diagrams_id: item.examination_diagrams_id,
+            unique: item.image
+          })
+          .then(reu => {
+            examination()
+              .getExistingDetail(item.hims_f_examination_diagram_header_id)
+              .then(result => {
+                this.setState(
+                  {
+                    exittingDetails: result,
+                    showUpload: true,
+                    showCam: true,
+                    showSave: true
+                  },
+                  () => {
+                    swalMessage({
+                      title: reu,
+                      type: "success"
+                    });
+                  }
+                );
+              })
+              .catch(error => {
+                console.error(error);
+              });
           })
           .catch(error => {
-            console.error(error);
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
           });
-      })
-      .catch(error => {
-        swalMessage({
-          title: error.message,
-          type: "error"
-        });
-      });
+      }
+    });
+  }
+  isHttps() {
+    if (window.location.protocol === "https:") {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  createUrl(destPath) {
+    // window.location.protocol + "//";
+    const url =
+      window.location.hostname +
+      ":3006/api/v1/Document/get?fileType=DepartmentImages&destinationName=" +
+      destPath;
+    return url;
   }
   render() {
     const _disable =
@@ -778,7 +811,7 @@ export default class ExaminationDiagram extends Component {
           <div className="row diagramList">
             {this.state.exittingDetails.map((item, index) => (
               <div className="col-12 eachDiagram" key={index}>
-                <AlgaehFile
+                {/* <AlgaehFile
                   name={"attach_" + index}
                   accept="image/*"
                   noImage={true}
@@ -788,7 +821,12 @@ export default class ExaminationDiagram extends Component {
                     destinationName: item.image,
                     fileType: "DepartmentImages"
                   }}
-                />
+                />*/}
+                {this.isHttps() ? (
+                  <img src={"https://" + this.createUrl(item.image)} />
+                ) : (
+                  <img src={"http://" + this.createUrl(item.image)} />
+                )}
                 <p>
                   {item.remarks}
                   <small>

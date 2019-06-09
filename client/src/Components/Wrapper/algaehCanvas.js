@@ -9,6 +9,7 @@ import icond from "tui-image-editor/dist/svg/icon-d.svg";
 import "./imageEditor.css";
 import Webcam from "react-webcam";
 import moment from "moment";
+import { swalMessage } from "../../utils/algaehApiCall";
 export default class AlgaehCanvas extends Component {
   constructor(props) {
     super(props);
@@ -135,6 +136,14 @@ export default class AlgaehCanvas extends Component {
   }
 
   loadImagaing(e) {
+    if (this.editor.getInstance().toDataURL() === "data:,") {
+      swalMessage({
+        type: "warning",
+        title: "no image to process..!"
+      });
+      return;
+    }
+
     if (typeof this.props.onSave === "function") {
       this.props.onSave({
         image: this.editor.getInstance().toDataURL(),
