@@ -101,7 +101,8 @@ const getSampleCollectionDetails = $this => {
   if ($this.state.status !== null) {
     inputobj.status = $this.state.status;
   }
-  if ($this.state.proiorty !== null) {
+
+  if ($this.state.proiorty !== null && $this.state.proiorty !== undefined) {
     inputobj.test_type = $this.state.proiorty;
   }
 

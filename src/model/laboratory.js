@@ -159,7 +159,7 @@ let insertLadOrderedServices = (req, res, next) => {
     connection.query(
       "INSERT INTO hims_f_lab_order(" +
         insurtColumns.join(",") +
-        ",created_by,updated_by)  VALUES ?",
+        ",created_by,updated_by,hospital_id)  VALUES ?",
       [
         jsonArrayToObject({
           sampleInputObject: insurtColumns,
@@ -167,7 +167,8 @@ let insertLadOrderedServices = (req, res, next) => {
           req: req,
           newFieldToInsert: [
             req.userIdentity.algaeh_d_app_user_id,
-            req.userIdentity.algaeh_d_app_user_id
+            req.userIdentity.algaeh_d_app_user_id,
+            req.userIdentity["x-branch"]
           ]
         })
       ],
