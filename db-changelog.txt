@@ -1,0 +1,11 @@
+Change Log on 10-06-2019
+-------------------------
+#issue no : #251.
+Fix :
+ALTER TABLE `hims_f_invoice_header`
+CHANGE COLUMN `policy_number` `policy_number` VARCHAR(100) NULL DEFAULT NULL ;
+
+#issue no :#213.
+Fix :
+ALTER TABLE `hims_d_lab_container`
+CHANGE COLUMN `container_id` `container_id` INT(11) NULL DEFAULT NULL ;
