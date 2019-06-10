@@ -126,7 +126,7 @@ const ProcessService = ($this, e) => {
 
               swal({
                 title:
-                  "With this service Approval Limit exceed. Do you want to proceed, If proceeds all the selected services will be pro aproved and will be as cash.",
+                  "With this service Approval Limit exceed. Do you want to proceed, If proceeds all the selected services will be pre aproved and will be as cash.",
                 type: "warning",
                 buttons: true
               }).then(willProceed => {
@@ -425,14 +425,43 @@ const SaveOrdersServices = ($this, e) => {
     method: "POST",
     onSuccess: response => {
       if (response.data.success) {
-        $this.setState(
-          {
-            addNew: true
-          },
-          () => {
-            $this.props.onClose && $this.props.onClose(e);
-          }
-        );
+        $this.setState({
+          s_service_type: null,
+          s_service: null,
+          selectedLang: "en",
+          patient_id: Window.global["current_patient"],
+          visit_id: Window.global["visit_id"],
+          doctor_id: null,
+          vat_applicable: $this.props.vat_applicable,
+
+          orderservicesdata: [],
+          approval_amt: 0,
+          preapp_limit_amount: 0,
+          preserviceInput: [],
+          dummy_company_payble: 0,
+          approval_limit_yesno: "N",
+          insurance_service_name: null,
+          saved: true,
+
+          insured: "N",
+          primary_insurance_provider_id: null,
+          primary_network_office_id: null,
+          primary_network_id: null,
+          sec_insured: "N",
+          secondary_insurance_provider_id: null,
+          secondary_network_id: null,
+          secondary_network_office_id: null,
+          test_type: "R",
+          addNew: false,
+          patient_payable: null,
+          company_payble: null,
+          sec_company_paybale: null,
+          sub_total_amount: null,
+          discount_amount: null,
+          net_total: null
+        });
+        $this.props.onClose && $this.props.onClose(e);
+
         swalMessage({
           title: "Ordered Successfully...",
           type: "success"
