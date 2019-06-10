@@ -273,19 +273,18 @@ const getCtrlCode = ($this, docNumber) => {
       mappingName: "invoiceGen"
     },
     afterSuccess: data => {
-      debugger
       data.generateVoice = false;
       data.clearEnable = false;
-      if(data.insurance_provider_id !== null){
-        data.select_invoice="CD"
+      if (data.insurance_provider_id !== null) {
+        data.select_invoice = "CD";
 
-        data.creidt_invoice= true
-        data.cash_invoice= false
-      }else{
-        data.select_invoice="CH"
+        data.creidt_invoice = true;
+        data.cash_invoice = false;
+      } else {
+        data.select_invoice = "CH";
 
-        data.creidt_invoice= false
-        data.cash_invoice= true
+        data.creidt_invoice = false;
+        data.cash_invoice = true;
       }
       $this.setState(data);
       AlgaehLoader({ show: false });
