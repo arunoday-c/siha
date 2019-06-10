@@ -521,6 +521,23 @@ class BasicSubjective extends Component {
                             value={this.state.onset_date}
                           />
 
+
+                          <AlagehAutoComplete
+                            div={{ className: "col-4" }}
+                            label={{ forceLabel: "Interval", isImp: false }}
+                            selector={{
+                              name: "interval",
+                              className: "select-fld",
+                              value: this.state.interval,
+                              dataSource: {
+                                textField: "name",
+                                valueField: "value",
+                                data: GlobalVariables.PAIN_DURATION
+                              },
+                              onChange: this.dataLevelUpdate.bind(this)
+                            }}
+                          />
+
                           <AlagehFormGroup
                             div={{ className: "col-4" }}
                             label={{
@@ -540,23 +557,6 @@ class BasicSubjective extends Component {
                               }
                             }}
                           />
-
-                          <AlagehAutoComplete
-                            div={{ className: "col-4" }}
-                            label={{ forceLabel: "Interval", isImp: false }}
-                            selector={{
-                              name: "interval",
-                              className: "select-fld",
-                              value: this.state.interval,
-                              dataSource: {
-                                textField: "name",
-                                valueField: "value",
-                                data: GlobalVariables.PAIN_DURATION
-                              },
-                              onChange: this.dataLevelUpdate.bind(this)
-                            }}
-                          />
-
                           <AlagehAutoComplete
                             div={{ className: "col-4" }}
                             label={{

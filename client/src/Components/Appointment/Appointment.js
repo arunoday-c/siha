@@ -1387,7 +1387,8 @@ class Appointment extends PureComponent {
                               </span>
                             </li>
                           ))
-                        : null}
+                          : null}
+                         <li onClick={this.openEditModal.bind(this,patient,data)}><span>Print App. Slip</span></li>
                     </ul>
                   </div>
                 </div>
