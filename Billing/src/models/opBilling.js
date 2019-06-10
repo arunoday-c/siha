@@ -137,6 +137,8 @@ module.exports = {
       const utilities = new algaehUtilities();
       utilities.logger().log("updateOrderedServicesBilled: ");
 
+      utilities.logger().log("OrderServices: ", req.body.billdetails);
+
       let OrderServices = new LINQ(req.body.billdetails)
         .Where(w => w.ordered_services_id != null)
         .Select(s => {
