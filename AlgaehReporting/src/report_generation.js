@@ -249,6 +249,8 @@ module.exports = {
         })
         .then(data => {
           _inputParam["hospital_id"] = req.userIdentity["hospital_id"];
+
+          // console.log("input:", _inputParam);
           const _reportCount = data[0].length;
           if (_reportCount > 0) {
             let _reportOutput = [];
@@ -265,6 +267,9 @@ module.exports = {
                 );
                 if (_params != undefined) {
                   _value.push(_params.value);
+                }
+                if (_inputOrders[i] == "hospital_id") {
+                  _value.push(_inputParam["hospital_id"]);
                 }
               }
               let queryObject = {

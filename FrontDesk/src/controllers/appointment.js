@@ -25,7 +25,8 @@ import {
   getPatientAppointment,
   getEmployeeServiceID,
   cancelPatientAppointment,
-  deleteSchedule
+  deleteSchedule,
+  getAppointmentSlip
 } from "../models/appointment";
 
 export default () => {
@@ -145,10 +146,17 @@ export default () => {
     "/getDoctorScheduleDateWise",
     getDoctorScheduleDateWise,
     (req, res, next) => {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: true,
-        records: req.records
-      });
+      if (req.records.invalid_input == true) {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: false,
+          records: req.records
+        });
+      } else {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: true,
+          records: req.records
+        });
+      }
     }
   );
   api.get(
@@ -267,5 +275,22 @@ export default () => {
       records: req.records
     });
   });
+
+  // created by irfan :to add Appointment schedule
+  api.get("/getAppointmentSlip", getAppointmentSlip, (req, res, next) => {
+    let result = req.records;
+    if (result.invalid_input == true) {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: false,
+        records: result
+      });
+    } else {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: result
+      });
+    }
+  });
+
   return api;
 };
