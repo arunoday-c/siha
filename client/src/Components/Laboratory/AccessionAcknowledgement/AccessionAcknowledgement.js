@@ -52,7 +52,8 @@ class AccessionAcknowledgement extends Component {
       reject_popup: false,
       selectedRow: {},
       remarks: "",
-      proiorty: null
+      proiorty: null,
+      status: null
     };
   }
 
@@ -107,7 +108,7 @@ class AccessionAcknowledgement extends Component {
            forceLabel: "Enter Label Here",
           isImp: false
             }}
-           textBox={{ 
+           textBox={{
           className: "txt-fld",
           name: "remarks" ,
           value: this.state.remarks,

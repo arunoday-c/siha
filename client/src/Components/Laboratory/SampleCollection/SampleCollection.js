@@ -48,7 +48,8 @@ class SampleCollection extends Component {
       sample_collection: [],
       selected_patient: null,
       status: null,
-      isOpen: false
+      isOpen: false,
+      proiorty: null
     };
   }
 

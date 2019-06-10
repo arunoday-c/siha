@@ -55,7 +55,8 @@ class RadScheduledList extends Component {
       isOpen: false,
       resultEntry: false,
       selectedPatient: {},
-      proiorty: null
+      proiorty: null,
+      status: null
     };
   }
 

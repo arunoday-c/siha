@@ -48,7 +48,9 @@ class ResultEntryList extends Component {
       patient_id: null,
       sample_collection: [],
       selected_patient: null,
-      isOpen: false
+      isOpen: false,
+      proiorty: null,
+      status: null
     };
   }
 
