@@ -566,6 +566,7 @@ class AppointmentStatus extends Component {
                   data: this.state.appointmentStatus
                 }}
                 isEditable={this.state.isEditable}
+                filter={true}
                 paging={{ page: 0, rowsPerPage: 10 }}
                 events={{
                   onEdit: () => {},

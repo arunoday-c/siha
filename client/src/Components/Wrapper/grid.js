@@ -74,6 +74,9 @@ class DataGrid extends Component {
     if (row[id] === undefined || row[id] === null) return false;
     if (typeof row[id] === "object") {
       const _value = row[id].props.children;
+      if (_value === undefined) {
+        return false;
+      }
       return row[id] !== undefined
         ? String(_value.toString().toLowerCase()).startsWith(
             filter.value.toLowerCase()
