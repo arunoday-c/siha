@@ -470,7 +470,7 @@ const SaveOrdersServices = ($this, e) => {
                   patient_id: Window.global["current_patient"],
                   visit_id: Window.global["visit_id"],
                   doctor_id: null,
-                  vat_applicable: this.props.vat_applicable,
+                  vat_applicable: $this.props.vat_applicable,
 
                   orderservicesdata: [],
                   approval_amt: 0,
@@ -501,7 +501,7 @@ const SaveOrdersServices = ($this, e) => {
                   itemchargable: false
                 },
                 () => {
-                  $this.props.onClose && this.props.onClose(e);
+                  $this.props.onClose && $this.props.onClose(e);
                 }
               );
             }
