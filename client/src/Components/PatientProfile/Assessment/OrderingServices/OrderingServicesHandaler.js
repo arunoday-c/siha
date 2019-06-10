@@ -126,7 +126,7 @@ const ProcessService = ($this, e) => {
 
               swal({
                 title:
-                  "With this service Approval Limit exceed. Do you want to proceed, If proceeds all the selected services will be pro aproved and will be as cash.",
+                  "With this service Approval Limit exceed. Do you want to proceed, If proceeds all the selected services will be pre aproved and will be as cash.",
                 type: "warning",
                 buttons: true
               }).then(willProceed => {
