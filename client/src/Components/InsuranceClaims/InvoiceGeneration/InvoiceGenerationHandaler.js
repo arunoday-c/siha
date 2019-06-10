@@ -273,7 +273,6 @@ const getCtrlCode = ($this, docNumber) => {
       mappingName: "invoiceGen"
     },
     afterSuccess: data => {
-      debugger;
       data.generateVoice = false;
       data.clearEnable = false;
       if (data.insurance_provider_id !== null) {
