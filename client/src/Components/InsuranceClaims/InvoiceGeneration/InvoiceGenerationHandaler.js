@@ -8,7 +8,7 @@ const VisitSearch = ($this, e) => {
   debugger;
   let input =
     $this.state.select_invoice === "CH"
-      ? "pv.invoice_generated='N'"
+      ? "pv.insured = 'N' and pv.invoice_generated='N'"
       : "pv.insured = 'Y' and pv.invoice_generated='N'";
   AlgaehSearch({
     searchGrid: {
