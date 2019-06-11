@@ -4,7 +4,7 @@ import bodyParser from "body-parser";
 import exxpress from "express";
 import keys from "algaeh-keys";
 import router from "./routes";
-import { logger } from "./utils/logging";
+import { logger } from "./Utils/logging";
 const app = exxpress();
 const portNumber = process.env.PORT; //keys.port;
 app.server = http.createServer(app);
