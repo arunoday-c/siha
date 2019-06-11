@@ -30,7 +30,7 @@ export default [
       },
       {
         subitem: "Doctor and Status wise report",
-        reportName: "departmentDoctorConsumption",
+        reportName: "departmentDoctorConsumptionInventory",
         pageSize: "A4",
         requireIframe: true,
         pageOrentation: "landscap", //"portrait",
