@@ -181,6 +181,10 @@ class OrderingServices extends Component {
     }
   }
 
+  chooseStyle = ({pre_approval, covered}) => {
+    
+  }
+
   onClose = e => {
     this.setState(
       {
@@ -237,6 +241,11 @@ class OrderingServices extends Component {
         >
           <div className="popupInner">
             <div className="col-lg-12">
+                     {this.state.insured === "Y" ?  <div className="row legendCntr">
+                <div className="col">
+                    <small><span className="legendSpan orange_Y_Y"></span><span>Ins. Covered: <b>Yes</b>, Pre Approval: <b>Yes</b></span><span className="legendSpan green_Y_N"></span><span>Ins. Covered: <b>Yes</b>, Pre Approval: <b>No</b></span><span className="legendSpan red_N_N"></span><span>Ins. Covered: <b>No</b>, Pre Approval: <b>--</b></span></small>
+                </div><hr></hr>
+                </div>: null }
               <div className="row">
                 {/*
                   <AlagehAutoComplete
@@ -263,22 +272,35 @@ class OrderingServices extends Component {
                 */}
 
                 <AlgaehAutoSearch
-                  div={{ className: "col-3 customServiceSearch" }}
+                  div={{ className: "col-7 customServiceSearch" }}
                   label={{ forceLabel: "Select Service" }}
                   title="Search Services"
                   id="service_id_search"
-                  template={result => {
+                  template={({ covered, pre_approval, service_name, service_type }) => {
+                    let properStyle;
+                    if (this.state.insured === "Y") { 
+                    if (covered === "Y") {
+                      if (pre_approval === "Y") {
+                        properStyle = "orange_Y_Y"
+                      } else {
+                        properStyle = "green_Y_N"
+                      }
+                    } else {
+                      properStyle = "red_N_N"
+                    }
+                  }else{
+                  properStyle = "white_N_N"
+                  }
                     return (
-                        <div className="row resultSecStyles">
-                          <div className="col-9 padd-10">
-                            <h6 className="title">{_.startCase(_.toLower(result.service_name))} <span className="service_type">({_.startCase(_.toLower(result.service_type))})</span></h6>
-                            <p className="service_type">{_.startCase(_.toLower(result.service_type))}</p>
-                          
+                      <div className={`row resultSecStyles ${properStyle}`}>
+                          <div className="col-12 padd-10">
+                            <h6 className="title">{_.startCase(_.toLower(service_name))} <span className="service_type">({_.startCase(_.toLower(service_type))})</span></h6>
+                            {/* <p className="service_type">{_.startCase(_.toLower(service_type))}</p> */}
                         </div>
-                        <div className="col-3  padd-10">  <span className="insCovered">Ins. Covered <span className={result.covered === "Y"  ? "yesStyle" : "noStyle"}>{result.covered === "Y" ? "Yes" : "No"}</span></span>
+                        {/* <div className="col-3  padd-10">  <span className="insCovered">Ins. Covered <span className={covered === "Y"  ? "yesStyle" : "noStyle"}>{covered === "Y" ? "Yes" : "No"}</span></span>
                             <span  className="insPreApp">Pre. Approval
-                              <span className={result.pre_approval === "Y" ? "noStyle" : "yesStyle" } > {result.pre_approval === "Y" ? "Yes" : "No"}</span>
-                          </span></div>
+                              <span className={pre_approval === "Y" ? "noStyle" : "yesStyle" } > {pre_approval === "Y" ? "Yes" : "No"}</span>
+                          </span></div> */}
                       </div>
                     );
                   }}
@@ -297,7 +319,7 @@ class OrderingServices extends Component {
                 />
 
                 <AlagehAutoComplete
-                  div={{ className: "col-lg-3" }}
+                  div={{ className: "col" }}
                   label={{
                     fieldName: "tst_type"
                   }}
@@ -315,7 +337,7 @@ class OrderingServices extends Component {
                   }}
                 />
 
-                <div className="col-lg-3">
+                <div className="col">
                   <button
                     className="btn btn-primary"
                     style={{ marginTop:19 }}
@@ -326,6 +348,8 @@ class OrderingServices extends Component {
                   </button>
                 </div>
               </div>
+      
+             
               <div className="row">
                 <div className="col-md-10 col-lg-12" id="doctorOrder">
                   <AlgaehDataGrid
@@ -430,7 +454,10 @@ class OrderingServices extends Component {
                         label: (
                           <AlgaehLabel label={{ fieldName: "unit_cost" }} />
                         ),
-                        disabled: true
+                        disabled: true,
+                        others: {
+                          minWidth: 80
+                        }
                       },
                       {
                         fieldName: "quantity",
@@ -461,6 +488,9 @@ class OrderingServices extends Component {
                               }}
                             />
                           );
+                        },
+                        others: {
+                          minWidth: 80
                         }
                       },
 
@@ -471,7 +501,7 @@ class OrderingServices extends Component {
                         ),
                         disabled: true,
                         others: {
-                          minWidth: 90
+                          minWidth: 110
                         }
                       },
                       {
@@ -595,7 +625,10 @@ class OrderingServices extends Component {
                         label: (
                           <AlgaehLabel label={{ fieldName: "total_tax" }} />
                         ),
-                        disabled: true
+                        disabled: true,
+                        others: {
+                          minWidth: 80
+                        }
                       },
                       {
                         fieldName: "patient_payable",
@@ -613,7 +646,10 @@ class OrderingServices extends Component {
                             label={{ fieldName: "company_payble" }}
                           />
                         ),
-                        disabled: true
+                        disabled: true,
+                        others: {
+                          minWidth: 80
+                        }
                       }
                     ]}
                     keyId="service_type_id"
@@ -644,7 +680,7 @@ class OrderingServices extends Component {
                       />
                       <h5>{getAmountFormart(this.state.sub_total_amount)}</h5>
                     </div>
-                    <div className="col">
+                    <div className="col" style={{ textAlign: "right" }}>
                       <AlgaehLabel
                         label={{
                           fieldName: "dsct_amt"
@@ -653,7 +689,7 @@ class OrderingServices extends Component {
                       <h5>{getAmountFormart(this.state.discount_amount)}</h5>
                     </div>
 
-                    <div className="col">
+                    <div className="col" style={{ textAlign: "right" }}>
                       <AlgaehLabel
                         label={{
                           fieldName: "net_ttl"
@@ -666,7 +702,7 @@ class OrderingServices extends Component {
 
                 <div className="col-lg-7">
                   <div className="row">
-                    <div className="col">
+                    <div className="col" style={{ textAlign: "right" }}>
                       <AlgaehLabel
                         label={{
                           fieldName: "pat_payable"
@@ -674,7 +710,7 @@ class OrderingServices extends Component {
                       />
                       <h5>{getAmountFormart(this.state.patient_payable)}</h5>
                     </div>
-                    <div className="col">
+                    <div className="col" style={{ textAlign: "right" }}>
                       <AlgaehLabel
                         label={{
                           fieldName: "co_payable"

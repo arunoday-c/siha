@@ -42,14 +42,14 @@
 }
 .customServiceSearch {
 	.yesStyle {
-		background: #00a796;
-		color: #fff;
+		background: #fff;
+		color: #000;
 		text-transform: initial;
 	}
 
 	.noStyle {
-		background: #f58220;
-		color: #fff;
+		background: #fff;
+		color: #000;
 		text-transform: initial;
 	}
 	.padd-10 {
@@ -57,11 +57,14 @@
 		padding-right: 10px;
 	}
 	.results {
-		width: 200% !important;
 		max-height: 65vh !important;
 	}
 	.result {
-		padding: 0.4rem 1rem !important;
+		padding: 0 !important;
+	}
+	.resultSecStyles {
+		padding: 0.5rem 0 !important;
+		margin: 0;
 	}
 	.title {
 		font-size: 0.9rem;
@@ -70,6 +73,7 @@
 		font-size: 0.8rem;
 		margin: 0;
 	}
+
 	.insCovered,
 	.insPreApp {
 		font-weight: normal;
@@ -88,5 +92,35 @@
 	}
 	.insPreApp {
 		margin-bottom: 0;
+	}
+}
+.orange_Y_Y {
+	background: rgb(255, 214, 137);
+}
+
+.red_N_N {
+	background: rgb(255, 163, 163);
+}
+
+.green_Y_N {
+	background: rgb(196, 255, 196);
+}
+.white_N_N {
+	background: rgb(255, 255, 255);
+}
+.legendCntr {
+	.legendSpan {
+		width: 12px;
+		height: 12px;
+		margin-right: 4px;
+		vertical-align: sub;
+	}
+	span {
+		display: inline-block;
+		b {
+			&:last-child {
+				margin-right: 5px;
+			}
+		}
 	}
 }
