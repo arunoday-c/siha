@@ -28,13 +28,13 @@
   font-size: 1.3rem; }
 
 .customServiceSearch .yesStyle {
-  background: #00a796;
-  color: #fff;
+  background: #fff;
+  color: #000;
   text-transform: initial; }
 
 .customServiceSearch .noStyle {
-  background: #f58220;
-  color: #fff;
+  background: #fff;
+  color: #000;
   text-transform: initial; }
 
 .customServiceSearch .padd-10 {
@@ -42,11 +42,14 @@
   padding-right: 10px; }
 
 .customServiceSearch .results {
-  width: 200% !important;
   max-height: 65vh !important; }
 
 .customServiceSearch .result {
-  padding: 0.4rem 1rem !important; }
+  padding: 0 !important; }
+
+.customServiceSearch .resultSecStyles {
+  padding: 0.5rem 0 !important;
+  margin: 0; }
 
 .customServiceSearch .title {
   font-size: 0.9rem; }
@@ -73,3 +76,26 @@
 
 .customServiceSearch .insPreApp {
   margin-bottom: 0; }
+
+.orange_Y_Y {
+  background: #ffd689; }
+
+.red_N_N {
+  background: #ffa3a3; }
+
+.green_Y_N {
+  background: #c4ffc4; }
+
+.white_N_N {
+  background: white; }
+
+.legendCntr .legendSpan {
+  width: 12px;
+  height: 12px;
+  margin-right: 4px;
+  vertical-align: sub; }
+
+.legendCntr span {
+  display: inline-block; }
+  .legendCntr span b:last-child {
+    margin-right: 5px; }
