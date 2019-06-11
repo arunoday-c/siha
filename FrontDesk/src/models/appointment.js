@@ -837,13 +837,15 @@ module.exports = {
   },
   //created by irfan:to get Doctor Schedule Date Wise
   getDoctorScheduleDateWise: (req, res, next) => {
-    const _mysql = new algaehMysql();
+    //const _mysql = new algaehMysql();
 
     let input = req.query;
     let qry = "";
     if (input.sub_dept_id > 0) {
+
+      const _mysql = new algaehMysql();
       qry += ` and sub_dept_id=${input.sub_dept_id}`;
-    }
+    
     if (input.schedule_date != null && input.schedule_date != undefined) {
       qry += ` and schedule_date=date('${input.schedule_date}')`;
     }
@@ -964,6 +966,20 @@ module.exports = {
         _mysql.releaseConnection();
         next(e);
       });
+
+    }else{
+      
+        req.records = {
+          invalid_input: true,
+          message: "Please select department"
+        };
+  
+        next();
+      
+
+
+
+    }
   },
 
   //created by irfan: to get Doctor Schedule to Modify
@@ -1811,6 +1827,40 @@ module.exports = {
         _mysql.releaseConnection();
         next(e);
       });
+  },
+
+  //created by irfan: to get Appointment slip
+  getAppointmentSlip: (req, res, next) => {
+ 
+
+    if (req.query.hims_f_patient_appointment_id > 0) {
+      const _mysql = new algaehMysql();
+      _mysql
+        .executeQuery({
+          query: `select A.patient_name,A.appointment_date,A.appointment_from_time,SD.sub_department_name,
+          E.full_name as doctor_name from hims_f_patient_appointment A inner join hims_d_sub_department SD on
+           A.sub_department_id=SD.hims_d_sub_department_id 
+           inner join hims_d_employee E on A.provider_id=E.hims_d_employee_id
+           where hims_f_patient_appointment_id=? and A.hospital_id=?`,
+          values: [req.query.hims_f_patient_appointment_id,req.userIdentity.hospital_id]
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "please provide valid appointment id"
+      };
+
+      next();
+    }
   }
 };
 //[0,1,2,3,4,5,6]

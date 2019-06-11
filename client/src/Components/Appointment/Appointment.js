@@ -56,19 +56,29 @@ class Appointment extends PureComponent {
 
     let x = JSON.parse(localStorage.getItem("ApptCriteria"));
 
+    // if (x !== undefined && x !== null) {
+    //   this.setState(
+    //     {
+    //       sub_department_id: x.sub_dept_id,
+    //       provider_id: x.provider_id,
+    //       activeDateHeader: x.schedule_date,
+    //       doctors: x.doctors,
+    //       byPassValidation: true
+    //     },
+    //     () => {
+    //       this.getAppointmentSchedule();
+    //     }
+    //   );
+    // }
+
     if (x !== undefined && x !== null) {
-      this.setState(
-        {
-          sub_department_id: x.sub_dept_id,
-          provider_id: x.provider_id,
-          activeDateHeader: x.schedule_date,
-          doctors: x.doctors,
-          byPassValidation: true
-        },
-        () => {
-          this.getAppointmentSchedule();
-        }
-      );
+      this.setState({
+        sub_department_id: x.sub_dept_id,
+        provider_id: x.provider_id,
+        activeDateHeader: x.schedule_date,
+        doctors: x.doctors,
+        byPassValidation: true
+      });
     }
   }
 
@@ -486,12 +496,17 @@ class Appointment extends PureComponent {
             }
           },
           onFailure: error => {
-            algaehLoader({ show: false });
             swalMessage({
               title: error.message,
               type: "error"
             });
           }
+        });
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
         });
       }
     });
@@ -1387,8 +1402,12 @@ class Appointment extends PureComponent {
                               </span>
                             </li>
                           ))
-                          : null}
-                         <li onClick={this.openEditModal.bind(this,patient,data)}><span>Print App. Slip</span></li>
+                        : null}
+                      <li
+                        onClick={this.openEditModal.bind(this, patient, data)}
+                      >
+                        <span>Print App. Slip</span>
+                      </li>
                     </ul>
                   </div>
                 </div>

@@ -4,12 +4,13 @@
     <div class="print-body">
 
         <section>
-                <p>Dear {{header.patient_full_name}}</p>
-                <p>Our records indicate that you are due for an appointment for {{header.full_name}} with {{header.sub_department_name}}, on {{header.visit_date}} at {{header.visit_time}}.</p>
-                <p>Your medical well-being is important to us. Please contact us for confirmation/change.</p>
-                <br/>
-                <p>Yours Sincerely,</p>
-                <p>The Staff and Physicians at {{header.branchName}}</p>
+            <p>Dear {{patient_name}}</p>
+            <p>Our records indicate that you are due for an appointment for {{doctor_name}} with
+                {{sub_department_name}}, on {{appointment_date}} at {{appointment_from_time}}.</p>
+            <p>Your medical well-being is important to us. Please contact us for confirmation/change.</p>
+            <br />
+            <p>Yours Sincerely,</p>
+            <p>The Staff and Physicians at {{hospital_name}}</p>
         </section>
         {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
     </div>
