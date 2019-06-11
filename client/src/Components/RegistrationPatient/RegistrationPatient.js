@@ -931,6 +931,9 @@ class RegistrationPatient extends Component {
                       advance_amount: this.state.advance_amount
                     }}
                   />
+
+                  
+
                 </div>
               </div>
             </div>

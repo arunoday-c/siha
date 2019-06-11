@@ -1913,3 +1913,20 @@ th {
 .trHighlight {
   background: lighten($color-black, 90%);
 }
+.btn-loader {
+	position: relative;
+  cursor:none;
+  pointer-events: none;
+	.showBtnLoader {
+    background:none;
+    padding: 4px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    color: #fff;
+    i.fa-spin{
+    font-size: 1.5rem;
+    }
+	}
+}
