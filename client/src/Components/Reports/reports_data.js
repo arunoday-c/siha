@@ -1619,7 +1619,7 @@ export default [
     submenu: [
       {
         subitem: "List of Receipts",
-        template_name: "SalesReciptList",
+        template_name: "salesReceiptListPharmacy",
         reportParameters: [
           {
             type: "date",
@@ -1644,7 +1644,7 @@ export default [
       },
       {
         subitem: "List of Sales Invoice",
-        reportName: "SalesInvoiceList",
+        reportName: "salesInvoiceListPharmacy",
         template_name: "SalesInvoiceList",
         requireIframe: true,
         reportParameters: [
@@ -1671,34 +1671,91 @@ export default [
       },
       {
         subitem: "Daily Collection - Consolidated",
-        template_name: "asset_war_exp",
-        reportParameters: []
+        template_name: "dailyCollectionPharmacy",
+        reportParameters: [
+          {
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          }]
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
         subitem: "GP Statement - Bill Wise",
-        template_name: "asset_war_exp",
-        reportParameters: []
+        template_name: "gpBillwisePharmacy",
+        pageSize: "A4",
+        requireIframe: true,
+        pageOrentation: "landscap", //"portrait",
+        reportParameters: [
+          {
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          }]
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
         subitem: "GP Statement - Date Wise",
-        template_name: "asset_war_exp",
-        reportParameters: []
+        template_name: "gpDatewisePharmacy",
+        reportParameters: [
+          {
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          }]
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
-      {
-        subitem: "GP Statment ItemWise Report",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "List of Claims Generated",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
-      }
+      // {
+      //   subitem: "GP Statment ItemWise Report",
+      //   template_name: "asset_war_exp",
+      //   reportParameters: []
+      //   //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
+      // },
+      // {
+      //   subitem: "List of Claims Generated",
+      //   template_name: "asset_war_exp",
+      //   reportParameters: []
+      //   //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
+      // }
     ]
   },
   {
