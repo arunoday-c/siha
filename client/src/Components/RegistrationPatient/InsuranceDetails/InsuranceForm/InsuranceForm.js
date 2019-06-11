@@ -190,7 +190,7 @@ class AddInsuranceForm extends Component {
                       <AlagehAutoComplete
                         div={{ className: "col-3" }}
                         label={{
-                          fieldName: "plan_id",
+                          fieldName: "policy_id",
                           isImp: this.state.insuranceYes === true ? false : true
                         }}
                         selector={{
