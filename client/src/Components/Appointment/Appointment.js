@@ -2332,7 +2332,7 @@ class Appointment extends PureComponent {
                   }}
                 />
 
-                <div className="col-lg-1 form-group" style={{ marginTop: 22 }}>
+                <div className="col-lg-1 form-group" style={{ marginTop: 19 }}>
                   <button
                     id="load-appt-sch"
                     type="submit"
