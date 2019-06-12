@@ -138,10 +138,37 @@ const clearData = $this => {
   });
 };
 
+const numberEventHandaler = ($this, context, e) => {
+  debugger;
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+  if (value < 0) {
+    swalMessage({
+      type: "warning",
+      title: "Vat % cannot be less than zero."
+    });
+    $this.setState({
+      [name]: 0
+    });
+  } else {
+    $this.setState({
+      [name]: value
+    });
+
+    if (context !== undefined) {
+      context.updateState({
+        [name]: value
+      });
+    }
+  }
+};
+
 export {
   texthandle,
   VatAppilicable,
   InsertServices,
   clearData,
-  CptCodesSearch
+  CptCodesSearch,
+  numberEventHandaler
 };
