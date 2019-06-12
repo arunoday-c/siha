@@ -44,7 +44,7 @@ class ValidateBills extends PureComponent {
         visit_id: this.state.invoices.visit_id
       },
       onSuccess: response => {
-        debugger;
+        
         if (response.data.success) {
           that.setState({ openUCAF: true, UCAFData: response.data.records });
         }
@@ -413,7 +413,7 @@ class ValidateBills extends PureComponent {
       method: "GET",
       onSuccess: res => {
         if (res.data.success) {
-          debugger;
+          
           this.setState({
             icds: res.data.records
           });
@@ -507,7 +507,7 @@ class ValidateBills extends PureComponent {
   }
 
   render() {
-    debugger;
+    
     let invoices =
       this.state.invoices !== undefined ? [this.state.invoices] : [];
     let invoice_details =

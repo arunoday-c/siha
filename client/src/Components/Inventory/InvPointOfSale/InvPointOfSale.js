@@ -69,7 +69,7 @@ class InvPointOfSale extends Component {
         visit_id: this.state.visit_id
       },
       onSuccess: response => {
-        debugger;
+        
         if (response.data.success) {
           that.setState({ openOCAF: true, OCAFData: response.data.records });
         }
@@ -204,7 +204,7 @@ class InvPointOfSale extends Component {
   }
 
   render() {
-    debugger;
+    
     const _posLocation =
       this.props.poslocations === undefined ? [] : this.props.poslocations;
 

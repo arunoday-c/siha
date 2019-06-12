@@ -86,7 +86,7 @@ class DNItemList extends Component {
                   <h4 style={{ marginBottom: 4 }}>Requested Items</h4>
                   <ul className="reqTransList">
                     {this.state.po_entry_detail.map((item, index) => {
-                      debugger;
+                      
                       return (
                         <li>
                           <div className="itemReq">

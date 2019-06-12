@@ -15,7 +15,7 @@ const getPatientProfile = $this => {
       mappingName: "patient_profile"
     },
     afterSuccess: data => {
-      debugger;
+      
     }
   });
 };
@@ -135,7 +135,7 @@ const getPatientHistory = $this => {
 };
 
 const printPrescription = (that, e) => {
-  debugger;
+  
   const _patient = Window.global["current_patient"];
   const _visit = Window.global["visit_id"];
   algaehApiCall({

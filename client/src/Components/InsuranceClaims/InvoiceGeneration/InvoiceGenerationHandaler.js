@@ -5,7 +5,7 @@ import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 
 const VisitSearch = ($this, e) => {
-  debugger;
+  
   let input =
     $this.state.select_invoice === "CH"
       ? "pv.insured = 'N' and pv.invoice_generated='N'"
@@ -40,7 +40,7 @@ const VisitSearch = ($this, e) => {
                 patient_visit_id: $this.state.visit_id
               },
               onSuccess: response => {
-                debugger;
+                
                 if (response.data.success) {
                   response.data.records[0].sub_insurance_id =
                     response.data.records[0].sub_insurance_provider_id;

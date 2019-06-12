@@ -75,7 +75,7 @@ export default class OcafEditor extends Component {
     // this.props.dataProps.hims_f_ocaf_insurance_details
     if(this.props.dataProps.hims_f_ocaf_header !== undefined &&
       this.props.dataProps.hims_f_ocaf_header.length > 0){
-        debugger;
+        
         let data = this.props.dataProps.hims_f_ocaf_header[0];
         let insurance = this.props.dataProps.hims_f_ocaf_insurance_details[0]
 
@@ -110,7 +110,7 @@ export default class OcafEditor extends Component {
   }
 
   componentWillReceiveProps(newProps){
-    debugger;
+    
 
   }
 

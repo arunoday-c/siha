@@ -76,7 +76,7 @@ class NetworkPlan extends PureComponent {
   }
 
   componentWillMount() {
-    debugger;
+    
     let InputOutput = this.props.InsuranceSetup;
     this.setState({ ...this.state, ...InputOutput });
   }

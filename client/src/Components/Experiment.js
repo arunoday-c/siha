@@ -101,7 +101,7 @@ class Experiment extends Component {
                 }
               },
               onSuccess: res => {
-                debugger;
+                
                 const url = URL.createObjectURL(res.data);
                 const link = document.createElement("a");
                 link.setAttribute("href", url);
@@ -272,7 +272,7 @@ class Experiment extends Component {
                 }
               },
               onSuccess: res => {
-                debugger;
+                
 
                 const url = URL.createObjectURL(res.data);
                 let myWindow = window.open(

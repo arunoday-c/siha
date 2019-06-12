@@ -176,7 +176,7 @@ class InsuranceCardClass extends Component {
   }
 
   render() {
-    debugger;
+    
     return (
       <div className="InsuranceCardClass">
         <div className="container-fluid">
@@ -283,7 +283,7 @@ class InsuranceCardClass extends Component {
                     fieldName: "created_by",
                     label: <AlgaehLabel label={{ fieldName: "created_by" }} />,
                     displayTemplate: row => {
-                      debugger;
+                      
                       let display =
                         this.props.userdrtails === undefined
                           ? []

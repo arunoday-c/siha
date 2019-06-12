@@ -34,7 +34,7 @@ class SickLeave extends Component {
   }
 
   getSickLeave() {
-    debugger;
+    
     algaehApiCall({
       uri: "/doctorsWorkBench/getSickLeave",
       method: "GET",
@@ -43,7 +43,7 @@ class SickLeave extends Component {
         visit_id: this.state.visit_id
       },
       onSuccess: response => {
-        debugger;
+        
         let data = response.data.records[0];
         if (response.data.success) {
           this.setState({ ...data });
@@ -59,7 +59,7 @@ class SickLeave extends Component {
   }
 
   datehandle(ctrl, e) {
-    debugger;
+    
     let days = 0;
     let fromDate = null;
     let toDate = null;
@@ -111,7 +111,7 @@ class SickLeave extends Component {
       method: "POST",
       onSuccess: response => {
         if (response.data.success) {
-          debugger;
+          
 
           algaehApiCall({
             uri: "/report",

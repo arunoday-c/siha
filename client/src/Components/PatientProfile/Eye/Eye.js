@@ -89,7 +89,7 @@ export default class Eye extends Component {
   }
 
   showModal(openModal) {
-    debugger;
+    
     if (openModal === "Refraction") {
       this.setState({
         openRefraction: !this.state.openRefraction

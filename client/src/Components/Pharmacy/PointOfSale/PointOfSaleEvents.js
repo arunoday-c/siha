@@ -40,7 +40,7 @@ const POSSearch = $this => {
     onRowSelect: row => {
       // $this.setState({ pos_number: row.pos_number });
       AlgaehLoader({ show: true });
-      debugger;
+      
       algaehApiCall({
         uri: "/posEntry/getPosEntry",
         module: "pharmacy",
@@ -404,7 +404,7 @@ const SavePosEnrty = $this => {
   if (!err) {
     AlgaehLoader({ show: true });
     GenerateReciept($this, that => {
-      debugger;
+      
       $this.state.posted = "Y";
       $this.state.transaction_type = "POS";
       $this.state.transaction_date = $this.state.pos_date;
@@ -641,7 +641,7 @@ const AddItems = ($this, ItemInput) => {
   if (ItemInput.length > 0) {
     let inputObj = {};
     let inputArray = [];
-    debugger;
+    
     for (let i = 0; i < ItemInput.length; i++) {
       inputObj = {
         item_id: ItemInput[i].item_id,
@@ -655,7 +655,7 @@ const AddItems = ($this, ItemInput) => {
       inputArray.push(inputObj);
     }
 
-    debugger;
+    
 
     algaehApiCall({
       uri: "/posEntry/getPrescriptionPOS",
@@ -664,7 +664,7 @@ const AddItems = ($this, ItemInput) => {
       data: inputArray,
       onSuccess: response => {
         if (response.data.success) {
-          debugger;
+          
           let data = response.data.records;
           $this.setState({
             pharmacy_stock_detail: data

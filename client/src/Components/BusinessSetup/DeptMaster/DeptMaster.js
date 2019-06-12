@@ -325,7 +325,7 @@ class DeptMaster extends Component {
       module: "masterSettings",
       onSuccess: response => {
         if (response.data.success) {
-          debugger;
+          
           this.setState({ subDepartments: response.data.records });
         }
       },
@@ -665,7 +665,7 @@ class DeptMaster extends Component {
                           <AlgaehLabel label={{ forceLabel: "Location" }} />
                         ),
                         displayTemplate: row => {
-                          debugger;
+                          
                           let display =
                             this.props.inventorylocations === undefined
                               ? []
@@ -685,7 +685,7 @@ class DeptMaster extends Component {
                         },
 
                         editorTemplate: row => {
-                          debugger;
+                          
                           let display =
                             this.props.inventorylocations === undefined
                               ? []

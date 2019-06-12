@@ -84,7 +84,7 @@ const selectVisit = ($this, context, e) => {
             let data = response.data.records;
 
             if (data.length > 0) {
-              debugger;
+              
               let pre_approval_Required = Enumerable.from(data)
                 .where(w => w.pre_approval === "Y" && w.apprv_status === "NR")
                 .toArray();

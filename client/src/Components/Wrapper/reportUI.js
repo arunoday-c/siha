@@ -44,7 +44,7 @@ export default class ReportUI extends Component {
                 ...{ method: "GET" },
                 ...{
                   onSuccess: response => {
-                    debugger;
+                    
                     if (response.data.success) {
                       const manupulateResult = s.manupulation;
                       if (typeof manupulateResult === "function") {
@@ -256,7 +256,7 @@ export default class ReportUI extends Component {
                   }
                 },
                 onSuccess: response => {
-                  debugger;
+                  
                   const url = URL.createObjectURL(response.data);
 
                   that.setState({
@@ -304,11 +304,11 @@ export default class ReportUI extends Component {
             onSuccess: response => {
               let buttonDisable = true;
               if (response.data.success === true) {
-                debugger;
+                
                 new Promise((resolve, reject) => {
                   resolve(response.data.records);
                 }).then(data => {
-                  debugger;
+                  
                   if (Array.isArray(data)) {
                     if (data.length > 0) {
                       buttonDisable = false;

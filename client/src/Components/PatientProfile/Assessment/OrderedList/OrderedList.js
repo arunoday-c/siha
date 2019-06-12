@@ -61,14 +61,14 @@ class OrderedList extends PureComponent {
   }
 
   ShowConsumableModel() {
-    debugger;
+    
     algaehApiCall({
       uri: "/department/get/subdepartment",
       method: "GET",
       module: "masterSettings",
       onSuccess: response => {
         if (response.data.success === true) {
-          debugger;
+          
           const Departmant_Location = _.filter(response.data.records, f => {
             return (
               f.hims_d_sub_department_id ===

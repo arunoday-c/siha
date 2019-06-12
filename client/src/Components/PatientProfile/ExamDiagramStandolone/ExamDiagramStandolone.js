@@ -362,7 +362,7 @@ export default class ExaminationDiagram extends Component {
                 });
             })
             .catch(error => {
-              debugger;
+              
               const errorI = error.request;
               swalMessage({
                 title:
@@ -514,7 +514,7 @@ export default class ExaminationDiagram extends Component {
     }
   }
   onClickDeleteDiagram(item, e) {
-    debugger;
+    
     const image = e.target.offsetParent.querySelector("img");
     image.style.width = "100px";
     image.style.height = "100px";

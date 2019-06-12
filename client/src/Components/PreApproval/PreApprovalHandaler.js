@@ -133,7 +133,7 @@ const CloseOrderModel = ($this, e) => {
 };
 
 const openUCAFReport = ($this, row) => {
-  debugger;
+  
   if (row.chart_type === "N") {
     algaehApiCall({
       uri: "/ucaf/getPatientUCAF",

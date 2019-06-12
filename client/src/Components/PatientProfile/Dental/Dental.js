@@ -185,7 +185,7 @@ class Dental extends Component {
   }
 
   saveBill() {
-    debugger;
+    
     let inputObj = {
       visit_id: Window.global["visit_is"],
       patient_id: Window.global["current_patient"],
@@ -255,7 +255,7 @@ class Dental extends Component {
   }
 
   addToBill(row) {
-    debugger;
+    
     algaehApiCall({
       // uri: "/insurance/getPatientInsurance",
       uri: "/patientRegistration/getPatientInsurance",
@@ -1289,7 +1289,7 @@ class Dental extends Component {
   }
 
   loadDentalTreatment(data) {
-    debugger;
+    
     data !== undefined
       ? this.setState(
           {

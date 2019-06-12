@@ -26,7 +26,7 @@ export default class DcafEditor extends Component {
   }
 
   saveAndPrintDcaf(e) {
-    debugger;
+    
     EditorEvents().saveAndPrintDcaf(this,e)  
   }
 
@@ -43,7 +43,7 @@ export default class DcafEditor extends Component {
 
     if(this.props.dataProps.hims_f_dcaf_header !== undefined &&
       this.props.dataProps.hims_f_dcaf_header.length > 0){
-        debugger;
+        
         let data = this.props.dataProps.hims_f_dcaf_header[0];
         let insurance = this.props.dataProps.hims_f_dcaf_insurance_details[0]
 
@@ -54,7 +54,7 @@ export default class DcafEditor extends Component {
   }
 
   render() {
-    debugger;
+    
     const _isPrimary = "primary";
     const _hims_f_dcaf_header = this.props.dataProps.hims_f_dcaf_header[0];
     const _insurnce = _.find(

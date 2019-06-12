@@ -74,7 +74,7 @@ const getDietList = $this => {
 };
 
 const deleteDietAdvice = ($this, row) => {
-  debugger;
+  
   swal({
     title: "Are you sure you want to delete Diet?",
     type: "warning",
