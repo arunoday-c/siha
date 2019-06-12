@@ -70,7 +70,7 @@ import algaehMasters from "../controller/algaehMasters";
 import dental from "../controller/dental";
 
 import algaehappexpiry from "../controller/algaehappexpiry";
-import selfService from "../selfService/controller/selfService";
+import selfService from "../SelfService/controller/selfService";
 let router = express();
 import leave from "../Payroll/controller/leave";
 import holiday from "../Payroll/controller/holiday";

@@ -181,10 +181,6 @@ class OrderingServices extends Component {
     }
   }
 
-  chooseStyle = ({pre_approval, covered}) => {
-    
-  }
-
   onClose = e => {
     this.setState(
       {
