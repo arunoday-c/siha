@@ -244,9 +244,9 @@ const getNetworkPlans = $this => {
         $this.state.hims_d_insurance_network_office_id
     },
     onSuccess: response => {
-      debugger;
+      
       if (response.data.success) {
-        debugger;
+        
         let data = response.data.records[0];
         $this.setState({
           copay_consultation: data.copay_consultation,
@@ -276,7 +276,7 @@ const getPOSEntry = $this => {
     data: { pos_number: $this.state.pos_number },
     onSuccess: response => {
       if (response.data.success) {
-        debugger;
+        
         let data = response.data.records;
         data.patient_payable_h = data.patient_payable;
 

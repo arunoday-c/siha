@@ -12,12 +12,13 @@ import moment from "moment";
 import {
   changeTexts,
   ClearData,
-  Patientchange,
   SavePosEnrty,
   VisitSearch,
   LocationchangeTexts,
   closePopup,
-  POSSearch
+  POSSearch,
+  PostPosEntry,
+  nationalityhandle
 } from "./PointOfSaleEvents";
 // getCtrlCode,
 import "./PointOfSale.css";
@@ -82,6 +83,20 @@ class PointOfSale extends Component {
       });
     }
 
+    if (
+      this.props.nationalities === undefined ||
+      this.props.nationalities.length === 0
+    ) {
+      this.props.getNationalities({
+        uri: "/masters/get/nationality",
+        method: "GET",
+        redux: {
+          type: "NAT_GET_DATA",
+          mappingName: "nationalities"
+        }
+      });
+    }
+
     this.props.getLocation({
       uri: "/pharmacyGlobal/getUserLocationPermission",
       module: "pharmacy",
@@ -137,7 +152,7 @@ class PointOfSale extends Component {
   }
 
   generateReport(rpt_name, rpt_desc) {
-    debugger;
+    
     algaehApiCall({
       uri: "/report",
       method: "GET",
@@ -199,7 +214,7 @@ class PointOfSale extends Component {
   }
 
   render() {
-    debugger;
+    
     const _posLocation =
       this.props.poslocations === undefined ? [] : this.props.poslocations;
     return (
@@ -261,9 +276,7 @@ class PointOfSale extends Component {
                       className: "txt-fld",
                       name: "visit_code",
                       value: this.state.visit_code,
-                      events: {
-                        onChange: Patientchange.bind(this, this)
-                      },
+
                       others: {
                         disabled: true
                       }
@@ -306,6 +319,7 @@ class PointOfSale extends Component {
                         : "-----------"}
                     </h6>
                   </div>
+
                   <div className="col">
                     <AlgaehLabel
                       label={{
@@ -335,6 +349,9 @@ class PointOfSale extends Component {
                       value: this.state.patient_name,
                       events: {
                         onChange: changeTexts.bind(this, this)
+                      },
+                      others: {
+                        disabled: this.state.dataExitst
                       }
                     }}
                   />
@@ -350,14 +367,18 @@ class PointOfSale extends Component {
                       value: this.state.referal_doctor,
                       events: {
                         onChange: changeTexts.bind(this, this)
+                      },
+                      others: {
+                        disabled: this.state.dataExitst
                       }
                     }}
                   />
 
                   <AlagehFormGroup
-                    div={{ className: "col" }}
+                    div={{ className: "col mandatory" }}
                     label={{
-                      forceLabel: "Mobile Number"
+                      forceLabel: "Mobile Number",
+                      isImp: true
                     }}
                     textBox={{
                       className: "txt-fld",
@@ -365,6 +386,49 @@ class PointOfSale extends Component {
                       value: this.state.mobile_number,
                       events: {
                         onChange: changeTexts.bind(this, this)
+                      },
+                      others: {
+                        disabled: this.state.dataExitst
+                      }
+                    }}
+                  />
+                  <AlagehAutoComplete
+                    div={{ className: "col mandatory" }}
+                    label={{
+                      forceLabel: "Nationality",
+                      isImp: true
+                    }}
+                    selector={{
+                      name: "nationality_id",
+                      className: "select-fld",
+                      value: this.state.nationality_id,
+                      dataSource: {
+                        textField: "nationality",
+                        valueField: "hims_d_nationality_id",
+                        data: this.props.nationalities
+                      },
+                      onChange: nationalityhandle.bind(this, this),
+                      others: {
+                        disabled: this.state.dataExitst
+                      }
+                    }}
+                  />
+
+                  <AlagehAutoComplete
+                    div={{ className: "col" }}
+                    label={{ forceLabel: "Mode of Payment" }}
+                    selector={{
+                      name: "mode_of_pay",
+                      className: "select-fld",
+                      value: this.state.mode_of_pay,
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: GlobalVariables.MODE_OF_PAY
+                      },
+                      onChange: changeTexts.bind(this, this),
+                      others: {
+                        disabled: this.state.dataExitst
                       }
                     }}
                   />
@@ -394,11 +458,11 @@ class PointOfSale extends Component {
                   type="button"
                   className="btn btn-primary"
                   onClick={SavePosEnrty.bind(this, this)}
-                  disabled={this.state.saveEnable}
+                  disabled={this.state.postEnable}
                 >
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Collect & Print",
+                      forceLabel: "Save",
                       returnText: true
                     }}
                   />
@@ -452,19 +516,19 @@ class PointOfSale extends Component {
                   </div>
                 ) : null}
 
-                {/* <button
-                    type="button"
-                    className="btn btn-other"
-                    onClick={PostPosEntry.bind(this, this)}
-                    disabled={this.state.postEnable}
-                  >
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Post",
-                        returnText: true
-                      }}
-                    />
-                  </button> */}
+                <button
+                  type="button"
+                  className="btn btn-other"
+                  onClick={PostPosEntry.bind(this, this)}
+                  disabled={this.state.postEnable}
+                >
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Collect & Print",
+                      returnText: true
+                    }}
+                  />
+                </button>
               </div>
             </div>
           </div>
@@ -553,9 +617,9 @@ function mapStateToProps(state) {
     positemlist: state.positemlist,
     poslocations: state.poslocations,
     posheader: state.posheader,
-    pospatients: state.pospatients,
     posentry: state.posentry,
-    existinsurance: state.existinsurance
+    existinsurance: state.existinsurance,
+    nationalities: state.nationalities
   };
 }
 
@@ -564,12 +628,12 @@ function mapDispatchToProps(dispatch) {
     {
       getItems: AlgaehActions,
       getLocation: AlgaehActions,
-      getPatientDetails: AlgaehActions,
       getPosEntry: AlgaehActions,
       getPatientInsurance: AlgaehActions,
       getMedicationList: AlgaehActions,
       getPrescriptionPOS: AlgaehActions,
-      PosHeaderCalculations: AlgaehActions
+      PosHeaderCalculations: AlgaehActions,
+      getNationalities: AlgaehActions
     },
     dispatch
   );

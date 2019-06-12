@@ -139,7 +139,7 @@ class Groups extends Component {
   }
 
   dropDownHandler(value) {
-    debugger;
+    
     this.setState({
       [value.name]: value.value
     });

@@ -402,6 +402,7 @@ class Dashboard extends Component {
       method: "GET",
       cancelRequestId: "getMyDay",
       onSuccess: response => {
+        console.log("getMyday");
         if (response.data.success) {
           this.setState({
             today_list: response.data.records

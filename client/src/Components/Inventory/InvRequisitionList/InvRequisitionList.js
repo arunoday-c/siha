@@ -5,34 +5,44 @@ import { bindActionCreators } from "redux";
 import Enumerable from "linq";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 import { setGlobal } from "../../../utils/GlobalFunctions";
+import GlobalVariables from "../../../utils/GlobalVariables.json";
 import "./InvRequisitionList.css";
 import "./../../../styles/site.css";
 
 import {
   LocationchangeTexts,
   dateFormater,
-  radioChange
+  radioChange,
+  getRequisitionList,
+  datehandle,
+  changeEventHandaler
 } from "./InvRequisitionListEvent";
 
 import {
   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehAutoComplete
+  AlagehAutoComplete,
+  AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
-
+import moment from "moment";
 import { AlgaehActions } from "../../../actions/algaehActions";
 
 class InvRequisitionList extends Component {
   constructor(props) {
     super(props);
-
+    let month = moment().format("MM");
+    let year = moment().format("YYYY");
     this.state = {
+      to_date: new Date(),
+      from_date: moment("01" + month + year, "DDMMYYYY")._d,
       from_location_id: null,
       to_location_id: null,
       requisition_list: [],
       radioYes: true,
-      authorize1: "Y"
+      authorize1: "Y",
+      status: "1"
     };
+    getRequisitionList(this);
   }
 
   componentDidMount() {
@@ -84,8 +94,26 @@ class InvRequisitionList extends Component {
           >
             <div className="col-lg-12">
               <div className="row">
+                <AlgaehDateHandler
+                  div={{ className: "col" }}
+                  label={{ forceLabel: "From Date" }}
+                  textBox={{ className: "txt-fld", name: "from_date" }}
+                  events={{
+                    onChange: datehandle.bind(this, this)
+                  }}
+                  value={this.state.from_date}
+                />
+                <AlgaehDateHandler
+                  div={{ className: "col" }}
+                  label={{ forceLabel: "To Date" }}
+                  textBox={{ className: "txt-fld", name: "to_date" }}
+                  events={{
+                    onChange: datehandle.bind(this, this)
+                  }}
+                  value={this.state.to_date}
+                />
                 <AlagehAutoComplete
-                  div={{ className: "col-lg-4" }}
+                  div={{ className: "col" }}
                   label={{ forceLabel: "Location" }}
                   selector={{
                     name: "from_location_id",
@@ -96,13 +124,17 @@ class InvRequisitionList extends Component {
                       valueField: "hims_d_inventory_location_id",
                       data: this.props.inventorylocations
                     },
-                    onChange: LocationchangeTexts.bind(this, this, "From"),
-                    onClear: LocationchangeTexts.bind(this, this, "From")
+                    onChange: changeEventHandaler.bind(this, this),
+                    onClear: () => {
+                      this.setState({
+                        from_location_id: null
+                      });
+                    }
                   }}
                 />
 
                 <AlagehAutoComplete
-                  div={{ className: "col-lg-4" }}
+                  div={{ className: "col" }}
                   label={{ forceLabel: "Requested Location" }}
                   selector={{
                     name: "to_location_id",
@@ -113,35 +145,61 @@ class InvRequisitionList extends Component {
                       valueField: "hims_d_inventory_location_id",
                       data: this.props.inventorylocations
                     },
-                    onChange: LocationchangeTexts.bind(this, this, "To"),
-                    onClear: LocationchangeTexts.bind(this, this, "From")
+                    onChange: changeEventHandaler.bind(this, this),
+                    onClear: () => {
+                      this.setState({
+                        to_location_id: null
+                      });
+                    }
                   }}
                 />
 
+                <AlagehAutoComplete
+                  div={{ className: "col" }}
+                  label={{ forceLabel: "Status" }}
+                  selector={{
+                    name: "status",
+                    className: "select-fld",
+                    value: this.state.status,
+                    dataSource: {
+                      textField: "name",
+                      valueField: "value",
+                      data: GlobalVariables.REQUSITION_STATUS
+                    },
+                    onChange: changeEventHandaler.bind(this, this),
+                    onClear: () => {
+                      this.setState({
+                        status: null
+                      });
+                    }
+                  }}
+                />
+
+                {/*
                 <div className="col-lg-4" style={{ paddingTop: "25px" }}>
-                  <div className="customRadio">
-                    <label className="radio inline">
-                      <input
-                        type="radio"
-                        name="insured"
-                        value="1"
-                        checked={this.state.radioYes}
-                        onChange={radioChange.bind(this, this)}
-                      />
-                      <span>Authorize 1</span>
-                    </label>
-                    <label className="radio inline">
-                      <input
-                        type="radio"
-                        name="insured"
-                        value="2"
-                        checked={this.state.radioNo}
-                        onChange={radioChange.bind(this, this)}
-                      />
-                      <span>Authorize 2</span>
-                    </label>
-                  </div>
-                </div>
+                    <div className="customRadio">
+                      <label className="radio inline">
+                        <input
+                          type="radio"
+                          name="insured"
+                          value="1"
+                          checked={this.state.radioYes}
+                          onChange={radioChange.bind(this, this)}
+                        />
+                        <span>Authorize 1</span>
+                      </label>
+                      <label className="radio inline">
+                        <input
+                          type="radio"
+                          name="insured"
+                          value="2"
+                          checked={this.state.radioNo}
+                          onChange={radioChange.bind(this, this)}
+                        />
+                        <span>Authorize 2</span>
+                      </label>
+                    </div>
+                  </div>*/}
               </div>
             </div>
           </div>
@@ -160,6 +218,11 @@ class InvRequisitionList extends Component {
                           return (
                             <span>
                               <i
+                                style={{
+                                  pointerEvents:
+                                    row.cancel === "Y" ? "none" : "",
+                                  opacity: row.cancel === "Y" ? "0.1" : ""
+                                }}
                                 className="fas fa-flask"
                                 onClick={() => {
                                   setGlobal({

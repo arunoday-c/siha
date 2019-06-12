@@ -20,7 +20,7 @@ class ItemBatchs extends PureComponent {
   }
 
   onClose = e => {
-    debugger
+    
     this.props.onClose && this.props.onClose(e);
   };
 

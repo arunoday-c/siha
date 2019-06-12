@@ -1598,5 +1598,12 @@
     { "name": "Level 5", "value": "AL5" },
     { "name": "Level 6", "value": "AL6" },
     { "name": "None", "value": "N" }
+  ],
+  "REQUSITION_STATUS": [
+    { "name": "All", "value": "0" },
+    { "name": "Pending To Authorize 1", "value": "1" },
+    { "name": "Pending To Authorize 2", "value": "2" },
+    { "name": "Transfer Pending", "value": "3" },
+    { "name": "Transfer Completed", "value": "4" }
   ]
 }

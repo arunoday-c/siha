@@ -162,7 +162,7 @@ module.exports = {
           query =
             "select hims_d_sub_department_id, sub_department_code, sub_department_name, arabic_sub_department_name,\
             inventory_location_id,sub_department_desc, department_id, effective_start_date, effective_end_date, \
-            chart_type, sub_department_status from  hims_d_sub_department where record_status='A' and \
+            chart_type, sub_department_status,vitals_mandatory from  hims_d_sub_department where record_status='A' and \
             department_id=? order by hims_d_sub_department_id desc";
 
           values.push(input.department_id);
@@ -170,7 +170,7 @@ module.exports = {
           query =
             "select hims_d_sub_department_id, sub_department_code, sub_department_name, arabic_sub_department_name,\
             inventory_location_id,sub_department_desc, department_id, effective_start_date, effective_end_date, \
-            chart_type, sub_department_status from  hims_d_sub_department where record_status='A' \
+            chart_type, sub_department_status,vitals_mandatory from  hims_d_sub_department where record_status='A' \
             order by hims_d_sub_department_id desc";
         }
 
@@ -250,7 +250,7 @@ module.exports = {
           "UPDATE `hims_d_sub_department`\
         SET `sub_department_name`=?, `sub_department_desc`=?,arabic_sub_department_name=?\
         , `effective_start_date`=?, `effective_end_date`=? ,`chart_type`=?\
-        ,`updated_date`=?, `updated_by`=?\
+        ,`updated_date`=?, `updated_by`=?,`vitals_mandatory`=? \
         WHERE `record_status`='A' AND `hims_d_sub_department_id`=? ;",
         values: [
           input.sub_department_name,
@@ -261,6 +261,7 @@ module.exports = {
           input.chart_type,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
+          input.vitals_mandatory,
           input.hims_d_sub_department_id
         ],
         printQuery: true

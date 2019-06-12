@@ -1,0 +1,49 @@
+.htpl-phase1-primary-insurance-form {
+  background: #ffff;
+  border-radius: 5px; }
+  .htpl-phase1-primary-insurance-form .primary-details {
+    padding-top: 8px;
+    border-right: 1px dashed #d3d3d3; }
+  .htpl-phase1-primary-insurance-form mark {
+    background: none;
+    color: red; }
+  .htpl-phase1-primary-insurance-form .centerAlign {
+    text-align: center; }
+  .htpl-phase1-primary-insurance-form .go-button {
+    cursor: pointer;
+    margin-top: 10px; }
+  .htpl-phase1-primary-insurance-form .text_field {
+    width: 100% !important;
+    background-color: #fbfbfb;
+    margin-right: "5px"; }
+  .htpl-phase1-primary-insurance-form .form-details {
+    padding: 5px;
+    padding-bottom: 0px; }
+  .htpl-phase1-primary-insurance-form .radio-design {
+    position: absolute;
+    top: 5px;
+    left: 36px; }
+  .htpl-phase1-primary-insurance-form .refactor-design {
+    min-height: 28px;
+    background-color: #fbfbfb;
+    border: 0px; }
+  .htpl-phase1-primary-insurance-form .file-name-upload {
+    margin-left: 4%;
+    margin-top: 2%; }
+  .htpl-phase1-primary-insurance-form .secondary-details {
+    padding-top: 8px; }
+    .htpl-phase1-primary-insurance-form .secondary-details .secondary-box-container .attach-design {
+      background: #8c8c8c;
+      color: #fff;
+      position: relative;
+      cursor: pointer;
+      margin-left: -1px;
+      margin-right: -1px; }
+    .htpl-phase1-primary-insurance-form .secondary-details .secondary-box-container .preview-image {
+      position: absolute;
+      top: -1px;
+      left: 15px;
+      height: 101px; }
+  .htpl-phase1-primary-insurance-form .insuranceRadio {
+    padding-left: 15px;
+    padding-right: 0; }

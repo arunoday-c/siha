@@ -162,7 +162,7 @@ const itemchangeText = ($this, context, e, ctrl) => {
           if (response.data.success) {
             let data = response.data.records;
             if (data.locationResult.length > 0) {
-              debugger;
+              
               getUnitCost($this, context, e.service_id, e.sale_price);
 
               $this.setState({
@@ -348,6 +348,30 @@ const getUnitCost = ($this, context, serviceid, sales_price) => {
   }
 };
 const AddItems = ($this, context) => {
+  debugger;
+  if ($this.state.pos_customer_type === "OT") {
+    if ($this.state.nationality_id === null) {
+      swalMessage({
+        title: "Select Nationality.",
+        type: "warning"
+      });
+      return;
+    } else if ($this.state.mobile_number === null) {
+      swalMessage({
+        title: "Enter Mobile Number.",
+        type: "warning"
+      });
+      return;
+    }
+  } else if ($this.state.pos_customer_type === "OP") {
+    if ($this.state.visit_id === null) {
+      swalMessage({
+        title: "Select the Patient.",
+        type: "warning"
+      });
+      return;
+    }
+  }
   let itemData = Enumerable.from($this.state.pharmacy_stock_detail)
     .where(
       w =>
@@ -380,7 +404,7 @@ const AddItems = ($this, context) => {
           insured: $this.state.insured,
           conversion_factor: $this.state.conversion_factor,
           unit_cost: $this.state.unit_cost,
-          vat_applicable: "Y",
+          vat_applicable: $this.state.vat_applicable,
           hims_d_services_id: $this.state.service_id,
           quantity: $this.state.quantity,
           primary_insurance_provider_id: $this.state.insurance_provider_id,
@@ -401,7 +425,7 @@ const AddItems = ($this, context) => {
         method: "POST",
         data: ItemInput,
         onSuccess: response => {
-          debugger;
+          
           if (response.data.success) {
             let data = response.data.records;
             if (data.billdetails[0].pre_approval === "Y") {
@@ -459,12 +483,16 @@ const AddItems = ($this, context) => {
 
                 data.billdetails[0].company_payable =
                   data.billdetails[0].company_payble;
-
+                data.billdetails[0].hims_f_pharmacy_pos_detail_id = null;
                 existingservices.splice(0, 0, data.billdetails[0]);
               }
-
+              let insert_pharmacy_stock = $this.state.insert_pharmacy_stock;
+              if ($this.state.hims_f_pharmacy_pos_header_id !== null) {
+                insert_pharmacy_stock = data.billdetails;
+              }
               if (context !== null) {
                 context.updateState({
+                  insert_pharmacy_stock: insert_pharmacy_stock,
                   pharmacy_stock_detail: existingservices,
                   item_description: "",
                   item_id: null,
@@ -511,34 +539,38 @@ const AddItems = ($this, context) => {
                 data: { billdetails: existingservices },
                 onSuccess: response => {
                   if (response.data.success) {
-                    let data = response.data.records;
+                    let sum_data = response.data.records;
 
-                    data.patient_payable_h =
-                      data.patient_payable || $this.state.patient_payable;
-                    data.sub_total =
-                      data.sub_total_amount || $this.state.sub_total;
-                    data.patient_responsibility =
-                      data.patient_res || $this.state.patient_responsibility;
-                    data.company_responsibility =
-                      data.company_res || $this.state.company_responsibility;
+                    sum_data.patient_payable_h =
+                      sum_data.patient_payable || $this.state.patient_payable;
+                    sum_data.sub_total =
+                      sum_data.sub_total_amount || $this.state.sub_total;
+                    sum_data.patient_responsibility =
+                      sum_data.patient_res ||
+                      $this.state.patient_responsibility;
+                    sum_data.company_responsibility =
+                      sum_data.company_res ||
+                      $this.state.company_responsibility;
 
-                    data.company_payable =
-                      data.company_payble || $this.state.company_payable;
-                    data.sec_company_responsibility =
-                      data.sec_company_res ||
+                    sum_data.company_payable =
+                      sum_data.company_payble || $this.state.company_payable;
+                    sum_data.sec_company_responsibility =
+                      sum_data.sec_company_res ||
                       $this.state.sec_company_responsibility;
-                    data.sec_company_payable =
-                      data.sec_company_paybale ||
+                    sum_data.sec_company_payable =
+                      sum_data.sec_company_paybale ||
                       $this.state.sec_company_payable;
 
-                    data.copay_amount =
-                      data.copay_amount || $this.state.copay_amount;
-                    data.sec_copay_amount =
-                      data.sec_copay_amount || $this.state.sec_copay_amount;
-                    data.addItemButton = false;
-                    data.saveEnable = false;
+                    sum_data.copay_amount =
+                      sum_data.copay_amount || $this.state.copay_amount;
+                    sum_data.sec_copay_amount =
+                      sum_data.sec_copay_amount || $this.state.sec_copay_amount;
+                    sum_data.addItemButton = false;
+                    sum_data.saveEnable = false;
+                    sum_data.postEnable = false;
+                    sum_data.hims_f_pharmacy_pos_detail_id = null;
                     if (context !== null) {
-                      context.updateState({ ...data });
+                      context.updateState({ ...sum_data });
                     }
                   } else {
                     swalMessage({
@@ -578,20 +610,47 @@ const datehandle = ($this, ctrl, e) => {
 };
 
 const deletePosDetail = ($this, context, row) => {
+  debugger;
   let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+  let update_pharmacy_stock = $this.state.update_pharmacy_stock;
+  let delete_pharmacy_stock = $this.state.delete_pharmacy_stock;
+  let insert_pharmacy_stock = $this.state.insert_pharmacy_stock;
 
-  for (var i = 0; i < pharmacy_stock_detail.length; i++) {
-    if (
-      pharmacy_stock_detail[i].item_id === row["item_id"] &&
-      pharmacy_stock_detail[i].batchno === row["batchno"]
-    ) {
-      pharmacy_stock_detail.splice(i, 1);
+  const _index = pharmacy_stock_detail.indexOf(row);
+  if (row.hims_f_pharmacy_pos_detail_id !== null) {
+    for (var i = 0; i < update_pharmacy_stock.length; i++) {
+      if (
+        update_pharmacy_stock[i].item_id === row["item_id"] &&
+        update_pharmacy_stock[i].batchno === row["batchno"]
+      ) {
+        update_pharmacy_stock.splice(i, 1);
+      }
+    }
+    let Updateobj = {
+      hims_f_pharmacy_pos_detail_id: row.hims_f_pharmacy_pos_detail_id
+    };
+    delete_pharmacy_stock.push(Updateobj);
+  } else {
+    if (insert_pharmacy_stock.length > 0) {
+      for (let k = 0; k < insert_pharmacy_stock.length; k++) {
+        if (
+          insert_pharmacy_stock[i].item_id === row["item_id"] &&
+          insert_pharmacy_stock[i].batchno === row["batchno"]
+        ) {
+          insert_pharmacy_stock.splice(k, 1);
+        }
+      }
     }
   }
+
+  pharmacy_stock_detail.splice(_index, 1);
 
   if (pharmacy_stock_detail.length === 0) {
     if (context !== undefined) {
       context.updateState({
+        update_pharmacy_stock: update_pharmacy_stock,
+        delete_pharmacy_stock: delete_pharmacy_stock,
+        insert_pharmacy_stock: insert_pharmacy_stock,
         pharmacy_stock_detail: pharmacy_stock_detail,
         advance_amount: 0,
         discount_amount: 0,
@@ -743,12 +802,12 @@ const calculateAmount = ($this, context, row, ctrl, e) => {
   e = e || ctrl;
   // if (e.target.value !== e.target.oldvalue) {
   let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
-  debugger;
+  
   row[e.target.name] = parseFloat(e.target.value);
   let inputParam = [
     {
       hims_d_services_id: row.service_id,
-      vat_applicable: "Y",
+      vat_applicable: $this.state.vat_applicable,
       unit_cost: row.unit_cost,
       pharmacy_item: "Y",
       quantity: row.quantity === null ? 0 : row.quantity,
@@ -779,7 +838,7 @@ const calculateAmount = ($this, context, row, ctrl, e) => {
     data: inputParam,
     onSuccess: response => {
       if (response.data.success) {
-        debugger;
+        
         let data = response.data.records;
 
         data.billdetails[0].extended_cost = data.billdetails[0].gross_amount;
@@ -1001,7 +1060,7 @@ const CloseItemBatch = ($this, context, e) => {
         : $this.state.unit_cost
       : $this.state.unit_cost;
 
-  debugger;
+  
   $this.setState({
     ...$this.state,
     selectBatch: !$this.state.selectBatch,
@@ -1032,7 +1091,7 @@ const onchangegridcol = ($this, context, row, e) => {
 };
 
 const qtyonchangegridcol = ($this, context, row, e) => {
-  debugger;
+  
   if (row.batchno === undefined || row.batchno === null) {
     swalMessage({
       title: "Please select Batch",
@@ -1062,7 +1121,6 @@ const qtyonchangegridcol = ($this, context, row, e) => {
 
 const ViewInsurance = ($this, e) => {
   $this.setState({
-    ...$this.state,
     viewInsurance: !$this.state.viewInsurance
   });
 };
@@ -1113,7 +1171,7 @@ const credittexthandle = ($this, context, ctrl, e) => {
 const SelectBatchDetails = ($this, row, context, e) => {
   //
 
-  debugger;
+  
   let _pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
 
   row["batchno"] = e.selected.batchno;
@@ -1121,6 +1179,7 @@ const SelectBatchDetails = ($this, row, context, e) => {
   row["qtyhand"] = e.selected.qtyhand;
   row["grn_no"] = e.selected.grnno;
   row["barcode"] = e.selected.barcode;
+  row["unit_cost"] = e.selected.sales_price;
 
   const _index = _pharmacy_stock_detail.indexOf(row);
   _pharmacy_stock_detail[_index] = row;

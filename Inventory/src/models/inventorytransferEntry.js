@@ -151,7 +151,6 @@ module.exports = {
                 });
               }
 
-              //console.log("details:", t_details);
               req.records = outputArray;
               next();
             } else {
@@ -349,9 +348,9 @@ module.exports = {
                 "INSERT INTO `hims_f_inventory_transfer_header` (transfer_number,transfer_date,`year`,period,\
               hims_f_inventory_material_header_id,from_location_type,from_location_id, \
               material_requisition_number, to_location_id, to_location_type, description, \
-              completed, completed_date, completed_lines, transfer_quantity,requested_quantity,\
-              recieved_quantity,outstanding_quantity, cancelled, cancelled_by,cancelled_date) \
-              VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+              completed, completed_date, completed_lines, transfer_quantity,requested_quantity,direct_transfer,\
+              recieved_quantity,outstanding_quantity, cancelled, cancelled_by,cancelled_date,hospital_id) \
+              VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
               values: [
                 transfer_number,
                 today,
@@ -369,11 +368,13 @@ module.exports = {
                 input.completed_lines,
                 input.transfer_quantity,
                 input.requested_quantity,
+                input.direct_transfer,
                 input.recieved_quantity,
                 input.outstanding_quantity,
                 input.cancelled,
                 input.cancelled_by,
-                input.cancelled_date
+                input.cancelled_date,
+                req.userIdentity.hospital_id
               ],
               printQuery: true
             })

@@ -6,7 +6,7 @@ import InventoryItem from "../../../Models/InventoryItem";
 const Validations = $this => {
   let isError = false;
 
-  debugger;
+  
 
   if ($this.state.item_description === null) {
     isError = true;

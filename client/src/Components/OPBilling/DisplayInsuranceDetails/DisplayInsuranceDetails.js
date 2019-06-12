@@ -11,7 +11,7 @@ export default class DisplayInsuranceDetails extends Component {
   }
 
   render() {
-    debugger;
+    
     return (
       <div className="col-12">
       

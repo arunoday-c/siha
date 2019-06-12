@@ -80,14 +80,14 @@ class ItemMaster extends Component {
 
   componentWillReceiveProps(newProps) {
     if (newProps.itemPop.hims_d_item_master_id !== undefined) {
-      debugger;
+      
       let IOputs = newProps.itemPop;
       this.setState({ ...this.state, ...IOputs });
     }
   }
 
   render() {
-    debugger;
+    
     return (
       <div className="hptl-phase1-Display-patient-details">
         <AlgaehModalPopUp

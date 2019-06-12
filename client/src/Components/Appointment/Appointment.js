@@ -350,7 +350,6 @@ class Appointment extends PureComponent {
           this.setState({
             departments: response.data.records.departmets
           });
-          //console.log("All Doctors:", response.data.records);
         }
       },
       onFailure: error => {
@@ -419,7 +418,6 @@ class Appointment extends PureComponent {
             });
           });
 
-          //console.log("Reschedule Status:", this.state.RescheduleId);
         }
       },
       onFailure: error => {

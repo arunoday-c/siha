@@ -14,27 +14,47 @@ import { updateIntoItemLocation } from "../models/commonFunction";
 const { addReceiptEntry, getReceiptEntry } = algaehPath(
   "algaeh-billing/src/models/receiptentry"
 );
+import algaehUtilities from "algaeh-utilities/utilities";
 
 export default () => {
   const api = Router();
-  api.get("/getPosEntry", getPosEntry, getReceiptEntry, (req, res, next) => {
-    let _receptEntry = req.receptEntry;
-    let _pos = req.records;
-    let result = { ..._receptEntry, ..._pos };
+  const utilities = new algaehUtilities();
 
-    delete req.receptEntry;
-    delete req.pos;
-    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-      success: true,
-      records: result
-    });
-  });
+  api.get(
+    "/getPosEntry",
+    getPosEntry,
+    (req, res, next) => {
+      if (req.records.hims_f_receipt_header_id != undefined) {
+        getReceiptEntry(req, res, next);
+      } else {
+        utilities.logger().log("Outside: ");
+
+        req.receptEntry = { receiptdetails: [] };
+        utilities.logger().log("po_from: ", req.receptEntry);
+        next();
+      }
+    },
+    (req, res, next) => {
+      let _receptEntry = req.receptEntry;
+      let _pos = req.records;
+      let result = { ..._receptEntry, ..._pos };
+
+      delete req.receptEntry;
+      delete req.pos;
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: result
+      });
+    }
+  );
 
   api.post(
     "/addPosEntry",
-    addReceiptEntry,
+    (req, res, next) => {
+      delete req.connection;
+      next();
+    },
     addPosEntry,
-    updateIntoItemLocation,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
@@ -49,6 +69,47 @@ export default () => {
       records: req.records
     });
   });
+
+  api.post(
+    "/addandpostPosEntry",
+    addReceiptEntry,
+    addPosEntry,
+    updateIntoItemLocation,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+
+  api.put(
+    "/updatePosEntry",
+    (req, res, next) => {
+      delete req.connection;
+      next();
+    },
+    updatePosEntry,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+
+  api.put(
+    "/postPosEntry",
+    addReceiptEntry,
+    updatePosEntry,
+    updateIntoItemLocation,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
 
   return api;
 };

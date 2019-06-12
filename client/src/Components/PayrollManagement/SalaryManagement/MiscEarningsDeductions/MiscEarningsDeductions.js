@@ -110,7 +110,6 @@ export default class MiscEarningsDeductions extends Component {
       this.setState({
         send_array: myArray
       });
-      //console.log("Send Array:", this.state.send_array);
     } else {
       swalMessage({
         title: "Already processed cannot update",

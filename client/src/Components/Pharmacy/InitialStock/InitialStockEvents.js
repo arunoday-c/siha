@@ -73,11 +73,11 @@ const getItemUom = $this => {
 };
 
 const itemchangeText = ($this, e) => {
-  debugger;
+  
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   getItemUom($this);
-  debugger;
+  
 
   $this.setState({
     [name]: value,
@@ -225,7 +225,7 @@ const SaveInitialStock = $this => {
   $this.state.transaction_type = "INT";
   $this.state.transaction_date = $this.state.docdate;
 
-  debugger;
+  
   for (let i = 0; i < $this.state.pharmacy_stock_detail.length; i++) {
     $this.state.pharmacy_stock_detail[i].net_total =
       $this.state.pharmacy_stock_detail[i].extended_cost;
@@ -233,7 +233,7 @@ const SaveInitialStock = $this => {
     $this.state.pharmacy_stock_detail[i].operation = "+";
   }
 
-  debugger;
+  
 
   algaehApiCall({
     uri: "/initialstock/addPharmacyInitialStock",

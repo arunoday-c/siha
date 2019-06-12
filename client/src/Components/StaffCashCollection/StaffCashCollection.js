@@ -64,7 +64,7 @@ class StaffCashCollection extends Component {
   }
 
   loadDetails(value) {
-    debugger;
+    
     this.setState({
       cashHandoverDetails: value.cashiers
     });

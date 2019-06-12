@@ -8,7 +8,7 @@ export default function EyeModalEvent() {
   return {
 
     ChangeEventHandler: ($this, e) => {
-      debugger
+      
       let name = e.name || e.target.name;
       let value = e.value || e.target.value;
       $this.setState({
@@ -17,7 +17,7 @@ export default function EyeModalEvent() {
     },
 
     DVRightEventHandler:($this, e) => {
-      debugger
+      
 
       $this.setState({
         cva_dv_right: e.target.value
@@ -25,7 +25,7 @@ export default function EyeModalEvent() {
     },
 
     SaveGlassPrescription:($this) => {
-      debugger
+      
       let inputObj = {
         patient_id: Window.global["current_patient"],
         visit_id:Window.global["visit_id"],
@@ -131,7 +131,7 @@ export default function EyeModalEvent() {
         remarks:$this.state.remarks
       }
 
-      debugger
+      
       if($this.state.hims_f_glass_prescription_id === null){
         algaehApiCall({
           uri: "/opthometry/addGlassPrescription",

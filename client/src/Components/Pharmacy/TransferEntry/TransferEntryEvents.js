@@ -15,7 +15,7 @@ const changeTexts = ($this, ctrl, e) => {
 
 const getCtrlCode = ($this, docNumber, row) => {
   AlgaehLoader({ show: true });
-  debugger;
+  
 
   algaehApiCall({
     uri: "/transferEntry/gettransferEntry",
@@ -28,7 +28,7 @@ const getCtrlCode = ($this, docNumber, row) => {
     },
     onSuccess: response => {
       if (response.data.success === true) {
-        debugger;
+        
         let pharmacy_stock_detail = [];
         let data = response.data.records[0];
         for (let i = 0; i < data.stock_detail.length; i++) {
@@ -43,6 +43,7 @@ const getCtrlCode = ($this, docNumber, row) => {
         }
 
         data.saveEnable = true;
+        data.dataExists = true;
 
         if (data.completed === "Y") {
           data.postEnable = true;
@@ -80,7 +81,7 @@ const ClearData = ($this, e) => {
 };
 
 const SaveTransferEntry = $this => {
-  debugger;
+  
   AlgaehLoader({ show: true });
   $this.state.completed = "Y";
   $this.state.transaction_type = "ST";
@@ -129,7 +130,7 @@ const SaveTransferEntry = $this => {
   });
 
   $this.state.stock_detail = stock_detail;
-  debugger;
+  
   algaehApiCall({
     uri: "/transferEntry/addtransferEntry",
     module: "pharmacy",
@@ -143,6 +144,7 @@ const SaveTransferEntry = $this => {
           year: response.data.records.year,
           period: response.data.records.period,
           saveEnable: true,
+          dataExists: true,
           postEnable: false,
           cannotEdit: true
         });
@@ -246,7 +248,7 @@ const RequisitionSearch = ($this, e) => {
           },
 
           onSuccess: response => {
-            debugger;
+            
             if (response.data.success === true) {
               let data = response.data.records;
 
@@ -258,7 +260,7 @@ const RequisitionSearch = ($this, e) => {
               data.to_location_id = from_location_id;
               data.from_location_type = data.to_location_type;
               data.to_location_type = from_location_type;
-              debugger;
+              
               for (let i = 0; i < data.stock_detail.length; i++) {
                 data.stock_detail[i].material_requisition_header_id =
                   data.hims_f_pharamcy_material_header_id;
@@ -339,6 +341,12 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
   }
 };
 
+const checkBoxEvent = ($this, e) => {
+  let IOputs = TransferIOputs.inputParam();
+  IOputs.direct_transfer = $this.state.direct_transfer === "Y" ? "N" : "Y";
+  $this.setState(IOputs);
+};
+
 export {
   changeTexts,
   getCtrlCode,
@@ -346,5 +354,6 @@ export {
   SaveTransferEntry,
   PostTransferEntry,
   RequisitionSearch,
-  LocationchangeTexts
+  LocationchangeTexts,
+  checkBoxEvent
 };

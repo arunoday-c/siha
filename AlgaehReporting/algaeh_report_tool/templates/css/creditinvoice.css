@@ -220,6 +220,7 @@ body {
 	font-family: 'Calibri', sans-serif;
 }
 
-.tableTotal tr:last-child td {
+.tableTotal .bold {
 	font-weight: bold;
+	background: #f2f2f2;
 }

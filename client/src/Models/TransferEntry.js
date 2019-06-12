@@ -51,7 +51,17 @@ export default {
       batch_detail_view: false,
       item_details: null,
       quantity_transferred: 0,
-      cannotEdit: false
+      cannotEdit: false,
+      direct_transfer: "N",
+      selectBatch: false,
+
+      sales_uom_id: null,
+      quantity: 0,
+      qtyhand: null,
+      barcode: null,
+      ItemUOM: [],
+      Batch_Items: [],
+      item_description: ""
     };
     return output;
   }

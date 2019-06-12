@@ -8,7 +8,7 @@ export default function EditorEvents() {
   return {
 
     ChangeEventHandler: ($this, e) => {
-      debugger
+      
       let name = e.name || e.target.name;
       let value = e.value || e.target.value;
       $this.setState({
@@ -17,7 +17,7 @@ export default function EditorEvents() {
     },
 
     dcafradioChange: ($this, e) => {
-      debugger
+      
       let value = e.target.value
       switch (e.target.name) {
 
@@ -64,7 +64,7 @@ export default function EditorEvents() {
     },
 
     ucafradioChange: ($this, e) => {
-      debugger
+      
       let value = e.target.value
       switch (e.target.name) {
 
@@ -207,7 +207,7 @@ export default function EditorEvents() {
     },
 
     saveAndPrintOcaf:($this, e) => {
-      debugger
+      
       // const _hims_f_ocaf_header = $this.props.dataProps.hims_f_ocaf_header[0];
 
       let inputObj = {
@@ -317,7 +317,7 @@ export default function EditorEvents() {
 
 
     saveAndPrintDcaf:($this, e) => {
-      debugger
+      
       algaehApiCall({
         uri: "/dcaf/updateDcafDetails",
         data: $this.state,
@@ -374,7 +374,7 @@ export default function EditorEvents() {
     },
 
     saveAndPrintUcaf:($this, e) => {
-      debugger
+      
       algaehApiCall({
         uri: "/ucaf/updateUcafDetails",
         data: $this.state,

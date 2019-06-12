@@ -76,7 +76,7 @@ class RCMWorkbench extends Component {
   }
 
   addClaimsArray(row, e) {
-    debugger;
+    
     let generateReport = true;
     if (row.claim_validated === "P") {
       e.preventDefault();
@@ -181,7 +181,7 @@ class RCMWorkbench extends Component {
   generateReports() {
     AlgaehLoader({ show: true });
     let rpt_paramenter = [];
-    debugger;
+    
     // validatedClaims
     for (let i = 0; i < this.validatedClaims.length; i++) {
       rpt_paramenter.push([

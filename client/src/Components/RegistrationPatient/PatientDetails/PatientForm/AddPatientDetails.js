@@ -6,6 +6,7 @@ import {
 } from "../../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import Enumerable from "linq";
+import { AlgaehOpenContainer } from "../../../../utils/GlobalFunctions";
 
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -155,10 +156,12 @@ const nationalityhandle = ($this, context, e) => {
     callback: () => {
       let name = e.name || e.target.name;
       let value = e.value || e.target.value;
-      //TODO HOSPITAL
 
+      let hospital_id = JSON.parse(
+        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+      ).hims_d_hospital_id;
       let hospitaldetails = Enumerable.from($this.props.hospitaldetails)
-        .where(w => w.hims_d_hospital_id === 1)
+        .where(w => w.hims_d_hospital_id === hospital_id)
         .firstOrDefault();
 
       let vat_applicable = "Y";

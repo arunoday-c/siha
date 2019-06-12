@@ -284,7 +284,7 @@ class OPBilling extends Component {
           data.billDetails = false;
 
           if (data.insured === "Y") {
-            debugger;
+            
             $this.props.getPatientInsurance({
               uri: "/patientRegistration/getPatientInsurance",
               module: "frontDesk",

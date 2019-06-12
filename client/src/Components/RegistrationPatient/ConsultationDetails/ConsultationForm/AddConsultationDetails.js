@@ -27,7 +27,7 @@ const DeptselectedHandeler = ($this, context, e) => {
 };
 
 const selectedHandeler = ($this, context, e) => {
-  debugger;
+  
   let primary_policy_num = $this.state.primary_policy_num;
   SetBulkState({
     state: $this,
@@ -63,7 +63,7 @@ const selectedHandeler = ($this, context, e) => {
                 primary_policy_num: primary_policy_num
               },
               () => {
-                debugger;
+                
                 if (context !== null) {
                   context.updateState({
                     ...$this.state,
@@ -85,7 +85,7 @@ const selectedHandeler = ($this, context, e) => {
           }
         },
         onCatch: () => {
-          debugger;
+          
           $this.setState({
             [e.name]: null
           });
@@ -103,9 +103,9 @@ const selectedHandeler = ($this, context, e) => {
 };
 
 const doctorselectedHandeler = ($this, context, e) => {
-  debugger;
+  
   if ($this.state.sub_department_id !== null) {
-    debugger;
+    
     let doctor_name = e.selected.full_name;
 
     if ($this.state.hims_d_patient_id != null) {
@@ -353,7 +353,7 @@ const generateBillDetails = ($this, context) => {
 };
 
 const radioChange = ($this, context, e) => {
-  debugger;
+  
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   if (name === "maternity_patient_yes") {

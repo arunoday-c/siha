@@ -27,7 +27,7 @@ export default class UcafEditor extends Component {
   }
 
   saveAndPrintUcaf(e) {
-    debugger;
+    
     EditorEvents().saveAndPrintUcaf(this,e)  
   }
 
@@ -51,11 +51,11 @@ export default class UcafEditor extends Component {
   }
 
   componentDidMount(){
-    debugger
+    
 
     if(this.props.dataProps.hims_f_ucaf_header !== undefined &&
       this.props.dataProps.hims_f_ucaf_header.length > 0){
-        debugger;
+        
         let data = this.props.dataProps.hims_f_ucaf_header[0];
         let insurance = this.props.dataProps.hims_f_ucaf_insurance_details[0]
 

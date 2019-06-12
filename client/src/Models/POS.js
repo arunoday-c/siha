@@ -57,6 +57,7 @@ export default {
 
       insured: "N",
       sec_insured: "N",
+      insurance_yesno: "N",
 
       hims_f_receipt_header_id: null,
       receipt_number: null,
@@ -113,7 +114,12 @@ export default {
       grn_no: null,
       item_group_id: null,
       item_category: null,
-      dataExitst: false
+      dataExitst: false,
+      vat_applicable: "Y",
+      nationality_id: null,
+      insert_pharmacy_stock: [],
+      update_pharmacy_stock: [],
+      delete_pharmacy_stock: []
     };
     return output;
   }

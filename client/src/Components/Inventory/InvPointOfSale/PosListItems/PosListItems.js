@@ -58,7 +58,6 @@ class PosListItems extends Component {
   }
 
   componentDidMount() {
-
     if (
       this.props.inventoryitemcategory === undefined ||
       this.props.inventoryitemcategory.length === 0
@@ -89,8 +88,10 @@ class PosListItems extends Component {
       });
     }
 
-    if (this.props.inventoryitemuom === undefined ||
-      this.props.inventoryitemuom.length === 0) {
+    if (
+      this.props.inventoryitemuom === undefined ||
+      this.props.inventoryitemuom.length === 0
+    ) {
       this.props.getItemUOM({
         uri: "/inventory/getInventoryUom",
         module: "inventory",
@@ -137,7 +138,6 @@ class PosListItems extends Component {
                                         <h4 className="title">
                                           {result.item_description}
                                         </h4>
-                                        <small>{result.generic_name}</small>
                                         <small>{result.uom_description}</small>
                                       </div>
                                       <div className="col-4">
@@ -426,8 +426,8 @@ class PosListItems extends Component {
                                         </span>
                                       );
                                     },
-                                    others:{
-                                      minWidth:200
+                                    others: {
+                                      minWidth: 200
                                     }
                                   },
 
@@ -510,8 +510,8 @@ class PosListItems extends Component {
                                         />
                                       );
                                     },
-                                    others:{
-                                      minWidth:90
+                                    others: {
+                                      minWidth: 90
                                     }
                                   },
                                   {
@@ -523,7 +523,8 @@ class PosListItems extends Component {
                                     ),
                                     displayTemplate: row => {
                                       let display =
-                                        this.props.inventoryitemuom === undefined
+                                        this.props.inventoryitemuom ===
+                                        undefined
                                           ? []
                                           : this.props.inventoryitemuom.filter(
                                               f =>
@@ -542,7 +543,8 @@ class PosListItems extends Component {
                                     },
                                     editorTemplate: row => {
                                       let display =
-                                        this.props.inventoryitemuom === undefined
+                                        this.props.inventoryitemuom ===
+                                        undefined
                                           ? []
                                           : this.props.inventoryitemuom.filter(
                                               f =>
@@ -559,8 +561,8 @@ class PosListItems extends Component {
                                         </span>
                                       );
                                     },
-                                    others:{
-                                      minWidth:90
+                                    others: {
+                                      minWidth: 90
                                     }
                                   },
                                   {
@@ -571,8 +573,8 @@ class PosListItems extends Component {
                                       />
                                     ),
                                     disabled: true,
-                                    others:{
-                                      minWidth:90
+                                    others: {
+                                      minWidth: 90
                                     }
                                   },
 
@@ -657,7 +659,7 @@ class PosListItems extends Component {
                                           }}
                                         />
                                       );
-                                    }                                    
+                                    }
                                   },
 
                                   {
@@ -693,7 +695,6 @@ class PosListItems extends Component {
                                     context
                                   )
                                 }}
-
                               />
                             </div>
                           </div>
@@ -733,7 +734,6 @@ class PosListItems extends Component {
                               {getAmountFormart(this.state.patient_payable_h)}
                             </h6>
                           </div>
-
                         </div>
                       </div>
                       <div className="col-lg-5" style={{ textAlign: "right" }}>
@@ -784,7 +784,6 @@ class PosListItems extends Component {
                                 {getAmountFormart(this.state.copay_amount)}
                               </h6>
                             </div>
-
                           </div>
                           <div className="row">
                             <div className="col-lg-12">
@@ -832,7 +831,6 @@ class PosListItems extends Component {
                                 </div>
                               </div>
                             </div>
-
                           </div>
                         </div>
                       </div>

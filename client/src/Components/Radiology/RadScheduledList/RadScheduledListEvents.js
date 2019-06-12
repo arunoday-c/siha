@@ -75,7 +75,7 @@ const datehandle = ($this, ctrl, e) => {
 };
 
 const getRadTestList = $this => {
-  debugger;
+  
   let inputobj = {};
 
   if ($this.state.from_date !== null) {
@@ -125,7 +125,7 @@ const openResultEntry = ($this, row) => {
         mappingName: "templatelist"
       },
       afterSuccess: data => {
-        debugger;
+        
         let Template = row;
         row.exam_start_date_time = new Date(row.exam_start_date_time);
         Template.Templatelist = data;
