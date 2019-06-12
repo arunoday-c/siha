@@ -70,7 +70,7 @@ export default class OcafEditor extends Component {
   }
 
   componentDidMount(){
-    debugger
+    
     // this.props.dataProps.hims_f_ocaf_header
     // this.props.dataProps.hims_f_ocaf_insurance_details
     if(this.props.dataProps.hims_f_ocaf_header !== undefined &&

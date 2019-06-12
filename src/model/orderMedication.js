@@ -378,7 +378,6 @@ let addPatientPrescription = (req, res, next) => {
 
                           insertArr.push(...pre_data);
                         }
-                        //console.log("insertArr:", insertArr);
                         //if request for pre-aproval needed
                         if (insertArr.length > 0) {
                           const insurtCols = [

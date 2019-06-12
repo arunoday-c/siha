@@ -87,7 +87,6 @@ class ShiftAssign extends PureComponent {
         shiftEmp: myArray
       },
       () => {
-        //console.log("Data:", this.state.shiftEmp);
       }
     );
   }

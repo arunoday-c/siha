@@ -85,7 +85,7 @@ const getPatientDetails = ($this, output) => {
 
 const ClearData = ($this, e) => {
 
-  debugger
+  
   let IOputs = INVPOSIOputs.inputParam();
 
   IOputs.patient_payable_h = 0;

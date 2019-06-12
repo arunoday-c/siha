@@ -39,13 +39,13 @@ class ServicePriceList extends PureComponent {
   }
 
   componentWillMount() {
-    debugger
+    
     let InputOutput = this.props.InsuranceSetup;
     this.setState({ ...this.state, ...InputOutput });
   }
 
   componentDidMount() {
-    debugger
+    
     if (this.state.insurance_provider_id !== null) {
       getPriceList(this, this);
     } else {
@@ -91,7 +91,7 @@ class ServicePriceList extends PureComponent {
           mappingName: "pricefromplans"
         },
         afterSuccess:data=>{
-          debugger
+          
         }
       });
       this.setState({

@@ -51,7 +51,7 @@ export default class UcafEditor extends Component {
   }
 
   componentDidMount(){
-    debugger
+    
 
     if(this.props.dataProps.hims_f_ucaf_header !== undefined &&
       this.props.dataProps.hims_f_ucaf_header.length > 0){

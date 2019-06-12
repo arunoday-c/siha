@@ -378,10 +378,8 @@ class Dental extends Component {
 
       if (my_item !== undefined) {
         teeth.splice(teeth.indexOf(my_item), 1);
-        //console.log("Teeth Selected", teeth);
       } else {
         teeth.push(my_obj);
-        //console.log("Teeth Selected", teeth);
       }
 
       let send_teeth = Enumerable.from(teeth)
@@ -404,7 +402,6 @@ class Dental extends Component {
       };
 
       my_send_obj.send_teeth = send_teeth;
-      //console.log("Send Teeth", JSON.stringify(my_send_obj));
 
       this.setState(
         {

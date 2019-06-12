@@ -39,7 +39,7 @@ export default class DcafEditor extends Component {
   }
 
   componentDidMount(){
-    debugger
+    
 
     if(this.props.dataProps.hims_f_dcaf_header !== undefined &&
       this.props.dataProps.hims_f_dcaf_header.length > 0){

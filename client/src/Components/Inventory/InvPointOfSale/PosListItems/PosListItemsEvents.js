@@ -160,7 +160,7 @@ const itemchangeText = ($this, context, e, ctrl) => {
         },
         onSuccess: response => {
           if (response.data.success) {
-            debugger
+            
             let data = response.data.records;
             if (data.locationResult.length > 0) {
               getUnitCost($this, context, e.service_id);
@@ -395,7 +395,7 @@ const AddItems = ($this, context) => {
                 type: "warning"
               });
             } else {
-              debugger
+              
               let existingservices = $this.state.inventory_stock_detail;
 
               if (data.billdetails.length !== 0) {
@@ -932,7 +932,7 @@ const ShowItemBatch = ($this, e) => {
 };
 
 const CloseItemBatch = ($this, context, e) => {
-  debugger
+  
 
   let batchno= e !== undefined ? e.selected === true ? e.batchno :
     $this.state.batchno : $this.state.batchno;

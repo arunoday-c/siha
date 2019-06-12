@@ -38,7 +38,7 @@ export default class Eye extends Component {
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {
-          debugger
+          
           let data = response.data.records
           for (let i = 0; i < data.length; i++) {
 

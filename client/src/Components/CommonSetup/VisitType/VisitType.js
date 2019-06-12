@@ -115,7 +115,6 @@ class VisitType extends Component {
   }
 
   deleteVisitType(row) {
-    //console.log("Delete Row ID: ", row.hims_d_visit_type_id);
     this.showconfirmDialog(row.hims_d_visit_type_id);
   }
 
