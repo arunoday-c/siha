@@ -67,7 +67,7 @@ const ClearData = ($this, e) => {
 };
 
 const SaveRequisitionEntry = $this => {
-  debugger
+  
   algaehApiCall({
     uri: "/requisitionEntry/addrequisitionEntry",
     module: "pharmacy",

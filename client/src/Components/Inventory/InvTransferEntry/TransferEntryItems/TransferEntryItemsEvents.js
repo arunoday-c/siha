@@ -202,7 +202,7 @@ const updateTransEntryDetail = ($this, context, e) => {
 };
 
 const onchangegridcol = ($this, context, row, e) => {
-  debugger;
+  
   let name = e.target.name;
   let value = e.target.value === "" ? null : e.target.value;
 
@@ -281,7 +281,7 @@ const onchangegridcol = ($this, context, row, e) => {
       type: "warning"
     });
   } else {
-    debugger;
+    
     let inventory_stock_detail = $this.state.inventory_stock_detail;
 
     row[name] = value;
@@ -370,7 +370,7 @@ const CancelGrid = ($this, context, cancelRow) => {
 };
 
 const AddSelectedBatches = ($this, context) => {
-  debugger;
+  
   if (
     parseFloat($this.state.item_details.quantity_transferred) >
     parseFloat($this.state.item_details.quantity_authorized)

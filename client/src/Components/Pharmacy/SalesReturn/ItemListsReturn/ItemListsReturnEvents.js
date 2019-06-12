@@ -304,7 +304,7 @@ const updateSalesReturnDetail = ($this, context) => {
 //Calculate Row Detail
 const calculateAmount = ($this, row, context, e) => {
   // e = e || ctrl;
-  debugger;
+  
 
   let name = e.target.name;
   let value = e.target.value === "" ? 0 : e.target.value;

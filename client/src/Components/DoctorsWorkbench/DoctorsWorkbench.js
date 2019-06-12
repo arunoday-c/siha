@@ -402,6 +402,7 @@ class DoctorsWorkbench extends Component {
                                 className="pat-code"
                                 onClick={() => {
                                   setGlobal({
+                                    vitals_mandatory: data.vitals_mandatory,
                                     "EHR-STD": "PatientProfile",
                                     current_patient: data.patient_id,
                                     episode_id: data.episode_id,

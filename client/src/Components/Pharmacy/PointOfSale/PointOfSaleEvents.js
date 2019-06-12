@@ -14,7 +14,6 @@ import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
 import Enumerable from "linq";
 
 const changeTexts = ($this, ctrl, e) => {
-  debugger;
   e = ctrl || e;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -86,7 +85,7 @@ const getPosEntry = ($this, pos_number) => {
           data.pos_customer_type = "OP";
         }
         data.dataExitst = true;
-        debugger;
+
         if (data.receiptdetails.length !== 0) {
           for (let i = 0; i < data.receiptdetails.length; i++) {
             if (data.receiptdetails[i].pay_type === "CA") {
@@ -135,7 +134,7 @@ const POSSearch = $this => {
     onRowSelect: row => {
       // $this.setState({ pos_number: row.pos_number });
       AlgaehLoader({ show: true });
-      debugger;
+
       getPosEntry($this, row.pos_number);
     }
   });
@@ -393,7 +392,7 @@ const SavePosEnrty = $this => {
   if (!err) {
     AlgaehLoader({ show: true });
     // GenerateReciept($this, that => {
-    debugger;
+
     // $this.state.insurance_yesno = $this.state.mode_of_pay === "2" ? "Y" : "N";
     $this.state.posted = "N";
     $this.state.receipt_header_id = null;
@@ -467,10 +466,7 @@ const SavePosEnrty = $this => {
 };
 
 const PostPosEntry = $this => {
-  debugger;
   GenerateReciept($this, that => {
-    debugger;
-
     $this.state.posted = "Y";
     $this.state.transaction_type = "POS";
     $this.state.transaction_id = $this.state.hims_f_pharmacy_pos_header_id;
@@ -654,7 +650,7 @@ const AddItems = ($this, ItemInput) => {
   if (ItemInput.length > 0) {
     let inputObj = {};
     let inputArray = [];
-    debugger;
+
     for (let i = 0; i < ItemInput.length; i++) {
       inputObj = {
         item_id: ItemInput[i].item_id,
@@ -668,8 +664,6 @@ const AddItems = ($this, ItemInput) => {
       inputArray.push(inputObj);
     }
 
-    debugger;
-
     algaehApiCall({
       uri: "/posEntry/getPrescriptionPOS",
       module: "pharmacy",
@@ -677,7 +671,6 @@ const AddItems = ($this, ItemInput) => {
       data: inputArray,
       onSuccess: response => {
         if (response.data.success) {
-          debugger;
           let data = response.data.records;
 
           $this.setState({
@@ -740,7 +733,6 @@ const nationalityhandle = ($this, e) => {
   const hospitaldetails = JSON.parse(
     AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
   );
-  debugger;
 
   let vat_applicable = "Y";
 

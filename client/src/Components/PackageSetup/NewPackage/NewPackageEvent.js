@@ -239,7 +239,7 @@ export default function NewPackageEvent() {
     },
 
     discounthandle: ($this, e) => {
-      debugger;
+      
       let advance_percentage = 0,
         advance_amount = 0;
       advance_percentage =

@@ -99,7 +99,6 @@ export default class LeaveAuthorization extends Component {
       hospital_id: this.state.hospital_id
     };
 
-    //console.log("Send Data:", JSON.stringify(send_data));
 
     algaehApiCall({
       uri: "/leave/authorizeLeave",

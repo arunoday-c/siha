@@ -147,7 +147,7 @@ const datehandle = ($this, ctrl, e) => {
 };
 
 const deleteTransEntryDetail = ($this, context, e, rowId) => {
-  debugger;
+  
 
   let display =
     $this.props.itemlist === undefined
@@ -194,7 +194,7 @@ const updateTransEntryDetail = ($this, context) => {
 };
 
 const onchangegridcol = ($this, context, row, e) => {
-  debugger;
+  
   let name = e.target.name;
   let value = e.target.value === "" ? null : e.target.value;
 
@@ -306,7 +306,7 @@ const EditGrid = ($this, context, cancelRow) => {
 };
 
 const AddSelectedBatches = ($this, context) => {
-  debugger;
+  
   if (
     parseFloat($this.state.item_details.quantity_transferred) >
     parseFloat($this.state.item_details.quantity_authorized)

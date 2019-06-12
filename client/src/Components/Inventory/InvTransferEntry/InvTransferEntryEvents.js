@@ -16,7 +16,6 @@ const changeTexts = ($this, ctrl, e) => {
 
 const getCtrlCode = ($this, docNumber, row) => {
   AlgaehLoader({ show: true });
-  debugger;
 
   algaehApiCall({
     uri: "/inventorytransferEntry/gettransferEntry",
@@ -29,7 +28,6 @@ const getCtrlCode = ($this, docNumber, row) => {
     },
     onSuccess: response => {
       if (response.data.success === true) {
-        debugger;
         let inventory_stock_detail = [];
         let data = response.data.records[0];
         for (let i = 0; i < data.stock_detail.length; i++) {
@@ -108,7 +106,6 @@ const ClearData = ($this, e) => {
 };
 
 const SaveTransferEntry = $this => {
-  debugger;
   AlgaehLoader({ show: true });
   $this.state.completed = "Y";
   $this.state.transaction_type = "ST";
@@ -270,7 +267,6 @@ const RequisitionSearch = ($this, e) => {
 
           onSuccess: response => {
             if (response.data.success === true) {
-              debugger;
               let data = response.data.records;
               AlgaehLoader({ show: true });
               let from_location_id = data.from_location_id;

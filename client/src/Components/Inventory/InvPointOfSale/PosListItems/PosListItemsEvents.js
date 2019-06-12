@@ -160,7 +160,11 @@ const itemchangeText = ($this, context, e, ctrl) => {
         },
         onSuccess: response => {
           if (response.data.success) {
+<<<<<<< HEAD
             debugger;
+=======
+            
+>>>>>>> 6e1e0bbc8a42f810febf9c1abeabd5cbf851d349
             let data = response.data.records;
             if (data.locationResult.length > 0) {
               getUnitCost($this, context, e.service_id);
@@ -394,7 +398,11 @@ const AddItems = ($this, context) => {
                 type: "warning"
               });
             } else {
+<<<<<<< HEAD
               debugger;
+=======
+              
+>>>>>>> 6e1e0bbc8a42f810febf9c1abeabd5cbf851d349
               let existingservices = $this.state.inventory_stock_detail;
 
               if (data.billdetails.length !== 0) {
@@ -931,6 +939,7 @@ const ShowItemBatch = ($this, e) => {
 };
 
 const CloseItemBatch = ($this, context, e) => {
+<<<<<<< HEAD
   debugger;
 
   let batchno =
@@ -958,6 +967,19 @@ const CloseItemBatch = ($this, context, e) => {
         ? e.qtyhand
         : $this.state.qtyhand
       : $this.state.qtyhand;
+=======
+  
+
+  let batchno= e !== undefined ? e.selected === true ? e.batchno :
+    $this.state.batchno : $this.state.batchno;
+  let expiry_date=
+    e !== undefined ? e.selected === true ? moment(e.expirydt)._d : $this.state.expiry_date : $this.state.expiry_date;
+
+  let grn_no= e !== undefined ? e.selected === true ? e.grnno :
+    $this.state.grn_no : $this.state.grn_no;
+  let qtyhand= e !== undefined ? e.selected === true ? e.qtyhand :
+    $this.state.qtyhand : $this.state.qtyhand;
+>>>>>>> 6e1e0bbc8a42f810febf9c1abeabd5cbf851d349
 
   $this.setState({
     ...$this.state,

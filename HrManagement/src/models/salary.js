@@ -2984,7 +2984,6 @@ module.exports = {
                     .Select(s => parseFloat(s.airfare_amount))
                     .FirstOrDefault(0);
 
-                  //console.log("totalbasic:", total_basic);
 
                   let emp_gratuity = new LINQ(gratuity)
                     .Where(w => w.employee_id == salary[i]["employee_id"])

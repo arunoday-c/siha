@@ -29,7 +29,7 @@ class PatientHistory extends Component {
   }
 
   savePatientHistory() {
-    debugger;
+    
     let his_array = [];
 
     if (
@@ -97,7 +97,7 @@ class PatientHistory extends Component {
             title: "Record added successfully",
             type: "success"
           });
-          debugger;
+          
 
           this.setState(
             {

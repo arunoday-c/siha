@@ -516,7 +516,7 @@ const deletePODetail = ($this, context, row) => {
 };
 
 const updatePODetail = ($this, context, row) => {
-  debugger
+  
   let saveEnable = false;
   if ($this.state.hims_f_procurement_po_header_id !== null) {
     saveEnable = true;
@@ -623,7 +623,7 @@ const dateFormater = ($this, value) => {
 
 const onchangegridcol = ($this, row, e) => {
   //
-  debugger
+  
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   if (parseFloat(value) > parseFloat(row.total_quantity)) {
@@ -647,7 +647,7 @@ const onchangegridcol = ($this, row, e) => {
 
 const onchhangegriddiscount = ($this, row, e) => {
   //
-  debugger
+  
   let sub_discount_percentage = 0;
   let sub_discount_amount = 0;
   let extended_cost = 0;
@@ -767,7 +767,7 @@ const CancelGrid = ($this, context, cancelRow) => {
 };
 
 const gridNumHandler = ($this, row, e) => {
-  debugger
+  
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 

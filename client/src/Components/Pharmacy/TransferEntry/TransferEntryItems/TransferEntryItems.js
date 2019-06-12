@@ -91,7 +91,7 @@ class TransferEntryItems extends Component {
   }
 
   CloseOrent(context) {
-    debugger;
+    
     this.setState({
       quantity_transferred: 0,
       item_details: null,
@@ -108,7 +108,7 @@ class TransferEntryItems extends Component {
   }
 
   ChangesOrent(context, item) {
-    debugger;
+    
     let quantity_transferred = _.sumBy(item.batches, s =>
       parseFloat(s.quantity_transfer)
     );

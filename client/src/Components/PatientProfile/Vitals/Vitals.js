@@ -144,8 +144,11 @@ class Vitals extends Component {
       onSuccess: () => {
         let bodyArray = [];
         const _elements = document.querySelectorAll("[vitalid]");
-
+        let resetElements = {};
         for (let i = 0; i < _elements.length; i++) {
+          const inputElement = _elements[i].querySelector("input");
+          const elementName = inputElement.getAttribute("name");
+          resetElements[elementName] = "";
           if (_elements[i].value !== "") {
             const _isDepended = _elements[i].getAttribute("dependent");
             bodyArray.push({
@@ -173,18 +176,9 @@ class Vitals extends Component {
             if (response.data.success) {
               this.setState(
                 {
-                  weight: "",
-                  height: "",
-                  heart_rate: "",
-                  respiratory_rate: "",
-                  glucose_fbs: "",
-                  glucose_rbs: "",
-                  glucose_pbs: "",
+                  ...resetElements,
                   temperature_from: "",
-                  oxysat: "",
-                  temperature_celsisus: "",
-                  systolic: "",
-                  diastolic: "",
+                  bp_position: "",
                   recorded_date: new Date(),
                   recorded_time: moment().format(config.formators.time)
                 },
@@ -474,7 +468,9 @@ class Vitals extends Component {
                                   className: "txt-fld",
                                   disabled: true,
                                   value: temperatureConvertion(
-                                    this.state[_name],
+                                    this.state[_name] === ""
+                                      ? 0
+                                      : this.state[_name],
                                     item.uom
                                   )
                                 }}

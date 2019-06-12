@@ -371,7 +371,7 @@ class InvoiceGeneration extends Component {
                         <AlgaehLabel label={{ fieldName: "service_type_id" }} />
                       ),
                       displayTemplate: row => {
-                        debugger;
+                        
                         let display =
                           this.props.servicetype === undefined
                             ? []

@@ -14,7 +14,7 @@ const texthandle = ($this, ctrl, e) => {
 };
 
 const numberhandle = ($this, ctrl, e) => {
-  debugger;
+  
   e = e || ctrl;
 
   let name = e.name;
@@ -34,7 +34,7 @@ const numberhandle = ($this, ctrl, e) => {
 //Save Order
 const SaveMedication = ($this, e) => {
   if ($this.state.medicationitems.length > 0) {
-    debugger;
+    
     let inputObj = {
       patient_id: $this.state.patient_id,
       encounter_id: $this.state.encounter_id,
@@ -76,7 +76,7 @@ const SaveMedication = ($this, e) => {
   }
 };
 const printPrescription = (that, e) => {
-  debugger;
+  
   const _patient = Window.global["current_patient"];
   const _visit = Window.global["visit_id"];
   algaehApiCall({
@@ -195,7 +195,7 @@ const AddItems = $this => {
     $this.state.item_category_id !== null &&
     $this.state.item_group_id !== null
   ) {
-    debugger;
+    
     let medicationitems = $this.state.medicationitems;
     let medicationobj = {
       item_id: $this.state.item_id,
@@ -306,7 +306,7 @@ const dateFormater = value => {
 };
 
 const deleteItems = ($this, row) => {
-  debugger;
+  
   let medicationitems = $this.state.medicationitems;
   medicationitems.splice(row.rowIdx, 1);
   let saveMedicationEnable = medicationitems.length > 0 ? false : true;
@@ -318,7 +318,7 @@ const deleteItems = ($this, row) => {
 };
 
 const updateItems = ($this, row) => {
-  debugger;
+  
   let medicationitems = $this.state.medicationitems;
   medicationitems[row.rowId] = row;
 
@@ -430,7 +430,7 @@ const onchangegridcol = ($this, row, e) => {
 };
 
 const EditGrid = ($this, cancelRow) => {
-  debugger;
+  
   let _medicationitems = $this.state.medicationitems;
   if (cancelRow !== undefined) {
     _medicationitems[cancelRow.rowIdx] = cancelRow;
@@ -442,7 +442,7 @@ const EditGrid = ($this, cancelRow) => {
 };
 
 const CancelGrid = ($this, cancelRow) => {
-  debugger;
+  
   let _medicationitems = $this.state.medicationitems;
   if (cancelRow !== undefined) {
     _medicationitems[cancelRow.rowIdx] = cancelRow;

@@ -53,7 +53,7 @@ const serviceTypeHandeler = ($this, e) => {
 };
 
 const serviceHandeler = ($this, e) => {
-  debugger;
+  
   $this.setState({
     s_service: e.hims_d_services_id,
     s_service_type: e.service_type_id,
@@ -65,7 +65,7 @@ const serviceHandeler = ($this, e) => {
 const ProcessService = ($this, e) => {
   // orderedList
 
-  debugger;
+  
 
   let SelectedService = Enumerable.from($this.props.orderedList)
     .where(

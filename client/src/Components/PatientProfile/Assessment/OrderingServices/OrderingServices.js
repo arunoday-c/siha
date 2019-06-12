@@ -141,7 +141,7 @@ class OrderingServices extends Component {
         mappingName: "existinginsurance"
       },
       afterSuccess: data => {
-        debugger;
+        
         if (data.length > 0) {
           this.setState({
             insured: "Y",
@@ -179,10 +179,6 @@ class OrderingServices extends Component {
       output.insured = "Y";
       this.setState({ ...output });
     }
-  }
-
-  chooseStyle = ({pre_approval, covered}) => {
-    
   }
 
   onClose = e => {

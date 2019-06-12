@@ -152,7 +152,7 @@ class PointOfSale extends Component {
   }
 
   generateReport(rpt_name, rpt_desc) {
-    debugger;
+    
     algaehApiCall({
       uri: "/report",
       method: "GET",
@@ -214,7 +214,7 @@ class PointOfSale extends Component {
   }
 
   render() {
-    debugger;
+    
     const _posLocation =
       this.props.poslocations === undefined ? [] : this.props.poslocations;
     return (

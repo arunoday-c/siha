@@ -84,7 +84,12 @@ const getPatientDetails = ($this, output) => {
 };
 
 const ClearData = ($this, e) => {
+<<<<<<< HEAD
   debugger;
+=======
+
+  
+>>>>>>> 6e1e0bbc8a42f810febf9c1abeabd5cbf851d349
   let IOputs = INVPOSIOputs.inputParam();
 
   IOputs.patient_payable_h = 0;
@@ -433,7 +438,7 @@ const AddItems = ($this, ItemInput) => {
   if (ItemInput.length > 0) {
     let inputObj = {};
     let inputArray = [];
-    debugger;
+    
     for (let i = 0; i < ItemInput.length; i++) {
       inputObj = {
         item_id: ItemInput[i].item_id,

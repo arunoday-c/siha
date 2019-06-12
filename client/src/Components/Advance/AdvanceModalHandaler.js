@@ -37,7 +37,7 @@ const cashtexthandle = ($this, ctrl, e) => {
 
 const calculateTotalAmount = ($this, e) => {
   // Enumerable
-  debugger;
+  
   let cash = parseFloat($this.state.cash_amount);
   let card = parseFloat($this.state.card_amount);
   let cheque = parseFloat($this.state.cheque_amount);

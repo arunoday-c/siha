@@ -115,7 +115,7 @@ class PhySchSetup extends Component {
       thursday: false,
       friday: false,
       saturday: false,
-      sunday: false,     
+      sunday: false,
       department_error: false,
       department_error_text: "",
       openScheduler: false,
@@ -205,8 +205,23 @@ class PhySchSetup extends Component {
 
   deleteSchedule(data) {
     console.log("dat:", data);
+
+    const docs = Enumerable.from(this.state.scheduleDoctors)
+      .where(
+        w =>
+          w.appointment_schedule_header_id ==
+          data.hims_d_appointment_schedule_header_id
+      )
+      .select(s => {
+        return s.provider_id;
+      })
+      .toArray();
+
+    console.log("docs:", docs);
+    console.log("scheduleDoctors:", this.state.scheduleDoctors);
+
     swal({
-      title: "Do you want to Delete " + data.description,
+      title: "Do you want to Delete Schedule: " + data.description,
       type: "warning",
       showCancelButton: true,
       confirmButtonText: "Yes!",
@@ -220,8 +235,12 @@ class PhySchSetup extends Component {
           method: "DELETE",
           module: "frontDesk",
           data: {
-            hims_d_appointment_schedule_header_id:
-              data.hims_d_appointment_schedule_header_id
+            providers: docs,
+            appointment_schedule_header_id:
+              data.hims_d_appointment_schedule_header_id,
+            from_date: this.state.from_date,
+            to_date: this.state.to_date,
+            sub_department_id: this.state.sub_department_id
           },
           onSuccess: response => {
             if (response.data.success) {
@@ -229,8 +248,14 @@ class PhySchSetup extends Component {
                 title: "Record updated successfully",
                 type: "success"
               });
+              this.clearState();
+            } else {
+              swalMessage({
+                title: response.data.records.message,
+                type: "error"
+              });
             }
-            this.clearState();
+          
           },
           onFailure: error => {
             swalMessage({
@@ -508,7 +533,10 @@ class PhySchSetup extends Component {
 
     let send_data = {
       appointment_schedule_header_id: header_id,
-      provider_id: provider_id
+      provider_id: provider_id,
+      from_date: this.state.from_date,
+      to_date: this.state.from_date,
+      sub_department_id: this.state.sub_department_id
     };
 
     swal({
@@ -524,7 +552,7 @@ class PhySchSetup extends Component {
         algaehApiCall({
           uri: "/appointment/deleteDoctorFromSchedule",
           module: "frontDesk",
-          method: "PUT",
+          method: "DELETE",
           data: send_data,
           onSuccess: response => {
             if (response.data.success) {
@@ -533,6 +561,11 @@ class PhySchSetup extends Component {
                 type: "success"
               });
               document.getElementById("srch-sch").click();
+            } else {
+              swalMessage({
+                title: response.data.records.message,
+                type: "error"
+              });
             }
           },
           onFailure: error => {
@@ -593,6 +626,9 @@ class PhySchSetup extends Component {
                 }
               }
             );
+
+            console.log("scheduleList", this.state.scheduleList);
+            console.log("scheduleDoctors", this.state.scheduleDoctors);
           }
         },
         onFailure: error => {

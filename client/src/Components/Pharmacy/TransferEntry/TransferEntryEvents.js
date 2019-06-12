@@ -15,7 +15,7 @@ const changeTexts = ($this, ctrl, e) => {
 
 const getCtrlCode = ($this, docNumber, row) => {
   AlgaehLoader({ show: true });
-  debugger;
+  
 
   algaehApiCall({
     uri: "/transferEntry/gettransferEntry",
@@ -28,7 +28,7 @@ const getCtrlCode = ($this, docNumber, row) => {
     },
     onSuccess: response => {
       if (response.data.success === true) {
-        debugger;
+        
         let pharmacy_stock_detail = [];
         let data = response.data.records[0];
         for (let i = 0; i < data.stock_detail.length; i++) {
@@ -81,7 +81,7 @@ const ClearData = ($this, e) => {
 };
 
 const SaveTransferEntry = $this => {
-  debugger;
+  
   AlgaehLoader({ show: true });
   $this.state.completed = "Y";
   $this.state.transaction_type = "ST";
@@ -130,7 +130,7 @@ const SaveTransferEntry = $this => {
   });
 
   $this.state.stock_detail = stock_detail;
-  debugger;
+  
   algaehApiCall({
     uri: "/transferEntry/addtransferEntry",
     module: "pharmacy",
@@ -248,7 +248,7 @@ const RequisitionSearch = ($this, e) => {
           },
 
           onSuccess: response => {
-            debugger;
+            
             if (response.data.success === true) {
               let data = response.data.records;
 
@@ -260,7 +260,7 @@ const RequisitionSearch = ($this, e) => {
               data.to_location_id = from_location_id;
               data.from_location_type = data.to_location_type;
               data.to_location_type = from_location_type;
-              debugger;
+              
               for (let i = 0; i < data.stock_detail.length; i++) {
                 data.stock_detail[i].material_requisition_header_id =
                   data.hims_f_pharamcy_material_header_id;

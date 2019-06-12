@@ -76,7 +76,7 @@ export default class PatientDashboard extends Component {
   }
   /* on diagnosis icd change */
   onChangeDiagnosis(e, item) {
-    debugger;
+    
   }
 
   /* method to render with selected patent data*/

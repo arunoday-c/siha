@@ -103,7 +103,6 @@ class UserShiftMapping extends Component {
           this.setState({
             cashiers_list: response.data.records
           });
-          //console.log("Cashiers:", response.data.records);
         }
       },
       onFailure: error => {

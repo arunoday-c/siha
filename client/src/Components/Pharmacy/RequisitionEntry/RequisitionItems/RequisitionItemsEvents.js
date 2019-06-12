@@ -87,7 +87,7 @@ const itemchangeText = ($this, context, e) => {
       });
     }
   } else {
-    debugger
+    
     if ($this.state.to_location_id !== null) {
       let value = e.value || e.target.value;
 

@@ -4,7 +4,7 @@ import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 
 const texthandle = ($this, e) => {
-  debugger;
+  
   // e = e || ctrl;
 
   let name = e.name || e.target.name;
@@ -196,7 +196,7 @@ const addNewNetwork = $this => {
       btnupdate: true
     },
     () => {
-      debugger;
+      
     }
   );
 };

@@ -31,7 +31,7 @@ class ActiveMedication extends Component {
   }
 
   render() {
-    debugger;
+    
     const latest_mediction =
       this.props.latest_mediction === undefined
         ? []
