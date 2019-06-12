@@ -955,31 +955,12 @@ const CloseItemBatch = ($this, context, e) => {
         : $this.state.qtyhand
       : $this.state.qtyhand;
 
-  let batchno =
+  let sale_price =
     e !== undefined
       ? e.selected === true
-        ? e.batchno
-        : $this.state.batchno
-      : $this.state.batchno;
-  let expiry_date =
-    e !== undefined
-      ? e.selected === true
-        ? moment(e.expirydt)._d
-        : $this.state.expiry_date
-      : $this.state.expiry_date;
-
-  let grn_no =
-    e !== undefined
-      ? e.selected === true
-        ? e.grnno
-        : $this.state.grn_no
-      : $this.state.grn_no;
-  let qtyhand =
-    e !== undefined
-      ? e.selected === true
-        ? e.qtyhand
-        : $this.state.qtyhand
-      : $this.state.qtyhand;
+        ? e.sale_price
+        : $this.state.unit_cost
+      : $this.state.unit_cost;
 
   $this.setState({
     ...$this.state,
@@ -987,7 +968,8 @@ const CloseItemBatch = ($this, context, e) => {
     batchno: batchno,
     expiry_date: expiry_date,
     grn_no: grn_no,
-    qtyhand: qtyhand
+    qtyhand: qtyhand,
+    unit_cost: sale_price
   });
 
   if (context !== null) {
@@ -995,7 +977,8 @@ const CloseItemBatch = ($this, context, e) => {
       batchno: batchno,
       expiry_date: expiry_date,
       grn_no: grn_no,
-      qtyhand: qtyhand
+      qtyhand: qtyhand,
+      unit_cost: sale_price
     });
   }
 };
