@@ -68,8 +68,6 @@ class InsuranceAdd extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-<<<<<<< HEAD
-    debugger;
     // if (
     //   nextProps.insuranceprovider !== undefined &&
     //   nextProps.insuranceprovider.length !== 0
@@ -83,8 +81,7 @@ class InsuranceAdd extends PureComponent {
     //     this.setState(IOputs);
     //   }
     // }
-=======
-    
+
     if (
       nextProps.insuranceprovider !== undefined &&
       nextProps.insuranceprovider.length !== 0
@@ -98,7 +95,7 @@ class InsuranceAdd extends PureComponent {
         this.setState(IOputs);
       }
     }
->>>>>>> 6e1e0bbc8a42f810febf9c1abeabd5cbf851d349
+
     // if (
     //   nextProps.subinsuranceprovider !== undefined &&
     //   nextProps.subinsuranceprovider.length !== 0
