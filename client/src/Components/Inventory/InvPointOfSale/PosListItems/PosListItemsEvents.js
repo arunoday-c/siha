@@ -160,7 +160,7 @@ const itemchangeText = ($this, context, e, ctrl) => {
         },
         onSuccess: response => {
           if (response.data.success) {
-            debugger
+            debugger;
             let data = response.data.records;
             if (data.locationResult.length > 0) {
               getUnitCost($this, context, e.service_id);
@@ -234,7 +234,6 @@ const itemchangeText = ($this, context, e, ctrl) => {
           });
         }
       });
-
     } else {
       $this.setState(
         {
@@ -365,7 +364,7 @@ const AddItems = ($this, context) => {
           discount_percentage: $this.state.discount_percentage,
           insured: $this.state.insured,
           conversion_factor: $this.state.conversion_factor,
-          vat_applicable: "Y",
+          vat_applicable: $this.state.vat_applicable,
           hims_d_services_id: $this.state.service_id,
           quantity: $this.state.quantity,
           primary_insurance_provider_id: $this.state.insurance_provider_id,
@@ -395,7 +394,7 @@ const AddItems = ($this, context) => {
                 type: "warning"
               });
             } else {
-              debugger
+              debugger;
               let existingservices = $this.state.inventory_stock_detail;
 
               if (data.billdetails.length !== 0) {
@@ -716,7 +715,7 @@ const calculateAmount = ($this, context, row, ctrl, e) => {
   let inputParam = [
     {
       hims_d_services_id: row.service_id,
-      vat_applicable: "Y",
+      vat_applicable: $this.state.vat_applicable,
       unit_cost: row.unit_cost,
       inventory_item: "Y",
       quantity: row.quantity,
@@ -932,17 +931,33 @@ const ShowItemBatch = ($this, e) => {
 };
 
 const CloseItemBatch = ($this, context, e) => {
-  debugger
+  debugger;
 
-  let batchno= e !== undefined ? e.selected === true ? e.batchno :
-    $this.state.batchno : $this.state.batchno;
-  let expiry_date=
-    e !== undefined ? e.selected === true ? moment(e.expirydt)._d : $this.state.expiry_date : $this.state.expiry_date;
+  let batchno =
+    e !== undefined
+      ? e.selected === true
+        ? e.batchno
+        : $this.state.batchno
+      : $this.state.batchno;
+  let expiry_date =
+    e !== undefined
+      ? e.selected === true
+        ? moment(e.expirydt)._d
+        : $this.state.expiry_date
+      : $this.state.expiry_date;
 
-  let grn_no= e !== undefined ? e.selected === true ? e.grnno :
-    $this.state.grn_no : $this.state.grn_no;
-  let qtyhand= e !== undefined ? e.selected === true ? e.qtyhand :
-    $this.state.qtyhand : $this.state.qtyhand;
+  let grn_no =
+    e !== undefined
+      ? e.selected === true
+        ? e.grnno
+        : $this.state.grn_no
+      : $this.state.grn_no;
+  let qtyhand =
+    e !== undefined
+      ? e.selected === true
+        ? e.qtyhand
+        : $this.state.qtyhand
+      : $this.state.qtyhand;
 
   $this.setState({
     ...$this.state,

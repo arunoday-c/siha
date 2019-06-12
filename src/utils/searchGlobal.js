@@ -433,6 +433,21 @@ let algaehSearchConfig = (searchName, req) => {
         orderBy: "IM.hims_d_inventory_item_master_id desc"
       },
       {
+        searchName: "tranitemmaster",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS IM.hims_d_inventory_item_master_id, IM.item_description, IM.category_id, IM.sales_uom_id, IM.service_id, IM.group_id, IC.category_desc, IG.group_description, PU.uom_description,\
+          SR.standard_fee,IL.sale_price from hims_d_inventory_item_master IM, hims_d_inventory_tem_category IC,\
+          hims_d_inventory_item_group IG, hims_d_inventory_uom PU, hims_d_services SR, \
+          hims_m_inventory_item_location IL where IL.item_id = IM.hims_d_inventory_item_master_id and \
+          IM.category_id = IC.hims_d_inventory_tem_category_id and IM.group_id = IG.hims_d_inventory_item_group_id\
+          and IM.sales_uom_id=PU.hims_d_inventory_uom_id and IM.service_id= SR.hims_d_services_id and\
+          IM.item_status='A' and IM.record_status='A' and \
+          IC.record_status='A' and IG.record_status='A' and IL.inventory_location_id=? ",
+        orderBy: "IM.hims_d_inventory_item_master_id desc",
+        groupBy: " GROUP By hims_d_inventory_item_master_id",
+        inputSequence: ["inventory_location_id"]
+      },
+      {
         searchName: "invitemmaster",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS IM.hims_d_inventory_item_master_id,IM.item_description,IM.category_id, IM.sales_uom_id,IM.service_id, \

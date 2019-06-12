@@ -1,0 +1,83 @@
+.htpl-phase1-primary-insurance-form {
+  background: #ffff;
+  border-radius: 5px;
+  .primary-details {
+    padding-top: 8px;
+    border-right: 1px dashed #d3d3d3;
+  }
+
+  mark {
+    background: none;
+    color: red;
+  }
+  // label {
+  //   font-weight: 400;
+  //
+  // }
+
+  .centerAlign {
+    text-align: center;
+  }
+
+  .go-button {
+    cursor: pointer;
+    margin-top: 10px;
+  }
+
+  .text_field {
+    width: 100% !important;
+    background-color: #fbfbfb;
+
+    margin-right: "5px";
+  }
+
+  .form-details {
+    padding: 5px;
+    padding-bottom: 0px;
+    // margin-top: 0px;
+  }
+  .radio-design {
+    position: absolute;
+    top: 5px;
+    left: 36px;
+    //
+  }
+  .refactor-design {
+    min-height: 28px;
+    background-color: #fbfbfb;
+    border: 0px;
+  }
+  .file-name-upload {
+    margin-left: 4%;
+    margin-top: 2%;
+  }
+
+  .secondary-details {
+    padding-top: 8px;
+    .secondary-box-container {
+      // padding: 5px;
+      .attach-design {
+        background: #8c8c8c;
+        // min-height: 30px;
+        color: #fff;
+        //padding: 5px;
+        position: relative;
+        //  top: 99px;
+        cursor: pointer;
+        margin-left: -1px;
+        margin-right: -1px;
+        //
+      }
+      .preview-image {
+        position: absolute;
+        top: -1px;
+        left: 15px;
+        height: 101px;
+      }
+    }
+  }
+  .insuranceRadio {
+    padding-left: 15px;
+    padding-right: 0;
+  }
+}

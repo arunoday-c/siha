@@ -110,7 +110,7 @@ const AddItems = ($this, context) => {
   let ItemInput = [
     {
       insured: $this.state.insured,
-      vat_applicable: "Y",
+      vat_applicable: $this.state.vat_applicable,
       hims_d_services_id: $this.state.service_id,
       quantity: $this.state.quantity,
       primary_insurance_provider_id: $this.state.insurance_provider_id,
@@ -325,7 +325,7 @@ const calculateAmount = ($this, row, context, e) => {
     let inputParam = [
       {
         hims_d_services_id: row.service_id,
-        vat_applicable: "Y",
+        vat_applicable: $this.state.vat_applicable,
         quantity: row.return_quantity,
         discount_amout: name === "discount_percentage" ? 0 : row.discount_amout,
         discount_percentage:

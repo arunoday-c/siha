@@ -356,10 +356,10 @@ module.exports = {
 
   billingCalculations: (req, res, next) => {
     try {
-      // const utilities = new algaehUtilities();
+      const utilities = new algaehUtilities();
 
       let decimal_places = req.userIdentity.decimal_places;
-      // utilities.logger().log("decimal_places: ", decimal_places);
+
       let hasCalculateall =
         req.body.intCalculateall == undefined ? true : req.body.intCalculateall;
       let inputParam =
@@ -373,14 +373,18 @@ module.exports = {
         );
       }
       let sendingObject = {};
+      utilities.logger().log("inputParam: ", inputParam);
 
+      utilities.logger().log("hasCalculateall: ", hasCalculateall);
       if (hasCalculateall == true) {
         sendingObject.sub_total_amount = new LINQ(inputParam).Sum(d =>
           parseFloat(d.gross_amount)
         );
+
         sendingObject.net_total = new LINQ(inputParam).Sum(d =>
           parseFloat(d.net_amout)
         );
+        utilities.logger().log("net_total: ", sendingObject.net_total);
         sendingObject.discount_amount = new LINQ(inputParam).Sum(d =>
           parseFloat(d.discount_amout)
         );

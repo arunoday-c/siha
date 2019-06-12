@@ -13,17 +13,12 @@ import NetworkPlan from "../NetworkPlan/NetworkPlan";
 import ServicePriceList from "../ServicePriceList/ServicePriceList";
 // import NetworkPlanList from "../NetworkPlanList/NetworkPlanList";
 import InsuranceSetup from "../../../Models/InsuranceSetup";
-import {
-  handleNext,
-  handleBack,
-  updatedata
-} from "./InsuranceAddHandaler";
+import { handleNext, handleBack, updatedata } from "./InsuranceAddHandaler";
 
 import MyContext from "../../../utils/MyContext";
 import { setGlobal } from "../../../utils/GlobalFunctions";
 import { getCookie } from "../../../utils/algaehApiCall";
 import { AlgaehActions } from "../../../actions/algaehActions";
-
 
 function getSteps() {
   return ["Insurance Provider", "Sub Insurance", "Network/Plan", "Price List"];
@@ -73,20 +68,20 @@ class InsuranceAdd extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger
-    if (
-      nextProps.insuranceprovider !== undefined &&
-      nextProps.insuranceprovider.length !== 0
-    ) {
-      this.setState({ ...this.state, ...nextProps.insuranceprovider[0] });
-    } else {
-      if (this.state.insurance_provider_saved === false) {
-        let IOputs = InsuranceSetup.inputParam();
-        let prevLang = getCookie("Language");
-        IOputs.selectedLang = prevLang;
-        this.setState(IOputs);
-      }
-    }
+    debugger;
+    // if (
+    //   nextProps.insuranceprovider !== undefined &&
+    //   nextProps.insuranceprovider.length !== 0
+    // ) {
+    //   this.setState({ ...this.state, ...nextProps.insuranceprovider[0] });
+    // } else {
+    //   if (this.state.insurance_provider_saved === false) {
+    //     let IOputs = InsuranceSetup.inputParam();
+    //     let prevLang = getCookie("Language");
+    //     IOputs.selectedLang = prevLang;
+    //     this.setState(IOputs);
+    //   }
+    // }
     // if (
     //   nextProps.subinsuranceprovider !== undefined &&
     //   nextProps.subinsuranceprovider.length !== 0
@@ -135,11 +130,11 @@ class InsuranceAdd extends PureComponent {
         });
       }
     }
-
+    debugger;
     let IOputs = InsuranceSetup.inputParam();
-    IOputs.activeStep= 0
-    IOputs.screenName= "InsuranceProvider"
-    this.setState(IOputs,()=>{
+    IOputs.activeStep = 0;
+    IOputs.screenName = "InsuranceProvider";
+    this.setState(IOputs, () => {
       this.props.onClose && this.props.onClose(e);
     });
   };

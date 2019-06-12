@@ -112,7 +112,8 @@ export default {
       conversion_factor: 1,
       grn_no: null,
       item_group_id: null,
-      item_category: null
+      item_category: null,
+      vat_applicable: "Y"
     };
     return output;
   }
