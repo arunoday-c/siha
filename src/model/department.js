@@ -197,18 +197,20 @@ let selectSubDepartment = (req, res, next) => {
     db.getConnection((error, connection) => {
       connection.query(
         "select hims_d_sub_department_id, sub_department_code, sub_department_name, arabic_sub_department_name,\
-        sub_department_desc, department_id, effective_start_date, effective_end_date, sub_department_status\
+        sub_department_desc, department_id, effective_start_date, effective_end_date, sub_department_status,vitals_mandatory\
         from  hims_d_sub_department where record_status='A' and " +
           where.condition +
           " order by hims_d_sub_department_id desc",
         where.values,
         (error, result) => {
+          console.log("Result", result);
           releaseDBConnection(db, connection);
           if (error) {
             next(error);
+          } else {
+            req.records = result;
+            next();
           }
-          req.records = result;
-          next();
         }
       );
     });

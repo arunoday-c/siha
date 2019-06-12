@@ -765,7 +765,7 @@ let getMyDay = (req, res, next) => {
       .executeQuery({
         query:
           "select  E.hims_f_patient_encounter_id,P.patient_code,P.full_name,P.gender,P.age,E.patient_id ,V.appointment_patient,V.new_visit_patient,E.provider_id,E.`status`,E.nurse_examine,E.checked_in,\
-         E.payment_type,E.episode_id,E.encounter_id,E.`source`,E.updated_date as encountered_date,E.visit_id ,sub_department_id,SD.chart_type from hims_f_patient_encounter E\
+         E.payment_type,E.episode_id,E.encounter_id,E.`source`,E.updated_date as encountered_date,E.visit_id ,sub_department_id,SD.chart_type,SD.vitals_mandatory from hims_f_patient_encounter E\
          INNER JOIN hims_f_patient P ON E.patient_id=P.hims_d_patient_id \
             inner join hims_f_patient_visit V on E.visit_id=V.hims_f_patient_visit_id  \
             inner join hims_d_sub_department SD on sub_department_id=SD.hims_d_sub_department_id  \
@@ -2572,12 +2572,32 @@ let getVitalsHeaderMaster = (req, res, next) => {
         [req.userIdentity.sub_department_id],
 
         (error, result) => {
-          releaseDBConnection(db, connection);
           if (error) {
+            releaseDBConnection(db, connection);
             next(error);
+          } else {
+            const vitalDetails = new LINQ(result)
+              .Select(s => {
+                return s.hims_d_vitals_header_id;
+              })
+              .ToArray();
+            console.log("vitalDetails", vitalDetails);
+            connection.query(
+              "select hims_d_vitals_details_id,vitals_header_id,gender,min_age,max_age,min_value,max_value from hims_d_vitals_details where vitals_header_id in (?)",
+              [vitalDetails],
+              (error, detailResult) => {
+                if (error) {
+                  releaseDBConnection(db, connection);
+                  next(error);
+                } else {
+                  console.log("detailResult", detailResult);
+                  releaseDBConnection(db, connection);
+                  req.records = result;
+                  next();
+                }
+              }
+            );
           }
-          req.records = result;
-          next();
         }
       );
     });

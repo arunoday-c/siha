@@ -276,7 +276,8 @@ class DeptMaster extends Component {
             arabic_sub_department_name: data.arabic_sub_department_name,
             effective_start_date: data.effective_start_date,
             chart_type: data.chart_type,
-            hims_d_sub_department_id: data.hims_d_sub_department_id
+            hims_d_sub_department_id: data.hims_d_sub_department_id,
+            vitals_mandatory: data.vitals_mandatory
           },
           module: "masterSettings",
           method: "PUT",
@@ -763,6 +764,36 @@ class DeptMaster extends Component {
                                 "DD-MM-YYYY"
                               )}
                             </span>
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "vitals_mandatory",
+                        label: (
+                          <label className="style_Label">
+                            Vitals Mandatory
+                          </label>
+                        ),
+                        displayTemplate: row => {
+                          return row.vitals_mandatory === "Y" ? "Yes" : "No";
+                        },
+                        editorTemplate: row => {
+                          console.log("Row on edit", row);
+                          return (
+                            <AlagehAutoComplete
+                              div={{}}
+                              selector={{
+                                name: "vitals_mandatory",
+                                className: "select-fld",
+                                value: row.vitals_mandatory,
+                                dataSource: {
+                                  textField: "name",
+                                  valueField: "value",
+                                  data: GlobalVariables.FORMAT_YESNO
+                                },
+                                onChange: this.changeGridEditors.bind(this, row)
+                              }}
+                            />
                           );
                         }
                       },
