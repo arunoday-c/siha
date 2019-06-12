@@ -1,3 +1,50 @@
+Change Log 12-06-2019
+--------------------------
+#issue no: #
+Fix :
+update algaeh_d_reports set report_query='select
+	P.full_name as pat_name,
+	V.visit_date,
+	P.patient_code,
+	V.age_in_years,
+	P.gender,
+	P.contact_number,
+	trim(N.nationality)as nationality,
+	S.sub_department_name,
+	G.generic_name,
+	D.frequency,
+	D.start_date as from_date,
+	D.dosage,
+	D.no_of_days,
+	D.instructions,
+	E.full_name as full_name,
+	E.license_number,
+	coalesce(IP.insurance_provider_name,''--'')as insurance_provider_name,
+	coalesce(M.card_class,''--'')as card_class ,
+	coalesce(M.primary_policy_num,''--'')as primary_policy_num
+from
+	hims_f_prescription as H
+inner join hims_f_patient_visit as V on
+	H.episode_id = V.episode_id
+inner join hims_f_prescription_detail as D on
+	prescription_id = H.hims_f_prescription_id
+inner join hims_d_item_generic as G on
+	G.hims_d_item_generic_id = D.generic_id
+inner join hims_f_patient as P on
+	P.hims_d_patient_id = H.patient_id
+inner join hims_d_nationality as N on
+	N.hims_d_nationality_id = P.nationality_id
+inner join hims_d_sub_department S on
+	S.hims_d_sub_department_id = V.sub_department_id
+inner join hims_d_employee E on
+	E.hims_d_employee_id = H.provider_id
+left join hims_m_patient_insurance_mapping as M on
+M.patient_visit_id = V.hims_f_patient_visit_id
+left join  hims_d_insurance_provider as IP on
+IP.hims_d_insurance_provider_id = M.primary_insurance_provider_id where V.patient_id=? and (V.hims_f_patient_visit_id =? or V.visit_code=?) '
+where report_id=14;
+update algaeh_d_reports set report_input_series='["hims_d_patient_id","visit_id","visit_code"]' where report_id=14;
+
 Chnge Log on 11-06-2019
 --------------------------
 #issue no :#276
