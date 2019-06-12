@@ -4,20 +4,21 @@
     <div class="print-body">
 
         <section>
-
   <table class="tableForLabel" cell-padding="0">
 
-      <tr><td><label class="textEnLft">TRN No</label>:<span class="valueText">{{header.tax_number}}</span><label class="textArRht">رقم التسجيل الضريبي</label></td></tr>
+      <tr><td><label class="textEnLft">VAT Reg No.</label>:<span class="valueText">{{header.tax_number}}</span><label class="textArRht">الرقم الضريبي</label></td></tr>
         <tr>
                     <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
                 </tr>
-                <tr><td><label class="textEnLft">Invoice No</label>:<span class="valueText">{{header.invoice_number}}</span><label class="textArRht">رقم الفاتورة</label></td><td><label class="textEnLft">Invoice Date</label>:<span class="valueText">{{dateTime header.invoice_date "date"}}</span><label class="textArRht">اريخ الفاتورة</label></td></tr>
-                 <tr><td><label class="textEnLft">Patient Name</label>:<span class="valueText">{{header.patient_full_name}}</span><label class="textArRht">اسم المريض</label></td><td><label class="textEnLft">Visit Date</label>:<span class="valueText">{{dateTime header.visit_date "date"}}</span><label class="textArRht">تاريخ الزيارة</label></td></tr>
-                <tr><td><label class="textEnLft">MR No</label>:<span class="valueText">{{header.patient_code}}</span><label class="textArRht">رقم التسجيل</label></td><td><label class="textEnLft">Reg. Date</label>:<span class="valueText">{{dateTime header.registration_date "date"}}</span><label class="textArRht">تاريخ التسجيل</label></td></tr>
+                <tr><td><label class="textEnLft">Invoice No</label>:<span class="valueText">{{header.invoice_number}}</span><label class="textArRht">رقم الفاتورة</label></td><td><label class="textEnLft">Invoice Date</label>:<span class="valueText">{{dateTime header.invoice_date "date"}}</span><label class="textArRht">تاريخ الفاتورة</label></td></tr>
+                 <tr><td><label class="textEnLft">Patient Name</label>:<span class="valueText">{{header.patient_full_name}}</span><label class="textArRht">الإسم</label></td><td><label class="textEnLft">Visit Date</label>:<span class="valueText">{{dateTime header.visit_date "date"}}</span><label class="textArRht">  رقم الزيارة</label></td></tr>
+                <tr><td><label class="textEnLft">MR No</label>:<span class="valueText">{{header.patient_code}}</span><label class="textArRht">رقم الملف</label></td><td><label class="textEnLft">Reg. Date</label>:<span class="valueText">{{dateTime header.registration_date "date"}}</span><label class="textArRht">  تاريخ التسجيل</label></td></tr>
+                 <tr><td><label class="textEnLft">Insurance Co.</label>:<span class="valueText">Cash</span><label class="textArRht">  شركة التأمين</label></td><td><label class="textEnLft">Age/Gender</label>:<span class="valueText">{{header.age_in_years}}/{{header.gender}}</span><label class="textArRht">  العمر / الجنس</label></td></tr>
+                  <tr><td><label class="textEnLft">Policy/ Class</label>:<span class="valueText">Cash</span><label class="textArRht">  البوليصة / الفئة</label></td><td><label class="textEnLft">Nationality</label>:<span class="valueText">{{header.nationality}}</span><label class="textArRht">  الجنسية</label></td></tr>
                <tr>
                     <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
                 </tr>
-               <tr><td><label class="textEnLft">Doctor</label>:<span class="valueText">{{header.full_name}}</span><label class="textArRht">طبيب</label></td><td><label class="textEnLft">Department</label>:<span class="valueText">{{header.sub_department_name}}</span><label class="textArRht">قسم</label></td></tr>
+               <tr><td><label class="textEnLft">Doctor</label>:<span class="valueText">{{header.full_name}}</span><label class="textArRht">لطبيب</label></td><td><label class="textEnLft">Department</label>:<span class="valueText">{{header.sub_department_name}}</span><label class="textArRht">القسم</label></td></tr>
 
             </table>
 
