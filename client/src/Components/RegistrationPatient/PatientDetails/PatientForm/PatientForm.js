@@ -211,7 +211,7 @@ class AddPatientForm extends Component {
     }
   }
   render() {
-    debugger;
+    
     let requied_emp_id = JSON.parse(
       AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
     ).requied_emp_id;
@@ -570,7 +570,7 @@ class AddPatientForm extends Component {
                               onBlur: texthandle.bind(this, this),
                               disabled: this.state.existingPatient,
                               type: "text",
-                              tabIndex: "20"
+                              tabIndex: "14"
                             }
                           }}
                         />
@@ -600,7 +600,7 @@ class AddPatientForm extends Component {
                           onChange: texthandle.bind(this, this),
                           others: {
                             disabled: this.state.existingPatient,
-                            tabIndex: "14"
+                            tabIndex: "17"
                           }
                         }}
                       />
@@ -625,7 +625,7 @@ class AddPatientForm extends Component {
                           onChange: texthandle.bind(this, this),
                           others: {
                             disabled: this.state.existingPatient,
-                            tabIndex: "15"
+                            tabIndex: "18"
                           }
                         }}
                       />
@@ -650,7 +650,7 @@ class AddPatientForm extends Component {
                           onChange: texthandle.bind(this, this),
                           others: {
                             disabled: this.state.existingPatient,
-                            tabIndex: "16"
+                            tabIndex: "19"
                           }
                         }}
                       />
@@ -675,7 +675,7 @@ class AddPatientForm extends Component {
                           onChange: countryStatehandle.bind(this, this),
                           others: {
                             disabled: this.state.existingPatient,
-                            tabIndex: "17"
+                            tabIndex: "20"
                           }
                         }}
                       />
@@ -703,7 +703,7 @@ class AddPatientForm extends Component {
                           onChange: texthandle.bind(this, this),
                           others: {
                             disabled: this.state.existingPatient,
-                            tabIndex: "18"
+                            tabIndex: "21"
                           }
                         }}
                       />
@@ -723,7 +723,7 @@ class AddPatientForm extends Component {
                             disabled: this.state.existingPatient,
                             onBlur: texthandle.bind(this, this),
                             placeholder: "Enter Full Address 1",
-                            tabIndex: "19"
+                            tabIndex: "22"
                           }
                         }}
                       />
@@ -808,7 +808,7 @@ class AddPatientForm extends Component {
                           onChange: texthandle.bind(this, this),
                           others: {
                             disabled: this.state.existingPatient,
-                            tabIndex: "21"
+                            tabIndex: "15"
                           }
                         }}
                       />
@@ -829,7 +829,7 @@ class AddPatientForm extends Component {
                           others: {
                             disabled: this.state.existingPatient,
                             onBlur: texthandle.bind(this, this),
-                            tabIndex: "22",
+                            tabIndex: "16",
                             placeholder: "Enter ID Number"
                           }
                         }}

@@ -1465,3 +1465,18 @@ th {
 
 .trHighlight {
   background: #e6e6e6; }
+
+.btn-loader {
+  position: relative;
+  cursor: none;
+  pointer-events: none; }
+  .btn-loader .showBtnLoader {
+    background: none;
+    padding: 4px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    color: #fff; }
+    .btn-loader .showBtnLoader i.fa-spin {
+      font-size: 1.5rem; }

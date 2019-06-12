@@ -364,7 +364,7 @@ class PatientProfile extends Component {
   }
 
   showAllergyAlert(_patient_allergies) {
-    debugger;
+    
     if (allergyPopUp && _patient_allergies.length > 0) {
       allergyPopUp = false;
       swalMessage({

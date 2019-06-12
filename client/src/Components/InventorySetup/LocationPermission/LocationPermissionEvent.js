@@ -101,7 +101,7 @@ const insertLocationPermission = ($this, e) => {
   AlgaehValidation({
     alertTypeIcon: "warning",
     onSuccess: () => {
-      debugger;
+      
       const data_exists = _.filter($this.props.invlocationpermission, f => {
         return (
           f.user_id === $this.state.user_id &&

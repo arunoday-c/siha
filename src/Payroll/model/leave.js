@@ -4056,7 +4056,6 @@ let calculateLeaveDays = (req, res, next) => {
                   calculatedLeaveDays: calculatedLeaveDays,
                   monthWiseCalculatedLeaveDeduction: leaveDeductionArray
                 });
-                //debugLog("updateResult", updateResult);
               }
             } else {
               if (req.options == null) {

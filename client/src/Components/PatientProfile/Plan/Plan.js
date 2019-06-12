@@ -50,7 +50,7 @@ class Plan extends Component {
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {
-          debugger;
+          
           this.setState({
             latest_mediction: response.data.records.latest_mediction,
             all_mediction: response.data.records.all_mediction

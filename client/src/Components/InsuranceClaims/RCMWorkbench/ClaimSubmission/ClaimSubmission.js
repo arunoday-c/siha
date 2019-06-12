@@ -84,7 +84,6 @@ class ClaimSubmission extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    //console.log("Data", nextProps.data !== undefined ? nextProps.data : "wait");
     this.setState({
       submit_invoices: nextProps.data !== undefined ? nextProps.data : []
     });

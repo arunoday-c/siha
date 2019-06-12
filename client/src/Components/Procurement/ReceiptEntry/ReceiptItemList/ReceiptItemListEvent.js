@@ -191,7 +191,7 @@ const onchhangegriddiscount = ($this, row, ctrl, e) => {
   let extended_cost = 0;
   let extended_price = 0;
   let tax_amount = 0;
-  debugger;
+  
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   let quantity_recieved_todate =
@@ -299,7 +299,7 @@ const CancelGrid = ($this, context, cancelRow) => {
 };
 
 const onchangegridcoldatehandle = ($this, row, ctrl, e) => {
-  debugger;
+  
   if (Date.parse(moment(ctrl)._d) < Date.parse(new Date())) {
     swalMessage({
       title: "Expiry date cannot be past Date.",

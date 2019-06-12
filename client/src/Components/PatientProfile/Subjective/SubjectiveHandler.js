@@ -10,7 +10,7 @@ import { setGlobal } from "../../../utils/GlobalFunctions";
 export default function SubjectiveHandler() {
   return {
     dataLevelUpdate: ($this, e) => {
-      debugger;
+      
       e = e.name === undefined ? e.currentTarget : e;
       let name = e.name || e.target.name;
       let value = "";
@@ -51,7 +51,7 @@ export default function SubjectiveHandler() {
       });
     },
     datehandle: ($this, ctrl, e) => {
-      debugger;
+      
       const _durat_interval = dateDurationAndInterval(ctrl);
 
       $this.setState({

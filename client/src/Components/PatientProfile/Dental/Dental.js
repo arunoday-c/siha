@@ -185,7 +185,7 @@ class Dental extends Component {
   }
 
   saveBill() {
-    debugger;
+    
     let inputObj = {
       visit_id: Window.global["visit_is"],
       patient_id: Window.global["current_patient"],
@@ -255,7 +255,7 @@ class Dental extends Component {
   }
 
   addToBill(row) {
-    debugger;
+    
     algaehApiCall({
       // uri: "/insurance/getPatientInsurance",
       uri: "/patientRegistration/getPatientInsurance",
@@ -378,10 +378,8 @@ class Dental extends Component {
 
       if (my_item !== undefined) {
         teeth.splice(teeth.indexOf(my_item), 1);
-        //console.log("Teeth Selected", teeth);
       } else {
         teeth.push(my_obj);
-        //console.log("Teeth Selected", teeth);
       }
 
       let send_teeth = Enumerable.from(teeth)
@@ -404,7 +402,6 @@ class Dental extends Component {
       };
 
       my_send_obj.send_teeth = send_teeth;
-      //console.log("Send Teeth", JSON.stringify(my_send_obj));
 
       this.setState(
         {
@@ -1289,7 +1286,7 @@ class Dental extends Component {
   }
 
   loadDentalTreatment(data) {
-    debugger;
+    
     data !== undefined
       ? this.setState(
           {

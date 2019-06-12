@@ -3,7 +3,7 @@ import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 
 const handleNext = ($this, setp, e) => {
-  debugger;
+  
   // if (setp === "Close") {
   //   $this.onClose(e);
   // } else if (setp === "Next") {

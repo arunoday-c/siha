@@ -367,7 +367,6 @@ module.exports = {
                     
                                    
                     
-                                         //debugLog("mergemonths:", mergemonths);
                     
                                           let finalData = {};
                                           _.chain(mergemonths)

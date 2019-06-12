@@ -30,7 +30,7 @@ export default [
       },
       {
         subitem: "Doctor and Status wise report",
-        reportName: "departmentDoctorConsumption",
+        reportName: "departmentDoctorConsumptionInventory",
         pageSize: "A4",
         requireIframe: true,
         pageOrentation: "landscap", //"portrait",
@@ -1619,7 +1619,7 @@ export default [
     submenu: [
       {
         subitem: "List of Receipts",
-        template_name: "SalesReciptList",
+        template_name: "salesReceiptListPharmacy",
         reportParameters: [
           {
             type: "date",
@@ -1644,7 +1644,7 @@ export default [
       },
       {
         subitem: "List of Sales Invoice",
-        reportName: "SalesInvoiceList",
+        reportName: "salesInvoiceListPharmacy",
         template_name: "SalesInvoiceList",
         requireIframe: true,
         reportParameters: [
@@ -1671,34 +1671,91 @@ export default [
       },
       {
         subitem: "Daily Collection - Consolidated",
-        template_name: "asset_war_exp",
-        reportParameters: []
+        template_name: "dailyCollectionPharmacy",
+        reportParameters: [
+          {
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          }]
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
         subitem: "GP Statement - Bill Wise",
-        template_name: "asset_war_exp",
-        reportParameters: []
+        template_name: "gpBillwisePharmacy",
+        pageSize: "A4",
+        requireIframe: true,
+        pageOrentation: "landscap", //"portrait",
+        reportParameters: [
+          {
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          }]
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
         subitem: "GP Statement - Date Wise",
-        template_name: "asset_war_exp",
-        reportParameters: []
+        template_name: "gpDatewisePharmacy",
+        reportParameters: [
+          {
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          }]
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
-      {
-        subitem: "GP Statment ItemWise Report",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "List of Claims Generated",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
-      }
+      // {
+      //   subitem: "GP Statment ItemWise Report",
+      //   template_name: "asset_war_exp",
+      //   reportParameters: []
+      //   //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
+      // },
+      // {
+      //   subitem: "List of Claims Generated",
+      //   template_name: "asset_war_exp",
+      //   reportParameters: []
+      //   //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
+      // }
     ]
   },
   {
@@ -1770,135 +1827,51 @@ export default [
     name: "Insurance",
     submenu: [
       {
-        subitem: "Claim Rejection Reports",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Claims Outstanding",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Claims Outstanding - Remittence Wise",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Claims Received",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Claims Received - Remittence Wise",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Claims Rejected - Reason Count",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Claims Summary - Monthly",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Company wise Claim Report",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Insurance Consolidated",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Insurance Overdue",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Insurance Revenue Received - Ageing Report",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Insurance Revenue Report",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Insurance Revenue Report - Consolidated",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Insurance Status Report - Invoice Wise",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "List of Claims Generated",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "List of Claims Write Off",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Services Report -Undelivered",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Summary Of Claims Generated - Formats",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Summary of Insurance Consolidated - Company Wise",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Summary of Insurance Consolidated - Year Wise",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Summary of Insurance Overdue and Outstanding",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Write Off Claims List-Servicewise",
-        template_name: "asset_war_exp",
-        reportParameters: []
+        subitem: "All Claim Statement",
+        template_name: "allClaimStatementInsurance",
+        reportParameters: [
+          {
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            type: "dropdown",
+            name: "",
+            initialLoad: true,
+            isImp: false,
+            label: "Select Company",
+            dataSource: {
+              // textField: "full_name",
+              // valueField: "employee_id",
+              // data: undefined
+            }
+          },
+          {
+            type: "dropdown",
+            name: "",
+            initialLoad: true,
+            isImp: false,
+            label: "Select Sub Company",
+            dataSource: {
+              // textField: "full_name",
+              // valueField: "employee_id",
+              // data: undefined
+            }
+          }]
         //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
       }
     ]

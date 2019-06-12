@@ -39,14 +39,14 @@ const uomtexthandle = ($this, context, ctrl, e) => {
 };
 
 const stockingtexthandle = ($this, context, ctrl, e) => {
-  debugger;
+  
   e = e || ctrl;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   SetBulkState({
     state: $this,
     callback: () => {
-      debugger;
+      
 
       let conversion_factor = 0;
       let convertEnable = false;
@@ -253,7 +253,7 @@ const updateUOM = ($this, context, row) => {
 };
 
 const deleteUOM = ($this, context, row, rowId) => {
-  debugger;
+  
 
   let detail_item_uom = $this.state.detail_item_uom;
   let updateUomMapResult = $this.state.updateUomMapResult;

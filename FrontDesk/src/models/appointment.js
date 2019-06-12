@@ -842,24 +842,23 @@ module.exports = {
     let input = req.query;
     let qry = "";
     if (input.sub_dept_id > 0) {
-
       const _mysql = new algaehMysql();
       qry += ` and sub_dept_id=${input.sub_dept_id}`;
-    
-    if (input.schedule_date != null && input.schedule_date != undefined) {
-      qry += ` and schedule_date=date('${input.schedule_date}')`;
-    }
 
-    let selectDoctor = "";
+      if (input.schedule_date != null && input.schedule_date != undefined) {
+        qry += ` and schedule_date=date('${input.schedule_date}')`;
+      }
 
-    if (input.provider_id != "null" && input.provider_id != null) {
-      selectDoctor = ` and ASD.provider_id=${input.provider_id}  `;
-      //provider_id = req.query.provider_id;
-    }
+      let selectDoctor = "";
 
-    _mysql
-      .executeQuery({
-        query: `select hims_d_appointment_schedule_header_id, sub_dept_id,SD.sub_department_name, SH.schedule_status as schedule_status, schedule_description, month, year,\
+      if (input.provider_id != "null" && input.provider_id != null) {
+        selectDoctor = ` and ASD.provider_id=${input.provider_id}  `;
+        //provider_id = req.query.provider_id;
+      }
+
+      _mysql
+        .executeQuery({
+          query: `select hims_d_appointment_schedule_header_id, sub_dept_id,SD.sub_department_name, SH.schedule_status as schedule_status, schedule_description, month, year,\
         from_date,to_date,from_work_hr, to_work_hr, work_break1, from_break_hr1, to_break_hr1, work_break2, from_break_hr2,\
         to_break_hr2, monday, tuesday, wednesday, thursday, friday, saturday, sunday,\
          hims_d_appointment_schedule_detail_id, ASD.provider_id,E.full_name as doctor_name,clinic_id,C.description as clinic_name,R.description as  room_name,\
@@ -871,18 +870,18 @@ module.exports = {
          SH.hims_d_appointment_schedule_header_id=ASD.appointment_schedule_header_id \
          and ASD.clinic_id=C.hims_d_appointment_clinic_id and C.room_id=R.hims_d_appointment_room_id \
           and sub_dept_id= SD.hims_d_sub_department_id  and SH.hospital_id=?  ${selectDoctor} ${qry} `,
-        values: [req.userIdentity.hospital_id]
-      })
-      .then(result => {
-        if (result.length > 0) {
-          new Promise((resolve, reject) => {
-            try {
-              for (let j = 0; j < result.length; j++) {
-                if (result[j]["modified"] == "M") {
-                  _mysql
-                    .executeQuery({
-                      query:
-                        "select hims_d_appointment_schedule_modify_id, appointment_schedule_detail_id, ASM.to_date as schedule_date, ASM.slot, ASM.from_work_hr,\
+          values: [req.userIdentity.hospital_id]
+        })
+        .then(result => {
+          if (result.length > 0) {
+            new Promise((resolve, reject) => {
+              try {
+                for (let j = 0; j < result.length; j++) {
+                  if (result[j]["modified"] == "M") {
+                    _mysql
+                      .executeQuery({
+                        query:
+                          "select hims_d_appointment_schedule_modify_id, appointment_schedule_detail_id, ASM.to_date as schedule_date, ASM.slot, ASM.from_work_hr,\
                               ASM.to_work_hr, ASM.work_break1, ASM.from_break_hr1,ASM.to_break_hr1, ASM.work_break2, ASM.from_break_hr2, ASM.to_break_hr2  \
                               hims_d_appointment_schedule_header_id, sub_dept_id,SD.sub_department_name, SH.schedule_status, schedule_description, month, year,  \
                              monday, tuesday, wednesday, thursday, friday, saturday, sunday, ASD.provider_id,E.full_name as doctor_name,clinic_id,C.description as clinic_name,R.description as  room_name,\
@@ -892,93 +891,87 @@ module.exports = {
                              and ASD.record_status='A' and C.record_status='A' and SD.record_status='A' and R.record_status='A'and ASD.provider_id=E.hims_d_employee_id and  SH.hims_d_appointment_schedule_header_id=ASD.appointment_schedule_header_id  \
                              and ASM.appointment_schedule_detail_id=ASD.hims_d_appointment_schedule_detail_id and ASM.record_status='A'\
                              and ASD.clinic_id=C.hims_d_appointment_clinic_id and C.room_id=R.hims_d_appointment_room_id and C.sub_department_id=SD.hims_d_sub_department_id and appointment_schedule_detail_id=?",
-                      values: [
-                        result[j]["hims_d_appointment_schedule_detail_id"]
-                      ],
+                        values: [
+                          result[j]["hims_d_appointment_schedule_detail_id"]
+                        ],
 
-                      printQuery: true
+                        printQuery: true
+                      })
+                      .then(modifyResult => {
+                        result[j] = modifyResult[0];
+                      })
+                      .catch(e => {
+                        _mysql.releaseConnection();
+                        next(e);
+                      });
+                  }
+                  if (j == result.length - 1) {
+                    resolve({});
+                  }
+                }
+              } catch (e) {
+                reject(e);
+              }
+            }).then(modifyRes => {
+              let outputArray = [];
+              if (result.length > 0) {
+                for (let i = 0; i < result.length; i++) {
+                  _mysql
+                    .executeQuery({
+                      query:
+                        "select hims_f_patient_appointment_id, patient_id, title_id, patient_code, provider_id, sub_department_id,number_of_slot, appointment_date, appointment_from_time,\
+                          appointment_to_time, appointment_status_id, patient_name, arabic_name, date_of_birth, age, contact_number, email, send_to_provider,\
+                          gender, confirmed, confirmed_by,comfirmed_date, cancelled, cancelled_by, cancelled_date, cancel_reason,\
+                          appointment_remarks, visit_created,is_stand_by  from hims_f_patient_appointment where record_status='A' and   cancelled<>'Y' and sub_department_id=?\
+                          and appointment_date=? and provider_id=? ",
+                      values: [
+                        result[i].sub_dept_id,
+                        result[i].schedule_date,
+                        result[i].provider_id
+                      ]
                     })
-                    .then(modifyResult => {
-                      result[j] = modifyResult[0];
+                    .then(appResult => {
+                      const obj = {
+                        ...result[i],
+                        ...{ patientList: appResult }
+                      };
+
+                      outputArray.push(obj);
+
+                      if (i == result.length - 1) {
+                        req.records = outputArray;
+                        _mysql.releaseConnection();
+                        next();
+                      }
                     })
                     .catch(e => {
                       _mysql.releaseConnection();
                       next(e);
                     });
                 }
-                if (j == result.length - 1) {
-                  resolve({});
-                }
+              } else {
+                _mysql.releaseConnection();
+                req.records = result;
+                next();
               }
-            } catch (e) {
-              reject(e);
-            }
-          }).then(modifyRes => {
-            let outputArray = [];
-            if (result.length > 0) {
-              for (let i = 0; i < result.length; i++) {
-                _mysql
-                  .executeQuery({
-                    query:
-                      "select hims_f_patient_appointment_id, patient_id, title_id, patient_code, provider_id, sub_department_id,number_of_slot, appointment_date, appointment_from_time,\
-                          appointment_to_time, appointment_status_id, patient_name, arabic_name, date_of_birth, age, contact_number, email, send_to_provider,\
-                          gender, confirmed, confirmed_by,comfirmed_date, cancelled, cancelled_by, cancelled_date, cancel_reason,\
-                          appointment_remarks, visit_created,is_stand_by  from hims_f_patient_appointment where record_status='A' and   cancelled<>'Y' and sub_department_id=?\
-                          and appointment_date=? and provider_id=? ",
-                    values: [
-                      result[i].sub_dept_id,
-                      result[i].schedule_date,
-                      result[i].provider_id
-                    ]
-                  })
-                  .then(appResult => {
-                    const obj = {
-                      ...result[i],
-                      ...{ patientList: appResult }
-                    };
-
-                    outputArray.push(obj);
-
-                    if (i == result.length - 1) {
-                      req.records = outputArray;
-                      _mysql.releaseConnection();
-                      next();
-                    }
-                  })
-                  .catch(e => {
-                    _mysql.releaseConnection();
-                    next(e);
-                  });
-              }
-            } else {
-              _mysql.releaseConnection();
-              req.records = result;
-              next();
-            }
-          });
-        } else {
+            });
+          } else {
+            _mysql.releaseConnection();
+            req.records = result;
+            next();
+          }
+        })
+        .catch(e => {
           _mysql.releaseConnection();
-          req.records = result;
-          next();
-        }
-      })
-      .catch(e => {
-        _mysql.releaseConnection();
-        next(e);
-      });
+          next(e);
+        });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "Please select department"
+      };
 
-    }else{
-      
-        req.records = {
-          invalid_input: true,
-          message: "Please select department"
-        };
-  
-        next();
-      
-
-
-
+      next();
     }
   },
 
@@ -1182,25 +1175,97 @@ module.exports = {
   },
 
   //created by irfan: to delete Doctor From Schedule
+  // deleteDoctorFromSchedule: (req, res, next) => {
+  //   const _mysql = new algaehMysql();
+  //   let input = req.body;
+  //   _mysql
+  //     .executeQuery({
+  //       query:
+  //         " update hims_d_appointment_schedule_detail set record_status='I',updated_by=?,updated_date=?\
+  //         where record_status='A' and appointment_schedule_header_id=? and provider_id=?;",
+  //       values: [
+  //         req.userIdentity.algaeh_d_app_user_id,
+  //         new Date(),
+  //         input.appointment_schedule_header_id,
+  //         input.provider_id
+  //       ]
+  //     })
+  //     .then(result => {
+  //       _mysql.releaseConnection();
+  //       req.records = result;
+  //       next();
+  //     })
+  //     .catch(e => {
+  //       _mysql.releaseConnection();
+  //       next(e);
+  //     });
+  // },
+  //created by irfan: to delete Doctor From Schedule
   deleteDoctorFromSchedule: (req, res, next) => {
     const _mysql = new algaehMysql();
     let input = req.body;
     _mysql
       .executeQuery({
         query:
-          " update hims_d_appointment_schedule_detail set record_status='I',updated_by=?,updated_date=?\
-          where record_status='A' and appointment_schedule_header_id=? and provider_id=?;",
+          "select hims_f_patient_appointment_id,appointment_date\
+          from hims_f_patient_appointment    where date(appointment_date) between date(?) and  date(?)\
+          and sub_department_id=? and hospital_id=? and provider_id=?",
         values: [
-          req.userIdentity.algaeh_d_app_user_id,
-          new Date(),
-          input.appointment_schedule_header_id,
+          input.from_date,
+          input.to_date,
+          input.sub_department_id,
+          req.userIdentity.hospital_id,
           input.provider_id
-        ]
+        ],
+        printQuery: false
       })
       .then(result => {
-        _mysql.releaseConnection();
-        req.records = result;
-        next();
+        // _mysql.releaseConnection();
+        // req.records = result;
+        // next();
+
+        if (result.length > 0) {
+          _mysql.releaseConnection();
+          req.records = {
+            invalid_opertaion: true,
+            message: `Cant delete ,doctor has appointments from ${
+              result[0]["appointment_date"]
+            } to ${result[result.length - 1]["appointment_date"]}`
+          };
+          next();
+        } else {
+          _mysql
+            .executeQueryWithTransaction({
+              query:
+                "delete M from hims_d_appointment_schedule_detail D inner join\
+                hims_d_appointment_schedule_modify M on D.hims_d_appointment_schedule_detail_id=M.appointment_schedule_detail_id\
+                where D.appointment_schedule_header_id=? and D.provider_id=?;\
+                delete from hims_d_appointment_schedule_detail\
+                where appointment_schedule_header_id=? and provider_id=?;\
+                delete H from hims_d_appointment_schedule_header H left join hims_d_appointment_schedule_detail D\
+                on H.hims_d_appointment_schedule_header_id=D.appointment_schedule_header_id where  hims_d_appointment_schedule_header_id=?\
+                and  D.appointment_schedule_header_id  is null ",
+              values: [
+                input.appointment_schedule_header_id,
+                input.provider_id,
+                input.appointment_schedule_header_id,
+                input.provider_id,
+                input.appointment_schedule_header_id
+              ]
+            })
+            .then(delDesult => {
+              _mysql.commitTransaction(() => {
+                _mysql.releaseConnection();
+                req.records = delDesult;
+                next();
+              });
+            })
+            .catch(e => {
+              _mysql.rollBackTransaction(() => {
+                next(e);
+              });
+            });
+        }
       })
       .catch(e => {
         _mysql.releaseConnection();
@@ -1802,26 +1867,100 @@ module.exports = {
         next(e);
       });
   },
-  //created by irfan: to cancel patient appointment
+  //created by irfan:
+  // deleteSchedule: (req, res, next) => {
+  //   const _mysql = new algaehMysql();
+  //   let input = req.body;
+
+  //   _mysql
+  //     .executeQuery({
+  //       query:
+  //         "update hims_d_appointment_schedule_header set record_status='I' ,updated_by=?,updated_date=?\
+  //         where hims_d_appointment_schedule_header_id=?;",
+  //       values: [
+  //         req.userIdentity.algaeh_d_app_user_id,
+  //         new Date(),
+  //         input.hims_d_appointment_schedule_header_id
+  //       ]
+  //     })
+  //     .then(result => {
+  //       _mysql.releaseConnection();
+  //       req.records = result;
+  //       next();
+  //     })
+  //     .catch(e => {
+  //       _mysql.releaseConnection();
+  //       next(e);
+  //     });
+  // },
+  //created by irfan: to deleteSchedule
   deleteSchedule: (req, res, next) => {
     const _mysql = new algaehMysql();
     let input = req.body;
-
     _mysql
       .executeQuery({
         query:
-          "update hims_d_appointment_schedule_header set record_status='I' ,updated_by=?,updated_date=?\
-          where hims_d_appointment_schedule_header_id=?;",
+          "select hims_f_patient_appointment_id ,full_name, appointment_date from hims_f_patient_appointment A\
+          inner join  hims_d_employee E on A.provider_id=E.hims_d_employee_id\
+          where date(appointment_date) between date(?) and  date(?)\
+          and A.sub_department_id=? and A.hospital_id=? and A.provider_id in (?)\
+          group by A.provider_id limit 1;",
         values: [
-          req.userIdentity.algaeh_d_app_user_id,
-          new Date(),
-          input.hims_d_appointment_schedule_header_id
-        ]
+          input.from_date,
+          input.to_date,
+          input.sub_department_id,
+          req.userIdentity.hospital_id,
+          input.providers
+        ],
+        printQuery: false
       })
       .then(result => {
-        _mysql.releaseConnection();
-        req.records = result;
-        next();
+        // _mysql.releaseConnection();
+        // req.records = result;
+        // next();
+
+        if (result.length > 0) {
+          _mysql.releaseConnection();
+          req.records = {
+            invalid_opertaion: true,
+            message: `Cant delete ,${
+              result[0]["full_name"]
+            } has appointments on  ${result[0]["appointment_date"]} `
+          };
+          next();
+        } else {
+          _mysql
+            .executeQueryWithTransaction({
+              query:
+                "delete M from hims_d_appointment_schedule_detail D inner join\
+                hims_d_appointment_schedule_modify M on D.hims_d_appointment_schedule_detail_id=M.appointment_schedule_detail_id\
+                where D.appointment_schedule_header_id=? and D.provider_id in (?);\
+                delete from hims_d_appointment_schedule_detail\
+                where appointment_schedule_header_id=? and provider_id in (?);\
+                delete H from hims_d_appointment_schedule_header H left join hims_d_appointment_schedule_detail D\
+                on H.hims_d_appointment_schedule_header_id=D.appointment_schedule_header_id where  hims_d_appointment_schedule_header_id=?\
+                and  D.appointment_schedule_header_id  is null ",
+              values: [
+                input.appointment_schedule_header_id,
+                input.providers,
+                input.appointment_schedule_header_id,
+                input.providers,
+                input.appointment_schedule_header_id
+              ]
+            })
+            .then(delDesult => {
+              _mysql.commitTransaction(() => {
+                _mysql.releaseConnection();
+                req.records = delDesult;
+                next();
+              });
+            })
+            .catch(e => {
+              _mysql.rollBackTransaction(() => {
+                next(e);
+              });
+            });
+        }
       })
       .catch(e => {
         _mysql.releaseConnection();
@@ -1831,8 +1970,6 @@ module.exports = {
 
   //created by irfan: to get Appointment slip
   getAppointmentSlip: (req, res, next) => {
- 
-
     if (req.query.hims_f_patient_appointment_id > 0) {
       const _mysql = new algaehMysql();
       _mysql
@@ -1842,7 +1979,10 @@ module.exports = {
            A.sub_department_id=SD.hims_d_sub_department_id 
            inner join hims_d_employee E on A.provider_id=E.hims_d_employee_id
            where hims_f_patient_appointment_id=? and A.hospital_id=?`,
-          values: [req.query.hims_f_patient_appointment_id,req.userIdentity.hospital_id]
+          values: [
+            req.query.hims_f_patient_appointment_id,
+            req.userIdentity.hospital_id
+          ]
         })
         .then(result => {
           _mysql.releaseConnection();

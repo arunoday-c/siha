@@ -54,7 +54,7 @@ class InvItemMaster extends Component {
 
   componentWillReceiveProps(newProps) {
     if (newProps.itemPop.hims_d_inventory_item_master_id !== undefined) {
-      debugger;
+      
       let IOputs = newProps.itemPop;
       this.setState({ ...this.state, ...IOputs });
     }

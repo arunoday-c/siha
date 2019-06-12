@@ -162,7 +162,7 @@ const itemchangeText = ($this, context, e, ctrl) => {
           if (response.data.success) {
             let data = response.data.records;
             if (data.locationResult.length > 0) {
-              debugger;
+              
               getUnitCost($this, context, e.service_id, e.sale_price);
 
               $this.setState({
@@ -401,7 +401,7 @@ const AddItems = ($this, context) => {
         method: "POST",
         data: ItemInput,
         onSuccess: response => {
-          debugger;
+          
           if (response.data.success) {
             let data = response.data.records;
             if (data.billdetails[0].pre_approval === "Y") {
@@ -743,7 +743,7 @@ const calculateAmount = ($this, context, row, ctrl, e) => {
   e = e || ctrl;
   // if (e.target.value !== e.target.oldvalue) {
   let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
-  debugger;
+  
   row[e.target.name] = parseFloat(e.target.value);
   let inputParam = [
     {
@@ -779,7 +779,7 @@ const calculateAmount = ($this, context, row, ctrl, e) => {
     data: inputParam,
     onSuccess: response => {
       if (response.data.success) {
-        debugger;
+        
         let data = response.data.records;
 
         data.billdetails[0].extended_cost = data.billdetails[0].gross_amount;
@@ -1001,7 +1001,7 @@ const CloseItemBatch = ($this, context, e) => {
         : $this.state.unit_cost
       : $this.state.unit_cost;
 
-  debugger;
+  
   $this.setState({
     ...$this.state,
     selectBatch: !$this.state.selectBatch,
@@ -1032,7 +1032,7 @@ const onchangegridcol = ($this, context, row, e) => {
 };
 
 const qtyonchangegridcol = ($this, context, row, e) => {
-  debugger;
+  
   if (row.batchno === undefined || row.batchno === null) {
     swalMessage({
       title: "Please select Batch",
@@ -1113,7 +1113,7 @@ const credittexthandle = ($this, context, ctrl, e) => {
 const SelectBatchDetails = ($this, row, context, e) => {
   //
 
-  debugger;
+  
   let _pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
 
   row["batchno"] = e.selected.batchno;

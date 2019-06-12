@@ -128,7 +128,7 @@ const numberchangeTexts = ($this, context, e) => {
 };
 
 const datehandle = ($this, ctrl, e) => {
-  debugger
+  
   $this.setState({
     [e]: moment(ctrl)._d
   });

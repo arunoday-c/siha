@@ -39,13 +39,13 @@ class ServicePriceList extends PureComponent {
   }
 
   componentWillMount() {
-    debugger
+    
     let InputOutput = this.props.InsuranceSetup;
     this.setState({ ...this.state, ...InputOutput });
   }
 
   componentDidMount() {
-    debugger
+    
     if (this.state.insurance_provider_id !== null) {
       getPriceList(this, this);
     } else {
@@ -91,7 +91,7 @@ class ServicePriceList extends PureComponent {
           mappingName: "pricefromplans"
         },
         afterSuccess:data=>{
-          debugger
+          
         }
       });
       this.setState({
@@ -200,7 +200,7 @@ class ServicePriceList extends PureComponent {
                 <div className="col-lg-2">
                   <button
                     className="btn btn-default"
-                    style={{ marginTop: 22 }}
+                    style={{ marginTop: 19 }}
                     onClick={Refresh.bind(this, this)}
                   >
                     Refresh List
@@ -247,7 +247,7 @@ class ServicePriceList extends PureComponent {
                     <div className="col" style={{ padding: 0 }}>
                       <button
                         className="btn btn-default"
-                        style={{ marginTop: 22 }}
+                        style={{ marginTop: 19 }}
                         onClick={bulkUpdate.bind(
                           this,
                           this,
@@ -282,7 +282,7 @@ class ServicePriceList extends PureComponent {
                     <div className="col" style={{ padding: 0 }}>
                       <button
                         className="btn btn-default"
-                        style={{ marginTop: 22 }}
+                        style={{ marginTop: 19 }}
                         onClick={bulkUpdate.bind(this, this, "pre_approval")}
                       >
                         Apply
@@ -314,7 +314,7 @@ class ServicePriceList extends PureComponent {
                     <div className="col" style={{ padding: 0 }}>
                       <button
                         className="btn btn-default"
-                        style={{ marginTop: 22 }}
+                        style={{ marginTop: 19 }}
                         onClick={bulkUpdate.bind(this, this, "covered")}
                       >
                         Apply

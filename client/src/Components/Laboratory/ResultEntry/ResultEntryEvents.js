@@ -11,7 +11,7 @@ const texthandle = ($this, e) => {
 };
 
 const UpdateLabOrder = ($this, value, status) => {
-  debugger;
+  
 
   algaehApiCall({
     uri: "/laboratory/updateLabResultEntry",

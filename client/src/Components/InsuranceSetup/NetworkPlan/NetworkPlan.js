@@ -76,7 +76,7 @@ class NetworkPlan extends PureComponent {
   }
 
   componentWillMount() {
-    debugger;
+    
     let InputOutput = this.props.InsuranceSetup;
     this.setState({ ...this.state, ...InputOutput });
   }
@@ -482,6 +482,20 @@ class NetworkPlan extends PureComponent {
                         }
                       }}
                     />
+                     <AlagehFormGroup
+                      //Optometry
+                      div={{ className: "col" }}
+                      label={{ forceLabel: "Optometry" }}
+                      textBox={{
+                        //value: this.state.copay_medicine,
+                        className: "txt-fld",
+                        name: "",
+                        others: {
+                          "data-netdata": true,
+                          type: "number"
+                        }
+                      }}
+                    />
                   </div>
                   <div className="row">
                     <div className="col-2">
@@ -631,6 +645,20 @@ class NetworkPlan extends PureComponent {
                         }
                       }}
                     />
+                    <AlagehFormGroup
+                      //Optometry
+                      div={{ className: "col" }}
+                      textBox={{
+                        //value: this.state.copay_medicine,
+                        className: "txt-fld",
+                        name: "",
+                        others: {
+                          "data-netdata": true,
+                          type: "number"
+                        }
+                      }}
+                    />
+                    
                   </div>
                   <div className="row">
                     <div className="col-2">

@@ -73,7 +73,7 @@ class InsuranceAdd extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger
+    
     if (
       nextProps.insuranceprovider !== undefined &&
       nextProps.insuranceprovider.length !== 0

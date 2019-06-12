@@ -81,7 +81,7 @@ class AddBillingForm extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger;
+    
     this.setState(nextProps.PatRegIOputs);
   }
 

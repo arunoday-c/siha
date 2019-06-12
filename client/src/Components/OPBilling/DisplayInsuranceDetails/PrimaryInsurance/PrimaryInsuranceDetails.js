@@ -36,13 +36,13 @@ class AddInsuranceForm extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger;
+    
 
     this.setState(nextProps.BillingIOputs);
   }
 
   componentDidMount() {
-    debugger;
+    
     if (this.state.hims_d_insurance_network_office_id !== null) {
       this.getNetworkPlans();
     }
@@ -58,7 +58,7 @@ class AddInsuranceForm extends Component {
       },
       onSuccess: response => {
         if (response.data.success) {
-          debugger;
+          
           let data = response.data.records[0];
           this.setState({
             copay_consultation: data.copay_consultation,

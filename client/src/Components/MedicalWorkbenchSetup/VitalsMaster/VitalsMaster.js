@@ -352,7 +352,6 @@ class VitalsMaster extends Component {
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {
-          //console.log("Header", response.data.records);
 
           let x = Enumerable.from(response.data.records)
             .where(w => w.general === "N")
@@ -378,7 +377,6 @@ class VitalsMaster extends Component {
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {
-          //console.log("Detail", response.data.records);
           this.setState({ vitalsDetail: response.data.records });
         }
       },

@@ -58,7 +58,7 @@ class PersistentDrawer extends React.Component {
       method: "GET",
       onSuccess: dataResponse => {
         if (dataResponse.data.success) {
-          debugger;
+          
           const _module = Enumarable.from(dataResponse.data.records)
             .select(s => {
               return {
@@ -343,7 +343,7 @@ class PersistentDrawer extends React.Component {
   }
 
   TriggerPath(submenu, module_id, e) {
-    debugger;
+    
     const name = submenu.page_to_redirect.replace(/\s/g, ""); // e.currentTarget.getAttribute("name");
 
     // submenu.screen_name === "Doctor Appointment"
@@ -358,7 +358,7 @@ class PersistentDrawer extends React.Component {
 
     let screenName = submenu.page_to_redirect.replace(/\s/g, "");
 
-    debugger;
+    
     let lang_className =
       this.state.Language === "en" ? " english_component" : " arabic_component";
     const _menuselected = e.currentTarget.getAttribute("menuselected");

@@ -493,7 +493,6 @@ let getRoleBaseActiveModules = (req, res, next) => {
 
           let outputArray = [];
 
-          //console.log("userIdentity:", req.userIdentity);
           if (ResModules.length > 0) {
             for (let i = 0; i < ResModules.length; i++) {
               const obj = {
@@ -2343,7 +2342,6 @@ let method2 = (req, res, next) => {
       if (result.length > 0) {
         let new_amount = result[0]["amount"] + input.amount;
 
-        //console.log("started waiting at:", new Date());
         setTimeout(() => {
           _mysql
             .executeQuery({
