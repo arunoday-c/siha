@@ -53,7 +53,7 @@ export default class GlassPrescription extends Component {
   }
 
 componentWillReceiveProps(newProps){
-  debugger
+  
   if(newProps.PrescriptionData !== undefined &&
     newProps.PrescriptionData.length !== 0){
 

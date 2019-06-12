@@ -16,7 +16,7 @@ const texthandle = ($this, ctrl, e) => {
 };
 
 const selectItemHandeler = ($this, e) => {
-  debugger;
+  
   $this.setState({
     item_description: e.item_description,
     inventory_item_id: e.hims_d_inventory_item_master_id,
@@ -35,7 +35,7 @@ const selectItemHandeler = ($this, e) => {
 
 //Process and gets selectd service data with all calculation
 const ProcessService = ($this, e) => {
-  debugger;
+  
 
   if ($this.state.inventory_item_id !== null) {
     let preserviceInput = $this.state.preserviceInput || [];
@@ -66,7 +66,7 @@ const ProcessService = ($this, e) => {
       data: serviceInput,
       onSuccess: response => {
         if (response.data.success) {
-          debugger;
+          
           let data = response.data.records;
           if (
             data.billdetails[0].preapp_limit_exceed === "Y" &&
@@ -442,7 +442,7 @@ const SaveOrdersServices = ($this, e) => {
     // module: "clicnicalDesk",
     method: "POST",
     onSuccess: response => {
-      debugger;
+      
       if (response.data.success === true) {
         $this.state.transaction_type = "CS";
         $this.state.location_id = $this.state.inventory_location_id;

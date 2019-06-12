@@ -211,7 +211,7 @@ class AddPatientForm extends Component {
     }
   }
   render() {
-    debugger;
+    
     let requied_emp_id = JSON.parse(
       AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
     ).requied_emp_id;

@@ -52,7 +52,7 @@ const itemchangeText = ($this, context, e) => {
           mappingName: "inventoryitemdetaillist"
         },
         afterSuccess: data => {
-          debugger
+          
           if (data.length > 0) {          
             getItemLocationStock($this, context, {
               location_id: $this.state.from_location_id,
@@ -130,7 +130,7 @@ const itemchangeText = ($this, context, e) => {
           mappingName: "inventoryitemdetaillist"
         },
         afterSuccess: data => {
-          debugger
+          
           if (data.length > 0) {
             getItemLocationStock($this, context, {
               location_id: $this.state.to_location_id,

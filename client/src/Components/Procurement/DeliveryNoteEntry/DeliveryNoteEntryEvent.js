@@ -194,7 +194,7 @@ const PurchaseOrderSearch = ($this, e) => {
                 data.dataExitst = true;
                 data.purchase_order_id = data.hims_f_procurement_po_header_id;
                 for (let i = 0; i < data.po_entry_detail.length; i++) {
-                  debugger;
+                  
                   data.po_entry_detail[i].item_id =
                     data.po_entry_detail[i].phar_item_id ||
                     data.po_entry_detail[i].inv_item_id;
@@ -223,7 +223,7 @@ const PurchaseOrderSearch = ($this, e) => {
                   data.po_entry_detail[i].purchase_order_detail_id =
                     data.po_entry_detail[i].hims_f_procurement_po_detail_id;
                 }
-                debugger;
+                
                 // data.purchase_detail = data.po_entry_detail;
                 $this.setState(data);
                 AlgaehLoader({ show: false });
@@ -256,7 +256,7 @@ const SaveDNEnrty = $this => {
     .where(w => w.expiry_date === null)
     .toArray();
 
-  debugger;
+  
   let InputObj = extend({}, $this.state);
   for (var i = 0; i < InputObj.po_entry_detail.length; i++) {
     if ($this.state.dn_from === "PHR") {
@@ -269,7 +269,7 @@ const SaveDNEnrty = $this => {
       // delete InputObj.po_entry_detail[i].dn_entry_detail;
     }
   }
-  debugger;
+  
 
   InputObj.posted = "Y";
   InputObj.transaction_type = "DNA";

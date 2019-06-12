@@ -22,7 +22,7 @@ class Encounters extends Component {
   }
 
   setEncounterDetails(row, e) {
-    debugger;
+    
     const enc_id = e.currentTarget.getAttribute("enc-id");
     const episode_id = e.currentTarget.getAttribute("epi-id");
     const visit_id = e.currentTarget.getAttribute("visit-id");
@@ -95,7 +95,7 @@ class Encounters extends Component {
       module: "MRD",
       cancelRequestId: "getPatientChiefComplaint",
       onSuccess: response => {
-        debugger;
+        
         if (response.data.success) {
           this.setState({ patientComplaints: response.data.records });
         }
@@ -142,7 +142,7 @@ class Encounters extends Component {
       },
       cancelRequestId: "getPatientMedication",
       onSuccess: response => {
-        debugger;
+        
 
         if (response.data.success) {
           this.setState({ patientMedications: response.data.records });
@@ -194,7 +194,7 @@ class Encounters extends Component {
       onSuccess: response => {
         algaehLoader({ show: false });
         if (response.data.success) {
-          debugger;
+          
           this.setState({ patientEncounters: response.data.records });
         }
       },
@@ -356,7 +356,7 @@ class Encounters extends Component {
                       <div className="col">
                         <h6 className="">
                           {this.state.patientComplaints.map((data, index) => {
-                            debugger;
+                            
                             return data.chief_complaint
                               ? data.chief_complaint
                               : data.comment

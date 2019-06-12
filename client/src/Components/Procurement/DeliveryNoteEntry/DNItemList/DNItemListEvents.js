@@ -166,7 +166,7 @@ const dateFormater = ($this, value) => {
 };
 
 const onchhangeNumber = ($this, row, e) => {
-  debugger;
+  
 
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -175,7 +175,7 @@ const onchhangeNumber = ($this, row, e) => {
 };
 
 const onchhangegriddiscount = ($this, row, e) => {
-  debugger;
+  
   let discount_percentage = row.discount_percentage;
   let discount_amount = 0;
   let extended_cost = 0;
@@ -346,7 +346,7 @@ const onChangeTextEventHandaler = ($this, context, e) => {
 };
 
 const onDateTextEventHandaler = ($this, context, ctrl, e) => {
-  debugger;
+  
   let item_details = $this.state.item_details;
 
   item_details[e] = moment(ctrl)._d;
@@ -455,7 +455,7 @@ const OnChangeDeliveryQty = ($this, context, e) => {
 };
 
 const AddtoList = ($this, context) => {
-  debugger;
+  
   let dn_entry_detail = $this.state.dn_entry_detail;
 
   let item_details = extend({}, $this.state.item_details);

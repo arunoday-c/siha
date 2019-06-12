@@ -151,7 +151,6 @@ module.exports = {
                 });
               }
 
-              //console.log("details:", t_details);
               req.records = outputArray;
               next();
             } else {

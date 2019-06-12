@@ -293,7 +293,6 @@ class NurseWorkbench extends Component {
       });
     }
 
-    //console.log("Send Data:", send_data);
   }
 
   deptDropDownHandler(value) {
@@ -401,7 +400,6 @@ class NurseWorkbench extends Component {
           this.setState({
             departments: response.data.records.departmets
           });
-          //console.log("All Doctors:", response.data.records);
         }
       },
       onFailure: error => {

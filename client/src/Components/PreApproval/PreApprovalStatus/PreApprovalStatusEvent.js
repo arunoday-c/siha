@@ -1,7 +1,7 @@
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 const UpdatePreApproval = ($this, e) => {
-  debugger;
+  
   if ($this.props.openFrom === "S") {
     algaehApiCall({
       uri: "/orderAndPreApproval/updatePreApproval",

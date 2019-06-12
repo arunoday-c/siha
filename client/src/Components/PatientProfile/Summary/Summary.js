@@ -103,7 +103,7 @@ class Summary extends Component {
   }
 
   getSummaryFollowUp() {
-    debugger;
+    
     algaehApiCall({
       uri: "/doctorsWorkBench/getSummaryFollowUp",
       method: "GET",
@@ -112,7 +112,7 @@ class Summary extends Component {
       },
       onSuccess: response => {
         if (response.data.success) {
-          debugger;
+          
           this.setState({ patientFollowUp: response.data.records });
         }
       },
@@ -179,7 +179,7 @@ class Summary extends Component {
         ? this.props.patient_diagnosis
         : [];
 
-    debugger;
+    
     let _pat_episode =
       Enumerable.from(this.state.patientEpisode).firstOrDefault() !== undefined
         ? Enumerable.from(this.state.patientEpisode).firstOrDefault()

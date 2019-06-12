@@ -154,7 +154,7 @@ class InsuranceSetup extends Component {
                         return (
                           <AlagehAutoComplete
                             div={{}}
-                            selector={{
+                            selector={{sort:"off",
                               name: "edit_option",
                               className: "select-fld",
                               value: row.edit_option,

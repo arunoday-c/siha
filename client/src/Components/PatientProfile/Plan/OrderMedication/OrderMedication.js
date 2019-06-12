@@ -105,7 +105,7 @@ class OrderMedication extends Component {
   }
 
   getPatientInsurance() {
-    debugger;
+    
     this.props.getPatientInsurance({
       uri: "/patientRegistration/getPatientInsurance",
       module: "frontDesk",
@@ -137,7 +137,7 @@ class OrderMedication extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger;
+    
 
     if (
       nextProps.existinginsurance !== undefined &&

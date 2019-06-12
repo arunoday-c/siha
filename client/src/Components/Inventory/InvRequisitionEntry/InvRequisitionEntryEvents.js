@@ -90,7 +90,7 @@ const SaveRequisitionEntry = $this => {
 };
 
 const AuthorizeRequisitionEntry = ($this, authorize) => {
-  debugger
+  
   // const auth_qty = _.filter(
   //   $this.state.inventory_stock_detail,
   //   f => {

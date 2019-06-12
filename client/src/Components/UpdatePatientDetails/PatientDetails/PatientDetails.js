@@ -553,9 +553,9 @@ class UpdatePatientForm extends Component {
                             value: this.state.employee_id,
                             events: {
                               onChange: texthandle.bind(this, this)
-                            },
-                            option: {
-                              type: "text"
+                            }, others: {
+                              type: "text",
+                              tabIndex: "14"
                             }
                           }}
                         />
@@ -584,7 +584,7 @@ class UpdatePatientForm extends Component {
                           },
                           onChange: texthandle.bind(this, this),
                           others: {
-                            tabIndex: "14"
+                            tabIndex: "17"
                           }
                         }}
                       /> 
@@ -608,7 +608,7 @@ class UpdatePatientForm extends Component {
                           },
                           onChange: texthandle.bind(this, this),
                           others: {
-                            tabIndex: "15"
+                            tabIndex: "18"
                           }
                         }}
                       />
@@ -632,7 +632,7 @@ class UpdatePatientForm extends Component {
                           },
                           onChange: texthandle.bind(this, this),
                           others: {
-                            tabIndex: "16"
+                            tabIndex: "19"
                           }
                         }}
                       />
@@ -656,7 +656,7 @@ class UpdatePatientForm extends Component {
                           },
                           onChange: countryStatehandle.bind(this, this),
                           others: {
-                            tabIndex: "17"
+                            tabIndex: "20"
                           }
                         }}
                       />
@@ -684,7 +684,7 @@ class UpdatePatientForm extends Component {
                           },
                           onChange: texthandle.bind(this, this),
                           others: {
-                            tabIndex: "18"
+                            tabIndex: "21"
                           }
                         }}
                       />
@@ -703,7 +703,7 @@ class UpdatePatientForm extends Component {
                           others: {
                             onBlur: texthandle.bind(this, this),
                             placeholder: "Enter Full Address 1",
-                            tabIndex: "19"
+                            tabIndex: "22"
                           }
                         }}
                       />
@@ -789,7 +789,7 @@ class UpdatePatientForm extends Component {
                           },
                           onChange: texthandle.bind(this, this),
                           others: {
-                            tabIndex: "20"
+                            tabIndex: "15"
                           }
                         }}
                       />
@@ -809,7 +809,7 @@ class UpdatePatientForm extends Component {
                           },
                           others: {
                             onBlur: texthandle.bind(this, this),
-                            tabIndex: "21",
+                            tabIndex: "16",
                             placeholder: "Enter ID Number"
                           }
                         }}

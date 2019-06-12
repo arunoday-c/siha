@@ -70,7 +70,7 @@ class RadScheduledList extends Component {
   };
 
   generateReport(row) {
-    debugger;
+    
     algaehApiCall({
       uri: "/report",
       method: "GET",

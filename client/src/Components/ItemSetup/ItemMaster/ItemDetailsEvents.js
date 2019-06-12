@@ -106,12 +106,12 @@ const uomtexthandle = ($this, ctrl, e) => {
 };
 
 const stockingtexthandle = ($this, e) => {
-  debugger;
+  
 
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
-  debugger;
+  
 
   let conversion_factor = 0;
   let convertEnable = false;
@@ -127,7 +127,7 @@ const stockingtexthandle = ($this, e) => {
       convertEnable: convertEnable
     },
     () => {
-      debugger;
+      
     }
   );
 };
@@ -292,7 +292,7 @@ const updateUOM = ($this, row) => {
 };
 
 const deleteUOM = ($this, row, rowId) => {
-  debugger;
+  
 
   let detail_item_uom = $this.state.detail_item_uom;
   let updateUomMapResult = $this.state.updateUomMapResult;

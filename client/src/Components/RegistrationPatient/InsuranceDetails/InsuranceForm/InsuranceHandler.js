@@ -68,7 +68,7 @@ const clearinsurancehandle = ($this, context, e) => {
   }
 };
 const insurancehandle = ($this, context, e) => {
-  debugger;
+  
   let ProcessInsure = false;
   if ($this.state.doctor_id === null) {
     ProcessInsure = true;
@@ -82,7 +82,7 @@ const insurancehandle = ($this, context, e) => {
       type: "warning"
     });
   } else {
-    debugger;
+    
     $this.setState(
       {
         primary_insurance_provider_id: e.selected.insurance_provider_id,
@@ -191,7 +191,7 @@ const InsuranceDetails = ($this, context, e) => {
   const hospital = JSON.parse(
     AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
   );
-  debugger;
+  
 
   AlgaehSearch({
     searchGrid: {
@@ -484,7 +484,7 @@ const radioChange = ($this, context, e) => {
   SetBulkState({
     state: $this,
     callback: () => {
-      debugger;
+      
       let PatType = null;
       let saveEnable = false;
       let ProcessInsure = false;
