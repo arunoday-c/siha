@@ -230,7 +230,7 @@ class InvTransferEntry extends Component {
             <div className="col">
               <div className="row">
                 <AlagehAutoComplete
-                  div={{ className: "col-3" }}
+                  div={{ className: "col-2" }}
                   label={{ forceLabel: "From Location" }}
                   selector={{
                     name: "from_location_id",
@@ -248,7 +248,7 @@ class InvTransferEntry extends Component {
                   }}
                 />
 
-                <div className="col-3">
+                <div className="col-2">
                   <AlgaehLabel
                     label={{
                       forceLabel: "From Location Type"
@@ -265,7 +265,7 @@ class InvTransferEntry extends Component {
                   </h6>
                 </div>
 
-                <div className="col-3">
+                <div className="col-2">
                   <label>Transfer Type</label>
                   <div className="customCheckbox" style={{ borderBottom: 0 }}>
                     <label className="checkbox" style={{ color: "#212529" }}>
@@ -282,11 +282,11 @@ class InvTransferEntry extends Component {
                     </label>
                   </div>
                 </div>
-
+ <div className="col-6">
                 {this.state.direct_transfer === "N" ? (
                   <div className="row">
                     <AlagehFormGroup
-                      div={{ className: "col-10" }}
+                      div={{ className: "col-4" }}
                       label={{
                         forceLabel: "Requisition Number"
                       }}
@@ -310,7 +310,7 @@ class InvTransferEntry extends Component {
                       />
                     </div>
 
-                    <div className="col-lg-6">
+                    <div className="col">
                       <AlgaehLabel
                         label={{
                           forceLabel: "To Location"
@@ -326,7 +326,7 @@ class InvTransferEntry extends Component {
                       </h6>
                     </div>
 
-                    <div className="col-lg-6">
+                    <div className="col">
                       <AlgaehLabel
                         label={{
                           forceLabel: "To Location Type"
@@ -379,7 +379,7 @@ class InvTransferEntry extends Component {
                     </div>
                   </div>
                 )}
-              </div>
+              </div></div>
             </div>
           </div>
 

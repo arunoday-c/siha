@@ -274,7 +274,7 @@ class TransferEntryItems extends Component {
                         />
                       </div>
                       <div className="row">
-                        <div className="col-lg-12 subFooter-btn">
+                        <div className="col-lg-12 subFooter-btn margin-top-15">
                           <button
                             className="btn btn-primary"
                             onClick={AddItems.bind(this, this, context)}
@@ -305,7 +305,6 @@ class TransferEntryItems extends Component {
                       </div>
                     </div>
 
-                    <div className="col-12">
                       <div className="portlet portlet-bordered margin-bottom-15">
                         <div className="portlet-body" id="REQ_batch_details">
                           <AlgaehDataGrid
@@ -583,7 +582,6 @@ class TransferEntryItems extends Component {
                             }}
                           />
                         </div>
-                      </div>
                     </div>
                   </div>
                 </div>
