@@ -204,8 +204,6 @@ class PhySchSetup extends Component {
   }
 
   deleteSchedule(data) {
-    console.log("dat:", data);
-
     const docs = Enumerable.from(this.state.scheduleDoctors)
       .where(
         w =>
@@ -216,9 +214,6 @@ class PhySchSetup extends Component {
         return s.provider_id;
       })
       .toArray();
-
-    console.log("docs:", docs);
-    console.log("scheduleDoctors:", this.state.scheduleDoctors);
 
     swal({
       title: "Do you want to Delete Schedule: " + data.description,
@@ -255,7 +250,6 @@ class PhySchSetup extends Component {
                 type: "error"
               });
             }
-          
           },
           onFailure: error => {
             swalMessage({
@@ -357,7 +351,6 @@ class PhySchSetup extends Component {
           data: this.state.send_obj,
           onSuccess: response => {
             if (response.data.success) {
-              console.log("after save", response.data);
               document.getElementById("srch-sch").click();
               this.resetSaveState();
 
@@ -626,9 +619,6 @@ class PhySchSetup extends Component {
                 }
               }
             );
-
-            console.log("scheduleList", this.state.scheduleList);
-            console.log("scheduleDoctors", this.state.scheduleDoctors);
           }
         },
         onFailure: error => {

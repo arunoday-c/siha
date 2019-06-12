@@ -1,4 +1,5 @@
 import algaehMysql from "algaeh-mysql";
+import extend from "extend";
 module.exports = {
   //Addded by noor code modification
   addPatientInsuranceData: (req, res, next) => {
@@ -117,8 +118,8 @@ module.exports = {
       let input = req.query;
 
       let qryStr = "";
-      if (input.insurance_sub_code > 0) {
-        qryStr += " and insurance_sub_code=" + input.insurance_sub_code;
+      if (input.insurance_provider_id > 0) {
+        qryStr += " and insurance_provider_id=" + input.insurance_provider_id;
       }
 
       _mysql
@@ -493,10 +494,79 @@ module.exports = {
   //of hospital (insurence plan master)
 
   addPlanAndPolicy: (req, res, next) => {
+    console.log("result:", "addPlanAndPolicy");
     const _mysql = new algaehMysql();
     try {
-      let input = req.body[0];
+      let input = extend(
+        {
+          hims_d_insurance_network_id: null,
+          network_type: null,
+          insurance_provider_id: null,
+          insurance_sub_id: null,
+          effective_start_date: null,
+          effective_end_date: null,
+          sub_insurance_status: null,
 
+          hims_d_insurance_network_office_id: null,
+          network_id: null,
+          hospital_id: null,
+          deductible: null,
+          deductable_type: null,
+          min_value: null,
+          max_value: null,
+          copay_consultation: null,
+          deductible_lab: null,
+          for_alllab: null,
+          copay_percent: null,
+          deductible_rad: null,
+          for_allrad: null,
+          copay_percent_rad: null,
+          copay_percent_trt: null,
+          copay_percent_dental: null,
+          copay_medicine: null,
+          insur_network_limit: null,
+          deductible_trt: null,
+          deductible_dental: null,
+          deductible_medicine: null,
+          lab_min: null,
+          lab_max: null,
+          rad_min: null,
+          rad_max: null,
+          trt_max: null,
+          trt_min: null,
+          dental_min: null,
+          dental_max: null,
+          medicine_min: null,
+          medicine_max: null,
+          invoice_max_liability: null,
+          for_alltrt: null,
+          for_alldental: null,
+          for_allmedicine: null,
+          invoice_max_deduct: null,
+          price_from: null,
+          employer: null,
+          policy_number: null,
+          follow_up: null,
+          preapp_limit: null,
+          deductible_ip: null,
+          copay_ip: null,
+          ip_min: null,
+          ip_max: null,
+          for_allip: null,
+          consult_limit: null,
+          preapp_limit_from: null,
+          copay_maternity: null,
+          maternity_min: null,
+          maternity_max: null,
+          copay_optical: null,
+          optical_min: null,
+          optical_max: null,
+          copay_diagnostic: null,
+          diagnostic_min: null,
+          diagnostic_max: null
+        },
+        req.body[0]
+      );
       _mysql
         .executeQueryWithTransaction({
           query:
@@ -516,7 +586,7 @@ module.exports = {
           printQuery: false
         })
         .then(result => {
-          if (result.length > 0) {
+          if (result.insertId > 0) {
             // _mysql.commitTransaction(() => {
             //   _mysql.releaseConnection();
             //   req.records = result;
@@ -526,7 +596,7 @@ module.exports = {
             _mysql
               .executeQuery({
                 query:
-                  "INSERT INTO hims_d_insurance_network_office(`network_id`,`hospital_id`,`deductible`,`deductable_type`,`min_value`,`max_value`,`copay_consultation`,\
+                  "INSERT INTO hims_d_insurance_network_office(`network_id`,`hospital_id`,`deductible`,`min_value`,`max_value`,`copay_consultation`,\
               `deductible_lab`,`for_alllab`,`copay_percent`,`deductible_rad`,`for_allrad`,`copay_percent_rad`,`copay_percent_trt`,\
               `copay_percent_dental`,`copay_medicine`,`insur_network_limit`,`deductible_trt`,`deductible_dental`,`deductible_medicine`,`lab_min`,\
               `lab_max`,`rad_min`,`rad_max`,`trt_max`,`trt_min`,`dental_min`,`dental_max`,`medicine_min`,`medicine_max`,`invoice_max_liability`,\
@@ -534,11 +604,9 @@ module.exports = {
               `deductible_ip`,`copay_ip`,`ip_min`,`ip_max`,`for_allip`,`consult_limit`,`preapp_limit_from`,`copay_maternity`,`maternity_min`,`maternity_max`,\
               `copay_optical`,`optical_min`,`optical_max`,`copay_diagnostic`,`diagnostic_min`,`diagnostic_max`,`created_by`,`updated_by`)\
               SELECT " +
-                  input.network_id +
+                  result.insertId +
                   ",hims_d_hospital_id," +
                   input.deductible +
-                  "," +
-                  input.deductable_type +
                   "," +
                   input.min_value +
                   "," +
@@ -650,7 +718,7 @@ module.exports = {
                   " from hims_d_hospital",
                 printQuery: false
               })
-              .then(result => {
+              .then(priceResult => {
                 //price from policy
                 if (input.price_from == "P") {
                   _mysql
@@ -661,11 +729,11 @@ module.exports = {
                 SELECT " +
                         input.insurance_provider_id +
                         "," +
-                        input.network_id +
+                        result.insertId +
                         ",hims_d_services_id,service_code,service_type_id,cpt_code,service_name,service_name,hospital_id,standard_fee,standard_fee," +
-                        input.created_by +
+                        req.userIdentity.algaeh_d_app_user_id +
                         "," +
-                        input.created_by +
+                        req.userIdentity.algaeh_d_app_user_id +
                         " from hims_d_services",
 
                       printQuery: false
@@ -678,7 +746,8 @@ module.exports = {
                       });
                     })
                     .catch(error => {
-                      mysql.rollBackTransaction(() => {
+                      console.log("error:", error);
+                      _mysql.rollBackTransaction(() => {
                         next(error);
                       });
                     });
@@ -689,11 +758,11 @@ module.exports = {
                         "INSERT IGNORE INTO hims_d_services_insurance(`insurance_id`,`services_id`,`service_code`,`service_type_id`,`cpt_code`,`service_name`,`insurance_service_name`,\
                           `hospital_id`,`gross_amt`,`net_amount`,`created_by`,`updated_by`)\
                           SELECT " +
-                        obj.insurance_provider_id +
+                        input.insurance_provider_id +
                         ",hims_d_services_id,service_code,service_type_id,cpt_code,service_name,service_name,hospital_id,standard_fee,standard_fee," +
-                        obj.created_by +
+                        req.userIdentity.algaeh_d_app_user_id +
                         "," +
-                        obj.created_by +
+                        req.userIdentity.algaeh_d_app_user_id +
                         " from hims_d_services",
 
                       printQuery: false
@@ -719,20 +788,21 @@ module.exports = {
                 }
               })
               .catch(error => {
-                mysql.rollBackTransaction(() => {
+                console.log("error:", error);
+                _mysql.rollBackTransaction(() => {
                   next(error);
                 });
               });
           } else {
-            mysql.rollBackTransaction(() => {
+            _mysql.rollBackTransaction(() => {
               req.records = result;
-
               next();
             });
           }
         })
         .catch(error => {
-          mysql.rollBackTransaction(() => {
+          console.log("error:", error);
+          _mysql.rollBackTransaction(() => {
             next(error);
           });
         });
