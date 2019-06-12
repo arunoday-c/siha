@@ -84,8 +84,12 @@ const getPatientDetails = ($this, output) => {
 };
 
 const ClearData = ($this, e) => {
+<<<<<<< HEAD
+  debugger;
+=======
 
   
+>>>>>>> 6e1e0bbc8a42f810febf9c1abeabd5cbf851d349
   let IOputs = INVPOSIOputs.inputParam();
 
   IOputs.patient_payable_h = 0;
@@ -299,7 +303,8 @@ const SavePosEnrty = $this => {
         $this.state.inventory_stock_detail[i].operation = "-";
         $this.state.inventory_stock_detail[i].sales_uom =
           $this.state.inventory_stock_detail[i].uom_id;
-        $this.state.inventory_stock_detail[i].item_code_id = $this.state.item_id;
+        $this.state.inventory_stock_detail[i].item_code_id =
+          $this.state.item_id;
         $this.state.inventory_stock_detail[i].grn_number =
           $this.state.inventory_stock_detail[i].grn_no;
         $this.state.inventory_stock_detail[i].item_category_id =
@@ -350,7 +355,6 @@ const SavePosEnrty = $this => {
     });
   }
 };
-
 
 const VisitSearch = ($this, e) => {
   if ($this.state.location_id !== null) {
@@ -443,7 +447,7 @@ const AddItems = ($this, ItemInput) => {
         inventory_location_id: $this.state.location_id,
 
         insured: $this.state.insured,
-        vat_applicable: "Y",
+        vat_applicable: $this.state.vat_applicable,
         hims_d_services_id: ItemInput[i].service_id,
         quantity: ItemInput[i].dispense,
         primary_insurance_provider_id: $this.state.insurance_provider_id,

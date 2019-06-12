@@ -4,6 +4,7 @@ import algaehPath from "algaeh-module-bridge";
 import algaehUtilities from "algaeh-utilities/utilities";
 import { LINQ } from "node-linq";
 import _ from "lodash";
+import mysql from "mysql";
 
 const { getBillDetailsFunction } = algaehPath(
   "algaeh-billing/src/models/billing"
@@ -22,18 +23,21 @@ module.exports = {
         .executeQuery({
           query:
             "SELECT hims_f_pharmacy_pos_header_id,receipt_header_id,PH.pos_number,PH.patient_id,P.patient_code,P.full_name as full_name,PH.visit_id,V.visit_code,PH.ip_id,PH.pos_date,PH.year,\
-          PH.period,PH.location_id,L.location_description,PH.location_type,PH.sub_total,PH.discount_percentage,PH.discount_amount,PH.net_total,\
-          PH.copay_amount,PH.patient_responsibility,PH.patient_tax,PH.patient_payable,PH.company_responsibility,PH.company_tax,\
-          PH.company_payable,PH.comments,PH.sec_company_responsibility,PH.sec_company_tax,PH.sec_company_payable,\
-          PH.sec_copay_amount,PH.net_tax,PH.gross_total,PH.sheet_discount_amount,PH.sheet_discount_percentage,\
-          PH.net_amount,PH.credit_amount,PH.balance_credit,PH.receiveable_amount,PH.posted,PH.card_number,PH.effective_start_date,\
-          PH.effective_end_date,PH.insurance_provider_id,PH.sub_insurance_provider_id,PH.network_id,PH.network_type,\
-          PH.network_office_id,PH.policy_number,PH.secondary_card_number,PH.secondary_effective_start_date,\
-          PH.secondary_effective_end_date,PH.secondary_insurance_provider_id,PH.secondary_network_id,PH.secondary_network_type,\
-          PH.secondary_sub_insurance_provider_id,PH.secondary_network_office_id from  hims_f_pharmacy_pos_header PH inner join hims_d_pharmacy_location L\
-           on PH.location_id=L.hims_d_pharmacy_location_id left outer join hims_f_patient_visit V on\
-           PH.visit_id=V.hims_f_patient_visit_id left outer join hims_f_patient P on PH.patient_id=P.hims_d_patient_id\
-          where PH.record_status='A' and L.record_status='A' " +
+            PH.period,PH.location_id,L.location_description,PH.location_type,PH.sub_total,PH.discount_percentage,\
+            PH.discount_amount,PH.net_total,PH.nationality_id,PH.patient_name,PH.mobile_number,PH.referal_doctor,\
+            PH.copay_amount,PH.patient_responsibility,PH.patient_tax,PH.patient_payable,PH.company_responsibility,\
+            PH.company_tax,PH.company_payable,PH.comments,PH.sec_company_responsibility,PH.sec_company_tax,\
+            PH.sec_company_payable,PH.sec_copay_amount,PH.net_tax,PH.gross_total,PH.sheet_discount_amount,\
+            PH.sheet_discount_percentage,PH.net_amount,PH.credit_amount,PH.balance_credit,PH.receiveable_amount,\
+            PH.posted,PH.card_number,PH.effective_start_date,PH.effective_end_date,PH.insurance_provider_id,\
+            PH.sub_insurance_provider_id,PH.network_id,PH.network_type,PH.network_office_id,PH.policy_number,\
+            PH.secondary_card_number,PH.secondary_effective_start_date,PH.secondary_effective_end_date,\
+            PH.secondary_insurance_provider_id,PH.secondary_network_id,PH.secondary_network_type,\
+            PH.secondary_sub_insurance_provider_id,PH.secondary_network_office_id from  \
+            hims_f_pharmacy_pos_header PH inner join hims_d_pharmacy_location L\
+            on PH.location_id=L.hims_d_pharmacy_location_id left outer join hims_f_patient_visit V on\
+            PH.visit_id=V.hims_f_patient_visit_id left outer join hims_f_patient P \
+            on PH.patient_id=P.hims_d_patient_id where PH.record_status='A' and L.record_status='A' " +
             _strAppend,
           values: intValue,
           printQuery: true
@@ -43,11 +47,20 @@ module.exports = {
             _mysql
               .executeQuery({
                 query:
-                  "select * from hims_f_pharmacy_pos_detail where pharmacy_pos_header_id=? and record_status='A'",
+                  "select *,extended_cost as gross_amount,net_extended_cost as net_amout ,\
+                  patient_responsibility as patient_resp from hims_f_pharmacy_pos_detail where\
+                  pharmacy_pos_header_id=? and record_status='A'",
                 values: [headerResult[0].hims_f_pharmacy_pos_header_id],
                 printQuery: true
               })
               .then(pharmacy_stock_detail => {
+                const utilities = new algaehUtilities();
+                // utilities
+                //   .logger()
+                //   .log(
+                //     "headerResult[0].receipt_header_id: ",
+                //     headerResult[0].receipt_header_id
+                //   );
                 _mysql.releaseConnection();
                 req.records = {
                   ...headerResult[0],
@@ -56,6 +69,7 @@ module.exports = {
                     hims_f_receipt_header_id: headerResult[0].receipt_header_id
                   }
                 };
+                // utilities.logger().log("req.records: ", req.records);
                 next();
               })
               .catch(error => {
@@ -108,6 +122,12 @@ module.exports = {
           let month = moment().format("MM");
 
           let period = month;
+
+          let receipt_header_id =
+            req.records === undefined
+              ? input.receipt_header_id
+              : req.records.receipt_header_id;
+          utilities.logger().log("receipt_header_id: ", receipt_header_id);
           _mysql
             .executeQuery({
               query:
@@ -119,8 +139,10 @@ module.exports = {
                 insurance_provider_id, sub_insurance_provider_id, network_id, network_type, network_office_id, policy_number, \
                 secondary_card_number, secondary_effective_start_date, secondary_effective_end_date, secondary_insurance_provider_id,\
                 secondary_network_id, secondary_network_type, secondary_sub_insurance_provider_id, secondary_network_office_id, \
-                posted,receipt_header_id, pos_customer_type,patient_name,referal_doctor,mobile_number,created_date,created_by,updated_date,updated_by,hospital_id) \
-                VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                 pos_customer_type,patient_name,referal_doctor,mobile_number,nationality_id,receipt_header_id,posted,\
+                 created_date,\
+                 created_by,updated_date,updated_by,hospital_id) \
+                VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
               values: [
                 pos_number,
                 today,
@@ -172,12 +194,13 @@ module.exports = {
                 input.secondary_network_type,
                 input.secondary_sub_insurance_provider_id,
                 input.secondary_network_office_id,
-                input.posted,
-                req.records.receipt_header_id,
                 input.pos_customer_type,
                 input.patient_name,
                 input.referal_doctor,
                 input.mobile_number,
+                input.nationality_id,
+                receipt_header_id,
+                input.posted,
                 new Date(),
                 req.userIdentity.algaeh_d_app_user_id,
                 new Date(),
@@ -242,17 +265,21 @@ module.exports = {
                 })
                 .then(detailResult => {
                   utilities.logger().log("detailResult: ", detailResult);
-                  //   _mysql.commitTransaction(() => {
-                  //     _mysql.releaseConnection();
-                  req.records = {
-                    pos_number: pos_number,
-                    hims_f_pharmacy_pos_header_id: headerResult.insertId,
-                    receipt_number: req.records.receipt_number,
-                    year: year,
-                    period: period
-                  };
-                  next();
-                  //   });
+                  if (req.connection == null) {
+                    _mysql.commitTransaction(() => {
+                      _mysql.releaseConnection();
+                      req.records = {
+                        pos_number: pos_number,
+                        hims_f_pharmacy_pos_header_id: headerResult.insertId,
+                        // receipt_number: req.records.receipt_number,
+                        year: year,
+                        period: period
+                      };
+                      next();
+                    });
+                  } else {
+                    next();
+                  }
                 })
                 .catch(error => {
                   _mysql.rollBackTransaction(() => {
@@ -279,25 +306,52 @@ module.exports = {
   },
 
   updatePosEntry: (req, res, next) => {
-    const _mysql = new algaehMysql();
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
 
     try {
-      req.mySQl = _mysql;
-      req.body.hims_f_pharmacy_pos_header_id =
-        req.records.hims_f_pharmacy_pos_header_id;
-      req.body.transaction_id = req.records.hims_f_pharmacy_pos_header_id;
-      req.body.year = req.records.year;
-      req.body.period = req.records.period;
+      const utilities = new algaehUtilities();
+      utilities.logger().log("updatePosEntry: ");
+      // console.log("req.connection: ", req.connection);
 
       let inputParam = { ...req.body };
+
+      let receipt_header_id =
+        req.records === undefined
+          ? inputParam.receipt_header_id
+          : req.records.receipt_header_id;
 
       _mysql
         .executeQueryWithTransaction({
           query:
-            "UPDATE `hims_f_pharmacy_pos_header` SET `posted`=?, `updated_by`=?, `updated_date`=? \
-          WHERE `record_status`='A' and `hims_f_pharmacy_pos_header_id`=?",
+            "UPDATE `hims_f_pharmacy_pos_header` SET sub_total=?, discount_percentage=?, discount_amount=?,\
+            net_total=?, copay_amount=?, patient_responsibility=?,patient_tax=?, patient_payable=?,\
+            company_responsibility=?, company_tax=?, company_payable=?, net_tax=?, gross_total=?,\
+            sheet_discount_amount=?, sheet_discount_percentage=?, net_amount=?, credit_amount=?, balance_credit=?,\
+            receiveable_amount=?,`posted`=?, `receipt_header_id`=?,`updated_by`=?,\
+            `updated_date`=? WHERE `hims_f_pharmacy_pos_header_id`=?",
           values: [
+            inputParam.sub_total,
+            inputParam.discount_percentage,
+            inputParam.discount_amount,
+            inputParam.net_total,
+            inputParam.copay_amount,
+            inputParam.patient_responsibility,
+            inputParam.patient_tax,
+            inputParam.patient_payable,
+            inputParam.company_responsibility,
+            inputParam.company_tax,
+            inputParam.company_payable,
+            inputParam.net_tax,
+            inputParam.gross_total,
+            inputParam.sheet_discount_amount,
+            inputParam.sheet_discount_percentage,
+            inputParam.net_amount,
+            inputParam.credit_amount,
+            inputParam.balance_credit,
+            inputParam.receiveable_amount,
             inputParam.posted,
+            receipt_header_id,
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
             inputParam.hims_f_pharmacy_pos_header_id
@@ -305,9 +359,182 @@ module.exports = {
           printQuery: true
         })
         .then(headerResult => {
-          // _mysql.releaseConnection();
-          // req.records = headerResult;
-          next();
+          let DeleteQry = "";
+
+          utilities
+            .logger()
+            .log(
+              "delete_pharmacy_stock: ",
+              inputParam.delete_pharmacy_stock.length
+            );
+          if (inputParam.delete_pharmacy_stock.length > 0) {
+            for (let i = 0; i < inputParam.delete_pharmacy_stock.length; i++) {
+              DeleteQry += mysql.format(
+                "DELETE from `hims_f_pharmacy_pos_detail`  where hims_f_pharmacy_pos_detail_id=?;",
+                [
+                  inputParam.delete_pharmacy_stock[i]
+                    .hims_f_pharmacy_pos_detail_id
+                ]
+              );
+            }
+          } else {
+            DeleteQry = "select 1";
+          }
+          utilities.logger().log("DeleteQry: ", DeleteQry);
+
+          _mysql
+            .executeQuery({
+              query: DeleteQry,
+              printQuery: true
+            })
+            .then(deleteResult => {
+              let UpdateQry = "";
+
+              for (
+                let j = 0;
+                j < inputParam.pharmacy_stock_detail.length;
+                j++
+              ) {
+                if (
+                  inputParam.pharmacy_stock_detail[j]
+                    .hims_f_pharmacy_pos_detail_id !== null
+                ) {
+                  UpdateQry += mysql.format(
+                    "UPDATE `hims_f_pharmacy_pos_detail` SET quantity=?, unit_cost=?, extended_cost=?,\
+                    discount_percentage=?, discount_amount=?, net_extended_cost=?, copay_amount=?,\
+                    patient_responsibility=?, patient_tax=?, patient_payable=?, company_responsibility=?, company_tax=?, company_payable=? where hims_f_pharmacy_pos_detail_id=?;",
+                    [
+                      inputParam.pharmacy_stock_detail[j].quantity,
+                      inputParam.pharmacy_stock_detail[j].unit_cost,
+                      inputParam.pharmacy_stock_detail[j].extended_cost,
+                      inputParam.pharmacy_stock_detail[j].discount_percentage,
+                      inputParam.pharmacy_stock_detail[j].discount_amount,
+                      inputParam.pharmacy_stock_detail[j].net_extended_cost,
+                      inputParam.pharmacy_stock_detail[j].copay_amount,
+                      inputParam.pharmacy_stock_detail[j]
+                        .patient_responsibility,
+                      inputParam.pharmacy_stock_detail[j].patient_tax,
+                      inputParam.pharmacy_stock_detail[j].patient_payable,
+                      inputParam.pharmacy_stock_detail[j]
+                        .company_responsibility,
+                      inputParam.pharmacy_stock_detail[j].company_tax,
+                      inputParam.pharmacy_stock_detail[j].company_payable,
+                      inputParam.pharmacy_stock_detail[j]
+                        .hims_f_pharmacy_pos_detail_id
+                    ]
+                  );
+                }
+              }
+
+              utilities.logger().log("UpdateQry: ", UpdateQry);
+
+              _mysql
+                .executeQuery({
+                  query: UpdateQry,
+                  printQuery: true
+                })
+                .then(result => {
+                  utilities
+                    .logger()
+                    .log(
+                      "insert_pharmacy_stock: ",
+                      inputParam.insert_pharmacy_stock.length
+                    );
+
+                  if (inputParam.insert_pharmacy_stock.length > 0) {
+                    let IncludeValues = [
+                      "item_id",
+                      "item_category",
+                      "item_group_id",
+                      "service_id",
+                      "grn_no",
+                      "barcode",
+                      "qtyhand",
+                      "expiry_date",
+                      "batchno",
+                      "uom_id",
+                      "quantity",
+                      "insurance_yesno",
+                      "tax_inclusive",
+                      "unit_cost",
+                      "extended_cost",
+                      "discount_percentage",
+                      "discount_amount",
+                      "net_extended_cost",
+                      "copay_percent",
+                      "copay_amount",
+                      "patient_responsibility",
+                      "patient_tax",
+                      "patient_payable",
+                      "company_responsibility",
+                      "company_tax",
+                      "company_payable",
+                      "sec_copay_percent",
+                      "sec_copay_amount",
+                      "sec_company_responsibility",
+                      "sec_company_tax",
+                      "sec_company_payable"
+                    ];
+
+                    _mysql
+                      .executeQuery({
+                        query:
+                          "INSERT INTO hims_f_pharmacy_pos_detail(??) VALUES ?",
+                        values: inputParam.insert_pharmacy_stock,
+                        includeValues: IncludeValues,
+                        extraValues: {
+                          pharmacy_pos_header_id:
+                            inputParam.hims_f_pharmacy_pos_header_id
+                        },
+                        bulkInsertOrUpdate: true,
+                        printQuery: true
+                      })
+                      .then(detailResult => {
+                        utilities
+                          .logger()
+                          .log("req.connection: ", req.connection);
+                        if (req.connection == null) {
+                          _mysql.commitTransaction(() => {
+                            _mysql.releaseConnection();
+                            req.records = detailResult;
+                            next();
+                          });
+                        } else {
+                          next();
+                        }
+                      })
+                      .catch(error => {
+                        _mysql.rollBackTransaction(() => {
+                          next(error);
+                        });
+                      });
+                  } else {
+                    utilities.logger().log("Check: ");
+
+                    if (req.connection == null) {
+                      utilities.logger().log("connection: ");
+                      _mysql.commitTransaction(() => {
+                        _mysql.releaseConnection();
+                        req.records = result;
+                        next();
+                      });
+                    } else {
+                      utilities.logger().log("connection else: ");
+                      next();
+                    }
+                  }
+                })
+                .catch(e => {
+                  _mysql.rollBackTransaction(() => {
+                    next(e);
+                  });
+                });
+            })
+            .catch(e => {
+              _mysql.rollBackTransaction(() => {
+                next(e);
+              });
+            });
         })
         .catch(e => {
           _mysql.rollBackTransaction(() => {

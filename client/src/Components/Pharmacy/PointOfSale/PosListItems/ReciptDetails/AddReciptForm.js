@@ -92,6 +92,7 @@ class AddReciptForm extends Component {
                         name="Pay by Cash"
                         checked={this.state.Cashchecked}
                         onChange={checkcashhandaler.bind(this, this, context)}
+                        disabled={this.state.postEnable}
                       />
 
                       <span style={{ fontSize: "0.8rem" }}>Pay by Cash</span>
@@ -116,7 +117,7 @@ class AddReciptForm extends Component {
                       others: {
                         // disabled: !this.state.Cashchecked,
                         disabled:
-                          this.state.saveEnable === true
+                          this.state.postEnable === true
                             ? true
                             : !this.state.Cashchecked,
                         placeholder: "0.00"
@@ -136,6 +137,7 @@ class AddReciptForm extends Component {
                         name="Pay by Card"
                         checked={this.state.Cardchecked}
                         onChange={checkcardhandaler.bind(this, this, context)}
+                        disabled={this.state.postEnable}
                       />
                       <span style={{ fontSize: "0.8rem" }}>Pay by Card</span>
                     </label>
@@ -211,6 +213,7 @@ class AddReciptForm extends Component {
                         name="Pay by Cheque"
                         checked={this.state.Checkchecked}
                         onChange={checkcheckhandaler.bind(this, this, context)}
+                        disabled={this.state.postEnable}
                       />
                       <span style={{ fontSize: "0.8rem" }}>Pay by Cheque</span>
                     </label>

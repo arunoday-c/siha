@@ -25,7 +25,7 @@ import {
   FORMAT_PACKAGE_CLAIM,
   FORMAT_PAYMENT_TYPE
 } from "../../../utils/GlobalVariables.json";
-import {algaehApiCall } from "../../../utils/algaehApiCall";
+import { algaehApiCall } from "../../../utils/algaehApiCall";
 import MyContext from "../../../utils/MyContext";
 
 class InsuranceProvider extends PureComponent {
@@ -35,7 +35,7 @@ class InsuranceProvider extends PureComponent {
     this.state = {};
   }
 
-    initCall() {
+  initCall() {
     let that = this;
     algaehApiCall({
       uri: "/init/",
@@ -50,7 +50,7 @@ class InsuranceProvider extends PureComponent {
           const placeHolder =
             response.data.records.length > 0 ? response.data.records[0] : {};
           that.setState({
-           service_code_placeHolder: placeHolder.service_code
+            service_code_placeHolder: placeHolder.service_code
           });
         }
       }
@@ -64,6 +64,7 @@ class InsuranceProvider extends PureComponent {
 
   componentDidMount() {
     // console.log("Data : ", this.props.insuranceprovider);
+    debugger;
     if (
       this.state.insurance_provider_id !== null &&
       this.state.insurance_provider_id !== undefined
@@ -84,6 +85,19 @@ class InsuranceProvider extends PureComponent {
           this.setState(data[0]);
         }
       });
+    } else {
+      if (
+        this.props.insuranceprovider !== undefined &&
+        this.props.insuranceprovider.length !== 0
+      ) {
+        this.props.getInsuranceDetails({
+          redux: {
+            type: "INSURANCE_INT_DATA",
+            mappingName: "insuranceprovider",
+            data: []
+          }
+        });
+      }
     }
   }
 

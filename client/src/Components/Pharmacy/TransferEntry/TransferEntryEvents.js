@@ -43,6 +43,7 @@ const getCtrlCode = ($this, docNumber, row) => {
         }
 
         data.saveEnable = true;
+        data.dataExists = true;
 
         if (data.completed === "Y") {
           data.postEnable = true;
@@ -143,6 +144,7 @@ const SaveTransferEntry = $this => {
           year: response.data.records.year,
           period: response.data.records.period,
           saveEnable: true,
+          dataExists: true,
           postEnable: false,
           cannotEdit: true
         });
@@ -339,6 +341,12 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
   }
 };
 
+const checkBoxEvent = ($this, e) => {
+  let IOputs = TransferIOputs.inputParam();
+  IOputs.direct_transfer = $this.state.direct_transfer === "Y" ? "N" : "Y";
+  $this.setState(IOputs);
+};
+
 export {
   changeTexts,
   getCtrlCode,
@@ -346,5 +354,6 @@ export {
   SaveTransferEntry,
   PostTransferEntry,
   RequisitionSearch,
-  LocationchangeTexts
+  LocationchangeTexts,
+  checkBoxEvent
 };

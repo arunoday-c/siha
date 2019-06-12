@@ -16,7 +16,6 @@ const changeTexts = ($this, ctrl, e) => {
 
 const getCtrlCode = ($this, docNumber, row) => {
   AlgaehLoader({ show: true });
-  
 
   algaehApiCall({
     uri: "/inventorytransferEntry/gettransferEntry",
@@ -29,7 +28,6 @@ const getCtrlCode = ($this, docNumber, row) => {
     },
     onSuccess: response => {
       if (response.data.success === true) {
-        
         let inventory_stock_detail = [];
         let data = response.data.records[0];
         for (let i = 0; i < data.stock_detail.length; i++) {
@@ -44,6 +42,7 @@ const getCtrlCode = ($this, docNumber, row) => {
         }
 
         data.saveEnable = true;
+        data.dataExists = true;
 
         if (data.completed === "Y") {
           data.postEnable = true;
@@ -107,7 +106,7 @@ const ClearData = ($this, e) => {
 };
 
 const SaveTransferEntry = $this => {
-  
+  AlgaehLoader({ show: true });
   $this.state.completed = "Y";
   $this.state.transaction_type = "ST";
   $this.state.transaction_id = $this.state.hims_f_inventory_transfer_header_id;
@@ -123,18 +122,18 @@ const SaveTransferEntry = $this => {
       $this.state.inventory_stock_detail[i].uom_transferred_id;
 
     $this.state.inventory_stock_detail[i].quantity =
-      $this.state.inventory_stock_detail[i].quantity_transferred;
+      $this.state.inventory_stock_detail[i].quantity_transfer;
 
     $this.state.inventory_stock_detail[i].grn_number =
       $this.state.inventory_stock_detail[i].grnno;
 
     $this.state.inventory_stock_detail[i].net_total =
       $this.state.inventory_stock_detail[i].unit_cost *
-      $this.state.inventory_stock_detail[i].quantity_transferred;
+      $this.state.inventory_stock_detail[i].quantity_transfer;
 
     $this.state.inventory_stock_detail[i].extended_cost =
       $this.state.inventory_stock_detail[i].unit_cost *
-      $this.state.inventory_stock_detail[i].quantity_transferred;
+      $this.state.inventory_stock_detail[i].quantity_transfer;
   }
 
   delete $this.state.item_details;
@@ -166,6 +165,7 @@ const SaveTransferEntry = $this => {
           year: response.data.records.year,
           period: response.data.records.period,
           saveEnable: true,
+          dataExists: true,
           postEnable: false,
           cannotEdit: true
         });
@@ -173,7 +173,15 @@ const SaveTransferEntry = $this => {
           title: "Saved successfully . .",
           type: "success"
         });
+        AlgaehLoader({ show: false });
       }
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
     }
   });
 };
@@ -259,7 +267,6 @@ const RequisitionSearch = ($this, e) => {
 
           onSuccess: response => {
             if (response.data.success === true) {
-              
               let data = response.data.records;
               AlgaehLoader({ show: true });
               let from_location_id = data.from_location_id;
@@ -349,6 +356,12 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
   }
 };
 
+const checkBoxEvent = ($this, e) => {
+  let IOputs = TransferIOputs.inputParam();
+  IOputs.direct_transfer = $this.state.direct_transfer === "Y" ? "N" : "Y";
+  $this.setState(IOputs);
+};
+
 export {
   changeTexts,
   getCtrlCode,
@@ -356,5 +369,6 @@ export {
   SaveTransferEntry,
   PostTransferEntry,
   RequisitionSearch,
-  LocationchangeTexts
+  LocationchangeTexts,
+  checkBoxEvent
 };

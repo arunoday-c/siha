@@ -30,6 +30,8 @@ let updateIntoItemLocation = (req, res, next) => {
       .logger()
       .log("updateIntoItemLocation: ", inputParam.pharmacy_stock_detail);
 
+    utilities.logger().log("transaction_id: ", req.body.transaction_id);
+
     new LINQ(inputParam.pharmacy_stock_detail)
       .Select(s => {
         xmlQuery += "<hims_m_item_location>";

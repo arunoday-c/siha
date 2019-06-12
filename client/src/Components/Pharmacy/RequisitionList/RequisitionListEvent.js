@@ -45,7 +45,16 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
 };
 
 const getRequisitionList = $this => {
-  let inpObj = {};
+  debugger;
+  let inpObj = { status: $this.state.status };
+
+  if ($this.state.from_date !== null) {
+    inpObj.from_date = $this.state.from_date;
+  }
+  if ($this.state.to_date !== null) {
+    inpObj.to_date = $this.state.to_date;
+  }
+
   if ($this.state.from_location_id !== null) {
     inpObj.from_location_id = $this.state.from_location_id;
   }
@@ -53,16 +62,14 @@ const getRequisitionList = $this => {
     inpObj.to_location_id = $this.state.to_location_id;
   }
 
-  if ($this.state.authorize1 === "Y") {
-    inpObj.authorize1 = "N";
-  }
-  if ($this.state.authorie2 === "Y") {
-    inpObj.authorize1 = "Y";
-    inpObj.authorie2 = "N";
-  }
+  // if ($this.state.authorize1 === "Y") {
+  //   inpObj.authorize1 = "N";
+  // }
+  // if ($this.state.authorie2 === "Y") {
+  //   inpObj.authorize1 = "Y";
+  //   inpObj.authorie2 = "N";
+  // }
 
-  // inpObj.authorize1 = "N";
-  // inpObj.authorie2 = "N";
   $this.props.getRequisitionList({
     uri: "/requisitionEntry/getAuthrequisitionList",
     module: "pharmacy",
@@ -109,11 +116,59 @@ const radioChange = ($this, e) => {
       authorie2: authorie2
     },
     () => {
-      if ($this.state.from_location_id !== null) {
-        getRequisitionList($this);
-      }
+      // if ($this.state.from_location_id !== null) {
+      getRequisitionList($this);
+      // }
     }
   );
 };
 
-export { LocationchangeTexts, dateFormater, radioChange };
+const datehandle = ($this, ctrl, e) => {
+  let intFailure = false;
+  if (e === "from_date") {
+    if (Date.parse($this.state.to_date) < Date.parse(moment(ctrl)._d)) {
+      intFailure = true;
+      swalMessage({
+        title: "From Date cannot be grater than To Date.",
+        type: "warning"
+      });
+    }
+  } else if (e === "to_date") {
+    if (Date.parse(moment(ctrl)._d) < Date.parse($this.state.from_date)) {
+      intFailure = true;
+      swalMessage({
+        title: "To Date cannot be less than From Date.",
+        type: "warning"
+      });
+    }
+  }
+
+  if (intFailure === false) {
+    $this.setState(
+      {
+        [e]: moment(ctrl)._d
+      },
+      () => {
+        getRequisitionList($this);
+      }
+    );
+  }
+};
+
+const changeEventHandaler = ($this, ctrl, e) => {
+  e = ctrl || e;
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  $this.setState({ [name]: value }, () => {
+    getRequisitionList($this);
+  });
+};
+
+export {
+  LocationchangeTexts,
+  dateFormater,
+  radioChange,
+  getRequisitionList,
+  datehandle,
+  changeEventHandaler
+};

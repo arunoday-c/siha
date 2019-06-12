@@ -41,6 +41,7 @@ import ItemBatchs from "../ItemBatchs/ItemBatchs";
 import DisplayInsuranceDetails from "../DisplayInsuranceDetails/DisplayInsuranceDetails";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
+import InsuranceForm from "../InsuranceDetails/InsuranceForm";
 
 class PosListItems extends Component {
   constructor(props) {
@@ -363,6 +364,9 @@ class PosListItems extends Component {
                               POSIOputs={this.state}
                               onClose={ViewInsurance.bind(this, this)}
                             />
+                            {this.state.insurance_yesno === "N" ? null : (
+                              <InsuranceForm POSIOputs={this.state} />
+                            )}
                           </div>
                         </div>
                       </div>
@@ -530,7 +534,7 @@ class PosListItems extends Component {
                                       />
                                     ),
                                     displayTemplate: row => {
-                                      return this.state.dataExitst === false ? (
+                                      return this.state.postEnable === false ? (
                                         <AlagehFormGroup
                                           div={{}}
                                           textBox={{
@@ -685,7 +689,7 @@ class PosListItems extends Component {
                                       />
                                     ),
                                     displayTemplate: row => {
-                                      return this.state.dataExitst === false ? (
+                                      return this.state.postEnable === false ? (
                                         <AlagehFormGroup
                                           div={{}}
                                           textBox={{
@@ -724,7 +728,7 @@ class PosListItems extends Component {
                                       />
                                     ),
                                     displayTemplate: row => {
-                                      return this.state.dataExitst === false ? (
+                                      return this.state.postEnable === false ? (
                                         <AlagehFormGroup
                                           div={{}}
                                           textBox={{
@@ -1234,53 +1238,3 @@ export default withRouter(
     mapDispatchToProps
   )(PosListItems)
 );
-
-{
-  /*
-{
-  fieldName: "item_category",
-  label: (
-    <AlgaehLabel
-      label={{ forceLabel: "Item Category" }}
-    />
-  ),
-  displayTemplate: row => {
-    let display =
-      this.props.itemcategory === undefined
-        ? []
-        : this.props.itemcategory.filter(
-            f =>
-              f.hims_d_item_category_id ===
-              row.item_category
-          );
-
-    return (
-      <span>
-        {display !== null &&
-        display.length !== 0
-          ? display[0].category_desc
-          : ""}
-      </span>
-    );
-  },
-  editorTemplate: row => {
-    let display =
-      this.props.itemcategory === undefined
-        ? []
-        : this.props.itemcategory.filter(
-            f =>
-              f.hims_d_item_category_id ===
-              row.item_category
-          );
-
-    return (
-      <span>
-        {display !== null &&
-        display.length !== 0
-          ? display[0].category_desc
-          : ""}
-      </span>
-    );
-  }
-},*/
-}

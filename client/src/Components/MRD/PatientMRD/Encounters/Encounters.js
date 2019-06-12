@@ -22,7 +22,6 @@ class Encounters extends Component {
   }
 
   setEncounterDetails(row, e) {
-    
     const enc_id = e.currentTarget.getAttribute("enc-id");
     const episode_id = e.currentTarget.getAttribute("epi-id");
     const visit_id = e.currentTarget.getAttribute("visit-id");
@@ -34,9 +33,7 @@ class Encounters extends Component {
     this.getPatientVitals(Window.global["mrd_patient"], visit_id);
 
     const general_info = Enumerable.from(this.state.patientEncounters)
-      .where(
-        w => w.hims_f_patient_encounter_id === parseInt(row.encounter_id, 10)
-      )
+      .where(w => w.encounter_id === parseInt(row.encounter_id, 10))
       .firstOrDefault();
 
     this.setState({
@@ -95,7 +92,6 @@ class Encounters extends Component {
       module: "MRD",
       cancelRequestId: "getPatientChiefComplaint",
       onSuccess: response => {
-        
         if (response.data.success) {
           this.setState({ patientComplaints: response.data.records });
         }
@@ -142,8 +138,6 @@ class Encounters extends Component {
       },
       cancelRequestId: "getPatientMedication",
       onSuccess: response => {
-        
-
         if (response.data.success) {
           this.setState({ patientMedications: response.data.records });
         }
@@ -194,7 +188,6 @@ class Encounters extends Component {
       onSuccess: response => {
         algaehLoader({ show: false });
         if (response.data.success) {
-          
           this.setState({ patientEncounters: response.data.records });
         }
       },
@@ -356,7 +349,6 @@ class Encounters extends Component {
                       <div className="col">
                         <h6 className="">
                           {this.state.patientComplaints.map((data, index) => {
-                            
                             return data.chief_complaint
                               ? data.chief_complaint
                               : data.comment
@@ -374,9 +366,7 @@ class Encounters extends Component {
                     <h6 className="smallh6">Significant Signs</h6>
                     <div className="row">
                       <div className="col">
-                        <h6 className="">
-                          {this.state.significant_signs}
-                        </h6>
+                        <h6 className="">{this.state.significant_signs}</h6>
                       </div>
                     </div>
                   </div>
@@ -414,23 +404,23 @@ class Encounters extends Component {
                     <h6 className="smallh6">Diagnosis</h6>
                     <div className="row">
                       <div className="col">
-                        <h6 className="danger">
-                          {this.state.patientDiagnosis.map((data, index) =>
-                            data.diagnosis_type === "P"
+                        {this.state.patientDiagnosis.map((data, index) => (
+                          <h6 className="danger">
+                            {data.diagnosis_type === "P"
                               ? "Primary: " + data.daignosis_description
-                              : null
-                          )}
-                        </h6>
+                              : ""}
+                          </h6>
+                        ))}
                       </div>
 
                       <div className="col">
-                        <h6 className="">
-                          {this.state.patientDiagnosis.map((data, index) =>
-                            data.diagnosis_type === "S"
+                        {this.state.patientDiagnosis.map((data, index) => (
+                          <h6 className="">
+                            {data.diagnosis_type === "S"
                               ? "Secondary: " + data.daignosis_description
-                              : null
-                          )}
-                        </h6>
+                              : ""}
+                          </h6>
+                        ))}
                       </div>
                     </div>
                   </div>

@@ -121,11 +121,15 @@ module.exports = {
         qryStr += " and insurance_sub_code=" + input.insurance_sub_code;
       }
 
+      if (input.insurance_provider_id != null) {
+        qryStr += " and insurance_provider_id=" + input.insurance_provider_id;
+      }
+
       _mysql
         .executeQuery({
           query: `select * from hims_d_insurance_sub where record_status='A' ${qryStr} `,
 
-          printQuery: false
+          printQuery: true
         })
         .then(result => {
           _mysql.releaseConnection();
@@ -706,12 +710,12 @@ module.exports = {
                       });
                     })
                     .catch(error => {
-                      mysql.rollBackTransaction(() => {
+                      _mysql.rollBackTransaction(() => {
                         next(error);
                       });
                     });
                 } else {
-                  mysql.rollBackTransaction(() => {
+                  _mysql.rollBackTransaction(() => {
                     req.records = result;
 
                     next();
@@ -719,20 +723,20 @@ module.exports = {
                 }
               })
               .catch(error => {
-                mysql.rollBackTransaction(() => {
+                _mysql.rollBackTransaction(() => {
                   next(error);
                 });
               });
           } else {
-            mysql.rollBackTransaction(() => {
+            _mysql.commitTransaction(() => {
+              _mysql.releaseConnection();
               req.records = result;
-
               next();
             });
           }
         })
         .catch(error => {
-          mysql.rollBackTransaction(() => {
+          _mysql.rollBackTransaction(() => {
             next(error);
           });
         });
@@ -1060,20 +1064,22 @@ module.exports = {
                 });
               })
               .catch(error => {
-                _mysql.releaseConnection();
-                next(error);
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                });
               });
           } else {
-            mysql.rollBackTransaction(() => {
+            _mysql.commitTransaction(() => {
+              _mysql.releaseConnection();
               req.records = result;
-
               next();
             });
           }
         })
         .catch(error => {
-          _mysql.releaseConnection();
-          next(error);
+          _mysql.rollBackTransaction(() => {
+            next(error);
+          });
         });
     } catch (e) {
       next(e);

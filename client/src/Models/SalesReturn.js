@@ -107,7 +107,8 @@ export default {
       service_id: null,
       conversion_factor: 1,
       grn_no: null,
-      item_group_id: null
+      item_group_id: null,
+      vat_applicable: "Y"
     };
     return output;
   }

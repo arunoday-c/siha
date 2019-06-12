@@ -157,12 +157,10 @@ class PatientProfile extends Component {
         title: "Enter Significant Signs. Atlest 4 letter",
         type: "warning"
       });
-    } else if (_Vitals.length === 0) {
-      swalMessage({
-        title: "Enter All Vitals...",
-        type: "warning"
-      });
-    } else if (_Vitals.length === 0) {
+    } else if (
+      _Vitals.length === 0 &&
+      Window.global["vitals_mandatory"] === "Y"
+    ) {
       swalMessage({
         title: "Enter All Vitals...",
         type: "warning"
@@ -219,7 +217,10 @@ class PatientProfile extends Component {
         title: "Enter Significant Signs. Atlest 4 letter",
         type: "warning"
       });
-    } else if (_Vitals.length === 0) {
+    } else if (
+      _Vitals.length === 0 &&
+      Window.global["vitals_mandatory"] === "Y"
+    ) {
       swalMessage({
         title: "Enter All Vitals...",
         type: "warning"
@@ -273,7 +274,10 @@ class PatientProfile extends Component {
         title: "Enter Significant Signs. Atlest 4 letter",
         type: "warning"
       });
-    } else if (_Vitals.length === 0) {
+    } else if (
+      _Vitals.length === 0 &&
+      Window.global["vitals_mandatory"] === "Y"
+    ) {
       swalMessage({
         title: "Enter All Vitals...",
         type: "warning"
@@ -327,7 +331,10 @@ class PatientProfile extends Component {
         title: "Enter Significant Signs. Atlest 4 letter",
         type: "warning"
       });
-    } else if (_Vitals.length === 0) {
+    } else if (
+      _Vitals.length === 0 &&
+      Window.global["vitals_mandatory"] === "Y"
+    ) {
       swalMessage({
         title: "Enter All Vitals...",
         type: "warning"
