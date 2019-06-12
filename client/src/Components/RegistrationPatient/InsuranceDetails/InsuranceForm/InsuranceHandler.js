@@ -319,7 +319,9 @@ const InsuranceDetails = ($this, context, e) => {
             network_id: row.hims_d_insurance_network_id,
             network_office_id: row.hims_d_insurance_network_office_id,
             network_type: row.network_type,
-
+            primary_effective_start_date: row.net_effective_start_date,
+            primary_effective_end_date: row.net_effective_end_date,
+            insurance_effective_end_date: row.effective_end_date,
             policy_number: row.policy_number
           };
           let insObj = $this.props.existinsurance || [];
