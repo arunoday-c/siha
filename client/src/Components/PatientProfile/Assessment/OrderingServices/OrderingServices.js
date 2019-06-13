@@ -141,7 +141,6 @@ class OrderingServices extends Component {
         mappingName: "existinginsurance"
       },
       afterSuccess: data => {
-        
         if (data.length > 0) {
           this.setState({
             insured: "Y",
@@ -170,6 +169,7 @@ class OrderingServices extends Component {
       }
     });
   }
+
   componentWillReceiveProps(nextProps) {
     if (
       nextProps.existinginsurance !== undefined &&
@@ -178,6 +178,8 @@ class OrderingServices extends Component {
       let output = nextProps.existinginsurance[0];
       output.insured = "Y";
       this.setState({ ...output });
+    } else {
+      this.setState({ insured: "N" });
     }
   }
 
@@ -233,15 +235,30 @@ class OrderingServices extends Component {
             onClose: this.onClose.bind(this)
           }}
           title="Order Services"
-          openPopup={this.props.open}
-        >
+          openPopup={this.props.open}>
           <div className="popupInner">
             <div className="col-lg-12">
-                     {this.state.insured === "Y" ?  <div className="row legendCntr">
-                <div className="col">
-                    <small><span className="legendSpan orange_Y_Y"></span><span>Ins. Covered: <b>Yes</b>, Pre Approval: <b>Yes</b></span><span className="legendSpan green_Y_N"></span><span>Ins. Covered: <b>Yes</b>, Pre Approval: <b>No</b></span><span className="legendSpan red_N_N"></span><span>Ins. Covered: <b>No</b>, Pre Approval: <b>--</b></span></small>
-                </div><hr></hr>
-                </div>: null }
+              {this.state.insured === "Y" ? (
+                <div className="row legendCntr">
+                  <div className="col">
+                    <small>
+                      <span className="legendSpan orange_Y_Y" />
+                      <span>
+                        Ins. Covered: <b>Yes</b>, Pre Approval: <b>Yes</b>
+                      </span>
+                      <span className="legendSpan green_Y_N" />
+                      <span>
+                        Ins. Covered: <b>Yes</b>, Pre Approval: <b>No</b>
+                      </span>
+                      <span className="legendSpan red_N_N" />
+                      <span>
+                        Ins. Covered: <b>No</b>, Pre Approval: <b>--</b>
+                      </span>
+                    </small>
+                  </div>
+                  <hr />
+                </div>
+              ) : null}
               <div className="row">
                 {/*
                   <AlagehAutoComplete
@@ -272,26 +289,36 @@ class OrderingServices extends Component {
                   label={{ forceLabel: "Select Service" }}
                   title="Search Services"
                   id="service_id_search"
-                  template={({ covered, pre_approval, service_name, service_type }) => {
+                  template={({
+                    covered,
+                    pre_approval,
+                    service_name,
+                    service_type
+                  }) => {
                     let properStyle;
-                    if (this.state.insured === "Y") { 
-                    if (covered === "Y") {
-                      if (pre_approval === "Y") {
-                        properStyle = "orange_Y_Y"
+                    if (this.state.insured === "Y") {
+                      if (covered === "Y") {
+                        if (pre_approval === "Y") {
+                          properStyle = "orange_Y_Y";
+                        } else {
+                          properStyle = "green_Y_N";
+                        }
                       } else {
-                        properStyle = "green_Y_N"
+                        properStyle = "red_N_N";
                       }
                     } else {
-                      properStyle = "red_N_N"
+                      properStyle = "white_N_N";
                     }
-                  }else{
-                  properStyle = "white_N_N"
-                  }
                     return (
                       <div className={`row resultSecStyles ${properStyle}`}>
-                          <div className="col-12 padd-10">
-                            <h6 className="title">{_.startCase(_.toLower(service_name))} <span className="service_type">({_.startCase(_.toLower(service_type))})</span></h6>
-                            {/* <p className="service_type">{_.startCase(_.toLower(service_type))}</p> */}
+                        <div className="col-12 padd-10">
+                          <h6 className="title">
+                            {_.startCase(_.toLower(service_name))}{" "}
+                            <span className="service_type">
+                              ({_.startCase(_.toLower(service_type))})
+                            </span>
+                          </h6>
+                          {/* <p className="service_type">{_.startCase(_.toLower(service_type))}</p> */}
                         </div>
                         {/* <div className="col-3  padd-10">  <span className="insCovered">Ins. Covered <span className={covered === "Y"  ? "yesStyle" : "noStyle"}>{covered === "Y" ? "Yes" : "No"}</span></span>
                             <span  className="insPreApp">Pre. Approval
@@ -336,16 +363,14 @@ class OrderingServices extends Component {
                 <div className="col">
                   <button
                     className="btn btn-primary"
-                    style={{ marginTop:19 }}
+                    style={{ marginTop: 19 }}
                     onClick={ProcessService.bind(this, this)}
-                    disabled={this.state.addNewService}
-                  >
+                    disabled={this.state.addNewService}>
                     Add New Service
                   </button>
                 </div>
               </div>
-      
-             
+
               <div className="row">
                 <div className="col-md-10 col-lg-12" id="doctorOrder">
                   <AlgaehDataGrid
@@ -737,8 +762,7 @@ class OrderingServices extends Component {
                       <button
                         className="btn btn-primary"
                         onClick={SaveOrdersServices.bind(this, this)}
-                        disabled={this.state.saved}
-                      >
+                        disabled={this.state.saved}>
                         Save
                       </button>
                     </span>
