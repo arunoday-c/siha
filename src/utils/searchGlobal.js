@@ -47,8 +47,8 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "visit",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS  full_name, patient_code, pv.visit_code, pv.visit_date, pv.patient_id,\
-           pv.hims_f_patient_visit_id, \
+          "select SQL_CALC_FOUND_ROWS  full_name, patient_code, contact_number, pv.visit_code, pv.visit_date,\
+          pv.patient_id, pv.hims_f_patient_visit_id, \
           pv.insured, pv.sec_insured,pv.episode_id FROM hims_f_patient,hims_f_patient_visit pv where  \
           pv.patient_id=hims_f_patient.hims_d_patient_id and pv.record_status='A' and pv.hospital_id=" +
           hospitalId,
@@ -73,11 +73,13 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "POSEntry",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS PH.*, date(PH.pos_date) as posdate, V.visit_code, P.patient_code, P.full_name \
-          from hims_f_pharmacy_pos_header PH \
-          left join hims_f_patient P on PH.patient_id = P.hims_d_patient_id \
-          left join hims_f_patient_visit V on PH.visit_id = V.hims_f_patient_visit_id \
-          where PH.record_status ='A' and PH.hospital_id=" +
+          "select SQL_CALC_FOUND_ROWS PH.*, date(PH.pos_date) as posdate, V.visit_code, P.patient_code,\
+        CASE WHEN PH.pos_customer_type='OP' THEN P.full_name else PH.patient_name END as patient_name, \
+        CASE WHEN PH.pos_customer_type='OP' THEN P.contact_number else PH.mobile_number END as mobile_number \
+        from hims_f_pharmacy_pos_header PH \
+        left join hims_f_patient P on PH.patient_id = P.hims_d_patient_id \
+        left join hims_f_patient_visit V on PH.visit_id = V.hims_f_patient_visit_id \
+        where PH.record_status ='A' and PH.hospital_id=" +
           hospitalId,
         orderBy: "hims_f_pharmacy_pos_header_id desc"
       },

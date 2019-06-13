@@ -40,8 +40,8 @@ const clearinsurancehandle = ($this, context, e) => {
     primary_policy_num: null,
     primary_network_office_id: null,
     primary_card_number: null,
-    primary_effective_start_date: null,
-    primary_effective_end_date: null,
+    effective_start_date: null,
+    effective_end_date: null,
     card_holder_name: null,
     card_holder_age: null,
     card_holder_gender: null,
@@ -57,8 +57,8 @@ const clearinsurancehandle = ($this, context, e) => {
       primary_policy_num: null,
       primary_network_office_id: null,
       primary_card_number: null,
-      primary_effective_start_date: null,
-      primary_effective_end_date: null,
+      effective_start_date: null,
+      effective_end_date: null,
       card_holder_name: null,
       card_holder_age: null,
       card_holder_gender: null,
@@ -92,8 +92,8 @@ const insurancehandle = ($this, context, e) => {
         primary_network_office_id:
           e.selected.hims_d_insurance_network_office_id,
         primary_card_number: e.selected.card_number,
-        primary_effective_start_date: e.selected.primary_effective_start_date,
-        primary_effective_end_date: e.selected.primary_effective_end_date,
+        effective_start_date: e.selected.effective_start_date,
+        effective_end_date: e.selected.effective_end_date,
         card_holder_name: e.selected.card_holder_name,
         ProcessInsure: ProcessInsure
       },
@@ -111,8 +111,8 @@ const insurancehandle = ($this, context, e) => {
         primary_network_id: e.selected.network_id,
         primary_policy_num: e.selected.policy_number,
         primary_card_number: e.selected.card_number,
-        primary_effective_start_date: e.selected.primary_effective_start_date,
-        primary_effective_end_date: e.selected.primary_effective_end_date,
+        effective_start_date: e.selected.effective_start_date,
+        effective_end_date: e.selected.effective_end_date,
         primary_network_office_id:
           e.selected.hims_d_insurance_network_office_id,
         card_holder_name: e.selected.card_holder_name,
@@ -181,6 +181,7 @@ const enddatehandle = ($this, context, ctrl, e) => {
 };
 
 const InsuranceDetails = ($this, context, e) => {
+  debugger;
   let ProcessInsure = false;
   if ($this.state.doctor_id === null) {
     ProcessInsure = true;
@@ -191,7 +192,6 @@ const InsuranceDetails = ($this, context, e) => {
   const hospital = JSON.parse(
     AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
   );
-  debugger;
 
   AlgaehSearch({
     searchGrid: {
@@ -205,31 +205,42 @@ const InsuranceDetails = ($this, context, e) => {
     },
     onRowSelect: row => {
       if (
-        $this.state.secondary_network_id === row.hims_d_insurance_network_id
+        Date.parse(row.net_effective_end_date) >
+        Date.parse(row.effective_end_date)
       ) {
-        swalMessage({
-          title: "Primary and Secondary Insurance Plan cannot be same.",
-          type: "warning"
-        });
-      } else {
-        if (
-          Date.parse(row.net_effective_end_date) >
-          Date.parse(row.effective_end_date)
-        ) {
-          swal({
-            title:
-              "Policy Date is more than insurance Expiry date Do you want to continue?",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonText: "Yes!",
-            confirmButtonColor: "#44b8bd",
-            cancelButtonColor: "#d33",
-            cancelButtonText: "No"
-          }).then(willProceed => {
-            if (willProceed.value) {
-              let mappingName = "";
+        swal({
+          title:
+            "Policy Date is more than insurance Expiry date Do you want to continue?",
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Yes!",
+          confirmButtonColor: "#44b8bd",
+          cancelButtonColor: "#d33",
+          cancelButtonText: "No"
+        }).then(willProceed => {
+          if (willProceed.value) {
+            $this.setState({
+              insurance_provider_id: row.hims_d_insurance_provider_id,
+              insurance_provider_name: row.insurance_provider_name,
 
-              let obj = {
+              sub_insurance_provider_id: row.hims_d_insurance_sub_id,
+              sub_insurance_provider_name: row.insurance_sub_name,
+
+              network_id: row.hims_d_insurance_network_id,
+              network_office_id: row.hims_d_insurance_network_office_id,
+              hims_d_insurance_network_office_id:
+                row.hims_d_insurance_network_office_id,
+              network_type: row.network_type,
+
+              policy_number: row.policy_number,
+              effective_start_date: row.net_effective_start_date,
+
+              effective_end_date: row.effective_end_date,
+              ProcessInsure: ProcessInsure
+            });
+
+            if (context !== null) {
+              context.updateState({
                 insurance_provider_id: row.hims_d_insurance_provider_id,
                 insurance_provider_name: row.insurance_provider_name,
 
@@ -238,78 +249,42 @@ const InsuranceDetails = ($this, context, e) => {
 
                 network_id: row.hims_d_insurance_network_id,
                 network_office_id: row.hims_d_insurance_network_office_id,
+                hims_d_insurance_network_office_id:
+                  row.hims_d_insurance_network_office_id,
                 network_type: row.network_type,
 
                 policy_number: row.policy_number,
-                primary_effective_start_date: row.net_effective_start_date,
-                // primary_effective_end_date: row.net_effective_end_date,
-                primary_effective_end_date: row.effective_end_date
-              };
+                effective_start_date: row.net_effective_start_date,
 
-              let insObj = $this.props.existinsurance || [];
-              if (
-                $this.props.existinsurance === undefined ||
-                $this.props.existinsurance.length === 0
-              ) {
-                mappingName = "primaryinsurance";
-                insObj.push(obj);
-              } else {
-                mappingName = "existinsurance";
-                insObj.push(obj);
-              }
-
-              $this.props.setSelectedInsurance({
-                redux: {
-                  type: "PRIMARY_INSURANCE_DATA",
-                  mappingName: mappingName,
-                  data: insObj
-                },
-                afterSuccess: data => {
-                  $this.setState(
-                    {
-                      primary_insurance_provider_id:
-                        row.hims_d_insurance_provider_id,
-                      primary_sub_id: row.hims_d_insurance_sub_id,
-                      primary_network_id: row.hims_d_insurance_network_id,
-                      primary_policy_num: row.policy_number,
-                      primary_network_office_id:
-                        row.hims_d_insurance_network_office_id,
-                      primary_effective_start_date:
-                        row.primary_effective_start_date,
-                      primary_effective_end_date: row.net_effective_start_date,
-                      insurance_effective_end_date: row.effective_end_date,
-                      ProcessInsure: ProcessInsure
-                    },
-                    () => {
-                      if ($this.state.doctor_id !== null) {
-                        ProcessInsurance($this, context);
-                      }
-                    }
-                  );
-
-                  if (context !== null) {
-                    context.updateState({
-                      primary_insurance_provider_id:
-                        row.hims_d_insurance_provider_id,
-                      primary_sub_id: row.hims_d_insurance_sub_id,
-                      primary_network_id: row.hims_d_insurance_network_id,
-                      primary_policy_num: row.policy_number,
-                      primary_network_office_id:
-                        row.hims_d_insurance_network_office_id,
-                      primary_effective_start_date:
-                        row.net_effective_start_date,
-                      primary_effective_end_date: row.net_effective_end_date,
-                      insurance_effective_end_date: row.effective_end_date,
-                      ProcessInsure: ProcessInsure
-                    });
-                  }
-                }
+                effective_end_date: row.effective_end_date,
+                ProcessInsure: ProcessInsure
               });
             }
-          });
-        } else {
-          let mappingName = "";
-          let obj = {
+          }
+        });
+      } else {
+        $this.setState({
+          insurance_provider_id: row.hims_d_insurance_provider_id,
+          insurance_provider_name: row.insurance_provider_name,
+
+          sub_insurance_provider_id: row.hims_d_insurance_sub_id,
+          sub_insurance_provider_name: row.insurance_sub_name,
+
+          network_id: row.hims_d_insurance_network_id,
+          network_office_id: row.hims_d_insurance_network_office_id,
+          hims_d_insurance_network_office_id:
+            row.hims_d_insurance_network_office_id,
+          network_type: row.network_type,
+
+          policy_number: row.policy_number,
+          effective_start_date: row.net_effective_start_date,
+
+          effective_end_date: row.effective_end_date,
+          ProcessInsure: ProcessInsure
+        });
+
+        if (context !== null) {
+          context.updateState({
             insurance_provider_id: row.hims_d_insurance_provider_id,
             insurance_provider_name: row.insurance_provider_name,
 
@@ -318,66 +293,15 @@ const InsuranceDetails = ($this, context, e) => {
 
             network_id: row.hims_d_insurance_network_id,
             network_office_id: row.hims_d_insurance_network_office_id,
+            hims_d_insurance_network_office_id:
+              row.hims_d_insurance_network_office_id,
             network_type: row.network_type,
 
-            policy_number: row.policy_number
-          };
-          let insObj = $this.props.existinsurance || [];
-          if (
-            $this.props.existinsurance === undefined ||
-            $this.props.existinsurance.length === 0
-          ) {
-            mappingName = "primaryinsurance";
-            insObj.push(obj);
-          } else {
-            mappingName = "existinsurance";
-            insObj.push(obj);
-          }
+            policy_number: row.policy_number,
+            effective_start_date: row.net_effective_start_date,
 
-          $this.props.setSelectedInsurance({
-            redux: {
-              type: "PRIMARY_INSURANCE_DATA",
-              mappingName: mappingName,
-              data: insObj
-            },
-            afterSuccess: data => {
-              $this.setState(
-                {
-                  primary_insurance_provider_id:
-                    row.hims_d_insurance_provider_id,
-                  primary_sub_id: row.hims_d_insurance_sub_id,
-                  primary_network_id: row.hims_d_insurance_network_id,
-                  primary_policy_num: row.policy_number,
-                  primary_network_office_id:
-                    row.hims_d_insurance_network_office_id,
-                  primary_effective_start_date: row.net_effective_start_date,
-                  primary_effective_end_date: row.net_effective_end_date,
-                  insurance_effective_end_date: row.effective_end_date,
-                  ProcessInsure: ProcessInsure
-                },
-                () => {
-                  if ($this.state.doctor_id !== null) {
-                    ProcessInsurance($this, context);
-                  }
-                }
-              );
-
-              if (context !== null) {
-                context.updateState({
-                  primary_insurance_provider_id:
-                    row.hims_d_insurance_provider_id,
-                  primary_sub_id: row.hims_d_insurance_sub_id,
-                  primary_network_id: row.hims_d_insurance_network_id,
-                  primary_policy_num: row.policy_number,
-                  primary_network_office_id:
-                    row.hims_d_insurance_network_office_id,
-                  primary_effective_start_date: row.net_effective_start_date,
-                  primary_effective_end_date: row.net_effective_end_date,
-                  insurance_effective_end_date: row.effective_end_date,
-                  ProcessInsure: ProcessInsure
-                });
-              }
-            }
+            effective_end_date: row.effective_end_date,
+            ProcessInsure: ProcessInsure
           });
         }
       }
@@ -511,8 +435,8 @@ const radioChange = ($this, context, e) => {
           primary_policy_num: null,
           primary_network_office_id: null,
           primary_card_number: null,
-          primary_effective_start_date: null,
-          primary_effective_end_date: null,
+          effective_start_date: null,
+          effective_end_date: null,
           patInsuranceFrontImg: undefined
         },
         () => {
@@ -538,8 +462,8 @@ const radioChange = ($this, context, e) => {
           primary_policy_num: null,
           primary_network_office_id: null,
           primary_card_number: null,
-          primary_effective_start_date: null,
-          primary_effective_end_date: null,
+          effective_start_date: null,
+          effective_end_date: null,
           patInsuranceFrontImg: undefined
         });
       }

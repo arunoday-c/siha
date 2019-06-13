@@ -71,7 +71,8 @@ export default {
       addItemButton: true,
       ReqData: true,
       ClearDisable: false,
-      saveEnable: true
+      saveEnable: true,
+      InvoiceEnable: false
     };
     return output;
   }

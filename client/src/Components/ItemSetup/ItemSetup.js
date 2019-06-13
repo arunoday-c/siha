@@ -24,34 +24,25 @@ class ItemSetup extends Component {
   }
 
   componentDidMount() {
-    if (
-      this.props.itemcategory === undefined ||
-      this.props.itemcategory.length === 0
-    ) {
-      this.props.getItemCategory({
-        uri: "/pharmacy/getItemCategory",
-        module: "pharmacy",
-        method: "GET",
-        redux: {
-          type: "ITEM_CATEGORY_GET_DATA",
-          mappingName: "itemcategory"
-        }
-      });
-    }
-    if (
-      this.props.itemgroup === undefined ||
-      this.props.itemgroup.length === 0
-    ) {
-      this.props.getItemGroup({
-        uri: "/pharmacy/getItemGroup",
-        module: "pharmacy",
-        method: "GET",
-        redux: {
-          type: "ITEM_GROUOP_GET_DATA",
-          mappingName: "itemgroup"
-        }
-      });
-    }
+    this.props.getItemCategory({
+      uri: "/pharmacy/getItemCategory",
+      module: "pharmacy",
+      method: "GET",
+      redux: {
+        type: "ITEM_CATEGORY_GET_DATA",
+        mappingName: "itemcategory"
+      }
+    });
+
+    this.props.getItemGroup({
+      uri: "/pharmacy/getItemGroup",
+      module: "pharmacy",
+      method: "GET",
+      redux: {
+        type: "ITEM_GROUOP_GET_DATA",
+        mappingName: "itemgroup"
+      }
+    });
 
     this.props.getItemUOM({
       uri: "/pharmacy/getPharmacyUom",
@@ -63,71 +54,45 @@ class ItemSetup extends Component {
       }
     });
 
-    if (
-      this.props.itemgeneric === undefined ||
-      this.props.itemgeneric.length === 0
-    ) {
-      this.props.getItemGeneric({
-        uri: "/pharmacy/getItemGeneric",
-        module: "pharmacy",
-        method: "GET",
-        redux: {
-          type: "ITEM_GENERIC_GET_DATA",
-          mappingName: "itemgeneric"
-        }
-      });
-    }
-    if (this.props.itemform === undefined || this.props.itemform.length === 0) {
-      this.props.getItemForm({
-        uri: "/pharmacy/getItemForm",
-        module: "pharmacy",
-        method: "GET",
-        redux: {
-          type: "ITEM_FORM_GET_DATA",
-          mappingName: "itemform"
-        }
-      });
-    }
-    if (
-      this.props.itemstorage === undefined ||
-      this.props.itemstorage.length === 0
-    ) {
-      this.props.getItemStorage({
-        uri: "/pharmacy/getItemStorage",
-        module: "pharmacy",
-        method: "GET",
-        redux: {
-          type: "ANALYTES_GET_DATA",
-          mappingName: "itemstorage"
-        }
-      });
-    }
-    if (
-      this.props.itemservices === undefined ||
-      this.props.itemservices.length === 0
-    ) {
-      this.props.getServices({
-        uri: "/serviceType/getService",
-        module: "masterSettings",
-        method: "GET",
-        redux: {
-          type: "SERVICES_GET_DATA",
-          mappingName: "itemservices"
-        }
-      });
-    }
+    this.props.getItemGeneric({
+      uri: "/pharmacy/getItemGeneric",
+      module: "pharmacy",
+      method: "GET",
+      redux: {
+        type: "ITEM_GENERIC_GET_DATA",
+        mappingName: "itemgeneric"
+      }
+    });
 
-    if (this.props.sfda === undefined || this.props.sfda.length === 0) {
-      this.props.getSFDA({
-        uri: "/sfda/getSFDA",
-        module: "masterSettings",
-        method: "GET",
-        redux: {
-          type: "SFDA_GET_DATA",
-          mappingName: "sfda"
-        }
-      });
-    }
+    this.props.getItemForm({
+      uri: "/pharmacy/getItemForm",
+      module: "pharmacy",
+      method: "GET",
+      redux: {
+        type: "ITEM_FORM_GET_DATA",
+        mappingName: "itemform"
+      }
+    });
+
+    this.props.getItemStorage({
+      uri: "/pharmacy/getItemStorage",
+      module: "pharmacy",
+      method: "GET",
+      redux: {
+        type: "ANALYTES_GET_DATA",
+        mappingName: "itemstorage"
+      }
+    });
+
+    this.props.getServices({
+      uri: "/serviceType/getService",
+      module: "masterSettings",
+      method: "GET",
+      redux: {
+        type: "SERVICES_GET_DATA",
+        mappingName: "itemservices"
+      }
+    });
 
     if (this.props.itemlist === undefined || this.props.itemlist.length === 0) {
       ItemSetupEvent().getItems(this, this);
@@ -183,6 +148,7 @@ class ItemSetup extends Component {
           addl_information: firstRecordSet.addl_information,
           required_batchno_expiry: firstRecordSet.required_batchno_expiry,
           sfda_code: firstRecordSet.sfda_code,
+          reorder_qty: firstRecordSet.reorder_qty,
           detail_item_uom:
             firstRecordSet.hims_m_item_uom_id === null ? [] : g.getSource()
         };
@@ -436,8 +402,7 @@ function mapStateToProps(state) {
     itemgeneric: state.itemgeneric,
     itemform: state.itemform,
     itemstorage: state.itemstorage,
-    itemservices: state.itemservices,
-    sfda: state.sfda
+    itemservices: state.itemservices
   };
 }
 
@@ -451,8 +416,7 @@ function mapDispatchToProps(dispatch) {
       getItemGeneric: AlgaehActions,
       getItemForm: AlgaehActions,
       getItemStorage: AlgaehActions,
-      getServices: AlgaehActions,
-      getSFDA: AlgaehActions
+      getServices: AlgaehActions
     },
     dispatch
   );

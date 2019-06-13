@@ -33,6 +33,7 @@ export default {
       addedItem: false,
 
       saveEnable: true,
+      dataExists: false,
       postEnable: true,
 
       addItemButton: true,

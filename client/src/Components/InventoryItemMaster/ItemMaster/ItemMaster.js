@@ -32,7 +32,8 @@ import {
   uomtexthandle,
   stockingtexthandle,
   stockonchangegridcol,
-  additionaleInfo
+  additionaleInfo,
+  numberEventHandaler
 } from "./ItemDetailsEvents";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 
@@ -54,7 +55,6 @@ class InvItemMaster extends Component {
 
   componentWillReceiveProps(newProps) {
     if (newProps.itemPop.hims_d_inventory_item_master_id !== undefined) {
-      
       let IOputs = newProps.itemPop;
       this.setState({ ...this.state, ...IOputs });
     }
@@ -195,7 +195,7 @@ class InvItemMaster extends Component {
                         </label>
                       </div>
                     </div>
-                    <div className="col-6">
+                    <div className="col-3">
                       <label>Expiry Date</label>
                       <div
                         className="customCheckbox"
@@ -219,6 +219,24 @@ class InvItemMaster extends Component {
                         </label>
                       </div>
                     </div>
+                    <AlagehFormGroup
+                      div={{ className: "col-3 form-group" }}
+                      label={{
+                        forceLabel: "Reorder Quantity",
+                        isImp: true
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "reorder_qty",
+                        value: this.state.reorder_qty,
+                        events: {
+                          onChange: numberEventHandaler.bind(this, this)
+                        },
+                        others: {
+                          type: "number"
+                        }
+                      }}
+                    />
                     {this.state.hims_d_inventory_item_master_id === null ? (
                       <div className="col-12">
                         <div className="row">
@@ -253,13 +271,14 @@ class InvItemMaster extends Component {
                               name: "vat_percent",
                               value: this.state.vat_percent,
                               events: {
-                                onChange: texthandle.bind(this, this)
+                                onChange: numberEventHandaler.bind(this, this)
                               },
                               others: {
                                 disabled:
                                   this.state.vat_applicable === "Y"
                                     ? false
-                                    : true
+                                    : true,
+                                type: "number"
                               }
                             }}
                           />

@@ -27,7 +27,8 @@ import {
   onChangeTextEventHandaler,
   onDateTextEventHandaler,
   OnChangeDeliveryQty,
-  AddtoList
+  AddtoList,
+  numberEventHandaler
 } from "./DNItemListEvents";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 
@@ -51,15 +52,19 @@ class DNItemList extends Component {
       parseFloat(item.po_quantity) -
       parseFloat(item.quantity_outstanding) -
       parseFloat(item.quantity_recieved_todate);
+
+    item.free_qty = 0;
     this.setState({
       selected_row_index: index,
       item_details: item,
-      dn_quantity: dn_quantity
+      dn_quantity: dn_quantity,
+      free_qty: 0
     });
 
     context.updateState({
       item_details: item,
-      dn_quantity: dn_quantity
+      dn_quantity: dn_quantity,
+      free_qty: 0
     });
   }
 
@@ -86,7 +91,6 @@ class DNItemList extends Component {
                   <h4 style={{ marginBottom: 4 }}>Requested Items</h4>
                   <ul className="reqTransList">
                     {this.state.po_entry_detail.map((item, index) => {
-                      
                       return (
                         <li>
                           <div className="itemReq">
@@ -243,13 +247,40 @@ class DNItemList extends Component {
                           }
                         }}
                       />
-                      <div className="itemAction">
-                        <span>
-                          <i
-                            className="fas fa-plus"
-                            onClick={AddtoList.bind(this, this, context)}
-                          />
-                        </span>
+
+                      <AlagehFormGroup
+                        div={{ className: "col" }}
+                        label={{
+                          forceLabel: "Free Qty."
+                        }}
+                        textBox={{
+                          number: {
+                            allowNegative: false,
+                            thousandSeparator: ","
+                          },
+                          value: this.state.free_qty,
+                          className: "txt-fld",
+                          name: "free_qty",
+                          events: {
+                            onChange: numberEventHandaler.bind(
+                              this,
+                              this,
+                              context
+                            )
+                          }
+                        }}
+                      />
+
+                      <div className="col">
+                        <button
+                          class="btn btn-default"
+                          style={{
+                            marginTop: 19
+                          }}
+                          onClick={AddtoList.bind(this, this, context)}
+                        >
+                          Add
+                        </button>
                       </div>
                     </div>
                     <div className="portlet-body">
@@ -690,7 +721,15 @@ class DNItemList extends Component {
                                   );
                                 }
                               },
-                              //
+                              {
+                                fieldName: "free_qty",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ forceLabel: "Free Quantity" }}
+                                  />
+                                )
+                              },
+
                               {
                                 fieldName: "quantity_outstanding",
                                 label: (

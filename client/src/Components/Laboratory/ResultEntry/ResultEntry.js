@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
-
 import { bindActionCreators } from "redux";
 import "react-quill/dist/quill.snow.css";
 import "./ResultEntry.css";
@@ -355,6 +354,7 @@ class ResultEntry extends Component {
                                     value: row.result,
                                     className: "txt-fld",
                                     name: "result",
+                                    number: row.analyte_type === "QN" ? true : undefined,
                                     events: {
                                       onChange: onchangegridresult.bind(
                                         this,
@@ -427,7 +427,8 @@ class ResultEntry extends Component {
                           />
                         ),
                         displayTemplate: row => {
-                          return row.critical_type === "N" ? (
+                          return ! row.critical_type ? null 
+                            : row.critical_type === "N" ? (
                             <span className="badge badge-success">Normal</span>
                           ) : row.critical_type === "CL" ? (
                             <span className="badge badge-danger">
@@ -439,9 +440,9 @@ class ResultEntry extends Component {
                             </span>
                           ) : row.critical_type === "L" ? (
                             <span className="badge badge-warning">Low</span>
-                          ) : row.critical_type === "H" ? (
+                          ) : row.critical_type === "H" && (
                             <span className="badge badge-warning">High</span>
-                          ) : null;
+                          )
                         }
                       },
                       {

@@ -166,8 +166,6 @@ const dateFormater = ($this, value) => {
 };
 
 const onchhangeNumber = ($this, row, e) => {
-  
-
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   row[name] = value;
@@ -175,7 +173,6 @@ const onchhangeNumber = ($this, row, e) => {
 };
 
 const onchhangegriddiscount = ($this, row, e) => {
-  
   let discount_percentage = row.discount_percentage;
   let discount_amount = 0;
   let extended_cost = 0;
@@ -346,7 +343,6 @@ const onChangeTextEventHandaler = ($this, context, e) => {
 };
 
 const onDateTextEventHandaler = ($this, context, ctrl, e) => {
-  
   let item_details = $this.state.item_details;
 
   item_details[e] = moment(ctrl)._d;
@@ -358,6 +354,11 @@ const onDateTextEventHandaler = ($this, context, ctrl, e) => {
   } else {
     // row[e] = moment(ctrl)._d;
     $this.setState({
+      [e]: moment(ctrl)._d,
+      append: !$this.state.append,
+      item_details: item_details
+    });
+    context.updateState({
       [e]: moment(ctrl)._d,
       append: !$this.state.append,
       item_details: item_details
@@ -399,6 +400,7 @@ const OnChangeDeliveryQty = ($this, context, e) => {
         type: "warning"
       });
     } else {
+      debugger;
       extended_price = parseFloat(item_details.unit_price) * parseFloat(value);
       discount_amount = (extended_price * discount_percentage) / 100;
 
@@ -455,19 +457,24 @@ const OnChangeDeliveryQty = ($this, context, e) => {
 };
 
 const AddtoList = ($this, context) => {
-  
+  debugger;
   let dn_entry_detail = $this.state.dn_entry_detail;
 
   let item_details = extend({}, $this.state.item_details);
+  let _item_details = extend({}, $this.state.item_details);
+
   let _po_entry_detail = $this.state.po_entry_detail;
 
   if (
-    $this.state.dn_quantity === 0 ||
-    $this.state.dn_quantity === "" ||
-    $this.state.dn_quantity === null
+    ($this.state.dn_quantity === 0 ||
+      $this.state.dn_quantity === "" ||
+      $this.state.dn_quantity === null) &&
+    ($this.state.free_qty === 0 ||
+      $this.state.free_qty === "" ||
+      $this.state.free_qty === null)
   ) {
     swalMessage({
-      title: "Enter Delivery Quantity.",
+      title: "Enter Delivery Quantity or Free Quantity.",
       type: "warning"
     });
   } else if (
@@ -480,7 +487,7 @@ const AddtoList = ($this, context) => {
       type: "warning"
     });
   } else {
-    dn_entry_detail.push($this.state.item_details);
+    dn_entry_detail.push(_item_details);
     let sub_total = Enumerable.from(dn_entry_detail).sum(s =>
       parseFloat(s.extended_price)
     );
@@ -509,7 +516,7 @@ const AddtoList = ($this, context) => {
     _po_entry_detail[$this.state.selected_row_index] = item_details;
 
     _po_entry_detail[$this.state.selected_row_index].dn_entry_detail = [
-      $this.state.item_details
+      _item_details
     ];
 
     $this.setState({
@@ -522,7 +529,8 @@ const AddtoList = ($this, context) => {
       net_total: net_total,
       net_payable: net_payable,
       total_tax: total_tax,
-      detail_discount: detail_discount
+      detail_discount: detail_discount,
+      free_qty: null
     });
     context.updateState({
       dn_entry_detail: dn_entry_detail,
@@ -534,7 +542,38 @@ const AddtoList = ($this, context) => {
       net_total: net_total,
       net_payable: net_payable,
       total_tax: total_tax,
-      detail_discount: detail_discount
+      detail_discount: detail_discount,
+      free_qty: null
+    });
+  }
+};
+
+const numberEventHandaler = ($this, context, ctrl, e) => {
+  debugger;
+  e = e || ctrl;
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  let item_details = $this.state.item_details;
+  if (value < 0) {
+    swalMessage({
+      type: "warning",
+      title: "Cannot be less than zero."
+    });
+    $this.setState({
+      [name]: 0
+    });
+    context.updateState({
+      [name]: value
+    });
+  } else {
+    item_details["free_qty"] = value;
+    $this.setState({
+      [name]: value,
+      item_details: item_details
+    });
+    context.updateState({
+      [name]: value,
+      item_details: item_details
     });
   }
 };
@@ -555,5 +594,6 @@ export {
   onChangeTextEventHandaler,
   onDateTextEventHandaler,
   OnChangeDeliveryQty,
-  AddtoList
+  AddtoList,
+  numberEventHandaler
 };

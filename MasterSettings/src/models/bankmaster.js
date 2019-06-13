@@ -8,7 +8,7 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "INSERT INTO hims_d_bank (bank_name,bank_code,bank_short_name,address1,contact_person,contact_number,created_date,created_by,updated_date,updated_by)\
+            "INSERT INTO hims_d_bank (bank_name, bank_code, bank_short_name, address1, contact_person, contact_number, created_date, created_by, updated_date, updated_by)\
                  values(?,?,?,?,?,?,?,?,?,?)",
           values: [
             input.bank_name,
@@ -21,7 +21,8 @@ module.exports = {
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id
-          ]
+          ],
+          printQuery: true
         })
         .then(result => {
           _mysql.releaseConnection();

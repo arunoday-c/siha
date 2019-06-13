@@ -152,7 +152,6 @@ class PointOfSale extends Component {
   }
 
   generateReport(rpt_name, rpt_desc) {
-    
     algaehApiCall({
       uri: "/report",
       method: "GET",
@@ -214,7 +213,6 @@ class PointOfSale extends Component {
   }
 
   render() {
-    
     const _posLocation =
       this.props.poslocations === undefined ? [] : this.props.poslocations;
     return (
@@ -339,9 +337,10 @@ class PointOfSale extends Component {
               ) : (
                 <div className="row">
                   <AlagehFormGroup
-                    div={{ className: "col" }}
+                    div={{ className: "col mandatory" }}
                     label={{
-                      forceLabel: "Patient Name"
+                      forceLabel: "Patient Name",
+                      isImp: true
                     }}
                     textBox={{
                       className: "txt-fld",
@@ -467,7 +466,19 @@ class PointOfSale extends Component {
                     }}
                   />
                 </button>
-
+                <button
+                  type="button"
+                  className="btn btn-default"
+                  onClick={PostPosEntry.bind(this, this)}
+                  disabled={this.state.postEnable}
+                >
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Collect & Print",
+                      returnText: true
+                    }}
+                  />
+                </button>
                 <button
                   type="button"
                   className="btn btn-default"
@@ -482,13 +493,13 @@ class PointOfSale extends Component {
                   type="button"
                   className="btn btn-other"
                   onClick={POSSearch.bind(this, this)}
-                  style={{ float: "left" }}
+                  style={{ float: "left", margin: 0 }}
                 >
                   <AlgaehLabel
-                    label={{ forceLabel: "Past POS Bill", returnText: true }}
+                    label={{ forceLabel: "Previous Bill", returnText: true }}
                   />
                 </button>
-                {this.state.dataExitst === true ? (
+                {this.state.InvoiceEnable === true ? (
                   <div>
                     <button
                       onClick={this.generateReport.bind(
@@ -496,39 +507,27 @@ class PointOfSale extends Component {
                         "posCashInvoice",
                         "Cash Invoice"
                       )}
-                      className="btn btn-default"
+                      className="btn btn-other"
+                      style={{ float: "left" }}
                     >
                       Cash Invoice
                     </button>
 
                     {this.state.insured === "Y" ? (
                       <button
-                        className="btn btn-default"
+                        className="btn btn-other  "
                         onClick={this.generateReport.bind(
                           this,
                           "posCreditInvoice",
                           "Credit Invoice"
                         )}
+                        style={{ float: "left" }}
                       >
                         Credit Invoice
                       </button>
                     ) : null}
                   </div>
                 ) : null}
-
-                <button
-                  type="button"
-                  className="btn btn-other"
-                  onClick={PostPosEntry.bind(this, this)}
-                  disabled={this.state.postEnable}
-                >
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Collect & Print",
-                      returnText: true
-                    }}
-                  />
-                </button>
               </div>
             </div>
           </div>
@@ -580,28 +579,33 @@ class PointOfSale extends Component {
                 >
                   Close
                 </button>
-                <button
-                  onClick={this.generateReport.bind(
-                    this,
-                    "posCashInvoice",
-                    "Cash Invoice"
-                  )}
-                  className="btn btn-default"
-                >
-                  Cash Invoice
-                </button>
 
-                {this.state.insured === "Y" ? (
-                  <button
-                    className="btn btn-default"
-                    onClick={this.generateReport.bind(
-                      this,
-                      "posCreditInvoice",
-                      "Credit Invoice"
-                    )}
-                  >
-                    Credit Invoice
-                  </button>
+                {this.state.InvoiceEnable === true ? (
+                  <div>
+                    <button
+                      onClick={this.generateReport.bind(
+                        this,
+                        "posCashInvoice",
+                        "Cash Invoice"
+                      )}
+                      className="btn btn-default"
+                    >
+                      Cash Invoice
+                    </button>
+
+                    {this.state.insured === "Y" ? (
+                      <button
+                        className="btn btn-default"
+                        onClick={this.generateReport.bind(
+                          this,
+                          "posCreditInvoice",
+                          "Credit Invoice"
+                        )}
+                      >
+                        Credit Invoice
+                      </button>
+                    ) : null}
+                  </div>
                 ) : null}
               </div>
             </div>

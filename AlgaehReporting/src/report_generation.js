@@ -234,7 +234,7 @@ module.exports = {
     const _mysql = new algaehMysql();
     try {
       const _inputParam = JSON.parse(input.report);
-      console.log("_inputParam:", _inputParam);
+
       _mysql
         .executeQuery({
           query:
