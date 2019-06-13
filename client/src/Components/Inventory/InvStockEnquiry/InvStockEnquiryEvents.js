@@ -19,6 +19,36 @@ const dateFormater = ($this, value) => {
   }
 };
 
+const getBatchWiseData = ($this, row) => {
+  let inputObj = {
+    item_id: row.item_id,
+    inventory_location_id: row.inventory_location_id
+  };
+  debugger;
+  algaehApiCall({
+    uri: "/inventoryGlobal/getItemandLocationStock",
+    module: "inventory",
+    method: "GET",
+    data: inputObj,
+    onSuccess: response => {
+      if (response.data.success === true) {
+        $this.setState({
+          batch_wise_item: response.data.records,
+          item_description: row.item_description,
+          total_quantity: row.qtyhand,
+          openBatchWise: !$this.state.openBatchWise
+        });
+      }
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
+};
+
 const getItemLocationStock = $this => {
   let inputObj = {};
 
@@ -31,7 +61,7 @@ const getItemLocationStock = $this => {
   }
 
   algaehApiCall({
-    uri: "/inventoryGlobal/getItemandLocationStock",
+    uri: "/inventoryGlobal/getItemLocationStock",
     module: "inventory",
     method: "GET",
     data: inputObj,
@@ -66,11 +96,19 @@ const texthandle = ($this, row, e) => {
   row.update();
 };
 
+const closeBatchWise = $this => {
+  $this.setState({
+    openBatchWise: !$this.state.openBatchWise
+  });
+};
+
 export {
   changeTexts,
   dateFormater,
   getItemLocationStock,
   updateStockDetils,
   datehandle,
-  texthandle
+  texthandle,
+  getBatchWiseData,
+  closeBatchWise
 };

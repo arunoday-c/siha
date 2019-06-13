@@ -487,7 +487,7 @@ class PointOfSale extends Component {
                     label={{ forceLabel: "Past POS Bill", returnText: true }}
                   />
                 </button>
-                {this.state.dataExitst === true ? (
+                {this.state.InvoiceEnable === true ? (
                   <div>
                     <button
                       onClick={this.generateReport.bind(
@@ -579,28 +579,33 @@ class PointOfSale extends Component {
                 >
                   Close
                 </button>
-                <button
-                  onClick={this.generateReport.bind(
-                    this,
-                    "posCashInvoice",
-                    "Cash Invoice"
-                  )}
-                  className="btn btn-default"
-                >
-                  Cash Invoice
-                </button>
 
-                {this.state.insured === "Y" ? (
-                  <button
-                    className="btn btn-default"
-                    onClick={this.generateReport.bind(
-                      this,
-                      "posCreditInvoice",
-                      "Credit Invoice"
-                    )}
-                  >
-                    Credit Invoice
-                  </button>
+                {this.state.InvoiceEnable === true ? (
+                  <div>
+                    <button
+                      onClick={this.generateReport.bind(
+                        this,
+                        "posCashInvoice",
+                        "Cash Invoice"
+                      )}
+                      className="btn btn-default"
+                    >
+                      Cash Invoice
+                    </button>
+
+                    {this.state.insured === "Y" ? (
+                      <button
+                        className="btn btn-default"
+                        onClick={this.generateReport.bind(
+                          this,
+                          "posCreditInvoice",
+                          "Credit Invoice"
+                        )}
+                      >
+                        Credit Invoice
+                      </button>
+                    ) : null}
+                  </div>
                 ) : null}
               </div>
             </div>

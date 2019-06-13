@@ -27,7 +27,8 @@ import {
   onChangeTextEventHandaler,
   onDateTextEventHandaler,
   OnChangeDeliveryQty,
-  AddtoList
+  AddtoList,
+  numberEventHandaler
 } from "./DNItemListEvents";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 
@@ -51,15 +52,19 @@ class DNItemList extends Component {
       parseFloat(item.po_quantity) -
       parseFloat(item.quantity_outstanding) -
       parseFloat(item.quantity_recieved_todate);
+
+    item.free_qty = 0;
     this.setState({
       selected_row_index: index,
       item_details: item,
-      dn_quantity: dn_quantity
+      dn_quantity: dn_quantity,
+      free_qty: 0
     });
 
     context.updateState({
       item_details: item,
-      dn_quantity: dn_quantity
+      dn_quantity: dn_quantity,
+      free_qty: 0
     });
   }
 
@@ -235,6 +240,29 @@ class DNItemList extends Component {
                           name: "dn_quantity",
                           events: {
                             onChange: OnChangeDeliveryQty.bind(
+                              this,
+                              this,
+                              context
+                            )
+                          }
+                        }}
+                      />
+
+                      <AlagehFormGroup
+                        div={{ className: "col" }}
+                        label={{
+                          forceLabel: "Free Qty."
+                        }}
+                        textBox={{
+                          number: {
+                            allowNegative: false,
+                            thousandSeparator: ","
+                          },
+                          value: this.state.free_qty,
+                          className: "txt-fld",
+                          name: "free_qty",
+                          events: {
+                            onChange: numberEventHandaler.bind(
                               this,
                               this,
                               context
@@ -693,7 +721,15 @@ class DNItemList extends Component {
                                   );
                                 }
                               },
-                              //
+                              {
+                                fieldName: "free_qty",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ forceLabel: "Free Quantity" }}
+                                  />
+                                )
+                              },
+
                               {
                                 fieldName: "quantity_outstanding",
                                 label: (

@@ -34,6 +34,7 @@ export default {
       net_total: 0,
       total_tax: 0,
       net_payable: 0,
+      free_qty: 0,
 
       is_completed: "N",
       cancelled: "N",

@@ -87,7 +87,9 @@ const getPosEntry = ($this, pos_number) => {
           data.pos_customer_type = "OP";
         }
         data.dataExitst = true;
-
+        data.InvoiceEnable = true;
+        data.insured = data.insurance_yesno;
+        data.mode_of_pay = data.insurance_yesno === "Y" ? "2" : "1";
         if (data.receiptdetails.length !== 0) {
           for (let i = 0; i < data.receiptdetails.length; i++) {
             if (data.receiptdetails[i].pay_type === "CA") {

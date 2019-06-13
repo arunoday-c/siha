@@ -106,12 +106,8 @@ const uomtexthandle = ($this, ctrl, e) => {
 };
 
 const stockingtexthandle = ($this, e) => {
-  
-
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-
-  
 
   let conversion_factor = 0;
   let convertEnable = false;
@@ -126,9 +122,7 @@ const stockingtexthandle = ($this, e) => {
       conversion_factor: conversion_factor,
       convertEnable: convertEnable
     },
-    () => {
-      
-    }
+    () => {}
   );
 };
 
@@ -292,8 +286,6 @@ const updateUOM = ($this, row) => {
 };
 
 const deleteUOM = ($this, row, rowId) => {
-  
-
   let detail_item_uom = $this.state.detail_item_uom;
   let updateUomMapResult = $this.state.updateUomMapResult;
   let insertItemUomMap = $this.state.insertItemUomMap;
@@ -379,6 +371,32 @@ const onchangegridcol = ($this, row, e) => {
   $this.setState({ detail_item_uom: detail_item_uom });
 };
 
+const numberEventHandaler = ($this, ctrl, e) => {
+  debugger;
+  e = e || ctrl;
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+  SetBulkState({
+    state: $this,
+    callback: () => {
+      if (value < 0) {
+        swalMessage({
+          type: "warning",
+          title: "Cannot be less than zero."
+        });
+        $this.setState({
+          [name]: 0
+        });
+      } else {
+        $this.setState({
+          [name]: value
+        });
+      }
+    }
+  });
+};
+
 export {
   texthandle,
   AddUom,
@@ -392,5 +410,6 @@ export {
   radioChange,
   BatchExpRequired,
   CptCodesSearch,
-  VatAppilicable
+  VatAppilicable,
+  numberEventHandaler
 };

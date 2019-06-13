@@ -322,5 +322,46 @@ module.exports = {
       _mysql.releaseConnection();
       next(e);
     }
+  },
+  getItemLocationStock: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let intValues = [];
+      let strAppend = "";
+      if (req.query.item_id != null) {
+        strAppend += " and item_id=?";
+        intValues.push(req.query.item_id);
+      }
+      if (req.query.pharmacy_location_id != null) {
+        strAppend += " and pharmacy_location_id=?";
+        intValues.push(req.query.pharmacy_location_id);
+      }
+      _mysql
+        .executeQuery({
+          query:
+            "SELECT IM.item_description, coalesce(IM.reorder_qty,0) as reorder_qty ,hims_m_item_location_id, item_id, pharmacy_location_id,\
+             item_location_status, batchno, expirydt, barcode, sum(qtyhand) as qtyhand, qtypo, cost_uom,avgcost,\
+            last_purchase_cost, item_type, grn_id, grnno, sale_price, mrp_price, sales_uom,\
+            CASE WHEN sum(qtyhand)<=IM.reorder_qty THEN 'R'   else 'NR' END as reorder from \
+            hims_d_item_master IM left  join hims_m_item_location IL on IM.hims_d_item_master_id=IL.item_id \
+            where qtyhand>0" +
+            strAppend +
+            "group by item_id order by expirydt",
+          values: intValues,
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
   }
 };

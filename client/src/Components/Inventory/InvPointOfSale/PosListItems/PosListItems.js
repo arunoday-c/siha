@@ -277,7 +277,9 @@ class PosListItems extends Component {
                                 },
                                 others: {
                                   type: "number",
-                                  tabIndex: "4"
+                                  tabIndex: "4",
+                                  disabled:
+                                    this.state.insured === "Y" ? true : false
                                 }
                               }}
                             />
