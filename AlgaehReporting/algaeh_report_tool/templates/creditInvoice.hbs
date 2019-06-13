@@ -34,12 +34,13 @@
                         <th style="width: 20%">Service Code<p>الخدمة</p></th>
                         <th  style="width: 35%">Service Desc.<p>وصف الخدمة</p></th>
                         <th>Qty<p>الكمية</p></th>
-                        <th>Total<p>الإجمالي</p></th>                        
+                        <th>Total<p>الإجمالي</p></th>
                         <th>Disc<p>الخصم</p></th>
                         <th>Net / Disc<p>الصافي بالخصم</p></th>
                         <th>Co. Pay<p>المشاركة</p></th>
                         <th>Patient Vat<p>ضريبة المريض</p></th>
                         <th>Patient Net<p>مبلغ المريض</p></th>
+                          <th>Ins Net. <p>ضريبة التأمين</p></th>
                         <th>Ins Vat. <p>ضريبة التأمين</p></th>
                         <th>Net Due Amt.<p>الصافي المبلغ</p></th>
                     </tr>
@@ -54,24 +55,25 @@
                        <td>{{cpt_code}}</td>
                         <td>{{capitalization service_name}}</td>
                         <td>{{quantity}}</td>
-                        <td class="numberFld">{{gross_amount}}</td>                        
+                        <td class="numberFld">{{gross_amount}}</td>
                           <td class="numberFld">{{discount_amount}}</td>
-                          <td class="numberFld">{{net_claim}}</td>
+                          <td class="numberFld">{{net_amount}}</td>
                           <td class="numberFld">{{patient_share}}</td>
                           <td class="numberFld">{{patient_tax}}</td>
+                          <td class="numberFld">{{patient_payable}}</td>
                           <td class="numberFld">{{company_resp}}</td>
                           <td class="numberFld">{{company_tax}}</td>
                           <td class="numberFld">{{net_claim}}</td>
                     </tr>
                     {{/each}}
                     {{/each}}
-  
+
                 </tbody>
             </table>  <table class="tableTotal">
                 <tr class="bold"><td>Total Amount before VAT</td><td>{{total_gross_amount}}</td><td>الإجمالي قبل الضريبة المضافة</td></tr>
                  <tr><td>Discount</td><td>{{total_discount_amount}}</td><td>الخصم</td></tr>
-                  <tr><td>Net After Discount</td><td>{{total_company_tax}}</td><td>الصافي بعد الخصم</td></tr>
-                  <tr><td>VAT Amount 5%</td><td>{{total_company_tax}}</td><td>إجمالي قيمة الضريبة المضافة %5</td></tr>
+                  <tr><td>Net After Discount</td><td>{{total_net_amount}}</td><td>الصافي بعد الخصم</td></tr>
+                  <tr><td>VAT Amount 5%</td><td>{{vat_amount_total}}</td><td>إجمالي قيمة الضريبة المضافة %5</td></tr>
                    <tr><td>Client VAT Amount</td><td>{{total_patient_tax}}</td><td>الضريبة المضافة على العميل</td></tr>
                     <tr><td>Company VAT amount</td><td>{{total_company_tax}}</td><td>الضريبة المضافة على الشركة</td></tr>
                       <tr><td>Co Payment</td><td>{{total_patient_share}}</td><td>نسبة التحمل</td></tr>

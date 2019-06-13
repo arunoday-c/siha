@@ -80,14 +80,12 @@ class ItemMaster extends Component {
 
   componentWillReceiveProps(newProps) {
     if (newProps.itemPop.hims_d_item_master_id !== undefined) {
-      
       let IOputs = newProps.itemPop;
       this.setState({ ...this.state, ...IOputs });
     }
   }
 
   render() {
-    
     return (
       <div className="hptl-phase1-Display-patient-details">
         <AlgaehModalPopUp
@@ -352,7 +350,8 @@ class ItemMaster extends Component {
                                 disabled:
                                   this.state.vat_applicable === "Y"
                                     ? false
-                                    : true
+                                    : true,
+                                type: "number"
                               }
                             }}
                           />

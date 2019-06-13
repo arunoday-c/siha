@@ -1,3 +1,75 @@
+Change Log 12-06-2019
+--------------------------
+#issue no :#
+FIX :
+update algaeh_d_reports set report_query=' select P.patient_code,H.invoice_number,P.full_name as patient_full_name,V.visit_date,V.visit_code, NET.network_type,
+ P.arabic_name as patient_arabaic_full_name,  H.invoice_date,H.card_holder_name,H.policy_number,P.registration_date,
+ ICC.card_class_name,E.full_name,E.arabic_name,trim(sub_department_name)as sub_department_name,H.card_number,V.age_in_years,
+ P.gender,N.nationality,
+  arabic_sub_department_name,IP.insurance_provider_name,IP.arabic_provider_name,E.license_number from hims_f_patient P
+ inner join hims_f_invoice_header H  on P.hims_d_patient_id= H.patient_id inner join hims_f_patient_visit V on
+   V.hims_f_patient_visit_id = H.visit_id inner join hims_d_employee E on E.hims_d_employee_id = V.doctor_id inner join
+ hims_d_sub_department SD on SD.hims_d_sub_department_id = V.sub_department_id inner join hims_d_insurance_provider IP
+ on IP.hims_d_insurance_provider_id=H.insurance_provider_id left join hims_d_insurance_card_class ICC on
+  ICC.hims_d_insurance_card_class_id = H.card_class inner join hims_d_nationality as N on N.hims_d_nationality_id =P.nationality_id
+  inner join hims_d_insurance_network NET on H.network_id=NET.hims_d_insurance_network_id
+  where H.patient_id=358 and H.visit_id=742;
+  select CPT.cpt_code,ST.service_type,ST.arabic_service_type,S.service_name,S.arabic_service_name, D.quantity,D.unit_cost as  price,
+ D.gross_amount, D.patient_resp as patient_share,coalesce(D.discount_amount,0)as discount_amount,coalesce(D.net_amount,0)as net_amount,
+  D.company_resp,D.company_tax,D.company_payable,D.patient_tax,coalesce(D.company_tax,0)+coalesce(D.company_resp,0) as net_claim,
+  D.patient_payable
+  from hims_f_invoice_details D inner join
+  hims_f_invoice_header H  on D.invoice_header_id = H.hims_f_invoice_header_id inner join  hims_d_services S on
+  S.hims_d_services_id = D.service_id inner join hims_d_service_type ST on D.service_type_id = ST.hims_d_service_type_id
+ left join hims_d_cpt_code as CPT on S.cpt_code = CPT.hims_d_cpt_code_id
+  where patient_id=358 and visit_id=742  and D.service_type_id <> 12 and D.company_resp <>0 ;' where  report_id=2;
+
+
+#issue no: #274
+Fix :
+update algaeh_d_reports set report_query='select
+	P.full_name as pat_name,
+	V.visit_date,
+	P.patient_code,
+	V.age_in_years,
+	P.gender,
+	P.contact_number,
+	trim(N.nationality)as nationality,
+	S.sub_department_name,
+	G.generic_name,
+	D.frequency,
+	D.start_date as from_date,
+	D.dosage,
+	D.no_of_days,
+	D.instructions,
+	E.full_name as full_name,
+	E.license_number,
+	coalesce(IP.insurance_provider_name,''--'')as insurance_provider_name,
+	coalesce(M.card_class,''--'')as card_class ,
+	coalesce(M.primary_policy_num,''--'')as primary_policy_num
+from
+	hims_f_prescription as H
+inner join hims_f_patient_visit as V on
+	H.episode_id = V.episode_id
+inner join hims_f_prescription_detail as D on
+	prescription_id = H.hims_f_prescription_id
+inner join hims_d_item_generic as G on
+	G.hims_d_item_generic_id = D.generic_id
+inner join hims_f_patient as P on
+	P.hims_d_patient_id = H.patient_id
+inner join hims_d_nationality as N on
+	N.hims_d_nationality_id = P.nationality_id
+inner join hims_d_sub_department S on
+	S.hims_d_sub_department_id = V.sub_department_id
+inner join hims_d_employee E on
+	E.hims_d_employee_id = H.provider_id
+left join hims_m_patient_insurance_mapping as M on
+M.patient_visit_id = V.hims_f_patient_visit_id
+left join  hims_d_insurance_provider as IP on
+IP.hims_d_insurance_provider_id = M.primary_insurance_provider_id where V.patient_id=? and (V.hims_f_patient_visit_id =? or V.visit_code=?) '
+where report_id=14;
+update algaeh_d_reports set report_input_series='["hims_d_patient_id","visit_id","visit_code"]' where report_id=14;
+
 Chnge Log on 11-06-2019
 --------------------------
 #issue no :#276

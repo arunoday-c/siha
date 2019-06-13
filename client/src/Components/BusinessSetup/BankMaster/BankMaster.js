@@ -79,7 +79,7 @@ class BankMaster extends Component {
             bank_short_name: this.state.bank_short_name,
             address1: this.state.address1,
             contact_person: this.state.contact_person,
-            contact_number: this.state.contact_numbe
+            contact_number: this.state.contact_number
           },
           onSuccess: response => {
             if (response.data.success) {

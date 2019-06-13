@@ -16,7 +16,8 @@ import {
   radioChange,
   BatchExpRequired,
   CptCodesSearch,
-  VatAppilicable
+  VatAppilicable,
+  numberEventHandaler
 } from "./ItemDetailsEvents";
 import {
   texthandle,
@@ -88,7 +89,6 @@ class ItemDetails extends Component {
   }
 
   render() {
-    
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -327,10 +327,19 @@ class ItemDetails extends Component {
                             className: "txt-fld",
                             name: "vat_percent",
                             value: this.state.vat_percent,
-
+                            events: {
+                              onChange: numberEventHandaler.bind(
+                                this,
+                                this,
+                                context
+                              )
+                            },
                             others: {
                               disabled:
-                                this.state.vat_applicable === "Y" ? false : true
+                                this.state.vat_applicable === "Y"
+                                  ? false
+                                  : true,
+                              type: "number"
                             }
                           }}
                         />
