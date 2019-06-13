@@ -383,7 +383,7 @@ let createUserLogin = (req, res, next) => {
               });
             }
             connection.query(
-              "INSERT INTO `algaeh_d_app_user` (username, user_display_name,employe_id, user_type, effective_start_date, created_date, created_by, updated_date, updated_by)\
+              "INSERT INTO `algaeh_d_app_user` (username, user_display_name,employee_id, user_type, effective_start_date, created_date, created_by, updated_date, updated_by)\
           VALUE(?,?,?,?,?,?,?,?,?)",
               [
                 input.username,
