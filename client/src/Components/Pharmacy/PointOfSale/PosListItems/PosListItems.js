@@ -135,6 +135,13 @@ class PosListItems extends Component {
                   <div className="algaeh-md-12 algaeh-lg-12 algaeh-xl-8">
                     <div className="row">
                       <div className="col-lg-12">
+                                    
+                      
+                          {this.state.insurance_yesno === "N" ? null : (
+                            <div className="portlet portlet-bordered margin-bottom-15">
+                              <InsuranceForm POSIOputs={this.state} />
+                            </div>
+                          )}
                         <div className="portlet portlet-bordered margin-bottom-15">
                           <div className="row">
                             <AlgaehAutoSearch
@@ -358,19 +365,14 @@ class PosListItems extends Component {
                                 Batch_Items: this.state.Batch_Items
                               }}
                             />
-
-                            <DisplayInsuranceDetails
+      <DisplayInsuranceDetails
                               show={this.state.viewInsurance}
                               POSIOputs={this.state}
                               onClose={ViewInsurance.bind(this, this)}
                             />
                           </div>
-                          {this.state.insurance_yesno === "N" ? null : (
-                            <div>
-                              <InsuranceForm POSIOputs={this.state} />
-                            </div>
-                          )}
                         </div>
+                    
                       </div>
 
                       <div className="col-lg-12">

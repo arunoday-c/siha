@@ -65,27 +65,21 @@ class AddInsuranceForm extends Component {
       <React.Fragment>
         <MyContext.Consumer>
           {context => (
-            <div className="htpl-phase1-primary-insurance-form">
-              <div className="col-12">
                 <div className="row">
-                  <div className="col-lg-8 primary-details">
-                    <div className="row primary-box-container">
-                      <div
-                        className="col-1"
-                        style={{ paddingRight: 0, marginTop: 20 }}
-                      >
-                        <button
-                          type="button"
-                          className="btn btn-primary btn-rounded"
-                          disabled={this.state.insuranceYes}
-                          onClick={InsuranceDetails.bind(this, this, context)}
-                        >
-                          <i className="fas fa-plus" />
-                        </button>
-                      </div>
+                  <div className="col-8">
+                    
+                    <div className="row">
 
-                      <div className="row">
-                        <div className="col-6">
+                  <div className="col-12 margin-bottom-15">
+
+                    <button className="btn btn-default" disabled={this.state.insuranceYes}
+                          onClick={InsuranceDetails.bind(this, this, context)}>
+Select Insurance
+                      
+
+                    </button>
+                  </div>
+                        <div className="col-3">
                           <AlgaehLabel
                             label={{
                               forceLabel: "INSURANCE CO."
@@ -98,7 +92,7 @@ class AddInsuranceForm extends Component {
                           </h6>
                         </div>
 
-                        <div className="col-6">
+                        <div className="col-3">
                           <AlgaehLabel
                             label={{
                               forceLabel: "SUB INSURANCE CO."
@@ -110,7 +104,7 @@ class AddInsuranceForm extends Component {
                               : "---"}
                           </h6>
                         </div>
-                        <div className="col-6">
+                        <div className="col-3">
                           <AlgaehLabel
                             label={{
                               forceLabel: "PLAN"
@@ -123,7 +117,7 @@ class AddInsuranceForm extends Component {
                           </h6>
                         </div>
 
-                        <div className="col-6">
+                        <div className="col-3">
                           <AlgaehLabel
                             label={{
                               forceLabel: "POLICY NUMBER"
@@ -134,7 +128,27 @@ class AddInsuranceForm extends Component {
                               ? this.state.policy_number
                               : "---"}
                           </h6>
-                        </div>
+                  </div>
+                  
+
+                        <AlagehFormGroup
+                          div={{ className: "col-3" }}
+                          label={{
+                            forceLabel: "Card Holder Name"
+                            // isImp: this.state.insuranceYes === true ? false : true
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "card_holder_name",
+                            value: this.state.card_holder_name,
+                            events: {
+                              onChange: texthandle.bind(this, this, context)
+                            },
+                            others: {
+                              disabled: this.state.insuranceYes
+                            }
+                          }}
+                  />
 
                         <AlagehFormGroup
                           div={{ className: "col-3" }}
@@ -156,7 +170,7 @@ class AddInsuranceForm extends Component {
                           }}
                         />
 
-                        <div className="col-6">
+                        <div className="col-3">
                           <AlgaehLabel
                             label={{
                               forceLabel: "START DATE"
@@ -189,34 +203,12 @@ class AddInsuranceForm extends Component {
                           value={this.state.effective_end_date}
                           disabled={this.state.insuranceYes}
                         />
-
-                        <AlagehFormGroup
-                          div={{ className: "col-3" }}
-                          label={{
-                            forceLabel: "Card Holder Name"
-                            // isImp: this.state.insuranceYes === true ? false : true
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "card_holder_name",
-                            value: this.state.card_holder_name,
-                            events: {
-                              onChange: texthandle.bind(this, this, context)
-                            },
-                            others: {
-                              disabled: this.state.insuranceYes
-                            }
-                          }}
-                        />
-                      </div>
                     </div>
                   </div>
 
-                  {/* //effective_end_date// */}
-
-                  <div className="col-lg-4 secondary-details">
-                    <div className="row secondary-box-container">
-                      <div className="col-lg-6 insurCrdImg">
+                  <div className="col-4">
+                    <div className="row">
+                      <div className="col-6 insurCrdImg">
                         <AlgaehFileUploader
                           ref={patInsuranceFrontImg => {
                             this.patInsuranceFrontImg = patInsuranceFrontImg;
@@ -239,7 +231,7 @@ class AddInsuranceForm extends Component {
                         />
                       </div>
 
-                      <div className="col-lg-6 insurCrdImg">
+                      <div className="col-6 insurCrdImg">
                         <AlgaehFileUploader
                           ref={patInsuranceBackImg => {
                             this.patInsuranceBackImg = patInsuranceBackImg;
@@ -265,8 +257,6 @@ class AddInsuranceForm extends Component {
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
           )}
         </MyContext.Consumer>
       </React.Fragment>

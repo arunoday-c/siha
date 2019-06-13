@@ -466,7 +466,19 @@ class PointOfSale extends Component {
                     }}
                   />
                 </button>
-
+   <button
+                  type="button"
+                  className="btn btn-default"
+                  onClick={PostPosEntry.bind(this, this)}
+                  disabled={this.state.postEnable}
+                >
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Collect & Print",
+                      returnText: true
+                    }}
+                  />
+                </button>
                 <button
                   type="button"
                   className="btn btn-default"
@@ -481,10 +493,10 @@ class PointOfSale extends Component {
                   type="button"
                   className="btn btn-other"
                   onClick={POSSearch.bind(this, this)}
-                  style={{ float: "left" }}
+                  style={{ float: "left",margin:0 }}
                 >
                   <AlgaehLabel
-                    label={{ forceLabel: "Past POS Bill", returnText: true }}
+                    label={{ forceLabel: "Previous Bill", returnText: true }}
                   />
                 </button>
                 {this.state.dataExitst === true ? (
@@ -495,19 +507,19 @@ class PointOfSale extends Component {
                         "posCashInvoice",
                         "Cash Invoice"
                       )}
-                      className="btn btn-default"
+                      className="btn btn-other"  style={{ float: "left"}}
                     >
                       Cash Invoice
                     </button>
 
                     {this.state.insured === "Y" ? (
                       <button
-                        className="btn btn-default"
+                        className="btn btn-other  "
                         onClick={this.generateReport.bind(
                           this,
                           "posCreditInvoice",
                           "Credit Invoice"
-                        )}
+                        )}  style={{ float: "left"}}
                       >
                         Credit Invoice
                       </button>
@@ -515,19 +527,7 @@ class PointOfSale extends Component {
                   </div>
                 ) : null}
 
-                <button
-                  type="button"
-                  className="btn btn-other"
-                  onClick={PostPosEntry.bind(this, this)}
-                  disabled={this.state.postEnable}
-                >
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Collect & Print",
-                      returnText: true
-                    }}
-                  />
-                </button>
+             
               </div>
             </div>
           </div>
@@ -585,14 +585,14 @@ class PointOfSale extends Component {
                     "posCashInvoice",
                     "Cash Invoice"
                   )}
-                  className="btn btn-default"
+                  className="btn btn-other"
                 >
                   Cash Invoice
                 </button>
 
                 {this.state.insured === "Y" ? (
                   <button
-                    className="btn btn-default"
+                    className="btn btn-other"
                     onClick={this.generateReport.bind(
                       this,
                       "posCreditInvoice",
