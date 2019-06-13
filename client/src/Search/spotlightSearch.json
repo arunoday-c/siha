@@ -155,6 +155,14 @@
         "label": "Patient Code"
       },
       {
+        "fieldName": "patient_name",
+        "label": "Patient Name"
+      },
+      {
+        "fieldName": "mobile_number",
+        "label": "Mobile No."
+      },
+      {
         "fieldName": "pos_date",
         "label": "Pos Date"
       },
@@ -181,6 +189,10 @@
       {
         "fieldName": "full_name",
         "label": "Patient Name"
+      },
+      {
+        "fieldName": "contact_number",
+        "label": "Mobile No."
       }
     ]
   },

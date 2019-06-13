@@ -152,7 +152,6 @@ class PointOfSale extends Component {
   }
 
   generateReport(rpt_name, rpt_desc) {
-    
     algaehApiCall({
       uri: "/report",
       method: "GET",
@@ -214,7 +213,6 @@ class PointOfSale extends Component {
   }
 
   render() {
-    
     const _posLocation =
       this.props.poslocations === undefined ? [] : this.props.poslocations;
     return (
@@ -339,9 +337,10 @@ class PointOfSale extends Component {
               ) : (
                 <div className="row">
                   <AlagehFormGroup
-                    div={{ className: "col" }}
+                    div={{ className: "col mandatory" }}
                     label={{
-                      forceLabel: "Patient Name"
+                      forceLabel: "Patient Name",
+                      isImp: true
                     }}
                     textBox={{
                       className: "txt-fld",

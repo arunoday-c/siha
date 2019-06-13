@@ -86,7 +86,6 @@ class DNItemList extends Component {
                   <h4 style={{ marginBottom: 4 }}>Requested Items</h4>
                   <ul className="reqTransList">
                     {this.state.po_entry_detail.map((item, index) => {
-                      
                       return (
                         <li>
                           <div className="itemReq">
@@ -243,13 +242,17 @@ class DNItemList extends Component {
                           }
                         }}
                       />
-                      <div className="itemAction">
-                        <span>
-                          <i
-                            className="fas fa-plus"
-                            onClick={AddtoList.bind(this, this, context)}
-                          />
-                        </span>
+
+                      <div className="col">
+                        <button
+                          class="btn btn-default"
+                          style={{
+                            marginTop: 19
+                          }}
+                          onClick={AddtoList.bind(this, this, context)}
+                        >
+                          Add
+                        </button>
                       </div>
                     </div>
                     <div className="portlet-body">

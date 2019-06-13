@@ -35,11 +35,13 @@ const changeTexts = ($this, ctrl, e) => {
       value === "1"
         ? $this.setState({
             [name]: value,
-            insurance_yesno: "N"
+            insurance_yesno: "N",
+            insured: "N"
           })
         : $this.setState({
             [name]: value,
-            insurance_yesno: "Y"
+            insurance_yesno: "Y",
+            insured: "Y"
           });
       break;
 

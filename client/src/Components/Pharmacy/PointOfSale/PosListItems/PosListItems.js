@@ -364,10 +364,12 @@ class PosListItems extends Component {
                               POSIOputs={this.state}
                               onClose={ViewInsurance.bind(this, this)}
                             />
-                            {this.state.insurance_yesno === "N" ? null : (
-                              <InsuranceForm POSIOputs={this.state} />
-                            )}
                           </div>
+                          {this.state.insurance_yesno === "N" ? null : (
+                            <div>
+                              <InsuranceForm POSIOputs={this.state} />
+                            </div>
+                          )}
                         </div>
                       </div>
 

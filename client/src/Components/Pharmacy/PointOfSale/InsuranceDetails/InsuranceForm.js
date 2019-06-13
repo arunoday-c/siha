@@ -58,9 +58,7 @@ class AddInsuranceForm extends Component {
       });
     }
   }
-  onClose = e => {
-    this.props.onClose && this.props.onClose(e);
-  };
+
   render() {
     debugger;
     return (
@@ -137,46 +135,79 @@ class AddInsuranceForm extends Component {
                               : "---"}
                           </h6>
                         </div>
-                        <div className="col-6">
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "CARD NUMBER"
-                            }}
-                          />
-                          <h6>
-                            {this.state.card_number
-                              ? this.state.card_number
-                              : "---"}
-                          </h6>
-                        </div>
+
+                        <AlagehFormGroup
+                          div={{ className: "col-3" }}
+                          label={{
+                            forceLabel: "CARD NUMBER",
+                            isImp:
+                              this.state.insuranceYes === true ? false : true
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "card_number",
+                            value: this.state.card_number,
+                            events: {
+                              onChange: texthandle.bind(this, this, context)
+                            },
+                            others: {
+                              disabled: this.state.insuranceYes
+                            }
+                          }}
+                        />
 
                         <div className="col-6">
                           <AlgaehLabel
                             label={{
-                              forceLabel: "EXPIRY DATE"
+                              forceLabel: "START DATE"
                             }}
                           />
                           <h6>
-                            {this.state.effective_end_date
-                              ? moment(this.state.effective_end_date).format(
+                            {this.state.effective_start_date
+                              ? moment(this.state.effective_start_date).format(
                                   Options.dateFormat
                                 )
                               : "---"}
                           </h6>
                         </div>
 
-                        <div className="col-6">
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "CARD HOLDER NAME"
-                            }}
-                          />
-                          <h6>
-                            {this.state.card_holder_name
-                              ? this.state.card_holder_name
-                              : "---"}
-                          </h6>
-                        </div>
+                        <AlgaehDateHandler
+                          div={{ className: "col-3" }}
+                          label={{
+                            forceLabel: "EXPIRY DATE",
+                            isImp:
+                              this.state.insuranceYes === true ? false : true
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "effective_end_date"
+                          }}
+                          minDate={new Date()}
+                          events={{
+                            onChange: enddatehandle.bind(this, this, context)
+                          }}
+                          value={this.state.effective_end_date}
+                          disabled={this.state.insuranceYes}
+                        />
+
+                        <AlagehFormGroup
+                          div={{ className: "col-3" }}
+                          label={{
+                            forceLabel: "Card Holder Name"
+                            // isImp: this.state.insuranceYes === true ? false : true
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "card_holder_name",
+                            value: this.state.card_holder_name,
+                            events: {
+                              onChange: texthandle.bind(this, this, context)
+                            },
+                            others: {
+                              disabled: this.state.insuranceYes
+                            }
+                          }}
+                        />
                       </div>
                     </div>
                   </div>
