@@ -29,7 +29,8 @@ module.exports = {
             PH.company_tax,PH.company_payable,PH.comments,PH.sec_company_responsibility,PH.sec_company_tax,\
             PH.sec_company_payable,PH.sec_copay_amount,PH.net_tax,PH.gross_total,PH.sheet_discount_amount,\
             PH.sheet_discount_percentage,PH.net_amount,PH.credit_amount,PH.balance_credit,PH.receiveable_amount,\
-            PH.posted,PH.card_number,PH.effective_start_date,PH.effective_end_date,PH.insurance_provider_id,\
+            PH.posted,PH.insurance_yesno,PH.card_number,PH.effective_start_date,PH.effective_end_date,\
+            PH.insurance_provider_id,INS.insurance_provider_name,ISB.insurance_sub_name as sub_insurance_provider_name,\
             PH.sub_insurance_provider_id,PH.network_id,PH.network_type,PH.network_office_id,PH.policy_number,\
             PH.secondary_card_number,PH.secondary_effective_start_date,PH.secondary_effective_end_date,\
             PH.secondary_insurance_provider_id,PH.secondary_network_id,PH.secondary_network_type,\
@@ -37,7 +38,10 @@ module.exports = {
             hims_f_pharmacy_pos_header PH inner join hims_d_pharmacy_location L\
             on PH.location_id=L.hims_d_pharmacy_location_id left outer join hims_f_patient_visit V on\
             PH.visit_id=V.hims_f_patient_visit_id left outer join hims_f_patient P \
-            on PH.patient_id=P.hims_d_patient_id where PH.record_status='A' and L.record_status='A' " +
+            on PH.patient_id=P.hims_d_patient_id left outer join hims_d_insurance_provider INS \
+            on PH.insurance_provider_id=INS.hims_d_insurance_provider_id \
+            left outer join hims_d_insurance_sub ISB on PH.sub_insurance_provider_id = ISB.hims_d_insurance_sub_id \
+            where PH.record_status='A' and L.record_status='A' " +
             _strAppend,
           values: intValue,
           printQuery: true
@@ -140,9 +144,9 @@ module.exports = {
                 secondary_card_number, secondary_effective_start_date, secondary_effective_end_date, secondary_insurance_provider_id,\
                 secondary_network_id, secondary_network_type, secondary_sub_insurance_provider_id, secondary_network_office_id, \
                  pos_customer_type,patient_name,referal_doctor,mobile_number,nationality_id,receipt_header_id,posted,\
-                 created_date,\
+                 insurance_yesno,created_date,\
                  created_by,updated_date,updated_by,hospital_id) \
-                VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
               values: [
                 pos_number,
                 today,
@@ -201,6 +205,7 @@ module.exports = {
                 input.nationality_id,
                 receipt_header_id,
                 input.posted,
+                input.insurance_yesno,
                 new Date(),
                 req.userIdentity.algaeh_d_app_user_id,
                 new Date(),

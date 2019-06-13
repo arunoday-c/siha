@@ -24,63 +24,45 @@ class InventoryItemMaster extends Component {
   }
 
   componentDidMount() {
-    if (
-      this.props.invitemcategory === undefined ||
-      this.props.invitemcategory.length === 0
-    ) {
-      this.props.getItemCategory({
-        uri: "/inventory/getItemCategory",
-        module: "inventory",
-        method: "GET",
-        redux: {
-          type: "ITEM_CATEGORY_GET_DATA",
-          mappingName: "invitemcategory"
-        }
-      });
-    }
-    if (
-      this.props.inventoryitemgroup === undefined ||
-      this.props.inventoryitemgroup.length === 0
-    ) {
-      this.props.getItemGroup({
-        uri: "/inventory/getItemGroup",
-        module: "inventory",
-        method: "GET",
-        redux: {
-          type: "ITEM_GROUOP_GET_DATA",
-          mappingName: "inventoryitemgroup"
-        }
-      });
-    }
+    this.props.getItemCategory({
+      uri: "/inventory/getItemCategory",
+      module: "inventory",
+      method: "GET",
+      redux: {
+        type: "ITEM_CATEGORY_GET_DATA",
+        mappingName: "invitemcategory"
+      }
+    });
 
-    if (
-      this.props.inventoryitemuom === undefined ||
-      this.props.inventoryitemuom.length === 0
-    ) {
-      this.props.getItemUOM({
-        uri: "/inventory/getInventoryUom",
-        module: "inventory",
-        method: "GET",
-        redux: {
-          type: "ITEM_UOM_GET_DATA",
-          mappingName: "inventoryitemuom"
-        }
-      });
-    }
-    if (
-      this.props.inventoryitemservices === undefined ||
-      this.props.inventoryitemservices.length === 0
-    ) {
-      this.props.getServices({
-        uri: "/serviceType/getService",
-        module: "masterSettings",
-        method: "GET",
-        redux: {
-          type: "SERVICES_GET_DATA",
-          mappingName: "inventoryitemservices"
-        }
-      });
-    }
+    this.props.getItemGroup({
+      uri: "/inventory/getItemGroup",
+      module: "inventory",
+      method: "GET",
+      redux: {
+        type: "ITEM_GROUOP_GET_DATA",
+        mappingName: "inventoryitemgroup"
+      }
+    });
+
+    this.props.getItemUOM({
+      uri: "/inventory/getInventoryUom",
+      module: "inventory",
+      method: "GET",
+      redux: {
+        type: "ITEM_UOM_GET_DATA",
+        mappingName: "inventoryitemuom"
+      }
+    });
+
+    this.props.getServices({
+      uri: "/serviceType/getService",
+      module: "masterSettings",
+      method: "GET",
+      redux: {
+        type: "SERVICES_GET_DATA",
+        mappingName: "inventoryitemservices"
+      }
+    });
 
     if (
       this.props.inventoryitemlist === undefined ||
@@ -139,6 +121,7 @@ class InventoryItemMaster extends Component {
           purchase_cost: firstRecordSet.purchase_cost,
           addl_information: firstRecordSet.addl_information,
           required_batchno_expiry: firstRecordSet.required_batchno_expiry,
+          reorder_qty: firstRecordSet.reorder_qty,
           detail_item_uom: g.getSource()
         };
       })

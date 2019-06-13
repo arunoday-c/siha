@@ -300,7 +300,9 @@ class PosListItems extends Component {
                                 },
                                 others: {
                                   type: "number",
-                                  tabIndex: "4"
+                                  tabIndex: "4",
+                                  disabled:
+                                    this.state.insured === "Y" ? true : false
                                 }
                               }}
                             />
@@ -344,7 +346,8 @@ class PosListItems extends Component {
                             </button>
 
                             <div>
-                              {this.state.insured === "N" ? null : (
+                              {this.state.insured === "Y" &&
+                              this.state.insurance_yesno === "N" ? (
                                 <button
                                   className="btn btn-default"
                                   onClick={ViewInsurance.bind(this, this)}
@@ -352,7 +355,7 @@ class PosListItems extends Component {
                                 >
                                   View Insurance
                                 </button>
-                              )}
+                              ) : null}
                             </div>
 
                             <ItemBatchs
@@ -694,29 +697,33 @@ class PosListItems extends Component {
                                     ),
                                     displayTemplate: row => {
                                       return this.state.postEnable === false ? (
-                                        <AlagehFormGroup
-                                          div={{}}
-                                          textBox={{
-                                            decimal: { allowNegative: false },
-                                            value: row.discount_percentage,
-                                            className: "txt-fld",
-                                            name: "discount_percentage",
-                                            events: {
-                                              onChange: onchangegridcol.bind(
-                                                this,
-                                                this,
-                                                context,
-                                                row
-                                              )
-                                            },
-                                            others: {
-                                              onFocus: e => {
-                                                e.target.oldvalue =
-                                                  e.target.value;
+                                        this.state.insured === "N" ? (
+                                          <AlagehFormGroup
+                                            div={{}}
+                                            textBox={{
+                                              decimal: { allowNegative: false },
+                                              value: row.discount_percentage,
+                                              className: "txt-fld",
+                                              name: "discount_percentage",
+                                              events: {
+                                                onChange: onchangegridcol.bind(
+                                                  this,
+                                                  this,
+                                                  context,
+                                                  row
+                                                )
+                                              },
+                                              others: {
+                                                onFocus: e => {
+                                                  e.target.oldvalue =
+                                                    e.target.value;
+                                                }
                                               }
-                                            }
-                                          }}
-                                        />
+                                            }}
+                                          />
+                                        ) : (
+                                          row.discount_percentage
+                                        )
                                       ) : (
                                         row.discount_percentage
                                       );
@@ -733,29 +740,33 @@ class PosListItems extends Component {
                                     ),
                                     displayTemplate: row => {
                                       return this.state.postEnable === false ? (
-                                        <AlagehFormGroup
-                                          div={{}}
-                                          textBox={{
-                                            decimal: { allowNegative: false },
-                                            value: row.discount_amount,
-                                            className: "txt-fld",
-                                            name: "discount_amount",
-                                            events: {
-                                              onChange: onchangegridcol.bind(
-                                                this,
-                                                this,
-                                                context,
-                                                row
-                                              )
-                                            },
-                                            others: {
-                                              onFocus: e => {
-                                                e.target.oldvalue =
-                                                  e.target.value;
+                                        this.state.insured === "N" ? (
+                                          <AlagehFormGroup
+                                            div={{}}
+                                            textBox={{
+                                              decimal: { allowNegative: false },
+                                              value: row.discount_amount,
+                                              className: "txt-fld",
+                                              name: "discount_amount",
+                                              events: {
+                                                onChange: onchangegridcol.bind(
+                                                  this,
+                                                  this,
+                                                  context,
+                                                  row
+                                                )
+                                              },
+                                              others: {
+                                                onFocus: e => {
+                                                  e.target.oldvalue =
+                                                    e.target.value;
+                                                }
                                               }
-                                            }
-                                          }}
-                                        />
+                                            }}
+                                          />
+                                        ) : (
+                                          row.discount_amount
+                                        )
                                       ) : (
                                         row.discount_amount
                                       );

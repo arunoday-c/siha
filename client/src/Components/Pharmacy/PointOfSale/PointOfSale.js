@@ -466,7 +466,7 @@ class PointOfSale extends Component {
                     }}
                   />
                 </button>
-   <button
+                <button
                   type="button"
                   className="btn btn-default"
                   onClick={PostPosEntry.bind(this, this)}
@@ -493,13 +493,13 @@ class PointOfSale extends Component {
                   type="button"
                   className="btn btn-other"
                   onClick={POSSearch.bind(this, this)}
-                  style={{ float: "left",margin:0 }}
+                  style={{ float: "left", margin: 0 }}
                 >
                   <AlgaehLabel
                     label={{ forceLabel: "Previous Bill", returnText: true }}
                   />
                 </button>
-                {this.state.dataExitst === true ? (
+                {this.state.InvoiceEnable === true ? (
                   <div>
                     <button
                       onClick={this.generateReport.bind(
@@ -507,7 +507,8 @@ class PointOfSale extends Component {
                         "posCashInvoice",
                         "Cash Invoice"
                       )}
-                      className="btn btn-other"  style={{ float: "left"}}
+                      className="btn btn-other"
+                      style={{ float: "left" }}
                     >
                       Cash Invoice
                     </button>
@@ -519,15 +520,14 @@ class PointOfSale extends Component {
                           this,
                           "posCreditInvoice",
                           "Credit Invoice"
-                        )}  style={{ float: "left"}}
+                        )}
+                        style={{ float: "left" }}
                       >
                         Credit Invoice
                       </button>
                     ) : null}
                   </div>
                 ) : null}
-
-             
               </div>
             </div>
           </div>
@@ -579,28 +579,33 @@ class PointOfSale extends Component {
                 >
                   Close
                 </button>
-                <button
-                  onClick={this.generateReport.bind(
-                    this,
-                    "posCashInvoice",
-                    "Cash Invoice"
-                  )}
-                  className="btn btn-other"
-                >
-                  Cash Invoice
-                </button>
 
-                {this.state.insured === "Y" ? (
-                  <button
-                    className="btn btn-other"
-                    onClick={this.generateReport.bind(
-                      this,
-                      "posCreditInvoice",
-                      "Credit Invoice"
-                    )}
-                  >
-                    Credit Invoice
-                  </button>
+                {this.state.InvoiceEnable === true ? (
+                  <div>
+                    <button
+                      onClick={this.generateReport.bind(
+                        this,
+                        "posCashInvoice",
+                        "Cash Invoice"
+                      )}
+                      className="btn btn-default"
+                    >
+                      Cash Invoice
+                    </button>
+
+                    {this.state.insured === "Y" ? (
+                      <button
+                        className="btn btn-default"
+                        onClick={this.generateReport.bind(
+                          this,
+                          "posCreditInvoice",
+                          "Credit Invoice"
+                        )}
+                      >
+                        Credit Invoice
+                      </button>
+                    ) : null}
+                  </div>
                 ) : null}
               </div>
             </div>

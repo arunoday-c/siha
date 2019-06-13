@@ -15,12 +15,15 @@ import {
   dateFormater,
   updateStockDetils,
   datehandle,
-  texthandle
+  texthandle,
+  getBatchWiseData,
+  closeBatchWise
 } from "./InvStockEnquiryEvents";
 import "./InvStockEnquiry.css";
 import "../../../styles/site.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import Enumerable from "linq";
+import BatchWiseStock from "./BatchWiseStock";
 
 class InvStockEnquiry extends Component {
   constructor(props) {
@@ -36,7 +39,12 @@ class InvStockEnquiry extends Component {
       expirt_date: null,
       quantity: 0,
       unit_cost: 0,
-      initial_stock_date: new Date()
+      initial_stock_date: new Date(),
+
+      batch_wise_item: [],
+      openBatchWise: false,
+      item_description: null,
+      total_quantity: 0
     };
   }
 
@@ -81,12 +89,6 @@ class InvStockEnquiry extends Component {
   }
 
   render() {
-    // inventoryitemBatch
-
-    let total_quantity = Enumerable.from(this.state.ListItems)
-      .select(w => parseFloat(w.qtyhand))
-      .sum();
-
     return (
       <React.Fragment>
         <div className="hptl-phase1-speciman-collection-form">
@@ -166,7 +168,7 @@ class InvStockEnquiry extends Component {
                     }
                   }}
                 />
-                <div className="col-lg-3">
+                {/*<div className="col-lg-3">
                   <AlgaehLabel
                     label={{
                       forceLabel: "Total Quantity"
@@ -179,7 +181,7 @@ class InvStockEnquiry extends Component {
                       ? total_quantity + " nos"
                       : "0 nos"}
                   </h6>
-                </div>
+                </div>*/}
               </div>
             </div>
           </div>
@@ -251,7 +253,10 @@ class InvStockEnquiry extends Component {
                             );
 
                       return (
-                        <span>
+                        <span
+                          className="pat-code"
+                          onClick={getBatchWiseData.bind(this, this, row)}
+                        >
                           {display !== undefined && display.length !== 0
                             ? display[0].item_description
                             : ""}
@@ -269,7 +274,10 @@ class InvStockEnquiry extends Component {
                             );
 
                       return (
-                        <span>
+                        <span
+                          className="pat-code"
+                          onClick={getBatchWiseData.bind(this, this, row)}
+                        >
                           {display !== undefined && display.length !== 0
                             ? display[0].item_description
                             : ""}
@@ -352,6 +360,20 @@ class InvStockEnquiry extends Component {
                   {
                     fieldName: "qtyhand",
                     label: <AlgaehLabel label={{ forceLabel: "Quantity" }} />,
+                    displayTemplate: row => {
+                      return (
+                        <span className={row.reorder === "R" ? "red" : ""}>
+                          {row.qtyhand}
+                        </span>
+                      );
+                    },
+                    disabled: true
+                  },
+                  {
+                    fieldName: "reorder_qty",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Reorder Quantity" }} />
+                    ),
                     disabled: true
                   },
                   {
@@ -387,7 +409,7 @@ class InvStockEnquiry extends Component {
                   data: this.state.ListItems
                 }}
                 noDataText="No Stock available for selected Item in the selected Location"
-                isEditable={true}
+                isEditable={false}
                 paging={{ page: 0, rowsPerPage: 10 }}
                 events={{
                   //   onDelete: deleteServices.bind(this, this),
@@ -398,6 +420,13 @@ class InvStockEnquiry extends Component {
             </div>
           </div>
         </div>
+        <BatchWiseStock
+          show={this.state.openBatchWise}
+          onClose={closeBatchWise.bind(this, this)}
+          batch_wise_item={this.state.batch_wise_item}
+          item_description={this.state.item_description}
+          total_quantity={this.state.total_quantity}
+        />
       </React.Fragment>
     );
   }

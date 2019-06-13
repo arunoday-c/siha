@@ -417,7 +417,7 @@
     { "name": "A-", "value": "A-" }
   ],
   "FORMAT_POS_CASE_TYPE": [
-    { "name": "Others", "value": "OT" },
+    { "name": "Outside Customer", "value": "OT" },
     { "name": "OP", "value": "OP" }
   ],
   "NO_OF_SLOTS": [

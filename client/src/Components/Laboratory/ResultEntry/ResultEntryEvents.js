@@ -330,26 +330,39 @@ const onchangegridresult = ($this, row, e) => {
     if (
       test_analytes[l].hims_f_ord_analytes_id === row.hims_f_ord_analytes_id
     ) {
-      if (row.result >= row.normal_low && row.result <= row.normal_high) {
-        row["critical_type"] = "N";
-      } else if (row.result <= row.critical_low && row.critical_low !== 0) {
-        row["critical_type"] = "CL";
-      } else if (row.result < row.normal_low && row.result > row.critical_low) {
-        row["critical_type"] = "L";
-      } else if (row.result >= row.critical_high) {
-        row["critical_type"] = "CH";
-      } else if (
-        row.result > row.normal_high &&
-        row.result < row.critical_high
-      ) {
-        row["critical_type"] = "H";
-      }
-
+      row["critical_type"] = checkRange(row)
       test_analytes[l] = row;
     }
   }
   $this.setState({ test_analytes: test_analytes });
 };
+
+function checkRange(row) {
+  let {result, critical_low, critical_high, normal_low, normal_high} = row;
+
+  result = parseFloat(result)
+  critical_low = parseFloat(critical_low)
+  normal_low = parseFloat(normal_low)
+  normal_high = parseFloat(normal_high)
+  critical_high = parseFloat(critical_high)
+  
+  console.log(result)
+
+  if (!result) {
+    return null
+  } else if(result <= critical_low) {
+      return "CL"
+  } else if (result < normal_low) {
+      return "L"
+  } else if (result < normal_high) {
+      return "N"
+  } else if (result < critical_high){
+      return "H"
+  } else {
+      return "CH"
+      console.log(result)
+  }
+}
 
 const onchangegridamended = ($this, row, e) => {
   swal({

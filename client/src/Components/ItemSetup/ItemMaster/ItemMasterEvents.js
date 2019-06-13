@@ -88,6 +88,13 @@ const Validations = $this => {
       title: "Enter the Vat Percentage."
     });
     return isError;
+  } else if ($this.state.reorder_qty === 0) {
+    isError = true;
+    swalMessage({
+      type: "error",
+      title: "Enter Reorder Quantity."
+    });
+    return isError;
   }
 };
 

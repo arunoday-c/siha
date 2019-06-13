@@ -37,7 +37,8 @@ export default {
       addl_information: null,
       conversion_factor: 0,
       convertEnable: false,
-      sfda_code: null
+      sfda_code: null,
+      reorder_qty: 0
     };
     return output;
   }

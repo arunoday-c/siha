@@ -376,6 +376,32 @@ const onchangegridcol = ($this, row, e) => {
   $this.setState({ detail_item_uom: detail_item_uom });
 };
 
+const numberEventHandaler = ($this, ctrl, e) => {
+  debugger;
+  e = e || ctrl;
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+  SetBulkState({
+    state: $this,
+    callback: () => {
+      if (value < 0) {
+        swalMessage({
+          type: "warning",
+          title: "Cannot be less than zero."
+        });
+        $this.setState({
+          [name]: 0
+        });
+      } else {
+        $this.setState({
+          [name]: value
+        });
+      }
+    }
+  });
+};
+
 export {
   texthandle,
   radioChange,
@@ -389,5 +415,6 @@ export {
   uomtexthandle,
   stockingtexthandle,
   stockonchangegridcol,
-  additionaleInfo
+  additionaleInfo,
+  numberEventHandaler
 };

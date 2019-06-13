@@ -34,7 +34,8 @@ export default {
       markup_percent: 0,
       sales_price: 0,
       assesments_notes: null,
-      item_type: null
+      item_type: null,
+      reorder_qty: 0
     };
     return output;
   }

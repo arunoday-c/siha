@@ -6,8 +6,6 @@ import InventoryItem from "../../../Models/InventoryItem";
 const Validations = $this => {
   let isError = false;
 
-  
-
   if ($this.state.item_description === null) {
     isError = true;
     swalMessage({
@@ -79,6 +77,13 @@ const Validations = $this => {
     swalMessage({
       type: "error",
       title: "Enter the Vat Percentage."
+    });
+    return isError;
+  } else if ($this.state.reorder_qty === 0) {
+    isError = true;
+    swalMessage({
+      type: "error",
+      title: "Enter Reorder Quantity."
     });
     return isError;
   }
