@@ -1181,7 +1181,9 @@ export default [
     submenu: [
       {
         subitem: "List of Receipts",
+        reportName: "salesReceiptListPharmacy",
         template_name: "salesReceiptListPharmacy",
+        requireIframe: true,
         reportParameters: [
           {
             type: "date",
@@ -1191,6 +1193,13 @@ export default [
               maxDate: new Date(),
               minDate: null
             }
+          },{
+            type: "time",
+            name: "from_time",
+            label: "From Time",
+            isImp: true,
+            others: {
+            }
           },
           {
             type: "date",
@@ -1199,6 +1208,71 @@ export default [
             others: {
               maxDate: new Date(),
               minDate: null
+            }
+          },{
+            type: "time",
+            name: "to_time",
+            label: "To Time",
+            isImp: true,
+            others: {
+            }
+          },
+          {
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Select branch",
+            link: {
+              uri: "/organization/getOrganization"
+            },
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            }
+          },
+          {
+            type: "dropdown",
+            name: "employee_group_id",
+            initialLoad: true,
+            label: "Select Location",
+            link: {
+              uri: "/hrsettings/getEmployeeGroups",
+              module: "hrManagement"
+            },
+            dataSource: {
+              textField: "group_description",
+              valueField: "hims_d_employee_group_id"
+            }
+          },
+          {
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Receipt Type",
+            link: {
+              uri: "/organization/getOrganization"
+            },
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            }
+          },
+          {
+            type: "dropdown",
+            name: "employee_group_id",
+            initialLoad: true,
+            label: "Select User/Employee",
+            link: {
+              uri: "/hrsettings/getEmployeeGroups",
+              module: "hrManagement"
+            },
+            dataSource: {
+              textField: "group_description",
+              valueField: "hims_d_employee_group_id"
             }
           }
         ]
@@ -1220,12 +1294,37 @@ export default [
             }
           },
           {
-            type: "date",
+            type:"time",
             name: "to_date",
+            isImp: true
+          },
+          {
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
             isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
+            label: "Select branch",
+            link: {
+              uri: "/organization/getOrganization"
+            },
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            }
+          },
+          {
+            type: "dropdown",
+            name: "employee_group_id",
+            initialLoad: true,
+            label: "Select Pharmacy Location",
+            link: {
+              uri: "/hrsettings/getEmployeeGroups",
+              module: "hrManagement"
+            },
+            dataSource: {
+              textField: "group_description",
+              valueField: "hims_d_employee_group_id"
             }
           }
         ]
@@ -1252,7 +1351,8 @@ export default [
               maxDate: new Date(),
               minDate: null
             }
-          }]
+          }
+        ]
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
@@ -1279,7 +1379,8 @@ export default [
               maxDate: new Date(),
               minDate: null
             }
-          }]
+          }
+        ]
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
@@ -1303,15 +1404,16 @@ export default [
               maxDate: new Date(),
               minDate: null
             }
-          }]
+          }
+        ]
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "GP Statment ItemWise Report",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
-      },
+      }
+      // {
+      //   subitem: "GP Statment ItemWise Report",
+      //   template_name: "asset_war_exp",
+      //   reportParameters: []
+      //   //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
+      // },
       // {
       //   subitem: "List of Claims Generated",
       //   template_name: "asset_war_exp",
@@ -1369,7 +1471,8 @@ export default [
               // valueField: "employee_id",
               // data: undefined
             }
-          }]
+          }
+        ]
         //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
       }
     ]
