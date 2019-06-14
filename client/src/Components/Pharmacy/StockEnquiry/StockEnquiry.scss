@@ -1,23 +1,51 @@
 .hptl-phase1-stock-enquiry-form {
-  border-radius: 5px;
-  margin-top: 12vh;
-  min-height: 80vh;
-  .form-details {
-    padding: 5px;
-    padding-bottom: 0px;
-  }
-  mark {
-    background: none;
-    color: red;
-  }
+	border-radius: 5px;
+	margin-top: 12vh;
+	min-height: 80vh;
+	.form-details {
+		padding: 5px;
+		padding-bottom: 0px;
+	}
+	mark {
+		background: none;
+		color: red;
+	}
 
-  .form-group {
-    // margin-top: 12vh;
-    padding: 2vh;
-  }
+	.form-group {
+		// margin-top: 12vh;
+		padding: 2vh;
+	}
 
-  .go-button {
-    cursor: pointer;
-    margin-top: 2.5vh;
-  }
+	.go-button {
+		cursor: pointer;
+		margin-top: 2.5vh;
+	}
+}
+.orderNow {
+	span:first-child {
+		display: block;
+		line-height: 10px;
+	}
+	.orderSoon {
+		background: #ff4b4b;
+		-webkit-animation: blinkingText 3s infinite;
+		animation: blinkingText 4s infinite;
+		font-weight: bold;
+		padding: 0 5px;
+		display: inline-block;
+		color: #fff;
+		border-radius: 3px;
+		font-size: 0.55rem;
+		@keyframes blinkingText {
+			0% {
+				background: rgb(218, 49, 49);
+			}
+			50% {
+				background: rgb(138, 39, 39);
+			}
+			100% {
+				background: rgb(218, 49, 49);
+			}
+		}
+	}
 }

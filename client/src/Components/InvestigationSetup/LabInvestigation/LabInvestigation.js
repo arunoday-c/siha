@@ -105,7 +105,7 @@ class LabInvestigation extends Component {
             <div className="hptl-phase1-add-lab-investigation-form">
               <div className="row">
                 <AlagehAutoComplete
-                  div={{ className: "col-lg-3" }}
+                  div={{ className: "col-3 mandatory" }}
                   label={{
                     fieldName: "lab_section_id",
                     isImp: true
@@ -123,7 +123,7 @@ class LabInvestigation extends Component {
                   }}
                 />
                 <AlagehAutoComplete
-                  div={{ className: "col-lg-3" }}
+                  div={{ className: "col-3 mandatory" }}
                   label={{
                     fieldName: "specimen_id",
                     isImp: true
@@ -137,11 +137,13 @@ class LabInvestigation extends Component {
                       valueField: "hims_d_lab_specimen_id",
                       data: this.props.labspecimen
                     },
-                    onChange: texthandle.bind(this, this, context)
+                    onChange: texthandle.bind(this, this, context), others:{
+                     tabIndex: "5"
+                      }
                   }}
                 />
                 <AlagehAutoComplete
-                  div={{ className: "col-lg-3" }}
+                  div={{ className: "col-3 mandatory" }}
                   label={{
                     fieldName: "container_id",
                     isImp: true
@@ -155,11 +157,39 @@ class LabInvestigation extends Component {
                       valueField: "hims_d_lab_container_id",
                       data: this.props.labcontainer
                     },
-                    onChange: containeridhandle.bind(this, this, context)
+                    onChange: containeridhandle.bind(this, this, context), others:{
+                     tabIndex: "6"
+                      }
+                  }}
+                /><AlagehAutoComplete
+                  div={{ className: "col-3 mandatory" }}
+                  label={{
+                    fieldName: "available_in_house",
+                    isImp: true
+                  }}
+                  selector={{
+                    name: "available_in_house",
+                    className: "select-fld",
+                    value: this.state.available_in_house,
+                    dataSource: {
+                      textField:
+                        this.state.selectedLang === "en"
+                          ? "name"
+                          : "arabic_name",
+                      valueField: "value",
+                      data: variableJson.FORMAT_YESNO
+                    },
+                    onChange: texthandle.bind(this, this, context), others:{
+                     tabIndex: "7"
+                      }
                   }}
                 />
+              </div>
+
+              <div className="row">
+                
                 <AlagehAutoComplete
-                  div={{ className: "col-lg-3" }}
+                  div={{ className: "col-3" }}
                   label={{
                     fieldName: "send_out_test"
                   }}
@@ -178,32 +208,8 @@ class LabInvestigation extends Component {
                     onChange: texthandle.bind(this, this, context)
                   }}
                 />
-              </div>
-
-              <div className="row">
                 <AlagehAutoComplete
-                  div={{ className: "col-lg-3" }}
-                  label={{
-                    fieldName: "available_in_house",
-                    isImp: true
-                  }}
-                  selector={{
-                    name: "available_in_house",
-                    className: "select-fld",
-                    value: this.state.available_in_house,
-                    dataSource: {
-                      textField:
-                        this.state.selectedLang === "en"
-                          ? "name"
-                          : "arabic_name",
-                      valueField: "value",
-                      data: variableJson.FORMAT_YESNO
-                    },
-                    onChange: texthandle.bind(this, this, context)
-                  }}
-                />
-                <AlagehAutoComplete
-                  div={{ className: "col-lg-3" }}
+                  div={{ className: "col-3" }}
                   label={{
                     fieldName: "external_facility_required"
                   }}
@@ -222,8 +228,8 @@ class LabInvestigation extends Component {
                     onChange: texthandle.bind(this, this, context)
                   }}
                 />
-                <AlagehAutoComplete
-                  div={{ className: "col-lg-3" }}
+                {/* <AlagehAutoComplete
+                  div={{ className: "col-3" }}
                   label={{
                     fieldName: "priority"
                   }}
@@ -241,9 +247,9 @@ class LabInvestigation extends Component {
                     },
                     onChange: texthandle.bind(this, this, context)
                   }}
-                />
+                /> */}
                 <AlagehFormGroup
-                  div={{ className: "col-lg-3" }}
+                  div={{ className: "col-3" }}
                   label={{
                     fieldName: "facility_description"
                   }}
@@ -260,7 +266,7 @@ class LabInvestigation extends Component {
               <div className="Paper">
                 <div className="row">
                   <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col-3" }}
                     label={{
                       fieldName: "analyte_id"
                     }}
@@ -276,8 +282,45 @@ class LabInvestigation extends Component {
                       onChange: analyteidhandle.bind(this, this, context)
                     }}
                   />
+                  <AlagehAutoComplete
+                    div={{ className: "col" }}
+                    label={{
+                      forceLabel: "Gender"
+                    }}
+                    selector={{
+                      name: "analyte_id",
+                      className: "select-fld",
+                      value:"",
+                      dataSource: {
+                      }
+                    }}
+                  />
+                   <AlagehFormGroup
+                    div={{ className: "col" }}
+                    label={{
+                      forceLabel: "Age From"
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "",
+                      value: "",
+                      events: {}
+                    }}
+                  />
+                   <AlagehFormGroup
+                    div={{ className: "col" }}
+                    label={{
+                      forceLabel: "Age To"
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "",
+                      value: "",
+                      events: {}
+                    }}
+                  />
                   <AlagehFormGroup
-                    div={{ className: "col-lg-2" }}
+                    div={{ className: "col" }}
                     label={{
                       fieldName: "normal_low"
                     }}
@@ -292,7 +335,7 @@ class LabInvestigation extends Component {
                     }}
                   />
                   <AlagehFormGroup
-                    div={{ className: "col-lg-2" }}
+                    div={{ className: "col" }}
                     label={{
                       fieldName: "normal_high"
                     }}
@@ -307,7 +350,7 @@ class LabInvestigation extends Component {
                     }}
                   />
                   <AlagehFormGroup
-                    div={{ className: "col-lg-2" }}
+                    div={{ className: "col" }}
                     label={{
                       fieldName: "critical_low"
                     }}
@@ -322,7 +365,7 @@ class LabInvestigation extends Component {
                     }}
                   />
                   <AlagehFormGroup
-                    div={{ className: "col-lg-2" }}
+                    div={{ className: "col" }}
                     label={{
                       fieldName: "critical_high"
                     }}
@@ -337,7 +380,7 @@ class LabInvestigation extends Component {
                     }}
                   />
 
-                  <div className="col-lg-1">
+                  <div className="col" style={{padding:0}}>
                     <button
                       className="btn btn-primary" style={{marginTop:19}}
                       onClick={AddAnalytes.bind(this, this, context)}
@@ -415,6 +458,30 @@ class LabInvestigation extends Component {
                               // );
                             }
                             // disabled: true
+                          },
+                          {
+                            fieldName: "gender",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Gender" }}
+                              />
+                            )
+                          },
+                          {
+                            fieldName: "ageFrom",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Age from" }}
+                              />
+                            )
+                          },
+                          {
+                            fieldName: "ageTo",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Age to" }}
+                              />
+                            )
                           },
                           {
                             fieldName: "normal_low",
