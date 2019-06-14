@@ -1,0 +1,6 @@
+{
+  "destination": "../algaeh_erp_live/",
+  "sudo-link": [],
+  "links": [],
+  "skip-folders": ["LOGS", "node_modules", ".git", "test", "undefined"]
+}
