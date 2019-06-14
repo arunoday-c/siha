@@ -119,7 +119,9 @@ export default {
       nationality_id: null,
       insert_pharmacy_stock: [],
       update_pharmacy_stock: [],
-      delete_pharmacy_stock: []
+      delete_pharmacy_stock: [],
+      posCancelled: false,
+      InvoiceEnable: false
     };
     return output;
   }

@@ -24,12 +24,12 @@ const numberchangeTexts = ($this, context, e) => {
   let value = e.value || e.target.value;
 
   if (name === "quantity") {
-    if (value < 0) {
+    if (parseFloat(value) < 0) {
       swalMessage({
         title: "Quantity cannot be less than or equal to Zero",
         type: "warning"
       });
-    } else if (value > $this.state.qtyhand) {
+    } else if (parseFloat(value) > parseFloat($this.state.qtyhand)) {
       swalMessage({
         title: "Quantity cannot be greater than Quantity in hand",
         type: "warning"
@@ -147,8 +147,6 @@ const datehandle = ($this, ctrl, e) => {
 };
 
 const deleteTransEntryDetail = ($this, context, e, rowId) => {
-  
-
   let display =
     $this.props.itemlist === undefined
       ? []
@@ -194,7 +192,6 @@ const updateTransEntryDetail = ($this, context) => {
 };
 
 const onchangegridcol = ($this, context, row, e) => {
-  
   let name = e.target.name;
   let value = e.target.value === "" ? null : e.target.value;
 
@@ -306,7 +303,6 @@ const EditGrid = ($this, context, cancelRow) => {
 };
 
 const AddSelectedBatches = ($this, context) => {
-  
   if (
     parseFloat($this.state.item_details.quantity_transferred) >
     parseFloat($this.state.item_details.quantity_authorized)

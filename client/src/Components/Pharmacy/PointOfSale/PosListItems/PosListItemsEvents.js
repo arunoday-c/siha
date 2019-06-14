@@ -449,12 +449,12 @@ const AddItems = ($this, context) => {
         onSuccess: response => {
           if (response.data.success) {
             let data = response.data.records;
-            // if (data.billdetails[0].pre_approval === "Y") {
-            //   swalMessage({
-            //     title:
-            //       "Selected Service is Pre-Approval required, you don't have rights to bill.",
-            //     type: "warning"
-            //   });
+            if (data.billdetails[0].pre_approval === "Y") {
+              swalMessage({
+                title: "Selected Item is Pre-Approval required.",
+                type: "warning"
+              });
+            }
             // } else {
             let existingservices = $this.state.pharmacy_stock_detail;
 
@@ -503,6 +503,8 @@ const AddItems = ($this, context) => {
               data.billdetails[0].company_payable =
                 data.billdetails[0].company_payble;
               data.billdetails[0].hims_f_pharmacy_pos_detail_id = null;
+
+              data.billdetails[0].prescribed_qty = 0;
               existingservices.splice(0, 0, data.billdetails[0]);
             }
             let insert_pharmacy_stock = $this.state.insert_pharmacy_stock;
@@ -585,7 +587,7 @@ const AddItems = ($this, context) => {
                   sum_data.sec_copay_amount =
                     sum_data.sec_copay_amount || $this.state.sec_copay_amount;
                   sum_data.addItemButton = false;
-                  sum_data.saveEnable = false;
+                  sum_data.saveEnable = true;
                   sum_data.postEnable = false;
                   sum_data.hims_f_pharmacy_pos_detail_id = null;
                   if (context !== null) {
@@ -869,6 +871,8 @@ const calculateAmount = ($this, context, row, ctrl, e) => {
         data.billdetails[0].uom_id = row.uom_id;
         data.billdetails[0].discount_amount =
           data.billdetails[0].discount_amout;
+        data.billdetails[0].pre_approval =
+          row.pre_approval === "N" ? "N" : data.billdetails[0].pre_approval;
         extend(row, data.billdetails[0]);
 
         const _index = pharmacy_stock_detail.indexOf(row);
@@ -1206,6 +1210,63 @@ const SelectBatchDetails = ($this, row, context, e) => {
   }
 };
 
+const getMedicationAprovalList = ($this, row) => {
+  debugger;
+  if (
+    $this.state.pos_customer_type === "OT" &&
+    $this.state.hims_f_pharmacy_pos_header_id === null
+  ) {
+    swalMessage({
+      title: "Save the record...",
+      type: "warning"
+    });
+    return;
+  }
+
+  let inputobj = { item_id: row.item_id };
+
+  if ($this.state.pos_customer_type === "OT") {
+    if (row.hims_f_pharmacy_pos_detail_id !== null) {
+      inputobj.pharmacy_pos_detail_id = row.hims_f_pharmacy_pos_detail_id;
+    }
+  }
+
+  if ($this.state.patient_id !== null) {
+    inputobj.patient_id = $this.state.patient_id;
+  }
+  if ($this.state.visit_id !== null) {
+    inputobj.visit_id = $this.state.visit_id;
+  }
+  if ($this.state.insurance_provider_id !== null) {
+    inputobj.insurance_provider_id = $this.state.insurance_provider_id;
+  }
+
+  algaehApiCall({
+    uri: "/orderAndPreApproval/getMedicationAprovalList",
+    method: "GET",
+    data: inputobj,
+    onSuccess: response => {
+      if (response.data.success) {
+        debugger;
+        $this.setState({
+          medca_approval_Services: response.data.records,
+          viewPreapproval: !$this.state.viewPreapproval,
+          item_description: row.item_description,
+          prescription_detail_id: row.prescription_detail_id,
+          item_data: row,
+          hims_f_pharmacy_pos_detail_id: row.hims_f_pharmacy_pos_detail_id
+        });
+      }
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.response.data.message,
+        type: "warning"
+      });
+    }
+  });
+};
+
 export {
   discounthandle,
   UomchangeTexts,
@@ -1226,5 +1287,6 @@ export {
   qtyonchangegridcol,
   EditGrid,
   credittexthandle,
-  SelectBatchDetails
+  SelectBatchDetails,
+  getMedicationAprovalList
 };

@@ -37,7 +37,7 @@ let updateIntoInvItemLocation = (req, res, next) => {
           item_id: s.item_id,
           inventory_location_id: s.location_id,
           batchno: s.batchno,
-          expirydt: s.expiry_date || null,
+          expirydt: s.expiry_date || "~",
           barcode: s.barcode,
           qtyhand: s.quantity,
           qtypo: s.qtypo || 0,

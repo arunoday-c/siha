@@ -94,9 +94,9 @@ class ItemSetup extends Component {
       }
     });
 
-    if (this.props.itemlist === undefined || this.props.itemlist.length === 0) {
-      ItemSetupEvent().getItems(this, this);
-    }
+    // if (this.props.itemlist === undefined || this.props.itemlist.length === 0) {
+    ItemSetupEvent().getItems(this, this);
+    // }
   }
 
   ShowModel(e) {
