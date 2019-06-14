@@ -1619,7 +1619,9 @@ export default [
     submenu: [
       {
         subitem: "List of Receipts",
+        reportName: "salesReceiptListPharmacy",
         template_name: "salesReceiptListPharmacy",
+        requireIframe: true,
         reportParameters: [
           {
             type: "date",
@@ -1690,7 +1692,8 @@ export default [
               maxDate: new Date(),
               minDate: null
             }
-          }]
+          }
+        ]
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
@@ -1717,7 +1720,8 @@ export default [
               maxDate: new Date(),
               minDate: null
             }
-          }]
+          }
+        ]
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
@@ -1741,9 +1745,10 @@ export default [
               maxDate: new Date(),
               minDate: null
             }
-          }]
+          }
+        ]
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
-      },
+      }
       // {
       //   subitem: "GP Statment ItemWise Report",
       //   template_name: "asset_war_exp",
@@ -1871,7 +1876,8 @@ export default [
               // valueField: "employee_id",
               // data: undefined
             }
-          }]
+          }
+        ]
         //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
       }
     ]
