@@ -336,11 +336,7 @@ class StockEnquiry extends Component {
                     fieldName: "qtyhand",
                     label: <AlgaehLabel label={{ forceLabel: "Quantity" }} />,
                     displayTemplate: row => {
-                      return (
-                        <span className={row.reorder === "R" ? "red" : ""}>
-                          {row.qtyhand}
-                        </span>
-                      );
+                      return row.reorder === "R" ? (<div  className= "orderNow"><span>{row.qtyhand}</span><span className="orderSoon">Order Soon</span></div>) : (row.qtyhand);
                     },
                     disabled: true
                   },
