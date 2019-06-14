@@ -66,8 +66,12 @@ export default class DateHandler extends PureComponent {
         this.props.events !== undefined &&
         typeof this.props.events.onChange === "function"
       ) {
+        const configType =
+          this.props.type !== undefined && this.props.type === "time"
+            ? config.formators.time
+            : config.formators.date;
         this.props.events.onChange(
-          moment(e.target.value, config.formators.date)._d,
+          moment(e.target.value, configType)._d,
           e.target.name
         );
       }
@@ -76,8 +80,12 @@ export default class DateHandler extends PureComponent {
         this.props.events !== undefined &&
         typeof this.props.events.onChange === "function"
       ) {
+        const configType =
+          this.props.type !== undefined && this.props.type === "time"
+            ? config.formators.time
+            : config.formators.date;
         this.props.events.onChange({
-          value: moment(e.target.value, config.formators.date)._d,
+          value: moment(e.target.value, configType)._d,
           name: e.target.name
         });
       }
@@ -87,16 +95,32 @@ export default class DateHandler extends PureComponent {
   renderDatePicker = () => {
     const minDate =
       this.props.minDate !== undefined
-        ? { min: moment(this.props.minDate).format(config.formators.date) }
+        ? {
+            min: moment(this.props.minDate).format(
+              this.props.type !== undefined && this.props.type === "time"
+                ? config.formators.time
+                : config.formators.date
+            )
+          }
         : {};
     const maxDate =
       this.props.maxDate !== undefined
-        ? { max: moment(this.props.maxDate).format(config.formators.date) }
+        ? {
+            max: moment(this.props.maxDate).format(
+              this.props.type !== undefined && this.props.type === "time"
+                ? config.formators.time
+                : config.formators.date
+            )
+          }
         : {};
     const value =
       this.state.value !== undefined
         ? this.state.value !== null
-          ? moment(this.state.value).format(config.formators.date)
+          ? moment(this.state.value).format(
+              this.props.type !== undefined && this.props.type === "time"
+                ? config.formators.time
+                : config.formators.date
+            )
           : ""
         : "";
     const name =

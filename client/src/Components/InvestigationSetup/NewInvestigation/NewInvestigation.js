@@ -95,7 +95,7 @@ class NewInvestigation extends PureComponent {
               <div className="col-12 popRightDiv">
                 <div className="row">
                   <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col-3 mandatory" }}
                     label={{
                       fieldName: "investigation_type",
                       isImp: true
@@ -113,7 +113,8 @@ class NewInvestigation extends PureComponent {
                         data: variableJson.FORMAT_LAB_RAD
                       },
                       others: {
-                        disabled: this.state.InvestigationtypeEnable
+                        disabled: this.state.InvestigationtypeEnable,
+                              tabIndex: "1"
                       },
                       onChange: texthandle.bind(this, this)
                     }}
@@ -121,7 +122,7 @@ class NewInvestigation extends PureComponent {
                 </div>
                 <div className="row">
                   <AlagehFormGroup
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col-3 mandatory" }}
                     label={{
                       fieldName: "test_name",
                       isImp: true
@@ -132,12 +133,14 @@ class NewInvestigation extends PureComponent {
                       value: this.state.description,
                       events: {
                         onChange: texthandle.bind(this, this)
+                      }, others:{
+                     tabIndex: "2"
                       }
                     }}
                   />
 
                   <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col-3 mandatory" }}
                     label={{
                       fieldName: "services_id",
                       isImp: true
@@ -154,7 +157,9 @@ class NewInvestigation extends PureComponent {
                         valueField: "hims_d_services_id",
                         data: this.props.ingservices
                       },
-                      onChange: texthandle.bind(this, this)
+                      onChange: texthandle.bind(this, this), others:{
+                     tabIndex: "3"
+                      }
                     }}
                   />
                   <AlagehAutoComplete

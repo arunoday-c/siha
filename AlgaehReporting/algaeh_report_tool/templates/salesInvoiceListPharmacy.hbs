@@ -1,4 +1,3 @@
-
 {{{importStyle 'css/creditinvoice.css'}}}
 
 <body>
@@ -9,36 +8,58 @@
                 <thead>
                     <tr>
                         <th>Sl No.</th>
+                        {{!-- <th>patient name.</th> --}}
                         <th>Invoice No.</th>
                         <th>Invoice Date</th>
                         <th>Invoice Amt.</th>
-                        <th>Insurance Amt.</th>
-                        <th>Discount</th>
-                        <th>Amount Paid</th>
-                        <th>Due Amt</th>
+                        <th>Patient Payable</th>
+                        <th>Patient Tax</th>
+                        <th>Company Payable</th>
+                        <th>Company Tax</th>
                     </tr>
                 </thead>
                 <tbody>
                     {{#each details}}
                     <tr>
-                        <td >{{inc @index}}</td>
+                        <td>{{inc @index}}</td>
+                        {{!-- <td>{{patient_full_name}}</td> --}}
                         <td>{{pos_number}}</td>
-                        <td>{{invoice_date}}</td>
-                        <td class="numberFld">{{invoice_amt}}</td>
-                        <td class="numberFld">{{insurance_amt}}</td>
-                        <td class="numberFld">{{discount_amount}}</td>
-                        <td class="numberFld">{{amt_paid}}</td>
-                        <td class="numberFld">{{due_amt}}</td>
+                        <td>{{pos_date}}</td>
+                        <td class="numberFld">{{net_amount}}</td>
+                        <td class="numberFld">{{patient_payable}}</td>
+                        <td class="numberFld">{{patient_tax}}</td>
+                        <td class="numberFld">{{company_payable}}</td>
+                        <td class="numberFld">{{company_tax}}</td>
                     </tr>
                     {{/each }}
                 </tbody>
             </table>
             <table class="tableTotal">
-              <tr><td>Total Invoice Amount</td><td>{{total_gross_amount}}</td><td>الإجمالي قبل الضريبة المضافة</td></tr>
-                 <tr><td>Total Discount Amount</td><td>{{total_discount_amount}}</td><td>الخصم</td></tr>
-                      <tr><td>Total Insurance Payment</td><td>{{total_patient_share}}</td><td>نسبة التحمل</td></tr>
-                       <tr><td>Total Paid Amount</td><td>0.00</td><td>المبلغ المدفوع</td></tr>
-                        <tr><td>Total Due Amount</td><td>{{total_net_claim}}</td><td>المبلغ المتبقي</td></tr>
+                <tr class="bold">
+                    <td>Total Invoive Amt.</td>
+                    <td>{{total_net_amount}}</td>
+                    <td>المبلغ الإجمالي للفاتورة</td>
+                </tr>
+                <tr>
+                    <td>Total Patient Payable</td>
+                    <td>{{total_patient_payable}}</td>
+                    <td>المجموع المريض بسبب</td>
+                </tr>
+                <tr>
+                    <td>Total Patient Tax</td>
+                    <td>{{total_patient_tax}}</td>
+                    <td>الإجمالي ضريبة المريض</td>
+                </tr>
+                <tr>
+                    <td>Total Company Payable</td>
+                    <td>{{total_company_payable}}</td>
+                    <td>المجموع الشركة المستحقة الدفع</td>
+                </tr>
+                <tr>
+                    <td>Total Company Tax</td>
+                    <td>{{total_company_tax}}</td>
+                    <td>إجمالي ضريبة الشركة</td>
+                </tr>
             </table>
         </section>
         {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
