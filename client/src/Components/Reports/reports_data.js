@@ -3,7 +3,8 @@ import {
   LEAVE_STATUS,
   MONTHS,
   RECEIPT_TYPE,
-  LOCAL_TYPE
+  LOCAL_TYPE,
+  FORMAT_PAYTYPE
 } from "../../utils/GlobalVariables.json";
 import { getYears } from "../../utils/GlobalFunctions";
 import { algaehApiCall } from "../../utils/algaehApiCall";
@@ -1193,13 +1194,13 @@ export default [
               maxDate: new Date(),
               minDate: null
             }
-          },{
+          },
+          {
             type: "time",
             name: "from_time",
             label: "From Time",
             isImp: true,
-            others: {
-            }
+            others: {}
           },
           {
             type: "date",
@@ -1209,13 +1210,13 @@ export default [
               maxDate: new Date(),
               minDate: null
             }
-          },{
+          },
+          {
             type: "time",
             name: "to_time",
             label: "To Time",
             isImp: true,
-            others: {
-            }
+            others: {}
           },
           {
             type: "dropdown",
@@ -1234,45 +1235,45 @@ export default [
           },
           {
             type: "dropdown",
-            name: "employee_group_id",
+            name: "location_id",
             initialLoad: true,
             label: "Select Location",
             link: {
-              uri: "/hrsettings/getEmployeeGroups",
-              module: "hrManagement"
+              uri: "/pharmacy/getPharmacyLocation",
+              module: "pharmacy",
+              data: {
+                allow_pos: "Y"
+              }
             },
             dataSource: {
-              textField: "group_description",
-              valueField: "hims_d_employee_group_id"
+              textField: "location_description",
+              valueField: "hims_d_pharmacy_location_id"
             }
           },
           {
             type: "dropdown",
-            name: "hospital_id",
+            name: "pay_type",
             initialLoad: true,
-            isImp: true,
+            isImp: false,
             label: "Receipt Type",
-            link: {
-              uri: "/organization/getOrganization"
-            },
+            link: {},
             dataSource: {
-              textField: "hospital_name",
-              valueField: "hims_d_hospital_id",
-              data: undefined
+              textField: "name",
+              valueField: "value",
+              data: FORMAT_PAYTYPE
             }
           },
           {
             type: "dropdown",
-            name: "employee_group_id",
+            name: "cashier_id",
             initialLoad: true,
             label: "Select User/Employee",
             link: {
-              uri: "/hrsettings/getEmployeeGroups",
-              module: "hrManagement"
+              uri: "/gloabelSearch/newSearch"
             },
             dataSource: {
-              textField: "group_description",
-              valueField: "hims_d_employee_group_id"
+              textField: "full_name",
+              valueField: "algaeh_d_app_user_id"
             }
           }
         ]
@@ -1294,7 +1295,7 @@ export default [
             }
           },
           {
-            type:"time",
+            type: "time",
             name: "to_date",
             isImp: true
           },
@@ -1422,7 +1423,7 @@ export default [
       // }
     ]
   },
-  
+
   {
     name: "Insurance",
     submenu: [

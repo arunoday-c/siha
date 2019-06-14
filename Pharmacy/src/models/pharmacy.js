@@ -583,9 +583,12 @@ module.exports = {
         intValues.push(req.query.location_status);
       }
 
-      if (req.query.hospital_id != null) {
+      if (req.query.hospital_id > 0) {
         _strQry += "and hospital_id=?";
         intValues.push(req.query.hospital_id);
+      }
+      if (req.query.allow_pos == "Y") {
+        _strQry += " and allow_pos='Y' ";
       }
 
       _mysql
