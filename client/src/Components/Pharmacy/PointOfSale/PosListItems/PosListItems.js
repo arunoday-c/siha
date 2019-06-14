@@ -32,7 +32,8 @@ import {
   qtyonchangegridcol,
   EditGrid,
   credittexthandle,
-  SelectBatchDetails
+  SelectBatchDetails,
+  getMedicationAprovalList
 } from "./PosListItemsEvents";
 import ReciptForm from "./ReciptDetails/AddReciptForm";
 import { AlgaehActions } from "../../../../actions/algaehActions";
@@ -42,6 +43,8 @@ import DisplayInsuranceDetails from "../DisplayInsuranceDetails/DisplayInsurance
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import InsuranceForm from "../InsuranceDetails/InsuranceForm";
+import PreApprovalStatus from "./PreApprovalStatus/PreApprovalStatus";
+import { getMedicationList, getPosEntry } from "../PointOfSaleEvents";
 
 class PosListItems extends Component {
   constructor(props) {
@@ -49,7 +52,8 @@ class PosListItems extends Component {
     this.state = {
       selectBatch: false,
       selectBatchButton: true,
-      viewInsurance: false
+      viewInsurance: false,
+      viewPreapproval: false
     };
     // this.onKeyPress = this.onKeyPress.bind(this);
   }
@@ -105,15 +109,19 @@ class PosListItems extends Component {
     }
   }
 
-  // onKeyPress(e) {
-  //   if (e.ctrlKey && e.keyCode === 9) {
-  //     this.attReg.focus();
-  //     // const element = ReactDOM.findDOMNode("root").querySelector(
-  //     //   "[name='item_id']"
-  //     // );
-  //     // element.focus();
-  //   }
-  // }
+  CloseEditModel(e) {
+    debugger;
+    if (e === "refresh") {
+      if (this.state.pos_customer_type === "OP") {
+        getMedicationList(this);
+      } else if (this.state.pos_customer_type === "OT") {
+        getPosEntry(this, this.state.pos_number);
+      }
+    }
+    this.setState({
+      viewPreapproval: !this.state.viewPreapproval
+    });
+  }
 
   componentWillUnmount() {
     document.removeEventListener("keypress", this.onKeyPress, false);
@@ -135,13 +143,11 @@ class PosListItems extends Component {
                   <div className="algaeh-md-12 algaeh-lg-12 algaeh-xl-8">
                     <div className="row">
                       <div className="col-lg-12">
-                                    
-                      
-                          {this.state.insurance_yesno === "N" ? null : (
-                            <div className="portlet portlet-bordered margin-bottom-15">
-                              <InsuranceForm POSIOputs={this.state} />
-                            </div>
-                          )}
+                        {this.state.insurance_yesno === "N" ? null : (
+                          <div className="portlet portlet-bordered margin-bottom-15">
+                            <InsuranceForm POSIOputs={this.state} />
+                          </div>
+                        )}
                         <div className="portlet portlet-bordered margin-bottom-15">
                           <div className="row">
                             <AlgaehAutoSearch
@@ -368,14 +374,13 @@ class PosListItems extends Component {
                                 Batch_Items: this.state.Batch_Items
                               }}
                             />
-      <DisplayInsuranceDetails
+                            <DisplayInsuranceDetails
                               show={this.state.viewInsurance}
                               POSIOputs={this.state}
                               onClose={ViewInsurance.bind(this, this)}
                             />
                           </div>
                         </div>
-                    
                       </div>
 
                       <div className="col-lg-12">
@@ -534,6 +539,20 @@ class PosListItems extends Component {
                                     }
                                   },
                                   {
+                                    fieldName: "prescribed_qty",
+                                    label: (
+                                      <AlgaehLabel
+                                        label={{
+                                          forceLabel: "Prescribed Qty"
+                                        }}
+                                      />
+                                    ),
+                                    disabled: true,
+                                    others: {
+                                      minWidth: 90
+                                    }
+                                  },
+                                  {
                                     fieldName: "quantity",
                                     label: (
                                       <AlgaehLabel
@@ -586,7 +605,7 @@ class PosListItems extends Component {
                                     displayTemplate: row => {
                                       return (
                                         <span>
-                                          {row.insured === "N"
+                                          {row.insurance_yesno === "N"
                                             ? "Not Covered"
                                             : "Covered"}
                                         </span>
@@ -605,8 +624,15 @@ class PosListItems extends Component {
                                       return row.pre_approval === "N" ? (
                                         <span>Not Required</span>
                                       ) : (
-                                        <span className="a-link">
-                                          Required{" "}
+                                        <span
+                                          className="pat-code"
+                                          onClick={getMedicationAprovalList.bind(
+                                            this,
+                                            this,
+                                            row
+                                          )}
+                                        >
+                                          Required
                                         </span>
                                       );
                                     },
@@ -815,52 +841,7 @@ class PosListItems extends Component {
                           </div>
                         </div>
                       </div>
-                      <div className="col-lg-7">
-                        <div className="row">
-                          <div className="col">
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "Patient Responsibility"
-                              }}
-                            />
-                            <h6>
-                              {getAmountFormart(
-                                this.state.patient_responsibility
-                              )}
-                            </h6>
-                          </div>
-
-                          <div className="col">
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "Patient Tax"
-                              }}
-                            />
-                            <h6>{getAmountFormart(this.state.patient_tax)}</h6>
-                          </div>
-
-                          <div className="col">
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "Patient Payable"
-                              }}
-                            />
-                            <h6>
-                              {getAmountFormart(this.state.patient_payable_h)}
-                            </h6>
-                          </div>
-
-                          {/* <div className="col-lg-12 patientRespo">
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "Patient"
-                              }}
-                            />
-                            <div className="row insurance-details" />
-                          </div> */}
-                          {/* <div className="col-lg-1"> &nbsp; </div> */}
-                        </div>
-                      </div>
+                      <div className="col-lg-7">&nbsp;</div>
                       <div className="col-lg-5" style={{ textAlign: "right" }}>
                         <div className="row">
                           <div className="col-lg-4">
@@ -899,28 +880,108 @@ class PosListItems extends Component {
                       <div className="algaeh-md-4 algaeh-lg-4 algaeh-xl-12">
                         <div className="Paper">
                           <div className="row">
-                            <div className="col-lg-6">
-                              <AlgaehLabel
-                                label={{
-                                  forceLabel: "Copay Amount"
-                                }}
-                              />
-                              <h6>
-                                {getAmountFormart(this.state.copay_amount)}
-                              </h6>
+                            <div className="col-12 patientRespo">
+                              <h6>Insurance Details</h6>
+                              <div className="row insurance-details">
+                                {" "}
+                                <div className="col-6">
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Copay Amount"
+                                    }}
+                                  />
+                                  <h6>
+                                    {getAmountFormart(this.state.copay_amount)}
+                                  </h6>
+                                </div>
+                              </div>
                             </div>
-                            {/* <div className="col-lg-6">
+                            <div className="col-12 patientRespo">
+                              <h6>Patient</h6>
+                              <div className="row insurance-details">
+                                <div className="col">
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Responsibility"
+                                    }}
+                                  />
+                                  <h6>
+                                    {getAmountFormart(
+                                      this.state.patient_responsibility
+                                    )}
+                                  </h6>
+                                </div>
+
+                                <div className="col">
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Tax"
+                                    }}
+                                  />
+                                  <h6>
+                                    {getAmountFormart(this.state.patient_tax)}
+                                  </h6>
+                                </div>
+
+                                <div className="col">
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Payable"
+                                    }}
+                                  />
+                                  <h6>
+                                    {getAmountFormart(
+                                      this.state.patient_payable_h
+                                    )}
+                                  </h6>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="col-lg-12">
                               <AlgaehLabel
                                 label={{
-                                  forceLabel: "Sec Copay Amount"
+                                  forceLabel: "Patient"
                                 }}
                               />
-                              <h6>
-                                {getAmountFormart(this.state.sec_copay_amount)}
-                              </h6>
-                            </div> */}
-                          </div>
-                          <div className="row">
+                              <div className="row insurance-details">
+                                <div className="col-5">
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Responsibility"
+                                    }}
+                                  />
+                                  <h6>
+                                    {getAmountFormart(
+                                      this.state.patient_responsibility
+                                    )}
+                                  </h6>
+                                </div>
+
+                                <div className="col-3">
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Tax"
+                                    }}
+                                  />
+                                  <h6>
+                                    {getAmountFormart(this.state.patient_tax)}
+                                  </h6>
+                                </div>
+
+                                <div className="col-4">
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Payable"
+                                    }}
+                                  />
+                                  <h6>
+                                    {getAmountFormart(
+                                      this.state.patient_payable_h
+                                    )}
+                                  </h6>
+                                </div>
+                              </div>
+                            </div>
                             <div className="col-lg-12">
                               <AlgaehLabel
                                 label={{
@@ -966,54 +1027,6 @@ class PosListItems extends Component {
                                 </div>
                               </div>
                             </div>
-
-                            {/* <div className="col-lg-12">
-                              <AlgaehLabel
-                                label={{
-                                  forceLabel: "Secondary Company"
-                                }}
-                              />
-                              <div className="row insurance-details">
-                                <div className="col-5">
-                                  <AlgaehLabel
-                                    label={{
-                                      forceLabel: "Responsibility"
-                                    }}
-                                  />
-                                  <h6>
-                                    {getAmountFormart(
-                                      this.state.sec_company_responsibility
-                                    )}
-                                  </h6>
-                                </div>
-
-                                <div className="col-3">
-                                  <AlgaehLabel
-                                    label={{
-                                      forceLabel: "Tax"
-                                    }}
-                                  />
-                                  <h6>
-                                    {getAmountFormart(
-                                      this.state.sec_company_tax
-                                    )}
-                                  </h6>
-                                </div>
-
-                                <div className="col-4">
-                                  <AlgaehLabel
-                                    label={{
-                                      forceLabel: "Payable"
-                                    }}
-                                  />
-                                  <h6>
-                                    {getAmountFormart(
-                                      this.state.sec_company_payable
-                                    )}
-                                  </h6>
-                                </div>
-                              </div>
-                            </div> */}
                           </div>
                         </div>
                       </div>
@@ -1069,7 +1082,10 @@ class PosListItems extends Component {
                                   )
                                 },
                                 others: {
-                                  disabled: this.state.saveEnable,
+                                  disabled:
+                                    this.state.insurance_yesno === "Y"
+                                      ? true
+                                      : this.state.saveEnable,
                                   placeholder: "0.00",
                                   // onBlur: PosheaderCalculation.bind(
                                   //   this,
@@ -1102,7 +1118,10 @@ class PosListItems extends Component {
                                   )
                                 },
                                 others: {
-                                  disabled: this.state.saveEnable,
+                                  disabled:
+                                    this.state.insurance_yesno === "Y"
+                                      ? true
+                                      : this.state.saveEnable,
                                   placeholder: "0.00",
                                   // onBlur: PosheaderCalculation.bind(
                                   //   this,
@@ -1208,6 +1227,19 @@ class PosListItems extends Component {
                   </div>
                 </div>
               </div>
+              <PreApprovalStatus
+                open={this.state.viewPreapproval}
+                onClose={this.CloseEditModel.bind(this)}
+                selected_services={this.state.medca_approval_Services}
+                item_description={this.state.item_description}
+                prescription_detail_id={this.state.prescription_detail_id}
+                insurance_provider_id={this.state.insurance_provider_id}
+                item_data={this.state.item_data}
+                pos_customer_type={this.state.pos_customer_type}
+                hims_f_pharmacy_pos_detail_id={
+                  this.state.hims_f_pharmacy_pos_detail_id
+                }
+              />
             </div>
           )}
         </MyContext.Consumer>
@@ -1240,7 +1272,8 @@ function mapDispatchToProps(dispatch) {
       getServicesCost: AlgaehActions,
       getInsuranceServicesCost: AlgaehActions,
       generateBill: AlgaehActions,
-      getItemGroup: AlgaehActions
+      getItemGroup: AlgaehActions,
+      getMedicationList: AlgaehActions
       // getItemLocationStock: AlgaehActions
     },
     dispatch

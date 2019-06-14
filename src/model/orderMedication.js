@@ -76,7 +76,8 @@ let addPatientPrescriptionBAckup = (req, res, next) => {
                 "frequency_time",
                 "insured",
                 "pre_approval",
-                "instructions"
+                "instructions",
+                "dispense"
               ];
 
               connection.query(
@@ -159,7 +160,8 @@ let addPatientPrescriptionBAckup = (req, res, next) => {
                             "patient_id",
                             "visit_id",
                             "gross_amt",
-                            "net_amount"
+                            "net_amount",
+                            "requested_quantity"
                           ];
 
                           connection.query(

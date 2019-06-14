@@ -543,6 +543,31 @@ export default class ReportUI extends Component {
             />
           );
           break;
+        case "time":
+          _controls.push(
+            <AlgaehDateHandler
+              type="time"
+              key={i}
+              singleOutput={false}
+              div={{ className: "col" }}
+              label={{
+                fieldName: _param.name,
+                forceLabel: _param.label,
+                isImp: _param.isImp !== undefined ? false : _param.isImp
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: _param.name,
+
+              }}
+              {..._param.others}
+              events={{
+                onChange: this.datePickerHandler.bind(this)
+              }}
+              value={this.state.parameterCollection[_param.name]}
+            />
+          );
+          break;
         case "search":
           _controls.push(
             <React.Fragment key={i}>
@@ -624,6 +649,7 @@ export default class ReportUI extends Component {
           );
           break;
         default:
+          console.log("_param",_param)
           _controls.push(
             <AlagehFormGroup
               key={i}

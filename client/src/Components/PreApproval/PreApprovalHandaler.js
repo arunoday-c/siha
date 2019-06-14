@@ -133,7 +133,6 @@ const CloseOrderModel = ($this, e) => {
 };
 
 const openUCAFReport = ($this, row) => {
-  
   if (row.chart_type === "N") {
     algaehApiCall({
       uri: "/ucaf/getPatientUCAF",
@@ -159,6 +158,7 @@ const openUCAFReport = ($this, row) => {
 };
 
 const getMedicationAprovalList = $this => {
+  debugger;
   let inputobj = {};
 
   if ($this.state.date !== null) {

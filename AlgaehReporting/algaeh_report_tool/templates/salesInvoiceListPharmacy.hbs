@@ -12,10 +12,10 @@
                         <th>Invoice No.</th>
                         <th>Invoice Date</th>
                         <th>Invoice Amt.</th>
-                        <th>patient_payable</th>
-                        <th>patient_tax.</th>
-                        <th>company_payable</th>
-                        <th>company_tax</th>
+                        <th>Patient Payable</th>
+                        <th>Patient Tax</th>
+                        <th>Company Payable</th>
+                        <th>Company Tax</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -35,30 +35,30 @@
                 </tbody>
             </table>
             <table class="tableTotal">
-                <tr>
-                    <td>Total Patient tax</td>
-                    <td>{{total_patient_tax}}</td>
-                    <td>الإجمالي قبل الضريبة المضافة</td>
-                </tr>
-                <tr>
-                    <td>Total patient_payable</td>
-                    <td>{{total_patient_payable}}</td>
-                    <td>الخصم</td>
-                </tr>
-                <tr>
-                    <td>Total company_tax</td>
-                    <td>{{total_company_tax}}</td>
-                    <td>نسبة التحمل</td>
-                </tr>
-                <tr>
-                    <td>Total company_payable</td>
-                    <td>{{total_company_payable}}</td>
-                    <td>المبلغ المدفوع</td>
-                </tr>
-                <tr>
+                <tr class="bold">
                     <td>Total Invoive Amt.</td>
                     <td>{{total_net_amount}}</td>
-                    <td>المبلغ المتبقي</td>
+                    <td>المبلغ الإجمالي للفاتورة</td>
+                </tr>
+                <tr>
+                    <td>Total Patient Payable</td>
+                    <td>{{total_patient_payable}}</td>
+                    <td>المجموع المريض بسبب</td>
+                </tr>
+                <tr>
+                    <td>Total Patient Tax</td>
+                    <td>{{total_patient_tax}}</td>
+                    <td>الإجمالي ضريبة المريض</td>
+                </tr>
+                <tr>
+                    <td>Total Company Payable</td>
+                    <td>{{total_company_payable}}</td>
+                    <td>المجموع الشركة المستحقة الدفع</td>
+                </tr>
+                <tr>
+                    <td>Total Company Tax</td>
+                    <td>{{total_company_tax}}</td>
+                    <td>إجمالي ضريبة الشركة</td>
                 </tr>
             </table>
         </section>

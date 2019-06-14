@@ -47,7 +47,7 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "visit",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS  full_name, patient_code, contact_number, pv.visit_code, pv.visit_date,\
+          "select SQL_CALC_FOUND_ROWS  full_name, patient_code, contact_number, nationality_id,pv.visit_code, pv.visit_date,\
           pv.patient_id, pv.hims_f_patient_visit_id, \
           pv.insured, pv.sec_insured,pv.episode_id FROM hims_f_patient,hims_f_patient_visit pv where  \
           pv.patient_id=hims_f_patient.hims_d_patient_id and pv.record_status='A' and pv.hospital_id=" +
@@ -497,6 +497,17 @@ let algaehSearchConfig = (searchName, req) => {
             insurance_id=? and {mapper} and service_type_id=4",
         orderBy: "services_id desc",
         inputSequence: ["insurance_id", "insurance_id"]
+      },
+      {
+        searchName: "pharmacyUsers",
+        searchQuery:
+          " select algaeh_d_app_user_id,employee_id,E.full_name,E.employee_code,SD.sub_department_name\
+          from algaeh_d_app_user U  inner join hims_d_employee E on U.employee_id=E.hims_d_employee_id\
+          inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\
+          where E.record_status='A' and E.hospital_id=? and SD.department_type='PH'\
+          and U.user_type in ('C','O')",
+        orderBy: "algaeh_d_app_user_id desc",
+        inputSequence: ["hospital_id"]
       }
     ]
   };

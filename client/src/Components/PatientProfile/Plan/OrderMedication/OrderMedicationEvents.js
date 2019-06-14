@@ -4,17 +4,22 @@ import Enumerable from "linq";
 import Options from "../../../../Options.json";
 
 //Text Handaler Change
-const texthandle = ($this, ctrl, e) => {
-  e = e || ctrl;
+const texthandle = ($this, e) => {
+  debugger;
+
   let name = e.name || e.target.name;
-  let value = e.value || e.target.value;
-  $this.setState({
-    [name]: value
-  });
+  let value = e.value === "" ? null : e.value || e.target.value;
+  $this.setState(
+    {
+      [name]: value
+    },
+    () => {
+      calcuateDispense($this, e);
+    }
+  );
 };
 
 const numberhandle = ($this, ctrl, e) => {
-  
   e = e || ctrl;
 
   let name = e.name;
@@ -25,16 +30,20 @@ const numberhandle = ($this, ctrl, e) => {
       type: "warning"
     });
   } else {
-    $this.setState({
-      [name]: value
-    });
+    $this.setState(
+      {
+        [name]: value
+      },
+      () => {
+        calcuateDispense($this, e);
+      }
+    );
   }
 };
 
 //Save Order
 const SaveMedication = ($this, e) => {
   if ($this.state.medicationitems.length > 0) {
-    
     let inputObj = {
       patient_id: $this.state.patient_id,
       encounter_id: $this.state.encounter_id,
@@ -76,7 +85,6 @@ const SaveMedication = ($this, e) => {
   }
 };
 const printPrescription = (that, e) => {
-  
   const _patient = Window.global["current_patient"];
   const _visit = Window.global["visit_id"];
   algaehApiCall({
@@ -195,7 +203,6 @@ const AddItems = $this => {
     $this.state.item_category_id !== null &&
     $this.state.item_group_id !== null
   ) {
-    
     let medicationitems = $this.state.medicationitems;
     let medicationobj = {
       item_id: $this.state.item_id,
@@ -211,6 +218,8 @@ const AddItems = $this => {
       item_category_id: $this.state.item_category_id,
       item_group_id: $this.state.item_group_id,
       instructions: $this.state.instructions,
+      dispense: $this.state.dispense,
+      requested_quantity: $this.state.dispense,
       insured: $this.state.insured,
       item_status: "A"
     };
@@ -231,7 +240,7 @@ const AddItems = $this => {
         secondary_network_office_id: $this.state.secondary_network_office_id
       }
     ];
-
+    debugger;
     algaehApiCall({
       uri: "/billing/getBillDetails",
       module: "billing",
@@ -246,8 +255,12 @@ const AddItems = $this => {
               ? "N"
               : data.billdetails[0].pre_approval;
           medicationobj.insured = data.billdetails[0].insurance_yesno;
-          medicationobj.gross_amt = data.billdetails[0].gross_amount;
-          medicationobj.net_amount = data.billdetails[0].net_amout;
+          medicationobj.gross_amt =
+            parseFloat(data.billdetails[0].gross_amount) *
+            parseFloat($this.state.dispense);
+          medicationobj.net_amount =
+            parseFloat(data.billdetails[0].net_amout) *
+            parseFloat($this.state.dispense);
 
           if (medicationobj.pre_approval === "Y") {
             swalMessage({
@@ -306,7 +319,6 @@ const dateFormater = value => {
 };
 
 const deleteItems = ($this, row) => {
-  
   let medicationitems = $this.state.medicationitems;
   medicationitems.splice(row.rowIdx, 1);
   let saveMedicationEnable = medicationitems.length > 0 ? false : true;
@@ -318,7 +330,6 @@ const deleteItems = ($this, row) => {
 };
 
 const updateItems = ($this, row) => {
-  
   let medicationitems = $this.state.medicationitems;
   medicationitems[row.rowId] = row;
 
@@ -330,6 +341,7 @@ const updateItems = ($this, row) => {
 
 const calcuateDispense = ($this, e) => {
   // if (e.target === null || e.target.value !== e.target.oldvalue) {
+  debugger;
   let frequency = 0;
   let frequency_type = 0;
   let dispense = 0;
@@ -430,7 +442,6 @@ const onchangegridcol = ($this, row, e) => {
 };
 
 const EditGrid = ($this, cancelRow) => {
-  
   let _medicationitems = $this.state.medicationitems;
   if (cancelRow !== undefined) {
     _medicationitems[cancelRow.rowIdx] = cancelRow;
@@ -442,7 +453,6 @@ const EditGrid = ($this, cancelRow) => {
 };
 
 const CancelGrid = ($this, cancelRow) => {
-  
   let _medicationitems = $this.state.medicationitems;
   if (cancelRow !== undefined) {
     _medicationitems[cancelRow.rowIdx] = cancelRow;
