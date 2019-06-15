@@ -94,6 +94,21 @@ let getMedicationAprovalList = (req, res, next) => {
     req.query["date(SA.created_date)"] = req.query.created_date;
     req.query["SA.doctor_id"] = req.query.doctor_id;
     req.query["SA.patient_id"] = req.query.patient_id;
+    if (req.query.item_id != null) {
+      req.query["SA.item_id"] = req.query.item_id;
+      delete req.query.item_id;
+    }
+
+    if (req.query.visit_id != null) {
+      req.query["SA.visit_id"] = req.query.visit_id;
+      delete req.query.visit_id;
+    }
+
+    if (req.query.pharmacy_pos_detail_id != null) {
+      req.query["SA.pharmacy_pos_detail_id"] = req.query.pharmacy_pos_detail_id;
+      delete req.query.pharmacy_pos_detail_id;
+    }
+
     delete req.query.created_date;
     delete req.query.doctor_id;
     delete req.query.patient_id;
@@ -115,10 +130,10 @@ let getMedicationAprovalList = (req, res, next) => {
         PAT.patient_code,PAT.full_name, refer_no, gross_amt,\
         net_amount, approved_amount, approved_no, apprv_remarks, apprv_date, rejected_reason,\
         apprv_status,SA.created_date,SA.created_by, SD.chart_type \
-        from ((hims_f_medication_approval SA inner join hims_f_patient PAT ON SA.patient_id=PAT.hims_d_patient_id) \
+        from ((hims_f_medication_approval SA left join hims_f_patient PAT ON SA.patient_id=PAT.hims_d_patient_id) \
         inner join \
-        hims_d_services SR on SR.hims_d_services_id=SA.service_id inner join \
-        hims_f_patient_visit V on V.hims_f_patient_visit_id=SA.visit_id inner join \
+        hims_d_services SR on SR.hims_d_services_id=SA.service_id left join \
+        hims_f_patient_visit V on V.hims_f_patient_visit_id=SA.visit_id left join \
         hims_d_sub_department SD on SD.hims_d_sub_department_id=V.sub_department_id) WHERE SA.record_status='A' AND " +
           where.condition,
         where.values,
@@ -163,7 +178,7 @@ let updatePreApproval = (req, res, next) => {
           "UPDATE `hims_f_service_approval` SET service_id=?, insurance_provider_id=?, insurance_network_office_id=?,\
           icd_code=?,insurance_service_name=?,doctor_id=?,patient_id=?,gross_amt=?,net_amount=?,requested_date=?,\
           requested_by=?, requested_mode=?,requested_quantity=?,submission_type=?,refer_no=?,approved_amount=?,\
-          apprv_remarks=?,apprv_date=?,rejected_reason=?, apprv_status=?, updated_date=?, updated_by=? \
+          apprv_remarks=?,apprv_date=?,rejected_reason=?, apprv_status=?, approved_no=?, updated_date=?, updated_by=? \
           where hims_f_service_approval_id=?;",
           [
             inputParam[i].service_id,
@@ -186,6 +201,7 @@ let updatePreApproval = (req, res, next) => {
             _appDate,
             inputParam[i].rejected_reason,
             inputParam[i].apprv_status,
+            inputParam[i].approved_no,
             moment().format("YYYY-MM-DD HH:mm"),
             req.userIdentity.algaeh_d_app_user_id,
             inputParam[i].hims_f_service_approval_id
@@ -227,13 +243,18 @@ let updateMedicinePreApproval = (req, res, next) => {
       for (let i = 0; i < req.body.length; i++) {
         let _appDate =
           inputParam[i].apprv_date != null ? inputParam[i].apprv_date : null;
+
+        let _requested_date =
+          inputParam[i].requested_date != null
+            ? inputParam[i].requested_date
+            : null;
         qry += mysql.format(
           "UPDATE `hims_f_medication_approval` SET requested_date=?,\
           requested_by=?, requested_mode=?,requested_quantity=?,submission_type=?,refer_no=?,approved_amount=?,\
-          apprv_remarks=?,apprv_date=?,rejected_reason=?, apprv_status=?, updated_date=?, updated_by=? \
+          apprv_remarks=?,apprv_date=?,rejected_reason=?, apprv_status=?, approved_no=?, updated_date=?, updated_by=? \
           where hims_f_medication_approval_id=?;",
           [
-            inputParam[i].requested_date,
+            _requested_date,
             req.userIdentity.algaeh_d_app_user_id,
             inputParam[i].requested_mode,
             inputParam[i].requested_quantity,
@@ -244,6 +265,7 @@ let updateMedicinePreApproval = (req, res, next) => {
             _appDate,
             inputParam[i].rejected_reason,
             inputParam[i].apprv_status,
+            inputParam[i].approved_no,
             moment().format("YYYY-MM-DD HH:mm"),
             req.userIdentity.algaeh_d_app_user_id,
             inputParam[i].hims_f_medication_approval_id

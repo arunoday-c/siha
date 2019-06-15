@@ -47,7 +47,7 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "visit",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS  full_name, patient_code, contact_number, pv.visit_code, pv.visit_date,\
+          "select SQL_CALC_FOUND_ROWS  full_name, patient_code, contact_number, nationality_id,pv.visit_code, pv.visit_date,\
           pv.patient_id, pv.hims_f_patient_visit_id, \
           pv.insured, pv.sec_insured,pv.episode_id FROM hims_f_patient,hims_f_patient_visit pv where  \
           pv.patient_id=hims_f_patient.hims_d_patient_id and pv.record_status='A' and pv.hospital_id=" +

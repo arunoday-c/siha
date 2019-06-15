@@ -6,7 +6,10 @@ import {
   getPosEntry,
   addPosEntry,
   updatePosEntry,
-  getPrescriptionPOS
+  getPrescriptionPOS,
+  cancelPosEntry,
+  insertPreApprovalOutsideCustomer,
+  updatePOSDetailForPreApproval
 } from "../models/posEntry";
 
 import { updateIntoItemLocation } from "../models/commonFunction";
@@ -55,6 +58,19 @@ export default () => {
       next();
     },
     addPosEntry,
+
+    (req, res, next) => {
+      utilities.logger().log("pos_customer_type: ", req.body.pos_customer_type);
+      utilities.logger().log("pre_approval_req: ", req.body.pre_approval_req);
+      if (
+        req.body.pos_customer_type == "OT" &&
+        req.body.pre_approval_req == "Y"
+      ) {
+        insertPreApprovalOutsideCustomer(req, res, next);
+      } else {
+        next();
+      }
+    },
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
@@ -103,6 +119,23 @@ export default () => {
     addReceiptEntry,
     updatePosEntry,
     updateIntoItemLocation,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+  api.put("/cancelPosEntry", cancelPosEntry, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+  api.put(
+    "/updatePOSDetailForPreApproval",
+    updatePOSDetailForPreApproval,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,

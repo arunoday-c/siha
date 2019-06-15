@@ -29,7 +29,7 @@ module.exports = {
             PH.company_tax,PH.company_payable,PH.comments,PH.sec_company_responsibility,PH.sec_company_tax,\
             PH.sec_company_payable,PH.sec_copay_amount,PH.net_tax,PH.gross_total,PH.sheet_discount_amount,\
             PH.sheet_discount_percentage,PH.net_amount,PH.credit_amount,PH.balance_credit,PH.receiveable_amount,\
-            PH.posted,PH.insurance_yesno,PH.card_number,PH.effective_start_date,PH.effective_end_date,\
+            PH.posted,PH.cancelled,PH.insurance_yesno,PH.card_number,PH.effective_start_date,PH.effective_end_date,\
             PH.insurance_provider_id,INS.insurance_provider_name,ISB.insurance_sub_name as sub_insurance_provider_name,\
             PH.sub_insurance_provider_id,PH.network_id,PH.network_type,PH.network_office_id,PH.policy_number,\
             PH.secondary_card_number,PH.secondary_effective_start_date,PH.secondary_effective_end_date,\
@@ -250,7 +250,10 @@ module.exports = {
                 "sec_copay_amount",
                 "sec_company_responsibility",
                 "sec_company_tax",
-                "sec_company_payable"
+                "sec_company_payable",
+                "prescribed_qty",
+                "prescription_detail_id",
+                "pre_approval"
               ];
 
               utilities
@@ -283,6 +286,12 @@ module.exports = {
                       next();
                     });
                   } else {
+                    req.records = {
+                      pos_number: pos_number,
+                      hims_f_pharmacy_pos_header_id: headerResult.insertId,
+                      year: year,
+                      period: period
+                    };
                     next();
                   }
                 })
@@ -608,7 +617,8 @@ module.exports = {
                     qtyhand: s.qtyhand,
 
                     item_category_id: ItemcatrgoryGroup.item_category_id,
-                    item_group_id: ItemcatrgoryGroup.item_group_id
+                    item_group_id: ItemcatrgoryGroup.item_group_id,
+                    prescribed_qty: ItemcatrgoryGroup.dispense
                   }
                 };
               })
@@ -748,7 +758,10 @@ module.exports = {
                   qtyhand: 0,
                   expiry_date: null,
                   insured: item_details.insured,
-                  pre_approval: item_details.pre_approval
+                  pre_approval: item_details.pre_approval,
+                  prescribed_qty: item_details.dispense,
+                  item_description: s.item_description,
+                  prescription_detail_id: item_details.prescription_detail_id
                 };
               })
               .FirstOrDefault();
@@ -773,6 +786,154 @@ module.exports = {
 
           req.records = outputArray;
           next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+
+  cancelPosEntry: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    try {
+      const utilities = new algaehUtilities();
+      utilities.logger().log("updatePosEntry: ");
+
+      _mysql
+        .executeQuery({
+          query:
+            "UPDATE `hims_f_pharmacy_pos_header` SET cancelled=?, `updated_by`=?,\
+            `updated_date`=? WHERE `hims_f_pharmacy_pos_header_id`=?",
+          values: [
+            "Y",
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.body.hims_f_pharmacy_pos_header_id
+          ],
+          printQuery: true
+        })
+        .then(headerResult => {
+          _mysql.releaseConnection();
+          req.records = headerResult;
+          next();
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+
+  updatePOSDetailForPreApproval: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    try {
+      const utilities = new algaehUtilities();
+      utilities.logger().log("updatePosEntry: ");
+
+      _mysql
+        .executeQuery({
+          query:
+            "UPDATE `hims_f_pharmacy_pos_detail` SET `pre_approval`=?, `insurance_yesno`=?\
+             WHERE `hims_f_pharmacy_pos_detail_id`=?",
+          values: [
+            req.body.pre_approval,
+            req.body.insurance_yesno,
+            req.body.hims_f_pharmacy_pos_detail_id
+          ],
+          printQuery: true
+        })
+        .then(headerResult => {
+          _mysql.releaseConnection();
+          req.records = headerResult;
+          next();
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+
+  insertPreApprovalOutsideCustomer: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    try {
+      const utilities = new algaehUtilities();
+      utilities.logger().log("insertPreApprovalOutsideCustomer: ");
+      let pos_number = req.records.pos_number;
+      _mysql
+        .executeQuery({
+          query:
+            "SELECT H.patient_name, H.insurance_provider_id, H.sub_insurance_provider_id as sub_insurance_id,\
+             H.network_id,H.network_office_id as insurance_network_office_id, \
+             D.hims_f_pharmacy_pos_detail_id as pharmacy_pos_detail_id, D.item_id, D.service_id,\
+             D.extended_cost as gross_amt,D.net_extended_cost as net_amount,D.quantity as requested_quantity, IM.item_description as insurance_service_name \
+             from hims_f_pharmacy_pos_header H, hims_f_pharmacy_pos_detail D, hims_d_item_master IM where\
+             H.hims_f_pharmacy_pos_header_id=D.pharmacy_pos_header_id and\
+             D.item_id=IM.hims_d_item_master and H.pos_number=? and D.pre_approval='Y' ",
+          values: [pos_number],
+          printQuery: true
+        })
+        .then(headerResult => {
+          if (headerResult.length != 0) {
+            let IncludeValues = [
+              "pharmacy_pos_detail_id",
+              "patient_name",
+              "item_id",
+              "service_id",
+              "requested_quantity",
+              "insurance_service_name",
+              "gross_amt",
+              "net_amount",
+              "insurance_provider_id",
+              "sub_insurance_id",
+              "network_id",
+              "insurance_network_office_id"
+            ];
+            _mysql
+              .executeQuery({
+                query: "INSERT INTO hims_f_medication_approval(??) VALUES ?",
+                values: headerResult,
+                includeValues: IncludeValues,
+                extraValues: {
+                  created_by: req.userIdentity.algaeh_d_app_user_id,
+                  updated_by: req.userIdentity.algaeh_d_app_user_id,
+                  created_date: new Date(),
+                  updated_date: new Date(),
+                  hospital_id: req.userIdentity.hospital_id
+                },
+                bulkInsertOrUpdate: true,
+                printQuery: true
+              })
+              .then(detailResult => {
+                utilities.logger().log("detailResult: ", detailResult);
+
+                _mysql.releaseConnection();
+                req.records = detailResult;
+                next();
+              })
+              .catch(error => {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                });
+              });
+          } else {
+            _mysql.releaseConnection();
+            req.preapproval = headerResult;
+            next();
+          }
         })
         .catch(error => {
           _mysql.releaseConnection();

@@ -1195,13 +1195,15 @@ export default [
               minDate: null
             }
           },
-          // {
-          //   type: "time",
-          //   name: "from_time",
-          //   label: "From Time",
-          //   isImp: true,
-          //   others: {}
-          // },
+          {
+            type: "time",
+            name: "from_time",
+            label: "From Time",
+            isImp: true,
+            others: {
+              min:"00.00",
+              max:"11.59"}
+          },
           {
             type: "date",
             name: "to_date",
@@ -1211,13 +1213,17 @@ export default [
               minDate: null
             }
           },
-          // {
-          //   type: "time",
-          //   name: "to_time",
-          //   label: "To Time",
-          //   isImp: true,
-          //   others: {}
-          // },
+          {
+            type: "time",
+            name: "to_time",
+            label: "To Time",
+            isImp: true,
+            others: {
+             // value:"00.00"
+              // min:"00.00",
+              // max:"11.59"
+            }
+          },
           {
             type: "dropdown",
             name: "hospital_id",
@@ -1263,20 +1269,20 @@ export default [
               valueField: "value",
               data: FORMAT_PAYTYPE
             }
+          },
+          {
+            type: "dropdown",
+            name: "cashier_id",
+            initialLoad: true,
+            label: "Select User/Employee",
+            link: {
+              uri: "/gloabelSearch/newSearch"
+            },
+            dataSource: {
+              textField: "full_name",
+              valueField: "algaeh_d_app_user_id"
+            }
           }
-          // {
-          //   type: "dropdown",
-          //   name: "cashier_id",
-          //   initialLoad: true,
-          //   label: "Select User/Employee",
-          //   link: {
-          //     uri: "/gloabelSearch/newSearch"
-          //   },
-          //   dataSource: {
-          //     textField: "full_name",
-          //     valueField: "algaeh_d_app_user_id"
-          //   }
-          // }
         ]
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },

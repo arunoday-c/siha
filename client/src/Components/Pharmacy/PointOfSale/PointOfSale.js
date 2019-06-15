@@ -18,7 +18,8 @@ import {
   closePopup,
   POSSearch,
   PostPosEntry,
-  nationalityhandle
+  nationalityhandle,
+  CancelPosEntry
 } from "./PointOfSaleEvents";
 // getCtrlCode,
 import "./PointOfSale.css";
@@ -469,6 +470,19 @@ class PointOfSale extends Component {
                 <button
                   type="button"
                   className="btn btn-default"
+                  onClick={CancelPosEntry.bind(this, this)}
+                  disabled={this.state.saveEnable}
+                >
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Cancel",
+                      returnText: true
+                    }}
+                  />
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-default"
                   onClick={PostPosEntry.bind(this, this)}
                   disabled={this.state.postEnable}
                 >
@@ -499,34 +513,36 @@ class PointOfSale extends Component {
                     label={{ forceLabel: "Previous Bill", returnText: true }}
                   />
                 </button>
-                {this.state.InvoiceEnable === true ? (
-                  <div>
-                    <button
-                      onClick={this.generateReport.bind(
-                        this,
-                        "posCashInvoice",
-                        "Cash Invoice"
-                      )}
-                      className="btn btn-other"
-                      style={{ float: "left" }}
-                    >
-                      Cash Invoice
-                    </button>
-
-                    {this.state.insured === "Y" ? (
+                {this.state.posCancelled === false ? (
+                  this.state.InvoiceEnable === true ? (
+                    <div>
                       <button
-                        className="btn btn-other  "
                         onClick={this.generateReport.bind(
                           this,
-                          "posCreditInvoice",
-                          "Credit Invoice"
+                          "posCashInvoice",
+                          "Cash Invoice"
                         )}
+                        className="btn btn-other"
                         style={{ float: "left" }}
                       >
-                        Credit Invoice
+                        Cash Invoice
                       </button>
-                    ) : null}
-                  </div>
+
+                      {this.state.insured === "Y" ? (
+                        <button
+                          className="btn btn-other  "
+                          onClick={this.generateReport.bind(
+                            this,
+                            "posCreditInvoice",
+                            "Credit Invoice"
+                          )}
+                          style={{ float: "left" }}
+                        >
+                          Credit Invoice
+                        </button>
+                      ) : null}
+                    </div>
+                  ) : null
                 ) : null}
               </div>
             </div>
