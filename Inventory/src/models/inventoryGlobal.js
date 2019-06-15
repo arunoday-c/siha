@@ -98,7 +98,7 @@ module.exports = {
     }
   },
 
-  getItemLocationStock: (req, res, next) => {
+  getItemLocationStockBcakUp: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
       _mysql
@@ -232,14 +232,17 @@ module.exports = {
     utilities.logger().log("updateInventoryItemMaster: ");
 
     try {
+      const utilities = new algaehUtilities();
       let inputParam = req.body;
       let execute_query = "";
+
+      utilities.logger().log("updateItemMaster: ", inputParam);
 
       for (let i = 0; i < inputParam.inventory_stock_detail.length; i++) {
         _mysql
           .executeQuery({
             query:
-              "select batch_no, item_code from `hims_d_inventory_item_master` WHERE `hims_d_inventory_item_master_id`=?",
+              "select item_code from `hims_d_inventory_item_master` WHERE `hims_d_inventory_item_master_id`=?",
             values: [inputParam.inventory_stock_detail[i].item_id],
             printQuery: true
           })
@@ -276,9 +279,9 @@ module.exports = {
               next();
             }
           })
-          .catch(e => {
+          .catch(error => {
             _mysql.releaseConnection();
-            next(e);
+            next(error);
           });
       }
     } catch (e) {

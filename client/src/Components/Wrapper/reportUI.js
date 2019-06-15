@@ -71,6 +71,21 @@ export default class ReportUI extends Component {
             })
             .toArray()
         );
+        
+       
+       Enumerable.from(props.options.plotUI.paramters)
+          .where(w => w.value !== undefined)
+         .select(s => {
+           if (s.type === "date" || s.type === "time") {
+             this.state.parameterCollection[s.name] = moment(s.value,s.type==="time"?"HH:mm":"YYYY-MM-DD")._d ;
+           } else {
+              this.state.parameterCollection[s.name] =  s.value;
+           }
+            return {
+              [s.name] : s.value
+            }
+          }).toArray();
+        
       }
     }
   }
@@ -482,7 +497,7 @@ export default class ReportUI extends Component {
     } = require("./algaehWrapper");
     for (let i = 0; i < _parameters.length; i++) {
       const _param = _parameters[i];
-
+      const _className = _param.className===undefined ? "col":_param.className;
       switch (_param.type) {
         case "dropdown":
           const _data =
@@ -495,7 +510,7 @@ export default class ReportUI extends Component {
           _controls.push(
             <AlagehAutoComplete
               key={i}
-              div={{ className: "col" }}
+              div={{ className: _className}}
               label={{
                 fieldName: _param.name,
                 forceLabel: _param.label,
@@ -521,11 +536,12 @@ export default class ReportUI extends Component {
           );
           break;
         case "date":
+         
           _controls.push(
             <AlgaehDateHandler
               key={i}
               singleOutput={false}
-              div={{ className: "col" }}
+              div={{ className: _className }}
               label={{
                 fieldName: _param.name,
                 forceLabel: _param.label,
@@ -549,7 +565,7 @@ export default class ReportUI extends Component {
               type="time"
               key={i}
               singleOutput={false}
-              div={{ className: "col" }}
+              div={{ className:_className }}
               label={{
                 fieldName: _param.name,
                 forceLabel: _param.label,
@@ -572,7 +588,7 @@ export default class ReportUI extends Component {
           _controls.push(
             <React.Fragment key={i}>
               <AlagehFormGroup
-                div={{ className: "col" }}
+                div={{ className: _className }}
                 label={{
                   fieldName: _param.name,
                   forceLabel: _param.label,
@@ -649,11 +665,10 @@ export default class ReportUI extends Component {
           );
           break;
         default:
-          console.log("_param",_param)
           _controls.push(
             <AlagehFormGroup
               key={i}
-              div={{ className: "col" }}
+              div={{ className: _className }}
               label={{
                 fieldName: _param.name,
                 forceLabel: _param.label,
@@ -711,10 +726,6 @@ export default class ReportUI extends Component {
             </div>
             <div />
             <div>
-              {/* {console.log(
-                "this.props.options.plotUI",
-                this.props.options.plotUI
-              )} */}
               {this.props.options !== undefined &&
               this.props.options.plotUI !== undefined ? (
                 <React.Fragment>
@@ -748,7 +759,7 @@ export default class ReportUI extends Component {
               style={{ minHeight: "30vh" }}
             >
               {/*}*/}
-              {console.log("this.props", this.props)}
+              
               {this.props.options !== undefined &&
               this.props.options.report !== undefined &&
               this.props.options.report.requireIframe === true ? (

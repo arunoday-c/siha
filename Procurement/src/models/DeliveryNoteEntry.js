@@ -196,22 +196,6 @@ module.exports = {
           let dn_entry_detail = [];
 
           for (let i = 0; i < input.po_entry_detail.length; i++) {
-            if (input.dn_from == "PHR") {
-              updateItemMaster({
-                pharmacy_stock_detail: input.po_entry_detail[i].dn_entry_detail,
-                _mysql: _mysql,
-                req: req,
-                next: next
-              });
-            } else {
-              updateInventoryItemMaster({
-                inventory_stock_detail:
-                  input.po_entry_detail[i].dn_entry_detail,
-                _mysql: _mysql,
-                req: req,
-                next: next
-              });
-            }
             _mysql
               .executeQuery({
                 query:
@@ -306,6 +290,21 @@ module.exports = {
                   })
                   .then(subResult => {
                     if (i == input.po_entry_detail.length - 1) {
+                      if (input.dn_from == "PHR") {
+                        updateItemMaster({
+                          pharmacy_stock_detail: input.pharmacy_stock_detail,
+                          _mysql: _mysql,
+                          req: req,
+                          next: next
+                        });
+                      } else {
+                        updateInventoryItemMaster({
+                          inventory_stock_detail: input.inventory_stock_detail,
+                          _mysql: _mysql,
+                          req: req,
+                          next: next
+                        });
+                      }
                       // req.connection = {
                       //   connection: _mysql.connection,
                       //   isTransactionConnection:
@@ -732,7 +731,7 @@ function updateInventoryItemMaster(options) {
         _mysql
           .executeQuery({
             query:
-              "select batch_no, item_code from `hims_d_inventory_item_master` WHERE `hims_d_inventory_item_master_id`=?",
+              "select item_code from `hims_d_inventory_item_master` WHERE `hims_d_inventory_item_master_id`=?",
             values: [inventory_stock_detail[i].item_id],
             printQuery: true
           })

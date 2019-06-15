@@ -343,16 +343,22 @@ const onChangeTextEventHandaler = ($this, context, e) => {
 };
 
 const onDateTextEventHandaler = ($this, context, ctrl, e) => {
-  let item_details = $this.state.item_details;
+  let inRange =
+    moment(ctrl).isAfter(2000, "year") && moment(ctrl).isBefore(moment());
 
-  item_details[e] = moment(ctrl)._d;
-  if (Date.parse(moment(ctrl)._d) < Date.parse(new Date())) {
+  if (inRange) {
     swalMessage({
       title: "Expiry date cannot be past Date.",
       type: "warning"
     });
+    $this.setState({
+      [e]: null
+    });
   } else {
-    // row[e] = moment(ctrl)._d;
+    let item_details = $this.state.item_details;
+
+    item_details[e] = moment(ctrl)._d;
+
     $this.setState({
       [e]: moment(ctrl)._d,
       append: !$this.state.append,
@@ -377,17 +383,23 @@ const OnChangeDeliveryQty = ($this, context, e) => {
 
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
+  debugger;
 
-  let delivery_quantity = _.sumBy($this.state.dn_entry_detail, s =>
-    parseFloat(s.dn_quantity)
-  );
+  const latest_added = _.filter($this.state.dn_entry_detail, f => {
+    return f.item_id == item_details.item_id;
+  });
+
+  let delivery_quantity = _.sumBy(latest_added, s => parseFloat(s.dn_quantity));
+
+  let entered_dn_quantity =
+    $this.state.po_entry_detail[$this.state.selected_row_index].dn_quantity;
 
   item_details.quantity_recieved_todate =
     item_details.quantity_recieved_todate === 0
       ? 0
       : item_details.quantity_recieved_todate;
   let quantity_recieved_todate =
-    item_details.quantity_recieved_todate + parseFloat(value);
+    parseFloat(entered_dn_quantity) + parseFloat(value);
   if (value !== "") {
     if (quantity_recieved_todate > parseFloat(item_details.po_quantity)) {
       swalMessage({
@@ -421,7 +433,7 @@ const OnChangeDeliveryQty = ($this, context, e) => {
       item_details["quantity_outstanding"] =
         parseFloat(item_details.po_quantity) -
         parseFloat(item_details.quantity_recieved_todate) -
-        delivery_quantity -
+        parseFloat(delivery_quantity) -
         parseFloat(value);
 
       item_details["extended_price"] = parseFloat(extended_price);
@@ -508,16 +520,24 @@ const AddtoList = ($this, context) => {
       parseFloat(s.discount_amount)
     );
 
-    let delivery_quantity = _.sumBy(dn_entry_detail, s =>
+    const latest_added = _.filter(dn_entry_detail, f => {
+      return f.item_id == _item_details.item_id;
+    });
+    // _.find(
+    //   dn_entry_detail,
+    //   f => f.item_id == _item_details.item_id
+    // );
+    let delivery_quantity = _.sumBy(latest_added, s =>
       parseFloat(s.dn_quantity)
     );
     item_details.dn_quantity = delivery_quantity;
 
     _po_entry_detail[$this.state.selected_row_index] = item_details;
 
-    _po_entry_detail[$this.state.selected_row_index].dn_entry_detail = [
+    delete _item_details.dn_entry_detail;
+    _po_entry_detail[$this.state.selected_row_index].dn_entry_detail.push(
       _item_details
-    ];
+    );
 
     $this.setState({
       dn_entry_detail: dn_entry_detail,

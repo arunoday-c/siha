@@ -38,7 +38,7 @@ const numberchangeTexts = ($this, e) => {
 
 const salesPriceEvent = ($this, e) => {
   let name = e.name || e.target.name;
-  let value = e.value || e.target.value;
+  let value = e.value === "" ? null : e.value || e.target.value;
 
   $this.setState({ [name]: value });
 };

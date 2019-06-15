@@ -236,7 +236,7 @@ function getItemLocationStock($this, context, value) {
     module: "inventory",
     method: "GET",
     data: {
-      location_id: value.location_id,
+      inventory_location_id: value.location_id,
       item_id: value.item_id
     },
     onSuccess: response => {

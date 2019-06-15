@@ -120,7 +120,7 @@ module.exports = {
               insurance_provider_id, sub_insurance_provider_id, network_id, network_type, network_office_id, policy_number, \
               secondary_card_number, secondary_effective_start_date, secondary_effective_end_date, secondary_insurance_provider_id,\
               secondary_network_id, secondary_network_type, secondary_sub_insurance_provider_id, secondary_network_office_id, \
-              posted,reciept_id,created_date,created_by,updated_date,updated_by,hospital_id=?) \
+              posted,reciept_id,created_date,created_by,updated_date,updated_by,hospital_id) \
           VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
               values: [
                 sales_return_number,

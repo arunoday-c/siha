@@ -50,9 +50,6 @@ const getCtrlCode = ($this, docNumber) => {
       } else {
         data.postEnable = false;
       }
-      // if (data.visit_id !== null) {
-      //   data.case_type = "OP";
-      // }
 
       data.addedItem = true;
       $this.setState(data, () => {});
@@ -67,6 +64,7 @@ const ClearData = ($this, e) => {
 };
 
 const SaveRequisitionEntry = $this => {
+  AlgaehLoader({ show: true });
   algaehApiCall({
     uri: "/inventoryrequisitionEntry/addinventoryrequisitionEntry",
     module: "inventory",
@@ -85,30 +83,19 @@ const SaveRequisitionEntry = $this => {
           type: "success"
         });
       }
+      AlgaehLoader({ show: false });
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
     }
   });
 };
 
 const AuthorizeRequisitionEntry = ($this, authorize) => {
-  
-  // const auth_qty = _.filter(
-  //   $this.state.inventory_stock_detail,
-  //   f => {
-  //     return (
-  //       f.quantity_authorized === 0 ||
-  //       f.quantity_authorized === null
-  //     );
-  //   }
-  // );
-
-  // if(auth_qty.length > 0){
-  //   swalMessage({
-  //     title: "Please enter Quantity Authorized ..",
-  //     type: "warning"
-  //   });
-  //   return
-  // }
-
   let authorize1 = "";
   let authorize2 = "";
   if (authorize === "authorize1") {
@@ -120,6 +107,7 @@ const AuthorizeRequisitionEntry = ($this, authorize) => {
     authorize1 = "Y";
     authorize2 = "Y";
   }
+  AlgaehLoader({ show: true });
 
   algaehApiCall({
     uri: "/inventoryrequisitionEntry/updateinventoryrequisitionEntry",
@@ -138,6 +126,14 @@ const AuthorizeRequisitionEntry = ($this, authorize) => {
           type: "success"
         });
       }
+      AlgaehLoader({ show: false });
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
     }
   });
 };
@@ -155,13 +151,6 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
       });
       $this.setState({ [name]: null });
     } else {
-      // let requistion_type = "";
-
-      // if (e.selected.location_type === "MS") {
-      //   requistion_type = "MR";
-      // } else if (e.selected.location_type === "SS") {
-      //   requistion_type = "MR";
-      // }
       $this.setState({
         [name]: value,
         from_location_type: e.selected.location_type,

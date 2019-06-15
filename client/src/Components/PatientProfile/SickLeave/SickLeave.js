@@ -7,8 +7,6 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 import moment from "moment";
 import {
   AlgaehDateHandler,
-  AlagehAutoComplete,
-  AlgaehDataGrid,
   AlgaehLabel,
   AlagehFormGroup,
   AlgaehModalPopUp
@@ -102,10 +100,9 @@ class SickLeave extends Component {
   };
 
   PrintSickLeave() {
-    const that = this;
     algaehApiCall({
       uri: "/doctorsWorkBench/addSickLeave",
-      data: that.state,
+      data: this.state,
       method: "POST",
       onSuccess: response => {
         if (response.data.success) {

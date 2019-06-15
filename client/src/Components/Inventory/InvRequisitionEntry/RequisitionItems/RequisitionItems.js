@@ -200,28 +200,6 @@ class RequisitionItems extends Component {
                       <AlagehFormGroup
                         div={{ className: "col" }}
                         label={{
-                          forceLabel: "To Qty In Hand"
-                        }}
-                        textBox={{
-                          number: {
-                            allowNegative: false,
-                            thousandSeparator: ","
-                          },
-                          className: "txt-fld",
-                          name: "to_qtyhand",
-                          value: this.state.to_qtyhand,
-                          events: {
-                            onChange: null
-                          },
-                          others: {
-                            disabled: true
-                          }
-                        }}
-                      />
-
-                      <AlagehFormGroup
-                        div={{ className: "col" }}
-                        label={{
                           forceLabel: "From Qty In Hand"
                         }}
                         textBox={{
@@ -232,6 +210,27 @@ class RequisitionItems extends Component {
                           className: "txt-fld",
                           name: "from_qtyhand",
                           value: this.state.from_qtyhand,
+                          events: {
+                            onChange: null
+                          },
+                          others: {
+                            disabled: true
+                          }
+                        }}
+                      />
+                      <AlagehFormGroup
+                        div={{ className: "col" }}
+                        label={{
+                          forceLabel: "To Qty In Hand"
+                        }}
+                        textBox={{
+                          number: {
+                            allowNegative: false,
+                            thousandSeparator: ","
+                          },
+                          className: "txt-fld",
+                          name: "to_qtyhand",
+                          value: this.state.to_qtyhand,
                           events: {
                             onChange: null
                           },
@@ -284,9 +283,11 @@ class RequisitionItems extends Component {
                                 );
                               },
                               others: {
-                                minWidth: this.state.requisition_auth === true ? 0 : 50,
-                                style:{
-                                  padding: this.state.requisition_auth === true ? 0 : 5
+                                minWidth:
+                                  this.state.requisition_auth === true ? 0 : 50,
+                                style: {
+                                  padding:
+                                    this.state.requisition_auth === true ? 0 : 5
                                 }
                               }
                             },

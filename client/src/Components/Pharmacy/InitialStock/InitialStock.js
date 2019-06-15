@@ -396,6 +396,7 @@ class InitialStock extends Component {
                       },
                       others: {
                         autoComplete: "off"
+                        // type: "number"
                       }
                     }}
                   />
@@ -416,6 +417,7 @@ class InitialStock extends Component {
                       },
                       others: {
                         autoComplete: "off"
+                        // type: "number"
                       }
                     }}
                   />
