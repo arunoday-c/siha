@@ -11,6 +11,7 @@ import {
   AlgaehLabel,
   AlgaehModalPopUp
 } from "./Wrapper/algaehWrapper";
+import ButtonType from "./Wrapper/algaehButton";
 class Experiment extends Component {
   constructor(props) {
     super(props);
@@ -49,6 +50,16 @@ class Experiment extends Component {
         Kill the connections by clicking on this button
         <br />
         <br />
+        <ButtonType
+          label={{
+            fieldName: "btn_clear",
+            forceLabel: "Clear All",
+            returnText: true
+          }}
+          reportparam={{
+            reportname: "Cash Receipt"
+          }}
+        />
         <button
           className="btn btn-primary"
           //style={{ marginLeft: "200px", marginRight: "auto" }}
@@ -101,7 +112,6 @@ class Experiment extends Component {
                 }
               },
               onSuccess: res => {
-                
                 const url = URL.createObjectURL(res.data);
                 const link = document.createElement("a");
                 link.setAttribute("href", url);
@@ -272,8 +282,6 @@ class Experiment extends Component {
                 }
               },
               onSuccess: res => {
-                
-
                 const url = URL.createObjectURL(res.data);
                 let myWindow = window.open(
                   "{{ product.metafields.google.custom_label_0 }}",

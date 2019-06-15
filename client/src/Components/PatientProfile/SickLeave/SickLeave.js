@@ -34,7 +34,6 @@ class SickLeave extends Component {
   }
 
   getSickLeave() {
-    
     algaehApiCall({
       uri: "/doctorsWorkBench/getSickLeave",
       method: "GET",
@@ -43,7 +42,6 @@ class SickLeave extends Component {
         visit_id: this.state.visit_id
       },
       onSuccess: response => {
-        
         let data = response.data.records[0];
         if (response.data.success) {
           this.setState({ ...data });
@@ -59,7 +57,6 @@ class SickLeave extends Component {
   }
 
   datehandle(ctrl, e) {
-    
     let days = 0;
     let fromDate = null;
     let toDate = null;
@@ -105,14 +102,13 @@ class SickLeave extends Component {
   };
 
   PrintSickLeave() {
+    const that = this;
     algaehApiCall({
       uri: "/doctorsWorkBench/addSickLeave",
-      data: this.state,
+      data: that.state,
       method: "POST",
       onSuccess: response => {
         if (response.data.success) {
-          
-
           algaehApiCall({
             uri: "/report",
             method: "GET",
@@ -127,15 +123,15 @@ class SickLeave extends Component {
                 reportParams: [
                   {
                     name: "patient_id",
-                    value: this.state.patient_id
+                    value: Window.global["current_patient"]
                   },
                   {
                     name: "visit_id",
-                    value: this.state.visit_id
+                    value: Window.global["visit_id"]
                   },
                   {
                     name: "episode_id",
-                    value: this.state.episode_id
+                    value: Window.global["episode_id"]
                   }
                 ],
                 outputFileType: "PDF"

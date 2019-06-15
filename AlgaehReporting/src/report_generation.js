@@ -234,7 +234,6 @@ module.exports = {
     const _mysql = new algaehMysql();
     try {
       const _inputParam = JSON.parse(input.report);
-
       _mysql
         .executeQuery({
           query:
@@ -407,10 +406,9 @@ module.exports = {
                         _mysql.releaseConnection();
                         merge(_reportOutput, _rOut, error => {
                           if (error) {
-                            res.writeHead(400, {
-                              "Content-Type": "text/plain"
-                            });
-                            res.end(JSON.stringify(error));
+                            res
+                              .status(400)
+                              .send({ error: JSON.stringify(error) });
                           } else {
                             fs.exists(_rOut, exists => {
                               if (exists) {
@@ -432,10 +430,9 @@ module.exports = {
                                 });
                                 _fs.pipe(res);
                               } else {
-                                res.writeHead(400, {
-                                  "Content-Type": "text/plain"
-                                });
-                                res.end("ERROR File does not exist");
+                                res
+                                  .status(400)
+                                  .send({ error: "ERROR File does not exist" });
                               }
                             });
                           }
@@ -454,10 +451,9 @@ module.exports = {
                             });
                             _fs.pipe(res);
                           } else {
-                            res.writeHead(400, {
-                              "Content-Type": "text/plain"
-                            });
-                            res.end("ERROR File does not exist");
+                            res
+                              .status(400)
+                              .send({ error: "ERROR File does not exist" });
                           }
                         });
                       }
@@ -496,8 +492,7 @@ module.exports = {
                 })
                 .catch(error => {
                   _mysql.releaseConnection();
-                  res.writeHead(400, { "Content-Type": "text/plain" });
-                  res.end(error);
+                  res.status(400).send({ error: JSON.stringify(error) });
                 });
             }
           } else {
@@ -507,13 +502,11 @@ module.exports = {
         })
         .catch(error => {
           _mysql.releaseConnection();
-          res.writeHead(400, { "Content-Type": "text/plain" });
-          res.end(error);
+          res.status(400).send({ error: JSON.stringify(error) });
         });
     } catch (e) {
       _mysql.releaseConnection();
-      res.writeHead(400, { "Content-Type": "text/plain" });
-      res.end(e);
+      res.status(400).send({ error: JSON.stringify(e) });
     }
   },
   getReportMultiPrint: async (req, res, next) => {
