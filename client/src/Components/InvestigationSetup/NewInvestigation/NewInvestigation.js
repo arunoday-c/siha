@@ -69,6 +69,7 @@ class NewInvestigation extends PureComponent {
       this.setState({ ...this.state, ...IOputs });
     } else {
       let IOputs = InvestigationIOputs.inputParam();
+      IOputs.InvestigationtypeEnable = false;
       this.setState({ ...this.state, ...IOputs });
     }
   }
@@ -114,7 +115,7 @@ class NewInvestigation extends PureComponent {
                       },
                       others: {
                         disabled: this.state.InvestigationtypeEnable,
-                              tabIndex: "1"
+                        tabIndex: "1"
                       },
                       onChange: texthandle.bind(this, this)
                     }}
@@ -133,8 +134,9 @@ class NewInvestigation extends PureComponent {
                       value: this.state.description,
                       events: {
                         onChange: texthandle.bind(this, this)
-                      }, others:{
-                     tabIndex: "2"
+                      },
+                      others: {
+                        tabIndex: "2"
                       }
                     }}
                   />
@@ -157,8 +159,9 @@ class NewInvestigation extends PureComponent {
                         valueField: "hims_d_services_id",
                         data: this.props.ingservices
                       },
-                      onChange: texthandle.bind(this, this), others:{
-                     tabIndex: "3"
+                      onChange: texthandle.bind(this, this),
+                      others: {
+                        tabIndex: "3"
                       }
                     }}
                   />

@@ -55,7 +55,8 @@ export default class RadTemplate extends PureComponent {
             onClose: this.onClose.bind(this)
           }}
           title="Radiology Template Editor"
-          openPopup={this.props.openTemplate}>
+          openPopup={this.props.openTemplate}
+        >
           {/* <div className="popupInner">
               <div className="col-12 popRightDiv"> */}
           <MyContext.Consumer>
@@ -119,15 +120,20 @@ export default class RadTemplate extends PureComponent {
                       <div className="col-lg-8">
                         <button
                           className="btn btn-primary"
-                          disabled={!this.state.template_name && !this.state.template_html ? true : false}
-                          onClick={saveTemplate.bind(this, this, context)}>
+                          disabled={
+                            !this.state.template_name ||
+                            !this.state.template_html
+                          }
+                          onClick={saveTemplate.bind(this, this, context)}
+                        >
                           Save
                         </button>
                         <button
                           className="btn btn-default"
                           onClick={e => {
                             this.onClose(e);
-                          }}>
+                          }}
+                        >
                           Close
                         </button>
                       </div>
