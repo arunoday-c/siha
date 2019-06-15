@@ -229,6 +229,24 @@ class InvTransferEntry extends Component {
             {/* Patient code */}
             <div className="col">
               <div className="row">
+
+                <div className="col-2">
+                  <label>Transfer Type</label>
+                  <div className="customCheckbox" style={{ borderBottom: 0 }}>
+                    <label className="checkbox" style={{ color: "#212529" }}>
+                      <input
+                        type="checkbox"
+                        name="direct_transfer"
+                        checked={
+                          this.state.direct_transfer === "Y" ? true : false
+                        }
+                        onChange={checkBoxEvent.bind(this, this)}
+                        disabled={this.state.dataExists}
+                      />
+                      <span>Direct Transfer</span>
+                    </label>
+                  </div>
+                </div>
                 <AlagehAutoComplete
                   div={{ className: "col-2" }}
                   label={{ forceLabel: "From Location" }}
@@ -263,24 +281,6 @@ class InvTransferEntry extends Component {
                         : "Sub Store"
                       : "From Location Type"}
                   </h6>
-                </div>
-
-                <div className="col-2">
-                  <label>Transfer Type</label>
-                  <div className="customCheckbox" style={{ borderBottom: 0 }}>
-                    <label className="checkbox" style={{ color: "#212529" }}>
-                      <input
-                        type="checkbox"
-                        name="direct_transfer"
-                        checked={
-                          this.state.direct_transfer === "Y" ? true : false
-                        }
-                        onChange={checkBoxEvent.bind(this, this)}
-                        disabled={this.state.dataExists}
-                      />
-                      <span>Direct Transfer</span>
-                    </label>
-                  </div>
                 </div>
  <div className="col-6">
                 {this.state.direct_transfer === "N" ? (

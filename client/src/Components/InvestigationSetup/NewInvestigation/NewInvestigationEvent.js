@@ -3,7 +3,7 @@ import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 const texthandle = ($this, ctrl, e) => {
   e = e || ctrl;
   let name = e.name || e.target.name;
-  let value = e.value || e.target.value;
+  let value = e.value === "" ? null : e.value || e.target.value;
 
   $this.setState({
     [name]: value
@@ -77,7 +77,6 @@ const Validations = $this => {
   }
 };
 const InsertLabTest = ($this, e) => {
-  
   const err = Validations($this);
 
   if (!err) {

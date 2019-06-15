@@ -7,14 +7,12 @@ import {
   AlagehFormGroup,
   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehAutoComplete,
   AlgaehModalPopUp
 } from "../../../Wrapper/algaehWrapper";
 import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import _ from "lodash";
 import {
-  texthandle,
   selectItemHandeler,
   ProcessService,
   deleteServices,
@@ -29,9 +27,7 @@ import "./OrderConsumables.css";
 import "../../../../styles/site.css";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import { getCookie } from "../../../../utils/algaehApiCall";
-import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
-import moment from "moment";
 class OrderConsumables extends Component {
   constructor(props) {
     super(props);

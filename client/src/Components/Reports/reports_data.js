@@ -1187,6 +1187,7 @@ export default [
         requireIframe: true,
         reportParameters: [
           {
+            className: "col-2",
             type: "date",
             name: "from_date",
             isImp: true,
@@ -1200,12 +1201,10 @@ export default [
             name: "from_time",
             label: "From Time",
             isImp: true,
-            others: {
-              min: "00.00",
-              max: "11.59"
-            }
+            value: "00:00"
           },
           {
+            className: "col-2",
             type: "date",
             name: "to_date",
             isImp: true,
@@ -1219,13 +1218,10 @@ export default [
             name: "to_time",
             label: "To Time",
             isImp: true,
-            others: {
-              // value:"00.00"
-              // min:"00.00",
-              // max:"11.59"
-            }
+            value: "23:59"
           },
           {
+            className: "col-2",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -1264,6 +1260,7 @@ export default [
             }
           },
           {
+            className: "col-2",
             type: "dropdown",
             name: "location_id",
 
@@ -1283,6 +1280,7 @@ export default [
             }
           },
           {
+            className: "col-2",
             type: "dropdown",
             name: "pay_type",
             initialLoad: true,
@@ -1296,6 +1294,7 @@ export default [
             }
           },
           {
+            className: "col-2",
             type: "dropdown",
             name: "cashier_id",
 
@@ -1317,6 +1316,7 @@ export default [
         requireIframe: true,
         reportParameters: [
           {
+            className: "col-2",
             type: "date",
             name: "from_date",
             isImp: true,
@@ -1326,6 +1326,7 @@ export default [
             }
           },
           {
+            className: "col-2",
             type: "date",
             name: "to_date",
             isImp: true,
@@ -1335,6 +1336,7 @@ export default [
             }
           },
           {
+            className: "col-2",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -1350,6 +1352,7 @@ export default [
             }
           },
           {
+            className: "col-2",
             type: "dropdown",
             name: "location_id",
             initialLoad: true,
