@@ -1374,6 +1374,70 @@ export default [
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
+        subitem: "List of Sales Return",
+        reportName: "salesReturnListPharmacy",
+        template_name: "salesReturnListPharmacy",
+        requireIframe: true,
+        reportParameters: [
+          {
+            className:"col-2",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+            {
+            className:"col-2",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            className:"col-2",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Select branch",
+            link: {
+              uri: "/organization/getOrganization"
+            },
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            }
+          },
+          {
+            className:"col-2",
+            type: "dropdown",
+            name: "location_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Select Location",
+            link: {
+              uri: "/pharmacy/getPharmacyLocation",
+              module: "pharmacy",
+              data: {
+                allow_pos: "Y"
+              }
+            },
+            dataSource: {
+              textField: "location_description",
+              valueField: "hims_d_pharmacy_location_id"
+            }
+          },
+        ]
+        //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
+      },
+      {
         subitem: "Daily Collection - Consolidated",
         template_name: "dailyCollectionPharmacy",
         reportParameters: [
