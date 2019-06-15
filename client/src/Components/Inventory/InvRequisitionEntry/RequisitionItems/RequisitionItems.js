@@ -335,7 +335,7 @@ class RequisitionItems extends Component {
                                       : ""}
                                   </span>
                                 );
-                              }
+                              },others:{minWidth:150}
                             },
 
                             {
@@ -380,7 +380,7 @@ class RequisitionItems extends Component {
                                       : ""}
                                   </span>
                                 );
-                              }
+                              },others:{minWidth:250}
                             },
 
                             {
@@ -425,7 +425,7 @@ class RequisitionItems extends Component {
                                       : ""}
                                   </span>
                                 );
-                              }
+                              },others:{minWidth:150}
                             },
 
                             {

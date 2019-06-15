@@ -399,7 +399,10 @@ class POItemList extends Component {
                                       : ""}
                                   </span>
                                 );
-                              }
+                              },
+                        others:{
+                          minWidth:150
+                        }
                             },
 
                             {
@@ -471,7 +474,10 @@ class POItemList extends Component {
                                       : ""}
                                   </span>
                                 );
-                              }
+                              },
+                        others:{
+                          minWidth:250
+                        }
                             },
                             {
                               fieldName:
@@ -558,7 +564,7 @@ class POItemList extends Component {
                               fieldName: "total_quantity",
                               label: (
                                 <AlgaehLabel
-                                  label={{ forceLabel: "Total Quantity" }}
+                                  label={{ forceLabel: "Total Qty" }}
                                 />
                               ),
                               disabled: true
@@ -567,7 +573,7 @@ class POItemList extends Component {
                               fieldName: "extended_price",
                               label: (
                                 <AlgaehLabel
-                                  label={{ forceLabel: "Extended Price" }}
+                                  label={{ forceLabel: "Ext. Price" }}
                                 />
                               ),
                               disabled: true
@@ -606,13 +612,16 @@ class POItemList extends Component {
                                     }}
                                   />
                                 );
+                              },
+                              others: {
+                                minWidth:100
                               }
                             },
                             {
                               fieldName: "sub_discount_amount",
                               label: (
                                 <AlgaehLabel
-                                  label={{ forceLabel: "Discount Amount" }}
+                                  label={{ forceLabel: "Discount Amt." }}
                                 />
                               ),
                               editorTemplate: row => {
@@ -648,7 +657,7 @@ class POItemList extends Component {
                               fieldName: "net_extended_cost",
                               label: (
                                 <AlgaehLabel
-                                  label={{ forceLabel: "Net Extended Cost" }}
+                                  label={{ forceLabel: "Net Ext Cost" }}
                                 />
                               ),
                               disabled: true
@@ -668,7 +677,7 @@ class POItemList extends Component {
                               label: (
                                 <AlgaehLabel
                                   label={{
-                                    forceLabel: "Expected Arrival Date"
+                                    forceLabel: "Exp Arrival Date"
                                   }}
                                 />
                               ),
@@ -691,6 +700,9 @@ class POItemList extends Component {
                                     )}
                                   </span>
                                 );
+                              },
+                              others: {
+                                minWidth:130
                               }
                             },
 
@@ -698,7 +710,7 @@ class POItemList extends Component {
                               fieldName: "authorize_quantity",
                               label: (
                                 <AlgaehLabel
-                                  label={{ forceLabel: "Authorize Quantity" }}
+                                  label={{ forceLabel: "Auth Qty" }}
                                 />
                               ),
                               editorTemplate: row => {
@@ -733,18 +745,21 @@ class POItemList extends Component {
                               label: (
                                 <AlgaehLabel
                                   label={{
-                                    forceLabel: "Quantity Outstanding"
+                                    forceLabel: "Outstanding Qty"
                                   }}
                                 />
                               ),
-                              disabled: true
+                              disabled: true,
+                              others: {
+                                minWidth:130
+                              }
                             },
                             {
                               fieldName: "rejected_quantity",
                               label: (
                                 <AlgaehLabel
                                   label={{
-                                    forceLabel: "Rejected Quantity"
+                                    forceLabel: "Rejected Qty"
                                   }}
                                 />
                               ),
@@ -754,7 +769,7 @@ class POItemList extends Component {
                               fieldName: "tax_amount",
                               label: (
                                 <AlgaehLabel
-                                  label={{ forceLabel: "Tax Amount" }}
+                                  label={{ forceLabel: "Tax Amt" }}
                                 />
                               ),
                               disabled: true
@@ -764,7 +779,7 @@ class POItemList extends Component {
                               fieldName: "total_amount",
                               label: (
                                 <AlgaehLabel
-                                  label={{ forceLabel: "Total Amount" }}
+                                  label={{ forceLabel: "Total Amt" }}
                                 />
                               ),
                               disabled: true
