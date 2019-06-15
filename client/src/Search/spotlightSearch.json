@@ -169,6 +169,10 @@
       {
         "fieldName": "posted",
         "label": "Posted"
+      },
+      {
+        "fieldName": "cancelled",
+        "label": "Cancelled"
       }
     ]
   },

@@ -218,7 +218,7 @@ class ItemMaster extends Component {
                           type: "number"
                         },
                         events: {
-                          onChange: texthandle.bind(this, this)
+                          onChange: numberEventHandaler.bind(this, this)
                         }
                       }}
                     />

@@ -355,7 +355,6 @@ class InitialStock extends Component {
                       isImp: this.state.required_batchno === "N" ? true : false
                     }}
                     textBox={{ className: "txt-fld", name: "expiry_date" }}
-                    minDate={new Date()}
                     events={{
                       onChange: datehandle.bind(this, this)
                     }}

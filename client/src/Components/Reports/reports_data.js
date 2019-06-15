@@ -3,7 +3,8 @@ import {
   LEAVE_STATUS,
   MONTHS,
   RECEIPT_TYPE,
-  LOCAL_TYPE
+  LOCAL_TYPE,
+  FORMAT_PAYTYPE
 } from "../../utils/GlobalVariables.json";
 import { getYears } from "../../utils/GlobalFunctions";
 import { algaehApiCall } from "../../utils/algaehApiCall";
@@ -1193,13 +1194,15 @@ export default [
               maxDate: new Date(),
               minDate: null
             }
-          },{
+          },
+          {
             type: "time",
             name: "from_time",
             label: "From Time",
             isImp: true,
             others: {
-            }
+              min:"00.00",
+              max:"11.59"}
           },
           {
             type: "date",
@@ -1209,12 +1212,16 @@ export default [
               maxDate: new Date(),
               minDate: null
             }
-          },{
+          },
+          {
             type: "time",
             name: "to_time",
             label: "To Time",
             isImp: true,
             others: {
+             // value:"00.00"
+              // min:"00.00",
+              // max:"11.59"
             }
           },
           {
@@ -1234,45 +1241,46 @@ export default [
           },
           {
             type: "dropdown",
-            name: "employee_group_id",
-            initialLoad: true,
-            label: "Select Location",
-            link: {
-              uri: "/hrsettings/getEmployeeGroups",
-              module: "hrManagement"
-            },
-            dataSource: {
-              textField: "group_description",
-              valueField: "hims_d_employee_group_id"
-            }
-          },
-          {
-            type: "dropdown",
-            name: "hospital_id",
+            name: "location_id",
             initialLoad: true,
             isImp: true,
-            label: "Receipt Type",
+            label: "Select Location",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/pharmacy/getPharmacyLocation",
+              module: "pharmacy",
+              data: {
+                allow_pos: "Y"
+              }
             },
             dataSource: {
-              textField: "hospital_name",
-              valueField: "hims_d_hospital_id",
-              data: undefined
+              textField: "location_description",
+              valueField: "hims_d_pharmacy_location_id"
             }
           },
           {
             type: "dropdown",
-            name: "employee_group_id",
+            name: "pay_type",
+            initialLoad: true,
+            isImp: false,
+            label: "Receipt Type",
+            link: {},
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: FORMAT_PAYTYPE
+            }
+          },
+          {
+            type: "dropdown",
+            name: "cashier_id",
             initialLoad: true,
             label: "Select User/Employee",
             link: {
-              uri: "/hrsettings/getEmployeeGroups",
-              module: "hrManagement"
+              uri: "/gloabelSearch/newSearch"
             },
             dataSource: {
-              textField: "group_description",
-              valueField: "hims_d_employee_group_id"
+              textField: "full_name",
+              valueField: "algaeh_d_app_user_id"
             }
           }
         ]
@@ -1293,10 +1301,14 @@ export default [
               minDate: null
             }
           },
-          {
-            type:"time",
+            {
+            type: "date",
             name: "to_date",
-            isImp: true
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
           },
           {
             type: "dropdown",
@@ -1315,18 +1327,22 @@ export default [
           },
           {
             type: "dropdown",
-            name: "employee_group_id",
+            name: "location_id",
             initialLoad: true,
-            label: "Select Pharmacy Location",
+            isImp: true,
+            label: "Select Location",
             link: {
-              uri: "/hrsettings/getEmployeeGroups",
-              module: "hrManagement"
+              uri: "/pharmacy/getPharmacyLocation",
+              module: "pharmacy",
+              data: {
+                allow_pos: "Y"
+              }
             },
             dataSource: {
-              textField: "group_description",
-              valueField: "hims_d_employee_group_id"
+              textField: "location_description",
+              valueField: "hims_d_pharmacy_location_id"
             }
-          }
+          },
         ]
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
@@ -1422,7 +1438,7 @@ export default [
       // }
     ]
   },
-  
+
   {
     name: "Insurance",
     submenu: [

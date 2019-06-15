@@ -119,7 +119,7 @@ export default class RadTemplate extends PureComponent {
                       <div className="col-lg-8">
                         <button
                           className="btn btn-primary"
-                          disabled={!this.state.template_name ? true : false}
+                          disabled={!this.state.template_name && !this.state.template_html ? true : false}
                           onClick={saveTemplate.bind(this, this, context)}>
                           Save
                         </button>

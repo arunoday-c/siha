@@ -73,11 +73,9 @@ const getItemUom = $this => {
 };
 
 const itemchangeText = ($this, e) => {
-  
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   getItemUom($this);
-  
 
   $this.setState({
     [name]: value,
@@ -170,10 +168,16 @@ const AddItems = $this => {
 };
 
 const datehandle = ($this, ctrl, e) => {
-  if (Date.parse(moment(ctrl)._d) < Date.parse(new Date())) {
+  let inRange =
+    moment(ctrl).isAfter(2000, "year") && moment(ctrl).isBefore(moment());
+
+  if (inRange) {
     swalMessage({
       title: "Expiry date cannot be past Date.",
       type: "warning"
+    });
+    $this.setState({
+      [e]: null
     });
   } else {
     $this.setState({
@@ -225,15 +229,12 @@ const SaveInitialStock = $this => {
   $this.state.transaction_type = "INT";
   $this.state.transaction_date = $this.state.docdate;
 
-  
   for (let i = 0; i < $this.state.pharmacy_stock_detail.length; i++) {
     $this.state.pharmacy_stock_detail[i].net_total =
       $this.state.pharmacy_stock_detail[i].extended_cost;
 
     $this.state.pharmacy_stock_detail[i].operation = "+";
   }
-
-  
 
   algaehApiCall({
     uri: "/initialstock/addPharmacyInitialStock",

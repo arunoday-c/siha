@@ -102,7 +102,7 @@ module.exports = {
 
     try {
       let input = req.body;
-      utilities.logger().log("input: ", input);
+      // utilities.logger().log("input: ", input);
 
       let year = moment().format("YYYY");
 

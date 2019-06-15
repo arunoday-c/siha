@@ -26,7 +26,6 @@ export default () => {
   api.post(
     "/addInventoryInitialStock",
     generateNumber,
-    updateInventoryItemMaster,
     addInventoryInitialStock,
     updateIntoInvItemLocation,
     (req, res, next) => {
