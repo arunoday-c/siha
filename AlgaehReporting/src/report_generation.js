@@ -268,9 +268,9 @@ module.exports = {
                 if (_params != undefined) {
                   _value.push(_params.value);
                 }
-                if (_inputOrders[i] == "hospital_id") {
-                  _value.push(_inputParam["hospital_id"]);
-                }
+                // if (_inputOrders[i] == "hospital_id") {
+                //   _value.push(_inputParam["hospital_id"]);
+                // }
               }
               let queryObject = {
                 query: _data.report_query,

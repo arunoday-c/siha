@@ -31,7 +31,8 @@ import {
   updateItemStorage,
   updateItemMasterAndUom,
   updateLocationPermission,
-  getItemMasterWithSalesPrice
+  getItemMasterWithSalesPrice,
+  getPharmacyUsers
 } from "../models/pharmacy";
 
 const { addServices } = algaehPath(
@@ -265,6 +266,12 @@ export default () => {
       });
     }
   );
+  api.get("/getPharmacyUsers", getPharmacyUsers, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
 
   return api;
 };

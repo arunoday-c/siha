@@ -1187,7 +1187,7 @@ export default [
         requireIframe: true,
         reportParameters: [
           {
-            className:"col-2",
+            className: "col-2",
             type: "date",
             name: "from_date",
             isImp: true,
@@ -1201,10 +1201,10 @@ export default [
             name: "from_time",
             label: "From Time",
             isImp: true,
-            value:"00:00"
+            value: "00:00"
           },
           {
-            className:"col-2",
+            className: "col-2",
             type: "date",
             name: "to_date",
             isImp: true,
@@ -1218,10 +1218,10 @@ export default [
             name: "to_time",
             label: "To Time",
             isImp: true,
-            value:"23:59"
+            value: "23:59"
           },
           {
-            className:"col-2",
+            className: "col-2",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -1234,19 +1234,17 @@ export default [
               onChange: (reportState, currentEvent) => {
                 //provider_id_list CONTROL NAME AND APPEND BY _LIST
                 algaehApiCall({
-                  url: "/pharmacy/getPharmacyUsers",
+                  uri: "/pharmacy/getPharmacyUsers",
                   module: "pharmacy",
-                  method: "get",
-                  data:{hospital_id:currentEvent.value},
-                  
-                  onSuccess: (result) => {
-                    console.log();
+                  method: "GET",
+                  data: { hospital_id: currentEvent.value },
+
+                  onSuccess: result => {
                     reportState.setState({
-                      cashier_id_list: currentEvent.selected.doctors
+                      cashier_id_list: result.data.records
                     });
-                    
                   }
-                })
+                });
               },
               onClear: (reportState, currentName) => {
                 reportState.setState({
@@ -1262,9 +1260,10 @@ export default [
             }
           },
           {
-            className:"col-2",
+            className: "col-2",
             type: "dropdown",
             name: "location_id",
+
             initialLoad: true,
             isImp: true,
             label: "Select Location",
@@ -1281,7 +1280,7 @@ export default [
             }
           },
           {
-            className:"col-2",
+            className: "col-2",
             type: "dropdown",
             name: "pay_type",
             initialLoad: true,
@@ -1295,17 +1294,16 @@ export default [
             }
           },
           {
-            className:"col-2",
+            className: "col-2",
             type: "dropdown",
             name: "cashier_id",
-            initialLoad: true,
+
             label: "Select User/Employee",
-            link: {
-              uri: "/gloabelSearch/newSearch"
-            },
+
             dataSource: {
               textField: "full_name",
-              valueField: "algaeh_d_app_user_id"
+              valueField: "algaeh_d_app_user_id",
+              data: []
             }
           }
         ]
@@ -1318,7 +1316,7 @@ export default [
         requireIframe: true,
         reportParameters: [
           {
-            className:"col-2",
+            className: "col-2",
             type: "date",
             name: "from_date",
             isImp: true,
@@ -1327,8 +1325,8 @@ export default [
               minDate: null
             }
           },
-            {
-            className:"col-2",
+          {
+            className: "col-2",
             type: "date",
             name: "to_date",
             isImp: true,
@@ -1338,7 +1336,7 @@ export default [
             }
           },
           {
-            className:"col-2",
+            className: "col-2",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -1354,7 +1352,7 @@ export default [
             }
           },
           {
-            className:"col-2",
+            className: "col-2",
             type: "dropdown",
             name: "location_id",
             initialLoad: true,
@@ -1371,7 +1369,7 @@ export default [
               textField: "location_description",
               valueField: "hims_d_pharmacy_location_id"
             }
-          },
+          }
         ]
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
