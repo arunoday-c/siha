@@ -128,12 +128,12 @@ const SaveTransferEntry = $this => {
       $this.state.inventory_stock_detail[i].grnno;
 
     $this.state.inventory_stock_detail[i].net_total =
-      $this.state.inventory_stock_detail[i].unit_cost *
-      $this.state.inventory_stock_detail[i].quantity_transfer;
+      parseFloat($this.state.inventory_stock_detail[i].unit_cost) *
+      parseFloat($this.state.inventory_stock_detail[i].quantity_transfer);
 
     $this.state.inventory_stock_detail[i].extended_cost =
-      $this.state.inventory_stock_detail[i].unit_cost *
-      $this.state.inventory_stock_detail[i].quantity_transfer;
+      parseFloat($this.state.inventory_stock_detail[i].unit_cost) *
+      parseFloat($this.state.inventory_stock_detail[i].quantity_transfer);
   }
 
   delete $this.state.item_details;

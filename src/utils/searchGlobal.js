@@ -391,7 +391,7 @@ let algaehSearchConfig = (searchName, req) => {
         searchQuery:
           "select SQL_CALC_FOUND_ROWS IM.hims_d_item_master_id, IM.item_description, IM.category_id, IM.sales_uom_id,\
           IM.service_id, IM.group_id, IC.category_desc, IE.generic_name,\
-          IG.group_description, PU.uom_description,SR.standard_fee,IL.sale_price from hims_d_item_master IM,\
+          IG.group_description, PU.uom_description,SR.standard_fee,IL.sale_price,IL.avgcost from hims_d_item_master IM,\
           hims_d_item_category IC, hims_d_item_generic IE, hims_d_item_group IG, hims_d_pharmacy_uom PU,\
           hims_d_services SR, hims_m_item_location IL where IL.item_id = IM.hims_d_item_master_id and\
           IM.category_id = IC.hims_d_item_category_id and IM.group_id = IG.hims_d_item_group_id and \
@@ -438,7 +438,7 @@ let algaehSearchConfig = (searchName, req) => {
         searchName: "tranitemmaster",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS IM.hims_d_inventory_item_master_id, IM.item_description, IM.category_id, IM.sales_uom_id, IM.service_id, IM.group_id, IC.category_desc, IG.group_description, PU.uom_description,\
-          SR.standard_fee,IL.sale_price from hims_d_inventory_item_master IM, hims_d_inventory_tem_category IC,\
+          SR.standard_fee,IL.sale_price,IL.avgcost from hims_d_inventory_item_master IM, hims_d_inventory_tem_category IC,\
           hims_d_inventory_item_group IG, hims_d_inventory_uom PU, hims_d_services SR, \
           hims_m_inventory_item_location IL where IL.item_id = IM.hims_d_inventory_item_master_id and \
           IM.category_id = IC.hims_d_inventory_tem_category_id and IM.group_id = IG.hims_d_inventory_item_group_id\

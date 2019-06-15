@@ -114,8 +114,8 @@ module.exports = {
                 from_location_id, expiration_date,required_date,requested_by,on_hold, to_location_id, \
                 to_location_type, description, comment, is_completed, completed_date, completed_lines,requested_lines, \
                 purchase_created_lines,status,requistion_type,no_of_transfers,no_of_po, authorize1,authorize1_date, \
-                authorize1_by,authorie2,authorize2_date,authorize2_by,cancelled, cancelled_by,cancelled_date) \
-            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                authorize1_by,authorie2,authorize2_date,authorize2_by,cancelled, cancelled_by,cancelled_date,hospital_id) \
+            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
               values: [
                 material_requisition_number,
                 new Date(),
@@ -148,7 +148,8 @@ module.exports = {
                 input.authorize2_by,
                 input.cancelled,
                 input.cancelled_by,
-                input.cancelled_date
+                input.cancelled_date,
+                req.userIdentity.hospital_id
               ],
               printQuery: true
             })

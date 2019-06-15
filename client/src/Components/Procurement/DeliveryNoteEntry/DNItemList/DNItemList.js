@@ -273,7 +273,7 @@ class DNItemList extends Component {
 
                       <div className="col">
                         <button
-                          class="btn btn-default"
+                          className="btn btn-default"
                           style={{
                             marginTop: 19
                           }}

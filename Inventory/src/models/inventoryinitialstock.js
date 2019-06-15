@@ -56,7 +56,7 @@ module.exports = {
                 query:
                   "select SD.`hims_f_inventory_stock_detail_id`, SD.`inventory_stock_header_id`, SD.`item_id`, SD.`location_type`, SD.`location_id`, \
                 SD.`item_category_id`, SD.`item_group_id`, SD.`uom_id`, SD.`barcode`, SD.`batchno`, SD.`expiry_date`, SD.`grn_number`, SD.`quantity`, \
-                SD.`conversion_fact`, SD.`unit_cost`, SD.`extended_cost`, SD.`sales_uom`, SD.`comment`, SD.`created_date`, SD.`created_by`, \
+                SD.`conversion_fact`, SD.`unit_cost`,SD.sales_price, SD.`extended_cost`, SD.`sales_uom`, SD.`comment`, SD.`created_date`, SD.`created_by`, \
                 SD.`updated_date`, SD.`updated_by`, SD.`record_status`, IM.item_code, IM.item_description, IU.uom_description, SD.vendor_batchno from \
                 hims_f_inventory_stock_detail SD, hims_d_inventory_item_master IM ,hims_d_inventory_uom IU where SD.inventory_stock_header_id=? and \
                 SD.record_status='A'  and SD.item_id = IM.hims_d_inventory_item_master_id and SD.uom_id = IU.hims_d_inventory_uom_id",
@@ -148,7 +148,8 @@ module.exports = {
             "conversion_fact",
             "unit_cost",
             "extended_cost",
-            "comment"
+            "comment",
+            "sales_price"
           ];
 
           _mysql

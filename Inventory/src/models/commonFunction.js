@@ -46,7 +46,7 @@ let updateIntoInvItemLocation = (req, res, next) => {
           last_purchase_cost: s.last_purchase_cost || 0,
           grn_id: s.grn_id || 0,
           grnno: s.grn_number,
-          sale_price: s.sale_price || 0,
+          sale_price: s.sales_price || 0,
           sales_uom: s.sales_uom,
           mrp_price: s.mrp_price || 0,
           transaction_type: req.body.transaction_type,

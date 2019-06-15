@@ -128,7 +128,6 @@ const numberchangeTexts = ($this, context, e) => {
 };
 
 const datehandle = ($this, ctrl, e) => {
-  
   $this.setState({
     [e]: moment(ctrl)._d
   });
@@ -313,6 +312,7 @@ const ClearData = ($this, e) => {
 };
 
 const SavePOEnrty = $this => {
+  AlgaehLoader({ show: true });
   if ($this.state.po_from === "PHR") {
     $this.state.po_entry_detail = $this.state.pharmacy_stock_detail;
   } else {
@@ -337,6 +337,14 @@ const SavePOEnrty = $this => {
           title: "Saved successfully . ."
         });
       }
+      AlgaehLoader({ show: false });
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
     }
   });
 };
@@ -505,6 +513,7 @@ const AuthorizePOEntry = $this => {
       type: "warning"
     });
   } else {
+    AlgaehLoader({ show: true });
     if ($this.state.po_from === "PHR") {
       $this.state.po_entry_detail = $this.state.pharmacy_stock_detail;
     } else {
@@ -526,6 +535,14 @@ const AuthorizePOEntry = $this => {
             type: "success"
           });
         }
+        AlgaehLoader({ show: false });
+      },
+      onFailure: error => {
+        AlgaehLoader({ show: false });
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
       }
     });
   }

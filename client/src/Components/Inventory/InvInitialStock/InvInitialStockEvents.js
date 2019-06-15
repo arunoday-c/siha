@@ -63,7 +63,7 @@ const itemchangeText = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   getItemUom($this);
-  
+
   $this.setState({
     [name]: value,
     item_category_id: e.selected.category_id,
@@ -71,7 +71,9 @@ const itemchangeText = ($this, e) => {
     uom_id: e.selected.stocking_uom_id,
     sales_uom: e.selected.sales_uom_id,
     required_batchno: e.selected.required_batchno_expiry,
-    item_code: e.selected.item_code
+    item_code: e.selected.item_code,
+    unit_cost: e.selected.purchase_cost,
+    sales_price: e.selected.standard_fee
   });
 };
 
@@ -99,7 +101,6 @@ const AddItems = $this => {
         });
         document.querySelector("[name='unit_cost']").focus();
       } else {
-        
         let inventory_stock_detail = $this.state.inventory_stock_detail;
 
         let itemObj = {
@@ -111,6 +112,7 @@ const AddItems = $this => {
           uom_id: $this.state.uom_id,
           sales_uom: $this.state.sales_uom,
           vendor_batchno: $this.state.vendor_batchno,
+          sales_price: $this.state.sales_price,
           expiry_date: $this.state.expiry_date,
           quantity: $this.state.quantity,
           unit_cost: $this.state.unit_cost,
@@ -137,6 +139,7 @@ const AddItems = $this => {
           quantity: 0,
           unit_cost: 0,
           uom_id: null,
+          sales_price: 0,
           conversion_fact: null,
           extended_cost: 0,
           saveEnable: false,
@@ -149,10 +152,16 @@ const AddItems = $this => {
 };
 
 const datehandle = ($this, ctrl, e) => {
-  if (Date.parse(moment(ctrl)._d) < Date.parse(new Date())) {
+  let inRange =
+    moment(ctrl).isAfter(2000, "year") && moment(ctrl).isBefore(moment());
+
+  if (inRange) {
     swalMessage({
       title: "Expiry date cannot be past Date.",
       type: "warning"
+    });
+    $this.setState({
+      [e]: null
     });
   } else {
     $this.setState({
@@ -160,7 +169,6 @@ const datehandle = ($this, ctrl, e) => {
     });
   }
 };
-
 const dateFormater = value => {
   if (value !== null) {
     return String(moment(value).format(Options.dateFormat));
@@ -324,6 +332,13 @@ const printBarcode = ($this, row, e) => {
     }
   });
 };
+const salesPriceEvent = ($this, ctrl, e) => {
+  e = e || ctrl;
+  let name = e.name || e.target.name;
+  let value = e.value === "" ? null : e.value || e.target.value;
+
+  $this.setState({ [name]: value });
+};
 
 export {
   changeTexts,
@@ -338,5 +353,6 @@ export {
   deleteInitialStock,
   ClearData,
   PostInitialStock,
-  printBarcode
+  printBarcode,
+  salesPriceEvent
 };

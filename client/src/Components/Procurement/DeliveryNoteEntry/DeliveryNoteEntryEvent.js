@@ -201,8 +201,8 @@ const PurchaseOrderSearch = ($this, e) => {
                   data.po_entry_detail[i].po_quantity =
                     data.po_entry_detail[i].authorize_quantity;
 
-                  data.po_entry_detail[i].dn_quantity =
-                    data.po_entry_detail[i].quantity_outstanding;
+                  // data.po_entry_detail[i].dn_quantity =
+                  //   data.po_entry_detail[i].quantity_outstanding;
 
                   data.po_entry_detail[i].quantity_recieved_todate =
                     data.po_entry_detail[i].authorize_quantity -
@@ -221,6 +221,8 @@ const PurchaseOrderSearch = ($this, e) => {
                     data.hims_f_procurement_po_header_id;
                   data.po_entry_detail[i].purchase_order_detail_id =
                     data.po_entry_detail[i].hims_f_procurement_po_detail_id;
+
+                  data.po_entry_detail[i].dn_entry_detail = [];
                 }
 
                 // data.purchase_detail = data.po_entry_detail;
@@ -251,19 +253,48 @@ const ClearData = ($this, e) => {
 };
 
 const SaveDNEnrty = $this => {
+  AlgaehLoader({ show: true });
   const batchExpiryDate = Enumerable.from($this.state.receipt_entry_detail)
     .where(w => w.expiry_date === null)
     .toArray();
 
   let InputObj = extend({}, $this.state);
+  debugger;
   for (var i = 0; i < InputObj.po_entry_detail.length; i++) {
     if ($this.state.dn_from === "PHR") {
-      InputObj.pharmacy_stock_detail =
-        InputObj.po_entry_detail[i].dn_entry_detail;
+      debugger;
+      if (
+        InputObj.pharmacy_stock_detail === undefined ||
+        InputObj.pharmacy_stock_detail.length === 0
+      ) {
+        InputObj.pharmacy_stock_detail =
+          InputObj.po_entry_detail[i].dn_entry_detail;
+      } else {
+        InputObj.pharmacy_stock_detail = InputObj.pharmacy_stock_detail.concat(
+          InputObj.po_entry_detail[i].dn_entry_detail
+        );
+        // InputObj.pharmacy_stock_detail.push(
+        //   InputObj.po_entry_detail[i].dn_entry_detail
+        // );
+      }
       // delete InputObj.po_entry_detail[i].dn_entry_detail;
     } else {
-      InputObj.inventory_stock_detail =
-        InputObj.po_entry_detail[i].dn_entry_detail;
+      if (
+        InputObj.inventory_stock_detail === undefined ||
+        InputObj.inventory_stock_detail.length === 0
+      ) {
+        InputObj.inventory_stock_detail =
+          InputObj.po_entry_detail[i].dn_entry_detail;
+      } else {
+        InputObj.inventory_stock_detail = InputObj.inventory_stock_detail.concat(
+          InputObj.po_entry_detail[i].dn_entry_detail
+        );
+        // InputObj.inventory_stock_detail.push(
+        //   InputObj.po_entry_detail[i].dn_entry_detail
+        // );
+      }
+      // InputObj.inventory_stock_detail =
+      //   InputObj.po_entry_detail[i].dn_entry_detail;
       // delete InputObj.po_entry_detail[i].dn_entry_detail;
     }
   }
@@ -337,6 +368,7 @@ const SaveDNEnrty = $this => {
       InputObj.inventory_stock_detail[i].operation = "+";
     }
   }
+  delete InputObj.dn_entry_detail;
 
   if (batchExpiryDate.length === 0) {
     algaehApiCall({
@@ -357,11 +389,20 @@ const SaveDNEnrty = $this => {
             title: "Saved successfully . ."
           });
         }
+        AlgaehLoader({ show: false });
+      },
+      onFailure: error => {
+        AlgaehLoader({ show: false });
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
       }
     });
   } else {
+    AlgaehLoader({ show: false });
     swalMessage({
-      title: "Please enter Batch No. and Expiry Date.",
+      title: "Please enter Expiry Date.",
       type: "warning"
     });
   }

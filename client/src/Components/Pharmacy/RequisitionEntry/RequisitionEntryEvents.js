@@ -67,7 +67,7 @@ const ClearData = ($this, e) => {
 };
 
 const SaveRequisitionEntry = $this => {
-  
+  AlgaehLoader({ show: true });
   algaehApiCall({
     uri: "/requisitionEntry/addrequisitionEntry",
     module: "pharmacy",
@@ -86,6 +86,14 @@ const SaveRequisitionEntry = $this => {
           type: "success"
         });
       }
+      AlgaehLoader({ show: false });
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
     }
   });
 };
@@ -102,6 +110,7 @@ const AuthorizeRequisitionEntry = ($this, authorize) => {
     authorize1 = "Y";
     authorize2 = "Y";
   }
+  AlgaehLoader({ show: true });
 
   algaehApiCall({
     uri: "/requisitionEntry/updaterequisitionEntry",
@@ -120,6 +129,14 @@ const AuthorizeRequisitionEntry = ($this, authorize) => {
           type: "success"
         });
       }
+      AlgaehLoader({ show: false });
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
     }
   });
 };
@@ -138,7 +155,6 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
       });
       $this.setState({ [name]: null });
     } else {
-
       $this.setState({
         [name]: value,
         [type]: e.selected.location_type,
