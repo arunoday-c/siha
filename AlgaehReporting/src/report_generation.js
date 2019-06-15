@@ -250,7 +250,7 @@ module.exports = {
         .then(data => {
           _inputParam["hospital_id"] = req.userIdentity["hospital_id"];
 
-          // console.log("input:", _inputParam);
+          //console.log("input:", _inputParam);
           const _reportCount = data[0].length;
           if (_reportCount > 0) {
             let _reportOutput = [];
@@ -272,6 +272,7 @@ module.exports = {
                 //   _value.push(_inputParam["hospital_id"]);
                 // }
               }
+
               let queryObject = {
                 query: _data.report_query,
                 values: _value,
@@ -283,9 +284,11 @@ module.exports = {
                   printQuery: true
                 };
               }
+
               _mysql
                 .executeQuery(queryObject)
                 .then(result => {
+                  //console.log("result", result);
                   const _path = path.join(
                     process.cwd(),
                     "algaeh_report_tool/templates/Output",
