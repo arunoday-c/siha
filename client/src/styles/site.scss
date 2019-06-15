@@ -828,8 +828,9 @@ textarea {
 */
 .algaeh-datePicker {
   position: relative;
-
   input[type="date"],
+  input[type="time"],
+  input[type="datetime-local"],
   input[type="month"],
   input[type="year"] {
     padding: 4px 0px 3px 3px;
@@ -855,7 +856,20 @@ textarea {
     background-size: 60%;
   }
 
+  input[type="time"]::-webkit-calendar-picker-indicator,  input[type="datetime-local"]::-webkit-calendar-picker-indicator{
+    color: rgba(0, 0, 0, 0);
+    opacity: 1;
+    display: block;
+    background: url(../assets/svg/clock-regular.svg) no-repeat center;
+    width: 12px;
+    height: 15px;
+    border-width: thin;
+    background-size: 60%;
+  }
+
   input[type="date"]:disabled,
+  input[type="time"]:disabled,
+  input[type="datetime-local"]:disabled,
   input[type="month"]:disabled,
   input[type="year"]:disabled {
     background: #fffdfa;
@@ -888,6 +902,8 @@ textarea {
   input[type="type"],
   input.autoselect-input,
   .algaeh-datePicker input[type="date"],
+  .algaeh-datePicker input[type="time"],
+  .algaeh-datePicker input[type="datetime-local"],
   .algaeh-datePicker input[type="month"],
   .algaeh-datePicker input[type="year"] {
     background-color: none;

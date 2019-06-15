@@ -18,17 +18,10 @@ const executePDF = function executePDFMethod(options) {
         str += ` and RH.created_by= ${input.cashier_id}`;
       }
 
-      if (
-        input.pay_type !== "null" &&
-        input.pay_type !== null &&
-        input.pay_type !== undefined
-      ) {
-        str += ` and RD.pay_type= '${input.pay_type}'`;
-      }
-
       options.mysql
         .executeQuery({
-          query: `	select RH.receipt_number,PH.pos_number,RH.created_date as collected_time, date(RH.receipt_date) as receipt_date ,CASE WHEN PH.pos_customer_type='OP' THEN 
+          query: `	select RH.receipt_number,PH.pos_number,RH.created_date as collected_time,
+		   date(RH.receipt_date) as receipt_date ,CASE WHEN PH.pos_customer_type='OP' THEN 
 		  P.full_name else PH.patient_name END as patient_full_name ,
 		  CASE WHEN PH.pos_customer_type='OP' THEN   P.patient_code else null END as mrn_no ,  
 		  RH.total_amount,RH.hims_f_receipt_header_id,PH.patient_id,RD.pay_type,RD.amount,
@@ -42,21 +35,42 @@ const executePDF = function executePDFMethod(options) {
 		  where  PH.record_status ='A' and RH.record_status ='A' and RD.record_status ='A' and RH.pay_type='R'
 		  and  PH.hospital_id=? and   RH.hospital_id=? and PH.cancelled='N' and PH.posted='Y'and PH.location_id=?
 		  and date(RH.receipt_date) between date(?) and date(?)
-		   and time(RH.created_date) between ? and ? ${str} ;`,
+		   and RH.created_date between ? and ? ${str} ;`,
           values: [
             input.hospital_id,
             input.hospital_id,
             input.location_id,
             input.from_date,
             input.to_date,
-            input.from_time,
-            input.to_time
+            input.from_date + " " + input.from_time,
+            input.to_date + " " + input.to_time
           ],
 
           printQuery: true
         })
-        .then(result => {
-          utilities.logger().log("result: ", result);
+        .then(rawResult => {
+          utilities.logger().log("result: ", rawResult);
+
+          let result = [];
+
+          if (
+            input.pay_type == "CD" ||
+            input.pay_type == "CH" ||
+            input.pay_type == "CA"
+          ) {
+            let ids = _.chain(rawResult)
+              .filter(f => f.pay_type == input.pay_type)
+              .map(obj => obj.hims_f_receipt_header_id)
+              .value();
+
+            ids.map(val => {
+              result.push(
+                ..._.filter(rawResult, f => f.hims_f_receipt_header_id == val)
+              );
+            });
+          } else {
+            result = rawResult;
+          }
 
           const data = _.chain(result)
             .groupBy(g => g.hims_f_receipt_header_id)
@@ -67,7 +81,7 @@ const executePDF = function executePDFMethod(options) {
                 .value()
                 .toFixed(3);
 
-              //   utilities.logger().log("cash: ", cash);
+              //   utilities.logger().log("item: ", item);
 
               const card = _.chain(item)
                 .filter(f => f.pay_type == "CD")
@@ -88,7 +102,9 @@ const executePDF = function executePDFMethod(options) {
                 total_amount: item[0]["total_amount"],
                 cash: cash,
                 card: card,
-                check: check
+                check: check,
+                cashier: item[0]["cashier"],
+                collected_time: item[0]["collected_time"]
               };
             })
             .value();

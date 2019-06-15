@@ -7,12 +7,20 @@ import ItemSetup from "../../../Models/ItemSetup";
 
 const Validations = $this => {
   let isError = false;
+  console.log($this.state);
 
-  if ($this.state.item_description === null) {
+  if (!$this.state.item_code) {
     isError = true;
     swalMessage({
       type: "error",
-      title: "Test Name Cannot be blank."
+      title: "Item Code Cannot be blank."
+    });
+    return isError;
+  } else if (!$this.state.item_description) {
+    isError = true;
+    swalMessage({
+      type: "error",
+      title: "Item Name Cannot be blank."
     });
     return isError;
   } else if ($this.state.generic_id === null) {

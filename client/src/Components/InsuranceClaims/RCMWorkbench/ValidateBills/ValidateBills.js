@@ -8,8 +8,6 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
-import Dropzone from "react-dropzone";
-import noImage from "../../../../assets/images/images.webp";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import swal from "sweetalert2";
 import AlgaehFileUploader from "../../../Wrapper/algaehFileUpload";
