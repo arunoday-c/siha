@@ -8,7 +8,9 @@
                 <thead>
                     <tr>
                         <th>Sl No.</th>
-                        {{!-- <th>patient name.</th> --}}
+                        <th>patient name.</th>
+                        <th>MRN No.</th>
+
                         <th>Return Invoie No.</th>
                         <th>Return Invoice Date</th>
                         <th>Return Invoice Amt.</th>
@@ -18,10 +20,13 @@
                     {{#each details}}
                     <tr>
                         <td>{{inc @index}}</td>
-                        {{!-- <td>{{patient_full_name}}</td> --}}
-                        <td>{{pos_number}}</td>
-                        <td>{{pos_date}}</td>
-                        <td class="numberFld">{{net_amount}}</td>
+
+                        <td>{{patient_full_name}}</td>
+                        <td class="numberFld">{{mrn_no}}</td>
+                        <td>{{sales_return_number}}</td>
+                        <td>{{sales_return_date}}</td>
+
+                        <td class="numberFld">{{return_amout}}</td>
                     </tr>
                     {{/each }}
                 </tbody>
@@ -29,10 +34,10 @@
             <table class="tableTotal">
                 <tr class="bold">
                     <td>Total Return Invoive Amt.</td>
-                    <td>{{total_net_amount}}</td>
+                    <td>{{total_return}}</td>
                     <td>المبلغ الإجمالي للفاتورة</td>
                 </tr>
-               
+
             </table>
         </section>
         {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}

@@ -10,23 +10,11 @@ const executePDF = function executePDFMethod(options) {
 
       const output = {
         details: result,
-        total_patient_tax: _.sumBy(result, s =>
-          parseFloat(s.patient_tax)
-        ).toFixed(3),
-        total_patient_payable: _.sumBy(result, s =>
-          parseFloat(s.patient_payable)
-        ).toFixed(3),
-        total_company_tax: _.sumBy(result, s =>
-          parseFloat(s.company_tax)
-        ).toFixed(3),
-        total_company_payable: _.sumBy(result, s =>
-          parseFloat(s.company_payable)
-        ).toFixed(3),
-        total_net_amount: _.sumBy(result, s =>
-          parseFloat(s.net_amount)
-        ).toFixed(3)
+        total_return: _.sumBy(result, s => parseFloat(s.return_amout)).toFixed(
+          3
+        )
       };
-      utilities.logger().log("output: ", output);
+      //utilities.logger().log("output: ", output);
       resolve(output);
     } catch (e) {
       reject(e);
