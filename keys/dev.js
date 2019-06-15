@@ -47,7 +47,8 @@ exports.default = {
 		headless: true,
 
 		// for windows
-		//executablePath: "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
+		// executablePath:
+		//   "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
 
 		// for Mac
 		executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'

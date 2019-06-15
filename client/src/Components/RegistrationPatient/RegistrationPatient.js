@@ -809,6 +809,7 @@ class RegistrationPatient extends Component {
           }}
           selectedLang={this.state.selectedLang}
         />
+
         <div className="spacing-push">
           <MyContext.Provider
             value={{
@@ -931,9 +932,6 @@ class RegistrationPatient extends Component {
                       advance_amount: this.state.advance_amount
                     }}
                   />
-
-                  
-
                 </div>
               </div>
             </div>
