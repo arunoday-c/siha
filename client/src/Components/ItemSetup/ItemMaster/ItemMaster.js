@@ -384,7 +384,7 @@ class ItemMaster extends Component {
                         label={{ forceLabel: "Additional Information" }}
                       />
                       <textarea
-                        value={this.state.addl_information}
+                        value={this.state.addl_information || ""}
                         name="addl_information"
                         onChange={additionaleInfo.bind(this, this)}
                       />
