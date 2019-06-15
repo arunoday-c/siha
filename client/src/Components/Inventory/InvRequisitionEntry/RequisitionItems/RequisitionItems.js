@@ -285,7 +285,7 @@ class RequisitionItems extends Component {
                               },
                               others: {
                                 minWidth: this.state.requisition_auth === true ? 0 : 50,
-                                style:{
+                                style: {
                                   padding: this.state.requisition_auth === true ? 0 : 5
                                 }
                               }
