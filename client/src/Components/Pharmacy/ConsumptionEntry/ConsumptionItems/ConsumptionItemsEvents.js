@@ -233,7 +233,7 @@ function getItemLocationStock($this, context, value) {
     module: "pharmacy",
     method: "GET",
     data: {
-      location_id: value.location_id,
+      pharmacy_location_id: value.location_id,
       item_id: value.item_id
     },
     onSuccess: response => {

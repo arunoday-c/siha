@@ -22,7 +22,8 @@ import {
   updateInventoryLocation,
   updateItemMasterAndUom,
   updateLocationPermission,
-  addProcedureItems
+  addProcedureItems,
+  getItemMasterWithSalesPrice
 } from "../models/inventory";
 
 const { addServices } = algaehPath(
@@ -187,6 +188,17 @@ export default () => {
       records: req.records
     });
   });
+
+  api.get(
+    "/getItemMasterWithSalesPrice",
+    getItemMasterWithSalesPrice,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
 
   return api;
 };

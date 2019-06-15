@@ -52,8 +52,7 @@ const itemchangeText = ($this, context, e) => {
           mappingName: "inventoryitemdetaillist"
         },
         afterSuccess: data => {
-          
-          if (data.length > 0) {          
+          if (data.length > 0) {
             getItemLocationStock($this, context, {
               location_id: $this.state.from_location_id,
               item_id: value,
@@ -130,7 +129,6 @@ const itemchangeText = ($this, context, e) => {
           mappingName: "inventoryitemdetaillist"
         },
         afterSuccess: data => {
-          
           if (data.length > 0) {
             getItemLocationStock($this, context, {
               location_id: $this.state.to_location_id,
@@ -285,8 +283,6 @@ const deleteRequisitionDetail = ($this, context, row) => {
 };
 
 const updatePosDetail = ($this, context, row) => {
-
-
   let inventory_stock_detail = $this.state.inventory_stock_detail;
   for (let k = 0; k < inventory_stock_detail.length; k++) {
     if (inventory_stock_detail[k].item_id === row.item_id) {
@@ -339,7 +335,7 @@ const getItemLocationStock = ($this, context, value) => {
     module: "inventory",
     method: "GET",
     data: {
-      location_id: value.location_id,
+      inventory_location_id: value.location_id,
       item_id: value.item_id
     },
     redux: {
@@ -377,7 +373,6 @@ const getItemLocationStock = ($this, context, value) => {
     }
   });
 };
-
 
 const EditGrid = ($this, context, cancelRow) => {
   if ($this.state.hims_f_inventory_material_header_id !== null) {

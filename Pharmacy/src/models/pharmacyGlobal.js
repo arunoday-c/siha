@@ -132,7 +132,7 @@ module.exports = {
     }
   },
 
-  getItemLocationStock: (req, res, next) => {
+  getItemLocationStockBackup: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
       _mysql

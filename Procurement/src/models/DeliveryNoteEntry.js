@@ -732,7 +732,7 @@ function updateInventoryItemMaster(options) {
         _mysql
           .executeQuery({
             query:
-              "select batch_no, item_code from `hims_d_inventory_item_master` WHERE `hims_d_inventory_item_master_id`=?",
+              "select item_code from `hims_d_inventory_item_master` WHERE `hims_d_inventory_item_master_id`=?",
             values: [inventory_stock_detail[i].item_id],
             printQuery: true
           })

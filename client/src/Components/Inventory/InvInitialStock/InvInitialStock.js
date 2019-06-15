@@ -25,7 +25,8 @@ import {
   deleteInitialStock,
   ClearData,
   PostInitialStock,
-  printBarcode
+  printBarcode,
+  salesPriceEvent
 } from "./InvInitialStockEvents";
 import "./InvInitialStock.css";
 import "../../../styles/site.css";
@@ -51,7 +52,7 @@ class InvInitialStock extends Component {
       quantity: 0,
       unit_cost: 0,
       docdate: new Date(),
-
+      sales_price: 0,
       uom_id: null,
       conversion_fact: null,
       extended_cost: 0,
@@ -67,81 +68,61 @@ class InvInitialStock extends Component {
     const hospital = JSON.parse(
       AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
     );
-    if (
-      this.props.inventoryitemlist === undefined ||
-      this.props.inventoryitemlist.length === 0
-    ) {
-      this.props.getItems({
-        uri: "/inventory/getItemMaster",
-        module: "inventory",
-        method: "GET",
-        redux: {
-          type: "ITEM_GET_DATA",
-          mappingName: "inventoryitemlist"
-        }
-      });
-    }
-    if (
-      this.props.inventorylocations === undefined ||
-      this.props.inventorylocations.length === 0
-    ) {
-      this.props.getLocation({
-        uri: "/inventory/getInventoryLocation",
-        module: "inventory",
-        data: {
-          location_status: "A",
-          hospital_id: hospital.hims_d_hospital_id
-        },
-        method: "GET",
-        redux: {
-          type: "LOCATIONS_GET_DATA",
-          mappingName: "inventorylocations"
-        }
-      });
-    }
-    if (
-      this.props.inventoryitemcategory === undefined ||
-      this.props.inventoryitemcategory.length === 0
-    ) {
-      this.props.getItemCategory({
-        uri: "/inventory/getItemCategory",
-        module: "inventory",
-        method: "GET",
-        redux: {
-          type: "ITEM_CATEGORY_GET_DATA",
-          mappingName: "inventoryitemcategory"
-        },
-        afterSuccess: data => {}
-      });
-    }
-    if (
-      this.props.inventoryitemgroup === undefined ||
-      this.props.inventoryitemgroup.length === 0
-    ) {
-      this.props.getItemGroup({
-        uri: "/inventory/getItemGroup",
-        module: "inventory",
-        method: "GET",
-        redux: {
-          type: "ITEM_GROUP_GET_DATA",
-          mappingName: "inventoryitemgroup"
-        }
-      });
-    }
-    if (
-      this.props.inventoryitemuom === undefined ||
-      this.props.inventoryitemuom.length === 0
-    ) {
-      this.props.getItemUOM({
-        uri: "/inventory/getInventoryUom",
-        module: "inventory",
-        method: "GET",
-        redux: {
-          type: "ITEM_UOM_GET_DATA",
-          mappingName: "inventoryitemuom"
-        }
-      });
-    }
+
+    this.props.getItems({
+      uri: "/inventory/getItemMasterWithSalesPrice",
+      module: "inventory",
+      method: "GET",
+      redux: {
+        type: "ITEM_GET_DATA",
+        mappingName: "inventoryitemlist"
+      }
+    });
+
+    this.props.getLocation({
+      uri: "/inventory/getInventoryLocation",
+      module: "inventory",
+      data: {
+        location_status: "A",
+        hospital_id: hospital.hims_d_hospital_id
+      },
+      method: "GET",
+      redux: {
+        type: "LOCATIONS_GET_DATA",
+        mappingName: "inventorylocations"
+      }
+    });
+
+    this.props.getItemCategory({
+      uri: "/inventory/getItemCategory",
+      module: "inventory",
+      method: "GET",
+      redux: {
+        type: "ITEM_CATEGORY_GET_DATA",
+        mappingName: "inventoryitemcategory"
+      },
+      afterSuccess: data => {}
+    });
+
+    this.props.getItemGroup({
+      uri: "/inventory/getItemGroup",
+      module: "inventory",
+      method: "GET",
+      redux: {
+        type: "ITEM_GROUP_GET_DATA",
+        mappingName: "inventoryitemgroup"
+      }
+    });
+
+    this.props.getItemUOM({
+      uri: "/inventory/getInventoryUom",
+      module: "inventory",
+      method: "GET",
+      redux: {
+        type: "ITEM_UOM_GET_DATA",
+        mappingName: "inventoryitemuom"
+      }
+    });
   }
 
   render() {
@@ -369,7 +350,6 @@ class InvInitialStock extends Component {
                       isImp: this.state.required_batchno === "N" ? true : false
                     }}
                     textBox={{ className: "txt-fld", name: "expiry_date" }}
-                    minDate={new Date()}
                     events={{
                       onChange: datehandle.bind(this, this)
                     }}
@@ -414,6 +394,26 @@ class InvInitialStock extends Component {
                         onChange: numberchangeTexts.bind(this, this)
                       },
                       others: { autoComplete: "off" }
+                    }}
+                  />
+
+                  <AlagehFormGroup
+                    div={{ className: "col-3 form-group" }}
+                    label={{
+                      forceLabel: "Sales Price",
+                      isImp: true
+                    }}
+                    textBox={{
+                      decimal: { allowNegative: false },
+                      value: this.state.sales_price,
+                      className: "txt-fld",
+                      name: "sales_price",
+                      events: {
+                        onChange: salesPriceEvent.bind(this, this)
+                      },
+                      others: {
+                        autoComplete: "off"
+                      }
                     }}
                   />
 
@@ -597,6 +597,12 @@ class InvInitialStock extends Component {
                     {
                       fieldName: "unit_cost",
                       label: <AlgaehLabel label={{ forceLabel: "Unit Cost" }} />
+                    },
+                    {
+                      fieldName: "sales_price",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Sales Price" }} />
+                      )
                     },
                     {
                       fieldName: "extended_cost",

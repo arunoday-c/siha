@@ -83,11 +83,12 @@ const AddItems = ($this, context) => {
     batchno: $this.state.batchno,
     grnno: $this.state.grn_no,
     expiry_date: $this.state.expiry_date,
-
+    barcode: $this.state.barcode,
     sales_uom: $this.state.sales_uom_id,
     unit_cost: $this.state.unit_cost,
     quantity_transfer: $this.state.quantity,
-    uom_transferred_id: $this.state.uom_id
+    uom_transferred_id: $this.state.uom_id,
+    sales_price: $this.state.sales_price
   };
   let stock_detail = $this.state.stock_detail;
   let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
@@ -267,7 +268,7 @@ const getItemLocationStock = ($this, value) => {
     module: "pharmacy",
     method: "GET",
     data: {
-      location_id: $this.state.from_location_id,
+      pharmacy_location_id: $this.state.from_location_id,
       item_id: value.item_id
     },
     redux: {
@@ -399,7 +400,8 @@ const itemchangeText = ($this, context, e, ctrl) => {
               Batch_Items: data.locationResult,
               addItemButton: false,
               item_description: e.item_description,
-              unit_cost: e.sale_price
+              sales_price: e.sale_price,
+              unit_cost: e.avgcost
             });
 
             if (context !== undefined) {
@@ -418,7 +420,9 @@ const itemchangeText = ($this, context, e, ctrl) => {
                 ItemUOM: data.uomResult,
                 Batch_Items: data.locationResult,
                 addItemButton: false,
-                item_description: e.item_description
+                item_description: e.item_description,
+                sales_price: e.sale_price,
+                unit_cost: e.avgcost
               });
             }
           } else {
@@ -499,12 +503,19 @@ const CloseItemBatch = ($this, context, e) => {
         : $this.state.qtyhand
       : $this.state.qtyhand;
 
+  let unit_cost =
+    e !== undefined
+      ? e.selected === true
+        ? e.avgcost
+        : $this.state.unit_cost
+      : $this.state.unit_cost;
+
   let sale_price =
     e !== undefined
       ? e.selected === true
         ? e.sale_price
-        : $this.state.unit_cost
-      : $this.state.unit_cost;
+        : $this.state.sales_price
+      : $this.state.sales_price;
 
   debugger;
   $this.setState({
@@ -514,7 +525,8 @@ const CloseItemBatch = ($this, context, e) => {
     expiry_date: expiry_date,
     grn_no: grn_no,
     qtyhand: qtyhand,
-    unit_cost: sale_price
+    unit_cost: unit_cost,
+    sales_price: sale_price
   });
 
   if (context !== null) {
@@ -523,7 +535,8 @@ const CloseItemBatch = ($this, context, e) => {
       expiry_date: expiry_date,
       grn_no: grn_no,
       qtyhand: qtyhand,
-      unit_cost: sale_price
+      unit_cost: unit_cost,
+      sales_price: sale_price
     });
   }
 };

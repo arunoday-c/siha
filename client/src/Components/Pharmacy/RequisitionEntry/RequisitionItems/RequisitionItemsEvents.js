@@ -50,7 +50,6 @@ const itemchangeText = ($this, context, e) => {
           mappingName: "itemdetaillist"
         },
         afterSuccess: data => {
-
           if (data.length > 0) {
             getItemLocationStock($this, context, {
               location_id: $this.state.from_location_id,
@@ -87,7 +86,6 @@ const itemchangeText = ($this, context, e) => {
       });
     }
   } else {
-    
     if ($this.state.to_location_id !== null) {
       let value = e.value || e.target.value;
 
@@ -176,7 +174,7 @@ const AddItems = ($this, context) => {
       title: "Please enter Quantity Required .",
       type: "warning"
     });
-  }else if ($this.state.item_uom === 0) {
+  } else if ($this.state.item_uom === 0) {
     swalMessage({
       title: "UOM is mandatory .",
       type: "warning"
@@ -251,7 +249,6 @@ const deleteRequisitionDetail = ($this, context, row) => {
 };
 
 const updatePosDetail = ($this, context, row) => {
-
   let authBtnEnable = true;
   let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
   for (let k = 0; k < pharmacy_stock_detail.length; k++) {
@@ -271,7 +268,6 @@ const updatePosDetail = ($this, context, row) => {
       pharmacy_stock_detail: pharmacy_stock_detail
     });
   }
-
 };
 
 const onchangegridcol = ($this, context, row, e) => {
@@ -307,12 +303,13 @@ const onchangegridcol = ($this, context, row, e) => {
 };
 
 const getItemLocationStock = ($this, context, value) => {
+  debugger;
   $this.props.getItemLocationStock({
     uri: "/pharmacyGlobal/getItemLocationStock",
     module: "pharmacy",
     method: "GET",
     data: {
-      location_id: value.location_id,
+      pharmacy_location_id: value.location_id,
       item_id: value.item_id
     },
     redux: {
