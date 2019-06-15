@@ -1201,8 +1201,9 @@ export default [
             label: "From Time",
             isImp: true,
             others: {
-              min:"00.00",
-              max:"11.59"}
+              min: "00.00",
+              max: "11.59"
+            }
           },
           {
             type: "date",
@@ -1219,7 +1220,7 @@ export default [
             label: "To Time",
             isImp: true,
             others: {
-             // value:"00.00"
+              // value:"00.00"
               // min:"00.00",
               // max:"11.59"
             }
@@ -1233,6 +1234,29 @@ export default [
             link: {
               uri: "/organization/getOrganization"
             },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/pharmacy/getPharmacyUsers",
+                  module: "pharmacy",
+                  method: "GET",
+                  data: { hospital_id: currentEvent.value },
+
+                  onSuccess: result => {
+                    reportState.setState({
+                      cashier_id_list: result.data.records
+                    });
+                  }
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  cashier_id_list: []
+                });
+              }
+            },
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
@@ -1242,6 +1266,7 @@ export default [
           {
             type: "dropdown",
             name: "location_id",
+
             initialLoad: true,
             isImp: true,
             label: "Select Location",
@@ -1273,14 +1298,13 @@ export default [
           {
             type: "dropdown",
             name: "cashier_id",
-            initialLoad: true,
+
             label: "Select User/Employee",
-            link: {
-              uri: "/gloabelSearch/newSearch"
-            },
+
             dataSource: {
               textField: "full_name",
-              valueField: "algaeh_d_app_user_id"
+              valueField: "algaeh_d_app_user_id",
+              data: []
             }
           }
         ]
@@ -1301,7 +1325,7 @@ export default [
               minDate: null
             }
           },
-            {
+          {
             type: "date",
             name: "to_date",
             isImp: true,
@@ -1342,7 +1366,7 @@ export default [
               textField: "location_description",
               valueField: "hims_d_pharmacy_location_id"
             }
-          },
+          }
         ]
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },

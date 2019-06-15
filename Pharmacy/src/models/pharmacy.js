@@ -1188,5 +1188,33 @@ module.exports = {
       _mysql.releaseConnection();
       next(e);
     }
+  },
+  getPharmacyUsers: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "select algaeh_d_app_user_id,employee_id,E.full_name,E.employee_code,SD.sub_department_name\
+            from algaeh_d_app_user U  inner join hims_d_employee E on U.employee_id=E.hims_d_employee_id\
+            inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\
+            where E.record_status='A' and E.hospital_id=? and SD.department_type='PH'\
+            and U.user_type in ('C','O');",
+          values: [req.query.hospital_id],
+          printQuery: false
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
   }
 };
