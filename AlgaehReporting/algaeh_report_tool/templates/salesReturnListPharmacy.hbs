@@ -9,8 +9,10 @@
                     <tr>
                         <th>Sl No.</th>
                         {{!-- <th>patient name.</th> --}}
-                        <th>Return Invoie No.</th>
+                        <th>Return Invoice No.</th>
                         <th>Return Invoice Date</th>
+                        <th>Patient Name.</th>
+                        <th>Patient MRN</th>
                         <th>Return Invoice Amt.</th>
                     </tr>
                 </thead>
@@ -19,8 +21,10 @@
                     <tr>
                         <td>{{inc @index}}</td>
                         {{!-- <td>{{patient_full_name}}</td> --}}
-                        <td>{{pos_number}}</td>
-                        <td>{{pos_date}}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
                         <td class="numberFld">{{net_amount}}</td>
                     </tr>
                     {{/each }}
