@@ -362,6 +362,7 @@ const getCtrlCode = ($this, docNumber) => {
       mappingName: "purchaseorderentry"
     },
     afterSuccess: data => {
+      debugger;
       if (
         $this.props.purchase_number !== undefined &&
         $this.props.purchase_number.length !== 0
@@ -369,6 +370,15 @@ const getCtrlCode = ($this, docNumber) => {
         data.authorizeEnable = false;
         data.ItemDisable = true;
         data.ClearDisable = true;
+
+        debugger;
+        for (let i = 0; i < data.po_entry_detail.length; i++) {
+          data.po_entry_detail[i].authorize_quantity =
+            data.po_entry_detail[i].total_quantity;
+          data.po_entry_detail[i].quantity_outstanding =
+            data.po_entry_detail[i].total_quantity;
+          data.po_entry_detail[i].rejected_quantity = 0;
+        }
       }
       data.saveEnable = true;
       data.dataExitst = true;

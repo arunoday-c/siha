@@ -54,6 +54,7 @@ class DNItemList extends Component {
       parseFloat(item.quantity_recieved_todate);
 
     item.free_qty = 0;
+    item.dn_quantity = dn_quantity;
     this.setState({
       selected_row_index: index,
       item_details: item,

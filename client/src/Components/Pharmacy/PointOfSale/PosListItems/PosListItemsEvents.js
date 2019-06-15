@@ -531,7 +531,7 @@ const AddItems = ($this, context) => {
                 qtyhand: 0,
                 barcode: null,
                 discount_percentage: 0,
-                dataExitst: true
+                OTItemAddDis: true
               });
             }
 
@@ -552,7 +552,7 @@ const AddItems = ($this, context) => {
               qtyhand: 0,
               barcode: null,
               discount_percentage: 0,
-              dataExitst: true
+              OTItemAddDis: true
             });
 
             algaehApiCall({
