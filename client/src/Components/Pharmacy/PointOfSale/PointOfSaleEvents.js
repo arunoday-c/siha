@@ -539,65 +539,71 @@ const PostPosEntry = $this => {
         module: "pharmacy",
         onSuccess: response => {
           if (response.data.success === true) {
-            $this.setState({
-              pos_number:
-                response.data.records.pos_number || $this.state.pos_number,
-              hims_f_pharmacy_pos_header_id:
-                response.data.records.hims_f_pharmacy_pos_header_id,
-              year: response.data.records.year,
-              period: response.data.records.period,
-              postEnable: true,
-              popUpGenereted: true
-            });
+            $this.setState(
+              {
+                pos_number:
+                  response.data.records.pos_number || $this.state.pos_number,
+                hims_f_pharmacy_pos_header_id:
+                  response.data.records.hims_f_pharmacy_pos_header_id ||
+                  $this.state.hims_f_pharmacy_pos_header_id,
+                year: response.data.records.year,
+                period: response.data.records.period,
+                postEnable: true,
+                popUpGenereted: true
+              },
+              () => {
+                generateReport($this, "posCashInvoice", "Cash Invoice");
+              }
+            );
             swalMessage({
               type: "success",
               title: "Done successfully . ."
             });
 
             //Fot printing
-            if ($this.state.visit_code !== "") {
-              algaehApiCall({
-                uri: "/report",
-                method: "GET",
-                module: "reports",
-                headers: {
-                  Accept: "blob"
-                },
-                others: { responseType: "blob" },
-                data: {
-                  report: {
-                    reportName: "prescription",
-                    reportParams: [
-                      {
-                        name: "hims_d_patient_id",
-                        value: $this.state.patient_id
-                      },
-                      {
-                        name: "visit_id",
-                        value: $this.state.visit_id
-                      },
-                      {
-                        name: "visit_code",
-                        value: $this.state.visit_code
-                      }
-                    ],
-                    outputFileType: "PDF"
-                  }
-                },
-                onSuccess: res => {
-                  const url = URL.createObjectURL(res.data);
-                  let myWindow = window.open(
-                    "{{ product.metafields.google.custom_label_0 }}",
-                    "_blank"
-                  );
-
-                  myWindow.document.write(
-                    "<iframe src= '" + url + "' width='100%' height='100%' />"
-                  );
-                  myWindow.document.title = "Prescription";
-                }
-              });
-            }
+            // if ($this.state.visit_code !== "") {
+            //   algaehApiCall({
+            //     uri: "/report",
+            //     method: "GET",
+            //     module: "reports",
+            //     headers: {
+            //       Accept: "blob"
+            //     },
+            //     others: { responseType: "blob" },
+            //     data: {
+            //       report: {
+            //         reportName: "prescription",
+            //         reportParams: [
+            //           {
+            //             name: "hims_d_patient_id",
+            //             value: $this.state.patient_id
+            //           },
+            //           {
+            //             name: "visit_id",
+            //             value: $this.state.visit_id
+            //           },
+            //           {
+            //             name: "visit_code",
+            //             value: $this.state.visit_code
+            //           }
+            //         ],
+            //         outputFileType: "PDF"
+            //       }
+            //     },
+            //     onSuccess: res => {
+            //       const url = URL.createObjectURL(res.data);
+            //       let myWindow = window.open(
+            //         "{{ product.metafields.google.custom_label_0 }}",
+            //         "_blank"
+            //       );
+            //
+            //       myWindow.document.write(
+            //         "<iframe src= '" + url + "' width='100%' height='100%' />"
+            //       );
+            //       myWindow.document.title = "Prescription";
+            //     }
+            //   });
+            // }
             AlgaehLoader({ show: false });
             //Done Printing
           }
@@ -867,6 +873,47 @@ const CancelPosEntry = $this => {
     }
   });
 };
+
+const generateReport = ($this, rpt_name, rpt_desc) => {
+  debugger;
+  algaehApiCall({
+    uri: "/report",
+    method: "GET",
+    module: "reports",
+    headers: {
+      Accept: "blob"
+    },
+    others: { responseType: "blob" },
+    data: {
+      report: {
+        reportName: rpt_name,
+        reportParams: [
+          {
+            name: "hims_f_pharmacy_pos_header_id",
+            value: $this.state.hims_f_pharmacy_pos_header_id
+          },
+          {
+            name: "pos_customer_type",
+            value: $this.state.pos_customer_type
+          }
+        ],
+        outputFileType: "PDF"
+      }
+    },
+    onSuccess: res => {
+      const url = URL.createObjectURL(res.data);
+      let myWindow = window.open(
+        "{{ product.metafields.google.custom_label_0 }}",
+        "_blank"
+      );
+
+      myWindow.document.write(
+        "<iframe src= '" + url + "' width='100%' height='100%' />"
+      );
+      myWindow.document.title = rpt_desc;
+    }
+  });
+};
 export {
   changeTexts,
   getCtrlCode,
@@ -880,5 +927,6 @@ export {
   nationalityhandle,
   getMedicationList,
   CancelPosEntry,
-  getPosEntry
+  getPosEntry,
+  generateReport
 };

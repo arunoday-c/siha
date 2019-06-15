@@ -30,9 +30,11 @@ class ItemMomentEnquiry extends Component {
     this.state = {
       ListItems: [],
       location_id: null,
-      item_id: null,
+      item_code_id: null,
       from_date: null,
-      to_date: null
+      to_date: null,
+      barcode: null,
+      transaction_type: null
     };
   }
 
@@ -116,9 +118,9 @@ class ItemMomentEnquiry extends Component {
                     div={{ className: "col" }}
                     label={{ forceLabel: "Item Name" }}
                     selector={{
-                      name: "item_id",
+                      name: "item_code_id",
                       className: "select-fld",
-                      value: this.state.item_id,
+                      value: this.state.item_code_id,
                       dataSource: {
                         textField: "item_description",
                         valueField: "hims_d_item_master_id",
@@ -127,7 +129,7 @@ class ItemMomentEnquiry extends Component {
                       onChange: changeTexts.bind(this, this),
                       onClear: () => {
                         this.setState({
-                          item_id: null
+                          item_code_id: null
                         });
                       }
                     }}
