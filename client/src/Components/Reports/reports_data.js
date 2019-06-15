@@ -1312,7 +1312,7 @@ export default [
       {
         subitem: "List of Sales Invoice",
         reportName: "salesInvoiceListPharmacy",
-        template_name: "SalesInvoiceList",
+        template_name: "salesInvoiceListPharmacy",
         requireIframe: true,
         reportParameters: [
           {
@@ -1380,7 +1380,7 @@ export default [
         requireIframe: true,
         reportParameters: [
           {
-            className:"col-2",
+            className: "col-2",
             type: "date",
             name: "from_date",
             isImp: true,
@@ -1389,8 +1389,8 @@ export default [
               minDate: null
             }
           },
-            {
-            className:"col-2",
+          {
+            className: "col-2",
             type: "date",
             name: "to_date",
             isImp: true,
@@ -1400,7 +1400,7 @@ export default [
             }
           },
           {
-            className:"col-2",
+            className: "col-2",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -1416,7 +1416,7 @@ export default [
             }
           },
           {
-            className:"col-2",
+            className: "col-2",
             type: "dropdown",
             name: "location_id",
             initialLoad: true,
@@ -1433,13 +1433,15 @@ export default [
               textField: "location_description",
               valueField: "hims_d_pharmacy_location_id"
             }
-          },
+          }
         ]
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Daily Collection - Consolidated",
         template_name: "dailyCollectionPharmacy",
+        reportName: "dailyCollectionPharmacy",
+        requireIframe: true,
         reportParameters: [
           {
             type: "date",
@@ -1457,6 +1459,42 @@ export default [
             others: {
               maxDate: new Date(),
               minDate: null
+            }
+          },
+
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Select branch",
+            link: {
+              uri: "/organization/getOrganization"
+            },
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "location_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Select Location",
+            link: {
+              uri: "/pharmacy/getPharmacyLocation",
+              module: "pharmacy",
+              data: {
+                allow_pos: "Y"
+              }
+            },
+            dataSource: {
+              textField: "location_description",
+              valueField: "hims_d_pharmacy_location_id"
             }
           }
         ]

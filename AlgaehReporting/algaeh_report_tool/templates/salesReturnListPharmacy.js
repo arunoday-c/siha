@@ -6,7 +6,7 @@ const executePDF = function executePDFMethod(options) {
     const _ = options.loadash;
 
     try {
-      const result = options.result.length > 0 ? options.result : [{}];
+      const result = options.result;
 
       const output = {
         details: result,
