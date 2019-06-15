@@ -146,15 +146,16 @@ class DNItemList extends Component {
                 <div className="col-lg-8">
                   <div className="portlet portlet-bordered margin-bottom-15">
                     <div className="row">
-                      <div className="col">
+                      <div className="col-5">
                         <AlgaehLabel label={{ forceLabel: "Item Name" }} />
                         <h6>{item_name ? item_name : "----------"}</h6>
                       </div>
 
-                      <div className="col">
+                      <div className="col-3">
                         <AlgaehLabel label={{ forceLabel: "Required Qty" }} />
                         <h6>{qty_auth ? qty_auth : "----------"}</h6>
-                      </div>
+                      </div></div>
+                       <div className="row">
                       <AlagehFormGroup
                         div={{ className: "col" }}
                         label={{
@@ -402,7 +403,7 @@ class DNItemList extends Component {
                                         : ""}
                                     </span>
                                   );
-                                }
+                                }, others: {minWidth: 150}
                               },
 
                               {
@@ -474,7 +475,7 @@ class DNItemList extends Component {
                                         : ""}
                                     </span>
                                   );
-                                }
+                                }, others: {minWidth: 250}
                               },
                               {
                                 fieldName:
@@ -545,7 +546,7 @@ class DNItemList extends Component {
                                         : ""}
                                     </span>
                                   );
-                                }
+                                }, others: {minWidth: 150}
                               },
 
                               {
@@ -683,7 +684,7 @@ class DNItemList extends Component {
                                 fieldName: "dn_quantity",
                                 label: (
                                   <AlgaehLabel
-                                    label={{ forceLabel: "Delivery Quantity" }}
+                                    label={{ forceLabel: "Delivery Qty" }}
                                   />
                                 ),
                                 editorTemplate: row => {
@@ -725,7 +726,7 @@ class DNItemList extends Component {
                                 fieldName: "free_qty",
                                 label: (
                                   <AlgaehLabel
-                                    label={{ forceLabel: "Free Quantity" }}
+                                    label={{ forceLabel: "Free Qty" }}
                                   />
                                 )
                               },
@@ -735,22 +736,22 @@ class DNItemList extends Component {
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Quantity Outstanding"
+                                      forceLabel: "Qty Outstanding"
                                     }}
                                   />
                                 ),
-                                disabled: true
+                                disabled: true,others:{minWidth:140}
                               },
                               {
                                 fieldName: "quantity_recieved_todate",
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Quantity Recieved Todate"
+                                      forceLabel: "Qty Received till date"
                                     }}
                                   />
                                 ),
-                                disabled: true
+                                disabled: true,others:{minWidth:150}
                               },
                               {
                                 fieldName: "discount_percentage",
@@ -765,7 +766,7 @@ class DNItemList extends Component {
                                 fieldName: "discount_amount",
                                 label: (
                                   <AlgaehLabel
-                                    label={{ forceLabel: "Discount Amount" }}
+                                    label={{ forceLabel: "Discount Amt" }}
                                   />
                                 ),
                                 disabled: true
@@ -774,7 +775,7 @@ class DNItemList extends Component {
                                 fieldName: "net_extended_cost",
                                 label: (
                                   <AlgaehLabel
-                                    label={{ forceLabel: "Net Extended Cost" }}
+                                    label={{ forceLabel: "Net Ext Cost" }}
                                   />
                                 ),
                                 disabled: true
@@ -784,7 +785,7 @@ class DNItemList extends Component {
                                 fieldName: "tax_amount",
                                 label: (
                                   <AlgaehLabel
-                                    label={{ forceLabel: "Tax Amount" }}
+                                    label={{ forceLabel: "Tax Amt" }}
                                   />
                                 ),
                                 disabled: true
@@ -794,7 +795,7 @@ class DNItemList extends Component {
                                 fieldName: "total_amount",
                                 label: (
                                   <AlgaehLabel
-                                    label={{ forceLabel: "Total Amount" }}
+                                    label={{ forceLabel: "Total Amt" }}
                                   />
                                 ),
                                 disabled: true
