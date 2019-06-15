@@ -868,7 +868,7 @@ class PosListItems extends Component {
                       <div className="algaeh-md-4 algaeh-lg-4 algaeh-xl-12">
                         <div className="Paper">
                           <div className="row">
- <div className="col-12 patientRespo">
+ <div className="col-12">
                             <h6>Insurance Details</h6>
                               <div className="row insurance-details">  <div className="col-6">
                               <AlgaehLabel
@@ -881,7 +881,7 @@ class PosListItems extends Component {
                               </h6>
                             </div></div></div>
                             <div className="col-12 patientRespo">
-                            <h6>Patient</h6>
+                            <h6>Patient Payment Details</h6>
                               <div className="row insurance-details">
                              <div className="col">
                             <AlgaehLabel
@@ -917,7 +917,7 @@ class PosListItems extends Component {
                           </div></div>
                           </div>
                             <div className="col-lg-12">
-                            <h6>Company</h6>
+                            <h6>Company Payment Details</h6>
                               <div className="row insurance-details">
                                 <div className="col-5">
                                   <AlgaehLabel

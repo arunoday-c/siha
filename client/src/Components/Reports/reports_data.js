@@ -1195,13 +1195,13 @@ export default [
               minDate: null
             }
           },
-          {
-            type: "time",
-            name: "from_time",
-            label: "From Time",
-            isImp: true,
-            others: {}
-          },
+          // {
+          //   type: "time",
+          //   name: "from_time",
+          //   label: "From Time",
+          //   isImp: true,
+          //   others: {}
+          // },
           {
             type: "date",
             name: "to_date",
@@ -1211,13 +1211,13 @@ export default [
               minDate: null
             }
           },
-          {
-            type: "time",
-            name: "to_time",
-            label: "To Time",
-            isImp: true,
-            others: {}
-          },
+          // {
+          //   type: "time",
+          //   name: "to_time",
+          //   label: "To Time",
+          //   isImp: true,
+          //   others: {}
+          // },
           {
             type: "dropdown",
             name: "hospital_id",
@@ -1237,6 +1237,7 @@ export default [
             type: "dropdown",
             name: "location_id",
             initialLoad: true,
+            isImp: true,
             label: "Select Location",
             link: {
               uri: "/pharmacy/getPharmacyLocation",
@@ -1262,20 +1263,20 @@ export default [
               valueField: "value",
               data: FORMAT_PAYTYPE
             }
-          },
-          {
-            type: "dropdown",
-            name: "cashier_id",
-            initialLoad: true,
-            label: "Select User/Employee",
-            link: {
-              uri: "/gloabelSearch/newSearch"
-            },
-            dataSource: {
-              textField: "full_name",
-              valueField: "algaeh_d_app_user_id"
-            }
           }
+          // {
+          //   type: "dropdown",
+          //   name: "cashier_id",
+          //   initialLoad: true,
+          //   label: "Select User/Employee",
+          //   link: {
+          //     uri: "/gloabelSearch/newSearch"
+          //   },
+          //   dataSource: {
+          //     textField: "full_name",
+          //     valueField: "algaeh_d_app_user_id"
+          //   }
+          // }
         ]
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
@@ -1294,10 +1295,14 @@ export default [
               minDate: null
             }
           },
-          {
-            type: "time",
+            {
+            type: "date",
             name: "to_date",
-            isImp: true
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
           },
           {
             type: "dropdown",
@@ -1316,18 +1321,22 @@ export default [
           },
           {
             type: "dropdown",
-            name: "employee_group_id",
+            name: "location_id",
             initialLoad: true,
-            label: "Select Pharmacy Location",
+            isImp: true,
+            label: "Select Location",
             link: {
-              uri: "/hrsettings/getEmployeeGroups",
-              module: "hrManagement"
+              uri: "/pharmacy/getPharmacyLocation",
+              module: "pharmacy",
+              data: {
+                allow_pos: "Y"
+              }
             },
             dataSource: {
-              textField: "group_description",
-              valueField: "hims_d_employee_group_id"
+              textField: "location_description",
+              valueField: "hims_d_pharmacy_location_id"
             }
-          }
+          },
         ]
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
