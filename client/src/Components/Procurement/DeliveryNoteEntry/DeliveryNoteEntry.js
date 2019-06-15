@@ -94,7 +94,7 @@ class DeliveryNoteEntry extends Component {
         <BreadCrumb
           title={
             <AlgaehLabel
-              label={{ forceLabel: "Delivery Note Entry", align: "ltr" }}
+              label={{ forceLabel: "Delivery Note", align: "ltr" }}
             />
           }
           breadStyle={this.props.breadStyle}
@@ -112,7 +112,7 @@ class DeliveryNoteEntry extends Component {
             {
               pageName: (
                 <AlgaehLabel
-                  label={{ forceLabel: "Delivery Note Entry", align: "ltr" }}
+                  label={{ forceLabel: "Delivery Note", align: "ltr" }}
                 />
               )
             }
