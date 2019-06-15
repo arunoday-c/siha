@@ -321,7 +321,11 @@ class PatientProfile extends Component {
             .lastOrDefault()
         : [];
 
-    if (chief_complaint === null || chief_complaint.length < 4) {
+    if (
+      chief_complaint === undefined ||
+      chief_complaint === null ||
+      chief_complaint.length < 4
+    ) {
       swalMessage({
         title: "Enter Chief Complaint. Atlest 4 letter",
         type: "warning"
@@ -364,7 +368,6 @@ class PatientProfile extends Component {
   }
 
   showAllergyAlert(_patient_allergies) {
-    
     if (allergyPopUp && _patient_allergies.length > 0) {
       allergyPopUp = false;
       swalMessage({

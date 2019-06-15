@@ -1444,6 +1444,7 @@ export default [
         requireIframe: true,
         reportParameters: [
           {
+            className: "col-2",
             type: "date",
             name: "from_date",
             isImp: true,
@@ -1453,6 +1454,7 @@ export default [
             }
           },
           {
+            className: "col-2",
             type: "date",
             name: "to_date",
             isImp: true,

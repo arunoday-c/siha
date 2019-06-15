@@ -143,7 +143,7 @@ class InitialStock extends Component {
           <BreadCrumb
             title={
               <AlgaehLabel
-                label={{ forceLabel: "Initial Stock", align: "ltr" }}
+                label={{ forceLabel: "Opening Stock", align: "ltr" }}
               />
             }
             breadStyle={this.props.breadStyle}
@@ -162,7 +162,7 @@ class InitialStock extends Component {
               {
                 pageName: (
                   <AlgaehLabel
-                    label={{ forceLabel: "Initial Stock", align: "ltr" }}
+                    label={{ forceLabel: "Opening Stock", align: "ltr" }}
                   />
                 )
               }
@@ -531,7 +531,10 @@ class InitialStock extends Component {
                           </span>
                         );
                       },
-                      disabled: true
+                      disabled: true,
+                      others: {
+                        minWidth:250
+                      }
                     },
 
                     {
@@ -556,7 +559,10 @@ class InitialStock extends Component {
                           </span>
                         );
                       },
-                      disabled: true
+                      disabled: true,
+                      others: {
+                        minWidth:150
+                      }
                     },
 
                     {
@@ -580,7 +586,10 @@ class InitialStock extends Component {
                           </span>
                         );
                       },
-                      disabled: true
+                      disabled: true,
+                      others: {
+                        minWidth:150
+                      }
                     },
                     {
                       fieldName: "vendor_batchno",
@@ -588,7 +597,10 @@ class InitialStock extends Component {
                         <AlgaehLabel
                           label={{ forceLabel: "Vendor Batch No." }}
                         />
-                      )
+                      ),
+                      others: {
+                        minWidth:150
+                      }
                     },
                     {
                       fieldName: "expiry_date",
@@ -624,9 +636,12 @@ class InitialStock extends Component {
                       fieldName: "grn_number",
                       label: (
                         <AlgaehLabel
-                          label={{ forceLabel: "Recipt Number(GRN)" }}
+                          label={{ forceLabel: "Receipt No. (GRN)" }}
                         />
-                      )
+                      ),
+                      others: {
+                        minWidth:130
+                      }
                     }
                   ]}
                   keyId="item_id"

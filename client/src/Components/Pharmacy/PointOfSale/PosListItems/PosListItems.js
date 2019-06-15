@@ -549,7 +549,7 @@ class PosListItems extends Component {
                                     ),
                                     disabled: true,
                                     others: {
-                                      minWidth: 90
+                                      minWidth: 110
                                     }
                                   },
                                   {

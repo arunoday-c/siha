@@ -3,48 +3,44 @@
 <body>
     <div class="print-body">
 
-        <section>
-            <table class="tableForData" cell-padding="0">
+        <table class="tableForData" cell-padding="0">
                 <thead>
-                     <tr>
-    <th rowspan="2">SL No.</th>
-    <th rowspan="2">Receipt No</th>
-    <th rowspan="2">Receipt Date</th>
-    <th rowspan="2">Bill No</th>
-    <th rowspan="2">Patient Name</th>
-    <th rowspan="2">MR No.</th>
-    <th colspan="3">Receipt Amount</th>
-  </tr>
-  <tr>
-    <th>Cash</th>
-    <th>Card</th>
-    <th>Total</th>
-  </tr>
+                    <tr>
+                        <th>Total Sales in Cash</th>
+
+                        <th>Total Sales in Card</th>
+
+                        <th>Total Sales in Cheque</th>
+                    </tr>
                 </thead>
                 <tbody>
-                    {{#each details}}
                     <tr>
-                        <td>{{inc @index}}</td>
-                        <td>{{receipt_no}}</td>
-                        <td>{{receipt_date}}</td>
-                        <td>{{bill_no}}</td>
-                        <td>{{patient_name}}</td>
-                        <td>{{patient_no}}</td>
-                        <td>{{cash}}</td>
-                        <td>{{card}}</td>
-                        <td>{{total}}</td>
+                        <td>{{total_cash}}</td>
+                        <td>{{total_card}}</td>
+    <td>{{total_check}}</td>
                     </tr>
-                    {{/each }}
                 </tbody>
             </table>
-             <table class="tableTotal">
-              <tr><td>Total Invoice Amount</td><td>{{total_gross_amount}}</td><td>الإجمالي قبل الضريبة المضافة</td></tr>
-                 <tr><td>Total Discount Amount</td><td>{{total_discount_amount}}</td><td>الخصم</td></tr>
-                      <tr><td>Total Insurance Payment</td><td>{{total_patient_share}}</td><td>نسبة التحمل</td></tr>
-                       <tr><td>Total Paid Amount</td><td>0.00</td><td>المبلغ المدفوع</td></tr>
-                        <tr><td>Total Due Amount</td><td>{{total_net_claim}}</td><td>المبلغ المتبقي</td></tr>
+
+ <table class="tableTotal">
+                <tr class="">
+                    <td>Total Sales Invoice Amt.</td>
+                    <td>{{total_collection}}</td>
+                    <td>إجمالي المبيعات</td>
+                </tr>
+                  <tr class="">
+                    <td>Total Return Invoice Amt.</td>
+                    <td>{{total_returned}}</td>
+                    <td>إجمالي العائد المبلغ</td>
+                </tr>
+                  <tr class="">
+                    <td>Total Income Amount</td>
+                    <td>{{income}}</td>
+                    <td>إجمالي الدخل</td>
+                </tr>
+
             </table>
-        </section>
-        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+
+
     </div>
 </body>
