@@ -168,11 +168,16 @@ const AddItems = $this => {
 };
 
 const datehandle = ($this, ctrl, e) => {
-  debugger;
-  if (Date.parse(moment(ctrl)._d) < Date.parse(new Date())) {
+  let inRange =
+    moment(ctrl).isAfter(2000, "year") && moment(ctrl).isBefore(moment());
+
+  if (inRange) {
     swalMessage({
       title: "Expiry date cannot be past Date.",
       type: "warning"
+    });
+    $this.setState({
+      [e]: null
     });
   } else {
     $this.setState({
