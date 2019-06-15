@@ -572,7 +572,7 @@ const numberEventHandaler = ($this, context, ctrl, e) => {
   debugger;
   e = e || ctrl;
   let name = e.name || e.target.name;
-  let value = e.value || e.target.value;
+  let value = e.value === "" ? null : e.value || e.target.value;
   let item_details = $this.state.item_details;
   if (value < 0) {
     swalMessage({
