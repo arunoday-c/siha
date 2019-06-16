@@ -431,6 +431,10 @@ class RegistrationPatient extends Component {
                           patient_code: response.data.records.patient_code,
                           bill_number: response.data.records.bill_number,
                           receipt_number: response.data.records.receipt_number,
+                          hims_d_patient_id:
+                            response.data.records.hims_d_patient_id,
+                          patient_visit_id:
+                            response.data.records.patient_visit_id,
                           saveEnable: true,
                           insuranceYes: true,
                           sec_insuranceYes: true,
