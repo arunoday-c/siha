@@ -152,23 +152,25 @@ const AddItems = $this => {
 };
 
 const datehandle = ($this, ctrl, e) => {
-  let inRange =
-    moment(ctrl).isAfter(2000, "year") && moment(ctrl).isBefore(moment());
+    $this.setState({
+      [e]: moment(ctrl)._d
+    });
+};
 
+const dateValidate = ($this, value, event) => {
+  let inRange = moment(value).isBefore(moment());
   if (inRange) {
     swalMessage({
       title: "Expiry date cannot be past Date.",
       type: "warning"
     });
+    event.target.focus()
     $this.setState({
-      [e]: null
-    });
-  } else {
-    $this.setState({
-      [e]: moment(ctrl)._d
+      [event.target.name]: null
     });
   }
-};
+}
+
 const dateFormater = value => {
   if (value !== null) {
     return String(moment(value).format(Options.dateFormat));
@@ -346,6 +348,7 @@ export {
   numberchangeTexts,
   AddItems,
   datehandle,
+  dateValidate,
   dateFormater,
   getCtrlCode,
   SaveInitialStock,

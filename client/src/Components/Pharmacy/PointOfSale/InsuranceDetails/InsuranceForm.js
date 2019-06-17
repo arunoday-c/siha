@@ -68,15 +68,17 @@ class AddInsuranceForm extends Component {
             <div className="row">
               <div className="col-8">
                 <div className="row">
-                  <div className="col-12 margin-bottom-15">
-                    <button
-                      className="btn btn-default"
-                      disabled={this.state.insuranceYes}
-                      onClick={InsuranceDetails.bind(this, this, context)}
-                    >
-                      Select Insurance
-                    </button>
-                  </div>
+                  {this.state.pos_customer_type === "OT" ? (
+                    <div className="col-12 margin-bottom-15">
+                      <button
+                        className="btn btn-default"
+                        disabled={this.state.insuranceYes}
+                        onClick={InsuranceDetails.bind(this, this, context)}
+                      >
+                        Select Insurance
+                      </button>
+                    </div>
+                  ) : null}
                   <div className="col-3">
                     <AlgaehLabel
                       label={{

@@ -7,7 +7,14 @@ import AlgaehReport from "../../../Wrapper/printReports";
 import _ from "lodash";
 import extend from "extend";
 
-const assignDataandclear = ($this, context, stock_detail, assignData) => {
+const assignDataandclear = (
+  $this,
+  context,
+  stock_detail,
+  assignData,
+  po_entry_detail,
+  assignPo
+) => {
   let sub_total = Enumerable.from(stock_detail).sum(s =>
     parseFloat(s.extended_price)
   );
@@ -30,6 +37,7 @@ const assignDataandclear = ($this, context, stock_detail, assignData) => {
 
   $this.setState({
     [assignData]: stock_detail,
+    [assignPo]: po_entry_detail,
     completed: "N",
     addedItem: true,
     saveEnable: false,
@@ -55,6 +63,7 @@ const assignDataandclear = ($this, context, stock_detail, assignData) => {
   if (context !== undefined) {
     context.updateState({
       [assignData]: stock_detail,
+      [assignPo]: po_entry_detail,
       addedItem: true,
       saveEnable: false,
       completed: "N",
@@ -81,19 +90,48 @@ const assignDataandclear = ($this, context, stock_detail, assignData) => {
 
 const deleteDNDetail = ($this, context, row) => {
   let dn_entry_detail = $this.state.dn_entry_detail;
-
-  for (var i = 0; i < dn_entry_detail.length; i++) {
-    if (dn_entry_detail[i].phar_item_id === row["phar_item_id"]) {
-      dn_entry_detail.splice(i, 1);
-    }
-  }
+  let po_entry_detail = $this.state.po_entry_detail;
+  debugger;
+  // for (var i = 0; i < dn_entry_detail.length; i++) {
+  //   if (dn_entry_detail[i].phar_item_id === row["phar_item_id"]) {
+  //     dn_entry_detail.splice(i, 1);
+  //   }
+  // }
   dn_entry_detail.splice(row.rowIdx, 1);
+  let getDeleteRowData = _.find(po_entry_detail, f => f.item_id == row.item_id);
+
+  let _index = po_entry_detail.indexOf(getDeleteRowData);
+
+  getDeleteRowData.dn_quantity =
+    parseFloat(getDeleteRowData.dn_quantity) - parseFloat(row.dn_quantity);
+  getDeleteRowData.quantity_outstanding =
+    parseFloat(getDeleteRowData.quantity_outstanding) +
+    parseFloat(row.dn_quantity);
+
+  po_entry_detail[_index] = getDeleteRowData;
+  let getDnDetailToDelete = _.find(
+    po_entry_detail[_index].dn_entry_detail,
+    f => f.dn_detail_index == row.dn_detail_index
+  );
+
+  let _dn_index = po_entry_detail[_index].dn_entry_detail.indexOf(
+    getDnDetailToDelete
+  );
+  po_entry_detail[_index].dn_entry_detail.splice(_dn_index, 1);
 
   if (dn_entry_detail.length === 0) {
-    assignDataandclear($this, context, dn_entry_detail, "dn_entry_detail");
+    assignDataandclear(
+      $this,
+      context,
+      dn_entry_detail,
+      "dn_entry_detail",
+      po_entry_detail,
+      "po_entry_detail"
+    );
   } else {
     if (context !== undefined) {
       context.updateState({
+        po_entry_detail: po_entry_detail,
         dn_entry_detail: dn_entry_detail
       });
     }
@@ -535,6 +573,9 @@ const AddtoList = ($this, context) => {
     _po_entry_detail[$this.state.selected_row_index] = item_details;
 
     delete _item_details.dn_entry_detail;
+    let dn_detail_length =
+      _po_entry_detail[$this.state.selected_row_index].dn_entry_detail.length;
+    _item_details.dn_detail_index = dn_detail_length;
     _po_entry_detail[$this.state.selected_row_index].dn_entry_detail.push(
       _item_details
     );
@@ -572,7 +613,7 @@ const numberEventHandaler = ($this, context, ctrl, e) => {
   debugger;
   e = e || ctrl;
   let name = e.name || e.target.name;
-  let value = e.value || e.target.value;
+  let value = e.value === "" ? null : e.value || e.target.value;
   let item_details = $this.state.item_details;
   if (value < 0) {
     swalMessage({

@@ -19,6 +19,7 @@ import {
   AddItems,
   datehandle,
   dateFormater,
+  dateValidate,
   getCtrlCode,
   SaveInitialStock,
   LocationchangeTexts,
@@ -132,7 +133,7 @@ class InvInitialStock extends Component {
           <BreadCrumb
             title={
               <AlgaehLabel
-                label={{ forceLabel: "Initial Stock", align: "ltr" }}
+                label={{ forceLabel: "Opening Stock", align: "ltr" }}
               />
             }
             breadStyle={this.props.breadStyle}
@@ -150,7 +151,7 @@ class InvInitialStock extends Component {
               {
                 pageName: (
                   <AlgaehLabel
-                    label={{ forceLabel: "Initial Stock", align: "ltr" }}
+                    label={{ forceLabel: "Opening Stock", align: "ltr" }}
                   />
                 )
               }
@@ -351,7 +352,8 @@ class InvInitialStock extends Component {
                     }}
                     textBox={{ className: "txt-fld", name: "expiry_date" }}
                     events={{
-                      onChange: datehandle.bind(this, this)
+                      onChange: datehandle.bind(this, this),
+                      onBlur: dateValidate.bind(this, this)
                     }}
                     value={this.state.expiry_date}
                   />
@@ -519,7 +521,10 @@ class InvInitialStock extends Component {
                           </span>
                         );
                       },
-                      disabled: true
+                      disabled: true,
+                      others: {
+                        minWidth:250
+                      }
                     },
 
                     {
@@ -545,7 +550,10 @@ class InvInitialStock extends Component {
                           </span>
                         );
                       },
-                      disabled: true
+                      disabled: true,
+                      others: {
+                        minWidth:150
+                      }
                     },
 
                     {
@@ -571,7 +579,10 @@ class InvInitialStock extends Component {
                           </span>
                         );
                       },
-                      disabled: true
+                      disabled: true,
+                      others: {
+                        minWidth:150
+                      }
                     },
                     {
                       fieldName: "vendor_batchno",
@@ -579,7 +590,10 @@ class InvInitialStock extends Component {
                         <AlgaehLabel
                           label={{ forceLabel: "Vendor Batch No." }}
                         />
-                      )
+                      ),
+                      others: {
+                        minWidth:150
+                      }
                     },
                     {
                       fieldName: "expiry_date",
@@ -614,9 +628,12 @@ class InvInitialStock extends Component {
                       fieldName: "grn_number",
                       label: (
                         <AlgaehLabel
-                          label={{ forceLabel: "Recipt Number(GRN)" }}
+                          label={{ forceLabel: "Receipt No. (GRN)" }}
                         />
-                      )
+                      ),
+                      others: {
+                        minWidth:120
+                      }
                     }
                   ]}
                   keyId="item_id"

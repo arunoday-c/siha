@@ -201,8 +201,7 @@ const PurchaseOrderSearch = ($this, e) => {
                   data.po_entry_detail[i].po_quantity =
                     data.po_entry_detail[i].authorize_quantity;
 
-                  // data.po_entry_detail[i].dn_quantity =
-                  //   data.po_entry_detail[i].quantity_outstanding;
+                  data.po_entry_detail[i].dn_quantity = 0;
 
                   data.po_entry_detail[i].quantity_recieved_todate =
                     data.po_entry_detail[i].authorize_quantity -

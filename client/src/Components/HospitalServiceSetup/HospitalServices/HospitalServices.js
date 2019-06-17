@@ -179,8 +179,7 @@ class HospitalServices extends PureComponent {
                 <AlagehFormGroup
                   div={{ className: "col-10 form-group" }}
                   label={{
-                    fieldName: "cpt_code",
-                    isImp: true
+                    fieldName: "cpt_code"
                   }}
                   textBox={{
                     className: "txt-fld",
@@ -226,8 +225,7 @@ class HospitalServices extends PureComponent {
                 <AlagehAutoComplete
                   div={{ className: "col-6 form-group" }}
                   label={{
-                    fieldName: "sub_department_id",
-                    isImp: true
+                    fieldName: "sub_department_id"
                   }}
                   selector={{
                     name: "sub_department_id",

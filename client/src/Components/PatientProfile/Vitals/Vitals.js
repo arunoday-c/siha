@@ -540,7 +540,10 @@ class Vitals extends Component {
                   </div>
                   <div className="col-9 popRightDiv">
                     <div className="row">
-                      <div className="col-9 popLeftDiv">
+                      <button className="btn btn-default graphView">View Graph View</button>
+                    </div>
+                    <div className="row">
+                      <div className="col-12 vitalsChartSec">
                         <Line
                           options={{
                             scales: {
@@ -554,8 +557,7 @@ class Vitals extends Component {
                         />
                       </div>
                       <div
-                        className="col-3 popRightDiv"
-                        style={{ maxHeight: "65vh" }}
+                        className="col-12 vitalsTimeLineSec"
                       >
                         <div className="timeline">
                           {_vitalsGroup.map((data, index) => (

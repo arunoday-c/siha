@@ -72,7 +72,8 @@ export default {
       ReqData: true,
       ClearDisable: false,
       saveEnable: true,
-      InvoiceEnable: false
+      InvoiceEnable: false,
+      OTItemAddDis: false
     };
     return output;
   }

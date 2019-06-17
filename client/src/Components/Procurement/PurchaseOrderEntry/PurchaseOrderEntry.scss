@@ -1,13 +1,14 @@
 .hims-purchase-order-entry {
 }
 #POGrid {
-  .ReactTable {
-    max-width: 95vw !important;
-  }
+	.ReactTable {
+		max-width: 95vw !important;
+		max-height: 50vh !important;
+	}
 
-  @media screen and (min-width: 481px) and (max-width: 1024px) and (orientation: landscape) {
-    .ReactTable {
-      max-width: 93vw !important;
-    }
-  }
+	@media screen and (min-width: 481px) and (max-width: 1024px) and (orientation: landscape) {
+		.ReactTable {
+			max-width: 93vw !important;
+		}
+	}
 }

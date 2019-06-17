@@ -297,7 +297,7 @@ const GridAssignData = ($this, row, e) => {
     e.preventDefault();
     row["recieved_quantity"] = 0;
     swalMessage({
-      title: "Recieved Quantity cannot be Zero.",
+      title: "Received Quantity cannot be Zero.",
       type: "warning"
     });
     row.update();

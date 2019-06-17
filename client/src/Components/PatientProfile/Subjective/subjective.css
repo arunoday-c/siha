@@ -54,13 +54,13 @@
 .basicSubjective #Finalintial_icd .ReactTable {
   max-height: 20vh !important; }
 
-.algaeh-col-4 {
-  width: 33%;
+.algaeh-col-3 {
+  width: 27%;
   margin-right: 15px;
   margin-left: 15px; }
 
-.algaeh-col-7 {
-  width: calc(64% - 65px);
+.algaeh-col-8 {
+  width: calc(70% - 65px);
   margin-right: 10px; }
 
 .algaeh-fixed-right-menu {

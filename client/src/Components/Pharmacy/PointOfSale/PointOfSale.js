@@ -19,7 +19,8 @@ import {
   POSSearch,
   PostPosEntry,
   nationalityhandle,
-  CancelPosEntry
+  CancelPosEntry,
+  generateReport
 } from "./PointOfSaleEvents";
 // getCtrlCode,
 import "./PointOfSale.css";
@@ -148,46 +149,6 @@ class PointOfSale extends Component {
           title: error.message,
           type: "error"
         });
-      }
-    });
-  }
-
-  generateReport(rpt_name, rpt_desc) {
-    algaehApiCall({
-      uri: "/report",
-      method: "GET",
-      module: "reports",
-      headers: {
-        Accept: "blob"
-      },
-      others: { responseType: "blob" },
-      data: {
-        report: {
-          reportName: rpt_name,
-          reportParams: [
-            {
-              name: "hims_f_pharmacy_pos_header_id",
-              value: this.state.hims_f_pharmacy_pos_header_id
-            },
-            {
-              name: "pos_customer_type",
-              value: this.state.pos_customer_type
-            }
-          ],
-          outputFileType: "PDF"
-        }
-      },
-      onSuccess: res => {
-        const url = URL.createObjectURL(res.data);
-        let myWindow = window.open(
-          "{{ product.metafields.google.custom_label_0 }}",
-          "_blank"
-        );
-
-        myWindow.document.write(
-          "<iframe src= '" + url + "' width='100%' height='100%' />"
-        );
-        myWindow.document.title = rpt_desc;
       }
     });
   }
@@ -351,7 +312,7 @@ class PointOfSale extends Component {
                         onChange: changeTexts.bind(this, this)
                       },
                       others: {
-                        disabled: this.state.dataExitst
+                        disabled: this.state.OTItemAddDis
                       }
                     }}
                   />
@@ -369,7 +330,7 @@ class PointOfSale extends Component {
                         onChange: changeTexts.bind(this, this)
                       },
                       others: {
-                        disabled: this.state.dataExitst
+                        disabled: this.state.OTItemAddDis
                       }
                     }}
                   />
@@ -388,7 +349,7 @@ class PointOfSale extends Component {
                         onChange: changeTexts.bind(this, this)
                       },
                       others: {
-                        disabled: this.state.dataExitst
+                        disabled: this.state.OTItemAddDis
                       }
                     }}
                   />
@@ -409,7 +370,7 @@ class PointOfSale extends Component {
                       },
                       onChange: nationalityhandle.bind(this, this),
                       others: {
-                        disabled: this.state.dataExitst
+                        disabled: this.state.OTItemAddDis
                       }
                     }}
                   />
@@ -428,7 +389,7 @@ class PointOfSale extends Component {
                       },
                       onChange: changeTexts.bind(this, this),
                       others: {
-                        disabled: this.state.dataExitst
+                        disabled: this.state.OTItemAddDis
                       }
                     }}
                   />
@@ -517,7 +478,8 @@ class PointOfSale extends Component {
                   this.state.InvoiceEnable === true ? (
                     <div>
                       <button
-                        onClick={this.generateReport.bind(
+                        onClick={generateReport.bind(
+                          this,
                           this,
                           "posCashInvoice",
                           "Cash Invoice"
@@ -531,7 +493,8 @@ class PointOfSale extends Component {
                       {this.state.insured === "Y" ? (
                         <button
                           className="btn btn-other  "
-                          onClick={this.generateReport.bind(
+                          onClick={generateReport.bind(
+                            this,
                             this,
                             "posCreditInvoice",
                             "Credit Invoice"
@@ -581,13 +544,13 @@ class PointOfSale extends Component {
             </div>
             <div className="row">
               <div className="col">
-                <button
+                {/*<button
                   //onClick={this.updateEmployeeBasicDetails.bind(this)}
                   type="button"
                   className="btn btn-primary"
                 >
                   Print Bill
-                </button>
+                </button>*/}
                 <button
                   type="button"
                   className="btn btn-default"
@@ -599,7 +562,8 @@ class PointOfSale extends Component {
                 {this.state.InvoiceEnable === true ? (
                   <div>
                     <button
-                      onClick={this.generateReport.bind(
+                      onClick={generateReport.bind(
+                        this,
                         this,
                         "posCashInvoice",
                         "Cash Invoice"
@@ -612,7 +576,8 @@ class PointOfSale extends Component {
                     {this.state.insured === "Y" ? (
                       <button
                         className="btn btn-default"
-                        onClick={this.generateReport.bind(
+                        onClick={generateReport.bind(
+                          this,
                           this,
                           "posCreditInvoice",
                           "Credit Invoice"

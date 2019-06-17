@@ -64,7 +64,7 @@ class InvRequisitionList extends Component {
           <BreadCrumb
             title={
               <AlgaehLabel
-                label={{ forceLabel: "Requisition List", align: "ltr" }}
+                label={{ forceLabel: "Requisition Auth List", align: "ltr" }}
               />
             }
             breadStyle={this.props.breadStyle}
@@ -82,7 +82,7 @@ class InvRequisitionList extends Component {
               {
                 pageName: (
                   <AlgaehLabel
-                    label={{ forceLabel: "Requisition List", align: "ltr" }}
+                    label={{ forceLabel: "Requisition Auth List", align: "ltr" }}
                   />
                 )
               }
