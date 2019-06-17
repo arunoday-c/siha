@@ -51,63 +51,44 @@ class HospitalServiceSetup extends Component {
       selectedLang: prevLang
     });
 
-    if (
-      this.props.hospitalservices === undefined ||
-      this.props.hospitalservices.length === 0
-    ) {
-      this.props.getServices({
-        uri: "/serviceType/getService",
-        module: "masterSettings",
-        method: "GET",
-        redux: {
-          type: "SERVICES_GET_DATA",
-          mappingName: "hospitalservices"
-        }
-      });
-    }
-    if (
-      this.props.servicetype === undefined ||
-      this.props.servicetype.length === 0
-    ) {
-      this.props.getServiceTypes({
-        uri: "/serviceType",
-        module: "masterSettings",
-        method: "GET",
-        redux: {
-          type: "SERVIES_TYPES_GET_DATA",
-          mappingName: "servicetype"
-        }
-      });
-    }
+    this.props.getServices({
+      uri: "/serviceType/getService",
+      module: "masterSettings",
+      method: "GET",
+      redux: {
+        type: "SERVICES_GET_DATA",
+        mappingName: "hospitalservices"
+      }
+    });
 
-    if (
-      this.props.subdepartments === undefined ||
-      this.props.subdepartments.length === 0
-    ) {
-      this.props.getSubDepatments({
-        uri: "/department/get/subdepartment",
-        module: "masterSettings",
-        method: "GET",
-        redux: {
-          type: "SERVIES_TYPES_GET_DATA",
-          mappingName: "subdepartments"
-        }
-      });
-    }
+    this.props.getServiceTypes({
+      uri: "/serviceType",
+      module: "masterSettings",
+      method: "GET",
+      redux: {
+        type: "SERVIES_TYPES_GET_DATA",
+        mappingName: "servicetype"
+      }
+    });
 
-    if (
-      this.props.hospitaldetails === undefined ||
-      this.props.hospitaldetails.length === 0
-    ) {
-      this.props.getHospitalDetails({
-        uri: "/organization/getOrganization",
-        method: "GET",
-        redux: {
-          type: "HOSPITAL_DETAILS_GET_DATA",
-          mappingName: "hospitaldetails"
-        }
-      });
-    }
+    this.props.getSubDepatments({
+      uri: "/department/get/subdepartment",
+      module: "masterSettings",
+      method: "GET",
+      redux: {
+        type: "SERVIES_TYPES_GET_DATA",
+        mappingName: "subdepartments"
+      }
+    });
+
+    this.props.getHospitalDetails({
+      uri: "/organization/getOrganization",
+      method: "GET",
+      redux: {
+        type: "HOSPITAL_DETAILS_GET_DATA",
+        mappingName: "hospitaldetails"
+      }
+    });
   }
 
   ShowModel(e) {
@@ -153,6 +134,7 @@ class HospitalServiceSetup extends Component {
   }
 
   EditItemMaster(row) {
+    debugger;
     if (row.cpt_code !== null) {
       algaehApiCall({
         uri: "/icdcptcodes/selectCptCodes",
@@ -194,34 +176,6 @@ class HospitalServiceSetup extends Component {
           }
         }
       });
-
-      // this.props.getCptCodes({
-      //   uri: "/icdcptcodes/selectCptCodes",
-      //   method: "GET",
-      //   data: { hims_d_cpt_code_id: row.cpt_code },
-      //   redux: {
-      //     type: "HOSPITAL_DETAILS_GET_DATA",
-      //     mappingName: "cptcodes"
-      //   },
-      //   afterSuccess: data => {
-      //     if (data.length !== undefined && data.length !== 0) {
-      //       row.addNew = false;
-      //       row.cpt_code_data = data[0].cpt_code;
-      //       this.setState({
-      //         isOpen: !this.state.isOpen,
-      //         servicePop: row,
-      //         addNew: false
-      //       });
-      //     } else {
-      //       row.addNew = false;
-      //       this.setState({
-      //         isOpen: !this.state.isOpen,
-      //         servicePop: row,
-      //         addNew: false
-      //       });
-      //     }
-      //   }
-      // });
     } else {
       row.addNew = false;
       this.setState({

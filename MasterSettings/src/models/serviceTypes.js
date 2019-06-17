@@ -598,5 +598,45 @@ module.exports = {
         next(e);
       });
     }
+  },
+  updateServicesOthrs: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    let inputParam = req.body;
+    try {
+      _mysql
+        .executeQueryWithTransaction({
+          query:
+            "UPDATE `hims_d_services` SET `standard_fee`=?, `vat_applicable`=?,`vat_percent`=?, \
+            `updated_by`=?, `updated_date`=? WHERE `hims_d_services_id`=?",
+          values: [
+            inputParam.standard_fee,
+            inputParam.vat_applicable,
+            inputParam.vat_percent,
+
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            inputParam.service_id
+          ],
+          printQuery: true
+        })
+        .then(result => {
+          req.connection = {
+            connection: _mysql.connection,
+            isTransactionConnection: _mysql.isTransactionConnection,
+            pool: _mysql.pool
+          };
+          next();
+        })
+        .catch(error => {
+          _mysql.rollBackTransaction(() => {
+            next(error);
+          });
+        });
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
   }
 };

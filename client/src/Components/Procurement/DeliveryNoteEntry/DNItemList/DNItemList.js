@@ -31,6 +31,7 @@ import {
   numberEventHandaler
 } from "./DNItemListEvents";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import extend from "extend";
 
 class DNItemList extends Component {
   constructor(props) {
@@ -48,22 +49,24 @@ class DNItemList extends Component {
   }
 
   AddItemDelivered(context, item, index) {
+    debugger;
+    let item_details = extend({}, item);
     let dn_quantity =
       parseFloat(item.po_quantity) -
-      parseFloat(item.quantity_outstanding) -
+      parseFloat(item.dn_quantity) -
       parseFloat(item.quantity_recieved_todate);
 
-    item.free_qty = 0;
-    item.dn_quantity = dn_quantity;
+    item_details.free_qty = 0;
+    item_details.dn_quantity = dn_quantity;
     this.setState({
       selected_row_index: index,
-      item_details: item,
+      item_details: item_details,
       dn_quantity: dn_quantity,
       free_qty: 0
     });
 
     context.updateState({
-      item_details: item,
+      item_details: item_details,
       dn_quantity: dn_quantity,
       free_qty: 0
     });
@@ -155,8 +158,9 @@ class DNItemList extends Component {
                       <div className="col-3">
                         <AlgaehLabel label={{ forceLabel: "Required Qty" }} />
                         <h6>{qty_auth ? qty_auth : "----------"}</h6>
-                      </div></div>
-                       <div className="row">
+                      </div>
+                    </div>
+                    <div className="row">
                       <AlagehFormGroup
                         div={{ className: "col" }}
                         label={{
@@ -404,7 +408,8 @@ class DNItemList extends Component {
                                         : ""}
                                     </span>
                                   );
-                                }, others: {minWidth: 150}
+                                },
+                                others: { minWidth: 150 }
                               },
 
                               {
@@ -476,7 +481,8 @@ class DNItemList extends Component {
                                         : ""}
                                     </span>
                                   );
-                                }, others: {minWidth: 250}
+                                },
+                                others: { minWidth: 250 }
                               },
                               {
                                 fieldName:
@@ -547,7 +553,8 @@ class DNItemList extends Component {
                                         : ""}
                                     </span>
                                   );
-                                }, others: {minWidth: 150}
+                                },
+                                others: { minWidth: 150 }
                               },
 
                               {
@@ -741,7 +748,8 @@ class DNItemList extends Component {
                                     }}
                                   />
                                 ),
-                                disabled: true,others:{minWidth:140}
+                                disabled: true,
+                                others: { minWidth: 140 }
                               },
                               {
                                 fieldName: "quantity_recieved_todate",
@@ -752,7 +760,8 @@ class DNItemList extends Component {
                                     }}
                                   />
                                 ),
-                                disabled: true,others:{minWidth:150}
+                                disabled: true,
+                                others: { minWidth: 150 }
                               },
                               {
                                 fieldName: "discount_percentage",

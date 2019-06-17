@@ -203,25 +203,7 @@ class ItemMaster extends Component {
                         }
                       }}
                     />
-                    <AlagehFormGroup
-                      div={{ className: "col-4 mandatory form-group" }}
-                      label={{
-                        fieldName: "purchase_cost",
-                        isImp: true
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "purchase_cost",
-                        value: this.state.purchase_cost,
-                        others: {
-                          min: 0,
-                          type: "number"
-                        },
-                        events: {
-                          onChange: numberEventHandaler.bind(this, this)
-                        }
-                      }}
-                    />
+
                     <AlagehAutoComplete
                       div={{ className: "col-4 form-group" }}
                       label={{
@@ -331,54 +313,54 @@ class ItemMaster extends Component {
                         }
                       }}
                     />
-                    {this.state.hims_d_item_master_id === null ? (
-                      <div className="col-12">
-                        <div className="row">
-                          <div className="col-6">
-                            <AlgaehLabel
-                              label={{ fieldName: "vat_applicable" }}
-                            />
-                            <div className=" customCheckbox ">
-                              <label className="checkbox inline">
-                                <input
-                                  type="checkbox"
-                                  name="vat_applicable"
-                                  value="Y"
-                                  checked={
-                                    this.state.vat_applicable === "Y"
-                                      ? true
-                                      : false
-                                  }
-                                  onChange={VatAppilicable.bind(this, this)}
-                                />
-                                <span>Yes</span>
-                              </label>
-                            </div>
-                          </div>
-                          <AlagehFormGroup
-                            div={{ className: "col-6 form-group" }}
-                            label={{
-                              fieldName: "vat_percent"
-                            }}
-                            textBox={{
-                              className: "txt-fld",
-                              name: "vat_percent",
-                              value: this.state.vat_percent,
-                              events: {
-                                onChange: numberEventHandaler.bind(this, this)
-                              },
-                              others: {
-                                disabled:
-                                  this.state.vat_applicable === "Y"
-                                    ? false
-                                    : true,
-                                type: "number"
-                              }
-                            }}
+
+                    <div className="col-12">
+                      <div className="row">
+                        <div className="col-6">
+                          <AlgaehLabel
+                            label={{ fieldName: "vat_applicable" }}
                           />
+                          <div className=" customCheckbox ">
+                            <label className="checkbox inline">
+                              <input
+                                type="checkbox"
+                                name="vat_applicable"
+                                value="Y"
+                                checked={
+                                  this.state.vat_applicable === "Y"
+                                    ? true
+                                    : false
+                                }
+                                onChange={VatAppilicable.bind(this, this)}
+                              />
+                              <span>Yes</span>
+                            </label>
+                          </div>
                         </div>
+                        <AlagehFormGroup
+                          div={{ className: "col-6 form-group" }}
+                          label={{
+                            fieldName: "vat_percent"
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "vat_percent",
+                            value: this.state.vat_percent,
+                            events: {
+                              onChange: numberEventHandaler.bind(this, this)
+                            },
+                            others: {
+                              disabled:
+                                this.state.vat_applicable === "Y"
+                                  ? false
+                                  : true,
+                              type: "number"
+                            }
+                          }}
+                        />
                       </div>
-                    ) : null}
+                    </div>
+
                     <div className="col-12  form-group">
                       <AlgaehLabel
                         label={{ forceLabel: "Additional Information" }}
@@ -651,6 +633,24 @@ class ItemMaster extends Component {
                     <AlagehAutoComplete
                       div={{ className: "col-4 mandatory form-group" }}
                       label={{
+                        fieldName: "purchase_uom_id",
+                        isImp: true
+                      }}
+                      selector={{
+                        name: "purchase_uom_id",
+                        className: "select-fld",
+                        value: this.state.purchase_uom_id,
+                        dataSource: {
+                          textField: "uom_description",
+                          valueField: "uom_id",
+                          data: this.state.detail_item_uom
+                        }
+                      }}
+                      //forceUpdate={true}
+                    />
+                    <AlagehAutoComplete
+                      div={{ className: "col-4 mandatory form-group" }}
+                      label={{
                         fieldName: "sales_uom_id",
                         isImp: true
                       }}
@@ -685,7 +685,7 @@ class ItemMaster extends Component {
                         }
                       }}
                     />
-                    <AlagehAutoComplete
+                    {/*<AlagehAutoComplete
                       div={{ className: "col-4" }}
                       label={{
                         fieldName: "item_uom_id"
@@ -700,39 +700,40 @@ class ItemMaster extends Component {
                           data: this.state.detail_item_uom
                         }
                       }}
-                    />
-                    <AlagehAutoComplete
+                    />*/}
+
+                    <AlagehFormGroup
                       div={{ className: "col-4 mandatory form-group" }}
                       label={{
-                        fieldName: "purchase_uom_id",
+                        fieldName: "purchase_cost",
                         isImp: true
                       }}
-                      selector={{
-                        name: "purchase_uom_id",
-                        className: "select-fld",
-                        value: this.state.purchase_uom_id,
-                        dataSource: {
-                          textField: "uom_description",
-                          valueField: "uom_id",
-                          data: this.state.detail_item_uom
+                      textBox={{
+                        className: "txt-fld",
+                        name: "purchase_cost",
+                        value: this.state.purchase_cost,
+                        others: {
+                          min: 0,
+                          type: "number"
+                        },
+                        events: {
+                          onChange: numberEventHandaler.bind(this, this)
                         }
                       }}
-                      //forceUpdate={true}
                     />
-                    {this.state.hims_d_item_master_id === null ? (
-                      <AlagehFormGroup
-                        div={{ className: "col-4 mandatory form-group" }}
-                        label={{
-                          fieldName: "price"
-                        }}
-                        textBox={{
-                          decimal: { allowNegative: false },
-                          className: "txt-fld",
-                          name: "standard_fee",
-                          value: this.state.standard_fee
-                        }}
-                      />
-                    ) : null}
+
+                    <AlagehFormGroup
+                      div={{ className: "col-4 mandatory form-group" }}
+                      label={{
+                        fieldName: "price"
+                      }}
+                      textBox={{
+                        decimal: { allowNegative: false },
+                        className: "txt-fld",
+                        name: "standard_fee",
+                        value: this.state.standard_fee
+                      }}
+                    />
                   </div>
                 </div>
               </div>

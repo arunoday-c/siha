@@ -93,14 +93,12 @@ export default ({ config, db }) => {
     selectCptCodes,
     (req, res, next) => {
       let result = req.records;
-      if (result.length == 0) {
-        next(httpStatus.generateError(httpStatus.notFound, "No records found"));
-      } else {
-        res.status(httpStatus.ok).json({
-          success: true,
-          records: result
-        });
-      }
+
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+
       next();
     },
     releaseConnection

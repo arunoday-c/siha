@@ -40,32 +40,29 @@ export default () => {
     }
   );
 
-  api.put(
-    "/updateReceiptEntry",
-    updateReceiptEntry,
-    (req, res, next) => {
-      utilities.logger().log("grn_for: ", req.body.grn_for);
-      if (req.body.grn_for == "PHR") {
-        updateIntoItemLocation(req, res, next);
-      } else {
-        next();
-      }
-    },
-    (req, res, next) => {
-      if (req.body.grn_for == "INV") {
-        utilities.logger().log("grn_for: ", req.body.grn_for);
-        updateIntoInvItemLocation(req, res, next);
-      } else {
-        next();
-      }
-    },
-    (req, res, next) => {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: true,
-        records: req.records
-      });
-    }
-  );
+  api.put("/updateReceiptEntry", updateReceiptEntry, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+  // (req, res, next) => {
+  //   utilities.logger().log("grn_for: ", req.body.grn_for);
+  //   if (req.body.grn_for == "PHR") {
+  //     updateIntoItemLocation(req, res, next);
+  //   } else {
+  //     next();
+  //   }
+  // },
+  // (req, res, next) => {
+  //   if (req.body.grn_for == "INV") {
+  //     utilities.logger().log("grn_for: ", req.body.grn_for);
+  //     updateIntoInvItemLocation(req, res, next);
+  //   } else {
+  //     next();
+  //   }
+  // },
 
   return api;
 };
