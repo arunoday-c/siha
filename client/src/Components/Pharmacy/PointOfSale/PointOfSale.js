@@ -312,7 +312,7 @@ class PointOfSale extends Component {
                         onChange: changeTexts.bind(this, this)
                       },
                       others: {
-                        disabled: this.state.dataExitst
+                        disabled: this.state.OTItemAddDis
                       }
                     }}
                   />
@@ -330,7 +330,7 @@ class PointOfSale extends Component {
                         onChange: changeTexts.bind(this, this)
                       },
                       others: {
-                        disabled: this.state.dataExitst
+                        disabled: this.state.OTItemAddDis
                       }
                     }}
                   />
@@ -349,7 +349,7 @@ class PointOfSale extends Component {
                         onChange: changeTexts.bind(this, this)
                       },
                       others: {
-                        disabled: this.state.dataExitst
+                        disabled: this.state.OTItemAddDis
                       }
                     }}
                   />
@@ -370,7 +370,7 @@ class PointOfSale extends Component {
                       },
                       onChange: nationalityhandle.bind(this, this),
                       others: {
-                        disabled: this.state.dataExitst
+                        disabled: this.state.OTItemAddDis
                       }
                     }}
                   />
@@ -389,7 +389,7 @@ class PointOfSale extends Component {
                       },
                       onChange: changeTexts.bind(this, this),
                       others: {
-                        disabled: this.state.dataExitst
+                        disabled: this.state.OTItemAddDis
                       }
                     }}
                   />

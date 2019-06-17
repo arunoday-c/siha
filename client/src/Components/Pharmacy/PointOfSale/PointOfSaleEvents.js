@@ -85,15 +85,17 @@ const getPosEntry = ($this, pos_number) => {
           data.postEnable = true;
           data.posCancelled = true;
           data.saveEnable = true;
+          data.InvoiceEnable = true;
         } else {
           data.postEnable = false;
           data.saveEnable = false;
+          data.InvoiceEnable = false;
         }
         if (data.visit_id !== null) {
           data.pos_customer_type = "OP";
         }
         data.dataExitst = true;
-        data.InvoiceEnable = true;
+
         data.insured = data.insurance_yesno;
         data.mode_of_pay = data.insurance_yesno === "Y" ? "2" : "1";
         if (data.receiptdetails.length !== 0) {
