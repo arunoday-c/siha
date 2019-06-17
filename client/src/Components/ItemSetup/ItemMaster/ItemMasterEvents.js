@@ -7,7 +7,7 @@ import ItemSetup from "../../../Models/ItemSetup";
 
 const Validations = $this => {
   let isError = false;
-  console.log($this.state);
+  debugger;
 
   if (!$this.state.item_code) {
     isError = true;
@@ -66,18 +66,20 @@ const Validations = $this => {
     });
     return isError;
   } else if (
-    $this.state.hims_d_item_master_id === null &&
-    $this.state.standard_fee === 0
+    $this.state.standard_fee === null ||
+    $this.state.standard_fee === "" ||
+    parseFloat($this.state.standard_fee) === 0
   ) {
     isError = true;
     swalMessage({
       type: "error",
-      title: "Please Enter the Price."
+      title: "Please Enter the Sales Price."
     });
     return isError;
   } else if (
     $this.state.purchase_cost === null ||
-    $this.state.purchase_cost === 0
+    $this.state.purchase_cost === "" ||
+    parseFloat($this.state.purchase_cost) === 0
   ) {
     isError = true;
     swalMessage({
@@ -86,9 +88,10 @@ const Validations = $this => {
     });
     return isError;
   } else if (
-    $this.state.hims_d_item_master_id === null &&
     $this.state.vat_applicable === "Y" &&
-    parseFloat($this.state.vat_percent) === 0
+    ($this.state.vat_percent === null ||
+      $this.state.vat_percent === "" ||
+      parseFloat($this.state.vat_percent) === 0)
   ) {
     isError = true;
     swalMessage({
@@ -96,7 +99,11 @@ const Validations = $this => {
       title: "Enter the Vat Percentage."
     });
     return isError;
-  } else if ($this.state.reorder_qty === 0) {
+  } else if (
+    $this.state.reorder_qty === null ||
+    $this.state.reorder_qty === "" ||
+    parseFloat($this.state.reorder_qty) === 0
+  ) {
     isError = true;
     swalMessage({
       type: "error",

@@ -14,10 +14,9 @@ module.exports = {
             "INSERT INTO `hims_d_item_master` (`item_code`, `item_description`, `structure_id`,\
             `generic_id`, `category_id`, `group_id`, `item_uom_id`, `purchase_uom_id`, `sales_uom_id`,\
             `stocking_uom_id`, `service_id`,`addl_information`, `decimals`, `purchase_cost`, `markup_percent`,\
-            `sales_price`,`sfda_code`,`required_batchno_expiry`, `reorder_qty`, `form_id`, `storage_id`\
-            `created_date`, `created_by`,\
-            `update_date`,`updated_by`)\
-         VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            `sales_price`,`sfda_code`,`required_batchno_expiry`, `reorder_qty`, `form_id`, `storage_id`,\
+            `created_date`, `created_by`,`update_date`,`updated_by`)\
+         VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
           values: [
             input.item_code,
             input.item_description,
