@@ -376,7 +376,7 @@ module.exports = {
                     const pageOrentation =
                       _inputParam.pageOrentation == null
                         ? {}
-                        : _inputParam.pageOrentation == "landscap"
+                        : _inputParam.pageOrentation == "landscape"
                         ? { landscape: true }
                         : {};
 
@@ -654,7 +654,7 @@ module.exports = {
                         const pageOrentation =
                           _inputParam.pageOrentation == null
                             ? {}
-                            : _inputParam.pageOrentation == "landscap"
+                            : _inputParam.pageOrentation == "landscape"
                             ? { landscape: true }
                             : {};
                         const pageSize =

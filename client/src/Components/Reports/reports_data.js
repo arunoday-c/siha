@@ -17,9 +17,9 @@ export default [
       {
         subitem: "Doctor and Status wise report",
         reportName: "doctor_Status_wise_appointment",
-        pageSize: "A4",
         requireIframe: true,
-        pageOrentation: "landscap", //"portrait",
+        pageSize: "A4",
+        pageOrentation: "landscape", //"portrait",
         reportParameters: [
           {
             type: "date",
@@ -978,9 +978,9 @@ export default [
       {
         subitem: "Items Consumption Report",
         reportName: "departmentDoctorConsumption",
-        pageSize: "A4",
         requireIframe: true,
-        pageOrentation: "landscap", //"portrait",
+        pageSize: "A4",
+        pageOrentation: "landscape", //"portrait",
         reportParameters: [
           {
             type: "date",
@@ -1185,6 +1185,8 @@ export default [
         reportName: "salesReceiptListPharmacy",
         template_name: "salesReceiptListPharmacy",
         requireIframe: true,
+        pageSize: "A4",
+        pageOrentation: "landscape", //"portrait",
         reportParameters: [
           {
             className: "col-2",
@@ -1505,9 +1507,9 @@ export default [
       {
         subitem: "GP Statement - Bill Wise",
         template_name: "gpBillwisePharmacy",
-        pageSize: "A4",
         requireIframe: true,
-        pageOrentation: "landscap", //"portrait",
+        pageSize: "A4",
+        pageOrentation: "landscape", //"portrait",
         reportParameters: [
           {
             type: "date",
