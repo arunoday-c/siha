@@ -694,6 +694,15 @@ class PosListItems extends Component {
                                         label={{ forceLabel: "Unit Cost" }}
                                       />
                                     ),
+                                    displayTemplate: row => {
+                                      return (
+                                        <span>
+                                          {getAmountFormart(row.unit_cost, {
+                                            appendSymbol: false
+                                          })}
+                                        </span>
+                                      );
+                                    },
                                     disabled: true,
                                     others: {
                                       minWidth: 80
@@ -707,6 +716,15 @@ class PosListItems extends Component {
                                         label={{ forceLabel: "Ext. Cost" }}
                                       />
                                     ),
+                                    displayTemplate: row => {
+                                      return (
+                                        <span>
+                                          {getAmountFormart(row.extended_cost, {
+                                            appendSymbol: false
+                                          })}
+                                        </span>
+                                      );
+                                    },
                                     disabled: true,
                                     others: {
                                       minWidth: 80
@@ -808,6 +826,18 @@ class PosListItems extends Component {
                                         }}
                                       />
                                     ),
+                                    displayTemplate: row => {
+                                      return (
+                                        <span>
+                                          {getAmountFormart(
+                                            row.net_extended_cost,
+                                            {
+                                              appendSymbol: false
+                                            }
+                                          )}
+                                        </span>
+                                      );
+                                    },
                                     disabled: true
                                   }
                                 ]}

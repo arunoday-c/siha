@@ -300,7 +300,12 @@ class PhySchSetup extends Component {
     } else if (provider_array.length === 0) {
       swalMessage({
         title: "Please Select Doctors to add to this schedule.",
-        type: "success"
+        type: "warning"
+      });
+    } else if (this.state.slot.length === 0) {
+      swalMessage({
+        title: "Please Select a Slot.",
+        type: "warning"
       });
     } else if (this.state.from_date > this.state.to_date) {
       swalMessage({
@@ -1146,12 +1151,14 @@ class PhySchSetup extends Component {
                     <AlagehAutoComplete
                       div={{ className: "col-5" }}
                       label={{
-                        fieldName: "sel_slot_time"
+                        fieldName: "sel_slot_time",
+                        isImp: true
                       }}
                       selector={{
                         name: "slot",
                         className: "select-fld",
                         value: this.state.slot,
+
                         dataSource: {
                           textField: "name",
                           valueField: "value",
@@ -1569,7 +1576,8 @@ class PhySchSetup extends Component {
                     <AlagehAutoComplete
                       div={{ className: "col-5" }}
                       label={{
-                        fieldName: "sel_slot_time"
+                        fieldName: "sel_slot_time",
+                        isImp: true
                       }}
                       selector={{
                         name: "slot",

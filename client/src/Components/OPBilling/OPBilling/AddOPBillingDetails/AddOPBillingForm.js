@@ -221,7 +221,7 @@ class AddOPBillingForm extends Component {
   //Calculate Row Detail
   calculateAmount(row, ctrl, e) {
     e = e || ctrl;
-    
+
     if (e.target.value !== e.target.oldvalue) {
       let $this = this;
       let billdetails = this.state.billdetails;
@@ -609,6 +609,15 @@ class AddOPBillingForm extends Component {
                           label: (
                             <AlgaehLabel label={{ fieldName: "unit_cost" }} />
                           ),
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {getAmountFormart(row.unit_cost, {
+                                  appendSymbol: false
+                                })}
+                              </span>
+                            );
+                          },
                           disabled: true
                         },
                         {
@@ -672,6 +681,15 @@ class AddOPBillingForm extends Component {
                               label={{ fieldName: "discount_amout" }}
                             />
                           ),
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {getAmountFormart(row.discount_amout, {
+                                  appendSymbol: false
+                                })}
+                              </span>
+                            );
+                          },
                           editorTemplate: row => {
                             return (
                               <AlagehFormGroup
@@ -709,6 +727,15 @@ class AddOPBillingForm extends Component {
                           label: (
                             <AlgaehLabel label={{ fieldName: "net_amout" }} />
                           ),
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {getAmountFormart(row.net_amout, {
+                                  appendSymbol: false
+                                })}
+                              </span>
+                            );
+                          },
                           disabled: true
                         }
                       ]}
