@@ -88,7 +88,7 @@ const assignDataandclear = (
   }
 };
 
-const deleteDNDetail = ($this, context, row) => {
+const deleteDNDetail = ($this, row, context) => {
   let dn_entry_detail = $this.state.dn_entry_detail;
   let po_entry_detail = $this.state.po_entry_detail;
   debugger;
@@ -97,7 +97,8 @@ const deleteDNDetail = ($this, context, row) => {
   //     dn_entry_detail.splice(i, 1);
   //   }
   // }
-  dn_entry_detail.splice(row.rowIdx, 1);
+  let _dn_index_data = dn_entry_detail.indexOf(row);
+  dn_entry_detail.splice(_dn_index_data, 1);
   let getDeleteRowData = _.find(po_entry_detail, f => f.item_id == row.item_id);
 
   let _index = po_entry_detail.indexOf(getDeleteRowData);
@@ -430,7 +431,13 @@ const OnChangeDeliveryQty = ($this, context, e) => {
   let delivery_quantity = _.sumBy(latest_added, s => parseFloat(s.dn_quantity));
 
   let entered_dn_quantity =
-    $this.state.po_entry_detail[$this.state.selected_row_index].dn_quantity;
+    parseFloat(
+      $this.state.po_entry_detail[$this.state.selected_row_index].dn_quantity
+    ) +
+    parseFloat(
+      $this.state.po_entry_detail[$this.state.selected_row_index]
+        .quantity_recieved_todate
+    );
 
   item_details.quantity_recieved_todate =
     item_details.quantity_recieved_todate === 0
@@ -516,10 +523,10 @@ const AddtoList = ($this, context) => {
   let _po_entry_detail = $this.state.po_entry_detail;
 
   if (
-    ($this.state.dn_quantity === 0 ||
+    (parseFloat($this.state.dn_quantity) === 0 ||
       $this.state.dn_quantity === "" ||
       $this.state.dn_quantity === null) &&
-    ($this.state.free_qty === 0 ||
+    (parseFloat($this.state.free_qty) === 0 ||
       $this.state.free_qty === "" ||
       $this.state.free_qty === null)
   ) {

@@ -183,6 +183,7 @@ const PurchaseOrderSearch = ($this, e) => {
           },
           onSuccess: response => {
             if (response.data.success) {
+              debugger;
               let data = response.data.records;
               if (data !== null && data !== undefined) {
                 AlgaehLoader({ show: true });
@@ -324,7 +325,7 @@ const SaveDNEnrty = $this => {
         InputObj.pharmacy_stock_detail[i].pharmacy_uom_id;
 
       InputObj.pharmacy_stock_detail[i].sales_uom =
-        InputObj.pharmacy_stock_detail[i].pharmacy_uom_id;
+        InputObj.pharmacy_stock_detail[i].sales_uom_id;
       InputObj.pharmacy_stock_detail[i].item_id =
         InputObj.pharmacy_stock_detail[i].phar_item_id;
       InputObj.pharmacy_stock_detail[i].item_code_id =
@@ -351,7 +352,7 @@ const SaveDNEnrty = $this => {
       InputObj.inventory_stock_detail[i].uom_id =
         InputObj.inventory_stock_detail[i].inventory_uom_id;
       InputObj.inventory_stock_detail[i].sales_uom =
-        InputObj.inventory_stock_detail[i].inventory_uom_id;
+        InputObj.inventory_stock_detail[i].sales_uom_id;
       InputObj.inventory_stock_detail[i].item_id =
         InputObj.inventory_stock_detail[i].inv_item_id;
       InputObj.inventory_stock_detail[i].item_code_id =

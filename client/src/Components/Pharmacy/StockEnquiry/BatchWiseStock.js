@@ -22,6 +22,7 @@ import "./StockEnquiry.css";
 import "../../../styles/site.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import Enumerable from "linq";
+import { getAmountFormart } from "../../../utils/GlobalFunctions";
 
 class BatchWiseStock extends Component {
   constructor(props) {
@@ -132,6 +133,48 @@ class BatchWiseStock extends Component {
                       }
                     },
                     {
+                      fieldName: "stocking_uom_id",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Stocking UOM" }} />
+                      ),
+                      displayTemplate: row => {
+                        let display =
+                          this.props.itemuom === undefined
+                            ? []
+                            : this.props.itemuom.filter(
+                                f =>
+                                  f.hims_d_pharmacy_uom_id ===
+                                  row.stocking_uom_id
+                              );
+
+                        return (
+                          <span>
+                            {display !== null && display.length !== 0
+                              ? display[0].uom_description
+                              : ""}
+                          </span>
+                        );
+                      },
+                      editorTemplate: row => {
+                        let display =
+                          this.props.itemuom === undefined
+                            ? []
+                            : this.props.itemuom.filter(
+                                f =>
+                                  f.hims_d_pharmacy_uom_id ===
+                                  row.stocking_uom_id
+                              );
+
+                        return (
+                          <span>
+                            {display !== null && display.length !== 0
+                              ? display[0].uom_description
+                              : ""}
+                          </span>
+                        );
+                      }
+                    },
+                    {
                       fieldName: "sales_uom",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Sales UOM" }} />
@@ -216,6 +259,15 @@ class BatchWiseStock extends Component {
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Avg. Cost" }} />
                       ),
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {getAmountFormart(row.avgcost, {
+                              appendSymbol: false
+                            })}
+                          </span>
+                        );
+                      },
                       disabled: true
                     },
                     {
@@ -223,6 +275,15 @@ class BatchWiseStock extends Component {
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Sales Price" }} />
                       ),
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {getAmountFormart(row.sale_price, {
+                              appendSymbol: false
+                            })}
+                          </span>
+                        );
+                      },
                       editorTemplate: row => {
                         return (
                           <AlagehFormGroup

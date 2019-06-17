@@ -478,10 +478,12 @@ class InitialStock extends Component {
                               className="fas fa-times"
                               onClick={deleteInitialStock.bind(this, this, row)}
                             />
-                            <i
-                              className="fas fa-barcode"
-                              onClick={printBarcode.bind(this, this, row)}
-                            />
+                            {this.state.saveEnable === true ? (
+                              <i
+                                className="fas fa-barcode"
+                                onClick={printBarcode.bind(this, this, row)}
+                              />
+                            ) : null}
                           </span>
                         );
                       }
@@ -535,7 +537,7 @@ class InitialStock extends Component {
                       },
                       disabled: true,
                       others: {
-                        minWidth:250
+                        minWidth: 250
                       }
                     },
 
@@ -563,7 +565,7 @@ class InitialStock extends Component {
                       },
                       disabled: true,
                       others: {
-                        minWidth:150
+                        minWidth: 150
                       }
                     },
 
@@ -590,7 +592,7 @@ class InitialStock extends Component {
                       },
                       disabled: true,
                       others: {
-                        minWidth:150
+                        minWidth: 150
                       }
                     },
                     {
@@ -601,7 +603,7 @@ class InitialStock extends Component {
                         />
                       ),
                       others: {
-                        minWidth:150
+                        minWidth: 150
                       }
                     },
                     {
@@ -642,7 +644,7 @@ class InitialStock extends Component {
                         />
                       ),
                       others: {
-                        minWidth:130
+                        minWidth: 130
                       }
                     }
                   ]}

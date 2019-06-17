@@ -400,9 +400,9 @@ class POItemList extends Component {
                                   </span>
                                 );
                               },
-                        others:{
-                          minWidth:150
-                        }
+                              others: {
+                                minWidth: 150
+                              }
                             },
 
                             {
@@ -475,9 +475,9 @@ class POItemList extends Component {
                                   </span>
                                 );
                               },
-                        others:{
-                          minWidth:250
-                        }
+                              others: {
+                                minWidth: 250
+                              }
                             },
                             {
                               fieldName:
@@ -558,6 +558,15 @@ class POItemList extends Component {
                                   label={{ forceLabel: "Unit Price" }}
                                 />
                               ),
+                              displayTemplate: row => {
+                                return (
+                                  <span>
+                                    {getAmountFormart(row.unit_price, {
+                                      appendSymbol: false
+                                    })}
+                                  </span>
+                                );
+                              },
                               disabled: true
                             },
                             {
@@ -576,6 +585,15 @@ class POItemList extends Component {
                                   label={{ forceLabel: "Ext. Price" }}
                                 />
                               ),
+                              displayTemplate: row => {
+                                return (
+                                  <span>
+                                    {getAmountFormart(row.extended_price, {
+                                      appendSymbol: false
+                                    })}
+                                  </span>
+                                );
+                              },
                               disabled: true
                             },
                             {
@@ -614,7 +632,7 @@ class POItemList extends Component {
                                 );
                               },
                               others: {
-                                minWidth:100
+                                minWidth: 100
                               }
                             },
                             {
@@ -624,6 +642,15 @@ class POItemList extends Component {
                                   label={{ forceLabel: "Discount Amt." }}
                                 />
                               ),
+                              displayTemplate: row => {
+                                return (
+                                  <span>
+                                    {getAmountFormart(row.sub_discount_amount, {
+                                      appendSymbol: false
+                                    })}
+                                  </span>
+                                );
+                              },
                               editorTemplate: row => {
                                 return (
                                   <AlagehFormGroup
@@ -660,6 +687,15 @@ class POItemList extends Component {
                                   label={{ forceLabel: "Net Ext Cost" }}
                                 />
                               ),
+                              displayTemplate: row => {
+                                return (
+                                  <span>
+                                    {getAmountFormart(row.net_extended_cost, {
+                                      appendSymbol: false
+                                    })}
+                                  </span>
+                                );
+                              },
                               disabled: true
                             },
 
@@ -670,6 +706,15 @@ class POItemList extends Component {
                                   label={{ forceLabel: "Unit Cost" }}
                                 />
                               ),
+                              displayTemplate: row => {
+                                return (
+                                  <span>
+                                    {getAmountFormart(row.unit_cost, {
+                                      appendSymbol: false
+                                    })}
+                                  </span>
+                                );
+                              },
                               disabled: true
                             },
                             {
@@ -702,7 +747,7 @@ class POItemList extends Component {
                                 );
                               },
                               others: {
-                                minWidth:130
+                                minWidth: 130
                               }
                             },
 
@@ -751,7 +796,7 @@ class POItemList extends Component {
                               ),
                               disabled: true,
                               others: {
-                                minWidth:130
+                                minWidth: 130
                               }
                             },
                             {
@@ -772,6 +817,15 @@ class POItemList extends Component {
                                   label={{ forceLabel: "Tax Amt" }}
                                 />
                               ),
+                              displayTemplate: row => {
+                                return (
+                                  <span>
+                                    {getAmountFormart(row.tax_amount, {
+                                      appendSymbol: false
+                                    })}
+                                  </span>
+                                );
+                              },
                               disabled: true
                             },
 
@@ -782,6 +836,15 @@ class POItemList extends Component {
                                   label={{ forceLabel: "Total Amt" }}
                                 />
                               ),
+                              displayTemplate: row => {
+                                return (
+                                  <span>
+                                    {getAmountFormart(row.total_amount, {
+                                      appendSymbol: false
+                                    })}
+                                  </span>
+                                );
+                              },
                               disabled: true
                             }
                           ]}

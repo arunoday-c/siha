@@ -123,8 +123,8 @@ class ItemListsReturn extends Component {
                             </span>
                           );
                         },
-                        others:{
-                          minWidth:150
+                        others: {
+                          minWidth: 150
                         }
                       },
 
@@ -154,21 +154,17 @@ class ItemListsReturn extends Component {
                       {
                         fieldName: "quantity",
                         label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Sold Qty" }}
-                          />
+                          <AlgaehLabel label={{ forceLabel: "Sold Qty" }} />
                         ),
                         disabled: true,
-                        others:{
-                          minWidth:90
+                        others: {
+                          minWidth: 90
                         }
                       },
                       {
                         fieldName: "return_quantity",
                         label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Return Qty" }}
-                          />
+                          <AlgaehLabel label={{ forceLabel: "Return Qty" }} />
                         ),
                         editorTemplate: row => {
                           return (
@@ -198,8 +194,8 @@ class ItemListsReturn extends Component {
                             />
                           );
                         },
-                        others:{
-                          minWidth:90
+                        others: {
+                          minWidth: 90
                         }
                       },
                       {
@@ -237,8 +233,8 @@ class ItemListsReturn extends Component {
                             </span>
                           );
                         },
-                        others:{
-                          minWidth:90
+                        others: {
+                          minWidth: 90
                         }
                       },
                       {
@@ -246,19 +242,35 @@ class ItemListsReturn extends Component {
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Unit Cost" }} />
                         ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {getAmountFormart(row.unit_cost, {
+                                appendSymbol: false
+                              })}
+                            </span>
+                          );
+                        },
                         disabled: true,
-                        others:{
-                          minWidth:90
+                        others: {
+                          minWidth: 90
                         }
                       },
 
                       {
                         fieldName: "extended_cost",
                         label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Ext. Cost" }}
-                          />
+                          <AlgaehLabel label={{ forceLabel: "Ext. Cost" }} />
                         ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {getAmountFormart(row.extended_cost, {
+                                appendSymbol: false
+                              })}
+                            </span>
+                          );
+                        },
                         disabled: true
                       },
                       {
@@ -275,10 +287,17 @@ class ItemListsReturn extends Component {
                       {
                         fieldName: "discount_amout",
                         label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "discount Amt" }}
-                          />
+                          <AlgaehLabel label={{ forceLabel: "discount Amt" }} />
                         ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {getAmountFormart(row.discount_amout, {
+                                appendSymbol: false
+                              })}
+                            </span>
+                          );
+                        },
                         disabled: true
                       },
 
@@ -289,6 +308,15 @@ class ItemListsReturn extends Component {
                             label={{ forceLabel: "Net Extended Cost" }}
                           />
                         ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {getAmountFormart(row.net_extended_cost, {
+                                appendSymbol: false
+                              })}
+                            </span>
+                          );
+                        },
                         disabled: true
                       }
                     ]}

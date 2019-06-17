@@ -70,34 +70,24 @@ class PointOfSale extends Component {
   componentDidMount() {
     document.addEventListener("keypress", this.onKeyPress, false);
 
-    if (
-      this.props.positemlist === undefined ||
-      this.props.positemlist.length === 0
-    ) {
-      this.props.getItems({
-        uri: "/pharmacy/getItemMaster",
-        module: "pharmacy",
-        method: "GET",
-        redux: {
-          type: "ITEM_GET_DATA",
-          mappingName: "positemlist"
-        }
-      });
-    }
+    this.props.getItems({
+      uri: "/pharmacy/getItemMaster",
+      module: "pharmacy",
+      method: "GET",
+      redux: {
+        type: "ITEM_GET_DATA",
+        mappingName: "positemlist"
+      }
+    });
 
-    if (
-      this.props.nationalities === undefined ||
-      this.props.nationalities.length === 0
-    ) {
-      this.props.getNationalities({
-        uri: "/masters/get/nationality",
-        method: "GET",
-        redux: {
-          type: "NAT_GET_DATA",
-          mappingName: "nationalities"
-        }
-      });
-    }
+    this.props.getNationalities({
+      uri: "/masters/get/nationality",
+      method: "GET",
+      redux: {
+        type: "NAT_GET_DATA",
+        mappingName: "nationalities"
+      }
+    });
 
     this.props.getLocation({
       uri: "/pharmacyGlobal/getUserLocationPermission",

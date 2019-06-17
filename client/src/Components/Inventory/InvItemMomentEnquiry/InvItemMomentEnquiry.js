@@ -116,9 +116,9 @@ class InvItemMomentEnquiry extends Component {
                     div={{ className: "col" }}
                     label={{ forceLabel: "Item Name" }}
                     selector={{
-                      name: "item_id",
+                      name: "item_code_id",
                       className: "select-fld",
-                      value: this.state.item_id,
+                      value: this.state.item_code_id,
                       dataSource: {
                         textField: "item_description",
                         valueField: "hims_d_inventory_item_master_id",
@@ -127,7 +127,7 @@ class InvItemMomentEnquiry extends Component {
                       onChange: changeTexts.bind(this, this),
                       onClear: () => {
                         this.setState({
-                          item_id: null
+                          item_code_id: null
                         });
                       }
                     }}
