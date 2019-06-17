@@ -114,8 +114,10 @@ export default [
     submenu: [
       {
         subitem: "Department Wise Income",
-        template_name: "Income/departmentIncome",
+       // template_name: "Income/departmentIncome",
+        reportName: " ",
         reportQuery: "subDepartmentIncome",
+        requireIframe:true,
         reportParameters: [
           {
             type: "date",

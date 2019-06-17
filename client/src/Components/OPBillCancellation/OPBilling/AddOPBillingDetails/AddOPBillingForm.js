@@ -431,6 +431,15 @@ class AddOPBillingForm extends Component {
                           label: (
                             <AlgaehLabel label={{ fieldName: "unit_cost" }} />
                           ),
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {getAmountFormart(row.unit_cost, {
+                                  appendSymbol: false
+                                })}
+                              </span>
+                            );
+                          },
                           disabled: true
                         },
                         {
@@ -447,6 +456,15 @@ class AddOPBillingForm extends Component {
                               label={{ fieldName: "gross_amount" }}
                             />
                           ),
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {getAmountFormart(row.gross_amount, {
+                                  appendSymbol: false
+                                })}
+                              </span>
+                            );
+                          },
                           disabled: true
                         },
                         {
@@ -459,6 +477,15 @@ class AddOPBillingForm extends Component {
                         },
                         {
                           fieldName: "discount_amout",
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {getAmountFormart(row.discount_amout, {
+                                  appendSymbol: false
+                                })}
+                              </span>
+                            );
+                          },
                           label: (
                             <AlgaehLabel
                               label={{ fieldName: "discount_amout" }}
@@ -471,6 +498,15 @@ class AddOPBillingForm extends Component {
                           label: (
                             <AlgaehLabel label={{ fieldName: "net_amout" }} />
                           ),
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {getAmountFormart(row.net_amout, {
+                                  appendSymbol: false
+                                })}
+                              </span>
+                            );
+                          },
                           disabled: true
                         }
                       ]}

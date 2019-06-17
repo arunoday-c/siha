@@ -1175,7 +1175,7 @@ module.exports = {
         .executeQuery({
           query:
             "select * FROM hims_d_item_master IM left join hims_d_services S on \
-            IM.service_id=S.hims_d_services_id where IM.record_status='A' " +
+            IM.service_id=S.hims_d_services_id where IM.record_status='A' and IM.item_status ='A' " +
             _strQry +
             " order by hims_d_item_master_id desc;",
           values: intValues,

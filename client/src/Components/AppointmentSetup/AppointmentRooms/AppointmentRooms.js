@@ -41,14 +41,14 @@ class AppointmentRooms extends Component {
           },
           method: "DELETE",
           onSuccess: response => {
-            if (response.data.records.success) {
+            if (response.data.success) {
               swalMessage({
                 title: "Record deleted successfully . .",
                 type: "success"
               });
 
               this.getAppointmentRooms();
-            } else if (!response.data.records.success) {
+            } else if (!response.data.success) {
               swalMessage({
                 title: response.data.records.message,
                 type: "error"

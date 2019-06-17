@@ -181,7 +181,42 @@ class InvStockEnquiry extends Component {
                       ? total_quantity + " nos"
                       : "0 nos"}
                   </h6>
-                </div>*/}
+                </div>
+                {
+                  fieldName: "barcode",
+                  label: <AlgaehLabel label={{ forceLabel: "Barcode" }} />,
+                  disabled: true
+                },
+                {
+                  fieldName: "batchno",
+                  label: <AlgaehLabel label={{ forceLabel: "Batch No." }} />,
+                  disabled: true
+                },
+                {
+                  fieldName: "expirydt",
+                  label: (
+                    <AlgaehLabel label={{ forceLabel: "Expiry Date" }} />
+                  ),
+                  displayTemplate: row => {
+                    return <span>{dateFormater(this, row.expirydt)}</span>;
+                  },
+                  editorTemplate: row => {
+                    return (
+                      <AlgaehDateHandler
+                        div={{ className: "" }}
+                        textBox={{
+                          className: "txt-fld hidden",
+                          name: "expirydt"
+                        }}
+                        minDate={new Date()}
+                        events={{
+                          onChange: datehandle.bind(this, this, row)
+                        }}
+                        value={row.expirydt}
+                      />
+                    );
+                  }
+                },*/}
               </div>
             </div>
           </div>
@@ -322,46 +357,19 @@ class InvStockEnquiry extends Component {
                       );
                     }
                   },
-                  {
-                    fieldName: "barcode",
-                    label: <AlgaehLabel label={{ forceLabel: "Barcode" }} />,
-                    disabled: true
-                  },
-                  {
-                    fieldName: "batchno",
-                    label: <AlgaehLabel label={{ forceLabel: "Batch No." }} />,
-                    disabled: true
-                  },
-                  {
-                    fieldName: "expirydt",
-                    label: (
-                      <AlgaehLabel label={{ forceLabel: "Expiry Date" }} />
-                    ),
-                    displayTemplate: row => {
-                      return <span>{dateFormater(this, row.expirydt)}</span>;
-                    },
-                    editorTemplate: row => {
-                      return (
-                        <AlgaehDateHandler
-                          div={{ className: "" }}
-                          textBox={{
-                            className: "txt-fld hidden",
-                            name: "expirydt"
-                          }}
-                          minDate={new Date()}
-                          events={{
-                            onChange: datehandle.bind(this, this, row)
-                          }}
-                          value={row.expirydt}
-                        />
-                      );
-                    }
-                  },
+
                   {
                     fieldName: "qtyhand",
                     label: <AlgaehLabel label={{ forceLabel: "Quantity" }} />,
-                     displayTemplate: row => {
-                      return row.reorder === "R" ? (<div  className= "orderNow"><span>{row.qtyhand}</span><span className="orderSoon">Order Soon</span></div>) : (row.qtyhand);
+                    displayTemplate: row => {
+                      return row.reorder === "R" ? (
+                        <div className="orderNow">
+                          <span>{row.qtyhand}</span>
+                          <span className="orderSoon">Order Soon</span>
+                        </div>
+                      ) : (
+                        row.qtyhand
+                      );
                     },
                     disabled: true
                   },

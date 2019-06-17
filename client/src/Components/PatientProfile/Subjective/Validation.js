@@ -17,6 +17,7 @@ export function Validations(state) {
 
     return isError;
   } else if (
+    state.state.significant_signs === undefined ||
     state.state.significant_signs === null ||
     state.state.significant_signs.length < 4
   ) {

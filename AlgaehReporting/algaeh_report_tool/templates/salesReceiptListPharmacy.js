@@ -1,4 +1,4 @@
-const algaehUtilities = require('algaeh-utilities/utilities');
+//const algaehUtilities = require('algaeh-utilities/utilities');
 const executePDF = function executePDFMethod(options) {
 	const utilities = new algaehUtilities();
 	const _ = options.loadash;
@@ -128,12 +128,12 @@ const executePDF = function executePDFMethod(options) {
 						total_check: total_check,
 						total_sum: total_sum.toFixed(3)
 					};
-					utilities.logger().log('output: ', output);
+					//utilities.logger().log('output: ', output);
 					resolve(output);
 				})
 				.catch((error) => {
 					options.mysql.releaseConnection();
-					console.log('error', error);
+					//console.log('error', error);
 				});
 
 			//----------------------------------

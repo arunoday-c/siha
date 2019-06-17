@@ -81,6 +81,10 @@ class DNItemList extends Component {
       this.state.item_details === null
         ? null
         : this.state.item_details.po_quantity;
+    let unit_cost =
+      this.state.item_details === null
+        ? null
+        : this.state.item_details.unit_cost;
     let required_batchno =
       this.state.item_details === null
         ? "Y"
@@ -158,6 +162,15 @@ class DNItemList extends Component {
                       <div className="col-3">
                         <AlgaehLabel label={{ forceLabel: "Required Qty" }} />
                         <h6>{qty_auth ? qty_auth : "----------"}</h6>
+                      </div>
+
+                      <div className="col-3">
+                        <AlgaehLabel label={{ forceLabel: "Purchase Cost" }} />
+                        <h6>
+                          {unit_cost
+                            ? getAmountFormart(unit_cost)
+                            : "----------"}
+                        </h6>
                       </div>
                     </div>
                     <div className="row">
@@ -313,23 +326,19 @@ class DNItemList extends Component {
                                           row
                                         )}
                                       />
-                                    </span>
-                                  );
-                                },
-                                editorTemplate: row => {
-                                  return (
-                                    <span>
                                       <i
                                         className="fas fa-barcode"
-                                        onClick={printBarcode.bind(
+                                        onClick={deleteDNDetail.bind(
                                           this,
                                           this,
-                                          row
+                                          row,
+                                          context
                                         )}
                                       />
                                     </span>
                                   );
                                 },
+
                                 disabled: true,
                                 others: {
                                   maxWidth: 70,
@@ -654,6 +663,16 @@ class DNItemList extends Component {
                                     label={{ forceLabel: "Unit Cost" }}
                                   />
                                 ),
+                                displayTemplate: row => {
+                                  return (
+                                    <span>
+                                      {getAmountFormart(row.unit_cost, {
+                                        appendSymbol: false
+                                      })}
+                                    </span>
+                                  );
+                                },
+
                                 disabled: true
                               },
                               {
@@ -663,6 +682,15 @@ class DNItemList extends Component {
                                     label={{ forceLabel: "Sales Price" }}
                                   />
                                 ),
+                                displayTemplate: row => {
+                                  return (
+                                    <span>
+                                      {getAmountFormart(row.sales_price, {
+                                        appendSymbol: false
+                                      })}
+                                    </span>
+                                  );
+                                },
                                 editorTemplate: row => {
                                   return (
                                     <AlagehFormGroup
@@ -779,6 +807,15 @@ class DNItemList extends Component {
                                     label={{ forceLabel: "Discount Amt" }}
                                   />
                                 ),
+                                displayTemplate: row => {
+                                  return (
+                                    <span>
+                                      {getAmountFormart(row.discount_amount, {
+                                        appendSymbol: false
+                                      })}
+                                    </span>
+                                  );
+                                },
                                 disabled: true
                               },
                               {
@@ -788,6 +825,15 @@ class DNItemList extends Component {
                                     label={{ forceLabel: "Net Ext Cost" }}
                                   />
                                 ),
+                                displayTemplate: row => {
+                                  return (
+                                    <span>
+                                      {getAmountFormart(row.net_extended_cost, {
+                                        appendSymbol: false
+                                      })}
+                                    </span>
+                                  );
+                                },
                                 disabled: true
                               },
 
@@ -798,6 +844,15 @@ class DNItemList extends Component {
                                     label={{ forceLabel: "Tax Amt" }}
                                   />
                                 ),
+                                displayTemplate: row => {
+                                  return (
+                                    <span>
+                                      {getAmountFormart(row.tax_amount, {
+                                        appendSymbol: false
+                                      })}
+                                    </span>
+                                  );
+                                },
                                 disabled: true
                               },
 
@@ -808,6 +863,15 @@ class DNItemList extends Component {
                                     label={{ forceLabel: "Total Amt" }}
                                   />
                                 ),
+                                displayTemplate: row => {
+                                  return (
+                                    <span>
+                                      {getAmountFormart(row.total_amount, {
+                                        appendSymbol: false
+                                      })}
+                                    </span>
+                                  );
+                                },
                                 disabled: true
                               }
                             ]}
@@ -815,7 +879,7 @@ class DNItemList extends Component {
                             dataSource={{
                               data: this.state.dn_entry_detail
                             }}
-                            isEditable={true}
+                            isEditable={false}
                             paging={{ page: 0, rowsPerPage: 10 }}
                             byForceEvents={true}
                             events={{

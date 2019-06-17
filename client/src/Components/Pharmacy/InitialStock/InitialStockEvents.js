@@ -168,9 +168,9 @@ const AddItems = $this => {
 };
 
 const datehandle = ($this, ctrl, e) => {
-    $this.setState({
-      [e]: moment(ctrl)._d
-    });
+  $this.setState({
+    [e]: moment(ctrl)._d
+  });
 };
 
 const dateValidate = ($this, value, event) => {
@@ -180,12 +180,12 @@ const dateValidate = ($this, value, event) => {
       title: "Expiry date cannot be past Date.",
       type: "warning"
     });
-    event.target.focus()
+    event.target.focus();
     $this.setState({
       [event.target.name]: null
     });
   }
-}
+};
 
 const dateFormater = value => {
   if (value !== null) {
@@ -195,20 +195,16 @@ const dateFormater = value => {
 };
 
 const getCtrlCode = ($this, docNumber) => {
-  clearInterval(intervalId);
-  intervalId = setInterval(() => {
-    AlgaehLoader({ show: true });
-    $this.props.getInitialStock({
-      uri: "/initialstock/getPharmacyInitialStock",
-      module: "pharmacy",
-      method: "GET",
-      printInput: true,
-      data: { document_number: docNumber },
-      redux: {
-        type: "INITIAL_STOCK_GET_DATA",
-        mappingName: "initialstock"
-      },
-      afterSuccess: data => {
+  AlgaehLoader({ show: true });
+  algaehApiCall({
+    uri: "/initialstock/getPharmacyInitialStock",
+    module: "pharmacy",
+    method: "GET",
+    data: { document_number: docNumber },
+    onSuccess: response => {
+      if (response.data.success === true) {
+        debugger;
+        let data = response.data.records;
         data.saveEnable = true;
 
         if (data.posted === "Y") {
@@ -220,9 +216,15 @@ const getCtrlCode = ($this, docNumber) => {
         $this.setState(data);
         AlgaehLoader({ show: false });
       }
-    });
-    clearInterval(intervalId);
-  }, 500);
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
 };
 
 const SaveInitialStock = $this => {
@@ -243,15 +245,16 @@ const SaveInitialStock = $this => {
     data: $this.state,
     onSuccess: response => {
       if (response.data.success === true) {
-        $this.setState({
-          document_number: response.data.records.document_number,
-          hims_f_pharmacy_stock_header_id:
-            response.data.records.hims_f_pharmacy_stock_header_id,
-          year: response.data.records.year,
-          period: response.data.records.period,
-          saveEnable: true,
-          postEnable: false
-        });
+        // $this.setState({
+        //   document_number: response.data.records.document_number,
+        //   hims_f_pharmacy_stock_header_id:
+        //     response.data.records.hims_f_pharmacy_stock_header_id,
+        //   year: response.data.records.year,
+        //   period: response.data.records.period,
+        //   saveEnable: true,
+        //   postEnable: false
+        // });
+        getCtrlCode($this, response.data.records.document_number);
         swalMessage({
           title: "Record Saved successfully . .",
           type: "success"

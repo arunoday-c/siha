@@ -24,6 +24,7 @@ import "../../../styles/site.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import Enumerable from "linq";
 import BatchWiseStock from "./BatchWiseStock";
+import { getAmountFormart } from "../../../utils/GlobalFunctions";
 
 class StockEnquiry extends Component {
   constructor(props) {
@@ -168,7 +169,43 @@ class StockEnquiry extends Component {
                       ? total_quantity + " nos"
                       : "0 nos"}
                   </h6>
-                </div>*/}
+                </div>
+
+                {
+                  fieldName: "barcode",
+                  label: <AlgaehLabel label={{ forceLabel: "Barcode" }} />,
+                  disabled: true
+                },
+                {
+                  fieldName: "batchno",
+                  label: <AlgaehLabel label={{ forceLabel: "Batch No." }} />,
+                  disabled: true
+                },
+                {
+                  fieldName: "expirydt",
+                  label: (
+                    <AlgaehLabel label={{ forceLabel: "Expiry Date" }} />
+                  ),
+                  displayTemplate: row => {
+                    return <span>{dateFormater(this, row.expirydt)}</span>;
+                  },
+                  editorTemplate: row => {
+                    return (
+                      <AlgaehDateHandler
+                        div={{ className: "" }}
+                        textBox={{
+                          className: "txt-fld hidden",
+                          name: "expirydt"
+                        }}
+                        minDate={new Date()}
+                        events={{
+                          onChange: datehandle.bind(this, this, row)
+                        }}
+                        value={row.expirydt}
+                      />
+                    );
+                  }
+                },*/}
               </div>
             </div>
           </div>
@@ -261,6 +298,47 @@ class StockEnquiry extends Component {
                       );
                     }
                   },
+
+                  {
+                    fieldName: "stocking_uom_id",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Stocking UOM" }} />
+                    ),
+                    displayTemplate: row => {
+                      let display =
+                        this.props.itemuom === undefined
+                          ? []
+                          : this.props.itemuom.filter(
+                              f =>
+                                f.hims_d_pharmacy_uom_id === row.stocking_uom_id
+                            );
+
+                      return (
+                        <span>
+                          {display !== null && display.length !== 0
+                            ? display[0].uom_description
+                            : ""}
+                        </span>
+                      );
+                    },
+                    editorTemplate: row => {
+                      let display =
+                        this.props.itemuom === undefined
+                          ? []
+                          : this.props.itemuom.filter(
+                              f =>
+                                f.hims_d_pharmacy_uom_id === row.stocking_uom_id
+                            );
+
+                      return (
+                        <span>
+                          {display !== null && display.length !== 0
+                            ? display[0].uom_description
+                            : ""}
+                        </span>
+                      );
+                    }
+                  },
                   {
                     fieldName: "sales_uom",
                     label: <AlgaehLabel label={{ forceLabel: "Sales UOM" }} />,
@@ -297,46 +375,19 @@ class StockEnquiry extends Component {
                       );
                     }
                   },
-                  {
-                    fieldName: "barcode",
-                    label: <AlgaehLabel label={{ forceLabel: "Barcode" }} />,
-                    disabled: true
-                  },
-                  {
-                    fieldName: "batchno",
-                    label: <AlgaehLabel label={{ forceLabel: "Batch No." }} />,
-                    disabled: true
-                  },
-                  {
-                    fieldName: "expirydt",
-                    label: (
-                      <AlgaehLabel label={{ forceLabel: "Expiry Date" }} />
-                    ),
-                    displayTemplate: row => {
-                      return <span>{dateFormater(this, row.expirydt)}</span>;
-                    },
-                    editorTemplate: row => {
-                      return (
-                        <AlgaehDateHandler
-                          div={{ className: "" }}
-                          textBox={{
-                            className: "txt-fld hidden",
-                            name: "expirydt"
-                          }}
-                          minDate={new Date()}
-                          events={{
-                            onChange: datehandle.bind(this, this, row)
-                          }}
-                          value={row.expirydt}
-                        />
-                      );
-                    }
-                  },
+
                   {
                     fieldName: "qtyhand",
                     label: <AlgaehLabel label={{ forceLabel: "Quantity" }} />,
                     displayTemplate: row => {
-                      return row.reorder === "R" ? (<div  className= "orderNow"><span>{row.qtyhand}</span><span className="orderSoon">Order Soon</span></div>) : (row.qtyhand);
+                      return row.reorder === "R" ? (
+                        <div className="orderNow">
+                          <span>{row.qtyhand}</span>
+                          <span className="orderSoon">Order Soon</span>
+                        </div>
+                      ) : (
+                        row.qtyhand
+                      );
                     },
                     disabled: true
                   },
@@ -350,6 +401,15 @@ class StockEnquiry extends Component {
                   {
                     fieldName: "avgcost",
                     label: <AlgaehLabel label={{ forceLabel: "Avg. Cost" }} />,
+                    displayTemplate: row => {
+                      return (
+                        <span>
+                          {getAmountFormart(row.avgcost, {
+                            appendSymbol: false
+                          })}
+                        </span>
+                      );
+                    },
                     disabled: true
                   },
                   {
@@ -357,6 +417,15 @@ class StockEnquiry extends Component {
                     label: (
                       <AlgaehLabel label={{ forceLabel: "Sales Price" }} />
                     ),
+                    displayTemplate: row => {
+                      return (
+                        <span>
+                          {getAmountFormart(row.sale_price, {
+                            appendSymbol: false
+                          })}
+                        </span>
+                      );
+                    },
                     editorTemplate: row => {
                       return (
                         <AlagehFormGroup
