@@ -65,7 +65,7 @@ class Subjective extends Component {
       <div className="subjective">
         <div className="row margin-top-15">
           <div className="col-lg-3">
-            <Vitals />
+            <Vitals mainThat={this.props.that} />
           </div>
 
           <div className="col-lg-9">

@@ -1006,7 +1006,7 @@ class PatientProfile extends Component {
             this.state.pageDisplay === "overview" ? (
               <Overview />
             ) : this.state.pageDisplay === "subjective" ? (
-              <Subjective />
+              <Subjective that={this} />
             ) : this.state.pageDisplay === "phy_exam" ? (
               <PhysicalExamination />
             ) : this.state.pageDisplay === "exam_diagram" ? (
