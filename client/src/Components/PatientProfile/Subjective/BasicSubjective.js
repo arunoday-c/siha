@@ -390,6 +390,7 @@ class BasicSubjective extends Component {
                 />
               </li>
               <Vitals
+                mainThat={this.props.mainThat}
                 openVital={this.state.openVital}
                 onClose={this.closeVitals.bind(this)}
               />
@@ -464,7 +465,7 @@ class BasicSubjective extends Component {
               />
             </ul>
           </div>
-          <div className="algaeh-col-4">
+          <div className="algaeh-col-3">
             <div className="row">
               <div className="col-12">
                 <div className="portlet portlet-bordered margin-bottom-15">
@@ -520,7 +521,6 @@ class BasicSubjective extends Component {
                             }}
                             value={this.state.onset_date}
                           />
-
 
                           <AlagehAutoComplete
                             div={{ className: "col-4" }}
@@ -666,9 +666,9 @@ class BasicSubjective extends Component {
               </div>
             </div>
           </div>
-          <div className="algaeh-col-7">
+          <div className="algaeh-col-8">
             <div className="row">
-              <div className="col-12">
+              <div className="col-5">
                 <div className="portlet portlet-bordered margin-bottom-15">
                   <div className="portlet-title">
                     <div className="caption">
@@ -768,6 +768,28 @@ class BasicSubjective extends Component {
                         />
                       </div>
                     </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="col-7">
+                <div className="portlet portlet-bordered margin-bottom-15">
+                  <div className="portlet-title">
+                    <div className="caption">
+                      <h3 className="caption-subject">Active Medication</h3>
+                    </div>
+                    <div className="actions">
+                      <a
+                        className="btn btn-primary btn-circle active"
+                        onClick={this.IcdsSearch.bind(this, "Final")}
+                      >
+                        <i className="fas fa-plus" />
+                      </a>
+                    </div>
+                  </div>
+
+                  <div className="portlet-body">
+                    Active Medication Comes Here
                   </div>
                 </div>
               </div>

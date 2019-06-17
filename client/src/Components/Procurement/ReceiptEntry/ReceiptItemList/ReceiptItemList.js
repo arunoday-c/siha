@@ -449,7 +449,7 @@ class ReceiptItemList extends Component {
                               label: (
                                 <AlgaehLabel
                                   label={{
-                                    forceLabel: "Quantity Recieved Todate"
+                                    forceLabel: "Quantity Received Todate"
                                   }}
                                 />
                               ),

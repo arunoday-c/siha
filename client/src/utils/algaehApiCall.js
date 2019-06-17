@@ -87,8 +87,7 @@ export function algaehApiCall(options) {
     }
 
     let queryParametres = "";
-    debugger;
-    // settings.data = settings.data;
+
     settings.data = JSON.parse(
       JSON.stringify(settings.data, function(k, v) {
         return v === undefined ? null : v;

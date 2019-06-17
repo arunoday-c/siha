@@ -35,7 +35,8 @@ export default {
       sales_price: 0,
       assesments_notes: null,
       item_type: null,
-      reorder_qty: 0
+      reorder_qty: 0,
+      vat_applicable: "N"
     };
     return output;
   }

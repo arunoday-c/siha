@@ -321,7 +321,11 @@ class PatientProfile extends Component {
             .lastOrDefault()
         : [];
 
-    if (chief_complaint === null || chief_complaint.length < 4) {
+    if (
+      chief_complaint === undefined ||
+      chief_complaint === null ||
+      chief_complaint.length < 4
+    ) {
       swalMessage({
         title: "Enter Chief Complaint. Atlest 4 letter",
         type: "warning"
@@ -364,7 +368,6 @@ class PatientProfile extends Component {
   }
 
   showAllergyAlert(_patient_allergies) {
-    
     if (allergyPopUp && _patient_allergies.length > 0) {
       allergyPopUp = false;
       swalMessage({
@@ -445,12 +448,10 @@ class PatientProfile extends Component {
     const _Vitals =
       this.props.patient_vitals !== undefined &&
       this.props.patient_vitals.length > 0
-        ? Enumerable.from(this.props.patient_vitals)
-            .groupBy("$.visit_date", null, (k, g) => {
-              return g.getSource();
-            })
-            .orderBy(g => g.visit_date)
-            .lastOrDefault()
+        ? _.chain(this.props.patient_vitals)
+            .uniqBy(u => u.vital_id)
+            .orderBy(o => o.sequence_order)
+            .value()
         : [];
 
     const _patient_allergies =
@@ -1003,7 +1004,7 @@ class PatientProfile extends Component {
             this.state.pageDisplay === "overview" ? (
               <Overview />
             ) : this.state.pageDisplay === "subjective" ? (
-              <Subjective />
+              <Subjective mainThat={this} />
             ) : this.state.pageDisplay === "phy_exam" ? (
               <PhysicalExamination />
             ) : this.state.pageDisplay === "exam_diagram" ? (
@@ -1020,7 +1021,10 @@ class PatientProfile extends Component {
           ) : this.state.pageDisplay === "overview" ? (
             <Overview />
           ) : this.state.pageDisplay === "subjective" ? (
-            <BasicSubjective vat_applicable={this.vatApplicable()} />
+            <BasicSubjective
+              mainThat={this}
+              vat_applicable={this.vatApplicable()}
+            />
           ) : this.state.pageDisplay === "exam_diagram" ? (
             <ExamDiagramStandolone />
           ) : this.state.pageDisplay === "eye" ? (

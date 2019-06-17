@@ -237,7 +237,6 @@ const closePopup = $this => {
 };
 
 const generateIdCard = $this => {
-  
   algaehApiCall({
     uri: "/report",
     method: "GET",
@@ -274,7 +273,6 @@ const generateIdCard = $this => {
 };
 
 const generateReceipt = $this => {
-  
   algaehApiCall({
     uri: "/report",
     method: "GET",
@@ -287,6 +285,10 @@ const generateReceipt = $this => {
       report: {
         reportName: "cashReceipt",
         reportParams: [
+          {
+            name: "patient_id",
+            value: $this.state.hims_d_patient_id
+          },
           {
             name: "hims_d_patient_id",
             value: $this.state.hims_d_patient_id

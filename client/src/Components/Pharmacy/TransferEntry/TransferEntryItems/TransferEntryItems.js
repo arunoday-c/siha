@@ -376,6 +376,9 @@ class TransferEntryItems extends Component {
                                         : ""}
                                     </span>
                                   );
+                                },
+                                others:{
+                                  minWidth:150
                                 }
                               },
 
@@ -421,6 +424,9 @@ class TransferEntryItems extends Component {
                                         : ""}
                                     </span>
                                   );
+                                },
+                                others:{
+                                  minWidth:250
                                 }
                               },
 
@@ -466,6 +472,9 @@ class TransferEntryItems extends Component {
                                         : ""}
                                     </span>
                                   );
+                                },
+                                others:{
+                                  minWidth:150
                                 }
                               },
                               {
@@ -549,10 +558,13 @@ class TransferEntryItems extends Component {
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Quantity Transfered"
+                                      forceLabel: "Qty Transfered"
                                     }}
                                   />
-                                )
+                                ),
+                                others: {
+                                  minWidth:130
+                                }
                               }
                             ]}
                             keyId="batch_details"
@@ -696,6 +708,9 @@ class TransferEntryItems extends Component {
                                         : ""}
                                     </span>
                                   );
+                                },
+                                others: {
+                                  minWidth:150
                                 }
                               },
 
@@ -741,6 +756,9 @@ class TransferEntryItems extends Component {
                                         : ""}
                                     </span>
                                   );
+                                },
+                                others: {
+                                  minWidth:250
                                 }
                               },
 
@@ -786,6 +804,9 @@ class TransferEntryItems extends Component {
                                         : ""}
                                     </span>
                                   );
+                                },
+                                others: {
+                                  minWidth:150
                                 }
                               },
                               {
@@ -863,36 +884,45 @@ class TransferEntryItems extends Component {
                                   );
                                 }
                               },
+                              {
+                                fieldName: "quantity_transfer",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Qty Transfered"
+                                    }}
+                                  />
+                                ),
+                                others: {
+                                  minWidth:130
+                                }
+                              },
 
                               {
                                 fieldName: "quantity_requested",
                                 label: (
                                   <AlgaehLabel
-                                    label={{ forceLabel: "Quantity Requested" }}
+                                    label={{ forceLabel: "Qty Requested" }}
                                   />
                                 ),
-                                disabled: true
+                                disabled: true,
+                                others: {
+                                  minWidth:130
+                                }
                               },
                               {
                                 fieldName: "quantity_authorized",
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Quantity Authorized"
+                                      forceLabel: "Qty Authorized"
                                     }}
                                   />
                                 ),
-                                disabled: true
-                              },
-                              {
-                                fieldName: "quantity_transfer",
-                                label: (
-                                  <AlgaehLabel
-                                    label={{
-                                      forceLabel: "Quantity Transfered"
-                                    }}
-                                  />
-                                )
+                                disabled: true,
+                                others: {
+                                  minWidth:140
+                                }
                               }
                             ]}
                             keyId="service_type_id"
@@ -966,7 +996,7 @@ class TransferEntryItems extends Component {
                                     label: (
                                       <AlgaehLabel
                                         label={{
-                                          forceLabel: "Qantity in Hand"
+                                          forceLabel: "Qty in Hand"
                                         }}
                                       />
                                     )

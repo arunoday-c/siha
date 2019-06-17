@@ -234,7 +234,6 @@ module.exports = {
     const _mysql = new algaehMysql();
     try {
       const _inputParam = JSON.parse(input.report);
-
       _mysql
         .executeQuery({
           query:
@@ -250,7 +249,7 @@ module.exports = {
         .then(data => {
           _inputParam["hospital_id"] = req.userIdentity["hospital_id"];
 
-          //console.log("input:", _inputParam);
+          console.log("input:", _inputParam);
           const _reportCount = data[0].length;
           if (_reportCount > 0) {
             let _reportOutput = [];
@@ -294,10 +293,7 @@ module.exports = {
                     "algaeh_report_tool/templates/Output",
                     _data.report_name + moment().format("YYYYMMDDHHmmss")
                   );
-                  const _reportType =
-                    _inputParam.outputFileType == null
-                      ? "PDF"
-                      : _inputParam.outputFileType;
+                  const _reportType = "PDF";
                   const _supportingJS = path.join(
                     process.cwd(),
                     "algaeh_report_tool/templates",
@@ -377,7 +373,7 @@ module.exports = {
                     const pageOrentation =
                       _inputParam.pageOrentation == null
                         ? {}
-                        : _inputParam.pageOrentation == "landscap"
+                        : _inputParam.pageOrentation == "landscape"
                         ? { landscape: true }
                         : {};
 
@@ -410,10 +406,9 @@ module.exports = {
                         _mysql.releaseConnection();
                         merge(_reportOutput, _rOut, error => {
                           if (error) {
-                            res.writeHead(400, {
-                              "Content-Type": "text/plain"
-                            });
-                            res.end(JSON.stringify(error));
+                            res
+                              .status(400)
+                              .send({ error: JSON.stringify(error) });
                           } else {
                             fs.exists(_rOut, exists => {
                               if (exists) {
@@ -435,10 +430,9 @@ module.exports = {
                                 });
                                 _fs.pipe(res);
                               } else {
-                                res.writeHead(400, {
-                                  "Content-Type": "text/plain"
-                                });
-                                res.end("ERROR File does not exist");
+                                res
+                                  .status(400)
+                                  .send({ error: "ERROR File does not exist" });
                               }
                             });
                           }
@@ -457,10 +451,9 @@ module.exports = {
                             });
                             _fs.pipe(res);
                           } else {
-                            res.writeHead(400, {
-                              "Content-Type": "text/plain"
-                            });
-                            res.end("ERROR File does not exist");
+                            res
+                              .status(400)
+                              .send({ error: "ERROR File does not exist" });
                           }
                         });
                       }
@@ -499,24 +492,29 @@ module.exports = {
                 })
                 .catch(error => {
                   _mysql.releaseConnection();
-                  res.writeHead(400, { "Content-Type": "text/plain" });
-                  res.end(error);
+                  console.log(
+                    "Error In query execution : ",
+                    JSON.stringify(error)
+                  );
+                  res.status(400).send({ error: JSON.stringify(error) });
                 });
             }
           } else {
-            res.writeHead(400, { "Content-Type": "text/plain" });
-            res.end(new Error("No such report exists"));
+            res.status(400).send({ error: "No such report exists" });
           }
         })
         .catch(error => {
           _mysql.releaseConnection();
-          res.writeHead(400, { "Content-Type": "text/plain" });
-          res.end(error);
+          console.log(
+            "Error in report table query execution : ",
+            JSON.stringify(error)
+          );
+          res.status(400).send({ error: JSON.stringify(error) });
         });
     } catch (e) {
       _mysql.releaseConnection();
-      res.writeHead(400, { "Content-Type": "text/plain" });
-      res.end(e);
+      console.log("Error in try catch : ", JSON.stringify(error));
+      res.status(400).send({ error: JSON.stringify(e) });
     }
   },
   getReportMultiPrint: async (req, res, next) => {
@@ -661,7 +659,7 @@ module.exports = {
                         const pageOrentation =
                           _inputParam.pageOrentation == null
                             ? {}
-                            : _inputParam.pageOrentation == "landscap"
+                            : _inputParam.pageOrentation == "landscape"
                             ? { landscape: true }
                             : {};
                         const pageSize =

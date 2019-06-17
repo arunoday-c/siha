@@ -122,7 +122,7 @@ class InvTransferEntry extends Component {
           <BreadCrumb
             title={
               <AlgaehLabel
-                label={{ forceLabel: "Transfer Entry", align: "ltr" }}
+                label={{ forceLabel: "Material Transfer", align: "ltr" }}
               />
             }
             breadStyle={this.props.breadStyle}
@@ -140,7 +140,7 @@ class InvTransferEntry extends Component {
               {
                 pageName: (
                   <AlgaehLabel
-                    label={{ forceLabel: "Transfer Entry", align: "ltr" }}
+                    label={{ forceLabel: "Material Transfer", align: "ltr" }}
                   />
                 )
               }

@@ -23,7 +23,7 @@ import config from "../../../utils/config.json";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import Enumerable from "linq";
 import moment from "moment";
-
+import _ from "lodash";
 class Vitals extends Component {
   constructor(props) {
     super(props);
@@ -139,6 +139,8 @@ class Vitals extends Component {
 
   addPatientVitals(e) {
     e.preventDefault();
+
+    const that = this;
     AlgaehValidation({
       querySelector: "id='vitals_recording'",
       onSuccess: () => {
@@ -184,6 +186,7 @@ class Vitals extends Component {
                 },
                 () => {
                   getVitalHistory(this);
+
                   swalMessage({
                     title: "Vitals recorded successfully . .",
                     type: "success"
@@ -540,7 +543,12 @@ class Vitals extends Component {
                   </div>
                   <div className="col-9 popRightDiv">
                     <div className="row">
-                      <div className="col-9 popLeftDiv">
+                      <button className="btn btn-default graphView">
+                        View Graph View
+                      </button>
+                    </div>
+                    <div className="row">
+                      <div className="col-12 vitalsChartSec">
                         <Line
                           options={{
                             scales: {
@@ -553,10 +561,7 @@ class Vitals extends Component {
                           }}
                         />
                       </div>
-                      <div
-                        className="col-3 popRightDiv"
-                        style={{ maxHeight: "65vh" }}
-                      >
+                      <div className="col-12 vitalsTimeLineSec">
                         <div className="timeline">
                           {_vitalsGroup.map((data, index) => (
                             <div
@@ -567,7 +572,10 @@ class Vitals extends Component {
                                 <p className="dateStamp">{data.dateTime}</p>
                                 <div className="vitalsCntr">
                                   <ul className="vitals-box">
-                                    {data.list.map((vitals, ind) => (
+                                    {_.orderBy(
+                                      data.list,
+                                      o => o.sequence_order
+                                    ).map((vitals, ind) => (
                                       <li className="each-vitals-box" key={ind}>
                                         <p>{vitals.vital_short_name}</p>
                                         <span className="vitalsText">

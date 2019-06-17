@@ -931,13 +931,13 @@
     { "name": "Material Requisition", "value": "MR" },
     { "name": "Purchase Order", "value": "PO" },
     { "name": "Stock Transfer", "value": "ST" },
-    { "name": "Point of Sale", "value": "PO" },
-    { "name": "Material Requisition", "value": "POS" },
+    { "name": "Purchase Order", "value": "PO" },
+    { "name": "Point Of Sale", "value": "POS" },
     { "name": "Sales Return", "value": "SRT" },
     { "name": "Opening Stock", "value": "INT" },
     { "name": "Consumption", "value": "CS" },
-    { "name": "Receipt", "value": "REC" },
-    { "name": "Delivery Note", "value": "DN" }
+    { "name": "Receipt Entry", "value": "REC" },
+    { "name": "Delivery Note", "value": "DNA" }
   ],
   "MODULE_PLAN": [
     { "name": "Silver", "value": "S" },
