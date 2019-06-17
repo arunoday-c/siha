@@ -92,6 +92,18 @@ export default class DateHandler extends PureComponent {
     }
   };
 
+  onBlur = e => {
+    const configType =
+          this.props.type !== undefined && this.props.type === "time"
+            ? config.formators.time
+            : config.formators.date;
+    if (typeof this.props.events.onBlur === "function") {
+      this.props.events.onBlur(
+        moment(e.target.value, configType)._d,
+          e)
+    }
+  }
+
   renderDatePicker = () => {
     const minDate =
       this.props.minDate !== undefined
@@ -146,7 +158,8 @@ export default class DateHandler extends PureComponent {
             {...maxDate}
             {...minDate}
             disabled={this.props.disabled}
-            onChange={this.onDayChange.bind(this)}
+            onChange={this.onDayChange}
+            onBlur={this.onBlur}
             {...this.props.textBox.others}
             {..._required}
           />

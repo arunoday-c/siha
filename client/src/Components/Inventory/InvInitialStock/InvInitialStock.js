@@ -19,6 +19,7 @@ import {
   AddItems,
   datehandle,
   dateFormater,
+  dateValidate,
   getCtrlCode,
   SaveInitialStock,
   LocationchangeTexts,
@@ -351,7 +352,8 @@ class InvInitialStock extends Component {
                     }}
                     textBox={{ className: "txt-fld", name: "expiry_date" }}
                     events={{
-                      onChange: datehandle.bind(this, this)
+                      onChange: datehandle.bind(this, this),
+                      onBlur: dateValidate.bind(this, this)
                     }}
                     value={this.state.expiry_date}
                   />

@@ -6,11 +6,18 @@ import InventoryItem from "../../../Models/InventoryItem";
 const Validations = $this => {
   let isError = false;
 
-  if ($this.state.item_description === null) {
+  if (!$this.state.item_code) {
     isError = true;
     swalMessage({
       type: "error",
-      title: "Test Name Cannot be blank."
+      title: "Item Code Cannot be blank."
+    });
+    return isError;
+  } else if (!$this.state.item_description) {
+    isError = true;
+    swalMessage({
+      type: "error",
+      title: "Item Name Cannot be blank."
     });
     return isError;
   } else if ($this.state.category_id === null) {

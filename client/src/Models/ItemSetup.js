@@ -38,7 +38,8 @@ export default {
       conversion_factor: 0,
       convertEnable: false,
       sfda_code: null,
-      reorder_qty: 0
+      reorder_qty: 0,
+      vat_applicable: "N"
     };
     return output;
   }

@@ -122,6 +122,9 @@ class InventoryItemMaster extends Component {
           addl_information: firstRecordSet.addl_information,
           required_batchno_expiry: firstRecordSet.required_batchno_expiry,
           reorder_qty: firstRecordSet.reorder_qty,
+          standard_fee: firstRecordSet.sales_price,
+          vat_applicable: firstRecordSet.vat_applicable,
+          vat_percent: firstRecordSet.vat_percent,
           detail_item_uom: g.getSource()
         };
       })

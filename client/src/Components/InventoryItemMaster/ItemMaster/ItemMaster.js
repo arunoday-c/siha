@@ -237,54 +237,54 @@ class InvItemMaster extends Component {
                         }
                       }}
                     />
-                    {this.state.hims_d_inventory_item_master_id === null ? (
-                      <div className="col-12">
-                        <div className="row">
-                          <div className="col-6">
-                            <AlgaehLabel
-                              label={{ fieldName: "vat_applicable" }}
-                            />
-                            <div className=" customCheckbox ">
-                              <label className="checkbox inline">
-                                <input
-                                  type="checkbox"
-                                  name="vat_applicable"
-                                  value="Y"
-                                  checked={
-                                    this.state.vat_applicable === "Y"
-                                      ? true
-                                      : false
-                                  }
-                                  onChange={VatAppilicable.bind(this, this)}
-                                />
-                                <span>Yes</span>
-                              </label>
-                            </div>
-                          </div>
-                          <AlagehFormGroup
-                            div={{ className: "col-6 form-group" }}
-                            label={{
-                              fieldName: "vat_percent"
-                            }}
-                            textBox={{
-                              className: "txt-fld",
-                              name: "vat_percent",
-                              value: this.state.vat_percent,
-                              events: {
-                                onChange: numberEventHandaler.bind(this, this)
-                              },
-                              others: {
-                                disabled:
-                                  this.state.vat_applicable === "Y"
-                                    ? false
-                                    : true,
-                                type: "number"
-                              }
-                            }}
+
+                    <div className="col-12">
+                      <div className="row">
+                        <div className="col-6">
+                          <AlgaehLabel
+                            label={{ fieldName: "vat_applicable" }}
                           />
+                          <div className=" customCheckbox ">
+                            <label className="checkbox inline">
+                              <input
+                                type="checkbox"
+                                name="vat_applicable"
+                                value="Y"
+                                checked={
+                                  this.state.vat_applicable === "Y"
+                                    ? true
+                                    : false
+                                }
+                                onChange={VatAppilicable.bind(this, this)}
+                              />
+                              <span>Yes</span>
+                            </label>
+                          </div>
                         </div>
+                        <AlagehFormGroup
+                          div={{ className: "col-6 form-group" }}
+                          label={{
+                            fieldName: "vat_percent"
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "vat_percent",
+                            value: this.state.vat_percent,
+                            events: {
+                              onChange: numberEventHandaler.bind(this, this)
+                            },
+                            others: {
+                              disabled:
+                                this.state.vat_applicable === "Y"
+                                  ? false
+                                  : true,
+                              type: "number"
+                            }
+                          }}
+                        />
                       </div>
-                    ) : null}
+                    </div>
+
                     <div className="col-12">
                       <AlgaehLabel
                         label={{ forceLabel: "Additional Information" }}
@@ -589,7 +589,7 @@ class InvItemMaster extends Component {
                         }
                       }}
                     />
-                    <AlagehAutoComplete
+                    {/*<AlagehAutoComplete
                       div={{ className: "col-4" }}
                       label={{
                         fieldName: "item_uom_id"
@@ -604,7 +604,7 @@ class InvItemMaster extends Component {
                           data: this.state.detail_item_uom
                         }
                       }}
-                    />
+                    />*/}
                     <AlagehAutoComplete
                       div={{ className: "col-4 mandatory form-group" }}
                       label={{
@@ -641,20 +641,19 @@ class InvItemMaster extends Component {
                         }
                       }}
                     />
-                    {this.state.hims_d_inventory_item_master_id === null ? (
-                      <AlagehFormGroup
-                        div={{ className: "col-4 mandatory form-group" }}
-                        label={{
-                          fieldName: "price"
-                        }}
-                        textBox={{
-                          decimal: { allowNegative: false },
-                          className: "txt-fld",
-                          name: "standard_fee",
-                          value: this.state.standard_fee
-                        }}
-                      />
-                    ) : null}
+
+                    <AlagehFormGroup
+                      div={{ className: "col-4 mandatory form-group" }}
+                      label={{
+                        fieldName: "price"
+                      }}
+                      textBox={{
+                        decimal: { allowNegative: false },
+                        className: "txt-fld",
+                        name: "standard_fee",
+                        value: this.state.standard_fee
+                      }}
+                    />
                   </div>
                 </div>
               </div>

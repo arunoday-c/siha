@@ -149,6 +149,9 @@ class ItemSetup extends Component {
           required_batchno_expiry: firstRecordSet.required_batchno_expiry,
           sfda_code: firstRecordSet.sfda_code,
           reorder_qty: firstRecordSet.reorder_qty,
+          standard_fee: firstRecordSet.sales_price,
+          vat_applicable: firstRecordSet.vat_applicable,
+          vat_percent: firstRecordSet.vat_percent,
           detail_item_uom:
             firstRecordSet.hims_m_item_uom_id === null ? [] : g.getSource()
         };

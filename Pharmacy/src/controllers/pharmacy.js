@@ -35,7 +35,7 @@ import {
   getPharmacyUsers
 } from "../models/pharmacy";
 
-const { addServices } = algaehPath(
+const { addServices, updateServicesOthrs } = algaehPath(
   "algaeh-master-settings/src/models/serviceTypes"
 );
 
@@ -236,6 +236,7 @@ export default () => {
 
   api.put(
     "/updateItemMasterAndUom",
+    updateServicesOthrs,
     updateItemMasterAndUom,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
