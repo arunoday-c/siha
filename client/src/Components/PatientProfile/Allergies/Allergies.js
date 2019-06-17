@@ -273,10 +273,11 @@ class Allergies extends Component {
                 <div className="col-lg-4 popLeftDiv">
                   <div className="row">
                     <AlagehAutoComplete
-                      div={{ className: "col-lg-12" }}
+                      div={{ className: "col-12" }}
                       label={{
                         forceLabel: "Allergy Type",
-                        fieldName: "sample"
+                          fieldName: "sample",
+                        isImp:true
                       }}
                       selector={{
                         name: "allergy_value",
@@ -296,7 +297,8 @@ class Allergies extends Component {
                       div={{ className: "col-lg-12 margin-top-15" }}
                       label={{
                         forceLabel: "Select a Alergy",
-                        fieldName: "sample"
+                        fieldName: "sample",
+                        isImp:true
                       }}
                       selector={{
                         name: "hims_d_allergy_id",
@@ -315,7 +317,8 @@ class Allergies extends Component {
                     <AlagehAutoComplete
                       div={{ className: "col-lg-12 margin-top-15" }}
                       label={{
-                        forceLabel: "Onset"
+                        forceLabel: "Onset",
+                        isImp:true
                       }}
                       selector={{
                         name: "allergy_onset",
@@ -353,7 +356,8 @@ class Allergies extends Component {
                       div={{ className: "col-lg-12 margin-top-15" }}
                       label={{
                         forceLabel: "Severity",
-                        fieldName: "sample"
+                        fieldName: "sample",
+                        isImp:true
                       }}
                       selector={{
                         name: "allergy_severity",
