@@ -475,6 +475,7 @@ class Dental extends Component {
 
               this.loadDentalTreatment();
               teeth = [];
+              my_send_obj = {};
               this.setState({
                 treatment_gridUpdate: true,
                 openDentalModal: false,
@@ -1902,6 +1903,7 @@ class Dental extends Component {
           events={{
             onClose: () => {
               teeth = [];
+              my_send_obj = {};
               this.setState({
                 treatment_gridUpdate: true,
                 openDentalModal: false,
@@ -2536,9 +2538,17 @@ class Dental extends Component {
                   events={{
                     onEdit: () => {},
                     onDelete: row => {
+                      const status =
+                        row.treatment_status === "PL"
+                          ? "Planned"
+                          : row.treatment_status === "WIP"
+                          ? "Work in Progress"
+                          : row.treatment_status === "CP"
+                          ? "Completed"
+                          : "";
                       row.billed === "SB" || row.billed === "Y"
                         ? swalMessage({
-                            title: "Treatment already completed, cannot delete",
+                            title: `Treatment is in ${status}, cannot delete`,
                             type: "warning"
                           })
                         : this.deleteDentalPlan(row);
