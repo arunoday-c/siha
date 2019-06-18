@@ -326,7 +326,6 @@ class DeptMaster extends Component {
       module: "masterSettings",
       onSuccess: response => {
         if (response.data.success) {
-          
           this.setState({ subDepartments: response.data.records });
         }
       },
@@ -385,6 +384,18 @@ class DeptMaster extends Component {
           data: sen_data,
           onSuccess: response => {
             if (response.data.success) {
+              this.props.getLocation({
+                uri: "/inventory/getInventoryLocation",
+                module: "inventory",
+                data: {
+                  location_status: "A"
+                },
+                method: "GET",
+                redux: {
+                  type: "LOCATIONS_GET_DATA",
+                  mappingName: "inventorylocations"
+                }
+              });
               swalMessage({
                 title: "Added Successfully",
                 type: "success"
@@ -666,7 +677,6 @@ class DeptMaster extends Component {
                           <AlgaehLabel label={{ forceLabel: "Location" }} />
                         ),
                         displayTemplate: row => {
-                          
                           let display =
                             this.props.inventorylocations === undefined
                               ? []
@@ -686,7 +696,6 @@ class DeptMaster extends Component {
                         },
 
                         editorTemplate: row => {
-                          
                           let display =
                             this.props.inventorylocations === undefined
                               ? []
