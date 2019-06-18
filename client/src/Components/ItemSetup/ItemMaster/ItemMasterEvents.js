@@ -8,14 +8,14 @@ import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 
 const Validations = $this => {
   let isError = false;
-  debugger;
+  
 
   AlgaehValidation({
     querySelector: "data-validate='ItemMaster'", //if require section level
     fetchFromFile: true, //if required arabic error
     alertTypeIcon: "warning", // error icon
     onSuccess: () => {
-      debugger;
+      
       if (
         $this.state.standard_fee === null ||
         $this.state.standard_fee === "" ||

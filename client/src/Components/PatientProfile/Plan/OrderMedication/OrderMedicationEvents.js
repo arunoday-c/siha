@@ -5,7 +5,7 @@ import Options from "../../../../Options.json";
 
 //Text Handaler Change
 const texthandle = ($this, e) => {
-  debugger;
+  
 
   let name = e.name || e.target.name;
   let value = e.value === "" ? null : e.value || e.target.value;
@@ -240,7 +240,7 @@ const AddItems = $this => {
         secondary_network_office_id: $this.state.secondary_network_office_id
       }
     ];
-    debugger;
+    
     algaehApiCall({
       uri: "/billing/getBillDetails",
       module: "billing",
@@ -341,7 +341,7 @@ const updateItems = ($this, row) => {
 
 const calcuateDispense = ($this, e) => {
   // if (e.target === null || e.target.value !== e.target.oldvalue) {
-  debugger;
+  
   let frequency = 0;
   let frequency_type = 0;
   let dispense = 0;

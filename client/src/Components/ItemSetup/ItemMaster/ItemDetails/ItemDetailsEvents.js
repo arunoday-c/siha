@@ -115,7 +115,7 @@ const texthandle = ($this, ctrl, e) => {
 };
 
 const numberEventHandaler = ($this, context, e) => {
-  debugger;
+  
   SetBulkState({
     state: $this,
     callback: () => {

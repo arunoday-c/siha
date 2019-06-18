@@ -158,7 +158,7 @@ const openUCAFReport = ($this, row) => {
 };
 
 const getMedicationAprovalList = $this => {
-  debugger;
+  
   let inputobj = {};
 
   if ($this.state.date !== null) {

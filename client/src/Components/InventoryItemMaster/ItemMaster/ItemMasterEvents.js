@@ -11,7 +11,7 @@ const Validations = $this => {
     fetchFromFile: true, //if required arabic error
     alertTypeIcon: "warning", // error icon
     onSuccess: () => {
-      debugger;
+      
       if (
         $this.state.standard_fee === null ||
         $this.state.standard_fee === "" ||

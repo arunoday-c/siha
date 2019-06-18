@@ -203,7 +203,7 @@ const getCtrlCode = ($this, docNumber) => {
     data: { document_number: docNumber },
     onSuccess: response => {
       if (response.data.success === true) {
-        debugger;
+        
         let data = response.data.records;
         data.saveEnable = true;
 

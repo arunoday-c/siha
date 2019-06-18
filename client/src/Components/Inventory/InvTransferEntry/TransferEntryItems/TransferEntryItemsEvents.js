@@ -63,7 +63,7 @@ const numberchangeTexts = ($this, context, e) => {
 };
 
 const AddItems = ($this, context) => {
-	debugger;
+	
 
 	let ItemInput = {
 		item_description: $this.state.item_description,
@@ -148,7 +148,7 @@ const datehandle = ($this, ctrl, e) => {
 };
 
 const deleteTransEntryDetail = ($this, context, e, rowId) => {
-	debugger;
+	
 
 	let display =
 		$this.props.itemlist === undefined
@@ -399,7 +399,7 @@ const AddSelectedBatches = ($this, context) => {
 				}
 			}
 
-			debugger;
+			
 			_inventory_stock_detail.push(
 				...batches.map((item, index) => {
 					item.sales_price = item.sale_price;
@@ -419,7 +419,7 @@ const AddSelectedBatches = ($this, context) => {
 };
 
 const itemchangeText = ($this, context, e, ctrl) => {
-	debugger;
+	
 	let name = ctrl;
 	if ($this.state.from_location_id !== null && $this.state.to_location_id !== null) {
 		let value = e.hims_d_inventory_item_master_id;
@@ -436,7 +436,7 @@ const itemchangeText = ($this, context, e, ctrl) => {
 				if (response.data.success) {
 					let data = response.data.records;
 					if (data.locationResult.length > 0) {
-						debugger;
+						
 
 						$this.setState({
 							[name]: value,
@@ -545,7 +545,7 @@ const CloseItemBatch = ($this, context, e) => {
 	let sale_price =
 		e !== undefined ? (e.selected === true ? e.sale_price : $this.state.sales_price) : $this.state.sales_price;
 
-	debugger;
+	
 	$this.setState({
 		...$this.state,
 		selectBatch: !$this.state.selectBatch,

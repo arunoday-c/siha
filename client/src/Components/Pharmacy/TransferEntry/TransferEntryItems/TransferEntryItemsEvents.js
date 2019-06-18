@@ -68,7 +68,7 @@ const numberchangeTexts = ($this, context, e) => {
 };
 
 const AddItems = ($this, context) => {
-  debugger;
+  
 
   let ItemInput = {
     item_description: $this.state.item_description,
@@ -367,7 +367,7 @@ const AddSelectedBatches = ($this, context) => {
 };
 
 const itemchangeText = ($this, context, e, ctrl) => {
-  debugger;
+  
   let name = ctrl;
   if (
     $this.state.from_location_id !== null &&
@@ -387,7 +387,7 @@ const itemchangeText = ($this, context, e, ctrl) => {
         if (response.data.success) {
           let data = response.data.records;
           if (data.locationResult.length > 0) {
-            debugger;
+            
 
             $this.setState({
               [name]: value,
@@ -522,7 +522,7 @@ const CloseItemBatch = ($this, context, e) => {
         : $this.state.sales_price
       : $this.state.sales_price;
 
-  debugger;
+  
   $this.setState({
     ...$this.state,
     selectBatch: !$this.state.selectBatch,

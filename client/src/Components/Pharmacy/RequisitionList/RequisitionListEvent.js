@@ -45,7 +45,7 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
 };
 
 const getRequisitionList = $this => {
-  debugger;
+  
   let inpObj = { status: $this.state.status };
 
   if ($this.state.from_date !== null) {

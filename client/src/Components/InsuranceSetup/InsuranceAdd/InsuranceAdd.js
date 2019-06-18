@@ -144,7 +144,7 @@ class InsuranceAdd extends PureComponent {
         });
       }
     }
-    debugger;
+    
     let IOputs = InsuranceSetup.inputParam();
     IOputs.activeStep = 0;
     IOputs.screenName = "InsuranceProvider";

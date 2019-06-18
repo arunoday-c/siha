@@ -45,7 +45,7 @@ class PreApprovalStatus extends PureComponent {
   };
 
   texthandle(ctrl, e) {
-    debugger;
+    
     e = e || ctrl;
     let name = e.name || e.target.name;
     let value = e.value === "" ? null : e.value || e.target.value;
@@ -91,7 +91,7 @@ class PreApprovalStatus extends PureComponent {
   }
 
   saveApproval(e) {
-    debugger;
+    
     if (this.state.apprv_status === "AP") {
       if (parseFloat(this.state.approved_amount) === 0) {
         swalMessage({

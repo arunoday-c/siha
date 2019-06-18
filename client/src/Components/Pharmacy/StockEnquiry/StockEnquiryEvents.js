@@ -29,7 +29,7 @@ const getBatchWiseData = ($this, row) => {
     item_id: row.item_id,
     pharmacy_location_id: row.pharmacy_location_id
   };
-  debugger;
+  
   algaehApiCall({
     uri: "/pharmacyGlobal/getItemandLocationStock",
     module: "pharmacy",

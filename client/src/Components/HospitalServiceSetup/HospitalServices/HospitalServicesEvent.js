@@ -139,7 +139,7 @@ const clearData = $this => {
 };
 
 const numberEventHandaler = ($this, context, e) => {
-  debugger;
+  
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 

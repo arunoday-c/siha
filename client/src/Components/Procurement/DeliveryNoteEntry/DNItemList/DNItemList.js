@@ -50,7 +50,7 @@ class DNItemList extends Component {
   }
 
   AddItemDelivered(context, item, index) {
-    debugger;
+    
     let item_details = extend({}, item);
     let dn_quantity =
       parseFloat(item.po_quantity) -

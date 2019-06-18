@@ -347,7 +347,7 @@ const getUnitCost = ($this, context, serviceid, sales_price) => {
   }
 };
 const AddItems = ($this, context) => {
-  debugger;
+  
 
   if ($this.state.pos_customer_type === "OT") {
     if ($this.state.nationality_id === null) {
@@ -631,7 +631,7 @@ const datehandle = ($this, ctrl, e) => {
 };
 
 const deletePosDetail = ($this, context, row) => {
-  debugger;
+  
   let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
   let update_pharmacy_stock = $this.state.update_pharmacy_stock;
   let delete_pharmacy_stock = $this.state.delete_pharmacy_stock;
@@ -1211,7 +1211,7 @@ const SelectBatchDetails = ($this, row, context, e) => {
 };
 
 const getMedicationAprovalList = ($this, row) => {
-  debugger;
+  
   if (
     $this.state.pos_customer_type === "OT" &&
     $this.state.hims_f_pharmacy_pos_header_id === null
@@ -1247,7 +1247,7 @@ const getMedicationAprovalList = ($this, row) => {
     data: inputobj,
     onSuccess: response => {
       if (response.data.success) {
-        debugger;
+        
         $this.setState({
           medca_approval_Services: response.data.records,
           viewPreapproval: !$this.state.viewPreapproval,
