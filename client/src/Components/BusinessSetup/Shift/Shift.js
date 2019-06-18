@@ -251,7 +251,7 @@ class Shift extends Component {
               }}
             />
             <AlagehFormGroup
-              div={{ className: "col form-group" }}
+              div={{ className: "col form-group arabic-txt-fld" }}
               label={{
                 fieldName: "arabic_name",
                 isImp: true

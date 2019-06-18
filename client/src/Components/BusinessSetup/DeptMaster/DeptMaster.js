@@ -517,7 +517,7 @@ class DeptMaster extends Component {
                   div={{ className: "col" }}
                   label={{
                     fieldName: "sub_department_name_arabic",
-                    isImp: true
+                    isImp: true 
                   }}
                   textBox={{
                     className: "txt-fld",
@@ -904,7 +904,7 @@ class DeptMaster extends Component {
             />
 
             <AlagehFormGroup
-              div={{ className: "col" }}
+              div={{ className: "col arabic-txt-fld" }}
               label={{
                 fieldName: "department_name_arabic",
                 isImp: true
@@ -1039,7 +1039,7 @@ class DeptMaster extends Component {
                 editorTemplate: row => {
                   return (
                     <AlagehFormGroup
-                      div={{ className: "col" }}
+                      div={{ className: "col " }}
                       textBox={{
                         className: "txt-fld",
                         name: "arabic_department_name",

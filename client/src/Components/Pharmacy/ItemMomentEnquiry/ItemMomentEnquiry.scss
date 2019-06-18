@@ -1,47 +1,48 @@
 .hptl-phase1-item-moment-enquiry-form {
-  border-radius: 5px;
-  margin-top: 12vh;
-  min-height: 80vh;
-  .form-details {
-    padding: 5px;
-    padding-bottom: 0px;
-  }
-  mark {
-    background: none;
-    color: red;
-  }
+	border-radius: 5px;
+	margin-top: 12vh;
+	min-height: 80vh;
+	.form-details {
+		padding: 5px;
+		padding-bottom: 0px;
+	}
+	mark {
+		background: none;
+		color: red;
+	}
 
-  .form-group {
-    // margin-top: 12vh;
-    padding: 2vh;
-  }
+	.form-group {
+		// margin-top: 12vh;
+		padding: 2vh;
+	}
 
-  .go-button {
-    cursor: pointer;
-    margin-top: 2.5vh;
-  }
+	.go-button {
+		cursor: pointer;
+		margin-top: 2.5vh;
+	}
 }
 #initial_stock {
-  .ReactTable {
-    max-height: 60vh !important;
-    span {
-      i {
-        width: 16px;
-        height: 16px;
-        border-radius: 100%;
-        font-size: 0.7rem;
-        line-height: 15px;
-        float: right;
-        text-align: center;
-        &.red {
-          background: #ff7f7f;
-          color: #fff;
-        }
-        &.green {
-          background: #15a28d;
-          color: #fff;
-        }
-      }
-    }
-  }
+	.ReactTable {
+		max-height: 60vh !important;
+		span {
+			.fa-arrow-up,
+			.fa-arrow-down {
+				width: 16px;
+				height: 16px;
+				border-radius: 100%;
+				font-size: 0.7rem;
+				line-height: 15px;
+				float: right;
+				text-align: center;
+			}
+			.red {
+				background: #ff7f7f;
+				color: #fff;
+			}
+			.green {
+				background: #15a28d;
+				color: #fff;
+			}
+		}
+	}
 }

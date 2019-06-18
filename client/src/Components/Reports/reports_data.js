@@ -241,92 +241,9 @@ export default [
         ]
       },
       {
-        subitem: "Daily Transaction",
-        template_name: "Income/DailyTransaction",
-        reportQuery: "dailyTransaction",
-        //reportUri: "/projectjobcosting/getProjectWiseJobCost",
-        module: "IncomeModule",
-
-        reportParameters: [
-          {
-            type: "date",
-            name: "from_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
-            }
-          },
-          {
-            type: "date",
-            name: "to_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
-            }
-          },
-          {
-            type: "dropdown",
-            name: "hospital_id",
-            initialLoad: true,
-            isImp: true,
-            label: "Select Branch",
-            link: {
-              uri: "/organization/getOrganization"
-            },
-            dataSource: {
-              textField: "hospital_name",
-              valueField: "hims_d_hospital_id",
-              data: undefined
-            }
-          },
-
-          {
-            type: "dropdown",
-            name: "sub_department_id",
-            initialLoad: true,
-            isImp: false,
-            label: "Select Department",
-            link: {
-              uri: "/department/get/subdepartment"
-            },
-            dataSource: {
-              textField: "sub_department_name",
-              valueField: "hims_d_sub_department_id",
-              data: undefined
-            }
-          },
-          {
-            type: "dropdown",
-            name: "",
-            initialLoad: true,
-            isImp: false,
-            label: "Select Doctor",
-            link: {
-              uri: "/employee/get",
-              module: "hrManagement",
-              data: {
-                isdoctor: "Y"
-              }
-            },
-            dataSource: {
-              textField: "full_name",
-              valueField: "hims_d_employee_id",
-              data: undefined
-            }
-          }
-        ]
-        //reportParameters: () => <Finance ui="asset_warty_exp_rep" />
-      },
-      {
         subitem: "List of Receipt",
-
-  //template_name: "Income/dailyCashCollection",
         reportName: "opBillIncomeReceipt",
-        //reportQuery: "staffCashCollection",
         requireIframe:true,
-
         reportParameters: [
           {
             className:"col-2",
@@ -444,10 +361,11 @@ export default [
     submenu: [
       {
         subitem: "Leave Reports",
-        template_name: "PayrollReports/leave_reports",
-        reportQuery: "leaveReport",
+        reportName: "leaveReportPayroll",
+        requireIframe:true,
         reportParameters: [
           {
+            className:"col-2",
             type: "date",
             name: "from_date",
             isImp: true,
@@ -457,6 +375,7 @@ export default [
             }
           },
           {
+            className:"col-2",
             type: "date",
             name: "to_date",
             isImp: true,
@@ -466,6 +385,7 @@ export default [
             }
           },
           {
+            className:"col-2",
             type: "dropdown",
             name: "hims_d_leave_id",
             initialLoad: true,
@@ -481,6 +401,7 @@ export default [
             }
           },
           {
+            className:"col-2",
             type: "dropdown",
             name: "status",
             initialLoad: true,
@@ -496,18 +417,14 @@ export default [
         ]
       },
       {
-        subitem: "Employee Details",
-        template_name: "PayrollReports/employee_details",
-        reportQuery: "employeeDetails",
-        reportParameters: []
-      },
-      {
         subitem: "Salary Statement",
-        template_name: "PayrollReports/salary_statement",
-        reportQuery: "salaryStatement",
+        reportName: "salaryStatementPayroll",
+        requireIframe:true,
+     
         input: "sub_department_id=?",
         reportParameters: [
           {
+            className:"col-2",
             type: "dropdown",
             name: "year",
             isImp: true,
@@ -522,6 +439,7 @@ export default [
             // }
           },
           {
+            className:"col-2",
             type: "dropdown",
             sort: "off",
             name: "month",
@@ -537,6 +455,7 @@ export default [
             }
           },
           {
+            className:"col-2",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -552,6 +471,7 @@ export default [
             }
           },
           {
+            className:"col-2",
             type: "dropdown",
             name: "sub_department_id",
             initialLoad: true,
@@ -570,11 +490,14 @@ export default [
       },
       {
         subitem: "Leave Accrual",
-        template_name: "PayrollReports/leave_accrual",
-        reportQuery: "leaveAccrual",
+        reportName: "leaveAccuralPayroll",
+        requireIframe:true,
+        pageSize: "A4",
+        pageOrentation: "landscape", //"portrait",
         input: "sub_department_id=?",
         reportParameters: [
           {
+            className:"col-2",
             type: "dropdown",
             name: "year",
             isImp: true,
@@ -589,6 +512,7 @@ export default [
             // }
           },
           {
+            className:"col-2",
             type: "dropdown",
             sort: "off",
             name: "month",
@@ -604,6 +528,7 @@ export default [
             }
           },
           {
+            className:"col-2",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -619,6 +544,7 @@ export default [
             }
           },
           {
+            className:"col-2",
             type: "dropdown",
             name: "sub_department_id",
             initialLoad: true,
@@ -637,11 +563,13 @@ export default [
       },
       {
         subitem: "Gratuity Provision",
-        template_name: "PayrollReports/gratuity_provision",
-        reportQuery: "gratuityProvision",
+        reportName: "gratuityProvisionStatementPayroll",
         input: "sub_department_id=?",
+        requireIframe:true,
+        
         reportParameters: [
           {
+            className:"col-2",
             type: "dropdown",
             name: "year",
             isImp: true,
@@ -656,6 +584,7 @@ export default [
             // }
           },
           {
+            className:"col-2",
             type: "dropdown",
             sort: "off",
             name: "month",
@@ -671,6 +600,7 @@ export default [
             }
           },
           {
+            className:"col-2",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -704,10 +634,13 @@ export default [
       },
       {
         subitem: "Absent Report",
-        template_name: "PayrollReports/absent_report",
-        reportQuery: "absentReport",
+        reportName: "absentReportPayroll",
+        requireIframe:true,
+        pageSize: "A4",
+        pageOrentation: "landscape", //"portrait",
         reportParameters: [
           {
+            className:"col-2",
             type: "date",
             name: "from_date",
             isImp: true,
@@ -717,6 +650,7 @@ export default [
             }
           },
           {
+            className:"col-2",
             type: "date",
             name: "to_date",
             isImp: true,
@@ -729,8 +663,10 @@ export default [
       },
       {
         subitem: "Employee Loan report",
-        template_name: "PayrollReports/employee_loans",
-        reportQuery: "loanApplication",
+        reportName: "EmployeeLoanReport",
+        requireIframe:true,
+        pageSize: "A4",
+        pageOrentation: "landscape", //"portrait",
         reportParameters: [
           {
             type: "date",
@@ -751,44 +687,6 @@ export default [
             }
           }
         ]
-        //reportParameters: () => <General ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Employee Advance report",
-        template_name: "PayrollReports/employee_loans",
-        reportQuery: "loanApplication",
-        reportParameters: [
-          {
-            type: "date",
-            name: "from_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
-            }
-          },
-          {
-            type: "date",
-            name: "to_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
-            }
-          }
-        ]
-        //reportParameters: () => <General ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Salary Slips",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <General ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Recon Report",
-        template_name: "asset_war_exp",
-        reportParameters: []
         //reportParameters: () => <General ui="asset_warty_exp_rep" />
       },
       {
@@ -871,45 +769,6 @@ export default [
         ]
         //reportParameters: () => <General ui="asset_warty_exp_rep" />
       },
-
-      {
-        subitem: "Bank Transfer letter with statement",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <General ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Employee Statistics reports",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <General ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Final Settlement report",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <General ui="asset_warty_exp_rep" />
-      },
-
-      {
-        subitem: "Shift Rostering reports",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <General ui="asset_warty_exp_rep" />
-      },
-
-      {
-        subitem: "Salary Component Wise reports",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <General ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Employee Ledger",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <General ui="asset_warty_exp_rep" />
-      },
       {
         subitem: "Attendance Reports",
         template_name: "PayrollReports/attendence_report",
@@ -977,19 +836,6 @@ export default [
             }
           }
         ]
-      },
-      {
-        subitem: "Document Expiry Reports",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <General ui="asset_warty_exp_rep" />
-      },
-
-      {
-        subitem: "Nationality Wise and Department Wise Statistics",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <General ui="asset_warty_exp_rep" />
       }
     ]
   },
