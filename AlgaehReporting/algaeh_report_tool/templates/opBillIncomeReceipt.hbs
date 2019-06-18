@@ -1,0 +1,41 @@
+{{{importStyle 'css/creditinvoice.css'}}}
+
+<body>
+    <div class="print-body">
+
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                     <tr>
+    <th>SL No.</th>
+    <th>Receipt Date</th>
+    <th>Patient Code</th>
+    <th>Patient Name</th>
+    <th>Dept. Name</th>
+    <th>Doctor Name</th>
+    <th>Cash</th>
+    <th>Card</th>
+    <th>Cheque</th>
+  </tr>
+                </thead>
+                <tbody>
+                    {{#each details}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                        <td>{{receipt_date}}</td>
+                        <td>{{patient_code}}</td>
+                        <td>{{full_name}}</td>
+                        <td>{{sub_department_code}}</td>
+                        <td>{{sub_department_name}}</td>
+                        <td>Cash</td>
+                        <td>Card</td>
+                        <td>Cheque</td>
+                    </tr>
+                    {{/each }}
+              
+                </tbody>
+            </table>
+        </section>
+        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+    </div>
+</body>

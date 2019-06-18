@@ -114,12 +114,12 @@ export default [
     submenu: [
       {
         subitem: "Department Wise Income",
-       // template_name: "Income/departmentIncome",
-        reportName: " ",
-        reportQuery: "subDepartmentIncome",
+        reportName: "departmentWiseIncome",
+       // reportQuery: "subDepartmentIncome",
         requireIframe:true,
         reportParameters: [
           {
+            className:"col-2",
             type: "date",
             name: "from_date",
             isImp: true,
@@ -129,6 +129,7 @@ export default [
             }
           },
           {
+            className:"col-2",
             type: "date",
             name: "to_date",
             isImp: true,
@@ -141,10 +142,12 @@ export default [
       },
       {
         subitem: "OP Billing Summary",
-        template_name: "Income/opBillSummary",
-        reportQuery: "OPBillSummary",
+        reportName: "opBillSummary",
+        //reportQuery: "OPBillSummary",
+        requireIframe:true,
         reportParameters: [
           {
+            className:"col-2",
             type: "date",
             name: "from_date",
             isImp: true,
@@ -154,6 +157,7 @@ export default [
             }
           },
           {
+            className:"col-2",
             type: "date",
             name: "to_date",
             isImp: true,
@@ -170,6 +174,7 @@ export default [
         reportQuery: "OPBillDetails",
         reportParameters: [
           {
+            className:"col-2",
             type: "date",
             name: "from_date",
             isImp: true,
@@ -179,6 +184,7 @@ export default [
             }
           },
           {
+            className:"col-2",
             type: "date",
             name: "to_date",
             isImp: true,
@@ -188,6 +194,7 @@ export default [
             }
           },
           {
+            className:"col-2",
             type: "dropdown",
             name: "service_type_id",
             initialLoad: true,
@@ -206,10 +213,13 @@ export default [
       },
       {
         subitem: "Daily Cash Collection Consolidated",
-        template_name: "Income/dailyCashCollection",
-        reportQuery: "staffCashCollection",
+        //template_name: "Income/dailyCashCollection",
+        reportName: "dailyCashCollection",
+        //reportQuery: "staffCashCollection",
+        requireIframe:true,
         reportParameters: [
           {
+            className:"col-2",
             type: "date",
             name: "from_date",
             isImp: true,
@@ -219,6 +229,7 @@ export default [
             }
           },
           {
+            className:"col-2",
             type: "date",
             name: "to_date",
             isImp: true,
@@ -310,11 +321,15 @@ export default [
       },
       {
         subitem: "List of Receipt",
-        template_name: "Income/ReceiptList",
-        reportQuery: "opBillReceipt",
-        // module: "IncomeModule",
+
+  //template_name: "Income/dailyCashCollection",
+        reportName: "opBillIncomeReceipt",
+        //reportQuery: "staffCashCollection",
+        requireIframe:true,
+
         reportParameters: [
           {
+            className:"col-2",
             type: "dropdown",
             name: "receipt_type",
             initialLoad: true,
@@ -345,6 +360,7 @@ export default [
             }
           },
           {
+            className:"col-2",
             type: "date",
             name: "from_date",
             isImp: true,
@@ -354,6 +370,7 @@ export default [
             }
           },
           {
+            className:"col-2",
             type: "date",
             name: "to_date",
             isImp: true,
@@ -363,6 +380,7 @@ export default [
             }
           },
           {
+            className:"col-2",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -379,6 +397,7 @@ export default [
           },
 
           {
+            className:"col-2",
             type: "dropdown",
             name: "V.sub_department_id",
             initialLoad: true,
@@ -394,6 +413,7 @@ export default [
             }
           },
           {
+            className:"col-2",
             type: "dropdown",
             name: "",
             initialLoad: true,
@@ -1185,7 +1205,7 @@ export default [
       {
         subitem: "List of Receipts",
         reportName: "salesReceiptListPharmacy",
-        template_name: "salesReceiptListPharmacy",
+       // template_name: "salesReceiptListPharmacy",
         requireIframe: true,
         pageSize: "A4",
         pageOrentation: "landscape", //"portrait",
@@ -1316,7 +1336,7 @@ export default [
       {
         subitem: "List of Sales Invoice",
         reportName: "salesInvoiceListPharmacy",
-        template_name: "salesInvoiceListPharmacy",
+       // template_name: "salesInvoiceListPharmacy",
         requireIframe: true,
         reportParameters: [
           {
@@ -1380,7 +1400,7 @@ export default [
       {
         subitem: "List of Sales Return",
         reportName: "salesReturnListPharmacy",
-        template_name: "salesReturnListPharmacy",
+       // template_name: "salesReturnListPharmacy",
         requireIframe: true,
         reportParameters: [
           {
@@ -1443,7 +1463,7 @@ export default [
       },
       {
         subitem: "Daily Collection - Consolidated",
-        template_name: "dailyCollectionPharmacy",
+        //template_name: "dailyCollectionPharmacy",
         reportName: "dailyCollectionPharmacy",
         requireIframe: true,
         reportParameters: [
