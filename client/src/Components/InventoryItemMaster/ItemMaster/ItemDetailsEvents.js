@@ -134,31 +134,36 @@ const AddUom = $this => {
   let isError = false;
 
   let stocking_uom_id = null;
-  if ($this.state.uom_id === null) {
+  if ($this.state.uom_id === null || $this.state.uom_id === "") {
     isError = true;
 
     swalMessage({
       type: "warning",
       title: "Please Select UOM."
     });
+    document.querySelector("[name='uom_id']").focus();
+    return isError;
+  } else if (
+    $this.state.stocking_uom === null ||
+    $this.state.stocking_uom === ""
+  ) {
+    isError = true;
+
+    swalMessage({
+      type: "warning",
+      title: "Enter Stocking Uom."
+    });
+    document.querySelector("[name='stocking_uom']").focus();
 
     return isError;
-  } else if ($this.state.conversion_factor === 0) {
+  } else if (parseFloat($this.state.conversion_factor) === 0) {
     isError = true;
 
     swalMessage({
       type: "warning",
       title: "Define Conversion Factor."
     });
-    return isError;
-  } else if ($this.state.stocking_uom === null) {
-    isError = true;
-
-    swalMessage({
-      type: "warning",
-      title: "Please Select Stocking Uom."
-    });
-
+    document.querySelector("[name='conversion_factor']").focus();
     return isError;
   } else {
     let detail_item_uom = $this.state.detail_item_uom;

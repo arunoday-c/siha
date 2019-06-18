@@ -100,8 +100,7 @@
 
   "FORMAT_PAYMENT_TYPE": [
     { "name": "Credit", "arabic_name": "ائتمان", "value": "CR" },
-    { "name": "Cash", "arabic_name": "السيولة النقدية", "value": "CH" },
-    { "name": "Discount", "arabic_name": "خصم", "value": "DI" }
+    { "name": "Cash", "arabic_name": "السيولة النقدية", "value": "CH" }
   ],
   "FORMAT_PRICE_FROM": [
     {

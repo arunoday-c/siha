@@ -3,6 +3,7 @@ import spotlightSearch from "../../../Search/spotlightSearch.json";
 import { swalMessage } from "../../../utils/algaehApiCall";
 import Enumerable from "linq";
 import { SetBulkState } from "../../../utils/GlobalFunctions";
+import _ from "lodash";
 
 const radioChange = ($this, e) => {
   let radioActive = true;
@@ -131,31 +132,37 @@ const AddUom = $this => {
   let isError = false;
 
   let stocking_uom_id = null;
-  if ($this.state.uom_id === null) {
+  debugger;
+  if ($this.state.uom_id === null || $this.state.uom_id === "") {
     isError = true;
 
     swalMessage({
       type: "warning",
       title: "Please Select UOM."
     });
-
+    document.querySelector("[name='uom_id']").focus();
     return isError;
-  } else if ($this.state.conversion_factor === 0) {
-    isError = true;
-
-    swalMessage({
-      type: "warning",
-      title: "Define Conversion Factor."
-    });
-    return isError;
-  } else if ($this.state.stocking_uom === null) {
+  } else if (
+    $this.state.stocking_uom === null ||
+    $this.state.stocking_uom === ""
+  ) {
     isError = true;
 
     swalMessage({
       type: "warning",
       title: "Enter Stocking Uom."
     });
+    document.querySelector("[name='stocking_uom']").focus();
 
+    return isError;
+  } else if (parseFloat($this.state.conversion_factor) === 0) {
+    isError = true;
+
+    swalMessage({
+      type: "warning",
+      title: "Define Conversion Factor."
+    });
+    document.querySelector("[name='conversion_factor']").focus();
     return isError;
   } else {
     let detail_item_uom = $this.state.detail_item_uom;
@@ -290,6 +297,15 @@ const deleteUOM = ($this, row, rowId) => {
   let detail_item_uom = $this.state.detail_item_uom;
   let updateUomMapResult = $this.state.updateUomMapResult;
   let insertItemUomMap = $this.state.insertItemUomMap;
+  let stocking_uom_id = $this.state.stocking_uom_id;
+  const stocking_Uom = _.filter(detail_item_uom, f => {
+    return f.stocking_uom == "Y";
+  });
+
+  if (stocking_Uom !== undefined && stocking_Uom.length > 0) {
+    stocking_uom_id = null;
+  }
+
   if ($this.state.hims_d_item_master_id !== null) {
     if (row.hims_m_item_uom_id !== undefined) {
       let Updateobj = {
@@ -319,7 +335,8 @@ const deleteUOM = ($this, row, rowId) => {
   $this.setState({
     detail_item_uom: detail_item_uom,
     updateUomMapResult: updateUomMapResult,
-    insertItemUomMap: insertItemUomMap
+    insertItemUomMap: insertItemUomMap,
+    stocking_uom_id: stocking_uom_id
   });
 };
 

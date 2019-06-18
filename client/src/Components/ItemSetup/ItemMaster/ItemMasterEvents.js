@@ -4,113 +4,71 @@ import {
   AlgaehOpenContainer
 } from "../../../utils/GlobalFunctions";
 import ItemSetup from "../../../Models/ItemSetup";
+import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 
 const Validations = $this => {
   let isError = false;
   debugger;
 
-  if (!$this.state.item_code) {
-    isError = true;
-    swalMessage({
-      type: "error",
-      title: "Item Code Cannot be blank."
-    });
-    return isError;
-  } else if (!$this.state.item_description) {
-    isError = true;
-    swalMessage({
-      type: "error",
-      title: "Item Name Cannot be blank."
-    });
-    return isError;
-  } else if ($this.state.generic_id === null) {
-    isError = true;
-    swalMessage({
-      type: "error",
-      title: "Please Select Generic."
-    });
-    return isError;
-  } else if ($this.state.category_id === null) {
-    isError = true;
-    swalMessage({
-      type: "error",
-      title: "Please Select Category."
-    });
-    return isError;
-  } else if ($this.state.group_id === null) {
-    isError = true;
-    swalMessage({
-      type: "error",
-      title: "Please Select Group."
-    });
-    return isError;
-  } else if ($this.state.stocking_uom_id === null) {
-    isError = true;
-    swalMessage({
-      type: "error",
-      title: "Please Select Stocking UOM."
-    });
-    return isError;
-  } else if ($this.state.purchase_uom_id === null) {
-    isError = true;
-    swalMessage({
-      type: "error",
-      title: "Please Select Purchase UOM."
-    });
-    return isError;
-  } else if ($this.state.sales_uom_id === null) {
-    isError = true;
-    swalMessage({
-      type: "error",
-      title: "Please Select Sales UOM."
-    });
-    return isError;
-  } else if (
-    $this.state.standard_fee === null ||
-    $this.state.standard_fee === "" ||
-    parseFloat($this.state.standard_fee) === 0
-  ) {
-    isError = true;
-    swalMessage({
-      type: "error",
-      title: "Please Enter the Sales Price."
-    });
-    return isError;
-  } else if (
-    $this.state.purchase_cost === null ||
-    $this.state.purchase_cost === "" ||
-    parseFloat($this.state.purchase_cost) === 0
-  ) {
-    isError = true;
-    swalMessage({
-      type: "error",
-      title: "Please Enter Purchase Cost."
-    });
-    return isError;
-  } else if (
-    $this.state.vat_applicable === "Y" &&
-    ($this.state.vat_percent === null ||
-      $this.state.vat_percent === "" ||
-      parseFloat($this.state.vat_percent) === 0)
-  ) {
-    isError = true;
-    swalMessage({
-      type: "error",
-      title: "Enter the Vat Percentage."
-    });
-    return isError;
-  } else if (
-    $this.state.reorder_qty === null ||
-    $this.state.reorder_qty === "" ||
-    parseFloat($this.state.reorder_qty) === 0
-  ) {
-    isError = true;
-    swalMessage({
-      type: "error",
-      title: "Enter Reorder Quantity."
-    });
-    return isError;
-  }
+  AlgaehValidation({
+    querySelector: "data-validate='ItemMaster'", //if require section level
+    fetchFromFile: true, //if required arabic error
+    alertTypeIcon: "warning", // error icon
+    onSuccess: () => {
+      debugger;
+      if (
+        $this.state.standard_fee === null ||
+        $this.state.standard_fee === "" ||
+        parseFloat($this.state.standard_fee) === 0
+      ) {
+        isError = true;
+        swalMessage({
+          type: "warning",
+          title: "Please Enter the Sales Price."
+        });
+        document.querySelector("[name='standard_fee']").focus();
+      } else if (
+        $this.state.purchase_cost === null ||
+        $this.state.purchase_cost === "" ||
+        parseFloat($this.state.purchase_cost) === 0
+      ) {
+        isError = true;
+        swalMessage({
+          type: "warning",
+          title: "Please Enter Purchase Cost."
+        });
+        document.querySelector("[name='purchase_cost']").focus();
+      } else if (
+        $this.state.vat_applicable === "Y" &&
+        ($this.state.vat_percent === null ||
+          $this.state.vat_percent === "" ||
+          parseFloat($this.state.vat_percent) === 0)
+      ) {
+        isError = true;
+        swalMessage({
+          type: "warning",
+          title: "Enter the Vat Percentage."
+        });
+        document.querySelector("[name='vat_percent']").focus();
+      } else if (
+        $this.state.reorder_qty === null ||
+        $this.state.reorder_qty === "" ||
+        parseFloat($this.state.reorder_qty) === 0
+      ) {
+        isError = true;
+        swalMessage({
+          type: "warning",
+          title: "Enter Reorder Quantity."
+        });
+        document.querySelector("[name='reorder_qty']").focus();
+      }
+    },
+    onCatch: () => {
+      isError = true;
+    }
+  });
+
+  return isError;
 };
 
 const InsertUpdateItems = $this => {

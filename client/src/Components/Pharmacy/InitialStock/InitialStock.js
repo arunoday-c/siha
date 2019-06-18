@@ -233,7 +233,8 @@ class InitialStock extends Component {
                         onChange: changeTexts.bind(this, this)
                       },
                       others: {
-                        autoComplete: "off"
+                        autoComplete: "off",
+                        disabled: this.state.dataExitst
                       }
                     }}
                   />
