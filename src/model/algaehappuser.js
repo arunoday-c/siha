@@ -71,7 +71,7 @@ let getLoginUserMaster = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "select  algaeh_d_app_user_id,username,user_display_name,user_type,hims_d_employee_id,\
+        "select  algaeh_d_app_user_id,username,user_display_name,user_type,user_status,hims_d_employee_id,\
         employee_code,full_name,role_name,app_group_name,algaeh_m_role_user_mappings_id,\
         hims_m_user_employee_id from  hims_m_user_employee UM inner join hims_d_employee E \
         on UM.employee_id=E.hims_d_employee_id inner join algaeh_d_app_user U on UM.user_id=U.algaeh_d_app_user_id\
@@ -623,14 +623,15 @@ let updateUser = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       if (
-        req.query.algaeh_d_app_user_id > 0 &&
-        req.query.user_display_name != null
+        req.body.algaeh_d_app_user_id > 0 &&
+        req.body.user_display_name != null
       ) {
         connection.query(
-          "update algaeh_d_app_user set user_display_name=?,updated_date=?,updated_by=? where\
+          "update algaeh_d_app_user set user_display_name=?,user_status=?,updated_date=?,updated_by=? where\
           record_status='A' and algaeh_d_app_user_id=?",
           [
             req.body.user_display_name,
+            req.body.user_status,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             req.body.algaeh_d_app_user_id
@@ -649,8 +650,8 @@ let updateUser = (req, res, next) => {
                 validUser: false,
                 message: "Please Provide valid user id"
               };
-              next();
             }
+            next();
           }
         );
 

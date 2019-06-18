@@ -52,7 +52,7 @@ const executePDF = function executePDFMethod(options) {
         })
         .then(results => {
           options.mysql.releaseConnection();
-          utilities.logger().log("result: ", results);
+          // utilities.logger().log("result: ", results);
           resolve({ details: results });
         })
         .catch(error => {
