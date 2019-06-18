@@ -341,21 +341,23 @@ class PurchaseOrderEntry extends Component {
                     }
                   }}
                 />
-                <AlgaehDateHandler
-                  div={{ className: "col" }}
-                  label={{ forceLabel: "Expected Arrival" }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "expected_date"
-                  }}
-                  minDate={new Date()}
-                  events={{
-                    onChange: datehandle.bind(this, this)
-                  }}
-                  disabled={this.state.dataExitst}
-                  value={this.state.expected_date}
-                />
-                {/* <div
+
+                {/*
+                  <AlgaehDateHandler
+                    div={{ className: "col" }}
+                    label={{ forceLabel: "Expected Arrival" }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "expected_date"
+                    }}
+                    minDate={new Date()}
+                    events={{
+                      onChange: datehandle.bind(this, this)
+                    }}
+                    disabled={this.state.dataExitst}
+                    value={this.state.expected_date}
+                  />
+                  <div
                   className="customCheckbox col-lg-3"
                   style={{ border: "none", marginTop: "28px" }}
                 >

@@ -97,7 +97,8 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "REQEntry",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS RH.*, FPL.location_description as from_location,\
+          "select SQL_CALC_FOUND_ROWS RH.*,date(RH.requistion_date) as requistiondate, \
+          FPL.location_description as from_location,\
           TPL.location_description as to_location from hims_f_pharamcy_material_header RH,\
           hims_d_inventory_location FPL, hims_d_inventory_location TPL \
           where FPL.hims_d_inventory_location_id = RH.from_location_id and \
@@ -108,7 +109,8 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "REQTransEntry",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS RH.*, FPL.location_description as from_location, \
+          "select SQL_CALC_FOUND_ROWS RH.*, date(RH.requistion_date) as requistiondate,\
+          FPL.location_description as from_location, \
           TPL.location_description as to_location from hims_f_pharamcy_material_header RH, \
           hims_d_inventory_location FPL, hims_d_inventory_location TPL \
           where FPL.hims_d_inventory_location_id = RH.from_location_id and \
@@ -166,7 +168,8 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "InvREQEntry",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS RH.*, FPL.location_description as from_location, \
+          "select SQL_CALC_FOUND_ROWS RH.*,date(RH.requistion_date) as requistiondate,\
+          FPL.location_description as from_location, \
           TPL.location_description as to_location from hims_f_inventory_material_header RH,\
           hims_d_inventory_location FPL, hims_d_inventory_location TPL \
           where FPL.hims_d_inventory_location_id = RH.from_location_id and \
@@ -188,7 +191,8 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "InvREQTransEntry",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS RH.*, FPL.location_description as from_location, \
+          "select SQL_CALC_FOUND_ROWS RH.*, date(RH.requistion_date) as requistiondate, \
+          FPL.location_description as from_location, \
           TPL.location_description as to_location from hims_f_inventory_material_header RH,\
           hims_d_inventory_location FPL, hims_d_inventory_location TPL \
           where FPL.hims_d_inventory_location_id = RH.from_location_id and \

@@ -28,7 +28,8 @@ import {
   onDateTextEventHandaler,
   OnChangeDeliveryQty,
   AddtoList,
-  numberEventHandaler
+  numberEventHandaler,
+  dateValidate
 } from "./DNItemListEvents";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 import extend from "extend";
@@ -213,7 +214,8 @@ class DNItemList extends Component {
                             this,
                             this,
                             context
-                          )
+                          ),
+                          onBlur: dateValidate.bind(this, this, context)
                         }}
                         value={this.state.expiry_date}
                       />
@@ -316,25 +318,26 @@ class DNItemList extends Component {
                                   />
                                 ),
                                 displayTemplate: row => {
-                                  return (
-                                    <span>
-                                      <i
-                                        className="fas fa-barcode"
-                                        onClick={printBarcode.bind(
-                                          this,
-                                          this,
-                                          row
-                                        )}
-                                      />
-                                      <i
-                                        className="fas fa-barcode"
-                                        onClick={deleteDNDetail.bind(
-                                          this,
-                                          this,
-                                          row,
-                                          context
-                                        )}
-                                      />
+                                  return this.state.saveEnable === true ? (
+                                    <span
+                                      onClick={printBarcode.bind(
+                                        this,
+                                        this,
+                                        row
+                                      )}
+                                    >
+                                      <i className="fas fa-barcode" />
+                                    </span>
+                                  ) : (
+                                    <span
+                                      onClick={deleteDNDetail.bind(
+                                        this,
+                                        this,
+                                        row,
+                                        context
+                                      )}
+                                    >
+                                      <i className="fas fa-trash-alt" />
                                     </span>
                                   );
                                 },

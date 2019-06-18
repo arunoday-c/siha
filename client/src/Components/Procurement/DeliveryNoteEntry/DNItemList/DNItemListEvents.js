@@ -382,33 +382,20 @@ const onChangeTextEventHandaler = ($this, context, e) => {
 };
 
 const onDateTextEventHandaler = ($this, context, ctrl, e) => {
-  let inRange =
-    moment(ctrl).isAfter(2000, "year") && moment(ctrl).isBefore(moment());
+  let item_details = $this.state.item_details;
 
-  if (inRange) {
-    swalMessage({
-      title: "Expiry date cannot be past Date.",
-      type: "warning"
-    });
-    $this.setState({
-      [e]: null
-    });
-  } else {
-    let item_details = $this.state.item_details;
+  item_details[e] = moment(ctrl)._d;
 
-    item_details[e] = moment(ctrl)._d;
-
-    $this.setState({
-      [e]: moment(ctrl)._d,
-      append: !$this.state.append,
-      item_details: item_details
-    });
-    context.updateState({
-      [e]: moment(ctrl)._d,
-      append: !$this.state.append,
-      item_details: item_details
-    });
-  }
+  $this.setState({
+    [e]: moment(ctrl)._d,
+    append: !$this.state.append,
+    item_details: item_details
+  });
+  context.updateState({
+    [e]: moment(ctrl)._d,
+    append: !$this.state.append,
+    item_details: item_details
+  });
 };
 
 const OnChangeDeliveryQty = ($this, context, e) => {
@@ -645,6 +632,25 @@ const numberEventHandaler = ($this, context, ctrl, e) => {
     });
   }
 };
+
+const dateValidate = ($this, context, value, event) => {
+  let inRange = moment(value).isBefore(moment());
+  if (inRange) {
+    swalMessage({
+      title: "Expiry date cannot be past Date.",
+      type: "warning"
+    });
+    event.target.focus();
+    $this.setState({
+      [event.target.name]: null
+    });
+
+    context.updateState({
+      [event.target.name]: null
+    });
+  }
+};
+
 export {
   deleteDNDetail,
   updateDNDetail,
@@ -663,5 +669,6 @@ export {
   onDateTextEventHandaler,
   OnChangeDeliveryQty,
   AddtoList,
-  numberEventHandaler
+  numberEventHandaler,
+  dateValidate
 };
