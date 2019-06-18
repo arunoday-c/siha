@@ -207,7 +207,7 @@
         "label": "Requisition Number"
       },
       {
-        "fieldName": "requistion_date",
+        "fieldName": "requistiondate",
         "label": "Requisition Date"
       },
       {

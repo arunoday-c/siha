@@ -498,8 +498,7 @@ let addPatientPrescription = (req, res, next) => {
 let getPatientPrescription = (req, res, next) => {
   let selectWhere = {
     provider_id: "ALL",
-    patient_id: "ALL",
-    prescription_date: "ALL"
+    patient_id: "ALL"
   };
 
   try {
@@ -507,9 +506,9 @@ let getPatientPrescription = (req, res, next) => {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
-    req.query["date(prescription_date)"] = req.query.prescription_date;
-
+    const predate = req.query.prescription_date;
     delete req.query.prescription_date;
+    req.query["date(prescription_date)"] = predate;
 
     let where = whereCondition(extend(selectWhere, req.query));
 

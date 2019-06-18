@@ -97,22 +97,24 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "REQEntry",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS RH.*, FPL.location_description as from_location,\
+          "select SQL_CALC_FOUND_ROWS RH.*,date(RH.requistion_date) as requistiondate, \
+          FPL.location_description as from_location,\
           TPL.location_description as to_location from hims_f_pharamcy_material_header RH,\
-          hims_d_inventory_location FPL, hims_d_inventory_location TPL \
-          where FPL.hims_d_inventory_location_id = RH.from_location_id and \
-          RH.to_location_id = TPL.hims_d_inventory_location_id and  RH.hospital_id=" +
+          hims_d_pharmacy_location FPL, hims_d_pharmacy_location TPL \
+          where FPL.hims_d_pharmacy_location_id = RH.from_location_id and \
+          RH.to_location_id = TPL.hims_d_pharmacy_location_id and  RH.hospital_id=" +
           hospitalId,
         orderBy: "hims_f_pharamcy_material_header_id desc"
       },
       {
         searchName: "REQTransEntry",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS RH.*, FPL.location_description as from_location, \
+          "select SQL_CALC_FOUND_ROWS RH.*, date(RH.requistion_date) as requistiondate,\
+          FPL.location_description as from_location, \
           TPL.location_description as to_location from hims_f_pharamcy_material_header RH, \
-          hims_d_inventory_location FPL, hims_d_inventory_location TPL \
-          where FPL.hims_d_inventory_location_id = RH.from_location_id and \
-          RH.to_location_id = TPL.hims_d_inventory_location_id and RH.authorize1 = 'Y' and RH.authorie2 = 'Y' \
+          hims_d_pharmacy_location FPL, hims_d_pharmacy_location TPL \
+          where FPL.hims_d_pharmacy_location_id = RH.from_location_id and \
+          RH.to_location_id = TPL.hims_d_pharmacy_location_id and RH.authorize1 = 'Y' and RH.authorie2 = 'Y' \
           and RH.is_completed = 'N' and RH.requistion_type='MR' and RH.cancelled='N' and  RH.hospital_id=" +
           hospitalId,
         orderBy: "hims_f_pharamcy_material_header_id desc"
@@ -166,7 +168,8 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "InvREQEntry",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS RH.*, FPL.location_description as from_location, \
+          "select SQL_CALC_FOUND_ROWS RH.*,date(RH.requistion_date) as requistiondate,\
+          FPL.location_description as from_location, \
           TPL.location_description as to_location from hims_f_inventory_material_header RH,\
           hims_d_inventory_location FPL, hims_d_inventory_location TPL \
           where FPL.hims_d_inventory_location_id = RH.from_location_id and \
@@ -188,7 +191,8 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "InvREQTransEntry",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS RH.*, FPL.location_description as from_location, \
+          "select SQL_CALC_FOUND_ROWS RH.*, date(RH.requistion_date) as requistiondate, \
+          FPL.location_description as from_location, \
           TPL.location_description as to_location from hims_f_inventory_material_header RH,\
           hims_d_inventory_location FPL, hims_d_inventory_location TPL \
           where FPL.hims_d_inventory_location_id = RH.from_location_id and \

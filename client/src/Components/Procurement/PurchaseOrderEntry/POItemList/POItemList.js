@@ -717,39 +717,6 @@ class POItemList extends Component {
                               },
                               disabled: true
                             },
-                            {
-                              fieldName: "expected_arrival_date",
-                              label: (
-                                <AlgaehLabel
-                                  label={{
-                                    forceLabel: "Exp Arrival Date"
-                                  }}
-                                />
-                              ),
-                              displayTemplate: row => {
-                                return (
-                                  <span>
-                                    {dateFormater(
-                                      this,
-                                      row.expected_arrival_date
-                                    )}
-                                  </span>
-                                );
-                              },
-                              editorTemplate: row => {
-                                return (
-                                  <span>
-                                    {dateFormater(
-                                      this,
-                                      row.expected_arrival_date
-                                    )}
-                                  </span>
-                                );
-                              },
-                              others: {
-                                minWidth: 130
-                              }
-                            },
 
                             {
                               fieldName: "authorize_quantity",
@@ -917,6 +884,41 @@ class POItemList extends Component {
   }
 }
 
+{
+  /*{
+  fieldName: "expected_arrival_date",
+  label: (
+    <AlgaehLabel
+      label={{
+        forceLabel: "Exp Arrival Date"
+      }}
+    />
+  ),
+  displayTemplate: row => {
+    return (
+      <span>
+        {dateFormater(
+          this,
+          row.expected_arrival_date
+        )}
+      </span>
+    );
+  },
+  editorTemplate: row => {
+    return (
+      <span>
+        {dateFormater(
+          this,
+          row.expected_arrival_date
+        )}
+      </span>
+    );
+  },
+  others: {
+    minWidth: 130
+  }
+},*/
+}
 function mapStateToProps(state) {
   return {
     poitemlist: state.poitemlist,
