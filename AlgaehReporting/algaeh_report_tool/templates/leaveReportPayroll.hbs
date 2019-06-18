@@ -1,0 +1,43 @@
+{{{importStyle 'css/creditinvoice.css'}}}
+
+<body>
+    <div class="print-body">
+
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                     <tr>
+    <th>Sl No.</th>
+    <th>Application No.</th>
+    <th>Employee Code</th>
+    <th>Employee Name</th>
+    <th>Leave Type</th>
+    <th>From Date</th>
+    <th>To Date</th>
+    <th>Total Days</th>
+  </tr>
+                </thead>
+                <tbody>
+                    {{#each detail}}
+                    <tr colspan="8"> <td>{{inc @index}}</td></tr>
+                    {{#each detailList}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                        
+    <th>Application No.</th>
+    <th>Employee Code</th>
+    <th>Employee Name</th>
+    <th>Leave Type</th>
+    <th>From Date</th>
+    <th>To Date</th>
+    <th>Total Days</th>
+                    </tr>
+                    {{/each }}
+                    {{/each }}
+              
+                </tbody>
+            </table>
+        </section>
+        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+    </div>
+</body>
