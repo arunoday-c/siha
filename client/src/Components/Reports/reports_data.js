@@ -4,7 +4,8 @@ import {
   MONTHS,
   RECEIPT_TYPE,
   LOCAL_TYPE,
-  FORMAT_PAYTYPE
+  FORMAT_PAYTYPE,
+  EXPIRY_STATUS
 } from "../../utils/GlobalVariables.json";
 import { getYears } from "../../utils/GlobalFunctions";
 import { algaehApiCall } from "../../utils/algaehApiCall";
@@ -115,11 +116,11 @@ export default [
       {
         subitem: "Department Wise Income",
         reportName: "departmentWiseIncome",
-       // reportQuery: "subDepartmentIncome",
-        requireIframe:true,
+        // reportQuery: "subDepartmentIncome",
+        requireIframe: true,
         reportParameters: [
           {
-            className:"col-2",
+            className: "col-2",
             type: "date",
             name: "from_date",
             isImp: true,
@@ -129,7 +130,7 @@ export default [
             }
           },
           {
-            className:"col-2",
+            className: "col-2",
             type: "date",
             name: "to_date",
             isImp: true,
@@ -144,10 +145,10 @@ export default [
         subitem: "OP Billing Summary",
         reportName: "opBillSummary",
         //reportQuery: "OPBillSummary",
-        requireIframe:true,
+        requireIframe: true,
         reportParameters: [
           {
-            className:"col-2",
+            className: "col-2",
             type: "date",
             name: "from_date",
             isImp: true,
@@ -157,7 +158,7 @@ export default [
             }
           },
           {
-            className:"col-2",
+            className: "col-2",
             type: "date",
             name: "to_date",
             isImp: true,
@@ -174,7 +175,7 @@ export default [
         reportQuery: "OPBillDetails",
         reportParameters: [
           {
-            className:"col-2",
+            className: "col-2",
             type: "date",
             name: "from_date",
             isImp: true,
@@ -184,7 +185,7 @@ export default [
             }
           },
           {
-            className:"col-2",
+            className: "col-2",
             type: "date",
             name: "to_date",
             isImp: true,
@@ -194,7 +195,7 @@ export default [
             }
           },
           {
-            className:"col-2",
+            className: "col-2",
             type: "dropdown",
             name: "service_type_id",
             initialLoad: true,
@@ -216,10 +217,10 @@ export default [
         //template_name: "Income/dailyCashCollection",
         reportName: "dailyCashCollection",
         //reportQuery: "staffCashCollection",
-        requireIframe:true,
+        requireIframe: true,
         reportParameters: [
           {
-            className:"col-2",
+            className: "col-2",
             type: "date",
             name: "from_date",
             isImp: true,
@@ -229,7 +230,7 @@ export default [
             }
           },
           {
-            className:"col-2",
+            className: "col-2",
             type: "date",
             name: "to_date",
             isImp: true,
@@ -243,10 +244,11 @@ export default [
       {
         subitem: "List of Receipt",
         reportName: "opBillIncomeReceipt",
-        requireIframe:true,
+        requireIframe: true,
+
         reportParameters: [
           {
-            className:"col-2",
+            className: "col-2",
             type: "dropdown",
             name: "receipt_type",
             initialLoad: true,
@@ -277,7 +279,7 @@ export default [
             }
           },
           {
-            className:"col-2",
+            className: "col-2",
             type: "date",
             name: "from_date",
             isImp: true,
@@ -287,7 +289,7 @@ export default [
             }
           },
           {
-            className:"col-2",
+            className: "col-2",
             type: "date",
             name: "to_date",
             isImp: true,
@@ -297,7 +299,7 @@ export default [
             }
           },
           {
-            className:"col-2",
+            className: "col-2",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -314,7 +316,7 @@ export default [
           },
 
           {
-            className:"col-2",
+            className: "col-2",
             type: "dropdown",
             name: "V.sub_department_id",
             initialLoad: true,
@@ -330,7 +332,7 @@ export default [
             }
           },
           {
-            className:"col-2",
+            className: "col-2",
             type: "dropdown",
             name: "",
             initialLoad: true,
@@ -1051,7 +1053,7 @@ export default [
       {
         subitem: "List of Receipts",
         reportName: "salesReceiptListPharmacy",
-       // template_name: "salesReceiptListPharmacy",
+        // template_name: "salesReceiptListPharmacy",
         requireIframe: true,
         pageSize: "A4",
         pageOrentation: "landscape", //"portrait",
@@ -1182,7 +1184,7 @@ export default [
       {
         subitem: "List of Sales Invoice",
         reportName: "salesInvoiceListPharmacy",
-       // template_name: "salesInvoiceListPharmacy",
+        // template_name: "salesInvoiceListPharmacy",
         requireIframe: true,
         reportParameters: [
           {
@@ -1246,7 +1248,7 @@ export default [
       {
         subitem: "List of Sales Return",
         reportName: "salesReturnListPharmacy",
-       // template_name: "salesReturnListPharmacy",
+        // template_name: "salesReturnListPharmacy",
         requireIframe: true,
         reportParameters: [
           {
@@ -1371,54 +1373,173 @@ export default [
           }
         ]
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
-      },{
+      },
+      {
         subitem: "Item Expiry Report",
         reportName: "itemExpiryPharmacy",
+        template_name: "itemExpiryPharmacy",
         requireIframe: true,
         pageSize: "A4",
         pageOrentation: "landscape", //"portrait",
         reportParameters: [
-          // {
-          //   className: "col-2",
-          //   type: "dropdown",
-          //   name: "location_id",
-          //   initialLoad: true,
-          //   isImp: true,
-          //   label: "Report Type"
-          // },
-          // {
-          //   className: "col-2",
-          //   type: "dropdown",
-          //   name: "year",
-          //   isImp: true,
-          //   label: "Expiry Month",
-          //   initialLoad: true,
-          //   dataSource: {
-          //     textField: "name",
-          //     valueField: "value",
-          //     data: allYears
-          //   }
-          //   // events: {
-          //   //   onChange: (reportState, currentValue) => {}
-          //   // }
-          // },
-          // {
-          //   className: "col-2",
-          //   type: "dropdown",
-          //   sort: "off",
-          //   name: "month",
-          //   isImp: true,
-          //   label: "Expiry Year",
-          //   initialLoad: true,
-          //   dataSource: {
-          //     textField: "name",
-          //     valueField: "value",
-          //     data: MONTHS
-          //   },
-          //   others: {
-          //     sort: "off"
-          //   }
-          // },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Select branch",
+            link: {
+              uri: "/organization/getOrganization"
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/pharmacy/getPharmacyLocation",
+                  module: "pharmacy",
+                  method: "GET",
+                  data: { hospital_id: currentEvent.value },
+
+                  onSuccess: result => {
+                    reportState.setState({
+                      location_id_list: result.data.records
+                    });
+                  }
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  location_id_list: []
+                });
+              }
+            },
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            }
+          },
+
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "location_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Select Location",
+            dataSource: {
+              textField: "location_description",
+              valueField: "hims_d_pharmacy_location_id",
+              data: []
+            }
+          },
+
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "group_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Select Group",
+            dataSource: {
+              textField: "group_description",
+              valueField: "hims_d_item_group_id",
+              data: []
+            },
+            link: {
+              uri: "/pharmacy/getItemGroup",
+              module: "pharmacy"
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/pharmacy/getItemCategory",
+                  module: "pharmacy",
+                  method: "GET",
+                  data: { hims_d_item_category_id: currentEvent.value },
+
+                  onSuccess: result => {
+                    reportState.setState({
+                      category_id_list: result.data.records
+                    });
+                  }
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  category_id_list: []
+                });
+              }
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "category_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Select Category",
+            dataSource: {
+              textField: "category_desc",
+              valueField: "hims_d_item_category_id",
+              data: []
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/pharmacy/getItemMaster",
+                  module: "pharmacy",
+                  method: "GET",
+                  data: { category_id: currentEvent.value },
+
+                  onSuccess: result => {
+                    reportState.setState({
+                      item_id_list: result.data.records
+                    });
+                  }
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  item_id_list: []
+                });
+              }
+            }
+          },
+
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "item_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Select Item",
+            dataSource: {
+              textField: "item_description",
+              valueField: "hims_d_item_master_id",
+              data: []
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "expiry_status",
+            initialLoad: true,
+            isImp: true,
+            label: "Select Expiry Status",
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: EXPIRY_STATUS
+            }
+          },
+
           {
             className: "col-2",
             type: "date",
@@ -1429,6 +1550,7 @@ export default [
               minDate: null
             }
           },
+
           {
             className: "col-2",
             type: "date",
@@ -1438,78 +1560,8 @@ export default [
               maxDate: new Date(),
               minDate: null
             }
-          },
-          // {
-          //   className: "col-2",
-          //   type: "dropdown",
-          //   name: "hospital_id",
-          //   initialLoad: true,
-          //   isImp: true,
-          //   label: "Select branch",
-          //   link: {
-          //     uri: "/organization/getOrganization"
-          //   },
-            
-          //   dataSource: {
-          //     textField: "hospital_name",
-          //     valueField: "hims_d_hospital_id",
-          //     data: undefined
-          //   }
-          // },
-          // {
-          //   className: "col-2",
-          //   type: "dropdown",
-          //   name: "location_id",
-
-          //   initialLoad: true,
-          //   isImp: true,
-          //   label: "Select Location",
-          //   link: {
-          //     uri: "/pharmacy/getPharmacyLocation",
-          //     module: "pharmacy",
-          //     data: {
-          //       allow_pos: "Y"
-          //     }
-          //   },
-          //   dataSource: {
-          //     textField: "location_description",
-          //     valueField: "hims_d_pharmacy_location_id"
-          //   }
-          // },
-           // {
-          //   className: "col-2",
-          //   type: "dropdown",
-          //   name: "location_id",
-          //   initialLoad: true,
-          //   isImp: true,
-          //   label: "Group"
-          // },
-           // {
-          //   className: "col-2",
-          //   type: "dropdown",
-          //   name: "location_id",
-          //   initialLoad: true,
-          //   isImp: true,
-          //   label: "Category"
-          // },
-           // {
-          //   className: "col-2",
-          //   type: "dropdown",
-          //   name: "location_id",
-          //   initialLoad: true,
-          //   isImp: true,
-          //   label: "Supplier"
-          // },
-           // {
-          //   className: "col-2",
-          //   type: "dropdown",
-          //   name: "location_id",
-          //   initialLoad: true,
-          //   isImp: true,
-          //   label: "Item Name"
-          // },
+          }
         ]
-        //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       },
       {
         subitem: "GP Statement - Bill Wise",

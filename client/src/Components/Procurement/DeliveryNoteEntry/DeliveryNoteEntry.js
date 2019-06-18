@@ -318,7 +318,7 @@ class DeliveryNoteEntry extends Component {
                   </h6>
                 </div>
 
-                <div className="col">
+                {/*<div className="col">
                   <AlgaehLabel label={{ forceLabel: "Expected Arrival" }} />
                   <h6>
                     {this.state.expiry_date
@@ -327,7 +327,7 @@ class DeliveryNoteEntry extends Component {
                         )
                       : Options.dateFormat}
                   </h6>
-                </div>
+                </div>*/}
               </div>
             </div>
           </div>

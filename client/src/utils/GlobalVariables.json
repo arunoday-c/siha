@@ -100,8 +100,7 @@
 
   "FORMAT_PAYMENT_TYPE": [
     { "name": "Credit", "arabic_name": "ائتمان", "value": "CR" },
-    { "name": "Cash", "arabic_name": "السيولة النقدية", "value": "CH" },
-    { "name": "Discount", "arabic_name": "خصم", "value": "DI" }
+    { "name": "Cash", "arabic_name": "السيولة النقدية", "value": "CH" }
   ],
   "FORMAT_PRICE_FROM": [
     {
@@ -1605,5 +1604,10 @@
     { "name": "Pending To Authorize 2", "value": "2" },
     { "name": "Transfer Pending", "value": "3" },
     { "name": "Transfer Completed", "value": "4" }
+  ],
+  "EXPIRY_STATUS": [
+    { "name": "Expired", "value": "E" },
+    { "name": "Expired On", "value": "EO" },
+    { "name": "Expiry within period", "value": "EW" }
   ]
 }

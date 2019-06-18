@@ -10,7 +10,7 @@ import {
 import AlgaehAutoSearch from "../../Wrapper/autoSearch";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-import { USER_TYPE } from "../../../utils/GlobalVariables.json";
+import { USER_TYPE, FORMAT_STATUS } from "../../../utils/GlobalVariables.json";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import Enumerable from "linq";
 import swal from "sweetalert2";
@@ -159,35 +159,35 @@ class LoginUsers extends Component {
     }
   }
 
-  deleteLoginUser() {}
-  updateLoginUser() {
-    AlgaehValidation({
-      alertTypeIcon: "warning",
-      onSuccess: () => {
-        algaehApiCall({
-          uri: "/algaehappuser/updateUser",
-          method: "PUT",
-          data: {
-            user_display_name: this.state.display_name,
-            algaeh_d_app_user_id: this.state.algaeh_d_app_user_id
-          },
-          onSuccess: response => {
-            if (response.data.success) {
-              swalMessage({
-                title: "Record added successfully",
-                type: "success"
-              });
+  updateLoginUser(data) {
+    algaehApiCall({
+      uri: "/algaehappuser/updateUser",
+      method: "PUT",
+      data: {
+        user_display_name: data.user_display_name,
+        algaeh_d_app_user_id: data.algaeh_d_app_user_id,
+        user_status: data.user_status
+      },
+      onSuccess: response => {
+        if (response.data.success) {
+          swalMessage({
+            title: "Record updated successfully",
+            type: "success"
+          });
 
-              this.getLoginUsers();
-              this.resetSaveState();
-            } else if (!response.data.success) {
-              swalMessage({
-                title: response.data.records.message,
-                type: "warning"
-              });
-            }
-          },
-          onError: error => {}
+          this.getLoginUsers();
+          this.resetSaveState();
+        } else if (!response.data.success) {
+          swalMessage({
+            title: response.data.records.message,
+            type: "error"
+          });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
         });
       }
     });
@@ -195,7 +195,7 @@ class LoginUsers extends Component {
 
   deleteLoginUser(data) {
     swal({
-      title: "Do you want to delete user: " + data.username + "?",
+      title: "Do you want to De Activate : " + data.username + "?",
       type: "warning",
       showCancelButton: true,
       confirmButtonText: "Yes!",
@@ -665,9 +665,41 @@ class LoginUsers extends Component {
                               </span>
                             );
                           }
+                        },
+                        {
+                          fieldName: "user_status",
+                          label: <label className="style_Label">Status</label>,
+                          displayTemplate: row => {
+                            return row.user_status === "A"
+                              ? "Active"
+                              : row.user_status === "I"
+                              ? "Inactive"
+                              : "----------";
+                          },
+                          editorTemplate: row => {
+                            return (
+                              <AlagehAutoComplete
+                                selector={{
+                                  name: "user_status",
+                                  className: "select-fld",
+                                  value: row.user_status,
+                                  dataSource: {
+                                    textField: "name",
+                                    valueField: "value",
+                                    data: FORMAT_STATUS
+                                  },
+
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  )
+                                }}
+                              />
+                            );
+                          }
                         }
                       ]}
-                      keyId="hims_m_user_employee_id"
+                      keyId="algaeh_d_app_user_id"
                       dataSource={{
                         data: this.state.login_users
                       }}

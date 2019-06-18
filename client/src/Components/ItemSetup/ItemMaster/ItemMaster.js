@@ -41,7 +41,12 @@ class ItemMaster extends Component {
     super(props);
     this.state = {
       batchexpreq: false,
-      item_code_placeHolder: ""
+      item_code_placeHolder: "",
+
+      uom_id: null,
+      stocking_uom: null,
+      conversion_factor: 0,
+      convertEnable: false
     };
     this.initCall();
   }
@@ -96,7 +101,7 @@ class ItemMaster extends Component {
           title={this.props.HeaderCaption}
           openPopup={this.props.open}
         >
-          <div className="popupInner">
+          <div className="popupInner" data-validate="ItemMaster">
             <div className="col-12 popRightDiv">
               <div className="row">
                 <div className="col-6">
@@ -398,24 +403,6 @@ class ItemMaster extends Component {
                           exclude: "true"
                         }
                       }}
-                    />{" "}
-                    <AlagehFormGroup
-                      div={{ className: "col" }}
-                      label={{
-                        fieldName: "conversion_factor"
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "conversion_factor",
-                        value: this.state.conversion_factor,
-                        events: {
-                          onChange: texthandle.bind(this, this)
-                        },
-                        others: {
-                          disabled: this.state.convertEnable,
-                          exclude: "true"
-                        }
-                      }}
                     />
                     <AlagehAutoComplete
                       div={{ className: "col-3" }}
@@ -437,6 +424,25 @@ class ItemMaster extends Component {
                         }
                       }}
                     />
+                    <AlagehFormGroup
+                      div={{ className: "col" }}
+                      label={{
+                        fieldName: "conversion_factor"
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "conversion_factor",
+                        value: this.state.conversion_factor,
+                        events: {
+                          onChange: texthandle.bind(this, this)
+                        },
+                        others: {
+                          disabled: this.state.convertEnable,
+                          exclude: "true"
+                        }
+                      }}
+                    />
+
                     <div className="col actions" style={{ paddingLeft: 0 }}>
                       <a
                         onClick={AddUom.bind(this, this)}

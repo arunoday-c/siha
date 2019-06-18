@@ -299,7 +299,7 @@ let deleteUserLogin = (req, res, next) => {
       _mysql
         .executeQuery({
           query:
-            "update algaeh_d_app_user set record_status='I' ,updated_by=?,updated_date=?\
+            "update algaeh_d_app_user set user_status='I' ,updated_by=?,updated_date=?\
             where  algaeh_d_app_user_id=?",
           values: [
           
@@ -2325,55 +2325,6 @@ let assignComponents = (req, res, next) => {
   }
 };
 
-//created by irfan:
-let method2 = (req, res, next) => {
-  const _mysql = new algaehMysql({ path: keyPath });
-
-  let input = req.body;
-
-  _mysql
-    .executeQueryWithTransaction({
-      query:
-        "select bank_id, customer_name, amount, queue from aa_bank where bank_id=1",
-
-      printQuery: true
-    })
-    .then(result => {
-      if (result.length > 0) {
-        let new_amount = result[0]["amount"] + input.amount;
-
-        setTimeout(() => {
-          _mysql
-            .executeQuery({
-              query:
-                " update aa_bank set amount=? ,queue=concat(queue,',',?) where bank_id=1",
-              values: [new_amount, req.userIdentity.username],
-              printQuery: true
-            })
-            .then(res2 => {
-              _mysql.commitTransaction(() => {
-                console.log("55555 ended waiting at:", new Date());
-                _mysql.releaseConnection();
-                req.records = res2;
-                next();
-              });
-            })
-            .catch(e => {
-              console.log("error", e);
-              _mysql.rollBackTransaction(() => {
-                next(e);
-              });
-            });
-        }, 3000);
-      }
-    })
-    .catch(e => {
-      console.log("error", e);
-      _mysql.rollBackTransaction(() => {
-        next(e);
-      });
-    });
-};
 
 //created by irfan:
 let method1 = (req, res, next) => {

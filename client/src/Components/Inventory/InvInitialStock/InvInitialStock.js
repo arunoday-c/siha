@@ -214,7 +214,8 @@ class InvInitialStock extends Component {
                         onChange: changeTexts.bind(this, this)
                       },
                       others: {
-                        autoComplete: "off"
+                        autoComplete: "off",
+                        disabled: this.state.dataExitst
                       }
                     }}
                   />
@@ -523,7 +524,7 @@ class InvInitialStock extends Component {
                       },
                       disabled: true,
                       others: {
-                        minWidth:250
+                        minWidth: 250
                       }
                     },
 
@@ -552,7 +553,7 @@ class InvInitialStock extends Component {
                       },
                       disabled: true,
                       others: {
-                        minWidth:150
+                        minWidth: 150
                       }
                     },
 
@@ -581,7 +582,7 @@ class InvInitialStock extends Component {
                       },
                       disabled: true,
                       others: {
-                        minWidth:150
+                        minWidth: 150
                       }
                     },
                     {
@@ -592,7 +593,7 @@ class InvInitialStock extends Component {
                         />
                       ),
                       others: {
-                        minWidth:150
+                        minWidth: 150
                       }
                     },
                     {
@@ -632,7 +633,7 @@ class InvInitialStock extends Component {
                         />
                       ),
                       others: {
-                        minWidth:120
+                        minWidth: 120
                       }
                     }
                   ]}

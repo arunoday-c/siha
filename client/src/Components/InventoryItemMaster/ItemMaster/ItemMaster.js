@@ -40,7 +40,12 @@ import GlobalVariables from "../../../utils/GlobalVariables.json";
 class InvItemMaster extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      uom_id: null,
+      stocking_uom: null,
+      conversion_factor: 0,
+      convertEnable: false
+    };
   }
   onClose = e => {
     this.props.onClose && this.props.onClose(false);
@@ -74,7 +79,7 @@ class InvItemMaster extends Component {
           title={this.props.HeaderCaption}
           openPopup={this.props.open}
         >
-          <div className="popupInner">
+          <div className="popupInner" data-validate="InvItemMaster">
             <div className="col-12 popRightDiv">
               <div className="row">
                 <div className="col-6">
