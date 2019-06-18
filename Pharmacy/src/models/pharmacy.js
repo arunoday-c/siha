@@ -370,10 +370,22 @@ module.exports = {
     try {
       let _strQry = "";
       let intValues = [];
-      if (req.query.hims_d_item_master_id != null) {
+
+      if (req.query.hims_d_item_master_id > 0) {
         _strQry = "and hims_d_item_master_id=?";
         intValues.push(req.query.hims_d_item_master_id);
       }
+
+      if (req.query.group_id > 0) {
+        _strQry = "and group_id=?";
+        intValues.push(req.query.group_id);
+      }
+
+      if (req.query.category_id > 0) {
+        _strQry = "and category_id=?";
+        intValues.push(req.query.category_id);
+      }
+
       _mysql
         .executeQuery({
           query:
@@ -444,7 +456,7 @@ module.exports = {
     try {
       let _strQry = "";
       let intValues = [];
-      if (req.query.hims_d_item_category_id != null) {
+      if (req.query.hims_d_item_category_id > 0) {
         _strQry = "and hims_d_item_category_id=?";
         intValues.push(req.query.hims_d_item_category_id);
       }
