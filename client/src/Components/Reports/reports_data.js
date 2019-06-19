@@ -364,10 +364,10 @@ export default [
       {
         subitem: "Leave Reports",
         reportName: "leaveReportPayroll",
-        requireIframe:true,
+        requireIframe: true,
         reportParameters: [
           {
-            className:"col-2",
+            className: "col-2",
             type: "date",
             name: "from_date",
             isImp: true,
@@ -377,7 +377,7 @@ export default [
             }
           },
           {
-            className:"col-2",
+            className: "col-2",
             type: "date",
             name: "to_date",
             isImp: true,
@@ -387,7 +387,7 @@ export default [
             }
           },
           {
-            className:"col-2",
+            className: "col-2",
             type: "dropdown",
             name: "hims_d_leave_id",
             initialLoad: true,
@@ -403,7 +403,7 @@ export default [
             }
           },
           {
-            className:"col-2",
+            className: "col-2",
             type: "dropdown",
             name: "status",
             initialLoad: true,
@@ -421,12 +421,12 @@ export default [
       {
         subitem: "Salary Statement",
         reportName: "salaryStatementPayroll",
-        requireIframe:true,
-     
+        requireIframe: true,
+
         input: "sub_department_id=?",
         reportParameters: [
           {
-            className:"col-2",
+            className: "col-2",
             type: "dropdown",
             name: "year",
             isImp: true,
@@ -441,7 +441,7 @@ export default [
             // }
           },
           {
-            className:"col-2",
+            className: "col-2",
             type: "dropdown",
             sort: "off",
             name: "month",
@@ -457,7 +457,7 @@ export default [
             }
           },
           {
-            className:"col-2",
+            className: "col-2",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -473,7 +473,7 @@ export default [
             }
           },
           {
-            className:"col-2",
+            className: "col-2",
             type: "dropdown",
             name: "sub_department_id",
             initialLoad: true,
@@ -493,13 +493,13 @@ export default [
       {
         subitem: "Leave Accrual",
         reportName: "leaveAccuralPayroll",
-        requireIframe:true,
+        requireIframe: true,
         pageSize: "A4",
         pageOrentation: "landscape", //"portrait",
         input: "sub_department_id=?",
         reportParameters: [
           {
-            className:"col-2",
+            className: "col-2",
             type: "dropdown",
             name: "year",
             isImp: true,
@@ -514,7 +514,7 @@ export default [
             // }
           },
           {
-            className:"col-2",
+            className: "col-2",
             type: "dropdown",
             sort: "off",
             name: "month",
@@ -530,7 +530,7 @@ export default [
             }
           },
           {
-            className:"col-2",
+            className: "col-2",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -546,7 +546,7 @@ export default [
             }
           },
           {
-            className:"col-2",
+            className: "col-2",
             type: "dropdown",
             name: "sub_department_id",
             initialLoad: true,
@@ -567,11 +567,11 @@ export default [
         subitem: "Gratuity Provision",
         reportName: "gratuityProvisionStatementPayroll",
         input: "sub_department_id=?",
-        requireIframe:true,
-        
+        requireIframe: true,
+
         reportParameters: [
           {
-            className:"col-2",
+            className: "col-2",
             type: "dropdown",
             name: "year",
             isImp: true,
@@ -586,7 +586,7 @@ export default [
             // }
           },
           {
-            className:"col-2",
+            className: "col-2",
             type: "dropdown",
             sort: "off",
             name: "month",
@@ -602,7 +602,7 @@ export default [
             }
           },
           {
-            className:"col-2",
+            className: "col-2",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -637,12 +637,12 @@ export default [
       {
         subitem: "Absent Report",
         reportName: "absentReportPayroll",
-        requireIframe:true,
+        requireIframe: true,
         pageSize: "A4",
         pageOrentation: "landscape", //"portrait",
         reportParameters: [
           {
-            className:"col-2",
+            className: "col-2",
             type: "date",
             name: "from_date",
             isImp: true,
@@ -652,7 +652,7 @@ export default [
             }
           },
           {
-            className:"col-2",
+            className: "col-2",
             type: "date",
             name: "to_date",
             isImp: true,
@@ -666,7 +666,7 @@ export default [
       {
         subitem: "Employee Loan report",
         reportName: "EmployeeLoanReport",
-        requireIframe:true,
+        requireIframe: true,
         pageSize: "A4",
         pageOrentation: "landscape", //"portrait",
         reportParameters: [
@@ -937,7 +937,7 @@ export default [
           }
         ]
       },
-      
+
       {
         subitem: "Items Issued Report",
         template_name: "asset_war_exp",
@@ -1472,11 +1472,85 @@ export default [
             }
           }
         ]
-      },{
+      },
+      {
         subitem: "Items Stock Register - Category wise",
         reportName: "itemStockEnquiryPharmacy",
         requireIframe: true,
         reportParameters: [
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Select branch",
+            link: {
+              uri: "/organization/getOrganization"
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/pharmacy/getPharmacyLocation",
+                  module: "pharmacy",
+                  method: "GET",
+                  data: { hospital_id: currentEvent.value },
+
+                  onSuccess: result => {
+                    reportState.setState({
+                      location_id_list: result.data.records
+                    });
+                  }
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  location_id_list: []
+                });
+              }
+            },
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            }
+          },
+
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "location_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Select Location",
+            dataSource: {
+              textField: "location_description",
+              valueField: "hims_d_pharmacy_location_id",
+              data: []
+            }
+          },
+
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "item_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Select Item",
+
+            link: {
+              uri: "/pharmacy/getItemMaster",
+              module: "pharmacy"
+            },
+            dataSource: {
+              textField: "item_description",
+              valueField: "hims_d_item_master_id",
+              data: undefined
+            }
+          },
+
           {
             type: "date",
             name: "from_date",
@@ -1494,20 +1568,7 @@ export default [
               maxDate: new Date(),
               minDate: null
             }
-          },
-          // {
-          //   className: "col-2",
-          //   type: "dropdown",
-          //   name: "item_id",
-          //   initialLoad: true,
-          //   isImp: false,
-          //   label: "Select Item",
-          //   dataSource: {
-          //     textField: "item_description",
-          //     valueField: "hims_d_item_master_id",
-          //     data: []
-          //   }
-          // }
+          }
         ]
         //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
       },

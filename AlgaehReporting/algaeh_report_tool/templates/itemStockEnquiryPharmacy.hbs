@@ -6,36 +6,50 @@
         <section>
             <table class="tableForData" cell-padding="0">
                 <thead>
-                     <tr>
-    <th>Sl No.</th>
-    <th>Employee Code</th>
-    <th>Employee Name</th>
-    <th>Department</th>
-    <th>Absent Date</th>
-    <th>From Session</th>
-    <th>To Session</th>
-    <th>Reason</th>
-    <th>Duration</th>
-    <th>Status</th>
-  </tr>
+                    <tr>
+                        <th>Sl No.</th>
+
+                        <th>Transaction Date</th>
+                        <th>Stock In</th>
+                        <th>Stock Out</th>
+
+                    </tr>
                 </thead>
                 <tbody>
                     {{#each details}}
                     <tr>
                         <td>{{inc @index}}</td>
-                        <td>{{employee_code}}</td>
-                        <td>{{employee_name}}</td>
-                        <td>{{sub_department_name}}</td>
-                        <td>{{absent_date}}</td>
-                        <td>{{from_session}}</td>
-                        <td>{{to_session}}</td>
-                        <td>{{absent_reason}}</td>
-                        <td>{{absent_duration}}</td>
-                        <td>{{status}}</td>
+
+                        <td>{{transaction_date}}</td>
+                        <td>{{stock_in}}</td>
+                        <td>{{stock_out}}</td>
+
                     </tr>
                     {{/each }}
-              
+
                 </tbody>
+            </table>
+
+
+            <table class="tableTotal">
+                <tr class="">
+                    <td>PRESENT QTY IN HAND.</td>
+                    <td>{{qtyInHand}}</td>
+                    <td>إجمالي المبيعات</td>
+                </tr>
+                <tr class="">
+                    <td>TOTAL STOCK OUT.</td>
+                    <td>{{total_out}}</td>
+                    <td>إجمالي المبيعات</td>
+                </tr>
+                <tr class="">
+                    <td>TOTAL STOCK IN.</td>
+                    <td>{{total_in}}</td>
+                    <td>إجمالي المبيعات</td>
+                </tr>
+
+
+
             </table>
         </section>
         {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
