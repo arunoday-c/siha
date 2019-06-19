@@ -473,18 +473,19 @@ class InitialStock extends Component {
                       fieldName: "action",
                       label: <AlgaehLabel label={{ forceLabel: "Action" }} />,
                       displayTemplate: row => {
-                        return (
+                        return this.state.saveEnable === true ? (
+                          <span>
+                            <i
+                              className="fas fa-barcode"
+                              onClick={printBarcode.bind(this, this, row)}
+                            />
+                          </span>
+                        ) : (
                           <span>
                             <i
                               className="fas fa-times"
                               onClick={deleteInitialStock.bind(this, this, row)}
                             />
-                            {this.state.saveEnable === true ? (
-                              <i
-                                className="fas fa-barcode"
-                                onClick={printBarcode.bind(this, this, row)}
-                              />
-                            ) : null}
                           </span>
                         );
                       }

@@ -1,7 +1,8 @@
 import moment from "moment";
 import Options from "../../../Options.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
-// import { AlgaehValidation } from "../../../utils/GlobalFunctions";
+import { AlgaehValidation } from "../../../utils/GlobalFunctions";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 const changeTexts = ($this, ctrl, e) => {
   e = ctrl || e;
@@ -22,6 +23,20 @@ const datehandle = ($this, ctrl, e) => {
   });
 };
 const ProcessItemMoment = $this => {
+  if ($this.state.from_date === null) {
+    swalMessage({
+      title: "Please Enter From Date",
+      type: "warning"
+    });
+    return;
+  } else if ($this.state.to_date === null) {
+    swalMessage({
+      title: "Please Enter To Date",
+      type: "warning"
+    });
+    return;
+  }
+  AlgaehLoader({ show: true });
   let inputObj = {};
   if ($this.state.location_id !== null) {
     inputObj.from_location_id = $this.state.location_id;
@@ -46,21 +61,49 @@ const ProcessItemMoment = $this => {
     );
   }
 
-  AlgaehLoader({ show: true });
-  $this.props.getItemMoment({
+  algaehApiCall({
     uri: "/inventoryGlobal/getItemMoment",
     module: "inventory",
     method: "GET",
     printInput: true,
     data: inputObj,
-    redux: {
-      type: "ITEM_MOMENT_DATA",
-      mappingName: "insuranceitemmoment"
+    onSuccess: response => {
+      if (response.data.success) {
+        let data = response.data.records;
+
+        $this.setState(
+          {
+            Inventory_Itemmoment: data
+          },
+          () => {
+            AlgaehLoader({ show: false });
+          }
+        );
+      }
     },
-    afterSuccess: data => {
+    onFailure: error => {
       AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
     }
   });
+
+  // $this.props.getItemMoment({
+  //   uri: "/inventoryGlobal/getItemMoment",
+  //   module: "inventory",
+  //   method: "GET",
+  //   printInput: true,
+  //   data: inputObj,
+  //   redux: {
+  //     type: "ITEM_MOMENT_DATA",
+  //     mappingName: "insuranceitemmoment"
+  //   },
+  //   afterSuccess: data => {
+  //     AlgaehLoader({ show: false });
+  //   }
+  // });
 };
 
 export { changeTexts, dateFormater, datehandle, ProcessItemMoment };
