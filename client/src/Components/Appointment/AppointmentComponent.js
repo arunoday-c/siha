@@ -95,19 +95,7 @@ function AppointmentComponent(props) {
                         }}
                         minDate={new Date()}
                         events={{
-                          onChange: selectedDate => {
-                            props.setState(
-                              { edit_appt_date: selectedDate },
-                              () => {
-                                props.setState({
-                                  edit_age: moment().diff(
-                                    props.state.edit_appt_date,
-                                    "years"
-                                  )
-                                });
-                              }
-                            );
-                          }
+                          onChange: props.dateHandler
                         }}
                         value={props.state.edit_appt_date}
                       />
