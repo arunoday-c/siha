@@ -70,6 +70,14 @@ const numberchangeTexts = ($this, context, e) => {
 const AddItems = ($this, context) => {
   debugger;
 
+  if (parseFloat($this.state.quantity) <= 0) {
+    swalMessage({
+      title: "Enter the Quantity",
+      type: "warning"
+    });
+    return;
+  }
+
   let ItemInput = {
     item_description: $this.state.item_description,
     item_id: $this.state.item_id,
@@ -388,25 +396,48 @@ const itemchangeText = ($this, context, e, ctrl) => {
           let data = response.data.records;
           if (data.locationResult.length > 0) {
             debugger;
+            const sales_conversion_factor = _.find(
+              data.uomResult,
+              f => f.uom_id === e.sales_uom_id
+            );
+            const qtyhand =
+              parseFloat(data.locationResult[0].qtyhand) /
+              parseFloat(sales_conversion_factor.conversion_factor);
+
+            const sales_qtyhand =
+              parseFloat(data.locationResult[0].qtyhand) /
+              parseFloat(sales_conversion_factor.conversion_factor);
+
+            for (var i = 0; i < data.locationResult.length; i++) {
+              let qtyhand_batch =
+                parseFloat(data.locationResult[i].qtyhand) /
+                parseFloat(sales_conversion_factor.conversion_factor);
+              data.locationResult[i].qtyhand = qtyhand_batch;
+            }
 
             $this.setState({
               [name]: value,
               item_category: e.category_id,
-              uom_id: e.uom_id,
-              sales_uom_id: e.sales_uom_id,
+              uom_id: e.sales_uom_id,
+              service_id: e.service_id,
               item_group_id: e.group_id,
-              quantity: 1,
+              quantity: 0,
               expiry_date: data.locationResult[0].expirydt,
               batchno: data.locationResult[0].batchno,
               grn_no: data.locationResult[0].grnno,
-              qtyhand: data.locationResult[0].qtyhand,
+              qtyhand: qtyhand,
               barcode: data.locationResult[0].barcode,
               ItemUOM: data.uomResult,
               Batch_Items: data.locationResult,
               addItemButton: false,
               item_description: e.item_description,
-              sales_price: e.sale_price,
-              unit_cost: e.avgcost
+              sales_uom_id: e.sales_uom_id,
+              sales_conversion_factor:
+                sales_conversion_factor.conversion_factor,
+              uom_description: e.uom_description,
+              stocking_uom: e.stocking_uom,
+              conversion_factor: sales_conversion_factor.conversion_factor,
+              sales_qtyhand: sales_qtyhand
             });
 
             if (context !== undefined) {
@@ -414,20 +445,26 @@ const itemchangeText = ($this, context, e, ctrl) => {
                 [name]: value,
                 item_category: e.category_id,
                 uom_id: e.sales_uom_id,
+                service_id: e.service_id,
                 item_group_id: e.group_id,
-                quantity: 1,
+                quantity: 0,
 
                 expiry_date: data.locationResult[0].expirydt,
                 batchno: data.locationResult[0].batchno,
                 grn_no: data.locationResult[0].grnno,
-                qtyhand: data.locationResult[0].qtyhand,
+                qtyhand: qtyhand,
                 barcode: data.locationResult[0].barcode,
                 ItemUOM: data.uomResult,
                 Batch_Items: data.locationResult,
                 addItemButton: false,
                 item_description: e.item_description,
-                sales_price: e.sale_price,
-                unit_cost: e.avgcost
+                sales_uom_id: e.sales_uom_id,
+                sales_conversion_factor:
+                  sales_conversion_factor.conversion_factor,
+                uom_description: e.uom_description,
+                stocking_uom: e.stocking_uom,
+                conversion_factor: sales_conversion_factor.conversion_factor,
+                sales_qtyhand: sales_qtyhand
               });
             }
           } else {

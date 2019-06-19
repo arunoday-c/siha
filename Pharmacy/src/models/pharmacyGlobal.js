@@ -10,14 +10,18 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "select hims_m_item_uom_id, item_master_id, uom_id, stocking_uom, conversion_factor, hims_m_item_uom.uom_status, \
-          hims_d_pharmacy_uom.uom_description  \
-          from hims_m_item_uom,hims_d_pharmacy_uom where hims_m_item_uom.record_status='A' and \
-          hims_m_item_uom.uom_id = hims_d_pharmacy_uom.hims_d_pharmacy_uom_id and hims_m_item_uom.item_master_id=? ;\
-          SELECT hims_m_item_location_id, item_id, pharmacy_location_id, item_location_status, batchno, expirydt, barcode, qtyhand, qtypo, cost_uom,\
-          avgcost, last_purchase_cost, item_type, grn_id, grnno, sale_price, mrp_price, sales_uom \
-          from hims_m_item_location where record_status='A'  and item_id=? and pharmacy_location_id=? and expirydt > CURDATE() \
-          and qtyhand>0  order by expirydt",
+            "select hims_m_item_uom_id, item_master_id, uom_id, stocking_uom, conversion_factor,\
+             hims_m_item_uom.uom_status, hims_d_pharmacy_uom.uom_description from \
+             hims_m_item_uom,hims_d_pharmacy_uom where hims_m_item_uom.record_status='A' and \
+             hims_m_item_uom.uom_id = hims_d_pharmacy_uom.hims_d_pharmacy_uom_id and \
+             hims_m_item_uom.item_master_id=? ;\
+             SELECT hims_m_item_location_id, item_id, pharmacy_location_id, item_location_status, batchno, \
+             expirydt,barcode, qtyhand, qtypo, cost_uom,avgcost, last_purchase_cost, item_type, \
+             grn_id, grnno, sale_price, mrp_price, sales_uom,hims_d_pharmacy_uom.uom_description \
+             from hims_m_item_location,hims_d_pharmacy_uom where\
+             hims_m_item_location.sales_uom = hims_d_pharmacy_uom.hims_d_pharmacy_uom_id and \
+             hims_m_item_location.record_status='A'  and item_id=? and pharmacy_location_id=? and \
+             expirydt > CURDATE() and qtyhand>0  order by expirydt",
           values: [req.query.item_id, req.query.item_id, req.query.location_id],
           printQuery: true
         })
@@ -186,12 +190,15 @@ module.exports = {
               _strQry += " and hospital_id=?";
               intValues.push(req.query.hospital_id);
             }
+            if (req.query.allow_pos == "Y") {
+              _strQry += " and allow_pos='Y' ";
+            }
 
             _mysql
               .executeQuery({
                 query:
                   "select  hims_d_pharmacy_location_id, location_description, location_status, location_type,\
-              allow_pos from hims_d_pharmacy_location where record_status='A' and allow_pos='Y' " +
+              allow_pos from hims_d_pharmacy_location where record_status='A' " +
                   _strQry,
                 values: intValues,
                 printQuery: true

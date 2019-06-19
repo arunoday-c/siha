@@ -197,48 +197,30 @@ class RequisitionItems extends Component {
                         }}
                       />
 
-                      <AlagehFormGroup
-                        div={{ className: "col" }}
-                        label={{
-                          forceLabel: "From Qty In Hand"
-                        }}
-                        textBox={{
-                          number: {
-                            allowNegative: false,
-                            thousandSeparator: ","
-                          },
-                          className: "txt-fld",
-                          name: "from_qtyhand",
-                          value: this.state.from_qtyhand,
-                          events: {
-                            onChange: null
-                          },
-                          others: {
-                            disabled: true
-                          }
-                        }}
-                      />
-                      <AlagehFormGroup
-                        div={{ className: "col" }}
-                        label={{
-                          forceLabel: "To Qty In Hand"
-                        }}
-                        textBox={{
-                          number: {
-                            allowNegative: false,
-                            thousandSeparator: ","
-                          },
-                          className: "txt-fld",
-                          name: "to_qtyhand",
-                          value: this.state.to_qtyhand,
-                          events: {
-                            onChange: null
-                          },
-                          others: {
-                            disabled: true
-                          }
-                        }}
-                      />
+                      <div className="col">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "From Loc. In Hand"
+                          }}
+                        />
+                        <h6>
+                          {this.state.from_qtyhand
+                            ? this.state.from_qtyhand
+                            : "-----------"}
+                        </h6>
+                      </div>
+                      <div className="col">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "To Loc. In Hand"
+                          }}
+                        />
+                        <h6>
+                          {this.state.to_qtyhand
+                            ? this.state.to_qtyhand
+                            : "-----------"}
+                        </h6>
+                      </div>
                     </div>
                   </div>
                   <div className="row">
@@ -335,7 +317,8 @@ class RequisitionItems extends Component {
                                       : ""}
                                   </span>
                                 );
-                              },others:{minWidth:150}
+                              },
+                              others: { minWidth: 150 }
                             },
 
                             {
@@ -380,7 +363,8 @@ class RequisitionItems extends Component {
                                       : ""}
                                   </span>
                                 );
-                              },others:{minWidth:250}
+                              },
+                              others: { minWidth: 250 }
                             },
 
                             {
@@ -425,7 +409,8 @@ class RequisitionItems extends Component {
                                       : ""}
                                   </span>
                                 );
-                              },others:{minWidth:150}
+                              },
+                              others: { minWidth: 150 }
                             },
 
                             {

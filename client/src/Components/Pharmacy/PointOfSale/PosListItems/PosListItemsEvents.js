@@ -4,6 +4,7 @@ import Enumerable from "linq";
 import extend from "extend";
 import Options from "../../../../Options.json";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
+import _ from "lodash";
 
 let texthandlerInterval = null;
 
@@ -74,17 +75,70 @@ const UomchangeTexts = ($this, context, ctrl, e) => {
   e = ctrl || e;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
+  debugger;
   if ($this.state.uom_id !== value) {
+    let qtyhand = 0;
     let unit_cost = 0;
-    if (e.selected.conversion_factor === 1) {
-      unit_cost = $this.state.Real_unit_cost;
+
+    if ($this.state.sales_uom_id === $this.state.stocking_uom_id) {
+      if (
+        parseFloat($this.state.sales_conversion_factor) ===
+        parseFloat(e.selected.conversion_factor)
+      ) {
+        unit_cost = $this.state.Real_unit_cost;
+        qtyhand = parseFloat($this.state.sales_qtyhand);
+      } else if (
+        parseFloat($this.state.sales_conversion_factor) >
+        parseFloat(e.selected.conversion_factor)
+      ) {
+        unit_cost =
+          parseFloat($this.state.Real_unit_cost) /
+          parseFloat($this.state.sales_conversion_factor);
+        qtyhand =
+          parseFloat($this.state.sales_qtyhand) *
+          parseFloat(e.selected.conversion_factor);
+      } else {
+        qtyhand =
+          parseFloat($this.state.sales_qtyhand) /
+          parseFloat(e.selected.conversion_factor);
+        unit_cost =
+          parseFloat(e.selected.conversion_factor) *
+          parseFloat($this.state.Real_unit_cost);
+      }
     } else {
-      unit_cost = e.selected.conversion_factor * $this.state.Real_unit_cost;
+      if (
+        parseFloat($this.state.sales_conversion_factor) ===
+        parseFloat(e.selected.conversion_factor)
+      ) {
+        unit_cost = $this.state.Real_unit_cost;
+        qtyhand = parseFloat($this.state.sales_qtyhand);
+      } else if (
+        parseFloat($this.state.sales_conversion_factor) >
+        parseFloat(e.selected.conversion_factor)
+      ) {
+        unit_cost =
+          parseFloat($this.state.Real_unit_cost) /
+          parseFloat($this.state.sales_conversion_factor);
+        qtyhand =
+          parseFloat($this.state.sales_qtyhand) *
+          parseFloat($this.state.sales_conversion_factor);
+      } else {
+        qtyhand =
+          parseFloat($this.state.sales_qtyhand) /
+          parseFloat($this.state.sales_conversion_factor);
+        unit_cost =
+          parseFloat(e.selected.conversion_factor) *
+          parseFloat($this.state.Real_unit_cost);
+      }
     }
+
     $this.setState({
       [name]: value,
       conversion_factor: e.selected.conversion_factor,
-      unit_cost: unit_cost
+      unit_cost: unit_cost,
+      qtyhand: qtyhand,
+      uom_description: e.selected.text,
+      quantity: 0
     });
 
     clearInterval(texthandlerInterval);
@@ -93,7 +147,10 @@ const UomchangeTexts = ($this, context, ctrl, e) => {
         context.updateState({
           [name]: value,
           conversion_factor: e.selected.conversion_factor,
-          unit_cost: unit_cost
+          unit_cost: unit_cost,
+          qtyhand: qtyhand,
+          uom_description: e.selected.text,
+          quantity: 0
         });
       }
       clearInterval(texthandlerInterval);
@@ -104,18 +161,22 @@ const UomchangeTexts = ($this, context, ctrl, e) => {
 const numberchangeTexts = ($this, context, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-
+  debugger;
   if (name === "quantity") {
+    let required_qty_stock =
+      parseFloat(value) * parseFloat($this.state.conversion_factor);
     if (parseFloat(value) < 0) {
       swalMessage({
         title: "Quantity cannot be less than or equal to Zero",
         type: "warning"
       });
+      return;
     } else if (parseFloat(value) > parseFloat($this.state.qtyhand)) {
       swalMessage({
-        title: "Quantity cannot be greater than Quantity in hand",
+        title: "Quantity cannot be greater than Quantity in hand.",
         type: "warning"
       });
+      return;
     } else {
       $this.setState({ [name]: value });
 
@@ -164,22 +225,50 @@ const itemchangeText = ($this, context, e, ctrl) => {
             if (data.locationResult.length > 0) {
               getUnitCost($this, context, e.service_id, e.sale_price);
 
+              debugger;
+              const sales_conversion_factor = _.find(
+                data.uomResult,
+                f => f.uom_id === e.sales_uom_id
+              );
+              const qtyhand =
+                parseFloat(data.locationResult[0].qtyhand) /
+                parseFloat(sales_conversion_factor.conversion_factor);
+
+              const sales_qtyhand =
+                parseFloat(data.locationResult[0].qtyhand) /
+                parseFloat(sales_conversion_factor.conversion_factor);
+
+              for (var i = 0; i < data.locationResult.length; i++) {
+                let qtyhand_batch =
+                  parseFloat(data.locationResult[i].qtyhand) /
+                  parseFloat(sales_conversion_factor.conversion_factor);
+                data.locationResult[i].qtyhand = qtyhand_batch;
+              }
+
               $this.setState({
                 [name]: value,
                 item_category: e.category_id,
                 uom_id: e.sales_uom_id,
                 service_id: e.service_id,
                 item_group_id: e.group_id,
-                quantity: 1,
+                quantity: 0,
                 expiry_date: data.locationResult[0].expirydt,
                 batchno: data.locationResult[0].batchno,
                 grn_no: data.locationResult[0].grnno,
-                qtyhand: data.locationResult[0].qtyhand,
+                qtyhand: qtyhand,
                 barcode: data.locationResult[0].barcode,
                 ItemUOM: data.uomResult,
                 Batch_Items: data.locationResult,
                 addItemButton: false,
-                item_description: e.item_description
+                item_description: e.item_description,
+                sales_uom_id: e.sales_uom_id,
+                sales_conversion_factor:
+                  sales_conversion_factor.conversion_factor,
+                uom_description: e.uom_description,
+                stocking_uom: e.stocking_uom,
+                conversion_factor: sales_conversion_factor.conversion_factor,
+                sales_qtyhand: sales_qtyhand,
+                stocking_uom_id: e.stocking_uom_id
               });
 
               if (context !== undefined) {
@@ -189,17 +278,25 @@ const itemchangeText = ($this, context, e, ctrl) => {
                   uom_id: e.sales_uom_id,
                   service_id: e.service_id,
                   item_group_id: e.group_id,
-                  quantity: 1,
+                  quantity: 0,
 
                   expiry_date: data.locationResult[0].expirydt,
                   batchno: data.locationResult[0].batchno,
                   grn_no: data.locationResult[0].grnno,
-                  qtyhand: data.locationResult[0].qtyhand,
+                  qtyhand: qtyhand,
                   barcode: data.locationResult[0].barcode,
                   ItemUOM: data.uomResult,
                   Batch_Items: data.locationResult,
                   addItemButton: false,
-                  item_description: e.item_description
+                  item_description: e.item_description,
+                  sales_uom_id: e.sales_uom_id,
+                  sales_conversion_factor:
+                    sales_conversion_factor.conversion_factor,
+                  uom_description: e.uom_description,
+                  stocking_uom: e.stocking_uom,
+                  conversion_factor: sales_conversion_factor.conversion_factor,
+                  sales_qtyhand: sales_qtyhand,
+                  stocking_uom_id: e.stocking_uom_id
                 });
               }
             } else {
@@ -393,6 +490,13 @@ const AddItems = ($this, context) => {
       });
       return;
     }
+  }
+  if ($this.state.uom_id === null) {
+    swalMessage({
+      title: "Select the UOM.",
+      type: "warning"
+    });
+    return;
   }
   let itemData = Enumerable.from($this.state.pharmacy_stock_detail)
     .where(
@@ -1049,6 +1153,7 @@ const ShowItemBatch = ($this, e) => {
 };
 
 const CloseItemBatch = ($this, context, e) => {
+  debugger;
   let batchno =
     e !== undefined
       ? e.selected === true
@@ -1081,6 +1186,19 @@ const CloseItemBatch = ($this, context, e) => {
         ? e.sale_price
         : $this.state.unit_cost
       : $this.state.unit_cost;
+  let uom_description =
+    e !== undefined
+      ? e.selected === true
+        ? e.uom_description
+        : $this.state.unit_cost
+      : $this.state.unit_cost;
+
+  let uom_id =
+    e !== undefined
+      ? e.selected === true
+        ? e.sales_uom
+        : $this.state.uom_id
+      : $this.state.uom_id;
 
   $this.setState({
     ...$this.state,
@@ -1089,7 +1207,10 @@ const CloseItemBatch = ($this, context, e) => {
     expiry_date: expiry_date,
     grn_no: grn_no,
     qtyhand: qtyhand,
-    unit_cost: sale_price
+    sales_qtyhand: qtyhand,
+    uom_id: uom_id,
+    unit_cost: sale_price,
+    uom_description: uom_description
   });
 
   if (context !== null) {
@@ -1098,7 +1219,10 @@ const CloseItemBatch = ($this, context, e) => {
       expiry_date: expiry_date,
       grn_no: grn_no,
       qtyhand: qtyhand,
-      unit_cost: sale_price
+      sales_qtyhand: qtyhand,
+      uom_id: uom_id,
+      unit_cost: sale_price,
+      uom_description: uom_description
     });
   }
 };
@@ -1122,7 +1246,7 @@ const qtyonchangegridcol = ($this, context, row, e) => {
   let name = e.target.name;
   let value = e.target.value === "" ? null : e.target.value;
 
-  if (value < 0) {
+  if (parseFloat(value) < 0) {
     swalMessage({
       title: "Quantity cannot be less than Zero",
       type: "warning"
@@ -1190,12 +1314,13 @@ const credittexthandle = ($this, context, ctrl, e) => {
 
 const SelectBatchDetails = ($this, row, context, e) => {
   //
-
+  debugger;
   let _pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
 
   row["batchno"] = e.selected.batchno;
   row["expiry_date"] = e.selected.expiry_date;
-  row["qtyhand"] = e.selected.qtyhand;
+  row["qtyhand"] =
+    parseFloat(e.selected.qtyhand) / parseFloat(e.selected.conversion_factor);
   row["grn_no"] = e.selected.grnno;
   row["barcode"] = e.selected.barcode;
   row["unit_cost"] = e.selected.sales_price;

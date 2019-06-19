@@ -1,6 +1,7 @@
 import moment from "moment";
 import Options from "../../../Options.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 const changeTexts = ($this, ctrl, e) => {
   e = ctrl || e;
@@ -21,6 +22,7 @@ const datehandle = ($this, ctrl, e) => {
   });
 };
 const ProcessItemMoment = $this => {
+  AlgaehLoader({ show: true });
   let inputObj = {};
   if ($this.state.location_id !== null) {
     inputObj.from_location_id = $this.state.location_id;
@@ -45,19 +47,32 @@ const ProcessItemMoment = $this => {
     );
   }
 
-  AlgaehLoader({ show: true });
-  $this.props.getItemMoment({
+  algaehApiCall({
     uri: "/pharmacyGlobal/getItemMoment",
     module: "pharmacy",
     method: "GET",
     printInput: true,
     data: inputObj,
-    redux: {
-      type: "ITEM_MOMENT_DATA",
-      mappingName: "itemmoment"
+    onSuccess: response => {
+      if (response.data.success) {
+        let data = response.data.records;
+
+        $this.setState(
+          {
+            itemmoment: data
+          },
+          () => {
+            AlgaehLoader({ show: false });
+          }
+        );
+      }
     },
-    afterSuccess: data => {
+    onFailure: error => {
       AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
     }
   });
 };

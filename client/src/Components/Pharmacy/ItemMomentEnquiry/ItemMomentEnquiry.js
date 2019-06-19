@@ -28,7 +28,7 @@ class ItemMomentEnquiry extends Component {
     super(props);
 
     this.state = {
-      ListItems: [],
+      itemmoment: [],
       location_id: null,
       item_code_id: null,
       from_date: null,
@@ -253,7 +253,7 @@ class ItemMomentEnquiry extends Component {
                           ? "Receipt"
                           : row.transaction_type === "PO"
                           ? "Purchase Order"
-                          : row.transaction_type === "DN"
+                          : row.transaction_type === "DNA"
                           ? "Delivery Note"
                           : "";
                       }
@@ -380,10 +380,7 @@ class ItemMomentEnquiry extends Component {
                   ]}
                   keyId="item_id"
                   dataSource={{
-                    data:
-                      this.props.itemmoment === undefined
-                        ? []
-                        : this.props.itemmoment
+                    data: this.state.itemmoment
                   }}
                   paging={{ page: 0, rowsPerPage: 20 }}
                 />
@@ -400,7 +397,6 @@ function mapStateToProps(state) {
   return {
     itemlist: state.itemlist,
     locations: state.locations,
-    itemmoment: state.itemmoment,
     itemuom: state.itemuom
   };
 }
@@ -410,7 +406,6 @@ function mapDispatchToProps(dispatch) {
     {
       getItems: AlgaehActions,
       getLocation: AlgaehActions,
-      getItemMoment: AlgaehActions,
       getItemUOM: AlgaehActions
     },
     dispatch

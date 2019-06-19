@@ -723,9 +723,9 @@ module.exports = {
           query:
             "select itmloc.item_id, itmloc.pharmacy_location_id, itmloc.batchno, itmloc.expirydt, itmloc.qtyhand, \
               itmloc.grnno, itmloc.sales_uom, itmloc.barcode, item.item_description, item.service_id,\
-              item.category_id,item.group_id \
-              from hims_m_item_location as itmloc \
-              inner join hims_d_item_master as item on itmloc.item_id = item.hims_d_item_master_id  \
+              item.category_id,item.group_id, ITMUOM.conversion_factor from hims_m_item_location as itmloc \
+              inner join hims_d_item_master as item on itmloc.item_id = item.hims_d_item_master_id left join\
+              hims_m_item_uom as ITMUOM  on ITMUOM.item_master_id=item.hims_d_item_master_id and ITMUOM.uom_id = itmloc.sales_uom \
               where item_id in (?) and pharmacy_location_id in (?) and qtyhand > 0 and expirydt > CURDATE() order by expirydt",
           values: [item_ids, location_ids],
           printQuery: true
@@ -776,7 +776,8 @@ module.exports = {
                   expiry_date: s.expirydt,
                   barcode: s.barcode,
                   qtyhand: s.qtyhand,
-                  grnno: s.grnno
+                  grnno: s.grnno,
+                  conversion_factor: s.conversion_factor
                 };
               })
               .ToArray();
