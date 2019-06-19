@@ -512,6 +512,8 @@ class Appointment extends PureComponent {
     );
   }
   monthChangeHandler(e) {
+    console.log("month handler")
+    console.log(e.target.value)
     let dt = moment(e.target.value + "-01", "YYYY-MM-DD")._d;
     this.setState({ selectedHDate: dt, activeDateHeader: dt });
   }
@@ -1528,6 +1530,7 @@ class Appointment extends PureComponent {
     return (
       <AppointmentComponent
         state={this.state}
+        setState={this.setState}
         texthandle={(e) => this.texthandle(e)}
         handleClose={(e) => this.handleClose(e)}
         dropDownHandle={(e) => this.dropDownHandle(e)}
@@ -1535,7 +1538,6 @@ class Appointment extends PureComponent {
         updatePatientAppointment={() => this.updatePatientAppointment()}
         ageHandler={() => this.ageHandler()}
         dobHandler={() => this.dobHandler()}
-        monthChangeHandler={(e) => this.monthChangeHandler(e)}
         patientSearch={() => this.patientSearch()}
         deptDropDownHandler={(value) => this.deptDropDownHandler(value)}
         getAppointmentSchedule={() => this.getAppointmentSchedule()}
