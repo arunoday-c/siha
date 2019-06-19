@@ -4,7 +4,7 @@ import moment from "moment";
 import {
   setGlobal,
   AlgaehValidation,
-  SetBulkState,
+  SetBulkState
 } from "../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 import Enumerable from "linq";
@@ -555,6 +555,7 @@ class Appointment extends PureComponent {
       }
     );
   }
+
   monthChangeHandler(e) {
     let dt = moment(e.target.value + "-01", "YYYY-MM-DD")._d;
     this.setState({ selectedHDate: dt, activeDateHeader: dt });
@@ -623,6 +624,10 @@ class Appointment extends PureComponent {
         });
       }
     });
+  }
+
+  dateHandler(selectedDate) {
+    this.setState({ edit_appt_date: selectedDate });
   }
 
   texthandle(e) {
@@ -697,7 +702,6 @@ class Appointment extends PureComponent {
 
   openEditModal(patient, data, e) {
     e.preventDefault();
-    console.log(patient, data);
 
     let maxSlots = 1;
     const _currentRow = e.target.parentElement.parentNode.sectionRowIndex + 1;
@@ -742,7 +746,6 @@ class Appointment extends PureComponent {
       }
       this.setState({ patToEdit: patient, openPatEdit: openPatEdit }, () => {
         let pat_edit = this.state.patToEdit;
-
         this.setState(
           {
             edit_appointment_status_id: pat_edit.appointment_status_id,
@@ -778,6 +781,7 @@ class Appointment extends PureComponent {
   }
 
   updatePatientAppointment(data) {
+    debugger;
     if (data !== null) {
       this.setState({
         edit_appointment_status_id: data.hims_d_appointment_status_id
@@ -1019,7 +1023,8 @@ class Appointment extends PureComponent {
           edit_sub_dep_id: pat_edit.sub_department_id,
           edit_appointment_date: pat_edit.appointment_date,
           patient_code: pat_edit.patient_code,
-          edit_no_of_slots: pat_edit.number_of_slot
+          edit_no_of_slots: pat_edit.number_of_slot,
+          edit_title_id: pat_edit.title_id
         });
       });
     }
@@ -1089,6 +1094,7 @@ class Appointment extends PureComponent {
                 arabic_name: this.state.edit_arabic_name,
                 date_of_birth: this.state.edit_date_of_birth,
                 age: this.state.edit_age,
+                title_id: this.state.edit_title_id,
                 contact_number: this.state.edit_contact_number,
                 email: this.state.edit_email,
                 send_to_provider: null,
@@ -1572,21 +1578,22 @@ class Appointment extends PureComponent {
     return (
       <AppointmentComponent
         state={this.state}
-        texthandle={(e) => this.texthandle(e)}
-        handleClose={(e) => this.handleClose(e)}
-        dropDownHandle={(e) => this.dropDownHandle(e)}
-        nullifyState={(name) => this.nullifyState(name)}
-        updatePatientAppointment={() => this.updatePatientAppointment()}
+        setState={this.setState}
+        texthandle={e => this.texthandle(e)}
+        handleClose={e => this.handleClose(e)}
+        dateHandler={selectedDate => this.dateHandler(selectedDate)}
+        dropDownHandle={e => this.dropDownHandle(e)}
+        nullifyState={name => this.nullifyState(name)}
+        updatePatientAppointment={data => this.updatePatientAppointment(data)}
         ageHandler={() => this.ageHandler()}
-        dobHandler={() => this.dobHandler()}
-        monthChangeHandler={(e) => this.monthChangeHandler(e)}
+        dobHandler={(e) => this.dobHandler(e)}
         patientSearch={() => this.patientSearch()}
-        deptDropDownHandler={(value) => this.deptDropDownHandler(value)}
+        deptDropDownHandler={value => this.deptDropDownHandler(value)}
         getAppointmentSchedule={() => this.getAppointmentSchedule()}
-        addPatientAppointment={(e) => this.addPatientAppointment(e)}
-        monthChangeHandler={(e) => this.monthChangeHandler(e)}
-        generateHorizontalDateBlocks={() =>this.generateHorizontalDateBlocks()}
-        generateTimeslots={(data) => this.generateTimeslots(data)}
+        addPatientAppointment={e => this.addPatientAppointment(e)}
+        monthChangeHandler={e => this.monthChangeHandler(e)}
+        generateHorizontalDateBlocks={() => this.generateHorizontalDateBlocks()}
+        generateTimeslots={data => this.generateTimeslots(data)}
       />
     );
   }

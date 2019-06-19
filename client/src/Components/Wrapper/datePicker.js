@@ -93,6 +93,7 @@ export default class DateHandler extends PureComponent {
   };
 
   onBlur = e => {
+    if(this.props.events != undefined){
     const configType =
           this.props.type !== undefined && this.props.type === "time"
             ? config.formators.time
@@ -101,6 +102,7 @@ export default class DateHandler extends PureComponent {
       this.props.events.onBlur(
         moment(e.target.value, configType)._d,
           e)
+    } 
     }
   }
 

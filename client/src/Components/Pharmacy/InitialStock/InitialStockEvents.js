@@ -203,7 +203,6 @@ const getCtrlCode = ($this, docNumber) => {
     data: { document_number: docNumber },
     onSuccess: response => {
       if (response.data.success === true) {
-        
         let data = response.data.records;
         data.saveEnable = true;
 
@@ -228,6 +227,7 @@ const getCtrlCode = ($this, docNumber) => {
 };
 
 const SaveInitialStock = $this => {
+  AlgaehLoader({ show: true });
   $this.state.posted = "Y";
   $this.state.transaction_type = "INT";
   $this.state.transaction_date = $this.state.docdate;
@@ -260,6 +260,13 @@ const SaveInitialStock = $this => {
           type: "success"
         });
       }
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
     }
   });
 };
@@ -333,6 +340,13 @@ const PostInitialStock = $this => {
           type: "success"
         });
       }
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
     }
   });
 };

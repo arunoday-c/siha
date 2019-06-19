@@ -134,6 +134,30 @@ class BatchWiseStock extends Component {
                       }
                     },
                     {
+                      fieldName: "stocking_uom_id",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Stocking UOM" }} />
+                      ),
+                      displayTemplate: row => {
+                        let display =
+                          this.props.inventoryitemuom === undefined
+                            ? []
+                            : this.props.inventoryitemuom.filter(
+                                f =>
+                                  f.hims_d_inventory_uom_id ===
+                                  row.stocking_uom_id
+                              );
+
+                        return (
+                          <span>
+                            {display !== null && display.length !== 0
+                              ? display[0].uom_description
+                              : ""}
+                          </span>
+                        );
+                      }
+                    },
+                    {
                       fieldName: "sales_uom",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Sales UOM" }} />
@@ -252,7 +276,7 @@ class BatchWiseStock extends Component {
                         : this.props.batch_wise_item
                   }}
                   noDataText="No Stock available for selected Item in the selected Location"
-                  isEditable={true}
+                  isEditable={false}
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
                     //   onDelete: deleteServices.bind(this, this),

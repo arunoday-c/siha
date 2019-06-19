@@ -80,8 +80,8 @@ class ConsumptionItems extends Component {
     ConsumptionItemsEvents().itemchangeText(this, context, e);
   }
 
-  UomchangeTexts() {
-    ConsumptionItemsEvents().UomchangeTexts(this);
+  UomchangeTexts(context, e) {
+    ConsumptionItemsEvents().UomchangeTexts(this, context, e);
   }
   numberchangeTexts(context, e) {
     ConsumptionItemsEvents().numberchangeTexts(this, context, e);
@@ -140,7 +140,7 @@ class ConsumptionItems extends Component {
                             data: this.state.ItemUOM
                           },
                           others: {
-                            disabled: this.state.ItemDisable
+                            disabled: true
                           },
 
                           onChange: this.UomchangeTexts.bind(this)

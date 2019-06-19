@@ -22,6 +22,19 @@ const datehandle = ($this, ctrl, e) => {
   });
 };
 const ProcessItemMoment = $this => {
+  if ($this.state.from_date === null) {
+    swalMessage({
+      title: "Please Enter From Date",
+      type: "warning"
+    });
+    return;
+  } else if ($this.state.to_date === null) {
+    swalMessage({
+      title: "Please Enter To Date",
+      type: "warning"
+    });
+    return;
+  }
   AlgaehLoader({ show: true });
   let inputObj = {};
   if ($this.state.location_id !== null) {

@@ -183,7 +183,6 @@ const PurchaseOrderSearch = ($this, e) => {
           },
           onSuccess: response => {
             if (response.data.success) {
-              
               let data = response.data.records;
               if (data !== null && data !== undefined) {
                 AlgaehLoader({ show: true });
@@ -259,10 +258,9 @@ const SaveDNEnrty = $this => {
     .toArray();
 
   let InputObj = extend({}, $this.state);
-  
+
   for (var i = 0; i < InputObj.po_entry_detail.length; i++) {
     if ($this.state.dn_from === "PHR") {
-      
       if (
         InputObj.pharmacy_stock_detail === undefined ||
         InputObj.pharmacy_stock_detail.length === 0
@@ -347,7 +345,8 @@ const SaveDNEnrty = $this => {
       InputObj.inventory_stock_detail[i].location_type = InputObj.location_type;
 
       InputObj.inventory_stock_detail[i].quantity =
-        InputObj.inventory_stock_detail[i].dn_quantity;
+        parseFloat(InputObj.inventory_stock_detail[i].dn_quantity) +
+        parseFloat(InputObj.inventory_stock_detail[i].free_qty);
 
       InputObj.inventory_stock_detail[i].uom_id =
         InputObj.inventory_stock_detail[i].inventory_uom_id;

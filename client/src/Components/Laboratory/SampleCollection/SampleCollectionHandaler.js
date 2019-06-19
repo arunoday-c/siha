@@ -189,10 +189,8 @@ const Refresh = $this => {
       patient_id: null,
       patient_code: null,
       proiorty: null,
-      status: null
-    },
-    () => {
-      getSampleCollectionDetails($this);
+      status: null,
+      sample_collection: []
     }
   );
 };
