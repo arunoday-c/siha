@@ -32,7 +32,8 @@ import { AlgaehActions } from "../../../../actions/algaehActions";
 import _ from "lodash";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import ItemBatchs from "../ItemBatchs/ItemBatchs";
-
+import Options from "../../../../Options.json";
+import moment from "moment";
 class TransferEntryItems extends Component {
   constructor(props) {
     super(props);
@@ -179,38 +180,61 @@ class TransferEntryItems extends Component {
                             this.attReg = attReg;
                           }}
                         />
-                        <AlagehFormGroup
-                          div={{ className: "col" }}
-                          label={{
-                            forceLabel: "Batch No."
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "batchno",
-                            value: this.state.batchno,
-                            events: {
-                              onChange: null
-                            },
-                            others: {
-                              disabled: true
-                            }
-                          }}
-                        />
-                        <AlgaehDateHandler
-                          div={{ className: "col" }}
-                          label={{ forceLabel: "Expiry Date" }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "expiry_date"
-                          }}
-                          minDate={new Date()}
-                          disabled={true}
-                          events={{
-                            onChange: null
-                          }}
-                          value={this.state.expiry_date}
-                        />
-                        <AlagehAutoComplete
+                        <div className="col">
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Batch No."
+                            }}
+                          />
+                          <h6>
+                            {this.state.batchno
+                              ? this.state.batchno
+                              : "-----------"}
+                          </h6>
+                        </div>
+                        <div className="col">
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Expiry Date"
+                            }}
+                          />
+                          <h6>
+                            {this.state.expiry_date
+                              ? moment(this.state.expiry_date).format(
+                                  Options.dateFormat
+                                )
+                              : "-----------"}
+                          </h6>
+                        </div>
+
+                        <div className="col">
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Quantity In Hand"
+                            }}
+                          />
+                          <h6>
+                            {this.state.qtyhand
+                              ? this.state.qtyhand +
+                                " " +
+                                this.state.uom_description
+                              : "-----------"}
+                          </h6>
+                        </div>
+
+                        <div className="col">
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Transfered UOM"
+                            }}
+                          />
+                          <h6>
+                            {this.state.uom_description
+                              ? this.state.uom_description
+                              : "-----------"}
+                          </h6>
+                        </div>
+                        {/*<AlagehAutoComplete
                           div={{ className: "col" }}
                           label={{ forceLabel: "UOM", isImp: true }}
                           selector={{
@@ -228,7 +252,7 @@ class TransferEntryItems extends Component {
                               tabIndex: "2"
                             }
                           }}
-                        />
+                        />*/}
                         <AlagehFormGroup
                           div={{ className: "col" }}
                           label={{
@@ -252,22 +276,6 @@ class TransferEntryItems extends Component {
                             others: {
                               disabled: this.state.dataExitst,
                               tabIndex: "3"
-                            }
-                          }}
-                        />
-                        <AlagehFormGroup
-                          div={{ className: "col" }}
-                          label={{
-                            forceLabel: "Quantity in Hand"
-                          }}
-                          textBox={{
-                            decimal: { allowNegative: false },
-                            value: this.state.qtyhand,
-                            className: "txt-fld",
-                            name: "qtyhand",
-
-                            others: {
-                              disabled: true
                             }
                           }}
                         />

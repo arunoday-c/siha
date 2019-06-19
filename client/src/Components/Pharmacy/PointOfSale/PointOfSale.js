@@ -93,6 +93,7 @@ class PointOfSale extends Component {
       uri: "/pharmacyGlobal/getUserLocationPermission",
       module: "pharmacy",
       method: "GET",
+      data: { allow_pos: "Y" },
       redux: {
         type: "LOCATIOS_GET_DATA",
         mappingName: "poslocations"

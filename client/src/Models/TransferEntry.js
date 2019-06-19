@@ -62,7 +62,8 @@ export default {
       barcode: null,
       ItemUOM: [],
       Batch_Items: [],
-      item_description: ""
+      item_description: "",
+      uom_description: null
     };
     return output;
   }

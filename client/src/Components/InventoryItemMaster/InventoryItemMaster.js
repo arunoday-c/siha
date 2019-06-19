@@ -64,12 +64,7 @@ class InventoryItemMaster extends Component {
       }
     });
 
-    if (
-      this.props.inventoryitemlist === undefined ||
-      this.props.inventoryitemlist.length === 0
-    ) {
-      InvItemSetupEvent().getItems(this, this);
-    }
+    InvItemSetupEvent().getItems(this, this);
   }
 
   ShowModel(e) {

@@ -3,7 +3,7 @@ import FrontDesk from "../../../Search/FrontDesk.json";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import ReactDOM from "react-dom";
-// import Enumerable from "linq";
+import swal from "sweetalert2";
 import POSIOputs from "../../../Models/POS";
 import {
   algaehApiCall,
@@ -24,11 +24,13 @@ const changeTexts = ($this, ctrl, e) => {
       value === "OT"
         ? $this.setState({
             [name]: value,
-            mode_of_pay: "1"
+            mode_of_pay: "1",
+            OTItemAddDis: false
           })
         : $this.setState({
             [name]: value,
-            mode_of_pay: ""
+            mode_of_pay: "",
+            OTItemAddDis: false
           });
       break;
 
@@ -81,6 +83,8 @@ const getPosEntry = ($this, pos_number) => {
         if (data.posted === "Y") {
           data.postEnable = true;
           data.saveEnable = true;
+          data.posCancelled = false;
+          data.InvoiceEnable = true;
         } else if (data.cancelled === "Y") {
           data.postEnable = true;
           data.posCancelled = true;
@@ -172,8 +176,15 @@ const getCtrlCode = ($this, docNumber) => {
       data.pos_customer_type = "OT";
       if (data.posted === "Y") {
         data.postEnable = true;
+        data.InvoiceEnable = true;
       } else {
         data.postEnable = false;
+      }
+
+      if (data.cancelled === "Y") {
+        data.posCancelled = true;
+      } else {
+        data.posCancelled = false;
       }
       if (data.visit_id !== null) {
         data.pos_customer_type = "OP";
@@ -405,7 +416,7 @@ const SavePosEnrty = $this => {
 
   if (!err) {
     AlgaehLoader({ show: true });
-    
+
     const PreApprovalExists = _.find(
       $this.state.pharmacy_stock_detail,
       f => f.pre_approval === "Y"
@@ -490,7 +501,6 @@ const SavePosEnrty = $this => {
 };
 
 const PostPosEntry = $this => {
-  
   const err = Validations($this);
   if (!err) {
     const PreApprovalExists = _.find(
@@ -505,119 +515,135 @@ const PostPosEntry = $this => {
       });
       return;
     }
-    AlgaehLoader({ show: true });
 
-    GenerateReciept($this, that => {
-      $this.state.posted = "Y";
-      $this.state.transaction_type = "POS";
-      $this.state.transaction_id = $this.state.hims_f_pharmacy_pos_header_id;
-      $this.state.transaction_date = $this.state.pos_date;
-      for (let i = 0; i < $this.state.pharmacy_stock_detail.length; i++) {
-        $this.state.pharmacy_stock_detail[i].location_id =
-          $this.state.location_id;
-        $this.state.pharmacy_stock_detail[i].location_type =
-          $this.state.location_type;
-        $this.state.pharmacy_stock_detail[i].operation = "-";
-        $this.state.pharmacy_stock_detail[i].sales_uom =
-          $this.state.pharmacy_stock_detail[i].uom_id;
-        $this.state.pharmacy_stock_detail[i].item_code_id = $this.state.item_id;
-        $this.state.pharmacy_stock_detail[i].grn_number =
-          $this.state.pharmacy_stock_detail[i].grn_no;
-        $this.state.pharmacy_stock_detail[i].item_category_id =
-          $this.state.pharmacy_stock_detail[i].item_category;
-        $this.state.pharmacy_stock_detail[i].net_total =
-          $this.state.pharmacy_stock_detail[i].net_extended_cost;
-      }
-      let callUri =
-        $this.state.hims_f_pharmacy_pos_header_id !== null
-          ? "/posEntry/postPosEntry"
-          : "/posEntry/addandpostPosEntry";
-      let method =
-        $this.state.hims_f_pharmacy_pos_header_id !== null ? "PUT" : "POST";
-      algaehApiCall({
-        uri: callUri,
-        data: $this.state,
-        method: method,
-        module: "pharmacy",
-        onSuccess: response => {
-          if (response.data.success === true) {
-            $this.setState(
-              {
-                pos_number:
-                  response.data.records.pos_number || $this.state.pos_number,
-                hims_f_pharmacy_pos_header_id:
-                  response.data.records.hims_f_pharmacy_pos_header_id ||
-                  $this.state.hims_f_pharmacy_pos_header_id,
-                year: response.data.records.year,
-                period: response.data.records.period,
-                postEnable: true,
-                popUpGenereted: true
-              },
-              () => {
-                generateReport($this, "posCashInvoice", "Cash Invoice");
-              }
-            );
-            swalMessage({
-              type: "success",
-              title: "Done successfully . ."
-            });
-
-            //Fot printing
-            // if ($this.state.visit_code !== "") {
-            //   algaehApiCall({
-            //     uri: "/report",
-            //     method: "GET",
-            //     module: "reports",
-            //     headers: {
-            //       Accept: "blob"
-            //     },
-            //     others: { responseType: "blob" },
-            //     data: {
-            //       report: {
-            //         reportName: "prescription",
-            //         reportParams: [
-            //           {
-            //             name: "hims_d_patient_id",
-            //             value: $this.state.patient_id
-            //           },
-            //           {
-            //             name: "visit_id",
-            //             value: $this.state.visit_id
-            //           },
-            //           {
-            //             name: "visit_code",
-            //             value: $this.state.visit_code
-            //           }
-            //         ],
-            //         outputFileType: "PDF"
-            //       }
-            //     },
-            //     onSuccess: res => {
-            //       const url = URL.createObjectURL(res.data);
-            //       let myWindow = window.open(
-            //         "{{ product.metafields.google.custom_label_0 }}",
-            //         "_blank"
-            //       );
-            //
-            //       myWindow.document.write(
-            //         "<iframe src= '" + url + "' width='100%' height='100%' />"
-            //       );
-            //       myWindow.document.title = "Prescription";
-            //     }
-            //   });
-            // }
-            AlgaehLoader({ show: false });
-            //Done Printing
+    swal({
+      title: "Are you sure want to Collect and Print ?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willDelete => {
+      if (willDelete.value) {
+        AlgaehLoader({ show: true });
+        GenerateReciept($this, that => {
+          $this.state.posted = "Y";
+          $this.state.transaction_type = "POS";
+          $this.state.transaction_id =
+            $this.state.hims_f_pharmacy_pos_header_id;
+          $this.state.transaction_date = $this.state.pos_date;
+          for (let i = 0; i < $this.state.pharmacy_stock_detail.length; i++) {
+            $this.state.pharmacy_stock_detail[i].location_id =
+              $this.state.location_id;
+            $this.state.pharmacy_stock_detail[i].location_type =
+              $this.state.location_type;
+            $this.state.pharmacy_stock_detail[i].operation = "-";
+            $this.state.pharmacy_stock_detail[i].sales_uom =
+              $this.state.pharmacy_stock_detail[i].sales_uom_id;
+            $this.state.pharmacy_stock_detail[i].item_code_id =
+              $this.state.item_id;
+            $this.state.pharmacy_stock_detail[i].grn_number =
+              $this.state.pharmacy_stock_detail[i].grn_no;
+            $this.state.pharmacy_stock_detail[i].item_category_id =
+              $this.state.pharmacy_stock_detail[i].item_category;
+            $this.state.pharmacy_stock_detail[i].net_total =
+              $this.state.pharmacy_stock_detail[i].net_extended_cost;
           }
-        },
-        onFailure: error => {
-          AlgaehLoader({ show: false });
-          swalMessage({
-            title: error.message,
-            type: "error"
+          let callUri =
+            $this.state.hims_f_pharmacy_pos_header_id !== null
+              ? "/posEntry/postPosEntry"
+              : "/posEntry/addandpostPosEntry";
+          let method =
+            $this.state.hims_f_pharmacy_pos_header_id !== null ? "PUT" : "POST";
+          algaehApiCall({
+            uri: callUri,
+            data: $this.state,
+            method: method,
+            module: "pharmacy",
+            onSuccess: response => {
+              if (response.data.success === true) {
+                $this.setState(
+                  {
+                    pos_number:
+                      response.data.records.pos_number ||
+                      $this.state.pos_number,
+                    hims_f_pharmacy_pos_header_id:
+                      response.data.records.hims_f_pharmacy_pos_header_id ||
+                      $this.state.hims_f_pharmacy_pos_header_id,
+                    year: response.data.records.year,
+                    period: response.data.records.period,
+                    postEnable: true,
+                    popUpGenereted: true,
+                    InvoiceEnable: true
+                  },
+                  () => {
+                    generateReport($this, "posCashInvoice", "Cash Invoice");
+                  }
+                );
+                swalMessage({
+                  type: "success",
+                  title: "Done successfully . ."
+                });
+
+                //Fot printing
+                // if ($this.state.visit_code !== "") {
+                //   algaehApiCall({
+                //     uri: "/report",
+                //     method: "GET",
+                //     module: "reports",
+                //     headers: {
+                //       Accept: "blob"
+                //     },
+                //     others: { responseType: "blob" },
+                //     data: {
+                //       report: {
+                //         reportName: "prescription",
+                //         reportParams: [
+                //           {
+                //             name: "hims_d_patient_id",
+                //             value: $this.state.patient_id
+                //           },
+                //           {
+                //             name: "visit_id",
+                //             value: $this.state.visit_id
+                //           },
+                //           {
+                //             name: "visit_code",
+                //             value: $this.state.visit_code
+                //           }
+                //         ],
+                //         outputFileType: "PDF"
+                //       }
+                //     },
+                //     onSuccess: res => {
+                //       const url = URL.createObjectURL(res.data);
+                //       let myWindow = window.open(
+                //         "{{ product.metafields.google.custom_label_0 }}",
+                //         "_blank"
+                //       );
+                //
+                //       myWindow.document.write(
+                //         "<iframe src= '" + url + "' width='100%' height='100%' />"
+                //       );
+                //       myWindow.document.title = "Prescription";
+                //     }
+                //   });
+                // }
+                AlgaehLoader({ show: false });
+                //Done Printing
+              }
+            },
+            onFailure: error => {
+              AlgaehLoader({ show: false });
+              swalMessage({
+                title: error.message,
+                type: "error"
+              });
+            }
           });
-        }
-      });
+        });
+      }
     });
   }
 };
@@ -639,7 +665,7 @@ const VisitSearch = ($this, e) => {
         const hospitaldetails = JSON.parse(
           AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
         );
-        
+
         let vat_applicable = "Y";
 
         if (
@@ -680,13 +706,35 @@ const VisitSearch = ($this, e) => {
                 afterSuccess: data => {
                   data[0].insurance_yesno = "Y";
                   data[0].mode_of_pay = "2";
+                  data[0].effective_start_date =
+                    data[0].primary_effective_end_date;
+                  data[0].effective_end_date =
+                    data[0].primary_effective_start_date;
                   $this.setState(data[0], () => {
                     getMedicationList($this);
                   });
                 }
               });
             } else {
-              getMedicationList($this);
+              $this.setState(
+                {
+                  insurance_yesno: "N",
+                  mode_of_pay: "1",
+                  effective_end_date: null,
+                  effective_start_date: null,
+                  insurance_provider_id: null,
+                  insurance_provider_name: null,
+                  sub_insurance_provider_id: null,
+                  sub_insurance_provider_name: null,
+                  network_id: null,
+                  network_type: null,
+                  policy_number: null,
+                  hims_d_insurance_network_office_id: null
+                },
+                () => {
+                  getMedicationList($this);
+                }
+              );
             }
           }
         );
@@ -701,7 +749,6 @@ const VisitSearch = ($this, e) => {
 };
 
 const getMedicationList = $this => {
-  
   let inputobj = { episode_id: $this.state.episode_id };
 
   $this.props.getMedicationList({
@@ -714,10 +761,12 @@ const getMedicationList = $this => {
       mappingName: "medicationlist"
     },
     afterSuccess: data => {
-      
       if (data.length > 0) {
         AddItems($this, data);
       } else {
+        $this.setState({
+          pharmacy_stock_detail: []
+        });
         AlgaehLoader({ show: false });
       }
     }
@@ -743,7 +792,6 @@ const AddItems = ($this, ItemInput) => {
       };
       inputArray.push(inputObj);
     }
-    
 
     algaehApiCall({
       uri: "/posEntry/getPrescriptionPOS",
@@ -877,7 +925,6 @@ const CancelPosEntry = $this => {
 };
 
 const generateReport = ($this, rpt_name, rpt_desc) => {
-  
   algaehApiCall({
     uri: "/report",
     method: "GET",

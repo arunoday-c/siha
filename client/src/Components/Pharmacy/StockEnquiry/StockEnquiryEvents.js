@@ -29,7 +29,7 @@ const getBatchWiseData = ($this, row) => {
     item_id: row.item_id,
     pharmacy_location_id: row.pharmacy_location_id
   };
-  
+
   algaehApiCall({
     uri: "/pharmacyGlobal/getItemandLocationStock",
     module: "pharmacy",
@@ -55,35 +55,41 @@ const getBatchWiseData = ($this, row) => {
 };
 
 const getItemLocationStock = $this => {
-  let inputObj = {};
+  if ($this.state.location_id !== null || $this.state.item_id !== null) {
+    let inputObj = {};
 
-  if ($this.state.location_id !== null) {
-    inputObj.pharmacy_location_id = $this.state.location_id;
-  }
+    if ($this.state.location_id !== null) {
+      inputObj.pharmacy_location_id = $this.state.location_id;
+    }
 
-  if ($this.state.item_id !== null) {
-    inputObj.item_id = $this.state.item_id;
-  }
+    if ($this.state.item_id !== null) {
+      inputObj.item_id = $this.state.item_id;
+    }
 
-  algaehApiCall({
-    uri: "/pharmacyGlobal/getItemLocationStock",
-    module: "pharmacy",
-    method: "GET",
-    data: inputObj,
-    onSuccess: response => {
-      if (response.data.success === true) {
-        $this.setState({
-          ListItems: response.data.records
+    algaehApiCall({
+      uri: "/pharmacyGlobal/getItemLocationStock",
+      module: "pharmacy",
+      method: "GET",
+      data: inputObj,
+      onSuccess: response => {
+        if (response.data.success === true) {
+          $this.setState({
+            ListItems: response.data.records
+          });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
         });
       }
-    },
-    onFailure: error => {
-      swalMessage({
-        title: error.message,
-        type: "error"
-      });
-    }
-  });
+    });
+  } else {
+    $this.setState({
+      ListItems: []
+    });
+  }
 };
 
 const updateStockDetils = $this => {};

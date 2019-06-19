@@ -14,7 +14,8 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 
 import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
-
+import Options from "../../../../Options.json";
+import moment from "moment";
 import {
   discounthandle,
   itemchangeText,
@@ -190,37 +191,49 @@ class PosListItems extends Component {
                                 this.attReg = attReg;
                               }}
                             />
-                            <AlagehFormGroup
-                              div={{ className: "col" }}
-                              label={{
-                                forceLabel: "Batch No."
-                              }}
-                              textBox={{
-                                className: "txt-fld",
-                                name: "batchno",
-                                value: this.state.batchno,
-                                events: {
-                                  onChange: null
-                                },
-                                others: {
-                                  disabled: true
-                                }
-                              }}
-                            />
-                            <AlgaehDateHandler
-                              div={{ className: "col" }}
-                              label={{ forceLabel: "Expiry Date" }}
-                              textBox={{
-                                className: "txt-fld",
-                                name: "expiry_date"
-                              }}
-                              minDate={new Date()}
-                              disabled={true}
-                              events={{
-                                onChange: null
-                              }}
-                              value={this.state.expiry_date}
-                            />
+
+                            <div className="col">
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "Batch No."
+                                }}
+                              />
+                              <h6>
+                                {this.state.batchno
+                                  ? this.state.batchno
+                                  : "-----------"}
+                              </h6>
+                            </div>
+                            <div className="col">
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "Expiry Date"
+                                }}
+                              />
+                              <h6>
+                                {this.state.expiry_date
+                                  ? moment(this.state.expiry_date).format(
+                                      Options.dateFormat
+                                    )
+                                  : "-----------"}
+                              </h6>
+                            </div>
+
+                            <div className="col">
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "Quantity In Hand"
+                                }}
+                              />
+                              <h6>
+                                {this.state.qtyhand
+                                  ? this.state.qtyhand +
+                                    " " +
+                                    this.state.uom_description
+                                  : "-----------"}
+                              </h6>
+                            </div>
+
                             <AlagehAutoComplete
                               div={{ className: "col" }}
                               label={{ forceLabel: "UOM", isImp: true }}
@@ -238,6 +251,14 @@ class PosListItems extends Component {
                                   this,
                                   context
                                 ),
+                                onClear: () => {
+                                  this.setState({
+                                    uom_id: null
+                                  });
+                                  context.updateState({
+                                    uom_id: null
+                                  });
+                                },
                                 others: {
                                   disabled: this.state.dataExitst,
                                   tabIndex: "2"
@@ -270,22 +291,6 @@ class PosListItems extends Component {
                                 }
                               }}
                             />
-                            <AlagehFormGroup
-                              div={{ className: "col" }}
-                              label={{
-                                forceLabel: "Quantity in Hand"
-                              }}
-                              textBox={{
-                                decimal: { allowNegative: false },
-                                value: this.state.qtyhand,
-                                className: "txt-fld",
-                                name: "qtyhand",
-
-                                others: {
-                                  disabled: true
-                                }
-                              }}
-                            />
 
                             <AlagehFormGroup
                               div={{ className: "col" }}
@@ -313,24 +318,18 @@ class PosListItems extends Component {
                               }}
                             />
 
-                            <AlagehFormGroup
-                              div={{ className: "col" }}
-                              label={{
-                                forceLabel: "Unit Cost"
-                              }}
-                              textBox={{
-                                decimal: { allowNegative: false },
-                                value: this.state.unit_cost,
-                                className: "txt-fld",
-                                name: "unit_cost",
-                                events: {
-                                  onChange: numberchangeTexts.bind(this, this)
-                                },
-                                others: {
-                                  disabled: true
-                                }
-                              }}
-                            />
+                            <div className="col">
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "Unit Cost"
+                                }}
+                              />
+                              <h6>
+                                {this.state.unit_cost
+                                  ? getAmountFormart(this.state.unit_cost)
+                                  : "-----------"}
+                              </h6>
+                            </div>
                           </div>
                         </div>
                         <div className="row">
@@ -538,20 +537,7 @@ class PosListItems extends Component {
                                       minWidth: 90
                                     }
                                   },
-                                  {
-                                    fieldName: "prescribed_qty",
-                                    label: (
-                                      <AlgaehLabel
-                                        label={{
-                                          forceLabel: "Prescribed Qty"
-                                        }}
-                                      />
-                                    ),
-                                    disabled: true,
-                                    others: {
-                                      minWidth: 110
-                                    }
-                                  },
+
                                   {
                                     fieldName: "quantity",
                                     label: (
@@ -1227,6 +1213,23 @@ class PosListItems extends Component {
       </React.Fragment>
     );
   }
+}
+
+{
+  /*{
+  fieldName: "prescribed_qty",
+  label: (
+    <AlgaehLabel
+      label={{
+        forceLabel: "Prescribed Qty"
+      }}
+    />
+  ),
+  disabled: true,
+  others: {
+    minWidth: 110
+  }
+},*/
 }
 
 function mapStateToProps(state) {
