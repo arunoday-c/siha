@@ -75,7 +75,7 @@ const UomchangeTexts = ($this, context, ctrl, e) => {
   e = ctrl || e;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  debugger;
+
   if ($this.state.uom_id !== value) {
     let qtyhand = 0;
     let unit_cost = 0;
@@ -161,7 +161,7 @@ const UomchangeTexts = ($this, context, ctrl, e) => {
 const numberchangeTexts = ($this, context, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  debugger;
+
   if (name === "quantity") {
     let required_qty_stock =
       parseFloat(value) * parseFloat($this.state.conversion_factor);
@@ -225,7 +225,6 @@ const itemchangeText = ($this, context, e, ctrl) => {
             if (data.locationResult.length > 0) {
               getUnitCost($this, context, e.service_id, e.sale_price);
 
-              debugger;
               const sales_conversion_factor = _.find(
                 data.uomResult,
                 f => f.uom_id === e.sales_uom_id
@@ -444,8 +443,6 @@ const getUnitCost = ($this, context, serviceid, sales_price) => {
   }
 };
 const AddItems = ($this, context) => {
-  debugger;
-
   if ($this.state.pos_customer_type === "OT") {
     if ($this.state.nationality_id === null) {
       swalMessage({
@@ -735,7 +732,6 @@ const datehandle = ($this, ctrl, e) => {
 };
 
 const deletePosDetail = ($this, context, row) => {
-  debugger;
   let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
   let update_pharmacy_stock = $this.state.update_pharmacy_stock;
   let delete_pharmacy_stock = $this.state.delete_pharmacy_stock;
@@ -1153,7 +1149,6 @@ const ShowItemBatch = ($this, e) => {
 };
 
 const CloseItemBatch = ($this, context, e) => {
-  debugger;
   let batchno =
     e !== undefined
       ? e.selected === true
@@ -1314,7 +1309,7 @@ const credittexthandle = ($this, context, ctrl, e) => {
 
 const SelectBatchDetails = ($this, row, context, e) => {
   //
-  debugger;
+
   let _pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
 
   row["batchno"] = e.selected.batchno;
@@ -1336,7 +1331,6 @@ const SelectBatchDetails = ($this, row, context, e) => {
 };
 
 const getMedicationAprovalList = ($this, row) => {
-  debugger;
   if (
     $this.state.pos_customer_type === "OT" &&
     $this.state.hims_f_pharmacy_pos_header_id === null
@@ -1372,7 +1366,6 @@ const getMedicationAprovalList = ($this, row) => {
     data: inputobj,
     onSuccess: response => {
       if (response.data.success) {
-        debugger;
         $this.setState({
           medca_approval_Services: response.data.records,
           viewPreapproval: !$this.state.viewPreapproval,

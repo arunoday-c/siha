@@ -7,23 +7,29 @@
             <table class="tableForData" cell-padding="0">
                 <thead>
                      <tr>
-    <th>SL No.</th>
-    <th>Handover Date</th>
-    <th>Total Expected</th>
-    <th>Total Collected</th>
-    <th>Difference</th>
-    <th>Status</th>
+    <th>Sl No.</th>
+    <th>Employee Code</th>
+    <th>Employee Name</th>
+    <th>Department</th>
+    <th>Applied On</th>
+    <th>Loan Amt</th>
+    <th>Approved Amt</th>
+    <th>EMI Amt</th>
+    <th>Due Amt</th>
   </tr>
                 </thead>
                 <tbody>
                     {{#each details}}
                     <tr>
                         <td>{{inc @index}}</td>
-                        <td>{{daily_handover_date}}</td>
-                        <td>{{expected_total}}</td>
-                        <td>{{collected_total}}</td>
-                        <td>Diff</td>
-                        <td>Status</td>
+                        <td>{{employee_code}}</td>
+                        <td>{{employee_name}}</td>
+                        <td>{{sub_department_name}}</td>
+                        <td>{{loan_application_date}}</td>
+                        <td>{{loan_amount}}</td>
+                        <td>{{approved_amount}}</td>
+                        <td>{{installment_amount}}</td>
+                        <td>{{pending_loan}}</td>
                     </tr>
                     {{/each }}
               

@@ -36,7 +36,7 @@ class BatchWiseStock extends Component {
   };
 
   render() {
-    debugger;
+    
     return (
       <React.Fragment>
         <AlgaehModalPopUp

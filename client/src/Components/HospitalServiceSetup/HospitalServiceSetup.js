@@ -134,7 +134,7 @@ class HospitalServiceSetup extends Component {
   }
 
   EditItemMaster(row) {
-    debugger;
+    
     if (row.cpt_code !== null) {
       algaehApiCall({
         uri: "/icdcptcodes/selectCptCodes",

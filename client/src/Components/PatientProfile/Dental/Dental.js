@@ -118,7 +118,7 @@ class Dental extends Component {
         hims_d_services_id: bill_dtls.services_id,
         quantity: bill_dtls.quantity,
         discount_amout: 0,
-        discount_percentage: e.target.value,
+        discount_percentage: e.target.value === "" ? 0 : e.target.value,
         insured: this.state.ins_details !== null ? "Y" : "N",
         vat_applicable: this.props.vat_applicable,
         primary_insurance_provider_id: bill_dtls.insurance_provider_id
@@ -185,7 +185,6 @@ class Dental extends Component {
   }
 
   saveBill() {
-    
     let inputObj = {
       visit_id: Window.global["visit_is"],
       patient_id: Window.global["current_patient"],
@@ -255,7 +254,6 @@ class Dental extends Component {
   }
 
   addToBill(row) {
-    
     algaehApiCall({
       // uri: "/insurance/getPatientInsurance",
       uri: "/patientRegistration/getPatientInsurance",
@@ -267,8 +265,6 @@ class Dental extends Component {
       },
       onSuccess: res => {
         if (res.data.success) {
-          console.log("Insurance Details", res.data.records);
-
           let ins = res.data.records.length > 0 ? res.data.records[0] : null;
 
           this.setState({
@@ -306,7 +302,6 @@ class Dental extends Component {
             ],
             onSuccess: res => {
               if (res.data.success) {
-                console.log("Billing Response:", res.data.records);
                 res.data.records.billdetails[0].teeth_number = row.teeth_number;
                 this.setState({
                   billDetails: res.data.records.billdetails[0]
@@ -355,17 +350,47 @@ class Dental extends Component {
   }
 
   markTeethSurface(e) {
-    if (this.state.hims_d_services_id.length !== 0) {
+    if (
+      this.state.hims_d_services_id !== null &&
+      this.state.hims_d_services_id.length !== 0
+    ) {
+      const toothNumber = parseInt(
+        e.currentTarget.parentElement.previousElementSibling.innerText,
+        10
+      );
+      const readyToBill = Enumerable.from(this.state.dentalTreatments)
+        .where(w => w.teeth_number === toothNumber)
+        .toArray();
+      const isMarked = e.currentTarget.classList.contains("mark-active");
+      const surface = e.currentTarget.innerText.toString();
+      const surfaceType = e.currentTarget
+        .querySelector("span")
+        .getAttribute("surface");
+      let returnfunction = false;
+      if (isMarked) {
+        for (let i = 0; i < readyToBill.length; i++) {
+          if (readyToBill[i][surfaceType] === "Y") {
+            swalMessage({
+              title:
+                String(surfaceType).toUpperCase() +
+                " - already added you con't add or remove from here need to delete first",
+              type: "warning"
+            });
+            returnfunction = true;
+            break;
+          }
+        }
+        if (returnfunction) {
+          return;
+        }
+      }
       e.currentTarget.classList.contains("mark-active")
         ? e.currentTarget.classList.remove("mark-active")
         : e.currentTarget.classList.add("mark-active");
 
       let my_obj = {
-        teeth_number: parseInt(
-          e.currentTarget.parentElement.previousElementSibling.innerText,
-          10
-        ),
-        surface: e.currentTarget.innerText.toString()
+        teeth_number: toothNumber,
+        surface: surface
       };
 
       let my_item = Enumerable.from(teeth)
@@ -422,6 +447,17 @@ class Dental extends Component {
   }
 
   addDentalPlan() {
+    if (
+      my_send_obj.send_teeth === undefined ||
+      my_send_obj.send_teeth.length === 0
+    ) {
+      swalMessage({
+        title: "No surface selected ..",
+        type: "info"
+      });
+      return;
+    }
+
     AlgaehValidation({
       querySelector: "data-validate='addDentalPlanDiv'",
       alertTypeIcon: "warning",
@@ -439,14 +475,14 @@ class Dental extends Component {
 
               this.loadDentalTreatment();
               teeth = [];
+              my_send_obj = {};
               this.setState({
                 treatment_gridUpdate: true,
                 openDentalModal: false,
                 hims_d_services_id: null,
                 quantity: 0,
                 standard_fee: 0,
-                total_price: 0,
-                hims_f_treatment_plan_id: null
+                total_price: 0
               });
             }
           },
@@ -554,12 +590,63 @@ class Dental extends Component {
   generateToothUpperRight(teeth) {
     let plot = [];
     for (let i = 1; i < 9; i++) {
-      const _marking =
-        teeth !== undefined
-          ? Enumerable.from(teeth)
-              .where(w => w.teeth_number === i)
-              .firstOrDefault()
-          : undefined;
+      const tooth =
+        i === 8
+          ? 11
+          : i === 7
+          ? 12
+          : i === 6
+          ? 13
+          : i === 5
+          ? 14
+          : i === 4
+          ? 15
+          : i === 3
+          ? 16
+          : i === 2
+          ? 17
+          : i === 1
+          ? 18
+          : null;
+      let _marking = undefined;
+      if (teeth !== undefined) {
+        const selectedTooth = Enumerable.from(teeth)
+          .where(w => w.teeth_number === tooth)
+          .toArray();
+        for (let i = 0; i < selectedTooth.length; i++) {
+          if (_marking === undefined) {
+            _marking = { ...selectedTooth[i] };
+          } else {
+            _marking["distal"] =
+              _marking["distal"] === "N"
+                ? selectedTooth[i]["distal"]
+                : _marking["distal"];
+            _marking["labial"] =
+              _marking["labial"] === "N"
+                ? selectedTooth[i]["labial"]
+                : _marking["labial"];
+            _marking["incisal"] =
+              _marking["incisal"] === "N"
+                ? selectedTooth[i]["incisal"]
+                : _marking["incisal"];
+            _marking["palatal"] =
+              _marking["palatal"] === "N"
+                ? selectedTooth[i]["palatal"]
+                : _marking["palatal"];
+            _marking["mesial"] =
+              _marking["mesial"] === "N"
+                ? selectedTooth[i]["mesial"]
+                : _marking["mesial"];
+          }
+        }
+      }
+
+      // _marking =
+      //  teeth !== undefined
+      //    ? Enumerable.from(teeth)
+      //        .where(w => w.teeth_number === tooth)
+      //        .firstOrDefault()
+      //    : undefined;
 
       plot.push(
         <div
@@ -576,25 +663,7 @@ class Dental extends Component {
             i
           }
         >
-          <span onClick={this.markAllSurface.bind(this)}>
-            {i === 8
-              ? "11"
-              : i === 7
-              ? "12"
-              : i === 6
-              ? "13"
-              : i === 5
-              ? "14"
-              : i === 4
-              ? "15"
-              : i === 3
-              ? "16"
-              : i === 2
-              ? "17"
-              : i === 1
-              ? "18"
-              : null}
-          </span>
+          <span onClick={this.markAllSurface.bind(this)}>{tooth}</span>
           <div className="surface-Marking">
             <div
               onClick={this.markTeethSurface.bind(this)}
@@ -608,7 +677,7 @@ class Dental extends Component {
                   : "")
               }
             >
-              <span>D</span>
+              <span surface="distal">D</span>
             </div>
             <div
               onClick={this.markTeethSurface.bind(this)}
@@ -622,7 +691,7 @@ class Dental extends Component {
                   : "")
               }
             >
-              <span>L</span>
+              <span surface="labial">L</span>
             </div>
             <div
               onClick={this.markTeethSurface.bind(this)}
@@ -636,7 +705,7 @@ class Dental extends Component {
                   : "")
               }
             >
-              <span>I</span>
+              <span surface="incisal">I</span>
             </div>
             <div
               onClick={this.markTeethSurface.bind(this)}
@@ -650,7 +719,7 @@ class Dental extends Component {
                   : "")
               }
             >
-              <span>P</span>
+              <span surface="palatal">P</span>
             </div>
             {i >= 6 ? null : (
               <div
@@ -665,7 +734,7 @@ class Dental extends Component {
                     : "")
                 }
               >
-                <span>M</span>
+                <span surface="mesial">M</span>
               </div>
             )}
           </div>
@@ -678,12 +747,62 @@ class Dental extends Component {
   generateToothUpperLeft(teeth) {
     let plot = [];
     for (let i = 9; i < 17; i++) {
-      const _marking =
-        teeth !== undefined
-          ? Enumerable.from(teeth)
-              .where(w => w.teeth_number === i)
-              .firstOrDefault()
-          : undefined;
+      const tooth =
+        i === 9
+          ? 21
+          : i === 10
+          ? 22
+          : i === 11
+          ? 23
+          : i === 12
+          ? 24
+          : i === 13
+          ? 25
+          : i === 14
+          ? 26
+          : i === 15
+          ? 27
+          : i === 16
+          ? 28
+          : null;
+      let _marking = undefined;
+      if (teeth !== undefined) {
+        const selectedTooth = Enumerable.from(teeth)
+          .where(w => w.teeth_number === tooth)
+          .toArray();
+        for (let i = 0; i < selectedTooth.length; i++) {
+          if (_marking === undefined) {
+            _marking = { ...selectedTooth[i] };
+          } else {
+            _marking["distal"] =
+              _marking["distal"] === "N"
+                ? selectedTooth[i]["distal"]
+                : _marking["distal"];
+            _marking["labial"] =
+              _marking["labial"] === "N"
+                ? selectedTooth[i]["labial"]
+                : _marking["labial"];
+            _marking["incisal"] =
+              _marking["incisal"] === "N"
+                ? selectedTooth[i]["incisal"]
+                : _marking["incisal"];
+            _marking["palatal"] =
+              _marking["palatal"] === "N"
+                ? selectedTooth[i]["palatal"]
+                : _marking["palatal"];
+            _marking["mesial"] =
+              _marking["mesial"] === "N"
+                ? selectedTooth[i]["mesial"]
+                : _marking["mesial"];
+          }
+        }
+      }
+      // const _marking =
+      //   teeth !== undefined
+      //     ? Enumerable.from(teeth)
+      //         .where(w => w.teeth_number === tooth)
+      //         .firstOrDefault()
+      //     : undefined;
       plot.push(
         <div
           key={i}
@@ -699,25 +818,7 @@ class Dental extends Component {
             i
           }
         >
-          <span onClick={this.markAllSurface.bind(this)}>
-            {i === 9
-              ? "21"
-              : i === 10
-              ? "22"
-              : i === 11
-              ? "23"
-              : i === 12
-              ? "24"
-              : i === 13
-              ? "25"
-              : i === 14
-              ? "26"
-              : i === 15
-              ? "27"
-              : i === 16
-              ? "28"
-              : null}
-          </span>
+          <span onClick={this.markAllSurface.bind(this)}>{tooth}</span>
           <div className="surface-Marking">
             <div
               onClick={this.markTeethSurface.bind(this)}
@@ -731,7 +832,7 @@ class Dental extends Component {
                   : "")
               }
             >
-              <span>D</span>
+              <span surface="distal">D</span>
             </div>
             <div
               onClick={this.markTeethSurface.bind(this)}
@@ -745,7 +846,7 @@ class Dental extends Component {
                   : "")
               }
             >
-              <span>L</span>
+              <span surface="labial">L</span>
             </div>
             <div
               onClick={this.markTeethSurface.bind(this)}
@@ -759,7 +860,7 @@ class Dental extends Component {
                   : "")
               }
             >
-              <span>I</span>
+              <span surface="incisal">I</span>
             </div>
             <div
               onClick={this.markTeethSurface.bind(this)}
@@ -773,7 +874,7 @@ class Dental extends Component {
                   : "")
               }
             >
-              <span>P</span>
+              <span surface="palatal">P</span>
             </div>
             {i >= 12 ? (
               <div
@@ -788,7 +889,7 @@ class Dental extends Component {
                     : "")
                 }
               >
-                <span>M</span>
+                <span surface="mesial">M</span>
               </div>
             ) : null}
           </div>
@@ -803,12 +904,62 @@ class Dental extends Component {
     let counter = 1;
 
     for (let i = 32; i >= 25; i--) {
-      const _marking =
-        teeth !== undefined
-          ? Enumerable.from(teeth)
-              .where(w => w.teeth_number === i)
-              .firstOrDefault()
-          : undefined;
+      const tooth =
+        i === 25
+          ? 41
+          : i === 26
+          ? 42
+          : i === 27
+          ? 43
+          : i === 28
+          ? 44
+          : i === 29
+          ? 45
+          : i === 30
+          ? 46
+          : i === 31
+          ? 47
+          : i === 32
+          ? 48
+          : null;
+      let _marking = undefined;
+      if (teeth !== undefined) {
+        const selectedTooth = Enumerable.from(teeth)
+          .where(w => w.teeth_number === tooth)
+          .toArray();
+        for (let i = 0; i < selectedTooth.length; i++) {
+          if (_marking === undefined) {
+            _marking = { ...selectedTooth[i] };
+          } else {
+            _marking["distal"] =
+              _marking["distal"] === "N"
+                ? selectedTooth[i]["distal"]
+                : _marking["distal"];
+            _marking["labial"] =
+              _marking["labial"] === "N"
+                ? selectedTooth[i]["labial"]
+                : _marking["labial"];
+            _marking["incisal"] =
+              _marking["incisal"] === "N"
+                ? selectedTooth[i]["incisal"]
+                : _marking["incisal"];
+            _marking["palatal"] =
+              _marking["palatal"] === "N"
+                ? selectedTooth[i]["palatal"]
+                : _marking["palatal"];
+            _marking["mesial"] =
+              _marking["mesial"] === "N"
+                ? selectedTooth[i]["mesial"]
+                : _marking["mesial"];
+          }
+        }
+      }
+      // const _marking =
+      //   teeth !== undefined
+      //     ? Enumerable.from(teeth)
+      //         .where(w => w.teeth_number === i)
+      //         .firstOrDefault()
+      //     : undefined;
 
       plot.push(
         <div
@@ -825,25 +976,7 @@ class Dental extends Component {
             counter
           }
         >
-          <span onClick={this.markAllSurface.bind(this)}>
-            {i === 25
-              ? "41"
-              : i === 26
-              ? "42"
-              : i === 27
-              ? "43"
-              : i === 28
-              ? "44"
-              : i === 29
-              ? "45"
-              : i === 30
-              ? "46"
-              : i === 31
-              ? "47"
-              : i === 32
-              ? "48"
-              : null}
-          </span>
+          <span onClick={this.markAllSurface.bind(this)}>{tooth}</span>
           <div className="surface-Marking">
             <div
               onClick={this.markTeethSurface.bind(this)}
@@ -857,7 +990,7 @@ class Dental extends Component {
                   : "")
               }
             >
-              <span>D</span>
+              <span surface="distal">D</span>
             </div>
             <div
               onClick={this.markTeethSurface.bind(this)}
@@ -871,7 +1004,7 @@ class Dental extends Component {
                   : "")
               }
             >
-              <span>L</span>
+              <span surface="labial">L</span>
             </div>
             <div
               onClick={this.markTeethSurface.bind(this)}
@@ -885,7 +1018,7 @@ class Dental extends Component {
                   : "")
               }
             >
-              <span>I</span>
+              <span surface="incisal">I</span>
             </div>
             <div
               onClick={this.markTeethSurface.bind(this)}
@@ -899,7 +1032,7 @@ class Dental extends Component {
                   : "")
               }
             >
-              <span>P</span>
+              <span surface="palatal">P</span>
             </div>
             {counter >= 6 ? null : (
               <div
@@ -914,7 +1047,7 @@ class Dental extends Component {
                     : "")
                 }
               >
-                <span>M</span>
+                <span surface="mesial">M</span>
               </div>
             )}
           </div>
@@ -930,12 +1063,62 @@ class Dental extends Component {
     let counter = 9;
 
     for (let i = 24; i >= 17; i--) {
-      const _marking =
-        teeth !== undefined
-          ? Enumerable.from(teeth)
-              .where(w => w.teeth_number === i)
-              .firstOrDefault()
-          : undefined;
+      const tooth =
+        i === 24
+          ? 31
+          : i === 23
+          ? 32
+          : i === 22
+          ? 33
+          : i === 21
+          ? 34
+          : i === 20
+          ? 35
+          : i === 19
+          ? 36
+          : i === 18
+          ? 37
+          : i === 17
+          ? 38
+          : null;
+      let _marking = undefined;
+      if (teeth !== undefined) {
+        const selectedTooth = Enumerable.from(teeth)
+          .where(w => w.teeth_number === tooth)
+          .toArray();
+        for (let i = 0; i < selectedTooth.length; i++) {
+          if (_marking === undefined) {
+            _marking = { ...selectedTooth[i] };
+          } else {
+            _marking["distal"] =
+              _marking["distal"] === "N"
+                ? selectedTooth[i]["distal"]
+                : _marking["distal"];
+            _marking["labial"] =
+              _marking["labial"] === "N"
+                ? selectedTooth[i]["labial"]
+                : _marking["labial"];
+            _marking["incisal"] =
+              _marking["incisal"] === "N"
+                ? selectedTooth[i]["incisal"]
+                : _marking["incisal"];
+            _marking["palatal"] =
+              _marking["palatal"] === "N"
+                ? selectedTooth[i]["palatal"]
+                : _marking["palatal"];
+            _marking["mesial"] =
+              _marking["mesial"] === "N"
+                ? selectedTooth[i]["mesial"]
+                : _marking["mesial"];
+          }
+        }
+      }
+      // const _marking =
+      //   teeth !== undefined
+      //     ? Enumerable.from(teeth)
+      //         .where(w => w.teeth_number === i)
+      //         .firstOrDefault()
+      //     : undefined;
 
       plot.push(
         <div
@@ -952,25 +1135,7 @@ class Dental extends Component {
             counter
           }
         >
-          <span onClick={this.markAllSurface.bind(this)}>
-            {i === 24
-              ? "31"
-              : i === 23
-              ? "32"
-              : i === 22
-              ? "33"
-              : i === 21
-              ? "34"
-              : i === 20
-              ? "35"
-              : i === 19
-              ? "36"
-              : i === 18
-              ? "37"
-              : i === 17
-              ? "38"
-              : null}
-          </span>
+          <span onClick={this.markAllSurface.bind(this)}>{tooth}</span>
           <div className="surface-Marking">
             <div
               onClick={this.markTeethSurface.bind(this)}
@@ -984,7 +1149,7 @@ class Dental extends Component {
                   : "")
               }
             >
-              <span>D</span>
+              <span surface="distal">D</span>
             </div>
             <div
               onClick={this.markTeethSurface.bind(this)}
@@ -998,7 +1163,7 @@ class Dental extends Component {
                   : "")
               }
             >
-              <span>L</span>
+              <span surface="labial">L</span>
             </div>
             <div
               onClick={this.markTeethSurface.bind(this)}
@@ -1012,7 +1177,7 @@ class Dental extends Component {
                   : "")
               }
             >
-              <span>I</span>
+              <span surface="incisal">I</span>
             </div>
             <div
               onClick={this.markTeethSurface.bind(this)}
@@ -1026,7 +1191,7 @@ class Dental extends Component {
                   : "")
               }
             >
-              <span>P</span>
+              <span surface="palatal">P</span>
             </div>
             {i <= 21 ? (
               <div
@@ -1041,7 +1206,7 @@ class Dental extends Component {
                     : "")
                 }
               >
-                <span>M</span>
+                <span surface="mesial">M</span>
               </div>
             ) : null}
           </div>
@@ -1286,7 +1451,6 @@ class Dental extends Component {
   }
 
   loadDentalTreatment(data) {
-    
     data !== undefined
       ? this.setState(
           {
@@ -1452,6 +1616,7 @@ class Dental extends Component {
                 <AlagehFormGroup
                   // div={{ className: "col" }}
                   textBox={{
+                    number: true,
                     className: "txt-fld",
                     name: "discount_percentage",
                     value: this.state.discount_percentage,
@@ -1459,8 +1624,7 @@ class Dental extends Component {
                       onChange: this.calculateDiscount.bind(this)
                     },
                     others: {
-                      min: 0,
-                      type: "number"
+                      min: 0
                     }
                   }}
                 />
@@ -1739,14 +1903,14 @@ class Dental extends Component {
           events={{
             onClose: () => {
               teeth = [];
+              my_send_obj = {};
               this.setState({
                 treatment_gridUpdate: true,
                 openDentalModal: false,
                 hims_d_services_id: null,
                 quantity: 0,
                 standard_fee: 0,
-                total_price: 0,
-                hims_f_treatment_plan_id: null
+                total_price: 0
               });
             }
           }}
@@ -2022,6 +2186,11 @@ class Dental extends Component {
                       fieldName: "actions",
                       label: <AlgaehLabel label={{ forceLabel: "Actions" }} />,
                       displayTemplate: row => {
+                        const isDisable =
+                          this.state.hims_f_treatment_plan_id ===
+                          row.hims_f_treatment_plan_id
+                            ? false
+                            : true;
                         return (
                           <div className="row">
                             <span className="col">
@@ -2034,7 +2203,9 @@ class Dental extends Component {
                                 className="fas fa-check"
                                 style={{
                                   pointerEvents:
-                                    row.approve_status === "Y" ? " none" : null,
+                                    row.approve_status === "Y" || isDisable
+                                      ? " none"
+                                      : null,
                                   opacity:
                                     row.approve_status === "Y" ? "0.1" : null
                                 }}
@@ -2048,7 +2219,9 @@ class Dental extends Component {
                                 )}
                                 style={{
                                   pointerEvents:
-                                    row.approve_status === "Y" ? " none" : null,
+                                    row.approve_status === "Y" || isDisable
+                                      ? " none"
+                                      : null,
                                   opacity:
                                     row.approve_status === "Y" ? "0.1" : null
                                 }}
@@ -2056,6 +2229,9 @@ class Dental extends Component {
                               />
 
                               <i
+                                style={{
+                                  pointerEvents: isDisable ? "none" : null
+                                }}
                                 onClick={this.openAddModal.bind(this, row)}
                                 className="fas fa-plus"
                               />
@@ -2362,9 +2538,17 @@ class Dental extends Component {
                   events={{
                     onEdit: () => {},
                     onDelete: row => {
+                      const status =
+                        row.treatment_status === "PL"
+                          ? "Planned"
+                          : row.treatment_status === "WIP"
+                          ? "Work in Progress"
+                          : row.treatment_status === "CP"
+                          ? "Completed"
+                          : "";
                       row.billed === "SB" || row.billed === "Y"
                         ? swalMessage({
-                            title: "Treatment already completed, cannot delete",
+                            title: `Treatment is in ${status}, cannot delete`,
                             type: "warning"
                           })
                         : this.deleteDentalPlan(row);

@@ -24,3 +24,6 @@
   .hptl-phase1-add-consultation-form .maternityRadio {
     padding-left: 15px;
     padding-right: 0; }
+  .hptl-phase1-add-consultation-form .hide {
+    display: none;
+    opacity: 0; }

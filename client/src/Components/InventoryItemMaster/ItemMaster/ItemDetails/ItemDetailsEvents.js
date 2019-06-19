@@ -128,7 +128,7 @@ const VatAppilicable = ($this, context, e) => {
 };
 
 const numberEventHandaler = ($this, context, e) => {
-  debugger;
+  
   SetBulkState({
     state: $this,
     callback: () => {

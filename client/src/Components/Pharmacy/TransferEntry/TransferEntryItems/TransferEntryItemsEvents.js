@@ -68,8 +68,6 @@ const numberchangeTexts = ($this, context, e) => {
 };
 
 const AddItems = ($this, context) => {
-  debugger;
-
   if (parseFloat($this.state.quantity) <= 0) {
     swalMessage({
       title: "Enter the Quantity",
@@ -375,7 +373,6 @@ const AddSelectedBatches = ($this, context) => {
 };
 
 const itemchangeText = ($this, context, e, ctrl) => {
-  debugger;
   let name = ctrl;
   if (
     $this.state.from_location_id !== null &&
@@ -395,7 +392,6 @@ const itemchangeText = ($this, context, e, ctrl) => {
         if (response.data.success) {
           let data = response.data.records;
           if (data.locationResult.length > 0) {
-            debugger;
             const sales_conversion_factor = _.find(
               data.uomResult,
               f => f.uom_id === e.sales_uom_id
@@ -559,7 +555,6 @@ const CloseItemBatch = ($this, context, e) => {
         : $this.state.sales_price
       : $this.state.sales_price;
 
-  debugger;
   $this.setState({
     ...$this.state,
     selectBatch: !$this.state.selectBatch,

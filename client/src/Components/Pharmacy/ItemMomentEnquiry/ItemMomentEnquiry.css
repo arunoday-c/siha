@@ -16,7 +16,8 @@
 
 #initial_stock .ReactTable {
   max-height: 60vh !important; }
-  #initial_stock .ReactTable span i {
+  #initial_stock .ReactTable span .fa-arrow-up,
+  #initial_stock .ReactTable span .fa-arrow-down {
     width: 16px;
     height: 16px;
     border-radius: 100%;
@@ -24,9 +25,9 @@
     line-height: 15px;
     float: right;
     text-align: center; }
-    #initial_stock .ReactTable span i.red {
-      background: #ff7f7f;
-      color: #fff; }
-    #initial_stock .ReactTable span i.green {
-      background: #15a28d;
-      color: #fff; }
+  #initial_stock .ReactTable span .red {
+    background: #ff7f7f;
+    color: #fff; }
+  #initial_stock .ReactTable span .green {
+    background: #15a28d;
+    color: #fff; }

@@ -77,7 +77,7 @@ const VatAppilicable = ($this, e) => {
   });
 };
 const texthandle = ($this, ctrl, e) => {
-  debugger;
+  
   e = e || ctrl;
   let name = e.name || e.target.name;
   let value = e.value === "" ? null : e.value || e.target.value;
@@ -132,7 +132,7 @@ const AddUom = $this => {
   let isError = false;
 
   let stocking_uom_id = null;
-  debugger;
+  
   if ($this.state.uom_id === null || $this.state.uom_id === "") {
     isError = true;
 
@@ -390,7 +390,7 @@ const onchangegridcol = ($this, row, e) => {
 };
 
 const numberEventHandaler = ($this, ctrl, e) => {
-  debugger;
+  
   e = e || ctrl;
   let name = e.name || e.target.name;
   let value = e.value === "" ? null : e.value || e.target.value;

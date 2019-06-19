@@ -303,7 +303,7 @@ const onchangegridcol = ($this, context, row, e) => {
 };
 
 const getItemLocationStock = ($this, context, value) => {
-  debugger;
+  
   $this.props.getItemLocationStock({
     uri: "/pharmacyGlobal/getItemLocationStock",
     module: "pharmacy",

@@ -561,7 +561,6 @@ class PatientProfile extends Component {
             <div className="patientVital">
               {_Vitals.map((row, idx) => (
                 <span key={idx}>
-                  {console.log("Viatal Details", row)}
                   {row.vital_short_name}:<b> {row.vital_value}</b>
                   {row.formula_value}
                 </span>
@@ -1004,7 +1003,7 @@ class PatientProfile extends Component {
             this.state.pageDisplay === "overview" ? (
               <Overview />
             ) : this.state.pageDisplay === "subjective" ? (
-              <Subjective mainThat={this} />
+              <Subjective />
             ) : this.state.pageDisplay === "phy_exam" ? (
               <PhysicalExamination />
             ) : this.state.pageDisplay === "exam_diagram" ? (
@@ -1021,10 +1020,7 @@ class PatientProfile extends Component {
           ) : this.state.pageDisplay === "overview" ? (
             <Overview />
           ) : this.state.pageDisplay === "subjective" ? (
-            <BasicSubjective
-              mainThat={this}
-              vat_applicable={this.vatApplicable()}
-            />
+            <BasicSubjective vat_applicable={this.vatApplicable()} />
           ) : this.state.pageDisplay === "exam_diagram" ? (
             <ExamDiagramStandolone />
           ) : this.state.pageDisplay === "eye" ? (

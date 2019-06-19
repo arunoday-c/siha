@@ -382,7 +382,7 @@ const onchangegridcol = ($this, row, e) => {
 };
 
 const numberEventHandaler = ($this, ctrl, e) => {
-  debugger;
+  
   e = e || ctrl;
   let name = e.name || e.target.name;
   let value = e.value === "" ? null : e.value || e.target.value;

@@ -275,7 +275,7 @@ class Speciality extends Component {
             />
 
             <AlagehFormGroup
-              div={{ className: "col" }}
+              div={{ className: "col arabic-txt-fld" }}
               label={{
                 fieldName: "arabic_name",
                 isImp: true

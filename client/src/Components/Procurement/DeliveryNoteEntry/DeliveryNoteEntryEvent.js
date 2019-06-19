@@ -183,7 +183,7 @@ const PurchaseOrderSearch = ($this, e) => {
           },
           onSuccess: response => {
             if (response.data.success) {
-              debugger;
+              
               let data = response.data.records;
               if (data !== null && data !== undefined) {
                 AlgaehLoader({ show: true });
@@ -259,10 +259,10 @@ const SaveDNEnrty = $this => {
     .toArray();
 
   let InputObj = extend({}, $this.state);
-  debugger;
+  
   for (var i = 0; i < InputObj.po_entry_detail.length; i++) {
     if ($this.state.dn_from === "PHR") {
-      debugger;
+      
       if (
         InputObj.pharmacy_stock_detail === undefined ||
         InputObj.pharmacy_stock_detail.length === 0

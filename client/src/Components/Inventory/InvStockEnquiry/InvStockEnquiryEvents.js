@@ -24,7 +24,7 @@ const getBatchWiseData = ($this, row) => {
     item_id: row.item_id,
     inventory_location_id: row.inventory_location_id
   };
-  debugger;
+  
   algaehApiCall({
     uri: "/inventoryGlobal/getItemandLocationStock",
     module: "inventory",

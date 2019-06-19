@@ -111,7 +111,7 @@ class PosListItems extends Component {
   }
 
   CloseEditModel(e) {
-    debugger;
+    
     if (e === "refresh") {
       if (this.state.pos_customer_type === "OP") {
         getMedicationList(this);

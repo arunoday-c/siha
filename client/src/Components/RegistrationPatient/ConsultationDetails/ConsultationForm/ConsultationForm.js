@@ -127,6 +127,7 @@ class AddConsultationForm extends Component {
       this.props.deptanddoctors === undefined
         ? []
         : this.props.deptanddoctors.departmets;
+    const hideMaternity = this.state.gender === "Female" ? "" : "hide"
 
     return (
       <MyContext.Consumer>
@@ -265,7 +266,7 @@ class AddConsultationForm extends Component {
                     <div className="col-lg-4 maternityRadio">
                       <AlgaehLabel
                         label={{
-                          fieldName: "maternity_patient"
+                          fieldName: this.state.gender === "Female" ? "maternity_patient" : null
                         }}
                       />
                       <br />
@@ -304,13 +305,15 @@ class AddConsultationForm extends Component {
                       <div className="customCheckbox">
                         <label className="checkbox inline">
                           <input
+                            className={hideMaternity}
                             type="checkbox"
                             name="maternity_patient_yes"
                             value="Y"
+                            disabled={this.state.gender === "Male"}
                             checked={this.state.checked_maternity_patient}
                             onChange={radioChange.bind(this, this, context)}
                           />
-                          <span>Yes</span>
+                          <span className={hideMaternity}>Yes</span>
                         </label>
                       </div>
                     </div>

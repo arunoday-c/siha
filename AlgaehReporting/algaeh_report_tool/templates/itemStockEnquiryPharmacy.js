@@ -2,7 +2,7 @@ const executePDF = function executePDFMethod(options) {
 	const _ = options.loadash;
 	return new Promise(function(resolve, reject) {
 		try {
-			const result = { detailsList: options.result };
+			const result = { details: options.result };
 			resolve(result);
 		} catch (e) {
 			reject(e);

@@ -416,7 +416,7 @@ const SavePosEnrty = $this => {
 
   if (!err) {
     AlgaehLoader({ show: true });
-    debugger;
+
     const PreApprovalExists = _.find(
       $this.state.pharmacy_stock_detail,
       f => f.pre_approval === "Y"
@@ -501,7 +501,6 @@ const SavePosEnrty = $this => {
 };
 
 const PostPosEntry = $this => {
-  debugger;
   const err = Validations($this);
   if (!err) {
     const PreApprovalExists = _.find(
@@ -666,7 +665,7 @@ const VisitSearch = ($this, e) => {
         const hospitaldetails = JSON.parse(
           AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
         );
-        debugger;
+
         let vat_applicable = "Y";
 
         if (
@@ -705,7 +704,6 @@ const VisitSearch = ($this, e) => {
                   mappingName: "existinsurance"
                 },
                 afterSuccess: data => {
-                  debugger;
                   data[0].insurance_yesno = "Y";
                   data[0].mode_of_pay = "2";
                   data[0].effective_start_date =
@@ -751,7 +749,6 @@ const VisitSearch = ($this, e) => {
 };
 
 const getMedicationList = $this => {
-  debugger;
   let inputobj = { episode_id: $this.state.episode_id };
 
   $this.props.getMedicationList({
@@ -764,7 +761,6 @@ const getMedicationList = $this => {
       mappingName: "medicationlist"
     },
     afterSuccess: data => {
-      debugger;
       if (data.length > 0) {
         AddItems($this, data);
       } else {
@@ -796,7 +792,6 @@ const AddItems = ($this, ItemInput) => {
       };
       inputArray.push(inputObj);
     }
-    debugger;
 
     algaehApiCall({
       uri: "/posEntry/getPrescriptionPOS",
@@ -930,7 +925,6 @@ const CancelPosEntry = $this => {
 };
 
 const generateReport = ($this, rpt_name, rpt_desc) => {
-  debugger;
   algaehApiCall({
     uri: "/report",
     method: "GET",

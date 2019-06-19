@@ -390,7 +390,6 @@ class BasicSubjective extends Component {
                 />
               </li>
               <Vitals
-                mainThat={this.props.mainThat}
                 openVital={this.state.openVital}
                 onClose={this.closeVitals.bind(this)}
               />
