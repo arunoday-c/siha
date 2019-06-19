@@ -1,4 +1,4 @@
-import { swalMessage } from "../../../utils/algaehApiCall";
+import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 import moment from "moment";
 import Options from "../../../Options.json";
 
@@ -45,7 +45,6 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
 };
 
 const getRequisitionList = $this => {
-  
   let inpObj = { status: $this.state.status };
 
   if ($this.state.from_date !== null) {
@@ -72,17 +71,33 @@ const getRequisitionList = $this => {
 
   // inpObj.authorize1 = "N";
   // inpObj.authorie2 = "N";
-  $this.props.getRequisitionList({
+  algaehApiCall({
     uri: "/inventoryrequisitionEntry/getinventoryAuthrequisitionList",
     module: "inventory",
     method: "GET",
     data: inpObj,
-    redux: {
-      type: "INV_REQ_LIST_GET_DATA",
-      mappingName: "inventoryrequisitionlist"
+
+    onSuccess: response => {
+      if (response.data.success) {
+        let data = response.data.records;
+        for (let i = 0; i < data.length; i++) {
+          if (
+            data[i].authorize1 === "Y" &&
+            data[i].authorie2 === "Y" &&
+            data[i].is_completed === "N"
+          ) {
+            data[i].trans_pending = true;
+          }
+        }
+        debugger;
+        $this.setState({ requisition_list: data });
+      }
     },
-    afterSuccess: data => {
-      $this.setState({ requisition_list: data });
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
     }
   });
 };

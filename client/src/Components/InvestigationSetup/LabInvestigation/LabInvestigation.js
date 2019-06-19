@@ -97,6 +97,21 @@ class LabInvestigation extends Component {
     }
   }
 
+  genderHandle(context, e) {
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+    console.log(name)
+    this.setState({
+      [name]: value
+    });
+    
+    if (context !== undefined) {
+      context.updateState({
+        [name]: value
+      });
+    }
+  }
+
   render() {
     return (
       <React.Fragment>
@@ -288,11 +303,15 @@ class LabInvestigation extends Component {
                       forceLabel: "Gender"
                     }}
                     selector={{
-                      name: "analyte_id",
+                      name: "gender",
                       className: "select-fld",
-                      value:"",
+                      value: this.state.gender,
                       dataSource: {
-                      }
+                        textField: "name",
+                        valueField: "value",
+                        data: variableJson.FORMAT_GENDER
+                      },
+                      onChange: (e) => this.genderHandle(context, e)
                     }}
                   />
                    <AlagehFormGroup
@@ -300,11 +319,16 @@ class LabInvestigation extends Component {
                     label={{
                       forceLabel: "Age From"
                     }}
+                    number={{
+                      allowNegative: false
+                    }}
                     textBox={{
                       className: "txt-fld",
-                      name: "",
-                      value: "",
-                      events: {}
+                      name: "age_from",
+                      value: this.state.age_from,
+                      events: {
+                        onChange: texthandle.bind(this, this, context)
+                      }
                     }}
                   />
                    <AlagehFormGroup
@@ -312,11 +336,16 @@ class LabInvestigation extends Component {
                     label={{
                       forceLabel: "Age To"
                     }}
+                    number={{
+                      allowNegative: false
+                    }}
                     textBox={{
                       className: "txt-fld",
-                      name: "",
-                      value: "",
-                      events: {}
+                      name: "age_to",
+                      value: this.state.age_to,
+                      events: {
+                        onChange: texthandle.bind(this, this, context)
+                      }
                     }}
                   />
                   <AlagehFormGroup

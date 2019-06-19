@@ -253,24 +253,6 @@ class InvStockEnquiry extends Component {
                             : ""}
                         </span>
                       );
-                    },
-                    editorTemplate: row => {
-                      let display =
-                        this.props.inventorylocations === undefined
-                          ? []
-                          : this.props.inventorylocations.filter(
-                              f =>
-                                f.hims_d_inventory_location_id ===
-                                row.inventory_location_id
-                            );
-
-                      return (
-                        <span>
-                          {display !== undefined && display.length !== 0
-                            ? display[0].location_description
-                            : ""}
-                        </span>
-                      );
                     }
                   },
 
@@ -297,38 +279,21 @@ class InvStockEnquiry extends Component {
                             : ""}
                         </span>
                       );
-                    },
-                    editorTemplate: row => {
-                      let display =
-                        this.props.inventoryitemlist === undefined
-                          ? []
-                          : this.props.inventoryitemlist.filter(
-                              f =>
-                                f.hims_d_inventory_item_master_id ===
-                                row.item_id
-                            );
-
-                      return (
-                        <span
-                          className="pat-code"
-                          onClick={getBatchWiseData.bind(this, this, row)}
-                        >
-                          {display !== undefined && display.length !== 0
-                            ? display[0].item_description
-                            : ""}
-                        </span>
-                      );
                     }
                   },
                   {
-                    fieldName: "sales_uom",
-                    label: <AlgaehLabel label={{ forceLabel: "Sales UOM" }} />,
+                    fieldName: "stocking_uom_id",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Stocking UOM" }} />
+                    ),
                     displayTemplate: row => {
                       let display =
                         this.props.inventoryitemuom === undefined
                           ? []
                           : this.props.inventoryitemuom.filter(
-                              f => f.hims_d_inventory_uom_id === row.sales_uom
+                              f =>
+                                f.hims_d_inventory_uom_id ===
+                                row.stocking_uom_id
                             );
 
                       return (
@@ -338,9 +303,12 @@ class InvStockEnquiry extends Component {
                             : ""}
                         </span>
                       );
-                    },
-
-                    editorTemplate: row => {
+                    }
+                  },
+                  {
+                    fieldName: "sales_uom",
+                    label: <AlgaehLabel label={{ forceLabel: "Sales UOM" }} />,
+                    displayTemplate: row => {
                       let display =
                         this.props.inventoryitemuom === undefined
                           ? []
@@ -387,25 +355,7 @@ class InvStockEnquiry extends Component {
                   },
                   {
                     fieldName: "sale_price",
-                    label: (
-                      <AlgaehLabel label={{ forceLabel: "Sales Price" }} />
-                    ),
-                    editorTemplate: row => {
-                      return (
-                        <AlagehFormGroup
-                          div={{}}
-                          textBox={{
-                            decimal: { allowNegative: false },
-                            value: row.sale_price,
-                            className: "txt-fld",
-                            name: "sale_price",
-                            events: {
-                              onChange: texthandle.bind(this, this, row)
-                            }
-                          }}
-                        />
-                      );
-                    }
+                    label: <AlgaehLabel label={{ forceLabel: "Sales Price" }} />
                   }
                 ]}
                 keyId="item_id"

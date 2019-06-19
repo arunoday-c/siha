@@ -339,7 +339,8 @@ module.exports = {
         //Pending To Authorize 2
         strQuery += " and authorize1 = 'Y' and authorie2 = 'N'";
       } else if (inputParam.status == "3") {
-        strQuery += " and is_completed='N'";
+        strQuery +=
+          " and authorize1 = 'Y' and authorie2 = 'Y' and is_completed='N'";
       } else if (inputParam.status == "4") {
         strQuery += " and is_completed='Y'";
       }

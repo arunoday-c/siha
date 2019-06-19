@@ -255,67 +255,18 @@ const RequisitionSearch = ($this, e) => {
         callBack(text);
       },
       onRowSelect: row => {
-        algaehApiCall({
-          uri: "/inventorytransferEntry/getrequisitionEntryTransfer",
-          module: "inventory",
-          method: "GET",
-          data: {
-            hims_f_inventory_material_header_id:
-              row.hims_f_inventory_material_header_id,
-            from_location_id: $this.state.from_location_id
-          },
-
-          onSuccess: response => {
-            if (response.data.success === true) {
-              let data = response.data.records;
-              AlgaehLoader({ show: true });
-              let from_location_id = data.from_location_id;
-              let from_location_type = data.from_location_type;
-              // data.saveEnable = false;
-
-              data.from_location_id = data.to_location_id;
-              data.to_location_id = from_location_id;
-              data.from_location_type = data.to_location_type;
-              data.to_location_type = from_location_type;
-
-              data.dataExitst = true;
-
-              for (let i = 0; i < data.stock_detail.length; i++) {
-                data.stock_detail[i].material_requisition_header_id =
-                  data.hims_f_inventory_material_header_id;
-
-                data.stock_detail[i].material_requisition_detail_id =
-                  data.stock_detail[i].hims_f_inventory_material_detail_id;
-
-                data.stock_detail[i].quantity_transferred = 0;
-
-                data.stock_detail[i].transfer_to_date =
-                  data.stock_detail[i].quantity_authorized -
-                  data.stock_detail[i].quantity_outstanding;
-                data.stock_detail[i].quantity_outstanding = 0;
-
-                data.stock_detail[i].quantity_requested =
-                  data.stock_detail[i].quantity_required;
-
-                data.stock_detail[i].uom_requested_id =
-                  data.stock_detail[i].item_uom;
-                data.stock_detail[i].uom_transferred_id =
-                  data.stock_detail[i].item_uom;
-
-                data.stock_detail[i].removed = "N";
-              }
-              $this.setState(data);
-              AlgaehLoader({ show: false });
-            }
-          },
-          onFailure: error => {
-            AlgaehLoader({ show: false });
-            swalMessage({
-              title: error.message,
-              type: "error"
-            });
-          }
-        });
+        if ($this.state.from_location_id !== null) {
+          getRequisitionDetails(
+            $this,
+            row.hims_f_inventory_material_header_id,
+            $this.state.from_location_id
+          );
+        } else {
+          swalMessage({
+            title: "Please select From Location.",
+            type: "warning"
+          });
+        }
       }
     });
   } else {
@@ -324,6 +275,82 @@ const RequisitionSearch = ($this, e) => {
       type: "warning"
     });
   }
+};
+
+const getRequisitionDetails = (
+  $this,
+  hims_f_inventory_material_header_id,
+  from_location_id
+) => {
+  AlgaehLoader({ show: true });
+  algaehApiCall({
+    uri: "/inventorytransferEntry/getrequisitionEntryTransfer",
+    module: "inventory",
+    method: "GET",
+    data: {
+      hims_f_inventory_material_header_id: hims_f_inventory_material_header_id,
+      from_location_id: from_location_id
+    },
+
+    onSuccess: response => {
+      if (response.data.success === true) {
+        let data = response.data.records;
+        AlgaehLoader({ show: true });
+        let from_location_id = data.from_location_id;
+        let from_location_type = data.from_location_type;
+        // data.saveEnable = false;
+
+        data.from_location_id = data.to_location_id;
+        data.to_location_id = from_location_id;
+        data.from_location_type = data.to_location_type;
+        data.to_location_type = from_location_type;
+
+        data.dataExitst = true;
+
+        for (let i = 0; i < data.stock_detail.length; i++) {
+          data.stock_detail[i].material_requisition_header_id =
+            data.hims_f_inventory_material_header_id;
+
+          data.stock_detail[i].material_requisition_detail_id =
+            data.stock_detail[i].hims_f_inventory_material_detail_id;
+
+          data.stock_detail[i].quantity_transferred = 0;
+
+          data.stock_detail[i].transfer_to_date =
+            data.stock_detail[i].quantity_authorized -
+            data.stock_detail[i].quantity_outstanding;
+          data.stock_detail[i].quantity_outstanding = 0;
+
+          data.stock_detail[i].quantity_requested =
+            data.stock_detail[i].quantity_required;
+
+          data.stock_detail[i].uom_requested_id = data.stock_detail[i].item_uom;
+          data.stock_detail[i].uom_transferred_id =
+            data.stock_detail[i].item_uom;
+
+          data.stock_detail[i].removed = "N";
+        }
+        data.quantity_transferred = 0;
+        data.item_details = null;
+        data.batch_detail_view = false;
+        if (
+          $this.props.hims_f_inventory_material_header_id !== undefined &&
+          $this.props.hims_f_inventory_material_header_id.length !== 0
+        ) {
+          data.fromReq = true;
+        }
+        $this.setState(data);
+        AlgaehLoader({ show: false });
+      }
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
 };
 
 const LocationchangeTexts = ($this, location, ctrl, e) => {
@@ -370,5 +397,6 @@ export {
   PostTransferEntry,
   RequisitionSearch,
   LocationchangeTexts,
-  checkBoxEvent
+  checkBoxEvent,
+  getRequisitionDetails
 };

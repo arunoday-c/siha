@@ -114,6 +114,25 @@ class ItemMomentEnquiry extends Component {
             >
               <div className="col-lg-12">
                 <div className="row">
+                  <AlgaehDateHandler
+                    div={{ className: "col" }}
+                    label={{ forceLabel: "From Date", isImp: true }}
+                    textBox={{ className: "txt-fld", name: "from_date" }}
+                    events={{
+                      onChange: datehandle.bind(this, this)
+                    }}
+                    value={this.state.from_date}
+                  />
+                  <AlgaehDateHandler
+                    div={{ className: "col" }}
+                    label={{ forceLabel: "To Date", isImp: true }}
+                    textBox={{ className: "txt-fld", name: "to_date" }}
+                    events={{
+                      onChange: datehandle.bind(this, this)
+                    }}
+                    maxDate={new Date()}
+                    value={this.state.to_date}
+                  />
                   <AlagehAutoComplete
                     div={{ className: "col" }}
                     label={{ forceLabel: "Item Name" }}
@@ -186,25 +205,6 @@ class ItemMomentEnquiry extends Component {
                     }}
                   />
 
-                  <AlgaehDateHandler
-                    div={{ className: "col" }}
-                    label={{ forceLabel: "From Date" }}
-                    textBox={{ className: "txt-fld", name: "from_date" }}
-                    events={{
-                      onChange: datehandle.bind(this, this)
-                    }}
-                    value={this.state.from_date}
-                  />
-                  <AlgaehDateHandler
-                    div={{ className: "col" }}
-                    label={{ forceLabel: "To Date" }}
-                    textBox={{ className: "txt-fld", name: "to_date" }}
-                    events={{
-                      onChange: datehandle.bind(this, this)
-                    }}
-                    maxDate={new Date()}
-                    value={this.state.to_date}
-                  />
                   <div className="col" style={{ paddingTop: "3vh" }}>
                     <button
                       className="btn btn-primary btn-sm"

@@ -63,7 +63,8 @@ export default {
       ItemUOM: [],
       Batch_Items: [],
       item_description: "",
-      uom_description: null
+      uom_description: null,
+      fromReq: false
     };
     return output;
   }

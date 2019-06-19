@@ -127,7 +127,7 @@ class RequisitionItems extends Component {
                             data: this.state.ItemUOM
                           },
                           others: {
-                            disabled: this.state.ItemDisable
+                            disabled: true
                           },
 
                           onChange: UomchangeTexts.bind(this, this)

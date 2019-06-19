@@ -202,9 +202,11 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "SELECT hims_m_inventory_item_location_id, item_id, inventory_location_id, item_location_status, batchno, expirydt, barcode, qtyhand, qtypo, cost_uom,\
-          avgcost, last_purchase_cost, item_type, grn_id, grnno, sale_price, mrp_price, sales_uom \
-          from hims_m_inventory_item_location where record_status='A' and qtyhand>0" +
+            "SELECT hims_m_inventory_item_location_id, item_id, inventory_location_id, item_location_status, \
+            batchno, expirydt, barcode, qtyhand, qtypo, cost_uom,avgcost, last_purchase_cost, IL.item_type, grn_id,\
+            grnno, sale_price, mrp_price, sales_uom,IM.stocking_uom_id from hims_m_inventory_item_location IL,\
+            hims_d_inventory_item_master IM where item_id = IM.hims_d_inventory_item_master_id and\
+            IL.record_status='A' and qtyhand>0" +
             strAppend +
             "order by expirydt",
           values: intValues,
@@ -305,7 +307,7 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "SELECT IM.item_description, coalesce(IM.reorder_qty,0) as reorder_qty , hims_m_inventory_item_location_id, item_id,\
+            "SELECT IM.item_description, IM.stocking_uom_id,coalesce(IM.reorder_qty,0) as reorder_qty, hims_m_inventory_item_location_id, item_id,\
             inventory_location_id, item_location_status, batchno, expirydt, barcode, sum(qtyhand) as qtyhand, \
             qtypo, cost_uom,avgcost, last_purchase_cost, grn_id, grnno, sale_price, mrp_price, sales_uom,\
             CASE WHEN sum(qtyhand)<=IM.reorder_qty THEN 'R'   else 'NR' END as reorder from \
