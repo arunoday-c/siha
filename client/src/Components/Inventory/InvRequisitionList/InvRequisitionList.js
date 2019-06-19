@@ -82,7 +82,10 @@ class InvRequisitionList extends Component {
               {
                 pageName: (
                   <AlgaehLabel
-                    label={{ forceLabel: "Requisition Auth List", align: "ltr" }}
+                    label={{
+                      forceLabel: "Requisition Auth List",
+                      align: "ltr"
+                    }}
                   />
                 )
               }
@@ -233,6 +236,22 @@ class InvRequisitionList extends Component {
                                   document.getElementById("rq-router").click();
                                 }}
                               />
+                              {row.trans_pending === true ? (
+                                <i
+                                  className="fa fa-globe"
+                                  onClick={() => {
+                                    setGlobal({
+                                      "RQ-STD": "InvTransferEntry",
+                                      hims_f_inventory_material_header_id:
+                                        row.hims_f_inventory_material_header_id,
+                                      from_location_id: row.to_location_id
+                                    });
+                                    document
+                                      .getElementById("rq-router")
+                                      .click();
+                                  }}
+                                />
+                              ) : null}
                             </span>
                           );
                         },

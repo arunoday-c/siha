@@ -16,7 +16,8 @@ import {
   PostTransferEntry,
   RequisitionSearch,
   LocationchangeTexts,
-  checkBoxEvent
+  checkBoxEvent,
+  getRequisitionDetails
 } from "./InvTransferEntryEvents";
 import "./InvTransferEntry.css";
 import "../../../styles/site.css";
@@ -96,6 +97,18 @@ class InvTransferEntry extends Component {
           mappingName: "invuserwiselocations"
         }
       });
+    }
+
+    if (
+      this.props.hims_f_inventory_material_header_id !== undefined &&
+      this.props.hims_f_inventory_material_header_id.length !== 0
+    ) {
+      debugger;
+      getRequisitionDetails(
+        this,
+        this.props.hims_f_inventory_material_header_id,
+        this.props.from_location_id
+      );
     }
   }
 
@@ -229,42 +242,68 @@ class InvTransferEntry extends Component {
             {/* Patient code */}
             <div className="col">
               <div className="row">
+                {this.state.fromReq === true ? (
+                  <div className="col">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "From Location"
+                      }}
+                    />
 
-                <div className="col-2">
-                  <label>Transfer Type</label>
-                  <div className="customCheckbox" style={{ borderBottom: 0 }}>
-                    <label className="checkbox" style={{ color: "#212529" }}>
-                      <input
-                        type="checkbox"
-                        name="direct_transfer"
-                        checked={
-                          this.state.direct_transfer === "Y" ? true : false
-                        }
-                        onChange={checkBoxEvent.bind(this, this)}
-                        disabled={this.state.dataExists}
-                      />
-                      <span>Direct Transfer</span>
-                    </label>
+                    <h6>
+                      {this.state.from_location_id
+                        ? from_location_name !== null &&
+                          from_location_name.length !== 0
+                          ? from_location_name[0].location_description
+                          : ""
+                        : "To Location "}
+                    </h6>
                   </div>
-                </div>
-                <AlagehAutoComplete
-                  div={{ className: "col-2" }}
-                  label={{ forceLabel: "From Location" }}
-                  selector={{
-                    name: "from_location_id",
-                    className: "select-fld",
-                    value: this.state.from_location_id,
-                    dataSource: {
-                      textField: "location_description",
-                      valueField: "hims_d_inventory_location_id",
-                      data: this.props.invuserwiselocations
-                    },
-                    onChange: LocationchangeTexts.bind(this, this, "From"),
-                    others: {
-                      disabled: this.state.dataExists
-                    }
-                  }}
-                />
+                ) : (
+                  <div>
+                    <div className="col-2">
+                      <label>Transfer Type</label>
+                      <div
+                        className="customCheckbox"
+                        style={{ borderBottom: 0 }}
+                      >
+                        <label
+                          className="checkbox"
+                          style={{ color: "#212529" }}
+                        >
+                          <input
+                            type="checkbox"
+                            name="direct_transfer"
+                            checked={
+                              this.state.direct_transfer === "Y" ? true : false
+                            }
+                            onChange={checkBoxEvent.bind(this, this)}
+                            disabled={this.state.dataExists}
+                          />
+                          <span>Direct Transfer</span>
+                        </label>
+                      </div>
+                    </div>
+                    <AlagehAutoComplete
+                      div={{ className: "col-2" }}
+                      label={{ forceLabel: "From Location" }}
+                      selector={{
+                        name: "from_location_id",
+                        className: "select-fld",
+                        value: this.state.from_location_id,
+                        dataSource: {
+                          textField: "location_description",
+                          valueField: "hims_d_inventory_location_id",
+                          data: this.props.invuserwiselocations
+                        },
+                        onChange: LocationchangeTexts.bind(this, this, "From"),
+                        others: {
+                          disabled: this.state.dataExists
+                        }
+                      }}
+                    />
+                  </div>
+                )}
 
                 <div className="col-2">
                   <AlgaehLabel
@@ -282,104 +321,105 @@ class InvTransferEntry extends Component {
                       : "From Location Type"}
                   </h6>
                 </div>
- <div className="col-6">
-                {this.state.direct_transfer === "N" ? (
-                  <div className="row">
-                    <AlagehFormGroup
-                      div={{ className: "col-4" }}
-                      label={{
-                        forceLabel: "Requisition Number"
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "material_requisition_number",
-                        value: this.state.material_requisition_number,
-                        events: {
-                          onChange: null
-                        },
-                        others: {
-                          disabled: true
-                        }
-                      }}
-                    />
-
-                    <div className="col  print_actions">
-                      <span
-                        className="fas fa-search globalSearchIconStyle"
-                        onClick={RequisitionSearch.bind(this, this)}
-                      />
-                    </div>
-
-                    <div className="col">
-                      <AlgaehLabel
+                <div className="col-6">
+                  {this.state.direct_transfer === "N" ? (
+                    <div className="row">
+                      <AlagehFormGroup
+                        div={{ className: "col-4" }}
                         label={{
-                          forceLabel: "To Location"
+                          forceLabel: "Requisition Number"
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "material_requisition_number",
+                          value: this.state.material_requisition_number,
+                          events: {
+                            onChange: null
+                          },
+                          others: {
+                            disabled: true
+                          }
                         }}
                       />
 
-                      <h6>
-                        {this.state.to_location_id
-                          ? display !== null && display.length !== 0
-                            ? display[0].location_description
-                            : ""
-                          : "To Location "}
-                      </h6>
-                    </div>
+                      <div className="col  print_actions">
+                        <span
+                          className="fas fa-search globalSearchIconStyle"
+                          onClick={RequisitionSearch.bind(this, this)}
+                        />
+                      </div>
 
-                    <div className="col">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "To Location Type"
+                      <div className="col">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "To Location"
+                          }}
+                        />
+
+                        <h6>
+                          {this.state.to_location_id
+                            ? display !== null && display.length !== 0
+                              ? display[0].location_description
+                              : ""
+                            : "To Location "}
+                        </h6>
+                      </div>
+
+                      <div className="col">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "To Location Type"
+                          }}
+                        />
+                        <h6>
+                          {this.state.to_location_type
+                            ? this.state.to_location_type === "WH"
+                              ? "Warehouse"
+                              : this.state.to_location_type === "MS"
+                              ? "Main Store"
+                              : "Sub Store"
+                            : "To Location Type"}
+                        </h6>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="row">
+                      <AlagehAutoComplete
+                        div={{ className: "col" }}
+                        label={{ forceLabel: "To Location" }}
+                        selector={{
+                          name: "to_location_id",
+                          className: "select-fld",
+                          value: this.state.to_location_id,
+                          dataSource: {
+                            textField: "location_description",
+                            valueField: "hims_d_inventory_location_id",
+                            data: this.props.invuserwiselocations
+                          },
+                          onChange: LocationchangeTexts.bind(this, this, "To")
                         }}
                       />
-                      <h6>
-                        {this.state.to_location_type
-                          ? this.state.to_location_type === "WH"
-                            ? "Warehouse"
-                            : this.state.to_location_type === "MS"
-                            ? "Main Store"
-                            : "Sub Store"
-                          : "To Location Type"}
-                      </h6>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="row">
-                    <AlagehAutoComplete
-                      div={{ className: "col" }}
-                      label={{ forceLabel: "To Location" }}
-                      selector={{
-                        name: "to_location_id",
-                        className: "select-fld",
-                        value: this.state.to_location_id,
-                        dataSource: {
-                          textField: "location_description",
-                          valueField: "hims_d_inventory_location_id",
-                          data: this.props.invuserwiselocations
-                        },
-                        onChange: LocationchangeTexts.bind(this, this, "To")
-                      }}
-                    />
 
-                    <div className="col">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "To Location Type"
-                        }}
-                      />
-                      <h6>
-                        {this.state.to_location_type
-                          ? this.state.to_location_type === "WH"
-                            ? "Warehouse"
-                            : this.state.to_location_type === "MS"
-                            ? "Main Store"
-                            : "Sub Store"
-                          : "To Location Type"}
-                      </h6>
+                      <div className="col">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "To Location Type"
+                          }}
+                        />
+                        <h6>
+                          {this.state.to_location_type
+                            ? this.state.to_location_type === "WH"
+                              ? "Warehouse"
+                              : this.state.to_location_type === "MS"
+                              ? "Main Store"
+                              : "Sub Store"
+                            : "To Location Type"}
+                        </h6>
+                      </div>
                     </div>
-                  </div>
-                )}
-              </div></div>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
 
@@ -409,15 +449,17 @@ class InvTransferEntry extends Component {
                     />
                   </button>
 
-                  <button
-                    type="button"
-                    className="btn btn-default"
-                    onClick={ClearData.bind(this, this)}
-                  >
-                    <AlgaehLabel
-                      label={{ forceLabel: "Clear", returnText: true }}
-                    />
-                  </button>
+                  {this.state.fromReq === false ? (
+                    <button
+                      type="button"
+                      className="btn btn-default"
+                      onClick={ClearData.bind(this, this)}
+                    >
+                      <AlgaehLabel
+                        label={{ forceLabel: "Clear", returnText: true }}
+                      />
+                    </button>
+                  ) : null}
 
                   {/*<button
                     type="button"
