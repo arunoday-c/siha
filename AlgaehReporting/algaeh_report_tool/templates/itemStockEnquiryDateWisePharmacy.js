@@ -1,6 +1,5 @@
 const algaehUtilities = require("algaeh-utilities/utilities");
 const executePDF = function executePDFMethod(options) {
-  const _ = options.loadash;
   return new Promise(function(resolve, reject) {
     const utilities = new algaehUtilities();
     try {

@@ -9,7 +9,6 @@
                     <tr>
                         <th>Sl No.</th>
                         <th>Item Name</th>
-                        <th>Category</th>
                         <th>Opening Balance</th>
                         <th>Stock In</th>
                         <th>Stock Out</th>
@@ -21,11 +20,11 @@
                     {{#each details}}
                     <tr>
                         <td>{{inc @index}}</td>
-                        <td>{{itemName}}</td>
-                        <td>{{itemCategory}}</td>
+                        <td>{{item_name}}</td>
+                        <td>{{opening_bal}}</td>
                         <td>{{stock_in}}</td>
                         <td>{{stock_out}}</td>
-                        <td>{{RemainingStock}}</td>
+                        <td>{{qtyhand}}</td>
                     </tr>
                     {{/each }}
 
