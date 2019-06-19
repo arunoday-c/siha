@@ -1475,7 +1475,117 @@ export default [
       },
       {
         subitem: "Items Stock Register - Category wise",
-        reportName: "itemStockEnquiryPharmacy",
+        reportName: "itemStockEnquiryCategoryWisePharmacy",
+        requireIframe: true,
+        reportParameters: [,
+          {
+            className: "col-2",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            label: "Select a Date",
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Select branch",
+            link: {
+              uri: "/organization/getOrganization"
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/pharmacy/getPharmacyLocation",
+                  module: "pharmacy",
+                  method: "GET",
+                  data: { hospital_id: currentEvent.value },
+
+                  onSuccess: result => {
+                    reportState.setState({
+                      location_id_list: result.data.records
+                    });
+                  }
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  location_id_list: []
+                });
+              }
+            },
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            }
+          },
+
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "location_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Select Location",
+            dataSource: {
+              textField: "location_description",
+              valueField: "hims_d_pharmacy_location_id",
+              data: []
+            }
+          },
+
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "item_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Select a Category",
+
+            link: {
+              uri: "/pharmacy/getItemMaster",
+              module: "pharmacy"
+            },
+            dataSource: {
+              textField: "item_description",
+              valueField: "hims_d_item_master_id",
+              data: undefined
+            }
+          }
+
+          // {
+          //   className: "col-2",
+          //   type: "dropdown",
+          //   name: "item_id",
+          //   initialLoad: true,
+          //   isImp: false,
+          //   label: "Select Item",
+
+          //   link: {
+          //     uri: "/pharmacy/getItemMaster",
+          //     module: "pharmacy"
+          //   },
+          //   dataSource: {
+          //     textField: "item_description",
+          //     valueField: "hims_d_item_master_id",
+          //     data: undefined
+          //   }
+          // }
+        ]
+        //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
+      },
+      {
+        subitem: "Items Stock Register - Date wise",
+        reportName: "itemStockEnquiryDateWisePharmacy",
         requireIframe: true,
         reportParameters: [
           {

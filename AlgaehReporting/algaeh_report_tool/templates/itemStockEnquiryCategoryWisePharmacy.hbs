@@ -8,10 +8,12 @@
                 <thead>
                     <tr>
                         <th>Sl No.</th>
-
-                        <th>Transaction Date</th>
+                        <th>Item Name</th>
+                        <th>Category</th>
+                        <th>Opening Balance</th>
                         <th>Stock In</th>
                         <th>Stock Out</th>
+                        <th>Remaining Stock</th>
 
                     </tr>
                 </thead>
@@ -19,11 +21,11 @@
                     {{#each details}}
                     <tr>
                         <td>{{inc @index}}</td>
-
-                        <td>{{transaction_date}}</td>
+                        <td>{{itemName}}</td>
+                        <td>{{itemCategory}}</td>
                         <td>{{stock_in}}</td>
                         <td>{{stock_out}}</td>
-
+                        <td>{{RemainingStock}}</td>
                     </tr>
                     {{/each }}
 
@@ -31,26 +33,6 @@
             </table>
 
 
-            <table class="tableTotal">
-                <tr class="">
-                    <td>PRESENT QTY IN HAND.</td>
-                    <td>{{qtyInHand}}</td>
-                    <td>إجمالي المبيعات</td>
-                </tr>
-                <tr class="">
-                    <td>TOTAL STOCK OUT.</td>
-                    <td>{{total_out}}</td>
-                    <td>إجمالي المبيعات</td>
-                </tr>
-                <tr class="">
-                    <td>TOTAL STOCK IN.</td>
-                    <td>{{total_in}}</td>
-                    <td>إجمالي المبيعات</td>
-                </tr>
-
-
-
-            </table>
         </section>
         {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
     </div>

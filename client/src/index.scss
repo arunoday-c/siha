@@ -236,17 +236,19 @@
 
   ul.ul-legend {
     li {
-      float: left;
-      margin-right: 10px;
-      list-style: none;
-      margin-top: 5px;
+    float: left;
+    margin-right: 10px;
+    list-style: none;
+    margin-top: 3px;
+    font-size: 0.8rem;
+    line-height: 19px;
 
       span {
         border: 1px solid #ccc;
         float: left;
         width: 12px;
         height: 12px;
-        margin: 2px;
+        margin: 4px 2px 2px 2px;
         margin-right: 5px;
       }
     }

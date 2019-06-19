@@ -249,7 +249,7 @@ class RadScheduledList extends Component {
                   }}
                 />
 
-                <div className="col" style={{ paddingTop: "21px" }}>
+                <div className="col" style={{ paddingTop: "19px" }}>
                   <button
                     className="btn btn-primary btn-sm"
                     type="button"
