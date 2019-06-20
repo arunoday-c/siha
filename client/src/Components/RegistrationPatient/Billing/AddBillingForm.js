@@ -19,7 +19,7 @@ import {
   adjustadvance,
   // ProcessInsurance,
   checkcashhandaler,
-  checkcardhandaler,
+  checkcardhandler,
   checkcheckhandaler,
   credittexthandle,
   advanceAdjustCal,
@@ -493,7 +493,6 @@ class AddBillingForm extends Component {
                               onChange: cashtexthandle.bind(this, this, context)
                             },
                             others: {
-                              disabled: !this.state.Cashchecked,
                               placeholder: "0.00",
                               onBlur: cashtexthCal.bind(this, this, context),
                               onFocus: e => {
@@ -517,7 +516,7 @@ class AddBillingForm extends Component {
                               type="checkbox"
                               name="Pay by Card"
                               checked={this.state.Cardchecked}
-                              onChange={checkcardhandaler.bind(
+                              onChange={checkcardhandler.bind(
                                 this,
                                 this,
                                 context
@@ -546,7 +545,6 @@ class AddBillingForm extends Component {
                               onChange: cardtexthandle.bind(this, this, context)
                             },
                             others: {
-                              disabled: !this.state.Cardchecked,
                               placeholder: "0.00",
                               onBlur: cardtexthCal.bind(this, this, context),
                               onFocus: e => {
