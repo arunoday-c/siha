@@ -646,7 +646,7 @@ module.exports = {
       });
     }
   },
-
+  //created by irfan:
   getDeliveryNoteEntry: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
