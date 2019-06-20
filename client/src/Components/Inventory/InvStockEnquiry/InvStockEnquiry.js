@@ -24,6 +24,7 @@ import "../../../styles/site.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import Enumerable from "linq";
 import BatchWiseStock from "./BatchWiseStock";
+import { getAmountFormart } from "../../../utils/GlobalFunctions";
 
 class InvStockEnquiry extends Component {
   constructor(props) {
@@ -332,11 +333,11 @@ class InvStockEnquiry extends Component {
                     displayTemplate: row => {
                       return row.reorder === "R" ? (
                         <div className="orderNow">
-                          <span>{row.qtyhand}</span>
+                          {parseFloat(row.qtyhand)}
                           <span className="orderSoon">Order Soon</span>
                         </div>
                       ) : (
-                        row.qtyhand
+                        parseFloat(row.qtyhand)
                       );
                     },
                     disabled: true
@@ -351,11 +352,31 @@ class InvStockEnquiry extends Component {
                   {
                     fieldName: "avgcost",
                     label: <AlgaehLabel label={{ forceLabel: "Avg. Cost" }} />,
+                    displayTemplate: row => {
+                      return (
+                        <span>
+                          {getAmountFormart(row.avgcost, {
+                            appendSymbol: false
+                          })}
+                        </span>
+                      );
+                    },
                     disabled: true
                   },
                   {
                     fieldName: "sale_price",
-                    label: <AlgaehLabel label={{ forceLabel: "Sales Price" }} />
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Sales Price" }} />
+                    ),
+                    displayTemplate: row => {
+                      return (
+                        <span>
+                          {getAmountFormart(row.sale_price, {
+                            appendSymbol: false
+                          })}
+                        </span>
+                      );
+                    }
                   }
                 ]}
                 keyId="item_id"

@@ -382,11 +382,11 @@ class StockEnquiry extends Component {
                     displayTemplate: row => {
                       return row.reorder === "R" ? (
                         <div className="orderNow">
-                          <span>{row.qtyhand}</span>
+                          {parseFloat(row.qtyhand)}
                           <span className="orderSoon">Order Soon</span>
                         </div>
                       ) : (
-                        row.qtyhand
+                        parseFloat(row.qtyhand)
                       );
                     },
                     disabled: true
