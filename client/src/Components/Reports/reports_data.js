@@ -149,6 +149,22 @@ export default [
         reportParameters: [
           {
             className: "col-2",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Select Branch",
+            link: {
+              uri: "/organization/getOrganization"
+            },
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            }
+          },
+          {
+            className: "col-2",
             type: "date",
             name: "from_date",
             isImp: true,
@@ -171,9 +187,24 @@ export default [
       },
       {
         subitem: "OP Billing Detail",
-        template_name: "Income/opBillDetails",
-        reportQuery: "OPBillDetails",
-        reportParameters: [
+        reportName: "opBillDetails",
+        requireIframe: true,
+        reportParameters: [ {
+            className: "col-2",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Select Branch",
+            link: {
+              uri: "/organization/getOrganization"
+            },
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            }
+          },
           {
             className: "col-2",
             type: "date",
@@ -199,7 +230,7 @@ export default [
             type: "dropdown",
             name: "service_type_id",
             initialLoad: true,
-            isImp: true,
+            isImp: false,
             link: {
               uri: "/serviceType",
               module: "masterSettings"
@@ -964,7 +995,6 @@ export default [
       {
         subitem: "List of Receipts",
         reportName: "salesReceiptListPharmacy",
-        // template_name: "salesReceiptListPharmacy",
         requireIframe: true,
         pageSize: "A4",
         pageOrentation: "landscape", //"portrait",

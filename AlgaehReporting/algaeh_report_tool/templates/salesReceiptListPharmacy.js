@@ -1,10 +1,7 @@
-//const algaehUtilities = require('algaeh-utilities/utilities');
 const executePDF = function executePDFMethod(options) {
-	const utilities = new algaehUtilities();
 	const _ = options.loadash;
 	return new Promise(function(resolve, reject) {
 		try {
-			//--------------------
 			let str = '';
 			let input = {};
 			let params = options.args.reportParams;
@@ -48,8 +45,6 @@ const executePDF = function executePDFMethod(options) {
 					printQuery: true
 				})
 				.then((rawResult) => {
-					utilities.logger().log('result: ', rawResult);
-
 					let result = [];
 
 					if (input.pay_type == 'CD' || input.pay_type == 'CH' || input.pay_type == 'CA') {
@@ -73,8 +68,6 @@ const executePDF = function executePDFMethod(options) {
 								.sumBy((s) => parseFloat(s.amount))
 								.value()
 								.toFixed(3);
-
-							//   utilities.logger().log("item: ", item);
 
 							const card = _.chain(item)
 								.filter((f) => f.pay_type == 'CD')
@@ -128,12 +121,11 @@ const executePDF = function executePDFMethod(options) {
 						total_check: total_check,
 						total_sum: total_sum.toFixed(3)
 					};
-					//utilities.logger().log('output: ', output);
 					resolve(output);
 				})
 				.catch((error) => {
 					options.mysql.releaseConnection();
-					//console.log('error', error);
+					console.log('error', error);
 				});
 
 			//----------------------------------

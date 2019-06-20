@@ -232,7 +232,7 @@ class RequisitionList extends Component {
                                     row.cancel === "Y" ? "none" : "",
                                   opacity: row.cancel === "Y" ? "0.1" : ""
                                 }}
-                                className="fas fa-flask"
+                                className="fas fa-check"
                                 onClick={() => {
                                   setGlobal({
                                     "RQ-STD": "RequisitionEntry",
@@ -244,7 +244,7 @@ class RequisitionList extends Component {
                               />
                               {row.trans_pending === true ? (
                                 <i
-                                  className="fa fa-globe"
+                                  className="fa fa-exchange-alt"
                                   onClick={() => {
                                     setGlobal({
                                       "RQ-STD": "TransferEntry",

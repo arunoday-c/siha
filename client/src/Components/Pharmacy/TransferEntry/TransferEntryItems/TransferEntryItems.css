@@ -90,3 +90,6 @@
 
 #itemTransferMapGrid .ReactTable {
   max-height: 43vh !important; }
+
+#REQ_details .ReactTable {
+  max-height: 44vh !important; }

@@ -4,6 +4,7 @@ import PurchaseOrderList from "./PurchaseOrderList";
 import PurchaseOrderEntry from "../PurchaseOrderEntry/PurchaseOrderEntry";
 import { getCookie } from "../../../utils/algaehApiCall";
 import { removeGlobal, setGlobal } from "../../../utils/GlobalFunctions";
+import DeliveryNoteEntry from "../DeliveryNoteEntry/DeliveryNoteEntry";
 
 class PurchaseSwitch extends Component {
   constructor(props) {
@@ -35,6 +36,12 @@ class PurchaseSwitch extends Component {
       PurchaseOrderList: <PurchaseOrderList />,
       PurchaseOrderEntry: (
         <PurchaseOrderEntry
+          purchase_number={this.state.purchase_number}
+          purchase_auth={true}
+        />
+      ),
+      DeliveryNoteEntry: (
+        <DeliveryNoteEntry
           purchase_number={this.state.purchase_number}
           purchase_auth={true}
         />
@@ -73,7 +80,7 @@ class PurchaseSwitch extends Component {
             <i className="fas fa-angle-double-left fa-lg" />
             Back to List
           </button>
-          {/*           
+          {/*
           <button
             style={{
               display:

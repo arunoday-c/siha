@@ -360,52 +360,52 @@ const itemchangeText = ($this, context, e, ctrl) => {
 
 const getUnitCost = ($this, context, serviceid, sales_price) => {
   if ($this.state.insured === "N") {
-    $this.setState({
-      unit_cost: sales_price,
-      Real_unit_cost: sales_price
-    });
-
-    if (context !== undefined) {
-      context.updateState({
+    if (sales_price > 0) {
+      $this.setState({
         unit_cost: sales_price,
         Real_unit_cost: sales_price
       });
-    }
 
-    {
-      /*$this.props.getServicesCost({
-      uri: "/serviceType/getService",
-      module: "masterSettings",
-      method: "GET",
-      data: { hims_d_services_id: serviceid },
-      redux: {
-        type: "SERVICES_GET_DATA",
-        mappingName: "hospitalservices"
-      },
-      afterSuccess: data => {
-        let servdata = Enumerable.from(data)
-          .where(w => w.hims_d_services_id === parseInt(serviceid, 10))
-          .firstOrDefault();
-        if (servdata !== undefined || servdata !== null) {
-          $this.setState({
-            unit_cost: servdata.standard_fee,
-            Real_unit_cost: servdata.standard_fee
-          });
-
-          if (context !== undefined) {
-            context.updateState({
+      if (context !== undefined) {
+        context.updateState({
+          unit_cost: sales_price,
+          Real_unit_cost: sales_price
+        });
+      }
+    } else {
+      $this.props.getServicesCost({
+        uri: "/serviceType/getService",
+        module: "masterSettings",
+        method: "GET",
+        data: { hims_d_services_id: serviceid },
+        redux: {
+          type: "SERVICES_GET_DATA",
+          mappingName: "hospitalservices"
+        },
+        afterSuccess: data => {
+          let servdata = Enumerable.from(data)
+            .where(w => w.hims_d_services_id === parseInt(serviceid, 10))
+            .firstOrDefault();
+          if (servdata !== undefined || servdata !== null) {
+            $this.setState({
               unit_cost: servdata.standard_fee,
               Real_unit_cost: servdata.standard_fee
             });
+
+            if (context !== undefined) {
+              context.updateState({
+                unit_cost: servdata.standard_fee,
+                Real_unit_cost: servdata.standard_fee
+              });
+            }
+          } else {
+            swalMessage({
+              title: "No Service for the selected item.",
+              type: "warning"
+            });
           }
-        } else {
-          swalMessage({
-            title: "No Service for the selected item.",
-            type: "warning"
-          });
         }
-      }
-    });*/
+      });
     }
   } else {
     $this.props.getInsuranceServicesCost({
@@ -590,8 +590,13 @@ const AddItems = ($this, context) => {
                   batchno: $this.state.batchno,
                   expiry_date: $this.state.expiry_date,
                   grn_no: $this.state.grn_no,
+                  grnno: $this.state.grn_no,
                   barcode: $this.state.barcode,
-                  qtyhand: $this.state.qtyhand
+                  qtyhand: $this.state.qtyhand,
+                  sales_price: $this.state.unit_cost,
+                  uom_id: $this.state.uom_id,
+                  conversion_factor: $this.state.conversion_factor,
+                  non_prec_Item: true
                 }
               ];
 
@@ -988,31 +993,47 @@ const calculateAmount = ($this, context, row, ctrl, e) => {
           data: { billdetails: pharmacy_stock_detail },
           onSuccess: response => {
             if (response.data.success) {
-              let data = response.data.records;
+              let data_billing = response.data.records;
+              debugger;
 
-              data.patient_payable_h =
-                data.patient_payable || $this.state.patient_payable;
-              data.sub_total = data.sub_total_amount || $this.state.sub_total;
-              data.patient_responsibility =
-                data.patient_res || $this.state.patient_responsibility;
-              data.company_responsibility =
-                data.company_res || $this.state.company_responsibility;
+              // data_billing.patient_payable_h = data_billing.patient_payable;
+              // data_billing.sub_total =
+              //   data_billing.sub_total_amount || $this.state.sub_total;
+              // data_billing.patient_responsibility = data_billing.patient_res;
+              // data_billing.company_responsibility =
+              //   data_billing.company_res || $this.state.company_responsibility;
+              //
+              // data_billing.company_payable =
+              //   data_billing.company_payble || $this.state.company_payable;
+              // data_billing.sec_company_responsibility =
+              //   data_billing.sec_company_res ||
+              //   $this.state.sec_company_responsibility;
+              // data_billing.sec_company_payable =
+              //   data_billing.sec_company_paybale ||
+              //   $this.state.sec_company_payable;
+              //
+              // data_billing.copay_amount =
+              //   data_billing.copay_amount || $this.state.copay_amount;
+              // data_billing.sec_copay_amount =
+              //   data_billing.sec_copay_amount || $this.state.sec_copay_amount;
+              data_billing.patient_payable_h = data_billing.patient_payable;
+              data_billing.sub_total = data_billing.sub_total_amount;
+              data_billing.patient_responsibility = data_billing.patient_res;
+              data_billing.company_responsibility = data_billing.company_res;
 
-              data.company_payable =
-                data.company_payble || $this.state.company_payable;
-              data.sec_company_responsibility =
-                data.sec_company_res || $this.state.sec_company_responsibility;
-              data.sec_company_payable =
-                data.sec_company_paybale || $this.state.sec_company_payable;
+              data_billing.company_payable = data_billing.company_payble;
+              data_billing.sec_company_responsibility =
+                data_billing.sec_company_res;
+              data_billing.sec_company_payable =
+                data_billing.sec_company_paybale;
 
-              data.copay_amount = data.copay_amount || $this.state.copay_amount;
-              data.sec_copay_amount =
-                data.sec_copay_amount || $this.state.sec_copay_amount;
-              data.addItemButton = false;
-              data.saveEnable = false;
+              data_billing.copay_amount = data_billing.copay_amount;
+              data_billing.sec_copay_amount = data_billing.sec_copay_amount;
+              data_billing.addItemButton = false;
+              data_billing.saveEnable = false;
               if (context !== null) {
                 context.updateState({
-                  ...data,
+                  ...data_billing,
                   pharmacy_stock_detail: pharmacy_stock_detail
                 });
               }
@@ -1185,8 +1206,8 @@ const CloseItemBatch = ($this, context, e) => {
     e !== undefined
       ? e.selected === true
         ? e.uom_description
-        : $this.state.unit_cost
-      : $this.state.unit_cost;
+        : $this.state.uom_description
+      : $this.state.uom_description;
 
   let uom_id =
     e !== undefined
@@ -1309,13 +1330,16 @@ const credittexthandle = ($this, context, ctrl, e) => {
 
 const SelectBatchDetails = ($this, row, context, e) => {
   //
-
+  debugger;
   let _pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
 
   row["batchno"] = e.selected.batchno;
   row["expiry_date"] = e.selected.expiry_date;
   row["qtyhand"] =
-    parseFloat(e.selected.qtyhand) / parseFloat(e.selected.conversion_factor);
+    e.selected.non_prec_Item === true
+      ? parseFloat(e.selected.qtyhand)
+      : parseFloat(e.selected.qtyhand) /
+        parseFloat(e.selected.conversion_factor);
   row["grn_no"] = e.selected.grnno;
   row["barcode"] = e.selected.barcode;
   row["unit_cost"] = e.selected.sales_price;

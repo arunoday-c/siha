@@ -14,6 +14,46 @@ import AlgaehSearch from "../Wrapper/globalSearch";
 import swal from "sweetalert2";
 import AppointmentComponent from "./AppointmentComponent";
 
+
+const generateReport = ($this, rpt_name, rpt_desc) => {
+
+  console.log("data:", $this);
+  algaehApiCall({
+    uri: "/report",
+    method: "GET",
+    module: "reports",
+    headers: {
+      Accept: "blob"
+    },
+    others: { responseType: "blob" },
+    data: {
+      report: {
+        reportName: rpt_name,
+        reportParams: [
+          {
+            name: "hims_f_patient_appointment_id",
+            value: $this.hims_f_patient_appointment_id
+          }
+
+        ],
+        outputFileType: "PDF"
+      }
+    },
+    onSuccess: res => {
+      const url = URL.createObjectURL(res.data);
+      let myWindow = window.open(
+        "{{ product.metafields.google.custom_label_0 }}",
+        "_blank"
+      );
+
+      myWindow.document.write(
+        "<iframe src= '" + url + "' width='100%' height='100%' />"
+      );
+      myWindow.document.title = rpt_desc;
+    }
+  });
+};
+
 class Appointment extends PureComponent {
   constructor(props) {
     super(props);
@@ -40,6 +80,10 @@ class Appointment extends PureComponent {
       byPassValidation: true
     };
   }
+
+
+
+
 
   componentDidMount() {
     this.getDoctorsAndDepts();
@@ -1400,8 +1444,8 @@ class Appointment extends PureComponent {
                             </li>
                           ))
                         : null}
-                      <li
-                        onClick={this.openEditModal.bind(this, patient, data)}>
+                      <li 
+                        onClick={generateReport.bind(this,patient,"appointmentSlip","Appointment Slip")}>
                         <span>Print App. Slip</span>
                       </li>
                     </ul>

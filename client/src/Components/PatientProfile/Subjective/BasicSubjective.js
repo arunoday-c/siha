@@ -471,7 +471,7 @@ class BasicSubjective extends Component {
                   <div className="portlet-title">
                     <div className="caption">
                       <h3 className="caption-subject">
-                        Chief Complaints and Main Symptoms
+                        Chief Complaints & Main Symptoms
                       </h3>
                     </div>
                   </div>
