@@ -623,7 +623,7 @@ export default class UcafEditor extends Component {
                         <AlagehFormGroup
                           div={{ className: "col-12 form-group" }}
                           label={{
-                            forceLabel: "Chief Complaints and Main Symptoms",
+                            forceLabel: "Chief Complaints & Main Symptoms",
                             isImp: false
                           }}
                           textBox={{

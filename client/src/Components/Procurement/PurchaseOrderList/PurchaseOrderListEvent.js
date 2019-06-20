@@ -1,4 +1,4 @@
-//import { swalMessage } from "../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import moment from "moment";
 import Options from "../../../Options.json";
 
@@ -19,7 +19,9 @@ const LocationchangeTexts = ($this, ctrl, e) => {
   e = ctrl || e;
 
   if (e.value === undefined) {
-    $this.setState({ [e]: null });
+    $this.setState({ [e]: null }, () => {
+      getPurchaseOrderList($this);
+    });
   } else {
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
@@ -31,29 +33,63 @@ const LocationchangeTexts = ($this, ctrl, e) => {
 };
 
 const getPurchaseOrderList = $this => {
-  let inpObj = {};
+  debugger;
+  let inpObj = { po_from: $this.state.po_from, status: $this.state.status };
 
+  if ($this.state.from_date !== null) {
+    inpObj.from_date = $this.state.from_date;
+  }
+  if ($this.state.to_date !== null) {
+    inpObj.to_date = $this.state.to_date;
+  }
   if ($this.state.po_from === "PHR") {
-    inpObj.pharmcy_location_id = $this.state.pharmcy_location_id;
-  } else {
-    inpObj.inventory_location_id = $this.state.inventory_location_id;
+    if ($this.state.pharmcy_location_id !== null) {
+      inpObj.pharmcy_location_id = $this.state.pharmcy_location_id;
+    }
+  } else if ($this.state.po_from === "INV") {
+    if ($this.state.inventory_location_id !== null) {
+      inpObj.inventory_location_id = $this.state.inventory_location_id;
+    }
   }
 
-  inpObj.authorize1 = "N";
+  // inpObj.authorize1 = "N";
   // inpObj.authorie2 = "N";
-  $this.props.getPurchaseOrderList({
+
+  algaehApiCall({
     uri: "/PurchaseOrderEntry/getAuthPurchaseList",
     module: "procurement",
     method: "GET",
     data: inpObj,
-    redux: {
-      type: "REQ_LIST_GET_DATA",
-      mappingName: "requisitionlist"
+
+    onSuccess: response => {
+      if (response.data.success) {
+        let data = response.data.records;
+        for (let i = 0; i < data.length; i++) {
+          if (data[i].authorize1 === "Y" && data[i].is_completed === "N") {
+            data[i].delivery_pending = true;
+          }
+        }
+        debugger;
+        $this.setState({ purchase_list: data });
+      }
     },
-    afterSuccess: data => {
-      $this.setState({ requisition_list: data });
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
     }
   });
+  // $this.props.getPurchaseOrderList({
+  //
+  //   redux: {
+  //     type: "REQ_LIST_GET_DATA",
+  //     mappingName: "requisitionlist"
+  //   },
+  //   afterSuccess: data => {
+  //     $this.setState({ requisition_list: data });
+  //   }
+  // });
 };
 
 const dateFormater = ($this, value) => {
@@ -63,17 +99,44 @@ const dateFormater = ($this, value) => {
 };
 
 const poforhandle = ($this, e) => {
-  let name = e.name || e.target.name;
-  let value = e.value || e.target.value;
-
-  $this.setState(
-    {
-      [name]: value
-    },
-    () => {
-      getData($this);
+  if (e.value === undefined) {
+    $this.setState(
+      {
+        [e]: null,
+        pharmcy_location_id: null,
+        inventory_location_id: null,
+        poSelected: true,
+        purchase_list: []
+      },
+      () => {
+        $this.props.getLocation({
+          redux: {
+            type: "LOCATIONS_GET_DATA",
+            mappingName: "polocations",
+            data: []
+          }
+        });
+      }
+    );
+  } else {
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+    if ($this.state.po_from !== value) {
+      $this.setState(
+        {
+          [name]: value,
+          pharmcy_location_id: null,
+          inventory_location_id: null,
+          poSelected: false,
+          status: "1"
+        },
+        () => {
+          getData($this);
+          getPurchaseOrderList($this);
+        }
+      );
     }
-  );
+  }
 };
 
 const getData = $this => {
@@ -100,4 +163,54 @@ const getData = $this => {
   }
 };
 
-export { LocationchangeTexts, dateFormater, texthandle, poforhandle };
+const datehandle = ($this, ctrl, e) => {
+  let intFailure = false;
+  if (e === "from_date") {
+    if (Date.parse($this.state.to_date) < Date.parse(moment(ctrl)._d)) {
+      intFailure = true;
+      swalMessage({
+        title: "From Date cannot be grater than To Date.",
+        type: "warning"
+      });
+    }
+  } else if (e === "to_date") {
+    if (Date.parse(moment(ctrl)._d) < Date.parse($this.state.from_date)) {
+      intFailure = true;
+      swalMessage({
+        title: "To Date cannot be less than From Date.",
+        type: "warning"
+      });
+    }
+  }
+
+  if (intFailure === false) {
+    $this.setState(
+      {
+        [e]: moment(ctrl)._d
+      },
+      () => {
+        if ($this.state.po_from !== null) {
+          getPurchaseOrderList($this);
+        }
+      }
+    );
+  }
+};
+
+const changeEventHandaler = ($this, ctrl, e) => {
+  e = ctrl || e;
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  $this.setState({ [name]: value }, () => {
+    getPurchaseOrderList($this);
+  });
+};
+
+export {
+  LocationchangeTexts,
+  dateFormater,
+  texthandle,
+  poforhandle,
+  datehandle,
+  changeEventHandaler
+};

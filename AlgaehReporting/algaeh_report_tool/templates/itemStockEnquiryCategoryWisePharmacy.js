@@ -24,8 +24,8 @@ const executePDF = function executePDFMethod(options) {
         .executeQuery({
           query: `WITH CTE AS (
             select hims_f_pharmacy_trans_history_id,transaction_type,from_location_id,item_code_id,location_description,
-            transaction_qty,transaction_date,case when transaction_type in ('SRT' 'INT','DNA') then  'in' 
-            when transaction_type in( 'ST', 'CS', 'POS') then  'out' end as stock_status,item_description
+            transaction_qty,transaction_date,case when transaction_type in ('SRT' 'INT','DNA','ST') and operation='+' then  'in' 
+            when transaction_type in( 'ST', 'CS', 'POS') and operation='-' then  'out' end as stock_status,item_description
             from hims_f_pharmacy_trans_history TS inner join hims_d_pharmacy_location PL on 
             TS.from_location_id=PL.hims_d_pharmacy_location_id inner join hims_d_item_master IM 
             on TS.item_code_id=IM.hims_d_item_master_id
@@ -93,8 +93,8 @@ const executePDF = function executePDFMethod(options) {
             const qty = qtyInHand.find(f => f.item_id == item.item_id);
             const opening_bal = parseFloat(
               parseFloat(qty["qtyhand"]) +
-                parseFloat(item["stock_in"]) -
-                parseFloat(item["stock_out"])
+                parseFloat(item["stock_out"]) -
+                parseFloat(item["stock_in"])
             ).toFixed(4);
             return {
               ...item,

@@ -686,7 +686,8 @@ const VisitSearch = ($this, e) => {
             sec_insured: row.sec_insured,
             episode_id: row.episode_id,
             postEnable: false,
-            vat_applicable: vat_applicable
+            vat_applicable: vat_applicable,
+            OTItemAddDis: true
           },
           () => {
             if ($this.state.insured === "Y") {

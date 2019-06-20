@@ -513,6 +513,8 @@ class PhySchSetup extends Component {
       to_break_hr2: docs.to_break_hr2,
       from_work_hr: docs.from_work_hr,
       to_work_hr: docs.to_work_hr,
+      work_break1: docs.work_break1,
+      work_break2: docs.work_break2,
       sunday: docs.sunday === "Y" ? true : false,
       monday: docs.monday === "Y" ? true : false,
       tuesday: docs.tuesday === "Y" ? true : false,
@@ -914,9 +916,11 @@ class PhySchSetup extends Component {
                     displayTemplate: row => {
                       return (
                         <span>
-                          {moment(row.from_break_hr1, "hh:mm:ss").format(
-                            "hh:mm A"
-                          )}
+                          {row.work_break1 === "Y"
+                            ? moment(row.from_break_hr1, "hh:mm:ss").format(
+                                "hh:mm A"
+                              )
+                            : "--"}
                         </span>
                       );
                     },
@@ -945,9 +949,11 @@ class PhySchSetup extends Component {
                     displayTemplate: row => {
                       return (
                         <span>
-                          {moment(row.to_break_hr1, "hh:mm:ss").format(
-                            "hh:mm A"
-                          )}
+                          {row.work_break1 === "Y"
+                            ? moment(row.to_break_hr1, "hh:mm:ss").format(
+                                "hh:mm A"
+                              )
+                            : "--"}
                         </span>
                       );
                     },
@@ -976,9 +982,11 @@ class PhySchSetup extends Component {
                     displayTemplate: row => {
                       return (
                         <span>
-                          {moment(row.from_break_hr2, "hh:mm:ss").format(
-                            "hh:mm A"
-                          )}
+                          {row.work_break2 === "Y"
+                            ? moment(row.from_break_hr2, "hh:mm:ss").format(
+                                "hh:mm A"
+                              )
+                            : "--"}
                         </span>
                       );
                     },
@@ -1007,9 +1015,11 @@ class PhySchSetup extends Component {
                     displayTemplate: row => {
                       return (
                         <span>
-                          {moment(row.to_break_hr2, "hh:mm:ss").format(
-                            "hh:mm A"
-                          )}
+                          {row.work_break2 === "Y"
+                            ? moment(row.to_break_hr2, "hh:mm:ss").format(
+                                "hh:mm A"
+                              )
+                            : "--"}
                         </span>
                       );
                     },
@@ -2179,12 +2189,12 @@ class PhySchSetup extends Component {
                                 }}
                               />
                               <h6>
-                                {this.state.from_break_hr1
+                                {this.state.work_break1 === "Y"
                                   ? moment(
                                       this.state.from_break_hr1,
                                       "hh:mm:ss"
                                     ).format("hh:mm a")
-                                  : "00:00"}
+                                  : "--"}
                               </h6>
                             </div>
 
@@ -2197,12 +2207,12 @@ class PhySchSetup extends Component {
                               />
 
                               <h6>
-                                {this.state.to_break_hr1
+                                {this.state.work_break1 === "Y"
                                   ? moment(
                                       this.state.to_break_hr1,
                                       "hh:mm:ss"
                                     ).format("hh:mm a")
-                                  : "00:00"}
+                                  : "--"}
                               </h6>
                             </div>
                           </div>
@@ -2221,12 +2231,12 @@ class PhySchSetup extends Component {
                               />
 
                               <h6>
-                                {this.state.from_break_hr2
+                                {this.state.work_break2 === "Y"
                                   ? moment(
                                       this.state.from_break_hr2,
                                       "hh:mm:ss"
                                     ).format("hh:mm a")
-                                  : "00:00"}
+                                  : "--"}
                               </h6>
                             </div>
 
@@ -2239,12 +2249,12 @@ class PhySchSetup extends Component {
                               />
 
                               <h6>
-                                {this.state.to_break_hr2
+                                {this.state.work_break2 === "Y"
                                   ? moment(
                                       this.state.to_break_hr2,
                                       "hh:mm:ss"
                                     ).format("hh:mm a")
-                                  : "00:00"}
+                                  : "--"}
                               </h6>
                             </div>
                           </div>

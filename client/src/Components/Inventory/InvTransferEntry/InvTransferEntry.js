@@ -260,8 +260,9 @@ class InvTransferEntry extends Component {
                     </h6>
                   </div>
                 ) : (
-                  <div>
-                    <div className="col-2">
+                  <div className="col-4">
+                  <div className="row">
+                    <div className="col">
                       <label>Transfer Type</label>
                       <div
                         className="customCheckbox"
@@ -285,7 +286,7 @@ class InvTransferEntry extends Component {
                       </div>
                     </div>
                     <AlagehAutoComplete
-                      div={{ className: "col-2" }}
+                      div={{ className: "col-7" }}
                       label={{ forceLabel: "From Location" }}
                       selector={{
                         name: "from_location_id",
@@ -302,6 +303,7 @@ class InvTransferEntry extends Component {
                         }
                       }}
                     />
+                  </div>
                   </div>
                 )}
 

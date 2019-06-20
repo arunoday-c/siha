@@ -24,6 +24,7 @@ import "../../../styles/site.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import Enumerable from "linq";
 import BatchWiseStock from "./BatchWiseStock";
+import { getAmountFormart } from "../../../utils/GlobalFunctions";
 
 class InvStockEnquiry extends Component {
   constructor(props) {
@@ -144,11 +145,12 @@ class InvStockEnquiry extends Component {
                       this.setState({
                         location_id: null
                       });
-                    }
+                    },
+                    autoComplete: "off"
                   }}
                 />
 
-                <AlagehAutoComplete
+                {/* <AlagehAutoComplete
                   div={{ className: "col-lg-3" }}
                   label={{ forceLabel: "Item Name" }}
                   selector={{
@@ -167,7 +169,7 @@ class InvStockEnquiry extends Component {
                       });
                     }
                   }}
-                />
+                /> */}
                 {/*<div className="col-lg-3">
                   <AlgaehLabel
                     label={{
@@ -253,7 +255,8 @@ class InvStockEnquiry extends Component {
                             : ""}
                         </span>
                       );
-                    }
+                    },
+                    others: { filterable: false }
                   },
 
                   {
@@ -303,7 +306,8 @@ class InvStockEnquiry extends Component {
                             : ""}
                         </span>
                       );
-                    }
+                    },
+                    others: { filterable: false }
                   },
                   {
                     fieldName: "sales_uom",
@@ -323,7 +327,8 @@ class InvStockEnquiry extends Component {
                             : ""}
                         </span>
                       );
-                    }
+                    },
+                    others: { filterable: false }
                   },
 
                   {
@@ -332,30 +337,52 @@ class InvStockEnquiry extends Component {
                     displayTemplate: row => {
                       return row.reorder === "R" ? (
                         <div className="orderNow">
-                          <span>{row.qtyhand}</span>
+                          {parseFloat(row.qtyhand)}
                           <span className="orderSoon">Order Soon</span>
                         </div>
                       ) : (
-                        row.qtyhand
+                        parseFloat(row.qtyhand)
                       );
                     },
-                    disabled: true
+                    disabled: true,
+                    others: { filterable: false }
                   },
                   {
                     fieldName: "reorder_qty",
                     label: (
                       <AlgaehLabel label={{ forceLabel: "Reorder Quantity" }} />
                     ),
-                    disabled: true
+                    disabled: true,
+                    others: { filterable: false }
                   },
                   {
                     fieldName: "avgcost",
                     label: <AlgaehLabel label={{ forceLabel: "Avg. Cost" }} />,
+                    displayTemplate: row => {
+                      return (
+                        <span>
+                          {getAmountFormart(row.avgcost, {
+                            appendSymbol: false
+                          })}
+                        </span>
+                      );
+                    },
                     disabled: true
                   },
                   {
                     fieldName: "sale_price",
-                    label: <AlgaehLabel label={{ forceLabel: "Sales Price" }} />
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Sales Price" }} />
+                    ),
+                    displayTemplate: row => {
+                      return (
+                        <span>
+                          {getAmountFormart(row.sale_price, {
+                            appendSymbol: false
+                          })}
+                        </span>
+                      );
+                    }
                   }
                 ]}
                 keyId="item_id"
@@ -364,7 +391,8 @@ class InvStockEnquiry extends Component {
                 }}
                 noDataText="No Stock available for selected Item in the selected Location"
                 isEditable={false}
-                paging={{ page: 0, rowsPerPage: 10 }}
+                filter={true}
+                paging={{ page: 0, rowsPerPage: 20 }}
                 events={{
                   //   onDelete: deleteServices.bind(this, this),
                   onEdit: row => {},
