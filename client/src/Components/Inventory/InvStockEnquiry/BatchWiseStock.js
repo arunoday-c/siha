@@ -22,6 +22,7 @@ import "./InvStockEnquiry.css";
 import "../../../styles/site.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import Enumerable from "linq";
+import { getAmountFormart } from "../../../utils/GlobalFunctions";
 
 class BatchWiseStock extends Component {
   constructor(props) {
@@ -236,6 +237,9 @@ class BatchWiseStock extends Component {
                     {
                       fieldName: "qtyhand",
                       label: <AlgaehLabel label={{ forceLabel: "Quantity" }} />,
+                      displayTemplate: row => {
+                        return parseFloat(row.qtyhand);
+                      },
                       disabled: true
                     },
                     {
@@ -243,6 +247,15 @@ class BatchWiseStock extends Component {
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Avg. Cost" }} />
                       ),
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {getAmountFormart(row.avgcost, {
+                              appendSymbol: false
+                            })}
+                          </span>
+                        );
+                      },
                       disabled: true
                     },
                     {
@@ -250,6 +263,15 @@ class BatchWiseStock extends Component {
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Sales Price" }} />
                       ),
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {getAmountFormart(row.sale_price, {
+                              appendSymbol: false
+                            })}
+                          </span>
+                        );
+                      },
                       editorTemplate: row => {
                         return (
                           <AlagehFormGroup

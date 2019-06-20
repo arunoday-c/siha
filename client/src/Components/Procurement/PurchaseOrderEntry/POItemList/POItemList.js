@@ -567,7 +567,15 @@ class POItemList extends Component {
                                   </span>
                                 );
                               },
-                              disabled: true
+                              editorTemplate: row => {
+                                return (
+                                  <span>
+                                    {getAmountFormart(row.unit_price, {
+                                      appendSymbol: false
+                                    })}
+                                  </span>
+                                );
+                              }
                             },
                             {
                               fieldName: "total_quantity",
@@ -594,7 +602,48 @@ class POItemList extends Component {
                                   </span>
                                 );
                               },
-                              disabled: true
+                              editorTemplate: row => {
+                                return (
+                                  <span>
+                                    {getAmountFormart(row.extended_price, {
+                                      appendSymbol: false
+                                    })}
+                                  </span>
+                                );
+                              }
+                            },
+                            {
+                              fieldName: "authorize_quantity",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Auth Qty" }}
+                                />
+                              ),
+                              displayTemplate: row => {
+                                return parseFloat(row.authorize_quantity);
+                              },
+                              editorTemplate: row => {
+                                return (
+                                  <AlagehFormGroup
+                                    div={{}}
+                                    textBox={{
+                                      value: parseFloat(row.authorize_quantity),
+                                      className: "txt-fld",
+                                      name: "authorize_quantity",
+                                      events: {
+                                        onChange: onchangegridcol.bind(
+                                          this,
+                                          this,
+                                          row
+                                        )
+                                      },
+                                      others: {
+                                        disabled: this.state.authorizeEnable
+                                      }
+                                    }}
+                                  />
+                                );
+                              }
                             },
                             {
                               fieldName: "sub_discount_percentage",
@@ -696,7 +745,15 @@ class POItemList extends Component {
                                   </span>
                                 );
                               },
-                              disabled: true
+                              editorTemplate: row => {
+                                return (
+                                  <span>
+                                    {getAmountFormart(row.net_extended_cost, {
+                                      appendSymbol: false
+                                    })}
+                                  </span>
+                                );
+                              }
                             },
 
                             {
@@ -715,43 +772,17 @@ class POItemList extends Component {
                                   </span>
                                 );
                               },
-                              disabled: true
-                            },
-
-                            {
-                              fieldName: "authorize_quantity",
-                              label: (
-                                <AlgaehLabel
-                                  label={{ forceLabel: "Auth Qty" }}
-                                />
-                              ),
                               editorTemplate: row => {
                                 return (
-                                  <AlagehFormGroup
-                                    div={{}}
-                                    textBox={{
-                                      number: {
-                                        allowNegative: false,
-                                        thousandSeparator: ","
-                                      },
-                                      value: row.authorize_quantity,
-                                      className: "txt-fld",
-                                      name: "authorize_quantity",
-                                      events: {
-                                        onChange: onchangegridcol.bind(
-                                          this,
-                                          this,
-                                          row
-                                        )
-                                      },
-                                      others: {
-                                        disabled: this.state.authorizeEnable
-                                      }
-                                    }}
-                                  />
+                                  <span>
+                                    {getAmountFormart(row.unit_cost, {
+                                      appendSymbol: false
+                                    })}
+                                  </span>
                                 );
                               }
                             },
+
                             {
                               fieldName: "quantity_outstanding",
                               label: (
@@ -761,6 +792,12 @@ class POItemList extends Component {
                                   }}
                                 />
                               ),
+                              displayTemplate: row => {
+                                return parseFloat(row.quantity_outstanding);
+                              },
+                              editorTemplate: row => {
+                                return parseFloat(row.quantity_outstanding);
+                              },
                               disabled: true,
                               others: {
                                 minWidth: 130
@@ -775,6 +812,12 @@ class POItemList extends Component {
                                   }}
                                 />
                               ),
+                              displayTemplate: row => {
+                                return parseFloat(row.rejected_quantity);
+                              },
+                              editorTemplate: row => {
+                                return parseFloat(row.rejected_quantity);
+                              },
                               disabled: true
                             },
                             {
@@ -793,7 +836,15 @@ class POItemList extends Component {
                                   </span>
                                 );
                               },
-                              disabled: true
+                              editorTemplate: row => {
+                                return (
+                                  <span>
+                                    {getAmountFormart(row.tax_amount, {
+                                      appendSymbol: false
+                                    })}
+                                  </span>
+                                );
+                              }
                             },
 
                             {
@@ -812,7 +863,15 @@ class POItemList extends Component {
                                   </span>
                                 );
                               },
-                              disabled: true
+                              editorTemplate: row => {
+                                return (
+                                  <span>
+                                    {getAmountFormart(row.total_amount, {
+                                      appendSymbol: false
+                                    })}
+                                  </span>
+                                );
+                              }
                             }
                           ]}
                           keyId="hims_f_procurement_po_detail_id"
