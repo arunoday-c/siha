@@ -356,8 +356,22 @@ module.exports = {
 
       let strQuery =
         "SELECT * from  hims_f_procurement_po_header\
-    where cancelled='N' ";
+          where cancelled='N' ";
 
+      if (req.query.from_date != null) {
+        strQuery +=
+          " and date(po_date) between date('" +
+          req.query.from_date +
+          "') AND date('" +
+          req.query.to_date +
+          "')";
+      } else {
+        strQuery += " and date(po_date) <= date(now())";
+      }
+
+      if (inputParam.po_from != null) {
+        strQuery += " and po_from = '" + inputParam.po_from + "'";
+      }
       if (inputParam.pharmcy_location_id != null) {
         strQuery +=
           " and pharmcy_location_id = " + inputParam.pharmcy_location_id;
@@ -366,8 +380,19 @@ module.exports = {
         strQuery +=
           " and inventory_location_id = " + inputParam.inventory_location_id;
       }
-      if (inputParam.authorize1 != null) {
-        strQuery += " and authorize1 = '" + inputParam.authorize1 + "'";
+      // if (inputParam.authorize1 != null) {
+      //   strQuery += " and authorize1 = '" + inputParam.authorize1 + "'";
+      // }
+
+      if (inputParam.status == null || inputParam.status == "0") {
+        strQuery += "";
+      } else if (inputParam.status == "1") {
+        //Pending To Authorize 1
+        strQuery += " and authorize1 = 'N'";
+      } else if (inputParam.status == "2") {
+        strQuery += " and authorize1 = 'Y' and is_completed='N'";
+      } else if (inputParam.status == "3") {
+        strQuery += " and is_completed='Y'";
       }
 
       _mysql

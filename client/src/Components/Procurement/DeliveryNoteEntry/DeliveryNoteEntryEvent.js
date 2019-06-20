@@ -174,74 +174,87 @@ const PurchaseOrderSearch = ($this, e) => {
         callBack(text);
       },
       onRowSelect: row => {
-        algaehApiCall({
-          uri: "/PurchaseOrderEntry/getPurchaseOrderEntry",
-          module: "procurement",
-          method: "GET",
-          data: {
-            purchase_number: row.purchase_number
-          },
-          onSuccess: response => {
-            if (response.data.success) {
-              let data = response.data.records;
-              if (data !== null && data !== undefined) {
-                AlgaehLoader({ show: true });
-
-                data.saveEnable = false;
-
-                data.location_type = "MS";
-
-                data.dataExitst = true;
-                data.purchase_order_id = data.hims_f_procurement_po_header_id;
-                for (let i = 0; i < data.po_entry_detail.length; i++) {
-                  data.po_entry_detail[i].item_id =
-                    data.po_entry_detail[i].phar_item_id ||
-                    data.po_entry_detail[i].inv_item_id;
-
-                  data.po_entry_detail[i].po_quantity =
-                    data.po_entry_detail[i].authorize_quantity;
-
-                  data.po_entry_detail[i].dn_quantity = 0;
-
-                  data.po_entry_detail[i].quantity_recieved_todate =
-                    data.po_entry_detail[i].authorize_quantity -
-                    data.po_entry_detail[i].quantity_outstanding;
-
-                  data.po_entry_detail[i].authorize_quantity = 0;
-                  data.po_entry_detail[i].quantity_outstanding = 0;
-
-                  data.po_entry_detail[i].discount_percentage =
-                    data.po_entry_detail[i].sub_discount_percentage;
-
-                  data.po_entry_detail[i].discount_amount =
-                    data.po_entry_detail[i].sub_discount_amount;
-
-                  data.po_entry_detail[i].purchase_order_header_id =
-                    data.hims_f_procurement_po_header_id;
-                  data.po_entry_detail[i].purchase_order_detail_id =
-                    data.po_entry_detail[i].hims_f_procurement_po_detail_id;
-
-                  data.po_entry_detail[i].dn_entry_detail = [];
-                }
-
-                // data.purchase_detail = data.po_entry_detail;
-                $this.setState(data);
-                AlgaehLoader({ show: false });
-              }
-            }
-            AlgaehLoader({ show: false });
-          },
-          onFailure: error => {
-            AlgaehLoader({ show: false });
-            swalMessage({
-              title: error.message,
-              type: "error"
-            });
-          }
-        });
+        getPurchaseDetails($this, row.purchase_number);
       }
     });
   }
+};
+
+const getPurchaseDetails = ($this, purchase_number) => {
+  AlgaehLoader({ show: true });
+  algaehApiCall({
+    uri: "/PurchaseOrderEntry/getPurchaseOrderEntry",
+    module: "procurement",
+    method: "GET",
+    data: {
+      purchase_number: purchase_number
+    },
+    onSuccess: response => {
+      if (response.data.success) {
+        let data = response.data.records;
+        if (data !== null && data !== undefined) {
+          data.saveEnable = false;
+
+          data.location_type = "MS";
+
+          data.dataExitst = true;
+          data.purchase_order_id = data.hims_f_procurement_po_header_id;
+          data.dn_from = data.po_from;
+          for (let i = 0; i < data.po_entry_detail.length; i++) {
+            data.po_entry_detail[i].item_id =
+              data.po_entry_detail[i].phar_item_id ||
+              data.po_entry_detail[i].inv_item_id;
+
+            data.po_entry_detail[i].po_quantity =
+              data.po_entry_detail[i].authorize_quantity;
+
+            data.po_entry_detail[i].dn_quantity = 0;
+
+            data.po_entry_detail[i].quantity_recieved_todate =
+              data.po_entry_detail[i].authorize_quantity -
+              data.po_entry_detail[i].quantity_outstanding;
+
+            data.po_entry_detail[i].authorize_quantity = 0;
+            data.po_entry_detail[i].quantity_outstanding = 0;
+
+            data.po_entry_detail[i].discount_percentage =
+              data.po_entry_detail[i].sub_discount_percentage;
+
+            data.po_entry_detail[i].discount_amount =
+              data.po_entry_detail[i].sub_discount_amount;
+
+            data.po_entry_detail[i].purchase_order_header_id =
+              data.hims_f_procurement_po_header_id;
+            data.po_entry_detail[i].purchase_order_detail_id =
+              data.po_entry_detail[i].hims_f_procurement_po_detail_id;
+
+            data.po_entry_detail[i].dn_entry_detail = [];
+          }
+
+          if (
+            $this.props.purchase_number !== undefined &&
+            $this.props.purchase_number.length !== 0
+          ) {
+            data.fromPurList = true;
+          }
+
+          // data.purchase_detail = data.po_entry_detail;
+          $this.setState(data, () => {
+            getData($this);
+          });
+          AlgaehLoader({ show: false });
+        }
+      }
+      AlgaehLoader({ show: false });
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
 };
 
 const ClearData = ($this, e) => {
@@ -562,5 +575,6 @@ export {
   ClearData,
   SaveDNEnrty,
   getCtrlCode,
-  loctexthandle
+  loctexthandle,
+  getPurchaseDetails
 };

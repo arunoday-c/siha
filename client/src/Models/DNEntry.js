@@ -49,7 +49,8 @@ export default {
 
       vendor_batchno: null,
       expiry_date: null,
-      dn_quantity: null
+      dn_quantity: null,
+      fromPurList: false
     };
     return output;
   }
