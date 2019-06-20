@@ -20,8 +20,8 @@ import {
   ClearData,
   SaveDNEnrty,
   PurchaseOrderSearch,
-  getCtrlCode
-  // PostDnEntry
+  getCtrlCode,
+  getPurchaseDetails
 } from "./DeliveryNoteEntryEvent";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -59,6 +59,14 @@ class DeliveryNoteEntry extends Component {
       this.props.delivery_note_number.length !== 0
     ) {
       getCtrlCode(this, this.props.delivery_note_number);
+    }
+
+    if (
+      this.props.purchase_number !== undefined &&
+      this.props.purchase_number.length !== 0
+    ) {
+      debugger;
+      getPurchaseDetails(this, this.props.purchase_number);
     }
   }
 
@@ -213,7 +221,10 @@ class DeliveryNoteEntry extends Component {
                       data: GlobalVariables.PO_FROM
                     },
                     others: {
-                      disabled: this.state.dataExitst
+                      disabled:
+                        this.state.fromPurList === true
+                          ? true
+                          : this.state.dataExitst
                     },
                     onChange: poforhandle.bind(this, this),
                     onClear: texthandle.bind(this, this)
@@ -241,7 +252,10 @@ class DeliveryNoteEntry extends Component {
                       data: _mainStore
                     },
                     others: {
-                      disabled: this.state.dataExitst
+                      disabled:
+                        this.state.fromPurList === true
+                          ? true
+                          : this.state.dataExitst
                     },
                     onChange: loctexthandle.bind(this, this),
                     onClear: texthandle.bind(this, this)
@@ -261,7 +275,10 @@ class DeliveryNoteEntry extends Component {
                       data: this.props.dnvendors
                     },
                     others: {
-                      disabled: this.state.dataExitst
+                      disabled:
+                        this.state.fromPurList === true
+                          ? true
+                          : this.state.dataExitst
                     },
                     onChange: vendortexthandle.bind(this, this),
                     onClear: vendortexthandle.bind(this, this)
@@ -360,16 +377,19 @@ class DeliveryNoteEntry extends Component {
                   />
                 </button>
 
-                <button
-                  type="button"
-                  className="btn btn-default"
-                  disabled={this.state.ClearDisable}
-                  onClick={ClearData.bind(this, this)}
-                >
-                  <AlgaehLabel
-                    label={{ forceLabel: "Clear", returnText: true }}
-                  />
-                </button>
+                {this.state.fromPurList === true ? (
+                  <button
+                    type="button"
+                    className="btn btn-default"
+                    disabled={this.state.ClearDisable}
+                    onClick={ClearData.bind(this, this)}
+                  >
+                    <AlgaehLabel
+                      label={{ forceLabel: "Clear", returnText: true }}
+                    />
+                  </button>
+                ) : null}
+
                 {/* <button
                   type="button"
                   className="btn btn-other"
