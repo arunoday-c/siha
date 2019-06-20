@@ -188,7 +188,7 @@ class PurchaseOrderList extends Component {
                           return (
                             <span>
                               <i
-                                className="fas fa-flask"
+                                className="fas fa-check"
                                 onClick={() => {
                                   setGlobal({
                                     "RQ-STD": "PurchaseOrderEntry",
@@ -200,7 +200,7 @@ class PurchaseOrderList extends Component {
 
                               {row.delivery_pending === true ? (
                                 <i
-                                  className="fa fa-globe"
+                                  className="fa fa-exchange-alt"
                                   onClick={() => {
                                     setGlobal({
                                       "RQ-STD": "DeliveryNoteEntry",

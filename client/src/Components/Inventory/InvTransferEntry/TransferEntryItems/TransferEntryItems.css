@@ -37,3 +37,6 @@
   color: #000; }
   #Bill_details input[type="text"]:disabled :after {
     border: none; }
+
+#REQ_details .ReactTable {
+  max-height: 44vh !important; }
