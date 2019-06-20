@@ -595,7 +595,8 @@ const AddItems = ($this, context) => {
                   qtyhand: $this.state.qtyhand,
                   sales_price: $this.state.unit_cost,
                   uom_id: $this.state.uom_id,
-                  conversion_factor: $this.state.conversion_factor
+                  conversion_factor: $this.state.conversion_factor,
+                  non_prec_Item: true
                 }
               ];
 
@@ -1329,13 +1330,16 @@ const credittexthandle = ($this, context, ctrl, e) => {
 
 const SelectBatchDetails = ($this, row, context, e) => {
   //
-
+  debugger;
   let _pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
 
   row["batchno"] = e.selected.batchno;
   row["expiry_date"] = e.selected.expiry_date;
   row["qtyhand"] =
-    parseFloat(e.selected.qtyhand) / parseFloat(e.selected.conversion_factor);
+    e.selected.non_prec_Item === true
+      ? parseFloat(e.selected.qtyhand)
+      : parseFloat(e.selected.qtyhand) /
+        parseFloat(e.selected.conversion_factor);
   row["grn_no"] = e.selected.grnno;
   row["barcode"] = e.selected.barcode;
   row["unit_cost"] = e.selected.sales_price;
