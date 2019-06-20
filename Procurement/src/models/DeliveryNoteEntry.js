@@ -40,7 +40,7 @@ module.exports = {
       });
     }
   },
-  getDeliveryNoteEntry: (req, res, next) => {
+  getDeliveryNoteEntryOLD: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
       _mysql
@@ -644,6 +644,61 @@ module.exports = {
       _mysql.rollBackTransaction(() => {
         next(e);
       });
+    }
+  },
+
+  getDeliveryNoteEntry: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "select * from hims_f_procurement_dn_header\
+            where hospital_id=?  and delivery_note_number=?; \
+            select D.* from hims_f_procurement_dn_header H  inner join hims_f_procurement_dn_detail D\
+            on H.hims_f_procurement_dn_header_id= D. hims_f_procurement_dn_header_id\
+            where H.hospital_id=?  and delivery_note_number=?;\
+            select B.* from hims_f_procurement_dn_header H  inner join hims_f_procurement_dn_detail D\
+            on H.hims_f_procurement_dn_header_id= D. hims_f_procurement_dn_header_id\
+            inner join hims_f_procurement_dn_batches B on D.hims_f_procurement_dn_detail_id=B.hims_f_procurement_dn_detail_id\
+            where H.hospital_id=?  and H.delivery_note_number=?;",
+          values: [
+            req.userIdentity.hospital_id,
+            req.query.delivery_note_number,
+            req.userIdentity.hospital_id,
+            req.query.delivery_note_number,
+            req.userIdentity.hospital_id,
+            req.query.delivery_note_number
+          ],
+          printQuery: true
+        })
+        .then(result => {
+          let header = result[0][0];
+          let details = result[1];
+          let subDetails = result[2];
+          let outputArray = [];
+
+          details.forEach(item => {
+            let dn_entry_detail = subDetails.filter(sub => {
+              return (
+                sub["hims_f_procurement_dn_detail_id"] ==
+                item["hims_f_procurement_dn_detail_id"]
+              );
+            });
+
+            outputArray.push({ ...item, dn_entry_detail });
+          });
+
+          req.records = { ...header, po_entry_detail: outputArray };
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
     }
   }
 };
