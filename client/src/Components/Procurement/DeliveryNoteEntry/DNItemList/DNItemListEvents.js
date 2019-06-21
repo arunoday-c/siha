@@ -369,7 +369,7 @@ const printBarcode = ($this, row, e) => {
 const onChangeTextEventHandaler = ($this, context, e) => {
   let item_details = $this.state.item_details;
   let name = e.name || e.target.name;
-  let value = e.value || e.target.value;
+  let value = e.value === "" ? null : e.value || e.target.value;
   item_details[name] = value;
   $this.setState({
     [name]: value,
