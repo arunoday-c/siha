@@ -8,7 +8,7 @@ import {
 import httpStatus from "../utils/httpStatus";
 import { debugFunction, debugLog } from "../utils/logging";
 import { LINQ } from "node-linq";
-
+import moment from "moment";
 import algaehMysql from "algaeh-mysql";
 const keyPath = require("algaeh-keys/keys");
 
@@ -549,27 +549,57 @@ let getPatientMedications = (req, res, next) => {
     _mysql
       .executeQuery({
         query:
-          "SELECT * FROM hims_f_prescription P, hims_f_prescription_detail PD \
-            where P.hims_f_prescription_id=PD.prescription_id and patient_id=? and  \
-            date(prescription_date) =(SELECT max(date(prescription_date))  FROM hims_f_prescription P, \
-            hims_f_prescription_detail PD where P.hims_f_prescription_id=PD.prescription_id and patient_id=?);\
-            SELECT * FROM hims_test_db.hims_f_prescription P, hims_f_prescription_detail PD \
-            where P.hims_f_prescription_id=PD.prescription_id and patient_id=? ;",
-        values: [
-          req.query.patient_id,
-          req.query.patient_id,
-          req.query.patient_id
-        ],
+          // "SELECT * FROM hims_f_prescription P, hims_f_prescription_detail PD \
+          //   where P.hims_f_prescription_id=PD.prescription_id and patient_id=? and  \
+          //   date(prescription_date) =(SELECT max(date(prescription_date))  FROM hims_f_prescription P, \
+          //   hims_f_prescription_detail PD where P.hims_f_prescription_id=PD.prescription_id and patient_id=?);\
+          //   SELECT * FROM hims_test_db.hims_f_prescription P, hims_f_prescription_detail PD \
+          //   where P.hims_f_prescription_id=PD.prescription_id and patient_id=? ;",
+          // values: [
+          //   req.query.patient_id,
+          //   req.query.patient_id,
+          //   req.query.patient_id
+          // ],
+          " select P.episode_id,P.prescription_date,P.prescription_status,P.cancelled,\
+ PD.item_id,IM.item_description,IM.item_code,PD.item_category_id,PD.generic_id,\
+ PD.item_id,PD.item_category_id,PD.item_group_id,PD.dosage,PD.frequency,\
+ PD.no_of_days,PD.dispense,PD.frequency_type,PD.frequency_time,PD.start_date,\
+ PD.service_id,PD.uom_id,PD.item_status,PD.instructions,PD.insured,PD.pre_approval,\
+ PD.apprv_status,PD.approved_amount,IG.generic_name \
+ from hims_f_prescription as P inner join hims_f_prescription_detail as PD \
+ on P.hims_f_prescription_id=PD.prescription_id inner join hims_d_item_master as IM \
+ on PD.item_id = IM.hims_d_item_master_id inner join hims_d_item_generic as IG \
+ on PD.generic_id = IG.hims_d_item_generic_id \
+ where  patient_id=? \
+  order by  prescription_date desc; ",
+        values: [req.query.patient_id],
         printQuery: true
       })
       .then(result => {
         _mysql.releaseConnection();
-        let latest_mediction = result[0];
-        let all_mediction = result[1];
+        let latest_mediction = [];
+        let all_mediction = result;
+        if (result.length > 0) {
+          const getPrescriptionDate = result[0]["prescription_date"];
+          latest_mediction = new LINQ(result)
+            .Where(
+              w =>
+                moment(w.prescription_date).format("YYYYMMDD") ==
+                moment(getPrescriptionDate).format("YYYYMMDD")
+            )
+            .Select(s => {
+              return s;
+            })
+            .ToArray();
+        }
+
+        // let latest_mediction = result[0]
+        // let all_mediction = result[1];
         req.records = {
           latest_mediction,
           all_mediction
         };
+
         next();
       })
       .catch(error => {

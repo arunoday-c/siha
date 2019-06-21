@@ -31,7 +31,9 @@ import Allergies from "../Allergies/Allergies";
 import Examination from "../Examination/Examination";
 import { Validations } from "./Validation";
 import { setGlobal } from "../../../utils/GlobalFunctions";
-
+import "./basicSubjective.css";
+import _ from "lodash";
+import moment from "moment";
 class BasicSubjective extends Component {
   constructor(props) {
     super(props);
@@ -54,7 +56,9 @@ class BasicSubjective extends Component {
       chronic: null,
       complaint_type: null,
       isPregnancy: true,
-      hims_f_episode_chief_complaint_id: null
+      hims_f_episode_chief_complaint_id: null,
+      recent_mediction: [],
+      all_mediction: []
     };
     this.isMale = String(Window["global"]["gender"]) === "Male" ? true : false;
     this.chiefComplaintMaxLength = 200;
@@ -151,6 +155,28 @@ class BasicSubjective extends Component {
         pageDisplay: specified
       });
     }
+  }
+
+  getPatientMedications() {
+    algaehApiCall({
+      uri: "/orderMedication/getPatientMedications",
+      data: { patient_id: Window.global["current_patient"] },
+      method: "GET",
+      onSuccess: response => {
+        if (response.data.success) {
+          this.setState({
+            recent_mediction: response.data.records.latest_mediction,
+            all_mediction: response.data.records.all_mediction
+          });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
   }
 
   getPatientEncounterDetails() {
@@ -361,6 +387,7 @@ class BasicSubjective extends Component {
     }
   }
   componentDidMount() {
+    this.getPatientMedications();
     if (this.isMale) {
       this.complaintType = Enumerable.from(GlobalVariables.COMPLAINT_TYPE)
         .where(w => w["value"] !== "PREGNANCY")
@@ -377,6 +404,20 @@ class BasicSubjective extends Component {
     const _finalDiagnosis = Enumerable.from(_diagnosis)
       .where(w => w.final_daignosis === "Y")
       .toArray();
+    const recentMediction = _.chain(this.state.recent_mediction)
+      .groupBy(g => moment(g.prescription_date).format("YYYYMMDD"))
+      .map((details, key) => {
+        const month = moment(key, "YYYYMMDD").format("MMM");
+        const day = moment(key, "YYYYMMDD").format("DD");
+        return {
+          date: key,
+          month: month,
+          day: day,
+          details: details
+        };
+      })
+      .value();
+
     return (
       <div className="subjective basicSubjective">
         <div className="row margin-top-15">
@@ -667,7 +708,7 @@ class BasicSubjective extends Component {
           </div>
           <div className="algaeh-col-8">
             <div className="row">
-              <div className="col-5">
+              <div className="col-7">
                 <div className="portlet portlet-bordered margin-bottom-15">
                   <div className="portlet-title">
                     <div className="caption">
@@ -771,16 +812,17 @@ class BasicSubjective extends Component {
                 </div>
               </div>
 
-              <div className="col-7">
+              <div className="col-5">
                 <div className="portlet portlet-bordered margin-bottom-15">
                   <div className="portlet-title">
                     <div className="caption">
                       <h3 className="caption-subject">Active Medication</h3>
                     </div>
+
                     <div className="actions">
                       <a
                         className="btn btn-primary btn-circle active"
-                        onClick={this.IcdsSearch.bind(this, "Final")}
+                        onClick={this.showMedication.bind(this)}
                       >
                         <i className="fas fa-plus" />
                       </a>
@@ -788,7 +830,32 @@ class BasicSubjective extends Component {
                   </div>
 
                   <div className="portlet-body">
-                    Active Medication Comes Here
+                    <div className="activeMedication">
+                      {recentMediction.map((item, index) => (
+                        <ul key={index}>
+                          <li>
+                            <div className="date">
+                              <h3>
+                                {item.month}
+                                <br />
+                                <span>{item.day}</span>
+                              </h3>
+                            </div>
+                            <ul>
+                              {item.details.map((medicine, indexD) => (
+                                <li key={indexD}>
+                                  <p>
+                                    <span>&#x2713;</span>
+                                    <strong>{medicine.generic_name}</strong>
+                                    <small>({medicine.item_description})</small>
+                                  </p>
+                                </li>
+                              ))}
+                            </ul>
+                          </li>
+                        </ul>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>

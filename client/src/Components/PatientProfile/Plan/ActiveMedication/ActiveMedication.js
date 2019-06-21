@@ -18,20 +18,19 @@ class ActiveMedication extends Component {
     };
   }
 
-  componentDidMount() {
-    this.props.getItems({
-      uri: "/pharmacy/getItemMaster",
-      module: "pharmacy",
-      method: "GET",
-      redux: {
-        type: "ITEMS_GET_DATA",
-        mappingName: "meditemlist"
-      }
-    });
-  }
+  // componentDidMount() {
+  //   this.props.getItems({
+  //     uri: "/pharmacy/getItemMaster",
+  //     module: "pharmacy",
+  //     method: "GET",
+  //     redux: {
+  //       type: "ITEMS_GET_DATA",
+  //       mappingName: "itemlist"
+  //     }
+  //   });
+  // }
 
   render() {
-    
     const latest_mediction =
       this.props.latest_mediction === undefined
         ? []
@@ -44,44 +43,44 @@ class ActiveMedication extends Component {
               id="activeMedication"
               columns={[
                 {
-                  fieldName: "generic_id",
-                  label: <AlgaehLabel label={{ forceLabel: "Generic Name" }} />,
-                  displayTemplate: row => {
-                    let display =
-                      this.props.genericlist === undefined
-                        ? []
-                        : this.props.genericlist.filter(
-                            f => f.hims_d_item_generic_id === row.generic_id
-                          );
-
-                    return (
-                      <span>
-                        {display !== undefined && display.length !== 0
-                          ? display[0].generic_name
-                          : ""}
-                      </span>
-                    );
-                  }
+                  fieldName: "generic_name",
+                  label: <AlgaehLabel label={{ forceLabel: "Generic Name" }} />
+                  // displayTemplate: row => {
+                  //   let display =
+                  //     this.props.genericlist === undefined
+                  //       ? []
+                  //       : this.props.genericlist.filter(
+                  //           f => f.hims_d_item_generic_id === row.generic_id
+                  //         );
+                  //
+                  //   return (
+                  //     <span>
+                  //       {display !== undefined && display.length !== 0
+                  //         ? display[0].generic_name
+                  //         : ""}
+                  //     </span>
+                  //   );
+                  // }
                 },
                 {
-                  fieldName: "item_id",
-                  label: <AlgaehLabel label={{ forceLabel: "Item Name" }} />,
-                  displayTemplate: row => {
-                    let display =
-                      this.props.meditemlist === undefined
-                        ? []
-                        : this.props.meditemlist.filter(
-                            f => f.hims_d_item_master_id === row.item_id
-                          );
-
-                    return (
-                      <span>
-                        {display !== undefined && display.length !== 0
-                          ? display[0].item_description
-                          : ""}
-                      </span>
-                    );
-                  }
+                  fieldName: "item_description",
+                  label: <AlgaehLabel label={{ forceLabel: "Item Name" }} />
+                  // displayTemplate: row => {
+                  //   let display =
+                  //     this.props.itemlist === undefined
+                  //       ? []
+                  //       : this.props.itemlist.filter(
+                  //           f => f.hims_d_item_master_id === row.item_id
+                  //         );
+                  //
+                  //   return (
+                  //     <span>
+                  //       {display !== undefined && display.length !== 0
+                  //         ? display[0].item_description
+                  //         : ""}
+                  //     </span>
+                  //   );
+                  // }
                 },
                 {
                   fieldName: "frequency",
@@ -189,7 +188,7 @@ class ActiveMedication extends Component {
 
 function mapStateToProps(state) {
   return {
-    meditemlist: state.meditemlist,
+    itemlist: state.itemlist,
     genericlist: state.genericlist
   };
 }
