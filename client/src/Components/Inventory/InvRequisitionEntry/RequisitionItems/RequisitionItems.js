@@ -265,12 +265,8 @@ class RequisitionItems extends Component {
                                 );
                               },
                               others: {
-                                minWidth:
-                                  this.state.requisition_auth === true ? 0 : 50,
-                                style: {
-                                  padding:
-                                    this.state.requisition_auth === true ? 0 : 5
-                                }
+                               
+                                show:this.state.requisition_auth === true ? false:true
                               }
                             },
                             {
