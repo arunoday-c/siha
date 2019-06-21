@@ -13,11 +13,11 @@ import FrontDesk from "../../Search/FrontDesk.json";
 import AlgaehSearch from "../Wrapper/globalSearch";
 import swal from "sweetalert2";
 import AppointmentComponent from "./AppointmentComponent";
-
+import { generateTimeslotsForDoctor } from "./AppointmentHelper";
 
 const generateReport = ($this, rpt_name, rpt_desc) => {
-
   console.log("data:", $this);
+  debugger;
   algaehApiCall({
     uri: "/report",
     method: "GET",
@@ -34,7 +34,6 @@ const generateReport = ($this, rpt_name, rpt_desc) => {
             name: "hims_f_patient_appointment_id",
             value: $this.hims_f_patient_appointment_id
           }
-
         ],
         outputFileType: "PDF"
       }
@@ -80,10 +79,6 @@ class Appointment extends PureComponent {
       byPassValidation: true
     };
   }
-
-
-
-
 
   componentDidMount() {
     this.getDoctorsAndDepts();
@@ -131,13 +126,12 @@ class Appointment extends PureComponent {
         title: "Cannot cancel previous appointments",
         type: "error"
       });
-    } else if(row.appointment_status_id === this.state.checkInId) {
+    } else if (row.appointment_status_id === this.state.checkInId) {
       swalMessage({
         title: "Cannot cancel checked in Patients",
         type: "error"
-      })
-    }
-    else {
+      });
+    } else {
       swal({
         title: "Cancel Appointment for " + row.patient_name + "?",
         type: "warning",
@@ -689,11 +683,13 @@ class Appointment extends PureComponent {
                       ? "col CurrentDate"
                       : "col"
                   }
-                  onClick={this.onSelectedDateHandler.bind(this)}>
+                  onClick={this.onSelectedDateHandler.bind(this)}
+                >
                   {row.day}
                   <span
                     date={row.currentdate}
-                    onClick={this.onSelectedDateHandler.bind(this)}>
+                    onClick={this.onSelectedDateHandler.bind(this)}
+                  >
                     {row.dayName}
                   </span>
                 </div>
@@ -708,7 +704,7 @@ class Appointment extends PureComponent {
   openEditModal(patient, data, e) {
     e.preventDefault();
 
-    this.getTimeSlotsForDoctor(patient.provider_id)
+    this.getTimeSlotsForDropDown(patient.provider_id);
     let maxSlots = 1;
     const _currentRow = e.target.parentElement.parentNode.sectionRowIndex + 1;
     const _allRows =
@@ -1011,27 +1007,25 @@ class Appointment extends PureComponent {
       });
       ev.preventDefault();
     } else {
-      this.setState({ patToEdit: pat }, () => {
-        let pat_edit = this.state.patToEdit;
-        this.setState({
-          edit_appointment_status_id: pat_edit.appointment_status_id,
-          edit_appt_date: pat_edit.appointment_date,
-          edit_contact_number: pat_edit.contact_number,
-          edit_patient_name: pat_edit.patient_name,
-          edit_arabic_name: pat_edit.arabic_name,
-          edit_date_of_birth: pat_edit.date_of_birth,
-          edit_age: pat_edit.age,
-          edit_gender: pat_edit.gender,
-          edit_email: pat_edit.email,
-          edit_appointment_remarks: pat_edit.appointment_remarks,
-          edit_appointment_id: pat_edit.hims_f_patient_appointment_id,
-          edit_patient_id: pat_edit.patient_id,
-          edit_sub_dep_id: pat_edit.sub_department_id,
-          edit_appointment_date: pat_edit.appointment_date,
-          patient_code: pat_edit.patient_code,
-          edit_no_of_slots: pat_edit.number_of_slot,
-          edit_title_id: pat_edit.title_id
-        });
+      this.setState({
+        patToEdit: pat,
+        edit_appointment_status_id: pat.appointment_status_id,
+        edit_appt_date: pat.appointment_date,
+        edit_contact_number: pat.contact_number,
+        edit_patient_name: pat.patient_name,
+        edit_arabic_name: pat.arabic_name,
+        edit_date_of_birth: pat.date_of_birth,
+        edit_age: pat.age,
+        edit_gender: pat.gender,
+        edit_email: pat.email,
+        edit_appointment_remarks: pat.appointment_remarks,
+        edit_appointment_id: pat.hims_f_patient_appointment_id,
+        edit_patient_id: pat.patient_id,
+        edit_sub_dep_id: pat.sub_department_id,
+        edit_appointment_date: pat.appointment_date,
+        patient_code: pat.patient_code,
+        edit_no_of_slots: pat.number_of_slot,
+        edit_title_id: pat.title_id
       });
     }
   }
@@ -1292,9 +1286,11 @@ class Appointment extends PureComponent {
             <div
               appt-pat={JSON.stringify(_firstPatient)}
               className="dynPatient"
-              style={{ background: "#f2f2f2" }}>
+              style={{ background: "#f2f2f2" }}
+            >
               <span
-                onClick={this.openEditModal.bind(this, _firstPatient, null)}>
+                onClick={this.openEditModal.bind(this, _firstPatient, null)}
+              >
                 {_firstPatient.patient_name}
                 <br />
                 {_firstPatient.contact_number}
@@ -1394,14 +1390,16 @@ class Appointment extends PureComponent {
     return (
       <tr
         style={{ opacity: brk_bg_color, cursor: "pointer" }}
-        key={data.counter}>
+        key={data.counter}
+      >
         <td
           className="tg-baqh" //highlight-Drop
           {...colspan}
           onDrop={this.drop.bind(this)}
           onDragOver={this.allowDrop.bind(this)}
           onDragEnter={this.enterDrag.bind(this)}
-          onDragLeave={this.leaveDrag.bind(this)}>
+          onDragLeave={this.leaveDrag.bind(this)}
+        >
           {data.mark_as_break === false ? (
             <span className="dynSlot">{data.time}</span>
           ) : null}
@@ -1418,7 +1416,8 @@ class Appointment extends PureComponent {
                   className="dynPatient"
                   style={{ background: bg_color }}
                   draggable={true}
-                  onDragStart={this.drag.bind(this)}>
+                  onDragStart={this.drag.bind(this)}
+                >
                   <span onClick={this.openEditModal.bind(this, patient, null)}>
                     {patient.patient_name}
                     <br />
@@ -1440,18 +1439,26 @@ class Appointment extends PureComponent {
                                 this,
                                 patient,
                                 data
-                              )}>
+                              )}
+                            >
                               <span
                                 style={{
                                   backgroundColor: data.color_code
-                                }}>
+                                }}
+                              >
                                 {data.description}
                               </span>
                             </li>
                           ))
                         : null}
-                      <li 
-                        onClick={generateReport.bind(this,patient,"appointmentSlip","Appointment Slip")}>
+                      <li
+                        onClick={generateReport.bind(
+                          this,
+                          patient,
+                          "appointmentSlip",
+                          "Appointment Slip"
+                        )}
+                      >
                         <span>Print App. Slip</span>
                       </li>
                     </ul>
@@ -1491,133 +1498,79 @@ class Appointment extends PureComponent {
     });
   }
 
-// will be refatored,to make the code DRY
-  getTimeSlotsForDoctor(id) {
-    const schedule = this.state.appointmentSchedule
-    const [data] = schedule.filter(doc => doc.provider_id === id )
-    const from_work_hr = moment(data.from_work_hr, "hh:mm:ss");
-    const to_work_hr = moment(data.to_work_hr, "hh:mm:ss");
-    const from_break_hr1 = moment(data.from_break_hr1, "hh:mm:ss");
-    const to_break_hr1 = moment(data.to_break_hr1, "hh:mm:ss");
-    const from_break_hr2 = moment(data.from_break_hr2, "hh:mm:ss");
-    const to_break_hr2 = moment(data.to_break_hr2, "hh:mm:ss");
-    const slot = parseInt(data.slot, 10);
-    console.log("from get timeSlots", slot)
-    let result = []
-    let isPrevbreak = null
-    let count = 0
-    for (;;) {
-      let isBreak = false;
-
-      let newFrom =
-        count === 0 ? from_work_hr : from_work_hr.add(slot, "minutes");
-      if (newFrom.isBefore(to_work_hr)) {
-        if (data.work_break1 === "Y" || data.work_break2 === "Y") {
-          let endTimeTemp = new moment(newFrom).add(slot, "minutes");
-          if (
-            (to_break_hr1 > newFrom && to_break_hr1 <= newFrom) ||
-            (from_break_hr1 <= newFrom && to_break_hr1 >= endTimeTemp)
-          ) {
-            isBreak = true;
-          }
-
-          if (
-            (to_break_hr2 > newFrom && to_break_hr2 <= endTimeTemp) ||
-            (from_break_hr2 <= newFrom && to_break_hr2 >= endTimeTemp)
-          ) {
-            isBreak = true;
-          }
-        }
-        if (!isBreak) {
-          result.push(
-            {
-              name: newFrom.format("hh:mm a"),
-              value: newFrom.format("HH:mm:ss")
-            }
-          );
-        }
-      } else {
-        break;
+  getTimeSlotsForDropDown(id) {
+    const schedule = this.state.appointmentSchedule;
+    const [data] = schedule.filter(doc => doc.provider_id === id);
+    const result = generateTimeslotsForDoctor(data);
+    console.log("from get", result);
+    let timeSlots = [];
+    result.forEach(time => {
+      if (time !== "break") {
+        timeSlots.push({
+          name: moment(time, "HH:mm:ss").format("hh:mm a"),
+          value: time
+        });
       }
-      count = count + 1;
-    }
-    return this.setState({timeSlots: result})
+    });
+    return this.setState({ timeSlots });
   }
 
   generateTimeslots(data) {
-    const clinic_id = data.clinic_id;
-    const provider_id = data.provider_id;
-    const sch_header_id = data.hims_d_appointment_schedule_header_id;
-    const sch_detail_id = data.hims_d_appointment_schedule_detail_id;
-    const sub_dept_id = data.sub_dept_id;
-    const from_work_hr = moment(data.from_work_hr, "hh:mm:ss");
-    const to_work_hr = moment(data.to_work_hr, "hh:mm:ss");
-    const from_break_hr1 = moment(data.from_break_hr1, "hh:mm:ss");
-    const to_break_hr1 = moment(data.to_break_hr1, "hh:mm:ss");
-    const from_break_hr2 = moment(data.from_break_hr2, "hh:mm:ss");
-    const to_break_hr2 = moment(data.to_break_hr2, "hh:mm:ss");
-    const slot = parseInt(data.slot, 10);
+    const {
+      to_work_hr,
+      from_break_hr1,
+      from_break_hr2,
+      to_break_hr1,
+      to_break_hr2,
+      slot,
+      clinic_id,
+      provider_id,
+      sch_header_id,
+      sch_detail_id,
+      sub_dept_id,
+      patientList
+    } = data;
+
+    const timeSlots = generateTimeslotsForDoctor(data);
     let isPrevbreak = null;
-    let tds = [];
     let count = 0;
-    for (;;) {
-      let isBreak = false;
-
-      let newFrom =
-        count === 0 ? from_work_hr : from_work_hr.add(slot, "minutes");
-      if (newFrom.isBefore(to_work_hr)) {
-        if (data.work_break1 === "Y" || data.work_break2 === "Y") {
-          let endTimeTemp = new moment(newFrom).add(slot, "minutes");
-          if (
-            (to_break_hr1 > newFrom && to_break_hr1 <= newFrom) ||
-            (from_break_hr1 <= newFrom && to_break_hr1 >= endTimeTemp)
-          ) {
-            isBreak = true;
-          }
-
-          if (
-            (to_break_hr2 > newFrom && to_break_hr2 <= endTimeTemp) ||
-            (from_break_hr2 <= newFrom && to_break_hr2 >= endTimeTemp)
-          ) {
-            isBreak = true;
-          }
-        }
-        if (isBreak) {
-          isPrevbreak = {
-            counter: count,
-            mark_as_break: isBreak
-          };
-        } else {
-          if (isPrevbreak !== null) {
-            tds.push(this.generateChilderns(isPrevbreak));
-            isPrevbreak = null;
-          }
-
-          tds.push(
-            this.generateChilderns({
-              time: newFrom.format("hh:mm a"),
-              counter: count,
-              to_work_hr: moment(to_work_hr).format("hh:mm a"),
-              from_break_hr1: moment(from_break_hr1).format("hh:mm a"),
-              to_break_hr1: moment(to_break_hr1).format("hh:mm a"),
-              from_break_hr2: moment(from_break_hr2).format("hh:mm a"),
-              to_break_hr2: moment(to_break_hr2).format("hh:mm a"),
-              slot: slot,
-              clinic_id: clinic_id,
-              provider_id: provider_id,
-              sch_header_id: sch_header_id,
-              sch_detail_id: sch_detail_id,
-              sub_dept_id: sub_dept_id,
-              mark_as_break: isBreak,
-              patients: data.patientList
-            })
-          );
-        }
+    let tds = [];
+    timeSlots.forEach(time => {
+      let isBreak = time === "break";
+      if (isBreak) {
+        isPrevbreak = {
+          counter: count,
+          mark_as_break: isBreak
+        };
       } else {
-        break;
+        console.log(isPrevbreak);
+        if (isPrevbreak !== null) {
+          tds.push(this.generateChilderns(isPrevbreak));
+          isPrevbreak = null;
+        }
+        tds.push(
+          this.generateChilderns({
+            time: moment(time, "HH:mm:ss").format("hh:mm a"),
+            counter: count,
+            to_work_hr: moment(to_work_hr).format("hh:mm a"),
+            from_break_hr1: moment(from_break_hr1).format("hh:mm a"),
+            to_break_hr1: moment(to_break_hr1).format("hh:mm a"),
+            from_break_hr2: moment(from_break_hr2).format("hh:mm a"),
+            to_break_hr2: moment(to_break_hr2).format("hh:mm a"),
+            slot: parseInt(slot, 10),
+            clinic_id: clinic_id,
+            provider_id: provider_id,
+            sch_header_id: sch_header_id,
+            sch_detail_id: sch_detail_id,
+            sub_dept_id: sub_dept_id,
+            mark_as_break: isBreak,
+            patients: patientList
+          })
+        );
       }
-      count = count + 1;
-    }
+      count++;
+    });
+
     return <React.Fragment>{tds}</React.Fragment>;
   }
   // getSnapshotBeforeUpdate() {
@@ -1645,7 +1598,7 @@ class Appointment extends PureComponent {
         nullifyState={name => this.nullifyState(name)}
         updatePatientAppointment={data => this.updatePatientAppointment(data)}
         ageHandler={() => this.ageHandler()}
-        dobHandler={(e) => this.dobHandler(e)}
+        dobHandler={e => this.dobHandler(e)}
         patientSearch={() => this.patientSearch()}
         deptDropDownHandler={value => this.deptDropDownHandler(value)}
         getAppointmentSchedule={() => this.getAppointmentSchedule()}
@@ -1653,7 +1606,6 @@ class Appointment extends PureComponent {
         monthChangeHandler={e => this.monthChangeHandler(e)}
         generateHorizontalDateBlocks={() => this.generateHorizontalDateBlocks()}
         generateTimeslots={data => this.generateTimeslots(data)}
-        getTimeSlotsForDoctor={id => this.getAppointmentSchedule(id)}
       />
     );
   }
