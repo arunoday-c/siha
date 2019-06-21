@@ -31,10 +31,20 @@ const getCtrlCode = ($this, docNumber, row) => {
         let inventory_stock_detail = [];
         let data = response.data.records[0];
         for (let i = 0; i < data.stock_detail.length; i++) {
-          data.inventory_stock_detail = inventory_stock_detail.concat(
-            data.stock_detail[i].inventory_stock_detail
-          );
+          if (inventory_stock_detail.length === 0) {
+            inventory_stock_detail =
+              data.stock_detail[i].inventory_stock_detail;
+          } else {
+            inventory_stock_detail = inventory_stock_detail.concat(
+              data.stock_detail[i].inventory_stock_detail
+            );
+          }
+
+          // data.inventory_stock_detail = inventory_stock_detail.concat(
+          //   data.stock_detail[i].inventory_stock_detail
+          // );
         }
+        data.inventory_stock_detail = inventory_stock_detail;
 
         for (let j = 0; j < data.inventory_stock_detail.length; j++) {
           data.inventory_stock_detail[j].quantity_transferred =

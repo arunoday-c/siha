@@ -4,7 +4,9 @@ import {
   addReceiptEntry,
   getReceiptEntry,
   updateReceiptEntry,
-  updateDNEntry
+  updateDNEntry,
+  getDeliveryForReceipt,
+  getDeliveryItemDetails
 } from "../models/ReceiptEntry";
 
 // import { x } from "algaeh-inventory/src/models/commonFunction";
@@ -27,6 +29,24 @@ export default () => {
       records: req.records
     });
   });
+
+  api.get("/getDeliveryForReceipt", getDeliveryForReceipt, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+  api.get(
+    "/getDeliveryItemDetails",
+    getDeliveryItemDetails,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
 
   api.post(
     "/addReceiptEntry",

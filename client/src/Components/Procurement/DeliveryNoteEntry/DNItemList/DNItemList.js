@@ -50,7 +50,6 @@ class DNItemList extends Component {
   }
 
   AddItemDelivered(context, item, index) {
-    
     let item_details = extend({}, item);
     let dn_quantity =
       parseFloat(item.po_quantity) -
@@ -59,6 +58,7 @@ class DNItemList extends Component {
 
     item_details.free_qty = 0;
     item_details.dn_quantity = dn_quantity;
+    item_details.unit_price = parseFloat(item_details.unit_price).toFixed(2);
     this.setState({
       selected_row_index: index,
       item_details: item_details,
@@ -90,6 +90,11 @@ class DNItemList extends Component {
       this.state.item_details === null
         ? "Y"
         : this.state.item_details.required_batchno_expiry;
+
+    let stock_uom_description =
+      this.state.item_details === null
+        ? ""
+        : this.state.item_details.stock_uom_description;
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -165,14 +170,31 @@ class DNItemList extends Component {
                         <h6>{qty_auth ? qty_auth : "----------"}</h6>
                       </div>
 
-                      <div className="col-3">
-                        <AlgaehLabel label={{ forceLabel: "Purchase Cost" }} />
-                        <h6>
-                          {unit_cost
-                            ? getAmountFormart(unit_cost)
-                            : "----------"}
-                        </h6>
-                      </div>
+                      <AlagehFormGroup
+                        div={{ className: "col" }}
+                        label={{
+                          forceLabel: "Purchase Cost"
+                        }}
+                        textBox={{
+                          number: {
+                            allowNegative: false,
+                            thousandSeparator: ","
+                          },
+                          value:
+                            this.state.item_details === null
+                              ? null
+                              : this.state.item_details.unit_price,
+                          className: "txt-fld",
+                          name: "unit_price",
+                          events: {
+                            onChange: onChangeTextEventHandaler.bind(
+                              this,
+                              this,
+                              context
+                            )
+                          }
+                        }}
+                      />
                     </div>
                     <div className="row">
                       <AlagehFormGroup
@@ -223,7 +245,8 @@ class DNItemList extends Component {
                       <AlagehFormGroup
                         div={{ className: "col" }}
                         label={{
-                          forceLabel: "Sales Price"
+                          forceLabel:
+                            "Sales Price" + "(" + stock_uom_description + ")"
                         }}
                         textBox={{
                           number: {
