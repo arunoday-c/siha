@@ -1609,5 +1609,11 @@
     { "name": "Expired", "value": "E" },
     { "name": "Expired On", "value": "EO" },
     { "name": "Expiry within period", "value": "EW" }
+  ],
+  "PO_STATUS": [
+    { "name": "All", "value": "0" },
+    { "name": "Pending To Authorize", "value": "1" },
+    { "name": "Delivery Pending", "value": "2" },
+    { "name": "Delivery Completed", "value": "3" }
   ]
 }

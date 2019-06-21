@@ -267,9 +267,7 @@ module.exports = {
                 if (_params != undefined) {
                   _value.push(_params.value);
                 }
-                // if (_inputOrders[i] == "hospital_id") {
-                //   _value.push(_inputParam["hospital_id"]);
-                // }
+               
               }
 
               let queryObject = {
@@ -494,7 +492,7 @@ module.exports = {
                   _mysql.releaseConnection();
                   console.log(
                     "Error In query execution : ",
-                    JSON.stringify(error)
+                    error
                   );
                   res.status(400).send({ error: JSON.stringify(error) });
                 });

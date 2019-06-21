@@ -84,7 +84,10 @@ class RequisitionList extends Component {
               {
                 pageName: (
                   <AlgaehLabel
-                    label={{ forceLabel: "Requisition Auth List", align: "ltr" }}
+                    label={{
+                      forceLabel: "Requisition Auth List",
+                      align: "ltr"
+                    }}
                   />
                 )
               }
@@ -177,35 +180,7 @@ class RequisitionList extends Component {
                   }}
                 />
 
-                {/*
-
-                  onChange: LocationchangeTexts.bind(this, this, "From"),
-                  onClear: LocationchangeTexts.bind(this, this, "From")
-                  <div className="col-lg-4" style={{ paddingTop: "25px" }}>
-                  <div className="customRadio">
-                    <label className="radio inline">
-                      <input
-                        type="radio"
-                        name="insured"
-                        value="1"
-                        checked={this.state.radioYes}
-                        onChange={radioChange.bind(this, this)}
-                      />
-                      <span>Authorize 1</span>
-                    </label>
-                    <label className="radio inline">
-                      <input
-                        type="radio"
-                        name="insured"
-                        value="2"
-                        checked={this.state.radioNo}
-                        onChange={radioChange.bind(this, this)}
-                      />
-                      <span>Authorize 2</span>
-                    </label>
-                  </div>
-                </div>
-                */}
+             
               </div>
             </div>
           </div>
@@ -224,7 +199,12 @@ class RequisitionList extends Component {
                           return (
                             <span>
                               <i
-                                className="fas fa-flask"
+                                style={{
+                                  pointerEvents:
+                                    row.cancel === "Y" ? "none" : "",
+                                  opacity: row.cancel === "Y" ? "0.1" : ""
+                                }}
+                                className="fas fa-check"
                                 onClick={() => {
                                   setGlobal({
                                     "RQ-STD": "RequisitionEntry",
@@ -234,6 +214,22 @@ class RequisitionList extends Component {
                                   document.getElementById("rq-router").click();
                                 }}
                               />
+                              {row.trans_pending === true ? (
+                                <i
+                                  className="fa fa-exchange-alt"
+                                  onClick={() => {
+                                    setGlobal({
+                                      "RQ-STD": "TransferEntry",
+                                      hims_f_pharamcy_material_header_id:
+                                        row.hims_f_pharamcy_material_header_id,
+                                      from_location_id: row.to_location_id
+                                    });
+                                    document
+                                      .getElementById("rq-router")
+                                      .click();
+                                  }}
+                                />
+                              ) : null}
                             </span>
                           );
                         },

@@ -4,8 +4,8 @@ import _ from "lodash";
 
 export default function ConsumptionItemsEvents() {
   return {
-    UomchangeTexts: ($this, ctrl, e) => {
-      e = ctrl || e;
+    UomchangeTexts: ($this, context, e) => {
+      debugger;
       let name = e.name || e.target.name;
       let value = e.value || e.target.value;
       let unit_cost = e.selected.conversion_factor * $this.state.unit_cost;
@@ -15,6 +15,14 @@ export default function ConsumptionItemsEvents() {
         unit_cost: unit_cost,
         uom_description: e.selected.uom_description
       });
+      if (context !== undefined) {
+        context.updateState({
+          [name]: value,
+          conversion_factor: e.selected.conversion_factor,
+          unit_cost: unit_cost,
+          uom_description: e.selected.uom_description
+        });
+      }
     },
     numberchangeTexts: ($this, context, e) => {
       let name = e.name || e.target.name;

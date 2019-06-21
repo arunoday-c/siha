@@ -36,7 +36,6 @@ class BatchWiseStock extends Component {
   };
 
   render() {
-    
     return (
       <React.Fragment>
         <AlgaehModalPopUp
@@ -252,6 +251,9 @@ class BatchWiseStock extends Component {
                     {
                       fieldName: "qtyhand",
                       label: <AlgaehLabel label={{ forceLabel: "Quantity" }} />,
+                      displayTemplate: row => {
+                        return parseFloat(row.qtyhand);
+                      },
                       disabled: true
                     },
                     {

@@ -51,7 +51,7 @@ exports.default = {
     executablePath:
       "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
 
-    // for Mac
+    //for Mac
     //executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
   }
 };

@@ -22,6 +22,7 @@ import "./InvStockEnquiry.css";
 import "../../../styles/site.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import Enumerable from "linq";
+import { getAmountFormart } from "../../../utils/GlobalFunctions";
 
 class BatchWiseStock extends Component {
   constructor(props) {
@@ -134,6 +135,30 @@ class BatchWiseStock extends Component {
                       }
                     },
                     {
+                      fieldName: "stocking_uom_id",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Stocking UOM" }} />
+                      ),
+                      displayTemplate: row => {
+                        let display =
+                          this.props.inventoryitemuom === undefined
+                            ? []
+                            : this.props.inventoryitemuom.filter(
+                                f =>
+                                  f.hims_d_inventory_uom_id ===
+                                  row.stocking_uom_id
+                              );
+
+                        return (
+                          <span>
+                            {display !== null && display.length !== 0
+                              ? display[0].uom_description
+                              : ""}
+                          </span>
+                        );
+                      }
+                    },
+                    {
                       fieldName: "sales_uom",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Sales UOM" }} />
@@ -212,6 +237,9 @@ class BatchWiseStock extends Component {
                     {
                       fieldName: "qtyhand",
                       label: <AlgaehLabel label={{ forceLabel: "Quantity" }} />,
+                      displayTemplate: row => {
+                        return parseFloat(row.qtyhand);
+                      },
                       disabled: true
                     },
                     {
@@ -219,6 +247,15 @@ class BatchWiseStock extends Component {
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Avg. Cost" }} />
                       ),
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {getAmountFormart(row.avgcost, {
+                              appendSymbol: false
+                            })}
+                          </span>
+                        );
+                      },
                       disabled: true
                     },
                     {
@@ -226,6 +263,15 @@ class BatchWiseStock extends Component {
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Sales Price" }} />
                       ),
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {getAmountFormart(row.sale_price, {
+                              appendSymbol: false
+                            })}
+                          </span>
+                        );
+                      },
                       editorTemplate: row => {
                         return (
                           <AlagehFormGroup
@@ -252,7 +298,7 @@ class BatchWiseStock extends Component {
                         : this.props.batch_wise_item
                   }}
                   noDataText="No Stock available for selected Item in the selected Location"
-                  isEditable={true}
+                  isEditable={false}
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
                     //   onDelete: deleteServices.bind(this, this),

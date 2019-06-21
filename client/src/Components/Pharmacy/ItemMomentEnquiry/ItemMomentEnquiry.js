@@ -22,6 +22,7 @@ import "./ItemMomentEnquiry.css";
 import "../../../styles/site.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
+import { getAmountFormart } from "../../../utils/GlobalFunctions";
 
 class ItemMomentEnquiry extends Component {
   constructor(props) {
@@ -114,6 +115,25 @@ class ItemMomentEnquiry extends Component {
             >
               <div className="col-lg-12">
                 <div className="row">
+                  <AlgaehDateHandler
+                    div={{ className: "col" }}
+                    label={{ forceLabel: "From Date", isImp: true }}
+                    textBox={{ className: "txt-fld", name: "from_date" }}
+                    events={{
+                      onChange: datehandle.bind(this, this)
+                    }}
+                    value={this.state.from_date}
+                  />
+                  <AlgaehDateHandler
+                    div={{ className: "col" }}
+                    label={{ forceLabel: "To Date", isImp: true }}
+                    textBox={{ className: "txt-fld", name: "to_date" }}
+                    events={{
+                      onChange: datehandle.bind(this, this)
+                    }}
+                    maxDate={new Date()}
+                    value={this.state.to_date}
+                  />
                   <AlagehAutoComplete
                     div={{ className: "col" }}
                     label={{ forceLabel: "Item Name" }}
@@ -186,25 +206,6 @@ class ItemMomentEnquiry extends Component {
                     }}
                   />
 
-                  <AlgaehDateHandler
-                    div={{ className: "col" }}
-                    label={{ forceLabel: "From Date" }}
-                    textBox={{ className: "txt-fld", name: "from_date" }}
-                    events={{
-                      onChange: datehandle.bind(this, this)
-                    }}
-                    value={this.state.from_date}
-                  />
-                  <AlgaehDateHandler
-                    div={{ className: "col" }}
-                    label={{ forceLabel: "To Date" }}
-                    textBox={{ className: "txt-fld", name: "to_date" }}
-                    events={{
-                      onChange: datehandle.bind(this, this)
-                    }}
-                    maxDate={new Date()}
-                    value={this.state.to_date}
-                  />
                   <div className="col" style={{ paddingTop: "3vh" }}>
                     <button
                       className="btn btn-primary btn-sm"
@@ -371,11 +372,25 @@ class ItemMomentEnquiry extends Component {
                     },
                     {
                       fieldName: "transaction_qty",
-                      label: <AlgaehLabel label={{ forceLabel: "Quantity" }} />
+                      label: <AlgaehLabel label={{ forceLabel: "Quantity" }} />,
+                      displayTemplate: row => {
+                        return parseFloat(row.transaction_qty);
+                      }
                     },
                     {
                       fieldName: "transaction_cost",
-                      label: <AlgaehLabel label={{ forceLabel: "Unit Cost" }} />
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Unit Cost" }} />
+                      ),
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {getAmountFormart(row.transaction_cost, {
+                              appendSymbol: false
+                            })}
+                          </span>
+                        );
+                      }
                     }
                   ]}
                   keyId="item_id"

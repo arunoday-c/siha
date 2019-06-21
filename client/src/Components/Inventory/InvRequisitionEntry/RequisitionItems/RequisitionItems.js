@@ -127,7 +127,7 @@ class RequisitionItems extends Component {
                             data: this.state.ItemUOM
                           },
                           others: {
-                            disabled: this.state.ItemDisable
+                            disabled: true
                           },
 
                           onChange: UomchangeTexts.bind(this, this)
@@ -265,12 +265,8 @@ class RequisitionItems extends Component {
                                 );
                               },
                               others: {
-                                minWidth:
-                                  this.state.requisition_auth === true ? 0 : 50,
-                                style: {
-                                  padding:
-                                    this.state.requisition_auth === true ? 0 : 5
-                                }
+                               
+                                show:this.state.requisition_auth === true ? false:true
                               }
                             },
                             {

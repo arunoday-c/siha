@@ -1,6 +1,5 @@
 const algaehUtilities = require("algaeh-utilities/utilities");
 const executePDF = function executePDFMethod(options) {
-  const _ = options.loadash;
   return new Promise(function(resolve, reject) {
     const utilities = new algaehUtilities();
     try {
@@ -19,8 +18,8 @@ const executePDF = function executePDFMethod(options) {
         .executeQuery({
           query: `WITH CTE AS (
 					select hims_f_pharmacy_trans_history_id,transaction_type,from_location_id,item_code_id,
-					transaction_qty,transaction_date,case when transaction_type in ('SRT' 'INT','DNA') then  'in' 
-					when transaction_type in( 'ST', 'CS', 'POS') then  'out' end as stock_status
+					transaction_qty,transaction_date,case when transaction_type in ('SRT' 'INT','DNA','ST') and operation='+' then  'in' 
+					when transaction_type in( 'ST', 'CS', 'POS') and operation='-' then  'out' end as stock_status
 					from hims_f_pharmacy_trans_history TS inner join hims_d_pharmacy_location PL on 
 					TS.from_location_id=PL.hims_d_pharmacy_location_id
 					where TS.record_status='A'  and   PL.hospital_id=? and TS.from_location_id=? and TS.item_code_id=?

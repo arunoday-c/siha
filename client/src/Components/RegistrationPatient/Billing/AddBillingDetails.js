@@ -408,7 +408,7 @@ const checkcashhandaler = ($this, context, e) => {
   }
 };
 
-const checkcardhandaler = ($this, context, e) => {
+const checkcardhandler = ($this, context, e) => {
   let Cardchecked = e.target.checked;
   $this.setState(
     {
@@ -568,7 +568,7 @@ export {
   adjustadvance,
   ProcessInsurance,
   checkcashhandaler,
-  checkcardhandaler,
+  checkcardhandler,
   checkcheckhandaler,
   credittexthandle,
   advanceAdjustCal,

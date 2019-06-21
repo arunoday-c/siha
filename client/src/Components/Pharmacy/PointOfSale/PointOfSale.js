@@ -190,7 +190,10 @@ class PointOfSale extends Component {
                     onChange: LocationchangeTexts.bind(this, this),
                     autoComplete: "off",
                     others: {
-                      disabled: this.state.dataExitst
+                      disabled:
+                        this.state.OTItemAddDis === true
+                          ? true
+                          : this.state.dataExitst
                     }
                   }}
                 />
@@ -209,7 +212,10 @@ class PointOfSale extends Component {
                     },
                     onChange: changeTexts.bind(this, this),
                     others: {
-                      disabled: this.state.dataExitst
+                      disabled:
+                        this.state.OTItemAddDis === true
+                          ? true
+                          : this.state.dataExitst
                     }
                   }}
                 />

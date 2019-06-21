@@ -22,13 +22,14 @@ import "./InvItemMomentEnquiry.css";
 import "../../../styles/site.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
+import { getAmountFormart } from "../../../utils/GlobalFunctions";
 
 class InvItemMomentEnquiry extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      ListItems: [],
+      Inventory_Itemmoment: [],
       location_id: null,
       item_code_id: null,
       from_date: null,
@@ -104,14 +105,35 @@ class InvItemMomentEnquiry extends Component {
             ]}
           />
 
-          <div className="hptl-phase1-item-moment-enquiry-form">
+          <div
+            className="hptl-phase1-item-moment-enquiry-form"
+            data-validate="itemMoment"
+          >
             <div
               className="row inner-top-search"
               style={{ marginTop: 76, paddingBottom: 10 }}
-              data-validate="itemMoment"
             >
               <div className="col-lg-12">
                 <div className="row">
+                  <AlgaehDateHandler
+                    div={{ className: "col" }}
+                    label={{ forceLabel: "From Date", isImp: true }}
+                    textBox={{ className: "txt-fld", name: "from_date" }}
+                    events={{
+                      onChange: datehandle.bind(this, this)
+                    }}
+                    value={this.state.from_date}
+                  />
+                  <AlgaehDateHandler
+                    div={{ className: "col" }}
+                    label={{ forceLabel: "To Date", isImp: true }}
+                    textBox={{ className: "txt-fld", name: "to_date" }}
+                    events={{
+                      onChange: datehandle.bind(this, this)
+                    }}
+                    maxDate={new Date()}
+                    value={this.state.to_date}
+                  />
                   <AlagehAutoComplete
                     div={{ className: "col" }}
                     label={{ forceLabel: "Item Name" }}
@@ -190,26 +212,6 @@ class InvItemMomentEnquiry extends Component {
                     }}
                   />
 
-                  <AlgaehDateHandler
-                    div={{ className: "col" }}
-                    label={{ forceLabel: "From Date" }}
-                    textBox={{ className: "txt-fld", name: "from_date" }}
-                    events={{
-                      onChange: datehandle.bind(this, this)
-                    }}
-                    value={this.state.from_date}
-                  />
-                  <AlgaehDateHandler
-                    div={{ className: "col" }}
-                    label={{ forceLabel: "To Date" }}
-                    textBox={{ className: "txt-fld", name: "to_date" }}
-                    events={{
-                      onChange: datehandle.bind(this, this)
-                    }}
-                    maxDate={new Date()}
-                    value={this.state.to_date}
-                  />
-
                   <div className="col" style={{ paddingTop: "3vh" }}>
                     <button
                       className="btn btn-primary btn-sm"
@@ -251,7 +253,7 @@ class InvItemMomentEnquiry extends Component {
                           ? "Receipt"
                           : row.transaction_type === "PO"
                           ? "Purchase Order"
-                          : row.transaction_type === "DN"
+                          : row.transaction_type === "DNA"
                           ? "Delivery Note"
                           : "";
                       }
@@ -370,19 +372,30 @@ class InvItemMomentEnquiry extends Component {
                     },
                     {
                       fieldName: "transaction_qty",
-                      label: <AlgaehLabel label={{ forceLabel: "Quantity" }} />
+                      label: <AlgaehLabel label={{ forceLabel: "Quantity" }} />,
+                      displayTemplate: row => {
+                        return parseFloat(row.transaction_qty);
+                      }
                     },
                     {
                       fieldName: "transaction_cost",
-                      label: <AlgaehLabel label={{ forceLabel: "Unit Cost" }} />
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Unit Cost" }} />
+                      ),
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {getAmountFormart(row.transaction_cost, {
+                              appendSymbol: false
+                            })}
+                          </span>
+                        );
+                      }
                     }
                   ]}
                   keyId="item_id"
                   dataSource={{
-                    data:
-                      this.props.insuranceitemmoment === undefined
-                        ? []
-                        : this.props.insuranceitemmoment
+                    data: this.state.Inventory_Itemmoment
                   }}
                   paging={{ page: 0, rowsPerPage: 20 }}
                 />

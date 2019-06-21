@@ -121,7 +121,8 @@ export default {
       update_pharmacy_stock: [],
       delete_pharmacy_stock: [],
       posCancelled: false,
-      InvoiceEnable: false
+      InvoiceEnable: false,
+      OTItemAddDis: false
     };
     return output;
   }

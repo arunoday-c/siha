@@ -199,7 +199,7 @@ class InsuranceCardClass extends Component {
               />
 
               <AlagehFormGroup
-                div={{ className: "col-lg-3" }}
+                div={{ className: "col-3 arabic-txt-fld" }}
                 label={{
                   fieldName: "arabic_type_desc",
                   isImp: true

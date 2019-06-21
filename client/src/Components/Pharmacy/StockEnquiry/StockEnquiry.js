@@ -134,13 +134,13 @@ class StockEnquiry extends Component {
                       valueField: "hims_d_pharmacy_location_id",
                       data: this.props.locations
                     },
-
                     onChange: changeTexts.bind(this, this),
-                    onClear: changeTexts.bind(this, this)
+                    onClear: changeTexts.bind(this, this),
+                                    autoComplete: "off"
                   }}
                 />
 
-                <AlagehAutoComplete
+                {/* <AlagehAutoComplete
                   div={{ className: "col-lg-3" }}
                   label={{ forceLabel: "Item Name" }}
                   selector={{
@@ -155,7 +155,7 @@ class StockEnquiry extends Component {
                     onChange: changeTexts.bind(this, this),
                     onClear: changeTexts.bind(this, this)
                   }}
-                />
+                /> */}
                 {/*<div className="col-lg-3">
                   <AlgaehLabel
                     label={{
@@ -253,7 +253,8 @@ class StockEnquiry extends Component {
                             : ""}
                         </span>
                       );
-                    }
+                    },
+                    others:{filterable: false}
                   },
 
                   {
@@ -337,7 +338,8 @@ class StockEnquiry extends Component {
                             : ""}
                         </span>
                       );
-                    }
+                    },
+                    others:{filterable: false}
                   },
                   {
                     fieldName: "sales_uom",
@@ -373,7 +375,8 @@ class StockEnquiry extends Component {
                             : ""}
                         </span>
                       );
-                    }
+                    },
+                    others:{filterable: false}
                   },
 
                   {
@@ -382,21 +385,23 @@ class StockEnquiry extends Component {
                     displayTemplate: row => {
                       return row.reorder === "R" ? (
                         <div className="orderNow">
-                          <span>{row.qtyhand}</span>
+                          {parseFloat(row.qtyhand)}
                           <span className="orderSoon">Order Soon</span>
                         </div>
                       ) : (
-                        row.qtyhand
+                        parseFloat(row.qtyhand)
                       );
                     },
-                    disabled: true
+                    disabled: true,
+                    others:{filterable: false}
                   },
                   {
                     fieldName: "reorder_qty",
                     label: (
                       <AlgaehLabel label={{ forceLabel: "Reorder Quantity" }} />
                     ),
-                    disabled: true
+                    disabled: true,
+                    others:{filterable: false}
                   },
                   {
                     fieldName: "avgcost",
@@ -410,7 +415,8 @@ class StockEnquiry extends Component {
                         </span>
                       );
                     },
-                    disabled: true
+                    disabled: true,
+                    others:{filterable: false}
                   },
                   {
                     fieldName: "sale_price",
@@ -441,7 +447,8 @@ class StockEnquiry extends Component {
                           }}
                         />
                       );
-                    }
+                    },
+                    others:{filterable: false}
                   }
                 ]}
                 keyId="item_id"
@@ -450,7 +457,8 @@ class StockEnquiry extends Component {
                 }}
                 noDataText="No Stock available for selected Item in the selected Location"
                 isEditable={false}
-                paging={{ page: 0, rowsPerPage: 10 }}
+                filter={true}
+                paging={{ page: 0, rowsPerPage: 20 }}
                 events={{
                   // onDelete: deleteStock.bind(this, this),
                   onEdit: row => {},

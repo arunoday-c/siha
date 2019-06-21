@@ -82,7 +82,10 @@ class InvRequisitionList extends Component {
               {
                 pageName: (
                   <AlgaehLabel
-                    label={{ forceLabel: "Requisition Auth List", align: "ltr" }}
+                    label={{
+                      forceLabel: "Requisition Auth List",
+                      align: "ltr"
+                    }}
                   />
                 )
               }
@@ -223,7 +226,7 @@ class InvRequisitionList extends Component {
                                     row.cancel === "Y" ? "none" : "",
                                   opacity: row.cancel === "Y" ? "0.1" : ""
                                 }}
-                                className="fas fa-flask"
+                                className="fas fa-check"
                                 onClick={() => {
                                   setGlobal({
                                     "RQ-STD": "InvRequisitionEntry",
@@ -233,6 +236,22 @@ class InvRequisitionList extends Component {
                                   document.getElementById("rq-router").click();
                                 }}
                               />
+                              {row.trans_pending === true ? (
+                                <i
+                                  className="fa fa-exchange-alt"
+                                  onClick={() => {
+                                    setGlobal({
+                                      "RQ-STD": "InvTransferEntry",
+                                      hims_f_inventory_material_header_id:
+                                        row.hims_f_inventory_material_header_id,
+                                      from_location_id: row.to_location_id
+                                    });
+                                    document
+                                      .getElementById("rq-router")
+                                      .click();
+                                  }}
+                                />
+                              ) : null}
                             </span>
                           );
                         },

@@ -440,6 +440,20 @@ module.exports = {
       };
       next();
       return;
+    } else if (input.from_work_hr > input.to_work_hr) {
+      req.records = {
+        schedule_exist: true,
+        message: "Schedule Time Cant be PM to AM "
+      };
+      next();
+      return;
+    } else if (input.from_work_hr == "00:00" && input.to_work_hr == "00:00") {
+      req.records = {
+        schedule_exist: true,
+        message: "To Time Can't be Greater Than 11:59 PM"
+      };
+      next();
+      return;
     } else {
       //creating schedule
       _mysql
@@ -495,17 +509,16 @@ module.exports = {
               working_days.push(d);
             }
           }
-          let nightShift = "";
+          // let nightShift = "";
 
-          if (input.from_work_hr > input.to_work_hr) {
-            nightShift = 1;
-          }
+          // if (input.from_work_hr > input.to_work_hr) {
+          //   nightShift = 1;
+          // }
 
           let newDateList = getDaysArray(
             new Date(input.from_date),
             new Date(input.to_date),
-            working_days,
-            nightShift
+            working_days
           );
           newDateList.map(v => v.toLocaleString());
           // adding doctors to created schedule
@@ -2004,22 +2017,25 @@ module.exports = {
   }
 };
 //[0,1,2,3,4,5,6]
-function getDaysArray(start, end, days, nightShift) {
+function getDaysArray(start, end, days) {
   for (var arr = [], dt = start; dt <= end; dt.setDate(dt.getDate() + 1)) {
     const dat = new Date(dt);
     const day = new Date(dat).getDay();
-    if (nightShift == 1) {
-      if (days.indexOf(day) > -1) {
-        arr.push(dat);
-
-        dat.setDate(dat.getDate() + 1);
-        arr.push(dat);
-      }
-    } else {
-      if (days.indexOf(day) > -1) {
-        arr.push(dat);
-      }
+    if (days.indexOf(day) > -1) {
+      arr.push(dat);
     }
+    // if (nightShift == 1) {
+    //   if (days.indexOf(day) > -1) {
+    //     arr.push(dat);
+
+    //     dat.setDate(dat.getDate() + 1);
+    //     arr.push(dat);
+    //   }
+    // } else {
+    //   if (days.indexOf(day) > -1) {
+    //     arr.push(dat);
+    //   }
+    // }
   }
 
   return arr;

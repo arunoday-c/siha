@@ -30,8 +30,8 @@
 
 .hptl-phase1-requisition-list-form #RequisitionListCntr .ReactTable {
   max-width: 95vw !important;
-  max-height: 42vh !important; }
+  max-height: 62vh !important; }
 
 @media screen and (min-width: 481px) and (max-width: 1024px) and (orientation: landscape) {
   .hptl-phase1-requisition-list-form #RequisitionListCntr .ReactTable {
-    max-width: 93vw !important; } }
+    max-width: 94vw !important; } }

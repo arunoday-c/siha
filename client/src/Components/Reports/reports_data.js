@@ -149,6 +149,22 @@ export default [
         reportParameters: [
           {
             className: "col-2",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Select Branch",
+            link: {
+              uri: "/organization/getOrganization"
+            },
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            }
+          },
+          {
+            className: "col-2",
             type: "date",
             name: "from_date",
             isImp: true,
@@ -171,9 +187,24 @@ export default [
       },
       {
         subitem: "OP Billing Detail",
-        template_name: "Income/opBillDetails",
-        reportQuery: "OPBillDetails",
-        reportParameters: [
+        reportName: "opBillDetails",
+        requireIframe: true,
+        reportParameters: [ {
+            className: "col-2",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Select Branch",
+            link: {
+              uri: "/organization/getOrganization"
+            },
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            }
+          },
           {
             className: "col-2",
             type: "date",
@@ -199,7 +230,7 @@ export default [
             type: "dropdown",
             name: "service_type_id",
             initialLoad: true,
-            isImp: true,
+            isImp: false,
             link: {
               uri: "/serviceType",
               module: "masterSettings"
@@ -964,7 +995,6 @@ export default [
       {
         subitem: "List of Receipts",
         reportName: "salesReceiptListPharmacy",
-        // template_name: "salesReceiptListPharmacy",
         requireIframe: true,
         pageSize: "A4",
         pageOrentation: "landscape", //"portrait",
@@ -1477,7 +1507,7 @@ export default [
         subitem: "Items Stock Register - Category wise",
         reportName: "itemStockEnquiryCategoryWisePharmacy",
         requireIframe: true,
-        reportParameters: [,
+        reportParameters: [
           {
             className: "col-2",
             type: "date",
@@ -1546,40 +1576,58 @@ export default [
           {
             className: "col-2",
             type: "dropdown",
-            name: "item_id",
+            name: "category_id",
             initialLoad: true,
-            isImp: false,
+            isImp: true,
             label: "Select a Category",
 
             link: {
-              uri: "/pharmacy/getItemMaster",
+              uri: "/pharmacy/getItemCategory",
               module: "pharmacy"
             },
             dataSource: {
+              textField: "category_desc",
+              valueField: "hims_d_item_category_id",
+              data: undefined
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/pharmacy/getItemMaster",
+                  module: "pharmacy",
+                  method: "GET",
+                  data: { category_id: currentEvent.value },
+
+                  onSuccess: result => {
+                    reportState.setState({
+                      item_id_list: result.data.records
+                    });
+                  }
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  item_id_list: []
+                });
+              }
+            }
+          },
+
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "item_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Select Item",
+            dataSource: {
               textField: "item_description",
               valueField: "hims_d_item_master_id",
-              data: undefined
+              data: []
             }
           }
-
-          // {
-          //   className: "col-2",
-          //   type: "dropdown",
-          //   name: "item_id",
-          //   initialLoad: true,
-          //   isImp: false,
-          //   label: "Select Item",
-
-          //   link: {
-          //     uri: "/pharmacy/getItemMaster",
-          //     module: "pharmacy"
-          //   },
-          //   dataSource: {
-          //     textField: "item_description",
-          //     valueField: "hims_d_item_master_id",
-          //     data: undefined
-          //   }
-          // }
         ]
         //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
       },
@@ -1647,7 +1695,7 @@ export default [
             type: "dropdown",
             name: "item_id",
             initialLoad: true,
-            isImp: false,
+            isImp: true,
             label: "Select Item",
 
             link: {
@@ -1810,7 +1858,7 @@ export default [
       {
         subitem: "Project wise Payroll",
         template_name: "ProjectPayroll/projectWisePayroll",
-        reportQuery: "projectWisePayroll",
+        // reportQuery: "projectWisePayroll",
         reportUri: "/projectjobcosting/getProjectWiseJobCost",
         module: "hrManagement",
         reportParameters: [
