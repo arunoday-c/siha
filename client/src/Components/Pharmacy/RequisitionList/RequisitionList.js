@@ -180,35 +180,7 @@ class RequisitionList extends Component {
                   }}
                 />
 
-                {/*
-
-                  onChange: LocationchangeTexts.bind(this, this, "From"),
-                  onClear: LocationchangeTexts.bind(this, this, "From")
-                  <div className="col-lg-4" style={{ paddingTop: "25px" }}>
-                  <div className="customRadio">
-                    <label className="radio inline">
-                      <input
-                        type="radio"
-                        name="insured"
-                        value="1"
-                        checked={this.state.radioYes}
-                        onChange={radioChange.bind(this, this)}
-                      />
-                      <span>Authorize 1</span>
-                    </label>
-                    <label className="radio inline">
-                      <input
-                        type="radio"
-                        name="insured"
-                        value="2"
-                        checked={this.state.radioNo}
-                        onChange={radioChange.bind(this, this)}
-                      />
-                      <span>Authorize 2</span>
-                    </label>
-                  </div>
-                </div>
-                */}
+             
               </div>
             </div>
           </div>

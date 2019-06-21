@@ -1695,7 +1695,7 @@ export default [
             type: "dropdown",
             name: "item_id",
             initialLoad: true,
-            isImp: false,
+            isImp: true,
             label: "Select Item",
 
             link: {

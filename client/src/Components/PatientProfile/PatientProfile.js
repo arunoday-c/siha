@@ -39,6 +39,7 @@ import Eye from "./Eye/Eye";
 import _ from "lodash";
 import Allergies from "./Allergies/Allergies";
 import SickLeave from "./SickLeave/SickLeave";
+import PatientMRD from "../MRD/PatientMRD/PatientMRD";
 
 const UcafEditor = React.lazy(() => import("../ucafEditors/ucaf"));
 const DcafEditor = React.lazy(() => import("../ucafEditors/dcaf"));
@@ -435,6 +436,27 @@ class PatientProfile extends Component {
       </AlgaehModalPopUp>
     );
   }
+
+  OpenMrdHandler(e) {
+    const details = Window.global;
+    var element = document.querySelectorAll("[algaehsoap]");
+    for (var i = 0; i < element.length; i++) {
+      element[i].classList.remove("active");
+    }
+    e.currentTarget.classList.add("active");
+    var page = e.currentTarget.getAttribute("algaehsoap");
+
+    setGlobal({
+      "MRD-STD": "PatientMRD",
+      mrd_patient: details["current_patient"],
+      nationality: document.querySelector("[patient_nationality='true']")
+        .innerText,
+      gender: details["gender"]
+    });
+    this.setState({
+      pageDisplay: page
+    });
+  }
   render() {
     const module_plan = _.find(this.active_modules, f => {
       return f.module_id === parseInt(this.selected_module);
@@ -531,7 +553,8 @@ class PatientProfile extends Component {
             </span>
 
             <span>
-              Nationality: <b>{_pat_profile.nationality}</b>
+              Nationality:{" "}
+              <b patient_nationality="true">{_pat_profile.nationality}</b>
             </span>
             <span>
               Payment:
@@ -573,19 +596,20 @@ class PatientProfile extends Component {
               More
             </button>
             <ul className="moreActionUl">
+              //{" "}
               <li>
-                <span>Open MRD</span>
+                //{" "}
+                <span onClick={this.OpenMrdHandler.bind(this)}>Open MRD</span>
+                //{" "}
               </li>
               <li>
                 <span onClick={printPrescription.bind(this, this)}>
                   Prescription
                 </span>
               </li>
-
               <li>
                 <span onClick={this.showSickLeave.bind(this)}>Sick Leave</span>
               </li>
-
               {/* <li onClick={this.openUCAFReport.bind(this, _pat_profile)}>
                 <span>UCAF Report</span>
               </li>
@@ -593,7 +617,6 @@ class PatientProfile extends Component {
               <li onClick={this.openDCAFReport.bind(this, _pat_profile)}>
                 <span>DCAF Report</span>
               </li> */}
-
               {this.state.chart_type === "D" ? (
                 <li onClick={this.openDCAFReport.bind(this, _pat_profile)}>
                   <span>DCAF Report</span>
@@ -677,6 +700,7 @@ class PatientProfile extends Component {
                   Summary
                 </span>
               </li>
+
               <ul className="float-right patient-quick-info">
                 <li>
                   <i className={"fas fa-allergies" + this.alergyExist} />
@@ -862,7 +886,15 @@ class PatientProfile extends Component {
                   Summary
                 </span>
               </li>
-
+              <li className="nav-item">
+                <span
+                  onClick={this.OpenMrdHandler.bind(this)}
+                  algaehsoap="mrd"
+                  className="nav-link"
+                >
+                  MRD
+                </span>
+              </li>
               <ul className="float-right patient-quick-info">
                 <li>
                   <i className={"fas fa-allergies" + this.alergyExist} />
@@ -1029,6 +1061,8 @@ class PatientProfile extends Component {
             <Dental vat_applicable={this.vatApplicable()} />
           ) : this.state.pageDisplay === "summary" ? (
             <Summary />
+          ) : this.state.pageDisplay === "mrd" ? (
+            <PatientMRD fromClinicalDesk={true} />
           ) : null}
         </div>
         {this.renderUCAFReport()}

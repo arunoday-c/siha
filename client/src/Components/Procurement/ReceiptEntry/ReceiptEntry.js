@@ -260,29 +260,6 @@ class ReceiptEntry extends Component {
                   }}
                 />
 
-                <AlagehAutoComplete
-                  div={{ className: "col-2" }}
-                  label={{ forceLabel: "Vendor" }}
-                  selector={{
-                    name: "vendor_id",
-                    className: "select-fld",
-                    value: this.state.vendor_id,
-                    dataSource: {
-                      textField: "vendor_name",
-                      valueField: "hims_d_vendor_id",
-                      data: this.props.receiptvendors
-                    },
-                    others: {
-                      disabled:
-                        this.state.poSelected === true
-                          ? this.state.poSelected
-                          : this.state.dataExitst
-                    },
-                    onChange: vendortexthandle.bind(this, this),
-                    onClear: vendortexthandle.bind(this, this)
-                  }}
-                />
-
                 <AlagehFormGroup
                   div={{ className: "col-2" }}
                   label={{
@@ -323,6 +300,26 @@ class ReceiptEntry extends Component {
                     onClick={PurchaseOrderSearch.bind(this, this)}
                   />
                 </div>
+
+                <AlagehAutoComplete
+                  div={{ className: "col-2" }}
+                  label={{ forceLabel: "Vendor" }}
+                  selector={{
+                    name: "vendor_id",
+                    className: "select-fld",
+                    value: this.state.vendor_id,
+                    dataSource: {
+                      textField: "vendor_name",
+                      valueField: "hims_d_vendor_id",
+                      data: this.props.receiptvendors
+                    },
+                    others: {
+                      disabled: true
+                    },
+                    onChange: vendortexthandle.bind(this, this),
+                    onClear: vendortexthandle.bind(this, this)
+                  }}
+                />
 
                 <div className="col">
                   <AlgaehLabel label={{ forceLabel: "Payment Terms" }} />

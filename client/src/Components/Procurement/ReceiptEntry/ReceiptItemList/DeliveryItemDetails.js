@@ -183,6 +183,16 @@ class DNItemList extends Component {
                   },
 
                   {
+                    fieldName: "batchno",
+                    label: <AlgaehLabel label={{ forceLabel: "Batch  No." }} />,
+
+                    others: {
+                      minWidth: 150,
+                      resizable: false
+                    }
+                  },
+
+                  {
                     fieldName: "vendor_batchno",
                     label: (
                       <AlgaehLabel

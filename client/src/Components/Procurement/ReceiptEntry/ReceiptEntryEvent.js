@@ -38,13 +38,13 @@ const loctexthandle = ($this, e) => {
   } else {
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
-    let ReqData = true;
-    if ($this.state.vendor_id !== null) {
-      ReqData = false;
-    }
+    // let ReqData = true;
+    // if ($this.state.vendor_id !== null) {
+    //   ReqData = false;
+    // }
     $this.setState({
       [name]: value,
-      ReqData: ReqData
+      ReqData: false
     });
   }
 };
@@ -579,14 +579,20 @@ const PurchaseOrderSearch = ($this, e) => {
         getDeliveryForReceipt(
           $this,
           row.hims_f_procurement_po_header_id,
-          row.purchase_number
+          row.purchase_number,
+          row.vendor_id
         );
       }
     });
   }
 };
 
-const getDeliveryForReceipt = ($this, purchase_order_id, purchase_number) => {
+const getDeliveryForReceipt = (
+  $this,
+  purchase_order_id,
+  purchase_number,
+  vendor_id
+) => {
   AlgaehLoader({ show: true });
   algaehApiCall({
     uri: "/ReceiptEntry/getDeliveryForReceipt",
@@ -621,6 +627,7 @@ const getDeliveryForReceipt = ($this, purchase_order_id, purchase_number) => {
 
           $this.setState({
             receipt_entry_detail: data,
+            vendor_id: vendor_id,
             po_id: purchase_order_id,
             purchase_number: purchase_number,
             sub_total: sub_total,
