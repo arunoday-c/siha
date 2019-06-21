@@ -353,21 +353,22 @@ class Vitals extends Component {
             title="Patient Vitals"
             openPopup={this.props.openVital}
           >
-            <div className="col-lg-12 popupInner">
+            <div className="col-12 popupInner">
               <div className="portlet-body" id="vitals_recording">
                 <div className="row">
-                  <div className="col-3 popLeftDiv">
-                    <div className="row">
+                
+                  <div className="col-12 popRightDiv" style={{paddingTop:0,paddingBottom:0}}>
+                    <div className="row vitalsAddingSec" >
                       {_department_viatals.map((item, index) => {
                         const _className =
                           item.hims_d_vitals_header_id === 1
-                            ? "col-6"
+                            ? "col-2"
                             : item.hims_d_vitals_header_id >= 3
-                            ? "col-6 vitalTopFld15"
+                            ? "col-2"
                             : item.hims_d_vitals_header_id === 5 ||
                               item.hims_d_vitals_header_id === 6
-                            ? "col-6 vitalTopFld20"
-                            : "col-6";
+                            ? "col-2"
+                            : "col-2";
                         const _name = String(item.vitals_name)
                           .replace(/" "/g, "_")
                           .toLowerCase();
@@ -384,7 +385,7 @@ class Vitals extends Component {
                             {item.hims_d_vitals_header_id === 4 ? (
                               <React.Fragment>
                                 <AlagehAutoComplete
-                                  div={{ className: "col-6" }}
+                                  div={{ className: "col-2" }}
                                   label={{
                                     forceLabel: "Temp. From"
                                   }}
@@ -405,7 +406,7 @@ class Vitals extends Component {
                               </React.Fragment>
                             ) : item.hims_d_vitals_header_id === 8 ? (
                               <AlagehAutoComplete
-                                div={{ className: "col-6" }}
+                                div={{ className: "col-2" }}
                                 label={{
                                   forceLabel: "BP (mmHg)",
                                   fieldName: "BP_type"
@@ -463,7 +464,7 @@ class Vitals extends Component {
 
                             {item.hims_d_vitals_header_id === 4 ? (
                               <AlagehFormGroup
-                                div={{ className: "col-6" }}
+                                div={{ className: "col-2" }}
                                 label={{
                                   forceLabel: item.uom === "C" ? "°F" : "°C"
                                 }}
@@ -485,7 +486,7 @@ class Vitals extends Component {
                       })}
 
                       <AlgaehDateHandler
-                        div={{ className: "col-6" }}
+                        div={{ className: "col-2" }}
                         label={{ forceLabel: "Recorded Date", isImp: true }}
                         textBox={{
                           className: "txt-fld",
@@ -502,7 +503,7 @@ class Vitals extends Component {
                       />
 
                       <AlagehFormGroup
-                        div={{ className: "col-6" }}
+                        div={{ className: "col-2" }}
                         label={{
                           isImp: true,
                           forceLabel: "Recorded Time"
@@ -540,28 +541,16 @@ class Vitals extends Component {
                         </button>
                       </div>
                     </div>
-                  </div>
-                  <div className="col-9 popRightDiv">
-                    <div className="row">
+                    <h6>Vitals History</h6>
+                    <hr></hr>
+                    {/* <div className="row">
                       <button className="btn btn-default graphView">
                         View Graph View
                       </button>
-                    </div>
+                    </div> */}
                     <div className="row">
-                      <div className="col-12 vitalsChartSec">
-                        <Line
-                          options={{
-                            scales: {
-                              yAxes: _yAxes
-                            }
-                          }}
-                          data={{
-                            datasets: _plotGraph,
-                            labels: _chartLabels
-                          }}
-                        />
-                      </div>
-                      <div className="col-12 vitalsTimeLineSec">
+                     
+                      <div className="col-8 vitalsTimeLineSec">
                         <div className="timeline">
                           {_vitalsGroup.map((data, index) => (
                             <div
@@ -590,6 +579,18 @@ class Vitals extends Component {
                             </div>
                           ))}
                         </div>
+                      </div> <div className="col-4 vitalsChartSec">
+                        <Line
+                          options={{
+                            scales: {
+                              yAxes: _yAxes
+                            }
+                          }}
+                          data={{
+                            datasets: _plotGraph,
+                            labels: _chartLabels
+                          }}
+                        />
                       </div>
                     </div>
                   </div>
