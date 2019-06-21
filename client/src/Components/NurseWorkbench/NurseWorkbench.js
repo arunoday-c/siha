@@ -46,7 +46,10 @@ class NurseWorkbench extends Component {
       toDate: moment()._d,
       activeDateHeader: moment()._d,
       recorded_date: new Date(),
-      recorded_time: moment().format(config.formators.time)
+      recorded_time: moment().format(config.formators.time),
+
+      sub_department_id: null,
+      provider_id: null
     };
 
     this.baseState = this.state;
@@ -292,7 +295,6 @@ class NurseWorkbench extends Component {
         }
       });
     }
-
   }
 
   deptDropDownHandler(value) {
@@ -692,18 +694,22 @@ class NurseWorkbench extends Component {
             toDate: this.state.toDate,
             activeDateHeader: this.state.fromDate
           };
+    debugger;
+    let inputObj = { fromDate: dateRange.fromDate, toDate: dateRange.toDate };
+    if (this.state.sub_department_id !== null) {
+      inputObj.sub_department_id = this.state.sub_department_id;
+    }
+    if (this.state.provider_id !== null) {
+      inputObj.provider_id = this.state.provider_id;
+    }
 
     algaehApiCall({
       uri: "/nurseWorkBench/getNurseMyDay",
-      data: {
-        fromDate: dateRange.fromDate,
-        toDate: dateRange.toDate,
-        sub_department_id: this.state.sub_department_id,
-        provider_id: this.state.provider_id
-      },
+      data: inputObj,
       method: "GET",
       cancelRequestId: "getNurseMyDay",
       onSuccess: response => {
+        debugger;
         if (response.data.success) {
           const _selecDate = new Date(dateRange.activeDateHeader).setDate(1);
 
@@ -885,7 +891,9 @@ class NurseWorkbench extends Component {
                     onClear: () => {
                       this.setState(
                         {
-                          sub_department_id: null
+                          sub_department_id: null,
+                          doctors: [],
+                          provider_id: null
                         },
                         () => {
                           this.loadListofData();

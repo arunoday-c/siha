@@ -527,7 +527,7 @@ let algaehSearchConfig = (searchName, req) => {
             ITL where INS.services_id = IM.service_id and IM.hims_d_inventory_item_master_id = ITL.item_id and \
             insurance_id=? and {mapper} and service_type_id=4",
         orderBy: "services_id desc",
-        inputSequence: ["insurance_id", "insurance_id"]
+        inputSequence: ["insurance_id", "inventory_location_id", "insurance_id"]
       },
       {
         searchName: "pharmacyUsers",

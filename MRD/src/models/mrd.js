@@ -1,6 +1,8 @@
 import algaehMysql from "algaeh-mysql";
 import { LINQ } from "node-linq";
 import moment from "moment";
+import algaehUtilities from "algaeh-utilities/utilities";
+
 module.exports = {
   getPatientMrdList: (req, res, next) => {
     const _mysql = new algaehMysql();
@@ -232,6 +234,8 @@ module.exports = {
 
   getPatientPaymentDetails: (req, res, next) => {
     const _mysql = new algaehMysql();
+    const utilities = new algaehUtilities();
+    utilities.logger().log("getPatientPaymentDetails: ");
     try {
       _mysql
         .executeQuery({
@@ -252,14 +256,17 @@ module.exports = {
 
           let outputArray = [];
           if (result.length > 0) {
+            utilities.logger().log("result: ");
             //bill for each visit
             for (let i = 0; i < allVisits.length; i++) {
               _mysql
                 .executeQuery({
                   query:
-                    "select hims_f_billing_header_id ,bill_number,patient_id,visit_id,E.full_name provider_name,incharge_or_provider,bill_date,\
-        net_amount,patient_payable,receiveable_amount,credit_amount from hims_f_billing_header BH,hims_d_employee E where BH.record_status='A' and\
-         E.record_status='A' and BH.incharge_or_provider=E.hims_d_employee_id and visit_id=? order by bill_date desc;",
+                    "select hims_f_billing_header_id ,bill_number,patient_id,visit_id,E.full_name provider_name,\
+                    incharge_or_provider,bill_date, receipt_header_id, net_amount, patient_payable,\
+                    receiveable_amount, credit_amount from hims_f_billing_header BH,hims_d_employee E \
+                    where BH.record_status='A' and E.record_status='A' and\
+                    BH.incharge_or_provider=E.hims_d_employee_id and visit_id=? order by bill_date desc;",
                   values: [allVisits[i]],
                   printQuery: true
                 })
@@ -268,6 +275,9 @@ module.exports = {
                   // req.records = result;
                   // next();
 
+                  utilities
+                    .logger()
+                    .log("billHeadResult: ", billHeadResult.length);
                   if (billHeadResult.length > 0) {
                     for (let k = 0; k < billHeadResult.length; k++) {
                       new Promise((resolve, reject) => {
@@ -278,11 +288,9 @@ module.exports = {
                             _mysql
                               .executeQuery({
                                 query:
-                                  "select hims_f_receipt_header_id, receipt_number, receipt_date, billing_header_id, total_amount\
-                    from hims_f_receipt_header where record_status='A' and billing_header_id=?;",
-                                values: [
-                                  billHeadResult[k].hims_f_billing_header_id
-                                ],
+                                  "select hims_f_receipt_header_id, receipt_number, receipt_date, total_amount\
+                                  from hims_f_receipt_header where record_status='A' and hims_f_receipt_header_id=?;",
+                                values: [billHeadResult[k].receipt_header_id],
                                 printQuery: true
                               })
                               .then(recptResult => {
