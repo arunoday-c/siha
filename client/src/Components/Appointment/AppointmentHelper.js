@@ -1,7 +1,6 @@
 import moment from "moment";
 
 export function generateTimeslotsForDoctor(data) {
-  console.log(data);
   // Takes Appointment Schedule as input and returns an Array with time and "break"
   const from_work_hr = moment(data.from_work_hr, "hh:mm:ss");
   const to_work_hr = moment(data.to_work_hr, "hh:mm:ss");
@@ -17,7 +16,6 @@ export function generateTimeslotsForDoctor(data) {
     let isBreak = false;
 
     newFrom = count === 0 ? newFrom : newFrom.add(slot, "minutes");
-    console.log(newFrom, "new time");
     if (newFrom.isBefore(to_work_hr)) {
       if (data.work_break1 === "Y" || data.work_break2 === "Y") {
         let endTimeTemp = new moment(newFrom).add(slot, "minutes");
@@ -44,8 +42,6 @@ export function generateTimeslotsForDoctor(data) {
       break;
     }
     count = count + 1;
-    console.log("from end", count);
   }
-  console.log("from result", result);
   return result;
 }
