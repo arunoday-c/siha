@@ -76,6 +76,7 @@ const UomchangeTexts = ($this, context, ctrl, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
+  debugger;
   if ($this.state.uom_id !== value) {
     let qtyhand = 0;
     let unit_cost = 0;
@@ -360,53 +361,53 @@ const itemchangeText = ($this, context, e, ctrl) => {
 
 const getUnitCost = ($this, context, serviceid, sales_price) => {
   if ($this.state.insured === "N") {
-    if (sales_price > 0) {
-      $this.setState({
+    // if (sales_price > 0) {
+    $this.setState({
+      unit_cost: sales_price,
+      Real_unit_cost: sales_price
+    });
+
+    if (context !== undefined) {
+      context.updateState({
         unit_cost: sales_price,
         Real_unit_cost: sales_price
       });
-
-      if (context !== undefined) {
-        context.updateState({
-          unit_cost: sales_price,
-          Real_unit_cost: sales_price
-        });
-      }
-    } else {
-      $this.props.getServicesCost({
-        uri: "/serviceType/getService",
-        module: "masterSettings",
-        method: "GET",
-        data: { hims_d_services_id: serviceid },
-        redux: {
-          type: "SERVICES_GET_DATA",
-          mappingName: "hospitalservices"
-        },
-        afterSuccess: data => {
-          let servdata = Enumerable.from(data)
-            .where(w => w.hims_d_services_id === parseInt(serviceid, 10))
-            .firstOrDefault();
-          if (servdata !== undefined || servdata !== null) {
-            $this.setState({
-              unit_cost: servdata.standard_fee,
-              Real_unit_cost: servdata.standard_fee
-            });
-
-            if (context !== undefined) {
-              context.updateState({
-                unit_cost: servdata.standard_fee,
-                Real_unit_cost: servdata.standard_fee
-              });
-            }
-          } else {
-            swalMessage({
-              title: "No Service for the selected item.",
-              type: "warning"
-            });
-          }
-        }
-      });
     }
+    // } else {
+    //   $this.props.getServicesCost({
+    //     uri: "/serviceType/getService",
+    //     module: "masterSettings",
+    //     method: "GET",
+    //     data: { hims_d_services_id: serviceid },
+    //     redux: {
+    //       type: "SERVICES_GET_DATA",
+    //       mappingName: "hospitalservices"
+    //     },
+    //     afterSuccess: data => {
+    //       let servdata = Enumerable.from(data)
+    //         .where(w => w.hims_d_services_id === parseInt(serviceid, 10))
+    //         .firstOrDefault();
+    //       if (servdata !== undefined || servdata !== null) {
+    //         $this.setState({
+    //           unit_cost: servdata.standard_fee,
+    //           Real_unit_cost: servdata.standard_fee
+    //         });
+    //
+    //         if (context !== undefined) {
+    //           context.updateState({
+    //             unit_cost: servdata.standard_fee,
+    //             Real_unit_cost: servdata.standard_fee
+    //           });
+    //         }
+    //       } else {
+    //         swalMessage({
+    //           title: "No Service for the selected item.",
+    //           type: "warning"
+    //         });
+    //       }
+    //     }
+    //   });
+    // }
   } else {
     $this.props.getInsuranceServicesCost({
       uri: "/insurance/getPriceList",
@@ -538,7 +539,8 @@ const AddItems = ($this, context) => {
           secondary_insurance_provider_id:
             $this.state.secondary_insurance_provider_id,
           secondary_network_id: $this.state.secondary_network_id,
-          secondary_network_office_id: $this.state.secondary_network_office_id
+          secondary_network_office_id: $this.state.secondary_network_office_id,
+          from_pos: "Y"
         }
       ];
 
@@ -1216,6 +1218,14 @@ const CloseItemBatch = ($this, context, e) => {
         : $this.state.uom_id
       : $this.state.uom_id;
 
+  const sales_qtyhand =
+    e !== undefined
+      ? e.selected === true
+        ? parseFloat(qtyhand) / parseFloat($this.state.sales_conversion_factor)
+        : $this.state.sales_qtyhand
+      : $this.state.sales_qtyhand;
+
+  debugger;
   $this.setState({
     ...$this.state,
     selectBatch: !$this.state.selectBatch,
@@ -1223,7 +1233,7 @@ const CloseItemBatch = ($this, context, e) => {
     expiry_date: expiry_date,
     grn_no: grn_no,
     qtyhand: qtyhand,
-    sales_qtyhand: qtyhand,
+    sales_qtyhand: sales_qtyhand,
     uom_id: uom_id,
     unit_cost: sale_price,
     uom_description: uom_description
@@ -1235,7 +1245,7 @@ const CloseItemBatch = ($this, context, e) => {
       expiry_date: expiry_date,
       grn_no: grn_no,
       qtyhand: qtyhand,
-      sales_qtyhand: qtyhand,
+      sales_qtyhand: sales_qtyhand,
       uom_id: uom_id,
       unit_cost: sale_price,
       uom_description: uom_description

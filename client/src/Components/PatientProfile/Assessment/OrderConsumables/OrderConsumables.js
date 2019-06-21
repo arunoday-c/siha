@@ -118,7 +118,6 @@ class OrderConsumables extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    
     let Location_name =
       this.props.inventorylocations !== undefined &&
       this.props.inventorylocations.length > 0
@@ -142,6 +141,7 @@ class OrderConsumables extends Component {
       }
       this.setState({ ...output });
     } else {
+      debugger;
       if (Location_name.length > 0) {
         this.setState({
           inventory_location_id: nextProps.inventory_location_id,

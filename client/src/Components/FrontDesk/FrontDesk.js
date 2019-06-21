@@ -50,20 +50,6 @@ class FrontDesk extends Component {
                   this.state.Language.charAt(0).toUpperCase() +
                   this.state.Language.slice(1)
                 : Window.global["FD-STD"],
-            patient_code: Window.global["appt-pat-code"],
-            provider_id: Window.global["appt-provider-id"],
-            sub_department_id: Window.global["appt-dept-id"],
-            hims_f_patient_appointment_id: Window.global["appt-id"],
-            patient_name: Window.global["appt-pat-name"],
-            arabic_patient_name: Window.global["appt-pat-arabic-name"],
-            date_of_birth: Window.global["appt-pat-dob"],
-            patient_age: Window.global["appt-pat-age"],
-            patient_gender: Window.global["appt-pat-gender"],
-            patient_phone: Window.global["appt-pat-ph-no"],
-            patient_email: Window.global["appt-pat-email"],
-            department_id: Window.global["appt-department-id"],
-            title_id: Window.global["appt-title-id"],
-
             hims_d_services_id: data[0].services_id
           },
           () => {
@@ -78,9 +64,18 @@ class FrontDesk extends Component {
     removeGlobal("FD-STD");
   }
 
+  goToCheckedIn(patient) {
+    console.log("from goto check", patient);
+    this.setState({ FD_Screen: "RegistrationPatient", ...patient }, () =>
+      this.changeDisplays()
+    );
+  }
+
   componentList() {
     return {
-      Appointment: <Appointment />,
+      Appointment: (
+        <Appointment goToCheckedIn={patient => this.goToCheckedIn(patient)} />
+      ),
       // AppointmentAr: <AppointmentAr />,
       RegistrationPatient: (
         <RegistrationPatient
@@ -105,30 +100,6 @@ class FrontDesk extends Component {
           hims_d_services_id={this.state.hims_d_services_id}
         />
       )
-
-      // RegistrationPatientAr: (
-      //   <RegistrationPatientAr
-      //     patient_code={this.state.patient_code}
-      //     provider_id={this.state.provider_id}
-      //     sub_department_id={this.state.sub_department_id}
-      //     hims_f_patient_appointment_id={
-      //       this.state.hims_f_patient_appointment_id
-      //     }
-      //     patient_details={{
-      //       patient_name: this.state.patient_name,
-      //       arabic_patient_name: this.state.arabic_patient_name,
-      //       date_of_birth: this.state.date_of_birth,
-      //       patient_age: this.state.patient_age,
-      //       patient_gender: this.state.patient_gender,
-      //       patient_phone: this.state.patient_phone,
-      //       patient_email: this.state.patient_email,
-      //       title_id: this.state.title_id
-      //     }}
-      //     visit_type={10}
-      //     fromAppoinment={true}
-      //     hims_d_services_id={this.state.hims_d_services_id}
-      //   />
-      // )
     };
   }
 
@@ -147,11 +118,7 @@ class FrontDesk extends Component {
           />
           <button
             style={{
-              display:
-                this.state.FD_Screen === "Appointment" ||
-                this.state.FD_Screen === "AppointmentAr"
-                  ? "none"
-                  : "block"
+              display: this.state.FD_Screen === "Appointment" ? "none" : "block"
             }}
             className="btn btn-default bk-bn"
             onClick={() => {
@@ -160,8 +127,7 @@ class FrontDesk extends Component {
               });
 
               this.routeComponents();
-            }}
-          >
+            }}>
             <i className="fas fa-angle-double-left fa-lg" />
             Back to Appointment
           </button>

@@ -318,7 +318,7 @@ let getPatientPaymentDetails = (req, res, next) => {
             //bill for each visit
             for (let i = 0; i < allVisits.length; i++) {
               connection.query(
-                "select hims_f_billing_header_id ,bill_number,patient_id,visit_id,E.full_name provider_name,incharge_or_provider,bill_date,\
+                "select hims_f_billing_header_id ,bill_number,patient_id,visit_id,E.full_name provider_name,incharge_or_provider,bill_date,receipt_header_id,\
               net_amount,patient_payable,receiveable_amount,credit_amount from hims_f_billing_header BH,hims_d_employee E where BH.record_status='A' and\
                E.record_status='A' and BH.incharge_or_provider=E.hims_d_employee_id and visit_id=? order by bill_date desc;",
                 [allVisits[i]],
@@ -339,8 +339,8 @@ let getPatientPaymentDetails = (req, res, next) => {
                           } else {
                             connection.query(
                               "select hims_f_receipt_header_id, receipt_number, receipt_date, billing_header_id, total_amount\
-                          from hims_f_receipt_header where record_status='A' and billing_header_id=?;",
-                              [billHeadResult[k].hims_f_billing_header_id],
+                          from hims_f_receipt_header where record_status='A' and hims_f_receipt_header_id=?;",
+                              [billHeadResult[k].receipt_header_id],
                               (error, recptResult) => {
                                 if (error) {
                                   releaseDBConnection(db, connection);

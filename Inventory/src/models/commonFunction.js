@@ -32,6 +32,8 @@ let updateIntoInvItemLocation = (req, res, next) => {
 
     new LINQ(inputParam.inventory_stock_detail)
       .Select(s => {
+        let unit_cost =
+          req.body.transaction_type == "DNA" ? s.average_cost : s.unit_cost;
         xmlQuery += "<hims_m_inventory_item_location>";
         xmlQuery += createXmlString({
           item_id: s.item_id,
@@ -42,7 +44,7 @@ let updateIntoInvItemLocation = (req, res, next) => {
           qtyhand: s.quantity,
           qtypo: s.qtypo || 0,
           cost_uom: s.uom_id,
-          avgcost: s.unit_cost,
+          avgcost: unit_cost,
           last_purchase_cost: s.last_purchase_cost || 0,
           grn_id: s.grn_id || 0,
           grnno: s.grn_number,
@@ -73,7 +75,7 @@ let updateIntoInvItemLocation = (req, res, next) => {
           discount_amount: s.discount_amount || 0,
           net_total: s.net_total || 0,
           landing_cost: s.landing_cost || 0,
-          average_cost: s.unit_cost,
+          average_cost: unit_cost,
           created_by: req.userIdentity.algaeh_d_app_user_id,
           updated_by: req.userIdentity.algaeh_d_app_user_id,
           operation: s.operation

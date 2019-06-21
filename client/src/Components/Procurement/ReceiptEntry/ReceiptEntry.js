@@ -7,8 +7,8 @@ import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 import {
   AlgaehLabel,
   AlagehFormGroup,
-  AlagehAutoComplete
-  // AlgaehDateHandler
+  AlagehAutoComplete,
+  AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
 import Options from "../../../Options.json";
 import moment from "moment";
@@ -23,7 +23,11 @@ import {
   SaveReceiptEnrty,
   DeliverySearch,
   getCtrlCode,
-  PostReceiptEntry
+  PostReceiptEntry,
+  PurchaseOrderSearch,
+  dateValidate,
+  datehandle,
+  textEventhandle
 } from "./ReceiptEntryEvent";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -215,7 +219,10 @@ class ReceiptEntry extends Component {
                       data: GlobalVariables.PO_FROM
                     },
                     others: {
-                      disabled: this.state.dataExitst
+                      disabled:
+                        this.state.poSelected === true
+                          ? this.state.poSelected
+                          : this.state.dataExitst
                     },
                     onChange: poforhandle.bind(this, this),
                     onClear: texthandle.bind(this, this)
@@ -243,42 +250,25 @@ class ReceiptEntry extends Component {
                       data: _mainStore
                     },
                     others: {
-                      disabled: this.state.dataExitst
+                      disabled:
+                        this.state.poSelected === true
+                          ? this.state.poSelected
+                          : this.state.dataExitst
                     },
                     onChange: loctexthandle.bind(this, this),
                     onClear: texthandle.bind(this, this)
                   }}
                 />
 
-                <AlagehAutoComplete
-                  div={{ className: "col-2" }}
-                  label={{ forceLabel: "Vendor" }}
-                  selector={{
-                    name: "vendor_id",
-                    className: "select-fld",
-                    value: this.state.vendor_id,
-                    dataSource: {
-                      textField: "vendor_name",
-                      valueField: "hims_d_vendor_id",
-                      data: this.props.receiptvendors
-                    },
-                    others: {
-                      disabled: this.state.dataExitst
-                    },
-                    onChange: vendortexthandle.bind(this, this),
-                    onClear: vendortexthandle.bind(this, this)
-                  }}
-                />
-
                 <AlagehFormGroup
                   div={{ className: "col-2" }}
                   label={{
-                    forceLabel: "Delivery Note No."
+                    forceLabel: "Purchase Order No."
                   }}
                   textBox={{
-                    value: this.state.delivery_note_number,
+                    value: this.state.purchase_number,
                     className: "txt-fld",
-                    name: "delivery_note_number",
+                    name: "purchase_number",
 
                     events: {
                       onChange: null
@@ -307,28 +297,29 @@ class ReceiptEntry extends Component {
                           ? "none"
                           : ""
                     }}
-                    onClick={DeliverySearch.bind(this, this)}
+                    onClick={PurchaseOrderSearch.bind(this, this)}
                   />
                 </div>
-                {/* <AlagehAutoComplete
-                  div={{ className: "col" }}
-                  label={{ forceLabel: "Payment Terms" }}
+
+                <AlagehAutoComplete
+                  div={{ className: "col-2" }}
+                  label={{ forceLabel: "Vendor" }}
                   selector={{
-                    name: "payment_terms",
+                    name: "vendor_id",
                     className: "select-fld",
-                    value: this.state.payment_terms,
+                    value: this.state.vendor_id,
                     dataSource: {
-                      textField: "name",
-                      valueField: "value",
-                      data: GlobalVariables.PAYMENT_TERMS
+                      textField: "vendor_name",
+                      valueField: "hims_d_vendor_id",
+                      data: this.props.receiptvendors
                     },
                     others: {
-                      disabled: this.state.dataExitst
+                      disabled: true
                     },
-                    onChange: texthandle.bind(this, this),
-                    onClear: texthandle.bind(this, this)
+                    onChange: vendortexthandle.bind(this, this),
+                    onClear: vendortexthandle.bind(this, this)
                   }}
-                /> */}
+                />
 
                 <div className="col">
                   <AlgaehLabel label={{ forceLabel: "Payment Terms" }} />
@@ -338,6 +329,41 @@ class ReceiptEntry extends Component {
                       : "0 days"}
                   </h6>
                 </div>
+
+                <AlagehFormGroup
+                  div={{ className: "col" }}
+                  label={{
+                    forceLabel: "Invoice No.",
+                    isImp: true
+                  }}
+                  textBox={{
+                    value: this.state.inovice_number,
+                    className: "txt-fld",
+                    name: "inovice_number",
+
+                    events: {
+                      onChange: textEventhandle.bind(this, this)
+                    },
+                    others: {
+                      disabled: this.state.dataExitst
+                    }
+                  }}
+                />
+                <AlgaehDateHandler
+                  div={{ className: "col" }}
+                  label={{ forceLabel: "Invoice Date", isImp: true }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "invoice_date"
+                  }}
+                  minDate={new Date()}
+                  disabled={this.state.dataExitst}
+                  events={{
+                    onChange: datehandle.bind(this, this),
+                    onBlur: dateValidate.bind(this, this)
+                  }}
+                  value={this.state.invoice_date}
+                />
 
                 {/*    <AlgaehDateHandler
                   div={{ className: "col" }}
@@ -410,7 +436,7 @@ class ReceiptEntry extends Component {
                     label={{ forceLabel: "Clear", returnText: true }}
                   />
                 </button>
-                <button
+                {/*<button
                   type="button"
                   className="btn btn-other"
                   disabled={this.state.postEnable}
@@ -422,7 +448,7 @@ class ReceiptEntry extends Component {
                       returnText: true
                     }}
                   />
-                </button>
+                </button>*/}
               </div>
             </div>
           </div>

@@ -1,8 +1,9 @@
-import { swalMessage } from "../../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import Enumerable from "linq";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 import Options from "../../../../Options.json";
+import _ from "lodash";
 
 const assignDataandclear = ($this, context, stock_detail, assignData) => {
   let sub_total = Enumerable.from(stock_detail).sum(s =>
@@ -76,10 +77,11 @@ const assignDataandclear = ($this, context, stock_detail, assignData) => {
   }
 };
 
-const deleteReceiptDetail = ($this, context, row) => {
+const deleteReceiptDetail = ($this, row, context) => {
   let receipt_entry_detail = $this.state.receipt_entry_detail;
 
-  receipt_entry_detail.splice(row.rowIdx, 1);
+  let _index = receipt_entry_detail.indexOf(row);
+  receipt_entry_detail.splice(_index, 1);
 
   if (receipt_entry_detail.length === 0) {
     assignDataandclear(
@@ -89,9 +91,30 @@ const deleteReceiptDetail = ($this, context, row) => {
       "receipt_entry_detail"
     );
   } else {
+    let sub_total = _.sumBy(receipt_entry_detail, s =>
+      parseFloat(s.extended_cost)
+    );
+    let detail_discount = _.sumBy(receipt_entry_detail, s =>
+      parseFloat(s.discount_amount)
+    );
+    let net_total = _.sumBy(receipt_entry_detail, s =>
+      parseFloat(s.net_extended_cost)
+    );
+    let total_tax = _.sumBy(receipt_entry_detail, s =>
+      parseFloat(s.tax_amount)
+    );
+    let net_payable = _.sumBy(receipt_entry_detail, s =>
+      parseFloat(s.total_amount)
+    );
+
     if (context !== undefined) {
       context.updateState({
-        receipt_entry_detail: receipt_entry_detail
+        receipt_entry_detail: receipt_entry_detail,
+        sub_total: sub_total,
+        detail_discount: detail_discount,
+        net_total: net_total,
+        total_tax: total_tax,
+        net_payable: net_payable
       });
     }
   }
@@ -191,7 +214,7 @@ const onchhangegriddiscount = ($this, row, ctrl, e) => {
   let extended_cost = 0;
   let extended_price = 0;
   let tax_amount = 0;
-  
+
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   let quantity_recieved_todate =
@@ -299,7 +322,6 @@ const CancelGrid = ($this, context, cancelRow) => {
 };
 
 const onchangegridcoldatehandle = ($this, row, ctrl, e) => {
-  
   if (Date.parse(moment(ctrl)._d) < Date.parse(new Date())) {
     swalMessage({
       title: "Expiry date cannot be past Date.",
@@ -330,6 +352,44 @@ const GridAssignData = ($this, row, e) => {
   }
 };
 
+const getDeliveryItemDetails = ($this, row) => {
+  algaehApiCall({
+    uri: "/ReceiptEntry/getDeliveryItemDetails",
+    module: "procurement",
+    method: "GET",
+    data: {
+      dn_header_id: row.dn_header_id
+    },
+    onSuccess: response => {
+      if (response.data.success) {
+        let data = response.data.records;
+        debugger;
+        if (data !== null && data !== undefined) {
+          debugger;
+
+          $this.setState({
+            dn_item_details: data,
+            dn_item_enable: !$this.state.dn_item_enable
+          });
+        }
+      }
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
+};
+
+const CloseItemDetail = $this => {
+  $this.setState({
+    dn_item_details: [],
+    dn_item_enable: !$this.state.dn_item_enable
+  });
+};
+
 export {
   deleteReceiptDetail,
   updateReceiptDetail,
@@ -341,5 +401,7 @@ export {
   EditGrid,
   CancelGrid,
   changeDateFormat,
-  GridAssignData
+  GridAssignData,
+  getDeliveryItemDetails,
+  CloseItemDetail
 };

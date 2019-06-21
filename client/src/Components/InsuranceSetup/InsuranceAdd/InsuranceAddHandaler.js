@@ -3,7 +3,6 @@ import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 
 const handleNext = ($this, setp, e) => {
-  
   // if (setp === "Close") {
   //   $this.onClose(e);
   // } else if (setp === "Next") {
@@ -14,6 +13,11 @@ const handleNext = ($this, setp, e) => {
     if ($this.state.screenName === "InsuranceProvider") {
       if ($this.state.insurance_provider_saved === false) {
         //Save Insurance
+        $this.state.preapp_valid_days =
+          $this.state.preapp_valid_days === "" ||
+          $this.state.preapp_valid_days === null
+            ? 0
+            : $this.state.preapp_valid_days;
         algaehApiCall({
           uri: "/insurance/addInsuranceProvider",
           module: "insurance",
@@ -134,6 +138,12 @@ const updatedata = ($this, e) => {
       }
     });
     if (isError === false) {
+      debugger;
+      $this.state.preapp_valid_days =
+        $this.state.preapp_valid_days === "" ||
+        $this.state.preapp_valid_days === null
+          ? 0
+          : $this.state.preapp_valid_days;
       algaehApiCall({
         uri: "/insurance/updateInsuranceProvider",
         module: "insurance",

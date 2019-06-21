@@ -91,7 +91,7 @@ const assignDataandclear = (
 const deleteDNDetail = ($this, row, context) => {
   let dn_entry_detail = $this.state.dn_entry_detail;
   let po_entry_detail = $this.state.po_entry_detail;
-  
+
   // for (var i = 0; i < dn_entry_detail.length; i++) {
   //   if (dn_entry_detail[i].phar_item_id === row["phar_item_id"]) {
   //     dn_entry_detail.splice(i, 1);
@@ -369,7 +369,7 @@ const printBarcode = ($this, row, e) => {
 const onChangeTextEventHandaler = ($this, context, e) => {
   let item_details = $this.state.item_details;
   let name = e.name || e.target.name;
-  let value = e.value || e.target.value;
+  let value = e.value === "" ? null : e.value || e.target.value;
   item_details[name] = value;
   $this.setState({
     [name]: value,
@@ -409,7 +409,6 @@ const OnChangeDeliveryQty = ($this, context, e) => {
 
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  
 
   const latest_added = _.filter($this.state.dn_entry_detail, f => {
     return f.item_id == item_details.item_id;
@@ -444,7 +443,6 @@ const OnChangeDeliveryQty = ($this, context, e) => {
         type: "warning"
       });
     } else {
-      
       extended_price = parseFloat(item_details.unit_price) * parseFloat(value);
       discount_amount = (extended_price * discount_percentage) / 100;
 
@@ -501,11 +499,11 @@ const OnChangeDeliveryQty = ($this, context, e) => {
 };
 
 const AddtoList = ($this, context) => {
-  
   let dn_entry_detail = $this.state.dn_entry_detail;
 
   let item_details = extend({}, $this.state.item_details);
   let _item_details = extend({}, $this.state.item_details);
+  let dn_item_details = extend({}, $this.state.item_details);
 
   let _po_entry_detail = $this.state.po_entry_detail;
 
@@ -574,8 +572,17 @@ const AddtoList = ($this, context) => {
       _item_details
     );
 
+    dn_item_details.dn_quantity = 0;
+    dn_item_details.extended_price = 0;
+    dn_item_details.extended_cost = 0;
+
+    dn_item_details.tax_amount = 0;
+    dn_item_details.total_amount = 0;
+    dn_item_details.net_extended_cost = 0;
+
     $this.setState({
       dn_entry_detail: dn_entry_detail,
+      item_details: dn_item_details,
       vendor_batchno: null,
       expiry_date: null,
       dn_quantity: null,
@@ -589,6 +596,7 @@ const AddtoList = ($this, context) => {
     });
     context.updateState({
       dn_entry_detail: dn_entry_detail,
+      item_details: dn_item_details,
       vendor_batchno: null,
       expiry_date: null,
       dn_quantity: null,
@@ -604,7 +612,6 @@ const AddtoList = ($this, context) => {
 };
 
 const numberEventHandaler = ($this, context, ctrl, e) => {
-  
   e = e || ctrl;
   let name = e.name || e.target.name;
   let value = e.value === "" ? null : e.value || e.target.value;

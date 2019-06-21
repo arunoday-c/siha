@@ -233,6 +233,14 @@ let algaehSearchConfig = (searchName, req) => {
         orderBy: "hims_f_procurement_po_header_id desc"
       },
       {
+        searchName: "POEntryGetReceipt",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS * from hims_f_procurement_po_header where authorize1 = 'Y'\
+           and cancelled='N' and  hospital_id=" +
+          hospitalId,
+        orderBy: "hims_f_procurement_po_header_id desc"
+      },
+      {
         searchName: "DNEntry",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS * from hims_f_procurement_dn_header where hospital_id=" +
@@ -519,7 +527,7 @@ let algaehSearchConfig = (searchName, req) => {
             ITL where INS.services_id = IM.service_id and IM.hims_d_inventory_item_master_id = ITL.item_id and \
             insurance_id=? and {mapper} and service_type_id=4",
         orderBy: "services_id desc",
-        inputSequence: ["insurance_id", "insurance_id"]
+        inputSequence: ["insurance_id", "inventory_location_id", "insurance_id"]
       },
       {
         searchName: "pharmacyUsers",
