@@ -516,7 +516,6 @@ const deletePODetail = ($this, context, row) => {
 };
 
 const updatePODetail = ($this, context, row) => {
-  
   let saveEnable = false;
   if ($this.state.hims_f_procurement_po_header_id !== null) {
     saveEnable = true;
@@ -623,7 +622,7 @@ const dateFormater = ($this, value) => {
 
 const onchangegridcol = ($this, row, e) => {
   //
-  
+
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   if (parseFloat(value) > parseFloat(row.total_quantity)) {
@@ -641,13 +640,13 @@ const onchangegridcol = ($this, row, e) => {
     row["quantity_outstanding"] = value;
     row["rejected_quantity"] = row.total_quantity - value;
     row.update();
-    onchhangegriddiscount($this, row, e)
+    onchhangegriddiscount($this, row, e);
   }
 };
 
 const onchhangegriddiscount = ($this, row, e) => {
   //
-  
+
   let sub_discount_percentage = 0;
   let sub_discount_amount = 0;
   let extended_cost = 0;
@@ -663,19 +662,19 @@ const onchhangegriddiscount = ($this, row, e) => {
       value === ""
         ? 0
         : (parseFloat(extended_price) * sub_discount_percentage) / 100;
-  } else if(name === "sub_discount_amount") {
+  } else if (name === "sub_discount_amount") {
     sub_discount_amount = value === "" ? "" : parseFloat(value);
     sub_discount_percentage =
       value === ""
         ? 0
         : (sub_discount_amount / parseFloat(extended_price)) * 100;
-  }
-  else{
-    extended_price = parseFloat(row.authorize_quantity) * parseFloat(row.unit_price);
-    sub_discount_percentage=row.sub_discount_percentage;
+  } else {
+    extended_price =
+      parseFloat(row.authorize_quantity) * parseFloat(row.unit_price);
+    sub_discount_percentage = row.sub_discount_percentage;
 
-    sub_discount_amount = (parseFloat(extended_price) *
-          parseFloat(sub_discount_percentage)) / 100
+    sub_discount_amount =
+      (parseFloat(extended_price) * parseFloat(sub_discount_percentage)) / 100;
   }
   if (sub_discount_percentage > 100) {
     swalMessage({
@@ -684,12 +683,13 @@ const onchhangegriddiscount = ($this, row, e) => {
     });
   } else {
     //
-    extended_cost = parseFloat(extended_price) - parseFloat(sub_discount_amount);
+    extended_cost =
+      parseFloat(extended_price) - parseFloat(sub_discount_amount);
 
     tax_amount = (extended_cost * parseFloat(row.tax_percentage)) / 100;
     tax_amount = getAmountFormart(tax_amount, { appendSymbol: false });
     extended_cost = getAmountFormart(extended_cost, { appendSymbol: false });
-    row["unit_cost"] = extended_cost / parseFloat(row.order_quantity);
+    // row["unit_cost"] = extended_cost / parseFloat(row.order_quantity);
 
     row["extended_cost"] = extended_cost;
     row["tax_amount"] = (extended_cost * parseFloat(row.tax_percentage)) / 100;
@@ -767,7 +767,6 @@ const CancelGrid = ($this, context, cancelRow) => {
 };
 
 const gridNumHandler = ($this, row, e) => {
-  
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
@@ -776,7 +775,7 @@ const gridNumHandler = ($this, row, e) => {
       title: "Authorize Quantity cannot be greater than Ordered Quantity.",
       type: "warning"
     });
-  }else if (value < 0) {
+  } else if (value < 0) {
     swalMessage({
       title: "Authorize Quantity cannot be less than Zero",
       type: "warning"
@@ -787,8 +786,7 @@ const gridNumHandler = ($this, row, e) => {
       extended_price = parseFloat(value) * parseFloat(row.unit_price);
     }
     let unit_cost = extended_price / parseFloat(value);
-    let tax_amount =
-      (extended_price * parseFloat(row.tax_percentage)) / 100;
+    let tax_amount = (extended_price * parseFloat(row.tax_percentage)) / 100;
     let total_amount = tax_amount + extended_price;
     $this.setState({
       [name]: value,

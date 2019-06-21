@@ -8,9 +8,6 @@ import {
   AlgaehModalPopUp
 } from "../Wrapper/algaehWrapper";
 import {
-  setGlobal,
-  AlgaehValidation,
-  SetBulkState,
   getLabelFromLanguage
 } from "../../utils/GlobalFunctions";
 import GlobalVariables from "../../utils/GlobalVariables";
@@ -99,24 +96,24 @@ function AppointmentComponent(props) {
                         }}
                         value={props.state.edit_appt_date}
                       />
-                      <AlagehFormGroup
+                      <AlagehAutoComplete
                         div={{ className: "col" }}
                         label={{
-                          fieldName: "appoTime"
+                          fieldName: "appoTime",
+                          // isImp: true
                         }}
-                        textBox={{
-                          className: "txt-fld",
+                        selector={{
                           name: "edit_appt_time",
+                          className: "select-fld",
                           value: props.state.edit_appt_time,
-                          events: {
-                            onChange: props.texthandle
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: props.state.timeSlots
                           },
-                          others: {
-                            type: "time",
-                            disabled: true
-                          }
+                          onChange: props.dropDownHandle
                         }}
-                      />
+                        />
                       <AlagehAutoComplete
                         div={{ className: "col" }}
                         label={{
@@ -228,19 +225,7 @@ function AppointmentComponent(props) {
                           }
                         }}
                         events={{
-                          onChange: selectedDate => {
-                            props.setState(
-                              { date_of_birth: selectedDate },
-                              () => {
-                                props.setState({
-                                  edit_age: moment().diff(
-                                    props.state.edit_date_of_birth,
-                                    "years"
-                                  )
-                                });
-                              }
-                            );
-                          }
+                          onChange: props.ageHandler
                         }}
                         value={props.state.edit_date_of_birth}
                       />

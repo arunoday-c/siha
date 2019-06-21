@@ -24,6 +24,7 @@ import "../../../styles/site.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import Enumerable from "linq";
 import BatchWiseStock from "./BatchWiseStock";
+import { getAmountFormart } from "../../../utils/GlobalFunctions";
 
 class InvStockEnquiry extends Component {
   constructor(props) {
@@ -145,7 +146,7 @@ class InvStockEnquiry extends Component {
                         location_id: null
                       });
                     },
-                                    autoComplete: "off"
+                    autoComplete: "off"
                   }}
                 />
 
@@ -255,7 +256,7 @@ class InvStockEnquiry extends Component {
                         </span>
                       );
                     },
-                    others:{filterable: false}
+                    others: { filterable: false }
                   },
 
                   {
@@ -306,7 +307,7 @@ class InvStockEnquiry extends Component {
                         </span>
                       );
                     },
-                    others:{filterable: false}
+                    others: { filterable: false }
                   },
                   {
                     fieldName: "sales_uom",
@@ -327,7 +328,7 @@ class InvStockEnquiry extends Component {
                         </span>
                       );
                     },
-                    others:{filterable: false}
+                    others: { filterable: false }
                   },
 
                   {
@@ -336,15 +337,15 @@ class InvStockEnquiry extends Component {
                     displayTemplate: row => {
                       return row.reorder === "R" ? (
                         <div className="orderNow">
-                          <span>{row.qtyhand}</span>
+                          {parseFloat(row.qtyhand)}
                           <span className="orderSoon">Order Soon</span>
                         </div>
                       ) : (
-                        row.qtyhand
+                        parseFloat(row.qtyhand)
                       );
                     },
                     disabled: true,
-                    others:{filterable: false}
+                    others: { filterable: false }
                   },
                   {
                     fieldName: "reorder_qty",
@@ -352,18 +353,36 @@ class InvStockEnquiry extends Component {
                       <AlgaehLabel label={{ forceLabel: "Reorder Quantity" }} />
                     ),
                     disabled: true,
-                    others:{filterable: false}
+                    others: { filterable: false }
                   },
                   {
                     fieldName: "avgcost",
                     label: <AlgaehLabel label={{ forceLabel: "Avg. Cost" }} />,
-                    disabled: true,
-                    others:{filterable: false}
+                    displayTemplate: row => {
+                      return (
+                        <span>
+                          {getAmountFormart(row.avgcost, {
+                            appendSymbol: false
+                          })}
+                        </span>
+                      );
+                    },
+                    disabled: true
                   },
                   {
                     fieldName: "sale_price",
-                    label: <AlgaehLabel label={{ forceLabel: "Sales Price" }} />,
-                    others:{filterable: false}
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Sales Price" }} />
+                    ),
+                    displayTemplate: row => {
+                      return (
+                        <span>
+                          {getAmountFormart(row.sale_price, {
+                            appendSymbol: false
+                          })}
+                        </span>
+                      );
+                    }
                   }
                 ]}
                 keyId="item_id"

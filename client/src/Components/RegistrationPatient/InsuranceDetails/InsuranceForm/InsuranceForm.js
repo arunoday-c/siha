@@ -24,7 +24,6 @@ import {
   clearinsurancehandle
 } from "./InsuranceHandler";
 import AlgaehFileUploader from "../../../Wrapper/algaehFileUpload";
-import variableJson from "../../../../utils/GlobalVariables.json";
 
 class AddInsuranceForm extends Component {
   constructor(props) {

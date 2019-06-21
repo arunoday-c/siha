@@ -131,7 +131,13 @@ class Appointment extends PureComponent {
         title: "Cannot cancel previous appointments",
         type: "error"
       });
-    } else {
+    } else if(row.appointment_status_id === this.state.checkInId) {
+      swalMessage({
+        title: "Cannot cancel checked in Patients",
+        type: "error"
+      })
+    }
+    else {
       swal({
         title: "Cancel Appointment for " + row.patient_name + "?",
         type: "warning",
@@ -501,7 +507,6 @@ class Appointment extends PureComponent {
           onSuccess: response => {
             algaehLoader({ show: false });
             if (response.data.success && response.data.records.length > 0) {
-              //  console.log("Appt Schedule:", response.data.records);
               this.setState(
                 { appointmentSchedule: response.data.records },
                 () => {
@@ -703,6 +708,7 @@ class Appointment extends PureComponent {
   openEditModal(patient, data, e) {
     e.preventDefault();
 
+    this.getTimeSlotsForDoctor(patient.provider_id)
     let maxSlots = 1;
     const _currentRow = e.target.parentElement.parentNode.sectionRowIndex + 1;
     const _allRows =
@@ -745,7 +751,7 @@ class Appointment extends PureComponent {
         openPatEdit = true;
       }
       this.setState({ patToEdit: patient, openPatEdit: openPatEdit }, () => {
-        let pat_edit = this.state.patToEdit;
+        let { patToEdit: pat_edit } = this.state;
         this.setState(
           {
             edit_appointment_status_id: pat_edit.appointment_status_id,
@@ -800,7 +806,7 @@ class Appointment extends PureComponent {
           cancelButtonColor: "#d33",
           cancelButtonText: "No"
         }).then(willUpdate => {
-          let new_to_time = moment(this.state.edit_from_time, "HH:mm:ss").add(
+          let new_to_time = moment(this.state.edit_appt_time, "HH:mm:ss").add(
             this.state.edit_no_of_slots * this.state.slot,
             "minutes"
           );
@@ -825,7 +831,7 @@ class Appointment extends PureComponent {
                 provider_id: this.state.edit_provider_id,
                 sub_department_id: this.state.edit_sub_dep_id,
                 appointment_date: this.state.edit_appt_date,
-                appointment_from_time: this.state.edit_from_time,
+                appointment_from_time: this.state.edit_appt_time,
                 appointment_to_time: moment(new_to_time).format("HH:mm:ss"),
                 patient_name: this.state.edit_patient_name,
                 arabic_name: this.state.edit_arabic_name,
@@ -1485,6 +1491,59 @@ class Appointment extends PureComponent {
     });
   }
 
+// will be refatored,to make the code DRY
+  getTimeSlotsForDoctor(id) {
+    const schedule = this.state.appointmentSchedule
+    const [data] = schedule.filter(doc => doc.provider_id === id )
+    const from_work_hr = moment(data.from_work_hr, "hh:mm:ss");
+    const to_work_hr = moment(data.to_work_hr, "hh:mm:ss");
+    const from_break_hr1 = moment(data.from_break_hr1, "hh:mm:ss");
+    const to_break_hr1 = moment(data.to_break_hr1, "hh:mm:ss");
+    const from_break_hr2 = moment(data.from_break_hr2, "hh:mm:ss");
+    const to_break_hr2 = moment(data.to_break_hr2, "hh:mm:ss");
+    const slot = parseInt(data.slot, 10);
+    console.log("from get timeSlots", slot)
+    let result = []
+    let isPrevbreak = null
+    let count = 0
+    for (;;) {
+      let isBreak = false;
+
+      let newFrom =
+        count === 0 ? from_work_hr : from_work_hr.add(slot, "minutes");
+      if (newFrom.isBefore(to_work_hr)) {
+        if (data.work_break1 === "Y" || data.work_break2 === "Y") {
+          let endTimeTemp = new moment(newFrom).add(slot, "minutes");
+          if (
+            (to_break_hr1 > newFrom && to_break_hr1 <= newFrom) ||
+            (from_break_hr1 <= newFrom && to_break_hr1 >= endTimeTemp)
+          ) {
+            isBreak = true;
+          }
+
+          if (
+            (to_break_hr2 > newFrom && to_break_hr2 <= endTimeTemp) ||
+            (from_break_hr2 <= newFrom && to_break_hr2 >= endTimeTemp)
+          ) {
+            isBreak = true;
+          }
+        }
+        if (!isBreak) {
+          result.push(
+            {
+              name: newFrom.format("hh:mm a"),
+              value: newFrom.format("HH:mm:ss")
+            }
+          );
+        }
+      } else {
+        break;
+      }
+      count = count + 1;
+    }
+    return this.setState({timeSlots: result})
+  }
+
   generateTimeslots(data) {
     const clinic_id = data.clinic_id;
     const provider_id = data.provider_id;
@@ -1594,6 +1653,7 @@ class Appointment extends PureComponent {
         monthChangeHandler={e => this.monthChangeHandler(e)}
         generateHorizontalDateBlocks={() => this.generateHorizontalDateBlocks()}
         generateTimeslots={data => this.generateTimeslots(data)}
+        getTimeSlotsForDoctor={id => this.getAppointmentSchedule(id)}
       />
     );
   }

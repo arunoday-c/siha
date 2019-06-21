@@ -22,6 +22,7 @@ import "./ItemMomentEnquiry.css";
 import "../../../styles/site.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
+import { getAmountFormart } from "../../../utils/GlobalFunctions";
 
 class ItemMomentEnquiry extends Component {
   constructor(props) {
@@ -371,11 +372,25 @@ class ItemMomentEnquiry extends Component {
                     },
                     {
                       fieldName: "transaction_qty",
-                      label: <AlgaehLabel label={{ forceLabel: "Quantity" }} />
+                      label: <AlgaehLabel label={{ forceLabel: "Quantity" }} />,
+                      displayTemplate: row => {
+                        return parseFloat(row.transaction_qty);
+                      }
                     },
                     {
                       fieldName: "transaction_cost",
-                      label: <AlgaehLabel label={{ forceLabel: "Unit Cost" }} />
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Unit Cost" }} />
+                      ),
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {getAmountFormart(row.transaction_cost, {
+                              appendSymbol: false
+                            })}
+                          </span>
+                        );
+                      }
                     }
                   ]}
                   keyId="item_id"
