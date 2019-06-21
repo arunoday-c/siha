@@ -22,14 +22,20 @@ import {
   onchangegridcoldatehandle,
   changeDateFormat,
   GridAssignData,
-  onchhangegriddiscount
+  onchhangegriddiscount,
+  getDeliveryItemDetails,
+  CloseItemDetail
 } from "./ReceiptItemListEvent";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import DNItemList from "./DeliveryItemDetails";
 
 class ReceiptItemList extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      dn_item_enable: false,
+      dn_item_details: []
+    };
   }
 
   componentWillMount() {
@@ -56,298 +62,43 @@ class ReceiptItemList extends Component {
                           id="Receipt_details"
                           columns={[
                             {
-                              fieldName:
-                                this.state.grn_for === "PHR"
-                                  ? "phar_item_id"
-                                  : "inv_item_id",
+                              fieldName: "actions",
                               label: (
-                                <AlgaehLabel
-                                  label={{ forceLabel: "Item Name" }}
-                                />
-                              ),
-                              displayTemplate: row => {
-                                let display;
-
-                                this.state.grn_for === "PHR"
-                                  ? (display =
-                                      this.props.receiptitemlist === undefined
-                                        ? []
-                                        : this.props.receiptitemlist.filter(
-                                            f =>
-                                              f.hims_d_item_master_id ===
-                                              row.phar_item_id
-                                          ))
-                                  : (display =
-                                      this.props.receiptitemlist === undefined
-                                        ? []
-                                        : this.props.receiptitemlist.filter(
-                                            f =>
-                                              f.hims_d_inventory_item_master_id ===
-                                              row.inv_item_id
-                                          ));
-
-                                return (
-                                  <span>
-                                    {display !== undefined &&
-                                    display.length !== 0
-                                      ? display[0].item_description
-                                      : ""}
-                                  </span>
-                                );
-                              },
-                              editorTemplate: row => {
-                                let display;
-
-                                this.state.grn_for === "PHR"
-                                  ? (display =
-                                      this.props.receiptitemlist === undefined
-                                        ? []
-                                        : this.props.receiptitemlist.filter(
-                                            f =>
-                                              f.hims_d_item_master_id ===
-                                              row.phar_item_id
-                                          ))
-                                  : (display =
-                                      this.props.receiptitemlist === undefined
-                                        ? []
-                                        : this.props.receiptitemlist.filter(
-                                            f =>
-                                              f.hims_d_inventory_item_master_id ===
-                                              row.inv_item_id
-                                          ));
-
-                                return (
-                                  <span>
-                                    {display !== undefined &&
-                                    display.length !== 0
-                                      ? display[0].item_description
-                                      : ""}
-                                  </span>
-                                );
-                              }
-                            },
-
-                            {
-                              fieldName:
-                                this.state.grn_for === "PHR"
-                                  ? "phar_item_category"
-                                  : "inv_item_category_id",
-                              label: (
-                                <AlgaehLabel
-                                  label={{ forceLabel: "Item Category" }}
-                                />
-                              ),
-                              displayTemplate: row => {
-                                let display;
-
-                                this.state.grn_for === "PHR"
-                                  ? (display =
-                                      this.props.receiptitemcategory ===
-                                      undefined
-                                        ? []
-                                        : this.props.receiptitemcategory.filter(
-                                            f =>
-                                              f.hims_d_item_category_id ===
-                                              row.phar_item_category
-                                          ))
-                                  : (display =
-                                      this.props.receiptitemcategory ===
-                                      undefined
-                                        ? []
-                                        : this.props.receiptitemcategory.filter(
-                                            f =>
-                                              f.hims_d_inventory_tem_category_id ===
-                                              row.inv_item_category_id
-                                          ));
-
-                                return (
-                                  <span>
-                                    {display !== undefined &&
-                                    display.length !== 0
-                                      ? display[0].category_desc
-                                      : ""}
-                                  </span>
-                                );
-                              },
-                              editorTemplate: row => {
-                                let display;
-
-                                this.state.grn_for === "PHR"
-                                  ? (display =
-                                      this.props.receiptitemcategory ===
-                                      undefined
-                                        ? []
-                                        : this.props.receiptitemcategory.filter(
-                                            f =>
-                                              f.hims_d_item_category_id ===
-                                              row.phar_item_category
-                                          ))
-                                  : (display =
-                                      this.props.receiptitemcategory ===
-                                      undefined
-                                        ? []
-                                        : this.props.receiptitemcategory.filter(
-                                            f =>
-                                              f.hims_d_inventory_tem_category_id ===
-                                              row.inv_item_category_id
-                                          ));
-
-                                return (
-                                  <span>
-                                    {display !== undefined &&
-                                    display.length !== 0
-                                      ? display[0].category_desc
-                                      : ""}
-                                  </span>
-                                );
-                              }
-                            },
-                            {
-                              fieldName:
-                                this.state.grn_for === "PHR"
-                                  ? "phar_item_group"
-                                  : "inv_item_group_id",
-                              label: (
-                                <AlgaehLabel
-                                  label={{ forceLabel: "Item Group" }}
-                                />
-                              ),
-                              displayTemplate: row => {
-                                let display;
-
-                                this.state.grn_for === "PHR"
-                                  ? (display =
-                                      this.props.receiptitemgroup === undefined
-                                        ? []
-                                        : this.props.receiptitemgroup.filter(
-                                            f =>
-                                              f.hims_d_item_group_id ===
-                                              row.phar_item_group
-                                          ))
-                                  : (display =
-                                      this.props.receiptitemgroup === undefined
-                                        ? []
-                                        : this.props.receiptitemgroup.filter(
-                                            f =>
-                                              f.hims_d_inventory_item_group_id ===
-                                              row.inv_item_group_id
-                                          ));
-
-                                return (
-                                  <span>
-                                    {display !== undefined &&
-                                    display.length !== 0
-                                      ? display[0].group_description
-                                      : ""}
-                                  </span>
-                                );
-                              },
-                              editorTemplate: row => {
-                                let display;
-
-                                this.state.grn_for === "PHR"
-                                  ? (display =
-                                      this.props.receiptitemgroup === undefined
-                                        ? []
-                                        : this.props.receiptitemgroup.filter(
-                                            f =>
-                                              f.hims_d_item_group_id ===
-                                              row.phar_item_group
-                                          ))
-                                  : (display =
-                                      this.props.receiptitemgroup === undefined
-                                        ? []
-                                        : this.props.receiptitemgroup.filter(
-                                            f =>
-                                              f.hims_d_inventory_item_group_id ===
-                                              row.inv_item_group_id
-                                          ));
-
-                                return (
-                                  <span>
-                                    {display !== undefined &&
-                                    display.length !== 0
-                                      ? display[0].group_description
-                                      : ""}
-                                  </span>
-                                );
-                              }
-                            },
-
-                            {
-                              fieldName: "vendor_batchno",
-                              label: (
-                                <AlgaehLabel
-                                  label={{ forceLabel: "Vendor Batch  No." }}
-                                />
-                              ),
-                              editorTemplate: row => {
-                                return (
-                                  <AlagehFormGroup
-                                    div={{}}
-                                    textBox={{
-                                      value: row.vendor_batchno,
-                                      className: "txt-fld",
-                                      name: "vendor_batchno",
-                                      events: {
-                                        onChange: onchangegridcol.bind(
-                                          this,
-                                          this,
-                                          row
-                                        )
-                                      },
-                                      others: {
-                                        disabled:
-                                          this.state.posted === "Y"
-                                            ? true
-                                            : false
-                                      }
-                                    }}
-                                  />
-                                );
-                              },
-                              others: {
-                                minWidth: 150,
-                                resizable: false
-                              }
-                            },
-                            {
-                              fieldName: "expiry_date",
-                              label: (
-                                <AlgaehLabel
-                                  label={{ forceLabel: "Expiry Date" }}
-                                />
+                                <AlgaehLabel label={{ forceLabel: "Action" }} />
                               ),
                               displayTemplate: row => {
                                 return (
                                   <span>
-                                    {changeDateFormat(row.expiry_date)}
-                                  </span>
-                                );
-                              },
-                              editorTemplate: row => {
-                                return (
-                                  <AlgaehDateHandler
-                                    div={{}}
-                                    textBox={{
-                                      className: "txt-fld hidden",
-                                      name: "expiry_date"
-                                    }}
-                                    minDate={new Date()}
-                                    disabled={
-                                      this.state.posted === "Y" ? true : false
-                                    }
-                                    events={{
-                                      onChange: onchangegridcoldatehandle.bind(
+                                    <i
+                                      className="fas fa-eye"
+                                      onClick={getDeliveryItemDetails.bind(
                                         this,
                                         this,
                                         row
-                                      )
-                                    }}
-                                    value={row.expiry_date}
-                                  />
+                                      )}
+                                    />
+
+                                    <i
+                                      className="fas fa-trash-alt"
+                                      onClick={deleteReceiptDetail.bind(
+                                        this,
+                                        this,
+                                        row,
+                                        context
+                                      )}
+                                    />
+                                  </span>
                                 );
-                              },
+                              }
+                            },
+                            {
+                              fieldName: "delivery_note_number",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Delivery Number" }}
+                                />
+                              ),
+
                               others: {
                                 minWidth: 150,
                                 resizable: false
@@ -355,115 +106,24 @@ class ReceiptItemList extends Component {
                             },
 
                             {
-                              fieldName: "po_quantity",
+                              fieldName: "extended_cost",
                               label: (
                                 <AlgaehLabel
-                                  label={{ forceLabel: "PO Quantity" }}
+                                  label={{ forceLabel: "Extended Cost" }}
                                 />
                               ),
+                              displayTemplate: row => {
+                                return (
+                                  <span>
+                                    {getAmountFormart(row.extended_cost, {
+                                      appendSymbol: false
+                                    })}
+                                  </span>
+                                );
+                              },
                               disabled: true
                             },
 
-                            {
-                              fieldName: "unit_cost",
-                              label: (
-                                <AlgaehLabel
-                                  label={{ forceLabel: "Unit Cost" }}
-                                />
-                              ),
-                              disabled: true
-                            },
-                            {
-                              fieldName: "dn_quantity",
-                              label: (
-                                <AlgaehLabel
-                                  label={{
-                                    forceLabel: "Delivery Note Quantity"
-                                  }}
-                                />
-                              ),
-                              disabled: true
-                            },
-                            {
-                              fieldName: "sales_price",
-                              label: (
-                                <AlgaehLabel
-                                  label={{ forceLabel: "Sales Price" }}
-                                />
-                              ),
-                              disabled: true
-                            },
-                            {
-                              fieldName: "recieved_quantity",
-                              label: (
-                                <AlgaehLabel
-                                  label={{ forceLabel: "Received Quantity" }}
-                                />
-                              ),
-                              editorTemplate: row => {
-                                return (
-                                  <AlagehFormGroup
-                                    div={{}}
-                                    textBox={{
-                                      number: {
-                                        allowNegative: false,
-                                        thousandSeparator: ","
-                                      },
-                                      value: row.recieved_quantity,
-                                      className: "txt-fld",
-                                      name: "recieved_quantity",
-                                      events: {
-                                        onChange: onchhangegriddiscount.bind(
-                                          this,
-                                          this,
-                                          row
-                                        )
-                                      },
-                                      others: {
-                                        disabled:
-                                          this.state.posted === "Y"
-                                            ? true
-                                            : false,
-                                        onBlur: GridAssignData.bind(
-                                          this,
-                                          this,
-                                          row
-                                        )
-                                      }
-                                    }}
-                                  />
-                                );
-                              }
-                            },
-                            {
-                              fieldName: "outstanding_quantity",
-                              label: (
-                                <AlgaehLabel
-                                  label={{ forceLabel: "OutStanding Quantity" }}
-                                />
-                              ),
-                              disabled: true
-                            },
-                            {
-                              fieldName: "quantity_recieved_todate",
-                              label: (
-                                <AlgaehLabel
-                                  label={{
-                                    forceLabel: "Quantity Received Todate"
-                                  }}
-                                />
-                              ),
-                              disabled: true
-                            },
-                            {
-                              fieldName: "discount_percentage",
-                              label: (
-                                <AlgaehLabel
-                                  label={{ forceLabel: "Discount %" }}
-                                />
-                              ),
-                              disabled: true
-                            },
                             {
                               fieldName: "discount_amount",
                               label: (
@@ -471,6 +131,15 @@ class ReceiptItemList extends Component {
                                   label={{ forceLabel: "Discount Amount" }}
                                 />
                               ),
+                              displayTemplate: row => {
+                                return (
+                                  <span>
+                                    {getAmountFormart(row.discount_amount, {
+                                      appendSymbol: false
+                                    })}
+                                  </span>
+                                );
+                              },
                               disabled: true
                             },
                             {
@@ -480,9 +149,17 @@ class ReceiptItemList extends Component {
                                   label={{ forceLabel: "Net Extended Cost" }}
                                 />
                               ),
+                              displayTemplate: row => {
+                                return (
+                                  <span>
+                                    {getAmountFormart(row.net_extended_cost, {
+                                      appendSymbol: false
+                                    })}
+                                  </span>
+                                );
+                              },
                               disabled: true
                             },
-
                             {
                               fieldName: "tax_amount",
                               label: (
@@ -490,6 +167,15 @@ class ReceiptItemList extends Component {
                                   label={{ forceLabel: "Tax Amount" }}
                                 />
                               ),
+                              displayTemplate: row => {
+                                return (
+                                  <span>
+                                    {getAmountFormart(row.tax_amount, {
+                                      appendSymbol: false
+                                    })}
+                                  </span>
+                                );
+                              },
                               disabled: true
                             },
 
@@ -500,6 +186,15 @@ class ReceiptItemList extends Component {
                                   label={{ forceLabel: "Total Amount" }}
                                 />
                               ),
+                              displayTemplate: row => {
+                                return (
+                                  <span>
+                                    {getAmountFormart(row.total_amount, {
+                                      appendSymbol: false
+                                    })}
+                                  </span>
+                                );
+                              },
                               disabled: true
                             }
                           ]}
@@ -507,7 +202,7 @@ class ReceiptItemList extends Component {
                           dataSource={{
                             data: this.state.receipt_entry_detail
                           }}
-                          isEditable={true}
+                          isEditable={false}
                           paging={{ page: 0, rowsPerPage: 10 }}
                           events={{
                             onDelete: deleteReceiptDetail.bind(
@@ -565,6 +260,13 @@ class ReceiptItemList extends Component {
                     </div>
                   </div>
                 </div>
+                <DNItemList
+                  show={this.state.dn_item_enable}
+                  onClose={CloseItemDetail.bind(this, this)}
+                  HeaderCaption="Delivery Items"
+                  dn_item_details={this.state.dn_item_details}
+                  grn_for={this.state.grn_for}
+                />
               </div>
             </div>
           )}

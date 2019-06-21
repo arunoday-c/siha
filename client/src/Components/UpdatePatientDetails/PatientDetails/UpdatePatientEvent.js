@@ -112,7 +112,7 @@ const setAge = ($this, e) => {
     let months = $this.state.AGEMM;
     let days = $this.state.AGEDD;
 
-    if (e.target.name === "AGEMM" && parseInt(e.target.value) > 23) {
+    if (e.target.name === "AGEMM" && parseInt(e.target.value, 10) > 23) {
       swalMessage({
         title: "Age in months cannot be greater than 23.",
         type: "error"
@@ -121,7 +121,7 @@ const setAge = ($this, e) => {
         [e.target.name]: $this.state.AGEMM
       });
     }
-    if (e.target.name === "AGEDD" && parseInt(e.target.value) > 365) {
+    if (e.target.name === "AGEDD" && parseInt(e.target.value, 10) > 365) {
       swalMessage({
         title: "Age in days cannot be greater than 365.",
         type: "error"

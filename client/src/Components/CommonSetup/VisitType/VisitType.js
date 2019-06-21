@@ -327,7 +327,7 @@ class VisitType extends Component {
                 />
 
                 <AlagehFormGroup
-                  div={{ className: "col" }}
+                  div={{ className: "col arabic-txt-fld" }}
                   label={{
                     fieldName: "arabic_type_desc",
                     isImp: true

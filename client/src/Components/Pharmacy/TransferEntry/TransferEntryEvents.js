@@ -30,10 +30,19 @@ const getCtrlCode = ($this, docNumber, row) => {
         let pharmacy_stock_detail = [];
         let data = response.data.records[0];
         for (let i = 0; i < data.stock_detail.length; i++) {
-          data.pharmacy_stock_detail = pharmacy_stock_detail.concat(
-            data.stock_detail[i].pharmacy_stock_detail
-          );
+          if (pharmacy_stock_detail.length === 0) {
+            pharmacy_stock_detail = data.stock_detail[i].pharmacy_stock_detail;
+          } else {
+            pharmacy_stock_detail = pharmacy_stock_detail.concat(
+              data.stock_detail[i].pharmacy_stock_detail
+            );
+          }
+
+          // data.pharmacy_stock_detail = pharmacy_stock_detail.concat(
+          //   data.stock_detail[i].pharmacy_stock_detail
+          // );
         }
+        data.pharmacy_stock_detail = pharmacy_stock_detail;
 
         for (let j = 0; j < data.pharmacy_stock_detail.length; j++) {
           data.pharmacy_stock_detail[j].quantity_transferred =

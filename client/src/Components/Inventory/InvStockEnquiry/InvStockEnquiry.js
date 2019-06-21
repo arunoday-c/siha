@@ -337,7 +337,7 @@ class InvStockEnquiry extends Component {
                     displayTemplate: row => {
                       return row.reorder === "R" ? (
                         <div className="orderNow">
-                          {parseFloat(row.qtyhand)}
+                          <span>{parseFloat(row.qtyhand)}</span>
                           <span className="orderSoon">Order Soon</span>
                         </div>
                       ) : (

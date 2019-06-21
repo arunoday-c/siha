@@ -233,6 +233,14 @@ let algaehSearchConfig = (searchName, req) => {
         orderBy: "hims_f_procurement_po_header_id desc"
       },
       {
+        searchName: "POEntryGetReceipt",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS * from hims_f_procurement_po_header where authorize1 = 'Y'\
+           and cancelled='N' and  hospital_id=" +
+          hospitalId,
+        orderBy: "hims_f_procurement_po_header_id desc"
+      },
+      {
         searchName: "DNEntry",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS * from hims_f_procurement_dn_header where hospital_id=" +

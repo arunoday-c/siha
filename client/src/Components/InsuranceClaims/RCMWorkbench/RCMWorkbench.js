@@ -791,7 +791,7 @@ class RCMWorkbench extends Component {
                     }}
                     filter={true}
                     isEditable={false}
-                    paging={{ page: 0, rowsPerPage: 10 }}
+                    paging={{ page: 0, rowsPerPage: 20 }}
                     // events={{
                     //   onDelete: deletePosDetail.bind(this, this, context),
                     //   onEdit: row => {},

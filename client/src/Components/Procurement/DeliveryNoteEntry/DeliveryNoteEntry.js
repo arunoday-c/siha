@@ -262,29 +262,6 @@ class DeliveryNoteEntry extends Component {
                   }}
                 />
 
-                <AlagehAutoComplete
-                  div={{ className: "col-2" }}
-                  label={{ forceLabel: "Vendor No." }}
-                  selector={{
-                    name: "vendor_id",
-                    className: "select-fld",
-                    value: this.state.vendor_id,
-                    dataSource: {
-                      textField: "vendor_name",
-                      valueField: "hims_d_vendor_id",
-                      data: this.props.dnvendors
-                    },
-                    others: {
-                      disabled:
-                        this.state.fromPurList === true
-                          ? true
-                          : this.state.dataExitst
-                    },
-                    onChange: vendortexthandle.bind(this, this),
-                    onClear: vendortexthandle.bind(this, this)
-                  }}
-                />
-
                 <AlagehFormGroup
                   div={{ className: "col-2" }}
                   label={{
@@ -325,6 +302,25 @@ class DeliveryNoteEntry extends Component {
                     onClick={PurchaseOrderSearch.bind(this, this)}
                   />
                 </div>
+                <AlagehAutoComplete
+                  div={{ className: "col-2" }}
+                  label={{ forceLabel: "Vendor No." }}
+                  selector={{
+                    name: "vendor_id",
+                    className: "select-fld",
+                    value: this.state.vendor_id,
+                    dataSource: {
+                      textField: "vendor_name",
+                      valueField: "hims_d_vendor_id",
+                      data: this.props.dnvendors
+                    },
+                    others: {
+                      disabled: true
+                    },
+                    onChange: vendortexthandle.bind(this, this),
+                    onClear: vendortexthandle.bind(this, this)
+                  }}
+                />
 
                 <div className="col">
                   <AlgaehLabel label={{ forceLabel: "Payment Terms" }} />
@@ -377,7 +373,7 @@ class DeliveryNoteEntry extends Component {
                   />
                 </button>
 
-                {this.state.fromPurList === true ? (
+                {this.state.fromPurList === false ? (
                   <button
                     type="button"
                     className="btn btn-default"
