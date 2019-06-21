@@ -59,6 +59,7 @@ class HistoricalData extends Component {
   getPatientTreatments() {
     algaehApiCall({
       uri: "/mrd/getPatientTreatments",
+      // module: "MRD",
       method: "GET",
       data: {
         patient_id: Window.global["mrd_patient"]
@@ -135,6 +136,7 @@ class HistoricalData extends Component {
   getPatientPaymentDetails() {
     algaehApiCall({
       uri: "/mrd/getPatientPaymentDetails",
+      module: "MRD",
       method: "GET",
       data: {
         patient_id: Window.global["mrd_patient"]
@@ -438,7 +440,7 @@ class HistoricalData extends Component {
                             ))}
                           </React.Fragment>
 
-                         
+
                         ))}
                       </dl> */}
                   </div>
@@ -643,7 +645,7 @@ class HistoricalData extends Component {
               </div>
               <div className="portlet-body">
                 <div className="row">
-                  <div className="col-lg-12"  id="mrdInvestigationGrid_Cntr">
+                  <div className="col-lg-12" id="mrdInvestigationGrid_Cntr">
                     <TreeTable
                       //Most recent 3 rows are expanded
                       //expanded={{ 0: true, 1: true, 2: true, 3: true }}
@@ -695,7 +697,7 @@ class HistoricalData extends Component {
         {/* Second Two Sections End */}
 
         {/* Third Two Sections Start */}
- {/*
+        {/*
         <div className="row">
           <div className="col-lg-6">
             <div className="portlet portlet-bordered margin-bottom-15">
@@ -825,9 +827,8 @@ class HistoricalData extends Component {
                 </div>
               </div>
             </div>
-          </div> 
+          </div>
         </div>*/}
-      
 
         <div className="portlet portlet-bordered margin-bottom-15">
           <div className="portlet-title">

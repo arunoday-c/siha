@@ -33,6 +33,7 @@ import "./InvInitialStock.css";
 import "../../../styles/site.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
+import { getAmountFormart } from "../../../utils/GlobalFunctions";
 
 class InvInitialStock extends Component {
   constructor(props) {
@@ -610,23 +611,55 @@ class InvInitialStock extends Component {
                     },
                     {
                       fieldName: "quantity",
-                      label: <AlgaehLabel label={{ forceLabel: "Quantity" }} />
+                      label: <AlgaehLabel label={{ forceLabel: "Quantity" }} />,
+                      displayTemplate: row => {
+                        return parseFloat(row.quantity);
+                      }
                     },
                     {
                       fieldName: "unit_cost",
-                      label: <AlgaehLabel label={{ forceLabel: "Unit Cost" }} />
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Unit Cost" }} />
+                      ),
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {getAmountFormart(row.unit_cost, {
+                              appendSymbol: false
+                            })}
+                          </span>
+                        );
+                      }
                     },
                     {
                       fieldName: "sales_price",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Sales Price" }} />
-                      )
+                      ),
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {getAmountFormart(row.sales_price, {
+                              appendSymbol: false
+                            })}
+                          </span>
+                        );
+                      }
                     },
                     {
                       fieldName: "extended_cost",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Extended Cost" }} />
-                      )
+                      ),
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {getAmountFormart(row.extended_cost, {
+                              appendSymbol: false
+                            })}
+                          </span>
+                        );
+                      }
                     },
                     {
                       fieldName: "grn_number",

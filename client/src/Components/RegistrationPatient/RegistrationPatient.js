@@ -63,6 +63,7 @@ class RegistrationPatient extends Component {
     this.setState(IOputs);
     setGlobal({ selectedLang: "en" });
   }
+
   componentDidMount() {
     let prevLang = getCookie("Language");
     setGlobal({ selectedLang: prevLang });
@@ -79,14 +80,7 @@ class RegistrationPatient extends Component {
     } else if (this.props.patient_details !== undefined) {
       this.setState(
         {
-          full_name: this.props.patient_details.patient_name,
-          arabic_name: this.props.patient_details.arabic_patient_name,
-          date_of_birth: this.props.patient_details.date_of_birth,
-          age: this.props.patient_details.patient_age,
-          gender: this.props.patient_details.patient_gender,
-          contact_number: this.props.patient_details.patient_phone,
-          email: this.props.patient_details.patient_email,
-          title_id: this.props.patient_details.title_id,
+          ...this.props.patient_details,
           sub_department_id: this.props.sub_department_id,
           department_id: this.props.department_id,
           provider_id: this.props.provider_id,

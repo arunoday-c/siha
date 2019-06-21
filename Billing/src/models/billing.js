@@ -1090,6 +1090,8 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
               ? 0
               : servicesDetails.unit_cost;
 
+          let from_pos = servicesDetails.from_pos;
+
           let zeroBill =
             servicesDetails.zeroBill == undefined
               ? false
@@ -1490,7 +1492,12 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                   unit_cost =
                     unit_cost != 0 ? unit_cost : records.followup_free_fee;
                 } else {
-                  unit_cost = unit_cost != 0 ? unit_cost : records.standard_fee;
+                  unit_cost =
+                    from_pos == "Y"
+                      ? unit_cost
+                      : unit_cost != 0
+                      ? unit_cost
+                      : records.standard_fee;
                 }
 
                 // if (conversion_factor != 0) {

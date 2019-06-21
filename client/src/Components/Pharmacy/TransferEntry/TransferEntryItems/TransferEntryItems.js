@@ -114,17 +114,20 @@ class TransferEntryItems extends Component {
       parseFloat(s.quantity_transfer)
     );
 
+let stock_enable = item.batches.length > 0?false:true
     this.setState({
       quantity_transferred: quantity_transferred,
       item_details: item,
-      batch_detail_view: true
+      batch_detail_view: true,
+      stock_enable:stock_enable
     });
 
     if (context !== undefined) {
       context.updateState({
         quantity_transferred: quantity_transferred,
         item_details: item,
-        batch_detail_view: true
+        batch_detail_view: true,
+        stock_enable:stock_enable
       });
     }
   }
@@ -137,12 +140,12 @@ class TransferEntryItems extends Component {
       this.state.item_details === null
         ? null
         : this.state.item_details.quantity_authorized;
-    let stock_enable =
-      this.state.item_details === null
-        ? null
-        : this.state.item_details.batches.length > 0
-        ? false
-        : true;
+    // let stock_enable =
+    //   this.state.item_details === null
+    //     ? null
+    //     : this.state.item_details.batches.length > 0
+    //     ? false
+    //     : true;
     const pharmacy_location_id = this.state.from_location_id;
     return (
       <React.Fragment>
@@ -982,7 +985,7 @@ class TransferEntryItems extends Component {
                             <h6>{qty_auth ? qty_auth : "----------"}</h6>
                           </div>
 
-                          {stock_enable === true ? (
+                          {this.state.stock_enable === true ? (
                             <div className="col">
                               <AlgaehLabel
                                 label={{ forceLabel: "Stock Not Available" }}

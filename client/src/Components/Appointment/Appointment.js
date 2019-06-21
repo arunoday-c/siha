@@ -16,7 +16,6 @@ import AppointmentComponent from "./AppointmentComponent";
 import { generateTimeslotsForDoctor } from "./AppointmentHelper";
 
 const generateReport = ($this, rpt_name, rpt_desc) => {
-  console.log("data:", $this);
   debugger;
   algaehApiCall({
     uri: "/report",
@@ -733,10 +732,7 @@ class Appointment extends PureComponent {
         title: "Can't edit past appointments",
         type: "error"
       });
-    } else if (
-      patient.appointment_status_id === this.state.checkInId &&
-      patient.visit_created === "Y"
-    ) {
+    } else if (patient.appointment_status_id === this.state.checkInId) {
       swalMessage({
         title: "Visit already created, cannot edit the appointment",
         type: "warning"
@@ -783,7 +779,6 @@ class Appointment extends PureComponent {
   }
 
   updatePatientAppointment(data) {
-    debugger;
     if (data !== null) {
       this.setState({
         edit_appointment_status_id: data.hims_d_appointment_status_id
@@ -885,7 +880,9 @@ class Appointment extends PureComponent {
                         title: "Appointment Updated Successfully",
                         type: "success"
                       });
-                      this.setState({ openPatEdit: false });
+                      this.setState({
+                        openPatEdit: false
+                      });
                       this.getAppointmentSchedule();
                     }
                   }
@@ -1006,6 +1003,12 @@ class Appointment extends PureComponent {
         type: "error"
       });
       ev.preventDefault();
+    } else if (pat.appointment_status_id === this.state.checkInId) {
+      swalMessage({
+        title: "Cannot re-schedule checked In patients",
+        type: "error"
+      });
+      ev.preventDefault();
     } else {
       this.setState({
         patToEdit: pat,
@@ -1050,6 +1053,11 @@ class Appointment extends PureComponent {
     ) {
       swalMessage({
         title: "Cannot create schedule for past time",
+        type: "error"
+      });
+    } else if (this.state.edit_appointment_status_id === this.state.checkInId) {
+      swalMessage({
+        title: "Cannot change schedule for CheckedIn Patients",
         type: "error"
       });
     } else {
@@ -1451,6 +1459,9 @@ class Appointment extends PureComponent {
                             </li>
                           ))
                         : null}
+                      {/* <li onClick={() => this.props.goToCheckedIn(patient)}>
+                        <span>Checked In</span>
+                      </li> */}
                       <li
                         onClick={generateReport.bind(
                           this,
@@ -1502,7 +1513,6 @@ class Appointment extends PureComponent {
     const schedule = this.state.appointmentSchedule;
     const [data] = schedule.filter(doc => doc.provider_id === id);
     const result = generateTimeslotsForDoctor(data);
-    console.log("from get", result);
     let timeSlots = [];
     result.forEach(time => {
       if (time !== "break") {
@@ -1543,7 +1553,6 @@ class Appointment extends PureComponent {
           mark_as_break: isBreak
         };
       } else {
-        console.log(isPrevbreak);
         if (isPrevbreak !== null) {
           tds.push(this.generateChilderns(isPrevbreak));
           isPrevbreak = null;

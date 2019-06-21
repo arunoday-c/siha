@@ -138,7 +138,7 @@ const getCashiersAndShiftMAP = $this => {
 };
 
 const generateReceipt = $this => {
-  
+  debugger;
   algaehApiCall({
     uri: "/report",
     method: "GET",

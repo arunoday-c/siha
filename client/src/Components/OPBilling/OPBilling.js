@@ -108,6 +108,7 @@ class OPBilling extends Component {
   componentWillReceiveProps(nextProps) {
     let prevLang = getCookie("Language");
     let output = {};
+    debugger;
     if (prevLang !== this.state.selectedLang) {
       let _screenName = getCookie("ScreenName").replace("/", "");
       let counter_id = 0;
@@ -284,7 +285,6 @@ class OPBilling extends Component {
           data.billDetails = false;
 
           if (data.insured === "Y") {
-            
             $this.props.getPatientInsurance({
               uri: "/patientRegistration/getPatientInsurance",
               module: "frontDesk",
@@ -299,6 +299,7 @@ class OPBilling extends Component {
               }
             });
           }
+          debugger;
           $this.setState(data);
           AlgaehLoader({ show: false });
         }

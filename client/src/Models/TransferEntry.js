@@ -64,7 +64,8 @@ export default {
       Batch_Items: [],
       item_description: "",
       uom_description: null,
-      fromReq: false
+      fromReq: false,
+      stock_enable:false
     };
     return output;
   }
