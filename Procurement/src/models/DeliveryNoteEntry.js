@@ -204,8 +204,8 @@ module.exports = {
                     pharmacy_uom_id,inventory_uom_id,unit_cost,extended_cost,discount_percentage,discount_amount,\
                     net_extended_cost,tax_percentage,tax_amount,total_amount,item_type,quantity_recieved_todate,\
                     batchno_expiry_required,batchno,expiry_date,purchase_order_header_id,purchase_order_detail_id,\
-                    vendor_batchno,barcode,sales_price,hims_f_procurement_dn_header_id) \
-                    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                    vendor_batchno,barcode,sales_price,free_qty,hims_f_procurement_dn_header_id) \
+                    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                 values: [
                   input.po_entry_detail[i]["phar_item_category"],
                   input.po_entry_detail[i]["phar_item_group"],
@@ -236,6 +236,7 @@ module.exports = {
                   input.po_entry_detail[i]["vendor_batchno"],
                   input.po_entry_detail[i]["barcode"],
                   input.po_entry_detail[i]["sales_price"],
+                  input.po_entry_detail[i]["free_qty"],
                   headerResult.insertId
                 ],
 

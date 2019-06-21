@@ -76,6 +76,7 @@ const UomchangeTexts = ($this, context, ctrl, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
+  debugger;
   if ($this.state.uom_id !== value) {
     let qtyhand = 0;
     let unit_cost = 0;
@@ -1216,6 +1217,14 @@ const CloseItemBatch = ($this, context, e) => {
         : $this.state.uom_id
       : $this.state.uom_id;
 
+  const sales_qtyhand =
+    e !== undefined
+      ? e.selected === true
+        ? parseFloat(qtyhand) / parseFloat($this.state.sales_conversion_factor)
+        : $this.state.sales_qtyhand
+      : $this.state.sales_qtyhand;
+
+  debugger;
   $this.setState({
     ...$this.state,
     selectBatch: !$this.state.selectBatch,
@@ -1223,7 +1232,7 @@ const CloseItemBatch = ($this, context, e) => {
     expiry_date: expiry_date,
     grn_no: grn_no,
     qtyhand: qtyhand,
-    sales_qtyhand: qtyhand,
+    sales_qtyhand: sales_qtyhand,
     uom_id: uom_id,
     unit_cost: sale_price,
     uom_description: uom_description
@@ -1235,7 +1244,7 @@ const CloseItemBatch = ($this, context, e) => {
       expiry_date: expiry_date,
       grn_no: grn_no,
       qtyhand: qtyhand,
-      sales_qtyhand: qtyhand,
+      sales_qtyhand: sales_qtyhand,
       uom_id: uom_id,
       unit_cost: sale_price,
       uom_description: uom_description

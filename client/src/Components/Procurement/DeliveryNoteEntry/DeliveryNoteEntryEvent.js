@@ -7,6 +7,7 @@ import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import DNEntry from "../../../Models/DNEntry";
 import Enumerable from "linq";
 import extend from "extend";
+import _ from "lodash";
 
 let texthandlerInterval = null;
 
@@ -272,41 +273,33 @@ const SaveDNEnrty = $this => {
 
   let InputObj = extend({}, $this.state);
 
-  for (var i = 0; i < InputObj.po_entry_detail.length; i++) {
+  debugger;
+
+  for (var j = 0; j < InputObj.po_entry_detail.length; j++) {
     if ($this.state.dn_from === "PHR") {
       if (
         InputObj.pharmacy_stock_detail === undefined ||
         InputObj.pharmacy_stock_detail.length === 0
       ) {
         InputObj.pharmacy_stock_detail =
-          InputObj.po_entry_detail[i].dn_entry_detail;
+          InputObj.po_entry_detail[j].dn_entry_detail;
       } else {
         InputObj.pharmacy_stock_detail = InputObj.pharmacy_stock_detail.concat(
-          InputObj.po_entry_detail[i].dn_entry_detail
+          InputObj.po_entry_detail[j].dn_entry_detail
         );
-        // InputObj.pharmacy_stock_detail.push(
-        //   InputObj.po_entry_detail[i].dn_entry_detail
-        // );
       }
-      // delete InputObj.po_entry_detail[i].dn_entry_detail;
     } else {
       if (
         InputObj.inventory_stock_detail === undefined ||
         InputObj.inventory_stock_detail.length === 0
       ) {
         InputObj.inventory_stock_detail =
-          InputObj.po_entry_detail[i].dn_entry_detail;
+          InputObj.po_entry_detail[j].dn_entry_detail;
       } else {
         InputObj.inventory_stock_detail = InputObj.inventory_stock_detail.concat(
-          InputObj.po_entry_detail[i].dn_entry_detail
+          InputObj.po_entry_detail[j].dn_entry_detail
         );
-        // InputObj.inventory_stock_detail.push(
-        //   InputObj.po_entry_detail[i].dn_entry_detail
-        // );
       }
-      // InputObj.inventory_stock_detail =
-      //   InputObj.po_entry_detail[i].dn_entry_detail;
-      // delete InputObj.po_entry_detail[i].dn_entry_detail;
     }
   }
 
@@ -380,6 +373,77 @@ const SaveDNEnrty = $this => {
       InputObj.inventory_stock_detail[i].operation = "+";
     }
   }
+
+  debugger;
+  let item_grp = [];
+  if ($this.state.dn_from === "PHR") {
+    item_grp = _(InputObj.pharmacy_stock_detail)
+      .groupBy("item_id")
+      .map((row, item_id) => item_id)
+      .value();
+
+    for (var k = 0; k < item_grp.length; k++) {
+      const pharmacy_stock_detail = _.filter(
+        InputObj.pharmacy_stock_detail,
+        f => {
+          return f.item_id === parseInt(item_grp[k]);
+        }
+      );
+      let total_recived_qty = _.sumBy(pharmacy_stock_detail, s =>
+        parseFloat(s.dn_quantity)
+      );
+      total_recived_qty =
+        total_recived_qty +
+        _.sumBy(pharmacy_stock_detail, s => parseFloat(s.free_qty));
+      let net_extended_cost = _.sumBy(pharmacy_stock_detail, s =>
+        parseFloat(s.net_extended_cost)
+      );
+      let average_cost = (
+        parseFloat(net_extended_cost) / total_recived_qty
+      ).toFixed(3);
+
+      for (var x = 0; x < InputObj.pharmacy_stock_detail.length; x++) {
+        if (String(InputObj.pharmacy_stock_detail[x].item_id) === item_grp[k]) {
+          InputObj.pharmacy_stock_detail[x].average_cost = average_cost;
+        }
+      }
+    }
+  } else {
+    item_grp = _(InputObj.inventory_stock_detail)
+      .groupBy("item_id")
+      .map((row, item_id) => item_id)
+      .value();
+
+    for (var l = 0; l < item_grp.length; l++) {
+      const inventory_stock_detail = _.filter(
+        InputObj.inventory_stock_detail,
+        f => {
+          return f.item_id === parseInt(item_grp[l]);
+        }
+      );
+
+      let total_recived_qty = _.sumBy(inventory_stock_detail, s =>
+        parseFloat(s.dn_quantity)
+      );
+      total_recived_qty =
+        total_recived_qty +
+        _.sumBy(inventory_stock_detail, s => parseFloat(s.free_qty));
+      let net_extended_cost = _.sumBy(inventory_stock_detail, s =>
+        parseFloat(s.net_extended_cost)
+      );
+      let average_cost = (
+        parseFloat(net_extended_cost) / total_recived_qty
+      ).toFixed(3);
+      for (var y = 0; y < InputObj.inventory_stock_detail.length; y++) {
+        if (
+          String(InputObj.inventory_stock_detail[y].item_id) === item_grp[l]
+        ) {
+          InputObj.inventory_stock_detail[y].average_cost = average_cost;
+        }
+      }
+    }
+  }
+
   delete InputObj.dn_entry_detail;
 
   if (batchExpiryDate.length === 0) {

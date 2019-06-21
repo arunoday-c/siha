@@ -377,7 +377,7 @@ class DeliveryNoteEntry extends Component {
                   />
                 </button>
 
-                {this.state.fromPurList === true ? (
+                {this.state.fromPurList === false ? (
                   <button
                     type="button"
                     className="btn btn-default"

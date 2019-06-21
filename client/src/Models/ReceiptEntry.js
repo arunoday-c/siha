@@ -48,7 +48,8 @@ export default {
       ReqData: true,
       ClearDisable: false,
       saveEnable: true,
-      postEnable: true
+      postEnable: true,
+      poSelected: false
     };
     return output;
   }

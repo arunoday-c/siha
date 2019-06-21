@@ -6,6 +6,7 @@ import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import ReceiptEntryInv from "../../../Models/ReceiptEntry";
 import Enumerable from "linq";
+import _ from "lodash";
 
 let texthandlerInterval = null;
 
@@ -20,6 +21,15 @@ const texthandle = ($this, e) => {
       [name]: value
     });
   }
+};
+
+const textEventhandle = ($this, e) => {
+  let name = e.name || e.target.name;
+  let value = e.value === "" ? null : e.value || e.target.value;
+
+  $this.setState({
+    [name]: value
+  });
 };
 
 const loctexthandle = ($this, e) => {
@@ -138,12 +148,6 @@ const numberchangeTexts = ($this, context, e) => {
   }
 };
 
-const datehandle = ($this, ctrl, e) => {
-  $this.setState({
-    [e]: moment(ctrl)._d
-  });
-};
-
 const DeliverySearch = ($this, e) => {
   if (
     $this.state.pharmcy_location_id === null &&
@@ -191,7 +195,6 @@ const DeliverySearch = ($this, e) => {
               }
 
               for (let i = 0; i < data.dn_entry_detail.length; i++) {
-                
                 data.dn_entry_detail[i].outstanding_quantity = 0;
                 data.dn_entry_detail[i].quantity_recieved_todate =
                   parseFloat(data.dn_entry_detail[i].quantity_outstanding) === 0
@@ -250,39 +253,50 @@ const ClearData = ($this, e) => {
 };
 
 const SaveReceiptEnrty = $this => {
-  const batchExpiryDate = Enumerable.from($this.state.receipt_entry_detail)
-    .where(w => w.expiry_date === null)
-    .toArray();
-
-  if (batchExpiryDate.length === 0) {
-    algaehApiCall({
-      uri: "/ReceiptEntry/addReceiptEntry",
-      module: "procurement",
-      data: $this.state,
-      onSuccess: response => {
-        if (response.data.success === true) {
-          $this.setState({
-            grn_number: response.data.records.grn_number,
-            hims_f_procurement_grn_header_id:
-              response.data.records.hims_f_procurement_grn_header_id,
-            year: response.data.records.year,
-            period: response.data.records.period,
-            saveEnable: true,
-            postEnable: false
-          });
-          swalMessage({
-            type: "success",
-            title: "Saved successfully . ."
-          });
-        }
-      }
-    });
-  } else {
+  debugger;
+  AlgaehLoader({ show: true });
+  if ($this.state.inovice_number === null) {
     swalMessage({
-      title: "Please enter Batch No. and Expiry Date.",
-      type: "warning"
+      type: "warning",
+      title: "Invoice Number is mandatory"
     });
+    return;
+  } else if ($this.state.invoice_date === null) {
+    swalMessage({
+      title: "Invoice Date is mandatory"
+    });
+    return;
   }
+  algaehApiCall({
+    uri: "/ReceiptEntry/addReceiptEntry",
+    module: "procurement",
+    data: $this.state,
+    onSuccess: response => {
+      if (response.data.success === true) {
+        $this.setState({
+          grn_number: response.data.records.grn_number,
+          hims_f_procurement_grn_header_id:
+            response.data.records.hims_f_procurement_grn_header_id,
+          year: response.data.records.year,
+          period: response.data.records.period,
+          saveEnable: true,
+          postEnable: false
+        });
+        swalMessage({
+          type: "success",
+          title: "Saved successfully . ."
+        });
+      }
+      AlgaehLoader({ show: false });
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
 };
 
 const getCtrlCode = ($this, docNumber) => {
@@ -532,17 +546,139 @@ const PostReceiptEntry = $this => {
   });
 };
 
+const PurchaseOrderSearch = ($this, e) => {
+  if (
+    $this.state.pharmcy_location_id === null &&
+    $this.state.inventory_location_id === null
+  ) {
+    swalMessage({
+      title: "Select Location.",
+      type: "warning"
+    });
+  } else {
+    let Inputs = "";
+
+    if ($this.state.grn_for === "PHR") {
+      Inputs = "pharmcy_location_id = " + $this.state.pharmcy_location_id;
+    } else {
+      Inputs = "inventory_location_id = " + $this.state.inventory_location_id;
+    }
+
+    AlgaehSearch({
+      searchGrid: {
+        columns: spotlightSearch.Purchase.POEntry
+      },
+      searchName: "POEntryGetReceipt",
+      uri: "/gloabelSearch/get",
+      inputs: Inputs,
+      onContainsChange: (text, serchBy, callBack) => {
+        callBack(text);
+      },
+      onRowSelect: row => {
+        debugger;
+        getDeliveryForReceipt(
+          $this,
+          row.hims_f_procurement_po_header_id,
+          row.purchase_number
+        );
+      }
+    });
+  }
+};
+
+const getDeliveryForReceipt = ($this, purchase_order_id, purchase_number) => {
+  AlgaehLoader({ show: true });
+  algaehApiCall({
+    uri: "/ReceiptEntry/getDeliveryForReceipt",
+    module: "procurement",
+    method: "GET",
+    data: {
+      purchase_order_id: purchase_order_id
+    },
+    onSuccess: response => {
+      if (response.data.success) {
+        let data = response.data.records;
+        debugger;
+        if (data !== null && data !== undefined) {
+          debugger;
+
+          for (let i = 0; i < data.length; i++) {
+            data[i].extended_cost = data[i].sub_total;
+            data[i].discount_amount = data[i].detail_discount;
+            data[i].net_extended_cost = data[i].net_total;
+            data[i].tax_amount = data[i].total_tax;
+            data[i].total_amount = data[i].net_payable;
+            data[i].dn_header_id = data[i].hims_f_procurement_dn_header_id;
+          }
+
+          let sub_total = _.sumBy(data, s => parseFloat(s.extended_cost));
+          let detail_discount = _.sumBy(data, s =>
+            parseFloat(s.discount_amount)
+          );
+          let net_total = _.sumBy(data, s => parseFloat(s.net_extended_cost));
+          let total_tax = _.sumBy(data, s => parseFloat(s.tax_amount));
+          let net_payable = _.sumBy(data, s => parseFloat(s.total_amount));
+
+          $this.setState({
+            receipt_entry_detail: data,
+            po_id: purchase_order_id,
+            purchase_number: purchase_number,
+            sub_total: sub_total,
+            detail_discount: detail_discount,
+            net_total: net_total,
+            net_payable: net_payable,
+            saveEnable: false,
+            poSelected: true
+          });
+          AlgaehLoader({ show: false });
+        }
+      }
+      AlgaehLoader({ show: false });
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
+};
+
+const datehandle = ($this, ctrl, e) => {
+  $this.setState({
+    [e]: moment(ctrl)._d
+  });
+};
+
+const dateValidate = ($this, value, event) => {
+  let inRange = moment(value).isBefore(moment());
+  if (inRange) {
+    swalMessage({
+      title: "Invoice date cannot be past Date.",
+      type: "warning"
+    });
+    event.target.focus();
+    $this.setState({
+      [event.target.name]: null
+    });
+  }
+};
+
 export {
   texthandle,
   poforhandle,
   discounthandle,
   numberchangeTexts,
   datehandle,
+  dateValidate,
   DeliverySearch,
   vendortexthandle,
   ClearData,
   SaveReceiptEnrty,
   getCtrlCode,
   loctexthandle,
-  PostReceiptEntry
+  PostReceiptEntry,
+  PurchaseOrderSearch,
+  textEventhandle
 };
