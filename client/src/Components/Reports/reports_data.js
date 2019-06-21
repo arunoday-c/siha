@@ -277,6 +277,10 @@ export default [
         reportName: "opBillIncomeReceipt",
         requireIframe: true,
 
+        // template_name: "Income/ReceiptList",
+        // reportQuery: "opBillReceipt",
+        // module: "IncomeModule",
+
         reportParameters: [
           {
             className: "col-2",
