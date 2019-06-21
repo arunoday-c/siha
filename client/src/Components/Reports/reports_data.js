@@ -878,12 +878,13 @@ export default [
     submenu: [
       {
         subitem: "Items Consumption Report",
-        reportName: "departmentDoctorConsumption",
+        reportName: "itemsConsumptionInventory",
         requireIframe: true,
         pageSize: "A4",
         pageOrentation: "landscape", //"portrait",
         reportParameters: [
           {
+            className:"col-2",
             type: "date",
             name: "from_date",
             isImp: true,
@@ -893,6 +894,7 @@ export default [
             }
           },
           {
+            className:"col-2",
             type: "date",
             name: "to_date",
             isImp: true,
@@ -902,6 +904,7 @@ export default [
             }
           },
           {
+            className:"col-2",
             type: "dropdown",
             name: "sub_department_id",
             initialLoad: true,
@@ -939,6 +942,7 @@ export default [
             }
           },
           {
+            className:"col-2",
             type: "dropdown",
             name: "provider_id",
             initialLoad: true,
@@ -951,6 +955,7 @@ export default [
             }
           },
           {
+            className:"col-2",
             type: "dropdown",
             name: "status_id",
             initialLoad: true,
@@ -1782,7 +1787,7 @@ export default [
           }
         ]
         //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
-      }
+      },
       // {
       //   subitem: "GP Statment ItemWise Report",
       //   template_name: "asset_war_exp",
@@ -1795,6 +1800,104 @@ export default [
       //   reportParameters: []
       //   //reportParameters: () => <Pharmacy ui="asset_warty_exp_rep" />
       // }
+
+      {
+        subitem: "Items Consumption Report",
+        reportName: "itemsConsumptionPharmacy",
+        requireIframe: true,
+        pageSize: "A4",
+        pageOrentation: "landscape", //"portrait",
+        reportParameters: [
+          {
+            className:"col-2",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            className:"col-2",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            className:"col-2",
+            type: "dropdown",
+            name: "sub_department_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Select Department",
+            link: {
+              //uri: "/department/get/subdepartment"
+              uri: "/department/get/get_All_Doctors_DepartmentWise",
+              module: "masterSettings"
+            },
+            manupulation: (response, reportState, stateProperty) => {
+              reportState.setState({
+                [stateProperty]: response.records.departmets
+              });
+            },
+            dataSource: {
+              textField: "sub_department_name",
+              valueField: "sub_department_id",
+              data: undefined
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                reportState.setState({
+                  sub_department_id: currentEvent.value,
+                  provider_id_list: currentEvent.selected.doctors
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  provider_id_list: []
+                });
+              }
+            }
+          },
+          {
+            className:"col-2",
+            type: "dropdown",
+            name: "provider_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Filter by Doctor",
+            dataSource: {
+              textField: "full_name",
+              valueField: "employee_id",
+              data: undefined
+            }
+          },
+          {
+            className:"col-2",
+            type: "dropdown",
+            name: "status_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Select Items",
+            link: {
+              uri: "/appointment/getAppointmentStatus",
+              module: "frontDesk"
+            },
+            dataSource: {
+              textField: "description",
+              valueField: "hims_d_appointment_status_id",
+              data: undefined
+            }
+          }
+        ]
+      }
     ]
   },
 

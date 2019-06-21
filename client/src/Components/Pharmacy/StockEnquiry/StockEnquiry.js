@@ -297,7 +297,10 @@ class StockEnquiry extends Component {
                             : ""}
                         </span>
                       );
-                    }
+                    },
+                      className: drow => {
+                        return "greenCell";
+                      }
                   },
 
                   {
@@ -385,7 +388,7 @@ class StockEnquiry extends Component {
                     displayTemplate: row => {
                       return row.reorder === "R" ? (
                         <div className="orderNow">
-                          {parseFloat(row.qtyhand)}
+                          <span>{parseFloat(row.qtyhand)}</span>
                           <span className="orderSoon">Order Soon</span>
                         </div>
                       ) : (
