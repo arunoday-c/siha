@@ -27,11 +27,12 @@ import {
   getPatientVitals,
   getPatientDiet,
   getPatientDiagnosis,
-  getPatientAllergies,
+  // getPatientAllergies,
   getPatientHistory,
   printPrescription
 } from "./PatientProfileHandlers";
 // import AlgaehReport from "../Wrapper/printReports";
+// import { getPatientAllergies } from "./Allergies/AllergiesHandlers";
 import Enumerable from "linq";
 import Summary from "./Summary/Summary";
 import Dental from "./Dental/Dental";
@@ -74,18 +75,25 @@ class PatientProfile extends Component {
       openOCAF: false,
       openSickLeave: false,
       OCAFData: [],
-      chart_type: Window.global["chart_type"]
+      chart_type: Window.global["chart_type"],
+      alergyExist: "",
+      patientAllergies: []
     };
 
     getPatientProfile(this);
     getPatientVitals(this);
-    getPatientAllergies(this);
+
+    // getPatientAllergies(this, () => {
+    //   swalMessage({
+    //     title: "Alergy Exists...",
+    //     type: "warning"
+    //   });
+    // });
     getPatientDiet(this);
     getPatientDiagnosis(this);
     getPatientHistory(this);
     this.getLocation();
     this.changeTabs = this.changeTabs.bind(this);
-    this.alergyExist = "";
   }
 
   openAllergies(e) {
@@ -185,10 +193,36 @@ class PatientProfile extends Component {
     cancelRequest("getPatientDiet");
     cancelRequest("getPatientDiagnosis");
   }
-
+  componentWillReceiveProps(props) {
+    if (props.patient_allergies !== undefined) {
+      if (this.state.patientAllergies.length === 0)
+        this.showAllergyAlert(props.patient_allergies);
+      this.setState({
+        alergyExist: props.patient_allergies.length > 0 ? " AllergyActive" : "",
+        patientAllergies: Enumerable.from(props.patient_allergies)
+          .groupBy("$.allergy_type", null, (k, g) => {
+            return {
+              allergy_type: k,
+              allergy_type_desc:
+                k === "F"
+                  ? "Food"
+                  : k === "A"
+                  ? "Airborne"
+                  : k === "AI"
+                  ? "Animal  &  Insect"
+                  : k === "C"
+                  ? "Chemical & Others"
+                  : "",
+              allergyList: g.getSource()
+            };
+          })
+          .toArray()
+      });
+    }
+  }
   componentDidMount() {
-    this.alergyExist = "";
     this.setState({
+      alergyExist: "",
       firstLaunch:
         this.state.firstLaunch === undefined ? this.props.firstLaunch : false
     });
@@ -375,7 +409,6 @@ class PatientProfile extends Component {
         title: "Alergy Exists...",
         type: "warning"
       });
-      this.alergyExist = " AllergyActive";
     }
   }
   decissionAllergyOnSet(row) {
@@ -476,27 +509,28 @@ class PatientProfile extends Component {
             .value()
         : [];
 
-    const _patient_allergies =
-      this.props.patient_allergies === undefined
-        ? []
-        : Enumerable.from(this.props.patient_allergies)
-            .groupBy("$.allergy_type", null, (k, g) => {
-              return {
-                allergy_type: k,
-                allergy_type_desc:
-                  k === "F"
-                    ? "Food"
-                    : k === "A"
-                    ? "Airborne"
-                    : k === "AI"
-                    ? "Animal  &  Insect"
-                    : k === "C"
-                    ? "Chemical & Others"
-                    : "",
-                allergyList: g.getSource()
-              };
-            })
-            .toArray();
+    // const _patient_allergies =
+    //   this.props.patient_allergies === undefined
+    //     ? []
+    //     : Enumerable.from(this.props.patient_allergies)
+    //         .groupBy("$.allergy_type", null, (k, g) => {
+    //           return {
+    //             allergy_type: k,
+    //             allergy_type_desc:
+    //               k === "F"
+    //                 ? "Food"
+    //                 : k === "A"
+    //                 ? "Airborne"
+    //                 : k === "AI"
+    //                 ? "Animal  &  Insect"
+    //                 : k === "C"
+    //                 ? "Chemical & Others"
+    //                 : "",
+    //             allergyList: g.getSource()
+    //           };
+    //         })
+    //         .toArray();
+    const _patient_allergies = this.state.patientAllergies;
 
     const _diagnosis =
       this.props.patient_diagnosis === undefined
@@ -508,8 +542,6 @@ class PatientProfile extends Component {
 
     return (
       <div className="row patientProfile">
-        {this.showAllergyAlert(_patient_allergies)}
-
         <div className="patientInfo-Top box-shadow-normal">
           <div className="backBtn">
             <button
@@ -703,7 +735,7 @@ class PatientProfile extends Component {
 
               <ul className="float-right patient-quick-info">
                 <li>
-                  <i className={"fas fa-allergies" + this.alergyExist} />
+                  <i className={"fas fa-allergies " + this.state.alergyExist} />
                   <section>
                     <span className="top-nav-sec-hdg">Allergies</span>
                     <div className="listofADDWrapper">
@@ -897,7 +929,7 @@ class PatientProfile extends Component {
               </li>
               <ul className="float-right patient-quick-info">
                 <li>
-                  <i className={"fas fa-allergies" + this.alergyExist} />
+                  <i className={"fas fa-allergies" + this.state.alergyExist} />
                   <section>
                     <span className="top-nav-sec-hdg">Allergies</span>
                     <div className="listofADDWrapper">

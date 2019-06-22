@@ -14,9 +14,7 @@ const getPatientProfile = $this => {
       type: "PATIENT_PROFILE",
       mappingName: "patient_profile"
     },
-    afterSuccess: data => {
-      
-    }
+    afterSuccess: data => {}
   });
 };
 
@@ -68,7 +66,12 @@ const getPatientAllergies = ($this, noFunctionCall) => {
             };
           })
           .toArray();
-        $this.setState({ patientAllergies: _allergies });
+
+        $this.setState({
+          patientAllergies: _allergies,
+          alergyExist: _allergies.length > 0 ? " AllergyActive" : ""
+        });
+        if (typeof noFunctionCall === "function") noFunctionCall();
       }
     }
   });
@@ -135,7 +138,6 @@ const getPatientHistory = $this => {
 };
 
 const printPrescription = (that, e) => {
-  
   const _patient = Window.global["current_patient"];
   const _visit = Window.global["visit_id"];
   algaehApiCall({

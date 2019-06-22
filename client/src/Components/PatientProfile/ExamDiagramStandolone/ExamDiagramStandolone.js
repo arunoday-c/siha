@@ -196,7 +196,10 @@ export default class ExaminationDiagram extends Component {
   }
   newDiagramLabelClickHandler(item, data) {
     if (item !== undefined) {
-      if (item.currentTarget.getAttribute("image_desc") !== "Blank") {
+      if (
+        item.currentTarget.getAttribute("image_desc") !== "Blank" &&
+        item.currentTarget.querySelector("img") !== null
+      ) {
         const _src = item.currentTarget.querySelector("img").src;
         this.setState({
           image: _src
@@ -362,7 +365,6 @@ export default class ExaminationDiagram extends Component {
                 });
             })
             .catch(error => {
-              
               const errorI = error.request;
               swalMessage({
                 title:
@@ -514,7 +516,6 @@ export default class ExaminationDiagram extends Component {
     }
   }
   onClickDeleteDiagram(item, e) {
-    
     const image = e.target.offsetParent.querySelector("img");
     image.style.width = "100px";
     image.style.height = "100px";
