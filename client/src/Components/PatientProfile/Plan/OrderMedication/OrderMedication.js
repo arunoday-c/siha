@@ -41,10 +41,16 @@ import moment from "moment";
 import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
 import _ from "lodash";
 import { Label } from "semantic-ui-react";
+import ButtonType from "../../../Wrapper/algaehButton";
+import { setGlobal, removeGlobal } from "../../../../utils/GlobalFunctions";
 class OrderMedication extends Component {
   constructor(props) {
     super(props);
-
+    let storedState = {};
+    if (Window.global["orderMedicationState"] !== null) {
+      storedState = Window.global["orderMedicationState"];
+      removeGlobal("orderMedicationState");
+    }
     this.state = {
       patient_id: Window.global["current_patient"],
       encounter_id: Window.global["encounter_id"],
@@ -54,7 +60,7 @@ class OrderMedication extends Component {
       episode_id: Window.global["episode_id"],
 
       vat_applicable: this.props.vat_applicable,
-
+      instructions: "",
       itemlist: [],
       medicationitems: [],
       start_date: moment(new Date())._d,
@@ -74,8 +80,9 @@ class OrderMedication extends Component {
 
       frequency_type: null,
       frequency_time: null,
-      Instructions: null,
-      total_quantity: 0
+      //Instructions: null,
+      total_quantity: 0,
+      ...storedState
     };
   }
 
@@ -107,12 +114,16 @@ class OrderMedication extends Component {
   }
   onGenericItemSelectedHandler(item) {
     this.setState({
-      generic_id: item.hims_d_item_generic_id
+      generic_id: item.hims_d_item_generic_id,
+      generic_name: _.startCase(_.toLower(item.generic_name))
     });
   }
   clearGenericCodeHandler() {
     this.setState({
-      generic_id: undefined
+      generic_id: undefined,
+      generic_name: "",
+      item_description: "",
+      item_id: undefined
     });
   }
   clearItemCodeHandler() {
@@ -159,7 +170,9 @@ class OrderMedication extends Component {
       }
     });
   }
-
+  componentWillUnmount() {
+    setGlobal({ orderMedicationState: this.state });
+  }
   componentWillReceiveProps(nextProps) {
     if (
       nextProps.existinginsurance !== undefined &&
@@ -175,6 +188,31 @@ class OrderMedication extends Component {
       return "";
     } else {
       return " AND generic_id='" + generic_id + "'";
+    }
+  }
+  instructionItems() {
+    const frequency = _.find(
+      PRESCRIPTION_FREQ_PERIOD,
+      f => f.value === this.state.frequency
+    );
+    const frequencyType = _.find(
+      PRESCRIPTION_FREQ_TIME,
+      f => f.value === this.state.frequency_type
+    );
+    const consume = _.find(
+      PRESCRIPTION_FREQ_DURATION,
+      f => f.value === this.state.frequency_time
+    );
+    if (
+      frequency !== undefined &&
+      frequencyType !== undefined &&
+      consume !== undefined
+    ) {
+      return `Use ${this.state.dosage} Unit(s),${frequency.name} Time(s) ${
+        frequencyType.name
+      } '${consume.name}' for ${this.state.no_of_days} day(s)`;
+    } else {
+      return "";
     }
   }
   render() {
@@ -381,8 +419,17 @@ class OrderMedication extends Component {
                 }}
                 value={this.state.start_date}
               />
-
-              <AlagehFormGroup
+              <div class="col-4 form-group">
+                <label className="style_Label ">Instruction</label>
+                <textarea
+                  name="instructions"
+                  className="txt-fld"
+                  rows="3"
+                  onChange={texthandle.bind(this, this)}
+                  value={this.instructionItems()}
+                />
+              </div>
+              {/*<AlagehFormGroup
                 div={{ className: "col-4 form-group" }}
                 label={{
                   forceLabel: "Instruction",
@@ -395,11 +442,11 @@ class OrderMedication extends Component {
                   events: {
                     onChange: texthandle.bind(this, this)
                   },
-                  option: {
-                    type: "text"
+                  others: {
+                    multiline: 3
                   }
                 }}
-              />
+              />*/}
 
               <div className="col" style={{ paddingTop: 21, paddingLeft: 0 }}>
                 <button
@@ -418,80 +465,82 @@ class OrderMedication extends Component {
                   id="Order_Medication"
                   columns={[
                     {
-                      fieldName: "generic_id",
+                      fieldName: "generic_name",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Generic Name" }} />
                       ),
-                      displayTemplate: row => {
-                        let display =
-                          this.props.genericlist === undefined
-                            ? []
-                            : this.props.genericlist.filter(
-                                f => f.hims_d_item_generic_id === row.generic_id
-                              );
-
-                        return (
-                          <span>
-                            {display !== undefined && display.length !== 0
-                              ? display[0].generic_name
-                              : ""}
-                          </span>
-                        );
-                      },
-                      editorTemplate: row => {
-                        let display =
-                          this.props.genericlist === undefined
-                            ? []
-                            : this.props.genericlist.filter(
-                                f => f.hims_d_item_generic_id === row.generic_id
-                              );
-
-                        return (
-                          <span>
-                            {display !== undefined && display.length !== 0
-                              ? display[0].generic_name
-                              : ""}
-                          </span>
-                        );
-                      }
+                      editorTemplate: row => <span>{row.generic_name}</span>
+                      // displayTemplate: row => {
+                      //   let display =
+                      //     this.props.genericlist === undefined
+                      //       ? []
+                      //       : this.props.genericlist.filter(
+                      //           f => f.hims_d_item_generic_id === row.generic_id
+                      //         );
+                      //
+                      //   return (
+                      //     <span>
+                      //       {display !== undefined && display.length !== 0
+                      //         ? display[0].generic_name
+                      //         : ""}
+                      //     </span>
+                      //   );
+                      // },
+                      // editorTemplate: row => {
+                      //   let display =
+                      //     this.props.genericlist === undefined
+                      //       ? []
+                      //       : this.props.genericlist.filter(
+                      //           f => f.hims_d_item_generic_id === row.generic_id
+                      //         );
+                      //
+                      //   return (
+                      //     <span>
+                      //       {display !== undefined && display.length !== 0
+                      //         ? display[0].generic_name
+                      //         : ""}
+                      //     </span>
+                      //   );
+                      // }
                     },
                     {
-                      fieldName: "item_id",
+                      fieldName: "item_description",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Item Name" }} />
                       ),
-                      displayTemplate: row => {
-                        let display =
-                          this.state.itemlist === undefined
-                            ? []
-                            : this.state.itemlist.filter(
-                                f => f.hims_d_item_master_id === row.item_id
-                              );
-
-                        return (
-                          <span>
-                            {display !== undefined && display.length !== 0
-                              ? display[0].item_description
-                              : ""}
-                          </span>
-                        );
-                      },
-                      editorTemplate: row => {
-                        let display =
-                          this.state.itemlist === undefined
-                            ? []
-                            : this.state.itemlist.filter(
-                                f => f.hims_d_item_master_id === row.item_id
-                              );
-
-                        return (
-                          <span>
-                            {display !== undefined && display.length !== 0
-                              ? display[0].item_description
-                              : ""}
-                          </span>
-                        );
-                      }
+                      editorTemplate: row => <span>{row.item_description}</span>
+                      // displayTemplate: row => {
+                      //   let display =
+                      //     this.state.itemlist === undefined
+                      //       ? []
+                      //       : this.state.itemlist.filter(
+                      //           f => f.hims_d_item_master_id === row.item_id
+                      //         );
+                      //
+                      //   return (
+                      //     <span>
+                      //       {display !== undefined && display.length !== 0
+                      //         ? display[0].item_description
+                      //         : ""}
+                      //     </span>
+                      //   );
+                      // },
+                      // editorTemplate: row => {
+                      //   let display =
+                      //     this.state.itemlist === undefined
+                      //       ? []
+                      //       : this.state.itemlist.filter(
+                      //           f => f.hims_d_item_master_id === row.item_id
+                      //         );
+                      //
+                      //   return (
+                      //     <span>
+                      //       {display !== undefined && display.length !== 0
+                      //         ? display[0].item_description
+                      //         : ""}
+                      //     </span>
+                      //   );
+                      // }
                     },
                     {
                       fieldName: "frequency",
@@ -727,14 +776,39 @@ class OrderMedication extends Component {
             >
               Save Medication
             </button>
-            <button
+            {/*<button
               className="btn btn-default"
               type="button"
               onClick={printPrescription.bind(this, this)}
               disabled={this.state.saveMedicationEnable}
             >
               Print Prescription
-            </button>
+            </button>*/}
+            <ButtonType
+              label={{
+                forceLabel: "Print Prescription",
+                returnText: true
+              }}
+              displayName="Prescription"
+              report={{
+                reportName: "prescription",
+                reportParams: [
+                  {
+                    name: "hims_d_patient_id",
+                    value: Window.global["current_patient"]
+                  },
+                  {
+                    name: "visit_id",
+                    value: Window.global["visit_id"]
+                  },
+                  {
+                    name: "visit_code",
+                    value: null
+                  }
+                ],
+                outputFileType: "PDF"
+              }}
+            />
             <button
               type="button"
               className="btn btn-default"

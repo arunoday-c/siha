@@ -200,6 +200,8 @@ const itemhandle = ($this, item) => {
   } else {
     $this.setState(
       {
+        generic_name: item.generic_name,
+        item_description: item.item_description,
         item_id: item.hims_d_item_master_id,
         generic_id: item.generic_id,
         service_id: item.service_id,
@@ -247,6 +249,16 @@ const itemhandle = ($this, item) => {
 };
 const AddItems = $this => {
   if (
+    $this.state.no_of_days === "" ||
+    parseInt($this.state.no_of_days, 10) < 1
+  ) {
+    swalMessage({
+      title: "Duration con't be zero",
+      type: "info"
+    });
+    return;
+  }
+  if (
     $this.state.item_id !== null &&
     $this.state.generic_id !== null &&
     $this.state.dosage !== null &&
@@ -273,7 +285,7 @@ const AddItems = $this => {
       service_id: $this.state.service_id,
       item_category_id: $this.state.item_category_id,
       item_group_id: $this.state.item_group_id,
-      instructions: $this.state.instructions,
+      instructions: $this.instructionItems(),
       dispense: $this.state.dispense,
       requested_quantity: $this.state.dispense,
       insured: $this.state.insured,
@@ -317,7 +329,8 @@ const AddItems = $this => {
           medicationobj.net_amount =
             parseFloat(data.billdetails[0].net_amout) *
             parseFloat($this.state.dispense);
-
+          medicationobj["generic_name"] = $this.state.generic_name;
+          medicationobj["item_description"] = $this.state.item_description;
           if (medicationobj.pre_approval === "Y") {
             swalMessage({
               title: "Selected Item is Pre Approval",
@@ -334,7 +347,7 @@ const AddItems = $this => {
             generic_id: null,
             dosage: 1,
             frequency: null,
-            no_of_days: null,
+            no_of_days: 0,
             dispense: null,
             frequency_type: null,
             frequency_time: null,
@@ -343,7 +356,9 @@ const AddItems = $this => {
             item_category_id: null,
             item_group_id: null,
             pre_approval: null,
-            instructions: null
+            instructions: null,
+            generic_name: "",
+            item_description: ""
           });
         }
       },

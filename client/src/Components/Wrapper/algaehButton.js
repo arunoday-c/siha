@@ -54,7 +54,7 @@ export default class ButtonType extends PureComponent {
     myWindow.document.write(
       "<iframe src= '" + data + "' width='100%' height='100%' />"
     );
-    myWindow.document.title = this.props.reportparam.reportname;
+    myWindow.document.title = this.props.displayName;
     myWindow.document.body.style.overflow = "hidden";
   }
   componentWillUnmount() {
@@ -77,29 +77,7 @@ export default class ButtonType extends PureComponent {
               Accept: "blob"
             },
             others: { responseType: "blob" },
-            data: {
-              report: {
-                reportName: "cashReceipt",
-                reportParams: [
-                  {
-                    name: "hims_d_patient_id",
-                    value: 377
-                  },
-                  {
-                    name: "visit_id",
-                    value: 770
-                  },
-                  {
-                    name: "visit_date",
-                    value: null
-                  },
-                  {
-                    name: "patient_id",
-                    value: 377
-                  }
-                ]
-              }
-            },
+            data: { report: that.props.report },
             onSuccess: res => {
               const url = URL.createObjectURL(res.data);
               that.launchReport(url);
@@ -127,6 +105,7 @@ export default class ButtonType extends PureComponent {
             "btn " + classname + (loading === true ? " btn-loader" : "")
           }
           onClick={this.onClickHandler.bind(this)}
+          {...this.props.others}
         >
           {loading === true ? (
             <span className="showBtnLoader">

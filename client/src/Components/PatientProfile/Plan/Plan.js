@@ -13,7 +13,7 @@ import ActiveMedication from "./ActiveMedication/ActiveMedication";
 import MedicationHistory from "./MedicationHistory/MedicationHistory";
 import OwnMedication from "./OwnMedication/OwnMedication";
 import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
-
+import { removeGlobal } from "../../../utils/GlobalFunctions";
 class Plan extends Component {
   constructor(props) {
     super(props);
@@ -38,6 +38,7 @@ class Plan extends Component {
   }
 
   onClose = e => {
+    removeGlobal("orderMedicationState");
     this.setState({ pageDisplay: "OrderMedication" }, () => {
       this.props.onClose && this.props.onClose(e);
     });
@@ -50,7 +51,6 @@ class Plan extends Component {
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {
-          
           this.setState({
             latest_mediction: response.data.records.latest_mediction,
             all_mediction: response.data.records.all_mediction
@@ -65,6 +65,12 @@ class Plan extends Component {
       }
     });
   }
+  componentWillUnmount() {
+    if (Window.global["orderMedicationState"] !== null) {
+      removeGlobal("orderMedicationState");
+    }
+  }
+
   componentDidMount() {
     this.getPatientMedications();
   }
@@ -128,6 +134,7 @@ class Plan extends Component {
               <OrderMedication
                 vat_applicable={this.props.vat_applicable}
                 onclosePopup={e => {
+                  removeGlobal("orderMedicationState");
                   this.setState({ pageDisplay: "OrderMedication" }, () => {
                     this.props.onClose && this.props.onClose(e);
                   });
@@ -136,6 +143,7 @@ class Plan extends Component {
             ) : this.state.pageDisplay === "ActiveMedication" ? (
               <ActiveMedication
                 onclosePopup={e => {
+                  removeGlobal("orderMedicationState");
                   this.setState({ pageDisplay: "OrderMedication" }, () => {
                     this.props.onClose && this.props.onClose(e);
                   });
@@ -145,6 +153,7 @@ class Plan extends Component {
             ) : this.state.pageDisplay === "MedicationHistory" ? (
               <MedicationHistory
                 onclosePopup={e => {
+                  removeGlobal("orderMedicationState");
                   this.setState({ pageDisplay: "OrderMedication" }, () => {
                     this.props.onClose && this.props.onClose(e);
                   });
@@ -198,6 +207,7 @@ class Plan extends Component {
                   type="button"
                   className="btn btn-default"
                   onClick={e => {
+                    removeGlobal("orderMedicationState");
                     this.onClose(e);
                   }}
                 >

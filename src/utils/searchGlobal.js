@@ -552,7 +552,8 @@ let algaehSearchConfig = (searchName, req) => {
           "select SQL_CALC_FOUND_ROWS item_code,item_description,generic_id,category_id,group_id,form_id,sfda_code,S.storage_description,\
           item_uom_id,sales_price , \
 	        IM.service_id, \
-	        IM.sales_uom_id,IM.hims_d_item_master_id from hims_d_item_master as IM left join \
+	        IM.sales_uom_id,IM.hims_d_item_master_id , G.generic_name from hims_d_item_master as IM  inner join hims_d_item_generic as G  \
+          on G.hims_d_item_generic_id = IM.generic_id left join \
           hims_d_item_storage as S on IM.storage_id = S.hims_d_item_storage_id where IM.item_status ='A'",
         orderBy: "hims_d_item_master_id desc"
       }
