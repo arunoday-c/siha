@@ -38,7 +38,9 @@ import "./OrderMedication.css";
 import "../../../../styles/site.css";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import moment from "moment";
-
+import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
+import _ from "lodash";
+import { Label } from "semantic-ui-react";
 class OrderMedication extends Component {
   constructor(props) {
     super(props);
@@ -78,34 +80,56 @@ class OrderMedication extends Component {
   }
 
   componentDidMount() {
-    this.props.getItems({
-      uri: "/pharmacy/getItemMaster",
-      module: "pharmacy",
-      method: "GET",
-      redux: {
-        type: "ITEMS_GET_DATA",
-        mappingName: "itemlist"
-      },
-      afterSuccess: data => {
-        this.setState({
-          itemlist: data
-        });
-      }
-    });
-    this.props.getGenerics({
-      uri: "/pharmacy/getItemGeneric",
-      module: "pharmacy",
-      method: "GET",
-      redux: {
-        type: "GENERIC_GET_DATA",
-        mappingName: "genericlist"
-      }
-    });
+    // this.props.getItems({
+    //   uri: "/pharmacy/getItemMaster",
+    //   module: "pharmacy",
+    //   method: "GET",
+    //   redux: {
+    //     type: "ITEMS_GET_DATA",
+    //     mappingName: "itemlist"
+    //   },
+    //   afterSuccess: data => {
+    //     this.setState({
+    //       itemlist: data
+    //     });
+    //   }
+    // });
+    // this.props.getGenerics({
+    //   uri: "/pharmacy/getItemGeneric",
+    //   module: "pharmacy",
+    //   method: "GET",
+    //   redux: {
+    //     type: "GENERIC_GET_DATA",
+    //     mappingName: "genericlist"
+    //   }
+    // });
     this.getPatientInsurance();
+  }
+  onGenericItemSelectedHandler(item) {
+    this.setState({
+      generic_id: item.hims_d_item_generic_id
+    });
+  }
+  clearGenericCodeHandler() {
+    this.setState({
+      generic_id: undefined
+    });
+  }
+  clearItemCodeHandler() {
+    this.setState({
+      service_id: null,
+      uom_id: null,
+      item_category_id: null,
+      item_group_id: null,
+      addItemEnable: true,
+      total_quantity: 0
+    });
+  }
+  itemChangeHandle(item) {
+    itemhandle(this, item);
   }
 
   getPatientInsurance() {
-    
     this.props.getPatientInsurance({
       uri: "/patientRegistration/getPatientInsurance",
       module: "frontDesk",
@@ -137,8 +161,6 @@ class OrderMedication extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    
-
     if (
       nextProps.existinginsurance !== undefined &&
       nextProps.existinginsurance.length !== 0
@@ -148,47 +170,113 @@ class OrderMedication extends Component {
       this.setState({ ...output });
     }
   }
-
+  generateDirectCondition(generic_id) {
+    if (generic_id === null || generic_id === undefined || generic_id === "") {
+      return "";
+    } else {
+      return " AND generic_id='" + generic_id + "'";
+    }
+  }
   render() {
     return (
       <div>
         <div className="popupInner">
           <div className="popRightDiv">
             <div className="row paddin-bottom-5" style={{ marginTop: 5 }}>
-              <AlagehAutoComplete
+              {/*/ <AlagehAutoComplete
+              //   div={{ className: "col-3" }}
+              //   label={{ forceLabel: "Generic Name" }}
+              //   selector={{
+              //     name: "generic_id",
+              //     className: "select-fld",
+              //     value: this.state.generic_id,
+              //     dataSource: {
+              //       textField: "generic_name",
+              //       valueField: "hims_d_item_generic_id",
+              //       data: this.props.genericlist
+              //     },
+              //     onChange: genericnamehandle.bind(this, this),
+              //     autoComplete: "off"
+              //   }}
+              // >*/}
+              <AlgaehAutoSearch
                 div={{ className: "col-3" }}
                 label={{ forceLabel: "Generic Name" }}
-                selector={{
-                  name: "generic_id",
-                  className: "select-fld",
-                  value: this.state.generic_id,
-                  dataSource: {
-                    textField: "generic_name",
-                    valueField: "hims_d_item_generic_id",
-                    data: this.props.genericlist
-                  },
-                  onChange: genericnamehandle.bind(this, this),
-                  autoComplete: "off"
+                title="Search Gereric Item"
+                name="generic_name"
+                columns={[{ fieldName: "generic_name" }]}
+                displayField="generic_name"
+                value={this.state.generic_name}
+                searchName="ItemGenericNames"
+                template={({ generic_name, item_generic_status }) => {
+                  return (
+                    <div className="col-12 padd-10">
+                      <h6>{_.startCase(_.toLower(generic_name))}</h6>
+                      <small>
+                        {item_generic_status === "A" ? "Active" : "Inactive"}
+                      </small>
+                    </div>
+                  );
                 }}
+                onClear={this.clearGenericCodeHandler.bind(this)}
+                onClick={this.onGenericItemSelectedHandler.bind(this)}
               />
-
-              <AlagehAutoComplete
+              <AlgaehAutoSearch
                 div={{ className: "col-3" }}
                 label={{ forceLabel: "Item Name" }}
-                selector={{
-                  name: "item_id",
-                  className: "select-fld",
-                  value: this.state.item_id,
-                  dataSource: {
-                    textField: "item_description",
-                    valueField: "hims_d_item_master_id",
-                    data: this.state.itemlist
-                  },
-                  onChange: itemhandle.bind(this, this),
-                  onClear: itemhandle.bind(this, this),
-                  autoComplete: "off"
+                title="Search Item"
+                name="item_description"
+                columns={[
+                  { fieldName: "item_description" },
+                  { fieldName: "item_code" },
+                  { fieldName: "sfda_code" }
+                ]}
+                displayField="item_description"
+                directCondition={this.generateDirectCondition(
+                  this.state.generic_id
+                )}
+                value={this.state.item_description}
+                searchName="ItemMasterOrderMedication"
+                template={({
+                  item_code,
+                  item_description,
+                  sfda_code,
+                  storage_description,
+                  sales_price
+                }) => {
+                  return (
+                    <div className="col-12 padd-10">
+                      <h6>{_.startCase(_.toLower(item_description))}</h6>
+                      {storage_description !== null &&
+                      storage_description !== "" ? (
+                        <small>
+                          Storage :{" "}
+                          {_.startCase(_.toLower(storage_description))}
+                        </small>
+                      ) : null}
+                    </div>
+                  );
                 }}
+                onClear={this.clearItemCodeHandler.bind(this)}
+                onClick={this.itemChangeHandle.bind(this)}
               />
+              {/* <AlagehAutoComplete
+                 div={{ className: "col-3" }}
+                 label={{ forceLabel: "Item Name" }}
+               selector={{
+                   name: "item_id",
+                 className: "select-fld",
+                 value: this.state.item_id,
+                dataSource: {
+                   textField: "item_description",
+                    valueField: "hims_d_item_master_id",
+                  data: this.state.itemlist
+                  },
+                   onChange: itemhandle.bind(this, this),
+                   onClear: itemhandle.bind(this, this),
+                  autoComplete: "off"
+               }}
+             />*/}
 
               <AlagehAutoComplete
                 div={{ className: "col" }}
@@ -675,8 +763,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getItems: AlgaehActions,
-      getGenerics: AlgaehActions,
+      //getItems: AlgaehActions,
+      //getGenerics: AlgaehActions,
       getItemStock: AlgaehActions,
       getPatientInsurance: AlgaehActions
     },

@@ -5,8 +5,6 @@ import Options from "../../../../Options.json";
 
 //Text Handaler Change
 const texthandle = ($this, e) => {
-  
-
   let name = e.name || e.target.name;
   let value = e.value === "" ? null : e.value || e.target.value;
   $this.setState(
@@ -143,52 +141,110 @@ const genericnamehandle = ($this, ctrl, e) => {
   });
 };
 
-const itemhandle = ($this, ctrl, e) => {
-  e = e || ctrl;
-  if (e.value === undefined) {
+// const itemhandle = ($this, ctrl, e) => {
+//   e = e || ctrl;
+//   if (e.value === undefined) {
+//     $this.setState({
+//       [e]: null,
+//       generic_id: null,
+//       service_id: null,
+//       uom_id: null,
+//       item_category_id: null,
+//       item_group_id: null,
+//       addItemEnable: true,
+//       total_quantity: 0
+//     });
+//   } else {
+//     let name = e.name || e.target.name;
+//     let value = e.value || e.target.value;
+//     if (e.selected.service_id === null) {
+//       swalMessage({
+//         title: "Service not setup to the selected Item.",
+//         type: "error"
+//       });
+//       $this.setState({
+//         [name]: null,
+//         total_quantity: 0,
+//         generic_id: null
+//       });
+//     } else {
+//       $this.setState(
+//         {
+//           [name]: value,
+//           generic_id: e.selected.generic_id,
+//           service_id: e.selected.service_id,
+//           uom_id: e.selected.sales_uom_id,
+//           item_category_id: e.selected.category_id,
+//           item_group_id: e.selected.group_id,
+//           addItemEnable: false,
+//           total_quantity: 0
+//         },
+//         () => {
+//           getItemStock($this);
+//         }
+//       );
+//     }
+//   }
+// };
+
+const itemhandle = ($this, item) => {
+  if (item.service_id === null || item.service_id === undefined) {
+    swalMessage({
+      title: "Service not setup to the selected Item.",
+      type: "error"
+    });
     $this.setState({
-      [e]: null,
-      generic_id: null,
-      service_id: null,
-      uom_id: null,
-      item_category_id: null,
-      item_group_id: null,
-      addItemEnable: true,
-      total_quantity: 0
+      total_quantity: 0,
+      generic_id: null
     });
   } else {
-    let name = e.name || e.target.name;
-    let value = e.value || e.target.value;
-    if (e.selected.service_id === null) {
-      swalMessage({
-        title: "Service not setup to the selected Item.",
-        type: "error"
-      });
-      $this.setState({
-        [name]: null,
-        total_quantity: 0,
-        generic_id: null
-      });
-    } else {
-      $this.setState(
-        {
-          [name]: value,
-          generic_id: e.selected.generic_id,
-          service_id: e.selected.service_id,
-          uom_id: e.selected.sales_uom_id,
-          item_category_id: e.selected.category_id,
-          item_group_id: e.selected.group_id,
-          addItemEnable: false,
-          total_quantity: 0
-        },
-        () => {
-          getItemStock($this);
-        }
-      );
-    }
+    $this.setState(
+      {
+        item_id: item.hims_d_item_master_id,
+        generic_id: item.generic_id,
+        service_id: item.service_id,
+        uom_id: item.sales_uom_id,
+        item_category_id: item.category_id,
+        item_group_id: item.group_id,
+        addItemEnable: false,
+        total_quantity: 0
+      },
+      () => {
+        getItemStock($this);
+      }
+    );
   }
-};
 
+  // let name = e.name || e.target.name;
+  // let value = e.value || e.target.value;
+  // if (e.selected.service_id === null) {
+  //   swalMessage({
+  //     title: "Service not setup to the selected Item.",
+  //     type: "error"
+  //   });
+  //   $this.setState({
+  //     [name]: null,
+  //     total_quantity: 0,
+  //     generic_id: null
+  //   });
+  // } else {
+  //   $this.setState(
+  //     {
+  //       [name]: value,
+  //       generic_id: e.selected.generic_id,
+  //       service_id: e.selected.service_id,
+  //       uom_id: e.selected.sales_uom_id,
+  //       item_category_id: e.selected.category_id,
+  //       item_group_id: e.selected.group_id,
+  //       addItemEnable: false,
+  //       total_quantity: 0
+  //     },
+  //     () => {
+  //       getItemStock($this);
+  //     }
+  //   );
+  // }
+};
 const AddItems = $this => {
   if (
     $this.state.item_id !== null &&
@@ -240,7 +296,7 @@ const AddItems = $this => {
         secondary_network_office_id: $this.state.secondary_network_office_id
       }
     ];
-    
+
     algaehApiCall({
       uri: "/billing/getBillDetails",
       module: "billing",
@@ -341,7 +397,7 @@ const updateItems = ($this, row) => {
 
 const calcuateDispense = ($this, e) => {
   // if (e.target === null || e.target.value !== e.target.oldvalue) {
-  
+
   let frequency = 0;
   let frequency_type = 0;
   let dispense = 0;

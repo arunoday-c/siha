@@ -45,10 +45,11 @@ class BasicSubjective extends Component {
       openVital: false,
       openAlergy: false,
       openExamnModal: null,
-      chief_complaint: null,
+      chief_complaint: "",
 
       duration: null,
-
+      significant_signs: "",
+      other_signs: "",
       interval: null,
       onset_date: null,
       pain: null,
@@ -522,17 +523,12 @@ class BasicSubjective extends Component {
                         <div className="row">
                           <div className="col-12">
                             <textarea
-                              value={
-                                this.state === undefined
-                                  ? ""
-                                  : this.state.chief_complaint
-                              }
+                              value={this.state.chief_complaint}
                               name="chief_complaint"
                               onChange={this.textAreaEvent.bind(this)}
                               maxLength={this.chiefComplaintMaxLength}
-                            >
-                              {this.state.chief_complaint}
-                            </textarea>
+                            />
+
                             <small className="float-right">
                               Max Char.{" "}
                               {maxCharactersLeft(
@@ -656,9 +652,7 @@ class BasicSubjective extends Component {
                           name="significant_signs"
                           onChange={this.textAreaEvent.bind(this)}
                           maxLength={this.significantSignsLength}
-                        >
-                          {this.state.significant_signs}
-                        </textarea>
+                        />
                         <small className="float-right">
                           Max Char.{" "}
                           {maxCharactersLeft(
@@ -688,9 +682,7 @@ class BasicSubjective extends Component {
                           name="other_signs"
                           onChange={this.textAreaEvent.bind(this)}
                           maxLength={this.otherConditionMaxLength}
-                        >
-                          {this.state.other_signs}
-                        </textarea>
+                        />
                         <small className="float-right">
                           Max Char.{" "}
                           {maxCharactersLeft(
