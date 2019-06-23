@@ -23,6 +23,7 @@ function AppointmentComponent(props) {
           <div id="appointment-module">
             {/* Edit Pop up Start */}
             <AlgaehModalPopUp
+              class="appoPopupWidth"
               title={getLabelFromLanguage({
                 fieldName: "editAppo"
               })}
@@ -60,7 +61,7 @@ function AppointmentComponent(props) {
                   <div className="col-lg-12 popRightDiv">
                     <div className="row">
                       <AlagehAutoComplete
-                        div={{ className: "col" }}
+                        div={{ className: "col-4 form-group mandatory" }}
                         label={{
                           fieldName: "selectStatus",
                           isImp: true
@@ -70,7 +71,7 @@ function AppointmentComponent(props) {
                           className: "select-fld",
                           value: props.state.edit_appointment_status_id,
                           dataSource: {
-                            textField: "description",
+                            textField: "statusDesc",
                             valueField: "hims_d_appointment_status_id",
                             data: props.state.appointmentStatus
                           },
@@ -78,7 +79,7 @@ function AppointmentComponent(props) {
                         }}
                       />
                       <AlgaehDateHandler
-                        div={{ className: "col" }}
+                        div={{ className: "col-3 form-group mandatory" }}
                         label={{
                           fieldName: "appoDate",
                           isImp: true
@@ -97,7 +98,7 @@ function AppointmentComponent(props) {
                         value={props.state.edit_appt_date}
                       />
                       <AlagehAutoComplete
-                        div={{ className: "col" }}
+                        div={{ className: "col-3 form-group mandatory" }}
                         label={{
                           fieldName: "appoTime",
                           // isImp: true
@@ -115,7 +116,7 @@ function AppointmentComponent(props) {
                         }}
                         />
                       <AlagehAutoComplete
-                        div={{ className: "col" }}
+                        div={{ className: "col-2 form-group mandatory " }}
                         label={{
                           fieldName: "selectSlot",
                           isImp: true
@@ -144,7 +145,7 @@ function AppointmentComponent(props) {
                     <div className="row">
                       <AlagehAutoComplete
                         div={{
-                          className: "col-2 margin-top-15 mandatory"
+                          className: "col-2 form-group"
                         }}
                         label={{
                           fieldName: "title_id",
@@ -168,7 +169,7 @@ function AppointmentComponent(props) {
 
                       <AlagehFormGroup
                         div={{
-                          className: "col margin-top-15"
+                          className: "col-5 form-group"
                         }}
                         label={{
                           fieldName: "full_name",
@@ -188,7 +189,7 @@ function AppointmentComponent(props) {
                       />
                       <AlagehFormGroup
                         div={{
-                          className: "col margin-top-15 arabic-txt-fld"
+                          className: "col-5 form-group arabic-txt-fld"
                         }}
                         label={{
                           fieldName: "arabic_name",
@@ -211,7 +212,7 @@ function AppointmentComponent(props) {
                     <div className="row">
                       <AlgaehDateHandler
                         div={{
-                          className: "col margin-top-15"
+                          className: "col-3 form-group"
                         }}
                         label={{
                           fieldName: "date_of_birth",
@@ -232,7 +233,7 @@ function AppointmentComponent(props) {
 
                       <AlagehFormGroup
                         div={{
-                          className: "col margin-top-15"
+                          className: "col-2 form-group"
                         }}
                         label={{
                           fieldName: "age",
@@ -254,7 +255,7 @@ function AppointmentComponent(props) {
 
                       <AlagehAutoComplete
                         div={{
-                          className: "col margin-top-15"
+                          className: "col-3 form-group"
                         }}
                         label={{
                           fieldName: "gender",
@@ -280,7 +281,7 @@ function AppointmentComponent(props) {
                     <div className="row">
                       <AlagehFormGroup
                         div={{
-                          className: "col margin-top-15"
+                          className: "col-6 form-group"
                         }}
                         label={{
                           fieldName: "contact_number",
@@ -302,7 +303,7 @@ function AppointmentComponent(props) {
 
                       <AlagehFormGroup
                         div={{
-                          className: "col margin-top-15"
+                          className: "col-6 form-group"
                         }}
                         label={{
                           fieldName: "email",
@@ -324,7 +325,7 @@ function AppointmentComponent(props) {
 
                     <div className="row">
                       <AlagehFormGroup
-                        div={{ className: "col margin-top-15" }}
+                        div={{ className: "col-12 form-group" }}
                         label={{
                           fieldName: "remarks",
                           isImp: false
@@ -346,7 +347,7 @@ function AppointmentComponent(props) {
                 </div>
                 {/* </div>
                   </div>{" "} */}
-                <div className="popupFooter">
+                <div className="row popupFooter">
                   <div className="col-lg-12">
                     <button
                       onClick={() => props.updatePatientAppointment(null)}
@@ -381,9 +382,9 @@ function AppointmentComponent(props) {
               }}
               openPopup={props.state.showApt}>
               <div className="popupInner" data-validate="addApptDiv">
-                <div className="col-lg-12 popRightDiv">
+                <div className="col-12 popRightDiv">
                   <div className="row">
-                    <div className="col margin-top-15">
+                    <div className="col form-group">
                       <AlgaehLabel
                         label={{
                           fieldName: "appoDate"
@@ -396,7 +397,7 @@ function AppointmentComponent(props) {
                       </h6>
                     </div>
 
-                    <div className="col margin-top-15">
+                    <div className="col form-group">
                       <AlgaehLabel
                         label={{
                           fieldName: "appoTime"
@@ -405,7 +406,7 @@ function AppointmentComponent(props) {
                       <h6>{props.state.apptFromTime}</h6>
                     </div>
                     <AlagehFormGroup
-                      div={{ className: "col  margin-top-15 " }}
+                      div={{ className: "col-4  form-group " }}
                       label={{
                         fieldName: "patient_code",
                         isImp: false
@@ -421,22 +422,20 @@ function AppointmentComponent(props) {
                           // onChange: props.texthandle
                         }
                       }}
-                    />
-
-                    <div className="col-lg-1" style={{ paddingTop: "40px" }}>
-                      <i
-                        //onClick={props.getPatient.bind(props)}
-                        onClick={props.patientSearch}
-                        className="fas fa-search"
-                        style={{
-                          marginLeft: "-40%",
-                          cursor: "pointer"
-                        }}
                       />
-                    </div>
+                      
+   <div className="col-1  print_actions">
+                        <span
+                          className="fas fa-search globalSearchIconStyle"
+                           onClick={props.patientSearch}
+                        />
+                      </div>
+
+
+                 
                     <AlagehAutoComplete
                       div={{
-                        className: "col margin-top-15 mandatory"
+                        className: "col-3  form-group mandatory"
                       }}
                       label={{
                         fieldName: "selectSlot",
@@ -466,7 +465,7 @@ function AppointmentComponent(props) {
                   <div className="row">
                     <AlagehAutoComplete
                       div={{
-                        className: "col margin-top-15 mandatory"
+                        className: "col-2  form-group mandatory"
                       }}
                       label={{
                         fieldName: "title_id",
@@ -487,7 +486,7 @@ function AppointmentComponent(props) {
 
                     <AlagehFormGroup
                       div={{
-                        className: "col margin-top-15 mandatory"
+                        className: "col-5  form-group mandatory"
                       }}
                       label={{
                         fieldName: "full_name",
@@ -504,7 +503,7 @@ function AppointmentComponent(props) {
                     />
                     <AlagehFormGroup
                       div={{
-                        className: "col margin-top-15 mandatory arabic-txt-fld"
+                        className: "col-5  form-group mandatory arabic-txt-fld"
                       }}
                       label={{
                         fieldName: "arabic_name",
@@ -524,7 +523,7 @@ function AppointmentComponent(props) {
                   <div className="row">
                     <AlgaehDateHandler
                       div={{
-                        className: "col margin-top-15 mandatory"
+                        className: "col-3   form-group mandatory"
                       }}
                       label={{
                         fieldName: "date_of_birth",
@@ -542,7 +541,7 @@ function AppointmentComponent(props) {
 
                     <AlagehFormGroup
                       div={{
-                        className: "col margin-top-15 mandatory"
+                        className: "col-3  form-group mandatory"
                       }}
                       label={{
                         fieldName: "age",
@@ -563,7 +562,7 @@ function AppointmentComponent(props) {
 
                     <AlagehAutoComplete
                       div={{
-                        className: "col margin-top-15 mandatory"
+                        className: "col-3  form-group mandatory"
                       }}
                       label={{
                         fieldName: "gender",
@@ -584,7 +583,7 @@ function AppointmentComponent(props) {
 
                     <AlagehAutoComplete
                       div={{
-                        className: "col margin-top-15 mandatory"
+                        className: "col-3 form-group mandatory AutoCompleteRight"
                       }}
                       label={{
                         fieldName: "selectStatus",
@@ -595,11 +594,11 @@ function AppointmentComponent(props) {
                         className: "select-fld",
                         value: props.state.appointment_status_id,
                         dataSource: {
-                          textField: "description",
+                          textField: "statusDesc",
                           valueField: "hims_d_appointment_status_id",
                           data: props.state.appointmentStatus
+                          
                         }
-                        // onChange: props.dropDownHandle
                       }}
                     />
                   </div>
@@ -607,7 +606,7 @@ function AppointmentComponent(props) {
                   <div className="row">
                     <AlagehFormGroup
                       div={{
-                        className: "col margin-top-15 mandatory"
+                        className: "col-6 form-group mandatory"
                       }}
                       label={{
                         fieldName: "contact_number",
@@ -628,7 +627,7 @@ function AppointmentComponent(props) {
 
                     <AlagehFormGroup
                       div={{
-                        className: "col margin-top-15"
+                        className: "col-6 form-group"
                       }}
                       label={{
                         fieldName: "email",
@@ -648,7 +647,7 @@ function AppointmentComponent(props) {
                   <div className="row">
                     <AlagehFormGroup
                       div={{
-                        className: "col margin-top-15 margin-bottom-15"
+                        className: "col-12 form-group margin-bottom-15"
                       }}
                       label={{
                         fieldName: "remarks",
@@ -727,7 +726,7 @@ function AppointmentComponent(props) {
 
             <div className="row inner-top-search">
               <AlagehAutoComplete
-                div={{ className: "col-lg-3 mandatory" }}
+                div={{ className: "col-3  mandatory" }}
                 label={{
                   fieldName: "department_name",
                   isImp: true
@@ -742,12 +741,13 @@ function AppointmentComponent(props) {
                     data: props.state.departments
                   },
                   onChange: props.deptDropDownHandler,
-                  onClear: () => props.nullifyState("sub_department_id")
+                  onClear: () => props.nullifyState("sub_department_id"),
+                      autoComplete: "off"
                 }}
               />
 
               <AlagehAutoComplete
-                div={{ className: "col-lg-3" }}
+                div={{ className: "col-3 " }}
                 label={{
                   fieldName: "filterbyDoctor"
                 }}
@@ -761,7 +761,8 @@ function AppointmentComponent(props) {
                     data: props.state.doctors
                   },
                   onChange: props.dropDownHandle,
-                  onClear: () => props.nullifyState("provider_id")
+                  onClear: () => props.nullifyState("provider_id"),
+                      autoComplete: "off"
                 }}
               />
 
