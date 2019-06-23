@@ -1615,7 +1615,7 @@ class NurseWorkbench extends Component {
                           fieldName: "duration"
                         }}
                         textBox={{
-                          className: "col txt-fld",
+                          className: "txt-fld",
                           name: "duration",
                           number: true,
                           value: this.state.duration,
