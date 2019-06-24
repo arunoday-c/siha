@@ -181,5 +181,11 @@
 	"payby_check": "Pay By Cheque",
 	"NotGenerated": "Not Generated",
 	"PastVisit": "Past Visit",
+	"employee_id": "Employee ID",
+
+	"card_holder_name": "Card Holder Name",
+	"card_holder_age": "Holder Age",
+	"card_holder_gender": "Holder Gender",
+	"card_class": "Card Class",
 	"employee_id": "Employee ID"
 }
