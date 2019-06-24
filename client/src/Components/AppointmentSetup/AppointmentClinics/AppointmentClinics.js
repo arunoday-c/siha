@@ -281,7 +281,7 @@ class AppointmentClinics extends Component {
     )
       .where(w => w.hims_d_appointment_room_id === id)
       .firstOrDefault();
-    return room !== undefined ? room.description : "";
+    return room !== undefined ? room.roomDesc : "";
   }
 
   render() {
@@ -357,7 +357,7 @@ class AppointmentClinics extends Component {
                 className: "select-fld",
                 value: this.state.room_id,
                 dataSource: {
-                  textField: "description",
+                  textField: "roomDesc",
                   valueField: "hims_d_appointment_room_id",
                   data: this.state.appointmentRooms
                 },
@@ -483,7 +483,7 @@ class AppointmentClinics extends Component {
                         className: "select-fld",
                         value: row.room_id,
                         dataSource: {
-                          textField: "description",
+                          textField: "roomDesc",
                           valueField: "hims_d_appointment_room_id",
                           data: this.state.appointmentRooms
                         },

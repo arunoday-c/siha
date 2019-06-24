@@ -8,34 +8,38 @@
                 <thead>
                      <tr>
     <th>Sl No.</th>
-    <th>Application No.</th>
-    <th>Employee Code</th>
-    <th>Employee Name</th>
-    <th>Leave Type</th>
-    <th>From Date</th>
-    <th>To Date</th>
-    <th>Total Days</th>
+    <th>Cons. Date</th>
+    <th>Cons. Code</th>
+    <th>Item Code</th>
+    <th>Item Name</th>
+    <th>Qty</th>
+    <th>Unit Price</th>
+    <th>Net Amount</th>
   </tr>
                 </thead>
                 <tbody>
             {{#each detail}}
-                    <tr> <td colspan="8" class="tableSubHdg">{{status}}</td></tr>
+                    <tr> <td colspan="8"  class="tableSubHdg">{{doctor}}</td></tr>
                     {{#each detailList}}
                     <tr>
                         <td>{{inc @index}}</td>
-    <td>{{leave_application_code}}</td>
-    <td>{{employee_code}}</td>
-    <td>{{employee_name}}</td>
-    <td>{{leave_description}}</td>
-    <td>{{from_date}}</td>
-    <td>{{to_date}}</td>
-    <td>{{total_applied_days}}</td>
+                        <td>{{consumption_date}}</td>
+                        <td>{{consumption_number}}</td>
+                        <td>{{item_code}}</td>
+                        <td>{{item_description}}</td>
+                        <td>{{quantity}}</td>
+                        <td class="numberFld">{{unit_cost}}</td>
+                        <td class="numberFld">{{extended_cost}}</td>
                     </tr>
                     {{/each }}
+                    <tr> <td colspan="7"  class="tableSubTotal">Total Net Amount</td><td class="tableSubTotal">{{total_cost}}</td></tr>
                     {{/each }}
               
                 </tbody>
             </table>
+            <table class="tableTotal">
+                <tr class="bold"><td>Grand Total</td><td>{{grandTotal}}</td><td>المبلغ الإجمالي الكلي</td></tr>
+               </table>
         </section>
         {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
     </div>
