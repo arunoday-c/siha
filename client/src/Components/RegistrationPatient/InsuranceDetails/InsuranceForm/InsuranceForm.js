@@ -47,7 +47,6 @@ class AddInsuranceForm extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    
     this.setState(nextProps.PatRegIOputs);
   }
   imageDetails(context, type) {
@@ -59,7 +58,6 @@ class AddInsuranceForm extends Component {
     }
   }
   render() {
-    
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -340,6 +338,9 @@ class AddInsuranceForm extends Component {
                           noImage="insurance-card-front"
                           name="patInsuranceFrontImg"
                           accept="image/*"
+                          showActions={
+                            this.state.primary_card_number ? true : false
+                          }
                           textAltMessage="Insurance Card Front Side"
                           serviceParameters={{
                             uniqueID: this.state.primary_card_number + "_front",
@@ -363,6 +364,9 @@ class AddInsuranceForm extends Component {
                           noImage="insurance-card-back"
                           name="patInsuranceBackImg"
                           accept="image/*"
+                          showActions={
+                            this.state.primary_card_number ? true : false
+                          }
                           textAltMessage="Insurance Card Back Side"
                           serviceParameters={{
                             uniqueID: this.state.primary_card_number + "_back",

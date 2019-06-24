@@ -26,7 +26,8 @@ class SickLeave extends Component {
       remarks: "",
       episode_id: Window.global["episode_id"],
       patient_id: Window.global["current_patient"],
-      visit_id: Window.global["visit_id"]
+      visit_id: Window.global["visit_id"],
+      disableEdit: false
     };
     this.getSickLeave();
   }
@@ -42,7 +43,10 @@ class SickLeave extends Component {
       onSuccess: response => {
         let data = response.data.records[0];
         if (response.data.success) {
-          this.setState({ ...data });
+          this.setState({
+            ...data,
+            disableEdit: response.data.records.length > 0 ? true : false
+          });
         }
       },
       onFailure: error => {
@@ -176,7 +180,13 @@ class SickLeave extends Component {
                   <AlgaehDateHandler
                     div={{ className: "col-4 form-group" }}
                     label={{ forceLabel: "From Date" }}
-                    textBox={{ className: "txt-fld", name: "from_date" }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "from_date",
+                      others: {
+                        disabled: this.state.disableEdit
+                      }
+                    }}
                     minDate={new Date()}
                     events={{
                       onChange: this.datehandle.bind(this)
@@ -186,7 +196,13 @@ class SickLeave extends Component {
                   <AlgaehDateHandler
                     div={{ className: "col-4 form-group" }}
                     label={{ forceLabel: "To Date" }}
-                    textBox={{ className: "txt-fld", name: "to_date" }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "to_date",
+                      others: {
+                        disabled: this.state.disableEdit
+                      }
+                    }}
                     minDate={new Date()}
                     events={{
                       onChange: this.datehandle.bind(this)
@@ -222,6 +238,7 @@ class SickLeave extends Component {
                       value={this.state.remarks}
                       name="remarks"
                       onChange={this.textAreaEvent.bind(this)}
+                      disabled={this.state.disableEdit}
                     />
                   </div>
                 </div>

@@ -31,7 +31,9 @@ import Allergies from "../Allergies/Allergies";
 import Examination from "../Examination/Examination";
 import { Validations } from "./Validation";
 import { setGlobal } from "../../../utils/GlobalFunctions";
-
+import "./basicSubjective.css";
+import _ from "lodash";
+import moment from "moment";
 class BasicSubjective extends Component {
   constructor(props) {
     super(props);
@@ -43,10 +45,11 @@ class BasicSubjective extends Component {
       openVital: false,
       openAlergy: false,
       openExamnModal: null,
-      chief_complaint: null,
+      chief_complaint: "",
 
       duration: null,
-
+      significant_signs: "",
+      other_signs: "",
       interval: null,
       onset_date: null,
       pain: null,
@@ -54,7 +57,9 @@ class BasicSubjective extends Component {
       chronic: null,
       complaint_type: null,
       isPregnancy: true,
-      hims_f_episode_chief_complaint_id: null
+      hims_f_episode_chief_complaint_id: null,
+      recent_mediction: [],
+      all_mediction: []
     };
     this.isMale = String(Window["global"]["gender"]) === "Male" ? true : false;
     this.chiefComplaintMaxLength = 200;
@@ -151,6 +156,28 @@ class BasicSubjective extends Component {
         pageDisplay: specified
       });
     }
+  }
+
+  getPatientMedications() {
+    algaehApiCall({
+      uri: "/orderMedication/getPatientMedications",
+      data: { patient_id: Window.global["current_patient"] },
+      method: "GET",
+      onSuccess: response => {
+        if (response.data.success) {
+          this.setState({
+            recent_mediction: response.data.records.latest_mediction,
+            all_mediction: response.data.records.all_mediction
+          });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
   }
 
   getPatientEncounterDetails() {
@@ -361,6 +388,7 @@ class BasicSubjective extends Component {
     }
   }
   componentDidMount() {
+    this.getPatientMedications();
     if (this.isMale) {
       this.complaintType = Enumerable.from(GlobalVariables.COMPLAINT_TYPE)
         .where(w => w["value"] !== "PREGNANCY")
@@ -377,6 +405,20 @@ class BasicSubjective extends Component {
     const _finalDiagnosis = Enumerable.from(_diagnosis)
       .where(w => w.final_daignosis === "Y")
       .toArray();
+    const recentMediction = _.chain(this.state.recent_mediction)
+      .groupBy(g => moment(g.prescription_date).format("YYYYMMDD"))
+      .map((details, key) => {
+        const month = moment(key, "YYYYMMDD").format("MMM");
+        const day = moment(key, "YYYYMMDD").format("DD");
+        return {
+          date: key,
+          month: month,
+          day: day,
+          details: details
+        };
+      })
+      .value();
+
     return (
       <div className="subjective basicSubjective">
         <div className="row margin-top-15">
@@ -481,17 +523,12 @@ class BasicSubjective extends Component {
                         <div className="row">
                           <div className="col-12">
                             <textarea
-                              value={
-                                this.state === undefined
-                                  ? ""
-                                  : this.state.chief_complaint
-                              }
+                              value={this.state.chief_complaint}
                               name="chief_complaint"
                               onChange={this.textAreaEvent.bind(this)}
                               maxLength={this.chiefComplaintMaxLength}
-                            >
-                              {this.state.chief_complaint}
-                            </textarea>
+                            />
+
                             <small className="float-right">
                               Max Char.{" "}
                               {maxCharactersLeft(
@@ -615,9 +652,7 @@ class BasicSubjective extends Component {
                           name="significant_signs"
                           onChange={this.textAreaEvent.bind(this)}
                           maxLength={this.significantSignsLength}
-                        >
-                          {this.state.significant_signs}
-                        </textarea>
+                        />
                         <small className="float-right">
                           Max Char.{" "}
                           {maxCharactersLeft(
@@ -647,9 +682,7 @@ class BasicSubjective extends Component {
                           name="other_signs"
                           onChange={this.textAreaEvent.bind(this)}
                           maxLength={this.otherConditionMaxLength}
-                        >
-                          {this.state.other_signs}
-                        </textarea>
+                        />
                         <small className="float-right">
                           Max Char.{" "}
                           {maxCharactersLeft(
@@ -667,7 +700,7 @@ class BasicSubjective extends Component {
           </div>
           <div className="algaeh-col-8">
             <div className="row">
-              <div className="col-5">
+              <div className="col-7">
                 <div className="portlet portlet-bordered margin-bottom-15">
                   <div className="portlet-title">
                     <div className="caption">
@@ -771,16 +804,17 @@ class BasicSubjective extends Component {
                 </div>
               </div>
 
-              <div className="col-7">
+              <div className="col-5" style={{paddingLeft:0}}>
                 <div className="portlet portlet-bordered margin-bottom-15">
                   <div className="portlet-title">
                     <div className="caption">
                       <h3 className="caption-subject">Active Medication</h3>
                     </div>
+
                     <div className="actions">
                       <a
                         className="btn btn-primary btn-circle active"
-                        onClick={this.IcdsSearch.bind(this, "Final")}
+                        onClick={this.showMedication.bind(this)}
                       >
                         <i className="fas fa-plus" />
                       </a>
@@ -788,7 +822,25 @@ class BasicSubjective extends Component {
                   </div>
 
                   <div className="portlet-body">
-                    Active Medication Comes Here
+                    <div className="activeMedication">
+                      {recentMediction.map((item, index) => (
+                        <div key={index} className="activeMedDateList">
+                          <div className="medcineDate"><span>{item.month}</span><h3>{item.day}</h3></div>
+                          <div className="medcineList">
+                             <ul>
+                              {item.details.map((medicine, indexD) => (
+                                <li key={indexD}>
+                                    <b>{medicine.generic_name}</b>
+                                    {/* <small>({medicine.item_description})</small> */}
+                                    <small><span>4 ml</span> - <span>12 hourly (1-1-1)</span> * <span>5 days</span></small>
+                          
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>

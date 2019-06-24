@@ -38,11 +38,19 @@ import "./OrderMedication.css";
 import "../../../../styles/site.css";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import moment from "moment";
-
+import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
+import _ from "lodash";
+import { Label } from "semantic-ui-react";
+import ButtonType from "../../../Wrapper/algaehButton";
+import { setGlobal, removeGlobal } from "../../../../utils/GlobalFunctions";
 class OrderMedication extends Component {
   constructor(props) {
     super(props);
-
+    let storedState = {};
+    if (Window.global["orderMedicationState"] !== null) {
+      storedState = Window.global["orderMedicationState"];
+      removeGlobal("orderMedicationState");
+    }
     this.state = {
       patient_id: Window.global["current_patient"],
       encounter_id: Window.global["encounter_id"],
@@ -52,7 +60,7 @@ class OrderMedication extends Component {
       episode_id: Window.global["episode_id"],
 
       vat_applicable: this.props.vat_applicable,
-
+      instructions: "",
       itemlist: [],
       medicationitems: [],
       start_date: moment(new Date())._d,
@@ -72,40 +80,67 @@ class OrderMedication extends Component {
 
       frequency_type: null,
       frequency_time: null,
-      Instructions: null,
-      total_quantity: 0
+      //Instructions: null,
+      total_quantity: 0,
+      ...storedState
     };
   }
 
   componentDidMount() {
-    this.props.getItems({
-      uri: "/pharmacy/getItemMaster",
-      module: "pharmacy",
-      method: "GET",
-      redux: {
-        type: "ITEMS_GET_DATA",
-        mappingName: "itemlist"
-      },
-      afterSuccess: data => {
-        this.setState({
-          itemlist: data
-        });
-      }
-    });
-    this.props.getGenerics({
-      uri: "/pharmacy/getItemGeneric",
-      module: "pharmacy",
-      method: "GET",
-      redux: {
-        type: "GENERIC_GET_DATA",
-        mappingName: "genericlist"
-      }
-    });
+    // this.props.getItems({
+    //   uri: "/pharmacy/getItemMaster",
+    //   module: "pharmacy",
+    //   method: "GET",
+    //   redux: {
+    //     type: "ITEMS_GET_DATA",
+    //     mappingName: "itemlist"
+    //   },
+    //   afterSuccess: data => {
+    //     this.setState({
+    //       itemlist: data
+    //     });
+    //   }
+    // });
+    // this.props.getGenerics({
+    //   uri: "/pharmacy/getItemGeneric",
+    //   module: "pharmacy",
+    //   method: "GET",
+    //   redux: {
+    //     type: "GENERIC_GET_DATA",
+    //     mappingName: "genericlist"
+    //   }
+    // });
     this.getPatientInsurance();
+  }
+  onGenericItemSelectedHandler(item) {
+    this.setState({
+      generic_id: item.hims_d_item_generic_id,
+      generic_name: _.startCase(_.toLower(item.generic_name))
+    });
+  }
+  clearGenericCodeHandler() {
+    this.setState({
+      generic_id: undefined,
+      generic_name: "",
+      item_description: "",
+      item_id: undefined
+    });
+  }
+  clearItemCodeHandler() {
+    this.setState({
+      service_id: null,
+      uom_id: null,
+      item_category_id: null,
+      item_group_id: null,
+      addItemEnable: true,
+      total_quantity: 0
+    });
+  }
+  itemChangeHandle(item) {
+    itemhandle(this, item);
   }
 
   getPatientInsurance() {
-    
     this.props.getPatientInsurance({
       uri: "/patientRegistration/getPatientInsurance",
       module: "frontDesk",
@@ -135,10 +170,10 @@ class OrderMedication extends Component {
       }
     });
   }
-
+  componentWillUnmount() {
+    setGlobal({ orderMedicationState: this.state });
+  }
   componentWillReceiveProps(nextProps) {
-    
-
     if (
       nextProps.existinginsurance !== undefined &&
       nextProps.existinginsurance.length !== 0
@@ -148,47 +183,138 @@ class OrderMedication extends Component {
       this.setState({ ...output });
     }
   }
-
+  generateDirectCondition(generic_id) {
+    if (generic_id === null || generic_id === undefined || generic_id === "") {
+      return "";
+    } else {
+      return " AND generic_id='" + generic_id + "'";
+    }
+  }
+  instructionItems() {
+    const frequency = _.find(
+      PRESCRIPTION_FREQ_PERIOD,
+      f => f.value === this.state.frequency
+    );
+    const frequencyType = _.find(
+      PRESCRIPTION_FREQ_TIME,
+      f => f.value === this.state.frequency_type
+    );
+    const consume = _.find(
+      PRESCRIPTION_FREQ_DURATION,
+      f => f.value === this.state.frequency_time
+    );
+    if (
+      frequency !== undefined &&
+      frequencyType !== undefined &&
+      consume !== undefined
+    ) {
+      return `Use ${this.state.dosage} Unit(s),${frequency.name} Time(s) ${
+        frequencyType.name
+      } '${consume.name}' for ${this.state.no_of_days} day(s)`;
+    } else {
+      return "";
+    }
+  }
   render() {
     return (
       <div>
         <div className="popupInner">
           <div className="popRightDiv">
             <div className="row paddin-bottom-5" style={{ marginTop: 5 }}>
-              <AlagehAutoComplete
+              {/*/ <AlagehAutoComplete
+              //   div={{ className: "col-3" }}
+              //   label={{ forceLabel: "Generic Name" }}
+              //   selector={{
+              //     name: "generic_id",
+              //     className: "select-fld",
+              //     value: this.state.generic_id,
+              //     dataSource: {
+              //       textField: "generic_name",
+              //       valueField: "hims_d_item_generic_id",
+              //       data: this.props.genericlist
+              //     },
+              //     onChange: genericnamehandle.bind(this, this),
+              //     autoComplete: "off"
+              //   }}
+              // >*/}
+              <AlgaehAutoSearch
                 div={{ className: "col-3" }}
                 label={{ forceLabel: "Generic Name" }}
-                selector={{
-                  name: "generic_id",
-                  className: "select-fld",
-                  value: this.state.generic_id,
-                  dataSource: {
-                    textField: "generic_name",
-                    valueField: "hims_d_item_generic_id",
-                    data: this.props.genericlist
-                  },
-                  onChange: genericnamehandle.bind(this, this),
-                  autoComplete: "off"
+                title="Search Gereric Item"
+                name="generic_name"
+                columns={[{ fieldName: "generic_name" }]}
+                displayField="generic_name"
+                value={this.state.generic_name}
+                searchName="ItemGenericNames"
+                template={({ generic_name, item_generic_status }) => {
+                  return (
+                    <div className="col-12 padd-10">
+                      <h6>{_.startCase(_.toLower(generic_name))}</h6>
+                      <small>
+                        {item_generic_status === "A" ? "Active" : "Inactive"}
+                      </small>
+                    </div>
+                  );
                 }}
+                onClear={this.clearGenericCodeHandler.bind(this)}
+                onClick={this.onGenericItemSelectedHandler.bind(this)}
               />
-
-              <AlagehAutoComplete
+              <AlgaehAutoSearch
                 div={{ className: "col-3" }}
                 label={{ forceLabel: "Item Name" }}
-                selector={{
-                  name: "item_id",
-                  className: "select-fld",
-                  value: this.state.item_id,
-                  dataSource: {
-                    textField: "item_description",
-                    valueField: "hims_d_item_master_id",
-                    data: this.state.itemlist
-                  },
-                  onChange: itemhandle.bind(this, this),
-                  onClear: itemhandle.bind(this, this),
-                  autoComplete: "off"
+                title="Search Item"
+                name="item_description"
+                columns={[
+                  { fieldName: "item_description" },
+                  { fieldName: "item_code" },
+                  { fieldName: "sfda_code" }
+                ]}
+                displayField="item_description"
+                directCondition={this.generateDirectCondition(
+                  this.state.generic_id
+                )}
+                value={this.state.item_description}
+                searchName="ItemMasterOrderMedication"
+                template={({
+                  item_code,
+                  item_description,
+                  sfda_code,
+                  storage_description,
+                  sales_price
+                }) => {
+                  return (
+                    <div className="col-12 padd-10">
+                      <h6>{_.startCase(_.toLower(item_description))}</h6>
+                      {storage_description !== null &&
+                      storage_description !== "" ? (
+                        <small>
+                          Storage :{" "}
+                          {_.startCase(_.toLower(storage_description))}
+                        </small>
+                      ) : null}
+                    </div>
+                  );
                 }}
+                onClear={this.clearItemCodeHandler.bind(this)}
+                onClick={this.itemChangeHandle.bind(this)}
               />
+              {/* <AlagehAutoComplete
+                 div={{ className: "col-3" }}
+                 label={{ forceLabel: "Item Name" }}
+               selector={{
+                   name: "item_id",
+                 className: "select-fld",
+                 value: this.state.item_id,
+                dataSource: {
+                   textField: "item_description",
+                    valueField: "hims_d_item_master_id",
+                  data: this.state.itemlist
+                  },
+                   onChange: itemhandle.bind(this, this),
+                   onClear: itemhandle.bind(this, this),
+                  autoComplete: "off"
+               }}
+             />*/}
 
               <AlagehAutoComplete
                 div={{ className: "col" }}
@@ -293,8 +419,17 @@ class OrderMedication extends Component {
                 }}
                 value={this.state.start_date}
               />
-
-              <AlagehFormGroup
+              <div class="col-4 form-group">
+                <label className="style_Label ">Instruction</label>
+                <textarea
+                  name="instructions"
+                  className="txt-fld"
+                  rows="3"
+                  onChange={texthandle.bind(this, this)}
+                  value={this.instructionItems()}
+                />
+              </div>
+              {/*<AlagehFormGroup
                 div={{ className: "col-4 form-group" }}
                 label={{
                   forceLabel: "Instruction",
@@ -307,11 +442,11 @@ class OrderMedication extends Component {
                   events: {
                     onChange: texthandle.bind(this, this)
                   },
-                  option: {
-                    type: "text"
+                  others: {
+                    multiline: 3
                   }
                 }}
-              />
+              />*/}
 
               <div className="col" style={{ paddingTop: 21, paddingLeft: 0 }}>
                 <button
@@ -330,80 +465,82 @@ class OrderMedication extends Component {
                   id="Order_Medication"
                   columns={[
                     {
-                      fieldName: "generic_id",
+                      fieldName: "generic_name",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Generic Name" }} />
                       ),
-                      displayTemplate: row => {
-                        let display =
-                          this.props.genericlist === undefined
-                            ? []
-                            : this.props.genericlist.filter(
-                                f => f.hims_d_item_generic_id === row.generic_id
-                              );
-
-                        return (
-                          <span>
-                            {display !== undefined && display.length !== 0
-                              ? display[0].generic_name
-                              : ""}
-                          </span>
-                        );
-                      },
-                      editorTemplate: row => {
-                        let display =
-                          this.props.genericlist === undefined
-                            ? []
-                            : this.props.genericlist.filter(
-                                f => f.hims_d_item_generic_id === row.generic_id
-                              );
-
-                        return (
-                          <span>
-                            {display !== undefined && display.length !== 0
-                              ? display[0].generic_name
-                              : ""}
-                          </span>
-                        );
-                      }
+                      editorTemplate: row => <span>{row.generic_name}</span>
+                      // displayTemplate: row => {
+                      //   let display =
+                      //     this.props.genericlist === undefined
+                      //       ? []
+                      //       : this.props.genericlist.filter(
+                      //           f => f.hims_d_item_generic_id === row.generic_id
+                      //         );
+                      //
+                      //   return (
+                      //     <span>
+                      //       {display !== undefined && display.length !== 0
+                      //         ? display[0].generic_name
+                      //         : ""}
+                      //     </span>
+                      //   );
+                      // },
+                      // editorTemplate: row => {
+                      //   let display =
+                      //     this.props.genericlist === undefined
+                      //       ? []
+                      //       : this.props.genericlist.filter(
+                      //           f => f.hims_d_item_generic_id === row.generic_id
+                      //         );
+                      //
+                      //   return (
+                      //     <span>
+                      //       {display !== undefined && display.length !== 0
+                      //         ? display[0].generic_name
+                      //         : ""}
+                      //     </span>
+                      //   );
+                      // }
                     },
                     {
-                      fieldName: "item_id",
+                      fieldName: "item_description",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Item Name" }} />
                       ),
-                      displayTemplate: row => {
-                        let display =
-                          this.state.itemlist === undefined
-                            ? []
-                            : this.state.itemlist.filter(
-                                f => f.hims_d_item_master_id === row.item_id
-                              );
-
-                        return (
-                          <span>
-                            {display !== undefined && display.length !== 0
-                              ? display[0].item_description
-                              : ""}
-                          </span>
-                        );
-                      },
-                      editorTemplate: row => {
-                        let display =
-                          this.state.itemlist === undefined
-                            ? []
-                            : this.state.itemlist.filter(
-                                f => f.hims_d_item_master_id === row.item_id
-                              );
-
-                        return (
-                          <span>
-                            {display !== undefined && display.length !== 0
-                              ? display[0].item_description
-                              : ""}
-                          </span>
-                        );
-                      }
+                      editorTemplate: row => <span>{row.item_description}</span>
+                      // displayTemplate: row => {
+                      //   let display =
+                      //     this.state.itemlist === undefined
+                      //       ? []
+                      //       : this.state.itemlist.filter(
+                      //           f => f.hims_d_item_master_id === row.item_id
+                      //         );
+                      //
+                      //   return (
+                      //     <span>
+                      //       {display !== undefined && display.length !== 0
+                      //         ? display[0].item_description
+                      //         : ""}
+                      //     </span>
+                      //   );
+                      // },
+                      // editorTemplate: row => {
+                      //   let display =
+                      //     this.state.itemlist === undefined
+                      //       ? []
+                      //       : this.state.itemlist.filter(
+                      //           f => f.hims_d_item_master_id === row.item_id
+                      //         );
+                      //
+                      //   return (
+                      //     <span>
+                      //       {display !== undefined && display.length !== 0
+                      //         ? display[0].item_description
+                      //         : ""}
+                      //     </span>
+                      //   );
+                      // }
                     },
                     {
                       fieldName: "frequency",
@@ -639,14 +776,39 @@ class OrderMedication extends Component {
             >
               Save Medication
             </button>
-            <button
+            {/*<button
               className="btn btn-default"
               type="button"
               onClick={printPrescription.bind(this, this)}
               disabled={this.state.saveMedicationEnable}
             >
               Print Prescription
-            </button>
+            </button>*/}
+            <ButtonType
+              label={{
+                forceLabel: "Print Prescription",
+                returnText: true
+              }}
+              displayName="Prescription"
+              report={{
+                reportName: "prescription",
+                reportParams: [
+                  {
+                    name: "hims_d_patient_id",
+                    value: Window.global["current_patient"]
+                  },
+                  {
+                    name: "visit_id",
+                    value: Window.global["visit_id"]
+                  },
+                  {
+                    name: "visit_code",
+                    value: null
+                  }
+                ],
+                outputFileType: "PDF"
+              }}
+            />
             <button
               type="button"
               className="btn btn-default"
@@ -675,8 +837,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getItems: AlgaehActions,
-      getGenerics: AlgaehActions,
+      //getItems: AlgaehActions,
+      //getGenerics: AlgaehActions,
       getItemStock: AlgaehActions,
       getPatientInsurance: AlgaehActions
     },

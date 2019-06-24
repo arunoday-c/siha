@@ -76,7 +76,6 @@ class RCMWorkbench extends Component {
   }
 
   addClaimsArray(row, e) {
-    
     let generateReport = true;
     if (row.claim_validated === "P") {
       e.preventDefault();
@@ -126,6 +125,7 @@ class RCMWorkbench extends Component {
 
         algaehApiCall({
           uri: "/invoiceGeneration/getInvoicesForClaims",
+          module: "insurance",
           method: "GET",
           data: send_data,
           onSuccess: response => {
@@ -181,7 +181,7 @@ class RCMWorkbench extends Component {
   generateReports() {
     AlgaehLoader({ show: true });
     let rpt_paramenter = [];
-    
+
     // validatedClaims
     for (let i = 0; i < this.validatedClaims.length; i++) {
       rpt_paramenter.push([

@@ -1,8 +1,9 @@
+//const algaehUtilities = require("algaeh-utilities/utilities");
 const executePDF = function executePDFMethod(options) {
   return new Promise(function(resolve, reject) {
     try {
       const _ = options.loadash;
-
+      //  const utilities = new algaehUtilities();
       let str = "";
 
       let input = {};
@@ -12,57 +13,65 @@ const executePDF = function executePDFMethod(options) {
         input[para["name"]] = para["value"];
       });
 
-      //utilities.logger().log("input: ", input);
+      // utilities.logger().log("input: ", input);
 
-      if (input.hims_d_leave_id > 0) {
-        str += ` and leave_id=${input.hims_d_leave_id}`;
-      }
-      if (
-        input.status !== "" &&
-        input.status !== null &&
-        input.status !== undefined
-      ) {
-        str += ` and status='${input.status}'`;
+      if (input.provider_id > 0) {
+        str += ` and  H.provider_id=${input.provider_id}`;
       }
 
+      if (input.item_id > 0) {
+        str += ` and D.item_id=${input.item_id}`;
+      }
       options.mysql
         .executeQuery({
-          query: `select hims_f_leave_application_id, leave_application_code,employee_id, leave_id ,
-			  from_date,to_date,total_applied_days,status ,L.leave_code,L.leave_description,L.leave_type,
-			  E.employee_code,full_name as employee_name,E.sex,E.employee_status,
-			  SD.sub_department_code,SD.sub_department_name
-			  FROM hims_f_leave_application LA inner join  hims_d_leave L on LA.leave_id=L.hims_d_leave_id
-			  inner join hims_d_employee E  on LA.employee_id=E.hims_d_employee_id
-			  inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
-			  where((from_date>= ? and from_date <= ?) or (to_date >= ? and to_date <= ?) or (from_date <= ? and to_date >= ?))	${str};`,
+          query: `select hims_f_inventory_consumption_header_id,consumption_number,
+          date(consumption_date)as consumption_date,H.provider_id,E.full_name,E.employee_code,
+          D.quantity,D.unit_cost,D.extended_cost,IM.item_code,IM.item_description
+          from hims_f_inventory_consumption_header H inner join hims_f_inventory_consumption_detail D on
+          H.hims_f_inventory_consumption_header_id=D.inventory_consumption_header_id
+          inner join  hims_d_employee E on E.hims_d_employee_id=H.provider_id
+          inner join hims_d_item_master IM on  D.item_id=IM.hims_d_item_master_id
+          inner join hims_d_sub_department SD on H.location_id=SD.inventory_location_id
+          where  SD.hims_d_sub_department_id=? and H.hospital_id=?  and  date(H.consumption_date) between 
+          date(?) and date(?)	${str};`,
           values: [
-            input.from_date,
-            input.to_date,
-            input.from_date,
-            input.to_date,
+            input.sub_department_id,
+            input.hospital_id,
             input.from_date,
             input.to_date
           ],
           printQuery: true
         })
         .then(results => {
+          // utilities.logger().log("results: ", results);
           const result = _.chain(results)
-            .groupBy(g => g.status)
-            .map(function(dtl, key) {
+            .groupBy(g => g.provider_id)
+            .map(function(item) {
+              const total_cost = _.chain(item)
+                .sumBy(s => parseFloat(s.extended_cost))
+                .value()
+                .toFixed(2);
               return {
-                status: key,
-                detailList: dtl
+                doctor: item[0]["full_name"],
+                detailList: item,
+                total_cost: total_cost
               };
             })
             .value();
-          resolve({ detail: result });
+          const grandTotal = _.chain(result)
+            .sumBy(s => parseFloat(s.total_cost))
+            .value()
+            .toFixed(2);
+
+          resolve({ detail: result, grandTotal: grandTotal });
+          // utilities
+          //   .logger()
+          //   .log("results: ", { detail: result, grandTotal: grandTotal });
         })
         .catch(error => {
           options.mysql.releaseConnection();
           console.log("error", error);
         });
-
-      //const result = { detailList: options.result };
     } catch (e) {
       reject(e);
     }

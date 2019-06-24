@@ -189,7 +189,8 @@ export default [
         subitem: "OP Billing Detail",
         reportName: "opBillDetails",
         requireIframe: true,
-        reportParameters: [ {
+        reportParameters: [
+          {
             className: "col-2",
             type: "dropdown",
             name: "hospital_id",
@@ -888,7 +889,23 @@ export default [
         pageOrentation: "landscape", //"portrait",
         reportParameters: [
           {
-            className:"col-2",
+            className: "col-2",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Select branch",
+            link: {
+              uri: "/organization/getOrganization"
+            },
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            }
+          },
+          {
+            className: "col-2",
             type: "date",
             name: "from_date",
             isImp: true,
@@ -898,7 +915,7 @@ export default [
             }
           },
           {
-            className:"col-2",
+            className: "col-2",
             type: "date",
             name: "to_date",
             isImp: true,
@@ -908,7 +925,7 @@ export default [
             }
           },
           {
-            className:"col-2",
+            className: "col-2",
             type: "dropdown",
             name: "sub_department_id",
             initialLoad: true,
@@ -946,7 +963,7 @@ export default [
             }
           },
           {
-            className:"col-2",
+            className: "col-2",
             type: "dropdown",
             name: "provider_id",
             initialLoad: true,
@@ -959,19 +976,20 @@ export default [
             }
           },
           {
-            className:"col-2",
+            className: "col-2",
             type: "dropdown",
-            name: "status_id",
+            name: "item_id",
             initialLoad: true,
             isImp: false,
-            label: "Select Items",
+            label: "Select Item",
+
             link: {
-              uri: "/appointment/getAppointmentStatus",
-              module: "frontDesk"
+              uri: "/pharmacy/getItemMaster",
+              module: "pharmacy"
             },
             dataSource: {
-              textField: "description",
-              valueField: "hims_d_appointment_status_id",
+              textField: "item_description",
+              valueField: "hims_d_item_master_id",
               data: undefined
             }
           }
@@ -1813,7 +1831,7 @@ export default [
         pageOrentation: "landscape", //"portrait",
         reportParameters: [
           {
-            className:"col-2",
+            className: "col-2",
             type: "date",
             name: "from_date",
             isImp: true,
@@ -1823,7 +1841,7 @@ export default [
             }
           },
           {
-            className:"col-2",
+            className: "col-2",
             type: "date",
             name: "to_date",
             isImp: true,
@@ -1833,7 +1851,7 @@ export default [
             }
           },
           {
-            className:"col-2",
+            className: "col-2",
             type: "dropdown",
             name: "sub_department_id",
             initialLoad: true,
@@ -1871,7 +1889,7 @@ export default [
             }
           },
           {
-            className:"col-2",
+            className: "col-2",
             type: "dropdown",
             name: "provider_id",
             initialLoad: true,
@@ -1884,7 +1902,7 @@ export default [
             }
           },
           {
-            className:"col-2",
+            className: "col-2",
             type: "dropdown",
             name: "status_id",
             initialLoad: true,

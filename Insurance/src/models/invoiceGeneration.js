@@ -341,7 +341,7 @@ module.exports = {
         input.insurance_provider_id > 0
       ) {
         let _qryStr = "";
-        let _values = [];
+        const _values = [];
 
         if (input.patient_id > 0) {
           _qryStr += " and IH.patient_id=?";
@@ -362,7 +362,7 @@ module.exports = {
           input.from_date != undefined &&
           input.to_date != undefined
         ) {
-          _qryStr = "and  date(invoice_date) between date(?) and date(?) ";
+          _qryStr += "and  date(invoice_date) between date(?) and date(?) ";
           _values.push(input.from_date, input.to_date);
         }
 
@@ -401,14 +401,14 @@ module.exports = {
               on IH.hims_f_invoice_header_id =ID.invoice_header_id inner join hims_d_service_type ST on \
                ID.service_type_id=ST.hims_d_service_type_id inner join hims_d_services S on \
                ID.service_id=S.hims_d_services_id left join hims_d_cpt_code C on ID.cpt_code=C.cpt_code where \
-              ST.record_status='A'  and S.record_status='A' " +
+               ST.record_status='A'  and S.record_status='A' " +
               _qryStr +
               "; select hims_f_invoice_icd_id, invoice_header_id from  hims_f_invoice_header IH\
               INNER JOIN hims_f_invoice_icd  ICD on IH.hims_f_invoice_header_id=ICD.invoice_header_id \
              where ICD.record_status='A' " +
               _qryStr,
-            values: [_values, _values, _values],
-            printQuery: false
+            values: [..._values, ..._values, ..._values],
+            printQuery: true
           })
           .then(result => {
             let header_arr = result[0];
@@ -416,10 +416,6 @@ module.exports = {
             let invoce_icd_arr = result[2];
 
             if (header_arr.length > 0) {
-              let all_patient_id = new LINQ(header_arr)
-                .Select(s => s.patient_id)
-                .ToArray();
-
               let all_episode_id = new LINQ(header_arr)
                 .Select(s => s.episode_id)
                 .ToArray();
@@ -428,59 +424,55 @@ module.exports = {
                 .executeQuery({
                   query:
                     "select hims_f_patient_diagnosis_id, patient_id, episode_id, daignosis_id, diagnosis_type, final_daignosis\
-              from hims_f_patient_diagnosis where record_status='A' and patient_id in (?) or episode_id in (?)",
-                  values: [all_patient_id, all_episode_id],
+              from hims_f_patient_diagnosis where record_status='A' and  episode_id in (?)",
+                  values: [all_episode_id],
 
-                  printQuery: false
+                  printQuery: true
                 })
                 .then(diagnosis_result => {
-                  //=-----------
-
                   let outputArray = [];
                   let insertArray = [];
 
                   for (let i = 0; i < header_arr.length; i++) {
-                    let invoiceDetails = new LINQ(detail_arr)
-                      .Where(
-                        w =>
-                          (w.invoice_header_id =
-                            header_arr[i]["hims_f_invoice_header_id"])
-                      )
-                      .Select(s => s)
-                      .ToArray();
+                    let invoiceDetails = detail_arr.filter(detail => {
+                      return (
+                        detail.invoice_header_id ==
+                        header_arr[i]["hims_f_invoice_header_id"]
+                      );
+                    });
 
-                    let icd_present = invoce_icd_arr.filter(
-                      item =>
+                    let icd_present = invoce_icd_arr.filter(item => {
+                      return (
                         item.invoice_header_id ==
                         header_arr[i]["hims_f_invoice_header_id"]
-                    ).length;
+                      );
+                    });
 
-                    if (icd_present > 0) {
+                    if (icd_present.length > 0) {
                       outputArray.push({
                         ...header_arr[i],
                         invoiceDetails
                       });
                     } else {
-                      let patientDiagnosys = diagnosis_result.filter(item => {
-                        if (
-                          item.patient_id == header_arr[i]["patient_id"] &&
-                          item.episode_id == header_arr[i]["episode_id"]
-                        ) {
-                          return {
+                      let patientDiagnosys = [];
+                      diagnosis_result.forEach(item => {
+                        if (item["episode_id"] == header_arr[i]["episode_id"]) {
+                          patientDiagnosys.push({
                             ...item,
-                            hims_f_invoice_header_id:
+                            invoice_header_id:
                               header_arr[i]["hims_f_invoice_header_id"]
-                          };
+                          });
                         }
                       });
 
                       insertArray.push(...patientDiagnosys);
+
+                      outputArray.push({
+                        ...header_arr[i],
+                        invoiceDetails
+                      });
                     }
                   }
-
-                  // _mysql.releaseConnection();
-                  // req.records = outputArray;
-                  // next();
 
                   if (insertArray.length > 0) {
                     const insertColumns = [
@@ -489,7 +481,6 @@ module.exports = {
                       "daignosis_id",
                       "diagnosis_type",
                       "final_daignosis",
-
                       "invoice_header_id"
                     ];
                     _mysql
@@ -504,7 +495,8 @@ module.exports = {
                           created_by: req.userIdentity.algaeh_d_app_user_id,
                           updated_by: req.userIdentity.algaeh_d_app_user_id
                         },
-                        bulkInsertOrUpdate: true
+                        bulkInsertOrUpdate: true,
+                        printQuery: true
                       })
                       .then(finalResult => {
                         _mysql.releaseConnection();
@@ -518,7 +510,6 @@ module.exports = {
                       });
                   } else {
                     _mysql.releaseConnection();
-
                     req.records = outputArray;
                     next();
                   }

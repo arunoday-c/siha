@@ -20,7 +20,7 @@ const getAllAllergies = ($this, callBack) => {
   });
 };
 
-const getPatientAllergies = $this => {
+const getPatientAllergies = ($this, callBack) => {
   $this.props.getPatientAllergies({
     uri: "/doctorsWorkBench/getPatientAllergies",
     method: "GET",
@@ -51,10 +51,15 @@ const getPatientAllergies = $this => {
           };
         })
         .toArray();
-      $this.setState({
-        patientAllergies: _allergies,
-        allPatientAllergies: data
-      });
+
+      if (typeof callBack === "function") {
+        callBack();
+      } else {
+        $this.setState({
+          patientAllergies: _allergies,
+          allPatientAllergies: data
+        });
+      }
     }
   });
 };
