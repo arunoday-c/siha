@@ -1,48 +1,61 @@
 .activeMedication {
-  ul {
-    list-style: none;
-  }
-
-  li {
-    ul {
-      margin-left: -28px;
-      li {
-        border-bottom: 1px solid #000;
-      }
-    }
-  }
-
-  .date {
-    position: absolute;
-    left: 18px;
-    width: 57px;
-    text-align: center;
-  }
-
-  .date:before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 0;
-    border-top: 22px solid #e2574c;
-    border-bottom: 50px solid #ddd;
-    border-radius: 5px;
-    z-index: 1;
-  }
-
-  .date h3 {
-    position: relative;
-    z-index: 2;
-    margin-top: -6px;
-    font-size: 16px;
-    color: #fff;
-    line-height: 36px;
-  }
-
-  .date h3 span {
-    font-size: 36px;
-    color: #324d5b;
-  }
+	max-height: 20.6vh;
+	min-height: 21.6vh;
+	/* overflow: auto; */
+	overflow-y: auto;
+	overflow-x: hidden;
+	margin: 0 -5px;
+	.activeMedDateList {
+		border-bottom: 1px solid #ccc;
+		margin-bottom: 3px;
+		.medcineDate {
+			background: #ccc;
+			width: 30px;
+			float: left;
+			text-align: center;
+			border-radius: 3px;
+			overflow: hidden;
+			margin-top: 4px;
+			span {
+				display: block;
+				font-size: 10px;
+				background: #dbad64;
+				color: #fff;
+				text-transform: uppercase;
+				font-weight: bold;
+				text-shadow: 1px solid rgba(0, 0, 0, 0.5);
+			}
+			h3 {
+				font-size: 18px;
+				margin: 0;
+				padding: 0;
+				text-shadow: 1px solid rgba(255, 255, 255, 1);
+			}
+		}
+		.medcineList {
+			float: none;
+			width: calc(100% - 40px);
+			margin-left: 40px;
+			ul {
+				list-style: none;
+				margin: 0;
+				padding: 0;
+				li {
+					border-bottom: 1px dashed rgb(236, 236, 236);
+					padding-bottom: 3px;
+					margin-bottom: 3px;
+					b {
+						display: block;
+						line-height: 15px;
+					}
+					small {
+						display: inline-block;
+					}
+					&:last-child {
+						border-bottom: none;
+					}
+				}
+			}
+		}
+	}
 }
