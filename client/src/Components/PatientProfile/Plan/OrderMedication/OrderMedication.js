@@ -208,12 +208,19 @@ class OrderMedication extends Component {
       frequencyType !== undefined &&
       consume !== undefined
     ) {
-      return `Use ${this.state.dosage} Unit(s),${frequency.name} Time(s) ${
-        frequencyType.name
-      } '${consume.name}' for ${this.state.no_of_days} day(s)`;
-    } else {
-      return "";
+      this.setState({
+        instructions: `Use ${this.state.dosage} Unit(s),${
+          frequency.name
+        } Time(s) ${frequencyType.name} '${consume.name}' for ${
+          this.state.no_of_days
+        } day(s)`
+      });
     }
+  }
+  onInstructionsTextHandler(e) {
+    this.setState({
+      instructions: e.currentTarget.value
+    });
   }
   render() {
     return (
@@ -419,14 +426,14 @@ class OrderMedication extends Component {
                 }}
                 value={this.state.start_date}
               />
-              <div class="col-4 form-group">
+              <div className="col-4 form-group">
                 <label className="style_Label ">Instruction</label>
                 <textarea
                   name="instructions"
                   className="txt-fld"
                   rows="3"
-                  onChange={texthandle.bind(this, this)}
-                  value={this.instructionItems()}
+                  onChange={this.onInstructionsTextHandler.bind(this)}
+                  value={this.state.instructions}
                 />
               </div>
               {/*<AlagehFormGroup
