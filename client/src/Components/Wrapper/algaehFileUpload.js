@@ -132,6 +132,7 @@ export default class AlgaehFileUploader extends Component {
       });
       return;
     }
+    debugger;
     const that = this;
     // just to make sure we won't repeat bug 168
     const splitID = uniqueID ? uniqueID.split("_") : [];
