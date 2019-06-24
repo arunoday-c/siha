@@ -1,5 +1,6 @@
 import moment from "moment";
 import { swalMessage, algaehApiCall } from "../../../../utils/algaehApiCall";
+import { removeGlobal } from "../../../../utils/GlobalFunctions";
 import Enumerable from "linq";
 import Options from "../../../../Options.json";
 
@@ -12,6 +13,7 @@ const texthandle = ($this, e) => {
       [name]: value
     },
     () => {
+      $this.instructionItems();
       calcuateDispense($this, e);
     }
   );
@@ -21,7 +23,13 @@ const numberhandle = ($this, ctrl, e) => {
   e = e || ctrl;
 
   let name = e.name;
-  let value = parseFloat(e.value);
+  if (e.value === "") {
+    $this.setState({
+      [name]: value
+    });
+    return;
+  }
+  let value = parseFloat(e.value, 10);
   if (typeof value === "number" && value < 0) {
     swalMessage({
       title: "Cannot be lessthan Zero.",
@@ -33,6 +41,7 @@ const numberhandle = ($this, ctrl, e) => {
         [name]: value
       },
       () => {
+        $this.instructionItems();
         calcuateDispense($this, e);
       }
     );
@@ -67,10 +76,18 @@ const SaveMedication = ($this, e) => {
             title: "Ordered Successfully...",
             type: "success"
           });
-          $this.setState({
-            saveMedicationEnable: true,
-            medicationitems: []
-          });
+          if (Window.global["orderMedicationState"] !== null)
+            removeGlobal("orderMedicationState");
+
+          $this.setState(
+            {
+              saveMedicationEnable: true,
+              medicationitems: []
+            },
+            () => {
+              $this.props.onclosePopup && $this.props.onclosePopup(e);
+            }
+          );
         }
       },
       onFailure: error => {}
@@ -285,7 +302,7 @@ const AddItems = $this => {
       service_id: $this.state.service_id,
       item_category_id: $this.state.item_category_id,
       item_group_id: $this.state.item_group_id,
-      instructions: $this.instructionItems(),
+      instructions: $this.state.instructions,
       dispense: $this.state.dispense,
       requested_quantity: $this.state.dispense,
       insured: $this.state.insured,
@@ -358,7 +375,8 @@ const AddItems = $this => {
             pre_approval: null,
             instructions: null,
             generic_name: "",
-            item_description: ""
+            item_description: "",
+            instructions: ""
           });
         }
       },

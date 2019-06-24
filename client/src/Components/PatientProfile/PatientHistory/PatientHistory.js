@@ -17,68 +17,75 @@ class PatientHistory extends Component {
     super(props);
     this.state = {
       patHistory: [],
-      social_history: null,
-      surgical_history: null,
-      medical_history: null,
-      family_history: null,
-      birth_history: null,
+      social_history: "",
+      surgical_history: "",
+      medical_history: "",
+      family_history: "",
+      birth_history: "",
       openAddModal: false
     };
-    this.socialHistoryMaxLength = 65535;
+    this.socialHistoryMaxLength = 1000;
+    this.medicalHistoryMaxLength = 1000;
+    this.surgeryHistoryMaxLength = 1000;
+    this.familyHistoryMaxLength = 1000;
+    this.birthHistoryMaxLength = 1000;
     getPatientHistory(this);
   }
 
   savePatientHistory() {
-    
     let his_array = [];
 
-    if (
-      (this.state.social_history === null ||
-        this.state.social_history === "") &&
-      (this.state.surgical_history === null ||
-        this.state.surgical_history === "") &&
-      (this.state.medical_history === null ||
-        this.state.medical_history === "") &&
-      (this.state.family_history === null ||
-        this.state.family_history === "") &&
-      (this.state.birth_history === null || this.state.birth_history === "")
-    ) {
-      swalMessage({
-        title: "Please Enter History to save",
-        type: "warning"
-      });
-      return;
-    }
+    // if (
+    //   this.state.social_history === "" ||
+    //   this.state.surgical_history === "" ||
+    //   this.state.medical_history === "" ||
+    //   this.state.family_history === "" ||
+    //   this.state.birth_history === ""
+    // ) {
+    //   swalMessage({
+    //     title: "Please Enter History to save",
+    //     type: "warning"
+    //   });
+    //   return;
+    // }
 
-    if (this.state.social_history !== null) {
+    if (this.state.social_history !== "") {
       his_array.push({
         history_type: "SOH",
         remarks: this.state.social_history
       });
     }
-    if (this.state.surgical_history !== null) {
+    if (this.state.surgical_history !== "") {
       his_array.push({
         history_type: "SGH",
         remarks: this.state.surgical_history
       });
     }
-    if (this.state.medical_history !== null) {
+    if (this.state.medical_history !== "") {
       his_array.push({
         history_type: "MEH",
         remarks: this.state.medical_history
       });
     }
-    if (this.state.family_history !== null) {
+    if (this.state.family_history !== "") {
       his_array.push({
         history_type: "FMH",
         remarks: this.state.family_history
       });
     }
-    if (this.state.birth_history !== null) {
+    if (this.state.birth_history !== "") {
       his_array.push({
         history_type: "BRH",
         remarks: this.state.birth_history
       });
+    }
+
+    if (his_array.length === 0) {
+      swalMessage({
+        title: "Please Enter History to save",
+        type: "warning"
+      });
+      return;
     }
 
     let send_obj = {
@@ -97,7 +104,6 @@ class PatientHistory extends Component {
             title: "Record added successfully",
             type: "success"
           });
-          
 
           this.setState(
             {
@@ -126,33 +132,6 @@ class PatientHistory extends Component {
     this.setState({ [e.target.name]: e.target.value });
   }
 
-  componentDidMount() {
-    this.accordianHistory();
-  }
-
-  accordianHistory() {
-    const acc = document.getElementsByClassName("accordion-btn");
-    let i;
-    for (i = 0; i < acc.length; i++) {
-      acc[i].addEventListener("click", function() {
-        this.classList.toggle("active");
-        var panel = this.nextElementSibling;
-        if (panel.style.maxHeight) {
-          panel.style.maxHeight = null;
-        } else {
-          panel.style.maxHeight = panel.scrollHeight + "px";
-        }
-      });
-    }
-  }
-
-  // addHistory(type) {
-  //   this.setState({
-  //     type: type,
-  //     openAddModal: true
-  //   });
-  // }
-
   onClose = e => {
     this.setState(
       {
@@ -169,29 +148,9 @@ class PatientHistory extends Component {
     );
   };
   render() {
-    let _pat_socialHistory =
+    const history =
       this.props.patient_history !== undefined
-        ? this.props.patient_history.social
-        : [];
-
-    let _pat_medicalHistory =
-      this.props.patient_history !== undefined
-        ? this.props.patient_history.medical
-        : [];
-
-    let _pat_surgicalHistory =
-      this.props.patient_history !== undefined
-        ? this.props.patient_history.surgical
-        : [];
-
-    let _pat_familyHistory =
-      this.props.patient_history !== undefined
-        ? this.props.patient_history.family
-        : [];
-
-    let _pat_birthHistory =
-      this.props.patient_history !== undefined
-        ? this.props.patient_history.birth
+        ? this.props.patient_history
         : [];
 
     return (
@@ -217,9 +176,7 @@ class PatientHistory extends Component {
                   name="social_history"
                   onChange={this.textHandle.bind(this)}
                   maxLength={this.socialHistoryMaxLength}
-                >
-                  {this.state.social_history}
-                </textarea>
+                />
                 <small className="float-right">
                   Max characters {this.socialHistoryMaxLength}/
                   {maxCharactersLeft(
@@ -237,10 +194,15 @@ class PatientHistory extends Component {
                   value={this.state.medical_history}
                   name="medical_history"
                   onChange={this.textHandle.bind(this)}
-                >
-                  {this.state.medical_history}
-                </textarea>
-
+                  maxLength={this.medicalHistoryMaxLength}
+                />
+                <small className="float-right">
+                  Max characters {this.medicalHistoryMaxLength}/
+                  {maxCharactersLeft(
+                    this.medicalHistoryMaxLength,
+                    this.state.medical_history
+                  )}
+                </small>
                 <AlgaehLabel
                   label={{
                     forceLabel: "Surgical History"
@@ -251,10 +213,15 @@ class PatientHistory extends Component {
                   value={this.state.surgical_history}
                   name="surgical_history"
                   onChange={this.textHandle.bind(this)}
-                >
-                  {this.state.surgical_history}
-                </textarea>
-
+                  maxLength={this.surgeryHistoryMaxLength}
+                />
+                <small className="float-right">
+                  Max characters {this.surgeryHistoryMaxLength}/
+                  {maxCharactersLeft(
+                    this.surgeryHistoryMaxLength,
+                    this.state.surgical_history
+                  )}
+                </small>
                 <AlgaehLabel
                   label={{
                     forceLabel: "Family History"
@@ -265,10 +232,15 @@ class PatientHistory extends Component {
                   value={this.state.family_history}
                   name="family_history"
                   onChange={this.textHandle.bind(this)}
-                >
-                  {this.state.family_history}
-                </textarea>
-
+                  maxLength={this.familyHistoryMaxLength}
+                />
+                <small className="float-right">
+                  Max characters {this.familyHistoryMaxLength}/
+                  {maxCharactersLeft(
+                    this.familyHistoryMaxLength,
+                    this.state.family_history
+                  )}
+                </small>
                 <AlgaehLabel
                   label={{
                     forceLabel: "Birth History"
@@ -279,95 +251,44 @@ class PatientHistory extends Component {
                   value={this.state.birth_history}
                   name="birth_history"
                   onChange={this.textHandle.bind(this)}
-                >
-                  {this.state.birth_history}
-                </textarea>
+                  maxLength={this.birthHistoryMaxLength}
+                />
+                <small className="float-right">
+                  Max characters {this.birthHistoryMaxLength}/
+                  {maxCharactersLeft(
+                    this.birthHistoryMaxLength,
+                    this.state.birth_history
+                  )}
+                </small>
               </div>
             </div>
             <div className="col-8" style={{ paddingLeft: 0 }}>
               <div className="popRightDiv" style={{ paddingLeft: 0 }}>
-                <table className="table table-sm table-bordered customTable">
-                  <thead className="">
-                    <tr>
-                      <th>Social History</th>
-                      <th>Recorded By</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {_pat_socialHistory.map((data, index) => (
-                      <tr key={index}>
-                        <td>{data.remarks}</td>
-                        <td>{"Dr. " + data.provider_name}</td>
+                {history.map((item, index) => (
+                  <table
+                    className="table table-sm table-bordered customTable"
+                    key={index}
+                  >
+                    <thead className="">
+                      <tr>
+                        <th>{item.groupName}</th>
+                        <th>Recorded By</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <table className="table table-sm table-bordered customTable">
-                  <thead className="">
-                    <tr>
-                      <th>Medical History</th>
-                      <th>Recorded By</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {_pat_medicalHistory.map((data, index) => (
-                      <tr key={index}>
-                        <td>{data.remarks}</td>
-                        <td>{"Dr. " + data.provider_name}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <table className="table table-sm table-bordered customTable">
-                  <thead className="">
-                    <tr>
-                      <th>Surgical History</th>
-                      <th>Recorded By</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {_pat_surgicalHistory.map((data, index) => (
-                      <tr key={index}>
-                        <td>{data.remarks}</td>
-                        <td>{"Dr " + data.provider_name}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-
-                <table className="table table-sm table-bordered customTable">
-                  <thead className="">
-                    <tr>
-                      <th>Family History</th>
-                      <th>Recorded By</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {_pat_familyHistory.map((data, index) => (
-                      <tr key={index}>
-                        <td>{data.remarks}</td>
-                        <td>{"Dr. " + data.provider_name}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-
-                <table className="table table-sm table-bordered customTable">
-                  <thead className="">
-                    <tr>
-                      <th>Birth History</th>
-                      <th>Recorded By</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {_pat_birthHistory.map((data, index) => (
-                      <tr key={index}>
-                        <td>{data.remarks}</td>
-                        <td>{"Dr. " + data.provider_name}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {item.groupDetail.map((data, dIndex) => (
+                        <tr key={dIndex}>
+                          <td>{data.remarks}</td>
+                          <td>
+                            {data.provider_name} on
+                            <small> {data.created_date}</small>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                ))}
+                {history.length === 0 ? <p>No History recorded</p> : null}
               </div>
             </div>
           </div>

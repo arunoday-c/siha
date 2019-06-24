@@ -16,6 +16,7 @@ import { decryption } from "../../utils/cryptography";
 import mysql from "mysql";
 import algaehMysql from "algaeh-mysql";
 const keyPath = require("algaeh-keys/keys");
+import _ from "lodash";
 //created by irfan: to add  physical_examination_header
 let physicalExaminationHeader = (req, res, next) => {
   let physicalExaminationHeaderModel = {
@@ -2702,9 +2703,25 @@ let getPatientHistory = (req, res, next) => {
     let db = req.db;
     db.getConnection((error, connection) => {
       connection.query(
-        "select hims_f_patient_history_id,history_type, provider_id,E.full_name as provider_name, patient_id, remarks from hims_f_patient_history PH,\
-        hims_d_employee E where  PH.provider_id= E.hims_d_employee_id and PH.record_status='A' and E.record_status='A' and  \
-         patient_id=? ",
+        "select \
+        	hims_f_patient_history_id, \
+        	history_type, \
+        	provider_id, \
+        	concat(T.title,' ', E.full_name) as provider_name, \
+        	patient_id,\
+        	remarks, \
+        	PH.created_date \
+        from \
+        	hims_f_patient_history as PH \
+        	inner join  hims_d_employee as E \
+        	on PH.provider_id = E.hims_d_employee_id \
+        	left join hims_d_title as T \
+        	on T.his_d_title_id = E.title_id \
+        where \
+        	PH.provider_id = E.hims_d_employee_id \
+        	and PH.record_status = 'A' \
+        	and E.record_status = 'A' \
+        	and  patient_id =?;",
         [req.query.patient_id],
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -2712,82 +2729,29 @@ let getPatientHistory = (req, res, next) => {
             next(error);
           }
 
-          let social = new LINQ(result)
-            .Where(w => w.history_type == "SOH")
-            .Select(s => {
+          let history = _.chain(result)
+            .groupBy(g => g.history_type)
+            .map(function(detail, key) {
               return {
-                hims_f_patient_history_id: s.hims_f_patient_history_id,
-                history_type: s.history_type,
-                provider_id: s.provider_id,
-                provider_name: s.provider_name,
-                patient_id: s.patient_id,
-                remarks: s.remarks
+                groupType: key,
+                groupName:
+                  key == "SOH"
+                    ? "Social History"
+                    : key === "MEH"
+                    ? "Medical History"
+                    : key === "SGH"
+                    ? "Surgical History"
+                    : key === "FMH"
+                    ? "Family History"
+                    : key === "BRH"
+                    ? "Birth History"
+                    : "",
+                groupDetail: detail
               };
             })
-            .ToArray();
-          debugLog("social:", social);
+            .value();
 
-          let medical = new LINQ(result)
-            .Where(w => w.history_type == "MEH")
-            .Select(s => {
-              return {
-                hims_f_patient_history_id: s.hims_f_patient_history_id,
-                history_type: s.history_type,
-                provider_id: s.provider_id,
-                provider_name: s.provider_name,
-                patient_id: s.patient_id,
-                remarks: s.remarks
-              };
-            })
-            .ToArray();
-          debugLog("medical:", medical);
-
-          let surgical = new LINQ(result)
-            .Where(w => w.history_type == "SGH")
-            .Select(s => {
-              return {
-                hims_f_patient_history_id: s.hims_f_patient_history_id,
-                history_type: s.history_type,
-                provider_id: s.provider_id,
-                provider_name: s.provider_name,
-                patient_id: s.patient_id,
-                remarks: s.remarks
-              };
-            })
-            .ToArray();
-          debugLog("surgical:", surgical);
-
-          let family = new LINQ(result)
-            .Where(w => w.history_type == "FMH")
-            .Select(s => {
-              return {
-                hims_f_patient_history_id: s.hims_f_patient_history_id,
-                history_type: s.history_type,
-                provider_id: s.provider_id,
-                provider_name: s.provider_name,
-                patient_id: s.patient_id,
-                remarks: s.remarks
-              };
-            })
-            .ToArray();
-          debugLog("family:", family);
-
-          let birth = new LINQ(result)
-            .Where(w => w.history_type == "BRH")
-            .Select(s => {
-              return {
-                hims_f_patient_history_id: s.hims_f_patient_history_id,
-                history_type: s.history_type,
-                provider_id: s.provider_id,
-                provider_name: s.provider_name,
-                patient_id: s.patient_id,
-                remarks: s.remarks
-              };
-            })
-            .ToArray();
-          debugLog("birth:", birth);
-
-          req.records = { social, medical, surgical, family, birth };
+          req.records = history;
           next();
         }
       );

@@ -1517,13 +1517,18 @@ class Dental extends Component {
       }
     );
   }
-
+  onClose = e => {
+    this.setState({ openBillingModal: false });
+  };
   render() {
     let billDetails = this.state.billDetails;
     return (
       <div id="dentalTreatment">
         <AlgaehModalPopUp
           openPopup={this.state.openBillingModal}
+          events={{
+            onClose: this.onClose.bind(this)
+          }}
           title="Bill Service"
         >
           <div
