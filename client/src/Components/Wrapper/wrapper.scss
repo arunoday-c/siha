@@ -224,3 +224,17 @@
 		left: auto !important;
 	}
 }
+.autoSearchClear {
+	position: absolute;
+	top: 25px;
+	right: 45px;
+	color: lighten($color-black, 50%);
+	border-right: 1px solid #dededf;
+	padding-left: 5px;
+	padding-right: 5px;
+	background: #fff;
+	&:hover {
+		cursor: pointer;
+		color: lighten($color-black, 20%);
+	}
+}
