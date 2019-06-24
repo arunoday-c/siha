@@ -628,12 +628,11 @@ class PatientProfile extends Component {
               More
             </button>
             <ul className="moreActionUl">
-              //{" "}
-              <li>
-                //{" "}
+              {/*<li>
+
                 <span onClick={this.OpenMrdHandler.bind(this)}>Open MRD</span>
-                //{" "}
-              </li>
+
+              </li> */}
               <li>
                 <span onClick={printPrescription.bind(this, this)}>
                   Prescription

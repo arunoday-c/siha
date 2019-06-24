@@ -116,6 +116,7 @@ export default class AlgaehFileUploader extends Component {
       this.props.onref(undefined);
   }
   getDisplayImage(propsP) {
+    const { uniqueID, fileType } = propsP.serviceParameters;
     let _call = true;
     if (typeof propsP.validateBeforeCall === "function") {
       _call = propsP.validateBeforeCall();
@@ -132,15 +133,14 @@ export default class AlgaehFileUploader extends Component {
       return;
     }
     const that = this;
-    if (
-      propsP.serviceParameters.uniqueID !== null &&
-      propsP.serviceParameters.uniqueID !== ""
-    ) {
+    // just to make sure we won't repeat bug 168
+    const splitID = uniqueID ? uniqueID.split("_") : [];
+    if (splitID[0] && splitID[0] !== "null") {
       displayFileFromServer({
         uri: "/Document/get",
         module: "documentManagement",
-        fileType: propsP.serviceParameters.fileType,
-        destinationName: propsP.serviceParameters.uniqueID,
+        fileType: fileType,
+        destinationName: uniqueID,
         addDataTag: propsP.addDataTag === undefined ? true : propsP.addDataTag,
         onFileSuccess: data => {
           if (propsP.events !== undefined) {
