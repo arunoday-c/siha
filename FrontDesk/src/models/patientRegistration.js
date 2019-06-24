@@ -122,7 +122,7 @@ module.exports = {
                net.network_type,netoff.policy_number,netoff.hims_d_insurance_network_office_id,\
                mIns.primary_card_number as card_number,\
               mIns.primary_inc_card_path as insurance_card_path,\
-              mIns.primary_effective_start_date,mIns.primary_effective_end_date,\
+              mIns.primary_effective_start_date,mIns.primary_effective_end_date,mIns.primary_effective_end_date as effective_end_date,\
               mIns.card_holder_name, mIns.card_holder_age, mIns.card_holder_gender, mIns.card_class ,iCClas.card_class_name\
               from (((((hims_d_insurance_provider Ins \
               INNER JOIN  hims_m_patient_insurance_mapping mIns ON mIns.primary_insurance_provider_id=Ins.hims_d_insurance_provider_id)\
@@ -171,7 +171,7 @@ module.exports = {
                 mIns.primary_sub_id as sub_insurance_provider_id, sIns.insurance_sub_name as sub_insurance_provider_name,\
                 mIns.primary_network_id as network_id,  net.network_type,netoff.policy_number,netoff.hims_d_insurance_network_office_id,mIns.primary_card_number as card_number,\
                 mIns.primary_inc_card_path as insurance_card_path,\
-               mIns.primary_effective_start_date,mIns.primary_effective_end_date,\
+               mIns.primary_effective_start_date,mIns.primary_effective_end_date,mIns.primary_effective_end_date as effective_end_date,\
                mIns.card_holder_name, mIns.card_holder_age, mIns.card_holder_gender, mIns.card_class  \
                from ((((hims_d_insurance_provider Ins \
                 INNER JOIN  hims_m_patient_insurance_mapping mIns ON mIns.primary_insurance_provider_id=Ins.hims_d_insurance_provider_id)\
