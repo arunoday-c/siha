@@ -392,10 +392,13 @@ class OPBilling extends Component {
             method: "POST",
             onSuccess: response => {
               AlgaehLoader({ show: false });
+              debugger;
               if (response.data.success) {
                 $this.setState({
                   bill_number: response.data.records.bill_number,
                   receipt_number: response.data.records.receipt_number,
+                  hims_f_billing_header_id:
+                    response.data.records.hims_f_billing_header_id,
                   saveEnable: true
                 });
                 this.setState({

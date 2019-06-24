@@ -1,9 +1,8 @@
 import AlgaehSearch from "../Wrapper/globalSearch";
 import FrontDesk from "../../Search/FrontDesk.json";
-import moment from "moment";
-import Options from "../../Options.json";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall.js";
 import Enumerable from "linq";
+import _ from "lodash";
 
 const PatientSearch = ($this, e) => {
   AlgaehSearch({
@@ -27,12 +26,6 @@ const PatientSearch = ($this, e) => {
       );
     }
   });
-};
-
-const DisplayDateFormat = ($this, date) => {
-  if (date != null) {
-    return moment(date).format(Options.dateFormat);
-  }
 };
 
 const getVisitDetails = $this => {
@@ -64,11 +57,20 @@ const getVisitDetails = $this => {
 const SelectVisitToClose = ($this, row, e) => {
   let visitDetails = $this.state.visitDetails;
   let name = e.target.name;
-
+  let saveEnable = true;
   row[name] = e.target.checked === true ? "Y" : "N";
   visitDetails[row.rowIdx] = row;
+
+  let check_visit = _.filter(visitDetails, f => {
+    return f.select == "Y";
+  });
+  debugger;
+  if (check_visit.length > 0) {
+    saveEnable = false;
+  }
   $this.setState({
-    visitDetails: visitDetails
+    visitDetails: visitDetails,
+    saveEnable: saveEnable
   });
 };
 
@@ -106,7 +108,6 @@ const CloseVisits = $this => {
 };
 export {
   PatientSearch,
-  DisplayDateFormat,
   getVisitDetails,
   SelectVisitToClose,
   ClearData,

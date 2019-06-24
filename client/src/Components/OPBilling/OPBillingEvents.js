@@ -29,6 +29,7 @@ const ClearData = ($this, e) => {
       IOputs.counter_id = counter_id;
       IOputs.s_service_type = null;
       IOputs.s_service = null;
+      IOputs.pageDisplay = "BillingDetails";
       $this.setState({ ...$this.state, ...IOputs });
     }
   });
@@ -151,6 +152,10 @@ const generateReceipt = $this => {
       report: {
         reportName: "cashReceipt",
         reportParams: [
+          {
+            name: "hims_f_billing_header_id",
+            value: $this.state.hims_f_billing_header_id
+          },
           {
             name: "hims_d_patient_id",
             value: $this.state.hims_d_patient_id
