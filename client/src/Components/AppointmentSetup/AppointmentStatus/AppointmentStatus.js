@@ -30,6 +30,9 @@ class AppointmentStatus extends Component {
   changeGridEditors(row, e) {
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
+    if (name === "description") {
+      row["statusDesc"] = value
+    }
     row[name] = value;
     row.update();
   }
@@ -454,7 +457,7 @@ class AppointmentStatus extends Component {
                     }
                   },
                   {
-                    fieldName: "description",
+                    fieldName: "statusDesc",
                     label: <AlgaehLabel label={{ fieldName: "description" }} />,
                     editorTemplate: row => {
                       return (
@@ -463,7 +466,7 @@ class AppointmentStatus extends Component {
                           textBox={{
                             className: "txt-fld",
                             name: "description",
-                            value: row.description,
+                            value: row.statusDesc,
                             events: {
                               onChange: this.changeGridEditors.bind(this, row)
                             },

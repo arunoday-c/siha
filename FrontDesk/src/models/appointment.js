@@ -150,7 +150,7 @@ module.exports = {
     _mysql
       .executeQuery({
         query:
-          "select hims_d_appointment_status_id, color_code, description,description as statusDesc, default_status,steps,authorized FROM\
+          "select hims_d_appointment_status_id, color_code,description as statusDesc, default_status,steps,authorized FROM\
            hims_d_appointment_status where record_status='A'  order by steps "
       })
       .then(result => {
@@ -175,7 +175,7 @@ module.exports = {
     }
     _mysql
       .executeQuery({
-        query: `select hims_d_appointment_room_id, description,description as roomDesc, room_active FROM hims_d_appointment_room where record_status='A'
+        query: `select hims_d_appointment_room_id, description as roomDesc, room_active FROM hims_d_appointment_room where record_status='A'
          and hospital_id=? ${appointment_room_id} order by hims_d_appointment_room_id desc `,
         values: [req.userIdentity.hospital_id]
       })
