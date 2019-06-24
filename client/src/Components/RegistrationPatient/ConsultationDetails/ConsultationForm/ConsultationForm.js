@@ -112,13 +112,12 @@ class AddConsultationForm extends Component {
   }
 
   changeDateFormat = date => {
-    if (date != null) {
+    if (date !== null) {
       return moment(date).format(Options.dateFormat);
     }
   };
 
   render() {
-    
     const vstDeatils =
       this.state.visitDetails === null ? [{}] : this.state.visitDetails;
     const doctors =
@@ -127,7 +126,7 @@ class AddConsultationForm extends Component {
       this.props.deptanddoctors === undefined
         ? []
         : this.props.deptanddoctors.departmets;
-    const hideMaternity = this.state.gender === "Female" ? "" : "hide"
+    const hideMaternity = this.state.gender === "Female" ? "" : "hide";
 
     return (
       <MyContext.Consumer>
@@ -266,7 +265,10 @@ class AddConsultationForm extends Component {
                     <div className="col-lg-4 maternityRadio">
                       <AlgaehLabel
                         label={{
-                          fieldName: this.state.gender === "Female" ? "maternity_patient" : null
+                          fieldName:
+                            this.state.gender === "Female"
+                              ? "maternity_patient"
+                              : null
                         }}
                       />
                       <br />

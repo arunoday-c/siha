@@ -286,6 +286,10 @@ const generateReceipt = $this => {
         reportName: "cashReceipt",
         reportParams: [
           {
+            name: "hims_f_billing_header_id",
+            value: $this.state.hims_f_billing_header_id
+          },
+          {
             name: "patient_id",
             value: $this.state.hims_d_patient_id
           },

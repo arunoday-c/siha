@@ -10,17 +10,19 @@ import { AlgaehLabel, AlgaehDataGrid } from "../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../actions/algaehActions";
 import {
   PatientSearch,
-  DisplayDateFormat,
   SelectVisitToClose,
   ClearData,
   CloseVisits
 } from "./VisitCloseEvent";
+import moment from "moment";
+import Options from "../../Options.json";
 
 class VisitClose extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      visitDetails: []
+      visitDetails: [],
+      saveEnable: true
     };
   }
 
@@ -55,6 +57,12 @@ class VisitClose extends Component {
       });
     }
   }
+
+  DisplayDateFormat = date => {
+    if (date !== null) {
+      return moment(date).format(Options.dateFormat);
+    }
+  };
 
   render() {
     return (
@@ -133,9 +141,7 @@ class VisitClose extends Component {
                       ),
                       displayTemplate: row => {
                         return (
-                          <span>
-                            {DisplayDateFormat(this, this, row.visit_date)}
-                          </span>
+                          <span>{this.DisplayDateFormat(row.visit_date)}</span>
                         );
                       }
                     },

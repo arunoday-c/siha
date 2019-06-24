@@ -134,7 +134,6 @@ class HospitalServiceSetup extends Component {
   }
 
   EditItemMaster(row) {
-    
     if (row.cpt_code !== null) {
       algaehApiCall({
         uri: "/icdcptcodes/selectCptCodes",
@@ -370,7 +369,7 @@ class HospitalServiceSetup extends Component {
                       )
                     },
                     {
-                      fieldName: "cpt_code",
+                      fieldName: "cpt_p_code",
                       label: <AlgaehLabel label={{ fieldName: "cpt_code" }} />
                     },
                     {
