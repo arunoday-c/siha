@@ -185,6 +185,7 @@ module.exports = {
         })
         .then(headerResult => {
           // utilities.logger().log("headerResult Bill: ", headerResult);
+          req.body.hims_f_billing_header_id = headerResult.insertId;
           if (
             headerResult.insertId != null &&
             headerResult.insertId != "" &&

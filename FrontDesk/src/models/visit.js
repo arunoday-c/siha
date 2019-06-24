@@ -419,7 +419,8 @@ module.exports = {
                 receipt_number: input.receipt_number,
                 bill_number: input.bill_number,
                 patient_visit_id: input.visit_id,
-                hims_d_patient_id: input.patient_id
+                hims_d_patient_id: input.patient_id,
+                hims_f_billing_header_id: input.hims_f_billing_header_id
               };
               _mysql.commitTransaction(() => {
                 _mysql.releaseConnection();

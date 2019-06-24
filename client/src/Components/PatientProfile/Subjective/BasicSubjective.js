@@ -45,10 +45,11 @@ class BasicSubjective extends Component {
       openVital: false,
       openAlergy: false,
       openExamnModal: null,
-      chief_complaint: null,
+      chief_complaint: "",
 
       duration: null,
-
+      significant_signs: "",
+      other_signs: "",
       interval: null,
       onset_date: null,
       pain: null,
@@ -522,17 +523,12 @@ class BasicSubjective extends Component {
                         <div className="row">
                           <div className="col-12">
                             <textarea
-                              value={
-                                this.state === undefined
-                                  ? ""
-                                  : this.state.chief_complaint
-                              }
+                              value={this.state.chief_complaint}
                               name="chief_complaint"
                               onChange={this.textAreaEvent.bind(this)}
                               maxLength={this.chiefComplaintMaxLength}
-                            >
-                              {this.state.chief_complaint}
-                            </textarea>
+                            />
+
                             <small className="float-right">
                               Max Char.{" "}
                               {maxCharactersLeft(
@@ -656,9 +652,7 @@ class BasicSubjective extends Component {
                           name="significant_signs"
                           onChange={this.textAreaEvent.bind(this)}
                           maxLength={this.significantSignsLength}
-                        >
-                          {this.state.significant_signs}
-                        </textarea>
+                        />
                         <small className="float-right">
                           Max Char.{" "}
                           {maxCharactersLeft(
@@ -688,9 +682,7 @@ class BasicSubjective extends Component {
                           name="other_signs"
                           onChange={this.textAreaEvent.bind(this)}
                           maxLength={this.otherConditionMaxLength}
-                        >
-                          {this.state.other_signs}
-                        </textarea>
+                        />
                         <small className="float-right">
                           Max Char.{" "}
                           {maxCharactersLeft(
@@ -812,7 +804,7 @@ class BasicSubjective extends Component {
                 </div>
               </div>
 
-              <div className="col-5">
+              <div className="col-5" style={{paddingLeft:0}}>
                 <div className="portlet portlet-bordered margin-bottom-15">
                   <div className="portlet-title">
                     <div className="caption">
@@ -832,28 +824,21 @@ class BasicSubjective extends Component {
                   <div className="portlet-body">
                     <div className="activeMedication">
                       {recentMediction.map((item, index) => (
-                        <ul key={index}>
-                          <li>
-                            <div className="date">
-                              <h3>
-                                {item.month}
-                                <br />
-                                <span>{item.day}</span>
-                              </h3>
-                            </div>
-                            <ul>
+                        <div key={index} className="activeMedDateList">
+                          <div className="medcineDate"><span>{item.month}</span><h3>{item.day}</h3></div>
+                          <div className="medcineList">
+                             <ul>
                               {item.details.map((medicine, indexD) => (
                                 <li key={indexD}>
-                                  <p>
-                                    <span>&#x2713;</span>
-                                    <strong>{medicine.generic_name}</strong>
-                                    <small>({medicine.item_description})</small>
-                                  </p>
+                                    <b>{medicine.generic_name}</b>
+                                    {/* <small>({medicine.item_description})</small> */}
+                                    <small><span>4 ml</span> - <span>12 hourly (1-1-1)</span> * <span>5 days</span></small>
+                          
                                 </li>
                               ))}
                             </ul>
-                          </li>
-                        </ul>
+                          </div>
+                        </div>
                       ))}
                     </div>
                   </div>

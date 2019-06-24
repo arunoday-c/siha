@@ -158,9 +158,16 @@ module.exports = {
           })
           .then(insert_rad_order => {
             utilities.logger().log("insert_rad_order: ");
+            utilities
+              .logger()
+              .log(
+                "insert hims_f_billing_header_id: ",
+                inputParam.hims_f_billing_header_id
+              );
             let result = {
               receipt_number: inputParam.receipt_number,
-              bill_number: inputParam.bill_number
+              bill_number: inputParam.bill_number,
+              hims_f_billing_header_id: inputParam.hims_f_billing_header_id
             };
             _mysql.commitTransaction(() => {
               _mysql.releaseConnection();
@@ -175,9 +182,16 @@ module.exports = {
           });
       } else {
         utilities.logger().log("result: ", result);
+        utilities
+          .logger()
+          .log(
+            "insert hims_f_billing_header_id: ",
+            inputParam.hims_f_billing_header_id
+          );
         let result = {
           receipt_number: inputParam.receipt_number,
-          bill_number: inputParam.bill_number
+          bill_number: inputParam.bill_number,
+          hims_f_billing_header_id: inputParam.hims_f_billing_header_id
         };
         _mysql.commitTransaction(() => {
           _mysql.releaseConnection();
@@ -340,9 +354,16 @@ module.exports = {
             printQuery: true
           })
           .then(rad_result => {
+            utilities
+              .logger()
+              .log(
+                "update hims_f_billing_header_id: ",
+                req.body.hims_f_billing_header_id
+              );
             let result = {
               receipt_number: req.body.receipt_number,
-              bill_number: req.body.bill_number
+              bill_number: req.body.bill_number,
+              hims_f_billing_header_id: req.body.hims_f_billing_header_id
             };
             _mysql.commitTransaction(() => {
               _mysql.releaseConnection();

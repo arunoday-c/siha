@@ -429,6 +429,8 @@ class RegistrationPatient extends Component {
                             response.data.records.hims_d_patient_id,
                           patient_visit_id:
                             response.data.records.patient_visit_id,
+                          hims_f_billing_header_id:
+                            response.data.records.hims_f_billing_header_id,
                           saveEnable: true,
                           insuranceYes: true,
                           sec_insuranceYes: true,
@@ -570,6 +572,8 @@ class RegistrationPatient extends Component {
                           receipt_number: response.data.records.receipt_number,
                           patient_visit_id:
                             response.data.records.patient_visit_id,
+                          hims_f_billing_header_id:
+                            response.data.records.hims_f_billing_header_id,
                           saveEnable: true,
                           insuranceYes: true,
                           sec_insuranceYes: true,

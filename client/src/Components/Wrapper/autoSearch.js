@@ -3,7 +3,9 @@ import { Search } from "semantic-ui-react";
 import _ from "lodash";
 import { algaehApiCall, cancelRequest } from "../../utils/algaehApiCall";
 import Label from "./label";
-
+const style = {
+  clear: { position: "relative", top: "-25px", left: "86%", cursor: "pointer" }
+};
 export default class AlgaehAutoSearch extends Component {
   constructor(props) {
     super(props);
@@ -47,6 +49,7 @@ export default class AlgaehAutoSearch extends Component {
           that.IntervalID = setInterval(() => {
             if (value.length < that.state.minCharacters) {
               that.setState({ isLoading: false });
+
               return;
             }
             let _process = true;
@@ -83,7 +86,12 @@ export default class AlgaehAutoSearch extends Component {
     return this.props.template(details);
   }
   generateInputParm() {
-    const { columns, extraParameters, searchName } = this.props;
+    const {
+      columns,
+      extraParameters,
+      searchName,
+      directCondition
+    } = this.props;
     const { pageSize, pageNo, value } = this.state;
     const _exParameters = extraParameters === undefined ? {} : extraParameters;
     let _arrayParam = columns.map(f => {
@@ -98,7 +106,8 @@ export default class AlgaehAutoSearch extends Component {
     //
     //   _arrayParam.push(obj);
     // });
-
+    const _directCondition =
+      directCondition === undefined ? {} : { directCondition: directCondition };
     const exteraParam = Object.keys(_exParameters);
     for (let i = 0; i < exteraParam.length; i++) {
       const obj = {};
@@ -109,7 +118,8 @@ export default class AlgaehAutoSearch extends Component {
       parameters: _arrayParam,
       searchName: searchName,
       pageSize: pageSize,
-      pageNo: pageNo
+      pageNo: pageNo,
+      ..._directCondition
     };
   }
 
@@ -138,7 +148,19 @@ export default class AlgaehAutoSearch extends Component {
       }
     });
   }
-  onSelectionChangeHandler(event, data) {}
+  onClearHandler(e) {
+    this.setState(
+      {
+        value: ""
+      },
+      () => {
+        if (typeof this.props.onClear === "function") {
+          this.props.onClear();
+        }
+      }
+    );
+  }
+
   renderLabel = () => {
     return <Label label={this.props.label} />;
   };
@@ -169,6 +191,9 @@ export default class AlgaehAutoSearch extends Component {
           resultRenderer={this.generateTemplate.bind(this)}
           {...this.props.others}
         />
+        <span style={style.clear} onClick={this.onClearHandler.bind(this)}>
+          &#10005;
+        </span>
       </div>
     );
   }

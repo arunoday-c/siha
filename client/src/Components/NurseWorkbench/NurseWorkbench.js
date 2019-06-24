@@ -4,7 +4,11 @@ import moment from "moment";
 import { AlgaehLabel, AlagehFormGroup } from "../Wrapper/algaehWrapper";
 import Enumerable from "linq";
 import algaehLoader from "../Wrapper/fullPageLoader";
-import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
+import {
+  algaehApiCall,
+  swalMessage,
+  maxCharactersLeft
+} from "../../utils/algaehApiCall";
 import {
   AlagehAutoComplete,
   AlgaehDataGrid,
@@ -29,6 +33,7 @@ import {
 } from "./NurseWorkbenchEvents";
 import swal from "sweetalert2";
 import Options from "../../Options.json";
+import NursingWorkbenchHandler from "./NursingWorkbenchHandler";
 
 class NurseWorkbench extends Component {
   constructor(props) {
@@ -49,12 +54,26 @@ class NurseWorkbench extends Component {
       recorded_time: moment().format(config.formators.time),
 
       sub_department_id: null,
-      provider_id: null
+      provider_id: null,
+      isPregnancy: true,
+
+      chief_complaint: null,
+
+      duration: null,
+
+      interval: null,
+      onset_date: null,
+      pain: null,
+      severity: null,
+      chronic: null,
+      complaint_type: null
     };
 
     this.baseState = this.state;
+    this.chiefComplaintMaxLength = 200;
 
     this.loadListofData = this.loadListofData.bind(this);
+    // this.isMale = String(Window["global"]["gender"]) === "Male" ? true : false;
 
     // if (
     //   this.props.allchiefcomplaints === undefined ||
@@ -62,9 +81,11 @@ class NurseWorkbench extends Component {
     // ) {
     //   getAllChiefComplaints(this);
     // }
+    this.isMale = false;
     getAllChiefComplaints(this);
     getDepartmentVitals(this);
     this.getDoctorsAndDepts();
+    this.complaintType = [];
   }
 
   allergyDropdownHandler(value) {
@@ -158,6 +179,42 @@ class NurseWorkbench extends Component {
         [_name]: ""
       });
     }
+  }
+
+  ChangeEventHandler(e) {
+    NursingWorkbenchHandler().ChangeEventHandler(this, e);
+  }
+
+  addChiefComplainToPatient() {
+    NursingWorkbenchHandler().addChiefComplainToPatient(this);
+  }
+
+  dropDownHandler(value) {
+    this.setState({
+      [value.name]: value.value
+    });
+
+    value.value === "PREGNANCY"
+      ? this.setState({
+          isPregnancy: false
+        })
+      : this.setState({
+          isPregnancy: true
+        });
+  }
+  dataLevelUpdate(e) {
+    NursingWorkbenchHandler().dataLevelUpdate(this, e);
+  }
+  datehandle(e) {
+    NursingWorkbenchHandler().datehandle(this, e);
+  }
+  textAreaEvent(e) {
+    let name = e.name || e.target.name;
+    let value = e.value === "" ? null : e.value || e.target.value;
+
+    this.setState({
+      [name]: value
+    });
   }
 
   updatePatientAllergy(data) {
@@ -427,44 +484,44 @@ class NurseWorkbench extends Component {
     }
   }
 
-  addChiefComplainToPatient() {
-    if (
-      this.state.chief_complaint_id === null ||
-      this.state.chief_complaint_id === undefined ||
-      this.state.chief_complaint_id.length < 0
-    ) {
-      swalMessage({
-        title: "Please select a chief complaint",
-        type: "warning"
-      });
-    } else {
-      this.state.patChiefComp.push({
-        episode_id: this.state.episode_id,
-        patient_id: this.state.patient_id,
-        chief_complaint_id: this.state.chief_complaint_id,
-        onset_date: this.state.onset_date,
-        duration: this.state.duration,
-        interval: this.state.interval,
-        severity: this.state.severity,
-        score: this.state.score,
-        pain: this.state.pain,
-        comment: this.state.comment,
-        chief_complaint_name: this.state.chief_complaint_name
-      });
-
-      this.setState({
-        chief_complaint_id: null,
-        onset_date: null,
-        duration: null,
-        interval: "D",
-        severity: null,
-        score: null,
-        pain: null,
-        comment: null,
-        chief_complaint_name: null
-      });
-    }
-  }
+  // addChiefComplainToPatient() {
+  //   if (
+  //     this.state.chief_complaint_id === null ||
+  //     this.state.chief_complaint_id === undefined ||
+  //     this.state.chief_complaint_id.length < 0
+  //   ) {
+  //     swalMessage({
+  //       title: "Please select a chief complaint",
+  //       type: "warning"
+  //     });
+  //   } else {
+  //     this.state.patChiefComp.push({
+  //       episode_id: this.state.episode_id,
+  //       patient_id: this.state.patient_id,
+  //       chief_complaint_id: this.state.chief_complaint_id,
+  //       onset_date: this.state.onset_date,
+  //       duration: this.state.duration,
+  //       interval: this.state.interval,
+  //       severity: this.state.severity,
+  //       score: this.state.score,
+  //       pain: this.state.pain,
+  //       comment: this.state.comment,
+  //       chief_complaint_name: this.state.chief_complaint_name
+  //     });
+  //
+  //     this.setState({
+  //       chief_complaint_id: null,
+  //       onset_date: null,
+  //       duration: null,
+  //       interval: "D",
+  //       severity: null,
+  //       score: null,
+  //       pain: null,
+  //       comment: null,
+  //       chief_complaint_name: null
+  //     });
+  //   }
+  // }
 
   gridLevelUpdate(row, e) {
     e = e.name === undefined ? e.currentTarget : e;
@@ -585,10 +642,6 @@ class NurseWorkbench extends Component {
     );
   }
 
-  // reloadState() {
-  //   this.setState({ ...this.state });
-  // }
-
   changeOnsetEdit(row, e) {
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
@@ -598,6 +651,16 @@ class NurseWorkbench extends Component {
 
   moveToStation(data, e) {
     this.resetSaveState();
+    debugger;
+
+    this.isMale = data.gender === "Male" ? true : false;
+    if (data.gender === "Male") {
+      this.complaintType = Enumerable.from(GlobalVariables.COMPLAINT_TYPE)
+        .where(w => w["value"] !== "PREGNANCY")
+        .toArray();
+    } else {
+      this.complaintType = GlobalVariables.COMPLAINT_TYPE;
+    }
     this.setState(
       {
         patient_name: data.full_name,
@@ -1537,7 +1600,154 @@ class NurseWorkbench extends Component {
                 <h6>Enter Chief Complaints</h6>
 
                 <div className="row">
-                  <div className="col-8">
+                  <div className="col-12">
+                    <div className="portlet portlet-bordered margin-bottom-15">
+                      <div className="portlet-title">
+                        <div className="caption">
+                          <h3 className="caption-subject">
+                            Chief Complaints & Main Symptoms
+                          </h3>
+                        </div>
+                      </div>
+                      <div className="portlet-body">
+                        <div className="row">
+                          <div className="col-12">
+                            <div className="row">
+                              <div className="col-12">
+                                <textarea
+                                  value={
+                                    this.state === undefined
+                                      ? ""
+                                      : this.state.chief_complaint
+                                  }
+                                  name="chief_complaint"
+                                  onChange={this.textAreaEvent.bind(this)}
+                                  maxLength={this.chiefComplaintMaxLength}
+                                >
+                                  {this.state.chief_complaint}
+                                </textarea>
+                                <small className="float-right">
+                                  Max Char.{" "}
+                                  {maxCharactersLeft(
+                                    this.chiefComplaintMaxLength,
+                                    this.state.chief_complaint
+                                  )}
+                                  /{this.chiefComplaintMaxLength}
+                                </small>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="col-12">
+                            <div className="row">
+                              <AlgaehDateHandler
+                                div={{ className: "col-8" }}
+                                label={{
+                                  forceLabel: "Onset Date"
+                                }}
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "onset_date"
+                                }}
+                                maxDate={new Date()}
+                                events={{
+                                  onChange: this.datehandle.bind(this)
+                                }}
+                                value={this.state.onset_date}
+                              />
+
+                              <AlagehAutoComplete
+                                div={{ className: "col-4" }}
+                                label={{ forceLabel: "Interval", isImp: false }}
+                                selector={{
+                                  name: "interval",
+                                  className: "select-fld",
+                                  value: this.state.interval,
+                                  dataSource: {
+                                    textField: "name",
+                                    valueField: "value",
+                                    data: GlobalVariables.PAIN_DURATION
+                                  },
+                                  onChange: this.dataLevelUpdate.bind(this)
+                                }}
+                              />
+
+                              <AlagehFormGroup
+                                div={{ className: "col-4" }}
+                                label={{
+                                  forceLabel: "Duration",
+                                  isImp: false
+                                }}
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "duration",
+                                  number: true,
+                                  value: this.state.duration,
+                                  events: {
+                                    onChange: this.dataLevelUpdate.bind(this)
+                                  },
+                                  others: {
+                                    min: 0
+                                  }
+                                }}
+                              />
+                              <AlagehAutoComplete
+                                div={{ className: "col-4" }}
+                                label={{
+                                  forceLabel: "Complaint Type",
+                                  isImp: false
+                                }}
+                                selector={{
+                                  name: "complaint_type",
+                                  className: "select-fld",
+                                  value: this.state.complaint_type,
+                                  dataSource: {
+                                    textField: "name",
+                                    valueField: "value",
+                                    data: this.complaintType
+                                  },
+                                  onChange: this.dropDownHandler.bind(this)
+                                }}
+                              />
+
+                              {this.isMale ? null : (
+                                <AlagehFormGroup
+                                  div={{ className: "col-4" }}
+                                  label={{
+                                    forceLabel: "LMP (Days)",
+                                    isImp: false
+                                  }}
+                                  textBox={{
+                                    className: "txt-fld",
+                                    name: "lmp_days",
+                                    number: true,
+                                    value: this.state.lmp_days,
+                                    disabled: this.state.isPregnancy,
+                                    events: {
+                                      onChange: this.ChangeEventHandler.bind(
+                                        this
+                                      )
+                                    }
+                                  }}
+                                />
+                              )}
+
+                              <div className="col-12 margin-top-15">
+                                <button
+                                  className="btn btn-primary"
+                                  onClick={this.addChiefComplainToPatient.bind(
+                                    this
+                                  )}
+                                >
+                                  ADD
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {/*<div className="col-8">
                     <div className="row">
                       <AlagehAutoComplete
                         div={{ className: "col-8" }}
@@ -1615,7 +1825,7 @@ class NurseWorkbench extends Component {
                           fieldName: "duration"
                         }}
                         textBox={{
-                          className: "col txt-fld",
+                          className: "txt-fld",
                           name: "duration",
                           number: true,
                           value: this.state.duration,
@@ -1678,7 +1888,7 @@ class NurseWorkbench extends Component {
                         </button>
                       </div>
                     </div>
-                  </div>
+                  </div>*/}
                 </div>
 
                 <hr />

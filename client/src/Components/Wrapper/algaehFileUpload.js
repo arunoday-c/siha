@@ -116,6 +116,7 @@ export default class AlgaehFileUploader extends Component {
       this.props.onref(undefined);
   }
   getDisplayImage(propsP) {
+    const { uniqueID, fileType } = propsP.serviceParameters;
     let _call = true;
     if (typeof propsP.validateBeforeCall === "function") {
       _call = propsP.validateBeforeCall();
@@ -131,16 +132,14 @@ export default class AlgaehFileUploader extends Component {
       });
       return;
     }
+    debugger;
     const that = this;
-    if (
-      propsP.serviceParameters.uniqueID !== null &&
-      propsP.serviceParameters.uniqueID !== ""
-    ) {
+    if (uniqueID) {
       displayFileFromServer({
         uri: "/Document/get",
         module: "documentManagement",
-        fileType: propsP.serviceParameters.fileType,
-        destinationName: propsP.serviceParameters.uniqueID,
+        fileType: fileType,
+        destinationName: uniqueID,
         addDataTag: propsP.addDataTag === undefined ? true : propsP.addDataTag,
         onFileSuccess: data => {
           if (propsP.events !== undefined) {

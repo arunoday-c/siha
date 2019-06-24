@@ -22,10 +22,6 @@
 #itemSetupPopGrid .ReactTable {
   max-height: 27vh !important; }
 
-.AutoCompleteRight .menu {
-  right: 0 !important;
-  left: auto !important; }
-
 .customGlobalSearch .searchView {
   padding-right: 0; }
 

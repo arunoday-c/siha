@@ -6,6 +6,10 @@ module.exports = {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
     try {
+      const utilities = new algaehUtilities();
+      utilities
+        .logger()
+        .log("getReceiptEntry: ", req.records.hims_f_receipt_header_id);
       let hims_f_receipt_header_id =
         req.records.hims_f_receipt_header_id ||
         req.records[0].receipt_header_id;

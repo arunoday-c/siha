@@ -330,6 +330,7 @@ class Appointment extends PureComponent {
               method: "POST",
               data: send_data,
               onSuccess: response => {
+                console.log("from add appointment", response);
                 if (response.data.success) {
                   if (
                     send_data.appointment_status_id === this.state.checkInId
@@ -698,6 +699,14 @@ class Appointment extends PureComponent {
         </div>
       </div>
     );
+  }
+
+  handlePatient(patient, data, e) {
+    if (data.hims_d_appointment_status_id === this.state.checkInId) {
+      this.props.goToCheckedIn(patient);
+    } else {
+      this.openEditModal(patient, data, e);
+    }
   }
 
   openEditModal(patient, data, e) {
@@ -1318,7 +1327,16 @@ class Appointment extends PureComponent {
     }
   }
 
-  generateChilderns(data) {
+  isInactiveTimeSlot(time) {
+    return (
+      moment(time, "HH:mm a").format("HHmm") <
+        moment(new Date()).format("HHmm") &&
+      moment(this.state.activeDateHeader).format("YYYYMMDD") <=
+        moment(new Date()).format("YYYYMMDD")
+    );
+  }
+
+  generateChildren(data) {
     const colspan = data.mark_as_break
       ? {
           colSpan: 2,
@@ -1374,12 +1392,7 @@ class Appointment extends PureComponent {
 
     let brk_bg_color = data.mark_as_break
       ? "1"
-      : (moment(data.time, "HH:mm a").format("HHmm") <
-          moment(new Date()).format("HHmm") &&
-          moment(this.state.activeDateHeader).format("YYYYMMDD") <=
-            moment(new Date()).format("YYYYMMDD")) ||
-        moment(this.state.activeDateHeader).format("YYYYMMDD") <
-          moment(new Date()).format("YYYYMMDD")
+      : this.isInactiveTimeSlot(data.time)
       ? "0.4"
       : "1";
 
@@ -1388,10 +1401,7 @@ class Appointment extends PureComponent {
         ? this.getColorCode(patient.appointment_status_id)
         : data.mark_as_break
         ? "#f2f2f2"
-        : moment(data.time, "HH:mm a").format("HHmm") <
-            moment(new Date()).format("HHmm") &&
-          moment(this.state.activeDateHeader).format("YYYYMMDD") <
-            moment(new Date()).format("YYYYMMDD")
+        : this.isInactiveTimeSlot(data.time)
         ? "#fbfbfb"
         : "#ffffff";
 
@@ -1443,7 +1453,7 @@ class Appointment extends PureComponent {
                         ? status.map((data, index) => (
                             <li
                               key={index}
-                              onClick={this.openEditModal.bind(
+                              onClick={this.handlePatient.bind(
                                 this,
                                 patient,
                                 data
@@ -1459,9 +1469,6 @@ class Appointment extends PureComponent {
                             </li>
                           ))
                         : null}
-                      {/* <li onClick={() => this.props.goToCheckedIn(patient)}>
-                        <span>Checked In</span>
-                      </li> */}
                       <li
                         onClick={generateReport.bind(
                           this,
@@ -1487,14 +1494,6 @@ class Appointment extends PureComponent {
         {data.mark_as_break === false ? (
           <td className="tg-baqh">
             <span className="dynSlot">{data.time}</span>
-
-            {(moment(data.time, "HH:mm a").format("HHmm") <
-              moment(new Date()).format("HHmm") ||
-              moment(this.state.activeDateHeader).format("YYYYMMDD") <
-                moment(new Date()).format("YYYYMMDD")) &&
-              moment(this.state.activeDateHeader).format("YYYYMMDD") <=
-                moment(new Date()).format("YYYYMMDD")}
-
             {this.plotStandByAddIcon(patient, data)}
             {this.renderStandByMultiple(_standByPatients)}
           </td>
@@ -1516,10 +1515,12 @@ class Appointment extends PureComponent {
     let timeSlots = [];
     result.forEach(time => {
       if (time !== "break") {
-        timeSlots.push({
-          name: moment(time, "HH:mm:ss").format("hh:mm a"),
-          value: time
-        });
+        if (!this.isInactiveTimeSlot(time)) {
+          timeSlots.push({
+            name: moment(time, "HH:mm:ss").format("hh:mm a"),
+            value: time
+          });
+        }
       }
     });
     return this.setState({ timeSlots });
@@ -1554,11 +1555,11 @@ class Appointment extends PureComponent {
         };
       } else {
         if (isPrevbreak !== null) {
-          tds.push(this.generateChilderns(isPrevbreak));
+          tds.push(this.generateChildren(isPrevbreak));
           isPrevbreak = null;
         }
         tds.push(
-          this.generateChilderns({
+          this.generateChildren({
             time: moment(time, "HH:mm:ss").format("hh:mm a"),
             counter: count,
             to_work_hr: moment(to_work_hr).format("hh:mm a"),
@@ -1567,11 +1568,11 @@ class Appointment extends PureComponent {
             from_break_hr2: moment(from_break_hr2).format("hh:mm a"),
             to_break_hr2: moment(to_break_hr2).format("hh:mm a"),
             slot: parseInt(slot, 10),
-            clinic_id: clinic_id,
-            provider_id: provider_id,
-            sch_header_id: sch_header_id,
-            sch_detail_id: sch_detail_id,
-            sub_dept_id: sub_dept_id,
+            clinic_id,
+            provider_id,
+            sch_header_id,
+            sch_detail_id,
+            sub_dept_id,
             mark_as_break: isBreak,
             patients: patientList
           })

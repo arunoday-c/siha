@@ -134,7 +134,7 @@
     .patient-mrd .patientProfile .patientTopNav ul li:after {
       display: block;
       content: "";
-      border-bottom: solid 3px #00a9ad;
+      border-bottom: solid 3px #00a796;
       transform: scaleX(0);
       transition: transform 150ms ease-in-out; }
     .patient-mrd .patientProfile .patientTopNav ul li:hover:after {
@@ -146,9 +146,9 @@
       cursor: pointer;
       font-size: 0.8em; }
     .patient-mrd .patientProfile .patientTopNav ul li span.active {
-      border-bottom: solid 3px #00a9ad;
+      border-bottom: solid 3px #00a796;
       color: #fff;
-      background: #34b8bc; }
+      background: #00a796; }
       .patient-mrd .patientProfile .patientTopNav ul li span.active:hover {
         cursor: default;
         color: #fff; }
@@ -157,62 +157,55 @@
         border: none !important;
         cursor: pointer; }
   .patient-mrd .patientProfile .patientTopNav .patient-quick-info {
-    color: #34b8bc;
+    color: #00a796;
     margin: 0;
     padding: 0;
     list-style: none;
     position: absolute;
     right: 20px; }
     .patient-mrd .patientProfile .patientTopNav .patient-quick-info li {
-      background: #ffffff;
-      color: #53bcb1;
-      padding: 4px 10px 3px;
+      background: #fff;
+      color: #00a796;
+      padding: 6px 10px 4px;
       cursor: pointer;
       margin: 0 10px;
       list-style: none;
-      display: inline-block; }
+      display: inline-block;
+      font-size: 1.1rem; }
       .patient-mrd .patientProfile .patientTopNav .patient-quick-info li section {
         width: 40vw;
         height: auto;
         position: absolute;
         right: 0;
         top: 30px;
-        background: #53bdb1;
+        background: #00a796;
         z-index: 9;
         padding: 10px;
         border-radius: 5px;
         color: #fff;
         display: none; }
-        .patient-mrd .patientProfile .patientTopNav .patient-quick-info li section b.top-nav-sec-hdg {
+        .patient-mrd .patientProfile .patientTopNav .patient-quick-info li section span.top-nav-sec-hdg {
           text-align: center;
-          border-bottom: 1px solid #337e74;
-          margin-left: -10px;
-          margin-right: -10px;
-          padding-bottom: 11px; }
-        .patient-mrd .patientProfile .patientTopNav .patient-quick-info li section b {
+          border-bottom: none;
+          height: 25px;
+          padding: 0;
+          font-weight: bold;
           display: block;
-          border-bottom: 1px solid #3f9c90;
-          margin-bottom: 10px;
-          padding-bottom: 5px; }
+          color: #fff; }
         .patient-mrd .patientProfile .patientTopNav .patient-quick-info li section .listofA-D-D {
           display: inline-block;
           margin-right: 8px;
-          border: 1px solid #317970;
+          border: 1px solid #007468;
           padding: 3px 10px;
           margin: 0;
           color: #fff;
           margin-right: 5px;
           margin-bottom: 3px;
           border-radius: 5px;
-          background: #3f9c91;
+          background: #00a796;
           white-space: normal; }
-        .patient-mrd .patientProfile .patientTopNav .patient-quick-info li section p {
-          background: rgba(0, 0, 0, 0.05);
-          border-top: 1px solid #65dace;
-          margin: -10px;
-          padding: 10px; }
     .patient-mrd .patientProfile .patientTopNav .patient-quick-info li:hover {
-      background: #53bcb1;
+      background: #007468;
       color: #fff;
       padding: 4px 10px; }
       .patient-mrd .patientProfile .patientTopNav .patient-quick-info li:hover section {
@@ -302,3 +295,26 @@
     border: 1px solid #e1e1e1;
     margin: 0 3px 5px;
     border-radius: 5px; }
+
+.mrdClinicalDeskTopMenu {
+  top: 159px !important;
+  margin-left: 5px; }
+
+.mrdClinicalDeskContent {
+  margin: 50px 15px 0 !important; }
+  .mrdClinicalDeskContent .encounters .col-lg-4 {
+    -webkit-box-flex: 0 !important;
+    -ms-flex: 0 0 25% !important;
+    flex: 0 0 25% !important;
+    max-width: 24% !important;
+    padding-right: 0 !important; }
+  .mrdClinicalDeskContent .encounters .col-lg-8 {
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 75%;
+    flex: 0 0 75%;
+    max-width: 75%;
+    padding-right: 10px !important; }
+  .mrdClinicalDeskContent .encounterListCntr {
+    min-height: 59vh !important; }
+  .mrdClinicalDeskContent .encounterDetailCntr {
+    min-height: 59vh !important; }

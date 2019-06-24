@@ -27,8 +27,9 @@ export const AlgaehActions = options => dispatch => {
             payload: eval(settings.schema.data),
             mappingName: settings.redux.mappingName
           });
-          if (typeof settings.afterSuccess === "function")
+          if (typeof settings.afterSuccess === "function") {
             settings.afterSuccess(eval(settings.schema.data));
+          }
         }
       } else {
         console.error(
