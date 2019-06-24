@@ -49,7 +49,7 @@ let getPreAprovalList = (req, res, next) => {
       }
       db.query(
         "SELECT hims_f_service_approval_id,ordered_services_id,insurance_provider_id,network_id,\
-        insurance_network_office_id,\
+        insurance_network_office_id,valid_upto,\
         service_id,SR.service_code, icd_code, requested_date, requested_by, requested_mode,\
         requested_quantity, submission_type, insurance_service_name, SA.doctor_id, SA.patient_id,visit_id,\
         PAT.patient_code,PAT.full_name, refer_no, gross_amt,\
@@ -178,7 +178,8 @@ let updatePreApproval = (req, res, next) => {
           "UPDATE `hims_f_service_approval` SET service_id=?, insurance_provider_id=?, insurance_network_office_id=?,\
           icd_code=?,insurance_service_name=?,doctor_id=?,patient_id=?,gross_amt=?,net_amount=?,requested_date=?,\
           requested_by=?, requested_mode=?,requested_quantity=?,submission_type=?,refer_no=?,approved_amount=?,\
-          apprv_remarks=?,apprv_date=?,rejected_reason=?, apprv_status=?, approved_no=?, updated_date=?, updated_by=? \
+          apprv_remarks=?,apprv_date=?,rejected_reason=?, apprv_status=?, approved_no=?, valid_upto = ?,\
+          updated_date=?, updated_by=? \
           where hims_f_service_approval_id=?;",
           [
             inputParam[i].service_id,
@@ -202,6 +203,7 @@ let updatePreApproval = (req, res, next) => {
             inputParam[i].rejected_reason,
             inputParam[i].apprv_status,
             inputParam[i].approved_no,
+            inputParam[i].valid_upto,
             moment().format("YYYY-MM-DD HH:mm"),
             req.userIdentity.algaeh_d_app_user_id,
             inputParam[i].hims_f_service_approval_id

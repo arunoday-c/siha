@@ -68,7 +68,6 @@ const clearinsurancehandle = ($this, context, e) => {
   }
 };
 const insurancehandle = ($this, context, e) => {
-  
   let ProcessInsure = false;
   if ($this.state.doctor_id === null) {
     ProcessInsure = true;
@@ -82,7 +81,6 @@ const insurancehandle = ($this, context, e) => {
       type: "warning"
     });
   } else {
-    
     $this.setState(
       {
         primary_insurance_provider_id: e.selected.insurance_provider_id,
@@ -191,7 +189,6 @@ const InsuranceDetails = ($this, context, e) => {
   const hospital = JSON.parse(
     AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
   );
-  
 
   AlgaehSearch({
     searchGrid: {
@@ -484,7 +481,6 @@ const radioChange = ($this, context, e) => {
   SetBulkState({
     state: $this,
     callback: () => {
-      
       let PatType = null;
       let saveEnable = false;
       let ProcessInsure = false;
@@ -497,8 +493,39 @@ const radioChange = ($this, context, e) => {
         } else {
           ProcessInsure = false;
         }
+        if ($this.state.hims_d_patient_id !== null) {
+          $this.props.getPatientInsurance({
+            // uri: "/insurance/getPatientInsurance",
+            uri: "/patientRegistration/getPatientInsurance",
+            module: "frontDesk",
+            method: "GET",
+            data: {
+              patient_id: $this.state.hims_d_patient_id
+            },
+            redux: {
+              type: "EXIT_INSURANCE_GET_DATA",
+              mappingName: "existinsurance"
+            }
+          });
+        }
       } else {
         PatType = "S";
+
+        $this.props.setSelectedInsurance({
+          redux: {
+            type: "PRIMARY_INSURANCE_DATA",
+            mappingName: "primaryinsurance",
+            data: []
+          }
+        });
+
+        $this.props.setSelectedInsurance({
+          redux: {
+            type: "EXIT_INSURANCE_GET_DATA",
+            mappingName: "existinsurance",
+            data: []
+          }
+        });
       }
 
       $this.setState(

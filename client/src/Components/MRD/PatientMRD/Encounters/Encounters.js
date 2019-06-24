@@ -31,14 +31,39 @@ class Encounters extends Component {
     this.getPatientMedication(row.encounter_id);
     this.getPatientInvestigation(visit_id);
     this.getPatientVitals(Window.global["mrd_patient"], visit_id);
+    this.getEncounterDetails(row.encounter_id);
 
     const general_info = Enumerable.from(this.state.patientEncounters)
       .where(w => w.encounter_id === parseInt(row.encounter_id, 10))
       .firstOrDefault();
 
     this.setState({
-      generalInfo: general_info,
-      significant_signs: row.significant_signs
+      generalInfo: general_info
+    });
+  }
+
+  getEncounterDetails(encounter_id) {
+    algaehApiCall({
+      uri: "/doctorsWorkBench/getPatientEncounter",
+      method: "GET",
+      data: {
+        encounter_id: encounter_id
+      },
+      onSuccess: response => {
+        let data = response.data.records[0];
+        if (response.data.success) {
+          this.setState({
+            significant_signs: data.significant_signs,
+            other_signs: data.other_signs
+          });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
     });
   }
 

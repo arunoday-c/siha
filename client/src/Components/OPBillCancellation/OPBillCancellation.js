@@ -360,7 +360,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getPatientType: AlgaehActions
+      getPatientType: AlgaehActions,
+      getPatientInsurance: AlgaehActions
     },
     dispatch
   );

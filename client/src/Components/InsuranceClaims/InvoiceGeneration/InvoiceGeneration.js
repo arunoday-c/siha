@@ -112,7 +112,7 @@ class InvoiceGeneration extends Component {
           reportParams: [
             {
               name: "hims_d_patient_id",
-              value:this.state.patient_id
+              value: this.state.patient_id
             },
             {
               name: "visit_id",
@@ -154,6 +154,16 @@ class InvoiceGeneration extends Component {
         creidt_invoice: true,
         cash_invoice: false
       });
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (
+      nextProps.existinsurance !== undefined &&
+      nextProps.existinsurance.length !== 0
+    ) {
+      let output = nextProps.existinsurance[0];
+      this.setState({ ...this.state, ...output });
     }
   }
 
@@ -371,14 +381,13 @@ class InvoiceGeneration extends Component {
                         <AlgaehLabel label={{ fieldName: "service_type_id" }} />
                       ),
                       displayTemplate: row => {
-                        
                         let display =
                           this.props.servicetype === undefined
                             ? []
                             : this.props.servicetype.filter(
                                 f =>
                                   f.hims_d_service_type_id ===
-                                  parseInt(row.service_type_id,10)
+                                  parseInt(row.service_type_id, 10)
                               );
 
                         return (
@@ -398,7 +407,7 @@ class InvoiceGeneration extends Component {
                             : this.props.servicetype.filter(
                                 f =>
                                   f.hims_d_service_type_id ===
-                                  parseInt(row.service_type_id,10)
+                                  parseInt(row.service_type_id, 10)
                               );
 
                         return (
@@ -669,45 +678,6 @@ class InvoiceGeneration extends Component {
                               : "---"}
                           </h6>
                         </div>
-
-                        <div className="col-4">
-                          <AlgaehLabel
-                            label={{
-                              fieldName: "card_holder_age"
-                            }}
-                          />
-                          <h6>
-                            {this.state.card_holder_age
-                              ? this.state.card_holder_age
-                              : "---"}
-                          </h6>
-                        </div>
-
-                        <div className="col-4">
-                          <AlgaehLabel
-                            label={{
-                              fieldName: "card_holder_gender"
-                            }}
-                          />
-                          <h6>
-                            {this.state.card_holder_gender
-                              ? this.state.card_holder_gender
-                              : "---"}
-                          </h6>
-                        </div>
-
-                        <div className="col-4">
-                          <AlgaehLabel
-                            label={{
-                              fieldName: "card_class"
-                            }}
-                          />
-                          <h6>
-                            {this.state.card_class_name
-                              ? this.state.card_class_name
-                              : "---"}
-                          </h6>
-                        </div>
                       </div>
                     </div>
                     {/* <div className="col-12">
@@ -962,8 +932,6 @@ class InvoiceGeneration extends Component {
                 POS Cash Invoice
               </button>
 
-
-
               {this.state.select_invoice === "CD" ? (
                 <div>
                   <button
@@ -1007,7 +975,8 @@ function mapStateToProps(state) {
     servicetype: state.servicetype,
     orderedserviceslist: state.orderedserviceslist,
     serviceslist: state.serviceslist,
-    invoiceGen: state.invoiceGen
+    invoiceGen: state.invoiceGen,
+    existinsurance: state.existinsurance
   };
 }
 
@@ -1018,7 +987,8 @@ function mapDispatchToProps(dispatch) {
       getServices: AlgaehActions,
       getMedicationList: AlgaehActions,
       initialStateOrders: AlgaehActions,
-      getInvoiceGeneration: AlgaehActions
+      getInvoiceGeneration: AlgaehActions,
+      getPatientInsurance: AlgaehActions
     },
     dispatch
   );

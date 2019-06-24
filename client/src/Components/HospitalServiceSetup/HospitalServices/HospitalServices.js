@@ -84,9 +84,11 @@ class HospitalServices extends PureComponent {
   componentWillReceiveProps(newProps) {
     if (newProps.servicePop.hims_d_services_id !== undefined) {
       let IOputs = newProps.servicePop;
-
+      debugger;
       if (IOputs.vat_applicable === "Y") {
         IOputs.Applicable = true;
+      } else {
+        IOputs.Applicable = false;
       }
 
       this.setState({ ...this.state, ...IOputs });
@@ -95,6 +97,7 @@ class HospitalServices extends PureComponent {
     }
   }
   onClose = e => {
+    clearData(this, this);
     this.props.onClose && this.props.onClose(false);
   };
 
