@@ -4,3 +4,15 @@
   .hptl-referal-doctor-form th,
   .hptl-referal-doctor-form td {
     border-right: 1px solid #e6e6e6; }
+
+.red_I {
+  font-size: x-small;
+  border-radius: 5px 0px;
+  float: right;
+  background: #ffa3a3; }
+
+.green_A {
+  font-size: x-small;
+  border-radius: 5px 0px;
+  float: right;
+  background: #c4ffc4; }

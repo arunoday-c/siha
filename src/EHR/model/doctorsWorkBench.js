@@ -2363,8 +2363,8 @@ let addReferalDoctor = (req, res, next) => {
     let inputParam = extend(referraldoc, req.body);
     connection.query(
       "INSERT INTO `hims_f_patient_referral` (`patient_id`, `episode_id`,`referral_type`, `sub_department_id`, \
-      `doctor_id` ,`hospital_name`, `reason`, `created_by` ,`created_date`,hospital_id) \
-      VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?,?)",
+      `doctor_id` ,`hospital_name`, `reason`, `created_by` ,`created_date`,`hospital_id`,`updated_by`,`updated_date`,`record_status`,`external_doc_name`) \
+      VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?)",
       [
         inputParam.patient_id,
         inputParam.episode_id,
@@ -2375,7 +2375,11 @@ let addReferalDoctor = (req, res, next) => {
         inputParam.reason,
         inputParam.created_by,
         new Date(),
-        req.userIdentity.hospital_id
+        req.userIdentity.hospital_id,
+        inputParam.created_by,
+        new Date(),
+        "A",
+        inputParam.external_doc_name
       ],
       (error, result) => {
         releaseDBConnection(db, connection);

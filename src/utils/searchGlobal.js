@@ -557,6 +557,24 @@ let algaehSearchConfig = (searchName, req) => {
           on G.hims_d_item_generic_id = IM.generic_id left join \
           hims_d_item_storage as S on IM.storage_id = S.hims_d_item_storage_id where IM.item_status ='A'",
         orderBy: "hims_d_item_master_id desc"
+      },
+      {
+        searchName: "DepartmentAndDoctors",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS E.hims_d_employee_id, concat(T.title,'. ',E.full_name) as doctor_name,SD.sub_department_name,\
+        E.sex,H.hospital_name,SD.hims_d_sub_department_id,\
+        case H.hosital_status when 'A' then 'Active' else 'Inactive' end as hosital_status,concat(T.title,'. ',E.full_name,' => ',SD.sub_department_name) as doctor_department \
+        from hims_d_sub_department as SD inner join hims_d_department as D \
+        on SD.department_id= D.hims_d_department_id \
+        inner join hims_m_employee_department_mappings as DEM \
+        on DEM.sub_department_id = SD.hims_d_sub_department_id \
+        inner join hims_d_employee as E on \
+        E.hims_d_employee_id = DEM.employee_id and DEM.sub_department_id = E.sub_department_id \
+        and DEM.sub_department_id = SD.hims_d_sub_department_id \
+        inner join hims_d_hospital as H \
+        on H.hims_d_hospital_id = E.hospital_id left join hims_d_title as T on T.his_d_title_id = E.title_id \
+        where E.isdoctor ='Y' and D.department_type='CLINICAL' and E.employee_status='A' and E.record_status='A' ",
+        groupBy: "group by DEM.employee_id"
       }
     ]
   };
