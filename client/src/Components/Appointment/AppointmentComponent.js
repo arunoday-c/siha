@@ -481,8 +481,9 @@ function AppointmentComponent(props) {
                           textField: "title",
                           valueField: "his_d_title_id",
                           data: props.state.titles
-                        }
-                        //onChange: props.dropDownHandle
+                        },
+                        onChange: props.dropDownHandle,
+                        onClear: props.dropDownHandle
                       }}
                     />
 
@@ -585,7 +586,8 @@ function AppointmentComponent(props) {
 
                     <AlagehAutoComplete
                       div={{
-                        className: "col-4 form-group mandatory AutoCompleteRight"
+                        className:
+                          "col-4 form-group mandatory AutoCompleteRight"
                       }}
                       label={{
                         fieldName: "selectStatus",
@@ -793,7 +795,10 @@ function AppointmentComponent(props) {
               }}
             >
               {/* Portlet Top Bar Start */}
-              <div className="portlet-title" style={{margin:"-10px -15px 0"}}>
+              <div
+                className="portlet-title"
+                style={{ margin: "-10px -15px 0" }}
+              >
                 <div className="caption">
                   <h3 className="caption-subject">
                     {getLabelFromLanguage({

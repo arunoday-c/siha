@@ -532,18 +532,41 @@ class Appointment extends PureComponent {
   }
 
   dropDownHandle(value) {
-    // const _maxSlots =
-    //   this.state.maxSlots === undefined ? 0 : this.state.maxSlots;
-    // if (value.name === "no_of_slots") {
-    //   if (parseInt(value.value) > parseInt(_maxSlots)) {
-    //     swalMessage({
-    //       type: "error",
-    //       title: "Maximum " + _maxSlots + " slots avilable "
-    //     });
-    //     return;
-    //   }
-    // }
+    if (value.name === "title_id" || value === "title_id") {
+      this.handleTitle(value);
+    }
+    console.log(value);
     this.setState({ [value.name]: value.value });
+  }
+
+  handleTitle(e) {
+    let setGender = null;
+    console.log(e.value);
+
+    if (!e.value) {
+      console.log("clearing");
+      this.setState(
+        {
+          gender: null,
+          [e.name]: null
+        },
+        () => console.log(this.state.gender)
+      );
+    } else {
+      if (e.selected.title === "Mr" || e.selected.title === "Master") {
+        setGender = "Male";
+      } else if (e.selected.title === "Mrs" || e.selected.title === "Miss") {
+        setGender = "Female";
+      } else if (e.selected.title === "Ms") {
+        setGender = "Female";
+      } else if (e.selected.title === "Dr" || e.selected.title === "Prof") {
+        setGender = "";
+      }
+      this.setState({
+        gender: setGender,
+        [e.name]: e.value
+      });
+    }
   }
 
   handleClose() {
@@ -1366,7 +1389,7 @@ class Appointment extends PureComponent {
     return (
       <tr
         className={brk_bg_color}
-        style={{  cursor: "pointer" }}
+        style={{ cursor: "pointer" }}
         key={data.counter}
       >
         <td
