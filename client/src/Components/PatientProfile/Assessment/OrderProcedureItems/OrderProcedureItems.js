@@ -83,7 +83,6 @@ class OrderProcedureItems extends Component {
         : [];
 
     if (Location_name.length > 0) {
-      debugger;
       this.setState({
         inventory_location_id: newProps.inputsparameters.inventory_location_id,
         location_name: Location_name[0].location_description,

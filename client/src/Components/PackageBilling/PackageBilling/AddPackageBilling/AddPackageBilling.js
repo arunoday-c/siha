@@ -89,6 +89,12 @@ class AddPackageBilling extends Component {
     });
   }
 
+  ClosePackList(e) {
+    this.setState({
+      packOpen: !this.state.packOpen
+    });
+  }
+
   ProcessToBill(context, e) {
     let $this = this;
 
@@ -524,7 +530,7 @@ class AddPackageBilling extends Component {
                         packages: this.state.packages
                       }}
                       open={this.state.packOpen}
-                      onClose={this.ShowPackList.bind(this)}
+                      onClose={this.ClosePackList.bind(this)}
                     />
                   </div>
                 </div>

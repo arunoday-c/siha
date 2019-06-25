@@ -65,7 +65,6 @@ class DeliveryNoteEntry extends Component {
       this.props.purchase_number !== undefined &&
       this.props.purchase_number.length !== 0
     ) {
-      debugger;
       getPurchaseDetails(this, this.props.purchase_number);
     }
   }

@@ -706,7 +706,8 @@ function mapStateToProps(state) {
     invitemcategory: state.invitemcategory,
     inventoryitemgroup: state.inventoryitemgroup,
     inventoryitemuom: state.inventoryitemuom,
-    inventoryitemservices: state.inventoryitemservices
+    inventoryitemservices: state.inventoryitemservices,
+    inventoryitemlist: state.inventoryitemlist
   };
 }
 

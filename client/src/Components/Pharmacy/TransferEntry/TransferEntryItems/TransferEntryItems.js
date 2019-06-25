@@ -109,17 +109,16 @@ class TransferEntryItems extends Component {
   }
 
   ChangesOrent(context, item) {
-    debugger;
     let quantity_transferred = _.sumBy(item.batches, s =>
       parseFloat(s.quantity_transfer)
     );
 
-let stock_enable = item.batches.length > 0?false:true
+    let stock_enable = item.batches.length > 0 ? false : true;
     this.setState({
       quantity_transferred: quantity_transferred,
       item_details: item,
       batch_detail_view: true,
-      stock_enable:stock_enable
+      stock_enable: stock_enable
     });
 
     if (context !== undefined) {
@@ -127,7 +126,7 @@ let stock_enable = item.batches.length > 0?false:true
         quantity_transferred: quantity_transferred,
         item_details: item,
         batch_detail_view: true,
-        stock_enable:stock_enable
+        stock_enable: stock_enable
       });
     }
   }

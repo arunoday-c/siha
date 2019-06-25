@@ -72,7 +72,7 @@ const selectVisit = ($this, context, e) => {
       }
 
       algaehApiCall({
-        uri: "/orderAndPreApproval/selectOrderServices",
+        uri: "/orderAndPreApproval/load_orders_for_bill",
         method: "GET",
         data: {
           visit_id: $this.state.visit_id
@@ -84,7 +84,6 @@ const selectVisit = ($this, context, e) => {
             let data = response.data.records;
 
             if (data.length > 0) {
-              
               let pre_approval_Required = Enumerable.from(data)
                 .where(w => w.pre_approval === "Y" && w.apprv_status === "NR")
                 .toArray();

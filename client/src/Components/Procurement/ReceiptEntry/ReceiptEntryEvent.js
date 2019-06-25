@@ -253,7 +253,6 @@ const ClearData = ($this, e) => {
 };
 
 const SaveReceiptEnrty = $this => {
-  debugger;
   AlgaehLoader({ show: true });
   if ($this.state.inovice_number === null) {
     swalMessage({
@@ -575,7 +574,6 @@ const PurchaseOrderSearch = ($this, e) => {
         callBack(text);
       },
       onRowSelect: row => {
-        debugger;
         getDeliveryForReceipt(
           $this,
           row.hims_f_procurement_po_header_id,
@@ -604,10 +602,8 @@ const getDeliveryForReceipt = (
     onSuccess: response => {
       if (response.data.success) {
         let data = response.data.records;
-        debugger;
-        if (data !== null && data !== undefined) {
-          debugger;
 
+        if (data !== null && data !== undefined) {
           for (let i = 0; i < data.length; i++) {
             data[i].extended_cost = data[i].sub_total;
             data[i].discount_amount = data[i].detail_discount;

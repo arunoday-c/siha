@@ -236,7 +236,6 @@ const resultEntryUpdate = $this => {
 const onconfirm = $this => {
   let test_analytes = $this.state.test_analytes;
 
-  debugger;
   for (let k = 0; k < test_analytes.length; k++) {
     if (test_analytes[k].result === null || test_analytes[k].result === "") {
       swalMessage({

@@ -5,7 +5,6 @@ import _ from "lodash";
 export default function ConsumptionItemsEvents() {
   return {
     UomchangeTexts: ($this, context, e) => {
-      debugger;
       let name = e.name || e.target.name;
       let value = e.value || e.target.value;
       let unit_cost = e.selected.conversion_factor * $this.state.unit_cost;

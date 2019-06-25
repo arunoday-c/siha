@@ -16,7 +16,6 @@ import AppointmentComponent from "./AppointmentComponent";
 import { generateTimeslotsForDoctor } from "./AppointmentHelper";
 
 const generateReport = ($this, rpt_name, rpt_desc) => {
-  debugger;
   algaehApiCall({
     uri: "/report",
     method: "GET",
@@ -1408,7 +1407,7 @@ class Appointment extends PureComponent {
     return (
       <tr
         className={brk_bg_color}
-        style={{  cursor: "pointer" }}
+        style={{ cursor: "pointer" }}
         key={data.counter}
       >
         <td

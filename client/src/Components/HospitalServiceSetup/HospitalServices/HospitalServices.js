@@ -84,7 +84,7 @@ class HospitalServices extends PureComponent {
   componentWillReceiveProps(newProps) {
     if (newProps.servicePop.hims_d_services_id !== undefined) {
       let IOputs = newProps.servicePop;
-      debugger;
+
       if (IOputs.vat_applicable === "Y") {
         IOputs.Applicable = true;
       } else {

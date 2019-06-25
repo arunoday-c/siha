@@ -141,7 +141,6 @@ const getCashiersAndShiftMAP = $this => {
 };
 
 const generateReceipt = $this => {
-  debugger;
   algaehApiCall({
     uri: "/report",
     method: "GET",
@@ -207,16 +206,15 @@ const selectVisit = $this => {
       }
     });
   }
-  debugger;
+
   algaehApiCall({
-    uri: "/orderAndPreApproval/selectOrderServices",
+    uri: "/orderAndPreApproval/load_orders_for_bill",
     method: "GET",
     data: {
       visit_id: $this.state.visit_id
     },
     onSuccess: response => {
       if (response.data.success) {
-        debugger;
         AlgaehLoader({ show: false });
 
         let data = response.data.records;

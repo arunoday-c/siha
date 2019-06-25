@@ -221,51 +221,64 @@ const ondiscountgridcol = ($this, row, e) => {
   let value = e.value || e.target.value;
   let oldvalue = e.oldvalue || e.target.oldvalue;
 
-  if(name === "discount_percentage"){
-    if(parseInt(value) > 0){
+  if (name === "discount_percentage") {
+    if (parseFloat(value) > 100) {
       swalMessage({
         title: "Discount % cannot be greater than 100.",
         type: "warning"
       });
-      return
+      row[name] = oldvalue;
+      row.update();
+      return;
     }
-    row[name] = oldvalue;
-    row.update();
-  }else if(name === "discount_amout"){
-    if(parseInt($this.state.gross_amount) > parseInt(value)){
+    if (parseFloat(value) < 0) {
+      swalMessage({
+        title: "Discount % cannot be less than Zero",
+        type: "warning"
+      });
+      row[name] = oldvalue;
+      row.update();
+      return;
+    }
+  } else if (name === "discount_amout") {
+    if (parseFloat(row.gross_amount) < parseFloat(value)) {
       swalMessage({
         title: "Discount Amount cannot be greater than Gross Amount.",
         type: "warning"
       });
-      return
+      row[name] = oldvalue;
+      row.update();
+      return;
     }
-    row[name] = oldvalue;
-    row.update();
-  }else{
-    row[name] = value;
-    row.update();
+    if (parseFloat(value) < 0) {
+      swalMessage({
+        title: "Discount Amount cannot be less than Zero",
+        type: "warning"
+      });
+      row[name] = oldvalue;
+      row.update();
+      return;
+    }
   }
-
-
+  row[name] = value;
+  row.update();
 };
-
 
 const onquantitycol = ($this, row, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   let oldvalue = e.oldvalue || e.target.oldvalue;
-  if(value < 0 ){
+  if (value < 0) {
     swalMessage({
       title: "Quantity cannot be less than zero.",
       type: "warning"
     });
     row[name] = oldvalue;
     row.update();
-  }else{
+  } else {
     row[name] = value;
     row.update();
   }
-
 };
 
 const credittexthandle = ($this, context, ctrl, e) => {

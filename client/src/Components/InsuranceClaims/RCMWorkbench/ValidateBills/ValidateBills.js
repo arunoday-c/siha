@@ -510,6 +510,11 @@ class ValidateBills extends PureComponent {
   render() {
     let invoices =
       this.state.invoices !== undefined ? [this.state.invoices] : [];
+
+    let claim_validated =
+      this.state.invoices !== undefined
+        ? this.state.invoices.claim_validated
+        : null;
     let invoice_details =
       this.state.invoices !== undefined
         ? this.state.invoices.invoiceDetails
@@ -828,7 +833,7 @@ class ValidateBills extends PureComponent {
                       data: invoice_details
                       // data: this.state.invoice_details
                     }}
-                    isEditable={true}
+                    isEditable={claim_validated === "P" ? true : false}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
                       onDelete: row => {},
@@ -923,45 +928,50 @@ class ValidateBills extends PureComponent {
                       </Dropzone>
                     </div>
                   </div> */}
-                  <AlagehFormGroup
-                    div={{ className: "col  margin-top-15 " }}
-                    label={{
-                      forceLabel: "ICD Code",
-                      isImp: false
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "icd_code",
-                      others: {
-                        disabled: true
-                      },
-                      value: this.state.icd_code,
-                      events: {
-                        // onChange: this.texthandle.bind(this)
-                      }
-                    }}
-                  />
-                  <div
-                    className="col-2"
-                    style={{ padding: 0, paddingTop: "39px" }}
-                  >
-                    <i
-                      onClick={this.icdSearch.bind(this)}
-                      className="fas fa-search"
-                      style={{
-                        cursor: "pointer"
-                      }}
-                    />
-                  </div>
-                  <div className="col-3">
-                    <button
-                      onClick={this.addICDtoInvoice.bind(this)}
-                      className="btn btn-primary margin-top-15"
-                      style={{ marginTop: 32 }}
-                    >
-                      Add
-                    </button>
-                  </div>
+                  {claim_validated === "P" ? (
+                    <div className="row">
+                      <AlagehFormGroup
+                        div={{ className: "col  margin-top-15 " }}
+                        label={{
+                          forceLabel: "ICD Code",
+                          isImp: false
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "icd_code",
+                          others: {
+                            disabled: true
+                          },
+                          value: this.state.icd_code,
+                          events: {
+                            // onChange: this.texthandle.bind(this)
+                          }
+                        }}
+                      />
+                      <div
+                        className="col-2"
+                        style={{ padding: 0, paddingTop: "39px" }}
+                      >
+                        <i
+                          onClick={this.icdSearch.bind(this)}
+                          className="fas fa-search"
+                          style={{
+                            cursor: "pointer"
+                          }}
+                        />
+                      </div>
+                      <div className="col-3">
+                        <button
+                          onClick={this.addICDtoInvoice.bind(this)}
+                          className="btn btn-primary margin-top-15"
+                          style={{ marginTop: 32 }}
+                        >
+                          Add
+                        </button>
+                      </div>
+                    </div>
+                  ) : null}
+
                   <div className="col-12 margin-top-15" id="icd_bill_cntr">
                     <AlgaehDataGrid
                       id="icd_bill_Grid"
@@ -973,13 +983,20 @@ class ValidateBills extends PureComponent {
                           ),
                           displayTemplate: row => {
                             return (
-                              <span
-                                onClick={this.deleteICDfromInvoice.bind(
-                                  this,
-                                  row
-                                )}
-                              >
-                                <i className="fas fa-trash-alt" />
+                              <span>
+                                <i
+                                  style={{
+                                    pointerEvents:
+                                      claim_validated === "P" ? "" : "none",
+                                    opacity:
+                                      claim_validated === "P" ? "" : "0.1"
+                                  }}
+                                  className="fas fa-trash-alt"
+                                  onClick={this.deleteICDfromInvoice.bind(
+                                    this,
+                                    row
+                                  )}
+                                />
                               </span>
                             );
                           },

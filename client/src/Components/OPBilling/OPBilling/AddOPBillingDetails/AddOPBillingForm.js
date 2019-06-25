@@ -624,7 +624,8 @@ class AddOPBillingForm extends Component {
                           fieldName: "quantity",
                           label: (
                             <AlgaehLabel label={{ fieldName: "quantity" }} />
-                          )
+                          ),
+                          disabled: true
                         },
 
                         {
@@ -648,7 +649,6 @@ class AddOPBillingForm extends Component {
                               <AlagehFormGroup
                                 div={{}}
                                 textBox={{
-                                  decimal: { allowNegative: false },
                                   value: row.discount_percentage,
                                   className: "txt-fld",
                                   name: "discount_percentage",
@@ -667,7 +667,8 @@ class AddOPBillingForm extends Component {
                                     ),
                                     onFocus: e => {
                                       e.target.oldvalue = e.target.value;
-                                    }
+                                    },
+                                    type: "number"
                                   }
                                 }}
                               />
@@ -695,7 +696,6 @@ class AddOPBillingForm extends Component {
                               <AlagehFormGroup
                                 div={{}}
                                 textBox={{
-                                  decimal: { allowNegative: false },
                                   value: row.discount_amout,
                                   className: "txt-fld",
                                   name: "discount_amout",
@@ -714,7 +714,8 @@ class AddOPBillingForm extends Component {
                                     ),
                                     onFocus: e => {
                                       e.target.oldvalue = e.target.value;
-                                    }
+                                    },
+                                    type: "number"
                                   }
                                 }}
                               />

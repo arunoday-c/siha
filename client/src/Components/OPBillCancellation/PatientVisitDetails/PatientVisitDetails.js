@@ -63,7 +63,6 @@ class PatientVisitDetails extends Component {
   }
 
   render() {
-    debugger;
     let provider_name = null;
     if (this.state.incharge_or_provider !== null) {
       provider_name = Enumerable.from(this.props.opcacelproviders)

@@ -119,7 +119,7 @@ class OPBilling extends Component {
   componentWillReceiveProps(nextProps) {
     let prevLang = getCookie("Language");
     let output = {};
-    debugger;
+
     if (prevLang !== this.state.selectedLang) {
       let _screenName = getCookie("ScreenName").replace("/", "");
       let counter_id = 0;
@@ -207,7 +207,7 @@ class OPBilling extends Component {
                 w.visit_status === "O"
             )
             .toArray();
-          debugger;
+
           let last_visitDetails = visitDetails[0];
 
           data.patientRegistration.visitDetails = visitDetails;
@@ -255,7 +255,6 @@ class OPBilling extends Component {
             data.patientRegistration.applydiscount = false;
           }
 
-          debugger;
           this.setState(data.patientRegistration, () => {
             selectVisit($this);
           });
@@ -343,7 +342,7 @@ class OPBilling extends Component {
               }
             });
           }
-          debugger;
+
           $this.setState(data);
           AlgaehLoader({ show: false });
         }
@@ -436,7 +435,7 @@ class OPBilling extends Component {
             method: "POST",
             onSuccess: response => {
               AlgaehLoader({ show: false });
-              debugger;
+
               if (response.data.success) {
                 $this.setState({
                   bill_number: response.data.records.bill_number,

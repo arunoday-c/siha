@@ -5,18 +5,28 @@ import {
 } from "../../../utils/GlobalFunctions";
 import ItemSetup from "../../../Models/ItemSetup";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
+import _ from "lodash";
 
 const Validations = $this => {
   let isError = false;
-  
 
   AlgaehValidation({
     querySelector: "data-validate='ItemMaster'", //if require section level
     fetchFromFile: true, //if required arabic error
     alertTypeIcon: "warning", // error icon
     onSuccess: () => {
-      
-      if (
+      const item_code_exit = _.filter(
+        $this.props.itemlist,
+        f => f.item_code === $this.state.item_code
+      );
+
+      if (item_code_exit.length > 0) {
+        isError = true;
+        swalMessage({
+          type: "warning",
+          title: "Item Code Already Exist."
+        });
+      } else if (
         $this.state.standard_fee === null ||
         $this.state.standard_fee === "" ||
         parseFloat($this.state.standard_fee) === 0
