@@ -20,7 +20,9 @@ let encryption = data => {
       leave_authorize_privilege: data["leave_authorize_privilege"],
       decimal_places: data["decimal_places"],
       edit_monthly_attendance: data["edit_monthly_attendance"],
-      hospital_id: data["hospital_id"]
+      hospital_id: data["hospital_id"],
+      default_currency: data["default_currency"],
+      default_nationality: data["default_nationality"]
     }
   });
   debugLog("stringData", stringData);

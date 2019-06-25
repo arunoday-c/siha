@@ -31,6 +31,7 @@ export function printReport(result) {
   let contributions_component = _.filter(header_data, f => {
     return f.component_category === "C";
   });
+
   let data_amount = [];
   let employee_employeer = 0;
 
