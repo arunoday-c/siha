@@ -213,23 +213,18 @@ class DisplayOPBilling extends PureComponent {
 
             <div className="col-lg-12">
               {/* Services Details */}
-              <div className="row form-details" style={{ paddingBottom: 0 }}>
-                {this.state.frontDesk === null ? (
+              {this.state.frontDesk === null ? (
+                <div className="row form-details" style={{ paddingBottom: 0 }}>
                   <AlagehAutoComplete
-                    div={{ className: "col" }}
+                    div={{ className: "col-3" }}
                     label={{
                       fieldName: "present-bill-services"
                     }}
                     selector={{
-                      name: "service_type_id",
+                      name: "services_id",
                       className: "select-fld",
-                      value: this.state.service_type_id,
+                      value: this.state.services_id,
                       dataSource: {
-                        // textField:
-                        //   this.state.selectedLang === "en"
-                        //     ? "service_type"
-                        //     : "arabic_service_type",
-                        // valueField: "hims_d_service_type_id",
                         textField:
                           this.state.selectedLang === "en"
                             ? "service_name"
@@ -243,57 +238,60 @@ class DisplayOPBilling extends PureComponent {
                       }
                     }}
                   />
-                ) : null}
+                  <div className="col-lg-9"> &nbsp;</div>
 
-                <AlagehAutoComplete
-                  div={{ className: "col" }}
-                  label={{
-                    fieldName: "service_type_id"
-                  }}
-                  selector={{
-                    name: "service_type_id",
-                    className: "select-fld",
-                    value: this.state.service_type_id,
-                    dataSource: {
-                      textField:
-                        this.state.selectedLang === "en"
-                          ? "service_type"
-                          : "arabic_service_type",
-                      valueField: "hims_d_service_type_id",
-                      data: this.props.servicetype
-                    },
-                    onChange: null,
-                    others: {
-                      disabled: true
-                    }
-                  }}
-                />
+                  {/*
 
-                <AlagehAutoComplete
-                  div={{ className: "col" }}
-                  label={{
-                    fieldName: "services_id"
-                  }}
-                  selector={{
-                    name: "services_id",
-                    className: "select-fld",
-                    value: this.state.services_id,
-                    dataSource: {
-                      // textField: "service_name",
-                      textField:
-                        this.state.selectedLang === "en"
-                          ? "service_name"
-                          : "arabic_service_name",
-                      valueField: "hims_d_services_id",
-                      data: this.props.billservices
-                    },
-                    onChange: null,
-                    others: {
-                      disabled: true
-                    }
-                  }}
-                />
-                {/* <AlagehFormGroup
+                  <AlagehAutoComplete
+                    div={{ className: "col" }}
+                    label={{
+                      fieldName: "service_type_id"
+                    }}
+                    selector={{
+                      name: "service_type_id",
+                      className: "select-fld",
+                      value: this.state.service_type_id,
+                      dataSource: {
+                        textField:
+                          this.state.selectedLang === "en"
+                            ? "service_type"
+                            : "arabic_service_type",
+                        valueField: "hims_d_service_type_id",
+                        data: this.props.servicetype
+                      },
+                      onChange: null,
+                      others: {
+                        disabled: true
+                      }
+                    }}
+                  />
+
+                  <AlagehAutoComplete
+                    div={{ className: "col" }}
+                    label={{
+                      fieldName: "services_id"
+                    }}
+                    selector={{
+                      name: "services_id",
+                      className: "select-fld",
+                      value: this.state.services_id,
+                      dataSource: {
+                        // textField: "service_name",
+                        textField:
+                          this.state.selectedLang === "en"
+                            ? "service_name"
+                            : "arabic_service_name",
+                        valueField: "hims_d_services_id",
+                        data: this.props.billservices
+                      },
+                      onChange: null,
+                      others: {
+                        disabled: true
+                      }
+                    }}
+                  />
+
+                  <AlagehFormGroup
                     div={{ className: "col" }}
                     label={{
                       fieldName: "tax_inclusive"
@@ -311,7 +309,8 @@ class DisplayOPBilling extends PureComponent {
                       }
                     }}
                   /> */}
-              </div>
+                </div>
+              ) : null}
               <hr />
               {/* Amount Details */}
               <div className="row">
@@ -377,9 +376,18 @@ class DisplayOPBilling extends PureComponent {
               {/* Insurance Details */}
               <div className="row">
                 <div className="col-4">
-               <b><u><AlgaehLabel label={{fieldName: "prim-insurance", returnText: true}}/></u></b>
-               
-               <div className="Paper">
+                  <b>
+                    <u>
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "prim-insurance",
+                          returnText: true
+                        }}
+                      />
+                    </u>
+                  </b>
+
+                  <div className="Paper">
                     <div className="row insurance-details">
                       <div className="col-6">
                         <AlgaehLabel
@@ -430,75 +438,93 @@ class DisplayOPBilling extends PureComponent {
                   </div>
                 </div>
 
-                  <div className="col-4" style={{borderLeft:"1px solid #ccc",borderRight:"1px solid #ccc"}}>
-                  <b><u><AlgaehLabel label={{ fieldName: "patient_lbl", returnText: true}}/></u></b>
+                <div
+                  className="col-4"
+                  style={{
+                    borderLeft: "1px solid #ccc",
+                    borderRight: "1px solid #ccc"
+                  }}
+                >
+                  <b>
+                    <u>
+                      <AlgaehLabel
+                        label={{ fieldName: "patient_lbl", returnText: true }}
+                      />
+                    </u>
+                  </b>
 
-                    <div className="Paper">
-                      <div className="row insurance-details">
-                        <div className="col-7">
-                          <AlgaehLabel
-                            label={{
-                              fieldName: "gross_amount"
-                            }}
-                          />
-                          <h6>{getAmountFormart(this.state.patient_resp)}</h6>
-                        </div>
+                  <div className="Paper">
+                    <div className="row insurance-details">
+                      <div className="col-7">
+                        <AlgaehLabel
+                          label={{
+                            fieldName: "gross_amount"
+                          }}
+                        />
+                        <h6>{getAmountFormart(this.state.patient_resp)}</h6>
+                      </div>
 
-                        <div className="col-5">
-                          <AlgaehLabel
-                            label={{
-                              fieldName: "tax_lbl"
-                            }}
-                          />
-                          <h6>{getAmountFormart(this.state.patient_tax)}</h6>
-                        </div>
+                      <div className="col-5">
+                        <AlgaehLabel
+                          label={{
+                            fieldName: "tax_lbl"
+                          }}
+                        />
+                        <h6>{getAmountFormart(this.state.patient_tax)}</h6>
+                      </div>
 
-                        <div className="col-12">
-                          <AlgaehLabel
-                            label={{
-                              fieldName: "payable_lbl"
-                            }}
-                          />
-                          <h6>{getAmountFormart(this.state.patient_payable)}</h6>
-                        </div>
+                      <div className="col-12">
+                        <AlgaehLabel
+                          label={{
+                            fieldName: "payable_lbl"
+                          }}
+                        />
+                        <h6>{getAmountFormart(this.state.patient_payable)}</h6>
                       </div>
                     </div>
                   </div>
-                  {/* <div className="col-lg-1"> &nbsp; </div> */}
+                </div>
+                {/* <div className="col-lg-1"> &nbsp; </div> */}
 
-                  <div className="col-4">
-                    <b><u><AlgaehLabel label={{ fieldName: "company_lbl", returnText: true }}/></u></b>
-                    <div className="Paper">
-                      <div className="row insurance-details">
-                        <div className="col-7">
-                          <AlgaehLabel
-                            label={{
-                              fieldName: "gross_amount"
-                            }}
-                          />
-                          <h6>{getAmountFormart(this.state.comapany_resp)}</h6>
-                        </div>
+                <div className="col-4">
+                  <b>
+                    <u>
+                      <AlgaehLabel
+                        label={{ fieldName: "company_lbl", returnText: true }}
+                      />
+                    </u>
+                  </b>
+                  <div className="Paper">
+                    <div className="row insurance-details">
+                      <div className="col-7">
+                        <AlgaehLabel
+                          label={{
+                            fieldName: "gross_amount"
+                          }}
+                        />
+                        <h6>{getAmountFormart(this.state.comapany_resp)}</h6>
+                      </div>
 
-                        <div className="col-5">
-                          <AlgaehLabel
-                            label={{
-                              fieldName: "tax_lbl"
-                            }}
-                          />
-                          <h6>{getAmountFormart(this.state.company_tax)}</h6>
-                        </div>
+                      <div className="col-5">
+                        <AlgaehLabel
+                          label={{
+                            fieldName: "tax_lbl"
+                          }}
+                        />
+                        <h6>{getAmountFormart(this.state.company_tax)}</h6>
+                      </div>
 
-                        <div className="col-12">
-                          <AlgaehLabel
-                            label={{
-                              fieldName: "payable_lbl"
-                            }}
-                          />
-                          <h6>{getAmountFormart(this.state.company_payble)}</h6>
-                        </div>
+                      <div className="col-12">
+                        <AlgaehLabel
+                          label={{
+                            fieldName: "payable_lbl"
+                          }}
+                        />
+                        <h6>{getAmountFormart(this.state.company_payble)}</h6>
                       </div>
                     </div>
                   </div>
+                </div>
               </div>
             </div>
             <div className="popupFooter">

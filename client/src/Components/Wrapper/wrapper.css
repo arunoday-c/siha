@@ -181,3 +181,16 @@
 .AutoCompleteRight .menu {
   right: 0 !important;
   left: auto !important; }
+
+.autoSearchClear {
+  position: absolute;
+  top: 25px;
+  right: 45px;
+  color: gray;
+  border-right: 1px solid #dededf;
+  padding-left: 5px;
+  padding-right: 5px;
+  background: #fff; }
+  .autoSearchClear:hover {
+    cursor: pointer;
+    color: #333333; }

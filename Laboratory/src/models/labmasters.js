@@ -19,7 +19,9 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "SELECT * FROM `hims_d_lab_section` WHERE `record_status`='A' " +
+            "SELECT `hims_d_lab_section_id`, `description` as SecDescription, `section_status`, `created_date`, \
+            `created_by`, `updated_date`, `updated_by`, `record_status`  FROM `hims_d_lab_section` \
+            WHERE `record_status`='A' " +
             _strAppend +
             "order by hims_d_lab_section_id desc",
           values: intValue,
@@ -154,7 +156,7 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "SELECT * FROM `hims_d_lab_container` WHERE `record_status`='A' " +
+            "SELECT *, description as ConDescription FROM `hims_d_lab_container` WHERE `record_status`='A' " +
             _strAppend +
             "order by hims_d_lab_container_id desc",
           values: intValue,
@@ -291,7 +293,7 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "SELECT * FROM `hims_d_lab_specimen` WHERE `record_status`='A' " +
+            "SELECT *, description as SpeDescription FROM `hims_d_lab_specimen` WHERE `record_status`='A' " +
             _strAppend +
             "order by hims_d_lab_specimen_id desc",
           values: intValue,
@@ -428,7 +430,7 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "SELECT * FROM `hims_d_lab_analytes` WHERE `record_status`='A' " +
+            "SELECT *, description as AnaDescription FROM `hims_d_lab_analytes` WHERE `record_status`='A' " +
             _strAppend +
             "order by hims_d_lab_analytes_id desc",
           values: intValue,

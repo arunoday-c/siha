@@ -1,101 +1,119 @@
 #subjectAccordian {
-  .accordion-btn {
-    color: #444;
-    cursor: inherit;
-    width: 90%;
-    padding: 7px;
-    text-align: left;
-    outline: none;
+	.accordion-btn {
+		color: #444;
+		cursor: inherit;
+		width: 90%;
+		padding: 7px;
+		text-align: left;
+		outline: none;
 
-    transition: 0.4s;
-    border: none;
-    border-bottom: 1px solid #efefef;
-  }
+		transition: 0.4s;
+		border: none;
+		border-bottom: 1px solid #efefef;
+	}
 
-  @media screen and (min-width: 481px) and (max-width: 1024px) and (orientation: landscape) {
-    .accordion-btn {
-      width: 85.2%;
-    }
-  }
+	@media screen and (min-width: 481px) and (max-width: 1024px) and (orientation: landscape) {
+		.accordion-btn {
+			width: 85.2%;
+		}
+	}
 
-  textarea {
-    border-radius: 0 !important;
-    border-color: #d3d3d3 !important;
-    border-width: 1px 0 !important;
-    background: #f9f9f9 !important;
-    height: 18.6vh;
-  }
-  .accordion-btn:after {
-    content: "\21E9";
-    color: #777;
-    font-weight: bold;
-    float: right;
-    margin-left: 5px;
-  }
+	textarea {
+		border-radius: 0 !important;
+		border-color: #d3d3d3 !important;
+		border-width: 1px 0 !important;
+		background: #f9f9f9 !important;
+		height: 18.6vh;
+	}
+	.accordion-btn:after {
+		content: "\21E9";
+		color: #777;
+		font-weight: bold;
+		float: right;
+		margin-left: 5px;
+	}
 
-  .accordion-btn:hover {
-    cursor: pointer;
-  }
+	.accordion-btn:hover {
+		cursor: pointer;
+	}
 
-  .active:after {
-    content: "\21E7";
-  }
+	.active:after {
+		content: "\21E7";
+	}
 
-  .panel {
-    width: 100%;
-    background-color: #efefef;
-    overflow: hidden;
-    max-height: 0;
-    transition: max-height 0.2s ease-out;
-    padding-left: 5px;
-    padding-right: 5px;
-  }
+	.panel {
+		width: 100%;
+		background-color: #efefef;
+		overflow: hidden;
+		max-height: 0;
+		transition: max-height 0.2s ease-out;
+		padding-left: 5px;
+		padding-right: 5px;
+	}
 
-
-
-  .actions {
-    display: inline-block;
-    margin-top: 0px;
-    margin-left: 4px;
-    border-bottom: 1px solid #efefef;
-    padding-top: 3px;
-    padding-right: 5px;
-    .btn.btn-circle {
-      width: 28px;
-      height: 28px;
-      padding: 3px 7px;
-      color: #fff;
-      text-align: center;
-      border: none;
-    }
-  }
+	.actions {
+		display: inline-block;
+		margin-top: 0px;
+		margin-left: 4px;
+		border-bottom: 1px solid #efefef;
+		padding-top: 3px;
+		padding-right: 5px;
+		.btn.btn-circle {
+			width: 28px;
+			height: 28px;
+			padding: 3px 7px;
+			color: #fff;
+			text-align: center;
+			border: none;
+		}
+	}
 }
 
 .textArea {
-  background: #f9f9f9 !important;
-  height: 30vh;
-  margin-top: 15px;
-  margin-bottom: 15px;
+	background: #f9f9f9 !important;
+	height: 30vh;
+	margin-top: 15px;
+	margin-bottom: 15px;
 }
 .historyH5 {
-  margin: 0;
-  padding: 5px;
-  background: #f9f9f9 !important;
-  color: #444;
+	margin: 0;
+	padding: 5px;
+	background: #f9f9f9 !important;
+	color: #444;
 }
 .customTable {
-  font-size: 0.8rem;
-  th {
-    background: #8c8c8c!important;
-    text-transform: uppercase;
-    min-width: auto !important;
-    color: #fff;
-    font-weight: normal;
-    &:first-child{
-      width: 75%;
-    }
-  }
-  td {
-    font-size: 0.9rem;
-  }
+	font-size: 0.8rem;
+	th {
+		background: #8c8c8c !important;
+		text-transform: uppercase;
+		min-width: auto !important;
+		color: #fff;
+		font-weight: normal;
+		&:first-child {
+			width: 75%;
+		}
+	}
+	td {
+		font-size: 0.9rem;
+	}
+}
+.noHistoryRecorded {
+	text-align: center;
+	i {
+		font-size: 12rem;
+		color: #e8e8e8;
+		margin-top: 7rem;
+	}
+	p {
+		margin: 20px 0 0;
+		font-size: 2rem;
+		color: #ccc;
+	}
+}
+.historySepration {
+	border-bottom: 1px dashed #e8e8e8;
+	margin-bottom: 5px;
+	.style_Label {
+		font-weight: bold !important;
+	}
 }

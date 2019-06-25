@@ -5,7 +5,6 @@ import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 
 const VisitSearch = ($this, e) => {
-  
   let input =
     $this.state.select_invoice === "CH"
       ? "pv.insured = 'N' and pv.invoice_generated='N'"
@@ -40,7 +39,6 @@ const VisitSearch = ($this, e) => {
                 patient_visit_id: $this.state.visit_id
               },
               onSuccess: response => {
-                
                 if (response.data.success) {
                   response.data.records[0].sub_insurance_id =
                     response.data.records[0].sub_insurance_provider_id;
@@ -75,6 +73,7 @@ const getVisitWiseBillDetailS = $this => {
 
   algaehApiCall({
     uri: "/invoiceGeneration/getVisitWiseBillDetailS",
+    module: "insurance",
     method: "GET",
     data: inputobj,
     onSuccess: response => {
@@ -186,6 +185,7 @@ const FinalizedAndInvoice = $this => {
   } else {
     algaehApiCall({
       uri: "/invoiceGeneration/addInvoiceGeneration",
+      module: "insurance",
       data: $this.state,
       onSuccess: response => {
         if (response.data.success === true) {
@@ -266,6 +266,7 @@ const getCtrlCode = ($this, docNumber) => {
   $this.props.getInvoiceGeneration({
     uri: "/invoiceGeneration/getInvoiceGeneration",
     method: "GET",
+    module: "insurance",
     // printInput: true,
     data: { invoice_number: docNumber },
     redux: {
@@ -285,6 +286,21 @@ const getCtrlCode = ($this, docNumber) => {
 
         data.creidt_invoice = false;
         data.cash_invoice = true;
+      }
+      if (data.insurance_provider_id !== null) {
+        $this.props.getPatientInsurance({
+          uri: "/patientRegistration/getPatientInsurance",
+          module: "frontDesk",
+          method: "GET",
+          data: {
+            patient_id: data.patient_id,
+            patient_visit_id: data.visit_id
+          },
+          redux: {
+            type: "EXIT_INSURANCE_GET_DATA",
+            mappingName: "existinsurance"
+          }
+        });
       }
       $this.setState(data);
       AlgaehLoader({ show: false });

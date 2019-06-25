@@ -407,7 +407,8 @@ function mapDispatchToProps(dispatch) {
     {
       getPatientInsurence: AlgaehActions,
       setSelectedInsurance: AlgaehActions,
-      getInsuranceCardClass: AlgaehActions
+      getInsuranceCardClass: AlgaehActions,
+      getPatientInsurance: AlgaehActions
     },
     dispatch
   );

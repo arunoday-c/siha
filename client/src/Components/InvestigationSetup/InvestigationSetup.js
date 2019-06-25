@@ -290,8 +290,8 @@ class InvestigationSetup extends Component {
                           <span>
                             {display !== null && display.length !== 0
                               ? this.state.selectedLang === "en"
-                                ? display[0].description
-                                : display[0].description
+                                ? display[0].SecDescription
+                                : display[0].SecDescription
                               : ""}
                           </span>
                         );
@@ -315,8 +315,8 @@ class InvestigationSetup extends Component {
                           <span>
                             {display !== null && display.length !== 0
                               ? this.state.selectedLang === "en"
-                                ? display[0].description
-                                : display[0].description
+                                ? display[0].SecDescription
+                                : display[0].SecDescription
                               : ""}
                           </span>
                         );

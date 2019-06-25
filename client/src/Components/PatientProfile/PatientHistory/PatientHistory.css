@@ -81,3 +81,20 @@
       width: 75%; }
   .customTable td {
     font-size: 0.9rem; }
+
+.noHistoryRecorded {
+  text-align: center; }
+  .noHistoryRecorded i {
+    font-size: 12rem;
+    color: #e8e8e8;
+    margin-top: 7rem; }
+  .noHistoryRecorded p {
+    margin: 20px 0 0;
+    font-size: 2rem;
+    color: #ccc; }
+
+.historySepration {
+  border-bottom: 1px dashed #e8e8e8;
+  margin-bottom: 5px; }
+  .historySepration .style_Label {
+    font-weight: bold !important; }

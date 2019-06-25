@@ -18,7 +18,8 @@ import {
   texthandle,
   datehandle,
   updateServices,
-  deleteServices
+  deleteServices,
+  numberhandle
 } from "./ApprovalDetailsEvents";
 
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
@@ -26,6 +27,7 @@ import "./../../../../styles/site.css";
 import "./ApprovalDetails.css";
 import MyContext from "../../../../utils/MyContext.js";
 import Options from "../../../../Options.json";
+import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 
 class PatientDetails extends PureComponent {
   constructor(props) {
@@ -95,7 +97,10 @@ class PatientDetails extends PureComponent {
                                 className: "txt-fld",
                                 name: "requested_quantity",
                                 events: {
-                                  onChange: texthandle.bind(this, this, row)
+                                  onChange: numberhandle.bind(this, this, row)
+                                },
+                                others: {
+                                  type: "number"
                                 }
                               }}
                             />
@@ -107,6 +112,24 @@ class PatientDetails extends PureComponent {
                         label: (
                           <AlgaehLabel label={{ fieldName: "gross_amount" }} />
                         ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {getAmountFormart(row.gross_amt, {
+                                appendSymbol: false
+                              })}
+                            </span>
+                          );
+                        },
+                        editorTemplate: row => {
+                          return (
+                            <span>
+                              {getAmountFormart(row.gross_amt, {
+                                appendSymbol: false
+                              })}
+                            </span>
+                          );
+                        },
                         disabled: true
                       },
                       {
@@ -114,6 +137,24 @@ class PatientDetails extends PureComponent {
                         label: (
                           <AlgaehLabel label={{ fieldName: "net_amount" }} />
                         ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {getAmountFormart(row.net_amount, {
+                                appendSymbol: false
+                              })}
+                            </span>
+                          );
+                        },
+                        editorTemplate: row => {
+                          return (
+                            <span>
+                              {getAmountFormart(row.net_amount, {
+                                appendSymbol: false
+                              })}
+                            </span>
+                          );
+                        },
                         disabled: true
                       },
                       {
@@ -154,17 +195,28 @@ class PatientDetails extends PureComponent {
                         label: (
                           <AlgaehLabel label={{ fieldName: "amount_app" }} />
                         ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {getAmountFormart(row.approved_amount, {
+                                appendSymbol: false
+                              })}
+                            </span>
+                          );
+                        },
                         editorTemplate: row => {
                           return (
                             <AlagehFormGroup
                               div={{}}
                               textBox={{
-                                decimal: { allowNegative: false },
                                 value: row.approved_amount,
                                 className: "txt-fld",
                                 name: "approved_amount",
                                 events: {
-                                  onChange: texthandle.bind(this, this, row)
+                                  onChange: numberhandle.bind(this, this, row)
+                                },
+                                others: {
+                                  type: "number"
                                 }
                               }}
                             />
@@ -205,8 +257,6 @@ class PatientDetails extends PureComponent {
                             <span>{this.changeDateFormat(row.apprv_date)}</span>
                           );
                         }
-
-                     
                       },
                       {
                         fieldName: "valid_upto",

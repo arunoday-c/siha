@@ -28,7 +28,7 @@ import {
   getPatientDiet,
   getPatientDiagnosis,
   // getPatientAllergies,
-  getPatientHistory,
+  //getPatientHistory,
   printPrescription
 } from "./PatientProfileHandlers";
 // import AlgaehReport from "../Wrapper/printReports";
@@ -91,7 +91,7 @@ class PatientProfile extends Component {
     // });
     getPatientDiet(this);
     getPatientDiagnosis(this);
-    getPatientHistory(this);
+    //getPatientHistory(this);
     this.getLocation();
     this.changeTabs = this.changeTabs.bind(this);
   }
@@ -1136,8 +1136,8 @@ function mapDispatchToProps(dispatch) {
       getPatientVitals: AlgaehActions,
       getPatientDiet: AlgaehActions,
       getPatientDiagnosis: AlgaehActions,
-      getLocation: AlgaehActions,
-      getPatientHistory: AlgaehActions
+      getLocation: AlgaehActions
+      //getPatientHistory: AlgaehActions
     },
     dispatch
   );

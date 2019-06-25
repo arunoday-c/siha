@@ -130,7 +130,7 @@ class LabInvestigation extends Component {
                     className: "select-fld",
                     value: this.state.lab_section_id,
                     dataSource: {
-                      textField: "description",
+                      textField: "SecDescription",
                       valueField: "hims_d_lab_section_id",
                       data: this.props.labsection
                     },
@@ -148,7 +148,7 @@ class LabInvestigation extends Component {
                     className: "select-fld",
                     value: this.state.specimen_id,
                     dataSource: {
-                      textField: "description",
+                      textField: "SpeDescription",
                       valueField: "hims_d_lab_specimen_id",
                       data: this.props.labspecimen
                     },
@@ -168,7 +168,7 @@ class LabInvestigation extends Component {
                     className: "select-fld",
                     value: this.state.container_id,
                     dataSource: {
-                      textField: "description",
+                      textField: "ConDescription",
                       valueField: "hims_d_lab_container_id",
                       data: this.props.labcontainer
                     },
@@ -290,7 +290,7 @@ class LabInvestigation extends Component {
                       className: "select-fld",
                       value: this.state.analyte_id,
                       dataSource: {
-                        textField: "description",
+                        textField: "AnaDescription",
                         valueField: "hims_d_lab_analytes_id",
                         data: this.props.labanalytes
                       },

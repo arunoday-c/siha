@@ -42,7 +42,6 @@ class ValidateBills extends PureComponent {
         visit_id: this.state.invoices.visit_id
       },
       onSuccess: response => {
-        
         if (response.data.success) {
           that.setState({ openUCAF: true, UCAFData: response.data.records });
         }
@@ -109,6 +108,7 @@ class ValidateBills extends PureComponent {
         hims_f_invoice_header_id: this.state.invoices.hims_f_invoice_header_id,
         claim_validated: "V"
       },
+      module: "insurance",
       method: "PUT",
       onSuccess: res => {
         if (res.data.success) {
@@ -288,6 +288,7 @@ class ValidateBills extends PureComponent {
             diagnosis_type: "P",
             final_daignosis: "Y"
           },
+          module: "insurance",
           method: "POST",
           onSuccess: res => {
             if (res.data.success) {
@@ -334,6 +335,7 @@ class ValidateBills extends PureComponent {
           data: {
             hims_f_invoice_icd_id: data.hims_f_invoice_icd_id
           },
+          module: "insurance",
           method: "DELETE",
           onSuccess: response => {
             if (response.data.success) {
@@ -407,11 +409,11 @@ class ValidateBills extends PureComponent {
 
     algaehApiCall({
       uri: "/invoiceGeneration/getPatientIcdForInvoice",
+      module: "insurance",
       data: { invoice_header_id: id },
       method: "GET",
       onSuccess: res => {
         if (res.data.success) {
-          
           this.setState({
             icds: res.data.records
           });
@@ -479,6 +481,7 @@ class ValidateBills extends PureComponent {
         hims_f_invoice_details_id: data.hims_f_invoice_details_id,
         cpt_code: data.cpt_code
       },
+      module: "insurance",
       method: "PUT",
       onSuccess: res => {
         if (res.data.success) {
@@ -505,7 +508,6 @@ class ValidateBills extends PureComponent {
   }
 
   render() {
-    
     let invoices =
       this.state.invoices !== undefined ? [this.state.invoices] : [];
     let invoice_details =
@@ -1091,7 +1093,7 @@ class ValidateBills extends PureComponent {
             onClick={this.generateReport.bind(
               this,
               "pharmacyCreditInvoice",
-              "Pharmacy Credit Invoice"              
+              "Pharmacy Credit Invoice"
             )}
           >
             POS Credit Invoice

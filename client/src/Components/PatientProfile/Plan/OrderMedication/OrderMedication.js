@@ -208,12 +208,19 @@ class OrderMedication extends Component {
       frequencyType !== undefined &&
       consume !== undefined
     ) {
-      return `Use ${this.state.dosage} Unit(s),${frequency.name} Time(s) ${
-        frequencyType.name
-      } '${consume.name}' for ${this.state.no_of_days} day(s)`;
-    } else {
-      return "";
+      this.setState({
+        instructions: `Use ${this.state.dosage} Unit(s),${
+          frequency.name
+        } Time(s) ${frequencyType.name} '${consume.name}' for ${
+          this.state.no_of_days
+        } day(s)`
+      });
     }
+  }
+  onInstructionsTextHandler(e) {
+    this.setState({
+      instructions: e.currentTarget.value
+    });
   }
   render() {
     return (
@@ -221,46 +228,10 @@ class OrderMedication extends Component {
         <div className="popupInner">
           <div className="popRightDiv">
             <div className="row paddin-bottom-5" style={{ marginTop: 5 }}>
-              {/*/ <AlagehAutoComplete
-              //   div={{ className: "col-3" }}
-              //   label={{ forceLabel: "Generic Name" }}
-              //   selector={{
-              //     name: "generic_id",
-              //     className: "select-fld",
-              //     value: this.state.generic_id,
-              //     dataSource: {
-              //       textField: "generic_name",
-              //       valueField: "hims_d_item_generic_id",
-              //       data: this.props.genericlist
-              //     },
-              //     onChange: genericnamehandle.bind(this, this),
-              //     autoComplete: "off"
-              //   }}
-              // >*/}
-              <AlgaehAutoSearch
-                div={{ className: "col-3" }}
-                label={{ forceLabel: "Generic Name" }}
-                title="Search Gereric Item"
-                name="generic_name"
-                columns={[{ fieldName: "generic_name" }]}
-                displayField="generic_name"
-                value={this.state.generic_name}
-                searchName="ItemGenericNames"
-                template={({ generic_name, item_generic_status }) => {
-                  return (
-                    <div className="col-12 padd-10">
-                      <h6>{_.startCase(_.toLower(generic_name))}</h6>
-                      <small>
-                        {item_generic_status === "A" ? "Active" : "Inactive"}
-                      </small>
-                    </div>
-                  );
-                }}
-                onClear={this.clearGenericCodeHandler.bind(this)}
-                onClick={this.onGenericItemSelectedHandler.bind(this)}
-              />
-              <AlgaehAutoSearch
-                div={{ className: "col-3" }}
+              <div className="col-8">
+                <div className="row">
+                  <AlgaehAutoSearch
+                div={{ className: "col-12" }}
                 label={{ forceLabel: "Item Name" }}
                 title="Search Item"
                 name="item_description"
@@ -297,27 +268,8 @@ class OrderMedication extends Component {
                 }}
                 onClear={this.clearItemCodeHandler.bind(this)}
                 onClick={this.itemChangeHandle.bind(this)}
-              />
-              {/* <AlagehAutoComplete
-                 div={{ className: "col-3" }}
-                 label={{ forceLabel: "Item Name" }}
-               selector={{
-                   name: "item_id",
-                 className: "select-fld",
-                 value: this.state.item_id,
-                dataSource: {
-                   textField: "item_description",
-                    valueField: "hims_d_item_master_id",
-                  data: this.state.itemlist
-                  },
-                   onChange: itemhandle.bind(this, this),
-                   onClear: itemhandle.bind(this, this),
-                  autoComplete: "off"
-               }}
-             />*/}
-
-              <AlagehAutoComplete
-                div={{ className: "col" }}
+              />  <AlagehAutoComplete
+                div={{ className: "col-4" }}
                 label={{ forceLabel: "Frequency" }}
                 selector={{
                   name: "frequency",
@@ -333,7 +285,7 @@ class OrderMedication extends Component {
                 }}
               />
               <AlagehAutoComplete
-                div={{ className: "col" }}
+                div={{ className: "col-4" }}
                 label={{ forceLabel: "Freq. Type" }}
                 selector={{
                   name: "frequency_type",
@@ -349,7 +301,7 @@ class OrderMedication extends Component {
                 }}
               />
               <AlagehAutoComplete
-                div={{ className: "col" }}
+                div={{ className: "col-4" }}
                 label={{ forceLabel: "Consume" }}
                 selector={{
                   name: "frequency_time",
@@ -363,11 +315,8 @@ class OrderMedication extends Component {
                   onChange: texthandle.bind(this, this),
                   autoComplete: "off"
                 }}
-              />
-            </div>
-            <div className="row paddin-bottom-5">
-              <AlagehFormGroup
-                div={{ className: "col" }}
+              />   <AlagehFormGroup
+                div={{ className: "col-4" }}
                 label={{
                   forceLabel: "Dosage"
                 }}
@@ -389,7 +338,7 @@ class OrderMedication extends Component {
               />
 
               <AlagehFormGroup
-                div={{ className: "col" }}
+                div={{ className: "col-4" }}
                 label={{
                   forceLabel: "Duration (Days)"
                 }}
@@ -410,7 +359,7 @@ class OrderMedication extends Component {
               />
 
               <AlgaehDateHandler
-                div={{ className: "col" }}
+                div={{ className: "col-4" }}
                 label={{ forceLabel: "Start Date" }}
                 textBox={{ className: "txt-fld", name: "start_date" }}
                 minDate={new Date()}
@@ -419,16 +368,95 @@ class OrderMedication extends Component {
                 }}
                 value={this.state.start_date}
               />
-              <div class="col-4 form-group">
+                </div>
+            </div>
+ <div className="col-4">
+                <div className="row">
+                  <div className="col-12">
                 <label className="style_Label ">Instruction</label>
                 <textarea
                   name="instructions"
                   className="txt-fld"
-                  rows="3"
-                  onChange={texthandle.bind(this, this)}
-                  value={this.instructionItems()}
+                  rows="4"
+                  onChange={this.onInstructionsTextHandler.bind(this)}
+                  value={this.state.instructions}
                 />
+                  </div>  <div className="col-12" style={{ paddingTop: 9, textAlign: "right" }}>
+                    <span style={{textAlign:"left"}}>Pharmacy Stock: <b>{this.state.total_quantity}</b></span>
+                <button
+                  className="btn btn-primary btn-sm"
+                  type="button"
+                  onClick={AddItems.bind(this, this)}
+                  disabled={this.state.addItemEnable}
+                >
+                  Add Item
+                </button>
               </div>
+                </div>
+            </div>
+
+              {/*/ <AlagehAutoComplete
+              //   div={{ className: "col-3" }}
+              //   label={{ forceLabel: "Generic Name" }}
+              //   selector={{
+              //     name: "generic_id",
+              //     className: "select-fld",
+              //     value: this.state.generic_id,
+              //     dataSource: {
+              //       textField: "generic_name",
+              //       valueField: "hims_d_item_generic_id",
+              //       data: this.props.genericlist
+              //     },
+              //     onChange: genericnamehandle.bind(this, this),
+              //     autoComplete: "off"
+              //   }}
+              // >*/}
+              {/* <AlgaehAutoSearch
+                div={{ className: "col-3" }}
+                label={{ forceLabel: "Generic Name" }}
+                title="Search Gereric Item"
+                name="generic_name"
+                columns={[{ fieldName: "generic_name" }]}
+                displayField="generic_name"
+                value={this.state.generic_name}
+                searchName="ItemGenericNames"
+                template={({ generic_name, item_generic_status }) => {
+                  return (
+                    <div className="col-12 padd-10">
+                      <h6>{_.startCase(_.toLower(generic_name))}</h6>
+                      <small>
+                        {item_generic_status === "A" ? "Active" : "Inactive"}
+                      </small>
+                    </div>
+                  );
+                }}
+                onClear={this.clearGenericCodeHandler.bind(this)}
+                onClick={this.onGenericItemSelectedHandler.bind(this)}
+              /> */}
+             
+              {/* <AlagehAutoComplete
+                 div={{ className: "col-3" }}
+                 label={{ forceLabel: "Item Name" }}
+               selector={{
+                   name: "item_id",
+                 className: "select-fld",
+                 value: this.state.item_id,
+                dataSource: {
+                   textField: "item_description",
+                    valueField: "hims_d_item_master_id",
+                  data: this.state.itemlist
+                  },
+                   onChange: itemhandle.bind(this, this),
+                   onClear: itemhandle.bind(this, this),
+                  autoComplete: "off"
+               }}
+             />*/}
+
+            
+            </div>
+            <div className="row paddin-bottom-5">
+           
+            
               {/*<AlagehFormGroup
                 div={{ className: "col-4 form-group" }}
                 label={{
@@ -448,16 +476,7 @@ class OrderMedication extends Component {
                 }}
               />*/}
 
-              <div className="col" style={{ paddingTop: 21, paddingLeft: 0 }}>
-                <button
-                  className="btn btn-default btn-sm"
-                  type="button"
-                  onClick={AddItems.bind(this, this)}
-                  disabled={this.state.addItemEnable}
-                >
-                  Add Item
-                </button>
-              </div>
+            
             </div>
             <div className="row">
               <div className="col-lg-12" style={{ marginTop: 10 }}>
@@ -757,11 +776,6 @@ class OrderMedication extends Component {
                     onDone: updateItems.bind(this, this)
                   }}
                 />
-              </div>
-            </div>
-            <div className="row" style={{ marginTop: 5, marginBottom: 5 }}>
-              <div className="col">
-                <p>Pharmacy Stock: {this.state.total_quantity}</p>
               </div>
             </div>
           </div>

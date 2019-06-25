@@ -825,7 +825,7 @@ class BasicSubjective extends Component {
                     <div className="activeMedication">
                       {recentMediction.map((item, index) => (
                         <div key={index} className="activeMedDateList">
-                          <div className="medcineDate"><span>{item.month}</span><h3>{item.day}</h3></div>
+                          <div className="medcineDate"><span>{item.month}</span><h3>{item.day}</h3><span>Year</span></div>
                           <div className="medcineList">
                              <ul>
                               {item.details.map((medicine, indexD) => (
@@ -838,6 +838,7 @@ class BasicSubjective extends Component {
                               ))}
                             </ul>
                           </div>
+                          <div className="printOnHover"><span>Print Prescription</span></div>
                         </div>
                       ))}
                     </div>

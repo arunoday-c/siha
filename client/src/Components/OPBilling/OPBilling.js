@@ -17,7 +17,8 @@ import {
   ClearData,
   Validations,
   getCashiersAndShiftMAP,
-  generateReceipt
+  generateReceipt,
+  selectVisit
 } from "./OPBillingEvents";
 import { AlgaehActions } from "../../actions/algaehActions";
 import { successfulMessage } from "../../utils/GlobalFunctions";
@@ -87,6 +88,16 @@ class OPBilling extends Component {
         }
       });
     }
+
+    this.props.getDepartmentsandDoctors({
+      uri: "/department/get/get_All_Doctors_DepartmentWise",
+      module: "masterSettings",
+      method: "GET",
+      redux: {
+        type: "DEPT_DOCTOR_GET_DATA",
+        mappingName: "deptanddoctors"
+      }
+    });
 
     let _screenName = getCookie("ScreenName").replace("/", "");
     algaehApiCall({
@@ -196,6 +207,8 @@ class OPBilling extends Component {
                 w.visit_status === "O"
             )
             .toArray();
+          debugger;
+          let last_visitDetails = visitDetails[0];
 
           data.patientRegistration.visitDetails = visitDetails;
           data.patientRegistration.patient_id =
@@ -215,10 +228,41 @@ class OPBilling extends Component {
           data.patientRegistration.secondary_policy_number = null;
           data.patientRegistration.card_number = null;
           data.patientRegistration.secondary_effective_end_date = null;
+          data.patientRegistration.visit_id =
+            last_visitDetails.hims_f_patient_visit_id;
+          data.patientRegistration.incharge_or_provider =
+            last_visitDetails.doctor_id;
 
-          this.setState(data.patientRegistration);
+          data.patientRegistration.insured = last_visitDetails.insured;
+          data.patientRegistration.insurance_yesno = last_visitDetails.insured;
+          data.patientRegistration.sec_insured = last_visitDetails.sec_insured;
+
+          let employee_list = Enumerable.from(
+            $this.props.deptanddoctors.doctors
+          )
+            .where(w => w.employee_id === last_visitDetails.doctor_id)
+            .toArray();
+
+          if (employee_list !== null && employee_list.length > 0) {
+            data.patientRegistration.doctor_name = employee_list[0].full_name;
+          }
+
+          if (last_visitDetails.insured === "Y") {
+            data.patientRegistration.mode_of_pay = "Insurance";
+            data.patientRegistration.applydiscount = true;
+          } else {
+            data.patientRegistration.mode_of_pay = "Self";
+            data.patientRegistration.applydiscount = false;
+          }
+
+          debugger;
+          this.setState(data.patientRegistration, () => {
+            selectVisit($this);
+          });
+
+          // visit_id
         }
-        AlgaehLoader({ show: false });
+        // AlgaehLoader({ show: false });
       },
       onFailure: error => {
         AlgaehLoader({ show: false });
@@ -562,7 +606,8 @@ function mapStateToProps(state) {
     patients: state.patients,
     existinsurance: state.existinsurance,
     patienttype: state.patienttype,
-    networkandplans: state.networkandplans
+    networkandplans: state.networkandplans,
+    deptanddoctors: state.deptanddoctors
   };
 }
 
@@ -573,7 +618,8 @@ function mapDispatchToProps(dispatch) {
       getBIllDetails: AlgaehActions,
       getPatientType: AlgaehActions,
       getPatientInsurance: AlgaehActions,
-      getNetworkPlans: AlgaehActions
+      getNetworkPlans: AlgaehActions,
+      getDepartmentsandDoctors: AlgaehActions
     },
     dispatch
   );

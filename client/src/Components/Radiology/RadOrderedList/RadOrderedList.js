@@ -53,7 +53,8 @@ class RadOrderedList extends Component {
   }
 
   componentDidMount() {
-    this.props.getTestCategory({
+    {
+      /*this.props.getTestCategory({
       uri: "/labmasters/selectTestCategory",
       module: "laboratory",
       method: "GET",
@@ -61,7 +62,8 @@ class RadOrderedList extends Component {
         type: "TESTCATEGORY_GET_DATA",
         mappingName: "testcategory"
       }
-    });
+    });*/
+    }
     getRadTestList(this, this);
   }
   changeDateFormat = date => {
@@ -180,7 +182,7 @@ class RadOrderedList extends Component {
                   }}
                 />
 
-                <AlagehAutoComplete
+                {/*  <AlagehAutoComplete
                   div={{ className: "col" }}
                   label={{
                     fieldName: "category_id"
@@ -196,7 +198,7 @@ class RadOrderedList extends Component {
                     },
                     onChange: texthandle.bind(this, this)
                   }}
-                />
+                />*/}
 
                 <div className="col" style={{ paddingTop: "21px" }}>
                   <button

@@ -7,7 +7,9 @@
   margin: 0 -5px; }
   .activeMedication .activeMedDateList {
     border-bottom: 1px solid #ccc;
-    margin-bottom: 3px; }
+    margin-bottom: 3px;
+    position: relative;
+    overflow: hidden; }
     .activeMedication .activeMedDateList .medcineDate {
       background: #ccc;
       width: 30px;
@@ -24,6 +26,11 @@
         text-transform: uppercase;
         font-weight: bold;
         text-shadow: 1px solid rgba(0, 0, 0, 0.5); }
+        .activeMedication .activeMedDateList .medcineDate span:last-child {
+          background: #bdbdbd;
+          font-size: 9px;
+          color: #000;
+          font-weight: normal; }
       .activeMedication .activeMedDateList .medcineDate h3 {
         font-size: 18px;
         margin: 0;
@@ -48,3 +55,16 @@
             display: inline-block; }
           .activeMedication .activeMedDateList .medcineList ul li:last-child {
             border-bottom: none; }
+    .activeMedication .activeMedDateList .printOnHover {
+      position: absolute;
+      text-align: center;
+      width: 100%;
+      bottom: 0;
+      background: #00a796;
+      padding: 5px;
+      color: #fff;
+      display: none; }
+    .activeMedication .activeMedDateList:hover .printOnHover {
+      display: block;
+      cursor: pointer;
+      background: #009182; }

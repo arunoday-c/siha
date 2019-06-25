@@ -121,6 +121,7 @@ class ClaimSubmission extends Component {
   loadInvoiceDetails(row) {
     algaehApiCall({
       uri: "/invoiceGeneration/getPatientIcdForInvoice",
+      module: "insurance",
       data: {
         invoice_header_id: row.hims_f_invoice_header_id
       },
@@ -272,7 +273,7 @@ class ClaimSubmission extends Component {
 
             <div className="row margin-top-15">
               <div className="col-lg-8">
-                {/*             
+                {/*
               <div className="row">
                 <AlagehAutoComplete
                   div={{ className: "col-lg-4" }}

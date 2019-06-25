@@ -11,8 +11,6 @@ const texthandle = ($this, e) => {
 };
 
 const UpdateLabOrder = ($this, value, status) => {
-  
-
   algaehApiCall({
     uri: "/laboratory/updateLabResultEntry",
     module: "laboratory",
@@ -20,10 +18,17 @@ const UpdateLabOrder = ($this, value, status) => {
     method: "PUT",
     onSuccess: response => {
       if (response.data.success === true) {
-        swalMessage({
-          type: "success",
-          title: "Done successfully . ."
-        });
+        if (status === "N") {
+          swalMessage({
+            type: "success",
+            title: "Re-Run Started, Investigation is in Progress . ."
+          });
+        } else {
+          swalMessage({
+            type: "success",
+            title: "Done successfully . ."
+          });
+        }
 
         for (let k = 0; k < value.length; k++) {
           if (value[k].run_type !== null && value[k].run_type !== undefined) {
@@ -54,14 +59,15 @@ const UpdateLabOrder = ($this, value, status) => {
 
 const onvalidate = $this => {
   let test_analytes = $this.state.test_analytes;
-  let success = true;
+
   for (let k = 0; k < test_analytes.length; k++) {
     if (test_analytes[k].confirm === "N") {
       swalMessage({
         type: "warning",
-        title: "Please confirm the result"
+        title: "Please confirm result for all the Analytes"
       });
-      success = false;
+
+      return;
     } else {
       test_analytes[k].status = "V";
       test_analytes[k].validate = "Y";
@@ -69,22 +75,21 @@ const onvalidate = $this => {
     }
     test_analytes[k].comments = $this.state.comments;
   }
-  if (success === true) {
-    swal({
-      title: "Are you sure want to Validate?",
-      type: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes!",
-      confirmButtonColor: "#44b8bd",
-      cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willProceed => {
-      if (willProceed.value) {
-        test_analytes.push({ run_type: $this.state.run_type });
-        UpdateLabOrder($this, test_analytes, "V");
-      }
-    });
-  }
+
+  swal({
+    title: "Are you sure want to Validate?",
+    type: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes!",
+    confirmButtonColor: "#44b8bd",
+    cancelButtonColor: "#d33",
+    cancelButtonText: "No"
+  }).then(willProceed => {
+    if (willProceed.value) {
+      test_analytes.push({ run_type: $this.state.run_type });
+      UpdateLabOrder($this, test_analytes, "V");
+    }
+  });
 };
 
 const getAnalytes = $this => {
@@ -217,7 +222,7 @@ const resultEntryUpdate = $this => {
     if (enterResult === false) {
       swalMessage({
         type: "warning",
-        title: "Please enter input."
+        title: "Please enter result for all the Analytes."
       });
     } else if (enterRemarks === false) {
       swalMessage({
@@ -230,15 +235,15 @@ const resultEntryUpdate = $this => {
 
 const onconfirm = $this => {
   let test_analytes = $this.state.test_analytes;
-  let success = true;
+
+  debugger;
   for (let k = 0; k < test_analytes.length; k++) {
-    if (test_analytes[k].result === null) {
+    if (test_analytes[k].result === null || test_analytes[k].result === "") {
       swalMessage({
         type: "warning",
-        title: "Please enter the result."
+        title: "Please enter result for all the Analytes."
       });
-
-      success = false;
+      return;
     } else {
       test_analytes[k].status = "C";
       test_analytes[k].confirm = "Y";
@@ -246,22 +251,21 @@ const onconfirm = $this => {
     }
     test_analytes[k].comments = $this.state.comments;
   }
-  if (success === true) {
-    swal({
-      title: "Are you sure want to Confirm?",
-      type: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes!",
-      confirmButtonColor: "#44b8bd",
-      cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willProceed => {
-      if (willProceed.value) {
-        test_analytes.push({ run_type: $this.state.run_type });
-        UpdateLabOrder($this, test_analytes, "CF");
-      }
-    });
-  }
+
+  swal({
+    title: "Are you sure want to Confirm?",
+    type: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes!",
+    confirmButtonColor: "#44b8bd",
+    cancelButtonColor: "#d33",
+    cancelButtonText: "No"
+  }).then(willProceed => {
+    if (willProceed.value) {
+      test_analytes.push({ run_type: $this.state.run_type });
+      UpdateLabOrder($this, test_analytes, "CF");
+    }
+  });
 };
 
 const onReRun = $this => {
@@ -330,7 +334,7 @@ const onchangegridresult = ($this, row, e) => {
     if (
       test_analytes[l].hims_f_ord_analytes_id === row.hims_f_ord_analytes_id
     ) {
-      row["critical_type"] = checkRange(row)
+      row["critical_type"] = checkRange(row);
       test_analytes[l] = row;
     }
   }
@@ -338,29 +342,29 @@ const onchangegridresult = ($this, row, e) => {
 };
 
 function checkRange(row) {
-  let {result, critical_low, critical_high, normal_low, normal_high} = row;
+  let { result, critical_low, critical_high, normal_low, normal_high } = row;
 
-  result = parseFloat(result)
-  critical_low = parseFloat(critical_low)
-  normal_low = parseFloat(normal_low)
-  normal_high = parseFloat(normal_high)
-  critical_high = parseFloat(critical_high)
-  
-  console.log(result)
+  result = parseFloat(result);
+  critical_low = parseFloat(critical_low);
+  normal_low = parseFloat(normal_low);
+  normal_high = parseFloat(normal_high);
+  critical_high = parseFloat(critical_high);
+
+  console.log(result);
 
   if (!result) {
-    return null
-  } else if(result <= critical_low) {
-      return "CL"
+    return null;
+  } else if (result <= critical_low) {
+    return "CL";
   } else if (result < normal_low) {
-      return "L"
+    return "L";
   } else if (result < normal_high) {
-      return "N"
-  } else if (result < critical_high){
-      return "H"
+    return "N";
+  } else if (result < critical_high) {
+    return "H";
   } else {
-      return "CH"
-      console.log(result)
+    return "CH";
+    console.log(result);
   }
 }
 

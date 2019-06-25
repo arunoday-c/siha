@@ -44,19 +44,21 @@ export default class OPBillingDetails extends Component {
                 />
               }
             </li>
-            <li
-              algaehtabs={"PrimaryInsurance"}
-              className={"nav-item tab-button"}
-              onClick={this.openTab.bind(this)}
-            >
-              {
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Insurance Details"
-                  }}
-                />
-              }
-            </li>
+            {this.props.BillingIOputs.insured === "Y" ? (
+              <li
+                algaehtabs={"PrimaryInsurance"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Insurance Details"
+                    }}
+                  />
+                }
+              </li>
+            ) : null}
           </ul>
         </div>
 

@@ -167,6 +167,21 @@ const getBillDetails = $this => {
         data.mode_of_pay = data.insured === "Y" ? "Insured" : "Self";
         data.saveEnable = false;
         $this.setState(data);
+        if (data.insured === "Y") {
+          $this.props.getPatientInsurance({
+            uri: "/patientRegistration/getPatientInsurance",
+            module: "frontDesk",
+            method: "GET",
+            data: {
+              patient_id: $this.state.hims_d_patient_id,
+              patient_visit_id: $this.state.visit_id
+            },
+            redux: {
+              type: "EXIT_INSURANCE_GET_DATA",
+              mappingName: "existinsurance"
+            }
+          });
+        }
         AlgaehLoader({ show: false });
       }
     },

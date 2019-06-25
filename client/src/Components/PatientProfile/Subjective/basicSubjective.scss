@@ -8,6 +8,8 @@
 	.activeMedDateList {
 		border-bottom: 1px solid #ccc;
 		margin-bottom: 3px;
+		position: relative;
+		overflow: hidden;
 		.medcineDate {
 			background: #ccc;
 			width: 30px;
@@ -24,6 +26,12 @@
 				text-transform: uppercase;
 				font-weight: bold;
 				text-shadow: 1px solid rgba(0, 0, 0, 0.5);
+				&:last-child {
+					background: #bdbdbd;
+					font-size: 9px;
+					color: #000;
+					font-weight: normal;
+				}
 			}
 			h3 {
 				font-size: 18px;
@@ -55,6 +63,23 @@
 						border-bottom: none;
 					}
 				}
+			}
+		}
+		.printOnHover {
+			position: absolute;
+			text-align: center;
+			width: 100%;
+			bottom: 0;
+			background: #00a796;
+			padding: 5px;
+			color: #fff;
+			display: none;
+		}
+		&:hover {
+			.printOnHover {
+				display: block;
+				cursor: pointer;
+				background: #009182;
 			}
 		}
 	}
