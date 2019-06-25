@@ -130,7 +130,7 @@ let algaehSearchConfig = (searchName, req) => {
         searchName: "TransferEntry",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS PH.*, FPL.location_description as from_location, \
-          TPL.location_description as to_location \
+          TPL.location_description as to_location, date(PH.transfer_date) as transferdate \
           from hims_f_pharmacy_transfer_header PH, hims_d_pharmacy_location FPL, hims_d_pharmacy_location TPL \
           where FPL.hims_d_pharmacy_location_id = PH.from_location_id and  \
           PH.to_location_id = TPL.hims_d_pharmacy_location_id ",
@@ -181,7 +181,7 @@ let algaehSearchConfig = (searchName, req) => {
         searchName: "InvTransferEntry",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS TH.*, FPL.location_description as from_location,   \
-          TPL.location_description as to_location from hims_f_inventory_transfer_header TH, \
+          TPL.location_description as to_location,date(TH.transfer_date) as transferdate from hims_f_inventory_transfer_header TH, \
           hims_d_inventory_location FPL, hims_d_inventory_location TPL          \
           where FPL.hims_d_inventory_location_id = TH.from_location_id and           \
           TH.to_location_id = TPL.hims_d_inventory_location_id and  TH.hospital_id=" +
@@ -513,21 +513,22 @@ let algaehSearchConfig = (searchName, req) => {
         searchQuery:
           "select SQL_CALC_FOUND_ROWS hims_d_inventory_item_master_id, item_description, \
             service_id as services_id,'N' as covered,'N' as pre_approval,IL.batchno,\
-            IL.expirydt,IL.barcode,IL.qtyhand,IL.sales_uom,category_id,group_id,IL.grnno,IL.sale_price \
+            IL.expirydt,IL.barcode,IL.qtyhand,IL.sales_uom,category_id,group_id,IL.grnno,IL.sale_price,\
+            IL.inventory_location_id \
             from hims_d_inventory_item_master I, hims_m_inventory_item_location IL \
             where service_id not in (SELECT services_id FROM hims_d_services_insurance where \
             insurance_id=? and {mapper}) and \
-            I.hims_d_inventory_item_master_id = IL.item_id and {mapper} and IL.inventory_location_id=?\
+            I.hims_d_inventory_item_master_id = IL.item_id and {mapper}\
             union \
             SELECT IM.hims_d_inventory_item_master_id,service_name as item_description,\
             services_id,covered,\
             pre_approval, ITL.batchno, ITL.expirydt,ITL.barcode, ITL.qtyhand,ITL.sales_uom,\
-            category_id,group_id,ITL.grnno, ITL.sale_price FROM \
+            category_id,group_id,ITL.grnno, ITL.sale_price,ITL.inventory_location_id FROM \
             hims_d_services_insurance INS, hims_d_inventory_item_master IM, hims_m_inventory_item_location \
             ITL where INS.services_id = IM.service_id and IM.hims_d_inventory_item_master_id = ITL.item_id and \
             insurance_id=? and {mapper} and service_type_id=4",
         orderBy: "services_id desc",
-        inputSequence: ["insurance_id", "inventory_location_id", "insurance_id"]
+        inputSequence: ["insurance_id", "insurance_id"]
       },
       {
         searchName: "pharmacyUsers",

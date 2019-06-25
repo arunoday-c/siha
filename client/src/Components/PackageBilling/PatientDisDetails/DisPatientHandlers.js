@@ -29,10 +29,6 @@ const selectVisit = ($this, context, e) => {
 
   let mode_of_pay = "Self";
   let applydiscount = false;
-  // let x = Enumerable.from($this.state.visitDetails)
-  //   .where(w => w.radioselect === 1)
-  //   .toArray();
-  // var index;
 
   let doctor_name = "";
 
@@ -43,14 +39,6 @@ const selectVisit = ($this, context, e) => {
     doctor_name = employee_list[0].full_name;
   }
 
-  // if (x !== null && x.length > 0) {
-  //   index = $this.state.visitDetails.indexOf(x[0]);
-  //   if (index > -1) {
-  //     $this.state.visitDetails[index]["radioselect"] = 0;
-  //   }
-  // }
-  // index = $this.state.visitDetails.indexOf(row);
-  // $this.state.visitDetails[index]["radioselect"] = 1;
   if (e.selected.insured === "Y") {
     mode_of_pay = "Insurance";
     applydiscount = true;
@@ -61,6 +49,7 @@ const selectVisit = ($this, context, e) => {
       incharge_or_provider: e.selected.doctor_id,
       visit_id: e.selected.hims_f_patient_visit_id,
       insured: e.selected.insured,
+      insurance_yesno: e.selected.insured,
       sec_insured: e.selected.sec_insured,
       mode_of_pay: mode_of_pay,
       doctor_name: doctor_name
@@ -86,7 +75,8 @@ const selectVisit = ($this, context, e) => {
         uri: "/orderAndPreApproval/selectOrderServices",
         method: "GET",
         data: {
-          visit_id: $this.state.visit_id
+          visit_id: $this.state.visit_id,
+          service_type_id: "14"
         },
         onSuccess: response => {
           if (response.data.success) {
@@ -102,13 +92,19 @@ const selectVisit = ($this, context, e) => {
                 data[i].ordered_date = data[i].created_date;
               }
 
-              if (pre_approval_Required.length > 0) {
-                swalMessage({
-                  title:
-                    "Some of the service is Pre-Approval required, Please wait for Approval.",
-                  type: "warning"
-                });
-              } else {
+              for (let j = 0; j < pre_approval_Required.length; j++) {
+                var index = data.indexOf(pre_approval_Required[j]);
+                data.splice(index, 1);
+              }
+
+              if (data.length > 0) {
+                if (pre_approval_Required.length > 0) {
+                  swalMessage({
+                    title: "Some of the service is Pre-Approval required.",
+                    type: "warning"
+                  });
+                }
+
                 if (context !== null) {
                   context.updateState({
                     billdetails: data
@@ -142,6 +138,12 @@ const selectVisit = ($this, context, e) => {
                       type: "error"
                     });
                   }
+                });
+              } else {
+                swalMessage({
+                  title:
+                    "All service is Pre-Approval required, Please wait for Approval.",
+                  type: "warning"
                 });
               }
             } else {

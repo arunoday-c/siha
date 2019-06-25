@@ -18,7 +18,8 @@ import {
   Validations,
   getCashiersAndShiftMAP,
   getBillDetails,
-  getCtrlCode
+  getCtrlCode,
+  generateReceipt
 } from "./OPBillCancellationEvents";
 import { AlgaehActions } from "../../actions/algaehActions";
 import { successfulMessage } from "../../utils/GlobalFunctions";
@@ -189,7 +190,7 @@ class OPBillCancellation extends Component {
                 bill_cancel_number: response.data.records.bill_number,
                 receipt_number: response.data.records.receipt_number,
                 hims_f_bill_cancel_header_id:
-                  response.data.hims_f_bill_cancel_header_id,
+                  response.data.records.hims_f_bill_cancel_header_id,
                 saveEnable: true
               });
               successfulMessage({
@@ -274,22 +275,7 @@ class OPBillCancellation extends Component {
                       label: "Print Receipt",
                       events: {
                         onClick: () => {
-                          AlgaehReport({
-                            report: {
-                              fileName: "printreceipt"
-                            },
-                            data: {
-                              patient_code: this.state.patient_code,
-                              full_name: this.state.full_name,
-                              advance_amount: this.state.advance_amount,
-                              bill_date: moment(this.state.bill_date).format(
-                                Options.dateFormat
-                              ),
-                              receipt_number: this.state.receipt_number,
-                              doctor_name: this.state.doctor_name,
-                              bill_details: this.state.billdetails
-                            }
-                          });
+                          generateReceipt(this, this);
                         }
                       }
                     }

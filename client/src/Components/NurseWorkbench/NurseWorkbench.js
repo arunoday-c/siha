@@ -19,7 +19,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../actions/algaehActions";
 import GlobalVariables from "../../utils/GlobalVariables.json";
-import { getLabelFromLanguage } from "../../utils/GlobalFunctions";
+import { setGlobal, getLabelFromLanguage } from "../../utils/GlobalFunctions";
 import config from "../../utils/config.json";
 import {
   getAllChiefComplaints,
@@ -34,6 +34,7 @@ import {
 import swal from "sweetalert2";
 import Options from "../../Options.json";
 import NursingWorkbenchHandler from "./NursingWorkbenchHandler";
+import OrderedList from "../PatientProfile/Assessment/OrderedList/OrderedList";
 
 class NurseWorkbench extends Component {
   constructor(props) {
@@ -66,7 +67,9 @@ class NurseWorkbench extends Component {
       pain: null,
       severity: null,
       chronic: null,
-      complaint_type: null
+      complaint_type: null,
+      pageDisplay: "Orders",
+      patient_id: null
     };
 
     this.baseState = this.state;
@@ -86,6 +89,18 @@ class NurseWorkbench extends Component {
     getDepartmentVitals(this);
     this.getDoctorsAndDepts();
     this.complaintType = [];
+  }
+
+  openTab(e) {
+    var element = document.querySelectorAll("[algaehtabs]");
+    for (var i = 0; i < element.length; i++) {
+      element[i].classList.remove("active");
+    }
+    e.currentTarget.classList.add("active");
+    var specified = e.currentTarget.getAttribute("algaehtabs");
+    this.setState({
+      pageDisplay: specified
+    });
   }
 
   allergyDropdownHandler(value) {
@@ -168,7 +183,13 @@ class NurseWorkbench extends Component {
       score: null,
       pain: null,
       comment: null,
-      chief_complaint_name: null
+      chief_complaint_name: null,
+      temperature_from: null,
+      bp_position: null,
+      complaint_type: null,
+      chief_complaint: null,
+      pageDisplay: "Orders",
+      patient_id: null
     });
 
     const _resetElements = document.getElementById("vitals_recording");
@@ -651,7 +672,6 @@ class NurseWorkbench extends Component {
 
   moveToStation(data, e) {
     this.resetSaveState();
-    debugger;
 
     this.isMale = data.gender === "Male" ? true : false;
     if (data.gender === "Male") {
@@ -661,6 +681,12 @@ class NurseWorkbench extends Component {
     } else {
       this.complaintType = GlobalVariables.COMPLAINT_TYPE;
     }
+    setGlobal({
+      current_patient: data.patient_id,
+      episode_id: data.episode_id,
+      visit_id: data.visit_id,
+      encounter_id: data.hims_f_patient_encounter_id
+    });
     this.setState(
       {
         patient_name: data.full_name,
@@ -757,7 +783,7 @@ class NurseWorkbench extends Component {
             toDate: this.state.toDate,
             activeDateHeader: this.state.fromDate
           };
-    debugger;
+
     let inputObj = { fromDate: dateRange.fromDate, toDate: dateRange.toDate };
     if (this.state.sub_department_id !== null) {
       inputObj.sub_department_id = this.state.sub_department_id;
@@ -772,7 +798,6 @@ class NurseWorkbench extends Component {
       method: "GET",
       cancelRequestId: "getNurseMyDay",
       onSuccess: response => {
-        debugger;
         if (response.data.success) {
           const _selecDate = new Date(dateRange.activeDateHeader).setDate(1);
 
@@ -825,9 +850,23 @@ class NurseWorkbench extends Component {
     ) {
       swalMessage({
         title: "Please Select a patient",
-        type: "error"
+        type: "warning"
       });
       return;
+    } else if (parseFloat(e.target.value) < 0) {
+      swalMessage({
+        title: "Cannot be less than zero",
+        type: "warning"
+      });
+      return;
+    } else if (e.target.name === "o2 sat") {
+      if (parseFloat(e.target.value) > 100) {
+        swalMessage({
+          title: "% Cannot be greater than 100",
+          type: "warning"
+        });
+        return;
+      }
     } else if (e.target.name === "weight") {
       //TODO  now hardCoded options need to pull from Db
       getFormula({
@@ -1230,7 +1269,6 @@ class NurseWorkbench extends Component {
                 {/* Vitals End */}
                 <hr />
                 <h6>Enter Patient Allergies</h6>
-
                 <div className="row">
                   <div className="col-8">
                     <div className="row">
@@ -1380,9 +1418,7 @@ class NurseWorkbench extends Component {
                     </div>
                   </div>
                 </div>
-
                 <hr />
-
                 <div className="row">
                   <div className="col-12" id="hpi-grid-cntr">
                     <AlgaehDataGrid
@@ -1595,10 +1631,8 @@ class NurseWorkbench extends Component {
                     />
                   </div>
                 </div>
-
                 <hr />
                 <h6>Enter Chief Complaints</h6>
-
                 <div className="row">
                   <div className="col-12">
                     <div className="portlet portlet-bordered margin-bottom-15">
@@ -1890,11 +1924,9 @@ class NurseWorkbench extends Component {
                     </div>
                   </div>*/}
                 </div>
-
                 <hr />
-
                 {/* Chief Complaint Start*/}
-                <div className="row">
+                {/*<div className="row">
                   <div className="col-12" id="hpi-grid-cntr">
                     <AlgaehDataGrid
                       id="complaint-grid"
@@ -2112,14 +2144,59 @@ class NurseWorkbench extends Component {
                       }}
                     />
                   </div>
-                </div>
+                </div>*/}
                 {/* Chief Complaint End */}
-
                 <hr />
-
                 <h6>Nurse Order Service</h6>
-                <div className="row">
-                  Nurse Order Service Container Add Here
+
+                <div className="col-12">
+                  <div className="tab-container toggle-section">
+                    <ul className="nav">
+                      <li
+                        algaehtabs={"Orders"}
+                        className={"nav-item tab-button active"}
+                        onClick={this.openTab.bind(this)}
+                      >
+                        {
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Order Investigation"
+                            }}
+                          />
+                        }
+                      </li>
+
+                      <li
+                        algaehtabs={"OrderConsumable"}
+                        className={"nav-item tab-button"}
+                        onClick={this.openTab.bind(this)}
+                      >
+                        {
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Order Consumable"
+                            }}
+                          />
+                        }
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div className="grid-section">
+                    {this.state.pageDisplay === "Orders" &&
+                    this.state.patient_id !== null ? (
+                      <OrderedList
+                        vat_applicable={this.props.vat_applicable}
+                        openData="Investigation"
+                      />
+                    ) : this.state.pageDisplay === "OrderConsumable" &&
+                      this.state.patient_id !== null ? (
+                      <OrderedList
+                        vat_applicable={this.props.vat_applicable}
+                        openData="Consumable"
+                      />
+                    ) : null}
+                  </div>
                 </div>
                 {/* Notes Start */}
                 <hr />

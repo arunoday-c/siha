@@ -239,7 +239,7 @@
         "label": "Transfer Number"
       },
       {
-        "fieldName": "transfer_date",
+        "fieldName": "transferdate",
         "label": "Transfer Date"
       },
       {

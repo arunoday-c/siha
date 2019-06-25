@@ -3,7 +3,10 @@ import AlgaehSearch from "../../../Wrapper/globalSearch";
 import Insurance from "../../../../Search/Insurance.json";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall.js";
 import swal from "sweetalert2";
-import { SetBulkState } from "../../../../utils/GlobalFunctions";
+import {
+  SetBulkState,
+  AlgaehValidation
+} from "../../../../utils/GlobalFunctions";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import { AlgaehOpenContainer } from "../../../../utils/GlobalFunctions";
 
@@ -481,97 +484,114 @@ const radioChange = ($this, context, e) => {
   SetBulkState({
     state: $this,
     callback: () => {
-      let PatType = null;
-      let saveEnable = false;
-      let ProcessInsure = false;
+      AlgaehValidation({
+        alertTypeIcon: "warning",
+        querySelector: "data-validate='demographicDetails'",
+        onSuccess: () => {
+          let PatType = null;
+          let saveEnable = false;
+          let ProcessInsure = false;
 
-      if (value === "Y") {
-        PatType = "I";
-        saveEnable = true;
-        if ($this.state.doctor_id === null) {
-          ProcessInsure = true;
-        } else {
-          ProcessInsure = false;
-        }
-        if ($this.state.hims_d_patient_id !== null) {
-          $this.props.getPatientInsurance({
-            // uri: "/insurance/getPatientInsurance",
-            uri: "/patientRegistration/getPatientInsurance",
-            module: "frontDesk",
-            method: "GET",
-            data: {
-              patient_id: $this.state.hims_d_patient_id
+          if (value === "Y") {
+            PatType = "I";
+            saveEnable = true;
+            if ($this.state.doctor_id === null) {
+              ProcessInsure = true;
+            } else {
+              ProcessInsure = false;
+            }
+            if ($this.state.hims_d_patient_id !== null) {
+              $this.props.getPatientInsurance({
+                // uri: "/insurance/getPatientInsurance",
+                uri: "/patientRegistration/getPatientInsurance",
+                module: "frontDesk",
+                method: "GET",
+                data: {
+                  patient_id: $this.state.hims_d_patient_id
+                },
+                redux: {
+                  type: "EXIT_INSURANCE_GET_DATA",
+                  mappingName: "existinsurance"
+                }
+              });
+            }
+          } else {
+            PatType = "S";
+
+            $this.props.setSelectedInsurance({
+              redux: {
+                type: "PRIMARY_INSURANCE_DATA",
+                mappingName: "primaryinsurance",
+                data: []
+              }
+            });
+
+            $this.props.setSelectedInsurance({
+              redux: {
+                type: "EXIT_INSURANCE_GET_DATA",
+                mappingName: "existinsurance",
+                data: []
+              }
+            });
+          }
+
+          $this.setState(
+            {
+              insured: value,
+              insuranceYes: !$this.state.insuranceYes,
+              saveEnable: saveEnable,
+
+              primary_insurance_provider_id: null,
+              primary_sub_id: null,
+              primary_network_id: null,
+              primary_policy_num: null,
+              primary_network_office_id: null,
+              primary_card_number: null,
+              primary_effective_start_date: null,
+              primary_effective_end_date: null,
+              patInsuranceFrontImg: undefined
             },
-            redux: {
-              type: "EXIT_INSURANCE_GET_DATA",
-              mappingName: "existinsurance"
+            () => {
+              if (value !== "Y") {
+                if ($this.state.doctor_id !== null) {
+                  ProcessInsurance($this, context);
+                }
+              }
             }
-          });
-        }
-      } else {
-        PatType = "S";
+          );
 
-        $this.props.setSelectedInsurance({
-          redux: {
-            type: "PRIMARY_INSURANCE_DATA",
-            mappingName: "primaryinsurance",
-            data: []
-          }
-        });
-
-        $this.props.setSelectedInsurance({
-          redux: {
-            type: "EXIT_INSURANCE_GET_DATA",
-            mappingName: "existinsurance",
-            data: []
-          }
-        });
-      }
-
-      $this.setState(
-        {
-          insured: value,
-          insuranceYes: !$this.state.insuranceYes,
-          saveEnable: saveEnable,
-
-          primary_insurance_provider_id: null,
-          primary_sub_id: null,
-          primary_network_id: null,
-          primary_policy_num: null,
-          primary_network_office_id: null,
-          primary_card_number: null,
-          primary_effective_start_date: null,
-          primary_effective_end_date: null,
-          patInsuranceFrontImg: undefined
-        },
-        () => {
-          if (value !== "Y") {
-            if ($this.state.doctor_id !== null) {
-              ProcessInsurance($this, context);
-            }
+          if (context !== null) {
+            context.updateState({
+              ...$this.state,
+              insured: value,
+              insuranceYes: !$this.state.insuranceYes,
+              payment_type: PatType,
+              saveEnable: saveEnable,
+              ProcessInsure: ProcessInsure,
+              primary_insurance_provider_id: null,
+              primary_sub_id: null,
+              primary_network_id: null,
+              primary_policy_num: null,
+              primary_network_office_id: null,
+              primary_card_number: null,
+              primary_effective_start_date: null,
+              primary_effective_end_date: null,
+              patInsuranceFrontImg: undefined
+            });
           }
         }
-      );
-
-      if (context !== null) {
-        context.updateState({
-          ...$this.state,
-          insured: value,
-          insuranceYes: !$this.state.insuranceYes,
-          payment_type: PatType,
-          saveEnable: saveEnable,
-          ProcessInsure: ProcessInsure,
-          primary_insurance_provider_id: null,
-          primary_sub_id: null,
-          primary_network_id: null,
-          primary_policy_num: null,
-          primary_network_office_id: null,
-          primary_card_number: null,
-          primary_effective_start_date: null,
-          primary_effective_end_date: null,
-          patInsuranceFrontImg: undefined
-        });
-      }
+        // onCatch: () => {
+        //   $this.setState({
+        //     [e.name]: null
+        //   });
+        //   if (context !== null) {
+        //     context.updateState({
+        //       ...$this.state,
+        //       [e.name]: null
+        //     });
+        //   }
+        // }
+      });
     }
   });
 };

@@ -1,4 +1,5 @@
 import moment from "moment";
+import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 
 export function generateTimeslotsForDoctor(data) {
   // Takes Appointment Schedule as input and returns an Array with time and "break"
@@ -44,4 +45,40 @@ export function generateTimeslotsForDoctor(data) {
     count = count + 1;
   }
   return result;
+}
+
+export function generateReport($this, rpt_name, rpt_desc) {
+  algaehApiCall({
+    uri: "/report",
+    method: "GET",
+    module: "reports",
+    headers: {
+      Accept: "blob"
+    },
+    others: { responseType: "blob" },
+    data: {
+      report: {
+        reportName: rpt_name,
+        reportParams: [
+          {
+            name: "hims_f_patient_appointment_id",
+            value: $this.hims_f_patient_appointment_id
+          }
+        ],
+        outputFileType: "PDF"
+      }
+    },
+    onSuccess: res => {
+      const url = URL.createObjectURL(res.data);
+      let myWindow = window.open(
+        "{{ product.metafields.google.custom_label_0 }}",
+        "_blank"
+      );
+
+      myWindow.document.write(
+        "<iframe src= '" + url + "' width='100%' height='100%' />"
+      );
+      myWindow.document.title = rpt_desc;
+    }
+  });
 }

@@ -1,9 +1,11 @@
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import Enumerable from "linq";
-import { SetBulkState } from "../../../../utils/GlobalFunctions";
+import {
+  SetBulkState,
+  AlgaehValidation
+} from "../../../../utils/GlobalFunctions";
 import moment from "moment";
-import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 
 const DeptselectedHandeler = ($this, context, e) => {
   let dept = Enumerable.from($this.props.deptanddoctors.departmets)
@@ -27,7 +29,6 @@ const DeptselectedHandeler = ($this, context, e) => {
 };
 
 const selectedHandeler = ($this, context, e) => {
-  
   let primary_policy_num = $this.state.primary_policy_num;
   SetBulkState({
     state: $this,
@@ -63,7 +64,6 @@ const selectedHandeler = ($this, context, e) => {
                 primary_policy_num: primary_policy_num
               },
               () => {
-                
                 if (context !== null) {
                   context.updateState({
                     ...$this.state,
@@ -85,7 +85,6 @@ const selectedHandeler = ($this, context, e) => {
           }
         },
         onCatch: () => {
-          
           $this.setState({
             [e.name]: null
           });
@@ -103,9 +102,7 @@ const selectedHandeler = ($this, context, e) => {
 };
 
 const doctorselectedHandeler = ($this, context, e) => {
-  
   if ($this.state.sub_department_id !== null) {
-    
     let doctor_name = e.selected.full_name;
 
     if ($this.state.hims_d_patient_id != null) {
@@ -353,7 +350,6 @@ const generateBillDetails = ($this, context) => {
 };
 
 const radioChange = ($this, context, e) => {
-  
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   if (name === "maternity_patient_yes") {

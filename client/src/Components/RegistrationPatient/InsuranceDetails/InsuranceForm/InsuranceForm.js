@@ -304,7 +304,7 @@ class AddInsuranceForm extends Component {
                       />
                     </div>
                     {/* Card Holder Details */}
-                    <div className="row primary-box-container">
+                    {/*<div className="row primary-box-container">
                       <AlagehFormGroup
                         div={{ className: "col-3" }}
                         label={{
@@ -323,7 +323,7 @@ class AddInsuranceForm extends Component {
                           }
                         }}
                       />
-                    </div>
+                    </div>*/}
                   </div>
 
                   {/* //effective_end_date// */}

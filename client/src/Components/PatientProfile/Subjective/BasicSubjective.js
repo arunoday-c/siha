@@ -559,7 +559,7 @@ class BasicSubjective extends Component {
                           />
 
                           <AlagehAutoComplete
-                            div={{ className: "col-4" }}
+                            div={{ className: "col-4 paddingLeft-0 " }}
                             label={{ forceLabel: "Interval", isImp: false }}
                             selector={{
                               name: "interval",
@@ -594,9 +594,9 @@ class BasicSubjective extends Component {
                             }}
                           />
                           <AlagehAutoComplete
-                            div={{ className: "col-4" }}
+                            div={{ className: "col-4  paddingRight-0 paddingLeft-0" }}
                             label={{
-                              forceLabel: "Complaint Type",
+                              forceLabel: "Comp. Type",
                               isImp: false
                             }}
                             selector={{
@@ -816,7 +816,8 @@ class BasicSubjective extends Component {
                         className="btn btn-primary btn-circle active"
                         onClick={this.showMedication.bind(this)}
                       >
-                        <i className="fas fa-plus" />
+                        {/* <i className="fas fa-plus" /> */}
+                         <i className="fas fa-retweet" />
                       </a>
                     </div>
                   </div>
@@ -829,6 +830,10 @@ class BasicSubjective extends Component {
                             <span>{item.month}</span>
                             <h3>{item.day}</h3>
                             <span>{item.year}</span>
+
+                      <div className="printOnHover">
+                        <i className="fas fa-print"></i>
+                      </div>
                           </div>
                           <div className="medcineList">
                             <ul>
@@ -844,15 +849,15 @@ class BasicSubjective extends Component {
                                   </b>
                                   {/* <small><span>4 ml</span> - <span>12 hourly (1-1-1)</span> * <span>5 days</span></small>*/}
                                   <small>{medicine.instructions}</small>
+                                   <div className="reOrderOnHover">
+                        <i className="fas fa-retweet"></i>
+                      </div>
                                 </li>
                               ))}
                             </ul>
                           </div>
                         </div>
                       ))}
-                      <div className="printOnHover">
-                        <span>Print Prescription</span>
-                      </div>
                     </div>
                   </div>
                 </div>

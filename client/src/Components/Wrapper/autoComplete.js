@@ -31,25 +31,14 @@ class AutoComplete extends Component {
       const _estData = !Array.isArray(props.selector.dataSource.data)
         ? []
         : props.selector.dataSource.data;
-      const _data =
-        props.selector.sort === null || props.selector.sort === undefined
-          ? _estData
-              .sort((a, b) => {
-                return (
-                  "" + a[props.selector.dataSource.textField]
-                ).localeCompare(b[props.selector.dataSource.textField]);
-              })
-              .map((item, index) => {
-                return {
-                  key: index,
-                  value: item[props.selector.dataSource.valueField],
-                  text: item[props.selector.dataSource.textField],
-                  content:
-                    _templtate === undefined ? undefined : _templtate(item),
-                  ...item
-                };
-              })
-          : _estData.map((item, index) => {
+      const _data = props.selector.sort
+        ? _estData
+            .sort((a, b) => {
+              return (
+                "" + a[props.selector.dataSource.textField]
+              ).localeCompare(b[props.selector.dataSource.textField]);
+            })
+            .map((item, index) => {
               return {
                 key: index,
                 value: item[props.selector.dataSource.valueField],
@@ -58,7 +47,16 @@ class AutoComplete extends Component {
                   _templtate === undefined ? undefined : _templtate(item),
                 ...item
               };
-            });
+            })
+        : _estData.map((item, index) => {
+            return {
+              key: index,
+              value: item[props.selector.dataSource.valueField],
+              text: item[props.selector.dataSource.textField],
+              content: _templtate === undefined ? undefined : _templtate(item),
+              ...item
+            };
+          });
 
       this.setState({
         data: _data,
@@ -110,26 +108,14 @@ class AutoComplete extends Component {
             return that.props.selector.template(item);
           }
         : undefined;
-    const _data =
-      this.props.selector.sort === null ||
-      this.props.selector.sort === undefined
-        ? _estData
-            .sort((a, b) => {
-              return (
-                "" + a[that.props.selector.dataSource.textField]
-              ).localeCompare(b[that.props.selector.dataSource.textField]);
-            })
-            .map((item, index) => {
-              return {
-                key: index,
-                value: item[that.props.selector.dataSource.valueField],
-                text: item[that.props.selector.dataSource.textField],
-                content:
-                  _templtate === undefined ? undefined : _templtate(item),
-                ...item
-              };
-            })
-        : _estData.map((item, index) => {
+    const _data = this.props.selector.sort
+      ? _estData
+          .sort((a, b) => {
+            return (
+              "" + a[that.props.selector.dataSource.textField]
+            ).localeCompare(b[that.props.selector.dataSource.textField]);
+          })
+          .map((item, index) => {
             return {
               key: index,
               value: item[that.props.selector.dataSource.valueField],
@@ -137,7 +123,16 @@ class AutoComplete extends Component {
               content: _templtate === undefined ? undefined : _templtate(item),
               ...item
             };
-          });
+          })
+      : _estData.map((item, index) => {
+          return {
+            key: index,
+            value: item[that.props.selector.dataSource.valueField],
+            text: item[that.props.selector.dataSource.textField],
+            content: _templtate === undefined ? undefined : _templtate(item),
+            ...item
+          };
+        });
 
     this.setState({
       value: this.props.selector.value,

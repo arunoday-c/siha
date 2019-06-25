@@ -791,7 +791,8 @@ function mapStateToProps(state) {
     itemform: state.itemform,
     itemstorage: state.itemstorage,
     itemservices: state.itemservices,
-    itemuom: state.itemuom
+    itemuom: state.itemuom,
+    itemlist: state.itemlist
   };
 }
 

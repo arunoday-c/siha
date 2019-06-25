@@ -138,7 +138,6 @@ const updatedata = ($this, e) => {
       }
     });
     if (isError === false) {
-      debugger;
       $this.state.preapp_valid_days =
         $this.state.preapp_valid_days === "" ||
         $this.state.preapp_valid_days === null

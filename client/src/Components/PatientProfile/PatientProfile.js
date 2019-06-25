@@ -616,8 +616,8 @@ class PatientProfile extends Component {
             <div className="patientVital">
               {_Vitals.map((row, idx) => (
                 <span key={idx}>
-                  {row.vital_short_name}:<b> {row.vital_value}</b>
-                  {row.formula_value}
+                  {row.vital_short_name}:<b> {row.vital_value} </b>
+                  <small>{row.formula_value}</small>
                 </span>
               ))}
             </div>

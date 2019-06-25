@@ -145,7 +145,7 @@ class HospitalServiceSetup extends Component {
             if (data.length !== undefined && data.length !== 0) {
               row.addNew = false;
               row.cpt_code_data = data[0].cpt_code;
-              debugger;
+
               this.setState({
                 isOpen: !this.state.isOpen,
                 servicePop: row,

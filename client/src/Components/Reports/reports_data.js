@@ -813,9 +813,10 @@ export default [
       },
       {
         subitem: "Attendance Reports",
-        template_name: "PayrollReports/attendence_report",
-        reportUri: "/attendance/loadAttendance",
-        module: "hrManagement",
+        reportName: "attendanceReports",
+
+        requireIframe: true,
+        pageOrentation: "landscape",
         reportParameters: [
           {
             type: "dropdown",
@@ -1918,10 +1919,13 @@ export default [
     submenu: [
       {
         subitem: "Project wise Payroll",
-        template_name: "ProjectPayroll/projectWisePayroll",
+        //template_name: "ProjectPayroll/projectWisePayroll",
         // reportQuery: "projectWisePayroll",
-        reportUri: "/projectjobcosting/getProjectWiseJobCost",
-        module: "hrManagement",
+        //  reportUri: "/projectjobcosting/getProjectWiseJobCost",
+        // module: "hrManagement",
+        reportName: "projectWisePayroll",
+        requireIframe: true,
+        pageOrentation: "landscape",
         reportParameters: [
           {
             type: "dropdown",

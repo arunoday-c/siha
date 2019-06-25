@@ -60,7 +60,6 @@ class AddInsuranceForm extends Component {
   }
 
   render() {
-    
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -130,7 +129,7 @@ class AddInsuranceForm extends Component {
                     </h6>
                   </div>
 
-                  {this.state.pos_customer_type === "OT" ? (
+                  {/*{this.state.pos_customer_type === "OT" ? (
                     <AlagehFormGroup
                       div={{ className: "col-3" }}
                       label={{
@@ -161,7 +160,7 @@ class AddInsuranceForm extends Component {
                           : "-----"}
                       </h6>
                     </div>
-                  )}
+                  )}*/}
 
                   {this.state.pos_customer_type === "OT" ? (
                     <AlagehFormGroup

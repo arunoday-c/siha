@@ -278,7 +278,6 @@ const getRequisitionDetails = (
 
     onSuccess: response => {
       if (response.data.success === true) {
-        debugger;
         let data = response.data.records;
 
         let from_location_id = data.from_location_id;

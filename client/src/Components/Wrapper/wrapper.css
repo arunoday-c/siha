@@ -194,3 +194,15 @@
   .autoSearchClear:hover {
     cursor: pointer;
     color: #333333; }
+
+.paddingLeft-0 {
+  padding-left: 0; }
+
+.paddingBottom-0 {
+  padding-bottom: 0; }
+
+.paddingTop-0 {
+  padding-top: 0; }
+
+.paddingRight-0 {
+  padding-right: 0; }

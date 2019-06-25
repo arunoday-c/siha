@@ -512,53 +512,105 @@ let insertOrderedServices = (req, res, next) => {
 };
 
 let selectOrderServices = (req, res, next) => {
-  let selectWhere = {
-    visit_id: "ALL",
-    billed: "N"
-  };
-
+  const _mysql = new algaehMysql({ path: keyPath });
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
+    let _stringData = "";
+    let inputValues = [];
+    if (req.query.visit_id != null) {
+      _stringData += " and visit_id=?";
+      inputValues.push(req.query.visit_id);
     }
-    let db = req.db;
-    db.getConnection((error, connection) => {
-      if (error) {
-        next(error);
-      }
-      let where = whereCondition(extend(selectWhere, req.query));
-      connection.query(
-        "SELECT  OS.`hims_f_ordered_services_id`,OS.`hims_f_ordered_services_id` as ordered_services_id,\
-        OS.`patient_id`, OS.`visit_id`, OS.`doctor_id`, OS.`service_type_id`, \
+
+    if (req.query.service_type_id != null) {
+      _stringData += " and OS.service_type_id=?";
+      inputValues.push(req.query.service_type_id);
+    }
+    _mysql
+      .executeQuery({
+        query:
+          "SELECT  OS.`hims_f_ordered_services_id`, OS.`patient_id`, OS.`visit_id`, OS.`doctor_id`, OS.`service_type_id`, \
         OS.`services_id`, OS.`test_type`, OS.`insurance_yesno`, OS.`insurance_provider_id`, OS.`insurance_sub_id`, \
-        OS.`network_id`, OS.`insurance_network_office_id`, OS.`policy_number`, OS.`pre_approval`, \
-        OS.`apprv_status`, OS.`billed`, OS.`quantity`, OS.`unit_cost`, OS.`gross_amount`, OS.`discount_amout`,\
-        OS.`discount_percentage`, OS.`net_amout`, OS.`copay_percentage`, OS.`copay_amount`, OS.`deductable_amount`,\
-        OS.`deductable_percentage`, OS.`tax_inclusive`, OS.`patient_tax`, OS.`company_tax`, OS.`total_tax`, OS.`patient_resp`, OS.`patient_payable`, OS.`comapany_resp`, OS.`company_payble`, OS.`sec_company`, OS.`sec_deductable_percentage`, OS.`sec_deductable_amount`,OS.`sec_company_res`, OS.`sec_company_tax`, OS.`sec_company_paybale`, OS.`sec_copay_percntage`, OS.`sec_copay_amount`,\
+        OS.`network_id`, OS.`insurance_network_office_id`, OS.`policy_number`, OS.`pre_approval`, OS.`apprv_status`, \
+        OS.`billed`, OS.`quantity`, OS.`unit_cost`, OS.`gross_amount`, OS.`discount_amout`, OS.`discount_percentage`, \
+        OS.`net_amout`, OS.`copay_percentage`, OS.`copay_amount`, OS.`deductable_amount`, OS.`deductable_percentage`, \
+        OS.`tax_inclusive`, OS.`patient_tax`, OS.`company_tax`, OS.`total_tax`, OS.`patient_resp`, OS.`patient_payable`, \
+        OS.`comapany_resp`, OS.`company_payble`, OS.`sec_company`, OS.`sec_deductable_percentage`, OS.`sec_deductable_amount`,\
+        OS.`sec_company_res`, OS.`sec_company_tax`, OS.`sec_company_paybale`, OS.`sec_copay_percntage`, OS.`sec_copay_amount`,\
         OS.`created_by`, OS.`created_date`, OS.`updated_by`, OS.`updated_date`, OS.`record_status`,\
         S.`hims_d_services_id`, S.`service_code`, S.`cpt_code`, S.`service_name`, S.`arabic_service_name`, \
         S.`service_desc`, S.`sub_department_id`, S.`hospital_id`, S.`service_type_id`, S.`procedure_type`, \
         S.`standard_fee`, S.`followup_free_fee`, S.`followup_paid_fee`, S.`discount`, S.`vat_applicable`, \
-        S.`vat_percent`, S.`service_status`, OS.teeth_number FROM \
-        `hims_f_ordered_services` OS,  `hims_d_services` S WHERE \
+        S.`vat_percent`, S.`service_status` FROM `hims_f_ordered_services` OS,  `hims_d_services` S WHERE \
         OS.services_id = S.hims_d_services_id and \
-        OS.`record_status`='A' AND OS.`billed`='N' AND " +
-          where.condition,
-        where.values,
-        (error, result) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          req.records = result;
-          next();
-        }
-      );
-    });
+        OS.`record_status`='A'  " +
+          _stringData,
+        values: inputValues,
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
+
+// let selectOrderServices = (req, res, next) => {
+//   let selectWhere = {
+//     visit_id: "ALL",
+//     service_type_id: "ALL",
+//     billed: "N"
+//   };
+//
+//   try {
+//     if (req.db == null) {
+//       next(httpStatus.dataBaseNotInitilizedError());
+//     }
+//     let db = req.db;
+//     db.getConnection((error, connection) => {
+//       if (error) {
+//         next(error);
+//       }
+//       let where = whereCondition(extend(selectWhere, req.query));
+//       connection.query(
+//         "SELECT  OS.`hims_f_ordered_services_id`,OS.`hims_f_ordered_services_id` as ordered_services_id,\
+//         OS.`patient_id`, OS.`visit_id`, OS.`doctor_id`, OS.`service_type_id`, \
+//         OS.`services_id`, OS.`test_type`, OS.`insurance_yesno`, OS.`insurance_provider_id`, OS.`insurance_sub_id`, \
+//         OS.`network_id`, OS.`insurance_network_office_id`, OS.`policy_number`, OS.`pre_approval`, \
+//         OS.`apprv_status`, OS.`billed`, OS.`quantity`, OS.`unit_cost`, OS.`gross_amount`, OS.`discount_amout`,\
+//         OS.`discount_percentage`, OS.`net_amout`, OS.`copay_percentage`, OS.`copay_amount`, OS.`deductable_amount`,\
+//         OS.`deductable_percentage`, OS.`tax_inclusive`, OS.`patient_tax`, OS.`company_tax`, OS.`total_tax`, OS.`patient_resp`, OS.`patient_payable`, OS.`comapany_resp`, OS.`company_payble`, OS.`sec_company`, OS.`sec_deductable_percentage`, OS.`sec_deductable_amount`,OS.`sec_company_res`, OS.`sec_company_tax`, OS.`sec_company_paybale`, OS.`sec_copay_percntage`, OS.`sec_copay_amount`,\
+//         OS.`created_by`, OS.`created_date`, OS.`updated_by`, OS.`updated_date`, OS.`record_status`,\
+//         S.`hims_d_services_id`, S.`service_code`, S.`cpt_code`, S.`service_name`, S.`arabic_service_name`, \
+//         S.`service_desc`, S.`sub_department_id`, S.`hospital_id`, S.`service_type_id`, S.`procedure_type`, \
+//         S.`standard_fee`, S.`followup_free_fee`, S.`followup_paid_fee`, S.`discount`, S.`vat_applicable`, \
+//         S.`vat_percent`, S.`service_status`, OS.teeth_number FROM \
+//         `hims_f_ordered_services` OS,  `hims_d_services` S WHERE \
+//         OS.services_id = S.hims_d_services_id and \
+//         OS.`record_status`='A' AND OS.`billed`='N' AND " +
+//           where.condition,
+//         where.values,
+//         (error, result) => {
+//           releaseDBConnection(db, connection);
+//           if (error) {
+//             next(error);
+//           }
+//           req.records = result;
+//           next();
+//         }
+//       );
+//     });
+//   } catch (e) {
+//     next(e);
+//   }
+// };
 
 let selectOrderServicesbyDoctor = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
@@ -1085,7 +1137,7 @@ let insertInvOrderedServices = (req, res, next) => {
                     printQuery: true
                   })
                   .then(result => {
-                    // _mysql.releaseConnection();
+                    _mysql.releaseConnection();
                     req.body.inventory_stock_detail = input.billdetails;
                     req.records = result;
                     next();
@@ -1095,7 +1147,7 @@ let insertInvOrderedServices = (req, res, next) => {
                     next(error);
                   });
               } else {
-                // _mysql.releaseConnection();
+                _mysql.releaseConnection();
                 req.body.inventory_stock_detail = input.billdetails;
                 req.records = { resultOrder, ResultOfFetchOrderIds };
                 next();
@@ -1110,7 +1162,7 @@ let insertInvOrderedServices = (req, res, next) => {
               next(error);
             });
         } else {
-          // _mysql.releaseConnection();
+          _mysql.releaseConnection();
           req.body.inventory_stock_detail = input.billdetails;
           req.records = { resultOrder, ResultOfFetchOrderIds };
           next();
