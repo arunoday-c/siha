@@ -3,7 +3,7 @@ import { swalMessage, algaehApiCall } from "../../../../utils/algaehApiCall";
 import { removeGlobal } from "../../../../utils/GlobalFunctions";
 import Enumerable from "linq";
 import Options from "../../../../Options.json";
-
+import _ from "lodash";
 //Text Handaler Change
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -217,8 +217,18 @@ const itemhandle = ($this, item) => {
   } else {
     $this.setState(
       {
-        generic_name: item.generic_name,
-        item_description: item.item_description,
+        generic_name_item_description:
+          item.generic_name_item_description !== undefined
+            ? item.generic_name_item_description.replace(/\w+/g, _.capitalize)
+            : item.generic_name_item_description,
+        generic_name:
+          item.generic_name !== undefined
+            ? item.generic_name.replace(/\w+/g, _.capitalize)
+            : item.generic_name,
+        item_description:
+          item.item_description !== undefined
+            ? item.item_description.replace(/\w+/g, _.capitalize)
+            : item.item_description,
         item_id: item.hims_d_item_master_id,
         generic_id: item.generic_id,
         service_id: item.service_id,
@@ -358,6 +368,7 @@ const AddItems = $this => {
           medicationitems.push(medicationobj);
           $this.setState({
             medicationitems: medicationitems,
+            generic_name_item_description: "",
             saveMedicationEnable: false,
             addItemEnable: true,
             item_id: null,
@@ -376,7 +387,8 @@ const AddItems = $this => {
             instructions: null,
             generic_name: "",
             item_description: "",
-            instructions: ""
+            instructions: "",
+            total_quantity: 0
           });
         }
       },

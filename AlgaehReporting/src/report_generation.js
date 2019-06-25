@@ -92,9 +92,37 @@ hbs.registerHelper("dateTime", function(value, type) {
 hbs.registerHelper("capitalization", function(value) {
   return _.startCase(_.toLower(value));
 });
-
+//created by irfan
 hbs.registerHelper("inc", function(value, options) {
   return parseInt(value) + 1;
+});
+
+//created by irfan:to check array has elements
+hbs.registerHelper("hasElement", function(conditional, options) {
+  if (conditional.length > 0) {
+    return options.fn(this);
+  } else {
+    return options.inverse(this);
+  }
+});
+//created by irfan:
+hbs.registerHelper("dynamicSalary", function(searchKey, inputArray, comp_type) {
+  if (comp_type == "E") {
+    const obj = inputArray.find(item => {
+      return item.earnings_id == searchKey;
+    });
+    return obj ? obj.amount : "0";
+  } else if (comp_type == "D") {
+    const obj = inputArray.find(item => {
+      return item.deductions_id == searchKey;
+    });
+    return obj ? obj.amount : "0";
+  } else if (comp_type == "C") {
+    const obj = inputArray.find(item => {
+      return item.contributions_id == searchKey;
+    });
+    return obj ? obj.amount : "0";
+  }
 });
 
 hbs.registerHelper("importStyle", function(styleSheetName) {
@@ -248,6 +276,7 @@ module.exports = {
         })
         .then(data => {
           _inputParam["hospital_id"] = req.userIdentity["hospital_id"];
+          _inputParam["crypto"] = req.userIdentity;
 
           console.log("input:", _inputParam);
           const _reportCount = data[0].length;
@@ -267,7 +296,6 @@ module.exports = {
                 if (_params != undefined) {
                   _value.push(_params.value);
                 }
-               
               }
 
               let queryObject = {
@@ -490,10 +518,7 @@ module.exports = {
                 })
                 .catch(error => {
                   _mysql.releaseConnection();
-                  console.log(
-                    "Error In query execution : ",
-                    error
-                  );
+                  console.log("Error In query execution : ", error);
                   res.status(400).send({ error: JSON.stringify(error) });
                 });
             }

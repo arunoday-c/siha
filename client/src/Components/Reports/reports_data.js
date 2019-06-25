@@ -730,9 +730,12 @@ export default [
       },
       {
         subitem: "Salary Statement Detail",
-        reportUri: "/salary/detailSalaryStatement",
-        module: "hrManagement",
-        template_name: "PayrollReports/salary_statement_detail",
+        // reportUri: "/salary/detailSalaryStatement",
+        // module: "hrManagement",
+        //template_name: "PayrollReports/salary_statement_detail",
+        reportName: "salaryStatementDetailsPayroll",
+        pageOrentation: "landscape",
+        requireIframe: true,
         reportParameters: [
           {
             type: "dropdown",

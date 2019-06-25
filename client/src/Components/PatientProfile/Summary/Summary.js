@@ -103,7 +103,6 @@ class Summary extends Component {
   }
 
   getSummaryFollowUp() {
-    
     algaehApiCall({
       uri: "/doctorsWorkBench/getSummaryFollowUp",
       method: "GET",
@@ -112,7 +111,6 @@ class Summary extends Component {
       },
       onSuccess: response => {
         if (response.data.success) {
-          
           this.setState({ patientFollowUp: response.data.records });
         }
       },
@@ -154,32 +152,35 @@ class Summary extends Component {
         ? this.props.patient_history.social
         : [];
 
-    let _pat_medicalHistory =
-      this.props.patient_history !== undefined
-        ? this.props.patient_history.medical
-        : [];
-
-    let _pat_surgicalHistory =
-      this.props.patient_history !== undefined
-        ? this.props.patient_history.surgical
-        : [];
-
-    let _pat_familyHistory =
-      this.props.patient_history !== undefined
-        ? this.props.patient_history.family
-        : [];
-
-    let _pat_birthHistory =
-      this.props.patient_history !== undefined
-        ? this.props.patient_history.birth
-        : [];
-
+    // let _pat_medicalHistory =
+    //   this.props.patient_history !== undefined
+    //     ? this.props.patient_history.medical
+    //     : [];
+    //
+    // let _pat_surgicalHistory =
+    //   this.props.patient_history !== undefined
+    //     ? this.props.patient_history.surgical
+    //     : [];
+    //
+    // let _pat_familyHistory =
+    //   this.props.patient_history !== undefined
+    //     ? this.props.patient_history.family
+    //     : [];
+    //
+    // let _pat_birthHistory =
+    //   this.props.patient_history !== undefined
+    //     ? this.props.patient_history.birth
+    //     : [];
+    //
     let _pat_patientDiagnosis =
       this.props.patient_diagnosis !== undefined
         ? this.props.patient_diagnosis
         : [];
+    const history =
+      this.props.patient_history !== undefined
+        ? this.props.patient_history
+        : [];
 
-    
     let _pat_episode =
       Enumerable.from(this.state.patientEpisode).firstOrDefault() !== undefined
         ? Enumerable.from(this.state.patientEpisode).firstOrDefault()
@@ -268,7 +269,7 @@ class Summary extends Component {
                 <thead className="table-primary">
                   <tr>
                     <th style={{ width: 30 }}>Sl. No.</th>
-                    <th style={{ width:"45%" }}>Item Name</th>
+                    <th style={{ width: "45%" }}>Item Name</th>
                     <th>Dosage</th>
                     <th>Frequency</th>
                     <th>Duration(days)</th>
@@ -303,177 +304,39 @@ class Summary extends Component {
                 </tbody>
               </table>
             </div>
-
-            <div className="bd-callout bd-callout-theme">
-              <h6>Family History</h6>
-              <table
-                className="table table-sm table-bordered customTable"
-                style={{ marginTop: 10 }}
-              >
-                <thead className="table-primary">
-                  <tr>
-                    <th>History</th>
-                    <th>Recorded By</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {_pat_familyHistory.map((data, index) => (
-                    <tr key={index}>
-                      <td>{data.remarks}</td>
-                      <td>{"Dr. " + data.provider_name}</td>
+            {history.map((patientHistory, index) => (
+              <div className="bd-callout bd-callout-theme" key={index}>
+                <h6>{patientHistory.groupName}</h6>
+                <table
+                  className="table table-sm table-bordered customTable"
+                  style={{ marginTop: 10 }}
+                >
+                  <thead className="table-primary">
+                    <tr>
+                      <th>History</th>
+                      <th>Recorded By</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-              {/* <ul>
-                {_pat_familyHistory.map((data, index) => (
-                  <li key={index}>{data.remarks}</li>
-                ))}
-              </ul> */}
-            </div>
-
-            <div className="bd-callout bd-callout-theme">
-              <h6>Social History</h6>
-              <table
-                className="table table-sm table-bordered customTable"
-                style={{ marginTop: 10 }}
-              >
-                <thead className="table-primary">
-                  <tr>
-                    <th>History</th>
-                    <th>Recorded By</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {_pat_socialHistory.map((data, index) => (
-                    <tr key={index}>
-                      <td>{data.remarks}</td>
-                      <td>{"Dr. " + data.provider_name}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              {/* <ul>
-
-                {_pat_socialHistory.map((data, index) => (
-                  <li key={index}>
-                    {data.remarks + " (Dr. " + data.provider_name + ")"}
-                  </li>
-                ))}
-              </ul> */}
-            </div>
-            <div className="bd-callout bd-callout-theme">
-              <h6>Medical History</h6>
-              <table
-                className="table table-sm table-bordered customTable"
-                style={{ marginTop: 10 }}
-              >
-                <thead className="table-primary">
-                  <tr>
-                    <th>History</th>
-                    <th>Recorded By</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {_pat_medicalHistory.map((data, index) => (
-                    <tr key={index}>
-                      <td>{data.remarks}</td>
-                      <td>{"Dr. " + data.provider_name}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              {/* <ul>
-                {_pat_medicalHistory.map((data, index) => (
-                  <li key={index}>
-                    {data.remarks + " (Dr. " + data.provider_name + ")"}
-                  </li>
-                ))}
-              </ul> */}
-            </div>
-
-            <div className="bd-callout bd-callout-theme">
-              <h6>Surgical History</h6>
-              <table
-                className="table table-sm table-bordered customTable"
-                style={{ marginTop: 10 }}
-              >
-                <thead className="table-primary">
-                  <tr>
-                    <th>History</th>
-                    <th>Recorded By</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {_pat_surgicalHistory.map((data, index) => (
-                    <tr key={index}>
-                      <td>{data.remarks}</td>
-                      <td>{"Dr " + data.provider_name}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              {/* <ul>
-                {_pat_surgicalHistory.map((data, index) => (
-                  <li key={index}>
-                    {data.remarks + " (Dr. " + data.provider_name + ")"}
-                  </li>
-                ))}
-              </ul> */}
-            </div>
-
-            <div className="bd-callout bd-callout-theme">
-              <h6>Birth History</h6>
-              <table
-                className="table table-sm table-bordered customTable"
-                style={{ marginTop: 10 }}
-              >
-                <thead className="table-primary">
-                  <tr>
-                    <th>History</th>
-                    <th>Recorded By</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {_pat_birthHistory.map((data, index) => (
-                    <tr key={index}>
-                      <td>{data.remarks}</td>
-                      <td>{"Dr. " + data.provider_name}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              {/* <ul>
-                {_pat_birthHistory.map((data, index) => (
-                  <li key={index}>
-                    {data.remarks + " (Dr. " + data.provider_name + ")"}
-                  </li>
-                ))}
-              </ul> */}
-            </div>
-
-            <div className="bd-callout bd-callout-theme">
-              <h6>Follow Up Details</h6>
-              <table
-                className="table table-sm table-bordered customTable"
-                style={{ marginTop: 10 }}
-              >
-                <thead className="table-primary">
-                  <tr>
-                    <th>Reason</th>
-                    <th>Date</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {this.state.patientFollowUp.map((data, index) => (
-                    <tr key={index}>
-                      <td>{data.reason}</td>
-                      <td>{moment(data.followup_date).format("DD-MM-YYYY")}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {patientHistory.groupDetail.map((data, dIndex) => (
+                      <tr key={dIndex}>
+                        <td>{data.remarks}</td>
+                        <td>
+                          {data.provider_name} on
+                          <small> {data.created_date}</small>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ))}
+            {history.length === 0 ? (
+              <div class="bd-callout bd-callout-theme">
+                <i class="fas fa-hourglass-half" />
+                <p>History not recorded yet.</p>
+              </div>
+            ) : null}
           </div>
           <div className="col-md-3 col-lg-3">
             <div className="card">

@@ -1,13 +1,9 @@
 import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 import { AlgaehDataGrid, AlgaehLabel } from "../../../Wrapper/algaehWrapper";
 
 import "./MedicationHistory.css";
 import "../../../../styles/site.css";
-import { AlgaehActions } from "../../../../actions/algaehActions";
-
+import _ from "lodash";
 class MedicationHistory extends Component {
   constructor(props) {
     super(props);
@@ -17,21 +13,10 @@ class MedicationHistory extends Component {
     };
   }
 
-  componentDidMount() {
-    this.props.getItems({
-      uri: "/pharmacy/getItemMaster",
-      module: "pharmacy",
-      method: "GET",
-      redux: {
-        type: "ITEMS_GET_DATA",
-        mappingName: "meditemlist"
-      }
-    });
-  }
-
   render() {
     const all_mediction =
       this.props.all_mediction === undefined ? [] : this.props.all_mediction;
+
     return (
       <div>
         <div className="popupInner">
@@ -40,43 +25,21 @@ class MedicationHistory extends Component {
               id="medicationHistory"
               columns={[
                 {
-                  fieldName: "generic_id",
+                  fieldName: "generic_name",
                   label: <AlgaehLabel label={{ forceLabel: "Generic Name" }} />,
                   displayTemplate: row => {
-                    let display =
-                      this.props.genericlist === undefined
-                        ? []
-                        : this.props.genericlist.filter(
-                            f => f.hims_d_item_generic_id === row.generic_id
-                          );
-
-                    return (
-                      <span>
-                        {display !== undefined && display.length !== 0
-                          ? display[0].generic_name
-                          : ""}
-                      </span>
-                    );
+                    return row.generic_name !== undefined
+                      ? row.generic_name.replace(/\w+/g, _.capitalize)
+                      : row.generic_name;
                   }
                 },
                 {
-                  fieldName: "item_id",
+                  fieldName: "item_description",
                   label: <AlgaehLabel label={{ forceLabel: "Item Name" }} />,
                   displayTemplate: row => {
-                    let display =
-                      this.props.meditemlist === undefined
-                        ? []
-                        : this.props.meditemlist.filter(
-                            f => f.hims_d_item_master_id === row.item_id
-                          );
-
-                    return (
-                      <span>
-                        {display !== undefined && display.length !== 0
-                          ? display[0].item_description
-                          : ""}
-                      </span>
-                    );
+                    return row.item_description !== undefined
+                      ? row.item_description.replace(/\w+/g, _.capitalize)
+                      : row.item_description;
                   }
                 },
                 {
@@ -155,6 +118,10 @@ class MedicationHistory extends Component {
                   others: {
                     minWidth: 90
                   }
+                },
+                {
+                  fieldName: "instructions",
+                  label: <AlgaehLabel label={{ forceLabel: "Instructions" }} />
                 }
               ]}
               keyId="item_id"
@@ -183,27 +150,4 @@ class MedicationHistory extends Component {
     );
   }
 }
-
-function mapStateToProps(state) {
-  return {
-    meditemlist: state.meditemlist,
-    genericlist: state.genericlist
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators(
-    {
-      getItems: AlgaehActions,
-      getGenerics: AlgaehActions
-    },
-    dispatch
-  );
-}
-
-export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(MedicationHistory)
-);
+export default MedicationHistory;
