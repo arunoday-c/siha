@@ -1,14 +1,10 @@
 import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-
 import { AlgaehDataGrid, AlgaehLabel } from "../../../Wrapper/algaehWrapper";
 
 import "./ActiveMedication.css";
 import "../../../../styles/site.css";
-import { AlgaehActions } from "../../../../actions/algaehActions";
 
+import _ from "lodash";
 class ActiveMedication extends Component {
   constructor(props) {
     super(props);
@@ -17,18 +13,6 @@ class ActiveMedication extends Component {
       orderservicesdata: []
     };
   }
-
-  // componentDidMount() {
-  //   this.props.getItems({
-  //     uri: "/pharmacy/getItemMaster",
-  //     module: "pharmacy",
-  //     method: "GET",
-  //     redux: {
-  //       type: "ITEMS_GET_DATA",
-  //       mappingName: "itemlist"
-  //     }
-  //   });
-  // }
 
   render() {
     const latest_mediction =
@@ -44,43 +28,21 @@ class ActiveMedication extends Component {
               columns={[
                 {
                   fieldName: "generic_name",
-                  label: <AlgaehLabel label={{ forceLabel: "Generic Name" }} />
-                  // displayTemplate: row => {
-                  //   let display =
-                  //     this.props.genericlist === undefined
-                  //       ? []
-                  //       : this.props.genericlist.filter(
-                  //           f => f.hims_d_item_generic_id === row.generic_id
-                  //         );
-                  //
-                  //   return (
-                  //     <span>
-                  //       {display !== undefined && display.length !== 0
-                  //         ? display[0].generic_name
-                  //         : ""}
-                  //     </span>
-                  //   );
-                  // }
+                  label: <AlgaehLabel label={{ forceLabel: "Generic Name" }} />,
+                  displayTemplate: row => {
+                    return row.generic_name !== undefined
+                      ? row.generic_name.replace(/\w+/g, _.capitalize)
+                      : row.generic_name;
+                  }
                 },
                 {
                   fieldName: "item_description",
-                  label: <AlgaehLabel label={{ forceLabel: "Item Name" }} />
-                  // displayTemplate: row => {
-                  //   let display =
-                  //     this.props.itemlist === undefined
-                  //       ? []
-                  //       : this.props.itemlist.filter(
-                  //           f => f.hims_d_item_master_id === row.item_id
-                  //         );
-                  //
-                  //   return (
-                  //     <span>
-                  //       {display !== undefined && display.length !== 0
-                  //         ? display[0].item_description
-                  //         : ""}
-                  //     </span>
-                  //   );
-                  // }
+                  label: <AlgaehLabel label={{ forceLabel: "Item Name" }} />,
+                  displayTemplate: row => {
+                    return row.item_description !== undefined
+                      ? row.item_description.replace(/\w+/g, _.capitalize)
+                      : row.item_description;
+                  }
                 },
                 {
                   fieldName: "frequency",
@@ -158,6 +120,10 @@ class ActiveMedication extends Component {
                   others: {
                     minWidth: 90
                   }
+                },
+                {
+                  fieldName: "instructions",
+                  label: <AlgaehLabel label={{ forceLabel: "Instructions" }} />
                 }
               ]}
               keyId="item_id"
@@ -185,27 +151,4 @@ class ActiveMedication extends Component {
     );
   }
 }
-
-function mapStateToProps(state) {
-  return {
-    itemlist: state.itemlist,
-    genericlist: state.genericlist
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators(
-    {
-      getItems: AlgaehActions,
-      getGenerics: AlgaehActions
-    },
-    dispatch
-  );
-}
-
-export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(ActiveMedication)
-);
+export default ActiveMedication;

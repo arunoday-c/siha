@@ -46,7 +46,6 @@ class BasicSubjective extends Component {
       openAlergy: false,
       openExamnModal: null,
       chief_complaint: "",
-
       duration: null,
       significant_signs: "",
       other_signs: "",
@@ -72,35 +71,34 @@ class BasicSubjective extends Component {
   }
 
   getMasters() {
-    if (
-      this.props.assdeptanddoctors === undefined ||
-      this.props.assdeptanddoctors.length === 0
-    ) {
-      this.props.getDepartmentsandDoctors({
-        uri: "/department/get/get_All_Doctors_DepartmentWise",
-        module: "masterSettings",
-        method: "GET",
-        redux: {
-          type: "LAB_DEPT_DOCTOR_GET_DATA",
-          mappingName: "assdeptanddoctors"
-        }
-      });
-    }
-
-    if (
-      this.props.assservices === undefined ||
-      this.props.assservices.length === 0
-    ) {
-      this.props.getServices({
-        uri: "/serviceType/getService",
-        module: "masterSettings",
-        method: "GET",
-        redux: {
-          type: "SERVICES_GET_DATA",
-          mappingName: "assservices"
-        }
-      });
-    }
+    // if (
+    //   this.props.assdeptanddoctors === undefined ||
+    //   this.props.assdeptanddoctors.length === 0
+    // ) {
+    //   this.props.getDepartmentsandDoctors({
+    //     uri: "/department/get/get_All_Doctors_DepartmentWise",
+    //     module: "masterSettings",
+    //     method: "GET",
+    //     redux: {
+    //       type: "LAB_DEPT_DOCTOR_GET_DATA",
+    //       mappingName: "assdeptanddoctors"
+    //     }
+    //   });
+    // }
+    // if (
+    //   this.props.assservices === undefined ||
+    //   this.props.assservices.length === 0
+    // ) {
+    //   this.props.getServices({
+    //     uri: "/serviceType/getService",
+    //     module: "masterSettings",
+    //     method: "GET",
+    //     redux: {
+    //       type: "SERVICES_GET_DATA",
+    //       mappingName: "assservices"
+    //     }
+    //   });
+    // }
   }
   dropDownHandler(value) {
     this.setState({
@@ -410,10 +408,12 @@ class BasicSubjective extends Component {
       .map((details, key) => {
         const month = moment(key, "YYYYMMDD").format("MMM");
         const day = moment(key, "YYYYMMDD").format("DD");
+        const year = moment(key, "YYYYMMDD").format("YYYY");
         return {
           date: key,
           month: month,
           day: day,
+          year: year,
           details: details
         };
       })
@@ -559,7 +559,7 @@ class BasicSubjective extends Component {
                           />
 
                           <AlagehAutoComplete
-                            div={{ className: "col-4" }}
+                            div={{ className: "col-4 paddingLeft-0 " }}
                             label={{ forceLabel: "Interval", isImp: false }}
                             selector={{
                               name: "interval",
@@ -594,9 +594,9 @@ class BasicSubjective extends Component {
                             }}
                           />
                           <AlagehAutoComplete
-                            div={{ className: "col-4" }}
+                            div={{ className: "col-4  paddingRight-0 paddingLeft-0" }}
                             label={{
-                              forceLabel: "Complaint Type",
+                              forceLabel: "Comp. Type",
                               isImp: false
                             }}
                             selector={{
@@ -804,11 +804,11 @@ class BasicSubjective extends Component {
                 </div>
               </div>
 
-              <div className="col-5" style={{paddingLeft:0}}>
+              <div className="col-5" style={{ paddingLeft: 0 }}>
                 <div className="portlet portlet-bordered margin-bottom-15">
                   <div className="portlet-title">
                     <div className="caption">
-                      <h3 className="caption-subject">Active Medication</h3>
+                      <h3 className="caption-subject">Under Medication</h3>
                     </div>
 
                     <div className="actions">
@@ -825,22 +825,34 @@ class BasicSubjective extends Component {
                     <div className="activeMedication">
                       {recentMediction.map((item, index) => (
                         <div key={index} className="activeMedDateList">
-                          <div className="medcineDate"><span>{item.month}</span><h3>{item.day}</h3><span>Year</span></div>
+                          <div className="medcineDate">
+                            <span>{item.month}</span>
+                            <h3>{item.day}</h3>
+                            <span>{item.year}</span>
+                          </div>
                           <div className="medcineList">
-                             <ul>
+                            <ul>
                               {item.details.map((medicine, indexD) => (
                                 <li key={indexD}>
-                                    <b>{medicine.generic_name}</b>
-                                    {/* <small>({medicine.item_description})</small> */}
-                                    <small><span>4 ml</span> - <span>12 hourly (1-1-1)</span> * <span>5 days</span></small>
-                          
+                                  <b>
+                                    {medicine.item_description !== undefined
+                                      ? medicine.item_description.replace(
+                                          /\w+/g,
+                                          _.capitalize
+                                        )
+                                      : medicine.item_description}
+                                  </b>
+                                  {/* <small><span>4 ml</span> - <span>12 hourly (1-1-1)</span> * <span>5 days</span></small>*/}
+                                  <small>{medicine.instructions}</small>
                                 </li>
                               ))}
                             </ul>
                           </div>
-                          <div className="printOnHover"><span>Print Prescription</span></div>
                         </div>
                       ))}
+                      <div className="printOnHover">
+                        <span>Print Prescription</span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -933,8 +945,8 @@ class BasicSubjective extends Component {
 
 function mapStateToProps(state) {
   return {
-    assdeptanddoctors: state.assdeptanddoctors,
-    assservices: state.assservices,
+    //  assdeptanddoctors: state.assdeptanddoctors,
+    //  assservices: state.assservices,
     patient_diagnosis: state.patient_diagnosis,
     patient_diet: state.patient_diet
   };
@@ -943,8 +955,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getDepartmentsandDoctors: AlgaehActions,
-      getServices: AlgaehActions,
+      //  getDepartmentsandDoctors: AlgaehActions,
+      //getServices: AlgaehActions,
       getPatientDiagnosis: AlgaehActions,
       getPatientDiet: AlgaehActions
     },

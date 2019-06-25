@@ -1,3 +1,5 @@
+@import "../../styles/algaehCssVariables.scss";
+
 .appoPopupWidth {
 	.algaeh-modal {
 		width: 50vw;
@@ -9,12 +11,12 @@
 		overflow-x: auto;
 		overflow-y: hidden;
 		min-width: 96vw;
+		margin-top: 10px;
 	}
 	.appointment-inner-cntr {
 		min-width: 94vw !important;
 		span.noDoctor {
 			display: inline-block;
-
 			margin: auto;
 			width: 100%;
 			text-align: center;
@@ -25,17 +27,14 @@
 
 	.tg {
 		display: inline-block;
-		padding: 8px;
-		padding-bottom: 0;
-		padding-right: 0;
-		-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-		margin-bottom: 10px;
-		border-bottom: 1px solid #d3d3d3;
+		border: 1px solid #d3d3d3;
+		border-right: none;
 		background: #fff;
-		margin-right: 10px;
-		border-radius: 5px;
 		vertical-align: top;
+
+		&:last-child {
+			border-right: 1px solid #d3d3d3;
+		}
 
 		thead {
 			tr {
@@ -43,39 +42,36 @@
 				.tg-amwm {
 					overflow: hidden;
 					padding: 0;
-					border: 1px solid #b3823b;
-					color: #ffffff;
-					background: #dcac66;
+					color: lighten($color-black, 10%);
 					h6 {
 						font-weight: bold;
-
 						margin: 0;
-						border-bottom: 1px solid #c39554;
 						padding: 2px 0;
+						color: $primary-color;
 					}
 					p {
 						margin: 0;
-
-						background: #d2a25e;
-						border-top: 1px solid #e4b26b;
 						span {
 							display: block;
+							font-size: 0.75rem;
+							color: #8e8e8e;
+							line-height: 12px;
+							margin-bottom: 5px;
 						}
 					}
 				}
 				.tbl-subHdg {
 					text-transform: uppercase;
-
 					border: 1px solid #e2e2c8 !important;
-					background: #fffff4;
-					color: #5a5a5a;
+					font-size: 0.8rem;
 					padding: 0;
 					width: 120px;
+					font-weight: normal;
 				}
 			}
 		}
 		tbody {
-			height: 44vh;
+			height: 52vh;
 			overflow: auto;
 			display: grid;
 			td.tg-baqh {
@@ -220,7 +216,7 @@
 				position: absolute;
 				top: 2px;
 				left: 8px;
-
+				font-size: 0.8rem;
 				color: #7d7d7d;
 			}
 			i.fa-plus {
@@ -314,5 +310,9 @@
 	.highlightGrey {
 		background: #e4e4e4;
 		border: 1px solid #d3d3d3;
+	}
+	.inActiveSlotOpacity {
+		opacity: 0.3;
+		pointer-events: none;
 	}
 }
