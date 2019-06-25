@@ -260,7 +260,6 @@ const getCtrlCode = ($this, billcode) => {
 };
 
 const generateReceipt = $this => {
-  debugger;
   algaehApiCall({
     uri: "/report",
     method: "GET",

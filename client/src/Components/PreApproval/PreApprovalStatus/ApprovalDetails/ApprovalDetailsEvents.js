@@ -26,7 +26,6 @@ const texthandle = ($this, row, e) => {
 };
 
 const numberhandle = ($this, row, e) => {
-  debugger;
   const amount_from = _.find(
     $this.props.insurarProviders,
     f => f.hims_d_insurance_provider_id === $this.state.insurance_provider_id

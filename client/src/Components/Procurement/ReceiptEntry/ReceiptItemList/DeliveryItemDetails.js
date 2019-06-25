@@ -22,8 +22,6 @@ class DNItemList extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger;
-
     // this.setState({
     //   dn_from: nextProps.dn_from,
     //   dn_item_details: nextProps.dn_item_details
@@ -50,7 +48,6 @@ class DNItemList extends Component {
   };
 
   render() {
-    debugger;
     return (
       <React.Fragment>
         <div>

@@ -56,7 +56,6 @@ export default function SubjectiveHandler() {
       });
     },
     addChiefComplainToPatient: $this => {
-      debugger;
       if ($this.state.chief_complaint === null) {
         swalMessage({
           title: "Please Enter Chief Complaint . .",

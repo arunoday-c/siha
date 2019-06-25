@@ -141,7 +141,6 @@ class OrderingServices extends Component {
         mappingName: "existinginsurance"
       },
       afterSuccess: data => {
-        debugger;
         if (data.length > 0) {
           this.setState({
             insured: "Y",
@@ -172,7 +171,6 @@ class OrderingServices extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger;
     if (
       nextProps.existinginsurance !== undefined &&
       nextProps.existinginsurance.length !== 0
@@ -230,7 +228,7 @@ class OrderingServices extends Component {
   };
   render() {
     const insurance_id = this.state.insurance_provider_id;
-    debugger;
+
     return (
       <div className="hptl-phase1-ordering-services-form">
         <AlgaehModalPopUp
