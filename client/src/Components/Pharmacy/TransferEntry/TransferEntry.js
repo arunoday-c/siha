@@ -86,7 +86,6 @@ class TransferEntry extends Component {
       this.props.hims_f_pharamcy_material_header_id !== undefined &&
       this.props.hims_f_pharamcy_material_header_id.length !== 0
     ) {
-      debugger;
       getRequisitionDetails(
         this,
         this.props.hims_f_pharamcy_material_header_id,
@@ -203,49 +202,55 @@ class TransferEntry extends Component {
                   </div>
                 ) : (
                   <div className="col-4">
-                  <div className="row">
-                    <div className="col">
-                      <label>Transfer Type</label>
-                      <div
-                        className="customCheckbox"
-                        style={{ borderBottom: 0 }}
-                      >
-                        <label
-                          className="checkbox"
-                          style={{ color: "#212529" }}
+                    <div className="row">
+                      <div className="col">
+                        <label>Transfer Type</label>
+                        <div
+                          className="customCheckbox"
+                          style={{ borderBottom: 0 }}
                         >
-                          <input
-                            type="checkbox"
-                            name="direct_transfer"
-                            checked={
-                              this.state.direct_transfer === "Y" ? true : false
-                            }
-                            onChange={checkBoxEvent.bind(this, this)}
-                            disabled={this.state.dataExists}
-                          />
-                          <span>Direct Transfer</span>
-                        </label>
+                          <label
+                            className="checkbox"
+                            style={{ color: "#212529" }}
+                          >
+                            <input
+                              type="checkbox"
+                              name="direct_transfer"
+                              checked={
+                                this.state.direct_transfer === "Y"
+                                  ? true
+                                  : false
+                              }
+                              onChange={checkBoxEvent.bind(this, this)}
+                              disabled={this.state.dataExists}
+                            />
+                            <span>Direct Transfer</span>
+                          </label>
+                        </div>
                       </div>
+                      <AlagehAutoComplete
+                        div={{ className: "col-7" }}
+                        label={{ forceLabel: "From Location" }}
+                        selector={{
+                          name: "from_location_id",
+                          className: "select-fld",
+                          value: this.state.from_location_id,
+                          dataSource: {
+                            textField: "location_description",
+                            valueField: "hims_d_pharmacy_location_id",
+                            data: this.props.userwiselocations
+                          },
+                          onChange: LocationchangeTexts.bind(
+                            this,
+                            this,
+                            "From"
+                          ),
+                          others: {
+                            disabled: this.state.dataExists
+                          }
+                        }}
+                      />
                     </div>
-                    <AlagehAutoComplete
-                      div={{ className: "col-7" }}
-                      label={{ forceLabel: "From Location" }}
-                      selector={{
-                        name: "from_location_id",
-                        className: "select-fld",
-                        value: this.state.from_location_id,
-                        dataSource: {
-                          textField: "location_description",
-                          valueField: "hims_d_pharmacy_location_id",
-                          data: this.props.userwiselocations
-                        },
-                        onChange: LocationchangeTexts.bind(this, this, "From"),
-                        others: {
-                          disabled: this.state.dataExists
-                        }
-                      }}
-                    />
-                  </div>
                   </div>
                 )}
 

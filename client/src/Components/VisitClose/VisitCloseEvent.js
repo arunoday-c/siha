@@ -64,7 +64,7 @@ const SelectVisitToClose = ($this, row, e) => {
   let check_visit = _.filter(visitDetails, f => {
     return f.select == "Y";
   });
-  debugger;
+
   if (check_visit.length > 0) {
     saveEnable = false;
   }

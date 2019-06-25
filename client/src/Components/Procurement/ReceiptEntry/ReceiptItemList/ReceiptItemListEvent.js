@@ -363,10 +363,8 @@ const getDeliveryItemDetails = ($this, row) => {
     onSuccess: response => {
       if (response.data.success) {
         let data = response.data.records;
-        debugger;
-        if (data !== null && data !== undefined) {
-          debugger;
 
+        if (data !== null && data !== undefined) {
           $this.setState({
             dn_item_details: data,
             dn_item_enable: !$this.state.dn_item_enable

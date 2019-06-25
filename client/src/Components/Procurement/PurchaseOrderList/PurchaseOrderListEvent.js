@@ -33,7 +33,6 @@ const LocationchangeTexts = ($this, ctrl, e) => {
 };
 
 const getPurchaseOrderList = $this => {
-  debugger;
   let inpObj = { po_from: $this.state.po_from, status: $this.state.status };
 
   if ($this.state.from_date !== null) {
@@ -69,7 +68,7 @@ const getPurchaseOrderList = $this => {
             data[i].delivery_pending = true;
           }
         }
-        debugger;
+
         $this.setState({ purchase_list: data });
       }
     },

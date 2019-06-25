@@ -6,7 +6,7 @@ import {
   AlgaehLabel,
   AlagehFormGroup
 } from "../../../Wrapper/algaehWrapper";
-import { algaehApiCall } from "../../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import js2xml from "js2xmlparser";
 
 var obj = {
@@ -133,7 +133,12 @@ class ClaimSubmission extends Component {
           });
         }
       },
-      onFailure: err => {}
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
     });
 
     this.setState({

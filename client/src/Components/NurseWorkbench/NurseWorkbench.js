@@ -672,7 +672,6 @@ class NurseWorkbench extends Component {
 
   moveToStation(data, e) {
     this.resetSaveState();
-    debugger;
 
     this.isMale = data.gender === "Male" ? true : false;
     if (data.gender === "Male") {
@@ -784,7 +783,7 @@ class NurseWorkbench extends Component {
             toDate: this.state.toDate,
             activeDateHeader: this.state.fromDate
           };
-    debugger;
+
     let inputObj = { fromDate: dateRange.fromDate, toDate: dateRange.toDate };
     if (this.state.sub_department_id !== null) {
       inputObj.sub_department_id = this.state.sub_department_id;
@@ -799,7 +798,6 @@ class NurseWorkbench extends Component {
       method: "GET",
       cancelRequestId: "getNurseMyDay",
       onSuccess: response => {
-        debugger;
         if (response.data.success) {
           const _selecDate = new Date(dateRange.activeDateHeader).setDate(1);
 
@@ -846,7 +844,6 @@ class NurseWorkbench extends Component {
   }
 
   texthandle(e) {
-    debugger;
     if (
       this.state.patient_name === undefined ||
       this.state.patient_name === null

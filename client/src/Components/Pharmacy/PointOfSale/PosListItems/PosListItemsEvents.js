@@ -76,7 +76,6 @@ const UomchangeTexts = ($this, context, ctrl, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
-  debugger;
   if ($this.state.uom_id !== value) {
     let qtyhand = 0;
     let unit_cost = 0;
@@ -175,6 +174,33 @@ const numberchangeTexts = ($this, context, e) => {
     } else if (parseFloat(value) > parseFloat($this.state.qtyhand)) {
       swalMessage({
         title: "Quantity cannot be greater than Quantity in hand.",
+        type: "warning"
+      });
+      return;
+    } else {
+      $this.setState({ [name]: value });
+
+      clearInterval(texthandlerInterval);
+      texthandlerInterval = setInterval(() => {
+        if (context !== undefined) {
+          context.updateState({
+            [name]: value
+          });
+        }
+        clearInterval(texthandlerInterval);
+      }, 500);
+    }
+  }
+  if (name === "discount_percentage") {
+    if (parseFloat(value) < 0) {
+      swalMessage({
+        title: "Discount % cannot be less than Zero",
+        type: "warning"
+      });
+      return;
+    } else if (parseFloat(value) > 100) {
+      swalMessage({
+        title: "Discount % cannot be greater than 100.",
         type: "warning"
       });
       return;
@@ -996,7 +1022,6 @@ const calculateAmount = ($this, context, row, ctrl, e) => {
           onSuccess: response => {
             if (response.data.success) {
               let data_billing = response.data.records;
-              debugger;
 
               // data_billing.patient_payable_h = data_billing.patient_payable;
               // data_billing.sub_total =
@@ -1225,7 +1250,6 @@ const CloseItemBatch = ($this, context, e) => {
         : $this.state.sales_qtyhand
       : $this.state.sales_qtyhand;
 
-  debugger;
   $this.setState({
     ...$this.state,
     selectBatch: !$this.state.selectBatch,
@@ -1256,7 +1280,48 @@ const CloseItemBatch = ($this, context, e) => {
 const onchangegridcol = ($this, context, row, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
+  let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+  let _index = $this.state.pharmacy_stock_detail.indexOf(row);
 
+  if (name === "discount_percentage") {
+    if (parseFloat(value) > 100) {
+      swalMessage({
+        title: "Discount % cannot be greater than 100.",
+        type: "warning"
+      });
+      row[name] = 0;
+      // pharmacy_stock_detail[_index] = row;
+      return;
+    }
+    if (parseFloat(value) < 0) {
+      swalMessage({
+        title: "Discount % cannot be less than Zero",
+        type: "warning"
+      });
+      row[name] = 0;
+      // pharmacy_stock_detail[_index] = row;
+      return;
+    }
+  } else if (name === "discount_amount") {
+    if (parseFloat(value) < 0) {
+      swalMessage({
+        title: "Discount Amount cannot be less than Zero",
+        type: "warning"
+      });
+      row[name] = 0;
+      // pharmacy_stock_detail[_index] = row;
+      return;
+    }
+    if (parseFloat(row.extended_cost) < parseFloat(value)) {
+      swalMessage({
+        title: "Discount Amount cannot be greater than Gross Amount.",
+        type: "warning"
+      });
+      row[name] = 0;
+      // pharmacy_stock_detail[_index] = row;
+      return;
+    }
+  }
   row[name] = value;
   calculateAmount($this, context, row, e);
 };
@@ -1340,7 +1405,7 @@ const credittexthandle = ($this, context, ctrl, e) => {
 
 const SelectBatchDetails = ($this, row, context, e) => {
   //
-  debugger;
+
   let _pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
 
   row["batchno"] = e.selected.batchno;

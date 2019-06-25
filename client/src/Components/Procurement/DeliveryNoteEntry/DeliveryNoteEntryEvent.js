@@ -275,8 +275,6 @@ const SaveDNEnrty = $this => {
 
   let InputObj = extend({}, $this.state);
 
-  debugger;
-
   for (var j = 0; j < InputObj.po_entry_detail.length; j++) {
     if ($this.state.dn_from === "PHR") {
       if (
@@ -376,7 +374,6 @@ const SaveDNEnrty = $this => {
     }
   }
 
-  debugger;
   let item_grp = [];
   if ($this.state.dn_from === "PHR") {
     item_grp = _(InputObj.pharmacy_stock_detail)
@@ -499,7 +496,6 @@ const getCtrlCode = ($this, docNumber) => {
       if (response.data.success) {
         let data = response.data.records;
         let dn_entry_detail = [];
-        debugger;
 
         for (let i = 0; i < data.po_entry_detail.length; i++) {
           if (dn_entry_detail.length === 0) {

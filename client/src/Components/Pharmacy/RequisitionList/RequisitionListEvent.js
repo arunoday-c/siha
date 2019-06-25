@@ -87,7 +87,7 @@ const getRequisitionList = $this => {
             data[i].trans_pending = true;
           }
         }
-        debugger;
+
         $this.setState({ requisition_list: data });
       }
     },

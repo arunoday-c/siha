@@ -111,7 +111,6 @@ class PosListItems extends Component {
   }
 
   CloseEditModel(e) {
-    
     if (e === "refresh") {
       if (this.state.pos_customer_type === "OP") {
         getMedicationList(this);
@@ -731,7 +730,6 @@ class PosListItems extends Component {
                                           <AlagehFormGroup
                                             div={{}}
                                             textBox={{
-                                              decimal: { allowNegative: false },
                                               value: row.discount_percentage,
                                               className: "txt-fld",
                                               name: "discount_percentage",
@@ -747,7 +745,8 @@ class PosListItems extends Component {
                                                 onFocus: e => {
                                                   e.target.oldvalue =
                                                     e.target.value;
-                                                }
+                                                },
+                                                type: "number"
                                               }
                                             }}
                                           />
@@ -774,7 +773,6 @@ class PosListItems extends Component {
                                           <AlagehFormGroup
                                             div={{}}
                                             textBox={{
-                                              decimal: { allowNegative: false },
                                               value: row.discount_amount,
                                               className: "txt-fld",
                                               name: "discount_amount",
@@ -790,7 +788,8 @@ class PosListItems extends Component {
                                                 onFocus: e => {
                                                   e.target.oldvalue =
                                                     e.target.value;
-                                                }
+                                                },
+                                                type: "number"
                                               }
                                             }}
                                           />
