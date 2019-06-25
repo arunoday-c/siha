@@ -6,11 +6,10 @@ import swal from "sweetalert2";
 import moment from "moment";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import { setGlobal } from "../../../utils/GlobalFunctions";
-
+import _ from "lodash";
 export default function SubjectiveHandler() {
   return {
     dataLevelUpdate: ($this, e) => {
-      
       e = e.name === undefined ? e.currentTarget : e;
       let name = e.name || e.target.name;
       let value = "";
@@ -51,7 +50,6 @@ export default function SubjectiveHandler() {
       });
     },
     datehandle: ($this, ctrl, e) => {
-      
       const _durat_interval = dateDurationAndInterval(ctrl);
 
       $this.setState({
@@ -72,7 +70,22 @@ export default function SubjectiveHandler() {
         },
         onRowSelect: row => {
           if (diagType === "Final") {
-            insertFinalICDS($this, row);
+            const existingComplaints =
+              $this.props.patient_diagnosis === undefined
+                ? []
+                : $this.props.patient_diagnosis;
+            const isFind = _.find(
+              existingComplaints,
+              f => f.daignosis_id === row.hims_d_icd_id
+            );
+            if (isFind === undefined) {
+              insertFinalICDS($this, row);
+            } else {
+              swalMessage({
+                title: "Same diagnosis is alreday in use,con't add duplicate",
+                type: "info"
+              });
+            }
           } else if (diagType === "Intial") {
             // insertInitialICDS($this, row);
           }
@@ -80,11 +93,25 @@ export default function SubjectiveHandler() {
       });
     },
     onchangegridcol: ($this, row, from, e) => {
+      if (e.selected.value === "P" && row.diagnosis_type !== "P") {
+        const primaryExists = _.find(
+          $this.props.patient_diagnosis,
+          f => f.diagnosis_type === "P"
+        );
+        if (primaryExists !== undefined) {
+          swalMessage({
+            title: "Primary diagnosis already exists",
+            type: "info"
+          });
+          return;
+        }
+      }
+
       if (from === "Intial" && row.final_daignosis === "Y") {
         swalMessage({
           title:
             "Already selected as final diagnosis. If changes required change in final diagnosis",
-          type: "error"
+          type: "info"
         });
       } else {
         let name = e.name || e.target.name;
