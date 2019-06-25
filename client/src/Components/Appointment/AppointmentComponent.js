@@ -498,10 +498,10 @@ function AppointmentComponent(props) {
                       textBox={{
                         className: "txt-fld",
                         name: "patient_name",
-                        value: props.state.patient_name
-                        // events: {
-                        //   //onChange: props.texthandle
-                        // }
+                        value: props.state.patient_name,
+                        events: {
+                          onChange: props.texthandle
+                        }
                       }}
                     />
                     <AlagehFormGroup
@@ -515,10 +515,10 @@ function AppointmentComponent(props) {
                       textBox={{
                         className: "txt-fld",
                         name: "arabic_name",
-                        value: props.state.arabic_name
-                        // events: {
-                        //   //onChange: props.texthandle
-                        // }
+                        value: props.state.arabic_name,
+                        events: {
+                          onChange: props.texthandle
+                        }
                       }}
                     />
                   </div>

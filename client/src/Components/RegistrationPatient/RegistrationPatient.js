@@ -449,7 +449,14 @@ class RegistrationPatient extends Component {
                             popUpGenereted: true,
                             advanceEnable: false
                           },
-                          () => $this.props.updateAppointmentStatus()
+                          () => {
+                            if (
+                              typeof $this.props.updateAppointmentStatus ===
+                              "function"
+                            ) {
+                              $this.props.updateAppointmentStatus();
+                            }
+                          }
                         );
                         swalMessage({
                           title: "Done Successfully",
@@ -594,7 +601,14 @@ class RegistrationPatient extends Component {
                             existingPatient: true,
                             popUpGenereted: true
                           },
-                          () => $this.props.updateAppointmentStatus()
+                          () => {
+                            if (
+                              typeof $this.props.updateAppointmentStatus ===
+                              "function"
+                            ) {
+                              $this.props.updateAppointmentStatus();
+                            }
+                          }
                         );
                         swalMessage({
                           title: "Done Successfully",

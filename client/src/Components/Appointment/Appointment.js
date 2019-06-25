@@ -241,11 +241,13 @@ class Appointment extends PureComponent {
 
   clearSaveState() {
     this.setState({
+      title_id: "",
+      gender: "",
       patient_code: "",
       patient_name: "",
       arabic_name: "",
       date_of_birth: null,
-      age: "",
+      age: null,
       contact_number: "",
       email: "",
       appointment_remarks: ""
@@ -535,23 +537,17 @@ class Appointment extends PureComponent {
     if (value.name === "title_id" || value === "title_id") {
       this.handleTitle(value);
     }
-    console.log(value);
     this.setState({ [value.name]: value.value });
   }
 
   handleTitle(e) {
     let setGender = null;
-    console.log(e.value);
 
     if (!e.value) {
-      console.log("clearing");
-      this.setState(
-        {
-          gender: null,
-          [e.name]: null
-        },
-        () => console.log(this.state.gender)
-      );
+      this.setState({
+        gender: null,
+        [e.name]: null
+      });
     } else {
       if (e.selected.title === "Mr" || e.selected.title === "Master") {
         setGender = "Male";
@@ -697,8 +693,6 @@ class Appointment extends PureComponent {
     });
     // for new patient who are not yet registered
     if (!patient.patient_code && !patient.patient_id) {
-      console.log("From handle checkin", patient);
-      debugger;
       patient.patient_age = patient.age;
       patient.arabic_patient_name = patient.arabic_name;
       patient.patient_gender = patient.gender;
@@ -709,8 +703,6 @@ class Appointment extends PureComponent {
       delete patient.contact_number;
       delete patient.email;
       delete patient.arabic_name;
-      console.log("after handle checkin", patient);
-      debugger;
       return this.props.routeComponents(patient, data);
     }
     this.props.routeComponents(patient, data);
