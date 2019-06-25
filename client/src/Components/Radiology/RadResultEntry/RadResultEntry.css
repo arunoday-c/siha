@@ -55,7 +55,8 @@
     border-right: 1px solid #e1e1e1;
     padding-left: 10px;
     padding-right: 10px;
-    min-height: 57px; }
+    min-height: 57px;
+    max-width: 175px; }
     .RadResultEntryPopupInner .patientInfo-Top .patientHospitalDetail span {
       display: block; }
       .RadResultEntryPopupInner .patientInfo-Top .patientHospitalDetail span b {
