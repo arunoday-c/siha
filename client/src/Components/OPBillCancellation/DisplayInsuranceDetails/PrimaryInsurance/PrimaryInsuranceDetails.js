@@ -160,7 +160,7 @@ class AddInsuranceForm extends Component {
                 </h6>
               </div>
 
-              <div className="col-6">
+              {/*<div className="col-6">
                 <AlgaehLabel
                   label={{
                     fieldName: "card_holder_name"
@@ -171,7 +171,7 @@ class AddInsuranceForm extends Component {
                     ? this.state.card_holder_name
                     : "---"}
                 </h6>
-              </div>
+              </div>*/}
             </div>
           </div>
           <div className="col-6 secondary-details">

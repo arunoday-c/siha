@@ -13,44 +13,10 @@ import FrontDesk from "../../Search/FrontDesk.json";
 import AlgaehSearch from "../Wrapper/globalSearch";
 import swal from "sweetalert2";
 import AppointmentComponent from "./AppointmentComponent";
-import { generateTimeslotsForDoctor } from "./AppointmentHelper";
-
-const generateReport = ($this, rpt_name, rpt_desc) => {
-  debugger;
-  algaehApiCall({
-    uri: "/report",
-    method: "GET",
-    module: "reports",
-    headers: {
-      Accept: "blob"
-    },
-    others: { responseType: "blob" },
-    data: {
-      report: {
-        reportName: rpt_name,
-        reportParams: [
-          {
-            name: "hims_f_patient_appointment_id",
-            value: $this.hims_f_patient_appointment_id
-          }
-        ],
-        outputFileType: "PDF"
-      }
-    },
-    onSuccess: res => {
-      const url = URL.createObjectURL(res.data);
-      let myWindow = window.open(
-        "{{ product.metafields.google.custom_label_0 }}",
-        "_blank"
-      );
-
-      myWindow.document.write(
-        "<iframe src= '" + url + "' width='100%' height='100%' />"
-      );
-      myWindow.document.title = rpt_desc;
-    }
-  });
-};
+import {
+  generateTimeslotsForDoctor,
+  generateReport
+} from "./AppointmentHelper";
 
 class Appointment extends PureComponent {
   constructor(props) {
@@ -102,13 +68,23 @@ class Appointment extends PureComponent {
     // }
 
     if (x !== undefined && x !== null) {
-      this.setState({
-        sub_department_id: x.sub_dept_id,
-        provider_id: x.provider_id,
-        activeDateHeader: x.schedule_date,
-        doctors: x.doctors,
-        byPassValidation: true
-      });
+      this.setState(
+        {
+          sub_department_id: x.sub_dept_id,
+          provider_id: x.provider_id,
+          activeDateHeader: x.schedule_date,
+          doctors: x.doctors,
+          byPassValidation: true
+        },
+        () => {
+          if (this.props.fromRegistration) {
+            if (this.props.visitCreated) {
+              this.clearSaveState();
+            }
+            this.getAppointmentSchedule();
+          }
+        }
+      );
     }
   }
 
@@ -330,28 +306,11 @@ class Appointment extends PureComponent {
               method: "POST",
               data: send_data,
               onSuccess: response => {
-                console.log("from add appointment", response);
                 if (response.data.success) {
                   if (
                     send_data.appointment_status_id === this.state.checkInId
                   ) {
-                    setGlobal({
-                      "FD-STD": "RegistrationPatient",
-                      "appt-pat-code": this.state.patient_code,
-                      "appt-provider-id": this.state.apptProvider,
-                      "appt-dept-id": this.state.apptSubDept,
-                      "appt-pat-name": this.state.patient_name,
-                      "appt-pat-arabic-name": this.state.arabic_name,
-                      "appt-pat-dob": this.state.date_of_birth,
-                      "appt-pat-age": this.state.age,
-                      "appt-pat-gender": this.state.gender,
-                      "appt-pat-ph-no": this.state.contact_number,
-                      "appt-pat-email": this.state.email,
-                      "appt-department-id": this.state.department_id,
-                      "appt-title-id": this.state.title_id
-                    });
-
-                    document.getElementById("fd-router").click();
+                    this.handleCheckIn(send_data);
                   } else {
                     this.clearSaveState();
                     swalMessage({
@@ -703,10 +662,35 @@ class Appointment extends PureComponent {
 
   handlePatient(patient, data, e) {
     if (data.hims_d_appointment_status_id === this.state.checkInId) {
-      this.props.goToCheckedIn(patient);
+      this.handleCheckIn(patient, data);
     } else {
       this.openEditModal(patient, data, e);
     }
+  }
+
+  handleCheckIn(patient, data) {
+    setGlobal({
+      "FD-STD": "RegistrationPatient"
+    });
+    // for new patient who are not yet registered
+    if (!patient.patient_code && !patient.patient_id) {
+      console.log("From handle checkin", patient);
+      debugger;
+      patient.patient_age = patient.age;
+      patient.arabic_patient_name = patient.arabic_name;
+      patient.patient_gender = patient.gender;
+      patient.patient_phone = patient.contact_number;
+      patient.patient_email = patient.email;
+      delete patient.age;
+      delete patient.gender;
+      delete patient.contact_number;
+      delete patient.email;
+      delete patient.arabic_name;
+      console.log("after handle checkin", patient);
+      debugger;
+      return this.props.routeComponents(patient, data);
+    }
+    this.props.routeComponents(patient, data);
   }
 
   openEditModal(patient, data, e) {
@@ -751,39 +735,37 @@ class Appointment extends PureComponent {
       if (data === null) {
         openPatEdit = true;
       }
-      this.setState({ patToEdit: patient, openPatEdit: openPatEdit }, () => {
-        let { patToEdit: pat_edit } = this.state;
-        this.setState(
-          {
-            edit_appointment_status_id: pat_edit.appointment_status_id,
-            edit_appt_date: pat_edit.appointment_date,
-            edit_appt_time: pat_edit.appointment_from_time,
-            edit_contact_number: pat_edit.contact_number,
-            edit_patient_name: pat_edit.patient_name,
-            edit_arabic_name: pat_edit.arabic_name,
-            edit_date_of_birth: pat_edit.date_of_birth,
-            edit_age: pat_edit.age,
-            edit_gender: pat_edit.gender,
-            edit_email: pat_edit.email,
-            edit_appointment_remarks: pat_edit.appointment_remarks,
-            edit_appointment_id: pat_edit.hims_f_patient_appointment_id,
-            edit_provider_id: pat_edit.provider_id,
-            edit_patient_id: pat_edit.patient_id,
-            edit_from_time: pat_edit.appointment_from_time,
-            edit_sub_dep_id: pat_edit.sub_department_id,
-            edit_appointment_date: pat_edit.appointment_date,
-            patient_code: pat_edit.patient_code,
-            edit_no_of_slots: pat_edit.number_of_slot,
-            edit_is_stand_by: pat_edit.is_stand_by,
-            edit_title_id: pat_edit.title_id
-          },
-          () => {
-            if (data !== null) {
-              this.updatePatientAppointment(data);
-            }
+      this.setState(
+        {
+          openPatEdit,
+          edit_appointment_status_id: patient.appointment_status_id,
+          edit_appt_date: patient.appointment_date,
+          edit_appt_time: patient.appointment_from_time,
+          edit_contact_number: patient.contact_number,
+          edit_patient_name: patient.patient_name,
+          edit_arabic_name: patient.arabic_name,
+          edit_date_of_birth: patient.date_of_birth,
+          edit_age: patient.age,
+          edit_gender: patient.gender,
+          edit_email: patient.email,
+          edit_appointment_remarks: patient.appointment_remarks,
+          edit_appointment_id: patient.hims_f_patient_appointment_id,
+          edit_provider_id: patient.provider_id,
+          edit_patient_id: patient.patient_id,
+          edit_from_time: patient.appointment_from_time,
+          edit_sub_dep_id: patient.sub_department_id,
+          edit_appointment_date: patient.appointment_date,
+          patient_code: patient.patient_code,
+          edit_no_of_slots: patient.number_of_slot,
+          edit_is_stand_by: patient.is_stand_by,
+          edit_title_id: patient.title_id
+        },
+        () => {
+          if (data !== null) {
+            this.updatePatientAppointment(data);
           }
-        );
-      });
+        }
+      );
     }
   }
 
@@ -861,39 +843,15 @@ class Appointment extends PureComponent {
                 data: edit_details,
                 onSuccess: response => {
                   if (response.data.success) {
-                    if (
-                      edit_details.appointment_status_id ===
-                      this.state.checkInId
-                    ) {
-                      setGlobal({
-                        "FD-STD": "RegistrationPatient",
-                        "appt-pat-code": this.state.patient_code,
-                        "appt-provider-id": this.state.edit_provider_id,
-                        "appt-dept-id": this.state.edit_sub_dep_id,
-                        "appt-pat-name": this.state.edit_patient_name,
-                        "appt-pat-arabic-name": this.state.edit_arabic_name,
-                        "appt-pat-dob": this.state.edit_date_of_birth,
-                        "appt-pat-age": this.state.edit_age,
-                        "appt-pat-gender": this.state.edit_gender,
-                        "appt-pat-ph-no": this.state.edit_contact_number,
-                        "appt-pat-email": this.state.edit_email,
-                        "appt-department-id": this.state.department_id,
-                        "appt-id": this.state.edit_appointment_id,
-                        "appt-title-id": this.state.edit_title_id
-                      });
-
-                      document.getElementById("fd-router").click();
-                    } else {
-                      this.clearSaveState();
-                      swalMessage({
-                        title: "Appointment Updated Successfully",
-                        type: "success"
-                      });
-                      this.setState({
-                        openPatEdit: false
-                      });
-                      this.getAppointmentSchedule();
-                    }
+                    this.clearSaveState();
+                    swalMessage({
+                      title: "Appointment Updated Successfully",
+                      type: "success"
+                    });
+                    this.setState({
+                      openPatEdit: false
+                    });
+                    this.getAppointmentSchedule();
                   }
                 },
                 onFailure: error => {

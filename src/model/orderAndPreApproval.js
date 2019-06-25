@@ -1085,7 +1085,7 @@ let insertInvOrderedServices = (req, res, next) => {
                     printQuery: true
                   })
                   .then(result => {
-                    // _mysql.releaseConnection();
+                    _mysql.releaseConnection();
                     req.body.inventory_stock_detail = input.billdetails;
                     req.records = result;
                     next();
@@ -1095,7 +1095,7 @@ let insertInvOrderedServices = (req, res, next) => {
                     next(error);
                   });
               } else {
-                // _mysql.releaseConnection();
+                _mysql.releaseConnection();
                 req.body.inventory_stock_detail = input.billdetails;
                 req.records = { resultOrder, ResultOfFetchOrderIds };
                 next();
@@ -1110,7 +1110,7 @@ let insertInvOrderedServices = (req, res, next) => {
               next(error);
             });
         } else {
-          // _mysql.releaseConnection();
+          _mysql.releaseConnection();
           req.body.inventory_stock_detail = input.billdetails;
           req.records = { resultOrder, ResultOfFetchOrderIds };
           next();
