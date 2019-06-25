@@ -141,6 +141,7 @@ class OrderingServices extends Component {
         mappingName: "existinginsurance"
       },
       afterSuccess: data => {
+        debugger;
         if (data.length > 0) {
           this.setState({
             insured: "Y",
@@ -171,6 +172,7 @@ class OrderingServices extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    debugger;
     if (
       nextProps.existinginsurance !== undefined &&
       nextProps.existinginsurance.length !== 0
@@ -228,6 +230,7 @@ class OrderingServices extends Component {
   };
   render() {
     const insurance_id = this.state.insurance_provider_id;
+    debugger;
     return (
       <div className="hptl-phase1-ordering-services-form">
         <AlgaehModalPopUp
@@ -235,7 +238,8 @@ class OrderingServices extends Component {
             onClose: this.onClose.bind(this)
           }}
           title="Order Services"
-          openPopup={this.props.open}>
+          openPopup={this.props.open}
+        >
           <div className="popupInner">
             <div className="col-lg-12">
               {this.state.insured === "Y" ? (
@@ -365,7 +369,8 @@ class OrderingServices extends Component {
                     className="btn btn-primary"
                     style={{ marginTop: 19 }}
                     onClick={ProcessService.bind(this, this)}
-                    disabled={this.state.addNewService}>
+                    disabled={this.state.addNewService}
+                  >
                     Add New Service
                   </button>
                 </div>
@@ -762,7 +767,8 @@ class OrderingServices extends Component {
                       <button
                         className="btn btn-primary"
                         onClick={SaveOrdersServices.bind(this, this)}
-                        disabled={this.state.saved}>
+                        disabled={this.state.saved}
+                      >
                         Save
                       </button>
                     </span>
