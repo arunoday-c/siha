@@ -16,7 +16,6 @@ const texthandle = ($this, ctrl, e) => {
 };
 
 const selectItemHandeler = ($this, e) => {
-  
   $this.setState({
     item_description: e.item_description,
     inventory_item_id: e.hims_d_inventory_item_master_id,
@@ -29,14 +28,13 @@ const selectItemHandeler = ($this, e) => {
     qtyhand: e.qtyhand,
     uom_id: e.sales_uom,
     item_category_id: e.category_id,
-    item_group_id: e.group_id
+    item_group_id: e.group_id,
+    unit_cost: e.sale_price
   });
 };
 
 //Process and gets selectd service data with all calculation
 const ProcessService = ($this, e) => {
-  
-
   if ($this.state.inventory_item_id !== null) {
     let preserviceInput = $this.state.preserviceInput || [];
     let serviceInput = [
@@ -55,7 +53,8 @@ const ProcessService = ($this, e) => {
         secondary_network_office_id: $this.state.secondary_network_office_id,
         approval_amt: $this.state.approval_amt,
         approval_limit_yesno: $this.state.approval_limit_yesno,
-        preapp_limit_amount: $this.state.preapp_limit_amount
+        preapp_limit_amount: $this.state.preapp_limit_amount,
+        unit_cost: $this.state.unit_cost
       }
     ];
 
@@ -66,7 +65,6 @@ const ProcessService = ($this, e) => {
       data: serviceInput,
       onSuccess: response => {
         if (response.data.success) {
-          
           let data = response.data.records;
           if (
             data.billdetails[0].preapp_limit_exceed === "Y" &&
@@ -442,7 +440,6 @@ const SaveOrdersServices = ($this, e) => {
     // module: "clicnicalDesk",
     method: "POST",
     onSuccess: response => {
-      
       if (response.data.success === true) {
         $this.state.transaction_type = "CS";
         $this.state.location_id = $this.state.inventory_location_id;

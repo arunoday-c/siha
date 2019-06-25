@@ -470,7 +470,7 @@ class Appointment extends PureComponent {
                         : null,
                     width:
                       response.data.records !== undefined
-                        ? 265 * response.data.records.length
+                        ? 253 * response.data.records.length
                         : 0
                   });
                 }
@@ -1349,10 +1349,10 @@ class Appointment extends PureComponent {
         : undefined;
 
     let brk_bg_color = data.mark_as_break
-      ? "1"
+      ? "activeSlotOpacity"
       : this.isInactiveTimeSlot(data.time)
-      ? "0.4"
-      : "1";
+      ? "inActiveSlotOpacity"
+      : "activeSlotOpacity";
 
     let bg_color =
       patient != null
@@ -1365,7 +1365,8 @@ class Appointment extends PureComponent {
 
     return (
       <tr
-        style={{ opacity: brk_bg_color, cursor: "pointer" }}
+        className={brk_bg_color}
+        style={{  cursor: "pointer" }}
         key={data.counter}
       >
         <td

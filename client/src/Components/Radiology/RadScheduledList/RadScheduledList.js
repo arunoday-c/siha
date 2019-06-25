@@ -370,7 +370,7 @@ class RadScheduledList extends Component {
                         displayTemplate: row => {
                           return (
                             <span>
-                              {row.test_type === "S" ? "Stat" : "Rotinue"}
+                              {row.test_type === "S" ? "Stat" : "Routine"}
                             </span>
                           );
                         },

@@ -1,86 +1,86 @@
 .activeMedication {
-	max-height: 20.6vh;
-	min-height: 21.6vh;
-	/* overflow: auto; */
-	overflow-y: auto;
-	overflow-x: hidden;
-	margin: 0 -5px;
-	.activeMedDateList {
-		border-bottom: 1px solid #ccc;
-		margin-bottom: 3px;
-		position: relative;
-		overflow: hidden;
-		.medcineDate {
-			background: #ccc;
-			width: 30px;
-			float: left;
-			text-align: center;
-			border-radius: 3px;
-			overflow: hidden;
-			margin-top: 4px;
-			span {
-				display: block;
-				font-size: 10px;
-				background: #dbad64;
-				color: #fff;
-				text-transform: uppercase;
-				font-weight: bold;
-				text-shadow: 1px solid rgba(0, 0, 0, 0.5);
-				&:last-child {
-					background: #bdbdbd;
-					font-size: 9px;
-					color: #000;
-					font-weight: normal;
-				}
-			}
-			h3 {
-				font-size: 18px;
-				margin: 0;
-				padding: 0;
-				text-shadow: 1px solid rgba(255, 255, 255, 1);
-			}
-		}
-		.medcineList {
-			float: none;
-			width: calc(100% - 40px);
-			margin-left: 40px;
-			ul {
-				list-style: none;
-				margin: 0;
-				padding: 0;
-				li {
-					border-bottom: 1px dashed rgb(236, 236, 236);
-					padding-bottom: 3px;
-					margin-bottom: 3px;
-					b {
-						display: block;
-						line-height: 15px;
-					}
-					small {
-						display: inline-block;
-					}
-					&:last-child {
-						border-bottom: none;
-					}
-				}
-			}
-		}
-		.printOnHover {
-			position: absolute;
-			text-align: center;
-			width: 100%;
-			bottom: 0;
-			background: #00a796;
-			padding: 5px;
-			color: #fff;
-			display: none;
-		}
-		&:hover {
-			.printOnHover {
-				display: block;
-				cursor: pointer;
-				background: #009182;
-			}
-		}
-	}
+  max-height: 20.6vh;
+  min-height: 21.6vh;
+  /* overflow: auto; */
+  overflow-y: auto;
+  overflow-x: hidden;
+  margin: 0 -5px;
+  .activeMedDateList {
+    // border-bottom: 1px solid #ccc;
+    margin-bottom: 3px;
+    position: relative;
+    overflow: hidden;
+    .medcineDate {
+      background: #ccc;
+      width: 30px;
+      float: left;
+      text-align: center;
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 4px;
+      span {
+        display: block;
+        font-size: 10px;
+        background: #dbad64;
+        color: #fff;
+        text-transform: uppercase;
+        font-weight: bold;
+        text-shadow: 1px solid rgba(0, 0, 0, 0.5);
+        &:last-child {
+          background: #bdbdbd;
+          font-size: 9px;
+          color: #000;
+          font-weight: normal;
+        }
+      }
+      h3 {
+        font-size: 18px;
+        margin: 0;
+        padding: 0;
+        text-shadow: 1px solid rgba(255, 255, 255, 1);
+      }
+    }
+    .medcineList {
+      float: none;
+      width: calc(100% - 40px);
+      margin-left: 40px;
+      ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        li {
+          border-bottom: 1px dashed rgb(236, 236, 236);
+          padding-bottom: 3px;
+          margin-bottom: 3px;
+          b {
+            display: block;
+            line-height: 15px;
+          }
+          small {
+            display: inline-block;
+          }
+          &:last-child {
+            border-bottom: none;
+          }
+        }
+      }
+    }
+  }
+  .printOnHover {
+    position: absolute;
+    text-align: center;
+    width: 100%;
+    bottom: 0;
+    background: #00a796;
+    padding: 5px;
+    color: #fff;
+    display: none;
+  }
+  &:hover {
+    .printOnHover {
+      display: block;
+      cursor: pointer;
+      background: #009182;
+    }
+  }
 }

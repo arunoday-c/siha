@@ -226,7 +226,7 @@ class SampleCollectionPatient extends PureComponent {
                                     <span>
                                       {row.test_type === "S"
                                         ? "Stat"
-                                        : "Rotinue"}
+                                        : "Routine"}
                                     </span>
                                   );
                                 },

@@ -145,7 +145,8 @@ class OrderConsumables extends Component {
         this.setState({
           inventory_location_id: nextProps.inventory_location_id,
           location_name: Location_name[0].location_description,
-          location_type: Location_name[0].location_type
+          location_type: Location_name[0].location_type,
+          insured: "N"
         });
       }
     }
@@ -208,6 +209,27 @@ class OrderConsumables extends Component {
         >
           <div className="popupInner">
             <div className="col-lg-12">
+              {this.state.insured === "Y" ? (
+                <div className="row legendCntr">
+                  <div className="col">
+                    <small>
+                      <span className="legendSpan orange_Y_Y" />
+                      <span>
+                        Ins. Covered: <b>Yes</b>, Pre Approval: <b>Yes</b>
+                      </span>
+                      <span className="legendSpan green_Y_N" />
+                      <span>
+                        Ins. Covered: <b>Yes</b>, Pre Approval: <b>No</b>
+                      </span>
+                      <span className="legendSpan red_N_N" />
+                      <span>
+                        Ins. Covered: <b>No</b>, Pre Approval: <b>--</b>
+                      </span>
+                    </small>
+                  </div>
+                  <hr />
+                </div>
+              ) : null}
               <div className="row">
                 <AlgaehAutoSearch
                   div={{ className: "col-3" }}
@@ -221,12 +243,19 @@ class OrderConsumables extends Component {
                           <div className="col-8">
                             <h4 className="title">{result.item_description}</h4>
                             <h5>
-                              {result.batchno} /{result.expirydt}
+                              {result.barcode} /{result.expirydt}
                             </h5>
                             <small>
                               Covered: {result.covered === "Y" ? "Yes" : "No"}
                               Pre Approval:
                               {result.pre_approval === "Y" ? "Yes" : "No"}
+                            </small>
+                            <small>
+                              Qty in Hand:
+                              {result.inventory_location_id ===
+                              this.state.inventory_location_id
+                                ? result.qtyhand
+                                : 0}
                             </small>
                           </div>
                         </div>
@@ -238,8 +267,7 @@ class OrderConsumables extends Component {
                   displayField="item_description"
                   value={this.state.item_description}
                   extraParameters={{
-                    insurance_id: this.state.insurance_provider_id,
-                    inventory_location_id: this.state.inventory_location_id
+                    insurance_id: this.state.insurance_provider_id
                   }}
                   searchName="insitemmaster"
                   onClick={selectItemHandeler.bind(this, this)}

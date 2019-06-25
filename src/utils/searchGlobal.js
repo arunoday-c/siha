@@ -513,21 +513,22 @@ let algaehSearchConfig = (searchName, req) => {
         searchQuery:
           "select SQL_CALC_FOUND_ROWS hims_d_inventory_item_master_id, item_description, \
             service_id as services_id,'N' as covered,'N' as pre_approval,IL.batchno,\
-            IL.expirydt,IL.barcode,IL.qtyhand,IL.sales_uom,category_id,group_id,IL.grnno,IL.sale_price \
+            IL.expirydt,IL.barcode,IL.qtyhand,IL.sales_uom,category_id,group_id,IL.grnno,IL.sale_price,\
+            IL.inventory_location_id \
             from hims_d_inventory_item_master I, hims_m_inventory_item_location IL \
             where service_id not in (SELECT services_id FROM hims_d_services_insurance where \
             insurance_id=? and {mapper}) and \
-            I.hims_d_inventory_item_master_id = IL.item_id and {mapper} and IL.inventory_location_id=?\
+            I.hims_d_inventory_item_master_id = IL.item_id and {mapper}\
             union \
             SELECT IM.hims_d_inventory_item_master_id,service_name as item_description,\
             services_id,covered,\
             pre_approval, ITL.batchno, ITL.expirydt,ITL.barcode, ITL.qtyhand,ITL.sales_uom,\
-            category_id,group_id,ITL.grnno, ITL.sale_price FROM \
+            category_id,group_id,ITL.grnno, ITL.sale_price,ITL.inventory_location_id FROM \
             hims_d_services_insurance INS, hims_d_inventory_item_master IM, hims_m_inventory_item_location \
             ITL where INS.services_id = IM.service_id and IM.hims_d_inventory_item_master_id = ITL.item_id and \
             insurance_id=? and {mapper} and service_type_id=4",
         orderBy: "services_id desc",
-        inputSequence: ["insurance_id", "inventory_location_id", "insurance_id"]
+        inputSequence: ["insurance_id", "insurance_id"]
       },
       {
         searchName: "pharmacyUsers",
@@ -552,7 +553,8 @@ let algaehSearchConfig = (searchName, req) => {
           "select SQL_CALC_FOUND_ROWS item_code,item_description,generic_id,category_id,group_id,form_id,sfda_code,S.storage_description,\
           item_uom_id,sales_price , \
 	        IM.service_id, \
-	        IM.sales_uom_id,IM.hims_d_item_master_id , G.generic_name from hims_d_item_master as IM  inner join hims_d_item_generic as G  \
+	        IM.sales_uom_id,IM.hims_d_item_master_id , G.generic_name ,concat(G.generic_name,' => ',item_description) as generic_name_item_description \
+          from hims_d_item_master as IM  inner join hims_d_item_generic as G  \
           on G.hims_d_item_generic_id = IM.generic_id left join \
           hims_d_item_storage as S on IM.storage_id = S.hims_d_item_storage_id where IM.item_status ='A'",
         orderBy: "hims_d_item_master_id desc"

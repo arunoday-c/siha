@@ -666,7 +666,7 @@ class InvoiceGeneration extends Component {
                           </h6>
                         </div>
 
-                        <div className="col-4">
+                        {/*<div className="col-4">
                           <AlgaehLabel
                             label={{
                               fieldName: "card_holder_name"
@@ -677,7 +677,7 @@ class InvoiceGeneration extends Component {
                               ? this.state.card_holder_name
                               : "---"}
                           </h6>
-                        </div>
+                        </div>*/}
                       </div>
                     </div>
                     {/* <div className="col-12">

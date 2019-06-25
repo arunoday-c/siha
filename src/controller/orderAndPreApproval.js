@@ -87,7 +87,7 @@ export default ({ config, db }) => {
   //created by Nowshad :to get Ordered Services which to bill
   api.get(
     "/selectOrderServices",
-    selectOrderServices,
+    load_orders_for_bill,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

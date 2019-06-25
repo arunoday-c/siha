@@ -219,6 +219,7 @@ const getCtrlCode = ($this, billcode) => {
 
         data.Billexists = true;
         data.saveEnable = true;
+        data.mode_of_pay = data.insured === "Y" ? "Insured" : "Self";
 
         if (data.receiptdetails.length !== 0) {
           for (let i = 0; i < data.receiptdetails.length; i++) {
@@ -227,6 +228,21 @@ const getCtrlCode = ($this, billcode) => {
               data.cash_amount = data.receiptdetails[i].amount;
             }
           }
+        }
+        if (data.insured === "Y") {
+          $this.props.getPatientInsurance({
+            uri: "/patientRegistration/getPatientInsurance",
+            module: "frontDesk",
+            method: "GET",
+            data: {
+              patient_id: data.patient_id,
+              patient_visit_id: data.visit_id
+            },
+            redux: {
+              type: "EXIT_INSURANCE_GET_DATA",
+              mappingName: "existinsurance"
+            }
+          });
         }
 
         $this.setState(data);
@@ -243,10 +259,48 @@ const getCtrlCode = ($this, billcode) => {
   });
 };
 
+const generateReceipt = $this => {
+  debugger;
+  algaehApiCall({
+    uri: "/report",
+    method: "GET",
+    module: "reports",
+    headers: {
+      Accept: "blob"
+    },
+    others: { responseType: "blob" },
+    data: {
+      report: {
+        reportName: "opCancelReceipt",
+        reportParams: [
+          {
+            name: "hims_f_bill_cancel_header_id",
+            value: $this.state.hims_f_bill_cancel_header_id
+          }
+        ],
+        outputFileType: "PDF"
+      }
+    },
+    onSuccess: res => {
+      const url = URL.createObjectURL(res.data);
+      let myWindow = window.open(
+        "{{ product.metafields.google.custom_label_0 }}",
+        "_blank"
+      );
+
+      myWindow.document.write(
+        "<iframe src= '" + url + "' width='100%' height='100%' />"
+      );
+      myWindow.document.title = "Receipt";
+    }
+  });
+};
+
 export {
   ClearData,
   Validations,
   getCashiersAndShiftMAP,
   getBillDetails,
-  getCtrlCode
+  getCtrlCode,
+  generateReceipt
 };
