@@ -541,7 +541,7 @@ function AppointmentComponent(props) {
 
                     <AlagehFormGroup
                       div={{
-                        className: "col-3  form-group mandatory"
+                        className: "col-2  form-group mandatory"
                       }}
                       label={{
                         fieldName: "age",
@@ -583,7 +583,7 @@ function AppointmentComponent(props) {
 
                     <AlagehAutoComplete
                       div={{
-                        className: "col-3 form-group mandatory AutoCompleteRight"
+                        className: "col-4 form-group mandatory AutoCompleteRight"
                       }}
                       label={{
                         fieldName: "selectStatus",
@@ -788,7 +788,7 @@ function AppointmentComponent(props) {
                 border: "none"
               }}>
               {/* Portlet Top Bar Start */}
-              <div className="portlet-title">
+              <div className="portlet-title" style={{margin:"-10px -15px 0"}}>
                 <div className="caption">
                   <h3 className="caption-subject">
                     {getLabelFromLanguage({
@@ -806,7 +806,7 @@ function AppointmentComponent(props) {
                                 backgroundColor: data.color_code
                               }}
                             />
-                            {data.description}
+                            {data.statusDesc}
                           </li>
                         ))
                       : null}
@@ -830,8 +830,8 @@ function AppointmentComponent(props) {
                               <th className="tg-amwm" colSpan="2">
                                 <h6>{data.doctor_name}</h6>
                                 <p>
-                                  <span>{data.sub_department_name}</span>
-                                  <span>{data.clinic_name}</span>
+                                  {/* <span>{data.sub_department_name}</span> */}
+                                  {/* <span>{data.clinic_name}</span> */}
                                   <span>
                                     {getLabelFromLanguage({
                                       fieldName: "roomNo"

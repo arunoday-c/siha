@@ -559,7 +559,7 @@ class BasicSubjective extends Component {
                           />
 
                           <AlagehAutoComplete
-                            div={{ className: "col-4" }}
+                            div={{ className: "col-4 paddingLeft-0 " }}
                             label={{ forceLabel: "Interval", isImp: false }}
                             selector={{
                               name: "interval",
@@ -594,9 +594,9 @@ class BasicSubjective extends Component {
                             }}
                           />
                           <AlagehAutoComplete
-                            div={{ className: "col-4" }}
+                            div={{ className: "col-4  paddingRight-0 paddingLeft-0" }}
                             label={{
-                              forceLabel: "Complaint Type",
+                              forceLabel: "Comp. Type",
                               isImp: false
                             }}
                             selector={{

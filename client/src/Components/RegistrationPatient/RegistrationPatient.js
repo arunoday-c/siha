@@ -792,12 +792,12 @@ class RegistrationPatient extends Component {
           }
           printArea={{
             menuitems: [
-              {
-                label: "Print Bar Code",
-                events: {
-                  onClick: this.printBarCodeHandler.bind(this)
-                }
-              },
+              // {
+              //   label: "Print Bar Code",
+              //   events: {
+              //     onClick: this.printBarCodeHandler.bind(this)
+              //   }
+              // },
 
               {
                 label: "ID Card",
@@ -999,12 +999,12 @@ class RegistrationPatient extends Component {
                 Print Card
               </button>
 
-              <button
+              {/* <button
                 className="btn btn-default"
                 // onClick={closePopup.bind(this, this, "")}
               >
                 Print Barcode
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
