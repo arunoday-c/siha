@@ -7,9 +7,7 @@ import {
   AlgaehDateHandler,
   AlgaehModalPopUp
 } from "../Wrapper/algaehWrapper";
-import {
-  getLabelFromLanguage
-} from "../../utils/GlobalFunctions";
+import { getLabelFromLanguage } from "../../utils/GlobalFunctions";
 import GlobalVariables from "../../utils/GlobalVariables";
 import "./appointment.css";
 
@@ -30,11 +28,13 @@ function AppointmentComponent(props) {
               events={{
                 onClose: props.handleClose
               }}
-              openPopup={props.state.openPatEdit}>
+              openPopup={props.state.openPatEdit}
+            >
               <div
                 className="col-lg-12"
                 //   style={{ width: "55vw" }}
-                data-validate="editApptDiv">
+                data-validate="editApptDiv"
+              >
                 {/* <div className="popupHeader">
                     <div className="row">
                       <div className="col-lg-8">
@@ -100,7 +100,7 @@ function AppointmentComponent(props) {
                       <AlagehAutoComplete
                         div={{ className: "col-3 form-group mandatory" }}
                         label={{
-                          fieldName: "appoTime",
+                          fieldName: "appoTime"
                           // isImp: true
                         }}
                         selector={{
@@ -112,9 +112,10 @@ function AppointmentComponent(props) {
                             valueField: "value",
                             data: props.state.timeSlots
                           },
-                          onChange: props.dropDownHandle
+                          onChange: props.dropDownHandle,
+                          sort: false
                         }}
-                        />
+                      />
                       <AlagehAutoComplete
                         div={{ className: "col-2 form-group mandatory " }}
                         label={{
@@ -352,7 +353,8 @@ function AppointmentComponent(props) {
                     <button
                       onClick={() => props.updatePatientAppointment(null)}
                       type="button"
-                      className="btn btn-primary">
+                      className="btn btn-primary"
+                    >
                       {getLabelFromLanguage({
                         fieldName: "btn_update"
                       })}
@@ -360,7 +362,8 @@ function AppointmentComponent(props) {
                     <button
                       onClick={props.handleClose}
                       type="button"
-                      className="btn btn-other">
+                      className="btn btn-other"
+                    >
                       {getLabelFromLanguage({
                         fieldName: "btn_close"
                       })}
@@ -380,7 +383,8 @@ function AppointmentComponent(props) {
               events={{
                 onClose: props.handleClose
               }}
-              openPopup={props.state.showApt}>
+              openPopup={props.state.showApt}
+            >
               <div className="popupInner" data-validate="addApptDiv">
                 <div className="col-12 popRightDiv">
                   <div className="row">
@@ -422,17 +426,15 @@ function AppointmentComponent(props) {
                           // onChange: props.texthandle
                         }
                       }}
+                    />
+
+                    <div className="col-1  print_actions">
+                      <span
+                        className="fas fa-search globalSearchIconStyle"
+                        onClick={props.patientSearch}
                       />
-                      
-   <div className="col-1  print_actions">
-                        <span
-                          className="fas fa-search globalSearchIconStyle"
-                           onClick={props.patientSearch}
-                        />
-                      </div>
+                    </div>
 
-
-                 
                     <AlagehAutoComplete
                       div={{
                         className: "col-3  form-group mandatory"
@@ -583,7 +585,8 @@ function AppointmentComponent(props) {
 
                     <AlagehAutoComplete
                       div={{
-                        className: "col-3 form-group mandatory AutoCompleteRight"
+                        className:
+                          "col-3 form-group mandatory AutoCompleteRight"
                       }}
                       label={{
                         fieldName: "selectStatus",
@@ -597,7 +600,6 @@ function AppointmentComponent(props) {
                           textField: "statusDesc",
                           valueField: "hims_d_appointment_status_id",
                           data: props.state.appointmentStatus
-                          
                         }
                       }}
                     />
@@ -672,7 +674,8 @@ function AppointmentComponent(props) {
                   <button
                     onClick={props.addPatientAppointment}
                     type="button"
-                    className="btn btn-primary">
+                    className="btn btn-primary"
+                  >
                     {getLabelFromLanguage({
                       fieldName: "btn_save"
                     })}
@@ -680,7 +683,8 @@ function AppointmentComponent(props) {
                   <button
                     onClick={props.handleClose}
                     type="button"
-                    className="btn btn-other">
+                    className="btn btn-other"
+                  >
                     {getLabelFromLanguage({
                       fieldName: "btn_close"
                     })}
@@ -742,7 +746,7 @@ function AppointmentComponent(props) {
                   },
                   onChange: props.deptDropDownHandler,
                   onClear: () => props.nullifyState("sub_department_id"),
-                      autoComplete: "off"
+                  autoComplete: "off"
                 }}
               />
 
@@ -762,7 +766,7 @@ function AppointmentComponent(props) {
                   },
                   onChange: props.dropDownHandle,
                   onClear: () => props.nullifyState("provider_id"),
-                      autoComplete: "off"
+                  autoComplete: "off"
                 }}
               />
 
@@ -771,7 +775,8 @@ function AppointmentComponent(props) {
                   id="load-appt-sch"
                   type="submit"
                   onClick={props.getAppointmentSchedule}
-                  className="btn btn-primary">
+                  className="btn btn-primary"
+                >
                   {getLabelFromLanguage({ fieldName: "loadData" })}
                 </button>
               </div>
@@ -786,7 +791,8 @@ function AppointmentComponent(props) {
                 background: "none",
                 boxShadow: "none",
                 border: "none"
-              }}>
+              }}
+            >
               {/* Portlet Top Bar Start */}
               <div className="portlet-title">
                 <div className="caption">
@@ -806,7 +812,7 @@ function AppointmentComponent(props) {
                                 backgroundColor: data.color_code
                               }}
                             />
-                            {data.description}
+                            {data.statusDesc}
                           </li>
                         ))
                       : null}
@@ -819,7 +825,8 @@ function AppointmentComponent(props) {
                 <div className="appointment-outer-cntr">
                   <div
                     className="appointment-inner-cntr"
-                    style={{ width: props.state.width }}>
+                    style={{ width: props.state.width }}
+                  >
                     {/* Table Start */}
                     {props.state.appointmentSchedule.length !== 0 ? (
                       props.state.appointmentSchedule.map((data, index) => (

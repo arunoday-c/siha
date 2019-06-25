@@ -71,16 +71,22 @@ class RegistrationPatient extends Component {
     let IOputs = emptyObject;
     IOputs.selectedLang = prevLang;
     this.setState(IOputs);
-
     if (
       this.props.patient_code !== undefined &&
       this.props.patient_code.length !== 0
     ) {
       this.getCtrlCode(this.props.patient_code);
-    } else if (this.props.patient_details !== undefined) {
+    } else {
+      const { patient_details } = this.props;
       this.setState(
         {
-          ...this.props.patient_details,
+          full_name: patient_details.patient_name,
+          arabic_name: patient_details.arabic_patient_name,
+          gender: patient_details.patient_gender,
+          age: patient_details.patient_age,
+          contact_number: patient_details.patient_phone,
+          title_id: patient_details.title_id,
+          date_of_birth: patient_details.date_of_birth,
           sub_department_id: this.props.sub_department_id,
           department_id: this.props.department_id,
           provider_id: this.props.provider_id,
@@ -421,25 +427,28 @@ class RegistrationPatient extends Component {
                       Promise.all(_arrayImages).then(result => {
                         AlgaehLoader({ show: false });
 
-                        $this.setState({
-                          patient_code: response.data.records.patient_code,
-                          bill_number: response.data.records.bill_number,
-                          receipt_number: response.data.records.receipt_number,
-                          hims_d_patient_id:
-                            response.data.records.hims_d_patient_id,
-                          patient_visit_id:
-                            response.data.records.patient_visit_id,
-                          hims_f_billing_header_id:
-                            response.data.records.hims_f_billing_header_id,
-                          saveEnable: true,
-                          insuranceYes: true,
-                          sec_insuranceYes: true,
-                          ProcessInsure: true,
-                          existingPatient: true,
-                          popUpGenereted: true,
-                          advanceEnable: false
-                        });
-
+                        $this.setState(
+                          {
+                            patient_code: response.data.records.patient_code,
+                            bill_number: response.data.records.bill_number,
+                            receipt_number:
+                              response.data.records.receipt_number,
+                            hims_d_patient_id:
+                              response.data.records.hims_d_patient_id,
+                            patient_visit_id:
+                              response.data.records.patient_visit_id,
+                            hims_f_billing_header_id:
+                              response.data.records.hims_f_billing_header_id,
+                            saveEnable: true,
+                            insuranceYes: true,
+                            sec_insuranceYes: true,
+                            ProcessInsure: true,
+                            existingPatient: true,
+                            popUpGenereted: true,
+                            advanceEnable: false
+                          },
+                          () => $this.props.updateAppointmentStatus()
+                        );
                         swalMessage({
                           title: "Done Successfully",
                           type: "success"
@@ -567,21 +576,24 @@ class RegistrationPatient extends Component {
                       Promise.all(_arrayImages).then(result => {
                         AlgaehLoader({ show: false });
 
-                        $this.setState({
-                          bill_number: response.data.records.bill_number,
-                          receipt_number: response.data.records.receipt_number,
-                          patient_visit_id:
-                            response.data.records.patient_visit_id,
-                          hims_f_billing_header_id:
-                            response.data.records.hims_f_billing_header_id,
-                          saveEnable: true,
-                          insuranceYes: true,
-                          sec_insuranceYes: true,
-                          ProcessInsure: true,
-                          existingPatient: true,
-                          popUpGenereted: true
-                        });
-
+                        $this.setState(
+                          {
+                            bill_number: response.data.records.bill_number,
+                            receipt_number:
+                              response.data.records.receipt_number,
+                            patient_visit_id:
+                              response.data.records.patient_visit_id,
+                            hims_f_billing_header_id:
+                              response.data.records.hims_f_billing_header_id,
+                            saveEnable: true,
+                            insuranceYes: true,
+                            sec_insuranceYes: true,
+                            ProcessInsure: true,
+                            existingPatient: true,
+                            popUpGenereted: true
+                          },
+                          () => $this.props.updateAppointmentStatus()
+                        );
                         swalMessage({
                           title: "Done Successfully",
                           type: "success"
@@ -601,7 +613,7 @@ class RegistrationPatient extends Component {
             });
           } else {
             swalMessage({
-              title: "Please recive the amount.",
+              title: "Please receive the amount.",
               type: "error"
             });
           }
@@ -627,7 +639,7 @@ class RegistrationPatient extends Component {
 
     let department_id = this.props.department_id || null;
     let appointment_id = this.props.hims_f_patient_appointment_id || null;
-    let title_id = Window.global["appt-title-id"] || null;
+    let title_id = this.props.patient_details.title_id || null;
 
     AlgaehLoader({ show: true });
 
