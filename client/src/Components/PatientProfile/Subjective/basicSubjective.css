@@ -7,9 +7,9 @@
   margin: 0 -5px; }
   .activeMedication .activeMedDateList {
     margin-bottom: 3px;
-    position: relative;
     overflow: hidden; }
     .activeMedication .activeMedDateList .medcineDate {
+      position: relative;
       background: #ccc;
       width: 30px;
       float: left;
@@ -35,6 +35,22 @@
         margin: 0;
         padding: 0;
         text-shadow: 1px solid white; }
+      .activeMedication .activeMedDateList .medcineDate .printOnHover {
+        position: absolute;
+        text-align: center;
+        width: 100%;
+        bottom: 0;
+        background: #00a796;
+        padding: 5px;
+        color: #fff;
+        height: 100%;
+        font-size: 1.4rem;
+        line-height: 37px;
+        display: none; }
+      .activeMedication .activeMedDateList .medcineDate:hover .printOnHover {
+        display: block;
+        cursor: pointer;
+        background: #009182; }
     .activeMedication .activeMedDateList .medcineList {
       float: none;
       width: calc(100% - 40px);
@@ -46,7 +62,8 @@
         .activeMedication .activeMedDateList .medcineList ul li {
           border-bottom: 1px dashed #ececec;
           padding-bottom: 3px;
-          margin-bottom: 3px; }
+          margin-bottom: 3px;
+          position: relative; }
           .activeMedication .activeMedDateList .medcineList ul li b {
             display: block;
             line-height: 15px; }
@@ -54,16 +71,19 @@
             display: inline-block; }
           .activeMedication .activeMedDateList .medcineList ul li:last-child {
             border-bottom: none; }
-  .activeMedication .printOnHover {
-    position: absolute;
-    text-align: center;
-    width: 100%;
-    bottom: 0;
-    background: #00a796;
-    padding: 5px;
-    color: #fff;
-    display: none; }
-  .activeMedication:hover .printOnHover {
-    display: block;
-    cursor: pointer;
-    background: #009182; }
+          .activeMedication .activeMedDateList .medcineList ul li .reOrderOnHover {
+            position: absolute;
+            text-align: center;
+            width: 36px;
+            bottom: 0;
+            background: #8d8d8d;
+            padding: 5px;
+            color: #fff;
+            height: 36px;
+            font-size: 1.4rem;
+            right: 0;
+            display: none; }
+          .activeMedication .activeMedDateList .medcineList ul li:hover .reOrderOnHover {
+            display: block;
+            cursor: pointer;
+            background: #009182; }

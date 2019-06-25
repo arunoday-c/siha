@@ -132,7 +132,6 @@ export default class AlgaehFileUploader extends Component {
       });
       return;
     }
-
     const that = this;
     if (uniqueID) {
       displayFileFromServer({

@@ -130,10 +130,10 @@ class ServicePriceList extends PureComponent {
                       : "Insurar Name"}
                   </h6>
                 </div>
-                <div className="col">
+                <div className="col-4">
                   <label>View by</label>
                   <div className="customRadio">
-                    <label className="radio block">
+                    <label className="radio inline">
                       <input
                         type="radio"
                         name="view_by"
@@ -143,7 +143,7 @@ class ServicePriceList extends PureComponent {
                       />
                       <span>Company Price List</span>
                     </label>
-                    <label className="radio block">
+                    <label className="radio inline">
                       <input
                         type="radio"
                         name="view_by"
@@ -177,9 +177,9 @@ class ServicePriceList extends PureComponent {
 
 
                 <AlagehAutoComplete
-                  div={{ className: "col-3" }}
+                  div={{ className: "col-2 form-group" }}
                   label={{
-                    fieldName: "filter_by"
+                    forceLabel: "Filter by Service"
                   }}
                   selector={{
                     name: "service_type_id",
@@ -197,7 +197,7 @@ class ServicePriceList extends PureComponent {
                   }}
                 />
 
-                <div className="col-lg-2">
+                <div className="col-2">
                   <button
                     className="btn btn-default"
                     style={{ marginTop: 19 }}
@@ -206,7 +206,9 @@ class ServicePriceList extends PureComponent {
                     Refresh List
                   </button>
                 </div>
-                <div className="col-lg-6">
+                </div>
+              <div className="row">
+                <div className="col-5">
                   <div className="row">
                     <AlagehFormGroup
                       div={{ className: "col" }}
@@ -223,7 +225,7 @@ class ServicePriceList extends PureComponent {
                       }}
                     />
                     <AlagehAutoComplete
-                      div={{ className: "col" }}
+                      div={{ className: "col-5" }}
                       label={{
                         fieldName: "applicable",
                         isImp: true
@@ -244,7 +246,7 @@ class ServicePriceList extends PureComponent {
                       }}
                     />
 
-                    <div className="col" style={{ padding: 0 }}>
+                    <div className="col-2" style={{ paddingLeft: 0 }}>
                       <button
                         className="btn btn-default"
                         style={{ marginTop: 19 }}
@@ -259,10 +261,10 @@ class ServicePriceList extends PureComponent {
                     </div>
                   </div>
                 </div>
-                <div className="col-lg-3">
+                <div className="col-4">
                   <div className="row">
                     <AlagehAutoComplete
-                      div={{ className: "col" }}
+                      div={{ className: "col-8" }}
                       label={{
                         fieldName: "pre_approval",
                         isImp: true
@@ -279,7 +281,7 @@ class ServicePriceList extends PureComponent {
                         onChange: texthandle.bind(this, this)
                       }}
                     />{" "}
-                    <div className="col" style={{ padding: 0 }}>
+                    <div className="col-2" style={{ padding: 0 }}>
                       <button
                         className="btn btn-default"
                         style={{ marginTop: 19 }}
@@ -290,7 +292,7 @@ class ServicePriceList extends PureComponent {
                     </div>
                   </div>
                 </div>
-                <div className="col-lg-3">
+                <div className="col-3">
                   <div className="row">
                     <AlagehAutoComplete
                       div={{ className: "col" }}
@@ -325,8 +327,8 @@ class ServicePriceList extends PureComponent {
               </div>
             </div>
 
-            <div className="row form-details">
-              <div className="col-lg-12">
+            <div className="row">
+              <div className="col-12">
                 <AlgaehDataGrid
                   id="service_price_grid"
                   columns={[
