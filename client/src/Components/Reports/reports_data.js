@@ -813,9 +813,12 @@ export default [
       },
       {
         subitem: "Attendance Reports",
-        template_name: "PayrollReports/attendence_report",
-        reportUri: "/attendance/loadAttendance",
-        module: "hrManagement",
+        reportName: "attendanceReports",
+        // template_name: "PayrollReports/attendence_report",
+        // reportUri: "/attendance/loadAttendance",
+        // module: "hrManagement",
+        requireIframe: true,
+        pageOrentation: "landscape",
         reportParameters: [
           {
             type: "dropdown",

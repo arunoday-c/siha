@@ -2,61 +2,67 @@
 
 <body>
     <div class="print-body">
-             <section>
-  <table class="tableForLabel" cell-padding="0">
-            <tr><td><label class="textEnLft">Branch</label>:<span class="valueText">{{hospital_name}}</span><label class="textArRht">لشركة</label></td><td><label class="textEnLft">Department</label>:<span class="valueText">{{sub_department_name}}</span><label class="textArRht">القسم</label></td></tr>
-</table>
+        <section>
+            <table class="tableForLabel" cell-padding="0">
+                <tr>
+                    <td><label class="textEnLft">Branch</label>:<span class="valueText">{{hospital_name}}</span><label
+                            class="textArRht">لشركة</label></td>
+                    <td><label class="textEnLft">Department</label>:<span
+                            class="valueText">{{sub_department_name}}</span><label class="textArRht">القسم</label></td>
+                </tr>
+            </table>
 
 
         </section>
         <section>
             <table class="tableForData" cell-padding="0">
                 <thead>
-                     <tr>
-    <th>Sl No.</th>
-    <th>Employee Code</th>
-                <th >Employee Name</th>
-                <th>Total Days</th>
-                <th>Total Work Days</th>
-                <th>Present Days</th>
-                <th>Absent Days</th>
-                <th>Paid Leaves</th>
-                <th>Unpaid Leaves</th>
-                <th>Total Paid Days</th>
-                <th>Total Holidays</th>
-                <th >Total Week Off Days</th>
-                <th >Total Working Hours</th>
-                <th >Total Worked Hours</th>
-                <th>OT Hours</th>
-                <th>Shortage Hours</th>
-                <th>Week Off OT</th>
-                <th>Holiday OT</th>                
-  </tr>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>Employee Code</th>
+                        <th>Employee Name</th>
+                        <th>Total Days</th>
+                        <th>Total Work Days</th>
+                        <th>Present Days</th>
+                        <th>Absent Days</th>
+                        <th>Paid Leaves</th>
+                        <th>Unpaid Leaves</th>
+                        <th>Total Paid Days</th>
+                        <th>Total Holidays</th>
+                        <th>Total Week Off Days</th>
+                        <th>Total Working Hours</th>
+                        <th>Total Worked Hours</th>
+                        <th>OT Hours</th>
+                        <th>Shortage Hours</th>
+                        <th>Week Off OT</th>
+                        <th>Holiday OT</th>
+                    </tr>
                 </thead>
                 <tbody>
-                    {{#each details}}
+                    {{#each result}}
                     <tr>
                         <td>{{inc @index}}</td>
                         <td>{{employee_code}}</td>
-                        <td>{{employee_code}}</td>  
-                        <td>{{employee_code}}</td>  
-                        <td>{{employee_code}}</td>  
-                        <td>{{employee_code}}</td>  
-                        <td>{{employee_code}}</td>  
-                        <td>{{employee_code}}</td>  
-                        <td>{{employee_code}}</td>  
-                        <td>{{employee_code}}</td>  
-                        <td>{{employee_code}}</td>  
-                        <td>{{employee_code}}</td>  
-                        <td>{{employee_code}}</td>  
-                        <td>{{employee_code}}</td>  
-                        <td>{{employee_code}}</td>  
-                        <td>{{employee_code}}</td>  
-                        <td>{{employee_code}}</td>  
-                        <td>{{employee_code}}</td>   
+                        <td>{{employee_name}}</td>
+                        <td>{{total_days}}</td>
+                        <td>{{total_work_days}}</td>
+
+                        <td>{{present_days}}</td>
+                        <td>{{absent_days}}</td>
+                        <td>{{paid_leave}}</td>
+                        <td>{{unpaid_leave}}</td>
+                        <td>{{total_paid_days}}</td>
+                        <td>{{total_holidays}}</td>
+                        <td>{{total_weekoff_days}}</td>
+                        <td>{{total_working_hours}}</td>
+                        <td>{{total_hours}}</td>
+                        <td>{{ot_work_hours}}</td>
+                        <td>{{shortage_hours}}</td>
+                        <td>{{ot_weekoff_hours}}</td>
+                        <td>{{ot_holiday_hours}}</td>
                     </tr>
                     {{/each }}
-              
+
                 </tbody>
             </table>
         </section>
