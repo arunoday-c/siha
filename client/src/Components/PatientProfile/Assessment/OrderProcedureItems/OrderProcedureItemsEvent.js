@@ -119,10 +119,7 @@ export default function OrderProcedureItemsEvent() {
           searchName: "procedureExistingItem",
           // reportQuery: "procedureExistingItem",
           uri: "/gloabelSearch/get",
-          inputs:
-            $this.state.sub_department_id !== null
-              ? "sub_department_id = " + $this.state.sub_department_id
-              : "1=1",
+          inputs: "encounter_id = " + Window.global.encounter_id,
           onContainsChange: (text, serchBy, callBack) => {
             callBack(text);
           },

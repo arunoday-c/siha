@@ -314,6 +314,7 @@ export function AlgaehValidation(options) {
     alertTypeIcon: "warning",
     ...options
   };
+
   if (settings.skip !== undefined && settings.skip === true) {
     if (
       settings.onSuccess !== undefined &&
