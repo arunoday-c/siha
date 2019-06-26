@@ -28,7 +28,9 @@ const executePDF = function executePDFMethod(options) {
       options.mysql
         .executeQuery({
           query: `select hims_f_leave_application_id, leave_application_code,employee_id, leave_id ,
-			  from_date,to_date,total_applied_days,status ,L.leave_code,L.leave_description,L.leave_type,
+			  from_date,to_date,total_applied_days,case status  when  'PEN' then 'PENDING'
+        when 'APR' then 'APPROVED' when 'REJ' then 'REJECTED' when 'CAN' then 'CANCELLED' end as status
+         ,L.leave_code,L.leave_description,L.leave_type,
 			  E.employee_code,full_name as employee_name,E.sex,E.employee_status,
 			  SD.sub_department_code,SD.sub_department_name
 			  FROM hims_f_leave_application LA inner join  hims_d_leave L on LA.leave_id=L.hims_d_leave_id
