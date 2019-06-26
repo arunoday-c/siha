@@ -17,6 +17,20 @@ const texthandle = ($this, e) => {
   });
 };
 
+const handlePrimaryId = ($this, e) => {
+  console.log(e.value, e.target.value);
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  if (/^[A-Z0-9]+$/i.test(value)) {
+    console.log(value, "inside if ");
+    $this.setState({
+      [name]: value
+    });
+  } else {
+    return;
+  }
+};
+
 const countryStatehandle = ($this, e) => {
   let name;
   let value;
@@ -110,6 +124,14 @@ const setAge = ($this, e) => {
     let years = $this.state.age;
     let months = $this.state.AGEMM;
     let days = $this.state.AGEDD;
+
+    if (e.target.value < 0) {
+      swalMessage({
+        title: "Negative values are not allowed",
+        type: "error"
+      });
+      return;
+    }
 
     if (e.target.name === "AGEMM" && parseFloat(e.target.value) > 11) {
       swalMessage({
@@ -278,6 +300,7 @@ const generateBillDetails = ($this, context) => {
 
 export {
   texthandle,
+  handlePrimaryId,
   titlehandle,
   calculateAge,
   setAge,

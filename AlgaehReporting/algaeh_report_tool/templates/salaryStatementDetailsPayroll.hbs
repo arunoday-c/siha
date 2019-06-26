@@ -2,6 +2,7 @@
 
 <body>
     <div class="print-body">
+                {{#hasElement employees}}
         <section>
             <table class="tableForLabel" cell-padding="0">
                 <tr>
@@ -24,7 +25,6 @@
         </section>
         <section>
             <table class="tableForData" cell-padding="0">
-                {{#hasElement employees}}
                 <thead>
                     <tr>
                         <th>Sl No.</th>
@@ -153,10 +153,10 @@
 
                 </tbody>
                 {{else}}
-                <h1>no data</h1>
-                {{/hasElement }}
+                <p class="noResultTextReport">no data</p>
             </table>
         </section>
         {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+                {{/hasElement }}
     </div>
 </body>

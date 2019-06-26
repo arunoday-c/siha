@@ -390,12 +390,20 @@ class Appointment extends PureComponent {
               .where(w => w.default_status === "Y")
               .firstOrDefault();
 
-            let CreateVisit = Enumerable.from(this.state.appointmentStatus)
+            let CheckedIn = Enumerable.from(this.state.appointmentStatus)
               .where(w => w.default_status === "C")
               .firstOrDefault();
 
             let Reschedule = Enumerable.from(this.state.appointmentStatus)
               .where(w => w.default_status === "RS")
+              .firstOrDefault();
+
+            let Cancelled = Enumerable.from(this.state.appointmentStatus)
+              .where(w => w.default_status === "CAN")
+              .firstOrDefault();
+
+            let NoShow = Enumerable.from(this.state.appointmentStatus)
+              .where(w => w.default_status === "NS")
               .firstOrDefault();
 
             this.setState({
@@ -405,12 +413,20 @@ class Appointment extends PureComponent {
                   ? DefaultStatus.hims_d_appointment_status_id
                   : null,
               checkInId:
-                CreateVisit !== undefined
-                  ? CreateVisit.hims_d_appointment_status_id
+                CheckedIn !== undefined
+                  ? CheckedIn.hims_d_appointment_status_id
                   : null,
               RescheduleId:
                 Reschedule !== undefined
                   ? Reschedule.hims_d_appointment_status_id
+                  : null,
+              cancelledId:
+                Cancelled !== undefined
+                  ? Cancelled.hims_d_appointment_status_id
+                  : null,
+              noShowId:
+                NoShow !== undefined
+                  ? NoShow.hims_d_appointment_status_id
                   : null
             });
           });
@@ -877,9 +893,11 @@ class Appointment extends PureComponent {
                 title_id: this.state.edit_title_id
               };
               if (edit_details.appointment_status_id === this.state.checkInId) {
-                console.log("from update patient", edit_details);
-                debugger;
                 this.handleCheckIn(edit_details);
+              } else if (
+                edit_details.appointment_status_id === this.state.cancelledId
+              ) {
+                this.cancelAppt(edit_details);
               } else {
                 algaehApiCall({
                   uri: "/appointment/updatePatientAppointment",
@@ -1332,12 +1350,16 @@ class Appointment extends PureComponent {
   }
 
   isInactiveTimeSlot(time) {
-    return (
-      moment(time, "HH:mm a").format("HHmm") <
-        moment(new Date()).format("HHmm") &&
-      moment(this.state.activeDateHeader).format("YYYYMMDD") <=
-        moment(new Date()).format("YYYYMMDD")
-    );
+    if (moment(this.state.activeDateHeader).isBefore(new Date(), "day")) {
+      return true;
+    } else if (moment(this.state.activeDateHeader).isSame(new Date(), "day")) {
+      return (
+        moment(time, "HH:mm a").format("HHmm") <
+        moment(new Date()).format("HHmm")
+      );
+    } else {
+      return false;
+    }
   }
 
   generateChildren(data) {
@@ -1434,59 +1456,73 @@ class Appointment extends PureComponent {
               {patient != null &&
               patient.is_stand_by === "N" &&
               patient.cancelled === "N" ? (
-                <div
-                  appt-pat={JSON.stringify(patient)}
-                  className="dynPatient"
-                  style={{ background: bg_color }}
-                  draggable={true}
-                  onDragStart={this.drag.bind(this)}
-                >
-                  <span onClick={this.openEditModal.bind(this, patient, null)}>
-                    {patient.patient_name}
-                    <br />
-                    {patient.contact_number}
-                  </span>
-
-                  <i
-                    className="fas fa-times"
-                    onClick={this.cancelAppt.bind(this, patient)}
-                  />
-                  <div className="appStatusListCntr">
-                    <i className="fas fa-clock" />
-                    <ul className="appStatusList">
-                      {status !== undefined
-                        ? status.map((data, index) => (
-                            <li
-                              key={index}
-                              onClick={this.handlePatient.bind(
-                                this,
-                                patient,
-                                data
-                              )}
-                            >
-                              <span
-                                style={{
-                                  backgroundColor: data.color_code
-                                }}
-                              >
-                                {data.statusDesc}
-                              </span>
-                            </li>
-                          ))
-                        : null}
-                      <li
-                        onClick={generateReport.bind(
-                          this,
-                          patient,
-                          "appointmentSlip",
-                          "Appointment Slip"
-                        )}
-                      >
-                        <span>Print App. Slip</span>
-                      </li>
-                    </ul>
+                patient.appointment_status_id === this.state.noShowId ? (
+                  <div
+                    className="dynPatient"
+                    style={{ background: bg_color }}
+                    draggable={false}
+                  >
+                    <span>
+                      {patient.patient_name} <br /> {patient.contact_number}
+                    </span>
                   </div>
-                </div>
+                ) : (
+                  <div
+                    appt-pat={JSON.stringify(patient)}
+                    className="dynPatient"
+                    style={{ background: bg_color }}
+                    draggable={true}
+                    onDragStart={this.drag.bind(this)}
+                  >
+                    <span
+                      onClick={this.openEditModal.bind(this, patient, null)}
+                    >
+                      {patient.patient_name}
+                      <br />
+                      {patient.contact_number}
+                    </span>
+
+                    <i
+                      className="fas fa-times"
+                      onClick={this.cancelAppt.bind(this, patient)}
+                    />
+                    <div className="appStatusListCntr">
+                      <i className="fas fa-clock" />
+                      <ul className="appStatusList">
+                        {status !== undefined
+                          ? status.map((data, index) => (
+                              <li
+                                key={index}
+                                onClick={this.handlePatient.bind(
+                                  this,
+                                  patient,
+                                  data
+                                )}
+                              >
+                                <span
+                                  style={{
+                                    backgroundColor: data.color_code
+                                  }}
+                                >
+                                  {data.statusDesc}
+                                </span>
+                              </li>
+                            ))
+                          : null}
+                        <li
+                          onClick={generateReport.bind(
+                            this,
+                            patient,
+                            "appointmentSlip",
+                            "Appointment Slip"
+                          )}
+                        >
+                          <span>Print App. Slip</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                )
               ) : null}
             </React.Fragment>
           ) : (

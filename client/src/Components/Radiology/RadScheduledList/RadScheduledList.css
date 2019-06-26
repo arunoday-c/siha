@@ -15,3 +15,6 @@
 
 .pat-code:hover {
   text-decoration: underline; }
+
+#RadWorkGridCntr .ReactTable {
+  max-height: 62vh !important; }

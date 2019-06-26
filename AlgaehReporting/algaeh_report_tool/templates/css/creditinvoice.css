@@ -244,3 +244,7 @@ body {
 .appSlipFormat span {
 	font-weight: bold;
 }
+.noResultTextReport {
+	font-size: 5rem;
+	color: #eee;
+}

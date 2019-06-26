@@ -18,3 +18,6 @@
 
 .hptl-phase1-speciman-collection-form .badge {
   margin-top: 5px; }
+
+#samplecollectionGrid_cntr .ReactTable {
+  max-height: 62vh !important; }

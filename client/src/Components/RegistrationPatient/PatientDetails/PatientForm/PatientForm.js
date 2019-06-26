@@ -12,7 +12,8 @@ import {
   calculateAge,
   setAge,
   countryStatehandle,
-  nationalityhandle
+  nationalityhandle,
+  handlePrimaryId
 } from "./AddPatientDetails.js";
 import MyContext from "../../../../utils/MyContext.js";
 
@@ -220,7 +221,8 @@ class AddPatientForm extends Component {
           {context => (
             <div
               className="hptl-phase1-add-patient-form"
-              data-validate="demographicDetails">
+              data-validate="demographicDetails"
+            >
               <div className="col-lg-12">
                 <div className="row">
                   <div className="col-lg-8 primary-details">
@@ -378,7 +380,8 @@ class AddPatientForm extends Component {
                           className: "txt-fld",
                           name: "age",
                           number: {
-                            thousandSeparator: ","
+                            thousandSeparator: ",",
+                            allowNegative: false
                           },
                           events: {
                             onChange: setAge.bind(this, this)
@@ -408,7 +411,8 @@ class AddPatientForm extends Component {
                           className: "txt-fld",
                           name: "AGEMM",
                           number: {
-                            thousandSeparator: ","
+                            thousandSeparator: ",",
+                            allowNegative: false
                           },
                           events: {
                             onChange: setAge.bind(this, this)
@@ -438,7 +442,8 @@ class AddPatientForm extends Component {
                           className: "txt-fld",
                           name: "AGEDD",
                           number: {
-                            thousandSeparator: ","
+                            thousandSeparator: ",",
+                            allowNegative: false
                           },
                           events: {
                             onChange: setAge.bind(this, this)
@@ -461,7 +466,9 @@ class AddPatientForm extends Component {
                           value: this.state.contact_number,
                           className: "txt-fld",
                           name: "contact_number",
-
+                          number: {
+                            allowNegative: false
+                          },
                           // events: {
                           //   onChange: texthandle.bind(this, this, context)
                           // },
@@ -730,7 +737,8 @@ class AddPatientForm extends Component {
                   <div className="col-lg-4 secondary-details">
                     <div
                       className="row secondary-box-container"
-                      style={{ paddingTop: "5px" }}>
+                      style={{ paddingTop: "5px" }}
+                    >
                       <div className="col-lg-5 patientRegImg">
                         <AlgaehFileUploader
                           ref={patientImage => {
@@ -782,7 +790,8 @@ class AddPatientForm extends Component {
 
                     <div
                       className="row secondary-box-container"
-                      style={{ paddingTop: "10px" }}>
+                      style={{ paddingTop: "10px" }}
+                    >
                       <AlagehAutoComplete
                         div={{ className: "col-lg-5 mandatory" }}
                         label={{
@@ -819,12 +828,12 @@ class AddPatientForm extends Component {
                           className: "txt-fld",
                           name: "primary_id_no",
                           value: this.state.primary_id_no,
-                          // events: {
-                          //   onChange: texthandle.bind(this, this, context)
-                          // },
+                          events: {
+                            onChange: handlePrimaryId.bind(this, this)
+                          },
                           others: {
                             disabled: this.state.existingPatient,
-                            onBlur: texthandle.bind(this, this),
+                            // onBlur: handlePrimaryId.bind(this, this),
                             tabIndex: "16",
                             placeholder: "Enter ID Number"
                           }

@@ -517,7 +517,9 @@ const radioChange = ($this, context, e) => {
             }
           } else {
             PatType = "S";
-
+            if ($this.state.doctor_id === null) {
+              saveEnable = true;
+            }
             $this.props.setSelectedInsurance({
               redux: {
                 type: "PRIMARY_INSURANCE_DATA",

@@ -12,3 +12,6 @@
 .hptl-phase1-rad-list-form th,
 .hptl-phase1-rad-list-form td {
   border-right: 1px solid #e6e6e6; }
+
+#RadOrderGridCntr .ReactTable {
+  max-height: 62vh !important; }

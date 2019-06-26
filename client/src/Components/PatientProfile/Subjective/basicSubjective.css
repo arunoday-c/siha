@@ -48,7 +48,7 @@
         line-height: 37px;
         display: none; }
       .activeMedication .activeMedDateList .medcineDate:hover .printOnHover {
-        display: block;
+        display: none;
         cursor: pointer;
         background: #009182; }
     .activeMedication .activeMedDateList .medcineList {
@@ -84,6 +84,6 @@
             right: 0;
             display: none; }
           .activeMedication .activeMedDateList .medcineList ul li:hover .reOrderOnHover {
-            display: block;
+            display: none;
             cursor: pointer;
             background: #009182; }

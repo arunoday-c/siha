@@ -567,7 +567,7 @@ class DeptUserDetails extends Component {
                   value={this.state.from_date}
                 />
 
-                <div className="col-1" style={{ paddingTop: "21px" }}>
+                <div className="col-1" style={{ paddingTop: "19px" }}>
                   <button
                     // href="javascript"
                     className="btn btn-primary"
