@@ -2,7 +2,6 @@ const { MONTHS } = require("../../../client/src/utils/GlobalVariables.json");
 const algaehUtilities = require("algaeh-utilities/utilities");
 const { LINQ } = require("node-linq");
 const executePDF = function executePDFMethod(options) {
-  const _ = options.loadash;
   return new Promise(function(resolve, reject) {
     try {
       const _ = options.loadash;
