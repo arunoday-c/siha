@@ -710,8 +710,11 @@ class Appointment extends PureComponent {
     setGlobal({
       "FD-STD": "RegistrationPatient"
     });
+    if (patient.is_stand_by === "Y") {
+      patient.patient_code = this.state.patient_code;
+    }
     // for new patient who are not yet registered
-    if (!patient.patient_code && !patient.patient_id) {
+    if (!patient.patient_code) {
       patient.patient_age = patient.age;
       patient.arabic_patient_name = patient.arabic_name;
       patient.patient_gender = patient.gender;
@@ -722,12 +725,16 @@ class Appointment extends PureComponent {
       delete patient.contact_number;
       delete patient.email;
       delete patient.arabic_name;
-      return this.props.routeComponents(patient, data);
+      console.log("after check in", patient);
+      return this.props.routeComponents(patient);
     }
-    this.props.routeComponents(patient, data);
+    debugger;
+    return this.props.routeComponents(patient);
   }
 
   openEditModal(patient, data, e) {
+    console.log("from open edit", patient, data);
+    debugger;
     e.preventDefault();
 
     this.getTimeSlotsForDropDown(patient.provider_id);
@@ -869,32 +876,37 @@ class Appointment extends PureComponent {
                 number_of_slot: this.state.edit_no_of_slots,
                 title_id: this.state.edit_title_id
               };
-
-              algaehApiCall({
-                uri: "/appointment/updatePatientAppointment",
-                module: "frontDesk",
-                method: "PUT",
-                data: edit_details,
-                onSuccess: response => {
-                  if (response.data.success) {
-                    this.clearSaveState();
+              if (edit_details.appointment_status_id === this.state.checkInId) {
+                console.log("from update patient", edit_details);
+                debugger;
+                this.handleCheckIn(edit_details);
+              } else {
+                algaehApiCall({
+                  uri: "/appointment/updatePatientAppointment",
+                  module: "frontDesk",
+                  method: "PUT",
+                  data: edit_details,
+                  onSuccess: response => {
+                    if (response.data.success) {
+                      this.clearSaveState();
+                      swalMessage({
+                        title: "Appointment Updated Successfully",
+                        type: "success"
+                      });
+                      this.setState({
+                        openPatEdit: false
+                      });
+                      this.getAppointmentSchedule();
+                    }
+                  },
+                  onFailure: error => {
                     swalMessage({
-                      title: "Appointment Updated Successfully",
-                      type: "success"
+                      title: error.message,
+                      type: "error"
                     });
-                    this.setState({
-                      openPatEdit: false
-                    });
-                    this.getAppointmentSchedule();
                   }
-                },
-                onFailure: error => {
-                  swalMessage({
-                    title: error.message,
-                    type: "error"
-                  });
-                }
-              });
+                });
+              }
             }
           } else {
             swalMessage({
