@@ -274,7 +274,7 @@ class EOSGratuity extends Component {
 
           <div className="col form-group">
             {this.state.gratuity_done === true ? (
-              <h3 style={{ paddingTop: "21px" }}>
+              <h3 style={{ paddingTop: "19px" }}>
                 <font color="green">Gratuity Done</font>
               </h3>
             ) : (

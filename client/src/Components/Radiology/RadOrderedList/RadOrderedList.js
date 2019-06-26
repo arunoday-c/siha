@@ -106,11 +106,8 @@ class RadOrderedList extends Component {
           <div
             className="row inner-top-search"
             style={{ marginTop: "75px", paddingBottom: "10px" }}
-          >
-            <div className="col-lg-6">
-              <div className="row">
-                <AlgaehDateHandler
-                  div={{ className: "col" }}
+          > <AlgaehDateHandler
+                  div={{ className: "col-2" }}
                   label={{ fieldName: "from_date" }}
                   textBox={{ className: "txt-fld", name: "from_date" }}
                   events={{
@@ -120,7 +117,7 @@ class RadOrderedList extends Component {
                 />
 
                 <AlgaehDateHandler
-                  div={{ className: "col" }}
+                  div={{ className: "col-2" }}
                   label={{ fieldName: "to_date" }}
                   textBox={{ className: "txt-fld", name: "to_date" }}
                   events={{
@@ -129,6 +126,26 @@ class RadOrderedList extends Component {
                   value={this.state.to_date}
                 />
 
+                <div className="col" style={{ paddingTop: "19px" }}>
+                  <button
+                    className="btn btn-primary btn-sm"
+                    type="button"
+                    onClick={getRadTestList.bind(this, this)}
+                  >
+                    Load
+                  </button>
+                  <button
+                    className="btn btn-default btn-sm"
+                    style={{ marginLeft: "10px" }}
+                    type="button"
+                    onClick={Refresh.bind(this, this)}
+                  >
+                    Clear
+                  </button>
+                </div>
+            {/*    <div className="col-lg-6">
+              <div className="row">
+               
                 <AlagehFormGroup
                   div={{ className: "col" }}
                   label={{
@@ -166,7 +183,7 @@ class RadOrderedList extends Component {
                 <AlagehAutoComplete
                   div={{ className: "col" }}
                   label={{
-                    fieldName: "proiorty",
+                    fieldName: "Priority",
                     isImp: false
                   }}
                   selector={{
@@ -182,7 +199,7 @@ class RadOrderedList extends Component {
                   }}
                 />
 
-                {/*  <AlagehAutoComplete
+              <AlagehAutoComplete
                   div={{ className: "col" }}
                   label={{
                     fieldName: "category_id"
@@ -198,27 +215,10 @@ class RadOrderedList extends Component {
                     },
                     onChange: texthandle.bind(this, this)
                   }}
-                />*/}
+                />
 
-                <div className="col" style={{ paddingTop: "21px" }}>
-                  <button
-                    className="btn btn-primary btn-sm"
-                    type="button"
-                    onClick={getRadTestList.bind(this, this)}
-                  >
-                    Load
-                  </button>
-                  <button
-                    className="btn btn-default btn-sm"
-                    style={{ marginLeft: "10px" }}
-                    type="button"
-                    onClick={Refresh.bind(this, this)}
-                  >
-                    Clear
-                  </button>
-                </div>
               </div>
-            </div>
+            </div>*/}
           </div>
 
           <div className="row">
@@ -245,7 +245,7 @@ class RadOrderedList extends Component {
                     </ul>
                   </div>
                 </div>
-                <div className="portlet-body">
+                <div className="portlet-body" id="RadOrderGridCntr">
                   <AlgaehDataGrid
                     id="Oedered_list_grid"
                     columns={[
@@ -279,20 +279,11 @@ class RadOrderedList extends Component {
                           );
                         },
                         others: {
+                          fixed: "left",
                           maxWidth: 70,
-                          resizable: false,
-                          style: { textAlign: "center" }
-                        }
-                      },
-                      {
-                        fieldName: "billed",
-                        label: <AlgaehLabel label={{ fieldName: "billed" }} />,
-                        displayTemplate: row => {
-                          return row.billed === "N" ? "Not Billed" : "Billed";
-                        },
-                        others: {
-                          resizable: false,
-                          style: { textAlign: "center" }
+                    resizable: false,
+                    filterable: false,
+
                         }
                       },
                       {
@@ -302,7 +293,7 @@ class RadOrderedList extends Component {
                         ),
                         disabled: false,
                         others: {
-                          maxWidth: 200,
+                          maxWidth: 150,
                           resizable: false,
                           style: { textAlign: "center" }
                         }
@@ -319,6 +310,42 @@ class RadOrderedList extends Component {
                         }
                       },
                       {
+                        fieldName: "billed",
+                        label: <AlgaehLabel label={{ fieldName: "billed" }} />,
+                        displayTemplate: row => {
+                          return row.billed === "N" ? <span className="badge badge-danger">Not Billed</span> : <span className="badge badge-success">Billed</span>;
+                        },
+                        others: {
+                          maxWidth: 100,
+                          resizable: false,
+                          style: { textAlign: "center" }
+                        }
+                      },
+                      {
+                        fieldName: "status",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "test_status" }} />
+                        ),
+                        displayTemplate: row => {
+                          return row.status === "O"
+                             ? <span className="badge badge-info">Ordered</span>
+                            : row.status === "S"
+                            ? <span className="badge badge-warning">Scheduled</span>
+                            : row.status === "UP"
+                            ? <span className="badge badge-warning">Under Process</span>
+                            : row.status === "CN"
+                            ? <span className="badge badge-danger">Cancelled</span>
+                            : row.status === "RC"
+                            ? <span className="badge badge-success">Result Confirmed</span>
+                            : <span className="badge badge-success">Result Available</span>
+                        },
+                        others: {
+                          maxWidth: 130,
+                          resizable: false,
+                          style: { textAlign: "center" }
+                        }
+                      },
+                      {
                         fieldName: "test_type",
                         label: (
                           <AlgaehLabel label={{ fieldName: "proiorty" }} />
@@ -332,49 +359,26 @@ class RadOrderedList extends Component {
                         },
                         disabled: true,
                         others: {
-                          resizable: false,
-                          style: { textAlign: "left" }
-                        }
-                      },
-                      {
-                        fieldName: "ordered_date",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "ordered_date" }} />
-                        ),
-                        displayTemplate: row => {
-                          return (
-                            <span>
-                              {this.changeDateFormat(row.ordered_date)}
-                            </span>
-                          );
-                        },
-                        disabled: true,
-                        others: {
-                          maxWidth: 200,
+                          maxWidth: 130,
                           resizable: false,
                           style: { textAlign: "center" }
                         }
                       },
                       {
-                        fieldName: "status",
+                        fieldName: "ordered_date",
                         label: (
-                          <AlgaehLabel label={{ fieldName: "test_status" }} />
+                          <AlgaehLabel label={{ forceLabel: "Ordered Date & Time" }} />
                         ),
-                        displayTemplate: row => {
-                          return row.status === "O"
-                            ? "Ordered"
-                            : row.status === "S"
-                            ? "Scheduled"
-                            : row.status === "UP"
-                            ? "Under Process"
-                            : row.status === "CN"
-                            ? "Cancelled"
-                            : row.status === "RC"
-                            ? "Result Confirmed"
-                            : "Result Available";
-                        },
+                        // displayTemplate: row => {
+                        //   return (
+                        //     <span>
+                        //       {this.changeDateFormat(row.ordered_date)}
+                        //     </span>
+                        //   );
+                        // },
+                        disabled: true,
                         others: {
-                          maxWidth: 200,
+                          maxWidth: 150,
                           resizable: false,
                           style: { textAlign: "center" }
                         }
@@ -383,19 +387,19 @@ class RadOrderedList extends Component {
                         fieldName: "scheduled_date_time",
                         label: (
                           <AlgaehLabel
-                            label={{ fieldName: "scheduled_date_time" }}
+                            label={{ forceLabel: "Scheduled Date & Time" }}
                           />
                         ),
-                        displayTemplate: row => {
-                          return (
-                            <span>
-                              {this.changeDateFormat(row.scheduled_date_time)}
-                            </span>
-                          );
-                        },
+                        // displayTemplate: row => {
+                        //   return (
+                        //     <span>
+                        //       {this.changeDateFormat(row.scheduled_date_time)}
+                        //     </span>
+                        //   );
+                        // },
                         disabled: true,
                         others: {
-                          maxWidth: 200,
+                          maxWidth: 150,
                           resizable: false,
                           style: { textAlign: "center" }
                         }
@@ -421,8 +425,9 @@ class RadOrderedList extends Component {
                         ? "underProcessClass"
                         : null;
                     }}
+                    filter="true"
                     noDataText="No data available for selected period"
-                    paging={{ page: 0, rowsPerPage: 10 }}
+                    paging={{ page: 0, rowsPerPage: 20 }}
                   />
                 </div>
               </div>

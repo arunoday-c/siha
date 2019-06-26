@@ -205,15 +205,11 @@
     color: #00a796 !important;
     text-decoration: underline !important; }
   :global .cancelledClass {
-    background-color: #ff400080 !important;
-    color: white;
-    font-weight: bolder; }
+    background-color: #ff400080 !important; }
   :global .confirmedClass {
     background-color: #ff99ff80 !important; }
   :global .orderedClass {
-    background-color: #ffff00 !important;
-    color: white;
-    font-weight: bolder; }
+    background-color: #ffff00 !important; }
   :global .collectedClass {
     background-color: #097bd880 !important; }
   :global .validateClass {
@@ -223,9 +219,7 @@
   :global .availableClass {
     background-color: rgba(0, 255, 64, 0.13) !important; }
   :global .underProcessClass {
-    background-color: rgba(255, 0, 0, 0.08) !important;
-    color: white;
-    font-weight: bolder; }
+    background-color: rgba(255, 0, 0, 0.08) !important; }
   :global .cursor-pointer {
     cursor: pointer; }
   :global .pat-code:hover {
