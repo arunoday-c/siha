@@ -584,6 +584,25 @@ class Appointment extends PureComponent {
     });
   }
 
+  validateAge(e) {
+    const { date_of_birth, age } = this.state;
+    let dob = moment(date_of_birth);
+    if (dob.isAfter(moment()) || age < 0) {
+      this.setState(
+        {
+          date_of_birth: null,
+          age: null
+        },
+        () => {
+          swalMessage({
+            title: "Date of Birth must be a Past date",
+            type: "error"
+          });
+        }
+      );
+    }
+  }
+
   dobHandler(e) {
     var age_value = e.target.value;
     var current_date = new Date();
@@ -1584,6 +1603,7 @@ class Appointment extends PureComponent {
         ageHandler={() => this.ageHandler()}
         dobHandler={e => this.dobHandler(e)}
         patientSearch={() => this.patientSearch()}
+        validateAge={e => this.validateAge(e)}
         deptDropDownHandler={value => this.deptDropDownHandler(value)}
         getAppointmentSchedule={() => this.getAppointmentSchedule()}
         addPatientAppointment={e => this.addPatientAppointment(e)}
