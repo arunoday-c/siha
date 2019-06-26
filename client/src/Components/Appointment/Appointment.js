@@ -390,12 +390,16 @@ class Appointment extends PureComponent {
               .where(w => w.default_status === "Y")
               .firstOrDefault();
 
-            let CreateVisit = Enumerable.from(this.state.appointmentStatus)
+            let CheckedIn = Enumerable.from(this.state.appointmentStatus)
               .where(w => w.default_status === "C")
               .firstOrDefault();
 
             let Reschedule = Enumerable.from(this.state.appointmentStatus)
               .where(w => w.default_status === "RS")
+              .firstOrDefault();
+
+            let Cancelled = Enumerable.from(this.state.appointmentStatus)
+              .where(w => w.default_status === "CAN")
               .firstOrDefault();
 
             this.setState({
@@ -405,12 +409,16 @@ class Appointment extends PureComponent {
                   ? DefaultStatus.hims_d_appointment_status_id
                   : null,
               checkInId:
-                CreateVisit !== undefined
-                  ? CreateVisit.hims_d_appointment_status_id
+                CheckedIn !== undefined
+                  ? CheckedIn.hims_d_appointment_status_id
                   : null,
               RescheduleId:
                 Reschedule !== undefined
                   ? Reschedule.hims_d_appointment_status_id
+                  : null,
+              cancelledId:
+                Cancelled !== undefined
+                  ? Cancelled.hims_d_appointment_status_id
                   : null
             });
           });
@@ -877,9 +885,11 @@ class Appointment extends PureComponent {
                 title_id: this.state.edit_title_id
               };
               if (edit_details.appointment_status_id === this.state.checkInId) {
-                console.log("from update patient", edit_details);
-                debugger;
                 this.handleCheckIn(edit_details);
+              } else if (
+                edit_details.appointment_status_id === this.state.cancelledId
+              ) {
+                this.cancelAppt(edit_details);
               } else {
                 algaehApiCall({
                   uri: "/appointment/updatePatientAppointment",
