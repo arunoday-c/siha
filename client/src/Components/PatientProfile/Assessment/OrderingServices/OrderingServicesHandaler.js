@@ -123,10 +123,20 @@ const ProcessService = ($this, e) => {
 
               swal({
                 title:
-                  "With this service Approval Limit exceed. Do you want to proceed, If proceeds all the selected services will be pre aproved and will be as cash.",
+                  "With this service Approval Limit exceed. Do you want to proceed, If proceeds all the selected services will be pre aproved.",
                 type: "warning",
-                buttons: true
+                showCancelButton: true,
+                confirmButtonText: "Yes!",
+                confirmButtonColor: "#",
+                cancelButtonColor: "#d33",
+                cancelButtonText: "No"
               }).then(willProceed => {
+                // swal({
+                //   title:
+                //     "With this service Approval Limit exceed. Do you want to proceed, If proceeds all the selected services will be pre aproved.",
+                //   type: "warning",
+                //   buttons: true
+                // }).then(willProceed => {
                 if (willProceed) {
                   let approval_amt = data.billdetails[0].approval_amt;
                   let approval_limit_yesno =

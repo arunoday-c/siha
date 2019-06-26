@@ -2,6 +2,7 @@ import algaehMysql from "algaeh-mysql";
 import moment from "moment";
 import algaehUtilities from "algaeh-utilities/utilities";
 import mysql from "mysql";
+import _ from "lodash";
 
 module.exports = {
   getsalesReturn: (req, res, next) => {
@@ -329,59 +330,115 @@ module.exports = {
       let inputParam = { ...req.body };
       const newDtls = inputParam.pharmacy_stock_detail;
       let updateString = "";
-      for (let i = 0; i < newDtls.length; i++) {
-        updateString += mysql.format(
-          "UPDATE hims_f_pharmacy_pos_detail SET `return_quantity`=?,`return_extended_cost` = ?,\
-        `return_discount_amt`=?, `return_net_extended_cost`=?, `return_pat_responsibility`=?, \
-        `return_company_responsibility`=?, `return_sec_company_responsibility`=?, `return_done`='Y' \
-        where `pharmacy_pos_header_id`=? and `item_id`=?;",
-          [
-            newDtls[i].return_quantity,
-            newDtls[i].return_extended_cost,
-            newDtls[i].return_discount_amt,
-            newDtls[i].return_net_extended_cost,
-            newDtls[i].return_pat_responsibility,
-            newDtls[i].return_company_responsibility,
-            newDtls[i].return_sec_company_responsibility,
-            inputParam.from_pos_id,
-            newDtls[i].item_id
-          ]
-        );
-        //     updateString +=
-        //       "UPDATE hims_f_pharmacy_pos_detail SET `return_quantity`='" +
-        //       newDtls[i].return_quantity +
-        //       "',\
-        //   `return_extended_cost` = '" +
-        //       newDtls[i].return_extended_cost +
-        //       "',`return_discount_amt`='" +
-        //       newDtls[i].return_discount_amt +
-        //       "',\
-        //   `return_net_extended_cost`='" +
-        //       newDtls[i].return_net_extended_cost +
-        //       "',`return_pat_responsibility`='" +
-        //       newDtls[i].return_pat_responsibility +
-        //       "',\
-        //   `return_company_responsibility`='" +
-        //       newDtls[i].return_company_responsibility +
-        //       "',`return_sec_company_responsibility`='" +
-        //       newDtls[i].return_sec_company_responsibility +
-        //       "',`return_done`='Y' WHERE \
-        //   `pharmacy_pos_header_id`='" +
-        //       inputParam.from_pos_id +
-        //       "' AND `item_id`='" +
-        //       newDtls[i].item_id +
-        //       "' ;";
-      }
-
       _mysql
-        .executeQueryWithTransaction({
-          query: updateString,
+        .executeQuery({
+          query:
+            "SELECT item_id, return_quantity, return_extended_cost, return_discount_amt, return_net_extended_cost, return_pat_responsibility, return_company_responsibility, return_sec_company_responsibility FROM\
+            hims_f_pharmacy_pos_detail where pharmacy_pos_header_id=?;",
+          values: [inputParam.from_pos_id],
           printQuery: true
         })
-        .then(headerResult => {
-          // _mysql.releaseConnection();
-          // req.records = headerResult;
-          next();
+        .then(posData => {
+          for (let i = 0; i < newDtls.length; i++) {
+            let get_item_detail = _.find(
+              posData,
+              f => f.item_id == newDtls[i].item_id
+            );
+
+            let return_quantity =
+              parseFloat(get_item_detail.return_quantity) +
+              parseFloat(newDtls[i].return_quantity);
+            let return_extended_cost =
+              parseFloat(get_item_detail.return_extended_cost) +
+              parseFloat(newDtls[i].return_extended_cost);
+            let return_discount_amt =
+              parseFloat(get_item_detail.return_discount_amt) +
+              parseFloat(newDtls[i].return_discount_amt);
+            let return_net_extended_cost =
+              parseFloat(get_item_detail.return_net_extended_cost) +
+              parseFloat(newDtls[i].return_net_extended_cost);
+            let return_pat_responsibility =
+              parseFloat(get_item_detail.return_pat_responsibility) +
+              parseFloat(newDtls[i].return_pat_responsibility);
+            let return_company_responsibility =
+              parseFloat(get_item_detail.return_company_responsibility) +
+              parseFloat(newDtls[i].return_company_responsibility);
+
+            updateString += mysql.format(
+              "UPDATE hims_f_pharmacy_pos_detail SET `return_quantity`=?,`return_extended_cost` = ?,\
+            `return_discount_amt`=?, `return_net_extended_cost`=?, `return_pat_responsibility`=?, \
+            `return_company_responsibility`=?, `return_done`='Y' \
+            where `pharmacy_pos_header_id`=? and `item_id`=?;",
+              [
+                return_quantity,
+                return_extended_cost,
+                return_discount_amt,
+                return_net_extended_cost,
+                return_pat_responsibility,
+                return_company_responsibility,
+                inputParam.from_pos_id,
+                newDtls[i].item_id
+              ]
+            );
+          }
+
+          _mysql
+            .executeQuery({
+              query: updateString,
+              printQuery: true
+            })
+            .then(headerResult => {
+              _mysql
+                .executeQuery({
+                  query:
+                    "select * from (SELECT (quantity-return_quantity) as re_quantity FROM\
+                    hims_f_pharmacy_pos_detail where pharmacy_pos_header_id=?) as A where re_quantity>0;",
+                  values: [inputParam.from_pos_id],
+                  printQuery: true
+                })
+                .then(posqtyData => {
+                  // let full_return = _.filter(
+                  //   posqtyData,
+                  //   f => f.re_quantity > 0
+                  // );
+                  const utilities = new algaehUtilities();
+                  utilities
+                    .logger()
+                    .log("updatePOSDetail: ", posqtyData.length);
+                  if (posqtyData.length == 0) {
+                    _mysql
+                      .executeQuery({
+                        query:
+                          "UPDATE hims_f_pharmacy_pos_header set return_done='Y' where\
+                          hims_f_pharmacy_pos_header_id=?;",
+                        values: [inputParam.from_pos_id],
+                        printQuery: true
+                      })
+                      .then(posData => {
+                        next();
+                      })
+                      .catch(e => {
+                        _mysql.rollBackTransaction(() => {
+                          next(e);
+                        });
+                      });
+                  } else {
+                    next();
+                  }
+                })
+                .catch(e => {
+                  _mysql.rollBackTransaction(() => {
+                    next(e);
+                  });
+                });
+              // _mysql.releaseConnection();
+              // req.records = headerResult;
+            })
+            .catch(e => {
+              _mysql.rollBackTransaction(() => {
+                next(e);
+              });
+            });
         })
         .catch(e => {
           _mysql.rollBackTransaction(() => {

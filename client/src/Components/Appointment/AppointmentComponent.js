@@ -224,7 +224,8 @@ function AppointmentComponent(props) {
                           className: "txt-fld",
                           name: "edit_date_of_birth",
                           others: {
-                            disabled: true
+                            disabled: true,
+                            maxDate: new Date()
                           }
                         }}
                         events={{
@@ -538,6 +539,7 @@ function AppointmentComponent(props) {
                         className: "txt-fld",
                         name: "date_of_birth"
                       }}
+                      maxDate={new Date()}
                       events={{
                         onChange: props.ageHandler,
                         onBlur: props.validateAge
@@ -556,6 +558,9 @@ function AppointmentComponent(props) {
                       textBox={{
                         className: "txt-fld",
                         name: "age",
+                        number: {
+                          allowNegative: false
+                        },
                         others: {
                           type: "number",
                           onBlur: props.validateAge
