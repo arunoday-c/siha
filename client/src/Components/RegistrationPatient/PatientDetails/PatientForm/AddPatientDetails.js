@@ -111,6 +111,14 @@ const setAge = ($this, e) => {
     let months = $this.state.AGEMM;
     let days = $this.state.AGEDD;
 
+    if (e.target.value < 0) {
+      swalMessage({
+        title: "Negative values are not allowed",
+        type: "error"
+      });
+      return;
+    }
+
     if (e.target.name === "AGEMM" && parseFloat(e.target.value) > 11) {
       swalMessage({
         title: "Age in months cannot be greater than 11.",
