@@ -1332,12 +1332,16 @@ class Appointment extends PureComponent {
   }
 
   isInactiveTimeSlot(time) {
-    return (
-      moment(time, "HH:mm a").format("HHmm") <
-        moment(new Date()).format("HHmm") &&
-      moment(this.state.activeDateHeader).format("YYYYMMDD") <=
-        moment(new Date()).format("YYYYMMDD")
-    );
+    if (moment(this.state.activeDateHeader).isBefore(new Date(), "day")) {
+      return true;
+    } else if (moment(this.state.activeDateHeader).isSame(new Date(), "day")) {
+      return (
+        moment(time, "HH:mm a").format("HHmm") <
+        moment(new Date()).format("HHmm")
+      );
+    } else {
+      return false;
+    }
   }
 
   generateChildren(data) {
