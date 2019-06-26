@@ -212,7 +212,7 @@ module.exports = {
           inner join hims_f_patient_visit V on OS.visit_id=V.hims_f_patient_visit_id\
           left join  hims_f_lab_order L on OS.visit_id=L.visit_id and OS.services_id= L.service_id\
           left join hims_f_rad_order R on OS.visit_id=R.visit_id  and OS.services_id=R.service_id\
-          where 1=1" +
+          where (OS.service_type_id=5 or OS.service_type_id=11)" +
             _stringData +
             " group by hims_f_ordered_services_id order by OS.visit_id desc",
           printQuery: true
