@@ -655,7 +655,10 @@ class RegistrationPatient extends Component {
 
     let department_id = this.props.department_id || null;
     let appointment_id = this.props.hims_f_patient_appointment_id || null;
-    let title_id = this.props.patient_details.title_id || null;
+    let title_id =
+      this.props.patient_details !== undefined
+        ? this.props.patient_details.title_id || null
+        : null;
 
     AlgaehLoader({ show: true });
 

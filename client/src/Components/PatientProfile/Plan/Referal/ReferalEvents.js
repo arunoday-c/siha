@@ -10,22 +10,10 @@ const texthandle = ($this, e) => {
   });
 };
 
-const DeptselectedHandeler = ($this, e) => {
-  $this.setState({
-    [e.name]: e.value
-  });
-};
-
 const addReferal = $this => {
-  if ($this.state.sub_department_id === null) {
-    successfulMessage({
-      message: "Please select Department",
-      title: "Warning",
-      icon: "warning"
-    });
-  } else if (
+  if (
     $this.state.referral_type === "I" &&
-    $this.state.doctor_id === null
+    $this.state.doctor_id === undefined
   ) {
     successfulMessage({
       message: "Please select Doctor",
@@ -40,7 +28,8 @@ const addReferal = $this => {
       sub_department_id: $this.state.sub_department_id,
       doctor_id: $this.state.doctor_id,
       hospital_name: $this.state.hospital_name,
-      reason: $this.state.reason
+      reason: $this.state.reason,
+      external_doc_name: $this.state.external_doc_name
     };
     algaehApiCall({
       uri: "/doctorsWorkBench/addReferalDoctor",
@@ -56,12 +45,11 @@ const addReferal = $this => {
         }
 
         $this.setState({
-          referral_type: null,
-          sub_department_id: null,
-          hospital_name: null,
-          reason: null,
-          radioInternal: true,
-          radioExternal: false
+          doctor_id: undefined,
+          sub_department_id: undefined,
+          hospital_name: "",
+          reason: "",
+          external_doc_name: ""
         });
       },
       onFailure: error => {
@@ -75,37 +63,20 @@ const addReferal = $this => {
   }
 };
 
-const doctorselectedHandeler = ($this, e) => {
-  $this.setState({
-    doctor_id: e.value,
-    departments: e.selected.departments
-  });
-};
-
 const radioChange = ($this, e) => {
-  let radioInternal = true;
-  let radioExternal = false;
+  let _external_doc_name = {};
+  let _radio = false;
   if (e.target.value === "I") {
-    radioInternal = true;
-    radioExternal = false;
-  } else if (e.target.value === "E") {
-    radioInternal = false;
-    radioExternal = true;
+    _radio = true;
+    _external_doc_name = { external_doc_name: "" };
   }
   $this.setState({
-    [e.target.name]: e.target.value,
-    radioExternal: radioExternal,
-    radioInternal: radioInternal,
-    referral_type: null,
+    referral_type: e.target.value,
+    radio: _radio,
     sub_department_id: null,
-    hospital_name: null,
-    reason: null
+    hospital_name: "",
+    reason: "",
+    ..._external_doc_name
   });
 };
-export {
-  texthandle,
-  addReferal,
-  DeptselectedHandeler,
-  doctorselectedHandeler,
-  radioChange
-};
+export { texthandle, addReferal, radioChange };
