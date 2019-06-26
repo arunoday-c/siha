@@ -147,7 +147,7 @@ const enddatehandle = ($this, context, ctrl, e) => {
         "Selected Date is more than insurance Expiry date Do you want to continue?",
       type: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes!",
+      confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
       cancelButtonText: "No"
@@ -221,7 +221,7 @@ const InsuranceDetails = ($this, context, e) => {
               "Policy Date is more than insurance Expiry date Do you want to continue?",
             type: "warning",
             showCancelButton: true,
-            confirmButtonText: "Yes!",
+            confirmButtonText: "Yes",
             confirmButtonColor: "#44b8bd",
             cancelButtonColor: "#d33",
             cancelButtonText: "No"

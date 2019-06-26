@@ -86,7 +86,7 @@ class DeptMaster extends Component {
       title: "Delete Department " + data.department_name + "?",
       type: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes!",
+      confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
       cancelButtonText: "No"
@@ -134,7 +134,7 @@ class DeptMaster extends Component {
       title: "Delete Department " + data.sub_department_name + "?",
       type: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes!",
+      confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
       cancelButtonText: "No"

@@ -94,7 +94,7 @@ class Counter extends Component {
       title: "Delete the counter " + data.counter_description + "?",
       type: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes!",
+      confirmButtonText: "Yes",
       confirmButtonColor: "#",
       cancelButtonColor: "#d33",
       cancelButtonText: "No"

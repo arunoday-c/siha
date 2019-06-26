@@ -55,7 +55,7 @@ const showconfirmDialog = ($this, id) => {
 		title: 'Are you sure you want to delete this Section?',
 		type: 'warning',
 		showCancelButton: true,
-		confirmButtonText: 'Yes!',
+		confirmButtonText: 'Yes',
 		confirmButtonColor: '#44b8bd',
 		cancelButtonColor: '#d33',
 		cancelButtonText: 'No'

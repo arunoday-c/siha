@@ -336,7 +336,7 @@ const deleteEarningComponent = ($this, row) => {
     title: "Are you sure you want to delete Earning Component?",
     type: "warning",
     showCancelButton: true,
-    confirmButtonText: "Yes!",
+    confirmButtonText: "Yes",
     confirmButtonColor: "#44b8bd",
     cancelButtonColor: "#d33",
     cancelButtonText: "No"
@@ -436,7 +436,7 @@ const deleteDeductionComponent = ($this, row) => {
     title: "Are you sure you want to delete Deduction Component?",
     type: "warning",
     showCancelButton: true,
-    confirmButtonText: "Yes!",
+    confirmButtonText: "Yes",
     confirmButtonColor: "#44b8bd",
     cancelButtonColor: "#d33",
     cancelButtonText: "No"
@@ -535,7 +535,7 @@ const deleteContibuteComponent = ($this, row) => {
     title: "Are you sure you want to delete Contribution Component?",
     type: "warning",
     showCancelButton: true,
-    confirmButtonText: "Yes!",
+    confirmButtonText: "Yes",
     confirmButtonColor: "#44b8bd",
     cancelButtonColor: "#d33",
     cancelButtonText: "No"
