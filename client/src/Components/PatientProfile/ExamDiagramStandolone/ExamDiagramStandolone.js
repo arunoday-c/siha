@@ -525,7 +525,7 @@ export default class ExaminationDiagram extends Component {
       html: image.outerHTML,
       buttons: true,
       showCancelButton: true,
-      confirmButtonText: "Yes!",
+      confirmButtonText: "Yes",
       confirmButtonColor: "#",
       cancelButtonColor: "#d33",
       cancelButtonText: "No"

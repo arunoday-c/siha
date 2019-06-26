@@ -113,7 +113,7 @@ export default class AttendanceRegularization extends Component {
           : "Reject Attendance Regularization Request",
       type: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes!",
+      confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
       cancelButtonText: "No"

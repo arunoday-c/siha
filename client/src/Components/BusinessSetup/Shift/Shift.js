@@ -112,7 +112,7 @@ class Shift extends Component {
       title: "Delete the Shift " + data.shift_description + "?",
       type: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes!",
+      confirmButtonText: "Yes",
       confirmButtonColor: "#",
       cancelButtonColor: "#d33",
       cancelButtonText: "No"

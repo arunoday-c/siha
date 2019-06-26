@@ -1,77 +1,77 @@
 .hptl-phase1-add-patient-form {
-  background: #ffff;
-  border-radius: 5px;
-  .primary-details {
-    border-right: 1px dashed #d3d3d3;
-    padding-top: 8px;
-  }
-  mark {
-    background: none;
-    color: red;
-  }
+	background: #ffff;
+	border-radius: 5px;
+	.primary-details {
+		border-right: 1px dashed #d3d3d3;
+		padding-top: 8px;
+	}
+	mark {
+		background: none;
+		color: red;
+	}
 
-  .centerAlign {
-    text-align: center;
-  }
+	.centerAlign {
+		text-align: center;
+	}
 
-  .text_field {
-    width: 100% !important;
-    background-color: #fbfbfb;
-    margin-right: 5px;
-  }
-  .paddin-bottom-5 {
-    padding-bottom: 4px;
-  }
+	.text_field {
+		width: 100% !important;
+		background-color: #fbfbfb;
+		margin-right: 5px;
+	}
+	.paddin-bottom-5 {
+		padding-bottom: 4px;
+	}
 
-  .secondary-details {
-    padding-top: 8px;
-    .secondary-box-container {
-      .attach-design {
-        background: #8c8c8c;
-        color: #fff;
-        position: relative;
-        cursor: pointer;
-        margin-left: -1px;
-        margin-right: -1px;
-      }
-      .preview-image {
-        position: absolute;
-        top: -1px;
-        left: 15px;
-        height: 101px;
-      }
-    }
-  }
+	.secondary-details {
+		padding-top: 8px;
+		.secondary-box-container {
+			.attach-design {
+				background: #8c8c8c;
+				color: #fff;
+				position: relative;
+				cursor: pointer;
+				margin-left: -1px;
+				margin-right: -1px;
+			}
+			.preview-image {
+				position: absolute;
+				top: -1px;
+				left: 15px;
+				height: 101px;
+			}
+		}
+	}
 }
 
 .patientRegImg {
-  .image-drop-area {
-    img {
-      height: 169px;
-    }
-  }
-  .Image-cropper {
-    top: 20vh;
-  }
+	.image-drop-area {
+		img {
+			height: 169px;
+		}
+	}
+	.Image-cropper {
+		top: 20vh;
+	}
 }
 .patientRegId {
-  .image-drop-area {
-    img {
-      height: 169px;
-    }
-  }
-  .Image-cropper {
-    top: 20vh;
-  }
+	.image-drop-area {
+		img {
+			height: 169px;
+		}
+	}
+	.Image-cropper {
+		top: 20vh;
+	}
 }
 
 .insurCrdImg {
-  .image-drop-area {
-    img {
-      height: 120px;
-    }
-  }
-  .Image-cropper {
-    top: 20vh;
-  }
+	.image-drop-area {
+		img {
+			height: 100px;
+		}
+	}
+	.Image-cropper {
+		top: 20vh;
+	}
 }

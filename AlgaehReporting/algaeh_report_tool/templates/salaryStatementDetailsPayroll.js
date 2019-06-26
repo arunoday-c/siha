@@ -1,3 +1,4 @@
+const { MONTHS } = require("../../../client/src/utils/GlobalVariables.json");
 const algaehUtilities = require("algaeh-utilities/utilities");
 const { LINQ } = require("node-linq");
 const executePDF = function executePDFMethod(options) {
@@ -50,11 +51,6 @@ const executePDF = function executePDFMethod(options) {
           printQuery: false
         })
         .then(result => {
-          // _mysql.releaseConnection();
-          // req.records = result;
-          // next();
-          // utilities.logger().log("am heere: ", result);
-
           const components = result[0];
           const salary = result[1];
 
@@ -119,6 +115,24 @@ const executePDF = function executePDFMethod(options) {
                 printQuery: false
               })
               .then(results => {
+                //ST print inputs in report
+                if (salary.length > 0) {
+                  input["hospital_name"] = salary[0]["hospital_name"];
+                  input["group_description"] = salary[0]["group_description"];
+                  MONTHS.forEach(month => {
+                    if (month.value == input.month) input["month"] = month.name;
+                  });
+
+                  if (input.is_local == "Y") {
+                    input["type"] = "Localite";
+                  } else if (input.is_local == "N") {
+                    input["type"] = "Expatriate";
+                  } else {
+                    input["type"] = "";
+                  }
+                }
+                //END print inputs in report
+
                 let earnings = results[0];
                 let deductions = results[1];
                 let basic_id = results[2][0]["basic_earning_component"];
@@ -289,6 +303,7 @@ const executePDF = function executePDFMethod(options) {
                 }
 
                 const result = {
+                  ...input,
                   components: components,
                   earning_component: earning_component,
                   deduction_component: deduction_component,
@@ -304,7 +319,7 @@ const executePDF = function executePDFMethod(options) {
                   sum_leave_salary: sum_leave_salary,
                   sum_airfare_amount: sum_airfare_amount
                 };
-                utilities.logger().log("result: ", result);
+                //utilities.logger().log("result: ", result);
                 resolve(result);
               })
               .catch(e => {
@@ -314,7 +329,7 @@ const executePDF = function executePDFMethod(options) {
           } else {
             options.mysql.releaseConnection();
 
-            const result = {};
+            const result = { employees: [] };
             resolve(result);
           }
         })

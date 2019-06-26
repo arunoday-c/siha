@@ -185,7 +185,7 @@ class EmployeeProjectRoster extends Component {
       title: "Delete the Project assigned?",
       type: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes!",
+      confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
       cancelButtonText: "No"
