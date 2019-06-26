@@ -7,8 +7,16 @@
                 <tr>
                     <td><label class="textEnLft">Branch</label>:<span class="valueText">{{hospital_name}}</span><label
                             class="textArRht">لشركة</label></td>
-                    <td><label class="textEnLft">Department</label>:<span
-                            class="valueText">{{sub_department_name}}</span><label class="textArRht">القسم</label></td>
+                    <td><label class="textEnLft">year</label>:<span class="valueText">{{year}}</span><label
+                            class="textArRht">القسم</label></td>
+                    <td><label class="textEnLft">Month</label>:<span class="valueText">{{month}}</span><label
+                            class="textArRht">القسم</label></td>
+                </tr>
+                <tr>
+                    <td><label class="textEnLft">GROUP</label>:<span
+                            class="valueText">{{group_description}}</span><label class="textArRht">لشركة</label></td>
+                    <td><label class="textEnLft">Type</label>:<span class="valueText">{{type}}</span><label
+                            class="textArRht">القسم</label></td>
                 </tr>
             </table>
 
@@ -16,6 +24,7 @@
         </section>
         <section>
             <table class="tableForData" cell-padding="0">
+                {{#hasElement employees}}
                 <thead>
                     <tr>
                         <th>Sl No.</th>
@@ -143,6 +152,9 @@
                     {{/each }}
 
                 </tbody>
+                {{else}}
+                <h1>no data</h1>
+                {{/hasElement }}
             </table>
         </section>
         {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
