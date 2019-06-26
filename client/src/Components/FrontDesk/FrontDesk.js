@@ -31,7 +31,7 @@ class FrontDesk extends Component {
     // this.routeComponents = this.routeComponents.bind(this);
   }
 
-  routeComponents(patient, status) {
+  routeComponents(patient) {
     this.props.getEmployeeServiceID({
       uri: "/appointment/getEmployeeServiceID",
       module: "frontDesk",
@@ -54,7 +54,7 @@ class FrontDesk extends Component {
                   this.state.Language.slice(1)
                 : Window.global["FD-STD"],
             ...patient,
-            checkinID: status.hims_d_appointment_status_id,
+            checkinID: 94,
             hims_d_services_id: data[0].services_id
           },
           () => {

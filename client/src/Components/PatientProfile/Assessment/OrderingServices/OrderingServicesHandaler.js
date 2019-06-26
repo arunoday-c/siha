@@ -53,7 +53,6 @@ const serviceTypeHandeler = ($this, e) => {
 };
 
 const serviceHandeler = ($this, e) => {
-  
   $this.setState({
     s_service: e.hims_d_services_id,
     s_service_type: e.service_type_id,
@@ -64,8 +63,6 @@ const serviceHandeler = ($this, e) => {
 //Process and gets selectd service data with all calculation
 const ProcessService = ($this, e) => {
   // orderedList
-
-  
 
   let SelectedService = Enumerable.from($this.props.orderedList)
     .where(
@@ -182,7 +179,8 @@ const ProcessService = ($this, e) => {
                           saved: false,
                           // s_service_type: null,
                           s_service: null,
-                          test_type: "R"
+                          test_type: "R",
+                          service_name: ""
                         });
 
                         algaehApiCall({
@@ -284,7 +282,8 @@ const ProcessService = ($this, e) => {
                 saved: false,
                 // s_service_type: null,
                 s_service: null,
-                test_type: "R"
+                test_type: "R",
+                service_name: ""
               });
 
               algaehApiCall({

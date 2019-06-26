@@ -459,8 +459,6 @@ export default [
         subitem: "Salary Statement",
         reportName: "salaryStatementPayroll",
         requireIframe: true,
-
-        input: "sub_department_id=?",
         reportParameters: [
           {
             className: "col-2",

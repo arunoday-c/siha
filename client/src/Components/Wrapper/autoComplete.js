@@ -31,7 +31,7 @@ class AutoComplete extends Component {
       const _estData = !Array.isArray(props.selector.dataSource.data)
         ? []
         : props.selector.dataSource.data;
-      const _data = props.selector.sort
+      const _data = !props.selector.sort
         ? _estData
             .sort((a, b) => {
               return (

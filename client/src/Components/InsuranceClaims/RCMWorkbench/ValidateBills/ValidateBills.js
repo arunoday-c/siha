@@ -834,6 +834,7 @@ class ValidateBills extends PureComponent {
                       // data: this.state.invoice_details
                     }}
                     isEditable={claim_validated === "P" ? true : false}
+                    actions={{ allowDelete: false }}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
                       onDelete: row => {},
