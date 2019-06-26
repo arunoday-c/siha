@@ -254,12 +254,20 @@ export default class FormGroup extends PureComponent {
         this.props.textBox.disabled !== undefined
           ? { disabled: this.props.textBox.disabled }
           : {};
-      const _required =
+      let _required =
         this.props.label !== undefined
           ? this.props.label.isImp !== undefined
             ? { algaeh_required: "" + this.props.label.isImp }
             : {}
           : {};
+
+      if (
+        this.props.textBox.others !== undefined &&
+        this.props.textBox.others.required === true
+      ) {
+        _required = { algaeh_required: "" + true };
+        // delete this.props.textBox.others["required"];
+      }
       const _invalid =
         this.props.textBox.helperText !== undefined
           ? {

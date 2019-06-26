@@ -48,13 +48,25 @@ module.exports = {
         })
         .then(headerResult => {
           if (headerResult.length != 0) {
+            let strQuery = "";
+            if (req.query.from_screen == "Sales_Return") {
+              strQuery += mysql.format(
+                "select * from (select *,(quantity-return_quantity) as re_quantity,extended_cost as gross_amount,net_extended_cost as net_amout ,\
+                patient_responsibility as patient_resp from hims_f_pharmacy_pos_detail where\
+                pharmacy_pos_header_id=? and record_status='A') as A where re_quantity>0;",
+                [headerResult[0].hims_f_pharmacy_pos_header_id]
+              );
+            } else {
+              strQuery += mysql.format(
+                "select *,extended_cost as gross_amount,net_extended_cost as net_amout ,\
+                patient_responsibility as patient_resp from hims_f_pharmacy_pos_detail where\
+                pharmacy_pos_header_id=? and record_status='A'",
+                [headerResult[0].hims_f_pharmacy_pos_header_id]
+              );
+            }
             _mysql
               .executeQuery({
-                query:
-                  "select *,extended_cost as gross_amount,net_extended_cost as net_amout ,\
-                  patient_responsibility as patient_resp from hims_f_pharmacy_pos_detail where\
-                  pharmacy_pos_header_id=? and record_status='A'",
-                values: [headerResult[0].hims_f_pharmacy_pos_header_id],
+                query: strQuery,
                 printQuery: true
               })
               .then(pharmacy_stock_detail => {

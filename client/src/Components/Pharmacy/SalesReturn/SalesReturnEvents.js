@@ -216,6 +216,7 @@ const POSSearch = ($this, e) => {
     },
     searchName: "POSNOReturn",
     uri: "/gloabelSearch/get",
+    inputs: "return_done = 'N'",
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);
     },
@@ -244,9 +245,7 @@ const getNetworkPlans = $this => {
         $this.state.hims_d_insurance_network_office_id
     },
     onSuccess: response => {
-      
       if (response.data.success) {
-        
         let data = response.data.records[0];
         $this.setState({
           copay_consultation: data.copay_consultation,
@@ -273,10 +272,9 @@ const getPOSEntry = $this => {
     uri: "/posEntry/getPosEntry",
     module: "pharmacy",
     method: "GET",
-    data: { pos_number: $this.state.pos_number },
+    data: { pos_number: $this.state.pos_number, from_screen: "Sales_Return" },
     onSuccess: response => {
       if (response.data.success) {
-        
         let data = response.data.records;
         data.patient_payable_h = data.patient_payable;
 
@@ -292,13 +290,13 @@ const getPOSEntry = $this => {
         data.insured = data.insurance_provider_id !== null ? "Y" : "N";
 
         for (let i = 0; i < data.pharmacy_stock_detail.length; i++) {
-          if (data.pharmacy_stock_detail[i].return_done === "Y") {
-            data.pharmacy_stock_detail[i].quantity =
-              data.pharmacy_stock_detail[i].quantity -
-              data.pharmacy_stock_detail[i].return_quantity;
-          }
+          // if (data.pharmacy_stock_detail[i].return_done === "Y") {
+          //   data.pharmacy_stock_detail[i].quantity =
+          //     data.pharmacy_stock_detail[i].quantity -
+          //     data.pharmacy_stock_detail[i].return_quantity;
+          // }
           data.pharmacy_stock_detail[i].return_quantity =
-            data.pharmacy_stock_detail[i].quantity;
+            data.pharmacy_stock_detail[i].re_quantity;
         }
         $this.setState(data, () => {
           if ($this.state.insured === "Y") {

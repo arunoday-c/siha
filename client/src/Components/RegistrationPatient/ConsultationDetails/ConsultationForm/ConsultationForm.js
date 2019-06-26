@@ -321,7 +321,8 @@ class AddConsultationForm extends Component {
                     </div>
 
                     <div className="col-lg-8">
-                      {this.state.department_type === "D" ? (
+                      {this.state.department_type === "D" &&
+                      this.state.hims_d_patient_id !== null ? (
                         <div className="row">
                           <div className="col-lg-4" style={{ paddingRight: 0 }}>
                             <label>Existing Plan</label>
