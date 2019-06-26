@@ -12,7 +12,8 @@ import {
   calculateAge,
   setAge,
   countryStatehandle,
-  nationalityhandle
+  nationalityhandle,
+  handlePrimaryId
 } from "./AddPatientDetails.js";
 import MyContext from "../../../../utils/MyContext.js";
 
@@ -827,12 +828,12 @@ class AddPatientForm extends Component {
                           className: "txt-fld",
                           name: "primary_id_no",
                           value: this.state.primary_id_no,
-                          // events: {
-                          //   onChange: texthandle.bind(this, this, context)
-                          // },
+                          events: {
+                            onChange: handlePrimaryId.bind(this, this)
+                          },
                           others: {
                             disabled: this.state.existingPatient,
-                            onBlur: texthandle.bind(this, this),
+                            // onBlur: handlePrimaryId.bind(this, this),
                             tabIndex: "16",
                             placeholder: "Enter ID Number"
                           }
