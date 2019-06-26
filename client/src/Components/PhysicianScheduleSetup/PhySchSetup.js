@@ -219,7 +219,7 @@ class PhySchSetup extends Component {
       title: "Do you want to Delete Schedule: " + data.description,
       type: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes!",
+      confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
       cancelButtonText: "No"
@@ -542,7 +542,7 @@ class PhySchSetup extends Component {
     swal({
       title: "Are you sure you want to delete this Doctor?",
       type: "warning",
-      confirmButtonText: "Yes!",
+      confirmButtonText: "Yes",
       showCancelButton: true,
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",

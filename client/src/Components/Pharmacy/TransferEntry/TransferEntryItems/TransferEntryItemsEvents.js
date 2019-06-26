@@ -168,7 +168,7 @@ const deleteTransEntryDetail = ($this, context, e, rowId) => {
     title: "Are you sure want to delete ?" + display[0].item_description + "?",
     type: "warning",
     showCancelButton: true,
-    confirmButtonText: "Yes!",
+    confirmButtonText: "Yes",
     confirmButtonColor: "#44b8bd",
     cancelButtonColor: "#d33",
     cancelButtonText: "No"

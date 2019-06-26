@@ -46,7 +46,7 @@ class Currency extends Component {
       title: "Delete the currency " + data.currency_description + "?",
       type: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes!",
+      confirmButtonText: "Yes",
       confirmButtonColor: "#",
       cancelButtonColor: "#d33",
       cancelButtonText: "No"

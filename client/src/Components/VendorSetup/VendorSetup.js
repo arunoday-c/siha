@@ -207,7 +207,7 @@ class VendorSetup extends Component {
       title: "Delete Vendor " + data.vendor_name + "?",
       type: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes!",
+      confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
       cancelButtonText: "No"

@@ -111,7 +111,7 @@ class Appointment extends PureComponent {
         title: "Cancel Appointment for " + row.patient_name + "?",
         type: "warning",
         showCancelButton: true,
-        confirmButtonText: "Yes!",
+        confirmButtonText: "Yes",
         confirmButtonColor: "#44b8bd",
         cancelButtonColor: "#d33",
         cancelButtonText: "No"
@@ -824,7 +824,7 @@ class Appointment extends PureComponent {
           title: "Are you Sure you want to Update Appointment?",
           type: "warning",
           showCancelButton: true,
-          confirmButtonText: "Yes!",
+          confirmButtonText: "Yes",
           confirmButtonColor: "#44b8bd",
           cancelButtonColor: "#d33",
           cancelButtonText: "No"
@@ -1095,7 +1095,7 @@ class Appointment extends PureComponent {
             title: "Are you sure you want to Re-Schedule the appointment?",
             type: "warning",
             showCancelButton: true,
-            confirmButtonText: "Yes!",
+            confirmButtonText: "Yes",
             confirmButtonColor: "#",
             cancelButtonColor: "#d33",
             cancelButtonText: "No"
