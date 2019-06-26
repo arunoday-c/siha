@@ -38,7 +38,7 @@ const showconfirmDialog = ($this, row) => {
     title: "Are you sure you want to delete this Form?",
     type: "warning",
     showCancelButton: true,
-    confirmButtonText: "Yes!",
+    confirmButtonText: "Yes",
     confirmButtonColor: "#44b8bd",
     cancelButtonColor: "#d33",
     cancelButtonText: "No"

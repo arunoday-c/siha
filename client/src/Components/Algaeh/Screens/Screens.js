@@ -119,7 +119,7 @@ class Screens extends Component {
       title: "Delete Screen : " + data.screen_name + "?",
       type: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes!",
+      confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
       cancelButtonText: "No"

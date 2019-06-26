@@ -80,7 +80,7 @@ const onvalidate = $this => {
     title: "Are you sure want to Validate?",
     type: "warning",
     showCancelButton: true,
-    confirmButtonText: "Yes!",
+    confirmButtonText: "Yes",
     confirmButtonColor: "#44b8bd",
     cancelButtonColor: "#d33",
     cancelButtonText: "No"
@@ -255,7 +255,7 @@ const onconfirm = $this => {
     title: "Are you sure want to Confirm?",
     type: "warning",
     showCancelButton: true,
-    confirmButtonText: "Yes!",
+    confirmButtonText: "Yes",
     confirmButtonColor: "#44b8bd",
     cancelButtonColor: "#d33",
     cancelButtonText: "No"
@@ -311,7 +311,7 @@ const onReRun = $this => {
       title: "Are you sure want to Re-Run?",
       type: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes!",
+      confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
       cancelButtonText: "No"
@@ -372,7 +372,7 @@ const onchangegridamended = ($this, row, e) => {
     title: "Are you sure want to Ammend?",
     type: "warning",
     showCancelButton: true,
-    confirmButtonText: "Yes!",
+    confirmButtonText: "Yes",
     confirmButtonColor: "#44b8bd",
     cancelButtonColor: "#d33",
     cancelButtonText: "No"

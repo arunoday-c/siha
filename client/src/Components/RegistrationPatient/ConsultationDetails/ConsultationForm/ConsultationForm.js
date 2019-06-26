@@ -272,38 +272,6 @@ class AddConsultationForm extends Component {
                         }}
                       />
                       <br />
-
-                      {/* <div className="customRadio">
-                        <label className="radio inline">
-                          <input
-                            type="radio"
-                            name="maternity_patient_yes"
-                            value="Y"
-                            checked={
-                              this.state.maternity_patient === "Y"
-                                ? true
-                                : false
-                            }
-                            onChange={radioChange.bind(this, this, context)}
-                          />
-                          <span>Yes</span>
-                        </label>
-                        <label className="radio inline">
-                          <input
-                            type="radio"
-                            name="maternity_patient_no"
-                            value="N"
-                            checked={
-                              this.state.maternity_patient === "N"
-                                ? true
-                                : false
-                            }
-                            onChange={radioChange.bind(this, this, context)}
-                          />
-                          <span>No</span>
-                        </label>
-                      </div> */}
-
                       <div className="customCheckbox">
                         <label className="checkbox inline">
                           <input

@@ -196,7 +196,7 @@ class VitalsMaster extends Component {
       title: "Delete Vital " + data.vitals_name + "?",
       type: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes!",
+      confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
       cancelButtonText: "No"
@@ -243,7 +243,7 @@ class VitalsMaster extends Component {
       title: "Delete Details for this Vital?",
       type: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes!",
+      confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
       cancelButtonText: "No"

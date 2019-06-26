@@ -347,7 +347,7 @@ class FinalSettlement extends Component {
       title: "Delete Earning " + row.earning_name + "?",
       type: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes!",
+      confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
       cancelButtonText: "No"
@@ -377,7 +377,7 @@ class FinalSettlement extends Component {
       title: "Delete Deduction " + row.deduction_name + "?",
       type: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes!",
+      confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
       cancelButtonText: "No"

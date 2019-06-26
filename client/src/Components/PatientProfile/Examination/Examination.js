@@ -95,7 +95,7 @@ class Examination extends Component {
       type: "warning",
       buttons: true,
       showCancelButton: true,
-      confirmButtonText: "Yes!",
+      confirmButtonText: "Yes",
       confirmButtonColor: "#",
       cancelButtonColor: "#d33",
       cancelButtonText: "No"

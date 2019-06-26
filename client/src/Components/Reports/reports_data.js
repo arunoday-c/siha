@@ -655,6 +655,7 @@ export default [
             }
           },
           {
+            className: "col-2",
             type: "dropdown",
             name: "sub_department_id",
             initialLoad: true,

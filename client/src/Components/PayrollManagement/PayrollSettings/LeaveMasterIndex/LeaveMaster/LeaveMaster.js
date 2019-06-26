@@ -35,7 +35,7 @@ class LeaveMaster extends Component {
       title: "Delete leave detail?",
       type: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes!",
+      confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
       cancelButtonText: "No"
@@ -60,7 +60,7 @@ class LeaveMaster extends Component {
       title: "Delete Leave Rule?",
       type: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes!",
+      confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
       cancelButtonText: "No"
@@ -84,7 +84,7 @@ class LeaveMaster extends Component {
       title: "Delete Leave Encashment?",
       type: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes!",
+      confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
       cancelButtonText: "No"

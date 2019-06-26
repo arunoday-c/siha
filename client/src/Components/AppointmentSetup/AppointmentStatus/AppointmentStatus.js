@@ -82,7 +82,7 @@ class AppointmentStatus extends Component {
             "This is a one time setup, are you sure you want to authorize the Status for Appointment set?",
           type: "warning",
           showCancelButton: true,
-          confirmButtonText: "Yes!",
+          confirmButtonText: "Yes",
           confirmButtonColor: "#44b8bd",
           cancelButtonColor: "#d33",
           cancelButtonText: "No"
@@ -135,7 +135,7 @@ class AppointmentStatus extends Component {
       title: "Are you sure you want to delete this Status?",
       type: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes!",
+      confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
       cancelButtonText: "No"
