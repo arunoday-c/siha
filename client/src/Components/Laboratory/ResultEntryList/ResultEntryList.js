@@ -377,7 +377,7 @@ class ResultEntryList extends Component {
                         fieldName: "service_name",
                         label: (
                           <AlgaehLabel
-                            label={{ forceLabel: "Investigation Name" }}
+                            label={{ forceLabel: "Test Name" }}
                           />
                         ),
 

@@ -1768,7 +1768,9 @@ export default [
         pageSize: "A4",
         pageOrentation: "landscape", //"portrait",
         reportParameters: [
+         
           {
+            className: "col-2",
             type: "date",
             name: "from_date",
             isImp: true,
@@ -1778,12 +1780,66 @@ export default [
             }
           },
           {
+            className: "col-2",
             type: "date",
             name: "to_date",
             isImp: true,
             others: {
               maxDate: new Date(),
               minDate: null
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Select branch",
+            link: {
+              uri: "/organization/getOrganization"
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/pharmacy/getPharmacyLocation",
+                  module: "pharmacy",
+                  method: "GET",
+                  data: { hospital_id: currentEvent.value },
+
+                  onSuccess: result => {
+                    reportState.setState({
+                      location_id_list: result.data.records
+                    });
+                  }
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  location_id_list: []
+                });
+              }
+            },
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            }
+          },
+
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "location_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Select Location",
+            dataSource: {
+              textField: "location_description",
+              valueField: "hims_d_pharmacy_location_id",
+              data: []
             }
           }
         ]
@@ -1794,6 +1850,7 @@ export default [
         template_name: "gpDatewisePharmacy",
         reportParameters: [
           {
+            className: "col-2",
             type: "date",
             name: "from_date",
             isImp: true,
@@ -1803,12 +1860,66 @@ export default [
             }
           },
           {
+            className: "col-2",
             type: "date",
             name: "to_date",
             isImp: true,
             others: {
               maxDate: new Date(),
               minDate: null
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Select branch",
+            link: {
+              uri: "/organization/getOrganization"
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/pharmacy/getPharmacyLocation",
+                  module: "pharmacy",
+                  method: "GET",
+                  data: { hospital_id: currentEvent.value },
+
+                  onSuccess: result => {
+                    reportState.setState({
+                      location_id_list: result.data.records
+                    });
+                  }
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  location_id_list: []
+                });
+              }
+            },
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            }
+          },
+
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "location_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Select Location",
+            dataSource: {
+              textField: "location_description",
+              valueField: "hims_d_pharmacy_location_id",
+              data: []
             }
           }
         ]

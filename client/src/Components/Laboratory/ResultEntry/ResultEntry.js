@@ -204,7 +204,7 @@ class ResultEntry extends Component {
                     <div className="col-lg-3">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Investigation Name"
+                          forceLabel: "Test Name"
                         }}
                       />
 
