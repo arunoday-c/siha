@@ -83,11 +83,14 @@ const AddAnalytes = ($this, context) => {
     }
 
     analytes.push(obj);
-    $this.setState({
-      analytes: analytes,
-      insert_analytes: insert_analytes,
-      analyte_id: null
-    });
+    $this.setState(
+      {
+        analytes: analytes,
+        insert_analytes: insert_analytes,
+        analyte_id: null
+      },
+      () => $this.clearInputState()
+    );
     if (context !== undefined) {
       context.updateState({
         analytes: analytes,
@@ -159,9 +162,14 @@ const updateLabInvestigation = ($this, context, row) => {
 };
 
 const deleteLabInvestigation = ($this, context, row, rowId) => {
+  console.log("from delete", row);
   let analytes = $this.state.analytes;
   let update_analytes = $this.state.update_analytes;
   let insert_analytes = $this.state.insert_analytes;
+  console.log(analytes, "analytes");
+  console.log(update_analytes, "update analytes");
+  console.log(insert_analytes, "insert analytes");
+  debugger;
   if ($this.state.hims_d_investigation_test_id !== null) {
     if (row.hims_m_lab_analyte_id !== undefined) {
       let Updateobj = {
@@ -182,10 +190,16 @@ const deleteLabInvestigation = ($this, context, row, rowId) => {
       // insert_analytes
     }
   }
-  analytes.splice(rowId, 1);
+
+  for (let l = 0; l < analytes.length; l++) {
+    if (analytes[l].analyte_id === row.analyte_id) {
+      analytes.splice(l, 1);
+    }
+  }
+
   $this.setState({
-    analytes: analytes,
-    update_analytes: update_analytes
+    analytes,
+    update_analytes
   });
 
   if (context !== undefined) {
