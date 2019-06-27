@@ -227,7 +227,7 @@ const resultEntryUpdate = $this => {
     } else if (enterRemarks === false) {
       swalMessage({
         type: "warning",
-        title: "Please enter Remarks for Ammended.."
+        title: "Please enter Remarks for Amended.."
       });
     }
   }
@@ -369,7 +369,7 @@ function checkRange(row) {
 
 const onchangegridamended = ($this, row, e) => {
   swal({
-    title: "Are you sure want to Ammend?",
+    title: "Are you sure want to Amend?",
     type: "warning",
     showCancelButton: true,
     confirmButtonText: "Yes",

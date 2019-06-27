@@ -40,7 +40,8 @@ class Dental extends Component {
       surface: {},
       scheduled_date: new Date(),
       selected_plan: "------",
-      hims_d_services_id: ""
+      hims_d_services_id: "",
+      discount_percentage: 0
     };
     this.getProcedures();
     this.getTreatementPlans();
@@ -222,7 +223,8 @@ class Dental extends Component {
                 this.setState(
                   {
                     openBillingModal: false,
-                    discount_amout: 0
+                    discount_amout: 0,
+                    discount_percentage: 0
                   },
                   () => {
                     this.loadDentalTreatment();
@@ -303,7 +305,10 @@ class Dental extends Component {
             onSuccess: res => {
               if (res.data.success) {
                 res.data.records.billdetails[0].teeth_number = row.teeth_number;
+
+                debugger;
                 this.setState({
+                  discount_percentage: 0,
                   billDetails: res.data.records.billdetails[0]
                 });
               }

@@ -204,7 +204,7 @@ class ResultEntry extends Component {
                     <div className="col-lg-3">
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Investigation Name"
+                          forceLabel: "Test Name"
                         }}
                       />
 
@@ -552,7 +552,7 @@ class ResultEntry extends Component {
                       //TODO
                       {
                         fieldName: "amended",
-                        label: <AlgaehLabel label={{ forceLabel: "Ammend" }} />,
+                        label: <AlgaehLabel label={{ forceLabel: "Amend" }} />,
                         displayTemplate: row => {
                           return (
                             <span>

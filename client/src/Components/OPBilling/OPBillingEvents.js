@@ -239,6 +239,7 @@ const selectVisit = $this => {
                 type: "warning"
               });
             }
+            debugger;
 
             $this.setState(
               {

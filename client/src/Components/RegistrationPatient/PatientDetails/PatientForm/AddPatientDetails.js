@@ -21,8 +21,7 @@ const handlePrimaryId = ($this, e) => {
   console.log(e.value, e.target.value);
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  if (/^[A-Z0-9]+$/i.test(value)) {
-    console.log(value, "inside if ");
+  if (/^[A-Z0-9]+$/i.test(value) || !value) {
     $this.setState({
       [name]: value
     });
