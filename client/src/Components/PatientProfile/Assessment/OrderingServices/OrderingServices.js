@@ -315,7 +315,7 @@ class OrderingServices extends Component {
                       <div className={`row resultSecStyles ${properStyle}`}>
                         <div className="col-12 padd-10">
                           <h6 className="title">
-                            {_.startCase(_.toLower(service_name))}{" "}
+                            {_.startCase(_.toLower(service_name))}
                             <span className="service_type">
                               ({_.startCase(_.toLower(service_type))})
                             </span>

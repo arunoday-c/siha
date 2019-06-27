@@ -402,6 +402,10 @@ class Appointment extends PureComponent {
               .where(w => w.default_status === "CAN")
               .firstOrDefault();
 
+            let NoShow = Enumerable.from(this.state.appointmentStatus)
+              .where(w => w.default_status === "NS")
+              .firstOrDefault();
+
             this.setState({
               defaultStatus: DefaultStatus,
               appointment_status_id:
@@ -419,6 +423,10 @@ class Appointment extends PureComponent {
               cancelledId:
                 Cancelled !== undefined
                   ? Cancelled.hims_d_appointment_status_id
+                  : null,
+              noShowId:
+                NoShow !== undefined
+                  ? NoShow.hims_d_appointment_status_id
                   : null
             });
           });
@@ -1448,59 +1456,73 @@ class Appointment extends PureComponent {
               {patient != null &&
               patient.is_stand_by === "N" &&
               patient.cancelled === "N" ? (
-                <div
-                  appt-pat={JSON.stringify(patient)}
-                  className="dynPatient"
-                  style={{ background: bg_color }}
-                  draggable={true}
-                  onDragStart={this.drag.bind(this)}
-                >
-                  <span onClick={this.openEditModal.bind(this, patient, null)}>
-                    {patient.patient_name}
-                    <br />
-                    {patient.contact_number}
-                  </span>
-
-                  <i
-                    className="fas fa-times"
-                    onClick={this.cancelAppt.bind(this, patient)}
-                  />
-                  <div className="appStatusListCntr">
-                    <i className="fas fa-clock" />
-                    <ul className="appStatusList">
-                      {status !== undefined
-                        ? status.map((data, index) => (
-                            <li
-                              key={index}
-                              onClick={this.handlePatient.bind(
-                                this,
-                                patient,
-                                data
-                              )}
-                            >
-                              <span
-                                style={{
-                                  backgroundColor: data.color_code
-                                }}
-                              >
-                                {data.statusDesc}
-                              </span>
-                            </li>
-                          ))
-                        : null}
-                      <li
-                        onClick={generateReport.bind(
-                          this,
-                          patient,
-                          "appointmentSlip",
-                          "Appointment Slip"
-                        )}
-                      >
-                        <span>Print App. Slip</span>
-                      </li>
-                    </ul>
+                patient.appointment_status_id === this.state.noShowId ? (
+                  <div
+                    className="dynPatient"
+                    style={{ background: bg_color }}
+                    draggable={false}
+                  >
+                    <span>
+                      {patient.patient_name} <br /> {patient.contact_number}
+                    </span>
                   </div>
-                </div>
+                ) : (
+                  <div
+                    appt-pat={JSON.stringify(patient)}
+                    className="dynPatient"
+                    style={{ background: bg_color }}
+                    draggable={true}
+                    onDragStart={this.drag.bind(this)}
+                  >
+                    <span
+                      onClick={this.openEditModal.bind(this, patient, null)}
+                    >
+                      {patient.patient_name}
+                      <br />
+                      {patient.contact_number}
+                    </span>
+
+                    <i
+                      className="fas fa-times"
+                      onClick={this.cancelAppt.bind(this, patient)}
+                    />
+                    <div className="appStatusListCntr">
+                      <i className="fas fa-clock" />
+                      <ul className="appStatusList">
+                        {status !== undefined
+                          ? status.map((data, index) => (
+                              <li
+                                key={index}
+                                onClick={this.handlePatient.bind(
+                                  this,
+                                  patient,
+                                  data
+                                )}
+                              >
+                                <span
+                                  style={{
+                                    backgroundColor: data.color_code
+                                  }}
+                                >
+                                  {data.statusDesc}
+                                </span>
+                              </li>
+                            ))
+                          : null}
+                        <li
+                          onClick={generateReport.bind(
+                            this,
+                            patient,
+                            "appointmentSlip",
+                            "Appointment Slip"
+                          )}
+                        >
+                          <span>Print App. Slip</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                )
               ) : null}
             </React.Fragment>
           ) : (

@@ -755,22 +755,25 @@ module.exports = {
     const utilities = new algaehUtilities();
     utilities.logger().log("updateLabOrderedBilled: ");
     try {
+      utilities.logger().log("billdetails: ", req.body.billdetails);
       let OrderServices = new LINQ(req.body.billdetails)
         .Where(
           w =>
-            w.hims_f_ordered_services_id != null &&
+            w.ordered_services_id != null &&
             w.service_type_id ==
               appsettings.hims_d_service_type.service_type_id.Lab
         )
         .Select(s => {
           return {
-            ordered_services_id: s.hims_f_ordered_services_id,
+            ordered_services_id: s.ordered_services_id,
             billed: "Y",
             updated_date: new Date(),
             updated_by: req.userIdentity.algaeh_d_app_user_id
           };
         })
         .ToArray();
+
+      utilities.logger().log("OrderServices: ", OrderServices);
 
       if (OrderServices.length > 0) {
         let qry = "";

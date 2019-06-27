@@ -230,6 +230,47 @@ class Encounters extends Component {
     this.getPatientEncounterDetails();
   }
 
+  generateReport(row, report_type) {
+    algaehApiCall({
+      uri: "/report",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob"
+      },
+      others: { responseType: "blob" },
+      data: {
+        report: {
+          reportName:
+            report_type === "RAD" ? "radiologyReport" : "haematologyReport",
+          reportParams: [
+            {
+              name: "hims_d_patient_id",
+              value: row.patient_id
+            },
+            {
+              name: "visit_id",
+              value: row.visit_id
+            }
+          ],
+          outputFileType: "PDF"
+        }
+      },
+      onSuccess: res => {
+        const url = URL.createObjectURL(res.data);
+        let myWindow = window.open(
+          "{{ product.metafields.google.custom_label_0 }}",
+          "_blank"
+        );
+
+        myWindow.document.write(
+          "<iframe src= '" + url + "' width='100%' height='100%' />"
+        );
+        myWindow.document.title = "Radiology";
+      }
+    });
+  }
+
   render() {
     return (
       <div className="encounters">
@@ -533,14 +574,33 @@ class Encounters extends Component {
                                 fieldName: "hims_f_ordered_services_id",
                                 label: "View Report",
                                 displayTemplate: row => {
-                                  return (
+                                  return row.service_type_id === 5 &&
+                                    row.lab_ord_status === "V" ? (
                                     <span
                                       className="pat-code"
                                       style={{ color: "#006699" }}
+                                      onClick={this.generateReport.bind(
+                                        this,
+                                        row,
+                                        "LAB"
+                                      )}
                                     >
                                       View Report
                                     </span>
-                                  );
+                                  ) : row.service_type_id === 11 &&
+                                    row.rad_ord_status === "RA" ? (
+                                    <span
+                                      className="pat-code"
+                                      style={{ color: "#006699" }}
+                                      onClick={this.generateReport.bind(
+                                        this,
+                                        row,
+                                        "RAD"
+                                      )}
+                                    >
+                                      View Report
+                                    </span>
+                                  ) : null;
                                 }
                               }
                             ]}

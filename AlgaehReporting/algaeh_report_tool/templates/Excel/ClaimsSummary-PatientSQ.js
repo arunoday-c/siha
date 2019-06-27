@@ -9,36 +9,36 @@ const executeExcel = function executeExcelMethod(options) {
         .executeQuery({
           query:
             " select O.tax_number,H.hospital_name,C.decimal_places from hims_d_hospital as  H,hims_d_organization as O,hims_d_currency as C where H.organization_id =  O.hims_d_organization_id and C.hims_d_currency_id =H.default_currency \
-and H.hims_d_hospital_id=?; \
-select \
-IH.network_id,\
-	INN.network_type as policy_name,\
-	INO.employer as provider_name,\
-	coalesce(ID.gross_amount,0) as gross_amount,\
-	coalesce(ID.discount_amount,0)as discount_amount,\
-	coalesce(0,0) as deductible,\
-	coalesce(ID.net_amount,0) as net_amount,\
-  (coalesce(ID.company_tax,0) + coalesce(ID.patient_tax,0)) as vat, \
-	(coalesce(ID.net_amount,0) + coalesce(ID.company_tax,0) + coalesce(ID.patient_tax,0)) as net_vat, \
-	IP.insurance_provider_name as company_name,\
-	INO.policy_number as provider_code,\
-	IP.insurance_provider_code as policy_holder,\
-	P.patient_code,P.full_name,IH.invoice_number,\
-	IH.invoice_date,IH.card_number as membership_no,\
-	ID.service_type_id,ID.patient_resp as co_pay,\
-	ID.patient_tax,ID.company_tax,IH.patient_id,ID.unit_cost, \
- IH.visit_id,SI.procedure_type from \
-	hims_f_invoice_header as IH \
-left outer join hims_d_insurance_network INN on \
-	IH.network_id = INN.hims_d_insurance_network_id \
-left outer join hims_d_insurance_provider IP on \
-	IH.insurance_provider_id = IP.hims_d_insurance_provider_id \
-inner join hims_d_insurance_network_office INO on \
-	IH.network_office_id = INO.hims_d_insurance_network_office_id inner join  hims_f_invoice_details ID  \
-	on IH.hims_f_invoice_header_id = ID.invoice_header_id inner join hims_f_patient P on P.hims_d_patient_id = IH.patient_id  inner  join hims_d_services as SI \
-	on SI.hims_d_services_id = ID.service_id\
-        where IH.insurance_provider_id=? \
-        and date(IH.invoice_date) between date(?) and date(?) and IH.claim_validated ='V'",
+                  and H.hims_d_hospital_id=?; \
+                  select \
+                  IH.network_id,\
+                    INN.network_type as policy_name,\
+                    INO.employer as provider_name,\
+                    coalesce(ID.gross_amount,0) as gross_amount,\
+                    coalesce(ID.discount_amount,0)as discount_amount,\
+                    coalesce(0,0) as deductible,\
+                    coalesce(ID.net_amount,0) as net_amount,\
+                    (coalesce(ID.company_tax,0) + coalesce(ID.patient_tax,0)) as vat, \
+                    (coalesce(ID.net_amount,0) + coalesce(ID.company_tax,0) + coalesce(ID.patient_tax,0)) as net_vat, \
+                    IP.insurance_provider_name as company_name,\
+                    INO.policy_number as provider_code,\
+                    IP.insurance_provider_code as policy_holder,\
+                    P.patient_code,P.full_name,IH.invoice_number,\
+                    IH.invoice_date,IH.card_number as membership_no,\
+                    ID.service_type_id,ID.patient_resp as co_pay,\
+                    ID.patient_tax,ID.company_tax,IH.patient_id,ID.unit_cost, \
+                  IH.visit_id,SI.procedure_type from \
+                    hims_f_invoice_header as IH \
+                  left outer join hims_d_insurance_network INN on \
+                    IH.network_id = INN.hims_d_insurance_network_id \
+                  left outer join hims_d_insurance_provider IP on \
+                    IH.insurance_provider_id = IP.hims_d_insurance_provider_id \
+                  inner join hims_d_insurance_network_office INO on \
+                    IH.network_office_id = INO.hims_d_insurance_network_office_id inner join  hims_f_invoice_details ID  \
+                    on IH.hims_f_invoice_header_id = ID.invoice_header_id inner join hims_f_patient P on P.hims_d_patient_id = IH.patient_id  inner  join hims_d_services as SI \
+                    on SI.hims_d_services_id = ID.service_id\
+                where IH.insurance_provider_id=? \
+                and date(IH.invoice_date) between date(?) and date(?) and IH.claim_validated ='V'",
           values: [
             inputParams.hospital_id,
             inputParams.insurance_provider_id,
