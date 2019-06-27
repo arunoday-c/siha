@@ -56,7 +56,8 @@ const serviceHandeler = ($this, e) => {
   $this.setState({
     s_service: e.hims_d_services_id,
     s_service_type: e.service_type_id,
-    insurance_service_name: e.service_name
+    insurance_service_name: e.service_name,
+    service_name: e.service_name
   });
 };
 
