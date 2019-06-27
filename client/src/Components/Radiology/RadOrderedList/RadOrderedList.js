@@ -322,6 +322,21 @@ class RadOrderedList extends Component {
                         }
                       },
                       {
+                        fieldName: "service_name",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Test Name" }}
+                          />
+                        ),
+
+                        disabled: true,
+                          others: {
+                          maxWidth: 130,
+                          resizable: false,
+                          style: { textAlign: "center" }
+                        }
+                      },
+                      {
                         fieldName: "status",
                         label: (
                           <AlgaehLabel label={{ fieldName: "test_status" }} />

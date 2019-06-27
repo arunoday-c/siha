@@ -390,6 +390,21 @@ class RadScheduledList extends Component {
                         }
                       },
                       {
+                        fieldName: "service_name",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Test Name" }}
+                          />
+                        ),
+
+                        disabled: true,
+                        others: {
+                          maxWidth: 130,
+                          resizable: false,
+                          style: { textAlign: "center" }
+                        }
+                      },
+                      {
                         fieldName: "test_type",
                         label: (
                           <AlgaehLabel label={{ fieldName: "proiorty" }} />
