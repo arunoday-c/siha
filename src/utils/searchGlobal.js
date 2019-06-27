@@ -86,7 +86,9 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "POSNOReturn",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS PH.*,date(PH.pos_date) as posdate, V.visit_code, P.patient_code, P.full_name \
+          "select SQL_CALC_FOUND_ROWS PH.*, date(PH.pos_date) as posdate, V.visit_code, P.patient_code,\
+          CASE WHEN PH.pos_customer_type='OP' THEN P.full_name else PH.patient_name END as patient_name, \
+          CASE WHEN PH.pos_customer_type='OP' THEN P.contact_number else PH.mobile_number END as mobile_number \
           from hims_f_pharmacy_pos_header PH \
           left join hims_f_patient P on PH.patient_id = P.hims_d_patient_id \
           left join hims_f_patient_visit V on PH.visit_id = V.hims_f_patient_visit_id \

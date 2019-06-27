@@ -516,6 +516,19 @@ const PostPosEntry = $this => {
       return;
     }
 
+    const Quantity_zero = _.filter(
+      $this.state.pharmacy_stock_detail,
+      f => f.quantity === 0
+    );
+
+    if (Quantity_zero.length > 0) {
+      swalMessage({
+        type: "warning",
+        title: "Please Enter the quantity for each item in the list."
+      });
+      return;
+    }
+
     swal({
       title: "Are you sure want to Collect and Print ?",
       type: "warning",

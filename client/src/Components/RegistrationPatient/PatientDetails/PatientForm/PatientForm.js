@@ -771,7 +771,10 @@ class AddPatientForm extends Component {
                           accept="image/*"
                           textAltMessage="ID Card"
                           serviceParameters={{
-                            uniqueID: this.state.primary_id_no,
+                            uniqueID:
+                              this.state.hims_d_patient_id !== null
+                                ? this.state.primary_id_no
+                                : null,
                             //   destinationName: this.state.patient_code,
                             fileType: "Patients",
                             processDelay: this.imageDetails.bind(
