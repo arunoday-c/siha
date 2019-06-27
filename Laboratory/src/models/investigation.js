@@ -365,6 +365,7 @@ module.exports = {
                         qry += mysql.format(
                           "UPDATE `hims_m_lab_analyte` SET record_status=?,\
                         `critical_low`=?, `critical_high`=?, `normal_low`=?, `normal_high`=?,\
+                          `from_age`=?, `to_age`=?,\
                         updated_date=?, updated_by=? where hims_m_lab_analyte_id=?;",
                           [
                             update_analytes[i].record_status,
@@ -372,6 +373,8 @@ module.exports = {
                             update_analytes[i].critical_high,
                             update_analytes[i].normal_low,
                             update_analytes[i].normal_high,
+                            update_analytes[i].from_age,
+                            update_analytes[i].to_age,
                             moment().format("YYYY-MM-DD HH:mm"),
                             req.userIdentity.algaeh_d_app_user_id,
                             update_analytes[i].hims_m_lab_analyte_id

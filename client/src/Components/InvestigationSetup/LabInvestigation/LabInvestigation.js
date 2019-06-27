@@ -36,6 +36,7 @@ class LabInvestigation extends Component {
     console.log(this.props, "from will mount");
     let InputOutput = this.props.InvestigationIOputs;
     this.setState({ ...this.state, ...InputOutput });
+    this.clearInputState();
   }
 
   componentDidMount() {
@@ -108,6 +109,9 @@ class LabInvestigation extends Component {
       analyte_id: "",
       analyte_type: "",
       result_unit: "",
+      gender: "",
+      from_age: "",
+      to_age: "",
       critical_low: "",
       critical_high: "",
       normal_low: "",
@@ -118,7 +122,7 @@ class LabInvestigation extends Component {
   genderHandle(context, e) {
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
-
+    console.log(name, value);
     this.setState({
       [name]: value
     });
@@ -340,13 +344,13 @@ class LabInvestigation extends Component {
                     label={{
                       forceLabel: "Age From"
                     }}
-                    number={{
-                      allowNegative: false
-                    }}
                     textBox={{
                       className: "txt-fld",
-                      name: "age_from",
-                      value: this.state.age_from,
+                      name: "from_age",
+                      value: this.state.from_age,
+                      number: {
+                        allowNegative: false
+                      },
                       events: {
                         onChange: texthandle.bind(this, this, context)
                       }
@@ -357,13 +361,13 @@ class LabInvestigation extends Component {
                     label={{
                       forceLabel: "Age To"
                     }}
-                    number={{
-                      allowNegative: false
-                    }}
                     textBox={{
                       className: "txt-fld",
-                      name: "age_to",
-                      value: this.state.age_to,
+                      name: "to_age",
+                      number: {
+                        allowNegative: false
+                      },
+                      value: this.state.to_age,
                       events: {
                         onChange: texthandle.bind(this, this, context)
                       }
@@ -511,19 +515,88 @@ class LabInvestigation extends Component {
                           fieldName: "gender",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Gender" }} />
-                          )
+                          ),
+                          editorTemplate: row => {
+                            return (
+                              <AlagehAutoComplete
+                                div={{}}
+                                selector={{
+                                  name: "gender",
+                                  className: "select-fld",
+                                  value: row.gender,
+                                  dataSource: {
+                                    textField: "name",
+                                    valueField: "value",
+                                    data: variableJson.FORMAT_GENDER
+                                  },
+                                  onChange: onchangegridcol.bind(
+                                    this,
+                                    this,
+                                    row
+                                  )
+                                }}
+                              />
+                            );
+                          }
                         },
                         {
-                          fieldName: "ageFrom",
+                          fieldName: "from_age",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Age from" }} />
-                          )
+                          ),
+                          editorTemplate: row => {
+                            return (
+                              <AlagehFormGroup
+                                div={{}}
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "from_age",
+                                  number: {
+                                    allowNegative: false
+                                  },
+                                  value: row.from_age,
+                                  events: {
+                                    onChange: onchangegridcol.bind(
+                                      this,
+                                      this,
+                                      row
+                                    )
+                                  }
+                                }}
+                              />
+                            );
+                          }
                         },
                         {
-                          fieldName: "ageTo",
+                          fieldName: "to_age",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Age to" }} />
-                          )
+                          ),
+                          editorTemplate: row => {
+                            return (
+                              <AlagehFormGroup
+                                div={{}}
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "to_age",
+                                  number: {
+                                    allowNegative: false
+                                  },
+                                  others: {
+                                    type: "number"
+                                  },
+                                  value: row.to_age,
+                                  events: {
+                                    onChange: onchangegridcol.bind(
+                                      this,
+                                      this,
+                                      row
+                                    )
+                                  }
+                                }}
+                              />
+                            );
+                          }
                         },
                         {
                           fieldName: "normal_low",
@@ -538,6 +611,9 @@ class LabInvestigation extends Component {
                                   value: row.normal_low,
                                   className: "txt-fld",
                                   name: "normal_low",
+                                  others: {
+                                    type: "number"
+                                  },
                                   events: {
                                     onChange: onchangegridcol.bind(
                                       this,

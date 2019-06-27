@@ -62,6 +62,9 @@ const AddAnalytes = ($this, context) => {
       analyte_id: $this.state.analyte_id,
       analyte_type: $this.state.analyte_type,
       result_unit: $this.state.result_unit,
+      gender: $this.state.gender,
+      from_age: $this.state.from_age,
+      to_age: $this.state.to_age,
       critical_low: $this.state.critical_low,
       critical_high: $this.state.critical_high,
       normal_low: $this.state.normal_low,
@@ -70,19 +73,15 @@ const AddAnalytes = ($this, context) => {
 
     if ($this.state.hims_d_investigation_test_id !== null) {
       let Insertobj = {
-        analyte_id: $this.state.analyte_id,
-        analyte_type: $this.state.analyte_type,
-        result_unit: $this.state.result_unit,
-        test_id: $this.state.hims_d_investigation_test_id,
-        critical_low: $this.state.critical_low,
-        critical_high: $this.state.critical_high,
-        normal_low: $this.state.normal_low,
-        normal_high: $this.state.normal_high
+        ...obj,
+        test_id: $this.state.hims_d_investigation_test_id
       };
       insert_analytes.push(Insertobj);
+      console.log("insert object ", Insertobj, "og obj", obj);
     }
 
     analytes.push(obj);
+    console.log("after pushing", analytes);
     $this.setState(
       {
         analytes: analytes,
@@ -112,27 +111,20 @@ const updateLabInvestigation = ($this, context, row) => {
   let update_analytes = $this.state.update_analytes;
 
   if ($this.state.hims_d_investigation_test_id !== null) {
+    let Updateobj = {
+      hims_m_lab_analyte_id: row.hims_m_lab_analyte_id,
+      critical_low: row.critical_low,
+      critical_high: row.critical_high,
+      normal_low: row.normal_low,
+      normal_high: row.normal_high,
+      gender: row.gender,
+      from_age: row.from_age,
+      to_age: row.to_age,
+      record_status: "A"
+    };
     if (row.hims_m_lab_analyte_id !== undefined) {
-      let Updateobj = {
-        hims_m_lab_analyte_id: row.hims_m_lab_analyte_id,
-        critical_low: row.critical_low,
-        critical_high: row.critical_high,
-        normal_low: row.normal_low,
-        normal_high: row.normal_high,
-        record_status: "A"
-      };
-
       update_analytes.push(Updateobj);
     } else {
-      let Updateobj = {
-        hims_m_lab_analyte_id: row.hims_m_lab_analyte_id,
-        critical_low: row.critical_low,
-        critical_high: row.critical_high,
-        normal_low: row.normal_low,
-        normal_high: row.normal_high,
-        record_status: "A"
-      };
-
       for (let j = 0; j < update_analytes.length; j++) {
         if (update_analytes[j].analyte_id === row.analyte_id) {
           update_analytes.splice(j, 1);
@@ -162,13 +154,9 @@ const updateLabInvestigation = ($this, context, row) => {
 };
 
 const deleteLabInvestigation = ($this, context, row, rowId) => {
-  console.log("from delete", row);
   let analytes = $this.state.analytes;
   let update_analytes = $this.state.update_analytes;
   let insert_analytes = $this.state.insert_analytes;
-  console.log(analytes, "analytes");
-  console.log(update_analytes, "update analytes");
-  console.log(insert_analytes, "insert analytes");
   debugger;
   if ($this.state.hims_d_investigation_test_id !== null) {
     if (row.hims_m_lab_analyte_id !== undefined) {
@@ -178,6 +166,9 @@ const deleteLabInvestigation = ($this, context, row, rowId) => {
         critical_high: row.critical_high,
         normal_low: row.normal_low,
         normal_high: row.normal_high,
+        gender: row.gender,
+        from_age: row.from_age,
+        to_age: row.to_age,
         record_status: "I"
       };
       update_analytes.push(Updateobj);
@@ -223,6 +214,7 @@ const onchangegridcol = ($this, row, e) => {
   }
   $this.setState({ analytes: analytes });
 };
+
 export {
   texthandle,
   analyteidhandle,

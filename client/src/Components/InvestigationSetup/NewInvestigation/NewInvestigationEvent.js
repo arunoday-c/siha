@@ -78,6 +78,7 @@ const Validations = $this => {
 };
 const InsertLabTest = ($this, e) => {
   const err = Validations($this);
+  console.log($this.state, "from insert lab");
 
   if (!err) {
     if ($this.state.hims_d_investigation_test_id === null) {
@@ -86,6 +87,7 @@ const InsertLabTest = ($this, e) => {
         module: "laboratory",
         data: $this.state,
         onSuccess: response => {
+          console.log("from add", response.data);
           if (response.data.success === true) {
             swalMessage({
               type: "success",
@@ -102,6 +104,7 @@ const InsertLabTest = ($this, e) => {
         data: $this.state,
         method: "PUT",
         onSuccess: response => {
+          console.log("from update", response.data);
           if (response.data.success === true) {
             swalMessage({
               type: "success",
