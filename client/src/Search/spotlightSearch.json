@@ -163,7 +163,7 @@
         "label": "Mobile No."
       },
       {
-        "fieldName": "pos_date",
+        "fieldName": "posdate",
         "label": "Pos Date"
       },
       {

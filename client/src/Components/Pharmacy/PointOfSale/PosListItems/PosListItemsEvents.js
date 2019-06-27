@@ -956,7 +956,7 @@ const calculateAmount = ($this, context, row, ctrl, e) => {
   e = e || ctrl;
   // if (e.target.value !== e.target.oldvalue) {
   let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
-
+  debugger;
   row[e.target.name] = parseFloat(e.target.value);
   let inputParam = [
     {
@@ -980,7 +980,8 @@ const calculateAmount = ($this, context, row, ctrl, e) => {
       secondary_insurance_provider_id:
         $this.state.secondary_insurance_provider_id,
       secondary_network_id: $this.state.secondary_network_id,
-      secondary_network_office_id: $this.state.secondary_network_office_id
+      secondary_network_office_id: $this.state.secondary_network_office_id,
+      from_pos: "Y"
     }
   ];
 
@@ -1006,6 +1007,8 @@ const calculateAmount = ($this, context, row, ctrl, e) => {
           data.billdetails[0].discount_amout;
         data.billdetails[0].pre_approval =
           row.pre_approval === "N" ? "N" : data.billdetails[0].pre_approval;
+        data.billdetails[0].insurance_yesno = data.billdetails[0].insured;
+
         extend(row, data.billdetails[0]);
 
         const _index = pharmacy_stock_detail.indexOf(row);
@@ -1057,7 +1060,7 @@ const calculateAmount = ($this, context, row, ctrl, e) => {
               data_billing.copay_amount = data_billing.copay_amount;
               data_billing.sec_copay_amount = data_billing.sec_copay_amount;
               data_billing.addItemButton = false;
-              data_billing.saveEnable = false;
+              // data_billing.saveEnable = false;
               if (context !== null) {
                 context.updateState({
                   ...data_billing,
