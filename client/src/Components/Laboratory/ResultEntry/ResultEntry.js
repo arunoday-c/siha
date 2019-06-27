@@ -552,7 +552,7 @@ class ResultEntry extends Component {
                       //TODO
                       {
                         fieldName: "amended",
-                        label: <AlgaehLabel label={{ forceLabel: "Ammend" }} />,
+                        label: <AlgaehLabel label={{ forceLabel: "Amend" }} />,
                         displayTemplate: row => {
                           return (
                             <span>
