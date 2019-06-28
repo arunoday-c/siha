@@ -596,7 +596,7 @@ module.exports = {
           .executeQuery({
             query:
               "select itmloc.item_id, itmloc.pharmacy_location_id, itmloc.batchno, itmloc.expirydt, itmloc.qtyhand, \
-              itmloc.grnno, itmloc.sales_uom, itmloc.barcode, item.item_description \
+              itmloc.grnno, itmloc.sales_uom, itmloc.barcode, item.item_description, itmloc.sale_price, \
                 from hims_m_item_location as itmloc inner join hims_d_item_master as item on itmloc.item_id = item.hims_d_item_master_id  \
                 where item_id in (?) and pharmacy_location_id in (?) and qtyhand > 0 and expirydt > CURDATE() order by expirydt",
             values: [item_ids, location_ids],
@@ -627,6 +627,7 @@ module.exports = {
                     grnno: s.grnno,
                     sales_uom: s.sales_uom,
                     qtyhand: s.qtyhand,
+                    sale_price: s.sale_price,
 
                     item_category_id: ItemcatrgoryGroup.item_category_id,
                     item_group_id: ItemcatrgoryGroup.item_group_id,
@@ -734,7 +735,7 @@ module.exports = {
         .executeQuery({
           query:
             "select itmloc.item_id, itmloc.pharmacy_location_id, itmloc.batchno, itmloc.expirydt, itmloc.qtyhand, \
-              itmloc.grnno, itmloc.sales_uom, itmloc.barcode, item.item_description, item.service_id,\
+              itmloc.grnno, itmloc.sales_uom, itmloc.barcode, itmloc.sale_price, item.item_description, item.service_id,\
               item.category_id,item.group_id, ITMUOM.conversion_factor from hims_m_item_location as itmloc \
               inner join hims_d_item_master as item on itmloc.item_id = item.hims_d_item_master_id left join\
               hims_m_item_uom as ITMUOM  on ITMUOM.item_master_id=item.hims_d_item_master_id and ITMUOM.uom_id = itmloc.sales_uom \
@@ -766,6 +767,7 @@ module.exports = {
                   item_category: s.category_id,
                   item_group_id: s.group_id,
                   uom_id: s.sales_uom,
+                  sale_price: s.sale_price,
                   quantity: 0,
                   qtyhand: 0,
                   expiry_date: null,
@@ -789,6 +791,7 @@ module.exports = {
                   barcode: s.barcode,
                   qtyhand: s.qtyhand,
                   grnno: s.grnno,
+                  sale_price: s.sale_price,
                   conversion_factor: s.conversion_factor
                 };
               })

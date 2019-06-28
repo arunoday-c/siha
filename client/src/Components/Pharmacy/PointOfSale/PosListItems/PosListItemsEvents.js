@@ -1351,6 +1351,19 @@ const qtyonchangegridcol = ($this, context, row, e) => {
       type: "warning"
     });
   } else {
+    if (value === null) {
+      let _pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+      const _index = _pharmacy_stock_detail.indexOf(row);
+      row[name] = value;
+      _pharmacy_stock_detail[_index] = row;
+
+      if (context !== null) {
+        context.updateState({
+          pharmacy_stock_detail: _pharmacy_stock_detail
+        });
+      }
+      return;
+    }
     row[name] = value;
     // row.update();
     calculateAmount($this, context, row, e);
@@ -1408,8 +1421,9 @@ const credittexthandle = ($this, context, ctrl, e) => {
 
 const SelectBatchDetails = ($this, row, context, e) => {
   //
-
+  debugger;
   let _pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+  const _index = _pharmacy_stock_detail.indexOf(row);
 
   row["batchno"] = e.selected.batchno;
   row["expiry_date"] = e.selected.expiry_date;
@@ -1420,9 +1434,7 @@ const SelectBatchDetails = ($this, row, context, e) => {
         parseFloat(e.selected.conversion_factor);
   row["grn_no"] = e.selected.grnno;
   row["barcode"] = e.selected.barcode;
-  row["unit_cost"] = e.selected.sales_price;
-
-  const _index = _pharmacy_stock_detail.indexOf(row);
+  row["unit_cost"] = e.selected.sale_price;
   _pharmacy_stock_detail[_index] = row;
 
   if (context !== null) {
