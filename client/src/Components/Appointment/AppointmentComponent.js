@@ -113,7 +113,7 @@ function AppointmentComponent(props) {
                             data: props.state.timeSlots
                           },
                           onChange: props.dropDownHandle,
-                          sort: false
+                          sort: "off"
                         }}
                       />
                       <AlagehAutoComplete
@@ -588,8 +588,8 @@ function AppointmentComponent(props) {
                           textField: "name",
                           valueField: "value",
                           data: GlobalVariables.FORMAT_GENDER
-                        }
-                        // onChange: props.dropDownHandle
+                        },
+                        onChange: props.dropDownHandle
                       }}
                     />
 
@@ -630,10 +630,10 @@ function AppointmentComponent(props) {
                         others: {
                           type: "number"
                         },
-                        value: props.state.contact_number
-                        // events: {
-                        //   //onChange: props.texthandle
-                        // }
+                        value: props.state.contact_number,
+                        events: {
+                          onChange: props.texthandle
+                        }
                       }}
                     />
 
@@ -648,10 +648,10 @@ function AppointmentComponent(props) {
                       textBox={{
                         className: "txt-fld",
                         name: "email",
-                        value: props.state.email
-                        // events: {
-                        //   //onChange: props.texthandle
-                        // }
+                        value: props.state.email,
+                        events: {
+                          onChange: props.texthandle
+                        }
                       }}
                     />
                   </div>
@@ -668,10 +668,10 @@ function AppointmentComponent(props) {
                       textBox={{
                         className: "txt-fld",
                         name: "appointment_remarks",
-                        value: props.state.appointment_remarks
-                        // events: {
-                        //   // onChange: props.texthandle
-                        // }
+                        value: props.state.appointment_remarks,
+                        events: {
+                          onChange: props.texthandle
+                        }
                       }}
                     />
                   </div>

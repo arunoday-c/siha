@@ -207,7 +207,7 @@ class DeliveryNoteEntry extends Component {
           >
             <div className="col-lg-12">
               <div className="row">
-                <AlagehAutoComplete
+                {/*<AlagehAutoComplete
                   div={{ className: "col-2" }}
                   label={{ forceLabel: "Delivery Note For" }}
                   selector={{
@@ -261,6 +261,26 @@ class DeliveryNoteEntry extends Component {
                   }}
                 />
 
+                <AlagehAutoComplete
+                  div={{ className: "col-2" }}
+                  label={{ forceLabel: "Vendor No." }}
+                  selector={{
+                    name: "vendor_id",
+                    className: "select-fld",
+                    value: this.state.vendor_id,
+                    dataSource: {
+                      textField: "vendor_name",
+                      valueField: "hims_d_vendor_id",
+                      data: this.props.dnvendors
+                    },
+                    others: {
+                      disabled: true
+                    },
+                    onChange: vendortexthandle.bind(this, this),
+                    onClear: vendortexthandle.bind(this, this)
+                  }}
+                />*/}
+
                 <AlagehFormGroup
                   div={{ className: "col-2" }}
                   label={{
@@ -292,34 +312,35 @@ class DeliveryNoteEntry extends Component {
                       marginTop: 26,
                       paddingBottom: 0,
                       pointerEvents:
-                        this.state.dataExitst === true
-                          ? "none"
-                          : this.state.ReqData === true
-                          ? "none"
-                          : ""
+                        this.state.dataExitst === true ? "none" : ""
                     }}
                     onClick={PurchaseOrderSearch.bind(this, this)}
                   />
                 </div>
-                <AlagehAutoComplete
-                  div={{ className: "col-2" }}
-                  label={{ forceLabel: "Vendor No." }}
-                  selector={{
-                    name: "vendor_id",
-                    className: "select-fld",
-                    value: this.state.vendor_id,
-                    dataSource: {
-                      textField: "vendor_name",
-                      valueField: "hims_d_vendor_id",
-                      data: this.props.dnvendors
-                    },
-                    others: {
-                      disabled: true
-                    },
-                    onChange: vendortexthandle.bind(this, this),
-                    onClear: vendortexthandle.bind(this, this)
-                  }}
-                />
+                <div className="col">
+                  <AlgaehLabel label={{ forceLabel: "Receipt For" }} />
+                  <h6>
+                    {this.state.dn_from
+                      ? this.state.dn_from === "INV"
+                        ? "Inventory"
+                        : "Pharmacy"
+                      : "------"}
+                  </h6>
+                </div>
+                <div className="col">
+                  <AlgaehLabel label={{ forceLabel: "Location" }} />
+                  <h6>
+                    {this.state.location_name
+                      ? this.state.location_name
+                      : "------"}
+                  </h6>
+                </div>
+                <div className="col">
+                  <AlgaehLabel label={{ forceLabel: "Vendor" }} />
+                  <h6>
+                    {this.state.vendor_name ? this.state.vendor_name : "------"}
+                  </h6>
+                </div>
 
                 <div className="col">
                   <AlgaehLabel label={{ forceLabel: "Payment Terms" }} />

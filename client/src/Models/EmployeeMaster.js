@@ -94,7 +94,10 @@ export default {
       gratuity_applicable: "N",
       suspend_salary: "N",
 
-      selectedLang: "en"
+      selectedLang: "en",
+      present_country_id: null,
+      present_state_id: null,
+      present_city_id: null
     };
     return output;
   }

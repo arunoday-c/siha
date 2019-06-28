@@ -64,7 +64,6 @@ class StaffCashCollection extends Component {
   }
 
   loadDetails(value) {
-    
     this.setState({
       cashHandoverDetails: value.cashiers
     });
@@ -126,75 +125,30 @@ class StaffCashCollection extends Component {
     });
   }
 
-  changeTexts(e) {
-    switch (e.target.name) {
-      case "actual_cash":
-        this.setState(
-          {
-            [e.target.name]: e.target.value,
-            difference_cash: this.state.expected_cash - e.target.value
-          },
-          () => {
-            this.setState({
-              cash_status:
-                this.state.difference_cash < 0
-                  ? "E"
-                  : this.state.difference_cash > 0
-                  ? "S"
-                  : this.state.difference_cash === 0
-                  ? "T"
-                  : null
-            });
-          }
-        );
+  handleCollection(e) {
+    const { name, value } = e.target;
 
-        break;
-      case "actual_card":
-        this.setState(
-          {
-            [e.target.name]: e.target.value,
-            difference_card: this.state.expected_card - e.target.value
-          },
-          () => {
-            this.setState({
-              card_status:
-                this.state.difference_card < 0
-                  ? "E"
-                  : this.state.difference_card > 0
-                  ? "S"
-                  : this.state.difference_card === 0
-                  ? "T"
-                  : null
-            });
-          }
-        );
-        break;
-      case "actual_cheque":
-        this.setState(
-          {
-            [e.target.name]: e.target.value,
-            difference_cheque: this.state.expected_cheque - e.target.value
-          },
-          () => {
-            this.setState({
-              cheque_status:
-                this.state.difference_cheque < 0
-                  ? "E"
-                  : this.state.difference_cheque > 0
-                  ? "S"
-                  : this.state.difference_cheque === 0
-                  ? "T"
-                  : null
-            });
-          }
-        );
+    let diff_prefix = "difference_";
+    let exp_prefix = "expected_";
+    let status_suffix = "_status";
 
-        break;
-      default:
-        this.setState({
-          [e.target.name]: e.target.value
-        });
-        break;
+    //getting the payment mode
+    const [waste, mode] = name.split("_");
+
+    if (value && value > 0) {
+      let diff = this.state[exp_prefix + mode] - value;
+      let status = diff < 0 ? "E" : diff > 0 ? "S" : diff === 0 ? "T" : null;
+      this.setState({
+        [name]: value,
+        [diff_prefix + mode]: diff,
+        [mode + status_suffix]: status
+      });
+    } else {
+      this.setState({
+        [name]: "",
+        [diff_prefix + mode]: 0,
+        [mode + status_suffix]: null
+      });
     }
   }
 
@@ -855,7 +809,7 @@ class StaffCashCollection extends Component {
                                   value: this.state.actual_cash,
                                   disabled: this.state.shift_status === "A",
                                   events: {
-                                    onChange: this.changeTexts.bind(this)
+                                    onChange: this.handleCollection.bind(this)
                                   },
                                   others: {
                                     type: "number",
@@ -879,7 +833,7 @@ class StaffCashCollection extends Component {
                                   value: this.state.actual_card,
                                   disabled: this.state.shift_status === "A",
                                   events: {
-                                    onChange: this.changeTexts.bind(this)
+                                    onChange: this.handleCollection.bind(this)
                                   },
                                   others: {
                                     type: "number",
@@ -903,7 +857,11 @@ class StaffCashCollection extends Component {
                                   value: this.state.actual_cheque,
                                   disabled: this.state.shift_status === "A",
                                   events: {
-                                    onChange: this.changeTexts.bind(this)
+                                    onChange: this.handleCollection.bind(this)
+                                  },
+                                  others: {
+                                    type: "number",
+                                    min: 0
                                   }
                                 }}
                               />

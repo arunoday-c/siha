@@ -86,6 +86,16 @@ class ReceiptItemList extends Component {
                                         row,
                                         context
                                       )}
+                                      style={{
+                                        pointerEvents:
+                                          this.state.saveEnable === true
+                                            ? "none"
+                                            : "",
+                                        opacity:
+                                          this.state.saveEnable === true
+                                            ? "0.1"
+                                            : ""
+                                      }}
                                     />
                                   </span>
                                 );

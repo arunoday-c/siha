@@ -163,7 +163,7 @@
         "label": "Mobile No."
       },
       {
-        "fieldName": "pos_date",
+        "fieldName": "posdate",
         "label": "Pos Date"
       },
       {
@@ -227,7 +227,7 @@
         "label": "Sales Return Number"
       },
       {
-        "fieldName": "sales_return_date",
+        "fieldName": "return_date",
         "label": "Sales Return Date"
       }
     ]
@@ -321,8 +321,20 @@
         "label": "PO Number"
       },
       {
-        "fieldName": "po_date",
+        "fieldName": "podate",
         "label": "PO Date"
+      },
+      {
+        "fieldName": "po_done_for",
+        "label": "PO Done For"
+      },
+      {
+        "fieldName": "loc_description",
+        "label": "Location Name"
+      },
+      {
+        "fieldName": "vendor_name",
+        "label": "Vendor Name"
       }
     ]
   },
@@ -333,8 +345,20 @@
         "label": "Delivery Number"
       },
       {
-        "fieldName": "dn_date",
+        "fieldName": "dndate",
         "label": "Delivery Date"
+      },
+      {
+        "fieldName": "dn_done_for",
+        "label": "DN Done For"
+      },
+      {
+        "fieldName": "loc_description",
+        "label": "Location Name"
+      },
+      {
+        "fieldName": "vendor_name",
+        "label": "Vendor Name"
       }
     ]
   },
@@ -345,8 +369,20 @@
         "label": "Receipt Number"
       },
       {
-        "fieldName": "grn_date",
+        "fieldName": "grndate",
         "label": "Receipt Date"
+      },
+      {
+        "fieldName": "grn_done_for",
+        "label": "GRN Done For"
+      },
+      {
+        "fieldName": "loc_description",
+        "label": "Location Name"
+      },
+      {
+        "fieldName": "vendor_name",
+        "label": "Vendor Name"
       }
     ]
   },

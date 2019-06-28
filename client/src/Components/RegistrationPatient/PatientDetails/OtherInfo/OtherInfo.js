@@ -13,6 +13,7 @@ class OtherInfo extends Component {
     super(props);
 
     this.state = this.props.PatRegIOputs;
+    this.handleChange = this.handleChange.bind(this);
   }
 
   componentDidMount() {
@@ -23,6 +24,14 @@ class OtherInfo extends Component {
     if (nextProps.patients !== undefined && nextProps.patients.length > 0) {
       this.setState(PatRegIOputs.inputParam(nextProps.patients[0]));
     }
+  }
+
+  handleChange(e) {
+    const { name, value } = e.target;
+    console.log(name, value);
+    this.setState({
+      [name]: value
+    });
   }
 
   render() {
@@ -42,7 +51,9 @@ class OtherInfo extends Component {
                     value: this.state.secondary_contact_number,
                     className: "txt-fld",
                     name: "secondary_contact_number",
-
+                    events: {
+                      onChange: this.handleChange
+                    },
                     others: {
                       disabled: this.state.existingPatient,
                       placeholder: "(+01)123-456-7890",
@@ -60,7 +71,9 @@ class OtherInfo extends Component {
                     value: this.state.emergency_contact_number,
                     className: "txt-fld",
                     name: "emergency_contact_number",
-
+                    events: {
+                      onChange: this.handleChange
+                    },
                     others: {
                       disabled: this.state.existingPatient,
                       placeholder: "(+01)123-456-7890",
@@ -78,7 +91,9 @@ class OtherInfo extends Component {
                     value: this.state.emergency_contact_name,
                     className: "txt-fld",
                     name: "emergency_contact_name",
-
+                    events: {
+                      onChange: this.handleChange
+                    },
                     others: {
                       disabled: this.state.existingPatient
                     }
@@ -94,7 +109,9 @@ class OtherInfo extends Component {
                     value: this.state.relationship_with_patient,
                     className: "txt-fld",
                     name: "relationship_with_patient",
-
+                    events: {
+                      onChange: this.handleChange
+                    },
                     others: {
                       disabled: this.state.existingPatient
                     }
@@ -109,7 +126,9 @@ class OtherInfo extends Component {
                     value: this.state.email,
                     className: "txt-fld",
                     name: "email",
-
+                    events: {
+                      onChange: this.handleChange
+                    },
                     others: {
                       disabled: this.state.existingPatient,
                       placeholder: "Enter Email Address",
@@ -128,7 +147,9 @@ class OtherInfo extends Component {
                     className: "txt-fld",
                     name: "postal_code",
                     value: this.state.postal_code,
-
+                    events: {
+                      onChange: this.handleChange
+                    },
                     others: {
                       disabled: this.state.existingPatient
                     }
@@ -143,7 +164,9 @@ class OtherInfo extends Component {
                     className: "txt-fld",
                     name: "address2",
                     value: this.state.address2,
-
+                    events: {
+                      onChange: this.handleChange
+                    },
                     others: {
                       disabled: this.state.existingPatient,
                       placeholder: "Enter Full Address 2"

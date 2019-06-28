@@ -94,6 +94,8 @@ class DNItemList extends Component {
     let stock_uom_description =
       this.state.item_details === null
         ? ""
+        : this.state.item_details.stock_uom_description === undefined
+        ? "-----"
         : this.state.item_details.stock_uom_description;
     return (
       <React.Fragment>

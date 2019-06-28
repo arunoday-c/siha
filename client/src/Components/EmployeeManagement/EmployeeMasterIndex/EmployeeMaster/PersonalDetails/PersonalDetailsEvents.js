@@ -21,11 +21,13 @@ const countryStatehandle = ($this, e) => {
       name = e.name;
       value = e.value;
       $this.setState({
+        [name]: value,
         present_state_id: null,
         present_city_id: null,
         countrystates: e.selected.states
       });
       $this.props.EmpMasterIOputs.updateEmployeeTabs({
+        [name]: value,
         present_state_id: null,
         present_city_id: null,
         countrystates: e.selected.states
@@ -34,10 +36,12 @@ const countryStatehandle = ($this, e) => {
       name = e.name;
       value = e.value;
       $this.setState({
+        [name]: value,
         present_city_id: null,
         present_cities: e.selected.cities
       });
       $this.props.EmpMasterIOputs.updateEmployeeTabs({
+        [name]: value,
         present_city_id: null,
         present_cities: e.selected.cities
       });
@@ -47,11 +51,13 @@ const countryStatehandle = ($this, e) => {
       name = e.name;
       value = e.value;
       $this.setState({
+        [name]: value,
         permanent_state_id: null,
         permanent_city_id: null,
         precountrystates: e.selected.states
       });
       $this.props.EmpMasterIOputs.updateEmployeeTabs({
+        [name]: value,
         permanent_state_id: null,
         permanent_city_id: null,
         precountrystates: e.selected.states
@@ -60,23 +66,26 @@ const countryStatehandle = ($this, e) => {
       name = e.name;
       value = e.value;
       $this.setState({
+        [name]: value,
         permanent_city_id: null,
         precities: e.selected.cities
       });
       $this.props.EmpMasterIOputs.updateEmployeeTabs({
+        [name]: value,
         permanent_city_id: null,
         precities: e.selected.cities
       });
     }
+  } else {
+    $this.setState({
+      [name]: value
+    });
+
+    $this.props.EmpMasterIOputs.updateEmployeeTabs({
+      [name]: value
+    });
   }
 
-  $this.setState({
-    [name]: value
-  });
-
-  $this.props.EmpMasterIOputs.updateEmployeeTabs({
-    [name]: value
-  });
   // let otherValues = {};
   // if (e.name === "present_country_id") {
   //   otherValues["present_state_id"] = 0;

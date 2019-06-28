@@ -86,7 +86,9 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "POSNOReturn",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS PH.*,date(PH.pos_date) as posdate, V.visit_code, P.patient_code, P.full_name \
+          "select SQL_CALC_FOUND_ROWS PH.*, date(PH.pos_date) as posdate, V.visit_code, P.patient_code,\
+          CASE WHEN PH.pos_customer_type='OP' THEN P.full_name else PH.patient_name END as patient_name, \
+          CASE WHEN PH.pos_customer_type='OP' THEN P.contact_number else PH.mobile_number END as mobile_number \
           from hims_f_pharmacy_pos_header PH \
           left join hims_f_patient P on PH.patient_id = P.hims_d_patient_id \
           left join hims_f_patient_visit V on PH.visit_id = V.hims_f_patient_visit_id \
@@ -220,30 +222,56 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "POEntry",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS * from hims_f_procurement_po_header where hospital_id=" +
+          "select SQL_CALC_FOUND_ROWS PO.*, PO.po_date as podate, CASE PO.po_from WHEN 'INV' then 'Inventory' \
+          else 'Pharmacy' end as po_done_for , CASE PO.po_from WHEN 'INV' then IL.location_description \
+          else PL.location_description end as loc_description,V.vendor_name \
+          from hims_f_procurement_po_header PO \
+          inner join hims_d_vendor V on PO.vendor_id = V.hims_d_vendor_id \
+          left join hims_d_pharmacy_location PL on PO.pharmcy_location_id = PL.hims_d_pharmacy_location_id\
+          left join hims_d_inventory_location IL on PO.inventory_location_id = IL.hims_d_inventory_location_id \
+          where PO.hospital_id=" +
           hospitalId,
         orderBy: "hims_f_procurement_po_header_id desc"
       },
       {
         searchName: "POEntryGetDN",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS * from hims_f_procurement_po_header where authorize1 = 'Y'\
-           and cancelled='N' and is_completed='N' and  hospital_id=" +
+          "select SQL_CALC_FOUND_ROWS PO.*, PO.po_date as podate, CASE PO.po_from WHEN 'INV' then 'Inventory' \
+            else 'Pharmacy' end as po_done_for , CASE PO.po_from WHEN 'INV' then IL.location_description \
+            else PL.location_description end as loc_description,V.vendor_name \
+            from hims_f_procurement_po_header PO \
+            inner join hims_d_vendor V on PO.vendor_id = V.hims_d_vendor_id \
+            left join hims_d_pharmacy_location PL on PO.pharmcy_location_id = PL.hims_d_pharmacy_location_id\
+            left join hims_d_inventory_location IL on PO.inventory_location_id = IL.hims_d_inventory_location_id \
+            where cancelled='N' and is_completed='N' and  PO.hospital_id=" +
           hospitalId,
         orderBy: "hims_f_procurement_po_header_id desc"
       },
       {
         searchName: "POEntryGetReceipt",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS * from hims_f_procurement_po_header where authorize1 = 'Y'\
-           and cancelled='N' and  hospital_id=" +
+          "select SQL_CALC_FOUND_ROWS PO.*, date(PO.po_date) as podate, CASE PO.po_from WHEN 'INV' then 'Inventory' \
+            else 'Pharmacy' end as po_done_for , CASE PO.po_from WHEN 'INV' then IL.location_description \
+            else PL.location_description end as loc_description,V.vendor_name \
+            from hims_f_procurement_po_header PO \
+            inner join hims_d_vendor V on PO.vendor_id = V.hims_d_vendor_id \
+            left join hims_d_pharmacy_location PL on PO.pharmcy_location_id = PL.hims_d_pharmacy_location_id\
+            left join hims_d_inventory_location IL on PO.inventory_location_id = IL.hims_d_inventory_location_id \
+            where authorize1 = 'Y' and cancelled='N' and  PO.hospital_id=" +
           hospitalId,
         orderBy: "hims_f_procurement_po_header_id desc"
       },
       {
         searchName: "DNEntry",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS * from hims_f_procurement_dn_header where hospital_id=" +
+          "select SQL_CALC_FOUND_ROWS DN.*, date(DN.dn_date) as dndate, CASE DN.dn_from WHEN 'INV' then \
+          'Inventory' else 'Pharmacy' end as dn_done_for , CASE DN.dn_from WHEN 'INV' then IL.location_description \
+          else PL.location_description end as loc_description,V.vendor_name \
+          from hims_f_procurement_dn_header DN \
+          inner join hims_d_vendor V on DN.vendor_id = V.hims_d_vendor_id \
+          left join hims_d_pharmacy_location PL on DN.pharmcy_location_id = PL.hims_d_pharmacy_location_id\
+          left join hims_d_inventory_location IL on DN.inventory_location_id = IL.hims_d_inventory_location_id \
+          where DN.hospital_id=" +
           hospitalId,
         orderBy: "hims_f_procurement_dn_header_id desc"
       },
@@ -257,7 +285,13 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "ReceiptEntry",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS * from hims_f_procurement_grn_header where hospital_id=" +
+          "select SQL_CALC_FOUND_ROWS GH.*, date(GH.grn_date) as grndate, CASE GH.grn_for WHEN 'INV' then \
+          'Inventory' else 'Pharmacy' end as grn_done_for , CASE GH.grn_for WHEN 'INV' then IL.location_description \
+          else PL.location_description end as loc_description,V.vendor_name from hims_f_procurement_grn_header GH \
+          inner join hims_d_vendor V on GH.vendor_id = V.hims_d_vendor_id \
+          left join hims_d_pharmacy_location PL on GH.pharmcy_location_id = PL.hims_d_pharmacy_location_id\
+          left join hims_d_inventory_location IL on GH.inventory_location_id = IL.hims_d_inventory_location_id \
+          where GH.hospital_id=" +
           hospitalId,
         orderBy: "hims_f_procurement_grn_header_id desc"
       },
