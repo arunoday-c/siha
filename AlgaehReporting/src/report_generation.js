@@ -8,6 +8,7 @@ import merge from "easy-pdf-merge";
 import hbs from "handlebars";
 import "babel-polyfill";
 import chrome from "algaeh-keys";
+import LINQ from "node-linq";
 const chromePath =
   chrome.default.chromePuppeteer != null ? chrome.default.chromePuppeteer : {};
 
@@ -495,7 +496,8 @@ module.exports = {
                       loadash: _,
                       moment: moment,
                       mainData: data[1],
-                      result: result
+                      result: result,
+                      LINQ: LINQ
                     })
                       .then(resultReq => {
                         result = resultReq;

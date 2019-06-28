@@ -1768,7 +1768,6 @@ export default [
         pageSize: "A4",
         pageOrentation: "landscape", //"portrait",
         reportParameters: [
-         
           {
             className: "col-2",
             type: "date",
@@ -1847,7 +1846,8 @@ export default [
       },
       {
         subitem: "GP Statement - Date Wise",
-        template_name: "gpDatewisePharmacy",
+        reportName: "gpDatewisePharmacy",
+        requireIframe: true,
         reportParameters: [
           {
             className: "col-2",
@@ -1874,7 +1874,7 @@ export default [
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
-            isImp: true,
+            isImp: false,
             label: "Select branch",
             link: {
               uri: "/organization/getOrganization"
