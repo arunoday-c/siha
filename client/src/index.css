@@ -184,9 +184,35 @@
       margin: 4px 2px 2px 2px;
       margin-right: 5px; }
   :global .btn-green {
-    background: #8add52;
     color: #fff;
-    border: 1px solid #fff; }
+    background-color: #00a796;
+    border-color: #007468; }
+    :global .btn-green:hover {
+      background-color: #007468;
+      border-color: #00dac4; }
+    :global .btn-green:focus {
+      background-color: #00a796;
+      border-color: #00a796; }
+    :global .btn-green.disabled, :global .btn-green:disabled {
+      opacity: 0.3;
+      color: #fff;
+      background-color: #00a796;
+      border-color: #007468;
+      cursor: not-allowed; }
+    :global .btn-green:active {
+      background-color: #fff;
+      border-color: #fff; }
+    :global .btn-green i {
+      color: #fff; }
+  :global .btn-grey {
+    color: #1a1a1a;
+    background-color: #e6e6e6;
+    border-color: gray; }
+    :global .btn-grey:hover, :global .btn-grey:focus {
+      background-color: #cccccc;
+      border-color: #1a1a1a; }
+    :global .btn-grey i {
+      color: #000; }
   :global ::-webkit-scrollbar-track {
     background: #ccc;
     -webkit-border-radius: 3px;

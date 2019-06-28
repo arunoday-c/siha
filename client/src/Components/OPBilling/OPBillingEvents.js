@@ -242,7 +242,8 @@ const selectVisit = $this => {
 
             $this.setState(
               {
-                billdetails: data
+                billdetails: data,
+                addNewService: false
               },
               () => {
                 algaehApiCall({
@@ -260,8 +261,7 @@ const selectVisit = $this => {
                       response.data.records.billDetails = false;
 
                       $this.setState({
-                        ...response.data.records,
-                        addNewService: false
+                        ...response.data.records
                       });
                     }
                     AlgaehLoader({ show: false });
@@ -324,6 +324,10 @@ const selectVisit = $this => {
           });
         }
       } else {
+        $this.setState({
+          addNewService: false
+        });
+
         AlgaehLoader({ show: false });
       }
     },
