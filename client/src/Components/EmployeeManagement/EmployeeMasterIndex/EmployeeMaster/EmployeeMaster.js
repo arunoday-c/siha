@@ -166,7 +166,6 @@ class EmployeeMaster extends Component {
           personalDetails: { ...this.state.personalDetails, ...IOputs }
         },
         () => {
-          debugger;
           if (this.state.personalDetails.present_country_id === null) return;
           if (
             this.state.personalDetails.present_country_id !==
@@ -225,7 +224,6 @@ class EmployeeMaster extends Component {
     }
   }
   updateEmployeeTabs(options) {
-    debugger;
     this.setState({
       personalDetails: {
         ...this.state.personalDetails,

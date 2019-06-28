@@ -306,7 +306,6 @@ class Dental extends Component {
               if (res.data.success) {
                 res.data.records.billdetails[0].teeth_number = row.teeth_number;
 
-                debugger;
                 this.setState({
                   discount_percentage: 0,
                   billDetails: res.data.records.billdetails[0]

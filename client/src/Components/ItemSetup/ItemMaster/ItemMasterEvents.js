@@ -20,7 +20,10 @@ const Validations = $this => {
         f => f.item_code === $this.state.item_code
       );
 
-      if (item_code_exit.length > 0) {
+      if (
+        $this.state.hims_d_item_master_id === null &&
+        item_code_exit.length > 0
+      ) {
         isError = true;
         swalMessage({
           type: "warning",

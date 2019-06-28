@@ -956,7 +956,7 @@ const calculateAmount = ($this, context, row, ctrl, e) => {
   e = e || ctrl;
   // if (e.target.value !== e.target.oldvalue) {
   let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
-  debugger;
+
   row[e.target.name] = parseFloat(e.target.value);
   let inputParam = [
     {

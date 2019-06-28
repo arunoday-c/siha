@@ -37,7 +37,6 @@ class OfficalDetails extends Component {
   }
 
   componentDidMount() {
-    debugger;
     let InputOutput = this.props.EmpMasterIOputs.state.personalDetails;
     this.setState({ ...this.state, ...InputOutput });
     if (this.props.banks === undefined || this.props.banks.length === 0) {

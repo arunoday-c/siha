@@ -157,7 +157,7 @@ const deleteLabInvestigation = ($this, context, row, rowId) => {
   let analytes = $this.state.analytes;
   let update_analytes = $this.state.update_analytes;
   let insert_analytes = $this.state.insert_analytes;
-  debugger;
+
   if ($this.state.hims_d_investigation_test_id !== null) {
     if (row.hims_m_lab_analyte_id !== undefined) {
       let Updateobj = {
