@@ -73,7 +73,8 @@ export default {
       ClearDisable: false,
       saveEnable: true,
       InvoiceEnable: false,
-      OTItemAddDis: false
+      OTItemAddDis: false,
+      authorizeBtn: false
     };
     return output;
   }

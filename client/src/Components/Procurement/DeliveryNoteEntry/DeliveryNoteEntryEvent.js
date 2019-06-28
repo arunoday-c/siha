@@ -147,48 +147,39 @@ const datehandle = ($this, ctrl, e) => {
 };
 
 const PurchaseOrderSearch = ($this, e) => {
-  if (
-    $this.state.pharmcy_location_id === null &&
-    $this.state.inventory_location_id === null
-  ) {
-    swalMessage({
-      title: "Select Location.",
-      type: "warning"
-    });
-  } else {
-    let Inputs = "";
+  // let Inputs = "";
 
-    if ($this.state.dn_from === "PHR") {
-      Inputs = "pharmcy_location_id = " + $this.state.pharmcy_location_id;
-    } else {
-      Inputs = "inventory_location_id = " + $this.state.inventory_location_id;
+  // if ($this.state.dn_from === "PHR") {
+  //   Inputs = "pharmcy_location_id = " + $this.state.pharmcy_location_id;
+  // } else {
+  //   Inputs = "inventory_location_id = " + $this.state.inventory_location_id;
+  // }
+  // inputs: Inputs,
+
+  AlgaehSearch({
+    searchGrid: {
+      columns: spotlightSearch.Purchase.POEntry
+    },
+    searchName: "POEntryGetDN",
+    uri: "/gloabelSearch/get",
+
+    onContainsChange: (text, serchBy, callBack) => {
+      callBack(text);
+    },
+    onRowSelect: row => {
+      getPurchaseDetails($this, row);
     }
-
-    AlgaehSearch({
-      searchGrid: {
-        columns: spotlightSearch.Purchase.POEntry
-      },
-      searchName: "POEntryGetDN",
-      uri: "/gloabelSearch/get",
-      inputs: Inputs,
-      onContainsChange: (text, serchBy, callBack) => {
-        callBack(text);
-      },
-      onRowSelect: row => {
-        getPurchaseDetails($this, row.purchase_number, row.vendor_id);
-      }
-    });
-  }
+  });
 };
 
-const getPurchaseDetails = ($this, purchase_number, vendor_id) => {
+const getPurchaseDetails = ($this, row) => {
   AlgaehLoader({ show: true });
   algaehApiCall({
     uri: "/PurchaseOrderEntry/getPurchaseOrderEntry",
     module: "procurement",
     method: "GET",
     data: {
-      purchase_number: purchase_number
+      purchase_number: row.purchase_number
     },
     onSuccess: response => {
       if (response.data.success) {
@@ -242,6 +233,9 @@ const getPurchaseDetails = ($this, purchase_number, vendor_id) => {
           // data.vendor_id = vendor_id;
 
           // data.purchase_detail = data.po_entry_detail;
+          data.location_name = row.loc_description;
+          data.vendor_name = row.vendor_name;
+          data.cannotEdit = false;
           $this.setState(data, () => {
             getData($this);
           });
@@ -484,7 +478,7 @@ const SaveDNEnrty = $this => {
   }
 };
 
-const getCtrlCode = ($this, docNumber) => {
+const getCtrlCode = ($this, docNumber, row) => {
   AlgaehLoader({ show: true });
 
   algaehApiCall({
@@ -518,8 +512,13 @@ const getCtrlCode = ($this, docNumber) => {
         }
         data.saveEnable = true;
         data.dataExitst = true;
+        data.cannotEdit = true;
 
         data.addedItem = true;
+        if (row !== undefined) {
+          data.location_name = row.loc_description;
+          data.vendor_name = row.vendor_name;
+        }
         $this.setState(data, () => {
           getData($this);
         });

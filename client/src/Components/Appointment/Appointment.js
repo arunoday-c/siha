@@ -744,13 +744,13 @@ class Appointment extends PureComponent {
       console.log("after check in", patient);
       return this.props.routeComponents(patient);
     }
-    debugger;
+
     return this.props.routeComponents(patient);
   }
 
   openEditModal(patient, data, e) {
     console.log("from open edit", patient, data);
-    debugger;
+
     e.preventDefault();
 
     this.getTimeSlotsForDropDown(patient.provider_id);
