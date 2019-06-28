@@ -216,10 +216,10 @@ class PhySchSetup extends Component {
       .toArray();
 
     swal({
-      title: "Do you want to Delete Schedule: " + data.description,
+      title: "Delete Schedule: " + data.description +"?",
       type: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes",
+      confirmButtonText: "Delete",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
       cancelButtonText: "No"
@@ -502,7 +502,7 @@ class PhySchSetup extends Component {
         w => w.hims_d_appointment_schedule_header_id === parseInt(header_id, 10)
       )
       .firstOrDefault();
-
+console.log(docs,'test')
     this.setState({
       hims_d_appointment_schedule_header_id: header_id,
       description: docs.schedule_description,
@@ -540,9 +540,9 @@ class PhySchSetup extends Component {
     };
 
     swal({
-      title: "Are you sure you want to delete this Doctor?",
+      title: "Delete this Doctor?",
       type: "warning",
-      confirmButtonText: "Yes",
+      confirmButtonText: "Delete",
       showCancelButton: true,
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
@@ -576,10 +576,10 @@ class PhySchSetup extends Component {
           }
         });
       } else {
-        swalMessage({
-          title: "Delete request cancelled.",
-          type: "warning"
-        });
+        // swalMessage({
+        //   title: "Delete request cancelled.",
+        //   type: "warning"
+        // });
       }
     });
   }
@@ -605,6 +605,7 @@ class PhySchSetup extends Component {
           provider_id: null
         },
         onSuccess: response => {
+                console.log(response.data.records,"From API");
           if (response.data.success) {
             AlgaehLoader({ show: false });
 
@@ -729,7 +730,7 @@ class PhySchSetup extends Component {
 
   render() {
     return (
-      <div className="phy-sch-setup">
+      <div className="phySchSetup">
         {/* Doctor Schedule Modify Modal Start */}
         <AlgaehModalPopUp
           events={{
@@ -743,7 +744,7 @@ class PhySchSetup extends Component {
               <div className="col-lg-12 card">
                 <div className="row">
                   <AlagehFormGroup
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col-6" }}
                     label={{
                       fieldName: "selected_doctor",
                       isImp: true
@@ -761,7 +762,7 @@ class PhySchSetup extends Component {
                     }}
                   />
                   {/* <AlgaehDateHandler
-                      div={{ className: "col-lg-3" }}
+                      div={{ className: "col-6" }}
                       label={{ fieldName: "Selected From Date", isImp: true }}
                       textBox={{
                         className: "txt-fld",
@@ -775,7 +776,7 @@ class PhySchSetup extends Component {
                       value={this.state.from_date}
                     />
                     <AlgaehDateHandler
-                      div={{ className: "col-lg-3" }}
+                      div={{ className: "col-6" }}
                       label={{ fieldName: "Selected To Date", isImp: true }}
                       textBox={{
                         className: "txt-fld",
@@ -1071,12 +1072,12 @@ class PhySchSetup extends Component {
           <div className="popupInner">
             <div className="col-lg-12 divInner">
               <div className="row">
-                <div className="col-lg-3 divInnerLeft">
+                <div className="col-9 divInnerLeft">
                   <div className="row">
                     <AlagehAutoComplete
-                      div={{ className: "col" }}
+                      div={{ className: "col-3" }}
                       label={{
-                        fieldName: "department_name"
+                        forceLabel: "Selected Department Name"
                       }}
                       selector={{
                         name: "sub_department_id",
@@ -1087,58 +1088,17 @@ class PhySchSetup extends Component {
                           valueField: "sub_dept_id",
                           data: this.state.departments
                         },
-                        onChange: this.deptDropDownHandler.bind(this)
+                        onChange: this.deptDropDownHandler.bind(this),
+                      others: {
+                        disabled: true
+                      }
+                    
                       }}
                       error={this.state.department_error}
                       helperText={this.state.department_error_text}
                     />
-                    <div className="col">
-                      <label>Doctors</label>
-                      <div className="bordered-layout physicianList">
-                        <ul
-                          style={
-                            {
-                              //  pointerEvents: this.state.disable ? "none" : ""
-                            }
-                          }
-                        >
-                          {this.state.doctors.map((data, index) => {
-                            const _alreadyExists = Enumerable.from(
-                              this.state.scheduleDoctors
-                            )
-                              .where(w => w.provider_id === data.provider_id)
-                              .firstOrDefault();
-                            const _checked =
-                              _alreadyExists === undefined
-                                ? {}
-                                : { checked: true };
-                            return (
-                              <li key={index}>
-                                <input
-                                  row={JSON.stringify(data)}
-                                  onChange={this.checkHandle.bind(this)}
-                                  type="checkbox"
-                                  {..._checked}
-                                />
-                                <span
-                                  style={{
-                                    width: "80%"
-                                  }}
-                                >
-                                  {data.full_name}
-                                </span>
-                              </li>
-                            );
-                          })}
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-lg-9 divInnerRight">
-                  <div className="row">
                     <AlagehFormGroup
-                      div={{ className: "col-4" }}
+                      div={{ className: "col" }}
                       label={{
                         fieldName: "sch_desc",
                         isImp: true
@@ -1159,7 +1119,7 @@ class PhySchSetup extends Component {
                         <span>Set Default Slot</span>
                       </div> */}
                     <AlagehAutoComplete
-                      div={{ className: "col-5" }}
+                      div={{ className: "col-3" }}
                       label={{
                         fieldName: "sel_slot_time",
                         isImp: true
@@ -1181,7 +1141,7 @@ class PhySchSetup extends Component {
                     />
                   </div>
                   <div className="row">
-                    <AlagehAutoComplete
+                    {/* <AlagehAutoComplete
                       div={{ className: "col-3" }}
                       label={{
                         fieldName: "sel_month"
@@ -1218,11 +1178,18 @@ class PhySchSetup extends Component {
                           min: moment().year()
                         }
                       }}
-                    />
+                    /> */}
 
+                  </div>
+                  <div className="row">
+                  <div className="col-6">
+                    <label className="margin-top-15 bold-text">
+                      Scheduled Date
+                    </label>
+                  <div className="row">
                     <AlgaehDateHandler
-                      div={{ className: "col-lg-3" }}
-                      label={{ fieldName: "frm_date", isImp: true }}
+                      div={{ className: "col" }}
+                      label={{ forceLabel: "From Date", isImp: true }}
                       textBox={{
                         className: "txt-fld",
                         name: "from_date"
@@ -1238,8 +1205,8 @@ class PhySchSetup extends Component {
                       minDate={new Date()}
                     />
                     <AlgaehDateHandler
-                      div={{ className: "col-lg-3" }}
-                      label={{ fieldName: "to_date", isImp: true }}
+                      div={{ className: "col" }}
+                      label={{ forceLabel: "To Date", isImp: true }}
                       textBox={{
                         className: "txt-fld",
                         name: "to_date"
@@ -1250,16 +1217,16 @@ class PhySchSetup extends Component {
                         }
                       }}
                       value={this.state.to_date}
-                    />
-                  </div>
-                  <div className="row">
-                    <label className="margin-top-15 col-12">
-                      Working Hours
+                    /></div></div>
+                  <div className="col-6">
+                    <label className="margin-top-15 bold-text">
+                      Scheduled Time
                     </label>
+                  <div className="row">
                     <AlagehFormGroup
-                      div={{ className: "col-3" }}
+                      div={{ className: "col" }}
                       label={{
-                        fieldName: "from_time",
+                        forceLabel: "From Time",
                         isImp: true
                       }}
                       textBox={{
@@ -1279,9 +1246,9 @@ class PhySchSetup extends Component {
                     />
 
                     <AlagehFormGroup
-                      div={{ className: "col-3" }}
+                      div={{ className: "col" }}
                       label={{
-                        fieldName: "to_time",
+                        forceLabel: "To Time",
                         isImp: true
                       }}
                       textBox={{
@@ -1297,16 +1264,17 @@ class PhySchSetup extends Component {
                       }}
                     />
                   </div>
+                  </div>
+                  </div>
 
                   <div className="row">
-                    <div className="col-lg-6">
-                      <label className="margin-top-15">Day Break 1</label>
+                    <div className="col-6">
+                      <label className="margin-top-15 bold-text">Day Break 1</label>
                       <div className="row">
                         <AlagehFormGroup
                           div={{ className: "col" }}
                           label={{
-                            fieldName: "from_time",
-                            isImp: true
+                            forceLabel: "From Time"
                           }}
                           textBox={{
                             className: "txt-fld",
@@ -1325,8 +1293,8 @@ class PhySchSetup extends Component {
                         <AlagehFormGroup
                           div={{ className: "col" }}
                           label={{
-                            fieldName: "to_time",
-                            isImp: true
+                            forceLabel: "To Time"
+                            
                           }}
                           textBox={{
                             className: "txt-fld",
@@ -1345,14 +1313,13 @@ class PhySchSetup extends Component {
                         />
                       </div>
                     </div>
-                    <div className="col-lg-6">
-                      <label className="margin-top-15">Day Break 2</label>
+                    <div className="col-6">
+                      <label className="margin-top-15 bold-text">Day Break 2</label>
                       <div className="row">
                         <AlagehFormGroup
                           div={{ className: "col" }}
                           label={{
-                            fieldName: "from_time",
-                            isImp: true
+                            forceLabel: "From Time"
                           }}
                           textBox={{
                             className: "txt-fld",
@@ -1371,8 +1338,7 @@ class PhySchSetup extends Component {
                         <AlagehFormGroup
                           div={{ className: "col" }}
                           label={{
-                            fieldName: "to_time",
-                            isImp: true
+                            forceLabel: "To Time"
                           }}
                           textBox={{
                             className: "txt-fld",
@@ -1394,7 +1360,7 @@ class PhySchSetup extends Component {
 
                   <div className="row margin-top-15">
                     <div className="col-lg-12">
-                      <label>Working Days</label>
+                      <label className="bold-text">Working Days</label>
                       <div className="customCheckbox">
                         <label className="checkbox inline">
                           <input
@@ -1473,12 +1439,49 @@ class PhySchSetup extends Component {
                     </div>
                   </div>
                 </div>
+                <div className="col-3 divInnerRight">
+                  <div className="row">
+                   
+                    <div className="col">
+                      <label>Doctors</label>
+                      <div className="bordered-layout physicianList">
+                        <ul>
+                          {this.state.doctors.map((data, index) => {
+                            const _alreadyExists = Enumerable.from(
+                              this.state.scheduleDoctors
+                            )
+                              .where(w => w.provider_id === data.provider_id)
+                              .firstOrDefault();
+                            const _checked =
+                              _alreadyExists === undefined
+                                ? {}
+                                : { checked: true };
+                            return (
+                              <li key={index}>
+                                <input className="checkBoxPhy"
+                                  row={JSON.stringify(data)}
+                                  onChange={this.checkHandle.bind(this)}
+                                  type="checkbox"
+                                  {..._checked}
+                                />
+                                <span
+                                >
+                                  {data.full_name}
+                                </span>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="popupFooter">
-            <button
+          <div className="col-12 popupFooter">
+         <button
               type="button"
               className="btn btn-primary"
               onClick={this.saveApptSchedule.bind(this)}
@@ -1508,10 +1511,9 @@ class PhySchSetup extends Component {
           <div className="popupInner">
             <div className="col-lg-12 divInner">
               <div className="row">
-                <div className="col-lg-3 divInnerLeft">
-                  <div className="row">
-                    <AlagehAutoComplete
-                      div={{ className: "col-12" }}
+                <div className="col-9 divInnerLeft">
+                  <div className="row"> <AlagehAutoComplete
+                      div={{ className: "col-3" }}
                       label={{
                         fieldName: "department_name"
                       }}
@@ -1529,41 +1531,8 @@ class PhySchSetup extends Component {
                       error={this.state.department_error}
                       helperText={this.state.department_error_text}
                     />
-                    <div className="col-12">
-                      <label>Doctors</label>
-                      <div className="bordered-layout physicianList">
-                        <ul
-                          style={
-                            {
-                              //  pointerEvents: this.state.disable ? "none" : ""
-                            }
-                          }
-                        >
-                          {this.state.doctors.map((data, index) => (
-                            <li key={index}>
-                              <input
-                                row={JSON.stringify(data)}
-                                onChange={this.checkHandle.bind(this)}
-                                type="checkbox"
-                              />
-                              <span
-                                style={{
-                                  width: "80%"
-                                }}
-                              >
-                                {data.full_name}
-                              </span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-lg-9 divInnerRight">
-                  <div className="row">
                     <AlagehFormGroup
-                      div={{ className: "col-4" }}
+                      div={{ className: "col" }}
                       label={{
                         fieldName: "sch_desc",
                         isImp: true
@@ -1584,7 +1553,7 @@ class PhySchSetup extends Component {
                         <span>Set Default Slot</span>
                       </div> */}
                     <AlagehAutoComplete
-                      div={{ className: "col-5" }}
+                      div={{ className: "col-3" }}
                       label={{
                         fieldName: "sel_slot_time",
                         isImp: true
@@ -1605,7 +1574,10 @@ class PhySchSetup extends Component {
                     />
                   </div>
                   <div className="row">
-                    <AlagehAutoComplete
+                    <div className="col-6">
+                      <label className="margin-top-15 bold-text">Schedule Date</label>
+                      <div className="row">
+                    {/* <AlagehAutoComplete
                       div={{ className: "col-3" }}
                       label={{
                         fieldName: "sel_month"
@@ -1642,11 +1614,11 @@ class PhySchSetup extends Component {
                           min: moment().year()
                         }
                       }}
-                    />
+                    /> */}
 
                     <AlgaehDateHandler
-                      div={{ className: "col-lg-3" }}
-                      label={{ fieldName: "frm_date", isImp: true }}
+                      div={{ className: "col-6" }}
+                      label={{ forceLabel: "From Date", isImp: true }}
                       textBox={{
                         className: "txt-fld",
                         name: "from_date"
@@ -1662,8 +1634,8 @@ class PhySchSetup extends Component {
                       minDate={new Date()}
                     />
                     <AlgaehDateHandler
-                      div={{ className: "col-lg-3" }}
-                      label={{ fieldName: "to_date", isImp: true }}
+                      div={{ className: "col-6" }}
+                      label={{ forceLabel: "To Date", isImp: true }}
                       textBox={{
                         className: "txt-fld",
                         name: "to_date"
@@ -1676,12 +1648,11 @@ class PhySchSetup extends Component {
                       value={this.state.to_date}
                     />
                   </div>
-                  <div className="row">
-                    <label className="margin-top-15 col-12">
-                      Working Hours
-                    </label>
-                    <AlagehFormGroup
-                      div={{ className: "col-3" }}
+                    </div>
+                    <div className="col-6">
+                      <label className="margin-top-15 bold-text">Schedule Time</label>
+                      <div className="row"><AlagehFormGroup
+                      div={{ className: "col-6" }}
                       label={{
                         fieldName: "frm_time",
                         isImp: true
@@ -1703,9 +1674,9 @@ class PhySchSetup extends Component {
                     />
 
                     <AlagehFormGroup
-                      div={{ className: "col-3" }}
+                      div={{ className: "col-6" }}
                       label={{
-                        fieldName: "to_time",
+                        forceLabel: "To Time",
                         isImp: true
                       }}
                       textBox={{
@@ -1719,18 +1690,19 @@ class PhySchSetup extends Component {
                           type: "time"
                         }
                       }}
-                    />
+                    /></div>
+                    </div>
                   </div>
+                 
 
                   <div className="row">
-                    <div className="col-lg-6">
-                      <label className="margin-top-15">Day Break 1</label>
+                    <div className="col-6">
+                      <label className="margin-top-15 bold-text">Day Break 1</label>
                       <div className="row">
                         <AlagehFormGroup
-                          div={{ className: "col" }}
+                          div={{ className: "col-6" }}
                           label={{
-                            fieldName: "frm_time",
-                            isImp: true
+                            fieldName: "frm_time"
                           }}
                           textBox={{
                             className: "txt-fld",
@@ -1747,10 +1719,9 @@ class PhySchSetup extends Component {
                           }}
                         />
                         <AlagehFormGroup
-                          div={{ className: "col" }}
+                          div={{ className: "col-6" }}
                           label={{
-                            fieldName: "to_time",
-                            isImp: true
+                            forceLabel: "To Time"
                           }}
                           textBox={{
                             className: "txt-fld",
@@ -1769,14 +1740,13 @@ class PhySchSetup extends Component {
                         />
                       </div>
                     </div>
-                    <div className="col-lg-6">
-                      <label className="margin-top-15">Day Break 2</label>
+                    <div className="col-6">
+                      <label className="margin-top-15 bold-text">Day Break 2</label>
                       <div className="row">
                         <AlagehFormGroup
                           div={{ className: "col" }}
                           label={{
-                            fieldName: "frm_time",
-                            isImp: true
+                            fieldName: "frm_time"
                           }}
                           textBox={{
                             className: "txt-fld",
@@ -1795,8 +1765,7 @@ class PhySchSetup extends Component {
                         <AlagehFormGroup
                           div={{ className: "col" }}
                           label={{
-                            fieldName: "to_time",
-                            isImp: true
+                            forceLabel: "To Time"
                           }}
                           textBox={{
                             className: "txt-fld",
@@ -1818,7 +1787,7 @@ class PhySchSetup extends Component {
 
                   <div className="row margin-top-15">
                     <div className="col-lg-12">
-                      <label>Working Days</label>
+                      <label className="bold-text">Working Days</label>
                       <div className="customCheckbox">
                         <label className="checkbox inline">
                           <input
@@ -1897,6 +1866,31 @@ class PhySchSetup extends Component {
                     </div>
                   </div>
                 </div>
+                <div className="col-3 divInnerRight">
+                  <div className="row">
+                   
+                    <div className="col-12">
+                      <label>Doctors</label>
+                      <div className="bordered-layout physicianList">
+                        <ul
+                        >
+                          {this.state.doctors.map((data, index) => (
+                            <li key={index}>
+                              <input  className="checkBoxPhy"
+                                row={JSON.stringify(data)}
+                                onChange={this.checkHandle.bind(this)}
+                                type="checkbox"
+                              />
+                              <span>
+                                {data.full_name}
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -1919,12 +1913,35 @@ class PhySchSetup extends Component {
         </AlgaehModalPopUp>
         {/* Schedule Modal End */}
 
-        {/* Top Filter Start */}
-        <div className="row inner-top-search">
+
+        <div className="row margin-top-15">
+          <div className="col-3" style={{paddingRight:0}}>
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Available Schedules</h3>
+                </div>
+                <div className="actions">
+                  <span
+                    className="btn btn-green btn-circle"
+                    onClick={() => {
+                      this.setState({
+                        ...this.resetSaveState(),
+                        openScheduler: true
+                      });
+                    }}
+                  >
+                    <i className="fas fa-plus" />
+                  </span>
+                </div>
+              </div>
+              <div className="portlet-body">
+                <div className="row" style={{borderBottom: "1px solid #ccc"}}>
           <AlagehAutoComplete
-            div={{ className: "col" }}
+            div={{ className: "col-12 form-group" }}
             label={{
-              fieldName: "department_name"
+              forceLabel: "Select Department",
+              isImp: true
             }}
             selector={{
               name: "sub_department_id",
@@ -1940,30 +1957,10 @@ class PhySchSetup extends Component {
             error={this.state.department_error}
             helperText={this.state.department_error_text}
           />
-
-          <AlagehAutoComplete
-            div={{ className: "col" }}
+                  <AlagehFormGroup
+            div={{ className: "col-7" }}
             label={{
-              fieldName: "sel_month"
-            }}
-            selector={{
-              sort: "off",
-              name: "month",
-              className: "select-fld",
-              value: this.state.month,
-              dataSource: {
-                textField: "name",
-                valueField: "value",
-                data: GlobalVariables.MONTHS
-              },
-              onChange: this.dropDownHandler.bind(this)
-            }}
-          />
-
-          <AlagehFormGroup
-            div={{ className: "col-2" }}
-            label={{
-              fieldName: "year",
+              forceLabel: "Select Year",
               isImp: true
             }}
             textBox={{
@@ -1980,43 +1977,14 @@ class PhySchSetup extends Component {
             }}
           />
 
-          <div className="col form-group">
-            <button
-              style={{ marginTop: 21 }}
-              className="btn btn-primary"
-              id="srch-sch"
-              onClick={this.getApptSchedule.bind(this)}
-            >
-              Search
+          <div className="col form-group" style={{textAlign:"right"}}>
+            <button style={{ marginTop: 19, }} className="btn btn-default" id="srch-sch" onClick={this.getApptSchedule.bind(this)}>
+             Apply
             </button>
           </div>
-        </div>
-        {/* Top Filter End */}
-
-        <div className="row">
-          <div className="col-lg-3">
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">Available Schedules</h3>
                 </div>
-                <div className="actions">
-                  <span
-                    className="btn btn-green btn-circle active"
-                    onClick={() => {
-                      this.setState({
-                        ...this.resetSaveState(),
-                        openScheduler: true
-                      });
-                    }}
-                  >
-                    <i className="fas fa-plus" />
-                  </span>
-                </div>
-              </div>
-              <div className="portlet-body">
-                <div className="bordered-layout-radius">
-                  <ul id="schedule-ul" style={{ height: "65vh" }}>
+                <div className="row">
+                  <ul id="schedule-ul">
                     {this.state.scheduleList.length !== 0 ? (
                       this.state.scheduleList.map((data, index) => (
                         <li
@@ -2024,82 +1992,58 @@ class PhySchSetup extends Component {
                           header-id={data.hims_d_appointment_schedule_header_id}
                           key={index}
                           onClick={this.loadDetails.bind(this)}
-                          style={{ paddingRight: 25 }}
                         >
-                          <span>{data.schedule_description}</span>
-                          {/* <span className="fas fa-trash" /> */}
-                          {/* <i
-                            id={data.appointment_schedule_header_id}
-                            className="fas fa-pen"
-                            onClick={() => {
-                              this.setState({
-                                scheduleDisable: false
-                              });
-                            }}
-                          /> */}
+                          <h3>{data.schedule_description}</h3>
+                          <p>Sch. From:<span>{data.from_date}</span></p>
+                          <p>Work Start:<span>{data.from_work_hr}</span></p>
+                          <p>Sch. To:<span>{data.to_date}</span></p>
+                          <p>Work End:<span>{data.to_work_hr}</span></p>
+                          
                         </li>
                       ))
                     ) : (
                       <span className="noDataStyle">
-                        Select Dept. and month to view available schedules
+                        <h1><i className="fas fa-calendar-check"></i></h1>
+                        <p>Select Year & Department to <br></br>View Schedule List</p>
                       </span>
                     )}
-                  </ul>
-                </div>
+                  </ul></div>
               </div>
             </div>
           </div>
-          <div className="col-lg-9">
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">
-                    {this.state.description
-                      ? this.state.description
-                      : "Selected Schedule Name"}
-                  </h3>
-                </div>
-
-                {this.state.description ? (
-                  <div className="actions">
-                    <span className="btn btn-green btn-circle">
-                      <i className="fas fa-copy" />
-                    </span>
-                    <span className="btn btn-green btn-circle">
-                      <i
-                        onClick={() => {
-                          this.deleteSchedule({
-                            hims_d_appointment_schedule_header_id: this.state
-                              .hims_d_appointment_schedule_header_id,
-                            description: this.state.description
-                          });
-                        }}
-                        className="fas fa-trash-alt"
-                      />
-                    </span>
-                    <span className="btn btn-green btn-circle active">
-                      <i
-                        onClick={() => {
-                          this.setState({ openEdit: true });
-                        }}
-                        className="fas fa-pen"
-                      />
-                    </span>
-                  </div>
-                ) : null}
-              </div>
+          <div className="col-9">
+            <div className="portlet portlet-bordered margin-bottom-15 viewScheduleDetails">
+           
+           {this.state.description ? (
               <div className="portlet-body">
+                 <div className="row" style={{marginBottom:30}}> <div className="col-6">
+                          <label className="">Schedule Name</label>
+
+                              <h2 style={{marginTop:5}}>
+                                  {this.state.description ? this.state.description: "--------"} 
+                              </h2>
+                            </div>
+                            
+                             <div className="col" style={{textAlign:"right"}}>
+                               <button className="btn btn-default" onClick={() => { this.deleteSchedule({ hims_d_appointment_schedule_header_id: this.state.hims_d_appointment_schedule_header_id,
+ description: this.state.description}); }}>Delete Schedule</button>
+  <button className="btn btn-primary" style={{marginLeft:15}} onClick={() => {this.setState({ openEdit: true });}}>Edit Schedule</button>
+
+                </div>
+                            
+                            </div>
                 <div className="row">
-                  <div className="col-lg-8" style={{ paddingTop: 15 }}>
+                  <div className="col-lg-8">
+                
                     <div className="col-lg-12">
                       <div className="row">
-                        <div className="col-lg-6 algaehLabelFormGroup">
+                        <div className="col-6 algaehLabelFormGroup">
                           <label className="algaehLabelGroup">Date Range</label>
                           <div className="row">
-                            <div className="col-lg-6">
+                            <div className="col-6">
                               <AlgaehLabel
                                 label={{
-                                  fieldName: "frm_date",
+                                  forceLabel: "From Date",
                                   isImp: true
                                 }}
                               />
@@ -2113,10 +2057,10 @@ class PhySchSetup extends Component {
                               </h6>
                             </div>
 
-                            <div className="col-lg-6">
+                            <div className="col-6">
                               <AlgaehLabel
                                 label={{
-                                  fieldName: "to_date",
+                                  forceLabel: "To Date",
                                   isImp: true
                                 }}
                               />
@@ -2131,12 +2075,12 @@ class PhySchSetup extends Component {
                             </div>
                           </div>
                         </div>
-                        <div className="col-lg-6 algaehLabelFormGroup">
+                        <div className="col-6 algaehLabelFormGroup">
                           <label className="algaehLabelGroup">
                             Working Hours
                           </label>
                           <div className="row">
-                            <div className="col-lg-6">
+                            <div className="col-6">
                               <AlgaehLabel
                                 label={{
                                   fieldName: "frm_time",
@@ -2154,10 +2098,10 @@ class PhySchSetup extends Component {
                               </h6>
                             </div>
 
-                            <div className="col-lg-6 ">
+                            <div className="col-6 ">
                               <AlgaehLabel
                                 label={{
-                                  fieldName: "to_time",
+                                  forceLabel: "To Time",
                                   isImp: true
                                 }}
                               />
@@ -2176,16 +2120,15 @@ class PhySchSetup extends Component {
                       </div>
 
                       <div className="row">
-                        <div className="col-lg-6 algaehLabelFormGroup">
+                        <div className="col-6 algaehLabelFormGroup">
                           <label className="algaehLabelGroup">
                             Day Break 1
                           </label>
                           <div className="row">
-                            <div className="col-lg-6">
+                            <div className="col-6">
                               <AlgaehLabel
                                 label={{
-                                  fieldName: "frm_time",
-                                  isImp: true
+                                  fieldName: "frm_time"
                                 }}
                               />
                               <h6>
@@ -2198,11 +2141,10 @@ class PhySchSetup extends Component {
                               </h6>
                             </div>
 
-                            <div className="col-lg-6">
+                            <div className="col-6">
                               <AlgaehLabel
                                 label={{
-                                  fieldName: "to_time",
-                                  isImp: true
+                                  forceLabel: "To Time"
                                 }}
                               />
 
@@ -2217,16 +2159,15 @@ class PhySchSetup extends Component {
                             </div>
                           </div>
                         </div>
-                        <div className="col-lg-6 algaehLabelFormGroup">
+                        <div className="col-6 algaehLabelFormGroup">
                           <label className="algaehLabelGroup">
                             Day Break 2
                           </label>
                           <div className="row">
-                            <div className="col-lg-6">
+                            <div className="col-6">
                               <AlgaehLabel
                                 label={{
-                                  fieldName: "frm_time",
-                                  isImp: true
+                                  fieldName: "frm_time"
                                 }}
                               />
 
@@ -2240,11 +2181,10 @@ class PhySchSetup extends Component {
                               </h6>
                             </div>
 
-                            <div className="col-lg-6">
+                            <div className="col-6">
                               <AlgaehLabel
                                 label={{
-                                  fieldName: "to_time",
-                                  isImp: true
+                                  forceLabel: "To Time"
                                 }}
                               />
 
@@ -2263,7 +2203,7 @@ class PhySchSetup extends Component {
                     </div>
 
                     <div className="row margin-top-15">
-                      <div className="col-lg-12">
+                      <div className="col-12">
                         <AlgaehLabel
                           label={{
                             fieldName: "wrkng_days",
@@ -2271,31 +2211,29 @@ class PhySchSetup extends Component {
                           }}
                         />
 
-                        <h6>
-                          {this.state.sunday ? "SUN" : ""}
-                          {this.state.monday ? " MON" : ""}
-                          {this.state.tuesday ? " TUE" : ""}
-                          {this.state.wednesday ? " WED" : ""}
-                          {this.state.thursday ? " THU" : ""}
-                          {this.state.friday ? " FRI" : ""}
-                          {this.state.saturday ? " SAT" : ""}
+                        <h6 className="daysSpan">
+                          <span>{this.state.sunday ? "SUN" : ""}</span>
+                          <span>{this.state.monday ? "MON" : ""}</span>
+                          <span>{this.state.tuesday ? "TUE" : ""}</span>
+                          <span>{this.state.wednesday ? "WED" : ""}</span>
+                          <span>{this.state.thursday ? "THU" : ""}</span>
+                          <span>{this.state.friday ? "FRI" : ""}</span>
+                          <span>{this.state.saturday ? "SAT" : ""}</span>
                         </h6>
 
                         {/* <h6>Weekdays</h6> */}
-                      </div>
+                        </div>
                     </div>
                   </div>
-                  <div className="col-lg-4" style={{ marginTop: 15 }}>
+                  <div className="col-lg-4">
                     <label className="algaehLabelGroup" style={{ left: 22 }}>
                       Doctors in the Schedule
                     </label>
-                    <div className="bordered-layout-radius">
-                      <ul style={{ height: "63vh", paddingTop: 3 }}>
+                    <div className="scheduledDocList">
+                      <ul >
                         {this.state.scheduleDoctors !== undefined ? (
                           this.state.scheduleDoctors.map((data, index) => (
-                            <li key={index}>
-                              {data.full_name}
-                              <i
+                            <li key={index}> <i
                                 provider-name={data.full_name}
                                 provider-id={data.provider_id}
                                 id={data.appointment_schedule_header_id}
@@ -2308,6 +2246,8 @@ class PhySchSetup extends Component {
                                 id={data.appointment_schedule_header_id}
                                 className="fas fa-trash-alt"
                               />
+                             <span>{data.full_name}</span> 
+                             
                             </li>
                           ))
                         ) : (
@@ -2318,10 +2258,14 @@ class PhySchSetup extends Component {
                       </ul>
                     </div>
                   </div>
-                </div>
+                </div>   
               </div>
-            </div>
+          ) : (   <span className="noDataStyle">
+                        <h1><i className="fas fa-info-circle"></i></h1>
+                        <p>Select a Schedule for more metails</p>
+                      </span>)}
           </div>
+        </div>
         </div>
       </div>
     );

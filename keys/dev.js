@@ -15,10 +15,11 @@ exports.default = {
 		port: 3306,
 		user: 'algaeh_root',
 		password: 'alg_hea2018',
-		//database: "algaeh_hims_db",
+		// database: 'algaeh_hims_db',
 		database: 'hims_test_db',
 		// database: "seco",
-		// database: "algaeh_hrms_oman_db",
+		//database: 'algaeh_hrms_oman_db',
+		//database: 'hrms_blank_db',
 
 		//database: "medical_db",
 
