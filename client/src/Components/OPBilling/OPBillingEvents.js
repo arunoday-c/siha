@@ -259,7 +259,10 @@ const selectVisit = $this => {
                       response.data.records.saveEnable = false;
                       response.data.records.billDetails = false;
 
-                      $this.setState({ ...response.data.records });
+                      $this.setState({
+                        ...response.data.records,
+                        addNewService: false
+                      });
                     }
                     AlgaehLoader({ show: false });
                   },

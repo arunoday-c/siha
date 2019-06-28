@@ -20,40 +20,53 @@ import {
 } from "../../../utils/GlobalFunctions";
 import swal from "sweetalert2";
 import moment from "moment";
+import _ from "lodash";
 
 class DeptMaster extends Component {
   constructor(props) {
     super(props);
-
+    debugger;
+    let Activated_Modueles = JSON.parse(
+      AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
+    );
+    const Inventory_Active = _.filter(Activated_Modueles, f => {
+      return f.module_code === "INVTRY";
+    });
     this.state = {
       allDepartments: [],
       subDepartments: [],
       department_type: "NON-CLINICAL",
       effective_start_date: new Date(),
       showSubDeptModal: false,
-      chart_type: null
+      chart_type: null,
+      Inventory_Active: Inventory_Active.length > 0 ? true : false
     };
+
     this.getLocation();
     this.getAllDepartments();
   }
 
   getLocation() {
-    if (
-      this.props.inventorylocations === undefined ||
-      this.props.inventorylocations.length === 0
-    ) {
-      this.props.getLocation({
-        uri: "/inventory/getInventoryLocation",
-        module: "inventory",
-        data: {
-          location_status: "A"
-        },
-        method: "GET",
-        redux: {
-          type: "LOCATIONS_GET_DATA",
-          mappingName: "inventorylocations"
-        }
-      });
+    debugger;
+
+    if (this.state.Inventory_Active) {
+      if (
+        this.props.inventorylocations === undefined ||
+        this.props.inventorylocations.length === 0
+      ) {
+        this.props.getLocation({
+          uri: "/inventory/getInventoryLocation",
+          module: "inventory",
+          data: {
+            location_status: "A"
+          },
+          method: "GET",
+          redux: {
+            type: "LOCATIONS_GET_DATA",
+            mappingName: "inventorylocations"
+          }
+        });
+      }
     }
   }
 
@@ -374,7 +387,8 @@ class DeptMaster extends Component {
           location_description: this.state.sub_department_name,
           hospital_id: hospital.hims_d_hospital_id,
           chart_type: this.state.chart_type,
-          location_type: "SS"
+          location_type: "SS",
+          Inventory_Active: this.state.Inventory_Active
         };
 
         algaehApiCall({
@@ -384,18 +398,20 @@ class DeptMaster extends Component {
           data: sen_data,
           onSuccess: response => {
             if (response.data.success) {
-              this.props.getLocation({
-                uri: "/inventory/getInventoryLocation",
-                module: "inventory",
-                data: {
-                  location_status: "A"
-                },
-                method: "GET",
-                redux: {
-                  type: "LOCATIONS_GET_DATA",
-                  mappingName: "inventorylocations"
-                }
-              });
+              if (this.state.Inventory_Active) {
+                this.props.getLocation({
+                  uri: "/inventory/getInventoryLocation",
+                  module: "inventory",
+                  data: {
+                    location_status: "A"
+                  },
+                  method: "GET",
+                  redux: {
+                    type: "LOCATIONS_GET_DATA",
+                    mappingName: "inventorylocations"
+                  }
+                });
+              }
               swalMessage({
                 title: "Added Successfully",
                 type: "success"
@@ -528,7 +544,7 @@ class DeptMaster extends Component {
                   div={{ className: "col" }}
                   label={{
                     fieldName: "sub_department_name_arabic",
-                    isImp: true 
+                    isImp: true
                   }}
                   textBox={{
                     className: "txt-fld",
@@ -712,6 +728,9 @@ class DeptMaster extends Component {
                                 : ""}
                             </span>
                           );
+                        },
+                        others: {
+                          show: this.state.Inventory_Active
                         }
                       },
 
