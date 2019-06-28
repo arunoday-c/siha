@@ -518,7 +518,7 @@ const PostPosEntry = $this => {
 
     const Quantity_zero = _.filter(
       $this.state.pharmacy_stock_detail,
-      f => f.quantity === 0
+      f => f.quantity === 0 || f.quantity === null
     );
 
     if (Quantity_zero.length > 0) {

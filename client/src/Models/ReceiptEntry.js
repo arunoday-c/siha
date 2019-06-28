@@ -49,7 +49,9 @@ export default {
       ClearDisable: false,
       saveEnable: true,
       postEnable: true,
-      poSelected: false
+      poSelected: false,
+      location_name: null,
+      vendor_name: null
     };
     return output;
   }

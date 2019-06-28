@@ -420,7 +420,11 @@ class PurchaseOrderEntry extends Component {
                 <button
                   type="button"
                   className="btn btn-other"
-                  disabled={this.state.authorize1 === "Y" ? true : false}
+                  disabled={
+                    this.state.authorize1 === "Y"
+                      ? true
+                      : this.state.authorizeBtn
+                  }
                   onClick={AuthorizePOEntry.bind(this, this)}
                 >
                   <AlgaehLabel

@@ -894,7 +894,11 @@ class RegistrationPatient extends Component {
                     type="button"
                     className="btn btn-other"
                     onClick={ShowRefundScreen.bind(this, this)}
-                    disabled={this.state.advanceEnable}
+                    disabled={
+                      parseFloat(this.state.advance_amount) === 0
+                        ? true
+                        : this.state.advanceEnable
+                    }
                   >
                     <AlgaehLabel
                       label={{

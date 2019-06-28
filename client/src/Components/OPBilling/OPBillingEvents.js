@@ -239,11 +239,11 @@ const selectVisit = $this => {
                 type: "warning"
               });
             }
-            debugger;
 
             $this.setState(
               {
-                billdetails: data
+                billdetails: data,
+                addNewService: false
               },
               () => {
                 algaehApiCall({
@@ -260,7 +260,9 @@ const selectVisit = $this => {
                       response.data.records.saveEnable = false;
                       response.data.records.billDetails = false;
 
-                      $this.setState({ ...response.data.records });
+                      $this.setState({
+                        ...response.data.records
+                      });
                     }
                     AlgaehLoader({ show: false });
                   },
@@ -322,6 +324,10 @@ const selectVisit = $this => {
           });
         }
       } else {
+        $this.setState({
+          addNewService: false
+        });
+
         AlgaehLoader({ show: false });
       }
     },

@@ -250,7 +250,9 @@ class Appointment extends PureComponent {
       age: null,
       contact_number: "",
       email: "",
-      appointment_remarks: ""
+      appointment_remarks: "",
+      timeSlots: [],
+      edit_appt_date: ""
     });
   }
 
@@ -639,7 +641,10 @@ class Appointment extends PureComponent {
   }
 
   dateHandler(selectedDate) {
-    this.setState({ edit_appt_date: selectedDate });
+    this.setState({ edit_appt_date: selectedDate }, () => {
+      const provider_id = this.state.edit_provider_id;
+      this.getTimeSlotsForDropDown(provider_id);
+    });
   }
 
   texthandle(e) {
@@ -744,13 +749,13 @@ class Appointment extends PureComponent {
       console.log("after check in", patient);
       return this.props.routeComponents(patient);
     }
-    debugger;
+
     return this.props.routeComponents(patient);
   }
 
   openEditModal(patient, data, e) {
     console.log("from open edit", patient, data);
-    debugger;
+
     e.preventDefault();
 
     this.getTimeSlotsForDropDown(patient.provider_id);
@@ -1349,10 +1354,11 @@ class Appointment extends PureComponent {
     }
   }
 
-  isInactiveTimeSlot(time) {
-    if (moment(this.state.activeDateHeader).isBefore(new Date(), "day")) {
+  isInactiveTimeSlot(time, date) {
+    let activeDate = date ? date : this.state.activeDateHeader;
+    if (moment(activeDate).isBefore(new Date(), "day")) {
       return true;
-    } else if (moment(this.state.activeDateHeader).isSame(new Date(), "day")) {
+    } else if (moment(activeDate).isSame(new Date(), "day")) {
       return (
         moment(time, "HH:mm a").format("HHmm") <
         moment(new Date()).format("HHmm")
@@ -1554,9 +1560,10 @@ class Appointment extends PureComponent {
     const [data] = schedule.filter(doc => doc.provider_id === id);
     const result = generateTimeslotsForDoctor(data);
     let timeSlots = [];
+    let activeDate = this.state.edit_appt_date;
     result.forEach(time => {
       if (time !== "break") {
-        if (!this.isInactiveTimeSlot(time)) {
+        if (!this.isInactiveTimeSlot(time, activeDate)) {
           timeSlots.push({
             name: moment(time, "HH:mm:ss").format("hh:mm a"),
             value: time

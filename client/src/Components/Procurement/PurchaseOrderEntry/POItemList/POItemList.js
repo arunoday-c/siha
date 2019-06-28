@@ -620,14 +620,19 @@ class POItemList extends Component {
                                 />
                               ),
                               displayTemplate: row => {
-                                return parseFloat(row.authorize_quantity);
+                                return row.authorize_quantity !== null
+                                  ? parseFloat(row.authorize_quantity)
+                                  : 0;
                               },
                               editorTemplate: row => {
                                 return (
                                   <AlagehFormGroup
                                     div={{}}
                                     textBox={{
-                                      value: parseFloat(row.authorize_quantity),
+                                      value:
+                                        row.authorize_quantity !== null
+                                          ? parseFloat(row.authorize_quantity)
+                                          : null,
                                       className: "txt-fld",
                                       name: "authorize_quantity",
                                       events: {
@@ -793,10 +798,14 @@ class POItemList extends Component {
                                 />
                               ),
                               displayTemplate: row => {
-                                return parseFloat(row.quantity_outstanding);
+                                return row.quantity_outstanding !== null
+                                  ? parseFloat(row.quantity_outstanding)
+                                  : 0;
                               },
                               editorTemplate: row => {
-                                return parseFloat(row.quantity_outstanding);
+                                return row.quantity_outstanding !== null
+                                  ? parseFloat(row.quantity_outstanding)
+                                  : 0;
                               },
                               disabled: true,
                               others: {
@@ -813,10 +822,14 @@ class POItemList extends Component {
                                 />
                               ),
                               displayTemplate: row => {
-                                return parseFloat(row.rejected_quantity);
+                                return row.rejected_quantity !== null
+                                  ? parseFloat(row.rejected_quantity)
+                                  : 0;
                               },
                               editorTemplate: row => {
-                                return parseFloat(row.rejected_quantity);
+                                return row.rejected_quantity !== null
+                                  ? parseFloat(row.rejected_quantity)
+                                  : 0;
                               },
                               disabled: true
                             },

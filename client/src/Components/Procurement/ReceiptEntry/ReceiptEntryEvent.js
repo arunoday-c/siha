@@ -25,7 +25,12 @@ const texthandle = ($this, e) => {
 
 const textEventhandle = ($this, e) => {
   let name = e.name || e.target.name;
-  let value = e.value === "" ? null : e.value || e.target.value;
+  let value =
+    e.value === ""
+      ? null
+      : e.value || e.target.value === ""
+      ? null
+      : e.target.value;
 
   $this.setState({
     [name]: value
@@ -253,7 +258,6 @@ const ClearData = ($this, e) => {
 };
 
 const SaveReceiptEnrty = $this => {
-  AlgaehLoader({ show: true });
   if ($this.state.inovice_number === null) {
     swalMessage({
       type: "warning",
@@ -266,6 +270,7 @@ const SaveReceiptEnrty = $this => {
     });
     return;
   }
+  AlgaehLoader({ show: true });
   algaehApiCall({
     uri: "/ReceiptEntry/addReceiptEntry",
     module: "procurement",
@@ -298,7 +303,7 @@ const SaveReceiptEnrty = $this => {
   });
 };
 
-const getCtrlCode = ($this, docNumber) => {
+const getCtrlCode = ($this, docNumber, row) => {
   AlgaehLoader({ show: true });
 
   algaehApiCall({
@@ -326,12 +331,14 @@ const getCtrlCode = ($this, docNumber) => {
         } else {
           data.postEnable = false;
         }
+        data.location_name = row.loc_description;
+        data.vendor_name = row.vendor_name;
         $this.setState(data, () => {
           getData($this);
         });
         AlgaehLoader({ show: false });
 
-        $this.setState({ ...response.data.records });
+        // $this.setState({ ...response.data.records });
       }
       AlgaehLoader({ show: false });
     },
@@ -546,58 +553,39 @@ const PostReceiptEntry = $this => {
 };
 
 const PurchaseOrderSearch = ($this, e) => {
-  if (
-    $this.state.pharmcy_location_id === null &&
-    $this.state.inventory_location_id === null
-  ) {
-    swalMessage({
-      title: "Select Location.",
-      type: "warning"
-    });
+  let Inputs = "";
+
+  if ($this.state.grn_for === "PHR") {
+    Inputs = "pharmcy_location_id = " + $this.state.pharmcy_location_id;
   } else {
-    let Inputs = "";
-
-    if ($this.state.grn_for === "PHR") {
-      Inputs = "pharmcy_location_id = " + $this.state.pharmcy_location_id;
-    } else {
-      Inputs = "inventory_location_id = " + $this.state.inventory_location_id;
-    }
-
-    AlgaehSearch({
-      searchGrid: {
-        columns: spotlightSearch.Purchase.POEntry
-      },
-      searchName: "POEntryGetReceipt",
-      uri: "/gloabelSearch/get",
-      inputs: Inputs,
-      onContainsChange: (text, serchBy, callBack) => {
-        callBack(text);
-      },
-      onRowSelect: row => {
-        getDeliveryForReceipt(
-          $this,
-          row.hims_f_procurement_po_header_id,
-          row.purchase_number,
-          row.vendor_id
-        );
-      }
-    });
+    Inputs = "inventory_location_id = " + $this.state.inventory_location_id;
   }
+  // inputs: Inputs,
+  AlgaehSearch({
+    searchGrid: {
+      columns: spotlightSearch.Purchase.POEntry
+    },
+    searchName: "POEntryGetReceipt",
+    uri: "/gloabelSearch/get",
+
+    onContainsChange: (text, serchBy, callBack) => {
+      callBack(text);
+    },
+    onRowSelect: row => {
+      getDeliveryForReceipt($this, row);
+    }
+  });
 };
 
-const getDeliveryForReceipt = (
-  $this,
-  purchase_order_id,
-  purchase_number,
-  vendor_id
-) => {
+const getDeliveryForReceipt = ($this, row) => {
   AlgaehLoader({ show: true });
+
   algaehApiCall({
     uri: "/ReceiptEntry/getDeliveryForReceipt",
     module: "procurement",
     method: "GET",
     data: {
-      purchase_order_id: purchase_order_id
+      purchase_order_id: row.hims_f_procurement_po_header_id
     },
     onSuccess: response => {
       if (response.data.success) {
@@ -621,18 +609,29 @@ const getDeliveryForReceipt = (
           let total_tax = _.sumBy(data, s => parseFloat(s.tax_amount));
           let net_payable = _.sumBy(data, s => parseFloat(s.total_amount));
 
-          $this.setState({
-            receipt_entry_detail: data,
-            vendor_id: vendor_id,
-            po_id: purchase_order_id,
-            purchase_number: purchase_number,
-            sub_total: sub_total,
-            detail_discount: detail_discount,
-            net_total: net_total,
-            net_payable: net_payable,
-            saveEnable: false,
-            poSelected: true
-          });
+          $this.setState(
+            {
+              payment_terms: data[0].payment_terms,
+              grn_for: data[0].dn_from,
+              inventory_location_id: data[0].inventory_location_id,
+              pharmcy_location_id: data[0].pharmcy_location_id,
+              receipt_entry_detail: data,
+              vendor_id: row.vendor_id,
+              po_id: row.hims_f_procurement_po_header_id,
+              purchase_number: row.purchase_number,
+              sub_total: sub_total,
+              detail_discount: detail_discount,
+              net_total: net_total,
+              net_payable: net_payable,
+              saveEnable: false,
+              poSelected: true,
+              location_name: row.loc_description,
+              vendor_name: row.vendor_name
+            },
+            () => {
+              getData($this);
+            }
+          );
           AlgaehLoader({ show: false });
         }
       }

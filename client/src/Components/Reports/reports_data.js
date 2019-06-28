@@ -7,11 +7,43 @@ import {
   FORMAT_PAYTYPE,
   EXPIRY_STATUS
 } from "../../utils/GlobalVariables.json";
-import { getYears } from "../../utils/GlobalFunctions";
+import { getYears, AlgaehOpenContainer } from "../../utils/GlobalFunctions";
 import { algaehApiCall } from "../../utils/algaehApiCall";
+import _ from "lodash";
+// debugger;
 let allYears = getYears();
+const Activated_Modueles = JSON.parse(
+  AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
+);
+const HIMS_Active = _.filter(Activated_Modueles, f => {
+  return f.module_code === "FTDSK";
+});
 
-export default [
+const HR_Active = _.filter(Activated_Modueles, f => {
+  return f.module_code === "HRMNGMT";
+});
+
+const LAB_Active = _.filter(Activated_Modueles, f => {
+  return f.module_code === "LAB";
+});
+
+const RAD_Active = _.filter(Activated_Modueles, f => {
+  return f.module_code === "RAD";
+});
+
+const INS_Active = _.filter(Activated_Modueles, f => {
+  return f.module_code === "INS";
+});
+
+const PHARMACY_Active = _.filter(Activated_Modueles, f => {
+  return f.module_code === "PHCY";
+});
+
+const INVENTORY_Active = _.filter(Activated_Modueles, f => {
+  return f.module_code === "INVTRY";
+});
+
+let Hims_Reports = [
   {
     name: "Appointment",
     submenu: [
@@ -110,7 +142,6 @@ export default [
       }
     ]
   },
-
   {
     name: "Income",
     submenu: [
@@ -394,7 +425,31 @@ export default [
       }
     ]
   },
+  {
+    name: "Patient Reports",
+    submenu: [
+      {
+        subitem: "Patient Outstanding",
+        template_name: "PatientReports/PatOutstandingSum",
+        reportQuery: "patOutstandingSum",
+        reportParameters: [
+          {
+            type: "date",
+            name: "till_date",
+            label: "Till Date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          }
+        ]
+      }
+    ]
+  }
+];
 
+let HR_Payroll_Reports = [
   {
     name: "Payroll Reports",
     submenu: [
@@ -881,7 +936,85 @@ export default [
       }
     ]
   },
+  {
+    name: "Project Payroll",
+    submenu: [
+      {
+        subitem: "Project wise Payroll",
+        //template_name: "ProjectPayroll/projectWisePayroll",
+        // reportQuery: "projectWisePayroll",
+        //  reportUri: "/projectjobcosting/getProjectWiseJobCost",
+        // module: "hrManagement",
+        reportName: "projectWisePayroll",
+        requireIframe: true,
+        pageOrentation: "landscape",
+        reportParameters: [
+          {
+            type: "dropdown",
+            name: "year",
+            initialLoad: true,
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: allYears
+            }
+            // events: {
+            //   onChange: (reportState, currentValue) => {}
+            // }
+          },
+          {
+            type: "dropdown",
+            sort: "off",
+            name: "month",
+            initialLoad: true,
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: MONTHS
+            },
+            others: {
+              sort: "off"
+            }
+          },
+          {
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Select branch",
+            link: {
+              uri: "/organization/getOrganization"
+            },
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            }
+          },
+          {
+            type: "dropdown",
+            name: "project_id",
+            initialLoad: true,
+            label: "Select Project",
+            link: {
+              uri: "/hrsettings/getProjects",
+              module: "hrManagement"
+            },
+            dataSource: {
+              textField: "project_desc",
+              valueField: "hims_d_project_id"
+            }
+            // events: {
+            //   onChange: (reportState, currentValue) => {}
+            // }
+          }
+        ]
+      }
+    ]
+  }
+];
 
+let Inventory_Reports = [
   {
     name: "Inventory",
     submenu: [
@@ -1019,7 +1152,10 @@ export default [
         //reportParameters: () => <Inventory ui="asset_warty_exp_rep" />
       }
     ]
-  },
+  }
+];
+
+let Pharmacy_Reports = [
   {
     name: "Pharmacy",
     submenu: [
@@ -1968,8 +2104,10 @@ export default [
       //   ]
       // }
     ]
-  },
+  }
+];
 
+let insurance_reports = [
   {
     name: "Insurance",
     submenu: [
@@ -2048,103 +2186,50 @@ export default [
         //reportParameters: () => <Insurance ui="asset_warty_exp_rep" />
       }
     ]
-  },
-  {
-    name: "Project Payroll",
-    submenu: [
-      {
-        subitem: "Project wise Payroll",
-        //template_name: "ProjectPayroll/projectWisePayroll",
-        // reportQuery: "projectWisePayroll",
-        //  reportUri: "/projectjobcosting/getProjectWiseJobCost",
-        // module: "hrManagement",
-        reportName: "projectWisePayroll",
-        requireIframe: true,
-        pageOrentation: "landscape",
-        reportParameters: [
-          {
-            type: "dropdown",
-            name: "year",
-            initialLoad: true,
-            dataSource: {
-              textField: "name",
-              valueField: "value",
-              data: allYears
-            }
-            // events: {
-            //   onChange: (reportState, currentValue) => {}
-            // }
-          },
-          {
-            type: "dropdown",
-            sort: "off",
-            name: "month",
-            initialLoad: true,
-            dataSource: {
-              textField: "name",
-              valueField: "value",
-              data: MONTHS
-            },
-            others: {
-              sort: "off"
-            }
-          },
-          {
-            type: "dropdown",
-            name: "hospital_id",
-            initialLoad: true,
-            isImp: true,
-            label: "Select branch",
-            link: {
-              uri: "/organization/getOrganization"
-            },
-            dataSource: {
-              textField: "hospital_name",
-              valueField: "hims_d_hospital_id",
-              data: undefined
-            }
-          },
-          {
-            type: "dropdown",
-            name: "project_id",
-            initialLoad: true,
-            label: "Select Project",
-            link: {
-              uri: "/hrsettings/getProjects",
-              module: "hrManagement"
-            },
-            dataSource: {
-              textField: "project_desc",
-              valueField: "hims_d_project_id"
-            }
-            // events: {
-            //   onChange: (reportState, currentValue) => {}
-            // }
-          }
-        ]
-      }
-    ]
-  },
-  {
-    name: "Patient Reports",
-    submenu: [
-      {
-        subitem: "Patient Outstanding",
-        template_name: "PatientReports/PatOutstandingSum",
-        reportQuery: "patOutstandingSum",
-        reportParameters: [
-          {
-            type: "date",
-            name: "till_date",
-            label: "Till Date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
-            }
-          }
-        ]
-      }
-    ]
   }
 ];
+// debugger;
+let final_report_plot = [];
+
+if (HIMS_Active.length > 0) {
+  final_report_plot.length === 0
+    ? (final_report_plot = Hims_Reports)
+    : (final_report_plot = final_report_plot.concat(Hims_Reports));
+}
+if (HR_Active.length > 0) {
+  final_report_plot.length === 0
+    ? (final_report_plot = HR_Payroll_Reports)
+    : (final_report_plot = final_report_plot.concat(HR_Payroll_Reports));
+}
+
+// if (LAB_Active.length > 0) {
+//   final_report_plot.length === 0
+//     ? (final_report_plot = HR_Payroll_Reports)
+//     : final_report_plot.concat(HR_Payroll_Reports);
+// }
+//
+// if (RAD_Active.length > 0) {
+//   final_report_plot.length === 0
+//     ? (final_report_plot = HR_Payroll_Reports)
+//     : final_report_plot.concat(HR_Payroll_Reports);
+// }
+
+if (INS_Active.length > 0) {
+  final_report_plot.length === 0
+    ? (final_report_plot = insurance_reports)
+    : (final_report_plot = final_report_plot.concat(insurance_reports));
+}
+
+if (PHARMACY_Active.length > 0) {
+  final_report_plot.length === 0
+    ? (final_report_plot = Pharmacy_Reports)
+    : (final_report_plot = final_report_plot.concat(Pharmacy_Reports));
+}
+
+if (INVENTORY_Active.length > 0) {
+  final_report_plot.length === 0
+    ? (final_report_plot = Inventory_Reports)
+    : (final_report_plot = final_report_plot.concat(Inventory_Reports));
+}
+
+export default final_report_plot;

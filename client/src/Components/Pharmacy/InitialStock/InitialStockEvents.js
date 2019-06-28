@@ -131,7 +131,9 @@ const AddItems = $this => {
           sales_price: $this.state.sales_price,
           expiry_date: $this.state.expiry_date,
           quantity: $this.state.quantity,
-          unit_cost: $this.state.unit_cost,
+          unit_cost:
+            parseFloat($this.state.unit_cost) /
+            parseFloat($this.state.conversion_factor),
           extended_cost: $this.state.extended_cost,
           conversion_factor: $this.state.conversion_factor,
           item_code: $this.state.item_code,

@@ -206,9 +206,70 @@ class ReceiptEntry extends Component {
           >
             <div className="col-lg-12">
               <div className="row">
-                <AlagehAutoComplete
+                <AlagehFormGroup
                   div={{ className: "col-2" }}
-                  label={{ forceLabel: "PO For" }}
+                  label={{
+                    forceLabel: "Purchase Order No."
+                  }}
+                  textBox={{
+                    value: this.state.purchase_number,
+                    className: "txt-fld",
+                    name: "purchase_number",
+
+                    events: {
+                      onChange: null
+                    },
+                    others: {
+                      disabled: true
+                    }
+                  }}
+                />
+                <div
+                  className="col-lg-1"
+                  style={{
+                    paddingLeft: 0
+                  }}
+                >
+                  <span
+                    className="fas fa-search fa-2x"
+                    style={{
+                      fontSize: " 1.2rem",
+                      marginTop: 26,
+                      paddingBottom: 0,
+                      pointerEvents:
+                        this.state.dataExitst === true ? "none" : ""
+                    }}
+                    onClick={PurchaseOrderSearch.bind(this, this)}
+                  />
+                </div>
+                <div className="col">
+                  <AlgaehLabel label={{ forceLabel: "Receipt For" }} />
+                  <h6>
+                    {this.state.grn_for
+                      ? this.state.grn_for === "INV"
+                        ? "Inventory"
+                        : "Pharmacy"
+                      : "------"}
+                  </h6>
+                </div>
+                <div className="col">
+                  <AlgaehLabel label={{ forceLabel: "Location" }} />
+                  <h6>
+                    {this.state.location_name
+                      ? this.state.location_name
+                      : "------"}
+                  </h6>
+                </div>
+                <div className="col">
+                  <AlgaehLabel label={{ forceLabel: "Vendor" }} />
+                  <h6>
+                    {this.state.vendor_name ? this.state.vendor_name : "------"}
+                  </h6>
+                </div>
+
+                {/*<AlagehAutoComplete
+                  div={{ className: "col-2" }}
+                  label={{ forceLabel: "Receipt For" }}
                   selector={{
                     name: "grn_for",
                     className: "select-fld",
@@ -259,48 +320,6 @@ class ReceiptEntry extends Component {
                     onClear: texthandle.bind(this, this)
                   }}
                 />
-
-                <AlagehFormGroup
-                  div={{ className: "col-2" }}
-                  label={{
-                    forceLabel: "Purchase Order No."
-                  }}
-                  textBox={{
-                    value: this.state.purchase_number,
-                    className: "txt-fld",
-                    name: "purchase_number",
-
-                    events: {
-                      onChange: null
-                    },
-                    others: {
-                      disabled: true
-                    }
-                  }}
-                />
-                <div
-                  className="col-lg-1"
-                  style={{
-                    paddingLeft: 0
-                  }}
-                >
-                  <span
-                    className="fas fa-search fa-2x"
-                    style={{
-                      fontSize: " 1.2rem",
-                      marginTop: 26,
-                      paddingBottom: 0,
-                      pointerEvents:
-                        this.state.dataExitst === true
-                          ? "none"
-                          : this.state.ReqData === true
-                          ? "none"
-                          : ""
-                    }}
-                    onClick={PurchaseOrderSearch.bind(this, this)}
-                  />
-                </div>
-
                 <AlagehAutoComplete
                   div={{ className: "col-2" }}
                   label={{ forceLabel: "Vendor" }}
@@ -319,7 +338,7 @@ class ReceiptEntry extends Component {
                     onChange: vendortexthandle.bind(this, this),
                     onClear: vendortexthandle.bind(this, this)
                   }}
-                />
+                />*/}
 
                 <div className="col">
                   <AlgaehLabel label={{ forceLabel: "Payment Terms" }} />

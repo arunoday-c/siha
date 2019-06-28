@@ -113,7 +113,7 @@ function AppointmentComponent(props) {
                             data: props.state.timeSlots
                           },
                           onChange: props.dropDownHandle,
-                          sort: false
+                          sort: "off"
                         }}
                       />
                       <AlagehAutoComplete

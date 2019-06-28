@@ -334,7 +334,7 @@ module.exports = {
       for (let i = 0; i < details.length; i++) {
         qry += mysql.format(
           "UPDATE `hims_f_procurement_dn_header` SET `is_completed`=?, `completed_date`=?, \
-          `updated_by` = ?,`updated_date` = ? WHERE `hims_f_procurement_dn_header_id`=?",
+          `updated_by` = ?,`updated_date` = ? WHERE `hims_f_procurement_dn_header_id`=?;",
           [
             complete,
             new Date(),
