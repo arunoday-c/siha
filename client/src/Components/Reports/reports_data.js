@@ -12,9 +12,10 @@ import { algaehApiCall } from "../../utils/algaehApiCall";
 import _ from "lodash";
 // debugger;
 let allYears = getYears();
-const Activated_Modueles = JSON.parse(
-  AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
-);
+const Activated_Modueles =
+  sessionStorage.getItem("ModuleDetails") !== null
+    ? JSON.parse(AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails")))
+    : [];
 const HIMS_Active = _.filter(Activated_Modueles, f => {
   return f.module_code === "FTDSK";
 });
@@ -2229,6 +2230,9 @@ if (INVENTORY_Active.length > 0) {
   final_report_plot.length === 0
     ? (final_report_plot = Inventory_Reports)
     : (final_report_plot = final_report_plot.concat(Inventory_Reports));
+}
+
+if (final_report_plot.length === 0) {
 }
 
 export default final_report_plot;
