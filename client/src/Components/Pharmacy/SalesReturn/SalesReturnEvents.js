@@ -140,6 +140,7 @@ const SaveSalesReturn = $this => {
     inputObj.transaction_type = "SRT";
     inputObj.pay_type = "P";
     inputObj.transaction_date = $this.state.sales_return_date;
+    debugger;
     for (let i = 0; i < inputObj.pharmacy_stock_detail.length; i++) {
       inputObj.pharmacy_stock_detail[i].location_id = $this.state.location_id;
       inputObj.pharmacy_stock_detail[i].location_type =

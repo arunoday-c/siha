@@ -345,24 +345,39 @@ module.exports = {
               f => f.item_id == newDtls[i].item_id
             );
 
+            const utilities = new algaehUtilities();
+            utilities.logger().log("get_item_detail: ", get_item_detail);
+
             let return_quantity =
-              parseFloat(get_item_detail.return_quantity) +
-              parseFloat(newDtls[i].return_quantity);
+              get_item_detail.return_quantity === null
+                ? newDtls[i].return_quantity
+                : parseFloat(get_item_detail.return_quantity) +
+                  parseFloat(newDtls[i].return_quantity);
             let return_extended_cost =
-              parseFloat(get_item_detail.return_extended_cost) +
-              parseFloat(newDtls[i].return_extended_cost);
+              get_item_detail.return_extended_cost === null
+                ? newDtls[i].return_extended_cost
+                : parseFloat(get_item_detail.return_extended_cost) +
+                  parseFloat(newDtls[i].return_extended_cost);
             let return_discount_amt =
-              parseFloat(get_item_detail.return_discount_amt) +
-              parseFloat(newDtls[i].return_discount_amt);
+              get_item_detail.return_discount_amt === null
+                ? newDtls[i].return_discount_amt
+                : parseFloat(get_item_detail.return_discount_amt) +
+                  parseFloat(newDtls[i].return_discount_amt);
             let return_net_extended_cost =
-              parseFloat(get_item_detail.return_net_extended_cost) +
-              parseFloat(newDtls[i].return_net_extended_cost);
+              get_item_detail.return_net_extended_cost === null
+                ? newDtls[i].return_net_extended_cost
+                : parseFloat(get_item_detail.return_net_extended_cost) +
+                  parseFloat(newDtls[i].return_net_extended_cost);
             let return_pat_responsibility =
-              parseFloat(get_item_detail.return_pat_responsibility) +
-              parseFloat(newDtls[i].return_pat_responsibility);
+              get_item_detail.return_pat_responsibility === null
+                ? newDtls[i].return_pat_responsibility
+                : parseFloat(get_item_detail.return_pat_responsibility) +
+                  parseFloat(newDtls[i].return_pat_responsibility);
             let return_company_responsibility =
-              parseFloat(get_item_detail.return_company_responsibility) +
-              parseFloat(newDtls[i].return_company_responsibility);
+              get_item_detail.return_company_responsibility === null
+                ? newDtls[i].return_company_responsibility
+                : parseFloat(get_item_detail.return_company_responsibility) +
+                  parseFloat(newDtls[i].return_company_responsibility);
 
             updateString += mysql.format(
               "UPDATE hims_f_pharmacy_pos_detail SET `return_quantity`=?,`return_extended_cost` = ?,\

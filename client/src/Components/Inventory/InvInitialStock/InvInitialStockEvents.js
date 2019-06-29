@@ -37,32 +37,69 @@ const numberchangeTexts = ($this, e) => {
   $this.setState({ [name]: value, extended_cost: extended_cost });
 };
 
-const getItemUom = $this => {
-  $this.props.getItemMasterAndItemUom({
-    uri: "/inventory/getItemMasterAndItemUom",
-    module: "inventory",
+const getItemUom = ($this, purchase_cost) => {
+  algaehApiCall({
+    uri: "/pharmacy/getItemMasterAndItemUom",
+    module: "pharmacy",
     method: "GET",
-    redux: {
-      type: "ITEMS_GET_DATA",
-      mappingName: "inventoryitemuomlist"
-    },
-    afterSuccess: data => {
-      let itemuomlist = Enumerable.from(data)
-        .where(
-          w => w.hims_d_inventory_item_master_id === $this.state.item_id,
-          w => w.uom_id === $this.state.uom_id
-        )
-        .firstOrDefault();
 
-      $this.setState({ conversion_factor: itemuomlist.conversion_factor });
+    onSuccess: response => {
+      if (response.data.success) {
+        if (response.data.records.length > 0) {
+          let itemuomlist = Enumerable.from(response.data.records)
+            .where(
+              w => w.hims_d_inventory_item_master_id === $this.state.item_id,
+              w => w.uom_id === $this.state.purchase_uom_id
+            )
+            .firstOrDefault();
+
+          let unit_cost =
+            parseFloat(purchase_cost) /
+            parseFloat(itemuomlist.conversion_factor);
+          $this.setState({
+            conversion_factor: itemuomlist.conversion_factor,
+            unit_cost: unit_cost
+          });
+        }
+      }
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
     }
   });
+  // $this.props.getItemMasterAndItemUom({
+  //   uri: "/inventory/getItemMasterAndItemUom",
+  //   module: "inventory",
+  //   method: "GET",
+  //   redux: {
+  //     type: "ITEMS_GET_DATA",
+  //     mappingName: "inventoryitemuomlist"
+  //   },
+  //   afterSuccess: data => {
+  //     let itemuomlist = Enumerable.from(data)
+  //       .where(
+  //         w => w.hims_d_inventory_item_master_id === $this.state.item_id,
+  //         w => w.uom_id === $this.state.purchase_uom_id
+  //       )
+  //       .firstOrDefault();
+  //
+  //     let unit_cost =
+  //       parseFloat(purchase_cost) / parseFloat(itemuomlist.conversion_factor);
+  //     $this.setState({
+  //       conversion_factor: itemuomlist.conversion_factor,
+  //       unit_cost: unit_cost
+  //     });
+  //   }
+  // });
 };
 
 const itemchangeText = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  getItemUom($this);
+  getItemUom($this, e.selected.purchase_cost);
 
   $this.setState({
     [name]: value,
@@ -72,8 +109,9 @@ const itemchangeText = ($this, e) => {
     sales_uom: e.selected.sales_uom_id,
     required_batchno: e.selected.required_batchno_expiry,
     item_code: e.selected.item_code,
-    unit_cost: e.selected.purchase_cost,
-    sales_price: e.selected.standard_fee
+    // unit_cost: e.selected.purchase_cost,
+    sales_price: e.selected.standard_fee,
+    purchase_uom_id: e.selected.purchase_uom_id
   });
 };
 
@@ -116,7 +154,8 @@ const AddItems = $this => {
           expiry_date: $this.state.expiry_date,
           quantity: $this.state.quantity,
           unit_cost:
-            parseFloat($this.state.unit_cost) /
+            (parseFloat($this.state.unit_cost) *
+              parseFloat($this.state.quantity)) /
             parseFloat($this.state.conversion_factor),
           extended_cost: $this.state.extended_cost,
           conversion_factor: $this.state.conversion_factor,
@@ -146,7 +185,9 @@ const AddItems = $this => {
           extended_cost: 0,
           saveEnable: false,
           grn_number: null,
-          sales_uom: null
+          sales_uom: null,
+          purchase_uom_id: null,
+          conversion_factor: null
         });
       }
     }

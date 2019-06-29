@@ -25,10 +25,20 @@ export default function ConsumptionItemsEvents() {
     },
     numberchangeTexts: ($this, context, e) => {
       let name = e.name || e.target.name;
-      let value = e.value || e.target.value === "" ? 0 : e.target.value;
-      if (value < 0) {
+      let value =
+        e.value === ""
+          ? null
+          : e.value || e.target.value === ""
+          ? null
+          : e.target.value;
+      if (parseFloat(value) < 0) {
         swalMessage({
           title: "Cannot be less than zero.",
+          type: "warning"
+        });
+      } else if (parseFloat(value) > parseFloat($this.state.qtyhand)) {
+        swalMessage({
+          title: "Cannot be greater than QTY in Hand.",
           type: "warning"
         });
       } else {
@@ -140,7 +150,10 @@ export default function ConsumptionItemsEvents() {
           title: "Select Item.",
           type: "warning"
         });
-      } else if ($this.state.quantity === 0) {
+      } else if (
+        parseFloat($this.state.quantity) === 0 ||
+        $this.state.quantity === null
+      ) {
         swalMessage({
           title: "Please enter Quantity.",
           type: "warning"

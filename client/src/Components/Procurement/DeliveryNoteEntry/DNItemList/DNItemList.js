@@ -56,6 +56,27 @@ class DNItemList extends Component {
       parseFloat(item.dn_quantity) -
       parseFloat(item.quantity_recieved_todate);
 
+    let extended_price =
+      parseFloat(item_details.unit_price) * parseFloat(dn_quantity);
+    let discount_amount =
+      (extended_price * parseFloat(item_details.discount_percentage)) / 100;
+
+    let extended_cost = extended_price - discount_amount;
+    let tax_amount =
+      (extended_cost * parseFloat(item_details.tax_percentage)) / 100;
+
+    item_details["extended_price"] = parseFloat(extended_price);
+    item_details["extended_cost"] = parseFloat(extended_cost);
+    item_details["unit_cost"] =
+      parseFloat(extended_cost) / parseFloat(dn_quantity);
+
+    item_details["tax_amount"] = parseFloat(tax_amount);
+    item_details["total_amount"] =
+      parseFloat(tax_amount) + parseFloat(extended_cost);
+
+    item_details["discount_amount"] = parseFloat(discount_amount);
+    item_details["net_extended_cost"] = parseFloat(extended_cost);
+
     item_details.free_qty = 0;
     item_details.dn_quantity = dn_quantity;
     item_details.unit_price = parseFloat(item_details.unit_price).toFixed(2);
@@ -196,7 +217,8 @@ class DNItemList extends Component {
                             )
                           }
                         }}
-                      /><AlagehFormGroup
+                      />
+                      <AlagehFormGroup
                         div={{ className: "col" }}
                         label={{
                           forceLabel: "Vendor Batch No"
@@ -218,9 +240,7 @@ class DNItemList extends Component {
                         }}
                       />
                     </div>
-                    <div className="row" style={{marginTop:15}}>
-                      
-
+                    <div className="row" style={{ marginTop: 15 }}>
                       <AlgaehDateHandler
                         div={{ className: "col" }}
                         label={{
@@ -675,16 +695,6 @@ class DNItemList extends Component {
                               },
 
                               {
-                                fieldName: "po_quantity",
-                                label: (
-                                  <AlgaehLabel
-                                    label={{ forceLabel: "PO Quantity" }}
-                                  />
-                                ),
-                                disabled: true
-                              },
-
-                              {
                                 fieldName: "unit_cost",
                                 label: (
                                   <AlgaehLabel
@@ -795,30 +805,6 @@ class DNItemList extends Component {
                                 )
                               },
 
-                              {
-                                fieldName: "quantity_outstanding",
-                                label: (
-                                  <AlgaehLabel
-                                    label={{
-                                      forceLabel: "Qty Outstanding"
-                                    }}
-                                  />
-                                ),
-                                disabled: true,
-                                others: { minWidth: 140 }
-                              },
-                              {
-                                fieldName: "quantity_recieved_todate",
-                                label: (
-                                  <AlgaehLabel
-                                    label={{
-                                      forceLabel: "Qty Received till date"
-                                    }}
-                                  />
-                                ),
-                                disabled: true,
-                                others: { minWidth: 150 }
-                              },
                               {
                                 fieldName: "discount_percentage",
                                 label: (
@@ -1000,3 +986,39 @@ export default withRouter(
     mapDispatchToProps
   )(DNItemList)
 );
+
+{
+  /*{
+  fieldName: "po_quantity",
+  label: (
+    <AlgaehLabel
+      label={{ forceLabel: "PO Quantity" }}
+    />
+  ),
+  disabled: true
+},
+{
+  fieldName: "quantity_outstanding",
+  label: (
+    <AlgaehLabel
+      label={{
+        forceLabel: "Qty Outstanding"
+      }}
+    />
+  ),
+  disabled: true,
+  others: { minWidth: 140 }
+},
+{
+  fieldName: "quantity_recieved_todate",
+  label: (
+    <AlgaehLabel
+      label={{
+        forceLabel: "Qty Received till date"
+      }}
+    />
+  ),
+  disabled: true,
+  others: { minWidth: 150 }
+},*/
+}
