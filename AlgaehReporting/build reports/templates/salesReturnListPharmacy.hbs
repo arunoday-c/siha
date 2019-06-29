@@ -1,0 +1,43 @@
+{{{importStyle 'css/creditinvoice.css'}}}
+
+<body>
+    <div class="print-body">
+
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th>Sl No.</th>
+
+                        <th>Return Invoie No.</th>
+                        <th>Return Invoice Date</th>
+                        <th>Patient Name</th>
+                        <th>Patient MRN</th>
+                        <th>Return Invoice Amt.</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each details}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                        <td>{{sales_return_number}}</td>
+                        <td>{{sales_return_date}}</td>
+                        <td>{{patient_full_name}}</td>
+                        <td class="numberFld">{{mrn_no}}</td>
+                        <td class="numberFld">{{return_amout}}</td>
+                    </tr>
+                    {{/each }}
+                </tbody>
+            </table>
+            <table class="tableTotal">
+                <tr class="bold">
+                    <td>Total Return Invoice Amt.</td>
+                    <td>{{total_return}}</td>
+                    <td>الإجمالي مبلغ الفاتورة المرتجعة</td>
+                </tr>
+
+            </table>
+        </section>
+        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+    </div>
+</body>

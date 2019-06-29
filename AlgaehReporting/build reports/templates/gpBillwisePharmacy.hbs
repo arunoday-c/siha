@@ -1,0 +1,72 @@
+{{{importStyle 'css/creditinvoice.css'}}}
+
+<body>
+    <div class="print-body">
+
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                     <tr>
+    <th>Sl No.</th>
+    <th>Date</th>
+    <th>Items</th>
+    <th>SFDA Code</th>
+    <th>Purchase Rate</th>
+    <th>Sales Rate</th>
+    <th>Profit</th>
+    <th>Qty</th>
+    <th>UOM</th>
+    <th>VAT Rule</th>
+    <th>VAT Amt.</th>
+    <th>Profit</th>
+    <th>Net Amt.</th>
+    <th>Net Profit</th>
+    <th>Net Profit %</th>
+  </tr>
+                </thead>
+                <tbody>
+                    {{#each detail}}
+                    <tr>
+                        <td colspan="15" class="tableSubHdg">Invoice No. - Invoice Date</td>
+                    </tr>
+                    {{#each details}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+    <td>Date</td>
+    <td>Items</td>
+    <td>SFDA Code</td>
+    <td>Purchase Rate</td>
+    <td>Sales Rate</td>
+    <td>Profit</td>
+    <td>Qty</td>
+    <td>UOM</td>
+    <td>VAT Rule</td>
+    <td>VAT Amt.</td>
+    <td>Profit</td>
+    <td>Net Amt.</td>
+    <td>Net Profit</td>
+    <td>Net Profit %</td>
+                    </tr>
+
+                    {{#each detailSum}}
+                    <tr>
+                        <td colspan="12" class="tableSubTotal"></td>
+                        <td class="tableSubTotal">Net Amt. Total</td>
+                        <td class="tableSubTotal">Profit Amt. Total</td>
+                        <td class="tableSubTotal">Profit % Total</td>
+                    </tr>
+                    {{/each}}
+                    {{/each}}
+                    {{/each}}
+                </tbody>
+            </table>
+             <table class="tableTotal">
+              <tr><td>Total Sales Amount</td><td>{{total_gross_amount}}</td><td>الإجمالي قبل الضريبة المضافة</td></tr>
+                 <tr><td>Total Purchase Amount</td><td>{{total_discount_amount}}</td><td>الخصم</td></tr>
+                      <tr><td>Total GP</td><td>{{total_patient_share}}</td><td>نسبة التحمل</td></tr>
+                       <tr><td>Total GP%</td><td>0.00</td><td>المبلغ المدفوع</td></tr>
+            </table>
+        </section>
+        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+    </div>
+</body>

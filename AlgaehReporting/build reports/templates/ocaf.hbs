@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    {{{importStyle 'css/ucaf.css'}}}
+</head>
+
+<body>
+
+    <div class="report-container">
+        <table class="mainTable">
+            {{!-- <thead>
+                <tr>
+                    <th colspan="2">
+                        <h1>OCAF 2.0</h1>
+                    </th>
+                </tr>
+            </thead> --}}
+            <tbody>
+                <tr>
+                    <td class="patientDetails">
+                        <table class="innerTable">
+                            <tbody>
+                                <tr>
+                                    <td colspan="5"><b>To be completed & ID Verified by the reception/nurse:</b></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="5">Provider Name: <span>{{header.provider_name}}</span></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3">Insurance Company Name:
+                                        <span>{{insurance.0.primary_insurance_company_name}}</span></td>
+                                    <td colspan="2">TPA Company Name:
+                                        <span>{{insurance.0.primary_tpa_insurance_company_name}}</span></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="5">Patient File Number: <span>{{header.patient_code}}</span></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">Date of Visit: <span>{{header.visit_date}}</span></td>  <td colspan="3"> Single ( {{#if header.patient_marital_status "Single"}}
+                                        <span>&#10004;</span>
+                                        {{/if}}
+                                        ) | Married ( {{#if header.patient_marital_status "Married"}}
+                                        <span>&#10004;</span>
+                                        {{/if}}
+                                        ) </td>
+                                </tr>
+                                <tr>
+                                  <td>New Visit ( {{#if header.new_visit_patient "Y"}}
+                                      <span>&#10004;</span>
+                                      {{/if}} )</td>
+                                  <td>Follow Up ( {{#if header.new_visit_patient "N"}}
+                                      <span>&#10004;</span>
+                                      {{/if}} )</td>
+                                  <td>Refill ( )</td>
+                                  <td>Walk In ( )</td>
+                                  <td>Referal ( )</td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </td>
+                    <td class="insuranceDetails">
+
+                        <table class="innerTable">
+                            <tbody>
+                                <tr>
+                                    <td colspan="3"><b>Print/Fill in clear letters or Emboss Card:</b></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3">Insured Name:
+                                        <span>{{insurance.0.primary_insurance_company_name}}</span></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="">ID.Card No.: <span>{{insurance.0.primary_card_number}}</span></td>
+                                    <td colspan="">Sex: <span>{{insurance.0.sex}}</span></td>
+                                    <td colspan="">Age: <span>{{insurance.0.age}}Y</span></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">Policy Holder: <span>{{insurance.0.policyholder}}</span></td>
+                                    <td colspan="1">Policy Number: <span>{{insurance.0.primary_policy_num}}</span></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">Expiry Date: <span>{{insurance.0.primary_effective_end_date}}</span>
+                                    </td>
+                                    <td colspan="1">Class: <span>{{insurance.0.class}}</span></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3">Approval: <span>{{insurance.0.approval}}</span></td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+
+        </table>
+
+        <table class="mainTable">
+            <tbody>
+                <tr>
+                    <td>
+                        <table class="innerTable">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <table class="servicetable">
+                                            <tb>
+                                                <tr>
+                                                    <td></td>
+                                                    <td colspan="5"><b>Right Eye</b></td>
+                                                </tr>
+                                                <tr>
+                                                    <td></td>
+                                                    <td>Sphere</td>
+                                                    <td>Cylinder</td>
+                                                    <td>Axis</td>
+                                                    <td>Prism</td>
+                                                    <td>V/A</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Distance</td>
+                                                    <td>{{header.dv_right_sch}}</td>
+                                                    <td>{{header.dv_right_cyl}}</td>
+                                                    <td>{{header.dv_right_axis}}</td>
+                                                    <td>{{header.dv_right_prism}}</td>
+                                                    <td>{{header.dv_right_vision}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Near</td>
+                                                    <td>{{header.nv_right_sch}}</td>
+                                                    <td>{{header.nv_right_cyl}}</td>
+                                                    <td>{{header.nv_right_axis}}</td>
+                                                    <td>{{header.nv_right_prism}}</td>
+                                                    <td>{{header.nv_right_vision}}</td>
+                                                </tr>
+                                            </tb>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table class="servicetable">
+                                            <tbody>
+                                                <tr>
+                                                    <td colspan="5"><b>Left Eye</b></td>
+                                                    <td rowspan="2">PD</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Sphere</td>
+                                                    <td>Cylinder</td>
+                                                    <td>Axis</td>
+                                                    <td>Prism</td>
+                                                    <td>V/A</td>
+                                                </tr>
+                                                <tr>
+                                                  <td>{{header.dv_left_sch}}</td>
+                                                  <td>{{header.dv_left_cyl}}</td>
+                                                  <td>{{header.dv_left_axis}}</td>
+                                                  <td>{{header.dv_left_prism}}</td>
+                                                  <td>{{header.dv_left_vision}}</td>
+                                                  <td>{{header.eye_pd1}}</td>
+                                                </tr>
+                                                <tr>
+                                                  <td>{{header.nv_left_sch}}</td>
+                                                  <td>{{header.nv_left_cyl}}</td>
+                                                  <td>{{header.nv_left_axis}}</td>
+                                                  <td>{{header.nv_left_prism}}</td>
+                                                  <td>{{header.nv_left_vision}}</td>
+                                                  <td>{{header.eye_pd2}}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+
+                        <table class="innerTable">
+                            <tr>
+                                <td>
+                                    <table class="servicetable">
+                                        <tbody>
+                                            <tr>
+                                                <td style="text-align: left">Bifocal:</td>
+                                                <td style="text-align: left">Add:<span>{{header.right_bifocal_add}}</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                                <td></td>
+                                <td>
+                                    <table class="servicetable">
+                                        <tbody>
+                                            <tr>
+                                                <td style="text-align: left">Vertex:</td>
+                                                <td style="text-align: left">Add:<span>{{header.vertical_add}}</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                                <td></td>
+                                <td>
+                                    <table class="servicetable">
+                                        <tbody>
+                                            <tr>
+                                                <td style="text-align: left">Bifocal:</td>
+                                                <td style="text-align: left">Add:<span>{{header.left_bifocal_add}}</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="mainTable">
+            <tbody>
+                <tr>
+                    <td>
+                        <table class="innerTable">
+                            <tr>
+                                <td colspan="3">
+                                    <b>
+                                        Regular Lense Type:</b>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Glass ( {{#if header.resgular_lense_type "GL"}}
+                                    <span>&#10004;</span>
+                                    {{/if}}
+                                    )</td>
+                                <td>Plastic ( {{#if header.resgular_lense_type "PL"}}
+                                    <span>&#10004;</span>
+                                    {{/if}} )</td>
+                                <td>None ( {{#if header.resgular_lense_type "N"}}
+                                    <span>&#10004;</span>
+                                    {{/if}} )</td>
+                            </tr>
+                            </table>
+                        <table class="innerTable">
+                            <tr>
+                                <td colspan="3">
+                                    <b>
+                                        Lenses Specification</b>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Multi-Coated ( {{#if header.multi_coated "Y"}}
+                                    <span>&#10004;</span>
+                                    {{/if}}
+                                    )<br>Varilux ( {{#if header.varilux "Y"}}
+                                    <span>&#10004;</span>
+                                    {{/if}}
+                                    )<br>Light ( {{#if header.light "Y"}}
+                                    <span>&#10004;</span>
+                                    {{/if}}
+                                    )<br>Aspheric ( {{#if header.aspheric "Y"}}
+                                    <span>&#10004;</span>
+                                    {{/if}}
+                                    )<br>Bifocal ( {{#if header.bifocal "Y"}}
+                                    <span>&#10004;</span>
+                                    {{/if}}
+                                    )<br></td>
+                                <td>Medium ( {{#if header.medium "Y"}}
+                                    <span>&#10004;</span>
+                                    {{/if}}
+                                    )<br>Lenticular ( {{#if header.lenticular "Y"}}
+                                    <span>&#10004;</span>
+                                    {{/if}}
+                                    )<br>Single Vision ( {{#if header.single_vision "Y"}}
+                                    <span>&#10004;</span>
+                                    {{/if}}
+                                    )<br>Dark ( {{#if header.dark "Y"}}
+                                    <span>&#10004;</span>
+                                    {{/if}}
+                                    )<br>Safety Thickness ( {{#if header.safety_thickness "Y"}}
+                                    <span>&#10004;</span>
+                                    {{/if}}
+                                    )<br></td>
+                                <td>Anti-reflecting Coating ( {{#if header.anti_reflecting_coating "Y"}}
+                                    <span>&#10004;</span>
+                                    {{/if}}
+                                    )<br>Photosensitive ( {{#if header.photosensitive "Y"}}
+                                    <span>&#10004;</span>
+                                    {{/if}}
+                                    )<br>High Index ( {{#if header.high_index "Y"}}
+                                    <span>&#10004;</span>
+                                    {{/if}}
+                                    )<br>Colored ( {{#if header.colored "Y"}}
+                                    <span>&#10004;</span>
+                                    {{/if}}
+                                    )<br>Anti-Scratch ( {{#if header.anti_scratch "Y"}}
+                                    <span>&#10004;</span>
+                                    {{/if}}
+                                    )<br></td>
+                            </tr>
+
+
+                        </table>
+                        <table class="innerTable">
+
+                            <tr>
+                                <td> Contact Lenses Type: <b>
+                                        Permanent ( {{#if header.contact_lense_type "P"}}
+                                    <span>&#10004;</span>
+                                    {{/if}}
+                                    ) | Disposable ( {{#if header.contact_lense_type "D"}}
+                                    <span>&#10004;</span>
+                                    {{/if}}
+                                    )</b>
+                                </td> <td>/ Frames: <b>Yes ( {{#if header.frames "Y"}}
+                                    <span>&#10004;</span>
+                                    {{/if}}
+                                    ) | No ( {{#if header.frames "N"}}
+                                    <span>&#10004;</span>
+                                    {{/if}}
+                                    )</b>
+                                </td><td>/ No. of Pairs: <b>{{header.no_pairs}}</b> Nos</td>
+                            </tr>
+                        </table>
+                       
+                        <table class="innerTable">
+                            <tr><td>Estimated Cost: <b>{{header.estimated_cost}}</b></td><td>Lenses: <b>{{header.lense_cost}}</b> Qty</td><td>Frames: <b>{{header.frame_cost}}</b> Qty</td></tr>
+                           
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="mainTable">
+            <tbody>
+                <tr>
+                    <td>
+                        <table class="innerTable">
+
+                            <tbody>
+
+                                <tr>
+                                    <td>I hereby certify that ALL information mentioned are correct and that
+                                        the medical services
+                                        shown on
+                                        this form were medically indicated and necessary for the management of this
+                                        case.</td>
+                                    <td>I hereby certify that all statements and information provided
+                                        concerning patient
+                                        Identification and the
+                                        present illness or injury are TRUE.
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td><b>{{header.provider_name}}</b></td>
+                                    <td><b>{{header.name_relation_guardian}}</b></td>
+                                </tr>
+                                <tr>
+                                    <td>Signature and Stamp</td>
+                                    <td>Name and Relationship(if Guardian) Signature :</td>
+                                </tr>
+                                <tr>
+                                    <td><b>{{header.physican_capture_date}}</b></td>
+                                    <td><b>{{header.relation_guardian_date}}</b></td>
+                                </tr>
+
+                        </table>
+                        <table class="innerTable">
+                            <tbody>
+                                <tr>
+                                    <td>For Insurance Company Use Only:</td>
+                                    <td>Approved: ( {{#if header.insurance_company_use_only_approved "Y"}}
+                                        <span>&#10004;</span>
+                                        {{/if}}
+                                        )</td>
+                                    <td>Not Approved: ( {{#if header.insurance_company_use_only_not_approved "Y"}}
+                                        <span>&#10004;</span> {{/if}} )</td>
+                                    <td>Approval No: {{header.insurance_company_use_only_approval_no }}</td>
+                                    <td colspan="2">Approval validity:
+                                        {{header.insurance_company_use_only_approval_validity_days}} Days</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="6">Comments (include approved days/services if different from the
+                                        requested):</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="6">{{header.insurance_company_use_only_comments}} </td>
+                                </tr>
+                                <tr>
+                                    <td>Approved/Disapproved By:</td>
+                                    <td>{{header.insurance_company_use_only_approved_by}}</td>
+                                    <td>Signature:</td>
+                                    <td>..........................................................</td>
+                                    <td>Date</td>
+                                    <td>{{header.insurance_company_use_only_approved_date}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>

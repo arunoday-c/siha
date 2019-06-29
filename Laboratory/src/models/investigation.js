@@ -517,5 +517,45 @@ module.exports = {
         next(e);
       });
     }
+  },
+  deleteLabAnalyte: (req, res, next) => {
+    try {
+      if (req.body.hims_m_lab_analyte_id > 0) {
+        _mysql
+          .executeQuery({
+            query:
+              "delete from hims_m_lab_analyte where hims_m_lab_analyte_id=>",
+            values: req.body.hims_m_lab_analyte_id,
+            printQuery: true
+          })
+          .then(result => {
+            // utilities.logger().log("result: ", result);
+            _mysql.releaseConnection();
+
+            if (result.affectedRows > 0) {
+              req.records = result;
+            } else {
+              req.records = {
+                invalid_input: true,
+                message: "Please provide valid input"
+              };
+            }
+            next();
+          })
+          .catch(error => {
+            _mysql.releaseConnection();
+            next(error);
+          });
+      } else {
+        req.records = {
+          invalid_input: true,
+          message: "Please provide valid input"
+        };
+        next();
+      }
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
   }
 };

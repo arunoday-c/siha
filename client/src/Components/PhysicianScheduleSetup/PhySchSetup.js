@@ -642,31 +642,31 @@ console.log(docs,'test')
 
   dropDownHandler(value) {
     this.setState({ [value.name]: value.value });
-    if (value.name === "month") {
-      // let dateToday = this.state.year + this.state.month + "01";
-      // this.setState({
-      //   from_date: this.state.year + this.state.month + "01"
-      // });
+    // if (value.name === "month") {
+    //   // let dateToday = this.state.year + this.state.month + "01";
+    //   // this.setState({
+    //   //   from_date: this.state.year + this.state.month + "01"
+    //   // });
 
-      let dateToday = moment().format("YYYY-MM-DD");
-      let startOf_mon = moment(this.state.year + "-" + value.value)
-        .startOf("month")
-        .format("YYYY-MM-DD");
+    //   let dateToday = moment().format("YYYY-MM-DD");
+    //   let startOf_mon = moment(this.state.year + "-" + value.value)
+    //     .startOf("month")
+    //     .format("YYYY-MM-DD");
 
-      let frm_date =
-        dateToday > startOf_mon
-          ? new Date()
-          : moment(startOf_mon).format("MM-DD-YYYY");
+    //   let frm_date =
+    //     dateToday > startOf_mon
+    //       ? new Date()
+    //       : moment(startOf_mon).format("MM-DD-YYYY");
 
-      let to_dte = moment(frm_date)
-        .endOf("month")
-        .format("MM-DD-YYYY");
+    //   let to_dte = moment(frm_date)
+    //     .endOf("month")
+    //     .format("MM-DD-YYYY");
 
-      this.setState({
-        from_date: frm_date,
-        to_date: to_dte
-      });
-    }
+    //   this.setState({
+    //     from_date: frm_date,
+    //     to_date: to_dte
+    //   });
+    // }
   }
 
   getDoctorScheduleToModify(header_id, provider_id) {
@@ -1957,6 +1957,31 @@ console.log(docs,'test')
             error={this.state.department_error}
             helperText={this.state.department_error_text}
           />
+
+
+
+<AlagehAutoComplete
+                      div={{ className: "col-7" }}
+                      label={{
+                        fieldName: "sel_month",
+                        isImp: false
+                      }}
+                      selector={{
+                        sort: "off",
+                        name: "month",
+                        className: "select-fld",
+                        value: this.state.month,
+                        dataSource: {
+                          textField: "name",
+                          valueField: "value",
+                          data: GlobalVariables.MONTHS
+                        },
+                        onChange: this.dropDownHandler.bind(this)
+                      }}
+                    />
+
+
+
                   <AlagehFormGroup
             div={{ className: "col-7" }}
             label={{
@@ -1976,6 +2001,9 @@ console.log(docs,'test')
               }
             }}
           />
+
+
+
 
           <div className="col form-group" style={{textAlign:"right"}}>
             <button style={{ marginTop: 19, }} className="btn btn-default" id="srch-sch" onClick={this.getApptSchedule.bind(this)}>

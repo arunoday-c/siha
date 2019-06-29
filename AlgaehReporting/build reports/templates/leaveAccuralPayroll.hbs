@@ -1,0 +1,37 @@
+{{{importStyle 'css/creditinvoice.css'}}}
+
+<body>
+    <div class="print-body">
+
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                     <tr>
+    <th>Sl No.</th>
+    <th>Employee Code</th>
+    <th>Employee Name</th>
+    <th>Department</th>
+    <th>Leave Days</th>
+    <th>Leave Salary</th>
+    <th>Airfare Amt.</th>
+  </tr>
+                </thead>
+                <tbody>
+                    {{#each detailsList}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                        <td>{{employee_code}}</td>
+                        <td>{{full_name}}</td>
+                        <td>{{sub_department_name}}</td>
+                        <td>{{leave_days}}</td>
+                        <td>{{leave_salary}}</td>
+                        <td>{{airfare_amount}}</td>
+                    </tr>
+                    {{/each }}
+              
+                </tbody>
+            </table>
+        </section>
+        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+    </div>
+</body>

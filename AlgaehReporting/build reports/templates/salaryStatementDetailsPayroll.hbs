@@ -1,0 +1,162 @@
+{{{importStyle 'css/creditinvoice.css'}}}
+
+<body>
+    <div class="print-body">
+                {{#hasElement employees}}
+        <section>
+            <table class="tableForLabel" cell-padding="0">
+                <tr>
+                    <td><label class="textEnLft">Branch</label>:<span class="valueText">{{hospital_name}}</span><label
+                            class="textArRht">لشركة</label></td>
+                    <td><label class="textEnLft">year</label>:<span class="valueText">{{year}}</span><label
+                            class="textArRht">القسم</label></td>
+                    <td><label class="textEnLft">Month</label>:<span class="valueText">{{month}}</span><label
+                            class="textArRht">القسم</label></td>
+                </tr>
+                <tr>
+                    <td><label class="textEnLft">GROUP</label>:<span
+                            class="valueText">{{group_description}}</span><label class="textArRht">لشركة</label></td>
+                    <td><label class="textEnLft">Type</label>:<span class="valueText">{{type}}</span><label
+                            class="textArRht">القسم</label></td>
+                </tr>
+            </table>
+
+
+        </section>
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>Employee Code</th>
+                        <th>Employee Name</th>
+                        <th>Nationality</th>
+                        <th>Dep.</th>
+                        <th>Desgnation</th>
+
+                        {{#hasElement earning_component}}
+                        {{#each earning_component}}
+                        <th>{{earning_deduction_description}}</th>
+                        {{/each }}
+                        {{/hasElement}}
+
+                        <th>Total Earnings</th>
+
+                        {{#hasElement deduction_component}}
+                        {{#each deduction_component}}
+                        <th>{{earning_deduction_description}}</th>
+                        {{/each }}
+                        {{/hasElement}}
+
+                        <th>Total Deduction </th>
+
+                        {{#hasElement contributions_component}}
+                        {{#each contributions_component}}
+                        <th>{{earning_deduction_description}}</th>
+                        {{/each }}
+                        {{/hasElement}}
+
+                        <th>Total Contribution</th>
+                        <th>Overtime</th>
+                        {{!-- 
+
+                        <th>HRA</th>
+                        <th>TA</th>
+                        <th>Others</th>
+                      
+
+                        <th>Employee PASI</th>
+                        <th>Deduction</th>
+
+                        <th>Net Salary</th>
+                        <th>Employer PASI</th>
+                        <th>Total Contribution</th> --}}
+                        <th>Employee + Employer</th>
+                        <th>Leave Provision</th>
+                        <th>Airfrare Amount</th>
+                        <th>Gratuity Provision</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each employees}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                        <td>{{employee_code}}</td>
+                        <td>{{full_name}}</td>
+                        <td>{{nationality}}</td>
+                        <td>{{sub_department_name}}</td>
+                        <td>{{designation}}</td>
+
+
+
+                        {{#hasElement ../earning_component}}
+                        {{#hasElement employee_earning}}
+                        {{#each ../earning_component}}
+                        <td> {{dynamicSalary hims_d_earning_deduction_id ../employee_earning "E"}}</td>
+                        {{/each }}
+                        {{else}}
+                        <td>NA</td>
+                        {{/hasElement }}
+                        {{/hasElement }}
+
+                        <td>{{total_earnings}}</td>
+
+
+
+                        {{#hasElement ../deduction_component}}
+                        {{#hasElement employee_deduction}}
+                        {{#each ../deduction_component}}
+                        <td> {{dynamicSalary hims_d_earning_deduction_id ../employee_deduction "D"}}</td>
+                        {{/each }}
+                        {{else}}
+                        <td>NA</td>
+                        {{/hasElement }}
+                        {{/hasElement }}
+
+                        <td>{{total_deductions}}</td>
+
+
+                        {{#hasElement ../contributions_component}}
+                        {{#hasElement employee_contributions}}
+                        {{#each ../contributions_component}}
+                        <td> {{dynamicSalary hims_d_earning_deduction_id ../employee_contributions "C"}}</td>
+                        {{/each }}
+                        {{else}}
+                        <td>NA</td>
+                        {{/hasElement }}
+                        {{/hasElement }}
+
+
+                        <td>{{total_contributions}}</td>
+                        <td>{{complete_ot}}</td>
+                        <td>{{employe_plus_employr}}</td>
+                        <td>{{leave_salary}}</td>
+                        <td>{{airfare_amount}}</td>
+                        <td>{{gratuity_amount}}</td>
+                        {{!-- <td>{{employee_code}}</td>
+                        <td>{{employee_code}}</td>
+                        <td>{{employee_code}}</td>
+                        <td>{{employee_code}}</td>
+                        <td>{{employee_code}}</td>
+                        <td>{{employee_code}}</td>
+                        <td>{{employee_code}}</td>
+                        <td>{{employee_code}}</td>
+                        <td>{{employee_code}}</td>
+                        <td>{{employee_code}}</td>
+                        <td>{{employee_code}}</td>
+                        <td>{{employee_code}}</td>
+                        <td>{{employee_code}}</td>
+                        <td>{{employee_code}}</td>
+                        <td>{{employee_code}}</td> --}}
+                    </tr>
+                    {{/each }}
+
+                </tbody>
+                {{else}}
+                <p class="noResultTextReport">no data</p>
+            </table>
+        </section>
+        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+                {{/hasElement }}
+    </div>
+</body>

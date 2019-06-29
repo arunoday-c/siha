@@ -1,0 +1,250 @@
+body {
+	font-family: 'Segoe UI', sans-serif;
+	font-size: 12px;
+}
+
+.print-body {
+	border-right: 0 !important;
+	padding: 0 15px 0 !important;
+	margin-top: -5px;
+	margin-bottom: 10px;
+}
+
+.print-body section h2 span {
+	background-color: #f2f2f2;
+	padding: 5px 15px;
+	color: #000000;
+	border: 1px solid #c5c5c5;
+
+	line-height: 29px;
+	border-radius: 5px 5px 0 0;
+	margin-bottom: 0;
+}
+
+.print-body section:after {
+	content: "";
+	display: table;
+	clear: both;
+	margin-bottom: 20px;
+}
+
+.print-body .tableForLabel,
+.tableTotal {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.print-body .tableForLabel tbody {
+	margin: 0;
+	padding: 0;
+}
+
+.print-body .tableForLabel td {
+	border: 1px solid #ccc;
+	padding: 3px;
+	margin: 0;
+	font-size: 11px;
+}
+
+.print-body .tableForLabel td span {
+	font-weight: bold;
+}
+
+.print-body .tableForData {
+	width: 100%;
+	border-collapse: collapse;
+	border: 1px solid #00dac4;
+	font-weight: normal;
+}
+
+.print-body .tableForData thead {
+	margin: 0;
+	padding: 0;
+	font-weight: bold;
+	text-transform: uppercase;
+}
+
+.print-body .tableForData tbody {
+	margin: 0;
+	padding: 0;
+}
+
+.print-body .tableForData .tableSubHdg {
+	font-weight: bold;
+	background: #f2f2f2;
+	border-bottom: 1px dotted #979797;
+	padding: 5px 3px;
+	text-align: left;
+}
+.print-body .tableForData .tableSubTotal {
+	font-weight: bold;
+	background: #f7f7f7;
+	border-top: 1px dashed #979797;
+	padding: 5px 3px;
+	text-align: right;
+}
+
+.print-body .tableForData th {
+	border-bottom: 2px solid #00a796 !important;
+	vertical-align: middle !important;
+	background-color: #e8feff !important;
+	padding: 5px;
+	text-transform: uppercase;
+	text-align: center;
+	border-right: 1px solid #007468;
+	font-size: 10px;
+}
+.print-body .tableForData th p {
+	font-size: 11px;
+	padding: 0;
+	margin: 3px 0 0;
+	font-family: 'Calibri', sans-serif;
+}
+
+.print-body .tableForData td {
+	border: 1px solid #ccc;
+	padding: 3px;
+	margin: 0;
+	font-size: 12px;
+	text-align: center;
+}
+
+.print-body footer {
+	margin: 0 0 10px;
+	padding: 0 0 10px;
+	display: block;
+	width: 100%;
+}
+
+.print-body .hospitalSeal {
+	float: right;
+}
+
+.print-body .hospitalSeal img {
+	height: 75px;
+}
+
+.print-body .doctorName {
+	text-align: left;
+	margin: 0 auto;
+	padding: 0 1%;
+	width: 75%;
+	height: 55px;
+}
+
+.print-body .doctorName h6 {
+	margin: 0 0 5px;
+	padding: 0;
+}
+
+.print-body .doctorName p {
+	margin: 0;
+	padding: 0;
+	line-height: 15px;
+}
+
+.print-body .signatureDiv {
+	text-align: left;
+	float: left;
+	width: 15%;
+	height: 60px;
+}
+.textArRht {
+	text-align: right;
+	float: right;
+	width: 25%;
+	font-size: 12px;
+	font-family: 'Calibri', sans-serif;
+}
+.textEnLft {
+	text-align: left;
+	float: left;
+	width: 25%;
+}
+.valueText {
+	margin-left: 10px;
+	text-align: left;
+}
+.footerTotalUp {
+	font-weight: bold !important;
+	text-align: right;
+}
+.footerTotalDown {
+	background: #ccc;
+	font-weight: bold !important;
+}
+.footerTotalDown td {
+	text-align: right !important;
+}
+.numberFld {
+	text-align: right !important;
+}
+.txtFld {
+	text-align: left !important;
+}
+
+.tableForPharmacy {
+	width: 100%;
+	border-collapse: collapse;
+}
+.tableForPharmacy td {
+	border: 1px solid #ccc;
+	padding: 3px;
+	margin: 0;
+	font-size: 13px;
+	width: 50%;
+}
+.tableForPharmacy td span {
+	display: inline-block;
+	margin: 0 5px;
+	font-weight: bold;
+}
+
+.tableTotal {
+	width: 50%;
+	border-top: 1px solid #ccc;
+	margin-top: 20px;
+}
+.tableForPharmacy td:last-child {
+	text-align: right;
+}
+.tableTotal td {
+	border-bottom: 1px solid #ccc;
+	padding: 3px;
+	margin: 0;
+	font-size: 11px;
+	text-align: center;
+}
+.tableTotal td:first-child {
+	text-align: left;
+	font-family: 'Segoe UI', sans-serif;
+}
+
+.tableTotal td:last-child {
+	text-align: right;
+	font-family: 'Calibri', sans-serif;
+}
+
+.tableTotal .bold {
+	font-weight: bold;
+	background: #f2f2f2;
+}
+.appSlipFormat {
+	font-family: 'Segoe UI', sans-serif;
+}
+.appSlipFormat .patient_name {
+	font-size: 1rem;
+	display: inline;
+}
+.appSlipFormat p {
+	font-size: 0.9rem;
+	font-weight: 300;
+}
+
+.appSlipFormat span {
+	font-weight: bold;
+}
+.noResultTextReport {
+	font-size: 5rem;
+	color: #eee;
+}
