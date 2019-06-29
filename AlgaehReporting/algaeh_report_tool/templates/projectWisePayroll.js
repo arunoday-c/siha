@@ -4,17 +4,17 @@ const executePDF = function executePDFMethod(options) {
   return new Promise(function(resolve, reject) {
     try {
       const _ = options.loadash;
-      const { LINQ } = options.LINQ;
+
       const utilities = new algaehUtilities();
-      let str = "";
+      // let str = "";
       let input = {};
       let params = options.args.reportParams;
-
+      const decimal_places = options.args.crypto.decimal_places;
       params.forEach(para => {
         input[para["name"]] = para["value"];
       });
 
-      console.log("input:", input);
+      // console.log("input:", input);
 
       let employee = "";
       let project = "";
@@ -60,17 +60,19 @@ const executePDF = function executePDFMethod(options) {
             });
           }
 
-          total_cost = new LINQ(result).Sum(s => parseFloat(s.project_cost));
+          // total_cost = new LINQ(result).Sum(s => parseFloat(s.project_cost));
+          total_cost = _.sumBy(result, s => parseFloat(s.project_cost)).toFixed(
+            decimal_places
+          );
 
           //ST---time calculation
+          total_worked_hours = _.sumBy(result, s => parseInt(s.worked_hours));
 
-          total_worked_hours = new LINQ(result).Sum(s =>
-            parseInt(s.worked_hours)
-          );
-
-          let worked_minutes = new LINQ(result).Sum(s =>
+          const worked_minutes = _.sumBy(result, s =>
             parseInt(s.worked_minutes)
           );
+
+          //.toFixed(decimal_places)
 
           total_worked_hours += parseInt(worked_minutes / 60);
           minutes = String("0" + parseInt(worked_minutes % 60)).slice(-2);
@@ -87,7 +89,6 @@ const executePDF = function executePDFMethod(options) {
         })
         .catch(error => {
           options.mysql.releaseConnection();
-
           console.log("error", error);
         });
     } catch (e) {
