@@ -521,11 +521,12 @@ module.exports = {
   deleteLabAnalyte: (req, res, next) => {
     try {
       if (req.body.hims_m_lab_analyte_id > 0) {
+        const _mysql = new algaehMysql();
         _mysql
           .executeQuery({
             query:
-              "delete from hims_m_lab_analyte where hims_m_lab_analyte_id=>",
-            values: req.body.hims_m_lab_analyte_id,
+              "delete from hims_m_lab_analyte where hims_m_lab_analyte_id=?",
+            values: [req.body.hims_m_lab_analyte_id],
             printQuery: true
           })
           .then(result => {
