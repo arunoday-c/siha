@@ -167,7 +167,7 @@ class DNItemList extends Component {
                         <h6>{item_name ? item_name : "----------"}</h6>
                       </div>
 
-                      <div className="col-3">
+                      <div className="col-2">
                         <AlgaehLabel label={{ forceLabel: "Required Qty" }} />
                         <h6>{qty_auth ? qty_auth : "----------"}</h6>
                       </div>
@@ -196,13 +196,10 @@ class DNItemList extends Component {
                             )
                           }
                         }}
-                      />
-                    </div>
-                    <div className="row">
-                      <AlagehFormGroup
+                      /><AlagehFormGroup
                         div={{ className: "col" }}
                         label={{
-                          forceLabel: "Vendor Batchno"
+                          forceLabel: "Vendor Batch No"
                         }}
                         textBox={{
                           value: this.state.vendor_batchno,
@@ -220,6 +217,9 @@ class DNItemList extends Component {
                           }
                         }}
                       />
+                    </div>
+                    <div className="row" style={{marginTop:15}}>
+                      
 
                       <AlgaehDateHandler
                         div={{ className: "col" }}
@@ -248,7 +248,7 @@ class DNItemList extends Component {
                         div={{ className: "col" }}
                         label={{
                           forceLabel:
-                            "Sales Price" + "(" + stock_uom_description + ")"
+                            "Sales Price " + "(" + stock_uom_description + ")"
                         }}
                         textBox={{
                           number: {
@@ -598,7 +598,7 @@ class DNItemList extends Component {
                                 fieldName: "vendor_batchno",
                                 label: (
                                   <AlgaehLabel
-                                    label={{ forceLabel: "Vendor Batch  No." }}
+                                    label={{ forceLabel: "Vend. Batch  No." }}
                                   />
                                 ),
                                 editorTemplate: row => {
