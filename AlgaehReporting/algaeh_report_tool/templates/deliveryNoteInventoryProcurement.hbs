@@ -1,0 +1,39 @@
+{{{importStyle 'css/creditinvoice.css'}}}
+
+<body>
+    <div class="print-body">
+
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                     <tr>
+    <th>Sl No.</th>
+    <th>Consumption No.</th>
+    <th>Consumption Date</th>
+    <th>Item Name</th>
+    <th>Item Category</th>
+    <th>Item Group</th>
+    <th>Qty</th>
+    <th>Batch No.</th>
+  </tr>
+                </thead>
+                <tbody>
+                    {{#each detailList}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                        <td>{{consumption_number}}</td>
+                        <td>{{consumption_date}}</td>
+                        <td>{{item_name}}</td>
+                        <td>{{item_description}}</td>
+                        <td>{{item_group}}</td>
+                        <td>{{quantity}}</td>
+                        <td class="numberFld">{{batch_no}}</td>
+                    </tr>
+                    {{/each }}
+              
+                </tbody>
+            </table>
+        </section>
+        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+    </div>
+</body>

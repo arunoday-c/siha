@@ -163,7 +163,7 @@
         "label": "Mobile No."
       },
       {
-        "fieldName": "posdate",
+        "fieldName": "pos_date",
         "label": "Pos Date"
       },
       {
@@ -207,16 +207,18 @@
         "label": "Requisition Number"
       },
       {
-        "fieldName": "requistiondate",
+        "fieldName": "requistion_date",
         "label": "Requisition Date"
       },
       {
         "fieldName": "from_location",
-        "label": "From Location"
+        "label": "From Location",
+        "required": "N"
       },
       {
         "fieldName": "to_location",
-        "label": "To Location"
+        "label": "To Location",
+        "required": "N"
       }
     ]
   },
@@ -227,7 +229,7 @@
         "label": "Sales Return Number"
       },
       {
-        "fieldName": "return_date",
+        "fieldName": "sales_return_date",
         "label": "Sales Return Date"
       }
     ]
@@ -239,16 +241,18 @@
         "label": "Transfer Number"
       },
       {
-        "fieldName": "transferdate",
+        "fieldName": "transfer_date",
         "label": "Transfer Date"
       },
       {
         "fieldName": "from_location",
-        "label": "From Location"
+        "label": "From Location",
+        "required": "N"
       },
       {
         "fieldName": "to_location",
-        "label": "To Location"
+        "label": "To Location",
+        "required": "N"
       }
     ]
   },
@@ -321,20 +325,22 @@
         "label": "PO Number"
       },
       {
-        "fieldName": "podate",
+        "fieldName": "po_date",
         "label": "PO Date"
       },
       {
-        "fieldName": "po_done_for",
+        "fieldName": "po_from",
         "label": "PO Done For"
       },
       {
         "fieldName": "loc_description",
-        "label": "Location Name"
+        "label": "Location Name",
+        "required": "N"
       },
       {
         "fieldName": "vendor_name",
-        "label": "Vendor Name"
+        "label": "Vendor Name",
+        "required": "N"
       }
     ]
   },
@@ -345,20 +351,22 @@
         "label": "Delivery Number"
       },
       {
-        "fieldName": "dndate",
+        "fieldName": "dn_date",
         "label": "Delivery Date"
       },
       {
-        "fieldName": "dn_done_for",
+        "fieldName": "dn_from",
         "label": "DN Done For"
       },
       {
         "fieldName": "loc_description",
-        "label": "Location Name"
+        "label": "Location Name",
+        "required": "N"
       },
       {
         "fieldName": "vendor_name",
-        "label": "Vendor Name"
+        "label": "Vendor Name",
+        "required": "N"
       }
     ]
   },
@@ -369,20 +377,22 @@
         "label": "Receipt Number"
       },
       {
-        "fieldName": "grndate",
+        "fieldName": "grn_date",
         "label": "Receipt Date"
       },
       {
-        "fieldName": "grn_done_for",
+        "fieldName": "grn_for",
         "label": "GRN Done For"
       },
       {
         "fieldName": "loc_description",
-        "label": "Location Name"
+        "label": "Location Name",
+        "required": "N"
       },
       {
         "fieldName": "vendor_name",
-        "label": "Vendor Name"
+        "label": "Vendor Name",
+        "required": "N"
       }
     ]
   },
@@ -628,6 +638,11 @@
       {
         "fieldName": "consumption_date",
         "label": "Consumption Date"
+      },
+      {
+        "fieldName": "location_description",
+        "label": "Location Name",
+        "required": "N"
       }
     ],
     "InvConsEntry": [
@@ -638,6 +653,11 @@
       {
         "fieldName": "consumption_date",
         "label": "Consumption Date"
+      },
+      {
+        "fieldName": "location_description",
+        "label": "Location Name",
+        "required": "N"
       }
     ]
   },

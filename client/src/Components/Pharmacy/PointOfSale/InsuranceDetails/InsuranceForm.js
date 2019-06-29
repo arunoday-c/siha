@@ -258,9 +258,10 @@ class AddInsuranceForm extends Component {
                       noImage="insurance-card-front"
                       name="patInsuranceFrontImg"
                       accept="image/*"
+                      showActions={this.state.card_number ? true : false}
                       textAltMessage="Insurance Card Front Side"
                       serviceParameters={{
-                        uniqueID: this.state.primary_card_number + "_front",
+                        uniqueID: this.state.card_number + "_front",
                         fileType: "Patients",
                         processDelay: this.imageDetails.bind(
                           this,
@@ -281,9 +282,10 @@ class AddInsuranceForm extends Component {
                       noImage="insurance-card-back"
                       name="patInsuranceBackImg"
                       accept="image/*"
+                      showActions={this.state.card_number ? true : false}
                       textAltMessage="Insurance Card Back Side"
                       serviceParameters={{
-                        uniqueID: this.state.primary_card_number + "_back",
+                        uniqueID: this.state.card_number + "_back",
                         fileType: "Patients",
                         processDelay: this.imageDetails.bind(
                           this,

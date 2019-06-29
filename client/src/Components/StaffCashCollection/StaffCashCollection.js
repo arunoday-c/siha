@@ -243,6 +243,16 @@ class StaffCashCollection extends Component {
     });
   }
 
+  changeTexts(e) {
+    const { name, value } = e.target;
+    this.setState(
+      {
+        [name]: value
+      },
+      () => console.log(this.state, "state from handle")
+    );
+  }
+
   dropDownHandle(value) {
     this.setState({ [value.name]: value.value });
   }
