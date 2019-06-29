@@ -4,33 +4,72 @@
     <div class="print-body">
 
         <section>
+
+  <table class="tableForLabel" cell-padding="0">
+
+                <tr><td><label class="textEnLft">Purchase No</label>:<span class="valueText">{{header.invoice_number}}</span></td><td><label class="textEnLft">Purchase Date</label>:<span class="valueText">{{dateTime header.invoice_date "date"}}</span></td></tr>
+                <tr>
+                    <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
+                </tr>
+                <tr><td><label class="textEnLft">Purchase For</label>:<span class="valueText">{{header.invoice_number}}</span></td><td><label class="textEnLft">Vendor Name</label>:<span class="valueText">{{dateTime header.invoice_date "date"}}</span></td></tr>
+               
+                <tr><td><label class="textEnLft">PO From</label>:<span class="valueText">{{header.invoice_number}}</span></td><td><label class="textEnLft">From Location</label>:<span class="valueText">{{dateTime header.invoice_date "date"}}</span></td></tr>
+              
+              <tr><td><label class="textEnLft">Doctor</label>:<span class="valueText">{{header.full_name}}</span><label class="textArRht">لطبيب</label></td><td><label class="textEnLft">Department</label>:<span class="valueText">{{header.sub_department_name}}</span><label class="textArRht">القسم</label></td></tr>
+
+            </table>
+
+
+        </section>
+        <section>
             <table class="tableForData" cell-padding="0">
                 <thead>
                      <tr>
     <th>Sl No.</th>
-    <th>Consumption No.</th>
-    <th>Consumption Date</th>
     <th>Item Name</th>
     <th>Item Category</th>
     <th>Item Group</th>
-    <th>Qty</th>
-    <th>Batch No.</th>
+    <th>Vendor Batch No.</th>
+    <th>Expiry Date</th>
+    <th>PO Quantity</th>
+    <th>Unit Cost</th>
+    <th>Sales Price</th> 
+    <th>Discount %</th>   
+    <th>Discount Amt.</th>    
+    <th>Net Ext. Cost</th>   
+    <th>Tax Amt.</th>      
+    <th>Total Amt.</th>     
   </tr>
                 </thead>
                 <tbody>
+                    {{#each detail}}
+                    <tr>
+                        <td colspan="9" class="tableSubHdg">Item Name: </td>
+                        <td colspan="9" class="tableSubHdg">Purchase UOM</td>
+                        <td colspan="9" class="tableSubHdg">Req. Qty:</td>
+                        <td colspan="9" class="tableSubHdg">Deliverd Qty:</td>
+                        <td colspan="9" class="tableSubHdg">Out Standing Qty:</td>
+                    </tr>
                     {{#each detailList}}
                     <tr>
-                        <td>{{inc @index}}</td>
-                        <td>{{consumption_number}}</td>
-                        <td>{{consumption_date}}</td>
-                        <td>{{item_name}}</td>
-                        <td>{{item_description}}</td>
-                        <td>{{item_group}}</td>
-                        <td>{{quantity}}</td>
-                        <td class="numberFld">{{batch_no}}</td>
+                       <td>Sl No.</td>
+    <td>Item Name</td>
+    <td>Item Category</td>
+    <td>Item Group</td>
+    <td>Vendor Batch No.</td>
+    <td>Expiry Date</td>
+    <td>PO Quantity</td>
+    <td>Unit Cost</td>
+    <td>Sales Price</td> 
+    <td>Discount %</td>   
+    <td>Discount Amt.</td>    
+    <td>Net Ext. Cost</td>   
+    <td>Tax Amt.</td>      
+    <td>Total Amt.</td>  
                     </tr>
                     {{/each }}
               
+                    {{/each }}
                 </tbody>
             </table>
         </section>

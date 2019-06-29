@@ -63,13 +63,13 @@ class DNItemList extends Component {
       selected_row_index: index,
       item_details: item_details,
       dn_quantity: dn_quantity,
-      free_qty: 0
+      free_qty: 0      
     });
 
     context.updateState({
       item_details: item_details,
       dn_quantity: dn_quantity,
-      free_qty: 0
+      free_qty: 0      
     });
   }
 
@@ -78,6 +78,11 @@ class DNItemList extends Component {
       this.state.item_details === null
         ? null
         : this.state.item_details.item_description;
+  let uom_description =
+      this.state.item_details === null
+        ? null
+        : this.state.item_details.uom_description;
+      
     let qty_auth =
       this.state.item_details === null
         ? null
@@ -110,27 +115,22 @@ class DNItemList extends Component {
                       return (
                         <li>
                           <div className="itemReq">
-                            <h6>{item.item_description}</h6>
-                            <span>
-                              UOM: <span>{item.uom_description}</span>
-                            </span>
+                            <h6>{item.item_description} ({item.uom_description})</h6>
+                          
                             <span>
                               Purchased Qty:
                               <span>{item.po_quantity}</span>
                             </span>
 
                             <span>
-                              Delivery Qty:
-                              <span>{item.dn_quantity}</span>
+                              Deliverd Qty: <span>{item.dn_quantity}</span>
                             </span>
                             <span>
-                              Out Std. Qty:
-                              <span>{item.quantity_outstanding}</span>
+                             Qty Pending to Receive: <span>{item.quantity_outstanding}</span>
                             </span>
 
                             <span>
-                              Qty. Rec. To Date:
-                              <span>{item.quantity_recieved_todate}</span>
+                              Qty. Received Till Date: <span>{item.quantity_recieved_todate}</span>
                             </span>
                           </div>
                           <div className="itemAction">
@@ -164,7 +164,7 @@ class DNItemList extends Component {
                     <div className="row">
                       <div className="col-5">
                         <AlgaehLabel label={{ forceLabel: "Item Name" }} />
-                        <h6>{item_name ? item_name : "----------"}</h6>
+                        <h6>{item_name ? item_name : "----------"} ({uom_description ? uom_description : "----------"})</h6>
                       </div>
 
                       <div className="col-2">
@@ -339,7 +339,7 @@ class DNItemList extends Component {
                                 fieldName: "action",
                                 label: (
                                   <AlgaehLabel
-                                    label={{ forceLabel: "Print" }}
+                                    label={{ forceLabel: "Action" }}
                                   />
                                 ),
                                 displayTemplate: row => {
