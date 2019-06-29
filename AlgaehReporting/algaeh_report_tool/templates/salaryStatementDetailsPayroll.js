@@ -1,16 +1,17 @@
-const { MONTHS } = require("../../../client/src/utils/GlobalVariables.json");
+const { MONTHS } = require("./GlobalVariables.json");
 const algaehUtilities = require("algaeh-utilities/utilities");
 
 const executePDF = function executePDFMethod(options) {
   return new Promise(function(resolve, reject) {
     try {
       const _ = options.loadash;
-      const { LINQ } = options.LINQ;
+
       const utilities = new algaehUtilities();
       let input = {};
-      const params = options.args.reportParams;
-      const crypto = options.args.crypto;
 
+      const params = options.args.reportParams;
+      const default_nationality = options.args.crypto.default_nationality;
+      const decimal_places = options.args.crypto.decimal_places;
       params.forEach(para => {
         input[para["name"]] = para["value"];
       });
@@ -71,22 +72,23 @@ const executePDF = function executePDFMethod(options) {
           let sum_net_salary = 0;
 
           if (salary.length > 0) {
-            sum_earnings = new LINQ(salary).Sum(s =>
-              parseFloat(s.total_earnings)
-            );
-            sum_deductions = new LINQ(salary).Sum(s =>
+            //--------first part------
+
+            sum_earnings = _.sumBy(salary, s => parseFloat(s.total_earnings));
+
+            sum_deductions = _.sumBy(salary, s =>
               parseFloat(s.total_deductions)
             );
-            sum_contributions = new LINQ(salary).Sum(s =>
+
+            sum_contributions = _.sumBy(salary, s =>
               parseFloat(s.total_contributions)
             );
-            sum_net_salary = new LINQ(salary).Sum(s =>
-              parseFloat(s.net_salary)
-            );
 
-            let salary_header_ids = new LINQ(salary)
-              .Select(s => s.hims_f_salary_id)
-              .ToArray();
+            sum_net_salary = _.sumBy(salary, s => parseFloat(s.net_salary));
+
+            const salary_header_ids = salary.map(s => s.hims_f_salary_id);
+
+            //--------first part------
 
             options.mysql
               .executeQuery({
@@ -179,25 +181,73 @@ const executePDF = function executePDFMethod(options) {
                     ot_hours + "." + (parseInt(ot_min) % parseInt(60));
                   //EN-complete OVER-Time  calculation
 
-                  const employee_earning = new LINQ(earnings)
-                    .Where(
-                      w => w.salary_header_id == salary[i]["hims_f_salary_id"]
+                  // const employee_earning = new LINQ(earnings)
+                  //   .Where(
+                  //     w => w.salary_header_id == salary[i]["hims_f_salary_id"]
+                  //   )
+                  //   .Select(s => {
+                  //     return {
+                  //       hims_f_salary_earnings_id: s.hims_f_salary_earnings_id,
+                  //       earnings_id: s.earnings_id,
+                  //       amount: s.amount,
+                  //       nationality_id: s.nationality_id
+                  //     };
+                  //   })
+                  //   .ToArray();
+
+                  // let employee_earning = earnings.map(item => {
+                  //   if (
+                  //     item.salary_header_id == salary[i]["hims_f_salary_id"]
+                  //   ) {
+
+                  //     let obj = {
+                  //       hims_f_salary_earnings_id:
+                  //         item.hims_f_salary_earnings_id,
+                  //       earnings_id: item.earnings_id,
+                  //       amount: item.amount,
+                  //       nationality_id: item.nationality_id
+                  //     };
+                  //     return obj;
+                  //   }
+                  // });
+
+                  let employee_earning = earnings
+                    .filter(
+                      item =>
+                        item.salary_header_id == salary[i]["hims_f_salary_id"]
                     )
-                    .Select(s => {
+                    .map(s => {
                       return {
                         hims_f_salary_earnings_id: s.hims_f_salary_earnings_id,
                         earnings_id: s.earnings_id,
                         amount: s.amount,
                         nationality_id: s.nationality_id
                       };
-                    })
-                    .ToArray();
+                    });
 
-                  const employee_deduction = new LINQ(deductions)
-                    .Where(
-                      w => w.salary_header_id == salary[i]["hims_f_salary_id"]
+                  // console.log("employee_earning old:", employee_earning);
+
+                  // const employee_deduction = new LINQ(deductions)
+                  //   .Where(
+                  //     w => w.salary_header_id == salary[i]["hims_f_salary_id"]
+                  //   )
+                  //   .Select(s => {
+                  //     return {
+                  //       hims_f_salary_deductions_id:
+                  //         s.hims_f_salary_deductions_id,
+                  //       deductions_id: s.deductions_id,
+                  //       amount: s.amount,
+                  //       nationality_id: s.nationality_id
+                  //     };
+                  //   })
+                  //   .ToArray();
+
+                  const employee_deduction = deductions
+                    .filter(
+                      item =>
+                        item.salary_header_id == salary[i]["hims_f_salary_id"]
                     )
-                    .Select(s => {
+                    .map(s => {
                       return {
                         hims_f_salary_deductions_id:
                           s.hims_f_salary_deductions_id,
@@ -205,14 +255,28 @@ const executePDF = function executePDFMethod(options) {
                         amount: s.amount,
                         nationality_id: s.nationality_id
                       };
-                    })
-                    .ToArray();
+                    });
 
-                  const employee_contributions = new LINQ(contributions)
-                    .Where(
-                      w => w.salary_header_id == salary[i]["hims_f_salary_id"]
+                  // const employee_contributions = new LINQ(contributions)
+                  //   .Where(
+                  //     w => w.salary_header_id == salary[i]["hims_f_salary_id"]
+                  //   )
+                  //   .Select(s => {
+                  //     return {
+                  //       hims_f_salary_contributions_id:
+                  //         s.hims_f_salary_contributions_id,
+                  //       contributions_id: s.contributions_id,
+                  //       amount: s.amount,
+                  //       nationality_id: s.nationality_id
+                  //     };
+                  //   })
+                  //   .ToArray();
+                  const employee_contributions = contributions
+                    .filter(
+                      item =>
+                        item.salary_header_id == salary[i]["hims_f_salary_id"]
                     )
-                    .Select(s => {
+                    .map(s => {
                       return {
                         hims_f_salary_contributions_id:
                           s.hims_f_salary_contributions_id,
@@ -220,8 +284,8 @@ const executePDF = function executePDFMethod(options) {
                         amount: s.amount,
                         nationality_id: s.nationality_id
                       };
-                    })
-                    .ToArray();
+                    });
+
                   //ST------ calculating employee_pasi plus employer_pasi
                   let employe_plus_employr = 0;
                   let employee_pasi = 0;
@@ -229,13 +293,13 @@ const executePDF = function executePDFMethod(options) {
 
                   //employee_pasi
                   employee_deduction.forEach(item => {
-                    if (item.nationality_id == crypto.default_nationality) {
+                    if (item.nationality_id == default_nationality) {
                       employee_pasi += parseFloat(item.amount);
                     }
                   });
                   //employer_pasi
                   employee_contributions.forEach(item => {
-                    if (item.nationality_id == crypto.default_nationality) {
+                    if (item.nationality_id == default_nationality) {
                       employr_pasi += parseFloat(item.amount);
                     }
                   });
@@ -246,53 +310,94 @@ const executePDF = function executePDFMethod(options) {
                   sum_employe_plus_emplyr += parseFloat(employe_plus_employr);
                   //EN------ calculating employee_pasi plus employer_pasi
 
-                  sum_basic += new LINQ(employee_earning)
-                    .Where(w => w.earnings_id == basic_id)
-                    .Select(s => parseFloat(s.amount))
-                    .FirstOrDefault(0);
+                  // sum_basic += new LINQ(employee_earning)
+                  //   .Where(w => w.earnings_id == basic_id)
+                  //   .Select(s => parseFloat(s.amount))
+                  //   .FirstOrDefault(0);
 
-                  sum_gratuity += new LINQ(gratuity)
-                    .Where(w => w.employee_id == salary[i]["employee_id"])
-                    .Select(s => parseFloat(s.gratuity_amount))
-                    .FirstOrDefault(0);
+                  //  console.log("sum_basic:", sum_basic);
 
-                  sum_leave_salary += new LINQ(accrual)
-                    .Where(w => w.employee_id == salary[i]["employee_id"])
-                    .Select(s => parseFloat(s.leave_salary))
-                    .FirstOrDefault(0);
+                  sum_basic += parseFloat(
+                    employee_earning.find(item => item.earnings_id == basic_id)
+                      .amount
+                  );
 
-                  sum_airfare_amount += new LINQ(accrual)
-                    .Where(w => w.employee_id == salary[i]["employee_id"])
-                    .Select(s => parseFloat(s.airfare_amount))
-                    .FirstOrDefault(0);
+                  // .value(v => v.amount);
 
-                  let emp_gratuity = new LINQ(gratuity)
-                    .Where(w => w.employee_id == salary[i]["employee_id"])
-                    .Select(s => {
-                      return {
-                        gratuity_amount: s.gratuity_amount
+                  // sum_gratuity += new LINQ(gratuity)
+                  //   .Where(w => w.employee_id == salary[i]["employee_id"])
+                  //   .Select(s => parseFloat(s.gratuity_amount))
+                  //   .FirstOrDefault(0);
+
+                  const grat = gratuity.find(
+                    item => item.employee_id == salary[i]["employee_id"]
+                  );
+                  sum_gratuity += grat ? parseFloat(grat.gratuity_amount) : 0;
+
+                  // console.log("sum_gratuity:", sum_gratuity);
+
+                  // sum_leave_salary += new LINQ(accrual)
+                  //   .Where(w => w.employee_id == salary[i]["employee_id"])
+                  //   .Select(s => parseFloat(s.leave_salary))
+                  //   .FirstOrDefault(0);
+
+                  const accu = accrual.find(
+                    item => item.employee_id == salary[i]["employee_id"]
+                  );
+                  sum_leave_salary += accu ? parseFloat(accu.leave_salary) : 0;
+
+                  sum_airfare_amount += accu
+                    ? parseFloat(accu.airfare_amount)
+                    : 0;
+
+                  // sum_airfare_amount += new LINQ(accrual)
+                  //   .Where(w => w.employee_id == salary[i]["employee_id"])
+                  //   .Select(s => parseFloat(s.airfare_amount))
+                  //   .FirstOrDefault(0);
+
+                  // let emp_gratuity = new LINQ(gratuity)
+                  //   .Where(w => w.employee_id == salary[i]["employee_id"])
+                  //   .Select(s => {
+                  //     return {
+                  //       gratuity_amount: s.gratuity_amount
+                  //     };
+                  //   })
+                  //   .FirstOrDefault({ gratuity_amount: 0 });
+
+                  let emp_gratuity = grat
+                    ? parseFloat(grat.gratuity_amount)
+                    : 0;
+
+                  // let emp_accural = new LINQ(accrual)
+                  //   .Where(w => w.employee_id == salary[i]["employee_id"])
+                  //   .Select(s => {
+                  //     return {
+                  //       leave_days: s.leave_days,
+                  //       leave_salary: s.leave_salary,
+                  //       airfare_amount: s.airfare_amount
+                  //     };
+                  //   })
+                  //   .FirstOrDefault({
+                  //     leave_days: 0,
+                  //     leave_salary: 0,
+                  //     airfare_amount: 0
+                  //   });
+
+                  let emp_accural = accu
+                    ? {
+                        leave_days: accu.leave_days,
+                        leave_salary: accu.leave_salary,
+                        airfare_amount: accu.airfare_amount
+                      }
+                    : {
+                        leave_days: 0,
+                        leave_salary: 0,
+                        airfare_amount: 0
                       };
-                    })
-                    .FirstOrDefault({ gratuity_amount: 0 });
-
-                  let emp_accural = new LINQ(accrual)
-                    .Where(w => w.employee_id == salary[i]["employee_id"])
-                    .Select(s => {
-                      return {
-                        leave_days: s.leave_days,
-                        leave_salary: s.leave_salary,
-                        airfare_amount: s.airfare_amount
-                      };
-                    })
-                    .FirstOrDefault({
-                      leave_days: 0,
-                      leave_salary: 0,
-                      airfare_amount: 0
-                    });
 
                   outputArray.push({
                     ...salary[i],
-                    ...emp_gratuity,
+                    gratuity_amount: emp_gratuity,
                     ...emp_accural,
                     employee_earning: employee_earning,
                     employee_deduction: employee_deduction,

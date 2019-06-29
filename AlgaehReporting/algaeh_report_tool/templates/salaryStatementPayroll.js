@@ -1,4 +1,4 @@
-const { MONTHS } = require("../../../client/src/utils/GlobalVariables.json");
+const { MONTHS } = require("./GlobalVariables.json");
 
 const executePDF = function executePDFMethod(options) {
   // const _ = options.loadash;
