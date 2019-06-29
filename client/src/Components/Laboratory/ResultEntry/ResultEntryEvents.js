@@ -349,8 +349,6 @@ function checkRange(row) {
   normal_high = parseFloat(normal_high);
   critical_high = parseFloat(critical_high);
 
-  console.log(result);
-
   if (!result) {
     return null;
   } else if (result <= critical_low) {
@@ -367,39 +365,51 @@ function checkRange(row) {
   }
 }
 
-const onchangegridamended = ($this, row, e) => {
-  swal({
-    title: "Are you sure want to Amend?",
-    type: "warning",
-    showCancelButton: true,
-    confirmButtonText: "Yes",
-    confirmButtonColor: "#44b8bd",
-    cancelButtonColor: "#d33",
-    cancelButtonText: "No"
-  }).then(willProceed => {
-    if (willProceed.value) {
-      let name = e.name || e.target.name;
-      let value = e.value || e.target.value;
-      let test_analytes = $this.state.test_analytes;
+const onchangeAmend = ($this, row, e) => {
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  let test_analytes = $this.state.test_analytes;
 
-      row[name] = value;
-      for (let l = 0; l < test_analytes.length; l++) {
-        if (
-          test_analytes[l].hims_f_ord_analytes_id === row.hims_f_ord_analytes_id
-        ) {
+  // TO trigger re-render
+  row[name] = "";
+  let l;
+  for (l = 0; l < test_analytes.length; l++) {
+    if (
+      test_analytes[l].hims_f_ord_analytes_id === row.hims_f_ord_analytes_id
+    ) {
+      test_analytes[l] = row;
+    }
+  }
+
+  $this.setState(
+    {
+      test_analytes
+    },
+    () => {
+      swal({
+        title: "Are you sure want to Amend?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes",
+        confirmButtonColor: "#44b8bd",
+        cancelButtonColor: "#d33",
+        cancelButtonText: "No"
+      }).then(willProceed => {
+        if (willProceed.value) {
+          row[name] = value;
           row["confirm"] = "N";
           row["validate"] = "N";
           row["status"] = "E";
-
-          test_analytes[l] = row;
+        } else {
+          row[name] = "N";
         }
-      }
-      $this.setState({
-        test_analytes: test_analytes,
-        status: "CL"
+        test_analytes[l - 1] = row;
+        let obj = { test_analytes };
+        willProceed.value ? (obj.status = "CL") : obj;
+        $this.setState(obj);
       });
     }
-  });
+  );
 };
 
 export {
@@ -412,5 +422,5 @@ export {
   onReRun,
   resultEntryUpdate,
   onchangegridresult,
-  onchangegridamended
+  onchangeAmend
 };

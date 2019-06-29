@@ -1983,7 +1983,8 @@ let Pharmacy_Reports = [
       },
       {
         subitem: "GP Statement - Date Wise",
-        template_name: "gpDatewisePharmacy",
+        reportName: "gpDatewisePharmacy",
+        requireIframe: true,
         reportParameters: [
           {
             className: "col-2",
@@ -2010,7 +2011,7 @@ let Pharmacy_Reports = [
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
-            isImp: true,
+            isImp: false,
             label: "Select branch",
             link: {
               uri: "/organization/getOrganization"

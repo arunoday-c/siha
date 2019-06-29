@@ -6,33 +6,58 @@
         <section>
             <table class="tableForData" cell-padding="0">
                 <thead>
-                     <tr>
-    <th>Sl No.</th>
-    <th>Date</th>
-    <th>Sales</th>
-    <th>Purchase</th>
-    <th>GP</th>
-    <th>GP %</th>
-  </tr>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>Date</th>
+
+                        <th>Purchase</th>
+                        <th>Sales</th>
+                        <th>Vat</th>
+                        <th>GP</th>
+                        <th>GP-VAT </th>
+
+                        <th>GP %</th>
+                    </tr>
                 </thead>
                 <tbody>
-                    {{#each details}}
+                    {{#each result}}
                     <tr>
                         <td>{{inc @index}}</td>
-                        <td>{{receipt_no}}</td>
-                        <td>{{receipt_date}}</td>
-                        <td>{{bill_no}}</td>
-                        <td>{{patient_name}}</td>
-                        <td>{{patient_no}}</td>
+                        <td>{{transaction_date}}</td>
+                        <td>{{purchase_amount}}</td>
+                        <td>{{sold_amount}}</td>
+                        <td>{{vat_amount}}</td>
+                        <td>{{profit_amount}}</td>
+                        <td>{{gp_profit_amount_aftr_vat}}</td>
+                        <td>{{gp_profit_percentage}}</td>
                     </tr>
                     {{/each }}
                 </tbody>
             </table>
-             <table class="tableTotal">
-              <tr><td>Total Sales Amount</td><td>{{total_gross_amount}}</td><td>الإجمالي قبل الضريبة المضافة</td></tr>
-                 <tr><td>Total Purchase Amount</td><td>{{total_discount_amount}}</td><td>الخصم</td></tr>
-                      <tr><td>Total GP</td><td>{{total_patient_share}}</td><td>نسبة التحمل</td></tr>
-                       <tr><td>Total GP%</td><td>0.00</td><td>المبلغ المدفوع</td></tr>
+
+
+            <table class="tableTotal">
+
+                <tr>
+                    <td>Total Purchase Amount</td>
+                    <td>{{sum_purchase}}</td>
+                    <td>الخصم</td>
+                </tr>
+                <tr>
+                    <td>Total Sales Amount</td>
+                    <td>{{sum_sold_amount}}</td>
+                    <td>الإجمالي قبل الضريبة المضافة</td>
+                </tr>
+                <tr>
+                    <td>Total GP</td>
+                    <td>{{sum_gp_profit_amount_aftr_vat}}</td>
+                    <td>نسبة التحمل</td>
+                </tr>
+                <tr>
+                    <td>Total GP%</td>
+                    <td>{{sum_gp_percent}}</td>
+                    <td>المبلغ المدفوع</td>
+                </tr>
             </table>
         </section>
         {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
