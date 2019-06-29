@@ -130,10 +130,10 @@ const UpdateRadOrder = ($this, row) => {
 		};
 
 		swal({
-			title: 'Are you sure the patient ' + row.full_name + ' has arrived for the procedure ' + row.service_name,
+			title: 'Patient ' + row.full_name + ' has arrived for the procedure ' + row.service_name,
 			type: 'warning',
 			showCancelButton: true,
-			confirmButtonText: 'Yes',
+			confirmButtonText: 'Confirm',
 			confirmButtonColor: '#',
 			cancelButtonColor: '#d33',
 			cancelButtonText: 'No'

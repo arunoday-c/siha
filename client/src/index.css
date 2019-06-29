@@ -1149,6 +1149,9 @@
     float: left;
     border-right: 1px solid #adaaaa;
     border-left: 0; }
+  .arabic_component .print-area .dropdown-menu {
+    left: 5px;
+    right: inherit; }
   .arabic_component .hdg_bredcrump {
     background: url("./assets/images/breadcrump_border_Ar.webp") no-repeat top left #fff !important; }
   .arabic_component .hptl-phase1-add-patient-form .primary-details,

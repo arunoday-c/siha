@@ -81,7 +81,6 @@ class AddBillingForm extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    
     this.setState(nextProps.PatRegIOputs);
   }
 
@@ -219,7 +218,7 @@ class AddBillingForm extends Component {
                           },
                           others: {
                             placeholder: "0.00",
-                            onBlur: advanceAdjustCal.bind(this, this, context),
+                            // onBlur: advanceAdjustCal.bind(this, this, context),
                             onFocus: e => {
                               e.target.oldvalue = e.target.value;
                             }
@@ -241,7 +240,7 @@ class AddBillingForm extends Component {
                           },
                           others: {
                             placeholder: "0.00",
-                            onBlur: discountCal.bind(this, this, context),
+                            // onBlur: discountCal.bind(this, this, context),
                             onFocus: e => {
                               e.target.oldvalue = e.target.value;
                             }
@@ -266,7 +265,7 @@ class AddBillingForm extends Component {
                           },
                           others: {
                             placeholder: "0.00",
-                            onBlur: discountCal.bind(this, this, context),
+                            // onBlur: discountCal.bind(this, this, context),
                             onFocus: e => {
                               e.target.oldvalue = e.target.value;
                             }

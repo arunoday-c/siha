@@ -1421,7 +1421,7 @@ const credittexthandle = ($this, context, ctrl, e) => {
 
 const SelectBatchDetails = ($this, row, context, e) => {
   //
-  debugger;
+
   let _pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
   const _index = _pharmacy_stock_detail.indexOf(row);
 

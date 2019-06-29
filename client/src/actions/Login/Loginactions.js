@@ -4,7 +4,11 @@
 import axios from "axios";
 import { setToken, getLocalIP } from "../../utils/algaehApiCall";
 import config from "../../utils/config.json";
-import { successfulMessage } from "../../utils/GlobalFunctions";
+import {
+  successfulMessage,
+  AlgaehCloseContainer
+} from "../../utils/GlobalFunctions";
+
 export function getTokenDetals(that) {
   var auth_url = "/api/v1/apiAuth";
   var username = config.apiAuth.user;
@@ -35,6 +39,11 @@ export function getTokenDetals(that) {
     })
       .then(response => {
         setToken(response.data.token, response.data.days);
+
+        sessionStorage.setItem(
+          "ModuleDetails",
+          AlgaehCloseContainer(JSON.stringify(response.data.activemoduleList))
+        );
         that.setState({
           hospitalList: response.data.hospitalList
         });
