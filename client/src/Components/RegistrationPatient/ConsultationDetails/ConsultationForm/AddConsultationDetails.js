@@ -62,6 +62,42 @@ const DeptselectedHandeler = ($this, context, e) => {
   }
 };
 
+export const clearBillDetails = context => {
+  context.updateState({
+    doctor_id: null,
+    saveEnable: true,
+    advance_adjust: null,
+    card_amount: null,
+    cash_amount: null,
+    cheque_amount: null,
+    company_payble: null,
+    company_res: null,
+    company_tax: null,
+    copay_amount: null,
+    deductable_amount: null,
+    discount_amount: null,
+    gross_total: null,
+    net_amount: null,
+    net_total: null,
+    patient_payable: null,
+    patient_payable_h: null,
+    patient_res: null,
+    patient_tax: null,
+    receiveable_amount: null,
+    sec_company_paybale: null,
+    sec_company_res: null,
+    sec_company_tax: null,
+    sec_copay_amount: null,
+    sec_deductable_amount: null,
+    sheet_discount_amount: null,
+    sheet_discount_percentage: null,
+    sub_total_amount: null,
+    total_amount: null,
+    total_tax: null,
+    unbalanced_amount: null
+  });
+};
+
 const selectedHandeler = ($this, context, e) => {
   let primary_policy_num = $this.state.primary_policy_num;
   SetBulkState({
@@ -346,6 +382,7 @@ const generateBillDetails = ($this, context) => {
     method: "POST",
     data: serviceInput,
     onSuccess: response => {
+      console.log("from before bill", response.data.records);
       if (response.data.success) {
         if (context !== null) {
           context.updateState({ ...response.data.records });
@@ -358,6 +395,7 @@ const generateBillDetails = ($this, context) => {
           data: response.data.records,
           onSuccess: response => {
             if (response.data.success) {
+              console.log("from bills", response.data.records);
               if (context !== null) {
                 context.updateState({ ...response.data.records });
               }

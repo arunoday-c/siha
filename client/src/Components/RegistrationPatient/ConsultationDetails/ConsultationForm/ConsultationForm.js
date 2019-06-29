@@ -22,7 +22,8 @@ import {
   selectedHandeler,
   doctorselectedHandeler,
   radioChange,
-  texthandle
+  texthandle,
+  clearBillDetails
 } from "./AddConsultationDetails";
 
 class AddConsultationForm extends Component {
@@ -159,12 +160,19 @@ class AddConsultationForm extends Component {
                         },
                         onChange: selectedHandeler.bind(this, this, context),
                         onClear: () => {
-                          this.setState({
-                            visit_type: null,
-                            sub_department_id: null,
-                            doctor_id: null,
-                            visittypeselect: true
-                          });
+                          this.setState(
+                            {
+                              visit_type: null,
+                              sub_department_id: null,
+                              doctor_id: null,
+                              visittypeselect: true
+                            },
+                            () => {
+                              if (context !== null) {
+                                clearBillDetails(context);
+                              }
+                            }
+                          );
                         }
                       }}
                     />
@@ -199,10 +207,18 @@ class AddConsultationForm extends Component {
                           context
                         ),
                         onClear: () => {
-                          this.setState({
-                            sub_department_id: null,
-                            doctor_id: null
-                          });
+                          this.setState(
+                            {
+                              sub_department_id: null,
+                              doctor_id: null,
+                              doctors: this.props.frontproviders
+                            },
+                            () => {
+                              if (context !== null) {
+                                clearBillDetails(context);
+                              }
+                            }
+                          );
                         }
                       }}
                     />
@@ -238,9 +254,17 @@ class AddConsultationForm extends Component {
                           context
                         ),
                         onClear: () => {
-                          this.setState({
-                            doctor_id: null
-                          });
+                          this.setState(
+                            {
+                              doctor_id: null,
+                              saveEnable: true
+                            },
+                            () => {
+                              if (context !== null) {
+                                clearBillDetails(context);
+                              }
+                            }
+                          );
                         }
                       }}
                     />
