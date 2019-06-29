@@ -215,7 +215,8 @@ class PurchaseOrderEntry extends Component {
                     onChange: poforhandle.bind(this, this),
                     onClear: () => {
                       this.setState({
-                        po_from: null
+                        po_from: null,
+                        ReqData: true
                       });
                     }
                   }}

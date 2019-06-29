@@ -73,7 +73,7 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "POSEntry",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS PH.*, date(PH.pos_date) as posdate, V.visit_code, P.patient_code,\
+          "select SQL_CALC_FOUND_ROWS PH.*, date(PH.pos_date) as pos_date, V.visit_code, P.patient_code,\
         CASE WHEN PH.pos_customer_type='OP' THEN P.full_name else PH.patient_name END as patient_name, \
         CASE WHEN PH.pos_customer_type='OP' THEN P.contact_number else PH.mobile_number END as mobile_number \
         from hims_f_pharmacy_pos_header PH \
@@ -86,7 +86,7 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "POSNOReturn",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS PH.*, date(PH.pos_date) as posdate, V.visit_code, P.patient_code,\
+          "select SQL_CALC_FOUND_ROWS PH.*, date(PH.pos_date) as pos_date, V.visit_code, P.patient_code,\
           CASE WHEN PH.pos_customer_type='OP' THEN P.full_name else PH.patient_name END as patient_name, \
           CASE WHEN PH.pos_customer_type='OP' THEN P.contact_number else PH.mobile_number END as mobile_number \
           from hims_f_pharmacy_pos_header PH \
@@ -99,7 +99,7 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "REQEntry",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS RH.*,date(RH.requistion_date) as requistiondate, \
+          "select SQL_CALC_FOUND_ROWS RH.*,date(RH.requistion_date) as requistion_date, \
           FPL.location_description as from_location,\
           TPL.location_description as to_location from hims_f_pharamcy_material_header RH,\
           hims_d_pharmacy_location FPL, hims_d_pharmacy_location TPL \
@@ -111,7 +111,7 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "REQTransEntry",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS RH.*, date(RH.requistion_date) as requistiondate,\
+          "select SQL_CALC_FOUND_ROWS RH.*, date(RH.requistion_date) as requistion_date,\
           FPL.location_description as from_location, \
           TPL.location_description as to_location from hims_f_pharamcy_material_header RH, \
           hims_d_pharmacy_location FPL, hims_d_pharmacy_location TPL \
@@ -124,7 +124,7 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "SalesReturn",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS *,date(sales_return_date) as return_date from hims_f_pharmcy_sales_return_header where hospital_id=" +
+          "select SQL_CALC_FOUND_ROWS *,date(sales_return_date) as sales_return_date from hims_f_pharmcy_sales_return_header where hospital_id=" +
           hospitalId,
         orderBy: "hims_f_pharmcy_sales_return_header_id desc"
       },
@@ -132,7 +132,7 @@ let algaehSearchConfig = (searchName, req) => {
         searchName: "TransferEntry",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS PH.*, FPL.location_description as from_location, \
-          TPL.location_description as to_location, date(PH.transfer_date) as transferdate \
+          TPL.location_description as to_location, date(PH.transfer_date) as transfer_date \
           from hims_f_pharmacy_transfer_header PH, hims_d_pharmacy_location FPL, hims_d_pharmacy_location TPL \
           where FPL.hims_d_pharmacy_location_id = PH.from_location_id and  \
           PH.to_location_id = TPL.hims_d_pharmacy_location_id ",
@@ -170,7 +170,7 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "InvREQEntry",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS RH.*,date(RH.requistion_date) as requistiondate,\
+          "select SQL_CALC_FOUND_ROWS RH.*,date(RH.requistion_date) as requistion_date,\
           FPL.location_description as from_location, \
           TPL.location_description as to_location from hims_f_inventory_material_header RH,\
           hims_d_inventory_location FPL, hims_d_inventory_location TPL \
@@ -183,7 +183,7 @@ let algaehSearchConfig = (searchName, req) => {
         searchName: "InvTransferEntry",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS TH.*, FPL.location_description as from_location,   \
-          TPL.location_description as to_location,date(TH.transfer_date) as transferdate from hims_f_inventory_transfer_header TH, \
+          TPL.location_description as to_location,date(TH.transfer_date) as transfer_date from hims_f_inventory_transfer_header TH, \
           hims_d_inventory_location FPL, hims_d_inventory_location TPL          \
           where FPL.hims_d_inventory_location_id = TH.from_location_id and           \
           TH.to_location_id = TPL.hims_d_inventory_location_id and  TH.hospital_id=" +
@@ -193,7 +193,7 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "InvREQTransEntry",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS RH.*, date(RH.requistion_date) as requistiondate, \
+          "select SQL_CALC_FOUND_ROWS RH.*, date(RH.requistion_date) as requistion_date, \
           FPL.location_description as from_location, \
           TPL.location_description as to_location from hims_f_inventory_material_header RH,\
           hims_d_inventory_location FPL, hims_d_inventory_location TPL \
@@ -206,16 +206,26 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "InvPOEntry",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS * from hims_f_inventory_material_header where authorize1 = 'Y' and authorie2 = 'Y'\
-          and is_completed = 'N' and requistion_type='PR' and hospital_id=" +
+          "select SQL_CALC_FOUND_ROWS RH.*, date(RH.requistion_date) as requistion_date, \
+        FPL.location_description as from_location, \
+        TPL.location_description as to_location from hims_f_inventory_material_header RH,\
+        hims_d_inventory_location FPL, hims_d_inventory_location TPL \
+        where FPL.hims_d_inventory_location_id = RH.from_location_id and \
+        RH.to_location_id = TPL.hims_d_inventory_location_id and RH.authorize1 = 'Y' and RH.authorie2 = 'Y'\
+        and RH.is_completed = 'N' and RH.cancelled='N' and  RH.hospital_id=" +
           hospitalId,
         orderBy: "hims_f_inventory_material_header_id desc"
       },
       {
         searchName: "PhrPOEntry",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS * from hims_f_pharamcy_material_header where authorize1 = 'Y' and authorie2 = 'Y'\
-          and is_completed = 'N' and requistion_type='PR' and hospital_id=" +
+          "select SQL_CALC_FOUND_ROWS RH.*, date(RH.requistion_date) as requistion_date,\
+            FPL.location_description as from_location, \
+            TPL.location_description as to_location from hims_f_pharamcy_material_header RH, \
+            hims_d_pharmacy_location FPL, hims_d_pharmacy_location TPL \
+            where FPL.hims_d_pharmacy_location_id = RH.from_location_id and \
+            RH.to_location_id = TPL.hims_d_pharmacy_location_id and RH.authorize1 = 'Y' and RH.authorie2 = 'Y' \
+            and RH.is_completed = 'N' and RH.cancelled='N' and  RH.hospital_id=" +
           hospitalId,
         orderBy: "hims_f_pharamcy_material_header_id desc"
       },
@@ -223,7 +233,7 @@ let algaehSearchConfig = (searchName, req) => {
         searchName: "POEntry",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS PO.*, PO.po_date as podate, CASE PO.po_from WHEN 'INV' then 'Inventory' \
-          else 'Pharmacy' end as po_done_for , CASE PO.po_from WHEN 'INV' then IL.location_description \
+          else 'Pharmacy' end as po_from , CASE PO.po_from WHEN 'INV' then IL.location_description \
           else PL.location_description end as loc_description,V.vendor_name \
           from hims_f_procurement_po_header PO \
           inner join hims_d_vendor V on PO.vendor_id = V.hims_d_vendor_id \
@@ -236,8 +246,8 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "POEntryGetDN",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS PO.*, PO.po_date as podate, CASE PO.po_from WHEN 'INV' then 'Inventory' \
-            else 'Pharmacy' end as po_done_for , CASE PO.po_from WHEN 'INV' then IL.location_description \
+          "select SQL_CALC_FOUND_ROWS PO.*, date(PO.po_date) as po_date, CASE PO.po_from WHEN 'INV' then 'Inventory' \
+            else 'Pharmacy' end as po_from , CASE PO.po_from WHEN 'INV' then IL.location_description \
             else PL.location_description end as loc_description,V.vendor_name \
             from hims_f_procurement_po_header PO \
             inner join hims_d_vendor V on PO.vendor_id = V.hims_d_vendor_id \
@@ -250,8 +260,8 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "POEntryGetReceipt",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS PO.*, date(PO.po_date) as podate, CASE PO.po_from WHEN 'INV' then 'Inventory' \
-            else 'Pharmacy' end as po_done_for , CASE PO.po_from WHEN 'INV' then IL.location_description \
+          "select SQL_CALC_FOUND_ROWS PO.*, date(PO.po_date) as po_date, CASE PO.po_from WHEN 'INV' then 'Inventory' \
+            else 'Pharmacy' end as po_from , CASE PO.po_from WHEN 'INV' then IL.location_description \
             else PL.location_description end as loc_description,V.vendor_name \
             from hims_f_procurement_po_header PO \
             inner join hims_d_vendor V on PO.vendor_id = V.hims_d_vendor_id \
@@ -264,8 +274,8 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "DNEntry",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS DN.*, date(DN.dn_date) as dndate, CASE DN.dn_from WHEN 'INV' then \
-          'Inventory' else 'Pharmacy' end as dn_done_for , CASE DN.dn_from WHEN 'INV' then IL.location_description \
+          "select SQL_CALC_FOUND_ROWS DN.*, date(DN.dn_date) as dn_date, CASE DN.dn_from WHEN 'INV' then \
+          'Inventory' else 'Pharmacy' end as dn_from , CASE DN.dn_from WHEN 'INV' then IL.location_description \
           else PL.location_description end as loc_description,V.vendor_name \
           from hims_f_procurement_dn_header DN \
           inner join hims_d_vendor V on DN.vendor_id = V.hims_d_vendor_id \
@@ -285,8 +295,8 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "ReceiptEntry",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS GH.*, date(GH.grn_date) as grndate, CASE GH.grn_for WHEN 'INV' then \
-          'Inventory' else 'Pharmacy' end as grn_done_for , CASE GH.grn_for WHEN 'INV' then IL.location_description \
+          "select SQL_CALC_FOUND_ROWS GH.*, date(GH.grn_date) as grn_date, CASE GH.grn_for WHEN 'INV' then \
+          'Inventory' else 'Pharmacy' end as grn_for , CASE GH.grn_for WHEN 'INV' then IL.location_description \
           else PL.location_description end as loc_description,V.vendor_name from hims_f_procurement_grn_header GH \
           inner join hims_d_vendor V on GH.vendor_id = V.hims_d_vendor_id \
           left join hims_d_pharmacy_location PL on GH.pharmcy_location_id = PL.hims_d_pharmacy_location_id\
@@ -470,14 +480,18 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "PharConsEntry",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS * from hims_f_pharmacy_consumption_header where hospital_id=" +
+          "select SQL_CALC_FOUND_ROWS H.*,date(H.consumption_date) as consumption_date, PL.location_description\
+            from hims_f_pharmacy_consumption_header H, hims_d_pharmacy_location PL where \
+            PL.hims_d_pharmacy_location_id = H.location_id and H.hospital_id=" +
           hospitalId,
         orderBy: "hims_f_pharmacy_consumption_header_id desc"
       },
       {
         searchName: "InvConsEntry",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS * from hims_f_inventory_consumption_header where hospital_id=" +
+          "select SQL_CALC_FOUND_ROWS H.*,date(H.consumption_date) as consumption_date, IL.location_description\
+            from hims_f_inventory_consumption_header H, hims_d_inventory_location IL where \
+            IL.hims_d_inventory_location_id = H.location_id and H.hospital_id=" +
           hospitalId,
         orderBy: "hims_f_inventory_consumption_header_id desc"
       },

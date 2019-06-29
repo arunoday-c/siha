@@ -10,7 +10,10 @@ import {
   swalMessage,
   getCookie
 } from "../../../utils/algaehApiCall";
-import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
+import {
+  AlgaehOpenContainer,
+  imageToByteArray
+} from "../../../utils/GlobalFunctions";
 import Enumerable from "linq";
 import _ from "lodash";
 
@@ -426,59 +429,95 @@ const SavePosEnrty = $this => {
     } else {
       $this.state.pre_approval_req = "N";
     }
-    // GenerateReciept($this, that => {
 
-    // $this.state.insurance_yesno = $this.state.mode_of_pay === "2" ? "Y" : "N";
     $this.state.posted = "N";
     $this.state.receipt_header_id = null;
-    // $this.state.transaction_type = "POS";
-    // $this.state.transaction_date = $this.state.pos_date;
-    //
-    // for (let i = 0; i < $this.state.pharmacy_stock_detail.length; i++) {
-    //   $this.state.pharmacy_stock_detail[i].location_id =
-    //     $this.state.location_id;
-    //   $this.state.pharmacy_stock_detail[i].location_type =
-    //     $this.state.location_type;
-    //   $this.state.pharmacy_stock_detail[i].operation = "-";
-    //   $this.state.pharmacy_stock_detail[i].sales_uom =
-    //     $this.state.pharmacy_stock_detail[i].uom_id;
-    //   $this.state.pharmacy_stock_detail[i].item_code_id = $this.state.item_id;
-    //   $this.state.pharmacy_stock_detail[i].grn_number =
-    //     $this.state.pharmacy_stock_detail[i].grn_no;
-    //   $this.state.pharmacy_stock_detail[i].item_category_id =
-    //     $this.state.pharmacy_stock_detail[i].item_category;
-    //   $this.state.pharmacy_stock_detail[i].net_total =
-    //     $this.state.pharmacy_stock_detail[i].net_extended_cost;
-    // }
+
     let callUri =
       $this.state.hims_f_pharmacy_pos_header_id !== null
         ? "/posEntry/updatePosEntry"
         : "/posEntry/addPosEntry";
     let method =
       $this.state.hims_f_pharmacy_pos_header_id !== null ? "PUT" : "POST";
+    let posdata = {};
+
+    if ($this.state.filePreview !== null) {
+      posdata = {
+        ...$this.state,
+        patient_Image: imageToByteArray($this.state.filePreview)
+      };
+    } else {
+      posdata = $this.state;
+    }
+    const _patInsuranceFrontImg = $this.state.patInsuranceFrontImg;
+    const _patInsuranceBackImg = $this.state.patInsuranceBackImg;
+    delete posdata.patInsuranceFrontImg;
+    delete posdata.patInsuranceBackImg;
+
     algaehApiCall({
       uri: callUri,
       module: "pharmacy",
       method: method,
-      data: $this.state,
+      data: posdata,
       onSuccess: response => {
         if (response.data.success) {
-          getPosEntry($this, response.data.records.pos_number);
-          // $this.setState({
-          //   pos_number: response.data.records.pos_number,
-          //   hims_f_pharmacy_pos_header_id:
-          //     response.data.records.hims_f_pharmacy_pos_header_id,
-          //   year: response.data.records.year,
-          //   period: response.data.records.period,
-          //   // receipt_number: response.data.records.receipt_number,
-          //   saveEnable: true,
-          //   postEnable: false
-          // });
+          debugger;
+          let _arrayImages = [];
+          if (
+            _patInsuranceFrontImg !== undefined &&
+            $this.state.insurance_yesno === "Y"
+          ) {
+            _arrayImages.push(
+              new Promise((resolve, reject) => {
+                _patInsuranceFrontImg.SavingImageOnServer(
+                  undefined,
+                  undefined,
+                  undefined,
+                  $this.state.card_number + "_front",
+                  () => {
+                    resolve();
+                  }
+                );
+              })
+            );
+          }
+          if (
+            _patInsuranceBackImg !== undefined &&
+            $this.state.insurance_yesno === "Y"
+          ) {
+            _arrayImages.push(
+              new Promise((resolve, reject) => {
+                _patInsuranceBackImg.SavingImageOnServer(
+                  undefined,
+                  undefined,
+                  undefined,
+                  $this.state.card_number + "_back",
+                  () => {
+                    resolve();
+                  }
+                );
+              })
+            );
+          }
+          Promise.all(_arrayImages).then(result => {
+            getPosEntry($this, response.data.records.pos_number);
+            // $this.setState({
+            //   pos_number: response.data.records.pos_number,
+            //   hims_f_pharmacy_pos_header_id:
+            //     response.data.records.hims_f_pharmacy_pos_header_id,
+            //   year: response.data.records.year,
+            //   period: response.data.records.period,
+            //   // receipt_number: response.data.records.receipt_number,
+            //   saveEnable: true,
+            //   postEnable: false
+            // });
 
-          swalMessage({
-            type: "success",
-            title: "Saved successfully ..."
+            swalMessage({
+              type: "success",
+              title: "Saved successfully ..."
+            });
           });
+
           // AlgaehLoader({ show: false });
         } else {
           AlgaehLoader({ show: false });
@@ -569,82 +608,91 @@ const PostPosEntry = $this => {
               : "/posEntry/addandpostPosEntry";
           let method =
             $this.state.hims_f_pharmacy_pos_header_id !== null ? "PUT" : "POST";
+
+          let posdata = {};
+
+          if ($this.state.filePreview !== null) {
+            posdata = {
+              ...$this.state,
+              patient_Image: imageToByteArray($this.state.filePreview)
+            };
+          } else {
+            posdata = $this.state;
+          }
+          const _patInsuranceFrontImg = $this.state.patInsuranceFrontImg;
+          const _patInsuranceBackImg = $this.state.patInsuranceBackImg;
+          delete posdata.patInsuranceFrontImg;
+          delete posdata.patInsuranceBackImg;
           algaehApiCall({
             uri: callUri,
-            data: $this.state,
+            data: posdata,
             method: method,
             module: "pharmacy",
             onSuccess: response => {
               if (response.data.success === true) {
-                $this.setState(
-                  {
-                    pos_number:
-                      response.data.records.pos_number ||
-                      $this.state.pos_number,
-                    hims_f_pharmacy_pos_header_id:
-                      response.data.records.hims_f_pharmacy_pos_header_id ||
-                      $this.state.hims_f_pharmacy_pos_header_id,
-                    year: response.data.records.year,
-                    period: response.data.records.period,
-                    postEnable: true,
-                    popUpGenereted: true,
-                    InvoiceEnable: true
-                  },
-                  () => {
-                    generateReport($this, "posCashInvoice", "Cash Invoice");
-                  }
-                );
-                swalMessage({
-                  type: "success",
-                  title: "Done successfully . ."
+                let _arrayImages = [];
+                if (
+                  _patInsuranceFrontImg !== undefined &&
+                  $this.state.insurance_yesno === "Y"
+                ) {
+                  _arrayImages.push(
+                    new Promise((resolve, reject) => {
+                      _patInsuranceFrontImg.SavingImageOnServer(
+                        undefined,
+                        undefined,
+                        undefined,
+                        $this.state.card_number + "_front",
+                        () => {
+                          resolve();
+                        }
+                      );
+                    })
+                  );
+                }
+                if (
+                  _patInsuranceBackImg !== undefined &&
+                  $this.state.insurance_yesno === "Y"
+                ) {
+                  _arrayImages.push(
+                    new Promise((resolve, reject) => {
+                      _patInsuranceBackImg.SavingImageOnServer(
+                        undefined,
+                        undefined,
+                        undefined,
+                        $this.state.card_number + "_back",
+                        () => {
+                          resolve();
+                        }
+                      );
+                    })
+                  );
+                }
+                Promise.all(_arrayImages).then(result => {
+                  $this.setState(
+                    {
+                      pos_number:
+                        response.data.records.pos_number ||
+                        $this.state.pos_number,
+                      hims_f_pharmacy_pos_header_id:
+                        response.data.records.hims_f_pharmacy_pos_header_id ||
+                        $this.state.hims_f_pharmacy_pos_header_id,
+                      year: response.data.records.year,
+                      period: response.data.records.period,
+                      postEnable: true,
+                      popUpGenereted: true,
+                      InvoiceEnable: true
+                    },
+                    () => {
+                      generateReport($this, "posCashInvoice", "Cash Invoice");
+                    }
+                  );
+                  swalMessage({
+                    type: "success",
+                    title: "Done successfully . ."
+                  });
                 });
 
-                //Fot printing
-                // if ($this.state.visit_code !== "") {
-                //   algaehApiCall({
-                //     uri: "/report",
-                //     method: "GET",
-                //     module: "reports",
-                //     headers: {
-                //       Accept: "blob"
-                //     },
-                //     others: { responseType: "blob" },
-                //     data: {
-                //       report: {
-                //         reportName: "prescription",
-                //         reportParams: [
-                //           {
-                //             name: "hims_d_patient_id",
-                //             value: $this.state.patient_id
-                //           },
-                //           {
-                //             name: "visit_id",
-                //             value: $this.state.visit_id
-                //           },
-                //           {
-                //             name: "visit_code",
-                //             value: $this.state.visit_code
-                //           }
-                //         ],
-                //         outputFileType: "PDF"
-                //       }
-                //     },
-                //     onSuccess: res => {
-                //       const url = URL.createObjectURL(res.data);
-                //       let myWindow = window.open(
-                //         "{{ product.metafields.google.custom_label_0 }}",
-                //         "_blank"
-                //       );
-                //
-                //       myWindow.document.write(
-                //         "<iframe src= '" + url + "' width='100%' height='100%' />"
-                //       );
-                //       myWindow.document.title = "Prescription";
-                //     }
-                //   });
-                // }
                 AlgaehLoader({ show: false });
-                //Done Printing
               }
             },
             onFailure: error => {

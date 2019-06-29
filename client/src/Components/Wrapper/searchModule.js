@@ -290,15 +290,17 @@ class SearchModule extends Component {
                       onChange={this.handleOnchnageSearchBy.bind(this)}
                       value={this.state.searchBy}
                     >
-                      {this.props.searchGrid.columns.map((row, index) => (
-                        <option
-                          key={index}
-                          datafieldtype={row.fieldType}
-                          value={row["fieldName"]}
-                        >
-                          {row["label"]}
-                        </option>
-                      ))}
+                      {this.props.searchGrid.columns.map((row, index) =>
+                        row.required !== "N" ? (
+                          <option
+                            key={index}
+                            datafieldtype={row.fieldType}
+                            value={row["fieldName"]}
+                          >
+                            {row["label"]}
+                          </option>
+                        ) : null
+                      )}
                     </select>
                   </div>
                 </div>
