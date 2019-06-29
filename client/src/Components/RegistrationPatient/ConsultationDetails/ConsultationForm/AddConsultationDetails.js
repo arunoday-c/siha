@@ -418,9 +418,9 @@ const radioChange = ($this, context, e) => {
       },
       () => {
         getTreatementPlans($this);
-        if ($this.state.doctor_id !== null) {
-          generateBillDetails($this, context);
-        }
+        // if ($this.state.doctor_id !== null) {
+        //   generateBillDetails($this, context);
+        // }
       }
     );
     if (context !== null) {
