@@ -532,14 +532,8 @@ module.exports = {
             // utilities.logger().log("result: ", result);
             _mysql.releaseConnection();
 
-            if (result.affectedRows > 0) {
-              req.records = result;
-            } else {
-              req.records = {
-                invalid_input: true,
-                message: "Please provide valid input"
-              };
-            }
+            req.records = result;
+
             next();
           })
           .catch(error => {
