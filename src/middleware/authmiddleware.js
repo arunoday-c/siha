@@ -31,7 +31,8 @@ let respond = (req, res) => {
     user: req.user,
     token: req.token,
     days: days,
-    hospitalList: req.result.hospitalList
+    hospitalList: req.result.hospitalList,
+    activemoduleList: req.result.activemoduleList
   });
 };
 

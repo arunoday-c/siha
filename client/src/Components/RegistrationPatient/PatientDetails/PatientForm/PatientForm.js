@@ -13,7 +13,8 @@ import {
   setAge,
   countryStatehandle,
   nationalityhandle,
-  handlePrimaryId
+  handlePrimaryId,
+  validateAge
 } from "./AddPatientDetails.js";
 import MyContext from "../../../../utils/MyContext.js";
 
@@ -341,7 +342,8 @@ class AddPatientForm extends Component {
                         }}
                         maxDate={new Date()}
                         events={{
-                          onChange: calculateAge.bind(this, this)
+                          onChange: calculateAge.bind(this, this),
+                          onBlur: validateAge.bind(this, this)
                         }}
                         disabled={this.state.existingPatient}
                         value={

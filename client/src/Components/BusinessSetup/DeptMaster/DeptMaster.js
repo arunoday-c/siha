@@ -25,7 +25,7 @@ import _ from "lodash";
 class DeptMaster extends Component {
   constructor(props) {
     super(props);
-    debugger;
+
     let Activated_Modueles = JSON.parse(
       AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
     );
@@ -47,8 +47,6 @@ class DeptMaster extends Component {
   }
 
   getLocation() {
-    debugger;
-
     if (this.state.Inventory_Active) {
       if (
         this.props.inventorylocations === undefined ||

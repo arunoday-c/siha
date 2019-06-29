@@ -70,7 +70,7 @@ export default class Login extends Component {
         if (response.data.success === true) {
           setCookie("userName", response.data.records.user_display_name);
           setCookie("keyResources", response.data.records.keyResources, 30);
-          debugger;
+
           sessionStorage.setItem(
             "CurrencyDetail",
             AlgaehCloseContainer(
@@ -78,12 +78,6 @@ export default class Login extends Component {
             )
           );
 
-          sessionStorage.setItem(
-            "ModuleDetails",
-            AlgaehCloseContainer(
-              JSON.stringify(response.data.records.moduleDetails)
-            )
-          );
           sessionStorage.setItem(
             "appRole",
             response.data.records.app_d_app_roles_id

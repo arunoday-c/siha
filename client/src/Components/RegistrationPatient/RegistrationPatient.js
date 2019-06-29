@@ -705,6 +705,7 @@ class RegistrationPatient extends Component {
           )._d;
 
           data.patientRegistration.advanceEnable = false;
+          debugger;
           $this.setState(data.patientRegistration, () => {
             if (fromAppoinment === true) {
               generateBillDetails(this, this);
@@ -758,6 +759,7 @@ class RegistrationPatient extends Component {
   //Render Page Start Here
 
   render() {
+    debugger;
     return (
       <div id="attach" style={{ marginBottom: "50px" }}>
         {/* <Barcode value='PAT-A-000017'/> */}
@@ -895,7 +897,7 @@ class RegistrationPatient extends Component {
                     className="btn btn-other"
                     onClick={ShowRefundScreen.bind(this, this)}
                     disabled={
-                      parseFloat(this.state.advance_amount) === 0
+                      this.state.advance_amount === null
                         ? true
                         : this.state.advanceEnable
                     }

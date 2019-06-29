@@ -168,9 +168,14 @@ const adjustadvance = ($this, context, ctrl, e) => {
       type: "warning"
     });
   } else {
-    $this.setState({
-      [e.target.name]: e.target.value
-    });
+    $this.setState(
+      {
+        [e.target.name]: e.target.value
+      },
+      () => {
+        billheaderCalculation($this, context);
+      }
+    );
 
     if (context !== null) {
       context.updateState({
@@ -214,9 +219,14 @@ const discounthandle = ($this, context, ctrl, e) => {
       title: "Discount Amount cannot be greater than Patient Share.",
       type: "Warning"
     });
-    $this.setState({
-      sheet_discount_amount: $this.state.sheet_discount_amount
-    });
+    $this.setState(
+      {
+        sheet_discount_amount: $this.state.sheet_discount_amount
+      },
+      () => {
+        billheaderCalculation($this, context);
+      }
+    );
 
     if (context !== null) {
       context.updateState({
@@ -224,10 +234,15 @@ const discounthandle = ($this, context, ctrl, e) => {
       });
     }
   } else {
-    $this.setState({
-      sheet_discount_percentage: sheet_discount_percentage,
-      sheet_discount_amount: sheet_discount_amount
-    });
+    $this.setState(
+      {
+        sheet_discount_percentage: sheet_discount_percentage,
+        sheet_discount_amount: sheet_discount_amount
+      },
+      () => {
+        billheaderCalculation($this, context);
+      }
+    );
 
     if (context !== null) {
       context.updateState({
@@ -496,9 +511,7 @@ const advanceAdjustCal = ($this, context, e) => {
 };
 
 const discountCal = ($this, context, e) => {
-  if (e.target.value !== e.target.oldvalue) {
-    billheaderCalculation($this, context);
-  }
+  billheaderCalculation($this, context);
 };
 
 const credittextCal = ($this, context, e) => {

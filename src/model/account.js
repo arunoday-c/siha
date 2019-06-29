@@ -62,16 +62,18 @@ let apiAuth = (req, res, next) => {
           "SELECT  hims_d_hospital_id,hospital_code,hospital_name,arabic_hospital_name, \
           username FROM algaeh_d_api_auth,hims_d_hospital WHERE password=md5(?)\
           AND algaeh_d_api_auth.record_status='A' AND username =? and hims_d_hospital.algaeh_api_auth_id =\
-          algaeh_d_api_auth. algaeh_d_api_auth_id",
+          algaeh_d_api_auth. algaeh_d_api_auth_id;select * from algaeh_d_app_module;",
         values: [inputData.password, inputData.username]
       })
       .then(result => {
         _mysql.releaseConnection();
         if (result.length > 0) {
+          // console.log("result", result);
           req.result = {
             success: true,
             results: result[0]["username"],
-            hospitalList: result
+            hospitalList: result[0],
+            activemoduleList: result[1]
           };
           next();
         } else {
@@ -210,8 +212,7 @@ let authUser = (req, res, next) => {
    hosital_status, lab_location_code ,hims_d_currency_id, currency_code, currency_description, currency_symbol,\
    decimal_places, symbol_position, thousand_separator, decimal_separator, negative_separator, requied_emp_id FROM \
    hims_d_hospital, hims_d_currency CUR WHERE hims_d_hospital.record_status='A' AND \
-   CUR.hims_d_currency_id=default_currency AND hims_d_hospital_id=?;\
-	 select * from algaeh_d_app_module",
+   CUR.hims_d_currency_id=default_currency AND hims_d_hospital_id=?;",
         values: [
           inputData.password,
           inputData.username,
