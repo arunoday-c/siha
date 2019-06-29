@@ -443,12 +443,12 @@ const OnChangeDeliveryQty = ($this, context, e) => {
         type: "warning"
       });
     } else {
+      debugger;
       extended_price = parseFloat(item_details.unit_price) * parseFloat(value);
       discount_amount = (extended_price * discount_percentage) / 100;
-
+      extended_cost = extended_price - discount_amount;
       tax_amount =
         (extended_cost * parseFloat(item_details.tax_percentage)) / 100;
-      extended_cost = extended_price - discount_amount;
 
       extended_price = parseFloat(
         getAmountFormart(extended_price, {

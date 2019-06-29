@@ -217,10 +217,7 @@ const RequisitionSearch = ($this, e) => {
                   purchase_cost * data.po_entry_detail[i].quantity_authorized;
                 data.po_entry_detail[i].net_extended_cost =
                   purchase_cost * data.po_entry_detail[i].quantity_authorized;
-                data.po_entry_detail[i].extended_price =
-                  purchase_cost * data.po_entry_detail[i].quantity_authorized;
-                data.po_entry_detail[i].extended_price =
-                  purchase_cost * data.po_entry_detail[i].quantity_authorized;
+                data.po_entry_detail[i].quantity_outstanding = 0;
 
                 data.po_entry_detail[i].sub_discount_percentage = 0;
                 data.po_entry_detail[i].sub_discount_amount = 0;
