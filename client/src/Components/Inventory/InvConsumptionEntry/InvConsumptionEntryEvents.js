@@ -79,7 +79,7 @@ export default function ConsumptionItemsEvents() {
 			});
 		},
 
-		generateConsumptionRecpt: ($this) => {
+		generateConsumptionRecpt: ($this, rpt_name, rpt_desc) => {
 			algaehApiCall({
 				uri: '/report',
 				method: 'GET',
@@ -90,11 +90,11 @@ export default function ConsumptionItemsEvents() {
 				others: { responseType: 'blob' },
 				data: {
 					report: {
-						reportName: 'consumptionReciptInventory',
+						reportName: 'consumptionReceiptInventory',
 						reportParams: [
 							{
 								name: 'hims_f_inventory_consumption_header_id',
-								value: $this.state.hims_f_inventory_consumption_header_id
+								value: $this.hims_f_inventory_consumption_header_id
 							}
 						],
 						outputFileType: 'PDF'
@@ -103,9 +103,8 @@ export default function ConsumptionItemsEvents() {
 				onSuccess: (res) => {
 					const url = URL.createObjectURL(res.data);
 					let myWindow = window.open('{{ product.metafields.google.custom_label_0 }}', '_blank');
-
 					myWindow.document.write("<iframe src= '" + url + "' width='100%' height='100%' />");
-					myWindow.document.title = 'ID Card';
+					myWindow.document.title = 'Consumption Receipt';
 				}
 			});
 		}
