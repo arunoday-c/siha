@@ -296,6 +296,32 @@ const generateBillDetails = ($this, context) => {
   });
 };
 
+const validateAge = ($this, e) => {
+  debugger;
+  let dob = moment($this.state.date_of_birth);
+  if (
+    dob.isAfter(moment()) ||
+    $this.state.age < 0 ||
+    $this.state.AGEMM < 0 ||
+    $this.state.AGEDD < 0
+  ) {
+    $this.setState(
+      {
+        date_of_birth: null,
+        age: null,
+        AGEMM: null,
+        AGEDD: null
+      },
+      () => {
+        swalMessage({
+          title: "Date of Birth must be a Past date",
+          type: "warning"
+        });
+      }
+    );
+  }
+};
+
 export {
   texthandle,
   handlePrimaryId,
@@ -305,5 +331,6 @@ export {
   onDrop,
   countryStatehandle,
   nationalityhandle,
-  generateBillDetails
+  generateBillDetails,
+  validateAge
 };

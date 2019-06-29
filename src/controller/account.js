@@ -41,7 +41,6 @@ export default ({ config, db }) => {
           debugLog("rowDetails: ", rowDetails);
           let encrypDetsil = { ...result[0][0], ...result[1][0] };
           let hospitalDetails = { ...result[1][0] };
-          let moduleDetails = result[2];
 
           // console.log("moduleDetails: ", moduleDetails);
           let keyData = encryption(encrypDetsil);
@@ -55,7 +54,6 @@ export default ({ config, db }) => {
               keyResources: keyData,
               secureModels: req.secureModels,
               hospitalDetails: hospitalDetails,
-              moduleDetails: moduleDetails,
               app_d_app_roles_id: rowDetails.app_d_app_roles_id
             }
           });

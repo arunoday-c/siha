@@ -123,9 +123,9 @@ const ProcessService = ($this, e) => {
               }
 
               swal({
-               
                 title: "Pre-Approval limit reached.",
-                text: "Service amount have exceeded insurance limit. If proceed all services will be senting for Pre Approval.",
+                text:
+                  "Service amount have exceeded insurance limit. If proceed all services will be senting for Pre Approval.",
                 type: "warning",
                 showCancelButton: true,
                 confirmButtonText: "Yes!",
@@ -427,6 +427,7 @@ const SaveOrdersServices = ($this, e) => {
     visit_id: $this.state.visit_id,
     patient_id: $this.state.patient_id,
     incharge_or_provider: Window.global["provider_id"],
+    ordered_by: Window.global["provider_id"],
     billed: "N",
     billdetails: $this.state.orderservicesdata
   };
