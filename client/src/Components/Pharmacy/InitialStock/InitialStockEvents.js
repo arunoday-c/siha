@@ -43,7 +43,7 @@ const salesPriceEvent = ($this, e) => {
   $this.setState({ [name]: value });
 };
 
-const getItemUom = $this => {
+const getItemUom = ($this, purchase_cost) => {
   algaehApiCall({
     uri: "/pharmacy/getItemMasterAndItemUom",
     module: "pharmacy",
@@ -55,11 +55,16 @@ const getItemUom = $this => {
           let itemuomlist = Enumerable.from(response.data.records)
             .where(
               w => w.hims_d_item_master_id === $this.state.item_id,
-              w => w.uom_id === $this.state.uom_id
+              w => w.uom_id === $this.state.purchase_uom_id
             )
             .firstOrDefault();
-
-          $this.setState({ conversion_factor: itemuomlist.conversion_factor });
+          let unit_cost =
+            parseFloat(purchase_cost) /
+            parseFloat(itemuomlist.conversion_factor);
+          $this.setState({
+            conversion_factor: itemuomlist.conversion_factor,
+            unit_cost: unit_cost
+          });
         }
       }
     },
@@ -75,7 +80,7 @@ const getItemUom = $this => {
 const itemchangeText = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  getItemUom($this);
+  getItemUom($this, e.selected.purchase_cost);
 
   $this.setState({
     [name]: value,
@@ -85,9 +90,10 @@ const itemchangeText = ($this, e) => {
     sales_uom: e.selected.sales_uom_id,
     required_batchno: e.selected.required_batchno_expiry,
     item_code: e.selected.item_code,
-    unit_cost: e.selected.purchase_cost,
+    // unit_cost: e.selected.purchase_cost,
     sales_price: e.selected.standard_fee,
-    batchno: "B" + e.selected.batch_no
+    batchno: "B" + e.selected.batch_no,
+    purchase_uom_id: e.selected.purchase_uom_id
   });
 };
 
@@ -160,7 +166,8 @@ const AddItems = $this => {
           extended_cost: 0,
           saveEnable: false,
           grn_number: null,
-          sales_uom: null
+          sales_uom: null,
+          purchase_uom_id: null
         });
       }
     }

@@ -180,30 +180,6 @@ class DNItemList extends Component {
                   },
 
                   {
-                    fieldName: "batchno",
-                    label: <AlgaehLabel label={{ forceLabel: "Batch  No." }} />,
-
-                    others: {
-                      minWidth: 150,
-                      resizable: false
-                    }
-                  },
-
-                  {
-                    fieldName: "vendor_batchno",
-                    label: (
-                      <AlgaehLabel
-                        label={{ forceLabel: "Vendor Batch  No." }}
-                      />
-                    ),
-
-                    others: {
-                      minWidth: 150,
-                      resizable: false
-                    }
-                  },
-
-                  {
                     fieldName: "expiry_date",
                     label: (
                       <AlgaehLabel label={{ forceLabel: "Expiry Date" }} />
@@ -417,6 +393,30 @@ export default withRouter(
         })}
       </span>
     );
+  }
+},
+
+{
+  fieldName: "batchno",
+  label: <AlgaehLabel label={{ forceLabel: "Batch  No." }} />,
+
+  others: {
+    minWidth: 150,
+    resizable: false
+  }
+},
+
+{
+  fieldName: "vendor_batchno",
+  label: (
+    <AlgaehLabel
+      label={{ forceLabel: "Vendor Batch  No." }}
+    />
+  ),
+
+  others: {
+    minWidth: 150,
+    resizable: false
   }
 },*/
 }

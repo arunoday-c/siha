@@ -200,7 +200,7 @@ class PayRollDetails extends Component {
                   }}
                 />
 
-                <div className="col" style={{ paddingTop: "21px" }}>
+                <div className="col" style={{ paddingTop: "19px" }}>
                   <button
                     className="btn btn-default"
                     onClick={AddEarnComponent.bind(this, this)}
@@ -404,7 +404,7 @@ class PayRollDetails extends Component {
                     }
                   }}
                 />
-                <div className="col" style={{ paddingTop: "21px" }}>
+                <div className="col" style={{ paddingTop: "19px" }}>
                   <button
                     className="btn btn-default"
                     onClick={AddDeductionComponent.bind(this, this)}
@@ -559,7 +559,7 @@ class PayRollDetails extends Component {
                     }
                   }}
                 />
-                <div className="col" style={{ paddingTop: "21px" }}>
+                <div className="col" style={{ paddingTop: "19px" }}>
                   <button
                     className="btn btn-default"
                     onClick={AddContributionComponent.bind(this, this)}

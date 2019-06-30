@@ -1,0 +1,55 @@
+{{{importStyle 'css/creditinvoice.css'}}}
+
+<body>
+    <div class="print-body">
+
+        <section>
+
+  <table class="tableForLabel" cell-padding="0">
+
+      <tr><td><label class="textEnLft">VAT Reg No.</label>:<span class="valueText">{{header.tax_number}}</span><label class="textArRht">الرقم الضريبي</label></td></tr>
+        <tr>
+                    <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
+                </tr>
+                  <tr><td><label class="textEnLft">Patient Name</label>:<span class="valueText">{{header.patient_full_name}}</span><label class="textArRht">الإسم</label></td><td><label class="textEnLft">Visit ID</label>:<span class="valueText">{{header.visit_code}}</span><label class="textArRht">  رقم الزيارة</label></td></tr>
+                <tr><td><label class="textEnLft">MR No</label>:<span class="valueText">{{header.patient_code}}</span><label class="textArRht">رقم الملف</label></td><td><label class="textEnLft">Reg. Date</label>:<span class="valueText">{{dateTime header.registration_date "date"}}</span><label class="textArRht">  تاريخ التسجيل</label></td></tr>
+                      <tr>
+                    <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
+                </tr>
+            
+            </table>
+
+
+        </section>
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>Bill No.</th>
+                        <th>Bill Amt.</th>
+                        <th>Credit Amt.</th>
+                        <th>Previous Balance Amt.</th>
+                        <th>Receipt Amt.</th>
+                        <th>Balance Amt.</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each detailList}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                       <td>{{bill_code}}</td>
+                       <td>{{bill_amt}</td>
+                       <td>{{credit_amt}}</td>
+                       <td>{{pre_bal_amt}}</td>
+                       <td>{{recei_amt}}</td>
+                       <td>{{bal_amt}}</td>
+                    </tr>
+                    {{/each}}
+
+                </tbody>
+            </table>
+            </table>
+        </section>
+    </div>
+</body>

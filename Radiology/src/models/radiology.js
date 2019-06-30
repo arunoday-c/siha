@@ -48,9 +48,10 @@ module.exports = {
             SR.service_code,SR.service_name,status, cancelled, ordered_by, ordered_date, test_type, technician_id, \
             scheduled_date_time,scheduled_by,arrived_date,arrived,validate_by,result_html,validate_date_time,\
             attended_by,attended_date_time,exam_start_date_time,exam_end_date_time,exam_status,report_type,comments,\
-            PAT.patient_code,PAT.full_name,PAT.date_of_birth,PAT.gender\
-            from ((hims_f_rad_order SA inner join hims_f_patient PAT ON SA.patient_id=PAT.hims_d_patient_id) inner join \
-            hims_d_services SR on SR.hims_d_services_id=SA.service_id) WHERE " +
+            PAT.patient_code,PAT.full_name,PAT.date_of_birth,PAT.gender,EMP.full_name as refered_name\
+            from ((hims_f_rad_order SA inner join hims_f_patient PAT ON SA.patient_id=PAT.hims_d_patient_id) \
+            inner join hims_d_services SR on SR.hims_d_services_id=SA.service_id \
+            inner join hims_d_employee EMP on EMP.hims_d_employee_id=SA.provider_id)  WHERE " +
             _stringData +
             " order by hims_f_rad_order_id desc",
           values: inputValues,
@@ -136,7 +137,7 @@ module.exports = {
             service_id: s.services_id,
             billed: req.body.billed,
             ordered_date: s.created_date,
-            ordered_by: req.userIdentity.algaeh_d_app_user_id,
+            ordered_by: s.ordered_by,
             test_type: s.test_type
           };
         })
@@ -316,13 +317,13 @@ module.exports = {
       let OrderServices = new LINQ(req.body.billdetails)
         .Where(
           w =>
-            w.hims_f_ordered_services_id != null &&
+            w.ordered_services_id != null &&
             w.service_type_id ==
               appsettings.hims_d_service_type.service_type_id.Radiology
         )
         .Select(s => {
           return {
-            ordered_services_id: s.hims_f_ordered_services_id,
+            ordered_services_id: s.ordered_services_id,
             billed: "Y",
             updated_date: new Date(),
             updated_by: req.userIdentity.algaeh_d_app_user_id

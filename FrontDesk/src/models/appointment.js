@@ -424,14 +424,15 @@ module.exports = {
     let from_month = moment(input.from_date).format("M");
     let to_month = moment(input.to_date).format("M");
 
-    if (from_month != input.month && to_month != input.month) {
-      req.records = {
-        schedule_exist: true,
-        message: " selected month and dates are not matching"
-      };
-      next();
-      return;
-    } else if (
+    // if (from_month != input.month && to_month != input.month) {
+    //   req.records = {
+    //     schedule_exist: true,
+    //     message: " selected month and dates are not matching"
+    //   };
+    //   next();
+    //   return;
+    // } else
+    if (
       moment(input.from_date).format("YYYYMMDD") < moment().format("YYYYMMDD")
     ) {
       req.records = {
@@ -466,7 +467,7 @@ module.exports = {
           values: [
             input.sub_dept_id,
             input.schedule_description,
-            input.month,
+            from_month,
             input.year,
             input.from_date,
             input.to_date,
@@ -490,7 +491,8 @@ module.exports = {
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
             req.userIdentity.hospital_id
-          ]
+          ],
+          printQuery: true
         })
         .then(result => {
           let working_days = [];
@@ -607,7 +609,7 @@ module.exports = {
                                     message: `schedule already exist on ${
                                       clashingDate[0]
                                     } for doctor_id:${
-                                      input.schedule_detail[doc].provider_id
+                                      input.schedule_detail[doc].full_name
                                     } from ${
                                       timeChecking[0][0].from_work_hr
                                     } to 
@@ -633,7 +635,7 @@ module.exports = {
                                       message: `schedule already exist on ${
                                         clashingDate[0]
                                       } for doctor_id:${
-                                        input.schedule_detail[doc].provider_id
+                                        input.schedule_detail[doc].full_name
                                       } from ${
                                         timeChecking[1][0].from_work_hr
                                       } to 
@@ -774,25 +776,30 @@ module.exports = {
 
     let outputArray = [];
     let selectDoctor = "";
+    let str = "";
     if (req.query.provider_id > 0) {
-      selectDoctor = `and ASD.provider_id=${req.query.provider_id}`;
+      selectDoctor += ` and ASD.provider_id=${req.query.provider_id}`;
     }
-    delete req.query.provider_id;
+    if (req.query.month > 0) {
+      str += ` and month=${req.query.month}`;
+    }
 
     _mysql
       .executeQuery({
         query:
-          "select hims_d_appointment_schedule_header_id, sub_dept_id, schedule_status, schedule_description, month, year,from_date,to_date, from_work_hr,\
+          "select hims_d_appointment_schedule_header_id, sub_dept_id, schedule_status, schedule_description,\
+          month, year,from_date,to_date, from_work_hr,\
            to_work_hr, work_break1, from_break_hr1, to_break_hr1, work_break2, from_break_hr2,\
         to_break_hr2, monday, tuesday, wednesday, thursday, friday, saturday, sunday\
          from hims_d_appointment_schedule_header where record_status='A' AND sub_dept_id=?\
-          and year=? and month=? and hospital_id=? ",
+          and year=? and hospital_id=? " +
+          str,
         values: [
           req.query.sub_dept_id,
           req.query.year,
-          req.query.month,
           req.userIdentity.hospital_id
-        ]
+        ],
+        printQuery: true
       })
       .then(result => {
         // _mysql.releaseConnection();

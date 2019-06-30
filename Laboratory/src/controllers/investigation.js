@@ -3,7 +3,8 @@ import utlities from "algaeh-utilities";
 import {
   addInvestigationTest,
   getInvestigTestList,
-  updateInvestigationTest
+  updateInvestigationTest,
+  deleteLabAnalyte
 } from "../models/investigation";
 
 export default () => {
@@ -32,6 +33,20 @@ export default () => {
       });
     }
   );
+
+  api.delete("/deleteLabAnalyte", deleteLabAnalyte, (req, res, next) => {
+    if (req.records.invalid_input == true) {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: false,
+        records: req.records
+      });
+    } else {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  });
 
   return api;
 };

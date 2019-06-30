@@ -143,7 +143,7 @@ const deleteIdentifications = ($this, row) => {
     title: "Are you sure you want to delete Identification Component?",
     type: "warning",
     showCancelButton: true,
-    confirmButtonText: "Yes!",
+    confirmButtonText: "Yes",
     confirmButtonColor: "#44b8bd",
     cancelButtonColor: "#d33",
     cancelButtonText: "No"
@@ -224,7 +224,7 @@ const deleteDependencies = ($this, row) => {
     title: "Are you sure you want to delete Dependenties Component?",
     type: "warning",
     showCancelButton: true,
-    confirmButtonText: "Yes!",
+    confirmButtonText: "Yes",
     confirmButtonColor: "#44b8bd",
     cancelButtonColor: "#d33",
     cancelButtonText: "No"

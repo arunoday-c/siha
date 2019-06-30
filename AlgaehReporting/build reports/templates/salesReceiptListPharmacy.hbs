@@ -1,0 +1,71 @@
+{{{importStyle 'css/creditinvoice.css'}}}
+
+<body>
+    <div class="print-body">
+
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th rowspan="2">Sl No.</th>
+                        <th rowspan="2">Receipt No</th>
+                        <th rowspan="2">Receipt Date</th>
+                        <th rowspan="2">Bill No</th>
+                        <th rowspan="2">Patient Name</th>
+                        <th rowspan="2">MR No.</th>
+                        <th rowspan="2">Cashier</th>
+                        <th rowspan="2">Collected On</th>
+                        <th colspan="4">Receipt Amount</th>
+                    </tr>
+                    <tr>
+                        <th>Cash</th>
+                        <th>Card</th>
+                        <th>Cheque</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each details}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                        <td>{{receipt_number}}</td>
+                        <td>{{receipt_date}}</td>
+                        <td>{{pos_number}}</td>
+                        <td>{{patient_full_name}}</td>
+                        <td>{{mrn_no}}</td>
+                        <td>{{cashier}}</td>
+                        <td>{{collected_time}}</td>
+                        <td>{{cash}}</td>
+                        <td>{{card}}</td>
+                        <td>{{check}}</td>
+                        <td>{{total_amount}}</td>
+                    </tr>
+                    {{/each }}
+                </tbody>
+            </table>
+            <table class="tableTotal">
+                <tr>
+                    <td>Total Cash Amount</td>
+                    <td>{{total_cash}}</td>
+                    <td>الإجمالي قبل الضريبة المضافة</td>
+                </tr>
+                <tr>
+                    <td>Total Card Amount</td>
+                    <td>{{total_card}}</td>
+                    <td>الخصم</td>
+                </tr>
+                <tr>
+                    <td>Total Cheque Amount</td>
+                    <td>{{total_check}}</td>
+                    <td>نسبة التحمل</td>
+                </tr>
+                <tr>
+                    <td>Total Net Amount</td>
+                    <td>{{total_sum}}</td>
+                    <td>المبلغ المدفوع</td>
+                </tr>
+            </table>
+        </section>
+        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+    </div>
+</body>

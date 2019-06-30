@@ -147,7 +147,7 @@ const enddatehandle = ($this, context, ctrl, e) => {
         "Selected Date is more than insurance Expiry date Do you want to continue?",
       type: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes!",
+      confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
       cancelButtonText: "No"
@@ -221,7 +221,7 @@ const InsuranceDetails = ($this, context, e) => {
               "Policy Date is more than insurance Expiry date Do you want to continue?",
             type: "warning",
             showCancelButton: true,
-            confirmButtonText: "Yes!",
+            confirmButtonText: "Yes",
             confirmButtonColor: "#44b8bd",
             cancelButtonColor: "#d33",
             cancelButtonText: "No"
@@ -484,114 +484,120 @@ const radioChange = ($this, context, e) => {
   SetBulkState({
     state: $this,
     callback: () => {
-      AlgaehValidation({
-        alertTypeIcon: "warning",
-        querySelector: "data-validate='demographicDetails'",
-        onSuccess: () => {
-          let PatType = null;
-          let saveEnable = false;
-          let ProcessInsure = false;
+      if (
+        $this.state.full_name === null ||
+        $this.state.full_name === "" ||
+        ($this.state.arabic_name === null || $this.state.arabic_name === "") ||
+        $this.state.title_id === null ||
+        $this.state.gender === null ||
+        $this.state.primary_identity_id === null ||
+        ($this.state.primary_id_no === null ||
+          $this.state.primary_id_no === "") ||
+        $this.state.nationality_id === null ||
+        $this.state.country_id === null ||
+        $this.state.contact_number === null ||
+        $this.state.age === null
+      ) {
+        swalMessage({
+          type: "warning",
+          title: "Enter the Demographic Details."
+        });
 
-          if (value === "Y") {
-            PatType = "I";
-            saveEnable = true;
-            if ($this.state.doctor_id === null) {
-              ProcessInsure = true;
-            } else {
-              ProcessInsure = false;
-            }
-            if ($this.state.hims_d_patient_id !== null) {
-              $this.props.getPatientInsurance({
-                // uri: "/insurance/getPatientInsurance",
-                uri: "/patientRegistration/getPatientInsurance",
-                module: "frontDesk",
-                method: "GET",
-                data: {
-                  patient_id: $this.state.hims_d_patient_id
-                },
-                redux: {
-                  type: "EXIT_INSURANCE_GET_DATA",
-                  mappingName: "existinsurance"
-                }
-              });
-            }
-          } else {
-            PatType = "S";
+        return;
+      }
+      let PatType = null;
+      let saveEnable = false;
+      let ProcessInsure = false;
 
-            $this.props.setSelectedInsurance({
-              redux: {
-                type: "PRIMARY_INSURANCE_DATA",
-                mappingName: "primaryinsurance",
-                data: []
-              }
-            });
-
-            $this.props.setSelectedInsurance({
-              redux: {
-                type: "EXIT_INSURANCE_GET_DATA",
-                mappingName: "existinsurance",
-                data: []
-              }
-            });
-          }
-
-          $this.setState(
-            {
-              insured: value,
-              insuranceYes: !$this.state.insuranceYes,
-              saveEnable: saveEnable,
-
-              primary_insurance_provider_id: null,
-              primary_sub_id: null,
-              primary_network_id: null,
-              primary_policy_num: null,
-              primary_network_office_id: null,
-              primary_card_number: null,
-              primary_effective_start_date: null,
-              primary_effective_end_date: null,
-              patInsuranceFrontImg: undefined
+      if (value === "Y") {
+        PatType = "I";
+        saveEnable = true;
+        if ($this.state.doctor_id === null) {
+          ProcessInsure = true;
+        } else {
+          ProcessInsure = false;
+        }
+        if ($this.state.hims_d_patient_id !== null) {
+          $this.props.getPatientInsurance({
+            // uri: "/insurance/getPatientInsurance",
+            uri: "/patientRegistration/getPatientInsurance",
+            module: "frontDesk",
+            method: "GET",
+            data: {
+              patient_id: $this.state.hims_d_patient_id
             },
-            () => {
-              if (value !== "Y") {
-                if ($this.state.doctor_id !== null) {
-                  ProcessInsurance($this, context);
-                }
-              }
+            redux: {
+              type: "EXIT_INSURANCE_GET_DATA",
+              mappingName: "existinsurance"
             }
-          );
+          });
+        }
+      } else {
+        PatType = "S";
+        if ($this.state.doctor_id === null) {
+          saveEnable = true;
+        }
+        $this.props.setSelectedInsurance({
+          redux: {
+            type: "PRIMARY_INSURANCE_DATA",
+            mappingName: "primaryinsurance",
+            data: []
+          }
+        });
 
-          if (context !== null) {
-            context.updateState({
-              ...$this.state,
-              insured: value,
-              insuranceYes: !$this.state.insuranceYes,
-              payment_type: PatType,
-              saveEnable: saveEnable,
-              ProcessInsure: ProcessInsure,
-              primary_insurance_provider_id: null,
-              primary_sub_id: null,
-              primary_network_id: null,
-              primary_policy_num: null,
-              primary_network_office_id: null,
-              primary_card_number: null,
-              primary_effective_start_date: null,
-              primary_effective_end_date: null,
-              patInsuranceFrontImg: undefined
-            });
+        $this.props.setSelectedInsurance({
+          redux: {
+            type: "EXIT_INSURANCE_GET_DATA",
+            mappingName: "existinsurance",
+            data: []
+          }
+        });
+      }
+
+      $this.setState(
+        {
+          insured: value,
+          insuranceYes: !$this.state.insuranceYes,
+          saveEnable: saveEnable,
+
+          primary_insurance_provider_id: null,
+          primary_sub_id: null,
+          primary_network_id: null,
+          primary_policy_num: null,
+          primary_network_office_id: null,
+          primary_card_number: null,
+          primary_effective_start_date: null,
+          primary_effective_end_date: null,
+          patInsuranceFrontImg: undefined
+        },
+        () => {
+          if (value !== "Y") {
+            if ($this.state.doctor_id !== null) {
+              ProcessInsurance($this, context);
+            }
           }
         }
-        // onCatch: () => {
-        //   $this.setState({
-        //     [e.name]: null
-        //   });
-        //   if (context !== null) {
-        //     context.updateState({
-        //       ...$this.state,
-        //       [e.name]: null
-        //     });
-        //   }
-        // }
-      });
+      );
+
+      if (context !== null) {
+        context.updateState({
+          ...$this.state,
+          insured: value,
+          insuranceYes: !$this.state.insuranceYes,
+          payment_type: PatType,
+          saveEnable: saveEnable,
+          ProcessInsure: ProcessInsure,
+          primary_insurance_provider_id: null,
+          primary_sub_id: null,
+          primary_network_id: null,
+          primary_policy_num: null,
+          primary_network_office_id: null,
+          primary_card_number: null,
+          primary_effective_start_date: null,
+          primary_effective_end_date: null,
+          patInsuranceFrontImg: undefined
+        });
+      }
     }
   });
 };

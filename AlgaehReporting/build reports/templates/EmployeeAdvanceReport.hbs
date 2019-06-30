@@ -1,0 +1,35 @@
+{{{importStyle 'css/creditinvoice.css'}}}
+
+<body>
+    <div class="print-body">
+
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                     <tr>
+    <th>Sl No.</th>
+    <th>Handover Date</th>
+    <th>Total Expected</th>
+    <th>Total Collected</th>
+    <th>Difference</th>
+    <th>Status</th>
+  </tr>
+                </thead>
+                <tbody>
+                    {{#each details}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                        <td>{{daily_handover_date}}</td>
+                        <td>{{expected_total}}</td>
+                        <td>{{collected_total}}</td>
+                        <td>Diff</td>
+                        <td>Status</td>
+                    </tr>
+                    {{/each }}
+              
+                </tbody>
+            </table>
+        </section>
+        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+    </div>
+</body>

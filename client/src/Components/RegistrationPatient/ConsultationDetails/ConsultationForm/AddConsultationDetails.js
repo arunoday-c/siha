@@ -16,16 +16,86 @@ const DeptselectedHandeler = ($this, context, e) => {
     [e.name]: e.value,
     department_id: e.selected.department_id,
     department_type: e.selected.department_type,
-    doctors: dept.doctors
+    doctors: dept.doctors,
+    doctor_id: null
   });
   if (context !== null) {
     context.updateState({
       [e.name]: e.value,
       department_id: e.selected.department_id,
       department_type: e.selected.department_type,
-      doctors: dept.doctors
+      doctors: dept.doctors,
+      doctor_id: null,
+
+      saveEnable: true,
+
+      advance_adjust: null,
+      card_amount: null,
+      cash_amount: null,
+      cheque_amount: null,
+      company_payble: null,
+      company_res: null,
+      company_tax: null,
+      copay_amount: null,
+      deductable_amount: null,
+      discount_amount: null,
+      gross_total: null,
+      net_amount: null,
+      net_total: null,
+      patient_payable: null,
+      patient_payable_h: null,
+      patient_res: null,
+      patient_tax: null,
+      receiveable_amount: null,
+      sec_company_paybale: null,
+      sec_company_res: null,
+      sec_company_tax: null,
+      sec_copay_amount: null,
+      sec_deductable_amount: null,
+      sheet_discount_amount: null,
+      sheet_discount_percentage: null,
+      sub_total_amount: null,
+      total_amount: null,
+      total_tax: null,
+      unbalanced_amount: null
     });
   }
+};
+
+export const clearBillDetails = context => {
+  context.updateState({
+    doctor_id: null,
+    saveEnable: true,
+    advance_adjust: null,
+    card_amount: null,
+    cash_amount: null,
+    cheque_amount: null,
+    company_payble: null,
+    company_res: null,
+    company_tax: null,
+    copay_amount: null,
+    deductable_amount: null,
+    discount_amount: null,
+    gross_total: null,
+    net_amount: null,
+    net_total: null,
+    patient_payable: null,
+    patient_payable_h: null,
+    patient_res: null,
+    patient_tax: null,
+    receiveable_amount: null,
+    sec_company_paybale: null,
+    sec_company_res: null,
+    sec_company_tax: null,
+    sec_copay_amount: null,
+    sec_deductable_amount: null,
+    sheet_discount_amount: null,
+    sheet_discount_percentage: null,
+    sub_total_amount: null,
+    total_amount: null,
+    total_tax: null,
+    unbalanced_amount: null
+  });
 };
 
 const selectedHandeler = ($this, context, e) => {
@@ -275,6 +345,7 @@ const generateBillDetails = ($this, context) => {
   if (DoctorVisits.length > 0) {
     expiryDate = Enumerable.from(DoctorVisits).max(s => s.visit_expiery_date);
   }
+
   if (
     $this.state.department_type === "D" &&
     $this.state.existing_plan === "Y"
@@ -311,6 +382,7 @@ const generateBillDetails = ($this, context) => {
     method: "POST",
     data: serviceInput,
     onSuccess: response => {
+      console.log("from before bill", response.data.records);
       if (response.data.success) {
         if (context !== null) {
           context.updateState({ ...response.data.records });
@@ -323,6 +395,7 @@ const generateBillDetails = ($this, context) => {
           data: response.data.records,
           onSuccess: response => {
             if (response.data.success) {
+              console.log("from bills", response.data.records);
               if (context !== null) {
                 context.updateState({ ...response.data.records });
               }
@@ -351,7 +424,7 @@ const generateBillDetails = ($this, context) => {
 
 const radioChange = ($this, context, e) => {
   let name = e.name || e.target.name;
-  let value = e.value || e.target.value;
+  let value = "N";
   if (name === "maternity_patient_yes") {
     $this.setState({
       maternity_patient: value,
@@ -364,22 +437,34 @@ const radioChange = ($this, context, e) => {
       });
     }
   } else if (name === "existing_plan") {
+    if ($this.state.doctor_id === null) {
+      swalMessage({
+        title: "Select The doctor...",
+        type: "warning"
+      });
+      return;
+    }
+    let checked_existing_plan = false;
+    if ($this.state.checked_existing_plan === false) {
+      checked_existing_plan = true;
+      value = "Y";
+    }
     $this.setState(
       {
         [name]: value,
-        checked_existing_plan: !$this.state.checked_existing_plan
+        checked_existing_plan: checked_existing_plan
       },
       () => {
         getTreatementPlans($this);
-        if ($this.state.doctor_id !== null) {
-          generateBillDetails($this, context);
-        }
+        // if ($this.state.doctor_id !== null) {
+        //   generateBillDetails($this, context);
+        // }
       }
     );
     if (context !== null) {
       context.updateState({
         [name]: value,
-        checked_existing_plan: !$this.state.checked_existing_plan
+        checked_existing_plan: checked_existing_plan
       });
     }
   }

@@ -36,9 +36,13 @@ const getCtrlCode = ($this, docNumber) => {
 
         for (let i = 0; i < data.pharmacy_stock_detail.length; i++) {
           data.pharmacy_stock_detail[i].quantity_authorized =
-            data.pharmacy_stock_detail[i].quantity_required;
+            data.authorize1 === "N"
+              ? data.pharmacy_stock_detail[i].quantity_required
+              : data.pharmacy_stock_detail[i].quantity_authorized;
           data.pharmacy_stock_detail[i].quantity_outstanding =
-            data.pharmacy_stock_detail[i].quantity_required;
+            data.authorize1 === "N"
+              ? data.pharmacy_stock_detail[i].quantity_required
+              : data.pharmacy_stock_detail[i].quantity_outstanding;
 
           data.pharmacy_stock_detail[i].operation = "+";
         }

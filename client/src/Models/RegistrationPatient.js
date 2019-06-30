@@ -159,7 +159,8 @@ export default {
       card_class: null,
       employee_id: null,
       popUpGenereted: false,
-      advanceEnable: true
+      advanceEnable: true,
+      advance_amount: 0
     };
     return output;
   }

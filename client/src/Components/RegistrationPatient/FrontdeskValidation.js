@@ -3,7 +3,7 @@ import { AlgaehOpenContainer } from "../../utils/GlobalFunctions";
 
 export function Validations(state) {
   let isError = false;
-  
+
   var tow_word_name = state.state.full_name.split(" ");
 
   let requied_emp_id = JSON.parse(
@@ -234,16 +234,16 @@ export function Validations(state) {
       return isError;
     }
 
-    if (state.state.cheque_date === null || state.state.cheque_date === "") {
-      isError = true;
-
-      swalMessage({
-        type: "warning",
-        title: "Cheque Date Cannot be blank."
-      });
-
-      document.querySelector("[name='cheque_date']").focus();
-      return isError;
-    }
+    // if (state.state.cheque_date === null || state.state.cheque_date === "") {
+    //   isError = true;
+    //
+    //   swalMessage({
+    //     type: "warning",
+    //     title: "Cheque Date Cannot be blank."
+    //   });
+    //
+    //   document.querySelector("[name='cheque_date']").focus();
+    //   return isError;
+    // }
   }
 }

@@ -111,7 +111,7 @@ class Appointment extends PureComponent {
         title: "Cancel Appointment for " + row.patient_name + "?",
         type: "warning",
         showCancelButton: true,
-        confirmButtonText: "Yes!",
+        confirmButtonText: "Yes",
         confirmButtonColor: "#44b8bd",
         cancelButtonColor: "#d33",
         cancelButtonText: "No"
@@ -250,7 +250,9 @@ class Appointment extends PureComponent {
       age: null,
       contact_number: "",
       email: "",
-      appointment_remarks: ""
+      appointment_remarks: "",
+      timeSlots: [],
+      edit_appt_date: ""
     });
   }
 
@@ -390,12 +392,20 @@ class Appointment extends PureComponent {
               .where(w => w.default_status === "Y")
               .firstOrDefault();
 
-            let CreateVisit = Enumerable.from(this.state.appointmentStatus)
+            let CheckedIn = Enumerable.from(this.state.appointmentStatus)
               .where(w => w.default_status === "C")
               .firstOrDefault();
 
             let Reschedule = Enumerable.from(this.state.appointmentStatus)
               .where(w => w.default_status === "RS")
+              .firstOrDefault();
+
+            let Cancelled = Enumerable.from(this.state.appointmentStatus)
+              .where(w => w.default_status === "CAN")
+              .firstOrDefault();
+
+            let NoShow = Enumerable.from(this.state.appointmentStatus)
+              .where(w => w.default_status === "NS")
               .firstOrDefault();
 
             this.setState({
@@ -405,12 +415,20 @@ class Appointment extends PureComponent {
                   ? DefaultStatus.hims_d_appointment_status_id
                   : null,
               checkInId:
-                CreateVisit !== undefined
-                  ? CreateVisit.hims_d_appointment_status_id
+                CheckedIn !== undefined
+                  ? CheckedIn.hims_d_appointment_status_id
                   : null,
               RescheduleId:
                 Reschedule !== undefined
                   ? Reschedule.hims_d_appointment_status_id
+                  : null,
+              cancelledId:
+                Cancelled !== undefined
+                  ? Cancelled.hims_d_appointment_status_id
+                  : null,
+              noShowId:
+                NoShow !== undefined
+                  ? NoShow.hims_d_appointment_status_id
                   : null
             });
           });
@@ -623,7 +641,10 @@ class Appointment extends PureComponent {
   }
 
   dateHandler(selectedDate) {
-    this.setState({ edit_appt_date: selectedDate });
+    this.setState({ edit_appt_date: selectedDate }, () => {
+      const provider_id = this.state.edit_provider_id;
+      this.getTimeSlotsForDropDown(provider_id);
+    });
   }
 
   texthandle(e) {
@@ -728,13 +749,13 @@ class Appointment extends PureComponent {
       console.log("after check in", patient);
       return this.props.routeComponents(patient);
     }
-    debugger;
+
     return this.props.routeComponents(patient);
   }
 
   openEditModal(patient, data, e) {
     console.log("from open edit", patient, data);
-    debugger;
+
     e.preventDefault();
 
     this.getTimeSlotsForDropDown(patient.provider_id);
@@ -824,7 +845,7 @@ class Appointment extends PureComponent {
           title: "Are you Sure you want to Update Appointment?",
           type: "warning",
           showCancelButton: true,
-          confirmButtonText: "Yes!",
+          confirmButtonText: "Yes",
           confirmButtonColor: "#44b8bd",
           cancelButtonColor: "#d33",
           cancelButtonText: "No"
@@ -877,9 +898,11 @@ class Appointment extends PureComponent {
                 title_id: this.state.edit_title_id
               };
               if (edit_details.appointment_status_id === this.state.checkInId) {
-                console.log("from update patient", edit_details);
-                debugger;
                 this.handleCheckIn(edit_details);
+              } else if (
+                edit_details.appointment_status_id === this.state.cancelledId
+              ) {
+                this.cancelAppt(edit_details);
               } else {
                 algaehApiCall({
                   uri: "/appointment/updatePatientAppointment",
@@ -1095,7 +1118,7 @@ class Appointment extends PureComponent {
             title: "Are you sure you want to Re-Schedule the appointment?",
             type: "warning",
             showCancelButton: true,
-            confirmButtonText: "Yes!",
+            confirmButtonText: "Yes",
             confirmButtonColor: "#",
             cancelButtonColor: "#d33",
             cancelButtonText: "No"
@@ -1331,13 +1354,18 @@ class Appointment extends PureComponent {
     }
   }
 
-  isInactiveTimeSlot(time) {
-    return (
-      moment(time, "HH:mm a").format("HHmm") <
-        moment(new Date()).format("HHmm") &&
-      moment(this.state.activeDateHeader).format("YYYYMMDD") <=
-        moment(new Date()).format("YYYYMMDD")
-    );
+  isInactiveTimeSlot(time, date) {
+    let activeDate = date ? date : this.state.activeDateHeader;
+    if (moment(activeDate).isBefore(new Date(), "day")) {
+      return true;
+    } else if (moment(activeDate).isSame(new Date(), "day")) {
+      return (
+        moment(time, "HH:mm a").format("HHmm") <
+        moment(new Date()).format("HHmm")
+      );
+    } else {
+      return false;
+    }
   }
 
   generateChildren(data) {
@@ -1434,59 +1462,73 @@ class Appointment extends PureComponent {
               {patient != null &&
               patient.is_stand_by === "N" &&
               patient.cancelled === "N" ? (
-                <div
-                  appt-pat={JSON.stringify(patient)}
-                  className="dynPatient"
-                  style={{ background: bg_color }}
-                  draggable={true}
-                  onDragStart={this.drag.bind(this)}
-                >
-                  <span onClick={this.openEditModal.bind(this, patient, null)}>
-                    {patient.patient_name}
-                    <br />
-                    {patient.contact_number}
-                  </span>
-
-                  <i
-                    className="fas fa-times"
-                    onClick={this.cancelAppt.bind(this, patient)}
-                  />
-                  <div className="appStatusListCntr">
-                    <i className="fas fa-clock" />
-                    <ul className="appStatusList">
-                      {status !== undefined
-                        ? status.map((data, index) => (
-                            <li
-                              key={index}
-                              onClick={this.handlePatient.bind(
-                                this,
-                                patient,
-                                data
-                              )}
-                            >
-                              <span
-                                style={{
-                                  backgroundColor: data.color_code
-                                }}
-                              >
-                                {data.statusDesc}
-                              </span>
-                            </li>
-                          ))
-                        : null}
-                      <li
-                        onClick={generateReport.bind(
-                          this,
-                          patient,
-                          "appointmentSlip",
-                          "Appointment Slip"
-                        )}
-                      >
-                        <span>Print App. Slip</span>
-                      </li>
-                    </ul>
+                patient.appointment_status_id === this.state.noShowId ? (
+                  <div
+                    className="dynPatient"
+                    style={{ background: bg_color }}
+                    draggable={false}
+                  >
+                    <span>
+                      {patient.patient_name} <br /> {patient.contact_number}
+                    </span>
                   </div>
-                </div>
+                ) : (
+                  <div
+                    appt-pat={JSON.stringify(patient)}
+                    className="dynPatient"
+                    style={{ background: bg_color }}
+                    draggable={true}
+                    onDragStart={this.drag.bind(this)}
+                  >
+                    <span
+                      onClick={this.openEditModal.bind(this, patient, null)}
+                    >
+                      {patient.patient_name}
+                      <br />
+                      {patient.contact_number}
+                    </span>
+
+                    <i
+                      className="fas fa-times"
+                      onClick={this.cancelAppt.bind(this, patient)}
+                    />
+                    <div className="appStatusListCntr">
+                      <i className="fas fa-clock" />
+                      <ul className="appStatusList">
+                        {status !== undefined
+                          ? status.map((data, index) => (
+                              <li
+                                key={index}
+                                onClick={this.handlePatient.bind(
+                                  this,
+                                  patient,
+                                  data
+                                )}
+                              >
+                                <span
+                                  style={{
+                                    backgroundColor: data.color_code
+                                  }}
+                                >
+                                  {data.statusDesc}
+                                </span>
+                              </li>
+                            ))
+                          : null}
+                        <li
+                          onClick={generateReport.bind(
+                            this,
+                            patient,
+                            "appointmentSlip",
+                            "Appointment Slip"
+                          )}
+                        >
+                          <span>Print App. Slip</span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                )
               ) : null}
             </React.Fragment>
           ) : (
@@ -1518,9 +1560,10 @@ class Appointment extends PureComponent {
     const [data] = schedule.filter(doc => doc.provider_id === id);
     const result = generateTimeslotsForDoctor(data);
     let timeSlots = [];
+    let activeDate = this.state.edit_appt_date;
     result.forEach(time => {
       if (time !== "break") {
-        if (!this.isInactiveTimeSlot(time)) {
+        if (!this.isInactiveTimeSlot(time, activeDate)) {
           timeSlots.push({
             name: moment(time, "HH:mm:ss").format("hh:mm a"),
             value: time

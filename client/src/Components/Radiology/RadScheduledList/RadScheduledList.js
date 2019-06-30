@@ -70,7 +70,6 @@ class RadScheduledList extends Component {
   };
 
   generateReport(row) {
-    
     algaehApiCall({
       uri: "/report",
       method: "GET",
@@ -157,117 +156,42 @@ class RadScheduledList extends Component {
             className="row inner-top-search"
             style={{ marginTop: "75px", paddingBottom: "10px" }}
           >
-            <div className="col-lg-6">
-              <div className="row">
-                <AlgaehDateHandler
-                  div={{ className: "col" }}
-                  label={{ fieldName: "from_date" }}
-                  textBox={{ className: "txt-fld", name: "from_date" }}
-                  events={{
-                    onChange: datehandle.bind(this, this)
-                  }}
-                  value={this.state.from_date}
-                />
+            <AlgaehDateHandler
+              div={{ className: "col-2" }}
+              label={{ fieldName: "from_date" }}
+              textBox={{ className: "txt-fld", name: "from_date" }}
+              events={{
+                onChange: datehandle.bind(this, this)
+              }}
+              value={this.state.from_date}
+            />
 
-                <AlgaehDateHandler
-                  div={{ className: "col" }}
-                  label={{ fieldName: "to_date" }}
-                  textBox={{ className: "txt-fld", name: "to_date" }}
-                  events={{
-                    onChange: datehandle.bind(this, this)
-                  }}
-                  value={this.state.to_date}
-                />
+            <AlgaehDateHandler
+              div={{ className: "col-2" }}
+              label={{ fieldName: "to_date" }}
+              textBox={{ className: "txt-fld", name: "to_date" }}
+              events={{
+                onChange: datehandle.bind(this, this)
+              }}
+              value={this.state.to_date}
+            />
+            <div className="col" style={{ paddingTop: "19px" }}>
+              <button
+                className="btn btn-primary btn-sm"
+                type="button"
+                onClick={getRadTestList.bind(this, this)}
+              >
+                Load{" "}
+              </button>
 
-                <AlagehFormGroup
-                  div={{ className: "col" }}
-                  label={{
-                    fieldName: "patient_code"
-                  }}
-                  textBox={{
-                    value: this.state.patient_code,
-                    className: "txt-fld",
-                    name: "patient_code",
-
-                    events: {
-                      onChange: texthandle.bind(this, this)
-                    },
-                    others: {
-                      disabled: true
-                    }
-                  }}
-                />
-
-                <div className="col-lg-1 form-group">
-                  <span
-                    className="fas fa-search"
-                    style={{
-                      fontSize: " 1.2rem",
-                      marginTop: "6px",
-                      paddingBottom: "10px"
-                    }}
-                    onClick={PatientSearch.bind(this, this)}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="col-lg-6">
-              <div className="row">
-                <AlagehAutoComplete
-                  div={{ className: "col" }}
-                  label={{
-                    fieldName: "proiorty",
-                    isImp: false
-                  }}
-                  selector={{
-                    name: "proiorty",
-                    className: "select-fld",
-                    value: this.state.proiorty,
-                    dataSource: {
-                      textField: "name",
-                      valueField: "value",
-                      data: FORMAT_PRIORITY
-                    },
-                    onChange: texthandle.bind(this, this)
-                  }}
-                />
-                <AlagehAutoComplete
-                  div={{ className: "col" }}
-                  label={{
-                    fieldName: "status"
-                  }}
-                  selector={{
-                    name: "status",
-                    className: "select-fld",
-                    value: this.state.status,
-                    dataSource: {
-                      textField: "name",
-                      valueField: "value",
-                      data: FORMAT_RAD_STATUS
-                    },
-                    onChange: texthandle.bind(this, this)
-                  }}
-                />
-
-                <div className="col" style={{ paddingTop: "19px" }}>
-                  <button
-                    className="btn btn-primary btn-sm"
-                    type="button"
-                    onClick={getRadTestList.bind(this, this)}
-                  >
-                    Load{" "}
-                  </button>
-
-                  <button
-                    className="btn btn-default btn-sm"
-                    style={{ marginLeft: "10px" }}
-                    type="button"
-                    onClick={Refresh.bind(this, this)}
-                  >
-                    Clear
-                  </button>
-                </div>
-              </div>
+              <button
+                className="btn btn-default btn-sm"
+                style={{ marginLeft: "10px" }}
+                type="button"
+                onClick={Refresh.bind(this, this)}
+              >
+                Clear
+              </button>
             </div>
           </div>
 
@@ -295,15 +219,13 @@ class RadScheduledList extends Component {
                     </ul>
                   </div>
                 </div>
-                <div className="portlet-body">
+                <div className="portlet-body" id="RadWorkGridCntr">
                   <AlgaehDataGrid
                     id="Scheduled_list_grid"
                     columns={[
                       {
                         fieldName: "actions",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Print Report" }} />
-                        ),
+                        label: <AlgaehLabel label={{ forceLabel: "Action" }} />,
                         displayTemplate: row => {
                           return (
                             <i
@@ -312,14 +234,16 @@ class RadScheduledList extends Component {
                                   row.status === "RA" ? "" : "none",
                                 opacity: row.status === "RA" ? "" : "0.1"
                               }}
-                              className="fa fa-print"
+                              className="fas fa-print"
                               onClick={this.generateReport.bind(this, row)}
                             />
                           );
                         },
                         others: {
                           fixed: "left",
-                          maxWidth: 100
+                          maxWidth: 70,
+                          resizable: false,
+                          filterable: false
                         }
                       },
                       {
@@ -346,7 +270,7 @@ class RadScheduledList extends Component {
                         },
                         disabled: false,
                         others: {
-                          maxWidth: 200,
+                          maxWidth: 150,
                           resizable: false,
                           style: { textAlign: "center" }
                         }
@@ -363,6 +287,55 @@ class RadScheduledList extends Component {
                         }
                       },
                       {
+                        fieldName: "status",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "test_status" }} />
+                        ),
+                        displayTemplate: row => {
+                          return row.status === "O" ? (
+                            <span className="badge badge-info">Ordered</span>
+                          ) : row.status === "S" ? (
+                            <span className="badge badge-warning">
+                              Scheduled
+                            </span>
+                          ) : row.status === "UP" ? (
+                            <span className="badge badge-warning">
+                              Under Process
+                            </span>
+                          ) : row.status === "CN" ? (
+                            <span className="badge badge-danger">
+                              Cancelled
+                            </span>
+                          ) : row.status === "RC" ? (
+                            <span className="badge badge-success">
+                              Confirmed
+                            </span>
+                          ) : (
+                            <span className="badge badge-success">
+                              Validated
+                            </span>
+                          );
+                        },
+                        others: {
+                          maxWidth: 130,
+                          resizable: false,
+                          style: { textAlign: "center" }
+                        }
+                      },
+                      {
+                        fieldName: "service_name",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Test Name" }} />
+                        ),
+
+                        disabled: true,
+                        others: {
+                          maxWidth: 130,
+                          resizable: false,
+                          style: { textAlign: "center" }
+                        }
+                      },
+                      {
                         fieldName: "test_type",
                         label: (
                           <AlgaehLabel label={{ fieldName: "proiorty" }} />
@@ -376,49 +349,28 @@ class RadScheduledList extends Component {
                         },
                         disabled: true,
                         others: {
-                          resizable: false,
-                          style: { textAlign: "left" }
-                        }
-                      },
-                      {
-                        fieldName: "ordered_date",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "ordered_date" }} />
-                        ),
-                        displayTemplate: row => {
-                          return (
-                            <span>
-                              {this.changeDateFormat(row.ordered_date)}
-                            </span>
-                          );
-                        },
-                        disabled: true,
-                        others: {
-                          maxWidth: 200,
+                          maxWidth: 130,
                           resizable: false,
                           style: { textAlign: "center" }
                         }
                       },
                       {
-                        fieldName: "status",
+                        fieldName: "ordered_date",
                         label: (
-                          <AlgaehLabel label={{ fieldName: "test_status" }} />
+                          <AlgaehLabel
+                            label={{ forceLabel: "Ordered Date & Time" }}
+                          />
                         ),
-                        displayTemplate: row => {
-                          return row.status === "O"
-                            ? "Ordered"
-                            : row.status === "S"
-                            ? "Scheduled"
-                            : row.status === "UP"
-                            ? "Under Process"
-                            : row.status === "CN"
-                            ? "Cancelled"
-                            : row.status === "RC"
-                            ? "Confirmed"
-                            : "Validated";
-                        },
+                        // displayTemplate: row => {
+                        //   return (
+                        //     <span>
+                        //       {this.changeDateFormat(row.ordered_date)}
+                        //     </span>
+                        //   );
+                        // },
+                        disabled: true,
                         others: {
-                          maxWidth: 200,
+                          maxWidth: 150,
                           resizable: false,
                           style: { textAlign: "center" }
                         }
@@ -427,19 +379,19 @@ class RadScheduledList extends Component {
                         fieldName: "scheduled_date_time",
                         label: (
                           <AlgaehLabel
-                            label={{ fieldName: "scheduled_date_time" }}
+                            label={{ forceLabel: "Scheduled Date & Time" }}
                           />
                         ),
-                        displayTemplate: row => {
-                          return (
-                            <span>
-                              {this.changeDateFormat(row.scheduled_date_time)}
-                            </span>
-                          );
-                        },
+                        // displayTemplate: row => {
+                        //   return (
+                        //     <span>
+                        //       {this.changeDateFormat(row.scheduled_date_time)}
+                        //     </span>
+                        //   );
+                        // },
                         disabled: true,
                         others: {
-                          maxWidth: 200,
+                          maxWidth: 150,
                           resizable: false,
                           style: { textAlign: "center" }
                         }
@@ -466,7 +418,8 @@ class RadScheduledList extends Component {
                           : this.props.radtestlist
                     }}
                     noDataText="No data available for selected period"
-                    paging={{ page: 0, rowsPerPage: 10 }}
+                    filter="true"
+                    paging={{ page: 0, rowsPerPage: 20 }}
                   />
                 </div>
               </div>

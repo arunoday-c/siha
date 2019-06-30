@@ -255,15 +255,44 @@
   }
 
   .btn-green {
-    background: rgb(138, 221, 82);
-    color: #fff;
-    border: 1px solid #fff;
+    color: $color-white;
+        background-color: $primary-color;
+        border-color: darken($primary-color, 10%);
+        &:hover {
+          background-color: darken($primary-color, 10%);
+          border-color: lighten($primary-color, 10%);
+        }
+        &:focus {
+          background-color: $primary-color;
+          border-color: $primary-color;
+        }
+        &.disabled,
+        &:disabled {
+          opacity: 0.3;
+          color: $color-white;
+          background-color: $primary-color;
+          border-color: darken($primary-color, 10%);
+          cursor: not-allowed;
+        }
+        &:active {
+          background-color: $color-white;
+          border-color: $color-white;
+        }
+    i{color: #fff;}
+  }
+  .btn-grey {
+    color: lighten($color-black, 10%);
+        background-color: lighten($color-black, 90%);
+        border-color: lighten($color-black, 50%);
+        &:hover,
+        &:focus {
+          background-color: lighten($color-black, 80%);
+          border-color: lighten($color-black, 10%);
+        }
+    i{
+    color: #000;}
   }
 
-  // :hover::-webkit-scrollbar {
-  //   width: 8px;
-  //   height: 8px;
-  // }
 
   /* Track */
   ::-webkit-scrollbar-track {
@@ -298,8 +327,8 @@
 
   .cancelledClass {
     background-color: #ff400080 !important;
-    color: white;
-    font-weight: bolder;
+    // color: white;
+    // font-weight: bolder;
   }
 
   .confirmedClass {
@@ -309,8 +338,8 @@
   }
   .orderedClass {
     background-color: #ffff00 !important;
-    color: white;
-    font-weight: bolder;
+    // color: white;
+    // font-weight: bolder;
   }
   .collectedClass {
     background-color: #097bd880 !important;
@@ -334,8 +363,8 @@
   }
   .underProcessClass {
     background-color: rgba(255, 0, 0, 0.08) !important;
-    color: white;
-    font-weight: bolder;
+    // color: white;
+    // font-weight: bolder;
   }
 
   .cursor-pointer {
@@ -1557,7 +1586,9 @@
     float: left;
     border-right: 1px solid #adaaaa;
     border-left: 0;
-  }
+  } .print-area .dropdown-menu {
+    left: 5px;
+    right: inherit;}
   .hdg_bredcrump {
     background: url("./assets/images/breadcrump_border_Ar.webp") no-repeat top
       left #fff !important;

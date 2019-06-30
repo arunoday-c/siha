@@ -563,7 +563,8 @@ const updatePODetail = ($this, context, row) => {
         net_payable: net_payable,
         total_tax: total_tax,
         detail_discount: detail_discount,
-        saveEnable: saveEnable
+        saveEnable: saveEnable,
+        authorizeBtn: false
       });
     }
   } else {
@@ -624,7 +625,12 @@ const onchangegridcol = ($this, row, e) => {
   //
 
   let name = e.name || e.target.name;
-  let value = e.value || e.target.value;
+  let value =
+    e.value === ""
+      ? null
+      : e.value || e.target.value === ""
+      ? null
+      : e.target.value;
   if (parseFloat(value) > parseFloat(row.total_quantity)) {
     swalMessage({
       title: "Authorize Quantity cannot be greater than Ordered Quantity.",
@@ -636,11 +642,18 @@ const onchangegridcol = ($this, row, e) => {
       type: "warning"
     });
   } else {
-    row[name] = value;
-    row["quantity_outstanding"] = value;
-    row["rejected_quantity"] = row.total_quantity - value;
-    row.update();
-    onchhangegriddiscount($this, row, e);
+    if (value !== null) {
+      row[name] = value;
+      row["quantity_outstanding"] = value;
+      row["rejected_quantity"] = row.total_quantity - value;
+      row.update();
+      onchhangegriddiscount($this, row, e);
+    } else {
+      row[name] = value;
+      row["quantity_outstanding"] = value;
+      row["rejected_quantity"] = value;
+      row.update();
+    }
   }
 };
 
@@ -727,7 +740,8 @@ const GridAssignData = ($this, row) => {
 const EditGrid = ($this, context, cancelRow) => {
   if (context !== null) {
     context.updateState({
-      saveEnable: true
+      saveEnable: true,
+      authorizeBtn: true
     });
   }
 };

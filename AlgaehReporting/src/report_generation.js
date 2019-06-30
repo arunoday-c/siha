@@ -8,6 +8,7 @@ import merge from "easy-pdf-merge";
 import hbs from "handlebars";
 import "babel-polyfill";
 import chrome from "algaeh-keys";
+
 const chromePath =
   chrome.default.chromePuppeteer != null ? chrome.default.chromePuppeteer : {};
 

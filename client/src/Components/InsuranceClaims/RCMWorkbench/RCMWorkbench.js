@@ -835,7 +835,7 @@ class RCMWorkbench extends Component {
                 />
               </button>
 
-              <button
+              {/*<button
                 onClick={this.generateReports.bind(this)}
                 type="button"
                 className="btn btn-other"
@@ -847,7 +847,7 @@ class RCMWorkbench extends Component {
                     returnText: true
                   }}
                 />
-              </button>
+              </button>*/}
               <button
                 onClick={this.claimsReport.bind(this)}
                 type="button"

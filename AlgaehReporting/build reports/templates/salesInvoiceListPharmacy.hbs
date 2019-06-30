@@ -1,0 +1,67 @@
+{{{importStyle 'css/creditinvoice.css'}}}
+
+<body>
+    <div class="print-body">
+
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th>Sl No.</th>
+                        {{!-- <th>patient name.</th> --}}
+                        <th>Invoice No.</th>
+                        <th>Invoice Date</th>
+                        <th>Invoice Amt.</th>
+                        <th>Patient Payable</th>
+                        <th>Patient Tax</th>
+                        <th>Company Payable</th>
+                        <th>Company Tax</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each details}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                        {{!-- <td>{{patient_full_name}}</td> --}}
+                        <td>{{pos_number}}</td>
+                        <td>{{pos_date}}</td>
+                        <td class="numberFld">{{net_amount}}</td>
+                        <td class="numberFld">{{patient_payable}}</td>
+                        <td class="numberFld">{{patient_tax}}</td>
+                        <td class="numberFld">{{company_payable}}</td>
+                        <td class="numberFld">{{company_tax}}</td>
+                    </tr>
+                    {{/each }}
+                </tbody>
+            </table>
+            <table class="tableTotal">
+                <tr class="bold">
+                    <td>Total Invoive Amt.</td>
+                    <td>{{total_net_amount}}</td>
+                    <td>المبلغ الإجمالي للفاتورة</td>
+                </tr>
+                <tr>
+                    <td>Total Patient Payable</td>
+                    <td>{{total_patient_payable}}</td>
+                    <td>المجموع المريض بسبب</td>
+                </tr>
+                <tr>
+                    <td>Total Patient Tax</td>
+                    <td>{{total_patient_tax}}</td>
+                    <td>الإجمالي ضريبة المريض</td>
+                </tr>
+                <tr>
+                    <td>Total Company Payable</td>
+                    <td>{{total_company_payable}}</td>
+                    <td>المجموع الشركة المستحقة الدفع</td>
+                </tr>
+                <tr>
+                    <td>Total Company Tax</td>
+                    <td>{{total_company_tax}}</td>
+                    <td>إجمالي ضريبة الشركة</td>
+                </tr>
+            </table>
+        </section>
+        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+    </div>
+</body>

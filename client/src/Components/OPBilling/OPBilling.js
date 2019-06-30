@@ -254,7 +254,7 @@ class OPBilling extends Component {
             data.patientRegistration.mode_of_pay = "Self";
             data.patientRegistration.applydiscount = false;
           }
-
+          data.patientRegistration.addNewService = false;
           this.setState(data.patientRegistration, () => {
             selectVisit($this);
           });

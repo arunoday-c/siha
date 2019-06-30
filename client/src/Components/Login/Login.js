@@ -77,6 +77,7 @@ export default class Login extends Component {
               JSON.stringify(response.data.records.hospitalDetails)
             )
           );
+
           sessionStorage.setItem(
             "appRole",
             response.data.records.app_d_app_roles_id

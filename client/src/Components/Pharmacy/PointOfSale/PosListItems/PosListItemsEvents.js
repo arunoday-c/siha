@@ -980,7 +980,8 @@ const calculateAmount = ($this, context, row, ctrl, e) => {
       secondary_insurance_provider_id:
         $this.state.secondary_insurance_provider_id,
       secondary_network_id: $this.state.secondary_network_id,
-      secondary_network_office_id: $this.state.secondary_network_office_id
+      secondary_network_office_id: $this.state.secondary_network_office_id,
+      from_pos: "Y"
     }
   ];
 
@@ -1006,6 +1007,8 @@ const calculateAmount = ($this, context, row, ctrl, e) => {
           data.billdetails[0].discount_amout;
         data.billdetails[0].pre_approval =
           row.pre_approval === "N" ? "N" : data.billdetails[0].pre_approval;
+        data.billdetails[0].insurance_yesno = data.billdetails[0].insured;
+
         extend(row, data.billdetails[0]);
 
         const _index = pharmacy_stock_detail.indexOf(row);
@@ -1057,7 +1060,7 @@ const calculateAmount = ($this, context, row, ctrl, e) => {
               data_billing.copay_amount = data_billing.copay_amount;
               data_billing.sec_copay_amount = data_billing.sec_copay_amount;
               data_billing.addItemButton = false;
-              data_billing.saveEnable = false;
+              // data_billing.saveEnable = false;
               if (context !== null) {
                 context.updateState({
                   ...data_billing,
@@ -1348,6 +1351,19 @@ const qtyonchangegridcol = ($this, context, row, e) => {
       type: "warning"
     });
   } else {
+    if (value === null) {
+      let _pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+      const _index = _pharmacy_stock_detail.indexOf(row);
+      row[name] = value;
+      _pharmacy_stock_detail[_index] = row;
+
+      if (context !== null) {
+        context.updateState({
+          pharmacy_stock_detail: _pharmacy_stock_detail
+        });
+      }
+      return;
+    }
     row[name] = value;
     // row.update();
     calculateAmount($this, context, row, e);
@@ -1407,6 +1423,7 @@ const SelectBatchDetails = ($this, row, context, e) => {
   //
 
   let _pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+  const _index = _pharmacy_stock_detail.indexOf(row);
 
   row["batchno"] = e.selected.batchno;
   row["expiry_date"] = e.selected.expiry_date;
@@ -1417,9 +1434,7 @@ const SelectBatchDetails = ($this, row, context, e) => {
         parseFloat(e.selected.conversion_factor);
   row["grn_no"] = e.selected.grnno;
   row["barcode"] = e.selected.barcode;
-  row["unit_cost"] = e.selected.sales_price;
-
-  const _index = _pharmacy_stock_detail.indexOf(row);
+  row["unit_cost"] = e.selected.sale_price;
   _pharmacy_stock_detail[_index] = row;
 
   if (context !== null) {

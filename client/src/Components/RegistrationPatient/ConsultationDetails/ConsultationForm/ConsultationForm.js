@@ -22,7 +22,8 @@ import {
   selectedHandeler,
   doctorselectedHandeler,
   radioChange,
-  texthandle
+  texthandle,
+  clearBillDetails
 } from "./AddConsultationDetails";
 
 class AddConsultationForm extends Component {
@@ -159,12 +160,19 @@ class AddConsultationForm extends Component {
                         },
                         onChange: selectedHandeler.bind(this, this, context),
                         onClear: () => {
-                          this.setState({
-                            visit_type: null,
-                            sub_department_id: null,
-                            doctor_id: null,
-                            visittypeselect: true
-                          });
+                          this.setState(
+                            {
+                              visit_type: null,
+                              sub_department_id: null,
+                              doctor_id: null,
+                              visittypeselect: true
+                            },
+                            () => {
+                              if (context !== null) {
+                                clearBillDetails(context);
+                              }
+                            }
+                          );
                         }
                       }}
                     />
@@ -199,10 +207,18 @@ class AddConsultationForm extends Component {
                           context
                         ),
                         onClear: () => {
-                          this.setState({
-                            sub_department_id: null,
-                            doctor_id: null
-                          });
+                          this.setState(
+                            {
+                              sub_department_id: null,
+                              doctor_id: null,
+                              doctors: this.props.frontproviders
+                            },
+                            () => {
+                              if (context !== null) {
+                                clearBillDetails(context);
+                              }
+                            }
+                          );
                         }
                       }}
                     />
@@ -238,9 +254,17 @@ class AddConsultationForm extends Component {
                           context
                         ),
                         onClear: () => {
-                          this.setState({
-                            doctor_id: null
-                          });
+                          this.setState(
+                            {
+                              doctor_id: null,
+                              saveEnable: true
+                            },
+                            () => {
+                              if (context !== null) {
+                                clearBillDetails(context);
+                              }
+                            }
+                          );
                         }
                       }}
                     />
@@ -272,38 +296,6 @@ class AddConsultationForm extends Component {
                         }}
                       />
                       <br />
-
-                      {/* <div className="customRadio">
-                        <label className="radio inline">
-                          <input
-                            type="radio"
-                            name="maternity_patient_yes"
-                            value="Y"
-                            checked={
-                              this.state.maternity_patient === "Y"
-                                ? true
-                                : false
-                            }
-                            onChange={radioChange.bind(this, this, context)}
-                          />
-                          <span>Yes</span>
-                        </label>
-                        <label className="radio inline">
-                          <input
-                            type="radio"
-                            name="maternity_patient_no"
-                            value="N"
-                            checked={
-                              this.state.maternity_patient === "N"
-                                ? true
-                                : false
-                            }
-                            onChange={radioChange.bind(this, this, context)}
-                          />
-                          <span>No</span>
-                        </label>
-                      </div> */}
-
                       <div className="customCheckbox">
                         <label className="checkbox inline">
                           <input
@@ -321,7 +313,8 @@ class AddConsultationForm extends Component {
                     </div>
 
                     <div className="col-lg-8">
-                      {this.state.department_type === "D" ? (
+                      {this.state.department_type === "D" &&
+                      this.state.hims_d_patient_id !== null ? (
                         <div className="row">
                           <div className="col-lg-4" style={{ paddingRight: 0 }}>
                             <label>Existing Plan</label>

@@ -55,7 +55,7 @@
 			}
 			&:hover {
 				.printOnHover {
-					display: block;
+					display: none;
 					cursor: pointer;
 					background: #009182;
 				}
@@ -100,7 +100,7 @@
 					}
 					&:hover {
 						.reOrderOnHover {
-							display: block;
+							display: none;
 							cursor: pointer;
 							background: #009182;
 						}

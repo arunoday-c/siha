@@ -74,7 +74,7 @@ class EmployeeGroups extends Component {
       title: "Are you sure you want to delete " + data.group_description + " ?",
       type: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes!",
+      confirmButtonText: "Yes",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
       cancelButtonText: "No"

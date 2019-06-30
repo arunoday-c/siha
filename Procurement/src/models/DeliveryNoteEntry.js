@@ -672,10 +672,17 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "select * from hims_f_procurement_dn_header\
-            where hospital_id=?  and delivery_note_number=?; \
-            select D.* from hims_f_procurement_dn_header H  inner join hims_f_procurement_dn_detail D\
+            "select DN.*, PH.purchase_number from hims_f_procurement_dn_header DN,\
+            hims_f_procurement_po_header PH  where DN.purchase_order_id=PH.hims_f_procurement_po_header_id \
+            and DN.hospital_id=?  and DN.delivery_note_number=?; \
+            select D.*,CASE H.dn_from WHEN 'INV' then II.item_description else PI.item_description end as \
+            item_description,CASE H.dn_from WHEN 'INV' then IU.uom_description else PU.uom_description end as \
+            uom_description  from hims_f_procurement_dn_header H  inner join hims_f_procurement_dn_detail D\
             on H.hims_f_procurement_dn_header_id= D. hims_f_procurement_dn_header_id\
+            left join hims_d_item_master PI on D.phar_item_id= PI.hims_d_item_master_id\
+            left join hims_d_inventory_item_master II on D.inv_item_id= II.hims_d_inventory_item_master_id\
+            left join hims_d_pharmacy_uom PU on D.pharmacy_uom_id= PU.hims_d_pharmacy_uom_id\
+            left join hims_d_inventory_uom IU on D.inventory_uom_id= IU.hims_d_inventory_uom_id\
             where H.hospital_id=?  and delivery_note_number=?;\
             select B.* from hims_f_procurement_dn_header H  inner join hims_f_procurement_dn_detail D\
             on H.hims_f_procurement_dn_header_id= D. hims_f_procurement_dn_header_id\

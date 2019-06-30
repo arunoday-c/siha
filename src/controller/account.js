@@ -42,9 +42,9 @@ export default ({ config, db }) => {
           let encrypDetsil = { ...result[0][0], ...result[1][0] };
           let hospitalDetails = { ...result[1][0] };
 
-          debugLog("encrypDetsil: ", encrypDetsil);
+          // console.log("moduleDetails: ", moduleDetails);
           let keyData = encryption(encrypDetsil);
-          // let keyhospitalDetails = encryption(hospitalDetails);
+          // let keymoduleDetails = encryption(hospitalDetails);
 
           res.status(httpStatus.ok).json({
             success: true,

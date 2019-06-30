@@ -110,10 +110,8 @@ class ResultEntryList extends Component {
             className="row inner-top-search"
             style={{ marginTop: "75px", paddingBottom: "10px" }}
           >
-            <div className="col-lg-6">
-              <div className="row">
                 <AlgaehDateHandler
-                  div={{ className: "col" }}
+                  div={{ className: "col-2" }}
                   label={{ fieldName: "from_date" }}
                   textBox={{ className: "txt-fld", name: "from_date" }}
                   events={{
@@ -122,14 +120,33 @@ class ResultEntryList extends Component {
                   value={this.state.from_date}
                 />
                 <AlgaehDateHandler
-                  div={{ className: "col" }}
+                  div={{ className: "col-2" }}
                   label={{ fieldName: "to_date" }}
                   textBox={{ className: "txt-fld", name: "to_date" }}
                   events={{
                     onChange: datehandle.bind(this, this)
                   }}
                   value={this.state.to_date}
-                />
+                /> <div className="col" style={{ paddingTop: "19px" }}>
+                  <button
+                    className="btn btn-primary btn-sm"
+                    type="button"
+                    onClick={getSampleCollectionDetails.bind(this, this)}
+                  >
+                    Load
+                  </button>
+
+                  <button
+                    className="btn btn-default btn-sm"
+                    style={{ marginLeft: "10px" }}
+                    type="button"
+                    onClick={Refresh.bind(this, this)}
+                  >
+                    Clear
+                  </button>
+                </div>
+            {/* <div className="col-lg-6">
+              <div className="row">
                 <AlagehFormGroup
                   div={{ className: "col" }}
                   label={{
@@ -215,26 +232,9 @@ class ResultEntryList extends Component {
                   }}
                 />
 
-                <div className="col" style={{ paddingTop: "21px" }}>
-                  <button
-                    className="btn btn-primary btn-sm"
-                    type="button"
-                    onClick={getSampleCollectionDetails.bind(this, this)}
-                  >
-                    Load
-                  </button>
-
-                  <button
-                    className="btn btn-default btn-sm"
-                    style={{ marginLeft: "10px" }}
-                    type="button"
-                    onClick={Refresh.bind(this, this)}
-                  >
-                    Clear
-                  </button>
-                </div>
+               
               </div>
-            </div>
+            </div> */}
           </div>
 
           <div className="row">
@@ -290,6 +290,7 @@ class ResultEntryList extends Component {
                         others: {
                           maxWidth: 70,
                           resizable: false,
+                          filterable:false,
                           style: { textAlign: "center" }
                         }
                       },
@@ -299,7 +300,8 @@ class ResultEntryList extends Component {
                           <AlgaehLabel label={{ fieldName: "patient_code" }} />
                         ),
                         disabled: false,
-                        others: {
+                     others: {
+                          maxWidth: 150,
                           resizable: false,
                           style: { textAlign: "center" }
                         }
@@ -313,70 +315,6 @@ class ResultEntryList extends Component {
                         others: {
                           resizable: false,
                           style: { textAlign: "left" }
-                        }
-                      },
-                      {
-                        fieldName: "service_name",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Investigation Name" }}
-                          />
-                        ),
-
-                        disabled: true,
-                        others: {
-                          resizable: false,
-                          style: { textAlign: "center" }
-                        }
-                      },
-                      {
-                        fieldName: "test_type",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "proiorty" }} />
-                        ),
-                        displayTemplate: row => {
-                          return (
-                            <span>
-                              {row.test_type === "S" ? "Stat" : "Routine"}
-                            </span>
-                          );
-                        },
-                        disabled: true,
-                        others: {
-                          resizable: false,
-                          style: { textAlign: "left" }
-                        }
-                      },
-                      {
-                        fieldName: "ordered_date",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "ordered_date" }} />
-                        ),
-                        displayTemplate: row => {
-                          return (
-                            <span>
-                              {this.changeDateFormat(row.ordered_date)}
-                            </span>
-                          );
-                        },
-                        disabled: true,
-                        others: {
-                          resizable: false,
-                          style: { textAlign: "center" }
-                        }
-                      },
-                      {
-                        fieldName: "test_type",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "proiorty" }} />
-                        ),
-                        displayTemplate: row => {
-                          return row.test_type === "S" ? "Stat" : "Rotuine";
-                        },
-                        disabled: true,
-                        others: {
-                          resizable: false,
-                          style: { textAlign: "center" }
                         }
                       },
                       {
@@ -404,20 +342,8 @@ class ResultEntryList extends Component {
                           );
                         },
                         disabled: true,
-                        others: {
-                          resizable: false,
-                          style: { textAlign: "center" }
-                        }
-                      },
-                      {
-                        fieldName: "lab_id_number",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Lab ID Number" }}
-                          />
-                        ),
-                        disabled: true,
-                        others: {
+                      others: {
+                          maxWidth: 130,
                           resizable: false,
                           style: { textAlign: "center" }
                         }
@@ -441,7 +367,71 @@ class ResultEntryList extends Component {
                           ) : null;
                         },
                         disabled: true,
+                      others: {
+                          maxWidth: 130,
+                          resizable: false,
+                          style: { textAlign: "center" }
+                        }
+                      },
+                      {
+                        fieldName: "service_name",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Test Name" }}
+                          />
+                        ),
+
+                        disabled: true,
                         others: {
+                          resizable: false,
+                          style: { textAlign: "center" }
+                        }
+                      },
+                      {
+                        fieldName: "lab_id_number",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Lab ID Number" }}
+                          />
+                        ),
+                        disabled: true,
+                      others: {
+                          maxWidth: 130,
+                          resizable: false,
+                          style: { textAlign: "center" }
+                        }
+                      },
+                      {
+                        fieldName: "ordered_date",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "ordered_date" }} />
+                        ),
+                        // displayTemplate: row => {
+                        //   return (
+                        //     <span>
+                        //       {this.changeDateFormat(row.ordered_date)}
+                        //     </span>
+                        //   );
+                        // },
+                        disabled: true,
+                       
+                        others: {
+                          maxWidth: 150,
+                          resizable: false,
+                          style: { textAlign: "center" }
+                        }
+                      },
+                      {
+                        fieldName: "test_type",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "proiorty" }} />
+                        ),
+                        displayTemplate: row => {
+                          return row.test_type === "S" ? "Stat" : "Rotuine";
+                        },
+                        disabled: true,
+                       others: {
+                          maxWidth: 130,
                           resizable: false,
                           style: { textAlign: "center" }
                         }
@@ -465,8 +455,9 @@ class ResultEntryList extends Component {
                         .toArray()
                       // data: this.state.sample_collection
                     }}
+                    filter="true"
                     noDataText="No data available for selected period"
-                    paging={{ page: 0, rowsPerPage: 10 }}
+                    paging={{ page: 0, rowsPerPage: 20 }}
                   />
                 </div>
               </div>

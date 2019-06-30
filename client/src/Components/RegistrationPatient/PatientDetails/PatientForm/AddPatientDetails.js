@@ -17,6 +17,18 @@ const texthandle = ($this, e) => {
   });
 };
 
+const handlePrimaryId = ($this, e) => {
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  if (/^[A-Z0-9]+$/i.test(value) || !value) {
+    $this.setState({
+      [name]: value
+    });
+  } else {
+    return;
+  }
+};
+
 const countryStatehandle = ($this, e) => {
   let name;
   let value;
@@ -110,6 +122,14 @@ const setAge = ($this, e) => {
     let years = $this.state.age;
     let months = $this.state.AGEMM;
     let days = $this.state.AGEDD;
+
+    if (e.target.value < 0) {
+      swalMessage({
+        title: "Negative values are not allowed",
+        type: "error"
+      });
+      return;
+    }
 
     if (e.target.name === "AGEMM" && parseFloat(e.target.value) > 11) {
       swalMessage({
@@ -276,13 +296,41 @@ const generateBillDetails = ($this, context) => {
   });
 };
 
+const validateAge = ($this, e) => {
+  debugger;
+  let dob = moment($this.state.date_of_birth);
+  if (
+    dob.isAfter(moment()) ||
+    $this.state.age < 0 ||
+    $this.state.AGEMM < 0 ||
+    $this.state.AGEDD < 0
+  ) {
+    $this.setState(
+      {
+        date_of_birth: null,
+        age: null,
+        AGEMM: null,
+        AGEDD: null
+      },
+      () => {
+        swalMessage({
+          title: "Date of Birth must be a Past date",
+          type: "warning"
+        });
+      }
+    );
+  }
+};
+
 export {
   texthandle,
+  handlePrimaryId,
   titlehandle,
   calculateAge,
   setAge,
   onDrop,
   countryStatehandle,
   nationalityhandle,
-  generateBillDetails
+  generateBillDetails,
+  validateAge
 };

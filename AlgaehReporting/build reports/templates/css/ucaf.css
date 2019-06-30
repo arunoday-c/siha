@@ -1,0 +1,99 @@
+body {
+  padding: 0;
+  margin: 0;
+  font-family: sans-serif;
+  font-size: 0.7rem;
+}
+
+.report-container {
+  height: auto;
+  margin: auto;
+}
+
+.mainTable,
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.mainTable > thead tr th {
+  text-align: center;
+}
+
+.mainTable > tbody tr td {
+  text-align: left;
+  padding: 2px;
+}
+
+.patientDetails {
+  width: 55%;
+}
+
+.patientDetails .innerTable {
+  height: 220px;
+}
+
+.insuranceDetails {
+  width: 45%;
+}
+
+.insuranceDetails .innerTable {
+  height: 220px;
+}
+
+.otherDetails {
+  width: 100%;
+}
+
+.innerTable {
+  border: 2px solid #000;
+  padding: 2px;
+}
+
+.innerTable tbody tr td {
+  border: none;
+  padding: 2px;
+}
+
+.innerTable tbody tr td span {
+  /* border-bottom: 1px dotted #000; */
+}
+
+.servicetable {
+  margin: 10px 0;
+}
+
+.servicetable thead tr th {
+  border: 1px solid #000;
+  text-align: center;
+  padding: 2px;
+}
+
+.servicetable tbody tr td {
+  border: 1px solid #000;
+  text-align: center;
+  padding: 2px;
+}
+
+.dcaf_Dental_chart {
+  height: 250px;
+  width: auto;
+}
+.IDImgSection {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.IDImgSection {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.IDImgSection img {
+  height: 180px;
+  width: auto;
+}
+.IDTextSection tr td {
+  padding: 5px;
+  line-height: 30px;
+}

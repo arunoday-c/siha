@@ -15,11 +15,22 @@ import CategorySpeciality from "./CategorySpecialityMapping/CategorySpeciality";
 import BankMaster from "./BankMaster/BankMaster";
 import CompanyAccount from "./CompanyAccount/CompanyAccount";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
+import { AlgaehOpenContainer } from "../../utils/GlobalFunctions";
+import _ from "lodash";
 
 class BusinessSetup extends Component {
   constructor(props) {
     super(props);
-    this.state = { pageDisplay: "DeptMaster" };
+    let Activated_Modueles = JSON.parse(
+      AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
+    );
+    const HIMS_Active = _.filter(Activated_Modueles, f => {
+      return f.module_code === "FTDSK";
+    });
+    this.state = {
+      pageDisplay: "DeptMaster",
+      HIMS_Active: HIMS_Active.length > 0 ? true : false
+    };
   }
 
   openTab(e) {
@@ -105,32 +116,36 @@ class BusinessSetup extends Component {
                   />
                 }
               </li>
-              <li
-                algaehtabs={"Counter"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "counter"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"UserShiftMapping"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "users_shift"
-                    }}
-                  />
-                }
-              </li>
+              {this.state.HIMS_Active === true ? (
+                <li
+                  algaehtabs={"Counter"}
+                  className={"nav-item tab-button"}
+                  onClick={this.openTab.bind(this)}
+                >
+                  {
+                    <AlgaehLabel
+                      label={{
+                        fieldName: "counter"
+                      }}
+                    />
+                  }
+                </li>
+              ) : null}
+              {this.state.HIMS_Active === true ? (
+                <li
+                  algaehtabs={"UserShiftMapping"}
+                  className={"nav-item tab-button"}
+                  onClick={this.openTab.bind(this)}
+                >
+                  {
+                    <AlgaehLabel
+                      label={{
+                        fieldName: "users_shift"
+                      }}
+                    />
+                  }
+                </li>
+              ) : null}
               <li
                 algaehtabs={"Currency"}
                 className={"nav-item tab-button"}

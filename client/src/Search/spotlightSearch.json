@@ -207,16 +207,18 @@
         "label": "Requisition Number"
       },
       {
-        "fieldName": "requistiondate",
+        "fieldName": "requistion_date",
         "label": "Requisition Date"
       },
       {
         "fieldName": "from_location",
-        "label": "From Location"
+        "label": "From Location",
+        "required": "N"
       },
       {
         "fieldName": "to_location",
-        "label": "To Location"
+        "label": "To Location",
+        "required": "N"
       }
     ]
   },
@@ -239,16 +241,18 @@
         "label": "Transfer Number"
       },
       {
-        "fieldName": "transferdate",
+        "fieldName": "transfer_date",
         "label": "Transfer Date"
       },
       {
         "fieldName": "from_location",
-        "label": "From Location"
+        "label": "From Location",
+        "required": "N"
       },
       {
         "fieldName": "to_location",
-        "label": "To Location"
+        "label": "To Location",
+        "required": "N"
       }
     ]
   },
@@ -323,6 +327,20 @@
       {
         "fieldName": "po_date",
         "label": "PO Date"
+      },
+      {
+        "fieldName": "po_from",
+        "label": "PO Done For"
+      },
+      {
+        "fieldName": "loc_description",
+        "label": "Location Name",
+        "required": "N"
+      },
+      {
+        "fieldName": "vendor_name",
+        "label": "Vendor Name",
+        "required": "N"
       }
     ]
   },
@@ -335,6 +353,20 @@
       {
         "fieldName": "dn_date",
         "label": "Delivery Date"
+      },
+      {
+        "fieldName": "dn_from",
+        "label": "DN Done For"
+      },
+      {
+        "fieldName": "loc_description",
+        "label": "Location Name",
+        "required": "N"
+      },
+      {
+        "fieldName": "vendor_name",
+        "label": "Vendor Name",
+        "required": "N"
       }
     ]
   },
@@ -347,6 +379,20 @@
       {
         "fieldName": "grn_date",
         "label": "Receipt Date"
+      },
+      {
+        "fieldName": "grn_for",
+        "label": "GRN Done For"
+      },
+      {
+        "fieldName": "loc_description",
+        "label": "Location Name",
+        "required": "N"
+      },
+      {
+        "fieldName": "vendor_name",
+        "label": "Vendor Name",
+        "required": "N"
       }
     ]
   },
@@ -592,6 +638,11 @@
       {
         "fieldName": "consumption_date",
         "label": "Consumption Date"
+      },
+      {
+        "fieldName": "location_description",
+        "label": "Location Name",
+        "required": "N"
       }
     ],
     "InvConsEntry": [
@@ -602,6 +653,11 @@
       {
         "fieldName": "consumption_date",
         "label": "Consumption Date"
+      },
+      {
+        "fieldName": "location_description",
+        "label": "Location Name",
+        "required": "N"
       }
     ]
   },

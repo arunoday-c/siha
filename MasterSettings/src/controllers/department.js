@@ -63,7 +63,13 @@ export default () => {
   });
   api.post(
     "/add/subdepartment",
-    addInventoryLocation,
+    (req, res, next) => {
+      if (req.body.Inventory_Active == true) {
+        addInventoryLocation(req, res, next);
+      } else {
+        next();
+      }
+    },
     addSubDepartment,
     (req, res, next) => {
       let result = req.records;

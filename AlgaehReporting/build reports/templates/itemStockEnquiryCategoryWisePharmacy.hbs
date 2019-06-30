@@ -1,0 +1,38 @@
+{{{importStyle 'css/creditinvoice.css'}}}
+
+<body>
+    <div class="print-body">
+
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>Item Name</th>
+                        <th>Opening Balance</th>
+                        <th>Stock In</th>
+                        <th>Stock Out</th>
+                        <th>Remaining Stock</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each details}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                        <td>{{item_name}}</td>
+                        <td>{{opening_bal}}</td>
+                        <td>{{stock_in}}</td>
+                        <td>{{stock_out}}</td>
+                        <td>{{qtyhand}}</td>
+                    </tr>
+                    {{/each }}
+
+                </tbody>
+            </table>
+
+
+        </section>
+        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+    </div>
+</body>

@@ -218,7 +218,7 @@ class PreApproval extends Component {
                 value={this.state.date}
               />
 
-              <AlagehAutoComplete
+              {/*<AlagehAutoComplete
                 div={{ className: "col" }}
                 label={{
                   fieldName: "insurance_id"
@@ -304,7 +304,7 @@ class PreApproval extends Component {
                   }}
                   onClick={PatientSearch.bind(this, this)}
                 />
-              </div>
+              </div>*/}
             </div>
           </div>
         </div>
@@ -486,7 +486,7 @@ class PreApproval extends Component {
                   </div>
                 </div>
               </div>
-</div>
+            </div>
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">

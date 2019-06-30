@@ -184,9 +184,35 @@
       margin: 4px 2px 2px 2px;
       margin-right: 5px; }
   :global .btn-green {
-    background: #8add52;
     color: #fff;
-    border: 1px solid #fff; }
+    background-color: #00a796;
+    border-color: #007468; }
+    :global .btn-green:hover {
+      background-color: #007468;
+      border-color: #00dac4; }
+    :global .btn-green:focus {
+      background-color: #00a796;
+      border-color: #00a796; }
+    :global .btn-green.disabled, :global .btn-green:disabled {
+      opacity: 0.3;
+      color: #fff;
+      background-color: #00a796;
+      border-color: #007468;
+      cursor: not-allowed; }
+    :global .btn-green:active {
+      background-color: #fff;
+      border-color: #fff; }
+    :global .btn-green i {
+      color: #fff; }
+  :global .btn-grey {
+    color: #1a1a1a;
+    background-color: #e6e6e6;
+    border-color: gray; }
+    :global .btn-grey:hover, :global .btn-grey:focus {
+      background-color: #cccccc;
+      border-color: #1a1a1a; }
+    :global .btn-grey i {
+      color: #000; }
   :global ::-webkit-scrollbar-track {
     background: #ccc;
     -webkit-border-radius: 3px;
@@ -205,15 +231,11 @@
     color: #00a796 !important;
     text-decoration: underline !important; }
   :global .cancelledClass {
-    background-color: #ff400080 !important;
-    color: white;
-    font-weight: bolder; }
+    background-color: #ff400080 !important; }
   :global .confirmedClass {
     background-color: #ff99ff80 !important; }
   :global .orderedClass {
-    background-color: #ffff00 !important;
-    color: white;
-    font-weight: bolder; }
+    background-color: #ffff00 !important; }
   :global .collectedClass {
     background-color: #097bd880 !important; }
   :global .validateClass {
@@ -223,9 +245,7 @@
   :global .availableClass {
     background-color: rgba(0, 255, 64, 0.13) !important; }
   :global .underProcessClass {
-    background-color: rgba(255, 0, 0, 0.08) !important;
-    color: white;
-    font-weight: bolder; }
+    background-color: rgba(255, 0, 0, 0.08) !important; }
   :global .cursor-pointer {
     cursor: pointer; }
   :global .pat-code:hover {
@@ -1129,6 +1149,9 @@
     float: left;
     border-right: 1px solid #adaaaa;
     border-left: 0; }
+  .arabic_component .print-area .dropdown-menu {
+    left: 5px;
+    right: inherit; }
   .arabic_component .hdg_bredcrump {
     background: url("./assets/images/breadcrump_border_Ar.webp") no-repeat top left #fff !important; }
   .arabic_component .hptl-phase1-add-patient-form .primary-details,

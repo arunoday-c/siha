@@ -215,7 +215,8 @@ class PurchaseOrderEntry extends Component {
                     onChange: poforhandle.bind(this, this),
                     onClear: () => {
                       this.setState({
-                        po_from: null
+                        po_from: null,
+                        ReqData: true
                       });
                     }
                   }}
@@ -420,7 +421,11 @@ class PurchaseOrderEntry extends Component {
                 <button
                   type="button"
                   className="btn btn-other"
-                  disabled={this.state.authorize1 === "Y" ? true : false}
+                  disabled={
+                    this.state.authorize1 === "Y"
+                      ? true
+                      : this.state.authorizeBtn
+                  }
                   onClick={AuthorizePOEntry.bind(this, this)}
                 >
                   <AlgaehLabel

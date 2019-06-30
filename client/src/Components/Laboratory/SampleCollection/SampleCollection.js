@@ -121,10 +121,8 @@ class SampleCollection extends Component {
             className="row inner-top-search"
             style={{ marginTop: "75px", paddingBottom: "10px" }}
           >
-            <div className="col-lg-6">
-              <div className="row">
                 <AlgaehDateHandler
-                  div={{ className: "col" }}
+                  div={{ className: "col-2" }}
                   label={{ fieldName: "from_date" }}
                   textBox={{ className: "txt-fld", name: "from_date" }}
                   events={{
@@ -133,14 +131,32 @@ class SampleCollection extends Component {
                   value={this.state.from_date}
                 />
                 <AlgaehDateHandler
-                  div={{ className: "col" }}
+                  div={{ className: "col-2" }}
                   label={{ fieldName: "to_date" }}
                   textBox={{ className: "txt-fld", name: "to_date" }}
                   events={{
                     onChange: datehandle.bind(this, this)
                   }}
                   value={this.state.to_date}
-                />
+                /> <div className="col" style={{ paddingTop: "19px" }}>
+                  <button
+                    className="btn btn-primary btn-sm"
+                    type="button"
+                    onClick={getSampleCollectionDetails.bind(this, this)}
+                  >
+                    Load
+                  </button>
+                  <button
+                    className="btn btn-default btn-sm"
+                    style={{ marginLeft: "10px" }}
+                    type="button"
+                    onClick={Refresh.bind(this, this)}
+                  >
+                    Clear
+                  </button>
+                </div>
+             {/*<div className="col-2">
+              <div className="row">
                 <AlagehFormGroup
                   div={{ className: "col" }}
                   label={{
@@ -159,7 +175,7 @@ class SampleCollection extends Component {
                     }
                   }}
                 />
-                <div className="col-lg-1 form-group">
+                <div className="col form-group">
                   <span
                     className="fas fa-search fa-2x"
                     style={{
@@ -230,7 +246,7 @@ class SampleCollection extends Component {
                     }
                   }}
                 />
-                {/* <AlagehAutoComplete
+                <AlagehAutoComplete
                   div={{ className: "col" }}
                   label={{
                     fieldName: "location_id",
@@ -247,26 +263,10 @@ class SampleCollection extends Component {
                     },
                     onChange: texthandle.bind(this, this)
                   }}
-                /> */}
-                <div className="col" style={{ paddingTop: "21px" }}>
-                  <button
-                    className="btn btn-primary btn-sm"
-                    type="button"
-                    onClick={getSampleCollectionDetails.bind(this, this)}
-                  >
-                    Load
-                  </button>
-                  <button
-                    className="btn btn-default btn-sm"
-                    style={{ marginLeft: "10px" }}
-                    type="button"
-                    onClick={Refresh.bind(this, this)}
-                  >
-                    Clear
-                  </button>
-                </div>
+                />
+               
               </div>
-            </div>
+            </div> */}
           </div>
 
           <div className="row">
@@ -303,6 +303,42 @@ class SampleCollection extends Component {
                         others: {
                           maxWidth: 70,
                           resizable: false,
+                          filterable:false,
+                          style: { textAlign: "center" }
+                        }
+                      },
+                      {
+                        fieldName: "patient_code",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "patient_code" }} />
+                        ),
+                        disabled: false,
+                        others: {
+                          maxWidth: 150,
+                          resizable: false,
+                          style: { textAlign: "center" }
+                        }
+                      },
+                      {
+                        fieldName: "full_name",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "patient_name" }} />
+                        ),
+                        disabled: true,
+                        others: {
+                          resizable: false,
+                          style: { textAlign: "left" }
+                        }
+                      },
+                      {
+                        fieldName: "visit_code",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "visit_code" }} />
+                        ),
+                        disabled: false,
+                        others: {
+                          maxWidth: 150,
+                          resizable: false,
                           style: { textAlign: "center" }
                         }
                       },
@@ -311,7 +347,7 @@ class SampleCollection extends Component {
                         label: <AlgaehLabel label={{ fieldName: "status" }} />,
                         displayTemplate: row => {
                           return row.status === "O" ? (
-                            <span className="badge badge-light">Ordered</span>
+                            <span className="badge badge-info">Ordered</span>
                           ) : row.status === "CL" ? (
                             <span className="badge badge-primary">
                               Collected
@@ -332,43 +368,9 @@ class SampleCollection extends Component {
                         },
                         disabled: true,
                         others: {
+                          maxWidth: 100,
                           resizable: false,
                           style: { textAlign: "center" }
-                        }
-                      },
-                      {
-                        fieldName: "visit_code",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "visit_code" }} />
-                        ),
-                        disabled: false,
-                        others: {
-                          maxWidth: 200,
-                          resizable: false,
-                          style: { textAlign: "center" }
-                        }
-                      },
-                      {
-                        fieldName: "patient_code",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "patient_code" }} />
-                        ),
-                        disabled: false,
-                        others: {
-                          maxWidth: 200,
-                          resizable: false,
-                          style: { textAlign: "center" }
-                        }
-                      },
-                      {
-                        fieldName: "full_name",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "patient_name" }} />
-                        ),
-                        disabled: true,
-                        others: {
-                          resizable: false,
-                          style: { textAlign: "left" }
                         }
                       },
                       {
@@ -385,6 +387,7 @@ class SampleCollection extends Component {
                         },
                         disabled: true,
                         others: {
+                          maxWidth: 130,
                           resizable: false,
                           style: { textAlign: "center" }
                         }
@@ -403,7 +406,7 @@ class SampleCollection extends Component {
                         // },
                         disabled: true,
                         others: {
-                          maxWidth: 200,
+                          maxWidth: 150,
                           resizable: false,
                           style: { textAlign: "center" }
                         }
@@ -412,11 +415,11 @@ class SampleCollection extends Component {
                         fieldName: "number_of_tests",
                         label: (
                           <AlgaehLabel
-                            label={{ fieldName: "number_of_tests" }}
+                            label={{ forceLabel: "No. of Tests" }}
                           />
                         ),
                         others: {
-                          maxWidth: 200,
+                          maxWidth: 130,
                           resizable: false,
                           style: { textAlign: "center" }
                         }
@@ -426,8 +429,9 @@ class SampleCollection extends Component {
                     dataSource={{
                       data: this.state.sample_collection
                     }}
+                    filter="true"
                     noDataText="No data available for selected period"
-                    paging={{ page: 0, rowsPerPage: 10 }}
+                    paging={{ page: 0, rowsPerPage: 20 }}
                   />
                 </div>
               </div>
