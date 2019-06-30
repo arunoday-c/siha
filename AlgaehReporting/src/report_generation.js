@@ -233,6 +233,12 @@ hbs.registerHelper("imageUrl", function(
   }
 });
 
+hbs.registerHelper("barcode", function(type, text, includetext) {
+  type = type || "code128";
+  includetext = includetext || true;
+  return `http://localhost:3018/barcode?bcid=${type}&text=${text}&includetext=${includetext}&guardwhitespace`;
+});
+
 const groupBy = (data, groupby) => {
   const groupBy = _.chain(data)
     .groupBy(groupby)

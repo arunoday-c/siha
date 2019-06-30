@@ -14,6 +14,7 @@ import {
   getRawReport
 } from "./report_generation";
 import algaehUtilities from "algaeh-utilities/utilities";
+const bwipjs = require("bwip-js");
 const exec = require("child_process").exec;
 const app = exxpress();
 app.server = http.createServer(app);
@@ -44,6 +45,15 @@ process.on("uncaughtException", error => {
 process.on("unhandledRejection", (reason, promise) => {
   console.error("Unhandled Rejection", { reason: reason, promise: promise });
 });
+app.use("/barcode", (req, res) => {
+  if (req.url.indexOf("/?bcid=") != 0) {
+    res.writeHead(404, { "Content-Type": "text/plain" });
+    res.end("BWIPJS: Unknown request format.", "utf8");
+  } else {
+    bwipjs(req, res);
+  }
+});
+
 app.use((req, res, next) => {
   const reqH = req.headers;
   const _token = reqH["x-api-key"];
@@ -88,6 +98,7 @@ app.use((req, res, next) => {
     });
   }
 });
+
 app.use("/api/v1/report", getReport);
 app.use("/api/v1/excelReport", getExcelReport);
 app.use("/api/v1/getRawReport", getRawReport);
