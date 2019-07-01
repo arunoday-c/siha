@@ -38,6 +38,7 @@
     "algaeh-mysql": "^1.2.5",
     "blob": "0.0.5",
     "body-parser": "^1.18.2",
+    "bwip-js": "^1.7.3",
     "compression": "^1.7.3",
     "concurrently": "^3.5.1",
     "cors": "^2.8.4",
@@ -48,7 +49,7 @@
     "fs-extra": "^7.0.1",
     "handlebars": "^4.1.2",
     "moment": "^2.22.1",
-    "puppeteer": "^1.14.0",
+    "puppeteer": "^1.18.1",
     "xlsx": "^0.14.2",
     "xlsx-template": "^0.5.0"
   },

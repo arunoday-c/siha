@@ -523,7 +523,12 @@ class BasicSubjective extends Component {
                         <div className="row">
                           <div className="col-12">
                             <textarea
-                              value={this.state.chief_complaint}
+                              value={
+                                this.state.chief_complaint === null ||
+                                this.state.chief_complaint === undefined
+                                  ? ""
+                                  : this.state.chief_complaint
+                              }
                               name="chief_complaint"
                               onChange={this.textAreaEvent.bind(this)}
                               maxLength={this.chiefComplaintMaxLength}
@@ -594,7 +599,9 @@ class BasicSubjective extends Component {
                             }}
                           />
                           <AlagehAutoComplete
-                            div={{ className: "col-4  paddingRight-0 paddingLeft-0" }}
+                            div={{
+                              className: "col-4  paddingRight-0 paddingLeft-0"
+                            }}
                             label={{
                               forceLabel: "Comp. Type",
                               isImp: false
@@ -648,7 +655,12 @@ class BasicSubjective extends Component {
                     <div className="row">
                       <div className="col-12">
                         <textarea
-                          value={this.state.significant_signs}
+                          value={
+                            this.state.significant_signs === null ||
+                            this.state.significant_signs === undefined
+                              ? ""
+                              : this.state.significant_signs
+                          }
                           name="significant_signs"
                           onChange={this.textAreaEvent.bind(this)}
                           maxLength={this.significantSignsLength}
@@ -678,7 +690,12 @@ class BasicSubjective extends Component {
                     <div className="row">
                       <div className="col-12">
                         <textarea
-                          value={this.state.other_signs}
+                          value={
+                            this.state.other_signs === null ||
+                            this.state.other_signs === undefined
+                              ? ""
+                              : this.state.other_signs
+                          }
                           name="other_signs"
                           onChange={this.textAreaEvent.bind(this)}
                           maxLength={this.otherConditionMaxLength}
@@ -817,7 +834,7 @@ class BasicSubjective extends Component {
                         onClick={this.showMedication.bind(this)}
                       >
                         {/* <i className="fas fa-plus" /> */}
-                         <i className="fas fa-retweet" />
+                        <i className="fas fa-retweet" />
                       </a>
                     </div>
                   </div>
@@ -831,9 +848,9 @@ class BasicSubjective extends Component {
                             <h3>{item.day}</h3>
                             <span>{item.year}</span>
 
-                      <div className="printOnHover">
-                        <i className="fas fa-print"></i>
-                      </div>
+                            <div className="printOnHover">
+                              <i className="fas fa-print" />
+                            </div>
                           </div>
                           <div className="medcineList">
                             <ul>
@@ -849,9 +866,9 @@ class BasicSubjective extends Component {
                                   </b>
                                   {/* <small><span>4 ml</span> - <span>12 hourly (1-1-1)</span> * <span>5 days</span></small>*/}
                                   <small>{medicine.instructions}</small>
-                                   <div className="reOrderOnHover">
-                        <i className="fas fa-retweet"></i>
-                      </div>
+                                  <div className="reOrderOnHover">
+                                    <i className="fas fa-retweet" />
+                                  </div>
                                 </li>
                               ))}
                             </ul>

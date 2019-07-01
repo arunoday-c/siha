@@ -78,24 +78,24 @@ class LabResult extends Component {
                       }
                     },
                     {
-                      fieldName: "services_id",
-                      label: <AlgaehLabel label={{ forceLabel: "Test" }} />,
-                      displayTemplate: row => {
-                        let display =
-                          this.props.assservices === undefined
-                            ? []
-                            : this.props.assservices.filter(
-                                f => f.hims_d_services_id === row.service_id
-                              );
-
-                        return (
-                          <span>
-                            {display !== null && display.length !== 0
-                              ? display[0].service_name
-                              : ""}
-                          </span>
-                        );
-                      }
+                      fieldName: "service_name",
+                      label: <AlgaehLabel label={{ forceLabel: "Test" }} />
+                      // displayTemplate: row => {
+                      //   let display =
+                      //     this.props.assservices === undefined
+                      //       ? []
+                      //       : this.props.assservices.filter(
+                      //           f => f.hims_d_services_id === row.service_id
+                      //         );
+                      //
+                      //   return (
+                      //     <span>
+                      //       {display !== null && display.length !== 0
+                      //         ? display[0].service_name
+                      //         : ""}
+                      //     </span>
+                      //   );
+                      // }
                     },
                     {
                       fieldName: "status",
@@ -113,26 +113,26 @@ class LabResult extends Component {
                       }
                     },
                     {
-                      fieldName: "provider_id",
+                      fieldName: "refered_name",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Ordered By" }} />
-                      ),
-                      displayTemplate: row => {
-                        let display =
-                          this.props.assdeptanddoctors.doctors === undefined
-                            ? []
-                            : this.props.assdeptanddoctors.doctors.filter(
-                                f => f.employee_id === row.provider_id
-                              );
-
-                        return (
-                          <span>
-                            {display !== null && display.length !== 0
-                              ? display[0].full_name
-                              : ""}
-                          </span>
-                        );
-                      }
+                      )
+                      // displayTemplate: row => {
+                      //   let display =
+                      //     this.props.assdeptanddoctors.doctors === undefined
+                      //       ? []
+                      //       : this.props.assdeptanddoctors.doctors.filter(
+                      //           f => f.employee_id === row.provider_id
+                      //         );
+                      //
+                      //   return (
+                      //     <span>
+                      //       {display !== null && display.length !== 0
+                      //         ? display[0].full_name
+                      //         : ""}
+                      //     </span>
+                      //   );
+                      // }
                     },
                     {
                       fieldName: "ordered_date",
@@ -167,9 +167,9 @@ class LabResult extends Component {
 
 function mapStateToProps(state) {
   return {
-    radresult: state.radresult,
-    assservices: state.assservices,
-    assdeptanddoctors: state.assdeptanddoctors
+    radresult: state.radresult
+    //assservices: state.assservices,
+    //  assdeptanddoctors: state.assdeptanddoctors
   };
 }
 
