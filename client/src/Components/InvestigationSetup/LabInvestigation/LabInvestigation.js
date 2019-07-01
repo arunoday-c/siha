@@ -33,7 +33,6 @@ class LabInvestigation extends Component {
   }
 
   componentWillMount() {
-    console.log(this.props, "from will mount");
     let InputOutput = this.props.InvestigationIOputs;
     this.setState({ ...this.state, ...InputOutput });
     this.clearInputState();
@@ -122,7 +121,6 @@ class LabInvestigation extends Component {
   genderHandle(context, e) {
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
-    console.log(name, value);
     this.setState({
       [name]: value
     });
@@ -523,7 +521,7 @@ class LabInvestigation extends Component {
                                 selector={{
                                   name: "gender",
                                   className: "select-fld",
-                                  value: row.gender,
+                                  value: row.gender.toUpperCase(),
                                   dataSource: {
                                     textField: "name",
                                     valueField: "value",
