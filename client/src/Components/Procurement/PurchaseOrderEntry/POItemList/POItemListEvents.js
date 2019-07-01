@@ -609,7 +609,8 @@ const updatePODetail = ($this, context, row) => {
         net_payable: net_payable,
         total_tax: total_tax,
         detail_discount: detail_discount,
-        saveEnable: saveEnable
+        saveEnable: saveEnable,
+        authorizeBtn: false
       });
     }
   }
@@ -696,22 +697,27 @@ const onchhangegriddiscount = ($this, row, e) => {
     });
   } else {
     //
+    debugger;
     extended_cost =
       parseFloat(extended_price) - parseFloat(sub_discount_amount);
+    row["unit_cost"] = extended_cost / parseFloat(row.authorize_quantity);
 
     tax_amount = (extended_cost * parseFloat(row.tax_percentage)) / 100;
     tax_amount = getAmountFormart(tax_amount, { appendSymbol: false });
-    extended_cost = getAmountFormart(extended_cost, { appendSymbol: false });
-    // row["unit_cost"] = extended_cost / parseFloat(row.order_quantity);
+    // extended_cost = getAmountFormart(extended_cost, { appendSymbol: false });
 
-    row["extended_cost"] = extended_cost;
+    row["extended_cost"] = getAmountFormart(extended_cost, {
+      appendSymbol: false
+    });
     row["tax_amount"] = (extended_cost * parseFloat(row.tax_percentage)) / 100;
     row["total_amount"] = parseFloat(tax_amount) + parseFloat(extended_cost);
 
     row["sub_discount_percentage"] = sub_discount_percentage;
     row["sub_discount_amount"] = sub_discount_amount;
-    row["extended_cost"] = extended_cost;
-    row["net_extended_cost"] = extended_cost;
+    // row["extended_cost"] = extended_cost;
+    row["net_extended_cost"] = getAmountFormart(extended_cost, {
+      appendSymbol: false
+    });
     row.update();
   }
 };
@@ -748,6 +754,7 @@ const EditGrid = ($this, context, cancelRow) => {
 
 const CancelGrid = ($this, context, cancelRow) => {
   let saveEnable = false;
+  let authorizeBtn = true;
 
   let _pharmacy_stock_detail =
     $this.state.po_from === "PHR"
@@ -768,6 +775,7 @@ const CancelGrid = ($this, context, cancelRow) => {
 
   if ($this.state.hims_f_procurement_po_header_id !== null) {
     saveEnable = true;
+    authorizeBtn = false;
   }
 
   if (context !== null) {
@@ -775,7 +783,8 @@ const CancelGrid = ($this, context, cancelRow) => {
       saveEnable: saveEnable,
       addItemButton: !$this.state.addItemButton,
       pharmacy_stock_detail: _pharmacy_stock_detail,
-      inventory_stock_detail: _inventory_stock_detail
+      inventory_stock_detail: _inventory_stock_detail,
+      authorizeBtn: authorizeBtn
     });
   }
 };

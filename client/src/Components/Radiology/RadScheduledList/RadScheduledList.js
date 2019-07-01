@@ -84,12 +84,8 @@ class RadScheduledList extends Component {
           reportName: "radiologyReport",
           reportParams: [
             {
-              name: "hims_d_patient_id",
-              value: row.patient_id
-            },
-            {
-              name: "visit_id",
-              value: row.visit_id
+              name: "hims_f_rad_order_id",
+              value: row.hims_f_rad_order_id
             }
           ],
           outputFileType: "PDF"
