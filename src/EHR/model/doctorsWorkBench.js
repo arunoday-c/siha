@@ -997,7 +997,7 @@ let getPatientVitals = (req, res, next) => {
 
           const sqlQuery = mysql.format(
             "select hims_f_patient_vitals_id, patient_id, visit_id, visit_date, visit_time,PV.updated_Date,\
-case_type, vital_id,PH.vitals_name,vital_short_name,PH.uom, vital_value, vital_value_one, vital_value_two, formula_value,PH.sequence_order from \
+case_type, vital_id,PH.vitals_name,vital_short_name,PH.uom, vital_value, vital_value_one, vital_value_two, formula_value,PH.sequence_order,PH.display from \
 hims_f_patient_vitals PV,hims_d_vitals_header PH where PV.record_status='A' and \
 PH.record_status='A' and PV.vital_id=PH.hims_d_vitals_header_id and " +
               where.condition +

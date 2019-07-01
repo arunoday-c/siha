@@ -471,24 +471,65 @@ class PatientProfile extends Component {
   }
 
   OpenMrdHandler(e) {
-    const details = Window.global;
-    var element = document.querySelectorAll("[algaehsoap]");
-    for (var i = 0; i < element.length; i++) {
-      element[i].classList.remove("active");
-    }
-    e.currentTarget.classList.add("active");
-    var page = e.currentTarget.getAttribute("algaehsoap");
+    let chief_complaint = Window.global["chief_complaint"];
+    let significant_signs = Window.global["significant_signs"];
+    const _Vitals =
+      this.props.patient_vitals !== undefined &&
+      this.props.patient_vitals.length > 0
+        ? Enumerable.from(this.props.patient_vitals)
+            .groupBy("$.visit_date", null, (k, g) => {
+              return g.getSource();
+            })
+            .orderBy(g => g.visit_date)
+            .lastOrDefault()
+        : [];
 
-    setGlobal({
-      "MRD-STD": "PatientMRD",
-      mrd_patient: details["current_patient"],
-      nationality: document.querySelector("[patient_nationality='true']")
-        .innerText,
-      gender: details["gender"]
-    });
-    this.setState({
-      pageDisplay: page
-    });
+    if (
+      chief_complaint === null ||
+      chief_complaint === undefined ||
+      chief_complaint.length < 4
+    ) {
+      swalMessage({
+        title: "Enter Chief Complaint. Atlest 4 letter",
+        type: "warning"
+      });
+    } else if (
+      significant_signs === null ||
+      significant_signs === undefined ||
+      significant_signs.length < 4
+    ) {
+      swalMessage({
+        title: "Enter Significant Signs. Atlest 4 letter",
+        type: "warning"
+      });
+    } else if (
+      _Vitals.length === 0 &&
+      Window.global["vitals_mandatory"] === "Y"
+    ) {
+      swalMessage({
+        title: "Enter All Vitals...",
+        type: "warning"
+      });
+    } else {
+      const details = Window.global;
+      var element = document.querySelectorAll("[algaehsoap]");
+      for (var i = 0; i < element.length; i++) {
+        element[i].classList.remove("active");
+      }
+      e.currentTarget.classList.add("active");
+      var page = e.currentTarget.getAttribute("algaehsoap");
+
+      setGlobal({
+        "MRD-STD": "PatientMRD",
+        mrd_patient: details["current_patient"],
+        nationality: document.querySelector("[patient_nationality='true']")
+          .innerText,
+        gender: details["gender"]
+      });
+      this.setState({
+        pageDisplay: page
+      });
+    }
   }
   render() {
     const module_plan = _.find(this.active_modules, f => {
@@ -614,12 +655,17 @@ class PatientProfile extends Component {
           </div>
           {_Vitals.length > 0 ? (
             <div className="patientVital">
-              {_Vitals.map((row, idx) => (
-                <span key={idx}>
-                  {row.vital_short_name}:<b> {row.vital_value} </b>
-                  <small>{row.formula_value}</small>
-                </span>
-              ))}
+              {_Vitals.map((row, idx) => {
+                if (row.display === "N") {
+                  return null;
+                }
+                return (
+                  <span key={idx}>
+                    {row.vital_short_name}:<b> {row.vital_value} </b>
+                    <small>{row.formula_value}</small>
+                  </span>
+                );
+              })}
             </div>
           ) : null}
           <div className="moreAction">
