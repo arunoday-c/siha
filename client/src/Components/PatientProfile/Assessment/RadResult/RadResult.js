@@ -113,26 +113,26 @@ class LabResult extends Component {
                       }
                     },
                     {
-                      fieldName: "provider_id",
+                      fieldName: "refered_name",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Ordered By" }} />
-                      ),
-                      displayTemplate: row => {
-                        let display =
-                          this.props.assdeptanddoctors.doctors === undefined
-                            ? []
-                            : this.props.assdeptanddoctors.doctors.filter(
-                                f => f.employee_id === row.provider_id
-                              );
-
-                        return (
-                          <span>
-                            {display !== null && display.length !== 0
-                              ? display[0].full_name
-                              : ""}
-                          </span>
-                        );
-                      }
+                      )
+                      // displayTemplate: row => {
+                      //   let display =
+                      //     this.props.assdeptanddoctors.doctors === undefined
+                      //       ? []
+                      //       : this.props.assdeptanddoctors.doctors.filter(
+                      //           f => f.employee_id === row.provider_id
+                      //         );
+                      //
+                      //   return (
+                      //     <span>
+                      //       {display !== null && display.length !== 0
+                      //         ? display[0].full_name
+                      //         : ""}
+                      //     </span>
+                      //   );
+                      // }
                     },
                     {
                       fieldName: "ordered_date",

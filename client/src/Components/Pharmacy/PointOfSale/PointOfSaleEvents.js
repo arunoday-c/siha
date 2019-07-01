@@ -580,6 +580,7 @@ const PostPosEntry = $this => {
       if (willDelete.value) {
         AlgaehLoader({ show: true });
         GenerateReciept($this, that => {
+          debugger;
           $this.state.posted = "Y";
           $this.state.transaction_type = "POS";
           $this.state.transaction_id =

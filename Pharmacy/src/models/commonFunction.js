@@ -35,7 +35,11 @@ let updateIntoItemLocation = (req, res, next) => {
     new LINQ(inputParam.pharmacy_stock_detail)
       .Select(s => {
         let unit_cost =
-          req.body.transaction_type == "DNA" ? s.average_cost : s.unit_cost;
+          req.body.transaction_type == "DNA" ||
+          req.body.transaction_type == "POS" ||
+          req.body.transaction_type == "SRT"
+            ? s.average_cost
+            : s.unit_cost;
         xmlQuery += "<hims_m_item_location>";
         xmlQuery += createXmlString({
           item_id: s.item_id,

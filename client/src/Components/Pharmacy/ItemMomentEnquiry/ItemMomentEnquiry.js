@@ -391,6 +391,36 @@ class ItemMomentEnquiry extends Component {
                           </span>
                         );
                       }
+                    },
+                    {
+                      fieldName: "transaction_total",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Total Cost" }} />
+                      ),
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {getAmountFormart(row.transaction_total, {
+                              appendSymbol: false
+                            })}
+                          </span>
+                        );
+                      }
+                    },
+                    {
+                      fieldName: "average_cost",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Average Cost" }} />
+                      ),
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {getAmountFormart(row.average_cost, {
+                              appendSymbol: false
+                            })}
+                          </span>
+                        );
+                      }
                     }
                   ]}
                   keyId="item_id"
