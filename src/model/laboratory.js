@@ -64,20 +64,27 @@ let getLabOrderedServices = (req, res, next) => {
       if (error) {
         next(error);
       }
-      db.query(
-        " select hims_f_lab_order_id,LO.patient_id, entered_by, confirmed_by, validated_by,visit_id,V.visit_code, provider_id, E.full_name as doctor_name, billed, service_id,S.service_code,S.service_name,LO.status,\
-        cancelled, provider_id, ordered_date, test_type, lab_id_number, run_type, P.patient_code,P.full_name,P.date_of_birth, P.gender,\
-        LS.sample_id,LS.collected,LS.collected_by, LS.remarks,LS.collected_date,LS.hims_d_lab_sample_id,LS.status as sample_status\
-        from hims_f_lab_order LO inner join hims_d_services S on LO.service_id=S.hims_d_services_id and S.record_status='A'\
-        inner join hims_f_patient_visit V on LO.visit_id=V.hims_f_patient_visit_id and  V.record_status='A'\
-        inner join hims_d_employee E on LO.provider_id=E.hims_d_employee_id and  E.record_status='A'\
-        inner join hims_f_patient P on LO.patient_id=P.hims_d_patient_id and  P.record_status='A'\
-        left outer join hims_f_lab_sample LS on  LO.hims_f_lab_order_id = LS.order_id  and LS.record_status='A'  WHERE " +
+      let queryCondition = mysql.format(
+        " select hims_f_lab_order_id,LO.patient_id, entered_by, confirmed_by, validated_by,visit_id,V.visit_code, provider_id, concat(T.title, ' ', E.full_name) as doctor_name, billed, service_id,S.service_code,S.service_name,LO.status,\
+      cancelled, provider_id, ordered_date, test_type, lab_id_number, run_type, P.patient_code,P.full_name,P.date_of_birth, P.gender,\
+      LS.sample_id,LS.collected,LS.collected_by, LS.remarks,LS.collected_date,LS.hims_d_lab_sample_id,LS.status as sample_status\
+      from hims_f_lab_order LO inner join hims_d_services S on LO.service_id=S.hims_d_services_id and S.record_status='A'\
+      inner join hims_f_patient_visit V on LO.visit_id=V.hims_f_patient_visit_id and  V.record_status='A'\
+      inner join hims_d_employee E on LO.provider_id=E.hims_d_employee_id and  E.record_status='A'\
+      inner join hims_f_patient P on LO.patient_id=P.hims_d_patient_id and  P.record_status='A'\
+      left outer join hims_f_lab_sample LS on  LO.hims_f_lab_order_id = LS.order_id  and LS.record_status='A' \
+      left join hims_d_title as T on T.his_d_title_id = E.title_id   WHERE " +
           whereOrder +
           (where.condition == ""
             ? "" + " order by hims_f_lab_order_id desc"
             : " AND " + where.condition),
-        where.values,
+        where.values
+      );
+      console.log("-----------------------------------");
+      console.log("MyQuery :", queryCondition);
+      console.log("-----------------------------------");
+      db.query(
+        queryCondition,
 
         (error, result) => {
           releaseDBConnection(db, connection);
