@@ -128,10 +128,18 @@ class Appointment extends PureComponent {
             method: "PUT",
             onSuccess: response => {
               if (response.data.success) {
-                swalMessage({
-                  title: "Record cancelled successfully . .",
-                  type: "success"
-                });
+                this.setState(
+                  {
+                    openPatEdit: false
+                  },
+                  () => {
+                    this.clearSaveState();
+                    swalMessage({
+                      title: "Record cancelled successfully . .",
+                      type: "success"
+                    });
+                  }
+                );
               }
               this.getAppointmentSchedule();
             },
@@ -746,7 +754,6 @@ class Appointment extends PureComponent {
       delete patient.contact_number;
       delete patient.email;
       delete patient.arabic_name;
-      console.log("after check in", patient);
       return this.props.routeComponents(patient);
     }
 
@@ -754,8 +761,6 @@ class Appointment extends PureComponent {
   }
 
   openEditModal(patient, data, e) {
-    console.log("from open edit", patient, data);
-
     e.preventDefault();
 
     this.getTimeSlotsForDropDown(patient.provider_id);

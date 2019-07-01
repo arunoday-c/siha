@@ -1,4 +1,6 @@
-import { successfulMessage } from "../../../utils/GlobalFunctions";
+import { successfulMessage, compareObj } from "../../../utils/GlobalFunctions";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import swal from "sweetalert2";
 
 const texthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
@@ -77,11 +79,9 @@ const AddAnalytes = ($this, context) => {
         test_id: $this.state.hims_d_investigation_test_id
       };
       insert_analytes.push(Insertobj);
-      console.log("insert object ", Insertobj, "og obj", obj);
     }
 
     analytes.push(obj);
-    console.log("after pushing", analytes);
     $this.setState(
       {
         analytes: analytes,
@@ -159,47 +159,82 @@ const deleteLabInvestigation = ($this, context, row, rowId) => {
   let insert_analytes = $this.state.insert_analytes;
 
   if ($this.state.hims_d_investigation_test_id !== null) {
-    if (row.hims_m_lab_analyte_id !== undefined) {
-      let Updateobj = {
-        hims_m_lab_analyte_id: row.hims_m_lab_analyte_id,
-        critical_low: row.critical_low,
-        critical_high: row.critical_high,
-        normal_low: row.normal_low,
-        normal_high: row.normal_high,
-        gender: row.gender,
-        from_age: row.from_age,
-        to_age: row.to_age,
-        record_status: "I"
-      };
-      update_analytes.push(Updateobj);
-    } else {
-      for (let k = 0; k < insert_analytes.length; k++) {
-        if (insert_analytes[k].analyte_id === row.analyte_id) {
-          insert_analytes.splice(k, 1);
+    swal({
+      title: "Are you Sure you want to Delete this Analyte?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willUpdate => {
+      if (willUpdate.value) {
+        if (row.hims_m_lab_analyte_id !== undefined) {
+          algaehApiCall({
+            uri: "/investigation/deleteLabAnalyte",
+            module: "laboratory",
+            data: {
+              hims_m_lab_analyte_id: row.hims_m_lab_analyte_id
+            },
+            method: "DELETE",
+            onSuccess: response => {
+              if (response.data.success === true) {
+                findAndRemoveAnalyte(analytes, row);
+                findAndRemoveAnalyte(update_analytes, row);
+                $this.setState({
+                  analytes,
+                  update_analytes
+                });
+                if (context !== undefined) {
+                  context.updateState({
+                    analytes,
+                    update_analytes
+                  });
+                }
+                swalMessage({
+                  type: "success",
+                  title: "Deleted successfully ..."
+                });
+              }
+            }
+          });
+        } else {
+          findAndRemoveAnalyte(insert_analytes, row);
+          findAndRemoveAnalyte(update_analytes, row);
+          findAndRemoveAnalyte(analytes, row);
+          $this.setState({
+            analytes,
+            update_analytes,
+            insert_analytes
+          });
+          if (context !== undefined) {
+            context.updateState({
+              analytes,
+              update_analytes,
+              insert_analytes
+            });
+          }
+          swalMessage({
+            type: "success",
+            title: "Deleted successfully ..."
+          });
         }
       }
-      // insert_analytes
-    }
-  }
-
-  for (let l = 0; l < analytes.length; l++) {
-    if (analytes[l].analyte_id === row.analyte_id) {
-      analytes.splice(l, 1);
-    }
-  }
-
-  $this.setState({
-    analytes,
-    update_analytes
-  });
-
-  if (context !== undefined) {
-    context.updateState({
-      analytes: analytes,
-      update_analytes: update_analytes
     });
   }
 };
+
+function findAndRemoveAnalyte(analytes, row) {
+  for (let l = 0; l < analytes.length; l++) {
+    if (
+      analytes[l].analyte_id === row.analyte_id &&
+      analytes[l].gender === row.gender &&
+      analytes[l].from_age === row.from_age
+    ) {
+      analytes.splice(l, 1);
+    }
+  }
+}
 
 const onchangegridcol = ($this, row, e) => {
   let analytes = $this.state.analytes;

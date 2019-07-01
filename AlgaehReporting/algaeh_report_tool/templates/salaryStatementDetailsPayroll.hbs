@@ -2,7 +2,7 @@
 
 <body>
     <div class="print-body">
-                {{#hasElement employees}}
+        {{#hasElement employees}}
         <section>
             <table class="tableForLabel" cell-padding="0">
                 <tr>
@@ -133,21 +133,7 @@
                         <td>{{leave_salary}}</td>
                         <td>{{airfare_amount}}</td>
                         <td>{{gratuity_amount}}</td>
-                        {{!-- <td>{{employee_code}}</td>
-                        <td>{{employee_code}}</td>
-                        <td>{{employee_code}}</td>
-                        <td>{{employee_code}}</td>
-                        <td>{{employee_code}}</td>
-                        <td>{{employee_code}}</td>
-                        <td>{{employee_code}}</td>
-                        <td>{{employee_code}}</td>
-                        <td>{{employee_code}}</td>
-                        <td>{{employee_code}}</td>
-                        <td>{{employee_code}}</td>
-                        <td>{{employee_code}}</td>
-                        <td>{{employee_code}}</td>
-                        <td>{{employee_code}}</td>
-                        <td>{{employee_code}}</td> --}}
+
                     </tr>
                     {{/each }}
 
@@ -157,6 +143,6 @@
             </table>
         </section>
         {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
-                {{/hasElement }}
+        {{/hasElement }}
     </div>
 </body>

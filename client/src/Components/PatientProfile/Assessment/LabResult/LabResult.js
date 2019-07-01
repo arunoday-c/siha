@@ -71,13 +71,6 @@ class LabResult extends Component {
                       fieldName: "service_name",
                       label: <AlgaehLabel label={{ forceLabel: "Test" }} />,
                       displayTemplate: row => {
-                        // let display =
-                        //   this.props.assservices === undefined
-                        //     ? []
-                        //     : this.props.assservices.filter(
-                        //         f => f.hims_d_services_id === row.service_id
-                        //       );
-
                         return (
                           <span
                             className="pat-code"
