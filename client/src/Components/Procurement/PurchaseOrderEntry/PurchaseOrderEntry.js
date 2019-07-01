@@ -26,7 +26,7 @@ import {
   getCtrlCode,
   AuthorizePOEntry,
   getVendorMaster,
-  datehandle
+	generatePOReceipt
 } from "./PurchaseOrderEntryEvents";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import POEntry from "../../../Models/POEntry";
@@ -60,27 +60,6 @@ class PurchaseOrderEntry extends Component {
       .where(w => w.location_type === "WH")
       .toArray();
 
-    const Location_data =
-      this.state.po_from === "PHR"
-        ? this.state.pharmcy_location_id !== null
-          ? _.filter(_mainStore, f => {
-              return (
-                f.hims_d_pharmacy_location_id === this.state.pharmcy_location_id
-              );
-            })
-          : []
-        : this.state.inventory_location_id !== null
-        ? _.filter(_mainStore, f => {
-            return (
-              f.hims_d_inventory_location_id ===
-              this.state.inventory_location_id
-            );
-          })
-        : [];
-
-    const Vendor_data = _.filter(this.props.povendors, f => {
-      return f.hims_d_vendor_id === this.state.vendor_id;
-    });
 
     return (
       <div>
@@ -143,51 +122,73 @@ class PurchaseOrderEntry extends Component {
               </div>
             </div>
           }
-          printArea={
-            this.state.purchase_number !== null
-              ? {
-                  menuitems: [
-                    {
-                      label: "Print Report",
-                      events: {
-                        onClick: () => {
-                          AlgaehReport({
-                            report: {
-                              fileName: "Procurement/PurchaseOrderEntry"
-                            },
-                            data: {
-                              purchase_number: this.state.purchase_number,
-                              po_date: moment(this.state.po_date).format(
-                                Options.datetimeFormat
-                              ),
-                              po_from:
-                                this.state.po_from === "PHR"
-                                  ? "Pharmacy"
-                                  : "Inventory",
+          // printArea={
+          //   this.state.purchase_number !== null
+          //     ? {
+          //         menuitems: [
+          //           {
+          //             label: "Print Report",
+          //             events: {
+          //               onClick: () => {
+          //                 AlgaehReport({
+          //                   report: {
+          //                     fileName: "Procurement/PurchaseOrderEntry"
+          //                   },
+          //                   data: {
+          //                     purchase_number: this.state.purchase_number,
+          //                     po_date: moment(this.state.po_date).format(
+          //                       Options.datetimeFormat
+          //                     ),
+          //                     po_from:
+          //                       this.state.po_from === "PHR"
+          //                         ? "Pharmacy"
+          //                         : "Inventory",
 
-                              from_location:
-                                Location_data.length > 0
-                                  ? Location_data[0].location_description
-                                  : "",
-                              vendor_name: Vendor_data[0].vendor_name,
-                              vendor_trn:
-                                Vendor_data[0].business_registration_no,
-                              requisition_number: this.state
-                                .material_requisition_number,
-                              net_payable: this.state.net_payable,
-                              po_detail:
-                                this.state.po_from === "PHR"
-                                  ? this.state.pharmacy_stock_detail
-                                  : this.state.inventory_stock_detail
-                            }
-                          });
-                        }
-                      }
-                    }
-                  ]
-                }
-              : ""
-          }
+          //                     from_location:
+          //                       Location_data.length > 0
+          //                         ? Location_data[0].location_description
+          //                         : "",
+          //                     vendor_name: Vendor_data[0].vendor_name,
+          //                     vendor_trn:
+          //                       Vendor_data[0].business_registration_no,
+          //                     requisition_number: this.state
+          //                       .material_requisition_number,
+          //                     net_payable: this.state.net_payable,
+          //                     po_detail:
+          //                       this.state.po_from === "PHR"
+          //                         ? this.state.pharmacy_stock_detail
+          //                         : this.state.inventory_stock_detail
+          //                   }
+          //                 });
+          //               }
+          //             }
+          //           }
+          //         ]
+          //       }
+          //     : ""
+          // }
+
+
+
+					printArea={
+						this.state.hims_f_procurement_po_header_id !== null ? (
+							{
+								menuitems: [
+									{
+										label: 'Print Receipt',
+										events: {
+											onClick: () => {
+												generatePOReceipt(this);
+											}
+										}
+									}
+								]
+							}
+						) : (
+							''
+						)
+					}
+
           selectedLang={this.state.selectedLang}
         />
         <div className="hims-purchase-order-entry">

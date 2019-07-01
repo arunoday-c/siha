@@ -128,10 +128,18 @@ class Appointment extends PureComponent {
             method: "PUT",
             onSuccess: response => {
               if (response.data.success) {
-                swalMessage({
-                  title: "Record cancelled successfully . .",
-                  type: "success"
-                });
+                this.setState(
+                  {
+                    openPatEdit: false
+                  },
+                  () => {
+                    this.clearSaveState();
+                    swalMessage({
+                      title: "Record cancelled successfully . .",
+                      type: "success"
+                    });
+                  }
+                );
               }
               this.getAppointmentSchedule();
             },

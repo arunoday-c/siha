@@ -74,7 +74,7 @@ class NewInvestigation extends PureComponent {
     }
   }
   onClose = e => {
-    this.props.onClose && this.props.onClose(false);
+    this.props.onClose && this.props.onClose(true);
   };
 
   handleClose = () => {
