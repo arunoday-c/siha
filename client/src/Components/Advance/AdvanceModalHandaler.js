@@ -37,7 +37,7 @@ const cashtexthandle = ($this, ctrl, e) => {
 
 const calculateTotalAmount = ($this, e) => {
   // Enumerable
-  
+
   let cash = parseFloat($this.state.cash_amount);
   let card = parseFloat($this.state.card_amount);
   let cheque = parseFloat($this.state.cheque_amount);
@@ -120,7 +120,11 @@ const datehandle = ($this, ctrl, e) => {
 const Validations = ($this, e) => {
   let isError = false;
 
-  if ($this.state.card_number.length !== 0 && $this.state.card_amount >= 0) {
+  debugger;
+  if (
+    $this.state.card_number.length !== 0 &&
+    parseFloat($this.state.card_amount) >= 0
+  ) {
     isError = true;
     swalMessage({
       title: "Invalid. Card amount cannot be zero.",
@@ -129,9 +133,10 @@ const Validations = ($this, e) => {
 
     document.querySelector("[name='card_amount']").focus();
     return isError;
-  }
-
-  if ($this.state.card_number.length !== 0 && $this.state.card_date === null) {
+  } else if (
+    $this.state.card_number.length !== 0 &&
+    $this.state.card_date === null
+  ) {
     isError = true;
     swalMessage({
       title: "Invalid. Card expiry date is mandatory.",
@@ -140,11 +145,9 @@ const Validations = ($this, e) => {
 
     document.querySelector("[name='card_date']").focus();
     return isError;
-  }
-
-  if (
+  } else if (
     $this.state.cheque_number.length !== 0 &&
-    $this.state.cheque_amount >= 0
+    parseFloat($this.state.cheque_amount) >= 0
   ) {
     isError = true;
     swalMessage({
@@ -154,9 +157,7 @@ const Validations = ($this, e) => {
 
     document.querySelector("[name='cheque_amount']").focus();
     return isError;
-  }
-
-  if (
+  } else if (
     $this.state.cheque_number.length !== 0 &&
     $this.state.cheque_date === null
   ) {
@@ -168,9 +169,31 @@ const Validations = ($this, e) => {
 
     document.querySelector("[name='cheque_date']").focus();
     return isError;
+  } else if (parseFloat($this.state.total_amount) < 0) {
+    isError = true;
+    swalMessage({
+      title: "Invalid. Please enter the amount.",
+      type: "error"
+    });
+
+    document.querySelector("[name='cash_amount']").focus();
+    return isError;
+  } else if (
+    $this.props.Advance === false &&
+    parseFloat($this.state.total_amount) >
+      parseFloat($this.props.inputsparameters.advance_amount)
+  ) {
+    isError = true;
+    swalMessage({
+      title: "Invalid. Refund Amount cannot be grester than Advance Taken.",
+      type: "error"
+    });
+
+    document.querySelector("[name='cash_amount']").focus();
+    return isError;
   }
 
-  if ($this.state.card_amount > 0) {
+  if (parseFloat($this.state.card_amount) > 0) {
     if ($this.state.card_number === null || $this.state.card_number === "") {
       isError = true;
       swalMessage({
@@ -192,7 +215,7 @@ const Validations = ($this, e) => {
     }
   }
 
-  if ($this.state.cheque_amount > 0) {
+  if (parseFloat($this.state.cheque_amount) > 0) {
     if (
       $this.state.cheque_number === null ||
       $this.state.cheque_number === ""
@@ -215,17 +238,6 @@ const Validations = ($this, e) => {
 
       return isError;
     }
-  }
-
-  if ($this.state.total_amount < 0) {
-    isError = true;
-    swalMessage({
-      title: "Invalid. Please enter the amount.",
-      type: "error"
-    });
-
-    document.querySelector("[name='cash_amount']").focus();
-    return isError;
   }
 };
 

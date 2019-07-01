@@ -880,35 +880,51 @@ class RegistrationPatient extends Component {
                       label={{ fieldName: "btn_save", returnText: true }}
                     />
                   </button>
+                  {this.props.fromAppoinment === true ? null : (
+                    <div className="">
+                      <button
+                        type="button"
+                        className="btn btn-default"
+                        onClick={ClearData.bind(this, this)}
+                        disabled={this.state.clearEnable}
+                      >
+                        <AlgaehLabel
+                          label={{ fieldName: "btn_clear", returnText: true }}
+                        />
+                      </button>
 
-                  <button
-                    type="button"
-                    className="btn btn-default"
-                    onClick={ClearData.bind(this, this)}
-                    disabled={this.state.clearEnable}
-                  >
-                    <AlgaehLabel
-                      label={{ fieldName: "btn_clear", returnText: true }}
-                    />
-                  </button>
-
-                  <button
-                    type="button"
-                    className="btn btn-other"
-                    onClick={ShowRefundScreen.bind(this, this)}
-                    disabled={
-                      this.state.advance_amount === null
-                        ? true
-                        : this.state.advanceEnable
-                    }
-                  >
-                    <AlgaehLabel
-                      label={{
-                        fieldName: "btn_refund",
-                        returnText: true
-                      }}
-                    />
-                  </button>
+                      <button
+                        type="button"
+                        className="btn btn-other"
+                        onClick={ShowRefundScreen.bind(this, this)}
+                        disabled={
+                          this.state.advance_amount === null
+                            ? true
+                            : this.state.advanceEnable
+                        }
+                      >
+                        <AlgaehLabel
+                          label={{
+                            fieldName: "btn_refund",
+                            returnText: true
+                          }}
+                        />
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-other"
+                        onClick={ShowAdvanceScreen.bind(this, this)}
+                        disabled={this.state.advanceEnable}
+                      >
+                        <AlgaehLabel
+                          label={{
+                            fieldName: "btn_advance",
+                            returnText: true
+                          }}
+                        />
+                      </button>
+                    </div>
+                  )}
 
                   <AddAdvanceModal
                     show={this.state.RefundOpen}
@@ -922,6 +938,7 @@ class RegistrationPatient extends Component {
                         }}
                       />
                     }
+                    Advance={false}
                     NumberLabel="payment_number"
                     DateLabel="payment_date"
                     inputsparameters={{
@@ -933,19 +950,6 @@ class RegistrationPatient extends Component {
                       advance_amount: this.state.advance_amount
                     }}
                   />
-                  <button
-                    type="button"
-                    className="btn btn-other"
-                    onClick={ShowAdvanceScreen.bind(this, this)}
-                    disabled={this.state.advanceEnable}
-                  >
-                    <AlgaehLabel
-                      label={{
-                        fieldName: "btn_advance",
-                        returnText: true
-                      }}
-                    />
-                  </button>
 
                   <AddAdvanceModal
                     show={this.state.AdvanceOpen}

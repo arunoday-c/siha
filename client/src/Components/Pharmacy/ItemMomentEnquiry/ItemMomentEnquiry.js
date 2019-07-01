@@ -378,14 +378,14 @@ class ItemMomentEnquiry extends Component {
                       }
                     },
                     {
-                      fieldName: "transaction_cost",
+                      fieldName: "average_cost",
                       label: (
-                        <AlgaehLabel label={{ forceLabel: "Unit Cost" }} />
+                        <AlgaehLabel label={{ forceLabel: "Average Cost" }} />
                       ),
                       displayTemplate: row => {
                         return (
                           <span>
-                            {getAmountFormart(row.transaction_cost, {
+                            {getAmountFormart(row.average_cost, {
                               appendSymbol: false
                             })}
                           </span>

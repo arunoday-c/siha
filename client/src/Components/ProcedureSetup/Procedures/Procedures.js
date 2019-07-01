@@ -87,7 +87,7 @@ class Procedures extends PureComponent {
         hims_d_procedure_id: null,
         procedure_code: null,
         procedure_desc: null,
-        package_amount: 0,
+        procedure_amount: 0,
         total_service_amount: 0,
         profit_loss: null,
         pl_amount: 0,
@@ -214,7 +214,7 @@ class Procedures extends PureComponent {
                     <AlagehFormGroup
                       div={{ className: "col form-group" }}
                       label={{
-                        forceLabel: "procedure_amount"
+                        forceLabel: "procedure amount"
                       }}
                       textBox={{
                         decimal: { allowNegative: false },

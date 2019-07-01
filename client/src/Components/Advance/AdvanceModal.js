@@ -169,6 +169,7 @@ class AddAdvanceModal extends PureComponent {
   }
 
   SaveAdvance(context, e) {
+    debugger;
     const err = Validations(this, this);
 
     if (!err) {
@@ -567,8 +568,10 @@ class AddAdvanceModal extends PureComponent {
                       />
                       <h6>
                         {this.props.inputsparameters.advance_amount
-                          ? this.props.inputsparameters.advance_amount
-                          : "0.00"}
+                          ? getAmountFormart(
+                              this.props.inputsparameters.advance_amount
+                            )
+                          : getAmountFormart("0")}
                       </h6>
                     </div>
 

@@ -59,6 +59,7 @@ class RadResultEntry extends Component {
     }
   }
   componentWillReceiveProps(newProps) {
+    debugger;
     if (
       newProps.selectedPatient !== undefined &&
       (newProps.radschlist === undefined || newProps.radschlist.length === 0)

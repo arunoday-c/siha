@@ -236,6 +236,7 @@ const itemchangeText = ($this, context, e, ctrl) => {
   let name = ctrl;
   if ($this.state.location_id !== null) {
     if (e.service_id !== null) {
+      debugger;
       let value = e.hims_d_item_master_id;
 
       algaehApiCall({
@@ -294,7 +295,8 @@ const itemchangeText = ($this, context, e, ctrl) => {
                 stocking_uom: e.stocking_uom,
                 conversion_factor: sales_conversion_factor.conversion_factor,
                 sales_qtyhand: sales_qtyhand,
-                stocking_uom_id: e.stocking_uom_id
+                stocking_uom_id: e.stocking_uom_id,
+                average_cost: data.locationResult[0].avgcost
               });
 
               if (context !== undefined) {
@@ -322,7 +324,8 @@ const itemchangeText = ($this, context, e, ctrl) => {
                   stocking_uom: e.stocking_uom,
                   conversion_factor: sales_conversion_factor.conversion_factor,
                   sales_qtyhand: sales_qtyhand,
-                  stocking_uom_id: e.stocking_uom_id
+                  stocking_uom_id: e.stocking_uom_id,
+                  average_cost: data.locationResult[0].avgcost
                 });
               }
             } else {
@@ -600,6 +603,7 @@ const AddItems = ($this, context) => {
                 data.billdetails[0].net_amout;
 
               data.billdetails[0].item_id = $this.state.item_id;
+              data.billdetails[0].average_cost = $this.state.average_cost;
               data.billdetails[0].item_category = $this.state.item_category;
               data.billdetails[0].item_group_id = $this.state.item_group_id;
               data.billdetails[0].expiry_date = $this.state.expiry_date;
@@ -624,7 +628,8 @@ const AddItems = ($this, context) => {
                   sales_price: $this.state.unit_cost,
                   uom_id: $this.state.uom_id,
                   conversion_factor: $this.state.conversion_factor,
-                  non_prec_Item: true
+                  non_prec_Item: true,
+                  average_cost: $this.state.average_cost
                 }
               ];
 
@@ -1253,6 +1258,13 @@ const CloseItemBatch = ($this, context, e) => {
         : $this.state.sales_qtyhand
       : $this.state.sales_qtyhand;
 
+  let average_cost =
+    e !== undefined
+      ? e.selected === true
+        ? e.avgcost
+        : $this.state.average_cost
+      : $this.state.average_cost;
+
   $this.setState({
     ...$this.state,
     selectBatch: !$this.state.selectBatch,
@@ -1263,7 +1275,8 @@ const CloseItemBatch = ($this, context, e) => {
     sales_qtyhand: sales_qtyhand,
     uom_id: uom_id,
     unit_cost: sale_price,
-    uom_description: uom_description
+    uom_description: uom_description,
+    average_cost: average_cost
   });
 
   if (context !== null) {
@@ -1275,7 +1288,8 @@ const CloseItemBatch = ($this, context, e) => {
       sales_qtyhand: sales_qtyhand,
       uom_id: uom_id,
       unit_cost: sale_price,
-      uom_description: uom_description
+      uom_description: uom_description,
+      average_cost: average_cost
     });
   }
 };
