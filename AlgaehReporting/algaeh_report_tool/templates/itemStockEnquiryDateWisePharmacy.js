@@ -7,7 +7,7 @@ const executePDF = function executePDFMethod(options) {
       let str = "";
       let input = {};
       let params = options.args.reportParams;
-
+      const decimal_places = options.args.crypto.decimal_places;
       params.forEach(para => {
         input[para["name"]] = para["value"];
       });
@@ -58,13 +58,13 @@ const executePDF = function executePDFMethod(options) {
                 .filter(f => f.stock_status == "out")
                 .sumBy(s => parseFloat(s.transaction_qty))
                 .value()
-                .toFixed(4);
+                .toFixed(decimal_places);
 
               const stock_in = _.chain(item)
                 .filter(f => f.stock_status == "in")
                 .sumBy(s => parseFloat(s.transaction_qty))
                 .value()
-                .toFixed(4);
+                .toFixed(decimal_places);
 
               return {
                 transaction_date: key,
@@ -80,13 +80,13 @@ const executePDF = function executePDFMethod(options) {
 
             .sumBy(s => parseFloat(s.stock_in))
             .value()
-            .toFixed(4);
+            .toFixed(decimal_places);
 
           const total_out = _.chain(data)
 
             .sumBy(s => parseFloat(s.stock_out))
             .value()
-            .toFixed(4);
+            .toFixed(decimal_places);
 
           resolve({
             details: data,

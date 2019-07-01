@@ -8,7 +8,7 @@ const executePDF = function executePDFMethod(options) {
       let str2 = "";
       let input = {};
       let params = options.args.reportParams;
-
+      const decimal_places = options.args.crypto.decimal_places;
       params.forEach(para => {
         input[para["name"]] = para["value"];
       });
@@ -69,13 +69,13 @@ const executePDF = function executePDFMethod(options) {
                 .filter(f => f.stock_status == "out")
                 .sumBy(s => parseFloat(s.transaction_qty))
                 .value()
-                .toFixed(4);
+                .toFixed(decimal_places);
 
               const stock_in = _.chain(item)
                 .filter(f => f.stock_status == "in")
                 .sumBy(s => parseFloat(s.transaction_qty))
                 .value()
-                .toFixed(4);
+                .toFixed(decimal_places);
 
               return {
                 item_id: key,
@@ -95,7 +95,7 @@ const executePDF = function executePDFMethod(options) {
               parseFloat(qty["qtyhand"]) +
                 parseFloat(item["stock_out"]) -
                 parseFloat(item["stock_in"])
-            ).toFixed(4);
+            ).toFixed(decimal_places);
             return {
               ...item,
               opening_bal: opening_bal,

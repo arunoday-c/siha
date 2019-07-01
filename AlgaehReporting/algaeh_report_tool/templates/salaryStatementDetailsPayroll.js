@@ -34,7 +34,8 @@ const executePDF = function executePDFMethod(options) {
 				select E.employee_code,E.full_name,E.employee_designation_id,S.employee_id,E.sub_department_id,E.date_of_joining,E.nationality,E.mode_of_payment,\
 				E.hospital_id,E.employee_group_id,D.designation,EG.group_description,N.nationality,\
 				S.hims_f_salary_id,S.salary_number,S.salary_date,S.present_days,S.net_salary,S.total_earnings,S.total_deductions,\
-				S.total_contributions,S.ot_work_hours,S.ot_weekoff_hours,S.ot_holiday_hours,H.hospital_name,SD.sub_department_name
+        S.total_contributions,coalesce(S.ot_work_hours,0.0) as ot_work_hours,    coalesce(S.ot_weekoff_hours,0.0) as ot_weekoff_hours,\
+        coalesce(S.ot_holiday_hours,0.0) as ot_holiday_hours,H.hospital_name,SD.sub_department_name
 				from hims_d_employee E\
 				inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\
 				inner join hims_d_hospital H  on E.hospital_id=H.hims_d_hospital_id  ${is_local}\
@@ -317,10 +318,15 @@ const executePDF = function executePDFMethod(options) {
 
                   //  console.log("sum_basic:", sum_basic);
 
-                  sum_basic += parseFloat(
-                    employee_earning.find(item => item.earnings_id == basic_id)
-                      .amount
+                  // sum_basic += parseFloat(
+                  //   employee_earning.find(item => item.earnings_id == basic_id)
+                  //     .amount
+                  // );
+
+                  const basic = employee_earning.find(
+                    item => item.earnings_id == basic_id
                   );
+                  sum_basic += basic ? parseFloat(basic.amount) : parseFloat(0);
 
                   // .value(v => v.amount);
 
@@ -332,7 +338,9 @@ const executePDF = function executePDFMethod(options) {
                   const grat = gratuity.find(
                     item => item.employee_id == salary[i]["employee_id"]
                   );
-                  sum_gratuity += grat ? parseFloat(grat.gratuity_amount) : 0;
+                  sum_gratuity += grat
+                    ? parseFloat(grat.gratuity_amount)
+                    : parseFloat(0);
 
                   // console.log("sum_gratuity:", sum_gratuity);
 
@@ -348,7 +356,7 @@ const executePDF = function executePDFMethod(options) {
 
                   sum_airfare_amount += accu
                     ? parseFloat(accu.airfare_amount)
-                    : 0;
+                    : parseFloat(0);
 
                   // sum_airfare_amount += new LINQ(accrual)
                   //   .Where(w => w.employee_id == salary[i]["employee_id"])
@@ -366,7 +374,7 @@ const executePDF = function executePDFMethod(options) {
 
                   let emp_gratuity = grat
                     ? parseFloat(grat.gratuity_amount)
-                    : 0;
+                    : parseFloat(0);
 
                   // let emp_accural = new LINQ(accrual)
                   //   .Where(w => w.employee_id == salary[i]["employee_id"])
@@ -424,7 +432,7 @@ const executePDF = function executePDFMethod(options) {
                   sum_leave_salary: sum_leave_salary,
                   sum_airfare_amount: sum_airfare_amount
                 };
-                //utilities.logger().log("result: ", result);
+                utilities.logger().log("result: ", result);
                 resolve(result);
               })
               .catch(e => {
@@ -442,9 +450,6 @@ const executePDF = function executePDFMethod(options) {
           options.mysql.releaseConnection();
           reject(e);
         });
-
-      // const result = { details: options.result };
-      // resolve(result);
     } catch (e) {
       reject(e);
     }
