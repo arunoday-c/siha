@@ -502,7 +502,9 @@ class PhySchSetup extends Component {
         w => w.hims_d_appointment_schedule_header_id === parseInt(header_id, 10)
       )
       .firstOrDefault();
-console.log(docs,'test')
+
+    
+    console.log("docs",docs)
     this.setState({
       hims_d_appointment_schedule_header_id: header_id,
       description: docs.schedule_description,
@@ -525,6 +527,8 @@ console.log(docs,'test')
       from_date: docs.from_date,
       to_date: docs.to_date
     });
+
+
   }
 
   deleteDocFromSchedule(e) {
@@ -1188,7 +1192,7 @@ console.log(docs,'test')
                     </label>
                   <div className="row">
                     <AlgaehDateHandler
-                      div={{ className: "col" }}
+                      div={{ className: "col-6" }}
                       label={{ forceLabel: "From Date", isImp: true }}
                       textBox={{
                         className: "txt-fld",
@@ -1205,7 +1209,7 @@ console.log(docs,'test')
                       minDate={new Date()}
                     />
                     <AlgaehDateHandler
-                      div={{ className: "col" }}
+                      div={{ className: "col-6" }}
                       label={{ forceLabel: "To Date", isImp: true }}
                       textBox={{
                         className: "txt-fld",
@@ -1279,7 +1283,7 @@ console.log(docs,'test')
                           textBox={{
                             className: "txt-fld",
                             name: "from_break_hr1",
-                            value: this.state.from_break_hr1,
+                            value:this.state.work_break1 === "Y" ? this.state.from_break_hr1:null,
                             events: {
                               onChange: this.changeTexts.bind(this)
                             },
@@ -1299,7 +1303,8 @@ console.log(docs,'test')
                           textBox={{
                             className: "txt-fld",
                             name: "to_break_hr1",
-                            value: this.state.to_break_hr1,
+                              value:this.state.work_break1 === "Y"
+                                  ?  this.state.to_break_hr1:null,
                             events: {
                               onChange: this.changeTexts.bind(this)
                             },
@@ -1324,7 +1329,8 @@ console.log(docs,'test')
                           textBox={{
                             className: "txt-fld",
                             name: "from_break_hr2",
-                            value: this.state.from_break_hr2,
+                             value:this.state.work_break2 === "Y"
+                                  ? this.state.from_break_hr2:null,
                             events: {
                               onChange: this.changeTexts.bind(this)
                             },
@@ -1343,7 +1349,8 @@ console.log(docs,'test')
                           textBox={{
                             className: "txt-fld",
                             name: "to_break_hr2",
-                            value: this.state.to_break_hr2,
+                           value:this.state.work_break2 === "Y"
+                                  ? this.state.to_break_hr2:null,
                             events: {
                               onChange: this.changeTexts.bind(this)
                             },
@@ -1646,6 +1653,7 @@ console.log(docs,'test')
                         }
                       }}
                       value={this.state.to_date}
+                      minDate={new Date()}
                     />
                   </div>
                     </div>
@@ -1961,7 +1969,7 @@ console.log(docs,'test')
 
 
 <AlagehAutoComplete
-                      div={{ className: "col-7" }}
+                      div={{ className: "col-5" }}
                       label={{
                         fieldName: "sel_month",
                         isImp: false
@@ -1983,9 +1991,9 @@ console.log(docs,'test')
 
 
                   <AlagehFormGroup
-            div={{ className: "col-7" }}
+            div={{ className: "col-4" }}
             label={{
-              forceLabel: "Select Year",
+              forceLabel: "Enter Year",
               isImp: true
             }}
             textBox={{
@@ -2005,7 +2013,7 @@ console.log(docs,'test')
 
 
 
-          <div className="col form-group" style={{textAlign:"right"}}>
+          <div className="col-3 form-group" style={{textAlign:"right"}}>
             <button style={{ marginTop: 19, }} className="btn btn-default" id="srch-sch" onClick={this.getApptSchedule.bind(this)}>
              Apply
             </button>
