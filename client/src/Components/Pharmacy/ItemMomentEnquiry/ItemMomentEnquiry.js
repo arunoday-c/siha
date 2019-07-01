@@ -378,36 +378,6 @@ class ItemMomentEnquiry extends Component {
                       }
                     },
                     {
-                      fieldName: "transaction_cost",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Unit Cost" }} />
-                      ),
-                      displayTemplate: row => {
-                        return (
-                          <span>
-                            {getAmountFormart(row.transaction_cost, {
-                              appendSymbol: false
-                            })}
-                          </span>
-                        );
-                      }
-                    },
-                    {
-                      fieldName: "transaction_total",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Total Cost" }} />
-                      ),
-                      displayTemplate: row => {
-                        return (
-                          <span>
-                            {getAmountFormart(row.transaction_total, {
-                              appendSymbol: false
-                            })}
-                          </span>
-                        );
-                      }
-                    },
-                    {
                       fieldName: "average_cost",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Average Cost" }} />

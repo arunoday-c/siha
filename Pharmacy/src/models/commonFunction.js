@@ -84,7 +84,8 @@ let updateIntoItemLocation = (req, res, next) => {
           average_cost: unit_cost,
           created_by: req.userIdentity.algaeh_d_app_user_id,
           updated_by: req.userIdentity.algaeh_d_app_user_id,
-          operation: s.operation
+          operation: s.operation,
+          hospital_id: req.userIdentity.hospital_id
         });
         xmlQuery += "</hims_m_item_location>";
       })
