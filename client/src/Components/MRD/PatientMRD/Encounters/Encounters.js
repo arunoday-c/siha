@@ -6,7 +6,7 @@ import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import Enumerable from "linq";
 // import Summary from "../Summary/Summary";
-
+import { Dimmer, Loader } from "semantic-ui-react";
 class Encounters extends Component {
   constructor(props) {
     super(props);
@@ -17,7 +17,10 @@ class Encounters extends Component {
       patientMedications: [],
       patientInvestigations: [],
       patientProcedures: [],
-      patientVital: []
+      patientVital: [],
+      loaderChiefComp: false,
+      loaderSignificantSigns_Others: false,
+      loaderVitals: false
     };
   }
 
@@ -43,91 +46,119 @@ class Encounters extends Component {
   }
 
   getEncounterDetails(encounter_id) {
-    algaehApiCall({
-      uri: "/doctorsWorkBench/getPatientEncounter",
-      method: "GET",
-      data: {
-        encounter_id: encounter_id
+    this.setState(
+      {
+        loaderSignificantSigns_Others: true
       },
-      onSuccess: response => {
-        let data = response.data.records[0];
-        if (response.data.success) {
-          this.setState({
-            significant_signs: data.significant_signs,
-            other_signs: data.other_signs
-          });
-        }
-      },
-      onFailure: error => {
-        swalMessage({
-          title: error.message,
-          type: "error"
+      () => {
+        algaehApiCall({
+          uri: "/doctorsWorkBench/getPatientEncounter",
+          method: "GET",
+          data: {
+            encounter_id: encounter_id
+          },
+          onSuccess: response => {
+            let data = response.data.records[0];
+            if (response.data.success) {
+              this.setState({
+                significant_signs: data.significant_signs,
+                other_signs: data.other_signs,
+                loaderSignificantSigns_Others: false
+              });
+            }
+          },
+          onFailure: error => {
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
         });
       }
-    });
+    );
   }
 
   getPatientVitals(patient_id, visit_id) {
-    algaehApiCall({
-      uri: "/doctorsWorkBench/getPatientVitals",
-      method: "GET",
-      data: {
-        patient_id: patient_id,
-        visit_id: visit_id
+    this.setState(
+      {
+        loaderVitals: true
       },
-      cancelRequestId: "getPatientVitals",
-      onSuccess: response => {
-        algaehLoader({ show: false });
-        if (response.data.success && response.data.records.length !== 0) {
-          const _Vitals =
-            response.data.records !== undefined &&
-            response.data.records.length > 0
-              ? Enumerable.from(response.data.records)
-                  .groupBy("$.visit_date", null, (k, g) => {
-                    return g.getSource();
-                  })
-                  .orderBy(g => g.visit_date)
-                  .lastOrDefault()
-              : [];
+      () => {
+        algaehApiCall({
+          uri: "/doctorsWorkBench/getPatientVitals",
+          method: "GET",
+          data: {
+            patient_id: patient_id,
+            visit_id: visit_id
+          },
+          cancelRequestId: "getPatientVitals",
+          onSuccess: response => {
+            algaehLoader({ show: false });
+            if (response.data.success && response.data.records.length !== 0) {
+              const _Vitals =
+                response.data.records !== undefined &&
+                response.data.records.length > 0
+                  ? Enumerable.from(response.data.records)
+                      .groupBy("$.visit_date", null, (k, g) => {
+                        return {
+                          key: k,
+                          details: g.getSource()
+                        };
+                      })
+                      .toArray()
+                  : [];
 
-          this.setState({ patientVital: _Vitals });
-        } else if (response.data.records.length === 0) {
-          this.setState({
-            patientVital: []
-          });
-        }
-      },
-      onFailure: error => {
-        algaehLoader({ show: false });
-        swalMessage({
-          title: error.message,
-          type: "error"
+              this.setState({ patientVital: _Vitals, loaderVitals: false });
+            } else if (response.data.records.length === 0) {
+              this.setState({
+                patientVital: [],
+                loaderVitals: false
+              });
+            }
+          },
+          onFailure: error => {
+            algaehLoader({ show: false });
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
         });
       }
-    });
+    );
   }
 
   getPatientChiefComplaint(episode_id) {
-    algaehApiCall({
-      uri: "/mrd/getPatientChiefComplaint",
-      method: "GET",
-      data: {
-        episode_id: episode_id
+    this.setState(
+      {
+        loaderChiefComp: true
       },
-      module: "MRD",
-      cancelRequestId: "getPatientChiefComplaint",
-      onSuccess: response => {
-        if (response.data.success) {
-          this.setState({ patientComplaints: response.data.records });
-        }
-      },
-      onFailure: error => {
-        swalMessage({
-          title: error.message,
-          type: "error"
+      () => {
+        algaehApiCall({
+          uri: "/mrd/getPatientChiefComplaint",
+          method: "GET",
+          data: {
+            episode_id: episode_id
+          },
+          module: "MRD",
+          cancelRequestId: "getPatientChiefComplaint",
+          onSuccess: response => {
+            if (response.data.success) {
+              this.setState({
+                patientComplaints: response.data.records,
+                loaderChiefComp: false
+              });
+            }
+          },
+          onFailure: error => {
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
         });
       }
-    });
+    );
   }
 
   getPatientDiagnosis(episode_id) {
@@ -412,17 +443,25 @@ class Encounters extends Component {
                   <div className="col-lg-12">
                     <h6 className="smallh6">Chief Complaint(s)</h6>
                     <div className="row">
-                      <div className="col">
-                        <h6 className="">
-                          {this.state.patientComplaints.map((data, index) => {
-                            return data.chief_complaint
-                              ? data.chief_complaint
-                              : data.comment
-                              ? data.comment
-                              : "-------";
-                          })}
-                        </h6>
-                      </div>
+                      {this.state.loaderChiefComp ? (
+                        <div className="col">
+                          <Dimmer active>
+                            <Loader inline="centered">Loading</Loader>
+                          </Dimmer>
+                        </div>
+                      ) : (
+                        <div className="col">
+                          <h6 className="">
+                            {this.state.patientComplaints.map((data, index) => {
+                              return data.chief_complaint
+                                ? data.chief_complaint
+                                : data.comment
+                                ? data.comment
+                                : "-------";
+                            })}
+                          </h6>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -431,9 +470,17 @@ class Encounters extends Component {
                   <div className="col-lg-12">
                     <h6 className="smallh6">Significant Signs</h6>
                     <div className="row">
-                      <div className="col">
-                        <h6 className="">{this.state.significant_signs}</h6>
-                      </div>
+                      {this.state.loaderSignificantSigns_Others ? (
+                        <div className="row">
+                          <Dimmer active>
+                            <Loader inline="centered">Loading</Loader>
+                          </Dimmer>
+                        </div>
+                      ) : (
+                        <div className="col">
+                          <h6 className="">{this.state.significant_signs}</h6>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -442,25 +489,41 @@ class Encounters extends Component {
                 <div className="row vitals">
                   <div className="col-lg-12">
                     <h6 className="smallh6">Vitals</h6>
-                    <div className="row">
-                      {this.state.patientVital.length > 0 ? (
-                        this.state.patientVital.map((row, index) => (
-                          <div key={index} className="col borderVitals">
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: row.vitals_name
-                              }}
-                            />
-                            <h6>
-                              {row.vital_value}
-                              <span>{row.uom}</span>
-                            </h6>
-                          </div>
-                        ))
-                      ) : (
-                        <span className="col">----------</span>
-                      )}
-                    </div>
+                    {this.state.loaderVitals ? (
+                      <div className="row">
+                        <Dimmer active>
+                          <Loader inline="centered">Loading</Loader>
+                        </Dimmer>
+                      </div>
+                    ) : (
+                      <div className="row">
+                        {this.state.patientVital.length > 0 ? (
+                          this.state.patientVital.map((item, index) => (
+                            <React.Fragment key={index}>
+                              <div className="col-lg-12">
+                                Recorded on {item.key}
+                              </div>
+
+                              {item.details.map((row, indexD) => (
+                                <div key={indexD} className="col borderVitals">
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: row.vitals_name
+                                    }}
+                                  />
+                                  <h6>
+                                    {row.vital_value}
+                                    <span>{row.uom}</span>
+                                  </h6>
+                                </div>
+                              ))}
+                            </React.Fragment>
+                          ))
+                        ) : (
+                          <span className="col">----------</span>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
                 {/* VITALS END */}

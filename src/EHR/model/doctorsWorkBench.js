@@ -971,54 +971,56 @@ let getPatientVitalsOLD = (req, res, next) => {
 
 //created by irfan: to  get Patient Vitals
 let getPatientVitals = (req, res, next) => {
-  let selectWhere = {
-    patient_id: "ALL"
-  };
+  const _mysql = new algaehMysql({ path: keyPath });
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-    // let inputData = extend({}, req.query);
+    let inputs = req.query;
+    console.log("inputs", inputs);
+    _mysql
+      .executeQuery({
+        query:
+          "select count(hims_d_vitals_header_id) cnt from hims_d_vitals_header where record_status='A'"
+      })
+      .then(rec => {
+        const _limit = (rec.length > 0 ? rec[0]["cnt"] : 0) * 5;
 
-    let where = whereCondition(extend(selectWhere, req.query));
-
-    db.getConnection((error, connection) => {
-      if (error) {
-        next(error);
-      }
-      connection.query(
-        "select count(hims_d_vitals_header_id) cnt from hims_d_vitals_header where record_status='A'",
-        (error, rec) => {
-          if (error) {
-            next(error);
-          }
-          const _limit = (rec.length > 0 ? rec[0]["cnt"] : 0) * 5;
-
-          const sqlQuery = mysql.format(
-            "select hims_f_patient_vitals_id, patient_id, visit_id, visit_date, visit_time,PV.updated_Date,\
+        let sqlQuery = _mysql.mysqlQueryFormat(
+          "select hims_f_patient_vitals_id, patient_id, visit_id, visit_date, visit_time,PV.updated_Date,\
 case_type, vital_id,PH.vitals_name,vital_short_name,PH.uom, vital_value, vital_value_one, vital_value_two, formula_value,PH.sequence_order,PH.display from \
 hims_f_patient_vitals PV,hims_d_vitals_header PH where PV.record_status='A' and \
-PH.record_status='A' and PV.vital_id=PH.hims_d_vitals_header_id and " +
-              where.condition +
-              " group by visit_date , vital_id order by hims_f_patient_vitals_id  desc LIMIT 0," +
-              _limit +
-              ";",
-            where.values
-          );
-
-          connection.query(sqlQuery, (error, result) => {
-            releaseDBConnection(db, connection);
-            if (error) {
-              next(error);
-            }
+PH.record_status='A' and PV.vital_id=PH.hims_d_vitals_header_id  "
+        );
+        if (inputs.visit_id != null) {
+          sqlQuery += _mysql.mysqlQueryFormat(" and visit_id=?", [
+            inputs.visit_id
+          ]);
+        }
+        if (inputs.patient_id != null) {
+          sqlQuery += _mysql.mysqlQueryFormat(" and patient_id=?", [
+            inputs.patient_id
+          ]);
+        }
+        sqlQuery += _mysql.mysqlQueryFormat(
+          " group by visit_date , vital_id order by hims_f_patient_vitals_id  desc LIMIT 0," +
+            _limit +
+            ";"
+        );
+        _mysql
+          .executeQuery({ query: sqlQuery, printQuery: true })
+          .then(result => {
             req.records = result;
             next();
+          })
+          .catch(error => {
+            _mysql.releaseConnection();
+            next(error);
           });
-        }
-      );
-    });
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
@@ -1431,29 +1433,47 @@ let getAllAllergies = (req, res, next) => {
 //created by irfan: to get all allergies
 let getPatientAllergy = (req, res, next) => {
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
+    // if (req.db == null) {
+    //   next(httpStatus.dataBaseNotInitilizedError());
+    // }
+    // let db = req.db;
     let inputData = extend({}, req.query);
+    const _mysql = new algaehMysql({ path: keyPath });
+    _mysql
+      .executeQuery({
+        query:
+          "select hims_f_patient_allergy_id,patient_id,allergy_id, onset, onset_date, severity, comment, allergy_inactive,A.allergy_type,A.allergy_name from\
+    hims_f_patient_allergy PA,hims_d_allergy A where PA.record_status='A' and patient_id=?\
+    and PA.allergy_id=A.hims_d_allergy_id order by hims_f_patient_allergy_id desc; ",
+        values: [inputData.patient_id]
+      })
+      .then(result => {
+        req.records = result;
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
 
-    db.getConnection((error, connection) => {
-      connection.query(
-        "select hims_f_patient_allergy_id,patient_id,allergy_id, onset, onset_date, severity, comment, allergy_inactive,A.allergy_type,A.allergy_name from\
-        hims_f_patient_allergy PA,hims_d_allergy A where PA.record_status='A' and patient_id=?\
-        and PA.allergy_id=A.hims_d_allergy_id order by hims_f_patient_allergy_id desc; ",
-        [inputData.patient_id],
-        (error, result) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          req.records = result;
-          next();
-        }
-      );
-    });
+    //   db.getConnection((error, connection) => {
+    //     connection.query(
+    //       "select hims_f_patient_allergy_id,patient_id,allergy_id, onset, onset_date, severity, comment, allergy_inactive,A.allergy_type,A.allergy_name from\
+    //       hims_f_patient_allergy PA,hims_d_allergy A where PA.record_status='A' and patient_id=?\
+    //       and PA.allergy_id=A.hims_d_allergy_id order by hims_f_patient_allergy_id desc; ",
+    //       [inputData.patient_id],
+    //       (error, result) => {
+    //         releaseDBConnection(db, connection);
+    //         if (error) {
+    //           next(error);
+    //         }
+    //         req.records = result;
+    //         next();
+    //       }
+    //     );
+    //   });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
