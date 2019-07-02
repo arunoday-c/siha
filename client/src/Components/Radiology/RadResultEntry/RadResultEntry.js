@@ -71,7 +71,7 @@ class RadResultEntry extends Component {
         this.setState({ ...this.state, ...newProps.selectedPatient });
       }
     } else {
-      this.setState({ ...this.state, ...newProps.radschlist });
+      this.setState({ ...this.state, ...newProps.radschlist[0] });
     }
   }
   onClose = e => {
