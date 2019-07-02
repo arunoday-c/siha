@@ -38,7 +38,8 @@ import {
   getCashiersAndShiftMAP,
   closePopup,
   generateIdCard,
-  generateReceipt
+  generateReceipt,
+  getCtrlCode
 } from "./RegistrationPatientEvent";
 import { SetBulkState } from "../../utils/GlobalFunctions";
 
@@ -75,7 +76,7 @@ class RegistrationPatient extends Component {
       this.props.patient_code !== undefined &&
       this.props.patient_code.length !== 0
     ) {
-      this.getCtrlCode(this.props.patient_code);
+      getCtrlCode(this, this.props.patient_code);
     } else {
       const { patient_details } = this.props;
       if (patient_details) {
@@ -169,7 +170,7 @@ class RegistrationPatient extends Component {
         RefundOpen: !this.state.RefundOpen
       },
       () => {
-        this.getCtrlCode(this.state.patient_code);
+        getCtrlCode(this, this.state.patient_code);
       }
     );
   }
@@ -180,7 +181,7 @@ class RegistrationPatient extends Component {
         AdvanceOpen: !this.state.AdvanceOpen
       },
       () => {
-        this.getCtrlCode(this.state.patient_code);
+        getCtrlCode(this, this.state.patient_code);
       }
     );
   }
@@ -642,101 +643,6 @@ class RegistrationPatient extends Component {
     this.setState({ open: false });
   };
 
-  getCtrlCode(patcode) {
-    let $this = this;
-    let provider_id = this.props.provider_id || null;
-    let sub_department_id = this.props.sub_department_id || null;
-    let visit_type = this.props.visit_type || null;
-    let hims_d_services_id = this.props.hims_d_services_id || null;
-    let fromAppoinment =
-      this.props.fromAppoinment === undefined
-        ? false
-        : this.props.fromAppoinment;
-
-    let department_id = this.props.department_id || null;
-    let appointment_id = this.props.hims_f_patient_appointment_id || null;
-    let title_id =
-      this.props.patient_details !== undefined
-        ? this.props.patient_details.title_id || null
-        : null;
-
-    AlgaehLoader({ show: true });
-
-    algaehApiCall({
-      uri: "/frontDesk/get",
-      module: "frontDesk",
-      method: "GET",
-      data: { patient_code: patcode },
-      onSuccess: response => {
-        if (response.data.success) {
-          let data = response.data.records;
-
-          data.patientRegistration.visitDetails = data.visitDetails;
-          data.patientRegistration.patient_id =
-            data.patientRegistration.hims_d_patient_id;
-          data.patientRegistration.existingPatient = true;
-
-          //Appoinment Start
-          if (fromAppoinment === true) {
-            data.patientRegistration.provider_id = provider_id;
-            data.patientRegistration.doctor_id = provider_id;
-            data.patientRegistration.sub_department_id = sub_department_id;
-
-            data.patientRegistration.visit_type = visit_type;
-            data.patientRegistration.saveEnable = false;
-            data.patientRegistration.clearEnable = true;
-            data.patientRegistration.hims_d_services_id = hims_d_services_id;
-            data.patientRegistration.department_id = department_id;
-            data.patientRegistration.billdetail = false;
-            data.patientRegistration.consultation = "Y";
-            data.patientRegistration.appointment_patient = "Y";
-            data.patientRegistration.appointment_id = appointment_id;
-            data.patientRegistration.title_id = title_id;
-          }
-          //Appoinment End
-
-          data.patientRegistration.filePreview =
-            "data:image/png;base64, " + data.patient_Image;
-          data.patientRegistration.arabic_name =
-            data.patientRegistration.arabic_name || "No Name";
-
-          data.patientRegistration.date_of_birth = moment(
-            data.patientRegistration.date_of_birth
-          )._d;
-
-          data.patientRegistration.advanceEnable = false;
-          debugger;
-          $this.setState(data.patientRegistration, () => {
-            if (fromAppoinment === true) {
-              generateBillDetails(this, this);
-            }
-          });
-
-          $this.props.getPatientInsurance({
-            // uri: "/insurance/getPatientInsurance",
-            uri: "/patientRegistration/getPatientInsurance",
-            module: "frontDesk",
-            method: "GET",
-            data: {
-              patient_id: data.patientRegistration.hims_d_patient_id
-            },
-            redux: {
-              type: "EXIT_INSURANCE_GET_DATA",
-              mappingName: "existinsurance"
-            }
-          });
-        }
-        AlgaehLoader({ show: false });
-      },
-      onFailure: error => {
-        AlgaehLoader({ show: false });
-        swalMessage({
-          title: error.message,
-          type: "error"
-        });
-      }
-    });
-  }
   printBarCodeHandler(e) {
     AlgaehReport({
       report: {
@@ -797,7 +703,7 @@ class RegistrationPatient extends Component {
             value: this.state.patient_code,
             selectValue: "patient_code",
             events: {
-              onChange: this.getCtrlCode.bind(this)
+              onChange: ClearData.bind(this, this, "pat_code")
             },
             jsonFile: {
               fileName: "spotlightSearch",

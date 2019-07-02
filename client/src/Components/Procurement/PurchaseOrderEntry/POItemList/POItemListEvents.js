@@ -624,7 +624,7 @@ const dateFormater = ($this, value) => {
 
 const onchangegridcol = ($this, row, e) => {
   //
-
+  debugger;
   let name = e.name || e.target.name;
   let value =
     e.value === ""
@@ -700,7 +700,10 @@ const onchhangegriddiscount = ($this, row, e) => {
     debugger;
     extended_cost =
       parseFloat(extended_price) - parseFloat(sub_discount_amount);
-    row["unit_cost"] = extended_cost / parseFloat(row.authorize_quantity);
+    row["unit_cost"] =
+      $this.state.hims_f_procurement_po_header_id !== null
+        ? extended_cost / parseFloat(row.authorize_quantity)
+        : extended_cost / parseFloat(row.total_quantity);
 
     tax_amount = (extended_cost * parseFloat(row.tax_percentage)) / 100;
     tax_amount = getAmountFormart(tax_amount, { appendSymbol: false });

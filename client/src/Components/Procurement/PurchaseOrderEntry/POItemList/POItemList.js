@@ -643,7 +643,8 @@ class POItemList extends Component {
                                         )
                                       },
                                       others: {
-                                        disabled: this.state.authorizeEnable
+                                        disabled: this.state.authorizeEnable,
+                                        type: "number"
                                       }
                                     }}
                                   />
@@ -662,7 +663,7 @@ class POItemList extends Component {
                                   <AlagehFormGroup
                                     div={{}}
                                     textBox={{
-                                      decimal: { allowNegative: false },
+                                      // decimal: { allowNegative: false },
                                       value: row.sub_discount_percentage,
                                       className: "txt-fld",
                                       name: "sub_discount_percentage",
@@ -679,7 +680,8 @@ class POItemList extends Component {
                                           this,
                                           this,
                                           row
-                                        )
+                                        ),
+                                        type: "number"
                                       }
                                     }}
                                   />
@@ -710,7 +712,7 @@ class POItemList extends Component {
                                   <AlagehFormGroup
                                     div={{}}
                                     textBox={{
-                                      decimal: { allowNegative: false },
+                                      // decimal: { allowNegative: false },
                                       value: row.sub_discount_amount,
                                       className: "txt-fld",
                                       name: "sub_discount_amount",
@@ -727,7 +729,8 @@ class POItemList extends Component {
                                           this,
                                           this,
                                           row
-                                        )
+                                        ),
+                                        type: "number"
                                       }
                                     }}
                                   />
