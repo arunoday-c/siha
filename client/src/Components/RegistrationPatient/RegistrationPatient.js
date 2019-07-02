@@ -443,6 +443,7 @@ class RegistrationPatient extends Component {
                               response.data.records.hims_f_billing_header_id,
                             saveEnable: true,
                             insuranceYes: true,
+                            hideInsurance: true,
                             sec_insuranceYes: true,
                             ProcessInsure: true,
                             existingPatient: true,
@@ -596,6 +597,7 @@ class RegistrationPatient extends Component {
                               response.data.records.hims_f_billing_header_id,
                             saveEnable: true,
                             insuranceYes: true,
+                            hideInsurance: true,
                             sec_insuranceYes: true,
                             ProcessInsure: true,
                             existingPatient: true,
@@ -705,7 +707,6 @@ class RegistrationPatient extends Component {
           )._d;
 
           data.patientRegistration.advanceEnable = false;
-          debugger;
           $this.setState(data.patientRegistration, () => {
             if (fromAppoinment === true) {
               generateBillDetails(this, this);
@@ -759,7 +760,6 @@ class RegistrationPatient extends Component {
   //Render Page Start Here
 
   render() {
-    debugger;
     return (
       <div id="attach" style={{ marginBottom: "50px" }}>
         {/* <Barcode value='PAT-A-000017'/> */}
