@@ -69,23 +69,29 @@ export default class ButtonType extends PureComponent {
           loading: true
         },
         () => {
-          algaehApiCall({
-            uri: "/report",
-            method: "GET",
-            module: "reports",
-            headers: {
-              Accept: "blob"
-            },
-            others: { responseType: "blob" },
-            data: { report: that.props.report },
-            onSuccess: res => {
-              const url = URL.createObjectURL(res.data);
-              that.launchReport(url);
-              that.setState({
-                loading: false
-              });
+          if (this.props.isReport !== undefined) {
+            algaehApiCall({
+              uri: "/report",
+              method: "GET",
+              module: "reports",
+              headers: {
+                Accept: "blob"
+              },
+              others: { responseType: "blob" },
+              data: { report: that.props.report },
+              onSuccess: res => {
+                const url = URL.createObjectURL(res.data);
+                that.launchReport(url);
+                that.setState({
+                  loading: false
+                });
+              }
+            });
+          } else {
+            if (typeof this.props.onClick === "function") {
+              this.props.onClick(e, this);
             }
-          });
+          }
         }
       );
     } catch (e) {

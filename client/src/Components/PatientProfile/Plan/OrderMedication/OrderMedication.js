@@ -634,6 +634,7 @@ class OrderMedication extends Component {
                 forceLabel: "Print Prescription",
                 returnText: true
               }}
+              isReport={true}
               displayName="Prescription"
               report={{
                 reportName: "prescription",
