@@ -2006,10 +2006,29 @@ class PhySchSetup extends Component {
                     helperText={this.state.department_error_text}
                   />
 
-                  <AlagehAutoComplete
-                    div={{ className: "col-7" }}
+                  <AlagehFormGroup
+                    div={{ className: "col-4" }}
                     label={{
-                      fieldName: "sel_month",
+                      forceLabel: "Year",
+                      isImp: true
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "year",
+                      value: this.state.year,
+                      events: {
+                        onChange: this.changeTexts.bind(this)
+                      },
+                      others: {
+                        type: "number",
+                        min: moment().year()
+                      }
+                    }}
+                  />
+                  <AlagehAutoComplete
+                    div={{ className: "col-5" }}
+                    label={{
+                      forceLabel: "Month",
                       isImp: false
                     }}
                     selector={{
@@ -2026,29 +2045,10 @@ class PhySchSetup extends Component {
                     }}
                   />
 
-                  <AlagehFormGroup
-                    div={{ className: "col-7" }}
-                    label={{
-                      forceLabel: "Select Year",
-                      isImp: true
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "year",
-                      value: this.state.year,
-                      events: {
-                        onChange: this.changeTexts.bind(this)
-                      },
-                      others: {
-                        type: "number",
-                        min: moment().year()
-                      }
-                    }}
-                  />
 
                   <div
-                    className="col form-group"
-                    style={{ textAlign: "right" }}
+                    className="col-3 form-group"
+                    style={{ textAlign: "right",paddingLeft:0 }}
                   >
                     <button
                       style={{ marginTop: 19 }}
