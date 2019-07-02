@@ -49,6 +49,7 @@ class AddInsuranceForm extends Component {
   componentWillReceiveProps(nextProps) {
     this.setState(nextProps.PatRegIOputs);
   }
+
   imageDetails(context, type) {
     if (context !== undefined) {
       context.updateState({
@@ -57,6 +58,7 @@ class AddInsuranceForm extends Component {
       });
     }
   }
+
   render() {
     return (
       <React.Fragment>

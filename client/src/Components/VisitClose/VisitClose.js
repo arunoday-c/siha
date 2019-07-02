@@ -151,13 +151,14 @@ class VisitClose extends Component {
                         <AlgaehLabel label={{ forceLabel: "Department" }} />
                       ),
                       displayTemplate: row => {
-                        let display = [];
-                        display =
+                        let display =
                           this.props.subDepartments === undefined
                             ? []
-                            : this.props.subDepartments.filter(f => f =>
-                                f.hims_d_employee_id === row.doctor_id
-                              );
+                            : (display = this.props.subDepartments.filter(
+                                f =>
+                                  f.hims_d_sub_department_id ===
+                                  row.sub_department_id
+                              ));
 
                         return (
                           <span>
@@ -166,19 +167,19 @@ class VisitClose extends Component {
                               : ""}
                           </span>
                         );
-                      }
+                      },
+                      disabled: true
                     },
                     {
                       fieldName: "doctor_id",
                       label: <AlgaehLabel label={{ forceLabel: "Doctor" }} />,
                       displayTemplate: row => {
-                        let display = [];
-                        display =
+                        let display =
                           this.props.viewproviders === undefined
                             ? []
-                            : this.props.viewproviders.filter(f => f =>
-                                f.hims_d_employee_id === row.doctor_id
-                              );
+                            : (display = this.props.viewproviders.filter(
+                                f => f.hims_d_employee_id === row.doctor_id
+                              ));
 
                         return (
                           <span>
@@ -187,14 +188,15 @@ class VisitClose extends Component {
                               : ""}
                           </span>
                         );
-                      }
+                      },
+                      disabled: true
                     }
                   ]}
                   keyId="hims_f_patient_visit_id"
                   dataSource={{
                     data: this.state.visitDetails
                   }}
-                  //   filter={true}
+                  // filter={true}
                   paging={{ page: 0, rowsPerPage: 10 }}
                 />
               </div>
