@@ -370,6 +370,14 @@ const onChangeTextEventHandaler = ($this, context, e) => {
   let item_details = $this.state.item_details;
   let name = e.name || e.target.name;
   let value = e.value === "" ? null : e.value || e.target.value;
+  if (name === "sales_price" || name === "unit_price") {
+    if (value < 0) {
+      swalMessage({
+        title: "Cannot be lessthan zero.",
+        type: "warning"
+      });
+    }
+  }
   item_details[name] = value;
   $this.setState({
     [name]: value,
