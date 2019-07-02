@@ -7,7 +7,12 @@ import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 const changeTexts = ($this, ctrl, e) => {
   e = ctrl || e;
   let name = e.name || e.target.name;
-  let value = e.value || e.target.value;
+  let value =
+    e.value === ""
+      ? null
+      : e.value || e.target.value === ""
+      ? null
+      : e.target.value;
   $this.setState({ [name]: value });
 };
 

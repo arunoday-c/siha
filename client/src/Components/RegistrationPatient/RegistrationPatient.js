@@ -38,7 +38,8 @@ import {
   getCashiersAndShiftMAP,
   closePopup,
   generateIdCard,
-  generateReceipt
+  generateReceipt,
+  getCtrlCode
 } from "./RegistrationPatientEvent";
 import { SetBulkState } from "../../utils/GlobalFunctions";
 
@@ -75,7 +76,7 @@ class RegistrationPatient extends Component {
       this.props.patient_code !== undefined &&
       this.props.patient_code.length !== 0
     ) {
-      this.getCtrlCode(this.props.patient_code);
+      getCtrlCode(this, this.props.patient_code);
     } else {
       const { patient_details } = this.props;
       if (patient_details) {
@@ -169,7 +170,7 @@ class RegistrationPatient extends Component {
         RefundOpen: !this.state.RefundOpen
       },
       () => {
-        this.getCtrlCode(this.state.patient_code);
+        getCtrlCode(this, this.state.patient_code);
       }
     );
   }
@@ -180,7 +181,7 @@ class RegistrationPatient extends Component {
         AdvanceOpen: !this.state.AdvanceOpen
       },
       () => {
-        this.getCtrlCode(this.state.patient_code);
+        getCtrlCode(this, this.state.patient_code);
       }
     );
   }
@@ -443,6 +444,7 @@ class RegistrationPatient extends Component {
                               response.data.records.hims_f_billing_header_id,
                             saveEnable: true,
                             insuranceYes: true,
+                            hideInsurance: true,
                             sec_insuranceYes: true,
                             ProcessInsure: true,
                             existingPatient: true,
@@ -596,6 +598,7 @@ class RegistrationPatient extends Component {
                               response.data.records.hims_f_billing_header_id,
                             saveEnable: true,
                             insuranceYes: true,
+                            hideInsurance: true,
                             sec_insuranceYes: true,
                             ProcessInsure: true,
                             existingPatient: true,
@@ -705,7 +708,6 @@ class RegistrationPatient extends Component {
           )._d;
 
           data.patientRegistration.advanceEnable = false;
-          debugger;
           $this.setState(data.patientRegistration, () => {
             if (fromAppoinment === true) {
               generateBillDetails(this, this);
@@ -737,6 +739,7 @@ class RegistrationPatient extends Component {
       }
     });
   }
+
   printBarCodeHandler(e) {
     AlgaehReport({
       report: {
@@ -759,7 +762,6 @@ class RegistrationPatient extends Component {
   //Render Page Start Here
 
   render() {
-    debugger;
     return (
       <div id="attach" style={{ marginBottom: "50px" }}>
         {/* <Barcode value='PAT-A-000017'/> */}
@@ -797,7 +799,7 @@ class RegistrationPatient extends Component {
             value: this.state.patient_code,
             selectValue: "patient_code",
             events: {
-              onChange: this.getCtrlCode.bind(this)
+              onChange: ClearData.bind(this, this, "pat_code")
             },
             jsonFile: {
               fileName: "spotlightSearch",

@@ -21,7 +21,7 @@ import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import Enumerable from "linq";
 import moment from "moment";
 import swal from "sweetalert2";
-
+import ButtonType from "../../Wrapper/algaehButton";
 let teeth = [];
 let my_send_obj = {};
 class Dental extends Component {
@@ -450,11 +450,14 @@ class Dental extends Component {
     }
   }
 
-  addDentalPlan() {
+  addDentalPlan(source, e, loader) {
     if (
       my_send_obj.send_teeth === undefined ||
       my_send_obj.send_teeth.length === 0
     ) {
+      loader.setState({
+        loading: false
+      });
       swalMessage({
         title: "No surface selected ..",
         type: "info"
@@ -471,6 +474,9 @@ class Dental extends Component {
           method: "POST",
           data: my_send_obj,
           onSuccess: response => {
+            loader.setState({
+              loading: false
+            });
             if (response.data.success) {
               swalMessage({
                 title: "Added Successfully",
@@ -501,7 +507,7 @@ class Dental extends Component {
     });
   }
 
-  addTreatementPlan() {
+  addTreatementPlan(source, e, loader) {
     AlgaehValidation({
       querySelector: "data-validate='addTreatementDiv'",
       alertTypeIcon: "warning",
@@ -518,6 +524,9 @@ class Dental extends Component {
             consult_date: this.state.consult_date
           },
           onSuccess: response => {
+            loader.setState({
+              loading: false
+            });
             if (response.data.success) {
               swalMessage({
                 title: "Added Successfully",
@@ -2103,13 +2112,22 @@ class Dental extends Component {
 
           <div className="popupFooter">
             <div className="col-lg-12 margin-bottom-15">
-              <button
+              <ButtonType
+                others={{ style: { float: "right" } }}
+                classname="btn-primary"
+                onClick={this.addDentalPlan.bind(this, this)}
+                label={{
+                  forceLabel: "Add to List",
+                  returnText: true
+                }}
+              />
+              {/* <button
                 onClick={this.addDentalPlan.bind(this)}
                 className="btn btn-primary"
                 style={{ float: "right" }}
               >
                 Add to List
-              </button>
+              </button>*/}
             </div>
           </div>
         </AlgaehModalPopUp>
@@ -2174,12 +2192,20 @@ class Dental extends Component {
                 /> */}
 
               <div className="col-lg-2 margin-top-15">
-                <button
+                <ButtonType
+                  classname="btn-primary"
+                  onClick={this.addTreatementPlan.bind(this, this)}
+                  label={{
+                    forceLabel: "Add Plan",
+                    returnText: true
+                  }}
+                />
+                {/*<button
                   onClick={this.addTreatementPlan.bind(this)}
                   className="btn btn-primary"
                 >
                   Add Plan
-                </button>
+                </button>*/}
               </div>
             </div>
           </div>

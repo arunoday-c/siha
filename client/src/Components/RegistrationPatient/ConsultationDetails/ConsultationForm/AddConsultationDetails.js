@@ -64,7 +64,9 @@ const DeptselectedHandeler = ($this, context, e) => {
 
 export const clearBillDetails = context => {
   context.updateState({
+    visit_type: null,
     doctor_id: null,
+    sub_department_id: null,
     saveEnable: true,
     advance_adjust: null,
     card_amount: null,
@@ -382,7 +384,6 @@ const generateBillDetails = ($this, context) => {
     method: "POST",
     data: serviceInput,
     onSuccess: response => {
-      console.log("from before bill", response.data.records);
       if (response.data.success) {
         if (context !== null) {
           context.updateState({ ...response.data.records });
@@ -395,7 +396,6 @@ const generateBillDetails = ($this, context) => {
           data: response.data.records,
           onSuccess: response => {
             if (response.data.success) {
-              console.log("from bills", response.data.records);
               if (context !== null) {
                 context.updateState({ ...response.data.records });
               }

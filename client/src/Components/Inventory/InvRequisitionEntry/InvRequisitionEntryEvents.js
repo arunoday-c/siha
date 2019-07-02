@@ -30,7 +30,6 @@ const getCtrlCode = ($this, docNumber) => {
         $this.props.material_requisition_number.length !== 0
       ) {
         data.authorizeEnable = false;
-        data.ItemDisable = true;
         data.ClearDisable = true;
 
         for (let i = 0; i < data.inventory_stock_detail.length; i++) {
@@ -54,7 +53,7 @@ const getCtrlCode = ($this, docNumber) => {
       } else {
         data.postEnable = false;
       }
-
+      data.ItemDisable = true;
       data.addedItem = true;
       $this.setState(data, () => {});
       AlgaehLoader({ show: false });

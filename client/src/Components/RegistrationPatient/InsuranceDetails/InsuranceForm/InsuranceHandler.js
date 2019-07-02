@@ -241,6 +241,7 @@ const InsuranceDetails = ($this, context, e) => {
                 network_type: row.network_type,
 
                 policy_number: row.policy_number,
+                primary_card_number: row.card_number,
                 primary_effective_start_date: row.net_effective_start_date,
                 // primary_effective_end_date: row.net_effective_end_date,
                 primary_effective_end_date: row.effective_end_date
@@ -272,6 +273,7 @@ const InsuranceDetails = ($this, context, e) => {
                       primary_sub_id: row.hims_d_insurance_sub_id,
                       primary_network_id: row.hims_d_insurance_network_id,
                       primary_policy_num: row.policy_number,
+                      primary_card_number: row.card_number,
                       primary_network_office_id:
                         row.hims_d_insurance_network_office_id,
                       primary_effective_start_date:
@@ -294,6 +296,7 @@ const InsuranceDetails = ($this, context, e) => {
                       primary_sub_id: row.hims_d_insurance_sub_id,
                       primary_network_id: row.hims_d_insurance_network_id,
                       primary_policy_num: row.policy_number,
+                      primary_card_number: row.card_number,
                       primary_network_office_id:
                         row.hims_d_insurance_network_office_id,
                       primary_effective_start_date:
@@ -322,6 +325,7 @@ const InsuranceDetails = ($this, context, e) => {
             primary_effective_start_date: row.net_effective_start_date,
             primary_effective_end_date: row.net_effective_end_date,
             insurance_effective_end_date: row.effective_end_date,
+            primary_card_number: row.card_number,
             policy_number: row.policy_number
           };
           let insObj = $this.props.existinsurance || [];
@@ -352,6 +356,7 @@ const InsuranceDetails = ($this, context, e) => {
                   primary_policy_num: row.policy_number,
                   primary_network_office_id:
                     row.hims_d_insurance_network_office_id,
+                  primary_card_number: row.card_number,
                   primary_effective_start_date: row.net_effective_start_date,
                   primary_effective_end_date: row.net_effective_end_date,
                   insurance_effective_end_date: row.effective_end_date,
@@ -373,6 +378,7 @@ const InsuranceDetails = ($this, context, e) => {
                   primary_policy_num: row.policy_number,
                   primary_network_office_id:
                     row.hims_d_insurance_network_office_id,
+                  primary_card_number: row.card_number,
                   primary_effective_start_date: row.net_effective_start_date,
                   primary_effective_end_date: row.net_effective_end_date,
                   insurance_effective_end_date: row.effective_end_date,
