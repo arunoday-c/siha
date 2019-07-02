@@ -38,7 +38,8 @@ import {
   getCashiersAndShiftMAP,
   closePopup,
   generateIdCard,
-  generateReceipt
+  generateReceipt,
+  getCtrlCode
 } from "./RegistrationPatientEvent";
 import { SetBulkState } from "../../utils/GlobalFunctions";
 
@@ -75,7 +76,7 @@ class RegistrationPatient extends Component {
       this.props.patient_code !== undefined &&
       this.props.patient_code.length !== 0
     ) {
-      this.getCtrlCode(this.props.patient_code);
+      getCtrlCode(this, this.props.patient_code);
     } else {
       const { patient_details } = this.props;
       if (patient_details) {
@@ -169,7 +170,7 @@ class RegistrationPatient extends Component {
         RefundOpen: !this.state.RefundOpen
       },
       () => {
-        this.getCtrlCode(this.state.patient_code);
+        getCtrlCode(this, this.state.patient_code);
       }
     );
   }
@@ -180,7 +181,7 @@ class RegistrationPatient extends Component {
         AdvanceOpen: !this.state.AdvanceOpen
       },
       () => {
-        this.getCtrlCode(this.state.patient_code);
+        getCtrlCode(this, this.state.patient_code);
       }
     );
   }
@@ -644,6 +645,7 @@ class RegistrationPatient extends Component {
     this.setState({ open: false });
   };
 
+<<<<<<< HEAD
   getCtrlCode(patcode) {
     let $this = this;
     let provider_id = this.props.provider_id || null;
@@ -738,6 +740,8 @@ class RegistrationPatient extends Component {
       }
     });
   }
+=======
+>>>>>>> 1f3317557944ead3a6457addf2cd084554d83c41
   printBarCodeHandler(e) {
     AlgaehReport({
       report: {
@@ -797,7 +801,7 @@ class RegistrationPatient extends Component {
             value: this.state.patient_code,
             selectValue: "patient_code",
             events: {
-              onChange: this.getCtrlCode.bind(this)
+              onChange: ClearData.bind(this, this, "pat_code")
             },
             jsonFile: {
               fileName: "spotlightSearch",
@@ -880,35 +884,51 @@ class RegistrationPatient extends Component {
                       label={{ fieldName: "btn_save", returnText: true }}
                     />
                   </button>
+                  {this.props.fromAppoinment === true ? null : (
+                    <div className="">
+                      <button
+                        type="button"
+                        className="btn btn-default"
+                        onClick={ClearData.bind(this, this)}
+                        disabled={this.state.clearEnable}
+                      >
+                        <AlgaehLabel
+                          label={{ fieldName: "btn_clear", returnText: true }}
+                        />
+                      </button>
 
-                  <button
-                    type="button"
-                    className="btn btn-default"
-                    onClick={ClearData.bind(this, this)}
-                    disabled={this.state.clearEnable}
-                  >
-                    <AlgaehLabel
-                      label={{ fieldName: "btn_clear", returnText: true }}
-                    />
-                  </button>
-
-                  <button
-                    type="button"
-                    className="btn btn-other"
-                    onClick={ShowRefundScreen.bind(this, this)}
-                    disabled={
-                      this.state.advance_amount === null
-                        ? true
-                        : this.state.advanceEnable
-                    }
-                  >
-                    <AlgaehLabel
-                      label={{
-                        fieldName: "btn_refund",
-                        returnText: true
-                      }}
-                    />
-                  </button>
+                      <button
+                        type="button"
+                        className="btn btn-other"
+                        onClick={ShowRefundScreen.bind(this, this)}
+                        disabled={
+                          this.state.advance_amount === null
+                            ? true
+                            : this.state.advanceEnable
+                        }
+                      >
+                        <AlgaehLabel
+                          label={{
+                            fieldName: "btn_refund",
+                            returnText: true
+                          }}
+                        />
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-other"
+                        onClick={ShowAdvanceScreen.bind(this, this)}
+                        disabled={this.state.advanceEnable}
+                      >
+                        <AlgaehLabel
+                          label={{
+                            fieldName: "btn_advance",
+                            returnText: true
+                          }}
+                        />
+                      </button>
+                    </div>
+                  )}
 
                   <AddAdvanceModal
                     show={this.state.RefundOpen}
@@ -922,6 +942,7 @@ class RegistrationPatient extends Component {
                         }}
                       />
                     }
+                    Advance={false}
                     NumberLabel="payment_number"
                     DateLabel="payment_date"
                     inputsparameters={{
@@ -933,19 +954,6 @@ class RegistrationPatient extends Component {
                       advance_amount: this.state.advance_amount
                     }}
                   />
-                  <button
-                    type="button"
-                    className="btn btn-other"
-                    onClick={ShowAdvanceScreen.bind(this, this)}
-                    disabled={this.state.advanceEnable}
-                  >
-                    <AlgaehLabel
-                      label={{
-                        fieldName: "btn_advance",
-                        returnText: true
-                      }}
-                    />
-                  </button>
 
                   <AddAdvanceModal
                     show={this.state.AdvanceOpen}

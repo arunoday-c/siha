@@ -539,6 +539,8 @@ class PhySchSetup extends Component {
       from_date: docs.from_date,
       to_date: docs.to_date
     });
+
+
   }
 
   deleteDocFromSchedule(e) {
@@ -1296,7 +1298,7 @@ class PhySchSetup extends Component {
                           textBox={{
                             className: "txt-fld",
                             name: "from_break_hr1",
-                            value: this.state.from_break_hr1,
+                            value:this.state.work_break1 === "Y" ? this.state.from_break_hr1:null,
                             events: {
                               onChange: this.changeTexts.bind(this)
                             },
@@ -1315,7 +1317,8 @@ class PhySchSetup extends Component {
                           textBox={{
                             className: "txt-fld",
                             name: "to_break_hr1",
-                            value: this.state.to_break_hr1,
+                              value:this.state.work_break1 === "Y"
+                                  ?  this.state.to_break_hr1:null,
                             events: {
                               onChange: this.changeTexts.bind(this)
                             },
@@ -1342,7 +1345,8 @@ class PhySchSetup extends Component {
                           textBox={{
                             className: "txt-fld",
                             name: "from_break_hr2",
-                            value: this.state.from_break_hr2,
+                             value:this.state.work_break2 === "Y"
+                                  ? this.state.from_break_hr2:null,
                             events: {
                               onChange: this.changeTexts.bind(this)
                             },
@@ -1361,7 +1365,8 @@ class PhySchSetup extends Component {
                           textBox={{
                             className: "txt-fld",
                             name: "to_break_hr2",
-                            value: this.state.to_break_hr2,
+                           value:this.state.work_break2 === "Y"
+                                  ? this.state.to_break_hr2:null,
                             events: {
                               onChange: this.changeTexts.bind(this)
                             },

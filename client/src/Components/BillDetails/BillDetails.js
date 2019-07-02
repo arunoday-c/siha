@@ -59,7 +59,6 @@ class DisplayOPBilling extends PureComponent {
     if (InputOutput.frontDesk === true) {
       let lang_sets = InputOutput.selectedLang === "en" ? "en_comp" : "ar_comp";
 
-      // InputOutput.billdetails[0].frontDesk = InputOutput.frontDesk;
       this.setState({
         ...this.state,
         ...InputOutput.billdetails[0],
@@ -147,23 +146,6 @@ class DisplayOPBilling extends PureComponent {
     );
   };
 
-  // displayServiceBills() {
-  //   let servicetype =
-  //     this.props.servicetype === undefined ? [] : this.props.servicetype;
-  //   if (this.state.billdetails !== undefined) {
-  //     return this.state.billdetails.map((row, index) => {
-  //       return {
-  //         ...row,
-  //         ...servicetype.find(
-  //           f => f.hims_d_service_type_id === row.service_type_id
-  //         )
-  //       };
-  //     });
-  //   } else {
-  //     return [];
-  //   }
-  // }
-
   displayServiceBills() {
     let billservices =
       this.props.billservices === undefined ? [] : this.props.billservices;
@@ -191,26 +173,6 @@ class DisplayOPBilling extends PureComponent {
             openPopup={this.props.show}
             class={this.state.lang_sets}
           >
-            {/* <div className="algaeh-modal"> */}
-            {/* <div className="popupHeader">
-                <div className="row">
-                  <div className="col-lg-8">
-                    <h4>{this.props.HeaderCaption}</h4>
-                  </div>
-                  <div className="col-lg-4">
-                    <button
-                      type="button"
-                      className=""
-                      onClick={e => {
-                        this.onClose(e);
-                      }}
-                    >
-                      <i className="fas fa-times-circle" />
-                    </button>
-                  </div>
-                </div>
-              </div> */}
-
             <div className="col-lg-12">
               {/* Services Details */}
               {this.state.frontDesk === null ? (
@@ -239,76 +201,6 @@ class DisplayOPBilling extends PureComponent {
                     }}
                   />
                   <div className="col-lg-9"> &nbsp;</div>
-
-                  {/*
-
-                  <AlagehAutoComplete
-                    div={{ className: "col" }}
-                    label={{
-                      fieldName: "service_type_id"
-                    }}
-                    selector={{
-                      name: "service_type_id",
-                      className: "select-fld",
-                      value: this.state.service_type_id,
-                      dataSource: {
-                        textField:
-                          this.state.selectedLang === "en"
-                            ? "service_type"
-                            : "arabic_service_type",
-                        valueField: "hims_d_service_type_id",
-                        data: this.props.servicetype
-                      },
-                      onChange: null,
-                      others: {
-                        disabled: true
-                      }
-                    }}
-                  />
-
-                  <AlagehAutoComplete
-                    div={{ className: "col" }}
-                    label={{
-                      fieldName: "services_id"
-                    }}
-                    selector={{
-                      name: "services_id",
-                      className: "select-fld",
-                      value: this.state.services_id,
-                      dataSource: {
-                        // textField: "service_name",
-                        textField:
-                          this.state.selectedLang === "en"
-                            ? "service_name"
-                            : "arabic_service_name",
-                        valueField: "hims_d_services_id",
-                        data: this.props.billservices
-                      },
-                      onChange: null,
-                      others: {
-                        disabled: true
-                      }
-                    }}
-                  />
-
-                  <AlagehFormGroup
-                    div={{ className: "col" }}
-                    label={{
-                      fieldName: "tax_inclusive"
-                    }}
-                    textBox={{
-                      value: this.state.tax_inclusive === "N" ? "No" : "Yes",
-                      className: "txt-fld",
-                      name: "tax_inclusive",
-
-                      events: {
-                        onChange: null
-                      },
-                      others: {
-                        disabled: true
-                      }
-                    }}
-                  /> */}
                 </div>
               ) : null}
               <hr />
@@ -411,29 +303,33 @@ class DisplayOPBilling extends PureComponent {
                         <h6>{getAmountFormart(this.state.copay_amount)}</h6>
                       </div>
 
-                      <div className="col-6">
-                        <AlgaehLabel
-                          label={{
-                            fieldName: "deductable_percentage"
-                          }}
-                        />
-                        <h6>
-                          {this.state.deductable_percentage
-                            ? this.state.deductable_percentage + "%"
-                            : "0.00%"}
-                        </h6>
-                      </div>
+                      {this.state.deductable_amount === 0 ? null : (
+                        <div className="row">
+                          <div className="col-6">
+                            <AlgaehLabel
+                              label={{
+                                fieldName: "deductable_percentage"
+                              }}
+                            />
+                            <h6>
+                              {this.state.deductable_percentage
+                                ? this.state.deductable_percentage + "%"
+                                : "0.00%"}
+                            </h6>
+                          </div>
 
-                      <div className="col-6">
-                        <AlgaehLabel
-                          label={{
-                            fieldName: "deductable_amount"
-                          }}
-                        />
-                        <h6>
-                          {getAmountFormart(this.state.deductable_amount)}
-                        </h6>
-                      </div>
+                          <div className="col-6">
+                            <AlgaehLabel
+                              label={{
+                                fieldName: "deductable_amount"
+                              }}
+                            />
+                            <h6>
+                              {getAmountFormart(this.state.deductable_amount)}
+                            </h6>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>

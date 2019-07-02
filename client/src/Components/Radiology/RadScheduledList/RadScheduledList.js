@@ -56,7 +56,8 @@ class RadScheduledList extends Component {
       resultEntry: false,
       selectedPatient: {},
       proiorty: null,
-      status: null
+      status: null,
+      radtestlist: []
     };
   }
 
@@ -83,12 +84,8 @@ class RadScheduledList extends Component {
           reportName: "radiologyReport",
           reportParams: [
             {
-              name: "hims_d_patient_id",
-              value: row.patient_id
-            },
-            {
-              name: "visit_id",
-              value: row.visit_id
+              name: "hims_f_rad_order_id",
+              value: row.hims_f_rad_order_id
             }
           ],
           outputFileType: "PDF"
@@ -413,9 +410,9 @@ class RadScheduledList extends Component {
                     keyId="patient_code"
                     dataSource={{
                       data:
-                        this.props.radtestlist === undefined
+                        this.state.radtestlist === undefined
                           ? []
-                          : this.props.radtestlist
+                          : this.state.radtestlist
                     }}
                     noDataText="No data available for selected period"
                     filter="true"
@@ -429,6 +426,7 @@ class RadScheduledList extends Component {
             open={this.state.resultEntry}
             onClose={closeResultEntry.bind(this, this)}
             selectedPatient={this.state.selectedPatient}
+            user_id={this.state.user_id}
           />
         </div>
       </React.Fragment>
@@ -438,7 +436,6 @@ class RadScheduledList extends Component {
 
 function mapStateToProps(state) {
   return {
-    radtestlist: state.radtestlist,
     templatelist: state.templatelist
   };
 }
@@ -446,7 +443,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getRadiologyTestList: AlgaehActions,
       getTemplateList: AlgaehActions
     },
     dispatch

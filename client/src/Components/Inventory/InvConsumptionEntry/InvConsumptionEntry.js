@@ -162,7 +162,7 @@ class InvConsumptionEntry extends Component {
 											label: 'Print Receipt',
 											events: {
 												onClick: () => {
-													ConsumptionItemsEvents().generateConsumptionRecpt(this);
+													ConsumptionItemsEvents().generateConsumptionRecpt(this.state.consumption_number);
 												}
 											}
 										}

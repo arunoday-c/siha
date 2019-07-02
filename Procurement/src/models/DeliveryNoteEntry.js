@@ -289,7 +289,8 @@ module.exports = {
                       "purchase_order_detail_id",
                       "vendor_batchno",
                       "barcode",
-                      "sales_price"
+                      "sales_price",
+                      "free_qty"
                     ];
 
                     _mysql

@@ -253,7 +253,7 @@ let algaehSearchConfig = (searchName, req) => {
             inner join hims_d_vendor V on PO.vendor_id = V.hims_d_vendor_id \
             left join hims_d_pharmacy_location PL on PO.pharmcy_location_id = PL.hims_d_pharmacy_location_id\
             left join hims_d_inventory_location IL on PO.inventory_location_id = IL.hims_d_inventory_location_id \
-            where cancelled='N' and is_completed='N' and  PO.hospital_id=" +
+            where cancelled='N' and is_completed='N' and authorize1='Y' and  PO.hospital_id=" +
           hospitalId,
         orderBy: "hims_f_procurement_po_header_id desc"
       },
@@ -489,9 +489,11 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "InvConsEntry",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS H.*,date(H.consumption_date) as consumption_date, IL.location_description\
-            from hims_f_inventory_consumption_header H, hims_d_inventory_location IL where \
-            IL.hims_d_inventory_location_id = H.location_id and H.hospital_id=" +
+          "select SQL_CALC_FOUND_ROWS H.*,date(H.consumption_date) as consumption_date, IL.location_description,\
+            EMP.full_name as doctor_name  from hims_f_inventory_consumption_header H \
+            inner join hims_d_inventory_location IL on IL.hims_d_inventory_location_id = H.location_id  \
+            inner join hims_d_employee EMP on EMP.hims_d_employee_id = H.provider_id  \
+            where H.hospital_id=" +
           hospitalId,
         orderBy: "hims_f_inventory_consumption_header_id desc"
       },

@@ -11,7 +11,8 @@ export default () => {
   api.get("/getRadOrderedServices", getRadOrderedServices, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: req.records
+      records: req.records,
+      user_id: req.userIdentity.algaeh_d_app_user_id
     });
   });
 

@@ -97,11 +97,16 @@ class Allergies extends Component {
 
   addAllergyToPatient(e) {
     e.preventDefault();
-    if (this.state.hims_d_allergy_id === "") {
-      this.setState({
-        allergyNameError: true,
-        allergyNameErrorText: "Required"
+    if (
+      this.state.hims_d_allergy_id === undefined ||
+      this.state.hims_d_allergy_id === null ||
+      this.state.hims_d_allergy_id === ""
+    ) {
+      swalMessage({
+        title: "There is no allergy selected.",
+        type: "info"
       });
+      return;
     }
     algaehApiCall({
       uri: "/doctorsWorkBench/addPatientNewAllergy",
@@ -276,8 +281,8 @@ class Allergies extends Component {
                       div={{ className: "col-12" }}
                       label={{
                         forceLabel: "Allergy Type",
-                          fieldName: "sample",
-                        isImp:true
+                        fieldName: "sample",
+                        isImp: true
                       }}
                       selector={{
                         name: "allergy_value",
@@ -298,7 +303,7 @@ class Allergies extends Component {
                       label={{
                         forceLabel: "Select a Alergy",
                         fieldName: "sample",
-                        isImp:true
+                        isImp: true
                       }}
                       selector={{
                         name: "hims_d_allergy_id",
@@ -318,7 +323,7 @@ class Allergies extends Component {
                       div={{ className: "col-lg-12 margin-top-15" }}
                       label={{
                         forceLabel: "Onset",
-                        isImp:true
+                        isImp: true
                       }}
                       selector={{
                         name: "allergy_onset",
@@ -357,7 +362,7 @@ class Allergies extends Component {
                       label={{
                         forceLabel: "Severity",
                         fieldName: "sample",
-                        isImp:true
+                        isImp: true
                       }}
                       selector={{
                         name: "allergy_severity",
@@ -539,7 +544,7 @@ class Allergies extends Component {
                             );
                           },
                           others: {
-                            minWidth:130
+                            minWidth: 130
                           }
                         },
                         {

@@ -2,7 +2,7 @@ import AlgaehSearch from "../../Wrapper/globalSearch";
 import FrontDesk from "../../../Search/FrontDesk.json";
 import moment from "moment";
 import Options from "../../../Options.json";
-import { swalMessage } from "../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -75,7 +75,6 @@ const datehandle = ($this, ctrl, e) => {
 };
 
 const getRadTestList = $this => {
-  
   let inputobj = {};
 
   if ($this.state.from_date !== null) {
@@ -101,40 +100,93 @@ const getRadTestList = $this => {
     inputobj.test_type = $this.state.proiorty;
   }
 
-  $this.props.getRadiologyTestList({
+  algaehApiCall({
     uri: "/radiology/getRadOrderedServices",
     module: "radiology",
     method: "GET",
     data: inputobj,
-    redux: {
-      type: "RAD_LIST_GET_DATA",
-      mappingName: "radtestlist"
+
+    onSuccess: response => {
+      debugger;
+      if (response.data.success === true) {
+        $this.setState({
+          radtestlist: response.data.records,
+          user_id: response.data.user_id
+        });
+      }
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
     }
   });
+  // $this.props.getRadiologyTestList({
+  //   uri: "/radiology/getRadOrderedServices",
+  //   module: "radiology",
+  //   method: "GET",
+  //   data: inputobj,
+  //   redux: {
+  //     type: "RAD_LIST_GET_DATA",
+  //     mappingName: "radtestlist"
+  //   }
+  // });
 };
 
 const openResultEntry = ($this, row) => {
   if (row.billed === "Y") {
-    $this.props.getTemplateList({
+    algaehApiCall({
       uri: "/radiology/getRadTemplateList",
       module: "radiology",
       method: "GET",
       data: { services_id: row.service_id },
-      redux: {
-        type: "TEMPLATE_LIST_GET_DATA",
-        mappingName: "templatelist"
+      onSuccess: response => {
+        if (response.data.success === true) {
+          let Template = row;
+          Template.technician_id =
+            Template.technician_id === null
+              ? $this.state.user_id
+              : Template.technician_id;
+
+          row.exam_start_date_time = new Date(row.exam_start_date_time);
+          Template.Templatelist = response.data.records;
+          $this.setState({
+            resultEntry: !$this.state.resultEntry,
+            selectedPatient: Template
+          });
+        }
       },
-      afterSuccess: data => {
-        
-        let Template = row;
-        row.exam_start_date_time = new Date(row.exam_start_date_time);
-        Template.Templatelist = data;
-        $this.setState({
-          resultEntry: !$this.state.resultEntry,
-          selectedPatient: Template
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
         });
       }
     });
+    // $this.props.getTemplateList({
+    //   uri: "/radiology/getRadTemplateList",
+    //   module: "radiology",
+    //   method: "GET",
+    //   data: { services_id: row.service_id },
+    //   redux: {
+    //     type: "TEMPLATE_LIST_GET_DATA",
+    //     mappingName: "templatelist"
+    //   },
+    //   afterSuccess: data => {
+    //     let Template = row;
+    //     Template.technician_id =
+    //       Template.technician_id === null
+    //         ? $this.state.user_id
+    //         : Template.technician_id;
+    //     row.exam_start_date_time = new Date(row.exam_start_date_time);
+    //     Template.Templatelist = data;
+    //     $this.setState({
+    //       resultEntry: !$this.state.resultEntry,
+    //       selectedPatient: Template
+    //     });
+    //   }
+    // });
   } else {
     swalMessage({
       title: "Please make the payment.",

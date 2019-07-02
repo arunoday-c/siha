@@ -59,6 +59,7 @@ class RadResultEntry extends Component {
     }
   }
   componentWillReceiveProps(newProps) {
+    debugger;
     if (
       newProps.selectedPatient !== undefined &&
       (newProps.radschlist === undefined || newProps.radschlist.length === 0)
@@ -70,10 +71,17 @@ class RadResultEntry extends Component {
         this.setState({ ...this.state, ...newProps.selectedPatient });
       }
     } else {
-      this.setState({ ...this.state, ...newProps.radschlist });
+      this.setState({ ...this.state, ...newProps.radschlist[0] });
     }
   }
   onClose = e => {
+    this.props.getRadiologyTestList({
+      redux: {
+        type: "RAD_LIST_GET_DATA",
+        mappingName: "radschlist",
+        data: []
+      }
+    });
     this.setState(
       {
         template_id: null,
@@ -81,7 +89,8 @@ class RadResultEntry extends Component {
         pre_exam_status: null,
         exam_start_date_time: null,
         exam_end_date_time: null,
-        changesDone: false
+        changesDone: false,
+        comments: ""
       },
       () => {
         this.props.onClose && this.props.onClose(e);
@@ -105,6 +114,7 @@ class RadResultEntry extends Component {
   }
 
   render() {
+    debugger;
     return (
       <div className="RadResultEntry">
         <AlgaehModalPopUp
@@ -440,7 +450,13 @@ class RadResultEntry extends Component {
                     type="button"
                     className="btn btn-primary"
                     onClick={onvalidate.bind(this, this)}
-                    disabled={this.state.status === "RA" ? true : false}
+                    disabled={
+                      this.state.exam_status === "CO"
+                        ? this.state.status === "RA"
+                          ? true
+                          : false
+                        : true
+                    }
                   >
                     Validate
                   </button>

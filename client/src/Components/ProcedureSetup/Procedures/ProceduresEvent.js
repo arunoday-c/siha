@@ -144,7 +144,28 @@ export default function ProceduresEvent() {
                     type: "success",
                     title: "Saved successfully . ."
                   });
-                  $this.props.onClose && $this.props.onClose(true);
+                  $this.setState(
+                    {
+                      hims_d_procedure_id: null,
+                      procedure_code: null,
+                      procedure_desc: null,
+                      procedure_amount: 0,
+                      total_service_amount: 0,
+                      profit_loss: null,
+                      pl_amount: 0,
+
+                      open: false,
+                      ProcedureDetail: [],
+                      deletePackage: [],
+                      insertProcedure: [],
+                      s_service_amount: null,
+                      s_service_type: null,
+                      s_service: null
+                    },
+                    () => {
+                      $this.props.onClose && $this.props.onClose(true);
+                    }
+                  );
                 }
               }
             });
@@ -160,7 +181,28 @@ export default function ProceduresEvent() {
                     type: "success",
                     title: "Updated successfully . ."
                   });
-                  $this.props.onClose && $this.props.onClose(true);
+                  $this.setState(
+                    {
+                      hims_d_procedure_id: null,
+                      procedure_code: null,
+                      procedure_desc: null,
+                      procedure_amount: 0,
+                      total_service_amount: 0,
+                      profit_loss: null,
+                      pl_amount: 0,
+
+                      open: false,
+                      ProcedureDetail: [],
+                      deletePackage: [],
+                      insertProcedure: [],
+                      s_service_amount: null,
+                      s_service_type: null,
+                      s_service: null
+                    },
+                    () => {
+                      $this.props.onClose && $this.props.onClose(true);
+                    }
+                  );
                 }
               }
             });
