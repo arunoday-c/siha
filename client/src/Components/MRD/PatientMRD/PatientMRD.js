@@ -172,11 +172,11 @@ class PatientMRD extends Component {
 								</span>
 							</div>
 
-							<div className="moreAction">
+							{/* <div className="moreAction">
 								<button type="button" className="btn btn-outline-secondary btn-sm">
 									<img src={require('../../../assets/images/print.webp')} alt="Print icon" />
 								</button>
-							</div>
+							</div> */}
 						</div>
 					) : null}
 
