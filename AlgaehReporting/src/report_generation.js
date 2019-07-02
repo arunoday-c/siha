@@ -293,7 +293,6 @@ module.exports = {
               const _data = data[0][r];
 
               const _inputOrders = eval(_data.report_input_series);
-
               let _value = [];
               for (var i = 0; i < _inputOrders.length; i++) {
                 const _params = _.find(
@@ -302,6 +301,9 @@ module.exports = {
                 );
                 if (_params != undefined) {
                   _value.push(_params.value);
+                }
+                if (_inputOrders[i] == "login_branch") {
+                  _value.push(req.userIdentity["hospital_id"]);
                 }
               }
 

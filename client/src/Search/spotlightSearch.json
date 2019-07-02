@@ -648,11 +648,17 @@
     "InvConsEntry": [
       {
         "fieldName": "consumption_number",
-        "label": "Consumption Date"
+        "label": "Consumption Number"
       },
+
       {
         "fieldName": "consumption_date",
         "label": "Consumption Date"
+      },
+      {
+        "fieldName": "doctor_name",
+        "label": "Doctor Name",
+        "required": "N"
       },
       {
         "fieldName": "location_description",

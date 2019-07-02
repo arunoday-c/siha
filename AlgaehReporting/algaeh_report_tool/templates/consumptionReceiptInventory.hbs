@@ -6,16 +6,22 @@
         <section>
             <table class="tableForData" cell-padding="0">
                 <thead>
-                     <tr>
-    <th>Sl No.</th>
-    <th>Consumption No.</th>
-    <th>Consumption Date</th>
-    <th>Item Name</th>
-    <th>Item Category</th>
-    <th>Item Group</th>
-    <th>Qty</th>
-    <th>Batch No.</th>
-  </tr>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>Consumption No.</th>
+                        <th>Consumption Date</th>
+                        <th>Item Name</th>
+                        <th>batchno</th>
+                        <th>unit_cost</th>
+                        <th>quantity</th>
+                        <th>extended_cost</th>
+                        <th>uom_description</th>
+
+
+                        <th>{{sub_department_name}}</th>
+                        <th>{{employee_code}}</th>
+                        <th>{{full_name}}</th>
+                    </tr>
                 </thead>
                 <tbody>
                     {{#each detailList}}
@@ -23,14 +29,16 @@
                         <td>{{inc @index}}</td>
                         <td>{{consumption_number}}</td>
                         <td>{{consumption_date}}</td>
-                        <td>{{item_name}}</td>
                         <td>{{item_description}}</td>
-                        <td>{{item_group}}</td>
-                        <td>{{quantity}}</td>
-                        <td class="numberFld">{{batch_no}}</td>
+                        <td>{{batchno}}</td>
+                        <td>{{unit_cost}}</td>
+                        <td class="numberFld">{{quantity}}</td>
+                        <td>{{extended_cost}}</td>
+
+                        <td class="numberFld">{{uom_description}}</td>
                     </tr>
                     {{/each }}
-              
+
                 </tbody>
             </table>
         </section>

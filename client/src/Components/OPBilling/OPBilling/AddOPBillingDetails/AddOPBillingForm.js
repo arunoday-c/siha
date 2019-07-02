@@ -814,16 +814,18 @@ class AddOPBillingForm extends Component {
                           />
                           <h6>{getAmountFormart(this.state.copay_amount)}</h6>
                         </div>
-                        <div className="col-lg-6">
-                          <AlgaehLabel
-                            label={{
-                              fieldName: "deductable_amount"
-                            }}
-                          />
-                          <h6>
-                            {getAmountFormart(this.state.deductable_amount)}
-                          </h6>
-                        </div>
+                        {this.state.deductable_amount === 0 ? null : (
+                          <div className="col-lg-6">
+                            <AlgaehLabel
+                              label={{
+                                fieldName: "deductable_amount"
+                              }}
+                            />
+                            <h6>
+                              {getAmountFormart(this.state.deductable_amount)}
+                            </h6>
+                          </div>
+                        )}
                         {/* <div className="col-lg-6">
                           <AlgaehLabel
                             label={{
