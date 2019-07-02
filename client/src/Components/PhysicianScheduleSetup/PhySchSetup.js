@@ -25,7 +25,7 @@ class PhySchSetup extends Component {
       scheduleList: [],
       scheduleDoctors: [],
       year: moment().year(),
-      month: moment().format("M"),
+      month: null,
       from_date: "",
       to_date: "",
       all: false,
