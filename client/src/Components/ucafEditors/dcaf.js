@@ -8,8 +8,8 @@ import {
 } from "../Wrapper/algaehWrapper";
 import { algaehApiCall } from "../../utils/algaehApiCall";
 import _ from "lodash";
-import EditorEvents from "./EditorEvents"
-
+import EditorEvents from "./EditorEvents";
+import ButtonType from "../Wrapper/algaehButton";
 export default class DcafEditor extends Component {
   constructor(props) {
     super(props);
@@ -21,40 +21,45 @@ export default class DcafEditor extends Component {
       insurance_holder: "",
       insurance_approved: "",
       dcaf_data: undefined,
-      showImgArea: true
+      showImgArea: true,
+      loading: false
     };
   }
 
   saveAndPrintDcaf(e) {
-    
-    EditorEvents().saveAndPrintDcaf(this,e)  
+    this.setState(
+      {
+        loading: true
+      },
+      () => {
+        EditorEvents().saveAndPrintDcaf(this, e);
+      }
+    );
   }
 
-  ChangeEventHandler(e){
-    EditorEvents().ChangeEventHandler(this,e)
+  ChangeEventHandler(e) {
+    EditorEvents().ChangeEventHandler(this, e);
   }
 
-  radioChange(e){
-    EditorEvents().dcafradioChange(this,e)
+  radioChange(e) {
+    EditorEvents().dcafradioChange(this, e);
   }
 
-  componentDidMount(){
-    
+  componentDidMount() {
+    if (
+      this.props.dataProps.hims_f_dcaf_header !== undefined &&
+      this.props.dataProps.hims_f_dcaf_header.length > 0
+    ) {
+      let data = this.props.dataProps.hims_f_dcaf_header[0];
+      let insurance = this.props.dataProps.hims_f_dcaf_insurance_details[0];
 
-    if(this.props.dataProps.hims_f_dcaf_header !== undefined &&
-      this.props.dataProps.hims_f_dcaf_header.length > 0){
-        
-        let data = this.props.dataProps.hims_f_dcaf_header[0];
-        let insurance = this.props.dataProps.hims_f_dcaf_insurance_details[0]
-
-        data.dcaf_services = this.props.dataProps.hims_f_dcaf_services
-        data.dcaf_medication = this.props.dataProps.hims_f_dcaf_medication
-        this.setState({...this.state, ...data, ...insurance})
+      data.dcaf_services = this.props.dataProps.hims_f_dcaf_services;
+      data.dcaf_medication = this.props.dataProps.hims_f_dcaf_medication;
+      this.setState({ ...this.state, ...data, ...insurance });
     }
   }
 
   render() {
-    
     const _isPrimary = "primary";
     const _hims_f_dcaf_header = this.props.dataProps.hims_f_dcaf_header[0];
     const _insurnce = _.find(
@@ -108,7 +113,7 @@ export default class DcafEditor extends Component {
                           textBox={{
                             className: "txt-fld",
                             name: "",
-                            value:this.state.primary_insurance_company_name,
+                            value: this.state.primary_insurance_company_name,
                             events: {},
                             option: {
                               type: "text"
@@ -124,7 +129,8 @@ export default class DcafEditor extends Component {
                           textBox={{
                             className: "txt-fld",
                             name: "",
-                            value:this.state.primary_tpa_insurance_company_name,
+                            value: this.state
+                              .primary_tpa_insurance_company_name,
                             events: {},
                             option: {
                               type: "text"
@@ -170,8 +176,7 @@ export default class DcafEditor extends Component {
                               type="radio"
                               name="maritalType"
                               checked={
-                                this.state.patient_marital_status ===
-                                "PlanType"
+                                this.state.patient_marital_status === "PlanType"
                                   ? true
                                   : false
                               }
@@ -251,7 +256,7 @@ export default class DcafEditor extends Component {
                                 textBox={{
                                   className: "txt-fld",
                                   name: "",
-                                  value:this.state.primary_card_number,
+                                  value: this.state.primary_card_number,
                                   events: {},
                                   option: {
                                     type: "text"
@@ -316,8 +321,7 @@ export default class DcafEditor extends Component {
                                   className: "txt-fld",
                                   name: "",
                                   value:
-                                    this.state.insurance_holder ===
-                                    undefined
+                                    this.state.insurance_holder === undefined
                                       ? this.state.insurance_holder === ""
                                         ? this.state.patient_full_name
                                         : this.state.insurance_holder
@@ -337,7 +341,7 @@ export default class DcafEditor extends Component {
                                 textBox={{
                                   className: "txt-fld",
                                   name: "",
-                                  value:this.state.primary_policy_num,
+                                  value: this.state.primary_policy_num,
                                   events: {},
                                   option: {
                                     type: "text"
@@ -399,10 +403,9 @@ export default class DcafEditor extends Component {
                           textBox={{
                             className: "txt-fld",
                             name: "patient_duration_of_illness",
-                            value:
-                              this.state.patient_duration_of_illness,
+                            value: this.state.patient_duration_of_illness,
                             events: {
-                              onChange:this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this)
                             },
                             option: {
                               type: "text"
@@ -418,10 +421,9 @@ export default class DcafEditor extends Component {
                           textBox={{
                             className: "txt-fld",
                             name: "patient_chief_comp_main_symptoms",
-                            value:
-                              this.state.patient_chief_comp_main_symptoms,
+                            value: this.state.patient_chief_comp_main_symptoms,
                             events: {
-                              onChange:this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this)
                             },
                             option: {
                               type: "text"
@@ -437,10 +439,9 @@ export default class DcafEditor extends Component {
                           textBox={{
                             className: "txt-fld",
                             name: "patient_significant_signs",
-                            value:
-                              this.state.patient_significant_signs,
+                            value: this.state.patient_significant_signs,
                             events: {
-                              onChange:this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this)
                             },
                             option: {
                               type: "text"
@@ -459,7 +460,7 @@ export default class DcafEditor extends Component {
                             name: "patient_diagnosys",
                             value: this.state.patient_diagnosys,
                             events: {
-                              onChange:this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this)
                             },
                             option: {
                               type: "text"
@@ -478,7 +479,7 @@ export default class DcafEditor extends Component {
                             name: "primary",
                             value: this.state.primary,
                             events: {
-                              onChange:this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this)
                             },
                             option: {
                               type: "text"
@@ -496,7 +497,7 @@ export default class DcafEditor extends Component {
                             name: "secondary",
                             value: this.state.secondary,
                             events: {
-                              onChange:this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this)
                             },
                             option: {
                               type: "text"
@@ -515,7 +516,7 @@ export default class DcafEditor extends Component {
                             name: "patient_other_conditions",
                             value: this.state.patient_other_conditions,
                             events: {
-                              onChange:this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this)
                             },
                             option: {
                               type: "text"
@@ -540,7 +541,7 @@ export default class DcafEditor extends Component {
                             <input
                               type="checkbox"
                               name="regular_dental_trt"
-                              value = "Y"
+                              value="Y"
                               checked={
                                 this.state.regular_dental_trt === "Y"
                                   ? true
@@ -567,11 +568,7 @@ export default class DcafEditor extends Component {
                             <input
                               type="checkbox"
                               name="RTA"
-                              checked={
-                                this.state.RTA === "Y"
-                                  ? true
-                                  : false
-                              }
+                              checked={this.state.RTA === "Y" ? true : false}
                               onChange={this.radioChange.bind(this)}
                             />
                             <span>Trauma Treatment Specify: RTA</span>
@@ -581,9 +578,7 @@ export default class DcafEditor extends Component {
                               type="checkbox"
                               name="work_related"
                               checked={
-                                this.state.work_related === "Y"
-                                  ? true
-                                  : false
+                                this.state.work_related === "Y" ? true : false
                               }
                               onChange={this.radioChange.bind(this)}
                             />
@@ -603,7 +598,7 @@ export default class DcafEditor extends Component {
                             name: "others",
                             value: this.state.others,
                             events: {
-                              onChange:this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this)
                             },
                             option: {
                               type: "text"
@@ -621,7 +616,7 @@ export default class DcafEditor extends Component {
                             name: "how",
                             value: this.state.how,
                             events: {
-                              onChange:this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this)
                             },
                             option: {
                               type: "text"
@@ -639,7 +634,7 @@ export default class DcafEditor extends Component {
                             name: "when",
                             value: this.state.when,
                             events: {
-                              onChange:this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this)
                             },
                             option: {
                               type: "text"
@@ -657,7 +652,7 @@ export default class DcafEditor extends Component {
                             name: "where",
                             value: this.state.where,
                             events: {
-                              onChange:this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this)
                             },
                             option: {
                               type: "text"
@@ -717,7 +712,6 @@ export default class DcafEditor extends Component {
                           />
                         </div>
                         <div className="col-12" id="medicationGrd_Cntr">
-
                           <h5 style={{ marginBottom: 0, marginTop: 10 }}>
                             Providers Approval/Coding staff must review/code the
                             recommended services(s) and allocate cost and
@@ -773,9 +767,17 @@ export default class DcafEditor extends Component {
                 <div className="col-lg-12">
                   <button
                     type="button"
-                    className="btn btn-primary"
+                    className={
+                      "btn btn-primary " +
+                      (this.state.loading ? " btn-loader" : "")
+                    }
                     onClick={this.saveAndPrintDcaf.bind(this)}
                   >
+                    {this.state.loading ? (
+                      <span className="showBtnLoader">
+                        <i className="fas fa-spinner fa-spin" />
+                      </span>
+                    ) : null}
                     Save & Print
                   </button>
                   {/* <button

@@ -9,8 +9,7 @@ import { accessReport } from "../Wrapper/printReports";
 import Enumerable from "linq";
 import ReactDOM from "react-dom";
 import AlgaehSearch from "../Wrapper/globalSearch";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
+import ButtonType from "../Wrapper/algaehButton";
 import moment from "moment";
 
 export default class ReportUI extends Component {
@@ -44,7 +43,6 @@ export default class ReportUI extends Component {
                 ...{ method: "GET" },
                 ...{
                   onSuccess: response => {
-                    
                     if (response.data.success) {
                       const manupulateResult = s.manupulation;
                       if (typeof manupulateResult === "function") {
@@ -71,21 +69,23 @@ export default class ReportUI extends Component {
             })
             .toArray()
         );
-        
-       
-       Enumerable.from(props.options.plotUI.paramters)
+
+        Enumerable.from(props.options.plotUI.paramters)
           .where(w => w.value !== undefined)
-         .select(s => {
-           if (s.type === "date" || s.type === "time") {
-             this.state.parameterCollection[s.name] = moment(s.value,s.type==="time"?"HH:mm":"YYYY-MM-DD")._d ;
-           } else {
-              this.state.parameterCollection[s.name] =  s.value;
-           }
-            return {
-              [s.name] : s.value
+          .select(s => {
+            if (s.type === "date" || s.type === "time") {
+              this.state.parameterCollection[s.name] = moment(
+                s.value,
+                s.type === "time" ? "HH:mm" : "YYYY-MM-DD"
+              )._d;
+            } else {
+              this.state.parameterCollection[s.name] = s.value;
             }
-          }).toArray();
-        
+            return {
+              [s.name]: s.value
+            };
+          })
+          .toArray();
       }
     }
   }
@@ -182,45 +182,8 @@ export default class ReportUI extends Component {
         });
     }
   }
-  onChangeReportPreview(type) {
-    if (type === "PDF") {
-      const _element = this.algehPrintRef;
-      const date_time = moment(new Date()).format("DD-MM-YYYY HH:mm:ss");
-      const _hasSelection = _element.querySelector("section");
-      if (_hasSelection !== undefined) {
-        _hasSelection.classList += "forPDF";
-      }
-      html2canvas(_element)
-        .then(canvas => {
-          if (_hasSelection !== undefined)
-            _hasSelection.classList.remove("forPDF");
-          let pdf = new jsPDF("l", "mm", "a4");
-          var width = pdf.internal.pageSize.getWidth();
-          var height = pdf.internal.pageSize.getHeight();
-          let ratio = canvas.height / canvas.width;
-          height = ratio * width;
 
-          pdf.addImage(
-            canvas.toDataURL("image/png"),
-            "png",
-            5,
-            5,
-            width - 10,
-            height - 10
-          );
-          //  pdf.addImage(canvas.toDataURL("image/png"), "PNG", 200, 2017);
-          pdf.save(
-            this.state.report_name + " " + date_time.toString() + ".pdf"
-          );
-        })
-        .catch(error => {
-          if (_hasSelection !== undefined)
-            _hasSelection.classList.remove("forPDF");
-          console.error(error);
-        });
-    }
-  }
-  generateReport(e) {
+  generateReport(source, e, loader) {
     AlgaehValidation({
       querySelector: "data-validate='parameters-data'",
       alertTypeIcon: "warning",
@@ -251,38 +214,38 @@ export default class ReportUI extends Component {
           });
           const reportProperties = that.props.options.report;
 
-          this.setState(
-            {
-              buttonDisable: true
+          algaehApiCall({
+            uri: "/report",
+            module: "reports",
+            method: "GET",
+            headers: {
+              Accept: "blob"
             },
-            () => {
-              algaehApiCall({
-                uri: "/report",
-                module: "reports",
-                method: "GET",
-                headers: {
-                  Accept: "blob"
-                },
-                others: { responseType: "blob" },
-                data: {
-                  report: {
-                    ...reportProperties,
-                    reportParams: parameters
-                  }
-                },
-                onSuccess: response => {
-                  
-                  const url = URL.createObjectURL(response.data);
-
-                  that.setState({
-                    _htmlString: url,
-                    buttonDisable: false,
-                    report_name: reportProperties.reportName
-                  });
-                }
+            others: { responseType: "blob" },
+            data: {
+              report: {
+                ...reportProperties,
+                reportParams: parameters
+              }
+            },
+            onSuccess: response => {
+              const url = URL.createObjectURL(response.data);
+              loader.setState({
+                loading: false
               });
+
+              let myWindow = window.open(
+                "",
+                "",
+                "width=800,height=500,left=200,top=200"
+              );
+              myWindow.document.write(
+                "<iframe src= '" + url + "' width='100%' height='100%' />"
+              );
+              myWindow.document.title = reportProperties.displayName;
+              myWindow.document.body.style.overflow = "hidden";
             }
-          );
+          });
         } else {
           const _reportQuery =
             this.state.reportQuery !== undefined
@@ -319,11 +282,9 @@ export default class ReportUI extends Component {
             onSuccess: response => {
               let buttonDisable = true;
               if (response.data.success === true) {
-                
                 new Promise((resolve, reject) => {
                   resolve(response.data.records);
                 }).then(data => {
-                  
                   if (Array.isArray(data)) {
                     if (data.length > 0) {
                       buttonDisable = false;
@@ -497,7 +458,8 @@ export default class ReportUI extends Component {
     } = require("./algaehWrapper");
     for (let i = 0; i < _parameters.length; i++) {
       const _param = _parameters[i];
-      const _className = _param.className===undefined ? "col":_param.className;
+      const _className =
+        _param.className === undefined ? "col" : _param.className;
       switch (_param.type) {
         case "dropdown":
           const _data =
@@ -510,7 +472,7 @@ export default class ReportUI extends Component {
           _controls.push(
             <AlagehAutoComplete
               key={i}
-              div={{ className: _className}}
+              div={{ className: _className }}
               label={{
                 fieldName: _param.name,
                 forceLabel: _param.label,
@@ -536,7 +498,6 @@ export default class ReportUI extends Component {
           );
           break;
         case "date":
-         
           _controls.push(
             <AlgaehDateHandler
               key={i}
@@ -565,7 +526,7 @@ export default class ReportUI extends Component {
               type="time"
               key={i}
               singleOutput={false}
-              div={{ className:_className }}
+              div={{ className: _className }}
               label={{
                 fieldName: _param.name,
                 forceLabel: _param.label,
@@ -573,8 +534,7 @@ export default class ReportUI extends Component {
               }}
               textBox={{
                 className: "txt-fld",
-                name: _param.name,
-
+                name: _param.name
               }}
               {..._param.others}
               events={{
@@ -741,12 +701,21 @@ export default class ReportUI extends Component {
                       </div>
                     </div>
                     <div className="reportActionBtns">
-                      <button
+                      <ButtonType
+                        others={{ style: { float: "right" } }}
+                        classname="btn-primary"
+                        onClick={this.generateReport.bind(this, this)}
+                        label={{
+                          forceLabel: "  Generate Report",
+                          returnText: true
+                        }}
+                      />
+                      {/*<button
                         className="btn btn-primary"
                         onClick={this.generateReport.bind(this)}
                       >
                         Generate Report
-                      </button>
+                      </button>*/}
                     </div>
                   </div>
                 </React.Fragment>
@@ -758,9 +727,7 @@ export default class ReportUI extends Component {
               ref={el => (this.algehPrintRef = el)}
               style={{ minHeight: "30vh" }}
             >
-              {/*}*/}
-              
-              {this.props.options !== undefined &&
+              {/*this.props.options !== undefined &&
               this.props.options.report !== undefined &&
               this.props.options.report.requireIframe === true ? (
                 <iframe
@@ -775,7 +742,7 @@ export default class ReportUI extends Component {
                     __html: this.state._htmlString
                   }}
                 />
-              )}
+            )*/}
 
               <div className="col-lg-12">
                 <div className="row">
@@ -840,7 +807,7 @@ export default class ReportUI extends Component {
                     />
                     <label htmlFor="report_excel_preview">Excel</label> */}
 
-                    <button
+                    {/*<button
                       className="btn btn-default"
                       type="button"
                       disabled={this.state.buttonDisable}
@@ -856,7 +823,7 @@ export default class ReportUI extends Component {
                       onClick={this.onChangeReportPreview.bind(this, "XSLS")}
                     >
                       Download as Excel
-                    </button>
+                    </button>*/}
                     <button
                       type="button"
                       className="btn btn-default"

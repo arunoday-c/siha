@@ -135,6 +135,7 @@ class Reports extends Component {
                     className="col-lg-2 reportList"
                     onClick={() => {
                       let pageProperies = {
+                        displayName: item.subitem,
                         reportName: item.reportName,
                         template_name: item.template_name,
                         reportQuery: item.reportQuery,

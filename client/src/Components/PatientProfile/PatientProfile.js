@@ -299,7 +299,11 @@ class PatientProfile extends Component {
             .lastOrDefault()
         : [];
 
-    if (chief_complaint === null || chief_complaint.length < 4) {
+    if (
+      chief_complaint === null ||
+      chief_complaint === undefined ||
+      chief_complaint.length < 4
+    ) {
       swalMessage({
         title: "Enter Chief Complaint. Atlest 4 letter",
         type: "warning"

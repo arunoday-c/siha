@@ -40,15 +40,6 @@ export default class ButtonType extends PureComponent {
   }
 
   launchReport(data) {
-    // return (
-    //   <AlgaehViewer reportparam={this.props.reportparam}>
-    //     <iframe
-    //       src={this.state.report + "#zoom=100"}
-    //       width="100%"
-    //       height="100%"
-    //     />
-    //   </AlgaehViewer>
-    // );
     let myWindow = window.open("", "", "width=800,height=500,left=200,top=200");
 
     myWindow.document.write(

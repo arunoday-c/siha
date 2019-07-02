@@ -468,6 +468,11 @@ class Dental extends Component {
     AlgaehValidation({
       querySelector: "data-validate='addDentalPlanDiv'",
       alertTypeIcon: "warning",
+      onFailure: () => {
+        loader.setState({
+          loading: false
+        });
+      },
       onSuccess: () => {
         algaehApiCall({
           uri: "/dental/addDentalTreatment",
@@ -497,6 +502,9 @@ class Dental extends Component {
             }
           },
           onError: error => {
+            loader.setState({
+              loading: false
+            });
             swalMessage({
               title: error.message,
               type: "success"
@@ -511,6 +519,11 @@ class Dental extends Component {
     AlgaehValidation({
       querySelector: "data-validate='addTreatementDiv'",
       alertTypeIcon: "warning",
+      onCatch: () => {
+        loader.setState({
+          loading: false
+        });
+      },
       onSuccess: () => {
         algaehApiCall({
           uri: "/dental/addTreatmentPlan",
@@ -537,6 +550,9 @@ class Dental extends Component {
             }
           },
           onError: error => {
+            loader.setState({
+              loading: false
+            });
             swalMessage({
               title: error.message,
               type: "error"
