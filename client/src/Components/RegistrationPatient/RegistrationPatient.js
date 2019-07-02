@@ -645,7 +645,6 @@ class RegistrationPatient extends Component {
     this.setState({ open: false });
   };
 
-<<<<<<< HEAD
   getCtrlCode(patcode) {
     let $this = this;
     let provider_id = this.props.provider_id || null;
@@ -740,8 +739,7 @@ class RegistrationPatient extends Component {
       }
     });
   }
-=======
->>>>>>> 1f3317557944ead3a6457addf2cd084554d83c41
+
   printBarCodeHandler(e) {
     AlgaehReport({
       report: {
