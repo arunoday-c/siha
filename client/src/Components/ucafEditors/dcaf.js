@@ -10,6 +10,8 @@ import { algaehApiCall } from "../../utils/algaehApiCall";
 import _ from "lodash";
 import EditorEvents from "./EditorEvents";
 import ButtonType from "../Wrapper/algaehButton";
+import Swal from "sweetalert2";
+import moment from "moment";
 export default class DcafEditor extends Component {
   constructor(props) {
     super(props);
@@ -45,6 +47,74 @@ export default class DcafEditor extends Component {
     EditorEvents().dcafradioChange(this, e);
   }
 
+  onClickReloadData(source, e, loader) {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, force load!"
+    }).then(result => {
+      if (result.value) {
+        const that = this;
+        algaehApiCall({
+          uri: "/dcaf/getPatientDCAF",
+          method: "GET",
+          data: {
+            patient_id: Window.global["current_patient"],
+            visit_id: Window.global["visit_id"],
+            forceReplace: "true"
+          },
+          onSuccess: response => {
+            loader.setState({
+              loading: false
+            });
+            if (response.data.success === true) {
+              debugger;
+              const data = response.data.records.hims_f_dcaf_header[0];
+              const insurance =
+                response.data.records.hims_f_dcaf_insurance_details[0];
+              data.dcaf_services = response.data.records.hims_f_dcaf_services;
+              data.dcaf_medication =
+                response.data.records.hims_f_dcaf_medication;
+
+              that.setState({
+                ...data,
+                ...insurance
+              });
+            }
+          }
+        });
+      } else {
+        loader.setState({
+          loading: false
+        });
+      }
+    });
+  }
+
+  numberOfDays(interval, duration, onset_date) {
+    if (interval === "D") {
+      return duration;
+    } else {
+      let fromdate = moment(onset_date);
+      if (interval === "M") {
+        let todate = moment(onset_date).set("month", duration);
+        return todate.diff(fromdate, "days");
+      } else if (interval === "W") {
+        let todate = moment(onset_date).set("week", duration);
+        return todate.diff(fromdate, "days");
+      } else if (interval === "Y") {
+        let todate = moment(onset_date).set("year", duration);
+        return todate.diff(fromdate, "days");
+      } else {
+        return duration;
+      }
+    }
+  }
+
   componentDidMount() {
     if (
       this.props.dataProps.hims_f_dcaf_header !== undefined &&
@@ -55,7 +125,12 @@ export default class DcafEditor extends Component {
 
       data.dcaf_services = this.props.dataProps.hims_f_dcaf_services;
       data.dcaf_medication = this.props.dataProps.hims_f_dcaf_medication;
-      this.setState({ ...this.state, ...data, ...insurance });
+
+      this.setState({
+        ...this.state,
+        ...data,
+        ...insurance
+      });
     }
   }
 
@@ -765,6 +840,14 @@ export default class DcafEditor extends Component {
             <div className="col-lg-12">
               <div className="row">
                 <div className="col-lg-12">
+                  <ButtonType
+                    onClick={this.onClickReloadData.bind(this, this)}
+                    classname="btn-primary"
+                    label={{
+                      forceLabel: "Reload data",
+                      returnText: true
+                    }}
+                  />
                   <button
                     type="button"
                     className={

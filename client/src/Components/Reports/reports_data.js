@@ -16,35 +16,35 @@ const Activated_Modueles =
   sessionStorage.getItem("ModuleDetails") !== null
     ? JSON.parse(AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails")))
     : [];
-const HIMS_Active = _.filter(Activated_Modueles, f => {
-  return f.module_code === "FTDSK";
-});
+// const HIMS_Active = _.filter(Activated_Modueles, f => {
+//   return f.module_code === "FTDSK";
+// });
+//
+// const HR_Active = _.filter(Activated_Modueles, f => {
+//   return f.module_code === "HRMNGMT";
+// });
+//
+// const LAB_Active = _.filter(Activated_Modueles, f => {
+//   return f.module_code === "LAB";
+// });
+//
+// const RAD_Active = _.filter(Activated_Modueles, f => {
+//   return f.module_code === "RAD";
+// });
+//
+// const INS_Active = _.filter(Activated_Modueles, f => {
+//   return f.module_code === "INS";
+// });
+//
+// const PHARMACY_Active = _.filter(Activated_Modueles, f => {
+//   return f.module_code === "PHCY";
+// });
+//
+// const INVENTORY_Active = _.filter(Activated_Modueles, f => {
+//   return f.module_code === "INVTRY";
+// });
 
-const HR_Active = _.filter(Activated_Modueles, f => {
-  return f.module_code === "HRMNGMT";
-});
-
-const LAB_Active = _.filter(Activated_Modueles, f => {
-  return f.module_code === "LAB";
-});
-
-const RAD_Active = _.filter(Activated_Modueles, f => {
-  return f.module_code === "RAD";
-});
-
-const INS_Active = _.filter(Activated_Modueles, f => {
-  return f.module_code === "INS";
-});
-
-const PHARMACY_Active = _.filter(Activated_Modueles, f => {
-  return f.module_code === "PHCY";
-});
-
-const INVENTORY_Active = _.filter(Activated_Modueles, f => {
-  return f.module_code === "INVTRY";
-});
-
-let Hims_Reports = [
+const Hims_Reports = [
   {
     name: "Appointment",
     submenu: [
@@ -450,7 +450,7 @@ let Hims_Reports = [
   }
 ];
 
-let HR_Payroll_Reports = [
+const HR_Payroll_Reports = [
   {
     name: "Payroll Reports",
     submenu: [
@@ -1015,7 +1015,7 @@ let HR_Payroll_Reports = [
   }
 ];
 
-let Inventory_Reports = [
+const Inventory_Reports = [
   {
     name: "Inventory",
     submenu: [
@@ -1156,7 +1156,7 @@ let Inventory_Reports = [
   }
 ];
 
-let Pharmacy_Reports = [
+const Pharmacy_Reports = [
   {
     name: "Pharmacy",
     submenu: [
@@ -2108,7 +2108,7 @@ let Pharmacy_Reports = [
   }
 ];
 
-let insurance_reports = [
+const insurance_reports = [
   {
     name: "Insurance",
     submenu: [
@@ -2190,18 +2190,18 @@ let insurance_reports = [
   }
 ];
 // debugger;
-let final_report_plot = [];
+const final_report_plot = [];
 
-if (HIMS_Active.length > 0) {
-  final_report_plot.length === 0
-    ? (final_report_plot = Hims_Reports)
-    : (final_report_plot = final_report_plot.concat(Hims_Reports));
-}
-if (HR_Active.length > 0) {
-  final_report_plot.length === 0
-    ? (final_report_plot = HR_Payroll_Reports)
-    : (final_report_plot = final_report_plot.concat(HR_Payroll_Reports));
-}
+// if (HIMS_Active.length > 0) {
+//   final_report_plot.length === 0
+//     ? (final_report_plot = Hims_Reports)
+//     : (final_report_plot = final_report_plot.concat(Hims_Reports));
+// }
+// if (HR_Active.length > 0) {
+//   final_report_plot.length === 0
+//     ? (final_report_plot = HR_Payroll_Reports)
+//     : (final_report_plot = final_report_plot.concat(HR_Payroll_Reports));
+// }
 
 // if (LAB_Active.length > 0) {
 //   final_report_plot.length === 0
@@ -2215,25 +2215,65 @@ if (HR_Active.length > 0) {
 //     : final_report_plot.concat(HR_Payroll_Reports);
 // }
 
-if (INS_Active.length > 0) {
-  final_report_plot.length === 0
-    ? (final_report_plot = insurance_reports)
-    : (final_report_plot = final_report_plot.concat(insurance_reports));
-}
+// if (INS_Active.length > 0) {
+//   final_report_plot.length === 0
+//     ? (final_report_plot = insurance_reports)
+//     : (final_report_plot = final_report_plot.concat(insurance_reports));
+// }
+//
+// if (PHARMACY_Active.length > 0) {
+//   final_report_plot.length === 0
+//     ? (final_report_plot = Pharmacy_Reports)
+//     : (final_report_plot = final_report_plot.concat(Pharmacy_Reports));
+// }
+//
+// if (INVENTORY_Active.length > 0) {
+//   final_report_plot.length === 0
+//     ? (final_report_plot = Inventory_Reports)
+//     : (final_report_plot = final_report_plot.concat(Inventory_Reports));
+// }
+//
+// if (final_report_plot.length === 0) {
+// }
 
-if (PHARMACY_Active.length > 0) {
-  final_report_plot.length === 0
-    ? (final_report_plot = Pharmacy_Reports)
-    : (final_report_plot = final_report_plot.concat(Pharmacy_Reports));
+// export default final_report_plot;
+const pushData = (result, current) => {
+  if (result.length === 0) {
+    result = current;
+  } else {
+    result.concat(current);
+  }
+  return result;
+};
+export default function loadActiveReports() {
+  return {
+    data: () => {
+      debugger;
+      let result = [];
+      for (let i = 0; i < Activated_Modueles.length; i++) {
+        const item = Activated_Modueles[i];
+        switch (item.module_code) {
+          case "FTDSK":
+            result = pushData(result, Hims_Reports);
+            break;
+          case "HRMNGMT":
+            result = pushData(result, HR_Payroll_Reports);
+            break;
+          case "LAB":
+            result = pushData(result, HR_Payroll_Reports);
+            break;
+          case "INS":
+            result = pushData(result, insurance_reports);
+            break;
+          case "PHCY":
+            result = pushData(result, Pharmacy_Reports);
+            break;
+          case "INVTRY":
+            result = pushData(result, Inventory_Reports);
+            break;
+        }
+      }
+      return result;
+    }
+  };
 }
-
-if (INVENTORY_Active.length > 0) {
-  final_report_plot.length === 0
-    ? (final_report_plot = Inventory_Reports)
-    : (final_report_plot = final_report_plot.concat(Inventory_Reports));
-}
-
-if (final_report_plot.length === 0) {
-}
-
-export default final_report_plot;

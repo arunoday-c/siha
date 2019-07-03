@@ -2811,7 +2811,9 @@ class Dental extends Component {
                     </div>
                     <div className="col-12 algaehLabelFormGroup">
                       <label className="algaehLabelGroup">Dental Diagram</label>
-                      <div className="row">image comes here</div>
+                      <div className="row">
+                        <img src="" />
+                      </div>
                     </div>
                   </div>
                 </div>

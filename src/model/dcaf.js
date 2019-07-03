@@ -32,16 +32,13 @@ let getPatientDCAF = (req, res, next) => {
           return;
         }
 
-        console.log("result[0][0]", result[0][0]);
         let hims_f_dcaf_header_id =
           result[0][0] == undefined ? null : result[0][0].hims_f_dcaf_header_id;
 
-        console.log("forceReplace", _input.forceReplace);
         if (_input.forceReplace == "true") {
           result[0] = [];
         }
 
-        console.log("result[0]", result[0]);
         if (result[0].length == 0) {
           console.log("forceReplace", _input.forceReplace);
           _mysql
@@ -75,7 +72,7 @@ let getPatientDCAF = (req, res, next) => {
                 select HPIH.hpi_description,case CC.pain when 'NH' then 'no hurts' when 'HLB' then 'hurts little bit' \
                 when 'HLM' then 'hurts little more' when 'HEM' then 'hurts even more' when 'HWL' then 'hurts whole lot' \
                 when 'HW' then 'hurts worst' end pain, case CC.severity when 'MI' then 'mild' when 'MO' then 'moderate' \
-                when 'SE' then 'severe' end  severity,  CC.score,CC.duration,CC.comment,CC.onset_date \
+                when 'SE' then 'severe' end  severity,CC.interval,  CC.score,CC.duration,CC.comment,CC.onset_date \
                 from hims_f_episode_chief_complaint CC \
                 inner join hims_f_patient_visit PV \
                 on CC.patient_id=PV.patient_id and CC.episode_id=PV.episode_id \
@@ -150,7 +147,6 @@ let getPatientDCAF = (req, res, next) => {
               printQuery: true
             })
             .then(outputResult => {
-
               const _fields =
                 outputResult[0].length > 0 ? { ...outputResult[0][0] } : {};
 
@@ -196,7 +192,7 @@ let getPatientDCAF = (req, res, next) => {
               for (var i = 0; i < outputResult[3].length; i++) {
                 const _out = outputResult[3][i];
                 _fields["patient_diagnosys"] =
-                  _out["long_icd_description"] + "/" +_out["icd_code"];
+                  _out["long_icd_description"] + "/" + _out["icd_code"];
                 _fields["patient_principal_code_" + (i + 1)] = _out["icd_code"];
               }
 
@@ -211,10 +207,10 @@ let getPatientDCAF = (req, res, next) => {
               _fields["patient_work_related"] = "N";
 
               _fields["patient_significant_signs"] =
-                outputResult[7][0]["significant_signs"]
+                outputResult[7][0]["significant_signs"];
 
               _fields["patient_other_conditions"] =
-                outputResult[7][0]["other_signs"]
+                outputResult[7][0]["other_signs"];
 
               _mysql
                 .executeQueryWithTransaction({
@@ -257,7 +253,7 @@ let getPatientDCAF = (req, res, next) => {
                 })
                 .then(headerResult => {
                   req["hims_f_dcaf_header_id"] = headerResult["insertId"];
-                  console.log("outputResult[4]", outputResult[4]);
+
                   _mysql
                     .executeQuery({
                       query: "INSERT INTO hims_f_dcaf_services (??) values ?",
@@ -269,16 +265,22 @@ let getPatientDCAF = (req, res, next) => {
                       // printQuery: true
                     })
                     .then(serviceResult => {
+                      const queryH =
+                        outputResult[5].length > 0
+                          ? {
+                              query:
+                                "INSERT INTO hims_f_dcaf_medication (??) values ?",
+                              values: outputResult[5],
+                              extraValues: {
+                                hims_f_dcaf_header_id: headerResult["insertId"]
+                              },
+                              bulkInsertOrUpdate: true
+                            }
+                          : {
+                              query: "select 1"
+                            };
                       _mysql
-                        .executeQuery({
-                          query:
-                            "INSERT INTO hims_f_dcaf_medication (??) values ?",
-                          values: outputResult[5],
-                          extraValues: {
-                            hims_f_dcaf_header_id: headerResult["insertId"]
-                          },
-                          bulkInsertOrUpdate: true
-                        })
+                        .executeQuery(queryH)
                         .then(medicationResult => {
                           _mysql
                             .executeQuery({
@@ -393,7 +395,6 @@ const _getDcafDetails = (_mysql, req) => {
       });
   });
 };
-
 
 const updateDcafDetails = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
