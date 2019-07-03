@@ -40,15 +40,6 @@ export default class ButtonType extends PureComponent {
   }
 
   launchReport(data) {
-    // return (
-    //   <AlgaehViewer reportparam={this.props.reportparam}>
-    //     <iframe
-    //       src={this.state.report + "#zoom=100"}
-    //       width="100%"
-    //       height="100%"
-    //     />
-    //   </AlgaehViewer>
-    // );
     let myWindow = window.open("", "", "width=800,height=500,left=200,top=200");
 
     myWindow.document.write(
@@ -69,23 +60,29 @@ export default class ButtonType extends PureComponent {
           loading: true
         },
         () => {
-          algaehApiCall({
-            uri: "/report",
-            method: "GET",
-            module: "reports",
-            headers: {
-              Accept: "blob"
-            },
-            others: { responseType: "blob" },
-            data: { report: that.props.report },
-            onSuccess: res => {
-              const url = URL.createObjectURL(res.data);
-              that.launchReport(url);
-              that.setState({
-                loading: false
-              });
+          if (this.props.isReport !== undefined) {
+            algaehApiCall({
+              uri: "/report",
+              method: "GET",
+              module: "reports",
+              headers: {
+                Accept: "blob"
+              },
+              others: { responseType: "blob" },
+              data: { report: that.props.report },
+              onSuccess: res => {
+                const url = URL.createObjectURL(res.data);
+                that.launchReport(url);
+                that.setState({
+                  loading: false
+                });
+              }
+            });
+          } else {
+            if (typeof this.props.onClick === "function") {
+              this.props.onClick(e, this);
             }
-          });
+          }
         }
       );
     } catch (e) {

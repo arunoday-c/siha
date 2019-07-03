@@ -10,76 +10,94 @@ import _ from "lodash";
 const Validations = $this => {
   let isError = false;
 
-  AlgaehValidation({
-    querySelector: "data-validate='ItemMaster'", //if require section level
-    fetchFromFile: true, //if required arabic error
-    alertTypeIcon: "warning", // error icon
-    onSuccess: () => {
-      const item_code_exit = _.filter(
-        $this.props.itemlist,
-        f => f.item_code === $this.state.item_code
-      );
-
-      if (
-        $this.state.hims_d_item_master_id === null &&
-        item_code_exit.length > 0
-      ) {
-        isError = true;
-        swalMessage({
-          type: "warning",
-          title: "Item Code Already Exist."
-        });
-      } else if (
-        $this.state.standard_fee === null ||
-        $this.state.standard_fee === "" ||
-        parseFloat($this.state.standard_fee) === 0
-      ) {
-        isError = true;
-        swalMessage({
-          type: "warning",
-          title: "Please Enter the Sales Price."
-        });
-        document.querySelector("[name='standard_fee']").focus();
-      } else if (
-        $this.state.purchase_cost === null ||
-        $this.state.purchase_cost === "" ||
-        parseFloat($this.state.purchase_cost) === 0
-      ) {
-        isError = true;
-        swalMessage({
-          type: "warning",
-          title: "Please Enter Purchase Cost."
-        });
-        document.querySelector("[name='purchase_cost']").focus();
-      } else if (
-        $this.state.vat_applicable === "Y" &&
-        ($this.state.vat_percent === null ||
-          $this.state.vat_percent === "" ||
-          parseFloat($this.state.vat_percent) === 0)
-      ) {
-        isError = true;
-        swalMessage({
-          type: "warning",
-          title: "Enter the Vat Percentage."
-        });
-        document.querySelector("[name='vat_percent']").focus();
-      } else if (
-        $this.state.reorder_qty === null ||
-        $this.state.reorder_qty === "" ||
-        parseFloat($this.state.reorder_qty) === 0
-      ) {
-        isError = true;
-        swalMessage({
-          type: "warning",
-          title: "Enter Reorder Quantity."
-        });
-        document.querySelector("[name='reorder_qty']").focus();
-      }
-    },
-    onCatch: () => {
-      isError = true;
+  if ($this.state.detail_item_uom.length === 0) {
+    isError = true;
+    swalMessage({
+      type: "warning",
+      title: "Please enter Stocking UOM in the list."
+    });
+    if ($this.state.uom_id === null) {
+      document.querySelector("[name='uom_id']").focus();
+    } else if ($this.state.stocking_uom === null) {
+      document.querySelector("[name='stocking_uom']").focus();
+    } else if (
+      $this.state.conversion_factor === 0 ||
+      $this.state.conversion_factor === null
+    ) {
+      document.querySelector("[name='conversion_factor']").focus();
     }
-  });
+  } else {
+    AlgaehValidation({
+      querySelector: "data-validate='ItemMaster'", //if require section level
+      fetchFromFile: true, //if required arabic error
+      alertTypeIcon: "warning", // error icon
+      onSuccess: () => {
+        const item_code_exit = _.filter(
+          $this.props.itemlist,
+          f => f.item_code === $this.state.item_code
+        );
+
+        if (
+          $this.state.hims_d_item_master_id === null &&
+          item_code_exit.length > 0
+        ) {
+          isError = true;
+          swalMessage({
+            type: "warning",
+            title: "Item Code Already Exist."
+          });
+        } else if (
+          $this.state.standard_fee === null ||
+          $this.state.standard_fee === "" ||
+          parseFloat($this.state.standard_fee) === 0
+        ) {
+          isError = true;
+          swalMessage({
+            type: "warning",
+            title: "Please Enter the Sales Price."
+          });
+          document.querySelector("[name='standard_fee']").focus();
+        } else if (
+          $this.state.purchase_cost === null ||
+          $this.state.purchase_cost === "" ||
+          parseFloat($this.state.purchase_cost) === 0
+        ) {
+          isError = true;
+          swalMessage({
+            type: "warning",
+            title: "Please Enter Purchase Cost."
+          });
+          document.querySelector("[name='purchase_cost']").focus();
+        } else if (
+          $this.state.vat_applicable === "Y" &&
+          ($this.state.vat_percent === null ||
+            $this.state.vat_percent === "" ||
+            parseFloat($this.state.vat_percent) === 0)
+        ) {
+          isError = true;
+          swalMessage({
+            type: "warning",
+            title: "Enter the Vat Percentage."
+          });
+          document.querySelector("[name='vat_percent']").focus();
+        } else if (
+          $this.state.reorder_qty === null ||
+          $this.state.reorder_qty === "" ||
+          parseFloat($this.state.reorder_qty) === 0
+        ) {
+          isError = true;
+          swalMessage({
+            type: "warning",
+            title: "Enter Reorder Quantity."
+          });
+          document.querySelector("[name='reorder_qty']").focus();
+        }
+      },
+      onCatch: () => {
+        isError = true;
+      }
+    });
+  }
 
   return isError;
 };

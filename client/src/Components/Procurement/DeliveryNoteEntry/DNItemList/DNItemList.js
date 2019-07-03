@@ -84,13 +84,15 @@ class DNItemList extends Component {
       selected_row_index: index,
       item_details: item_details,
       dn_quantity: dn_quantity,
-      free_qty: 0      
+      free_qty: 0,
+      addItemButton: false
     });
 
     context.updateState({
       item_details: item_details,
       dn_quantity: dn_quantity,
-      free_qty: 0      
+      free_qty: 0,
+      addItemButton: false
     });
   }
 
@@ -99,11 +101,11 @@ class DNItemList extends Component {
       this.state.item_details === null
         ? null
         : this.state.item_details.item_description;
-  let uom_description =
+    let uom_description =
       this.state.item_details === null
         ? null
         : this.state.item_details.uom_description;
-      
+
     let qty_auth =
       this.state.item_details === null
         ? null
@@ -136,22 +138,31 @@ class DNItemList extends Component {
                       return (
                         <li>
                           <div className="itemReq">
-                            <h6>{item.item_description} ({item.uom_description})</h6>
-                          
+                            <h6>
+                              {item.item_description} ({item.uom_description})
+                            </h6>
+
                             <span>
                               Purchased Qty:
-                              <span>{item.po_quantity}</span>
+                              <span>{parseFloat(item.po_quantity)}</span>
                             </span>
 
                             <span>
-                              Deliverd Qty: <span>{item.dn_quantity}</span>
+                              Deliverd Qty:{" "}
+                              <span>{parseFloat(item.dn_quantity)}</span>
                             </span>
                             <span>
-                             Qty Pending to Receive: <span>{item.quantity_outstanding}</span>
+                              Qty Pending to Receive:{" "}
+                              <span>
+                                {parseFloat(item.quantity_outstanding)}
+                              </span>
                             </span>
 
                             <span>
-                              Qty. Received Till Date: <span>{item.quantity_recieved_todate}</span>
+                              Qty. Received Till Date:{" "}
+                              <span>
+                                {parseFloat(item.quantity_recieved_todate)}
+                              </span>
                             </span>
                           </div>
                           <div className="itemAction">
@@ -185,7 +196,10 @@ class DNItemList extends Component {
                     <div className="row">
                       <div className="col-5">
                         <AlgaehLabel label={{ forceLabel: "Item Name" }} />
-                        <h6>{item_name ? item_name : "----------"} ({uom_description ? uom_description : "----------"})</h6>
+                        <h6>
+                          {item_name ? item_name : "----------"} (
+                          {uom_description ? uom_description : "----------"})
+                        </h6>
                       </div>
 
                       <div className="col-2">
@@ -196,13 +210,10 @@ class DNItemList extends Component {
                       <AlagehFormGroup
                         div={{ className: "col" }}
                         label={{
-                          forceLabel: "Purchase Cost"
+                          forceLabel: "Purchase Cost",
+                          isImp: true
                         }}
                         textBox={{
-                          number: {
-                            allowNegative: false,
-                            thousandSeparator: ","
-                          },
                           value:
                             this.state.item_details === null
                               ? null
@@ -215,6 +226,9 @@ class DNItemList extends Component {
                               this,
                               context
                             )
+                          },
+                          others: {
+                            type: "number"
                           }
                         }}
                       />
@@ -268,13 +282,10 @@ class DNItemList extends Component {
                         div={{ className: "col" }}
                         label={{
                           forceLabel:
-                            "Sales Price " + "(" + stock_uom_description + ")"
+                            "Sales Price " + "(" + stock_uom_description + ")",
+                          isImp: true
                         }}
                         textBox={{
-                          number: {
-                            allowNegative: false,
-                            thousandSeparator: ","
-                          },
                           value:
                             this.state.item_details === null
                               ? null
@@ -287,6 +298,9 @@ class DNItemList extends Component {
                               this,
                               context
                             )
+                          },
+                          others: {
+                            type: "number"
                           }
                         }}
                       />
@@ -310,6 +324,9 @@ class DNItemList extends Component {
                               this,
                               context
                             )
+                          },
+                          others: {
+                            type: "number"
                           }
                         }}
                       />
@@ -344,6 +361,7 @@ class DNItemList extends Component {
                             marginTop: 19
                           }}
                           onClick={AddtoList.bind(this, this, context)}
+                          disabled={this.state.addItemButton}
                         >
                           Add
                         </button>
@@ -761,6 +779,11 @@ class DNItemList extends Component {
                                     label={{ forceLabel: "Delivery Qty" }}
                                   />
                                 ),
+                                displayTemplate: row => {
+                                  return (
+                                    <span>{parseFloat(row.dn_quantity)}</span>
+                                  );
+                                },
                                 editorTemplate: row => {
                                   return (
                                     <AlagehFormGroup
@@ -802,7 +825,12 @@ class DNItemList extends Component {
                                   <AlgaehLabel
                                     label={{ forceLabel: "Free Qty" }}
                                   />
-                                )
+                                ),
+                                displayTemplate: row => {
+                                  return (
+                                    <span>{parseFloat(row.free_qty)}</span>
+                                  );
+                                }
                               },
 
                               {

@@ -235,7 +235,12 @@ const itemchangeText = ($this, context, e) => {
                 ? 0
                 : parseFloat(e.selected.purchase_cost).toFixed(6),
 
-            addItemButton: false
+            addItemButton: false,
+            order_quantity: 0,
+            extended_price: 0,
+            sub_discount_percentage: 0,
+            sub_discount_amount: 0,
+            extended_cost: 0
           });
         }
       } else {
@@ -263,7 +268,12 @@ const itemchangeText = ($this, context, e) => {
                 ? 0
                 : parseFloat(e.selected.purchase_cost).toFixed(6),
 
-            addItemButton: false
+            addItemButton: false,
+            order_quantity: 0,
+            extended_price: 0,
+            sub_discount_percentage: 0,
+            sub_discount_amount: 0,
+            extended_cost: 0
           });
         }
       }
@@ -609,7 +619,8 @@ const updatePODetail = ($this, context, row) => {
         net_payable: net_payable,
         total_tax: total_tax,
         detail_discount: detail_discount,
-        saveEnable: saveEnable
+        saveEnable: saveEnable,
+        authorizeBtn: false
       });
     }
   }
@@ -623,7 +634,7 @@ const dateFormater = ($this, value) => {
 
 const onchangegridcol = ($this, row, e) => {
   //
-
+  debugger;
   let name = e.name || e.target.name;
   let value =
     e.value === ""
@@ -671,6 +682,7 @@ const onchhangegriddiscount = ($this, row, e) => {
   let value = e.value || e.target.value;
   if (name === "sub_discount_percentage") {
     sub_discount_percentage = value === "" ? "" : parseFloat(value);
+
     sub_discount_amount =
       value === ""
         ? 0
@@ -694,24 +706,37 @@ const onchhangegriddiscount = ($this, row, e) => {
       title: "Discount % cannot be greater than 100.",
       type: "warning"
     });
+  } else if (sub_discount_percentage < 0) {
+    swalMessage({
+      title: "Cannot be less than 0.",
+      type: "warning"
+    });
   } else {
     //
+    debugger;
     extended_cost =
       parseFloat(extended_price) - parseFloat(sub_discount_amount);
+    row["unit_cost"] =
+      $this.state.hims_f_procurement_po_header_id !== null
+        ? extended_cost / parseFloat(row.authorize_quantity)
+        : extended_cost / parseFloat(row.total_quantity);
 
     tax_amount = (extended_cost * parseFloat(row.tax_percentage)) / 100;
     tax_amount = getAmountFormart(tax_amount, { appendSymbol: false });
-    extended_cost = getAmountFormart(extended_cost, { appendSymbol: false });
-    // row["unit_cost"] = extended_cost / parseFloat(row.order_quantity);
+    // extended_cost = getAmountFormart(extended_cost, { appendSymbol: false });
 
-    row["extended_cost"] = extended_cost;
+    row["extended_cost"] = getAmountFormart(extended_cost, {
+      appendSymbol: false
+    });
     row["tax_amount"] = (extended_cost * parseFloat(row.tax_percentage)) / 100;
     row["total_amount"] = parseFloat(tax_amount) + parseFloat(extended_cost);
 
     row["sub_discount_percentage"] = sub_discount_percentage;
     row["sub_discount_amount"] = sub_discount_amount;
-    row["extended_cost"] = extended_cost;
-    row["net_extended_cost"] = extended_cost;
+    // row["extended_cost"] = extended_cost;
+    row["net_extended_cost"] = getAmountFormart(extended_cost, {
+      appendSymbol: false
+    });
     row.update();
   }
 };
@@ -748,6 +773,7 @@ const EditGrid = ($this, context, cancelRow) => {
 
 const CancelGrid = ($this, context, cancelRow) => {
   let saveEnable = false;
+  let authorizeBtn = true;
 
   let _pharmacy_stock_detail =
     $this.state.po_from === "PHR"
@@ -768,6 +794,7 @@ const CancelGrid = ($this, context, cancelRow) => {
 
   if ($this.state.hims_f_procurement_po_header_id !== null) {
     saveEnable = true;
+    authorizeBtn = false;
   }
 
   if (context !== null) {
@@ -775,7 +802,8 @@ const CancelGrid = ($this, context, cancelRow) => {
       saveEnable: saveEnable,
       addItemButton: !$this.state.addItemButton,
       pharmacy_stock_detail: _pharmacy_stock_detail,
-      inventory_stock_detail: _inventory_stock_detail
+      inventory_stock_detail: _inventory_stock_detail,
+      authorizeBtn: authorizeBtn
     });
   }
 };

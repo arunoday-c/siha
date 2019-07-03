@@ -40,6 +40,11 @@ module.exports = {
         inputValues.push(req.query.test_type);
       }
 
+      if (req.query.hims_f_rad_order_id != null) {
+        _stringData += " and SA.hims_f_rad_order_id=?";
+        inputValues.push(req.query.hims_f_rad_order_id);
+      }
+
       utilities.logger().log("_stringData: ", _stringData);
       _mysql
         .executeQuery({

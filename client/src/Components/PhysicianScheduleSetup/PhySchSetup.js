@@ -25,7 +25,7 @@ class PhySchSetup extends Component {
       scheduleList: [],
       scheduleDoctors: [],
       year: moment().year(),
-      month: moment().format("M"),
+      month: null,
       from_date: "",
       to_date: "",
       all: false,
@@ -538,7 +538,16 @@ class PhySchSetup extends Component {
       saturday: docs.saturday === "Y" ? true : false,
       from_date: docs.from_date,
       to_date: docs.to_date
-    });
+    }, () => this.isPastSchedule(docs));
+  }
+
+  isPastSchedule(docs) {
+    const {to_date} = docs;
+    const result = moment(to_date).isBefore(moment())
+    console.log(result, "from check")
+    this.setState({
+      pastSchedule: result
+    })
   }
 
   deleteDocFromSchedule(e) {
@@ -743,6 +752,7 @@ class PhySchSetup extends Component {
   }
 
   render() {
+    const toHide = this.state.pastSchedule ? "hide-feature" : ""
     return (
       <div className="phySchSetup">
         {/* Doctor Schedule Modify Modal Start */}
@@ -1296,7 +1306,7 @@ class PhySchSetup extends Component {
                           textBox={{
                             className: "txt-fld",
                             name: "from_break_hr1",
-                            value: this.state.from_break_hr1,
+                            value:this.state.work_break1 === "Y" ? this.state.from_break_hr1:null,
                             events: {
                               onChange: this.changeTexts.bind(this)
                             },
@@ -1315,7 +1325,8 @@ class PhySchSetup extends Component {
                           textBox={{
                             className: "txt-fld",
                             name: "to_break_hr1",
-                            value: this.state.to_break_hr1,
+                              value:this.state.work_break1 === "Y"
+                                  ?  this.state.to_break_hr1:null,
                             events: {
                               onChange: this.changeTexts.bind(this)
                             },
@@ -1342,7 +1353,8 @@ class PhySchSetup extends Component {
                           textBox={{
                             className: "txt-fld",
                             name: "from_break_hr2",
-                            value: this.state.from_break_hr2,
+                             value:this.state.work_break2 === "Y"
+                                  ? this.state.from_break_hr2:null,
                             events: {
                               onChange: this.changeTexts.bind(this)
                             },
@@ -1361,7 +1373,8 @@ class PhySchSetup extends Component {
                           textBox={{
                             className: "txt-fld",
                             name: "to_break_hr2",
-                            value: this.state.to_break_hr2,
+                           value:this.state.work_break2 === "Y"
+                                  ? this.state.to_break_hr2:null,
                             events: {
                               onChange: this.changeTexts.bind(this)
                             },
@@ -2001,10 +2014,29 @@ class PhySchSetup extends Component {
                     helperText={this.state.department_error_text}
                   />
 
-                  <AlagehAutoComplete
-                    div={{ className: "col-7" }}
+                  <AlagehFormGroup
+                    div={{ className: "col-4" }}
                     label={{
-                      fieldName: "sel_month",
+                      forceLabel: "Year",
+                      isImp: true
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "year",
+                      value: this.state.year,
+                      events: {
+                        onChange: this.changeTexts.bind(this)
+                      },
+                      others: {
+                        type: "number",
+                        min: moment().year()
+                      }
+                    }}
+                  />
+                  <AlagehAutoComplete
+                    div={{ className: "col-5" }}
+                    label={{
+                      forceLabel: "Month",
                       isImp: false
                     }}
                     selector={{
@@ -2021,29 +2053,10 @@ class PhySchSetup extends Component {
                     }}
                   />
 
-                  <AlagehFormGroup
-                    div={{ className: "col-7" }}
-                    label={{
-                      forceLabel: "Select Year",
-                      isImp: true
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "year",
-                      value: this.state.year,
-                      events: {
-                        onChange: this.changeTexts.bind(this)
-                      },
-                      others: {
-                        type: "number",
-                        min: moment().year()
-                      }
-                    }}
-                  />
 
                   <div
-                    className="col form-group"
-                    style={{ textAlign: "right" }}
+                    className="col-3 form-group"
+                    style={{ textAlign: "right",paddingLeft:0 }}
                   >
                     <button
                       style={{ marginTop: 19 }}
@@ -2113,7 +2126,7 @@ class PhySchSetup extends Component {
                     </div>
                     <div className="col" style={{ textAlign: "right" }}>
                       <button
-                        className="btn btn-default"
+                        className={`btn btn-default ${toHide}`}
                         onClick={() => {
                           this.deleteSchedule({
                             hims_d_appointment_schedule_header_id: this.state
@@ -2121,15 +2134,17 @@ class PhySchSetup extends Component {
                             description: this.state.description
                           });
                         }}
+                        disabled={this.state.pastSchedule}
                       >
                         Delete Schedule
                       </button>
                       <button
-                        className="btn btn-primary"
+                        className={`btn btn-primary ${toHide}`}
                         style={{ marginLeft: 15 }}
                         onClick={() => {
                           this.setState({ openEdit: true });
                         }}
+                        disabled={this.state.pastSchedule}
                       >
                         Edit Schedule
                       </button>
@@ -2336,9 +2351,12 @@ class PhySchSetup extends Component {
                       <div className="scheduledDocList">
                         <ul>
                           {this.state.scheduleDoctors !== undefined ? (
-                            this.state.scheduleDoctors.map((data, index) => (
+                            this.state.scheduleDoctors.map((data, index) => this.state.pastSchedule ? (
+                              <li>
+                                <span>{data.full_name}</span>
+                              </li>
+                            ) : (
                               <li key={index}>
-                                {" "}
                                 <i
                                   provider-name={data.full_name}
                                   provider-id={data.provider_id}

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-
+import Swal from "sweetalert2";
 import {
   PRESCRIPTION_FREQ_PERIOD,
   PRESCRIPTION_FREQ_TIME,
@@ -634,6 +634,7 @@ class OrderMedication extends Component {
                 forceLabel: "Print Prescription",
                 returnText: true
               }}
+              isReport={true}
               displayName="Prescription"
               report={{
                 reportName: "prescription",
@@ -658,10 +659,25 @@ class OrderMedication extends Component {
               type="button"
               className="btn btn-default"
               onClick={e => {
-                this.props.onclosePopup && this.props.onclosePopup(e);
+                Swal.fire({
+                  title: "Are you sure?",
+                  text: "You won't be able to revert this!",
+                  type: "warning",
+                  showCancelButton: true,
+                  confirmButtonColor: "#3085d6",
+                  cancelButtonColor: "#d33",
+                  confirmButtonText: "Yes, clear it!"
+                }).then(result => {
+                  if (result.value) {
+                    this.setState({
+                      saveMedicationEnable: true,
+                      medicationitems: []
+                    });
+                  }
+                });
               }}
             >
-              Cancel
+              Clear
             </button>
           </div>
         </div>

@@ -1311,7 +1311,9 @@ class Appointment extends PureComponent {
               {_otherPatients.map((item, index) => {
                 return (
                   <li key={index}>
-                    {item.patient_name}{" "}
+                    <span onClick={this.openEditModal.bind(this, item, null)}>
+                    {item.patient_name}
+                    </span>
                     <b onClick={this.cancelAppt.bind(this, item)}>x</b>
                   </li>
                 );

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./reports.css";
 import { AlagehAutoComplete } from "../Wrapper/algaehWrapper";
-import data from "./reports_data";
+import loadActiveReports from "./reports_data";
 import AlgaehReport from "../Wrapper/printReports";
 class Reports extends Component {
   constructor(props) {
@@ -53,7 +53,7 @@ class Reports extends Component {
                   dataSource: {
                     textField: "name",
                     valueField: "name",
-                    data: data
+                    data: loadActiveReports().data()
                   },
                   others: {},
                   onChange: this.dropDownHandler.bind(this)
@@ -135,6 +135,7 @@ class Reports extends Component {
                     className="col-lg-2 reportList"
                     onClick={() => {
                       let pageProperies = {
+                        displayName: item.subitem,
                         reportName: item.reportName,
                         template_name: item.template_name,
                         reportQuery: item.reportQuery,

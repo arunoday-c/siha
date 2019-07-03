@@ -121,7 +121,6 @@ export function Validations(state) {
       state.state.primary_effective_end_date === null)
   ) {
     isError = true;
-
     swalMessage({
       type: "warning",
       title: "Please select the primary insurance details properly."
