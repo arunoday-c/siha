@@ -484,6 +484,7 @@ const getData = ($this, po_from) => {
 };
 
 const generatePOReceipt = data => {
+  console.log("data:", data);
   algaehApiCall({
     uri: "/report",
     method: "GET",

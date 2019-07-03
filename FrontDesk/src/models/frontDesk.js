@@ -353,7 +353,7 @@ module.exports = {
     try {
       _mysql
         .executeQuery({
-          query: ` select hims_f_cash_handover_header_id,shift_id ,shift_description from\
+          query: ` select hims_f_cash_handover_header_id,shift_id ,shift_description,daily_handover_date from\
             hims_f_cash_handover_header  H inner join  hims_d_shift S on H.shift_id=S.hims_d_shift_id\
             where H.hospital_id=? and date(daily_handover_date)=date(?);
             select   H.hims_f_cash_handover_header_id,H.shift_id,H.daily_handover_date,\
@@ -366,7 +366,7 @@ module.exports = {
             H.hims_f_cash_handover_header_id=D.cash_handover_header_id inner join hims_m_user_employee U on D.casher_id=U.user_id\
             inner join  hims_d_employee E on U.employee_id=E.hims_d_employee_id \
             where H.hospital_id=? and date(daily_handover_date)=date(?) ;\
-            select hims_f_cash_handover_header_id,shift_id ,shift_description  from \
+            select hims_f_cash_handover_header_id,shift_id ,shift_description,daily_handover_date  from \
             hims_f_cash_handover_header  H inner join hims_f_cash_handover_detail D on \
             H.hims_f_cash_handover_header_id=D.cash_handover_header_id \
             inner join  hims_d_shift S on H.shift_id=S.hims_d_shift_id \

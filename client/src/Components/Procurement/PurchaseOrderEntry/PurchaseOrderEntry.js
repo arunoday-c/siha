@@ -132,7 +132,7 @@ class PurchaseOrderEntry extends Component {
                       label: "Print Receipt",
                       events: {
                         onClick: () => {
-                          generatePOReceipt(this);
+                          generatePOReceipt(this.state);
                         }
                       }
                     }
