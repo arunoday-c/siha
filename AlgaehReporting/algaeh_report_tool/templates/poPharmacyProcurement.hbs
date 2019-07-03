@@ -1,0 +1,87 @@
+{{{importStyle 'css/creditinvoice.css'}}}
+
+<body>
+    <div class="print-body">
+
+        <section>
+
+            <table class="tableForLabel" cell-padding="0">
+
+                <tr>
+                    <td><label class="textEnLft">Purchase No</label>:<span class="valueText">{{purchase_number}}</span>
+                    </td>
+                    <td><label class="textEnLft">Purchase Date</label>:<span class="valueText">{{po_date }}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
+                </tr>
+                <tr>
+                    <td><label class="textEnLft">Purchase For</label>:<span
+                            class="valueText">{{location_description}}</span></td>
+                    <td><label class="textEnLft">Vendor Name</label>:<span class="valueText">{{vendor_name}}</span></td>
+                </tr>
+
+                {{!-- <tr>
+                    <td><label class="textEnLft">PO From</label>:<span
+                            class="valueText">{{header.invoice_number}}</span></td>
+                    <td><label class="textEnLft">From Location</label>:<span
+                            class="valueText">{{dateTime header.invoice_date "date"}}</span></td>
+                </tr> --}}
+
+                {{!-- <tr>
+                    <td><label class="textEnLft">Doctor</label>:<span class="valueText">{{full_name}}</span><label
+                            class="textArRht">لطبيب</label></td>
+                    <td><label class="textEnLft">Department</label>:<span
+                            class="valueText">{{sub_department_name}}</span><label class="textArRht">القسم</label></td>
+                </tr> --}}
+
+            </table>
+
+
+        </section>
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>Item Name</th>
+                        <th>Item Code</th>
+                        <th>unit</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>extended_price</th>
+                        <th>Discount %</th>
+                        <th>Discount </th>
+                        <th>After Discount </th>
+                        <th>Tax </th>
+                        <th>Amount </th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    \
+                    {{#each detailList}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                        <td>{{item_description}}</td>
+                        <td>{{item_code}}</td>
+                        <td>{{uom_description}}</td>
+                        <td>{{total_quantity}}</td>
+                        <td>{{unit_price}}</td>
+                        <td>{{extended_price}}</td>
+                        <td>{{sub_discount_percentage}}</td>
+                        <td>{{sub_discount_amount}}</td>
+                        <td>{{net_extended_cost}}</td>
+                        <td>{{tax_amount}}</td>
+                        <td>{{total_amount}}</td>
+
+                    </tr>
+                    {{/each }}
+                    net_payable: {{net_payable}}
+                </tbody>
+            </table>
+        </section>
+        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+    </div>
+</body>

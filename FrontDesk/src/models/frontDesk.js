@@ -361,7 +361,7 @@ module.exports = {
             D.open_date,D.close_date,D.close_by,D.expected_cash,D.actual_cash,D.difference_cash,\
             D.cash_status,D.expected_card,D.actual_card,D.difference_card,D.card_status,\
             D.expected_cheque,D.actual_cheque,D.difference_cheque,D.cheque_status,D.remarks,D.no_of_cheques,\
-            E.full_name as employee_name,E.arabic_name as employee_arabic_name \
+            E.full_name as employee_name,E.arabic_name as employee_arabic_name,E.employee_code \
             from hims_f_cash_handover_header H inner join hims_f_cash_handover_detail D on \
             H.hims_f_cash_handover_header_id=D.cash_handover_header_id inner join hims_m_user_employee U on D.casher_id=U.user_id\
             inner join  hims_d_employee E on U.employee_id=E.hims_d_employee_id \
@@ -376,7 +376,7 @@ module.exports = {
             D.open_date,D.close_date,D.close_by,D.expected_cash,D.actual_cash,D.difference_cash,\
             D.cash_status,D.expected_card,D.actual_card,D.difference_card,D.card_status,\
             D.expected_cheque,D.actual_cheque,D.difference_cheque,D.cheque_status,D.remarks,D.no_of_cheques,\
-            E.full_name as employee_name,E.arabic_name as employee_arabic_name \
+            E.full_name as employee_name,E.arabic_name as employee_arabic_name,E.employee_code \
             from hims_f_cash_handover_header H inner join hims_f_cash_handover_detail D on \
             H.hims_f_cash_handover_header_id=D.cash_handover_header_id inner join hims_m_user_employee U on D.casher_id=U.user_id\
             inner join  hims_d_employee E on U.employee_id=E.hims_d_employee_id \
@@ -440,6 +440,7 @@ module.exports = {
                     remarks: S.remarks,
                     no_of_cheques: S.no_of_cheques,
                     employee_name: S.employee_name,
+                    employee_code: S.employee_code,
                     employee_arabic_name: S.employee_arabic_name
                   };
                 })
@@ -485,6 +486,7 @@ module.exports = {
                     remarks: S.remarks,
                     no_of_cheques: S.no_of_cheques,
                     employee_name: S.employee_name,
+                    employee_code: S.employee_code,
                     employee_arabic_name: S.employee_arabic_name
                   };
                 })

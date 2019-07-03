@@ -26,7 +26,7 @@ import {
   getCtrlCode,
   AuthorizePOEntry,
   getVendorMaster,
-	generatePOReceipt
+  generatePOReceipt
 } from "./PurchaseOrderEntryEvents";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import POEntry from "../../../Models/POEntry";
@@ -59,7 +59,6 @@ class PurchaseOrderEntry extends Component {
     const _mainStore = Enumerable.from(this.props.polocations)
       .where(w => w.location_type === "WH")
       .toArray();
-
 
     return (
       <div>
@@ -168,27 +167,22 @@ class PurchaseOrderEntry extends Component {
           //     : ""
           // }
 
-
-
-					printArea={
-						this.state.hims_f_procurement_po_header_id !== null ? (
-							{
-								menuitems: [
-									{
-										label: 'Print Receipt',
-										events: {
-											onClick: () => {
-												generatePOReceipt(this);
-											}
-										}
-									}
-								]
-							}
-						) : (
-							''
-						)
-					}
-
+          printArea={
+            this.state.hims_f_procurement_po_header_id !== null
+              ? {
+                  menuitems: [
+                    {
+                      label: "Print Receipt",
+                      events: {
+                        onClick: () => {
+                          generatePOReceipt(this.state);
+                        }
+                      }
+                    }
+                  ]
+                }
+              : ""
+          }
           selectedLang={this.state.selectedLang}
         />
         <div className="hims-purchase-order-entry">
