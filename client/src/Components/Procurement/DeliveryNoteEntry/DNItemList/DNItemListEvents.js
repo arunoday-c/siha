@@ -537,7 +537,7 @@ const AddtoList = ($this, context) => {
   } else if (
     ($this.state.expiry_date === null ||
       $this.state.expiry_date === undefined) &&
-    item_details.required_batchno_expiry === "N"
+    item_details.exp_date_not_required === "N"
   ) {
     swalMessage({
       title: "Expiry Date is mandatory.",

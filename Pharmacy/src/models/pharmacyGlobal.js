@@ -11,17 +11,17 @@ module.exports = {
         .executeQuery({
           query:
             "select hims_m_item_uom_id, item_master_id, uom_id, stocking_uom, conversion_factor,\
-             hims_m_item_uom.uom_status, hims_d_pharmacy_uom.uom_description from \
-             hims_m_item_uom,hims_d_pharmacy_uom where hims_m_item_uom.record_status='A' and \
-             hims_m_item_uom.uom_id = hims_d_pharmacy_uom.hims_d_pharmacy_uom_id and \
-             hims_m_item_uom.item_master_id=? ;\
+             ITU.uom_status, PU.uom_description from \
+             hims_m_item_uom ITU,hims_d_pharmacy_uom PU where ITU.record_status='A' and \
+             ITU.uom_id = PU.hims_d_pharmacy_uom_id and \
+             ITU.item_master_id=? ;\
              SELECT hims_m_item_location_id, item_id, pharmacy_location_id, item_location_status, batchno, \
              expirydt,barcode, qtyhand, qtypo, cost_uom,avgcost, last_purchase_cost, item_type, \
-             grn_id, grnno, sale_price, mrp_price, sales_uom,hims_d_pharmacy_uom.uom_description \
-             from hims_m_item_location,hims_d_pharmacy_uom where\
-             hims_m_item_location.sales_uom = hims_d_pharmacy_uom.hims_d_pharmacy_uom_id and \
-             hims_m_item_location.record_status='A'  and item_id=? and pharmacy_location_id=? and \
-             expirydt > CURDATE() and qtyhand>0  order by expirydt",
+             grn_id, grnno, sale_price, mrp_price, sales_uom,PU.uom_description \
+             from hims_m_item_location IL,hims_d_pharmacy_uom PU, hims_d_item_master IM where\
+             IL.sales_uom = PU.hims_d_pharmacy_uom_id and IL.item_id = IM.hims_d_item_master_id and \
+             IL.record_status='A'  and item_id=? and pharmacy_location_id=? and qtyhand>0 \
+             and (expirydt > CURDATE()|| exp_date_not_required='Y') order by expirydt",
           values: [req.query.item_id, req.query.item_id, req.query.location_id],
           printQuery: true
         })

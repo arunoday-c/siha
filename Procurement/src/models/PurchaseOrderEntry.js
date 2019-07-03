@@ -38,7 +38,7 @@ module.exports = {
                    PD.`quantity_recieved`, PD.`quantity_outstanding`, PD.`pharmacy_requisition_id`,\
                    PD.`inventory_requisition_id`, PD.`authorize_quantity`, PD.`rejected_quantity`, PD.`tax_percentage`,\
                    PD.`tax_amount`, PD.`total_amount`, PD.`mrp_price`, PD.`calculate_tax_on`,\
-                   PD.`tax_discount`, PD.`item_type`, IM.item_code, IM.item_description, IM.required_batchno_expiry,\
+                   PD.`tax_discount`, PD.`item_type`, IM.item_code, IM.item_description, IM.exp_date_not_required,\
                    IU.uom_description,STOCK_UOM.uom_description as stock_uom_description,S.standard_fee as sales_price,IM.sales_uom_id from hims_f_procurement_po_detail PD,\
                     hims_d_inventory_item_master IM ,hims_d_inventory_uom IU, hims_d_inventory_uom STOCK_UOM, hims_d_services S \
                     where PD.inv_item_id = IM.hims_d_inventory_item_master_id\
@@ -55,7 +55,7 @@ module.exports = {
                 PD.`expected_arrival_date`, PD.`vendor_item_no`, PD.`manufacturer_item_code`, PD.`completed`, PD.`completed_date`, PD.`quantity_recieved`, \
                 PD.`quantity_outstanding`, PD.`pharmacy_requisition_id`, PD.`inventory_requisition_id`, PD.`authorize_quantity`, PD.`rejected_quantity`, \
                 PD.`tax_percentage`, PD.`tax_amount`, PD.`total_amount`, PD.`mrp_price`, PD.`calculate_tax_on`, PD.`tax_discount`, PD.`item_type`, \
-                IM.item_code, IM.item_description,  IM.required_batchno_expiry,\
+                IM.item_code, IM.item_description,  IM.exp_date_not_required,\
                 PU.uom_description,STOCK_UOM.uom_description  as stock_uom_description, S.standard_fee as sales_price,IM.sales_uom_id\
                 from hims_f_procurement_po_detail PD, hims_d_item_master IM ,hims_d_pharmacy_uom PU, hims_d_pharmacy_uom STOCK_UOM, hims_d_services S\
                 where PD.phar_item_id = IM.hims_d_item_master_id and PD.pharmacy_uom_id = PU.hims_d_pharmacy_uom_id \

@@ -22,7 +22,7 @@ export default {
       updateUomMapResult: [],
       insertItemUomMap: [],
       service_id: null,
-      required_batchno_expiry: "N",
+      exp_date_not_required: "N",
       item_code: null,
       cpt_code: null,
       cpt_code_data: null,
