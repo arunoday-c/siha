@@ -4,7 +4,8 @@ import {
   addInvestigationTest,
   getInvestigTestList,
   updateInvestigationTest,
-  deleteLabAnalyte
+  deleteLabAnalyte,
+  deleteRadTemplate
 } from "../models/investigation";
 
 export default () => {
@@ -35,6 +36,19 @@ export default () => {
   );
 
   api.delete("/deleteLabAnalyte", deleteLabAnalyte, (req, res, next) => {
+    if (req.records.invalid_input == true) {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: false,
+        records: req.records
+      });
+    } else {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  });
+  api.delete("/deleteRadTemplate", deleteRadTemplate, (req, res, next) => {
     if (req.records.invalid_input == true) {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: false,

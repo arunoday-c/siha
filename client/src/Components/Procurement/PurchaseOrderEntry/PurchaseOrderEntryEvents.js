@@ -483,7 +483,8 @@ const getData = ($this, po_from) => {
   }
 };
 
-const generatePOReceipt = $this => {
+const generatePOReceipt = data => {
+  console.log("data:", data);
   algaehApiCall({
     uri: "/report",
     method: "GET",
@@ -495,13 +496,13 @@ const generatePOReceipt = $this => {
     data: {
       report: {
         reportName:
-          $this.state.po_from === "PHR"
+          data.po_from === "PHR"
             ? "poPharmacyProcurement"
             : "poInventoryProcurement",
         reportParams: [
           {
-            name: "hims_f_procurement_po_header_id",
-            value: $this.hims_f_procurement_po_header_id
+            name: "purchase_number",
+            value: data.purchase_number
           }
         ],
         outputFileType: "PDF"
