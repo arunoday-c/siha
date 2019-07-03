@@ -552,5 +552,40 @@ module.exports = {
       _mysql.releaseConnection();
       next(e);
     }
+  },
+  deleteRadTemplate: (req, res, next) => {
+    try {
+      if (req.body.hims_d_rad_template_detail_id > 0) {
+        const _mysql = new algaehMysql();
+        _mysql
+          .executeQuery({
+            query:
+              "delete from hims_d_rad_template_detail where hims_d_rad_template_detail_id=?",
+            values: [req.body.hims_d_rad_template_detail_id],
+            printQuery: true
+          })
+          .then(result => {
+            // utilities.logger().log("result: ", result);
+            _mysql.releaseConnection();
+
+            req.records = result;
+
+            next();
+          })
+          .catch(error => {
+            _mysql.releaseConnection();
+            next(error);
+          });
+      } else {
+        req.records = {
+          invalid_input: true,
+          message: "Please provide valid input"
+        };
+        next();
+      }
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
   }
 };
