@@ -83,9 +83,9 @@ const VatAppilicable = ($this, e) => {
       } else if ($this.state.Applicable === false) {
         Value = "Y";
       }
+      $this.state.vat_percent = 0;
       $this.setState({
         [name]: Value,
-        vat_percent: 0,
         ...$this.state
       });
     }
@@ -382,7 +382,6 @@ const onchangegridcol = ($this, row, e) => {
 };
 
 const numberEventHandaler = ($this, ctrl, e) => {
-  
   e = e || ctrl;
   let name = e.name || e.target.name;
   let value = e.value === "" ? null : e.value || e.target.value;

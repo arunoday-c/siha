@@ -68,19 +68,23 @@ const VatAppilicable = ($this, e) => {
   SetBulkState({
     state: $this,
     callback: () => {
+      $this.state.vat_percent = 0;
       $this.setState({
         [name]: value,
-        vat_percent: 0,
         ...$this.state
       });
     }
   });
 };
 const texthandle = ($this, ctrl, e) => {
-  
   e = e || ctrl;
   let name = e.name || e.target.name;
-  let value = e.value === "" ? null : e.value || e.target.value;
+  let value =
+    e.value === ""
+      ? null
+      : e.value || e.target.value === ""
+      ? null
+      : e.target.value;
 
   $this.setState({
     [name]: value
@@ -132,7 +136,7 @@ const AddUom = $this => {
   let isError = false;
 
   let stocking_uom_id = null;
-  
+
   if ($this.state.uom_id === null || $this.state.uom_id === "") {
     isError = true;
 
@@ -390,7 +394,6 @@ const onchangegridcol = ($this, row, e) => {
 };
 
 const numberEventHandaler = ($this, ctrl, e) => {
-  
   e = e || ctrl;
   let name = e.name || e.target.name;
   let value = e.value === "" ? null : e.value || e.target.value;

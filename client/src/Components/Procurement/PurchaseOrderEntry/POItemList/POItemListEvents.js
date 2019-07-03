@@ -235,7 +235,12 @@ const itemchangeText = ($this, context, e) => {
                 ? 0
                 : parseFloat(e.selected.purchase_cost).toFixed(6),
 
-            addItemButton: false
+            addItemButton: false,
+            order_quantity: 0,
+            extended_price: 0,
+            sub_discount_percentage: 0,
+            sub_discount_amount: 0,
+            extended_cost: 0
           });
         }
       } else {
@@ -263,7 +268,12 @@ const itemchangeText = ($this, context, e) => {
                 ? 0
                 : parseFloat(e.selected.purchase_cost).toFixed(6),
 
-            addItemButton: false
+            addItemButton: false,
+            order_quantity: 0,
+            extended_price: 0,
+            sub_discount_percentage: 0,
+            sub_discount_amount: 0,
+            extended_cost: 0
           });
         }
       }
@@ -672,6 +682,7 @@ const onchhangegriddiscount = ($this, row, e) => {
   let value = e.value || e.target.value;
   if (name === "sub_discount_percentage") {
     sub_discount_percentage = value === "" ? "" : parseFloat(value);
+
     sub_discount_amount =
       value === ""
         ? 0
@@ -693,6 +704,11 @@ const onchhangegriddiscount = ($this, row, e) => {
   if (sub_discount_percentage > 100) {
     swalMessage({
       title: "Discount % cannot be greater than 100.",
+      type: "warning"
+    });
+  } else if (sub_discount_percentage < 0) {
+    swalMessage({
+      title: "Cannot be less than 0.",
       type: "warning"
     });
   } else {

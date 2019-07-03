@@ -138,8 +138,7 @@ const clearData = $this => {
   });
 };
 
-const numberEventHandaler = ($this, context, e) => {
-  
+const numberEventHandaler = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
@@ -155,12 +154,6 @@ const numberEventHandaler = ($this, context, e) => {
     $this.setState({
       [name]: value
     });
-
-    if (context !== undefined) {
-      context.updateState({
-        [name]: value
-      });
-    }
   }
 };
 

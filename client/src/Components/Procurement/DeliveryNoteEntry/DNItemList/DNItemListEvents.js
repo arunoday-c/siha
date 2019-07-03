@@ -369,7 +369,20 @@ const printBarcode = ($this, row, e) => {
 const onChangeTextEventHandaler = ($this, context, e) => {
   let item_details = $this.state.item_details;
   let name = e.name || e.target.name;
-  let value = e.value === "" ? null : e.value || e.target.value;
+  let value =
+    e.value === ""
+      ? null
+      : e.value || e.target.value === ""
+      ? null
+      : e.target.value;
+  if (name === "sales_price" || name === "unit_price") {
+    if (parseFloat(value) < 0) {
+      swalMessage({
+        title: "Cannot be lessthan zero.",
+        type: "warning"
+      });
+    }
+  }
   item_details[name] = value;
   $this.setState({
     [name]: value,
@@ -507,6 +520,7 @@ const AddtoList = ($this, context) => {
 
   let _po_entry_detail = $this.state.po_entry_detail;
 
+  debugger;
   if (
     (parseFloat($this.state.dn_quantity) === 0 ||
       $this.state.dn_quantity === "" ||
@@ -526,6 +540,22 @@ const AddtoList = ($this, context) => {
   ) {
     swalMessage({
       title: "Expiry Date is mandatory.",
+      type: "warning"
+    });
+  } else if (
+    item_details.sales_price === null ||
+    parseFloat(item_details.sales_price) === 0
+  ) {
+    swalMessage({
+      title: "Sales Price is mandatory.",
+      type: "warning"
+    });
+  } else if (
+    item_details.unit_price === null ||
+    parseFloat(item_details.unit_price) === 0
+  ) {
+    swalMessage({
+      title: "Purchase Cost is mandatory.",
       type: "warning"
     });
   } else {
@@ -616,7 +646,7 @@ const numberEventHandaler = ($this, context, ctrl, e) => {
   let name = e.name || e.target.name;
   let value = e.value === "" ? null : e.value || e.target.value;
   let item_details = $this.state.item_details;
-  if (value < 0) {
+  if (parseFloat(value) < 0) {
     swalMessage({
       type: "warning",
       title: "Cannot be less than zero."
@@ -625,7 +655,7 @@ const numberEventHandaler = ($this, context, ctrl, e) => {
       [name]: 0
     });
     context.updateState({
-      [name]: value
+      [name]: 0
     });
   } else {
     item_details["free_qty"] = value;

@@ -84,13 +84,15 @@ class DNItemList extends Component {
       selected_row_index: index,
       item_details: item_details,
       dn_quantity: dn_quantity,
-      free_qty: 0
+      free_qty: 0,
+      addItemButton: false
     });
 
     context.updateState({
       item_details: item_details,
       dn_quantity: dn_quantity,
-      free_qty: 0
+      free_qty: 0,
+      addItemButton: false
     });
   }
 
@@ -208,13 +210,10 @@ class DNItemList extends Component {
                       <AlagehFormGroup
                         div={{ className: "col" }}
                         label={{
-                          forceLabel: "Purchase Cost"
+                          forceLabel: "Purchase Cost",
+                          isImp: true
                         }}
                         textBox={{
-                          number: {
-                            allowNegative: false,
-                            thousandSeparator: ","
-                          },
                           value:
                             this.state.item_details === null
                               ? null
@@ -227,6 +226,9 @@ class DNItemList extends Component {
                               this,
                               context
                             )
+                          },
+                          others: {
+                            type: "number"
                           }
                         }}
                       />
@@ -280,13 +282,10 @@ class DNItemList extends Component {
                         div={{ className: "col" }}
                         label={{
                           forceLabel:
-                            "Sales Price " + "(" + stock_uom_description + ")"
+                            "Sales Price " + "(" + stock_uom_description + ")",
+                          isImp: true
                         }}
                         textBox={{
-                          number: {
-                            allowNegative: false,
-                            thousandSeparator: ","
-                          },
                           value:
                             this.state.item_details === null
                               ? null
@@ -299,6 +298,9 @@ class DNItemList extends Component {
                               this,
                               context
                             )
+                          },
+                          others: {
+                            type: "number"
                           }
                         }}
                       />
@@ -322,6 +324,9 @@ class DNItemList extends Component {
                               this,
                               context
                             )
+                          },
+                          others: {
+                            type: "number"
                           }
                         }}
                       />
@@ -356,6 +361,7 @@ class DNItemList extends Component {
                             marginTop: 19
                           }}
                           onClick={AddtoList.bind(this, this, context)}
+                          disabled={this.state.addItemButton}
                         >
                           Add
                         </button>

@@ -25,7 +25,7 @@ class PhySchSetup extends Component {
       scheduleList: [],
       scheduleDoctors: [],
       year: moment().year(),
-      month: moment().format("M"),
+      month: null,
       from_date: "",
       to_date: "",
       all: false,
@@ -538,9 +538,16 @@ class PhySchSetup extends Component {
       saturday: docs.saturday === "Y" ? true : false,
       from_date: docs.from_date,
       to_date: docs.to_date
-    });
+    }, () => this.isPastSchedule(docs));
+  }
 
-
+  isPastSchedule(docs) {
+    const {to_date} = docs;
+    const result = moment(to_date).isBefore(moment())
+    console.log(result, "from check")
+    this.setState({
+      pastSchedule: result
+    })
   }
 
   deleteDocFromSchedule(e) {
@@ -745,6 +752,7 @@ class PhySchSetup extends Component {
   }
 
   render() {
+    const toHide = this.state.pastSchedule ? "hide-feature" : ""
     return (
       <div className="phySchSetup">
         {/* Doctor Schedule Modify Modal Start */}
@@ -2118,7 +2126,7 @@ class PhySchSetup extends Component {
                     </div>
                     <div className="col" style={{ textAlign: "right" }}>
                       <button
-                        className="btn btn-default"
+                        className={`btn btn-default ${toHide}`}
                         onClick={() => {
                           this.deleteSchedule({
                             hims_d_appointment_schedule_header_id: this.state
@@ -2126,15 +2134,17 @@ class PhySchSetup extends Component {
                             description: this.state.description
                           });
                         }}
+                        disabled={this.state.pastSchedule}
                       >
                         Delete Schedule
                       </button>
                       <button
-                        className="btn btn-primary"
+                        className={`btn btn-primary ${toHide}`}
                         style={{ marginLeft: 15 }}
                         onClick={() => {
                           this.setState({ openEdit: true });
                         }}
+                        disabled={this.state.pastSchedule}
                       >
                         Edit Schedule
                       </button>
@@ -2341,9 +2351,12 @@ class PhySchSetup extends Component {
                       <div className="scheduledDocList">
                         <ul>
                           {this.state.scheduleDoctors !== undefined ? (
-                            this.state.scheduleDoctors.map((data, index) => (
+                            this.state.scheduleDoctors.map((data, index) => this.state.pastSchedule ? (
+                              <li>
+                                <span>{data.full_name}</span>
+                              </li>
+                            ) : (
                               <li key={index}>
-                                {" "}
                                 <i
                                   provider-name={data.full_name}
                                   provider-id={data.provider_id}
