@@ -323,13 +323,13 @@ module.exports = {
       let OrderServices = new LINQ(req.body.billdetails)
         .Where(
           w =>
-            w.ordered_services_id != null &&
+            w.hims_f_ordered_services_id != null &&
             w.service_type_id ==
               appsettings.hims_d_service_type.service_type_id.Radiology
         )
         .Select(s => {
           return {
-            ordered_services_id: s.ordered_services_id,
+            ordered_services_id: s.hims_f_ordered_services_id,
             billed: "Y",
             updated_date: new Date(),
             updated_by: req.userIdentity.algaeh_d_app_user_id

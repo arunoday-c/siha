@@ -2,6 +2,7 @@ import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
 import algaehUtilities from "algaeh-utilities/utilities";
 import { LINQ } from "node-linq";
+import moment from "moment";
 
 module.exports = {
   selectFrontDesk: (req, res, next) => {
@@ -28,7 +29,8 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "SELECT  `hims_d_patient_id`, `patient_code`\
+            "SELECT param_value from algaeh_d_app_config WHERE algaeh_d_app_config_id=11 \
+              and record_status='A';SELECT  `hims_d_patient_id`, `patient_code`\
           , `registration_date`, `title_id`,`first_name`, `middle_name`, `last_name`,`full_name`, `arabic_name`\
           , `gender`, `religion_id`,`date_of_birth`, `age`, `marital_status`, `address1`\
           , `address2`,`contact_number`, `secondary_contact_number`, `email`\
@@ -42,16 +44,31 @@ module.exports = {
           printQuery: true
         })
         .then(patient_details => {
-          if (patient_details.length > 0) {
-            let hims_d_patient_id = patient_details[0]["hims_d_patient_id"];
+          if (patient_details[1].length > 0) {
+            const utilities = new algaehUtilities();
 
-            // "SELECT 0 radioselect, `hims_f_patient_visit_id`, `patient_id`,`visit_code`,`visit_status`\
-            //   , `visit_type`, `visit_date`, `department_id`, `sub_department_id`\
-            //   , `doctor_id`, `maternity_patient`, `is_mlc`, `mlc_accident_reg_no`\
-            //   , `mlc_police_station`, `mlc_wound_certified_date`, `insured`, `sec_insured`, `no_free_visit`,\
-            //   `visit_expiery_date`,`visit_status`\
-            //    FROM `hims_f_patient_visit` WHERE `record_status`='A' AND \
-            //    patient_id=? ORDER BY hims_f_patient_visit_id desc ",
+            let hims_d_patient_id = patient_details[1][0]["hims_d_patient_id"];
+            let param_value = -patient_details[0][0]["param_value"];
+
+            utilities.logger().log("hims_d_patient_id: ", hims_d_patient_id);
+            utilities.logger().log("param_value: ", param_value);
+
+            let input_Values = [];
+            let _string_Data = "";
+            _string_Data += " and patient_id=?";
+            input_Values.push(hims_d_patient_id);
+
+            utilities.logger().log("expiry_visit: ", input.expiry_visit);
+
+            if (input.expiry_visit != null) {
+              var expiry_date = moment(new Date()).format("YYYY-MM-DD");
+
+              _string_Data +=
+                " and date(visit_expiery_date) > date('" + expiry_date + "')";
+
+              _string_Data += " and visit_status='O'";
+            }
+
             _mysql
               .executeQuery({
                 query:
@@ -61,14 +78,16 @@ module.exports = {
                 , `mlc_police_station`, `mlc_wound_certified_date`, `insured`, `sec_insured`, `no_free_visit`,\
                 `visit_expiery_date`,`visit_status`,`sub_department_name`,`full_name`\
                 FROM `hims_f_patient_visit`, hims_d_sub_department SD, hims_d_employee E  WHERE hims_f_patient_visit.`record_status`='A' AND hims_f_patient_visit.sub_department_id = SD.hims_d_sub_department_id AND\
-                 doctor_id =E.hims_d_employee_id AND patient_id=?  ORDER BY hims_f_patient_visit_id desc",
-                values: [hims_d_patient_id],
+                 doctor_id =E.hims_d_employee_id " +
+                  _string_Data +
+                  "  ORDER BY hims_f_patient_visit_id desc",
+                values: input_Values,
                 printQuery: true
               })
               .then(visit_detsils => {
                 _mysql.releaseConnection();
                 let result = {
-                  patientRegistration: patient_details[0],
+                  patientRegistration: patient_details[1][0],
                   visitDetails: visit_detsils
                 };
                 req.records = result;

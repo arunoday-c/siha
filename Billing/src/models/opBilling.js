@@ -140,10 +140,10 @@ module.exports = {
       utilities.logger().log("OrderServices: ", req.body.billdetails);
 
       let OrderServices = new LINQ(req.body.billdetails)
-        .Where(w => w.ordered_services_id != null)
+        .Where(w => w.hims_f_ordered_services_id != null)
         .Select(s => {
           return {
-            hims_f_ordered_services_id: s.ordered_services_id,
+            hims_f_ordered_services_id: s.hims_f_ordered_services_id,
             billed: "Y",
             updated_date: new Date(),
             updated_by: req.userIdentity.algaeh_d_app_user_id

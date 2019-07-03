@@ -266,7 +266,8 @@ const SaveReceiptEnrty = $this => {
     return;
   } else if ($this.state.invoice_date === null) {
     swalMessage({
-      title: "Invoice Date is mandatory"
+      title: "Invoice Date is mandatory",
+      type: "warning"
     });
     return;
   }
@@ -654,7 +655,7 @@ const datehandle = ($this, ctrl, e) => {
 };
 
 const dateValidate = ($this, value, event) => {
-  let inRange = moment(value).isBefore(moment());
+  let inRange = moment(value).isBefore(moment().format("YYYY-MM-DD"));
   if (inRange) {
     swalMessage({
       title: "Invoice date cannot be past Date.",

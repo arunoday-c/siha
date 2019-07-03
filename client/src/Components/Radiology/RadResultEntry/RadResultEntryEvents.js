@@ -73,6 +73,7 @@ const UpdateRadOrder = ($this, value) => {
       type: "warning"
     });
   } else {
+    debugger;
     let inputobj = {};
     let status = "",
       report_type = "",
@@ -158,8 +159,8 @@ const UpdateRadOrder = ($this, value) => {
                 },
                 afterSuccess: data => {
                   $this.setState({
-                    isOpen: !$this.state.isOpen,
-                    status: "RA"
+                    isOpen: !$this.state.isOpen
+                    // status: "RA"
                   });
                 }
               });

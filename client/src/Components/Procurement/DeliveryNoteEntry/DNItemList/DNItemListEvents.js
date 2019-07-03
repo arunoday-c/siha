@@ -381,6 +381,7 @@ const onChangeTextEventHandaler = ($this, context, e) => {
         title: "Cannot be lessthan zero.",
         type: "warning"
       });
+      return;
     }
   }
   item_details[name] = value;
@@ -671,7 +672,7 @@ const numberEventHandaler = ($this, context, ctrl, e) => {
 };
 
 const dateValidate = ($this, context, value, event) => {
-  let inRange = moment(value).isBefore(moment());
+  let inRange = moment(value).isBefore(moment().format("YYYY-MM-DD"));
   if (inRange) {
     swalMessage({
       title: "Expiry date cannot be past Date.",
