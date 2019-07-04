@@ -688,7 +688,8 @@ const PostPosEntry = $this => {
                       period: response.data.records.period,
                       postEnable: true,
                       popUpGenereted: true,
-                      InvoiceEnable: true
+                      InvoiceEnable: true,
+                      saveEnable: true
                     },
                     () => {
                       generateReport($this, "posCashInvoice", "Cash Invoice");
