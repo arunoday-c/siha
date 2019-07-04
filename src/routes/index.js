@@ -1,7 +1,8 @@
 import express from "express";
 import middleware from "../middleware";
 import initializedDb from "../db";
-import config from "../keys/keys";
+//import config from "../keys/keys";
+const con = require("algaeh-keys/keys");
 import account from "../controller/account";
 import employee from "../controller/employee";
 import department from "../controller/department";
@@ -85,6 +86,10 @@ import diagram from "../controller/diagram";
 import myInit from "../controller/myinit";
 //connect to DB
 //function(db)
+
+const config = con.default;
+
+console.log("config ff:", config);
 initializedDb(db => {
   //internal middleware
   router.use(middleware({ config, db }));

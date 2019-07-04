@@ -1,13 +1,15 @@
 import jwt from "jsonwebtoken";
 import expressjwt from "express-jwt";
-import config from "../keys/keys";
+//import config from "../keys/keys";
+const config = require("algaeh-keys/keys");
 import moment from "moment";
 import { debugLog } from "../utils/logging";
-const TOKENTIME = config.TOKENTIME;
-const SECRET = config.SECRETKey;
+const TOKENTIME = config.default.TOKENTIME;
+const SECRET = config.default.SECRETKey;
 
 let authenticate = expressjwt({ secret: SECRET });
 
+//console.log("dum:", dum);
 let generateAccessToken = (req, res, next) => {
   req.token = req.token || {};
   req.result.success = req.result.success || false;
