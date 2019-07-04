@@ -8,24 +8,22 @@
             <table class="tableForLabel" cell-padding="0">
 
                 <tr>
-                    <td><label class="textEnLft">Purchase No</label>:<span class="valueText">{{purchase_number}}</span>
-                    </td>
-                    <td><label class="textEnLft">delivery Date</label>:<span class="valueText">{{dn_date}}</span></td>
-                </tr>
-                <tr>
-                    <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
-                </tr>
-                <tr>
+                    <td><label class="textEnLft">Delivery No.</label>:<span
+                            class="valueText">{{delivery_note_number}}</span></td>
                     <td><label class="textEnLft">Purchase For</label>:<span
                             class="valueText">{{location_description}}</span></td>
+
+                </tr>
+                <tr>
+                    <td><label class="textEnLft">Delivery Date</label>:<span class="valueText">{{dn_date}}</span>
+                    </td>
                     <td><label class="textEnLft">Vendor Name</label>:<span class="valueText">{{vendor_name}}</span></td>
                 </tr>
 
                 <tr>
-                    <td><label class="textEnLft">delivery_note_number</label>:<span
-                            class="valueText">{{delivery_note_number}}</span></td>
-                    <td><label class="textEnLft">po_date</label>:<span class="valueText">{{po_date}}</span></td>
-                    <td><label class="textEnLft">net_payable</label>:<span class="valueText">{{net_payable}}</span></td>
+                    <td><label class="textEnLft">Purchase No</label>:<span class="valueText">{{purchase_number}}</span>
+                    </td>
+                    <td><label class="textEnLft">Purchase Date</label>:<span class="valueText">{{po_date}}</span></td>
                 </tr>
 
             </table>
@@ -37,9 +35,7 @@
                 <thead>
                     <tr>
                         <th>Sl No.</th>
-
                         <th>Vendor Batch No.</th>
-
                         <th>PO Quantity</th>
                         <th>Unit Cost</th>
                         <th>Sales Price</th>
@@ -53,13 +49,12 @@
                 <tbody>
                     {{#each details}}
                     <tr>
-                        <td colspan="9" class="tableSubHdg">Item Code: {{item_code}}</td>
-                        <td colspan="9" class="tableSubHdg">Item Name:{{item_description}} </td>
-                        <td colspan="9" class="tableSubHdg">Purchase UOM:{{uom_description}}</td>
-                        <td colspan="9" class="tableSubHdg">Req. Qty:{{po_quantity}}</td>
-                        <td colspan="9" class="tableSubHdg">Deliverd Qty:{{dn_quantity}}</td>
-                        <td colspan="9" class="tableSubHdg">Quantity recieved_todate:{{quantity_recieved_todate}}</td>
-                        <td colspan="9" class="tableSubHdg">Out Standing Qty:{{quantity_outstanding}}</td>
+                        <td colspan="5" class="tableSubHdg"><small>Item Name:</small><br>{{item_description}} </td>
+                        <td class="tableSubHdg"><small>Item Code:</small><br> {{item_code}}</td>
+                        <td class="tableSubHdg"><small>Purchase UOM:</small><br>{{uom_description}}</td>
+                        <td class="tableSubHdg"><small>Req. Qty:</small><br>{{po_quantity}}</td>
+                        <td class="tableSubHdg"><small>Deliverd Qty:</small><br>{{dn_quantity}}</td>
+                        <td class="tableSubHdg"><small>Out Standing Qty:</small><br>{{quantity_outstanding}}</td>
                     </tr>
                     {{#each batches}}
                     <tr>
@@ -79,7 +74,10 @@
                     </tr>
                     {{/each }}
 
-                    {{/each }}
+                    {{/each }}<tr class="footerTotalDown">
+                        <td colspan="9">Total Net Amount</td>
+                        <td>{{net_payable}}</td>
+                    </tr>
                 </tbody>
             </table>
         </section>

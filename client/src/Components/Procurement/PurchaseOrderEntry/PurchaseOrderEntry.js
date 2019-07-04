@@ -26,7 +26,8 @@ import {
   getCtrlCode,
   AuthorizePOEntry,
   getVendorMaster,
-  generatePOReceipt
+  generatePOReceipt,
+  generatePOReceiptNoPrice
 } from "./PurchaseOrderEntryEvents";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import POEntry from "../../../Models/POEntry";
@@ -129,10 +130,18 @@ class PurchaseOrderEntry extends Component {
               ? {
                   menuitems: [
                     {
-                      label: "Print Receipt",
+                      label: "Receipt for Internal",
                       events: {
                         onClick: () => {
                           generatePOReceipt(this.state);
+                        }
+                      }
+                    },
+                    {
+                      label: "Receipt for Vendor",
+                      events: {
+                        onClick: () => {
+                          generatePOReceiptNoPrice(this.state);
                         }
                       }
                     }

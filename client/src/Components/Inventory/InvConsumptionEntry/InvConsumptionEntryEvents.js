@@ -80,7 +80,6 @@ export default function ConsumptionItemsEvents() {
     },
 
     generateConsumptionRecpt: (consumption_number, rpt_name, rpt_desc) => {
-      console.log("consmp:", consumption_number);
       algaehApiCall({
         uri: "/report",
         method: "GET",
@@ -110,7 +109,7 @@ export default function ConsumptionItemsEvents() {
           myWindow.document.write(
             "<iframe src= '" + url + "' width='100%' height='100%' />"
           );
-          myWindow.document.title = "Consumption Receipt";
+          myWindow.document.title = "Consumption Receipt - Inventory";
         }
       });
     }
