@@ -485,7 +485,7 @@ module.exports = {
                     ];
                     _mysql
                       .executeQuery({
-                        query: "insert into hims_f_invoice_icd values ?",
+                        query: "insert into hims_f_invoice_icd (??) values ?",
 
                         values: insertArray,
                         includeValues: insertColumns,
