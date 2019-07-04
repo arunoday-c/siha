@@ -1,7 +1,8 @@
 {
   "dateFormat": "DD-MM-YYYY",
-  "timeFormat": "HH:mm:ss",
+  "timeFormat": "HH:mm",
   "dateFormatYear": "YYYY-MM-DD",
   "timeFormatHM": "HH:mm",
-  "datetimeFormat": "DD-MM-YYYY HH:mm:ss"
+  "datetimeFormat": "DD-MM-YYYY - hh:mm A",
+  "datetimeFormat24": "DD-MM-YYYY / HH:mm"
 }

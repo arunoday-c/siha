@@ -31,6 +31,7 @@ import {
 import { AlgaehActions } from "../../../actions/algaehActions";
 import moment from "moment";
 import Options from "../../../Options.json";
+import _ from "lodash";
 
 class RadOrderedList extends Component {
   constructor(props) {
@@ -68,17 +69,50 @@ class RadOrderedList extends Component {
   }
   changeDateFormat = date => {
     if (date != null) {
-      return moment(date).format(Options.dateFormat);
+      return moment(date).format(Options.datetimeFormat);
     }
   };
 
   render() {
-    // let sampleCollection =
-    //   this.state.billdetails === null ? [{}] : this.state.billdetails;
+    let _Ordered = [];
+    let _Sheduled = [];
+
+    let _Under_Process = [];
+
+    let _Completed = [];
+
+    let _Validated = [];
+
+    let _Cancelled = [];
+    if (this.props.radtestlist !== undefined) {
+      _Ordered = _.filter(this.props.radtestlist, f => {
+        return f.status === "O";
+      });
+
+      _Sheduled = _.filter(this.props.radtestlist, f => {
+        return f.status === "S";
+      });
+
+      _Under_Process = _.filter(this.props.radtestlist, f => {
+        return f.status === "UP";
+      });
+
+      _Completed = _.filter(this.props.radtestlist, f => {
+        return f.status === "RC";
+      });
+
+      _Validated = _.filter(this.props.radtestlist, f => {
+        return f.status === "RA";
+      });
+
+      _Cancelled = _.filter(this.props.radtestlist, f => {
+        return f.status === "CN";
+      });
+    }
     return (
       <React.Fragment>
         <div className="hptl-phase1-rad-list-form">
-          <BreadCrumb
+          {/* <BreadCrumb
             title={
               <AlgaehLabel label={{ fieldName: "form_name", align: "ltr" }} />
             }
@@ -102,10 +136,10 @@ class RadOrderedList extends Component {
                 )
               }
             ]}
-          />
+          /> */}
           <div
             className="row inner-top-search"
-            style={{ marginTop: "75px", paddingBottom: "10px" }}
+            style={{ paddingBottom: "10px" }}
           >
             <AlgaehDateHandler
               div={{ className: "col-2" }}
@@ -143,7 +177,65 @@ class RadOrderedList extends Component {
               </button>
             </div>
           </div>
-
+          <div className="row  margin-bottom-15 topResultCard">
+            <div className="col-12">
+              {" "}
+              <div className="card-group">
+                <div className="card">
+                  <div className="card-body">
+                    <h5 className="card-title">{_Ordered.length}</h5>
+                    <p className="card-text">
+                      <span className="badge badge-light">Ordered</span>
+                    </p>
+                  </div>
+                </div>
+                <div className="card">
+                  <div className="card-body">
+                    <h5 className="card-title">{_Sheduled.length}</h5>
+                    <p className="card-text">
+                      <span className="badge badge-secondary">Scheduled</span>
+                    </p>
+                  </div>
+                </div>
+                <div className="card">
+                  <div className="card-body">
+                    <h5 className="card-title">{_Under_Process.length}</h5>
+                    <p className="card-text">
+                      <span className="badge badge-warning">
+                        Process on going
+                      </span>
+                    </p>
+                  </div>
+                </div>
+                <div className="card">
+                  <div className="card-body">
+                    <h5 className="card-title">{_Completed.length}</h5>{" "}
+                    <p className="card-text">
+                      <span className="badge badge-primary">Completed</span>
+                    </p>
+                  </div>
+                </div>
+                <div className="card">
+                  <div className="card-body">
+                    <h5 className="card-title">{_Cancelled.length}</h5>
+                    <p className="card-text">
+                      <span className="badge badge-danger">Cancelled</span>
+                    </p>
+                  </div>
+                </div>
+                <div className="card">
+                  <div className="card-body">
+                    <h5 className="card-title">{_Validated.length}</h5>
+                    <p className="card-text">
+                      <span className="badge badge-success">
+                        Result Available
+                      </span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <div className="row">
             <div className="col-lg-12">
               <div className="portlet portlet-bordered margin-bottom-15">
@@ -154,7 +246,7 @@ class RadOrderedList extends Component {
 
                   <div className="actions">
                     {/* <span> Status: </span> */}
-                    <ul className="ul-legend">
+                    {/* <ul className="ul-legend">
                       {FORMAT_RAD_STATUS.map((data, index) => (
                         <li key={index}>
                           <span
@@ -165,7 +257,7 @@ class RadOrderedList extends Component {
                           {data.name}
                         </li>
                       ))}
-                    </ul>
+                    </ul> */}
                   </div>
                 </div>
                 <div className="portlet-body" id="RadOrderGridCntr">
@@ -209,6 +301,88 @@ class RadOrderedList extends Component {
                         }
                       },
                       {
+                        fieldName: "billed",
+                        label: <AlgaehLabel label={{ fieldName: "billed" }} />,
+                        displayTemplate: row => {
+                          return row.billed === "N" ? (
+                            <span className="badge badge-danger">
+                              Not Billed
+                            </span>
+                          ) : (
+                            <span className="badge badge-success">Billed</span>
+                          );
+                        },
+                        others: {
+                          maxWidth: 90,
+                          resizable: false,
+                          style: { textAlign: "center" }
+                        }
+                      },
+
+                      {
+                        fieldName: "ordered_date",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Ordered Date & Time" }}
+                          />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {this.changeDateFormat(row.ordered_date)}
+                            </span>
+                          );
+                        },
+                        disabled: true,
+                        others: {
+                          maxWidth: 150,
+                          resizable: false,
+                          style: { textAlign: "center" }
+                        }
+                      },
+                      {
+                        fieldName: "scheduled_date_time",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Scheduled Date & Time" }}
+                          />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {this.changeDateFormat(row.scheduled_date_time)}
+                            </span>
+                          );
+                        },
+                        disabled: true,
+                        others: {
+                          maxWidth: 150,
+                          resizable: false,
+                          style: { textAlign: "center" }
+                        }
+                      },
+                      {
+                        fieldName: "test_type",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "proiorty" }} />
+                        ),
+                        displayTemplate: row => {
+                          return row.test_type === "S" ? (
+                            <span className="badge badge-danger">Stat</span>
+                          ) : (
+                            <span className="badge badge-secondary">
+                              Routine
+                            </span>
+                          );
+                        },
+                        disabled: true,
+                        others: {
+                          maxWidth: 90,
+                          resizable: false,
+                          style: { textAlign: "center" }
+                        }
+                      },
+                      {
                         fieldName: "patient_code",
                         label: (
                           <AlgaehLabel label={{ fieldName: "patient_code" }} />
@@ -232,24 +406,6 @@ class RadOrderedList extends Component {
                         }
                       },
                       {
-                        fieldName: "billed",
-                        label: <AlgaehLabel label={{ fieldName: "billed" }} />,
-                        displayTemplate: row => {
-                          return row.billed === "N" ? (
-                            <span className="badge badge-danger">
-                              Not Billed
-                            </span>
-                          ) : (
-                            <span className="badge badge-success">Billed</span>
-                          );
-                        },
-                        others: {
-                          maxWidth: 100,
-                          resizable: false,
-                          style: { textAlign: "center" }
-                        }
-                      },
-                      {
                         fieldName: "service_name",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Test Name" }} />
@@ -257,7 +413,6 @@ class RadOrderedList extends Component {
 
                         disabled: true,
                         others: {
-                          maxWidth: 130,
                           resizable: false,
                           style: { textAlign: "center" }
                         }
@@ -269,22 +424,22 @@ class RadOrderedList extends Component {
                         ),
                         displayTemplate: row => {
                           return row.status === "O" ? (
-                            <span className="badge badge-info">Ordered</span>
+                            <span className="badge badge-light">Ordered</span>
                           ) : row.status === "S" ? (
-                            <span className="badge badge-warning">
+                            <span className="badge badge-secondary">
                               Scheduled
                             </span>
                           ) : row.status === "UP" ? (
                             <span className="badge badge-warning">
-                              Under Process
+                              Process On Going
                             </span>
                           ) : row.status === "CN" ? (
                             <span className="badge badge-danger">
                               Cancelled
                             </span>
                           ) : row.status === "RC" ? (
-                            <span className="badge badge-success">
-                              Result Confirmed
+                            <span className="badge badge-primary">
+                              Confirmed
                             </span>
                           ) : (
                             <span className="badge badge-success">
@@ -293,68 +448,7 @@ class RadOrderedList extends Component {
                           );
                         },
                         others: {
-                          maxWidth: 130,
-                          resizable: false,
-                          style: { textAlign: "center" }
-                        }
-                      },
-                      {
-                        fieldName: "test_type",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "proiorty" }} />
-                        ),
-                        displayTemplate: row => {
-                          return (
-                            <span>
-                              {row.test_type === "S" ? "Stat" : "Routine"}
-                            </span>
-                          );
-                        },
-                        disabled: true,
-                        others: {
-                          maxWidth: 130,
-                          resizable: false,
-                          style: { textAlign: "center" }
-                        }
-                      },
-                      {
-                        fieldName: "ordered_date",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Ordered Date & Time" }}
-                          />
-                        ),
-                        // displayTemplate: row => {
-                        //   return (
-                        //     <span>
-                        //       {this.changeDateFormat(row.ordered_date)}
-                        //     </span>
-                        //   );
-                        // },
-                        disabled: true,
-                        others: {
-                          maxWidth: 150,
-                          resizable: false,
-                          style: { textAlign: "center" }
-                        }
-                      },
-                      {
-                        fieldName: "scheduled_date_time",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Scheduled Date & Time" }}
-                          />
-                        ),
-                        // displayTemplate: row => {
-                        //   return (
-                        //     <span>
-                        //       {this.changeDateFormat(row.scheduled_date_time)}
-                        //     </span>
-                        //   );
-                        // },
-                        disabled: true,
-                        others: {
-                          maxWidth: 150,
+                          maxWidth: 90,
                           resizable: false,
                           style: { textAlign: "center" }
                         }
@@ -367,19 +461,19 @@ class RadOrderedList extends Component {
                           ? []
                           : this.props.radtestlist
                     }}
-                    rowClassName={row => {
-                      return row.status === "S"
-                        ? "scheduledClass"
-                        : row.status === "CN"
-                        ? "cancelledClass"
-                        : row.status === "RC"
-                        ? "confirmedClass"
-                        : row.status === "RA"
-                        ? "availableClass"
-                        : row.status === "UP"
-                        ? "underProcessClass"
-                        : null;
-                    }}
+                    // rowClassName={row => {
+                    //   return row.status === "S"
+                    //     ? "scheduledClass"
+                    //     : row.status === "CN"
+                    //     ? "cancelledClass"
+                    //     : row.status === "RC"
+                    //     ? "confirmedClass"
+                    //     : row.status === "RA"
+                    //     ? "availableClass"
+                    //     : row.status === "UP"
+                    //     ? "underProcessClass"
+                    //     : null;
+                    // }}
                     filter="true"
                     noDataText="No data available for selected period"
                     paging={{ page: 0, rowsPerPage: 20 }}

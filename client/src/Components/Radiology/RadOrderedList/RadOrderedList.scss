@@ -1,26 +1,43 @@
 .hptl-phase1-rad-list-form {
-	.go-button {
-		cursor: pointer;
-		margin-bottom: -15px;
-		margin-top: 10px;
-	}
+  .go-button {
+    cursor: pointer;
+    margin-bottom: -15px;
+    margin-top: 10px;
+  }
 
-	.form-group {
-		margin-bottom: 0;
+  .form-group {
+    margin-bottom: 0;
 
-		padding: 0;
-		padding-top: 20px;
-		cursor: pointer;
-	}
+    padding: 0;
+    padding-top: 20px;
+    cursor: pointer;
+  }
 
-	th,
-	td {
-		border-right: 1px solid #e6e6e6;
-	}
+  th,
+  td {
+    border-right: 1px solid #e6e6e6;
+  }
 }
 
 #RadOrderGridCntr {
-	.ReactTable {
-		max-height: 62vh !important;
-	}
+  .ReactTable {
+    max-height: 57vh !important;
+  }
+}
+
+.topResultCard {
+  .card-body {
+    padding: 0px 10px 3px;
+    p {
+      margin: 0;
+      padding: 0;
+      float: right;
+      line-height: 35px;
+    }
+    .card-title {
+      margin: 0;
+      display: inline-block;
+      font-size: 2rem;
+    }
+  }
 }

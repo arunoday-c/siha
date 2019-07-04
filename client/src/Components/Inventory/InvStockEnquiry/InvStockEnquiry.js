@@ -282,7 +282,10 @@ class InvStockEnquiry extends Component {
                             : ""}
                         </span>
                       );
-                    }
+                    },
+                          className: row => {
+                            return "greenCell";
+                          }
                   },
                   {
                     fieldName: "stocking_uom_id",
