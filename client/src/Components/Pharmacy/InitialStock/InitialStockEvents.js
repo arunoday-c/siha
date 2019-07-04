@@ -181,7 +181,7 @@ const datehandle = ($this, ctrl, e) => {
 };
 
 const dateValidate = ($this, value, event) => {
-  let inRange = moment(value).isBefore(moment());
+  let inRange = moment(value).isBefore(moment().format("YYYY-MM-DD"));
   if (inRange) {
     swalMessage({
       title: "Expiry date cannot be past Date.",
