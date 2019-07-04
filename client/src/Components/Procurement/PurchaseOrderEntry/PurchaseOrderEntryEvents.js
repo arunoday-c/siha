@@ -350,10 +350,16 @@ const getCtrlCode = ($this, docNumber) => {
 
         for (let i = 0; i < data.po_entry_detail.length; i++) {
           data.po_entry_detail[i].authorize_quantity =
-            data.po_entry_detail[i].total_quantity;
+            data.authorize1 === "N"
+              ? data.po_entry_detail[i].total_quantity
+              : data.po_entry_detail[i].authorize_quantity;
           data.po_entry_detail[i].quantity_outstanding =
-            data.po_entry_detail[i].total_quantity;
-          data.po_entry_detail[i].rejected_quantity = 0;
+            data.authorize1 === "N"
+              ? data.po_entry_detail[i].total_quantity
+              : data.po_entry_detail[i].quantity_outstanding;
+          data.po_entry_detail[i].rejected_quantity =
+            parseFloat(data.po_entry_detail[i].total_quantity) -
+            parseFloat(data.po_entry_detail[i].authorize_quantity);
         }
       }
       data.saveEnable = true;

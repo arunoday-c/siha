@@ -67,7 +67,8 @@ class AddInsuranceForm extends Component {
             <div className="row">
               <div className="col-8">
                 <div className="row">
-                  {this.state.pos_customer_type === "OT" ? (
+                  {this.state.pos_customer_type === "OT" &&
+                  this.state.dataExitst === false ? (
                     <div className="col-12 margin-bottom-15">
                       <button
                         className="btn btn-default"
@@ -162,7 +163,8 @@ class AddInsuranceForm extends Component {
                     </div>
                   )}*/}
 
-                  {this.state.pos_customer_type === "OT" ? (
+                  {this.state.pos_customer_type === "OT" &&
+                  this.state.dataExitst === false ? (
                     <AlagehFormGroup
                       div={{ className: "col-3" }}
                       label={{
@@ -211,7 +213,8 @@ class AddInsuranceForm extends Component {
                     </h6>
                   </div>
 
-                  {this.state.pos_customer_type === "OT" ? (
+                  {this.state.pos_customer_type === "OT" &&
+                  this.state.dataExitst === false ? (
                     <AlgaehDateHandler
                       div={{ className: "col-3" }}
                       label={{
