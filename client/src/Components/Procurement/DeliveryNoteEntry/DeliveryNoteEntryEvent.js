@@ -512,7 +512,7 @@ const generateDeliveryNoteReceipt = data => {
       myWindow.document.write(
         "<iframe src= '" + url + "' width='100%' height='100%' />"
       );
-      //myWindow.document.title = 'Delivery Note Receipt';
+      myWindow.document.title = "Delivery Note Receipt";
     }
   });
 };
