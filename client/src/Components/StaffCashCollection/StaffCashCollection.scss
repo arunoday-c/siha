@@ -1,54 +1,44 @@
 .staffCashCollection {
-  #staffCashCollectionGrid_Cntr {
-    width: 98vw !important;
-    .ReactTable {
-      max-height: 30vh !important;
-    }
-  }
-  .ulShiftList {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    border: 1px solid #d6d6d6;
-    border-radius: 5px;
-    min-height: 20vh;
-    max-height: 23.3vh;
-    overflow: auto;
-    li {
-      margin: 0;
-      padding: 0;
-      list-style: none;
-      cursor: pointer;
-      span {
-        padding: 5px;
-        border-bottom: 1px solid #d6d6d6;
-        display: block;
-        small {
-          float: right;
-          background: #00a796;
-          color: #fff;
-          text-align: center;
-          padding: 2px;
-          width: 20px;
-          border-radius: 10px;
-        }
-        &:hover {
-          background: #ccc;
-        }
-      }
-      &:last-child {
-        span {
-          border-bottom: none;
-        }
-      }
-    }
+	#staffCashCollectionGrid_Cntr {
+		width: 98vw !important;
+		.ReactTable {
+			max-height: 30vh !important;
+		}
+	}
+	.ulShiftList {
+		border: 1px solid #d6d6d6;
+		min-height: 26vh;
+		max-height: 26vh;
+		overflow: auto;
 
-    .noDataStyle {
-      padding: 20px !important;
-      display: inline-block !important;
-      text-align: center !important;
-      width: 100% !important;
-      color: lightgray !important;
-    }
-  }
+		.eachShift {
+			border-bottom: 1px solid #d6d6d6;
+			padding-top: 7px;
+			padding-bottom: 7px;
+			.staffCount {
+				background: #00a796;
+				color: #fff;
+				text-align: center;
+				width: 24px;
+				height: 24px;
+				border-radius: 10px;
+				display: block;
+				font-size: 0.8rem;
+				line-height: 24px;
+				float: right;
+			}
+			&:hover {
+				background: #f3f3f3;
+				cursor: pointer;
+			}
+		}
+
+		.noDataStyle {
+			padding: 20px !important;
+			display: inline-block !important;
+			text-align: center !important;
+			width: 100% !important;
+			color: lightgray !important;
+		}
+	}
 }

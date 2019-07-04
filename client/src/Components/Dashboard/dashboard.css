@@ -25,7 +25,8 @@
             color: blue;
             text-decoration: underline;
             cursor: pointer;
-            float: right; }
+            float: right;
+            font-size: 0.8rem; }
     .dashboard .card .numbers {
       text-align: right;
       font-weight: 600;

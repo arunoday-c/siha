@@ -136,7 +136,7 @@ class DeliveryNoteEntry extends Component {
                       label: "Print Receipt",
                       events: {
                         onClick: () => {
-                          generateDeliveryNoteReceipt(this);
+                          generateDeliveryNoteReceipt(this.state);
                         }
                       }
                     }

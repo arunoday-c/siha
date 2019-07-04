@@ -479,7 +479,7 @@ const SaveDNEnrty = $this => {
   }
 };
 
-const generateDeliveryNoteReceipt = $this => {
+const generateDeliveryNoteReceipt = data => {
   algaehApiCall({
     uri: "/report",
     method: "GET",
@@ -491,13 +491,13 @@ const generateDeliveryNoteReceipt = $this => {
     data: {
       report: {
         reportName:
-          $this.state.dn_from === "PHR"
+          data.dn_from === "PHR"
             ? "deliveryNotePharmacyProcurement"
             : "deliveryNoteInventoryProcurement",
         reportParams: [
           {
-            name: "hims_f_procurement_dn_header_id",
-            value: $this.hims_f_procurement_dn_header_id
+            name: "delivery_note_number",
+            value: data.delivery_note_number
           }
         ],
         outputFileType: "PDF"

@@ -20,7 +20,7 @@ class StaffCashCollection extends Component {
     this.state = {
       daily_handover_date: new Date(),
       shifts: [],
-      daily_handover_date: moment().format("DD-MM-YYYY"),
+      
       shift_open_date: "DD-MM-YYYY",
       shift_open_time: "--:-- --",
       shift_close_date: "DD-MM-YYYY",
@@ -305,19 +305,21 @@ class StaffCashCollection extends Component {
         />
         <div className="row" style={{ marginTop: 90 }}>
           <div className="col-3">
-            <div className="portlet portlet-bordered margin-bottom-15">
+            <div className="portlet portlet-bordered margin-bottom-15"  style={{paddingBottom:0}}>
               <div className="portlet-body">
                 <div className="row">
                   <AlgaehDateHandler
-                    div={{ className: "col-12" }}
+                    div={{ className: "col-8 form-group" }}
                     label={{
                       fieldName: "shift_date",
                       isImp: true
                     }}
                     textBox={{
                       className: "txt-fld",
-                      name: "daily_handover_date"
+                      name: "daily_handover_date",
+                      // value: new Date()
                     }}
+
                     maxDate={new Date()}
                     events={{
                       onChange: selDate => {
@@ -351,92 +353,79 @@ class StaffCashCollection extends Component {
                       }
                     }}
                   /> */}
-                  <div className="col-12">
+                  <div className="col-4">
                     <button
                       onClick={this.getCashHandoverDetails.bind(this)}
-                      className="btn btn-primary margin-bottom-15 margin-top-15 float-right"
+                      className="btn btn-primary float-right" style={{marginTop:19}}
                     >
                       Apply
                     </button>
                   </div>
 
-                  <div className="col-12" id="">
-                    <ul className="ulShiftList">
-                      {/* <li>
-                        <span>
-                          Shift Name 1 <small>1</small>
-                        </span>
-                      </li>
-                      <li>
-                        <span>
-                          Shift Name 2 <small>2</small>
-                        </span>
-                      </li> */}
+                  <div className="col-12 ulShiftList" id="">
+                 
 
                       {this.state.cash_collection.length !== 0 ? (
                         this.state.cash_collection.map((data, index) => (
-                          <li
+                          <div
                             description={data.shift_description}
                             shift_id={data.shift_id}
                             key={index}
                             onClick={this.loadDetails.bind(this, data)}
+                            className="row eachShift"
                           >
-                            <span>
-                              {data.shift_description}{" "}
-                              <small>
-                                {data.cashiers.length > 0
-                                  ? data.cashiers.length
-                                  : 0}
-                              </small>
-                            </span>
-                          </li>
+                            {/* <small>Shift Name</small>
+                            <p> {data.shift_description}</p>
+                            <small>Shift Date</small>
+                            <p> {data.daily_handover_date}</p>
+                            <small>Staff Count</small>
+                            <p>{data.cashiers.length > 0 ? data.cashiers.length : 0}</p> */}
+                            
+
+      <div className="col-10"  style={{paddingRight:0}}>
+                              <h5 style={{marginBottom:0}}>{data.shift_description}</h5>
+                              <p>{data.daily_handover_date}</p>
+                            </div>
+                            <div className="col-2" style={{paddingLeft:0}}><span className="staffCount">{data.cashiers.length > 0 ? data.cashiers.length : 0}</span></div>
+</div>
+                          
                         ))
                       ) : (
                         <span className="noDataStyle">Select Shift Date</span>
                       )}
-                    </ul>
-                  </div>
+                    </div>
                 </div>
               </div>
             </div>
 
-            <div className="portlet portlet-bordered margin-bottom-15">
+            <div className="portlet portlet-bordered margin-bottom-15" style={{paddingBottom:0}}>
               <div className="portlet-body">
                 <div className="row">
-                  <div className="col-12" id="">
-                    <h5>All the open shift</h5>
-                    <ul className="ulShiftList">
+                  <div className="col-12">
+                    <h5 style={{marginBottom:15}}>All the open shift</h5></div>
+                  <div className="col-12 ulShiftList" id="">
                       {this.state.previous_opend_shift.length !== 0 ? (
                         this.state.previous_opend_shift.map((data, index) => (
-                          <li
+                          <div
                             prv_description={data.shift_description}
                             prv_shift_id={data.shift_id}
                             key={index}
                             onClick={this.loadDetails.bind(this, data)}
+                             className="row eachShift"
                           >
-                            <span>
-                              {data.shift_description}{" "}
-                              <small>
-                                {data.cashiers.length > 0
-                                  ? data.cashiers.length
-                                  : 0}
-                              </small>
-                            </span>
-                          </li>
-                        ))
-                      ) : (
-                        <span className="noDataStyle">
-                          Relax! No more Open Shift Available.
-                        </span>
-                      )}
-                    </ul>
+                    <div className="col-10"  style={{paddingRight:0}}>
+                              <h5 style={{marginBottom:0}}>{data.shift_description}</h5>
+                              <p>{data.daily_handover_date}</p>
+                            </div>
+                            <div className="col-2" style={{paddingLeft:0}}><span className="staffCount">{data.cashiers.length > 0 ? data.cashiers.length : 0}</span></div>
+</div>))) : (<div className="noDataStyle">Relax! No more Open Shift Available.</div>)}
                   </div>
                 </div>
               </div>
             </div>
           </div>
           <div className="col-9">
-            <div className="portlet portlet-bordered margin-bottom-15">
+            <div className="portlet portlet-bordered margin-bottom-15" style={{paddingBottom:0}}>
               {/* <div className="portlet-title">
             <div className="caption">
               <h3 className="caption-subject">Investigation Lists</h3>
@@ -450,16 +439,25 @@ class StaffCashCollection extends Component {
                       id="staffCashCollection_grid"
                       columns={[
                         {
-                          fieldName: "employee_name",
+                          fieldName: "employee_code",
                           label: (
                             <AlgaehLabel
-                              label={{ fieldName: "employee_name" }}
+                              label={{ forceLabel: "Emp. Code" }}
                             />
                           ),
                           others: {
+                            maxWidth: 130,
                             resizable: false,
                             style: { textAlign: "center" }
-                          },
+                          }
+                        },
+                        {
+                          fieldName: "employee_name",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Emp. Name" }}
+                            />
+                          ),
                           displayTemplate: data => {
                             return (
                               <span
@@ -472,6 +470,11 @@ class StaffCashCollection extends Component {
                           },
                           className: row => {
                             return "greenCell";
+                          },
+                          others: {
+                            minWidth: 200,
+                            resizable: false,
+                            style: { textAlign: "center" }
                           }
                         },
                         {
@@ -495,6 +498,11 @@ class StaffCashCollection extends Component {
                             ) : (
                               "------"
                             );
+                          },
+                          others: {
+                            maxWidth: 100,
+                            resizable: false,
+                            style: { textAlign: "center" }
                           }
                         },
                         {
@@ -509,6 +517,7 @@ class StaffCashCollection extends Component {
                             return <span>{x.shift_description}</span>;
                           },
                           others: {
+                            maxWidth: 100,
                             resizable: false,
                             style: { textAlign: "center" }
                           }
@@ -517,32 +526,34 @@ class StaffCashCollection extends Component {
                           fieldName: "expected_cash",
                           label: (
                             <AlgaehLabel
-                              label={{ fieldName: "expected_cash" }}
+                              label={{ forceLabel: "Exp. Cash" }}
                             />
                           ),
                           others: {
+                            maxWidth: 100,
                             resizable: false,
                             style: { textAlign: "center" }
                           }
                         },
-                        {
-                          fieldName: "actual_cash",
-                          label: (
-                            <AlgaehLabel label={{ fieldName: "actual_cash" }} />
-                          ),
-                          others: {
-                            resizable: false,
-                            style: { textAlign: "center" }
-                          }
-                        },
+                        // {
+                        //   fieldName: "actual_cash",
+                        //   label: (
+                        //     <AlgaehLabel label={{ fieldName: "actual_cash" }} />
+                        //   ),
+                        //   others: {
+                        //     resizable: false,
+                        //     style: { textAlign: "center" }
+                        //   }
+                        // },
                         {
                           fieldName: "difference_cash",
                           label: (
                             <AlgaehLabel
-                              label={{ fieldName: "difference_cash" }}
+                              label={{ forceLabel: "Cash Diff." }}
                             />
                           ),
                           others: {
+                            maxWidth: 100,
                             resizable: false,
                             style: { textAlign: "center" }
                           }
@@ -570,6 +581,7 @@ class StaffCashCollection extends Component {
                             );
                           },
                           others: {
+                            maxWidth: 100,
                             resizable: false,
                             style: { textAlign: "center" }
                           }
@@ -578,28 +590,29 @@ class StaffCashCollection extends Component {
                           fieldName: "expected_card",
                           label: (
                             <AlgaehLabel
-                              label={{ fieldName: "expected_card" }}
+                              label={{ forceLabel: "Exp. Card" }}
                             />
                           )
                         },
-                        {
-                          fieldName: "actual_card",
-                          label: (
-                            <AlgaehLabel label={{ fieldName: "actual_card" }} />
-                          ),
-                          others: {
-                            resizable: false,
-                            style: { textAlign: "center" }
-                          }
-                        },
+                        // {
+                        //   fieldName: "actual_card",
+                        //   label: (
+                        //     <AlgaehLabel label={{ fieldName: "actual_card" }} />
+                        //   ),
+                        //   others: {
+                        //     resizable: false,
+                        //     style: { textAlign: "center" }
+                        //   }
+                        // },
                         {
                           fieldName: "difference_card",
                           label: (
                             <AlgaehLabel
-                              label={{ fieldName: "difference_card" }}
+                              label={{ forceLabel: "Card Diff." }}
                             />
                           ),
                           others: {
+                            maxWidth: 100,
                             resizable: false,
                             style: { textAlign: "center" }
                           }
@@ -627,6 +640,7 @@ class StaffCashCollection extends Component {
                             );
                           },
                           others: {
+                            maxWidth: 100,
                             resizable: false,
                             style: { textAlign: "center" }
                           }
@@ -636,30 +650,36 @@ class StaffCashCollection extends Component {
                           fieldName: "expected_cheque",
                           label: (
                             <AlgaehLabel
-                              label={{ fieldName: "expected_cheque" }}
-                            />
-                          )
-                        },
-                        {
-                          fieldName: "actual_cheque",
-                          label: (
-                            <AlgaehLabel
-                              label={{ fieldName: "actual_cheque" }}
+                              label={{ forceLabel: "Exp. Cheque" }}
                             />
                           ),
                           others: {
+                            maxWidth: 100,
                             resizable: false,
                             style: { textAlign: "center" }
                           }
                         },
+                        // {
+                        //   fieldName: "actual_cheque",
+                        //   label: (
+                        //     <AlgaehLabel
+                        //       label={{ fieldName: "actual_cheque" }}
+                        //     />
+                        //   ),
+                        //   others: {
+                        //     resizable: false,
+                        //     style: { textAlign: "center" }
+                        //   }
+                        // },
                         {
                           fieldName: "difference_cheque",
                           label: (
                             <AlgaehLabel
-                              label={{ fieldName: "difference_cheque" }}
+                              label={{ forceLabel: "Cheque Diff." }}
                             />
                           ),
                           others: {
+                            maxWidth: 100,
                             resizable: false,
                             style: { textAlign: "center" }
                           }
@@ -689,6 +709,7 @@ class StaffCashCollection extends Component {
                             );
                           },
                           others: {
+                            maxWidth: 105,
                             resizable: false,
                             style: { textAlign: "center" }
                           }
