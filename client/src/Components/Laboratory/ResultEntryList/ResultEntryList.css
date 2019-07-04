@@ -18,3 +18,15 @@
 
 .badge {
   margin-top: 5px; }
+
+.topResultCard .card-body {
+  padding: 0px 10px 3px; }
+  .topResultCard .card-body p {
+    margin: 0;
+    padding: 0;
+    float: right;
+    line-height: 35px; }
+  .topResultCard .card-body .card-title {
+    margin: 0;
+    display: inline-block;
+    font-size: 2rem; }

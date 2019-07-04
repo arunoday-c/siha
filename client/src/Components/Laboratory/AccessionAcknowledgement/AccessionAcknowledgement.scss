@@ -1,49 +1,66 @@
 .hptl-phase1-accession-acknowledgement-form {
-	.go-button {
-		cursor: pointer;
-		margin-bottom: -9px;
-		margin-top: 20px;
-	}
+  .go-button {
+    cursor: pointer;
+    margin-bottom: -9px;
+    margin-top: 20px;
+  }
 
-	.form-group {
-		margin-bottom: 0;
+  .form-group {
+    margin-bottom: 0;
 
-		padding: 0;
-		padding-top: 20px;
-		cursor: pointer;
-	}
+    padding: 0;
+    padding-top: 20px;
+    cursor: pointer;
+  }
 
-	th,
-	td {
-		border-right: 1px solid #e6e6e6;
-	}
+  th,
+  td {
+    border-right: 1px solid #e6e6e6;
+  }
 
-	#accessionAcknoweldgeGrid_Cntr {
-		.ReactTable {
-			max-height: 62vh !important;
-		}
-	}
+  #accessionAcknoweldgeGrid_Cntr {
+    .ReactTable {
+      max-height: 62vh !important;
+    }
+  }
 }
 .hdg_bredcrump {
-	max-width: 50% !important;
-	flex: 0 0 35% !important;
+  max-width: 50% !important;
+  flex: 0 0 35% !important;
 }
 
 .badge {
-	margin-top: 5px;
+  margin-top: 5px;
 }
 .accessionRemarkPopUp {
-	.algaeh-modal {
-		max-width: 30vw !important;
-		.popupInner {
-			padding-top: 5px;
-			.textArea {
-				input {
-					height: 15vh !important;
-					width: 100%;
-					margin-bottom: 15px;
-				}
-			}
-		}
-	}
+  .algaeh-modal {
+    max-width: 30vw !important;
+    .popupInner {
+      padding-top: 5px;
+      .textArea {
+        input {
+          height: 15vh !important;
+          width: 100%;
+          margin-bottom: 15px;
+        }
+      }
+    }
+  }
+}
+
+.topResultCard {
+  .card-body {
+    padding: 0px 10px 3px;
+    p {
+      margin: 0;
+      padding: 0;
+      float: right;
+      line-height: 35px;
+    }
+    .card-title {
+      margin: 0;
+      display: inline-block;
+      font-size: 2rem;
+    }
+  }
 }
