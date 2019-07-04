@@ -1,12 +1,12 @@
 #ReceiptGrid {
-  .ReactTable {
-    max-width: 96vw !important;
-    max-height: 48vh !important;
-  }
+	.ReactTable {
+		max-width: 96vw !important;
+		max-height: 46vh !important;
+	}
 
-  @media screen and (min-width: 481px) and (max-width: 1024px) and (orientation: landscape) {
-    .ReactTable {
-      max-width: 95vw !important;
-    }
-  }
+	@media screen and (min-width: 481px) and (max-width: 1024px) and (orientation: landscape) {
+		.ReactTable {
+			max-width: 95vw !important;
+		}
+	}
 }
