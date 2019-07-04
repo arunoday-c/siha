@@ -89,7 +89,6 @@ import myInit from "../controller/myinit";
 
 const config = con.default;
 
-console.log("config ff:", config);
 initializedDb(db => {
   //internal middleware
   router.use(middleware({ config, db }));
