@@ -445,7 +445,7 @@ class Dashboard extends Component {
                   <b onClick={this.showDetailHandler.bind(this)}>
                     {this.state.showDetails === "d-block"
                       ? "Hide"
-                      : "Show Details"}
+                      : "Show"}
                   </b>
                 </div>
               </div>

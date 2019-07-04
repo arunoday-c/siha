@@ -33,6 +33,7 @@ import moment from "moment";
 import Options from "../../../Options.json";
 import SampleCollectionModal from "../SampleCollections/SampleCollections";
 import MyContext from "../../../utils/MyContext.js";
+import _ from "lodash";
 
 class SampleCollection extends Component {
   constructor(props) {
@@ -87,12 +88,41 @@ class SampleCollection extends Component {
   }
 
   render() {
+    let _Ordered = [];
+
+    let _Collected = [];
+
+    let _Confirmed = [];
+    let _Validated = [];
+
+    let _Cancelled = [];
+    if (this.state.sample_collection !== undefined) {
+      _Ordered = _.filter(this.state.sample_collection, f => {
+        return f.status === "O";
+      });
+
+      _Collected = _.filter(this.state.sample_collection, f => {
+        return f.status === "CL";
+      });
+
+      _Validated = _.filter(this.state.sample_collection, f => {
+        return f.status === "RA";
+      });
+      _Confirmed = _.filter(this.state.sample_collection, f => {
+        return f.status === "CF";
+      });
+
+      _Cancelled = _.filter(this.state.sample_collection, f => {
+        return f.status === "CN";
+      });
+    }
+
     // let sampleCollection =
     //   this.state.billdetails === null ? [{}] : this.state.billdetails;
     return (
       <React.Fragment>
         <div className="hptl-phase1-speciman-collection-form">
-          <BreadCrumb
+          {/* <BreadCrumb
             title={
               <AlgaehLabel label={{ fieldName: "form_name", align: "ltr" }} />
             }
@@ -116,46 +146,47 @@ class SampleCollection extends Component {
                 )
               }
             ]}
-          />
+          /> */}
           <div
             className="row inner-top-search"
-            style={{ marginTop: "75px", paddingBottom: "10px" }}
+            style={{ paddingBottom: "10px" }}
           >
-                <AlgaehDateHandler
-                  div={{ className: "col-2" }}
-                  label={{ fieldName: "from_date" }}
-                  textBox={{ className: "txt-fld", name: "from_date" }}
-                  events={{
-                    onChange: datehandle.bind(this, this)
-                  }}
-                  value={this.state.from_date}
-                />
-                <AlgaehDateHandler
-                  div={{ className: "col-2" }}
-                  label={{ fieldName: "to_date" }}
-                  textBox={{ className: "txt-fld", name: "to_date" }}
-                  events={{
-                    onChange: datehandle.bind(this, this)
-                  }}
-                  value={this.state.to_date}
-                /> <div className="col" style={{ paddingTop: "19px" }}>
-                  <button
-                    className="btn btn-primary btn-sm"
-                    type="button"
-                    onClick={getSampleCollectionDetails.bind(this, this)}
-                  >
-                    Load
-                  </button>
-                  <button
-                    className="btn btn-default btn-sm"
-                    style={{ marginLeft: "10px" }}
-                    type="button"
-                    onClick={Refresh.bind(this, this)}
-                  >
-                    Clear
-                  </button>
-                </div>
-             {/*<div className="col-2">
+            <AlgaehDateHandler
+              div={{ className: "col-2" }}
+              label={{ fieldName: "from_date" }}
+              textBox={{ className: "txt-fld", name: "from_date" }}
+              events={{
+                onChange: datehandle.bind(this, this)
+              }}
+              value={this.state.from_date}
+            />
+            <AlgaehDateHandler
+              div={{ className: "col-2" }}
+              label={{ fieldName: "to_date" }}
+              textBox={{ className: "txt-fld", name: "to_date" }}
+              events={{
+                onChange: datehandle.bind(this, this)
+              }}
+              value={this.state.to_date}
+            />{" "}
+            <div className="col" style={{ paddingTop: "19px" }}>
+              <button
+                className="btn btn-primary btn-sm"
+                type="button"
+                onClick={getSampleCollectionDetails.bind(this, this)}
+              >
+                Load
+              </button>
+              <button
+                className="btn btn-default btn-sm"
+                style={{ marginLeft: "10px" }}
+                type="button"
+                onClick={Refresh.bind(this, this)}
+              >
+                Clear
+              </button>
+            </div>
+            {/*<div className="col-2">
               <div className="row">
                 <AlagehFormGroup
                   div={{ className: "col" }}
@@ -268,7 +299,54 @@ class SampleCollection extends Component {
               </div>
             </div> */}
           </div>
+          <div className="row  margin-bottom-15 topResultCard">
+            <div className="col-12">
+              {" "}
+              <div className="card-group">
+                <div className="card">
+                  <div className="card-body">
+                    <h5 className="card-title">{_Ordered.length}</h5>
+                    <p className="card-text">
+                      <span className="badge badge-light">Ordered</span>
+                    </p>
+                  </div>
+                </div>
 
+                <div className="card">
+                  <div className="card-body">
+                    <h5 className="card-title">{_Collected.length}</h5>{" "}
+                    <p className="card-text">
+                      <span className="badge badge-secondary">Collected</span>
+                    </p>
+                  </div>
+                </div>
+                <div className="card">
+                  <div className="card-body">
+                    <h5 className="card-title">{_Confirmed.length}</h5>{" "}
+                    <p className="card-text">
+                      <span className="badge badge-primary">Confirmed</span>
+                    </p>
+                  </div>
+                </div>
+                <div className="card">
+                  <div className="card-body">
+                    <h5 className="card-title">{_Cancelled.length}</h5>
+                    <p className="card-text">
+                      <span className="badge badge-danger">Cancelled</span>
+                    </p>
+                  </div>
+                </div>
+                <div className="card">
+                  <div className="card-body">
+                    <h5 className="card-title">{_Validated.length}</h5>
+                    <p className="card-text">
+                      <span className="badge badge-success">Validated</span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <div className="row">
             <div className="col-lg-12">
               <div className="portlet portlet-bordered margin-bottom-15">
@@ -303,7 +381,56 @@ class SampleCollection extends Component {
                         others: {
                           maxWidth: 70,
                           resizable: false,
-                          filterable:false,
+                          filterable: false,
+                          style: { textAlign: "center" }
+                        }
+                      },
+                      {
+                        fieldName: "ordered_date",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "ordered_date" }} />
+                        ),
+                        // displayTemplate: row => {
+                        //   return (
+                        //     <span>
+                        //       {this.changeDateFormat(row.ordered_date)}
+                        //     </span>
+                        //   );
+                        // },
+                        disabled: true,
+                        others: {
+                          maxWidth: 150,
+                          resizable: false,
+                          style: { textAlign: "center" }
+                        }
+                      },
+                      {
+                        fieldName: "number_of_tests",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "No. of Tests" }} />
+                        ),
+                        others: {
+                          maxWidth: 90,
+                          resizable: false,
+                          style: { textAlign: "center" }
+                        }
+                      },
+                      {
+                        fieldName: "test_type",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "proiorty" }} />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {row.test_type === "S" ? "Stat" : "Routine"}
+                            </span>
+                          );
+                        },
+                        disabled: true,
+                        others: {
+                          maxWidth: 80,
+                          resizable: false,
                           style: { textAlign: "center" }
                         }
                       },
@@ -330,26 +457,26 @@ class SampleCollection extends Component {
                           style: { textAlign: "left" }
                         }
                       },
-                      {
-                        fieldName: "visit_code",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "visit_code" }} />
-                        ),
-                        disabled: false,
-                        others: {
-                          maxWidth: 150,
-                          resizable: false,
-                          style: { textAlign: "center" }
-                        }
-                      },
+                      // {
+                      //   fieldName: "visit_code",
+                      //   label: (
+                      //     <AlgaehLabel label={{ fieldName: "visit_code" }} />
+                      //   ),
+                      //   disabled: false,
+                      //   others: {
+                      //     maxWidth: 150,
+                      //     resizable: false,
+                      //     style: { textAlign: "center" }
+                      //   }
+                      // },
                       {
                         fieldName: "status",
                         label: <AlgaehLabel label={{ fieldName: "status" }} />,
                         displayTemplate: row => {
                           return row.status === "O" ? (
-                            <span className="badge badge-info">Ordered</span>
+                            <span className="badge badge-light">Ordered</span>
                           ) : row.status === "CL" ? (
-                            <span className="badge badge-primary">
+                            <span className="badge badge-secondary">
                               Collected
                             </span>
                           ) : row.status === "CN" ? (
@@ -357,7 +484,7 @@ class SampleCollection extends Component {
                               Cancelled
                             </span>
                           ) : row.status === "CF" ? (
-                            <span className="badge badge-success">
+                            <span className="badge badge-primary">
                               Confirmed
                             </span>
                           ) : (
@@ -368,58 +495,7 @@ class SampleCollection extends Component {
                         },
                         disabled: true,
                         others: {
-                          maxWidth: 100,
-                          resizable: false,
-                          style: { textAlign: "center" }
-                        }
-                      },
-                      {
-                        fieldName: "test_type",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "proiorty" }} />
-                        ),
-                        displayTemplate: row => {
-                          return (
-                            <span>
-                              {row.test_type === "S" ? "Stat" : "Routine"}
-                            </span>
-                          );
-                        },
-                        disabled: true,
-                        others: {
-                          maxWidth: 130,
-                          resizable: false,
-                          style: { textAlign: "center" }
-                        }
-                      },
-                      {
-                        fieldName: "ordered_date",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "ordered_date" }} />
-                        ),
-                        // displayTemplate: row => {
-                        //   return (
-                        //     <span>
-                        //       {this.changeDateFormat(row.ordered_date)}
-                        //     </span>
-                        //   );
-                        // },
-                        disabled: true,
-                        others: {
-                          maxWidth: 150,
-                          resizable: false,
-                          style: { textAlign: "center" }
-                        }
-                      },
-                      {
-                        fieldName: "number_of_tests",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "No. of Tests" }}
-                          />
-                        ),
-                        others: {
-                          maxWidth: 130,
+                          maxWidth: 90,
                           resizable: false,
                           style: { textAlign: "center" }
                         }

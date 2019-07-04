@@ -17,7 +17,7 @@ import {
   containeridhandle,
   AddAnalytes,
   updateLabInvestigation,
-  deleteLabInvestigation,
+  deleteLabAnalyte,
   onchangegridcol
 } from "./LabInvestigationEvent";
 import variableJson from "../../../utils/GlobalVariables.json";
@@ -711,11 +711,7 @@ class LabInvestigation extends Component {
                       isEditable={true}
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
-                        onDelete: deleteLabInvestigation.bind(
-                          this,
-                          this,
-                          context
-                        ),
+                        onDelete: deleteLabAnalyte.bind(this, this, context),
                         onEdit: row => {},
 
                         onDone: updateLabInvestigation.bind(this, this, context)

@@ -4,35 +4,28 @@
     max-height: 30vh !important; }
 
 .staffCashCollection .ulShiftList {
-  margin: 0;
-  padding: 0;
-  list-style: none;
   border: 1px solid #d6d6d6;
-  border-radius: 5px;
-  min-height: 20vh;
-  max-height: 23.3vh;
+  min-height: 26vh;
+  max-height: 26vh;
   overflow: auto; }
-  .staffCashCollection .ulShiftList li {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    cursor: pointer; }
-    .staffCashCollection .ulShiftList li span {
-      padding: 5px;
-      border-bottom: 1px solid #d6d6d6;
-      display: block; }
-      .staffCashCollection .ulShiftList li span small {
-        float: right;
-        background: #00a796;
-        color: #fff;
-        text-align: center;
-        padding: 2px;
-        width: 20px;
-        border-radius: 10px; }
-      .staffCashCollection .ulShiftList li span:hover {
-        background: #ccc; }
-    .staffCashCollection .ulShiftList li:last-child span {
-      border-bottom: none; }
+  .staffCashCollection .ulShiftList .eachShift {
+    border-bottom: 1px solid #d6d6d6;
+    padding-top: 7px;
+    padding-bottom: 7px; }
+    .staffCashCollection .ulShiftList .eachShift .staffCount {
+      background: #00a796;
+      color: #fff;
+      text-align: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 10px;
+      display: block;
+      font-size: 0.8rem;
+      line-height: 24px;
+      float: right; }
+    .staffCashCollection .ulShiftList .eachShift:hover {
+      background: #f3f3f3;
+      cursor: pointer; }
   .staffCashCollection .ulShiftList .noDataStyle {
     padding: 20px !important;
     display: inline-block !important;
