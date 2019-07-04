@@ -117,7 +117,7 @@ class DNItemList extends Component {
     let required_batchno =
       this.state.item_details === null
         ? "Y"
-        : this.state.item_details.required_batchno_expiry;
+        : this.state.item_details.exp_date_not_required;
 
     let stock_uom_description =
       this.state.item_details === null

@@ -399,7 +399,7 @@ const assignDataandclear = ($this, context, stock_detail, assignData) => {
     [assignData]: stock_detail,
     completed: "N",
     addedItem: true,
-    saveEnable: false,
+    saveEnable: stock_detail.length > 0 ? false : true,
     phar_item_category: null,
     phar_item_group: null,
     phar_item_id: null,
@@ -441,7 +441,7 @@ const assignDataandclear = ($this, context, stock_detail, assignData) => {
     context.updateState({
       [assignData]: stock_detail,
       addedItem: true,
-      saveEnable: false,
+      saveEnable: stock_detail.length > 0 ? false : true,
       completed: "N",
       phar_item_category: null,
       phar_item_group: null,
@@ -680,6 +680,7 @@ const onchhangegriddiscount = ($this, row, e) => {
   let extended_price = row.extended_price;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
+  let discount_amount = 0;
   if (name === "sub_discount_percentage") {
     sub_discount_percentage = value === "" ? "" : parseFloat(value);
 
@@ -689,6 +690,7 @@ const onchhangegriddiscount = ($this, row, e) => {
         : (parseFloat(extended_price) * sub_discount_percentage) / 100;
   } else if (name === "sub_discount_amount") {
     sub_discount_amount = value === "" ? "" : parseFloat(value);
+    discount_amount = value === "" ? 0 : parseFloat(value);
     sub_discount_percentage =
       value === ""
         ? 0
@@ -714,8 +716,7 @@ const onchhangegriddiscount = ($this, row, e) => {
   } else {
     //
     debugger;
-    extended_cost =
-      parseFloat(extended_price) - parseFloat(sub_discount_amount);
+    extended_cost = parseFloat(extended_price) - parseFloat(discount_amount);
     row["unit_cost"] =
       $this.state.hims_f_procurement_po_header_id !== null
         ? extended_cost / parseFloat(row.authorize_quantity)

@@ -72,7 +72,7 @@ let updateIntoItemLocation = (req, res, next) => {
           item_group_id: s.item_group_id,
           item_code_id: s.item_id,
           required_batchno: s.required_batchno || "N",
-          expiry_date: s.expiry_date,
+          expiry_date: s.expiry_date || "~",
           transaction_qty: s.quantity,
           transaction_uom: s.uom_id,
           transaction_cost: s.unit_cost,

@@ -30,15 +30,6 @@ const selectVisit = ($this, context, e) => {
   let mode_of_pay = "Self";
   let applydiscount = false;
 
-  let doctor_name = "";
-
-  let employee_list = Enumerable.from($this.props.deptanddoctors.doctors)
-    .where(w => w.employee_id === e.selected.doctor_id)
-    .toArray();
-  if (employee_list !== null && employee_list.length > 0) {
-    doctor_name = employee_list[0].full_name;
-  }
-
   if (e.selected.insured === "Y") {
     mode_of_pay = "Insurance";
     applydiscount = true;
@@ -51,8 +42,7 @@ const selectVisit = ($this, context, e) => {
       insured: e.selected.insured,
       insurance_yesno: e.selected.insured,
       sec_insured: e.selected.sec_insured,
-      mode_of_pay: mode_of_pay,
-      doctor_name: doctor_name
+      mode_of_pay: mode_of_pay
     },
     () => {
       if ($this.state.insured === "Y") {
@@ -206,7 +196,6 @@ const selectVisit = ($this, context, e) => {
       insured: e.selected.insured,
       sec_insured: e.selected.sec_insured,
       mode_of_pay: mode_of_pay,
-      doctor_name: doctor_name,
       addNewService: false
     });
   }

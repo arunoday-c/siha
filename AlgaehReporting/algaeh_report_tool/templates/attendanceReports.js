@@ -1,4 +1,4 @@
-import algaehUtilities from "algaeh-utilities/utilities";
+const algaehUtilities = require("algaeh-utilities/utilities");
 const executePDF = function executePDFMethod(options) {
   return new Promise(function(resolve, reject) {
     try {

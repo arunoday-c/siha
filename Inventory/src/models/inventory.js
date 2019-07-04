@@ -14,7 +14,7 @@ module.exports = {
             "INSERT INTO `hims_d_inventory_item_master` (`item_code`, `item_description`,item_type, `structure_id`,\
           `category_id`, `group_id`, `item_uom_id`, `purchase_uom_id`, `sales_uom_id`, `stocking_uom_id`,\
           `service_id`, addl_information,decimals, purchase_cost, markup_percent, sales_price,\
-           required_batchno_expiry, `reorder_qty`, `created_date`, `created_by`, `update_date`, `updated_by`)\
+           exp_date_not_required, `reorder_qty`, `created_date`, `created_by`, `update_date`, `updated_by`)\
         VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
           values: [
             input.item_code,
@@ -33,7 +33,7 @@ module.exports = {
             input.purchase_cost,
             input.markup_percent,
             input.standard_fee,
-            input.required_batchno_expiry,
+            input.exp_date_not_required,
             input.reorder_qty,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
@@ -317,7 +317,7 @@ module.exports = {
              MIU.stocking_uom, MIU.conversion_factor,IM.hims_d_inventory_item_master_id,\
              IM.item_code, IM.item_description, IM.structure_id, IM.category_id,IM.group_id,IM.item_type, \
              IM.item_uom_id, IM.purchase_uom_id, IM.sales_uom_id, IM.stocking_uom_id, IM.item_status, \
-             IM.service_id, IM.purchase_cost,IM.addl_information,IM.required_batchno_expiry,\
+             IM.service_id, IM.purchase_cost,IM.addl_information,IM.exp_date_not_required,\
             IM.reorder_qty,IM.sales_price,S.vat_applicable,S.vat_percent from\
             hims_d_inventory_item_master IM left join \
              hims_m_inventory_item_uom MIU on IM.hims_d_inventory_item_master_id=MIU.item_master_id \
@@ -710,7 +710,7 @@ module.exports = {
             `category_id`=?, `group_id`=?,`item_uom_id`=?,\
             `purchase_uom_id`=?, `sales_uom_id`=?, `stocking_uom_id`=?, `item_status`=?, `service_id`=?,\
             `item_type`=?, `addl_information`=?, `decimals`=?, `purchase_cost`=?, `markup_percent`=?, `sales_price`=?,\
-            `required_batchno_expiry`=?,`reorder_qty`=?, `update_date`=?, `updated_by`=?, `record_status`=? WHERE record_status='A' and\
+            `exp_date_not_required`=?,`reorder_qty`=?, `update_date`=?, `updated_by`=?, `record_status`=? WHERE record_status='A' and\
             `hims_d_inventory_item_master_id`=?",
           values: [
             input.item_code,
@@ -730,7 +730,7 @@ module.exports = {
             input.purchase_cost,
             input.markup_percent,
             input.standard_fee,
-            input.required_batchno_expiry,
+            input.exp_date_not_required,
             input.reorder_qty,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,

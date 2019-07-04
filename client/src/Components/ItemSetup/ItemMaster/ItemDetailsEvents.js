@@ -30,12 +30,12 @@ const BatchExpRequired = $this => {
   SetBulkState({
     state: $this,
     callback: () => {
-      let required_batchno_expiry = "N";
+      let exp_date_not_required = "N";
       if (!$this.state.batchexpreq === true) {
-        required_batchno_expiry = "Y";
+        exp_date_not_required = "Y";
       }
       $this.setState({
-        required_batchno_expiry: required_batchno_expiry,
+        exp_date_not_required: exp_date_not_required,
         batchexpreq: !$this.state.batchexpreq,
         ...$this.state
       });
@@ -79,12 +79,7 @@ const VatAppilicable = ($this, e) => {
 const texthandle = ($this, ctrl, e) => {
   e = e || ctrl;
   let name = e.name || e.target.name;
-  let value =
-    e.value === ""
-      ? null
-      : e.value || e.target.value === ""
-      ? null
-      : e.target.value;
+  let value = e.value === "" ? null : e.value || e.target.value;
 
   $this.setState({
     [name]: value

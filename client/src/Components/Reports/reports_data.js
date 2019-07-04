@@ -12,37 +12,6 @@ import { algaehApiCall } from "../../utils/algaehApiCall";
 import _ from "lodash";
 // debugger;
 let allYears = getYears();
-const Activated_Modueles =
-  sessionStorage.getItem("ModuleDetails") !== null
-    ? JSON.parse(AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails")))
-    : [];
-// const HIMS_Active = _.filter(Activated_Modueles, f => {
-//   return f.module_code === "FTDSK";
-// });
-//
-// const HR_Active = _.filter(Activated_Modueles, f => {
-//   return f.module_code === "HRMNGMT";
-// });
-//
-// const LAB_Active = _.filter(Activated_Modueles, f => {
-//   return f.module_code === "LAB";
-// });
-//
-// const RAD_Active = _.filter(Activated_Modueles, f => {
-//   return f.module_code === "RAD";
-// });
-//
-// const INS_Active = _.filter(Activated_Modueles, f => {
-//   return f.module_code === "INS";
-// });
-//
-// const PHARMACY_Active = _.filter(Activated_Modueles, f => {
-//   return f.module_code === "PHCY";
-// });
-//
-// const INVENTORY_Active = _.filter(Activated_Modueles, f => {
-//   return f.module_code === "INVTRY";
-// });
 
 const Hims_Reports = [
   {
@@ -2189,59 +2158,15 @@ const insurance_reports = [
     ]
   }
 ];
-// debugger;
-const final_report_plot = [];
 
-// if (HIMS_Active.length > 0) {
-//   final_report_plot.length === 0
-//     ? (final_report_plot = Hims_Reports)
-//     : (final_report_plot = final_report_plot.concat(Hims_Reports));
-// }
-// if (HR_Active.length > 0) {
-//   final_report_plot.length === 0
-//     ? (final_report_plot = HR_Payroll_Reports)
-//     : (final_report_plot = final_report_plot.concat(HR_Payroll_Reports));
-// }
-
-// if (LAB_Active.length > 0) {
-//   final_report_plot.length === 0
-//     ? (final_report_plot = HR_Payroll_Reports)
-//     : final_report_plot.concat(HR_Payroll_Reports);
-// }
-//
-// if (RAD_Active.length > 0) {
-//   final_report_plot.length === 0
-//     ? (final_report_plot = HR_Payroll_Reports)
-//     : final_report_plot.concat(HR_Payroll_Reports);
-// }
-
-// if (INS_Active.length > 0) {
-//   final_report_plot.length === 0
-//     ? (final_report_plot = insurance_reports)
-//     : (final_report_plot = final_report_plot.concat(insurance_reports));
-// }
-//
-// if (PHARMACY_Active.length > 0) {
-//   final_report_plot.length === 0
-//     ? (final_report_plot = Pharmacy_Reports)
-//     : (final_report_plot = final_report_plot.concat(Pharmacy_Reports));
-// }
-//
-// if (INVENTORY_Active.length > 0) {
-//   final_report_plot.length === 0
-//     ? (final_report_plot = Inventory_Reports)
-//     : (final_report_plot = final_report_plot.concat(Inventory_Reports));
-// }
-//
-// if (final_report_plot.length === 0) {
-// }
-
-// export default final_report_plot;
+// case "LAB":
+//   result = pushData(result, HR_Payroll_Reports);
+//   break;
 const pushData = (result, current) => {
   if (result.length === 0) {
     result = current;
   } else {
-    result.concat(current);
+    result = result.concat(current);
   }
   return result;
 };
@@ -2249,6 +2174,12 @@ export default function loadActiveReports() {
   return {
     data: () => {
       debugger;
+      const Activated_Modueles =
+        sessionStorage.getItem("ModuleDetails") !== null
+          ? JSON.parse(
+              AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
+            )
+          : [];
       let result = [];
       for (let i = 0; i < Activated_Modueles.length; i++) {
         const item = Activated_Modueles[i];
@@ -2257,9 +2188,6 @@ export default function loadActiveReports() {
             result = pushData(result, Hims_Reports);
             break;
           case "HRMNGMT":
-            result = pushData(result, HR_Payroll_Reports);
-            break;
-          case "LAB":
             result = pushData(result, HR_Payroll_Reports);
             break;
           case "INS":

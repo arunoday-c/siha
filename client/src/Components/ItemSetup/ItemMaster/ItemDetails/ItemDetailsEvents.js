@@ -36,19 +36,19 @@ const BatchExpRequired = ($this, context) => {
   SetBulkState({
     state: $this,
     callback: () => {
-      let required_batchno_expiry = "N";
+      let exp_date_not_required = "N";
       if (!$this.state.batchexpreq === true) {
-        required_batchno_expiry = "Y";
+        exp_date_not_required = "Y";
       }
       $this.setState({
-        required_batchno_expiry: required_batchno_expiry,
+        exp_date_not_required: exp_date_not_required,
         batchexpreq: !$this.state.batchexpreq,
         ...$this.state
       });
 
       if (context !== undefined) {
         context.updateState({
-          required_batchno_expiry: required_batchno_expiry,
+          exp_date_not_required: exp_date_not_required,
           ...$this.state
         });
       }
@@ -115,7 +115,6 @@ const texthandle = ($this, ctrl, e) => {
 };
 
 const numberEventHandaler = ($this, context, e) => {
-  
   SetBulkState({
     state: $this,
     callback: () => {

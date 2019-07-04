@@ -115,6 +115,12 @@ class RadResultEntry extends Component {
 
   render() {
     debugger;
+    let validateDisable =
+      this.state.exam_status === "CO"
+        ? this.state.status === "RA"
+          ? true
+          : false
+        : true;
     return (
       <div className="RadResultEntry">
         <AlgaehModalPopUp
@@ -450,13 +456,7 @@ class RadResultEntry extends Component {
                     type="button"
                     className="btn btn-primary"
                     onClick={onvalidate.bind(this, this)}
-                    disabled={
-                      this.state.exam_status === "CO"
-                        ? this.state.status === "RA"
-                          ? true
-                          : false
-                        : true
-                    }
+                    disabled={validateDisable}
                   >
                     Validate
                   </button>

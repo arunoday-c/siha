@@ -179,9 +179,8 @@ class OPBilling extends Component {
       uri: "/frontDesk/get",
       module: "frontDesk",
       method: "GET",
-      data: { patient_code: this.state.patient_code },
+      data: { patient_code: this.state.patient_code, expiry_visit: "N" },
       onSuccess: response => {
-        let todayDate = new Date();
         if (response.data.success) {
           let data = response.data.records;
 
@@ -193,24 +192,15 @@ class OPBilling extends Component {
             )
             .toArray();
 
-          todayDate.setDate(todayDate.getDate() - 7);
           if (x !== undefined && x.length > 0) {
             data.patientRegistration.patient_type = x[0].patitent_type_desc;
           } else {
             data.patientRegistration.patient_type = "Not Selected";
           }
 
-          let visitDetails = Enumerable.from(data.visitDetails)
-            .where(
-              w =>
-                w.visit_expiery_date > moment(todayDate).format("YYYY-MM-DD") &&
-                w.visit_status === "O"
-            )
-            .toArray();
+          let last_visitDetails = data.visitDetails[0];
 
-          let last_visitDetails = visitDetails[0];
-
-          data.patientRegistration.visitDetails = visitDetails;
+          data.patientRegistration.visitDetails = data.visitDetails;
           data.patientRegistration.patient_id =
             data.patientRegistration.hims_d_patient_id;
           data.patientRegistration.mode_of_pay = "None";
@@ -236,16 +226,6 @@ class OPBilling extends Component {
           data.patientRegistration.insured = last_visitDetails.insured;
           data.patientRegistration.insurance_yesno = last_visitDetails.insured;
           data.patientRegistration.sec_insured = last_visitDetails.sec_insured;
-
-          let employee_list = Enumerable.from(
-            $this.props.deptanddoctors.doctors
-          )
-            .where(w => w.employee_id === last_visitDetails.doctor_id)
-            .toArray();
-
-          if (employee_list !== null && employee_list.length > 0) {
-            data.patientRegistration.doctor_name = employee_list[0].full_name;
-          }
 
           if (last_visitDetails.insured === "Y") {
             data.patientRegistration.mode_of_pay = "Insurance";

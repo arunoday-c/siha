@@ -624,7 +624,7 @@ module.exports = {
                   inner join hims_m_inventory_item_location LOC  on D.item_id=LOC.item_id \
                   inner join `hims_d_inventory_item_master` IM  on IM.hims_d_inventory_item_master_id=D.item_id \
                   inner join `hims_d_inventory_uom` PU  on PU.hims_d_inventory_uom_id=D.item_uom \
-                  where D.inventory_header_id=? and  LOC.expirydt > CURDATE() \
+                  where D.inventory_header_id=? and  (LOC.expirydt > CURDATE() || exp_date_not_required='Y') \
                   and D.quantity_outstanding<>0 order by  LOC.expirydt ",
                 values: [inputParam.hims_f_inventory_material_header_id],
                 printQuery: false

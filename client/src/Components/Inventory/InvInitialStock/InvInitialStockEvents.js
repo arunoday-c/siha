@@ -107,7 +107,7 @@ const itemchangeText = ($this, e) => {
     item_group_id: e.selected.group_id,
     uom_id: e.selected.stocking_uom_id,
     sales_uom: e.selected.sales_uom_id,
-    required_batchno: e.selected.required_batchno_expiry,
+    required_batchno: e.selected.exp_date_not_required,
     item_code: e.selected.item_code,
     // unit_cost: e.selected.purchase_cost,
     sales_price: e.selected.standard_fee,
@@ -201,7 +201,7 @@ const datehandle = ($this, ctrl, e) => {
 };
 
 const dateValidate = ($this, value, event) => {
-  let inRange = moment(value).isBefore(moment());
+  let inRange = moment(value).isBefore(moment().format("YYYY-MM-DD"));
   if (inRange) {
     swalMessage({
       title: "Expiry date cannot be past Date.",
