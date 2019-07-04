@@ -380,10 +380,7 @@ class EmployeeMasterIndex extends Component {
 
 function mapStateToProps(state) {
   return {
-    hospitalservices: state.hospitalservices,
-    servicetype: state.servicetype,
     subdepartment: state.subdepartment,
-    employeedetails: state.employeedetails,
     designations: state.designations
   };
 }
@@ -391,10 +388,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getServices: AlgaehActions,
-      getServiceTypes: AlgaehActions,
       getSubDepartment: AlgaehActions,
-      getEmployeeDetails: AlgaehActions,
       getDesignations: AlgaehActions
     },
     dispatch

@@ -234,8 +234,8 @@ const getPurchaseDetails = ($this, row) => {
           // data.vendor_id = vendor_id;
 
           // data.purchase_detail = data.po_entry_detail;
-          data.location_name = row.loc_description;
-          data.vendor_name = row.vendor_name;
+          // data.location_name = row.loc_description;
+          // data.vendor_name = row.vendor_name;
           data.cannotEdit = false;
           $this.setState(data, () => {
             getData($this);
@@ -512,7 +512,7 @@ const generateDeliveryNoteReceipt = data => {
       myWindow.document.write(
         "<iframe src= '" + url + "' width='100%' height='100%' />"
       );
-      //myWindow.document.title = 'Delivery Note Receipt';
+      myWindow.document.title = "Delivery Note Receipt";
     }
   });
 };
@@ -545,6 +545,7 @@ const getCtrlCode = ($this, docNumber, row) => {
           }
           data.dn_entry_detail = dn_entry_detail;
 
+          debugger;
           if (
             $this.props.delivery_note_number !== undefined &&
             $this.props.delivery_note_number.length !== 0
@@ -558,10 +559,10 @@ const getCtrlCode = ($this, docNumber, row) => {
           data.cannotEdit = true;
 
           data.addedItem = true;
-          if (row !== undefined) {
-            data.location_name = row.loc_description;
-            data.vendor_name = row.vendor_name;
-          }
+          // if (row !== undefined) {
+          //   data.location_name = row.loc_description;
+          //   data.vendor_name = row.vendor_name;
+          // }
           data.addItemButton = true;
           $this.setState(data, () => {
             getData($this);

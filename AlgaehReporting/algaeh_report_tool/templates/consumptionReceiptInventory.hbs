@@ -2,40 +2,58 @@
 
 <body>
     <div class="print-body">
+        <section>
 
+            <table class="tableForLabel" cell-padding="0">
+
+                <tr>
+                    <td><label class="textEnLft">Consumption No</label>:<span
+                            class="valueText">{{consumption_number}}</span>
+                    </td>
+                    <td><label class="textEnLft">Consumption Date</label>:<span
+                            class="valueText">{{consumption_date}}</span>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td><label class="textEnLft">Location</label>:<span
+                            class="valueText">{{location_description}}</span>
+                    </td>
+                    <td><label class="textEnLft">Consumed By</label>:<span class="valueText">{{full_name}} -
+                            {{employee_code}}</span>
+                    </td>
+                </tr>
+
+                {{!-- <td>{{consumption_number}}</td>
+                        <td>{{consumption_date}}</td> --}}
+
+            </table>
+
+
+        </section>
         <section>
             <table class="tableForData" cell-padding="0">
                 <thead>
                     <tr>
                         <th>Sl No.</th>
-                        <th>Consumption No.</th>
-                        <th>Consumption Date</th>
                         <th>Item Name</th>
+                        <th>UOM</th>
                         <th>batchno</th>
-                        <th>unit_cost</th>
-                        <th>quantity</th>
-                        <th>extended_cost</th>
-                        <th>uom_description</th>
-
-
-                        <th>{{sub_department_name}}</th>
-                        <th>{{employee_code}}</th>
-                        <th>{{full_name}}</th>
+                        <th>Unit Cost</th>
+                        <th>Qty</th>
+                        <th>Ext. Cost</th>
                     </tr>
                 </thead>
                 <tbody>
                     {{#each detailList}}
                     <tr>
                         <td>{{inc @index}}</td>
-                        <td>{{consumption_number}}</td>
-                        <td>{{consumption_date}}</td>
                         <td>{{item_description}}</td>
+                        <td>{{uom_description}}</td>
                         <td>{{batchno}}</td>
-                        <td>{{unit_cost}}</td>
-                        <td class="numberFld">{{quantity}}</td>
-                        <td>{{extended_cost}}</td>
-
-                        <td class="numberFld">{{uom_description}}</td>
+                        <td class="numberFld">{{unit_cost}}</td>
+                        <td>{{quantity}}</td>
+                        <td class="numberFld">{{extended_cost}}</td>
                     </tr>
                     {{/each }}
 

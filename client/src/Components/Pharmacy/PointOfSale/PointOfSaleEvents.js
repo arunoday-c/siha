@@ -58,6 +58,7 @@ const changeTexts = ($this, ctrl, e) => {
 };
 
 const getPosEntry = ($this, pos_number) => {
+  ClearData($this);
   algaehApiCall({
     uri: "/posEntry/getPosEntry",
     module: "pharmacy",
@@ -102,6 +103,7 @@ const getPosEntry = ($this, pos_number) => {
           data.pos_customer_type = "OP";
         }
         data.dataExitst = true;
+        data.OTItemAddDis = true;
 
         data.insured = data.insurance_yesno;
         data.mode_of_pay = data.insurance_yesno === "Y" ? "2" : "1";

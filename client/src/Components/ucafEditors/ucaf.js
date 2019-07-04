@@ -9,7 +9,7 @@ import {
 import { algaehApiCall } from "../../utils/algaehApiCall";
 import _ from "lodash";
 import AlgaehFileUploader from "../Wrapper/algaehFileUpload";
-import EditorEvents from "./EditorEvents"
+import EditorEvents from "./EditorEvents";
 
 export default class UcafEditor extends Component {
   constructor(props) {
@@ -27,8 +27,7 @@ export default class UcafEditor extends Component {
   }
 
   saveAndPrintUcaf(e) {
-    
-    EditorEvents().saveAndPrintUcaf(this,e)  
+    EditorEvents().saveAndPrintUcaf(this, e);
   }
 
   // getPrimaryCardNumber() {
@@ -42,31 +41,29 @@ export default class UcafEditor extends Component {
   //   }
   // }
 
-  ChangeEventHandler(e){
-    EditorEvents().ChangeEventHandler(this,e)
+  ChangeEventHandler(e) {
+    EditorEvents().ChangeEventHandler(this, e);
   }
 
-  radioChange(e){
-    EditorEvents().ucafradioChange(this,e)
+  radioChange(e) {
+    EditorEvents().ucafradioChange(this, e);
   }
 
-  componentDidMount(){
-    
+  componentDidMount() {
+    if (
+      this.props.dataProps.hims_f_ucaf_header !== undefined &&
+      this.props.dataProps.hims_f_ucaf_header.length > 0
+    ) {
+      let data = this.props.dataProps.hims_f_ucaf_header[0];
+      let insurance = this.props.dataProps.hims_f_ucaf_insurance_details[0];
 
-    if(this.props.dataProps.hims_f_ucaf_header !== undefined &&
-      this.props.dataProps.hims_f_ucaf_header.length > 0){
-        
-        let data = this.props.dataProps.hims_f_ucaf_header[0];
-        let insurance = this.props.dataProps.hims_f_ucaf_insurance_details[0]
-
-        data.ucaf_services = this.props.dataProps.hims_f_ucaf_services
-        data.ucaf_medication = this.props.dataProps.hims_f_ucaf_medication
-        this.setState({...this.state, ...data, ...insurance})
+      data.ucaf_services = this.props.dataProps.hims_f_ucaf_services;
+      data.ucaf_medication = this.props.dataProps.hims_f_ucaf_medication;
+      this.setState({ ...this.state, ...data, ...insurance });
     }
   }
 
   render() {
-
     return (
       <div className="">
         <React.Fragment>
@@ -82,7 +79,8 @@ export default class UcafEditor extends Component {
                             To be completed & ID verified by the
                             reception/nurse:
                           </h5>
-                        </div>  <div className="col-6">
+                        </div>{" "}
+                        <div className="col-6">
                           <label>Provider Name</label>
                           <h6>{this.state.provider_name}</h6>
                         </div>
@@ -92,8 +90,11 @@ export default class UcafEditor extends Component {
                         </div>
                         <div className="col-4">
                           <label>TPA Company Name</label>
-                          <h6>{this.state.primary_tpa_insurance_company_name}</h6>
-                        </div> <div className="col-4">
+                          <h6>
+                            {this.state.primary_tpa_insurance_company_name}
+                          </h6>
+                        </div>{" "}
+                        <div className="col-4">
                           <label>Patient File Number</label>
                           <h6>{this.state.patient_code}</h6>
                         </div>
@@ -101,14 +102,10 @@ export default class UcafEditor extends Component {
                           <label>Department</label>
                           <h6>{this.state.sub_department_name}</h6>
                         </div>
-
                         <div className="col-4">
                           <label>Date of Visit</label>
                           <h6>{this.state.visit_date}</h6>
                         </div>
-
-
-
                         <div
                           className="col-6 customRadio"
                           style={{ paddingTop: 24, borderBottom: "none" }}
@@ -119,8 +116,7 @@ export default class UcafEditor extends Component {
                               name="patient_marital_status"
                               value="Single"
                               checked={
-                                this.state.patient_marital_status ===
-                                "Single"
+                                this.state.patient_marital_status === "Single"
                                   ? true
                                   : false
                               }
@@ -134,8 +130,7 @@ export default class UcafEditor extends Component {
                               name="patient_marital_status"
                               value="Married"
                               checked={
-                                this.state.patient_marital_status ===
-                                "Married"
+                                this.state.patient_marital_status === "Married"
                                   ? true
                                   : false
                               }
@@ -148,8 +143,7 @@ export default class UcafEditor extends Component {
                               name="patient_marital_status"
                               value="PlanType"
                               checked={
-                                this.state.patient_marital_status ===
-                                "PlanType"
+                                this.state.patient_marital_status === "PlanType"
                                   ? true
                                   : false
                               }
@@ -329,8 +323,7 @@ export default class UcafEditor extends Component {
                                   className: "txt-fld",
                                   name: "",
                                   value:
-                                    this.state.insurance_holder ===
-                                    undefined
+                                    this.state.insurance_holder === undefined
                                       ? this.state.insurance_holder === ""
                                         ? this.state.patient_full_name
                                         : this.state.insurance_holder
@@ -408,9 +401,7 @@ export default class UcafEditor extends Component {
                               type="checkbox"
                               name="caseType"
                               checked={
-                                this.state.case_type === "IP"
-                                  ? true
-                                  : false
+                                this.state.case_type === "IP" ? true : false
                               }
                             />
                             <span>Inpatient</span>
@@ -420,9 +411,7 @@ export default class UcafEditor extends Component {
                               type="checkbox"
                               name="caseType"
                               checked={
-                                this.state.case_type === "OP"
-                                  ? true
-                                  : false
+                                this.state.case_type === "OP" ? true : false
                               }
                             />
                             <span>Outpatient</span>
@@ -435,8 +424,7 @@ export default class UcafEditor extends Component {
                               name="patient_emergency_case"
                               value="null"
                               checked={
-                                this.state.patient_emergency_case !==
-                                null
+                                this.state.patient_emergency_case !== null
                                   ? true
                                   : false
                               }
@@ -450,8 +438,7 @@ export default class UcafEditor extends Component {
                               name="patient_emergency_case"
                               value="L1"
                               checked={
-                                this.state.patient_emergency_case ===
-                                "L1"
+                                this.state.patient_emergency_case === "L1"
                                   ? true
                                   : false
                               }
@@ -465,8 +452,7 @@ export default class UcafEditor extends Component {
                               name="patient_emergency_case"
                               value="L2"
                               checked={
-                                this.state.patient_emergency_case ===
-                                "L2"
+                                this.state.patient_emergency_case === "L2"
                                   ? true
                                   : false
                               }
@@ -480,8 +466,7 @@ export default class UcafEditor extends Component {
                               name="patient_emergency_case"
                               value="L3"
                               checked={
-                                this.state.patient_emergency_case ===
-                                "L3"
+                                this.state.patient_emergency_case === "L3"
                                   ? true
                                   : false
                               }
@@ -504,7 +489,7 @@ export default class UcafEditor extends Component {
                               "/" +
                               this.state.patient_bp_dia,
                             events: {
-                              onChange:this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this)
                             },
                             option: {
                               type: "text"
@@ -522,7 +507,7 @@ export default class UcafEditor extends Component {
                             name: "patient_pulse",
                             value: this.state.patient_pulse,
                             events: {
-                              onChange:this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this)
                             },
                             option: {
                               type: "text"
@@ -540,7 +525,7 @@ export default class UcafEditor extends Component {
                             name: "patient_temp",
                             value: this.state.patient_temp,
                             events: {
-                              onChange:this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this)
                             },
                             option: {
                               type: "text"
@@ -558,7 +543,7 @@ export default class UcafEditor extends Component {
                             name: "patient_weight",
                             value: this.state.patient_weight,
                             events: {
-                              onChange:this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this)
                             },
                             option: {
                               type: "text"
@@ -576,7 +561,7 @@ export default class UcafEditor extends Component {
                             name: "patient_height",
                             value: this.state.patient_height,
                             events: {
-                              onChange:this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this)
                             },
                             option: {
                               type: "text"
@@ -594,7 +579,7 @@ export default class UcafEditor extends Component {
                             name: "patient_respiratory_rate",
                             value: this.state.patient_respiratory_rate,
                             events: {
-                              onChange:this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this)
                             },
                             option: {
                               type: "text"
@@ -610,10 +595,9 @@ export default class UcafEditor extends Component {
                           textBox={{
                             className: "txt-fld",
                             name: "patient_duration_of_illness",
-                            value:
-                              this.state.patient_duration_of_illness,
+                            value: this.state.patient_duration_of_illness,
                             events: {
-                              onChange:this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this)
                             },
                             option: {
                               type: "text"
@@ -629,10 +613,9 @@ export default class UcafEditor extends Component {
                           textBox={{
                             className: "txt-fld",
                             name: "patient_chief_comp_main_symptoms",
-                            value:
-                              this.state.patient_chief_comp_main_symptoms,
+                            value: this.state.patient_chief_comp_main_symptoms,
                             events: {
-                              onChange:this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this)
                             },
                             option: {
                               type: "text"
@@ -648,10 +631,9 @@ export default class UcafEditor extends Component {
                           textBox={{
                             className: "txt-fld",
                             name: "patient_significant_signs",
-                            value:
-                              this.state.patient_significant_signs,
+                            value: this.state.patient_significant_signs,
                             events: {
-                              onChange:this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this)
                             },
                             option: {
                               type: "text"
@@ -669,7 +651,7 @@ export default class UcafEditor extends Component {
                             name: "patient_other_conditions",
                             value: this.state.patient_other_conditions,
                             events: {
-                              onChange:this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this)
                             },
                             option: {
                               type: "text"
@@ -687,7 +669,7 @@ export default class UcafEditor extends Component {
                             name: "patient_diagnosys",
                             value: this.state.patient_diagnosys,
                             events: {
-                              onChange:this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this)
                             },
                             option: {
                               type: "text"
@@ -705,7 +687,7 @@ export default class UcafEditor extends Component {
                             name: "patient_principal_code_1",
                             value: this.state.patient_principal_code_1,
                             events: {
-                              onChange:this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this)
                             },
                             option: {
                               type: "text"
@@ -723,7 +705,7 @@ export default class UcafEditor extends Component {
                             name: "patient_principal_code_2",
                             value: this.state.patient_principal_code_2,
                             events: {
-                              onChange:this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this)
                             },
                             option: {
                               type: "text"
@@ -741,7 +723,7 @@ export default class UcafEditor extends Component {
                             name: "patient_principal_code_3",
                             value: this.state.patient_principal_code_3,
                             events: {
-                              onChange:this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this)
                             },
                             option: {
                               type: "text"
@@ -759,7 +741,7 @@ export default class UcafEditor extends Component {
                             name: "patient_principal_code_4",
                             value: this.state.patient_principal_code_4,
                             events: {
-                              onChange:this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this)
                             },
                             option: {
                               type: "text"
@@ -800,7 +782,8 @@ export default class UcafEditor extends Component {
                               name="patient_complaint_type"
                               value="CONGENTIAL"
                               checked={
-                                this.state.patient_complaint_type === "CONGENTIAL"
+                                this.state.patient_complaint_type ===
+                                "CONGENTIAL"
                                   ? true
                                   : false
                               }
@@ -828,7 +811,8 @@ export default class UcafEditor extends Component {
                               name="patient_complaint_type"
                               value="WORKRELATED"
                               checked={
-                                this.state.patient_complaint_type === "WORKRELATED"
+                                this.state.patient_complaint_type ===
+                                "WORKRELATED"
                                   ? true
                                   : false
                               }
@@ -842,7 +826,8 @@ export default class UcafEditor extends Component {
                               name="patient_complaint_type"
                               value="VACCINATION"
                               checked={
-                                this.state.patient_complaint_type === "VACCINATION"
+                                this.state.patient_complaint_type ===
+                                "VACCINATION"
                                   ? true
                                   : false
                               }
@@ -870,7 +855,8 @@ export default class UcafEditor extends Component {
                               name="patient_complaint_type"
                               value="PSYCHIATRIC"
                               checked={
-                                this.state.patient_complaint_type === "PSYCHIATRIC"
+                                this.state.patient_complaint_type ===
+                                "PSYCHIATRIC"
                                   ? true
                                   : false
                               }
@@ -884,7 +870,8 @@ export default class UcafEditor extends Component {
                               name="patient_complaint_type"
                               value="INFERTILITY"
                               checked={
-                                this.state.patient_complaint_type === "INFERTILITY"
+                                this.state.patient_complaint_type ===
+                                "INFERTILITY"
                                   ? true
                                   : false
                               }
@@ -898,7 +885,8 @@ export default class UcafEditor extends Component {
                               name="patient_complaint_type"
                               value="PREGNANCY"
                               checked={
-                                this.state.patient_complaint_type === "PREGNANCY"
+                                this.state.patient_complaint_type ===
+                                "PREGNANCY"
                                   ? true
                                   : false
                               }
@@ -918,19 +906,21 @@ export default class UcafEditor extends Component {
                             name: "patient_indicated_LMP",
                             value: this.state.patient_indicated_LMP,
                             events: {
-                              onChange:this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this)
                             },
                             others: {
                               type: "number",
-                              disabled:this.state.patient_complaint_type === "PREGNANCY"
-                                ? false
-                                : true
+                              disabled:
+                                this.state.patient_complaint_type ===
+                                "PREGNANCY"
+                                  ? false
+                                  : true
                             }
                           }}
                         />
 
                         <div className="col-12 margin-top-15">
-                          <h5 style={{margin:0}}>
+                          <h5 style={{ margin: 0 }}>
                             Suggestive line(s) of management: Kindly, enumerate
                             the recommended investigation, and/or procedures{" "}
                             <b>For outpatient approvals only:</b>
@@ -987,7 +977,7 @@ export default class UcafEditor extends Component {
                         </div>
 
                         <div className="col-12 margin-top-15">
-                          <h5 style={{margin:0}}>
+                          <h5 style={{ margin: 0 }}>
                             Providers Approval/Coding staff must review/code the
                             recommended services(s) and allocate cost and
                             complete the following:
@@ -1026,7 +1016,7 @@ export default class UcafEditor extends Component {
                             ]}
                             keyId="hims_f_ucaf_medication_id"
                             dataSource={{
-                              data: this.props.dataProps.ucaf_medication
+                              data: this.state.ucaf_medication
                             }}
                             paging={{ page: 0, rowsPerPage: 10 }}
                           />

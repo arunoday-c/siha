@@ -350,10 +350,16 @@ const getCtrlCode = ($this, docNumber) => {
 
         for (let i = 0; i < data.po_entry_detail.length; i++) {
           data.po_entry_detail[i].authorize_quantity =
-            data.po_entry_detail[i].total_quantity;
+            data.authorize1 === "N"
+              ? data.po_entry_detail[i].total_quantity
+              : data.po_entry_detail[i].authorize_quantity;
           data.po_entry_detail[i].quantity_outstanding =
-            data.po_entry_detail[i].total_quantity;
-          data.po_entry_detail[i].rejected_quantity = 0;
+            data.authorize1 === "N"
+              ? data.po_entry_detail[i].total_quantity
+              : data.po_entry_detail[i].quantity_outstanding;
+          data.po_entry_detail[i].rejected_quantity =
+            parseFloat(data.po_entry_detail[i].total_quantity) -
+            parseFloat(data.po_entry_detail[i].authorize_quantity);
         }
       }
       data.saveEnable = true;
@@ -517,7 +523,46 @@ const generatePOReceipt = data => {
       myWindow.document.write(
         "<iframe src= '" + url + "' width='100%' height='100%' />"
       );
-      //myWindow.document.title = 'Delivery Note Receipt';
+      myWindow.document.title = "Purchase Order Receipt";
+    }
+  });
+};
+
+const generatePOReceiptNoPrice = data => {
+  console.log("data:", data);
+  algaehApiCall({
+    uri: "/report",
+    method: "GET",
+    module: "reports",
+    headers: {
+      Accept: "blob"
+    },
+    others: { responseType: "blob" },
+    data: {
+      report: {
+        reportName:
+          data.po_from === "PHR"
+            ? "poPharmacyProcurementNoPrice"
+            : "poInventoryProcurementNoPrice",
+        reportParams: [
+          {
+            name: "purchase_number",
+            value: data.purchase_number
+          }
+        ],
+        outputFileType: "PDF"
+      }
+    },
+    onSuccess: res => {
+      const url = URL.createObjectURL(res.data);
+      let myWindow = window.open(
+        "{{ product.metafields.google.custom_label_0 }}",
+        "_blank"
+      );
+      myWindow.document.write(
+        "<iframe src= '" + url + "' width='100%' height='100%' />"
+      );
+      myWindow.document.title = "Purchase Order Receipt";
     }
   });
 };
@@ -598,5 +643,6 @@ export {
   loctexthandle,
   AuthorizePOEntry,
   getVendorMaster,
-  generatePOReceipt
+  generatePOReceipt,
+  generatePOReceiptNoPrice
 };

@@ -284,7 +284,6 @@ class PointOfSale extends Component {
                       }}
                     />
                     <h6>
-                      {console.log(typeof this.state.mode_of_pay)}
                       {this.state.mode_of_pay === "1"
                         ? "Self"
                         : this.state.mode_of_pay === "2"

@@ -33,13 +33,13 @@
                         <th>Item Code</th>
                         <th>unit</th>
                         <th>Qty</th>
-                        <th>Unit Price</th>
+                        {{!-- <th>Unit Price</th>
                         <th>Ext. Price</th>
                         <th>Disc. %</th>
                         <th>Disc. Amt</th>
                         <th>Net Ext. Amt.</th>
                         <th>Tax Amt.</th>
-                        <th>Total Amt. </th>
+                        <th>Total Amt. </th> --}}
 
                     </tr>
                 </thead>
@@ -52,20 +52,20 @@
                         <td>{{item_code}}</td>
                         <td>{{uom_description}}</td>
                         <td>{{total_quantity}}</td>
-                        <td>{{unit_price}}</td>
+                        {{!-- <td>{{unit_price}}</td>
                         <td>{{extended_price}}</td>
                         <td>{{sub_discount_percentage}}</td>
                         <td>{{sub_discount_amount}}</td>
                         <td>{{net_extended_cost}}</td>
                         <td>{{tax_amount}}</td>
-                        <td>{{total_amount}}</td>
+                        <td>{{total_amount}}</td> --}}
 
                     </tr>
                     {{/each }}
-                    <tr class="footerTotalDown">
+                    {{!-- <tr class="footerTotalDown">
                         <td colspan="11">Total Net Amount</td>
                         <td>{{net_payable}}</td>
-                    </tr>
+                    </tr> --}}
                 </tbody>
             </table>
         </section>
