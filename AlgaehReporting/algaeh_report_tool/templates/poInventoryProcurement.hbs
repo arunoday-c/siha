@@ -10,31 +10,15 @@
                 <tr>
                     <td><label class="textEnLft">Purchase No</label>:<span class="valueText">{{purchase_number}}</span>
                     </td>
-                    <td><label class="textEnLft">Purchase Date</label>:<span class="valueText">{{po_date }}</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
-                </tr>
-                <tr>
                     <td><label class="textEnLft">Purchase For</label>:<span
                             class="valueText">{{location_description}}</span></td>
+
+                </tr>
+                <tr>
+                    <td><label class="textEnLft">Purchase Date</label>:<span class="valueText">{{po_date }}</span>
+                    </td>
                     <td><label class="textEnLft">Vendor Name</label>:<span class="valueText">{{vendor_name}}</span></td>
                 </tr>
-
-                {{!-- <tr>
-                    <td><label class="textEnLft">PO From</label>:<span
-                            class="valueText">{{header.invoice_number}}</span></td>
-                    <td><label class="textEnLft">From Location</label>:<span
-                            class="valueText">{{dateTime header.invoice_date "date"}}</span></td>
-                </tr> --}}
-
-                {{!-- <tr>
-                    <td><label class="textEnLft">Doctor</label>:<span class="valueText">{{full_name}}</span><label
-                            class="textArRht">لطبيب</label></td>
-                    <td><label class="textEnLft">Department</label>:<span
-                            class="valueText">{{sub_department_name}}</span><label class="textArRht">القسم</label></td>
-                </tr> --}}
 
             </table>
 
@@ -48,14 +32,14 @@
                         <th>Item Name</th>
                         <th>Item Code</th>
                         <th>unit</th>
-                        <th>Quantity</th>
+                        <th>Qty</th>
                         <th>Unit Price</th>
-                        <th>extended_price</th>
-                        <th>Discount %</th>
-                        <th>Discount </th>
-                        <th>After Discount </th>
-                        <th>Tax </th>
-                        <th>Amount </th>
+                        <th>Ext. Price</th>
+                        <th>Disc. %</th>
+                        <th>Disc. Amt</th>
+                        <th>Net Ext. Amt.</th>
+                        <th>Tax Amt.</th>
+                        <th>Total Amt. </th>
 
                     </tr>
                 </thead>
@@ -78,7 +62,10 @@
 
                     </tr>
                     {{/each }}
-                    net_payable: {{net_payable}}
+                    <tr class="footerTotalDown">
+                        <td colspan="11">Total Net Amount</td>
+                        <td>{{net_payable}}</td>
+                    </tr>
                 </tbody>
             </table>
         </section>
