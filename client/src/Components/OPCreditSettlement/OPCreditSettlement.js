@@ -138,7 +138,7 @@ class OPCreditSettlement extends Component {
 										label: 'Print Receipt',
 										events: {
 											onClick: () => {
-												generateOPCreditReceipt(this);
+												generateOPCreditReceipt(this.state);
 											}
 										}
 									}

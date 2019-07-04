@@ -4,10 +4,12 @@ const executePDF = function executePDFMethod(options) {
     try {
       let cash_collected = options.result[0];
       let cash_retuned = options.result[1];
+
+      const decimal_places = options.args.crypto.decimal_places;
       let total_returned = _.sumBy(cash_retuned, s =>
         parseFloat(s.return_amout)
-      ).toFixed(3);
-      const decimal_places = options.args.crypto.decimal_places;
+      ).toFixed(decimal_places);
+
       const total_cash = _.chain(cash_collected)
         .filter(f => f.pay_type == "CA")
         .sumBy(s => parseFloat(s.amount))
