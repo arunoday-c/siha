@@ -278,9 +278,9 @@ class ItemDetails extends Component {
                       <label className="checkbox" style={{ color: "#212529" }}>
                         <input
                           type="checkbox"
-                          name="required_batchno_expiry"
+                          name="exp_date_not_required"
                           checked={
-                            this.state.required_batchno_expiry === "Y"
+                            this.state.exp_date_not_required === "Y"
                               ? true
                               : false
                           }
