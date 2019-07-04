@@ -4,7 +4,7 @@ const executePDF = function executePDFMethod(options) {
     try {
       const header = options.result[0].length > 0 ? options.result[0] : [{}];
       const detail = options.result[1];
-      let otherObj = {};
+      // let otherObj = {};
       const result = {
         header: { ...header[0], ...options.mainData[0] },
         detail: detail,

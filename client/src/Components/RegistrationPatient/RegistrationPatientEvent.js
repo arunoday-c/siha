@@ -333,7 +333,7 @@ const generateReceipt = $this => {
 
 const getCtrlCode = ($this, patcode) => {
   debugger;
-  AlgaehLoader({ show: true });
+  // AlgaehLoader({ show: true });
   let provider_id = $this.props.provider_id || null;
   let sub_department_id = $this.props.sub_department_id || null;
   let visit_type = $this.props.visit_type || null;

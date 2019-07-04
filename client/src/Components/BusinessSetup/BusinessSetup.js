@@ -64,45 +64,51 @@ class BusinessSetup extends Component {
                   />
                 }
               </li>
-              <li
-                algaehtabs={"Speciality"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "speciality"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"Category"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "category"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"CategorySpeciality"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "category_speciality_map"
-                    }}
-                  />
-                }
-              </li>
+              {this.state.HIMS_Active === true ? (
+                <li
+                  algaehtabs={"Speciality"}
+                  className={"nav-item tab-button"}
+                  onClick={this.openTab.bind(this)}
+                >
+                  {
+                    <AlgaehLabel
+                      label={{
+                        fieldName: "speciality"
+                      }}
+                    />
+                  }
+                </li>
+              ) : null}
+              {this.state.HIMS_Active === true ? (
+                <li
+                  algaehtabs={"Category"}
+                  className={"nav-item tab-button"}
+                  onClick={this.openTab.bind(this)}
+                >
+                  {
+                    <AlgaehLabel
+                      label={{
+                        fieldName: "category"
+                      }}
+                    />
+                  }
+                </li>
+              ) : null}
+              {this.state.HIMS_Active === true ? (
+                <li
+                  algaehtabs={"CategorySpeciality"}
+                  className={"nav-item tab-button"}
+                  onClick={this.openTab.bind(this)}
+                >
+                  {
+                    <AlgaehLabel
+                      label={{
+                        fieldName: "category_speciality_map"
+                      }}
+                    />
+                  }
+                </li>
+              ) : null}
               <li
                 algaehtabs={"Shift"}
                 className={"nav-item tab-button"}

@@ -19,16 +19,25 @@ import EmpMasterIOputs from "../../../../Models/EmployeeMaster";
 import { getCookie } from "../../../../utils/algaehApiCall";
 import { InsertUpdateEmployee } from "./EmployeeMasterEvents";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
+import { AlgaehOpenContainer } from "../../../../utils/GlobalFunctions";
+import _ from "lodash";
 
 class EmployeeMaster extends Component {
   constructor(props) {
     super(props);
 
+    let Activated_Modueles = JSON.parse(
+      AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
+    );
+    const HIMS_Active = _.filter(Activated_Modueles, f => {
+      return f.module_code === "FTDSK";
+    });
     this.state = {
       pageDisplay: "PersonalDetails",
       personalDetails: {},
       department_and_other: {},
-      payroll: {}
+      payroll: {},
+      HIMS_Active: HIMS_Active.length > 0 ? true : false
     };
   }
 
@@ -99,46 +108,35 @@ class EmployeeMaster extends Component {
       });
     }
 
-    // if (
-    //   this.props.userdrtails === undefined ||
-    //   this.props.userdrtails.length === 0
-    // ) {
-    this.props.getUserDetails({
-      uri: "/algaehappuser/selectLoginUser",
-      method: "GET",
-      redux: {
-        type: "USER_DETAILS_GET_DATA",
-        mappingName: "userdrtails"
+    if (this.state.HIMS_Active === true) {
+      if (
+        this.props.empservicetype === undefined ||
+        this.props.empservicetype.length === 0
+      ) {
+        this.props.getServiceTypes({
+          uri: "/serviceType",
+          module: "masterSettings",
+          method: "GET",
+          redux: {
+            type: "SERVIES_TYPES_GET_DATA",
+            mappingName: "empservicetype"
+          }
+        });
       }
-    });
-    // }
-    if (
-      this.props.empservicetype === undefined ||
-      this.props.empservicetype.length === 0
-    ) {
-      this.props.getServiceTypes({
-        uri: "/serviceType",
-        module: "masterSettings",
-        method: "GET",
-        redux: {
-          type: "SERVIES_TYPES_GET_DATA",
-          mappingName: "empservicetype"
-        }
-      });
-    }
-    if (
-      this.props.empservices === undefined ||
-      this.props.empservices.length === 0
-    ) {
-      this.props.getServices({
-        uri: "/serviceType/getService",
-        module: "masterSettings",
-        method: "GET",
-        redux: {
-          type: "SERVICES_GET_DATA",
-          mappingName: "empservices"
-        }
-      });
+      if (
+        this.props.empservices === undefined ||
+        this.props.empservices.length === 0
+      ) {
+        this.props.getServices({
+          uri: "/serviceType/getService",
+          module: "masterSettings",
+          method: "GET",
+          redux: {
+            type: "SERVICES_GET_DATA",
+            mappingName: "empservices"
+          }
+        });
+      }
     }
 
     if (
@@ -526,7 +524,6 @@ class EmployeeMaster extends Component {
 
 function mapStateToProps(state) {
   return {
-    userdrtails: state.userdrtails,
     empservicetype: state.empservicetype,
     empservices: state.empservices,
     servicetypelist: state.servicetypelist,
@@ -540,7 +537,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getUserDetails: AlgaehActions,
       getServiceTypes: AlgaehActions,
       getServices: AlgaehActions,
       getSubDepartment: AlgaehActions,

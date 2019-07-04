@@ -18,8 +18,12 @@ module.exports = {
             CASE WHEN PH.po_from = 'INV' THEN (select material_requisition_number from hims_f_inventory_material_header \
             where hims_f_inventory_material_header_id=PH.inv_requisition_id ) \
             else (select material_requisition_number from hims_f_pharamcy_material_header  \
-            where hims_f_pharamcy_material_header_id=PH.inv_requisition_id) END as material_requisition_number\
-            from  hims_f_procurement_po_header PH where purchase_number=?",
+            where hims_f_pharamcy_material_header_id=PH.inv_requisition_id) END as material_requisition_number,\
+            CASE PH.po_from WHEN 'INV' then IL.location_description \
+            else PL.location_description end as location_name, V.vendor_name\
+            from  hims_f_procurement_po_header PH inner join hims_d_vendor V on PH.vendor_id = V.hims_d_vendor_id \
+            left join hims_d_pharmacy_location PL on PH.pharmcy_location_id = PL.hims_d_pharmacy_location_id\
+            left join hims_d_inventory_location IL on PH.inventory_location_id = IL.hims_d_inventory_location_id  where purchase_number=?",
           values: [req.query.purchase_number],
           printQuery: true
         })

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import jwt from "jsonwebtoken";
-import config from "../keys/keys";
+const config = require("algaeh-keys/keys");
 
 export default ({ db }) => {
   let api = Router();
@@ -13,7 +13,7 @@ export default ({ db }) => {
     } else {
       var token = req.body.token || req.query.token || req.headers["x-api-key"];
       if (token) {
-        jwt.verify(token, config.SECRETKey, (err, decoded) => {
+        jwt.verify(token, config.default.SECRETKey, (err, decoded) => {
           if (err) {
             return res.json({
               success: false,

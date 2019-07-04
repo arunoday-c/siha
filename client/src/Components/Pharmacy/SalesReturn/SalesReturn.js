@@ -191,40 +191,45 @@ class SalesReturn extends Component {
             style={{ marginTop: 76, paddingBottom: 10 }}
           >
             {/* Patient code */}
-            <div className="col-lg-7">
-              <div className="row">
-                <AlagehFormGroup
-                  div={{ className: "col-lg-4" }}
-                  label={{
-                    forceLabel: "POS Number"
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "pos_number",
-                    value: this.state.pos_number,
-                    events: {
-                      onChange: null
-                    },
-                    others: {
-                      disabled: true
-                    }
-                  }}
-                />
+            <div className="col-lg-3">
+              <div
+                className="row"
+                style={{
+                  border: " 1px solid #ced4d9",
+                  borderRadius: 5,
+                  marginLeft: 0,
+                  height: 50
+                }}
+              >
+                <div className="col">
+                  <AlgaehLabel label={{ forceLabel: "POS Number" }} />
+                  <h6>
+                    {this.state.pos_number
+                      ? this.state.pos_number
+                      : "----------"}
+                  </h6>
+                </div>
                 <div
-                  className="col-lg-2 print_actions"
-                  style={{ marginTop: "auto" }}
+                  className="col-lg-2"
+                  style={{ borderLeft: "1px solid #ced4d8" }}
                 >
-                  <span
-                    style={{ cursor: "pointer" }}
-                    className="fas fa-search fa-2x"
-                    disabled={
-                      this.state.pos_customer_type === "O" ? false : true
-                    }
+                  <i
+                    className="fas fa-search fa-lg"
+                    style={{
+                      paddingTop: 17,
+                      paddingLeft: 3,
+                      cursor: "pointer",
+                      pointerEvents:
+                        this.state.postEnable === true ? "none" : ""
+                    }}
                     onClick={POSSearch.bind(this, this)}
                   />
                 </div>
-
-                <div className="col-lg-3">
+              </div>
+            </div>
+            <div className="col-lg-9">
+              <div className="row">
+                <div className="col">
                   <AlgaehLabel
                     label={{
                       forceLabel: "Location"
@@ -233,27 +238,21 @@ class SalesReturn extends Component {
                   <h6>
                     {this.state.location_description
                       ? this.state.location_description
-                      : "Location"}
+                      : "--------"}
                   </h6>
                 </div>
 
-                <div className="col-lg-3">
+                <div className="col">
                   <AlgaehLabel
                     label={{
                       forceLabel: "Visit Code"
                     }}
                   />
                   <h6>
-                    {this.state.visit_code
-                      ? this.state.visit_code
-                      : "Visit Code"}
+                    {this.state.visit_code ? this.state.visit_code : "--------"}
                   </h6>
                 </div>
-              </div>
-            </div>
-            <div className="col-lg-5">
-              <div className="row">
-                <div className="col-lg-4">
+                <div className="col">
                   <AlgaehLabel
                     label={{
                       forceLabel: "Patient Code"
@@ -262,34 +261,32 @@ class SalesReturn extends Component {
                   <h6>
                     {this.state.patient_code
                       ? this.state.patient_code
-                      : "Patient Code"}
+                      : "--------"}
                   </h6>
                 </div>
-                <div className="col-lg-4">
+                <div className="col">
                   <AlgaehLabel
                     label={{
                       forceLabel: "Patient Name"
                     }}
                   />
                   <h6>
-                    {this.state.full_name
-                      ? this.state.full_name
-                      : "Patient Name"}
+                    {this.state.full_name ? this.state.full_name : "--------"}
                   </h6>
                 </div>
 
-                <div className="col-lg-4">
+                <div className="col">
                   <AlgaehLabel
                     label={{
                       forceLabel: "Mode of Payment"
                     }}
                   />
                   <h6>
-                    {this.state.mode_of_pay
-                      ? this.state.mode_of_pay === "1"
-                        ? "Self"
-                        : "Insurance"
-                      : "Mode of Payment"}
+                    {this.state.mode_of_pay === "1"
+                      ? "Self"
+                      : this.state.mode_of_pay === "2"
+                      ? "Insurance"
+                      : "-----------"}
                   </h6>
                 </div>
               </div>

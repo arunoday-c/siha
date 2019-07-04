@@ -58,6 +58,7 @@ const changeTexts = ($this, ctrl, e) => {
 };
 
 const getPosEntry = ($this, pos_number) => {
+  ClearData($this);
   algaehApiCall({
     uri: "/posEntry/getPosEntry",
     module: "pharmacy",
@@ -102,9 +103,13 @@ const getPosEntry = ($this, pos_number) => {
           data.pos_customer_type = "OP";
         }
         data.dataExitst = true;
+        data.OTItemAddDis = true;
 
         data.insured = data.insurance_yesno;
         data.mode_of_pay = data.insurance_yesno === "Y" ? "2" : "1";
+
+        data.hims_d_insurance_network_office_id = data.network_office_id;
+
         if (data.receiptdetails.length !== 0) {
           for (let i = 0; i < data.receiptdetails.length; i++) {
             if (data.receiptdetails[i].pay_type === "CA") {
@@ -454,6 +459,8 @@ const SavePosEnrty = $this => {
     delete posdata.patInsuranceFrontImg;
     delete posdata.patInsuranceBackImg;
 
+    debugger;
+
     algaehApiCall({
       uri: callUri,
       module: "pharmacy",
@@ -681,7 +688,8 @@ const PostPosEntry = $this => {
                       period: response.data.records.period,
                       postEnable: true,
                       popUpGenereted: true,
-                      InvoiceEnable: true
+                      InvoiceEnable: true,
+                      saveEnable: true
                     },
                     () => {
                       generateReport($this, "posCashInvoice", "Cash Invoice");
@@ -767,12 +775,15 @@ const VisitSearch = ($this, e) => {
                   mappingName: "existinsurance"
                 },
                 afterSuccess: data => {
+                  debugger;
                   data[0].insurance_yesno = "Y";
                   data[0].mode_of_pay = "2";
                   data[0].effective_start_date =
                     data[0].primary_effective_end_date;
                   data[0].effective_end_date =
                     data[0].primary_effective_start_date;
+                  data[0].network_office_id =
+                    data[0].hims_d_insurance_network_office_id;
                   $this.setState(data[0], () => {
                     getMedicationList($this);
                   });

@@ -66,7 +66,7 @@ export default {
       unbalanced_amount: 0,
       receiptdetails: [],
       saveEnable: true,
-      postEnable: true,
+      postEnable: false,
       episode_id: null,
       Cashchecked: true,
       Cardchecked: false,

@@ -62,7 +62,7 @@ import {
   addSickLeave,
   getSickLeave
 } from "../model/doctorsWorkBench";
-export default ({ config, db }) => {
+export default () => {
   let api = Router();
 
   // created by irfan : to add  physical_examination_header
