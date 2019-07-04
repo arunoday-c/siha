@@ -13,7 +13,8 @@ import {
 	CloseTemplate,
 	ViewEditTemplate,
 	deleteRadInvestigation,
-	updateRadInvestigation
+	updateRadInvestigation,
+	deleteRadTemplate
 } from './RadInvestigationEvent';
 import variableJson from '../../../utils/GlobalVariables.json';
 import { AlgaehActions } from '../../../actions/algaehActions';
@@ -159,7 +160,7 @@ class RadInvestigation extends Component {
 																	/>
 																	<i
 																		className="fas fa-trash-alt"
-																		onClick={deleteRadInvestigation.bind(
+																		onClick={deleteRadTemplate.bind(
 																			this,
 																			this,
 																			context,
@@ -187,7 +188,7 @@ class RadInvestigation extends Component {
 												isEditable={false}
 												paging={{ page: 0, rowsPerPage: 4 }}
 												events={{
-													onDelete: deleteRadInvestigation.bind(this, this, context),
+													onDelete: deleteRadTemplate.bind(this, this, context),
 													onEdit: (row) => {},
 
 													onDone: updateRadInvestigation.bind(this, this)

@@ -215,7 +215,7 @@ class AddConsultationForm extends Component {
                             },
                             () => {
                               if (context !== null) {
-                                clearBillDetails(context);
+                                clearBillDetails(context, "visit_type");
                               }
                             }
                           );
@@ -261,7 +261,11 @@ class AddConsultationForm extends Component {
                             },
                             () => {
                               if (context !== null) {
-                                clearBillDetails(context);
+                                clearBillDetails(
+                                  context,
+                                  "visit_type",
+                                  "sub_department_id"
+                                );
                               }
                             }
                           );

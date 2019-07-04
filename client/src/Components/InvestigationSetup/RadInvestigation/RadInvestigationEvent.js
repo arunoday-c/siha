@@ -1,4 +1,6 @@
 import { successfulMessage } from "../../../utils/GlobalFunctions";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import swal from "sweetalert2";
 
 const texthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
@@ -143,6 +145,86 @@ const deleteRadInvestigation = ($this, context, row, rowId) => {
   }
 };
 
+const deleteRadTemplate = ($this, context, row) => {
+  let RadTemplate = $this.state.RadTemplate;
+  let update_rad_temp = $this.state.update_rad_temp;
+  let insert_rad_temp = $this.state.insert_rad_temp;
+  debugger;
+
+  if ($this.state.hims_d_investigation_test_id !== null) {
+    swal({
+      title: "Are you Sure you want to Delete this Template?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willUpdate => {
+      if (willUpdate.value) {
+        if (row.hims_d_rad_template_detail_id !== undefined) {
+          algaehApiCall({
+            uri: "/investigation/deleteRadTemplate",
+            module: "laboratory",
+            data: {
+              hims_d_rad_template_detail_id: row.hims_d_rad_template_detail_id
+            },
+            method: "DELETE",
+            onSuccess: response => {
+              if (response.data.success === true) {
+                findAndRemoveTemplate(RadTemplate, row);
+                findAndRemoveTemplate(update_rad_temp, row);
+                $this.setState({
+                  RadTemplate,
+                  update_rad_temp
+                });
+                if (context !== undefined) {
+                  context.updateState({
+                    RadTemplate,
+                    update_rad_temp
+                  });
+                }
+                swalMessage({
+                  type: "success",
+                  title: "Deleted successfully ..."
+                });
+              }
+            }
+          });
+        } else {
+          findAndRemoveTemplate(insert_rad_temp, row);
+          findAndRemoveTemplate(update_rad_temp, row);
+          findAndRemoveTemplate(RadTemplate, row);
+          $this.setState({
+            RadTemplate,
+            update_rad_temp,
+            insert_rad_temp
+          });
+          if (context !== undefined) {
+            context.updateState({
+              RadTemplate,
+              update_rad_temp,
+              insert_rad_temp
+            });
+          }
+          swalMessage({
+            type: "success",
+            title: "Deleted successfully ..."
+          });
+        }
+      }
+    });
+  }
+};
+
+function findAndRemoveTemplate(templates, row) {
+  for (let l = 0; l < templates.length; l++) {
+    if (templates[l].template_name === row.template_name) {
+      templates.splice(l, 1);
+    }
+  }
+}
+
 const updateRadInvestigation = $this => {
   successfulMessage({
     message: "No Option to edit.",
@@ -157,5 +239,6 @@ export {
   CloseTemplate,
   ViewEditTemplate,
   deleteRadInvestigation,
-  updateRadInvestigation
+  updateRadInvestigation,
+  deleteRadTemplate
 };

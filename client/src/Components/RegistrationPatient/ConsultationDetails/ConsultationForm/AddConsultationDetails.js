@@ -62,8 +62,9 @@ const DeptselectedHandeler = ($this, context, e) => {
   }
 };
 
-export const clearBillDetails = context => {
-  context.updateState({
+export const clearBillDetails = (context, ...args) => {
+  //Takes context and field names as arguements, pass whatever fields you want to keep in the state.
+  const removeObj = {
     visit_type: null,
     doctor_id: null,
     sub_department_id: null,
@@ -97,7 +98,13 @@ export const clearBillDetails = context => {
     total_amount: null,
     total_tax: null,
     unbalanced_amount: null
+  };
+
+  args.forEach(arg => {
+    delete removeObj[arg];
   });
+
+  context.updateState(removeObj);
 };
 
 const selectedHandeler = ($this, context, e) => {

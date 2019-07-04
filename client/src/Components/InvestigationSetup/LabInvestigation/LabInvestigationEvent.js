@@ -1,4 +1,4 @@
-import { successfulMessage, compareObj } from "../../../utils/GlobalFunctions";
+import { successfulMessage } from "../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import swal from "sweetalert2";
 
@@ -153,7 +153,7 @@ const updateLabInvestigation = ($this, context, row) => {
   }
 };
 
-const deleteLabInvestigation = ($this, context, row, rowId) => {
+const deleteLabAnalyte = ($this, context, row, rowId) => {
   let analytes = $this.state.analytes;
   let update_analytes = $this.state.update_analytes;
   let insert_analytes = $this.state.insert_analytes;
@@ -256,6 +256,6 @@ export {
   containeridhandle,
   AddAnalytes,
   updateLabInvestigation,
-  deleteLabInvestigation,
+  deleteLabAnalyte,
   onchangegridcol
 };
