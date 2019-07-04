@@ -35,6 +35,7 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 import moment from "moment";
 import Options from "../../../Options.json";
 import ResultEntry from "../ResultEntry/ResultEntry";
+import _ from "lodash";
 
 class ResultEntryList extends Component {
   constructor(props) {
@@ -56,7 +57,7 @@ class ResultEntryList extends Component {
 
   changeDateFormat = date => {
     if (date != null) {
-      return moment(date).format(Options.dateFormat);
+      return moment(date).format(Options.datetimeFormat);
     }
   };
 
@@ -78,10 +79,39 @@ class ResultEntryList extends Component {
   }
 
   render() {
+    let _Ordered = [];
+
+    let _Collected = [];
+
+    let _Confirmed = [];
+    let _Validated = [];
+
+    let _Cancelled = [];
+    if (this.state.sample_collection !== undefined) {
+      _Ordered = _.filter(this.state.sample_collection, f => {
+        return f.status === "O";
+      });
+
+      _Collected = _.filter(this.state.sample_collection, f => {
+        return f.status === "CL";
+      });
+
+      _Validated = _.filter(this.state.sample_collection, f => {
+        return f.status === "V";
+      });
+      _Confirmed = _.filter(this.state.sample_collection, f => {
+        return f.status === "CF";
+      });
+
+      _Cancelled = _.filter(this.state.sample_collection, f => {
+        return f.status === "CN";
+      });
+    }
+
     return (
       <React.Fragment>
         <div className="hptl-phase1-result-entry-form">
-          <BreadCrumb
+          {/* <BreadCrumb
             title={
               <AlgaehLabel label={{ fieldName: "form_name", align: "ltr" }} />
             }
@@ -105,46 +135,47 @@ class ResultEntryList extends Component {
                 )
               }
             ]}
-          />
+          /> */}
           <div
             className="row inner-top-search"
-            style={{ marginTop: "75px", paddingBottom: "10px" }}
+            style={{ paddingBottom: "10px" }}
           >
-                <AlgaehDateHandler
-                  div={{ className: "col-2" }}
-                  label={{ fieldName: "from_date" }}
-                  textBox={{ className: "txt-fld", name: "from_date" }}
-                  events={{
-                    onChange: datehandle.bind(this, this)
-                  }}
-                  value={this.state.from_date}
-                />
-                <AlgaehDateHandler
-                  div={{ className: "col-2" }}
-                  label={{ fieldName: "to_date" }}
-                  textBox={{ className: "txt-fld", name: "to_date" }}
-                  events={{
-                    onChange: datehandle.bind(this, this)
-                  }}
-                  value={this.state.to_date}
-                /> <div className="col" style={{ paddingTop: "19px" }}>
-                  <button
-                    className="btn btn-primary btn-sm"
-                    type="button"
-                    onClick={getSampleCollectionDetails.bind(this, this)}
-                  >
-                    Load
-                  </button>
+            <AlgaehDateHandler
+              div={{ className: "col-2" }}
+              label={{ fieldName: "from_date" }}
+              textBox={{ className: "txt-fld", name: "from_date" }}
+              events={{
+                onChange: datehandle.bind(this, this)
+              }}
+              value={this.state.from_date}
+            />
+            <AlgaehDateHandler
+              div={{ className: "col-2" }}
+              label={{ fieldName: "to_date" }}
+              textBox={{ className: "txt-fld", name: "to_date" }}
+              events={{
+                onChange: datehandle.bind(this, this)
+              }}
+              value={this.state.to_date}
+            />{" "}
+            <div className="col" style={{ paddingTop: "19px" }}>
+              <button
+                className="btn btn-primary btn-sm"
+                type="button"
+                onClick={getSampleCollectionDetails.bind(this, this)}
+              >
+                Load
+              </button>
 
-                  <button
-                    className="btn btn-default btn-sm"
-                    style={{ marginLeft: "10px" }}
-                    type="button"
-                    onClick={Refresh.bind(this, this)}
-                  >
-                    Clear
-                  </button>
-                </div>
+              <button
+                className="btn btn-default btn-sm"
+                style={{ marginLeft: "10px" }}
+                type="button"
+                onClick={Refresh.bind(this, this)}
+              >
+                Clear
+              </button>
+            </div>
             {/* <div className="col-lg-6">
               <div className="row">
                 <AlagehFormGroup
@@ -236,7 +267,54 @@ class ResultEntryList extends Component {
               </div>
             </div> */}
           </div>
+          <div className="row  margin-bottom-15 topResultCard">
+            <div className="col-12">
+              {" "}
+              <div className="card-group">
+                {/* <div className="card">
+                  <div className="card-body">
+                    <h5 className="card-title">{_Ordered.length}</h5>
+                    <p className="card-text">
+                      <span className="badge badge-light">Ordered</span>
+                    </p>
+                  </div>
+                </div> */}
 
+                <div className="card">
+                  <div className="card-body">
+                    <h5 className="card-title">{_Collected.length}</h5>{" "}
+                    <p className="card-text">
+                      <span className="badge badge-secondary">Collected</span>
+                    </p>
+                  </div>
+                </div>
+                <div className="card">
+                  <div className="card-body">
+                    <h5 className="card-title">{_Confirmed.length}</h5>{" "}
+                    <p className="card-text">
+                      <span className="badge badge-primary">Confirmed</span>
+                    </p>
+                  </div>
+                </div>
+                <div className="card">
+                  <div className="card-body">
+                    <h5 className="card-title">{_Cancelled.length}</h5>
+                    <p className="card-text">
+                      <span className="badge badge-danger">Cancelled</span>
+                    </p>
+                  </div>
+                </div>
+                <div className="card">
+                  <div className="card-body">
+                    <h5 className="card-title">{_Validated.length}</h5>
+                    <p className="card-text">
+                      <span className="badge badge-success">Validated</span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <div className="row">
             <div className="col-lg-12">
               <div className="portlet portlet-bordered margin-bottom-15">
@@ -290,60 +368,47 @@ class ResultEntryList extends Component {
                         others: {
                           maxWidth: 70,
                           resizable: false,
-                          filterable:false,
+                          filterable: false,
                           style: { textAlign: "center" }
                         }
                       },
                       {
-                        fieldName: "patient_code",
+                        fieldName: "ordered_date",
                         label: (
-                          <AlgaehLabel label={{ fieldName: "patient_code" }} />
+                          <AlgaehLabel label={{ fieldName: "ordered_date" }} />
                         ),
-                        disabled: false,
-                     others: {
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {this.changeDateFormat(row.ordered_date)}
+                            </span>
+                          );
+                        },
+                        disabled: true,
+
+                        others: {
                           maxWidth: 150,
                           resizable: false,
                           style: { textAlign: "center" }
                         }
                       },
                       {
-                        fieldName: "full_name",
+                        fieldName: "test_type",
                         label: (
-                          <AlgaehLabel label={{ fieldName: "patient_name" }} />
+                          <AlgaehLabel label={{ fieldName: "proiorty" }} />
                         ),
-                        disabled: true,
-                        others: {
-                          resizable: false,
-                          style: { textAlign: "left" }
-                        }
-                      },
-                      {
-                        fieldName: "status",
-                        label: <AlgaehLabel label={{ fieldName: "status" }} />,
                         displayTemplate: row => {
-                          return row.status === "O" ? (
-                            <span className="badge badge-light">Ordered</span>
-                          ) : row.status === "CL" ? (
-                            <span className="badge badge-primary">
-                              Collected
-                            </span>
-                          ) : row.status === "CN" ? (
-                            <span className="badge badge-danger">
-                              Cancelled
-                            </span>
-                          ) : row.status === "CF" ? (
-                            <span className="badge badge-success">
-                              Confirmed
-                            </span>
+                          return row.test_type === "S" ? (
+                            <span className="badge badge-danger">Stat</span>
                           ) : (
-                            <span className="badge badge-success">
-                              Validated
+                            <span className="badge badge-secondary">
+                              Routine
                             </span>
                           );
                         },
                         disabled: true,
-                      others: {
-                          maxWidth: 130,
+                        others: {
+                          maxWidth: 90,
                           resizable: false,
                           style: { textAlign: "center" }
                         }
@@ -367,22 +432,8 @@ class ResultEntryList extends Component {
                           ) : null;
                         },
                         disabled: true,
-                      others: {
-                          maxWidth: 130,
-                          resizable: false,
-                          style: { textAlign: "center" }
-                        }
-                      },
-                      {
-                        fieldName: "service_name",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Test Name" }}
-                          />
-                        ),
-
-                        disabled: true,
                         others: {
+                          maxWidth: 150,
                           resizable: false,
                           style: { textAlign: "center" }
                         }
@@ -395,26 +446,18 @@ class ResultEntryList extends Component {
                           />
                         ),
                         disabled: true,
-                      others: {
+                        others: {
                           maxWidth: 130,
                           resizable: false,
                           style: { textAlign: "center" }
                         }
                       },
                       {
-                        fieldName: "ordered_date",
+                        fieldName: "patient_code",
                         label: (
-                          <AlgaehLabel label={{ fieldName: "ordered_date" }} />
+                          <AlgaehLabel label={{ fieldName: "patient_code" }} />
                         ),
-                        // displayTemplate: row => {
-                        //   return (
-                        //     <span>
-                        //       {this.changeDateFormat(row.ordered_date)}
-                        //     </span>
-                        //   );
-                        // },
-                        disabled: true,
-                       
+                        disabled: false,
                         others: {
                           maxWidth: 150,
                           resizable: false,
@@ -422,15 +465,52 @@ class ResultEntryList extends Component {
                         }
                       },
                       {
-                        fieldName: "test_type",
+                        fieldName: "full_name",
                         label: (
-                          <AlgaehLabel label={{ fieldName: "proiorty" }} />
+                          <AlgaehLabel label={{ fieldName: "patient_name" }} />
                         ),
+                        disabled: true,
+                        others: {
+                          resizable: false,
+                          style: { textAlign: "left" }
+                        }
+                      },
+                      {
+                        fieldName: "service_name",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Test Name" }} />
+                        ),
+
+                        disabled: true,
+                        others: {
+                          resizable: false,
+                          style: { textAlign: "center" }
+                        }
+                      },
+                      {
+                        fieldName: "status",
+                        label: <AlgaehLabel label={{ fieldName: "status" }} />,
                         displayTemplate: row => {
-                          return row.test_type === "S" ? "Stat" : "Rotuine";
+                          return row.status === "CL" ? (
+                            <span className="badge badge-secondary">
+                              Collected
+                            </span>
+                          ) : row.status === "CN" ? (
+                            <span className="badge badge-danger">
+                              Cancelled
+                            </span>
+                          ) : row.status === "CF" ? (
+                            <span className="badge badge-primary">
+                              Confirmed
+                            </span>
+                          ) : (
+                            <span className="badge badge-success">
+                              Validated
+                            </span>
+                          );
                         },
                         disabled: true,
-                       others: {
+                        others: {
                           maxWidth: 130,
                           resizable: false,
                           style: { textAlign: "center" }

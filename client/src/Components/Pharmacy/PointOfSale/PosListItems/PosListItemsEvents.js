@@ -629,7 +629,7 @@ const AddItems = ($this, context) => {
                   uom_id: $this.state.uom_id,
                   conversion_factor: $this.state.conversion_factor,
                   non_prec_Item: true,
-                  average_cost: $this.state.average_cost
+                  avgcost: $this.state.average_cost
                 }
               ];
 
@@ -963,6 +963,7 @@ const calculateAmount = ($this, context, row, ctrl, e) => {
   let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
 
   row[e.target.name] = parseFloat(e.target.value);
+  debugger;
   let inputParam = [
     {
       hims_d_services_id: row.service_id,
@@ -1013,6 +1014,16 @@ const calculateAmount = ($this, context, row, ctrl, e) => {
         data.billdetails[0].pre_approval =
           row.pre_approval === "N" ? "N" : data.billdetails[0].pre_approval;
         data.billdetails[0].insurance_yesno = data.billdetails[0].insured;
+
+        data.billdetails[0].insurance_yesno = data.billdetails[0].insured;
+        data.billdetails[0].insurance_yesno = data.billdetails[0].insured;
+
+        data.billdetails[0].patient_responsibility =
+          data.billdetails[0].patient_resp;
+        data.billdetails[0].company_responsibility =
+          data.billdetails[0].comapany_resp;
+        data.billdetails[0].company_payable =
+          data.billdetails[0].company_payble;
 
         extend(row, data.billdetails[0]);
 
@@ -1438,7 +1449,7 @@ const SelectBatchDetails = ($this, row, context, e) => {
 
   let _pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
   const _index = _pharmacy_stock_detail.indexOf(row);
-
+  debugger;
   row["batchno"] = e.selected.batchno;
   row["expiry_date"] = e.selected.expiry_date;
   row["qtyhand"] =
@@ -1449,6 +1460,7 @@ const SelectBatchDetails = ($this, row, context, e) => {
   row["grn_no"] = e.selected.grnno;
   row["barcode"] = e.selected.barcode;
   row["unit_cost"] = e.selected.sale_price;
+  row["average_cost"] = e.selected.avgcost;
   _pharmacy_stock_detail[_index] = row;
 
   if (context !== null) {

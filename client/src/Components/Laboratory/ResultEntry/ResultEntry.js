@@ -156,7 +156,10 @@ class ResultEntry extends Component {
           openPopup={this.props.open}
         >
           <div className="popupInner">
-            <div className="popRightDiv" style={{ padding: 0 }}>
+            <div
+              className="popRightDiv"
+              style={{ padding: 0, maxHeight: "79vh" }}
+            >
               <div className="col-lg-12">
                 <div className="row">
                   <div className="patientInfo-lab-Top box-shadow-normal">
@@ -292,13 +295,28 @@ class ResultEntry extends Component {
                             />
                           ),
                           displayTemplate: row => {
-                            return row.status === "E"
-                              ? "Entered"
-                              : row.status === "C"
-                              ? "Confirmed"
-                              : row.status === "V"
-                              ? "Validated"
-                              : "Not Entered";
+                            return row.status === "E" ? (
+                              <span className="badge badge-secondary">
+                                Result Entered
+                              </span>
+                            ) : row.status === "C" ? (
+                              <span className="badge badge-primary">
+                                Confirmed
+                              </span>
+                            ) : row.status === "V" ? (
+                              <span className="badge badge-success">
+                                Validated
+                              </span>
+                            ) : (
+                              <span className="badge badge-light">
+                                Result Not Entered
+                              </span>
+                            );
+                          },
+                          others: {
+                            maxWidth: 150,
+                            resizable: false,
+                            style: { textAlign: "center" }
                           }
                         },
                         {
@@ -323,6 +341,11 @@ class ResultEntry extends Component {
                                   : ""}
                               </span>
                             );
+                          },
+                          others: {
+                            minWidth: 250,
+                            resizable: false,
+                            style: { textAlign: "left" }
                           }
                         },
                         {
@@ -338,6 +361,11 @@ class ResultEntry extends Component {
                               : row.analyte_type === "QN"
                               ? "Quantity"
                               : "Text";
+                          },
+                          others: {
+                            resizable: false,
+                            filterable: false,
+                            style: { textAlign: "center" }
                           }
                         },
                         {
@@ -380,12 +408,25 @@ class ResultEntry extends Component {
                                 )}
                               </span>
                             );
+                          },
+                          others: {
+                            resizable: false,
+                            filterable: false,
+                            style: { textAlign: "center" }
                           }
                         },
 
                         {
                           fieldName: "result_unit",
-                          label: <AlgaehLabel label={{ forceLabel: "Units" }} />
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Units" }} />
+                          ),
+                          others: {
+                            maxWidth: 70,
+                            resizable: false,
+                            filterable: false,
+                            style: { textAlign: "center" }
+                          }
                         },
                         {
                           fieldName: "run1",
@@ -402,6 +443,12 @@ class ResultEntry extends Component {
                                 {row.run1 !== "null" ? row.run1 : "----"}
                               </span>
                             );
+                          },
+                          others: {
+                            maxWidth: 70,
+                            resizable: false,
+                            filterable: false,
+                            style: { textAlign: "center" }
                           }
                         },
 
@@ -414,6 +461,12 @@ class ResultEntry extends Component {
                                 {row.run2 !== "null" ? row.run2 : "----"}
                               </span>
                             );
+                          },
+                          others: {
+                            maxWidth: 70,
+                            resizable: false,
+                            filterable: false,
+                            style: { textAlign: "center" }
                           }
                         },
                         {
@@ -425,6 +478,12 @@ class ResultEntry extends Component {
                                 {row.run3 !== "null" ? row.run3 : "----"}
                               </span>
                             );
+                          },
+                          others: {
+                            maxWidth: 70,
+                            resizable: false,
+                            filterable: false,
+                            style: { textAlign: "center" }
                           }
                         },
                         {
@@ -463,7 +522,12 @@ class ResultEntry extends Component {
                           fieldName: "normal_low",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Normal Low" }} />
-                          )
+                          ),
+                          others: {
+                            resizable: false,
+                            filterable: false,
+                            style: { textAlign: "center" }
+                          }
                         },
                         {
                           fieldName: "normal_high",
@@ -471,7 +535,12 @@ class ResultEntry extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "Normal High" }}
                             />
-                          )
+                          ),
+                          others: {
+                            resizable: false,
+                            filterable: false,
+                            style: { textAlign: "center" }
+                          }
                         },
                         {
                           fieldName: "critical_low",
@@ -481,7 +550,12 @@ class ResultEntry extends Component {
                                 forceLabel: "Critical Low"
                               }}
                             />
-                          )
+                          ),
+                          others: {
+                            resizable: false,
+                            filterable: false,
+                            style: { textAlign: "center" }
+                          }
                         },
 
                         {
@@ -490,7 +564,12 @@ class ResultEntry extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "Critical High" }}
                             />
-                          )
+                          ),
+                          others: {
+                            resizable: false,
+                            filterable: false,
+                            style: { textAlign: "center" }
+                          }
                         },
                         //TODO
                         {
@@ -527,6 +606,12 @@ class ResultEntry extends Component {
                                 )}
                               </span>
                             );
+                          },
+                          others: {
+                            maxWidth: 70,
+                            resizable: false,
+                            filterable: false,
+                            style: { textAlign: "center" }
                           }
                         },
                         {
@@ -563,6 +648,12 @@ class ResultEntry extends Component {
                                 )}
                               </span>
                             );
+                          },
+                          others: {
+                            maxWidth: 70,
+                            resizable: false,
+                            filterable: false,
+                            style: { textAlign: "center" }
                           }
                         },
                         //TODO
@@ -600,6 +691,12 @@ class ResultEntry extends Component {
                                 )}
                               </span>
                             );
+                          },
+                          others: {
+                            maxWidth: 70,
+                            resizable: false,
+                            filterable: false,
+                            style: { textAlign: "center" }
                           }
                         },
                         //TODO
@@ -647,14 +744,20 @@ class ResultEntry extends Component {
                                 )}
                               </span>
                             );
+                          },
+                          others: {
+                            minWidth: 250,
+                            resizable: false,
+                            filterable: false
                           }
                         }
                       ]}
                       keyId="patient_code"
+                      filter="true"
                       dataSource={{
                         data: this.state.test_analytes
                       }}
-                      paging={{ page: 0, rowsPerPage: 20 }}
+                      paging={{ page: 0, rowsPerPage: 30 }}
                     />
                   </div>
                   <div className="col-12">

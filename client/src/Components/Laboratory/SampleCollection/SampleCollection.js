@@ -56,7 +56,7 @@ class SampleCollection extends Component {
 
   changeDateFormat = date => {
     if (date != null) {
-      return moment(date).format(Options.dateFormat);
+      return moment(date).format(Options.datetimeFormat);
     }
   };
 
@@ -106,7 +106,7 @@ class SampleCollection extends Component {
       });
 
       _Validated = _.filter(this.state.sample_collection, f => {
-        return f.status === "RA";
+        return f.status === "V";
       });
       _Confirmed = _.filter(this.state.sample_collection, f => {
         return f.status === "CF";
@@ -328,14 +328,7 @@ class SampleCollection extends Component {
                     </p>
                   </div>
                 </div>
-                <div className="card">
-                  <div className="card-body">
-                    <h5 className="card-title">{_Cancelled.length}</h5>
-                    <p className="card-text">
-                      <span className="badge badge-danger">Cancelled</span>
-                    </p>
-                  </div>
-                </div>
+
                 <div className="card">
                   <div className="card-body">
                     <h5 className="card-title">{_Validated.length}</h5>
@@ -390,13 +383,13 @@ class SampleCollection extends Component {
                         label: (
                           <AlgaehLabel label={{ fieldName: "ordered_date" }} />
                         ),
-                        // displayTemplate: row => {
-                        //   return (
-                        //     <span>
-                        //       {this.changeDateFormat(row.ordered_date)}
-                        //     </span>
-                        //   );
-                        // },
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {this.changeDateFormat(row.ordered_date)}
+                            </span>
+                          );
+                        },
                         disabled: true,
                         others: {
                           maxWidth: 150,
@@ -421,9 +414,11 @@ class SampleCollection extends Component {
                           <AlgaehLabel label={{ fieldName: "proiorty" }} />
                         ),
                         displayTemplate: row => {
-                          return (
-                            <span>
-                              {row.test_type === "S" ? "Stat" : "Routine"}
+                          return row.test_type === "S" ? (
+                            <span className="badge badge-danger">Stat</span>
+                          ) : (
+                            <span className="badge badge-secondary">
+                              Routine
                             </span>
                           );
                         },

@@ -22,15 +22,18 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "SELECT hims_f_pharmacy_pos_header_id,receipt_header_id,PH.pos_number,PH.patient_id,P.patient_code,P.full_name as full_name,PH.visit_id,V.visit_code,PH.ip_id,PH.pos_date,PH.year,\
+            "SELECT hims_f_pharmacy_pos_header_id,receipt_header_id,PH.pos_number,PH.patient_id,P.patient_code,\
+            P.full_name as full_name,PH.visit_id,V.visit_code,PH.ip_id,PH.pos_date,PH.year,\
             PH.period,PH.location_id,L.location_description,PH.location_type,PH.sub_total,PH.discount_percentage,\
-            PH.discount_amount,PH.net_total,PH.nationality_id,PH.patient_name,PH.mobile_number,PH.referal_doctor,\
+            PH.discount_amount,PH.net_total,CASE  pos_customer_type WHEN 'OP' THEN P.nationality_id \
+            ELSE PH.nationality_id END as nationality_id,PH.patient_name,PH.mobile_number,PH.referal_doctor,\
             PH.copay_amount,PH.patient_responsibility,PH.patient_tax,PH.patient_payable,PH.company_responsibility,\
             PH.company_tax,PH.company_payable,PH.comments,PH.sec_company_responsibility,PH.sec_company_tax,\
             PH.sec_company_payable,PH.sec_copay_amount,PH.net_tax,PH.gross_total,PH.sheet_discount_amount,\
             PH.sheet_discount_percentage,PH.net_amount,PH.credit_amount,PH.balance_credit,PH.receiveable_amount,\
             PH.posted,PH.cancelled,PH.insurance_yesno,PH.card_number,PH.effective_start_date,PH.effective_end_date,\
-            PH.insurance_provider_id,INS.insurance_provider_name,ISB.insurance_sub_name as sub_insurance_provider_name,\
+            PH.insurance_provider_id, INS.insurance_provider_name, \
+            ISB.insurance_sub_name as sub_insurance_provider_name,\
             PH.sub_insurance_provider_id,PH.network_id,PH.network_type,PH.network_office_id,PH.policy_number,\
             PH.secondary_card_number,PH.secondary_effective_start_date,PH.secondary_effective_end_date,\
             PH.secondary_insurance_provider_id,PH.secondary_network_id,PH.secondary_network_type,\
@@ -77,12 +80,7 @@ module.exports = {
               })
               .then(pharmacy_stock_detail => {
                 const utilities = new algaehUtilities();
-                // utilities
-                //   .logger()
-                //   .log(
-                //     "headerResult[0].receipt_header_id: ",
-                //     headerResult[0].receipt_header_id
-                //   );
+                utilities.logger().log("headerResult[0]", headerResult[0]);
                 _mysql.releaseConnection();
                 req.records = {
                   ...headerResult[0],
@@ -271,7 +269,8 @@ module.exports = {
                 "sec_company_payable",
                 "prescribed_qty",
                 "prescription_detail_id",
-                "pre_approval"
+                "pre_approval",
+                "average_cost"
               ];
 
               utilities
@@ -528,7 +527,7 @@ module.exports = {
                         if (req.connection == null) {
                           _mysql.commitTransaction(() => {
                             _mysql.releaseConnection();
-                            req.records = detailResult;
+                            req.records = { pos_number: inputParam.pos_number };
                             next();
                           });
                         } else {
@@ -547,7 +546,7 @@ module.exports = {
                       utilities.logger().log("connection: ");
                       _mysql.commitTransaction(() => {
                         _mysql.releaseConnection();
-                        req.records = result;
+                        req.records = { pos_number: inputParam.pos_number };
                         next();
                       });
                     } else {
@@ -602,8 +601,8 @@ module.exports = {
           .executeQuery({
             query:
               "select itmloc.item_id, itmloc.pharmacy_location_id, itmloc.batchno, itmloc.expirydt, itmloc.qtyhand, \
-              itmloc.grnno, itmloc.sales_uom, itmloc.barcode, item.item_description, itmloc.sale_price, \
-                from hims_m_item_location as itmloc inner join hims_d_item_master as item on itmloc.item_id = item.hims_d_item_master_id  \
+                itmloc.grnno, itmloc.sales_uom, itmloc.barcode, item.item_description, itmloc.sale_price,   \
+                itmloc.avgcost from hims_m_item_location as itmloc inner join hims_d_item_master as item on itmloc.item_id = item.hims_d_item_master_id  \
                 where item_id in (?) and pharmacy_location_id in (?) and qtyhand > 0 and expirydt > CURDATE() order by expirydt",
             values: [item_ids, location_ids],
             printQuery: true
@@ -741,10 +740,12 @@ module.exports = {
         .executeQuery({
           query:
             "select itmloc.item_id, itmloc.pharmacy_location_id, itmloc.batchno, itmloc.expirydt, itmloc.qtyhand, \
-              itmloc.grnno, itmloc.sales_uom, itmloc.barcode, itmloc.sale_price, item.item_description, item.service_id,\
-              item.category_id,item.group_id, ITMUOM.conversion_factor from hims_m_item_location as itmloc \
-              inner join hims_d_item_master as item on itmloc.item_id = item.hims_d_item_master_id left join\
-              hims_m_item_uom as ITMUOM  on ITMUOM.item_master_id=item.hims_d_item_master_id and ITMUOM.uom_id = itmloc.sales_uom \
+              itmloc.grnno, itmloc.sales_uom, itmloc.barcode, itmloc.sale_price, itmloc.avgcost,\
+              item.item_description, item.service_id,item.category_id,item.group_id, ITMUOM.conversion_factor \
+              from hims_m_item_location as itmloc \
+              inner join hims_d_item_master as item on itmloc.item_id = item.hims_d_item_master_id \
+              left join hims_m_item_uom as ITMUOM  on ITMUOM.item_master_id=item.hims_d_item_master_id \
+              and ITMUOM.uom_id = itmloc.sales_uom \
               where item_id in (?) and pharmacy_location_id in (?) and qtyhand > 0 and expirydt > CURDATE() order by expirydt",
           values: [item_ids, location_ids],
           printQuery: true
@@ -798,7 +799,8 @@ module.exports = {
                   qtyhand: s.qtyhand,
                   grnno: s.grnno,
                   sale_price: s.sale_price,
-                  conversion_factor: s.conversion_factor
+                  conversion_factor: s.conversion_factor,
+                  avgcost: s.avgcost
                 };
               })
               .ToArray();
