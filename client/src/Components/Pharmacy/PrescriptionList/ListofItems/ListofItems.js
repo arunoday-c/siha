@@ -36,6 +36,7 @@ class ListofItems extends PureComponent {
     if (this.props.itemlist === undefined || this.props.itemlist.length === 0) {
       this.props.getItems({
         uri: "/pharmacy/getItemMaster",
+        data: { item_status: "A" },
         module: "pharmacy",
         method: "GET",
         redux: {

@@ -16,7 +16,8 @@ import {
   changeTexts,
   dateFormater,
   datehandle,
-  ProcessItemMoment
+  ProcessItemMoment,
+  dateValidate
 } from "./ItemMomentEnquiryEvents";
 import "./ItemMomentEnquiry.css";
 import "../../../styles/site.css";
@@ -42,6 +43,7 @@ class ItemMomentEnquiry extends Component {
   componentDidMount() {
     this.props.getItems({
       uri: "/pharmacy/getItemMaster",
+      data: { item_status: "A" },
       module: "pharmacy",
       method: "GET",
       redux: {
@@ -120,7 +122,8 @@ class ItemMomentEnquiry extends Component {
                     label={{ forceLabel: "From Date", isImp: true }}
                     textBox={{ className: "txt-fld", name: "from_date" }}
                     events={{
-                      onChange: datehandle.bind(this, this)
+                      onChange: datehandle.bind(this, this),
+                      onBlur: dateValidate.bind(this, this)
                     }}
                     value={this.state.from_date}
                   />
@@ -129,7 +132,8 @@ class ItemMomentEnquiry extends Component {
                     label={{ forceLabel: "To Date", isImp: true }}
                     textBox={{ className: "txt-fld", name: "to_date" }}
                     events={{
-                      onChange: datehandle.bind(this, this)
+                      onChange: datehandle.bind(this, this),
+                      onBlur: dateValidate.bind(this, this)
                     }}
                     maxDate={new Date()}
                     value={this.state.to_date}

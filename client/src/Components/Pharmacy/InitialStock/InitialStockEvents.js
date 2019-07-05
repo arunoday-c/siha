@@ -91,9 +91,11 @@ const itemchangeText = ($this, e) => {
     required_batchno: e.selected.exp_date_not_required,
     item_code: e.selected.item_code,
     // unit_cost: e.selected.purchase_cost,
-    sales_price: e.selected.standard_fee,
+    sales_price: e.selected.sales_price,
     batchno: "B" + e.selected.batch_no,
-    purchase_uom_id: e.selected.purchase_uom_id
+    purchase_uom_id: e.selected.purchase_uom_id,
+    stock_uom_desc: e.selected.stock_uom_desc,
+    sales_uom_desc: e.selected.sales_uom_desc
   });
 };
 
@@ -219,6 +221,23 @@ const getCtrlCode = ($this, docNumber) => {
           data.postEnable = false;
         }
         data.dataExitst = true;
+
+        data.location_id = null;
+        data.item_category_id = null;
+        data.item_group_id = null;
+        data.item_id = null;
+        data.batchno = null;
+        data.vendor_batchno = null;
+        data.expiry_date = null;
+        data.quantity = 0;
+        data.unit_cost = 0;
+        data.uom_id = null;
+        data.sales_price = 0;
+        data.conversion_fact = null;
+        data.extended_cost = 0;
+        data.grn_number = null;
+        data.sales_uom = null;
+        data.purchase_uom_id = null;
         $this.setState(data);
         AlgaehLoader({ show: false });
       }
@@ -310,7 +329,9 @@ const ClearData = $this => {
     extended_cost: 0,
     saveEnable: true,
     postEnable: true,
-    dataExitst: false
+    dataExitst: false,
+    sales_price: 0,
+    grn_number: null
   });
 };
 

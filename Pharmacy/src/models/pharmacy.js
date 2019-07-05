@@ -386,6 +386,11 @@ module.exports = {
         intValues.push(req.query.category_id);
       }
 
+      if (req.query.item_status != null) {
+        _strQry = "and item_status=?";
+        intValues.push(req.query.item_status);
+      }
+
       _mysql
         .executeQuery({
           query:
@@ -1182,11 +1187,14 @@ module.exports = {
         _strQry = "and hims_d_item_master_id=?";
         intValues.push(req.query.hims_d_item_master_id);
       }
+
       _mysql
         .executeQuery({
           query:
-            "select * FROM hims_d_item_master IM left join hims_d_services S on \
-            IM.service_id=S.hims_d_services_id where IM.record_status='A' and IM.item_status ='A' " +
+            "select IM.*,SPU.uom_description as stock_uom_desc, SAPU.uom_description sales_uom_desc\
+             FROM hims_d_item_master IM inner join hims_d_pharmacy_uom SPU on \
+             IM.stocking_uom_id = SPU.hims_d_pharmacy_uom_id inner join hims_d_pharmacy_uom SAPU on \
+             IM.sales_uom_id = SAPU.hims_d_pharmacy_uom_id  where IM.record_status='A' and IM.item_status ='A' " +
             _strQry +
             " order by hims_d_item_master_id desc;",
           values: intValues,

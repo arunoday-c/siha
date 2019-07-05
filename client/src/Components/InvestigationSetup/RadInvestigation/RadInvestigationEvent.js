@@ -149,7 +149,6 @@ const deleteRadTemplate = ($this, context, row) => {
   let RadTemplate = $this.state.RadTemplate;
   let update_rad_temp = $this.state.update_rad_temp;
   let insert_rad_temp = $this.state.insert_rad_temp;
-  debugger;
 
   if ($this.state.hims_d_investigation_test_id !== null) {
     swal({

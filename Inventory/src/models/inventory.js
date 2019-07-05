@@ -275,6 +275,11 @@ module.exports = {
         _strQry = "and item_type=?";
         intValues.push(req.query.item_type);
       }
+
+      if (req.query.item_status != null) {
+        _strQry = "and item_status=?";
+        intValues.push(req.query.item_status);
+      }
       _mysql
         .executeQuery({
           query:
@@ -918,11 +923,17 @@ module.exports = {
         _strQry = "and hims_d_inventory_item_master_id=?";
         intValues.push(req.query.hims_d_inventory_item_master_id);
       }
+      if (req.query.item_status != null) {
+        _strQry = "and item_status=?";
+        intValues.push(req.query.item_status);
+      }
       _mysql
         .executeQuery({
           query:
-            "select * FROM hims_d_inventory_item_master IM left join hims_d_services S on \
-            IM.service_id=S.hims_d_services_id where IM.record_status='A' " +
+            "select IM.*,SIU.uom_description as stock_uom_desc, SAIU.uom_description sales_uom_desc \
+            FROM hims_d_inventory_item_master IM inner join hims_d_inventory_uom SIU on \
+            IM.stocking_uom_id = SIU.hims_d_inventory_uom_id inner join hims_d_inventory_uom SAIU on \
+            IM.sales_uom_id = SAIU.hims_d_inventory_uom_id where IM.record_status='A'  and IM.item_status ='A'" +
             _strQry +
             " order by hims_d_inventory_item_master_id desc;",
           values: intValues,

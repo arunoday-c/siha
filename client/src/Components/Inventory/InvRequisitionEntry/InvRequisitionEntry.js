@@ -49,6 +49,7 @@ class InvRequisitionEntry extends Component {
       uri: "/inventory/getItemMaster",
       module: "inventory",
       method: "GET",
+      data: { item_status: "A" },
       redux: {
         type: "ITEM_GET_DATA",
         mappingName: "inventoryitemlist"

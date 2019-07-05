@@ -10,7 +10,7 @@ import {
 import { getYears, AlgaehOpenContainer } from "../../utils/GlobalFunctions";
 import { algaehApiCall } from "../../utils/algaehApiCall";
 import _ from "lodash";
-// debugger;
+
 let allYears = getYears();
 
 const Hims_Reports = [
@@ -2173,7 +2173,6 @@ const pushData = (result, current) => {
 export default function loadActiveReports() {
   return {
     data: () => {
-      debugger;
       const Activated_Modueles =
         sessionStorage.getItem("ModuleDetails") !== null
           ? JSON.parse(

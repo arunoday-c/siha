@@ -52,6 +52,7 @@ class StockEnquiry extends Component {
     if (this.props.itemlist === undefined || this.props.itemlist.length === 0) {
       this.props.getItems({
         uri: "/pharmacy/getItemMaster",
+        data: { item_status: "A" },
         module: "pharmacy",
         method: "GET",
         redux: {
@@ -136,7 +137,7 @@ class StockEnquiry extends Component {
                     },
                     onChange: changeTexts.bind(this, this),
                     onClear: changeTexts.bind(this, this),
-                                    autoComplete: "off"
+                    autoComplete: "off"
                   }}
                 />
 
@@ -254,7 +255,7 @@ class StockEnquiry extends Component {
                         </span>
                       );
                     },
-                    others:{filterable: false}
+                    others: { filterable: false }
                   },
 
                   {
@@ -298,9 +299,9 @@ class StockEnquiry extends Component {
                         </span>
                       );
                     },
-                      className: drow => {
-                        return "greenCell";
-                      }
+                    className: drow => {
+                      return "greenCell";
+                    }
                   },
 
                   {
@@ -342,7 +343,7 @@ class StockEnquiry extends Component {
                         </span>
                       );
                     },
-                    others:{filterable: false}
+                    others: { filterable: false }
                   },
                   {
                     fieldName: "sales_uom",
@@ -379,7 +380,7 @@ class StockEnquiry extends Component {
                         </span>
                       );
                     },
-                    others:{filterable: false}
+                    others: { filterable: false }
                   },
 
                   {
@@ -396,7 +397,7 @@ class StockEnquiry extends Component {
                       );
                     },
                     disabled: true,
-                    others:{filterable: false}
+                    others: { filterable: false }
                   },
                   {
                     fieldName: "reorder_qty",
@@ -404,7 +405,7 @@ class StockEnquiry extends Component {
                       <AlgaehLabel label={{ forceLabel: "Reorder Quantity" }} />
                     ),
                     disabled: true,
-                    others:{filterable: false}
+                    others: { filterable: false }
                   },
                   {
                     fieldName: "avgcost",
@@ -419,7 +420,7 @@ class StockEnquiry extends Component {
                       );
                     },
                     disabled: true,
-                    others:{filterable: false}
+                    others: { filterable: false }
                   },
                   {
                     fieldName: "sale_price",
@@ -451,7 +452,7 @@ class StockEnquiry extends Component {
                         />
                       );
                     },
-                    others:{filterable: false}
+                    others: { filterable: false }
                   }
                 ]}
                 keyId="item_id"
