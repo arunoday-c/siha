@@ -27,7 +27,8 @@ import {
   PurchaseOrderSearch,
   dateValidate,
   datehandle,
-  textEventhandle
+  textEventhandle,
+  generateReceiptEntryReport
 } from "./ReceiptEntryEvent";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -156,40 +157,14 @@ class ReceiptEntry extends Component {
             </div>
           }
           printArea={
-            this.state.grn_number !== null
+            this.state.hims_f_procurement_po_header_id !== null
               ? {
                   menuitems: [
                     {
-                      label: "Print Report",
+                      label: "Receipt Entry Report",
                       events: {
                         onClick: () => {
-                          AlgaehReport({
-                            report: {
-                              fileName: "Procurement/ReceiptEntry"
-                            },
-                            data: {
-                              grn_number: this.state.grn_number,
-                              grn_date: moment(this.state.grn_date).format(
-                                Options.datetimeFormat
-                              ),
-                              grn_from:
-                                this.state.grn_from === "PHR"
-                                  ? "Pharmacy"
-                                  : "Inventory",
-
-                              from_location:
-                                Location_data.length > 0
-                                  ? Location_data[0].location_description
-                                  : "",
-                              vendor_name: Vendor_data[0].vendor_name,
-                              vendor_trn:
-                                Vendor_data[0].business_registration_no,
-                              delivery_note_number: this.state
-                                .delivery_note_number,
-                              net_payable: this.state.net_payable,
-                              receipt_detail: this.state.receipt_entry_detail
-                            }
-                          });
+                          generateReceiptEntryReport(this.state);
                         }
                       }
                     }
@@ -197,6 +172,48 @@ class ReceiptEntry extends Component {
                 }
               : ""
           }
+          // printArea={
+          //   this.state.grn_number !== null
+          //     ? {
+          //         menuitems: [
+          //           {
+          //             label: "Print Report",
+          //             events: {
+          //               onClick: () => {
+          //                 AlgaehReport({
+          //                   report: {
+          //                     fileName: "Procurement/ReceiptEntry"
+          //                   },
+          //                   data: {
+          //                     grn_number: this.state.grn_number,
+          //                     grn_date: moment(this.state.grn_date).format(
+          //                       Options.datetimeFormat
+          //                     ),
+          //                     grn_from:
+          //                       this.state.grn_from === "PHR"
+          //                         ? "Pharmacy"
+          //                         : "Inventory",
+
+          //                     from_location:
+          //                       Location_data.length > 0
+          //                         ? Location_data[0].location_description
+          //                         : "",
+          //                     vendor_name: Vendor_data[0].vendor_name,
+          //                     vendor_trn:
+          //                       Vendor_data[0].business_registration_no,
+          //                     delivery_note_number: this.state
+          //                       .delivery_note_number,
+          //                     net_payable: this.state.net_payable,
+          //                     receipt_detail: this.state.receipt_entry_detail
+          //                   }
+          //                 });
+          //               }
+          //             }
+          //           }
+          //         ]
+          //       }
+          //     : ""
+          // }
           selectedLang={this.state.selectedLang}
         />
         <div className="hims-receipt-entry">
