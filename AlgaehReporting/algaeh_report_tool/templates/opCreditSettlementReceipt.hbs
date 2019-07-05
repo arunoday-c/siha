@@ -43,10 +43,11 @@
                         <th>Sl No.</th>
                         <th>Bill No.</th>
                         <th>Bill Amt.</th>
+                        <th>Bill Date</th>
                         <th>Credit Amt.</th>
-                        <th>Previous Balance Amt.</th>
-                        <th>Receipt Amt.</th>
                         <th>Balance Amt.</th>
+                        <th>Receipt Amt.</th>
+                        <th>Remaining Balance Amt.</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -55,6 +56,7 @@
                         <td>{{inc @index}}</td>
                         <td>{{bill_number}}</td>
                         <td>{{bill_amount}}</td>
+                        <td>{{bill_date}}</td>
                         <td>{{credit_amount}}</td>
                         <td>{{previous_balance}}</td>
                         <td>{{receipt_amount}}</td>
@@ -66,8 +68,10 @@
             </table>
             <table class="tableTotal">
                 <tr class="bold">
-                    <td>Total Receipt Amt.</td>
-                    <td>{{total_reciept_amount}}</td>
+
+                    <td>Total Recivevable Amt.</td>
+                    <td>{{recievable_amount}}</td>
+
                 </tr>
                 <tr>
                     <td>Write off Amt.</td>
@@ -87,8 +91,8 @@
                 </tr>
 
                 <tr class="bold">
-                    <td>Total Recived Amt.</td>
-                    <td>{{total_net_claim}}</td>
+                    <td>Total Receipt Amt.</td>
+                    <td>{{total_reciept_amount}}</td>
                 </tr>
 
 
