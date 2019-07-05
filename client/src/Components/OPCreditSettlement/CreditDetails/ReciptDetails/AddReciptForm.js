@@ -239,7 +239,7 @@ class AddReciptForm extends Component {
                       error: this.state.errorInCard,
                       value: this.state.card_amount,
                       events: {
-                        onChange: cardtexthandle.bind(this, this, context)
+                        onChange: cashtexthandle.bind(this, this, context)
                       },
                       others: {
                         disabled: !this.state.Cardchecked,
@@ -318,7 +318,7 @@ class AddReciptForm extends Component {
                       error: this.state.errorInCheck,
                       value: this.state.cheque_amount,
                       events: {
-                        onChange: chequetexthandle.bind(this, this, context)
+                        onChange: cashtexthandle.bind(this, this, context)
                       },
                       others: {
                         "data-receipt": "true",

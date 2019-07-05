@@ -386,10 +386,22 @@ class PhySchSetup extends Component {
       myObj.sunday = this.state.sunday ? "Y" : "N";
       myObj.from_work_hr = this.state.from_work_hr;
       myObj.to_work_hr = this.state.to_work_hr;
-      myObj.work_break1 = this.state.from_break_hr1 ? "Y" : "N";
+
+      myObj.work_break1 = this.state.from_break_hr1
+        ? this.state.from_break_hr1 !== "00:00:00"
+          ? "Y"
+          : "N"
+        : "N";
+
       myObj.from_break_hr1 = this.state.from_break_hr1;
       myObj.to_break_hr1 = this.state.to_break_hr1;
-      myObj.work_break2 = this.state.from_break_hr2 ? "Y" : "N";
+
+      myObj.work_break2 = this.state.from_break_hr2
+        ? this.state.from_break_hr2 !== "00:00:00"
+          ? "Y"
+          : "N"
+        : "N";
+
       myObj.from_break_hr2 = this.state.from_break_hr2;
       myObj.to_break_hr2 = this.state.to_break_hr2;
       myObj.from_date = moment(this.state.from_date).format("YYYY-MM-DD");
@@ -409,7 +421,6 @@ class PhySchSetup extends Component {
         _uri = "/appointment/updateSchedule";
       }
 
-      console.log(myObj, "from save or update");
       this.setState({ send_obj: myObj }, () => {
         algaehApiCall({
           uri: _uri,
@@ -418,7 +429,6 @@ class PhySchSetup extends Component {
           data: this.state.send_obj,
           onSuccess: response => {
             if (response.data.success) {
-              console.log(response.data);
               document.getElementById("srch-sch").click();
               this.resetSaveState();
 
@@ -445,7 +455,6 @@ class PhySchSetup extends Component {
   }
 
   changeDate(date, field) {
-    console.log(date, "date");
     this.setState({
       [field]: date
     });
@@ -580,8 +589,6 @@ class PhySchSetup extends Component {
       .where(w => w.sub_dept_id === docs.sub_dept_id)
       .firstOrDefault();
 
-    console.log(docs, "from load");
-
     this.setState(
       {
         doctors: dept.doctors,
@@ -612,6 +619,7 @@ class PhySchSetup extends Component {
   }
 
   isPastSchedule(docs) {
+    console.log(this.state.from_break_hr2, this.state.to_break_hr2);
     const { to_date } = docs;
     const result = moment(to_date).isBefore(moment().format("YYYY-MM-DD"));
     this.setState({
@@ -678,7 +686,7 @@ class PhySchSetup extends Component {
 
   getApptSchedule(e) {
     this.resetSaveState();
-    e.preventDefault();
+    // e.preventDefault();
     if (this.state.portlet_sub_department === null) {
       this.setState(
         {
@@ -815,12 +823,15 @@ class PhySchSetup extends Component {
   }
 
   handleClose() {
-    this.setState({
-      openScheduler: false,
-      openModifier: false,
-      openEdit: false,
-      schedule_detail: []
-    });
+    this.setState(
+      {
+        openScheduler: false,
+        openModifier: false,
+        openEdit: false,
+        schedule_detail: []
+      },
+      () => this.resetSaveState()
+    );
   }
 
   render() {
@@ -1589,7 +1600,7 @@ class PhySchSetup extends Component {
                   <h1>
                     <i className="fas fa-info-circle" />
                   </h1>
-                  <p>Select a Schedule for more metails</p>
+                  <p>Select a Schedule for more details</p>
                 </span>
               )}
             </div>
