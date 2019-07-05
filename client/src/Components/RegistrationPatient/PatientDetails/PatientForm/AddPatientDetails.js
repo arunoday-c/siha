@@ -297,7 +297,6 @@ const generateBillDetails = ($this, context) => {
 };
 
 const validateAge = ($this, e) => {
-  debugger;
   let dob = moment($this.state.date_of_birth);
   if (
     dob.isAfter(moment()) ||

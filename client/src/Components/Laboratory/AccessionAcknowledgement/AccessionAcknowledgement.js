@@ -149,25 +149,6 @@ class AccessionAcknowledgement extends Component {
           }}
           /> */}
           <div className="popupInner">
-            {/* <AlagehFormGroup
-              div={{ className: "col-12 textArea" }}
-              label={{
-                forceLabel: "Reason for Rejection",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "remarks",
-                value: this.state.remarks,
-                others: {
-                  multiline: true
-                },
-                events: {
-                  onChange: texthandle.bind(this, this)
-                }
-              }}
-            /> */}
-
             <div className="col-12">
               <label>Reason for Rejection</label>
               <textarea
@@ -195,7 +176,8 @@ class AccessionAcknowledgement extends Component {
               <button
                 onClick={() => {
                   this.setState({
-                    reject_popup: false
+                    reject_popup: false,
+                    remarks: ""
                   });
                 }}
                 type="button"
@@ -274,113 +256,10 @@ class AccessionAcknowledgement extends Component {
                 Clear
               </button>
             </div>
-            {/* <div className="col-lg-6">
-              <div className="row">
-                <AlagehFormGroup
-                  div={{ className: "col" }}
-                  label={{
-                    fieldName: "patient_code"
-                  }}
-                  textBox={{
-                    value: this.state.patient_code,
-                    className: "txt-fld",
-                    name: "patient_code",
-
-                    events: {
-                      onChange: texthandle.bind(this, this)
-                    },
-                    others: {
-                      disabled: true
-                    }
-                  }}
-                />
-                <div className="col-lg-1 form-group">
-                  <span
-                    className="fas fa-search"
-                    style={{
-                      fontSize: " 1.2rem",
-                      marginTop: "6px",
-                      paddingBottom: "10px"
-                    }}
-                    onClick={PatientSearch.bind(this, this)}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="col-lg-6">
-              <div className="row">
-                <AlagehAutoComplete
-                  div={{ className: "col" }}
-                  label={{
-                    fieldName: "proiorty",
-                    isImp: false
-                  }}
-                  selector={{
-                    name: "proiorty",
-                    className: "select-fld",
-                    value: this.state.proiorty,
-                    dataSource: {
-                      textField: "name",
-                      valueField: "value",
-                      data: FORMAT_PRIORITY
-                    },
-                    onChange: texthandle.bind(this, this),
-                    onClear: () => {
-                      this.setState(
-                        {
-                          proiorty: null
-                        },
-                        () => {
-                          getSampleCollectionDetails(this, this);
-                        }
-                      );
-                    }
-                  }}
-                />
-                <AlagehAutoComplete
-                  div={{ className: "col" }}
-                  label={{
-                    fieldName: "status",
-                    isImp: false
-                  }}
-                  selector={{
-                    name: "status",
-                    className: "select-fld",
-                    value: this.state.status,
-                    dataSource: {
-                      textField: "name",
-                      valueField: "value",
-                      data: FORMAT_TEST_STATUS
-                    },
-                    onChange: texthandle.bind(this, this),
-                    onClear: () => {
-                      this.setState(
-                        {
-                          status: null
-                        },
-                        () => {
-                          getSampleCollectionDetails(this, this);
-                        }
-                      );
-                    }
-                  }}
-                />
-              </div>
-            </div> */}
           </div>
           <div className="row  margin-bottom-15 topResultCard">
             <div className="col-12">
-              {" "}
               <div className="card-group">
-                {/* <div className="card">
-                  <div className="card-body">
-                    <h5 className="card-title">{_Ordered.length}</h5>
-                    <p className="card-text">
-                      <span className="badge badge-light">Ordered</span>
-                    </p>
-                  </div>
-                </div> */}
-
                 <div className="card">
                   <div className="card-body">
                     <h5 className="card-title">{_Collected.length}</h5>{" "}

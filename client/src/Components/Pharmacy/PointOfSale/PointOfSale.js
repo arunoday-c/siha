@@ -72,6 +72,7 @@ class PointOfSale extends Component {
 
     this.props.getItems({
       uri: "/pharmacy/getItemMaster",
+      data: { item_status: "A" },
       module: "pharmacy",
       method: "GET",
       redux: {

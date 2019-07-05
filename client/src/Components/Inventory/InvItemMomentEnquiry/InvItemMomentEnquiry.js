@@ -16,7 +16,8 @@ import {
   changeTexts,
   dateFormater,
   datehandle,
-  ProcessItemMoment
+  ProcessItemMoment,
+  dateValidate
 } from "./InvItemMomentEnquiryEvents";
 import "./InvItemMomentEnquiry.css";
 import "../../../styles/site.css";
@@ -44,6 +45,7 @@ class InvItemMomentEnquiry extends Component {
       uri: "/inventory/getItemMaster",
       module: "inventory",
       method: "GET",
+      data: { item_status: "A" },
       redux: {
         type: "ITEM_GET_DATA",
         mappingName: "inventoryitemlist"
@@ -120,7 +122,8 @@ class InvItemMomentEnquiry extends Component {
                     label={{ forceLabel: "From Date", isImp: true }}
                     textBox={{ className: "txt-fld", name: "from_date" }}
                     events={{
-                      onChange: datehandle.bind(this, this)
+                      onChange: datehandle.bind(this, this),
+                      onBlur: dateValidate.bind(this, this)
                     }}
                     value={this.state.from_date}
                   />
@@ -129,7 +132,8 @@ class InvItemMomentEnquiry extends Component {
                     label={{ forceLabel: "To Date", isImp: true }}
                     textBox={{ className: "txt-fld", name: "to_date" }}
                     events={{
-                      onChange: datehandle.bind(this, this)
+                      onChange: datehandle.bind(this, this),
+                      onBlur: dateValidate.bind(this, this)
                     }}
                     maxDate={new Date()}
                     value={this.state.to_date}

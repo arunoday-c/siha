@@ -107,7 +107,6 @@ const getRadTestList = $this => {
     data: inputobj,
 
     onSuccess: response => {
-      debugger;
       if (response.data.success === true) {
         $this.setState({
           radtestlist: response.data.records,

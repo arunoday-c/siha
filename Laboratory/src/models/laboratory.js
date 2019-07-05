@@ -366,7 +366,8 @@ module.exports = {
         .then(result => {
           utilities.logger().log("result: ", result);
           if (result != null) {
-            const _date = new Date();
+            let _date = new Date();
+            _date = moment(_date).format("YYYY-MM-DD");
             return new Promise((resolve, reject) => {
               _mysql
                 .executeQuery({
@@ -399,13 +400,13 @@ module.exports = {
               let _newNumber = 1;
               utilities.logger().log("record: ", record);
               if (record != null && record.length > 0) {
-                _newNumber = parseInt(record[1][0].number, 10);
+                _newNumber = parseInt(record[0].number, 10);
                 _newNumber = _newNumber + 1;
                 padNum = pad(String(_newNumber), 3, "LEFT", "0");
                 condition.push(
                   _newNumber,
-                  record.hims_m_hospital_container_mapping_id,
-                  req.userIdentity.algaeh_d_app_user_id
+                  req.userIdentity.algaeh_d_app_user_id,
+                  record[0].hims_m_hospital_container_mapping_id
                 );
 
                 condition.push;

@@ -357,6 +357,7 @@ const getData = $this => {
   if ($this.state.grn_for === "PHR") {
     $this.props.getItems({
       uri: "/pharmacy/getItemMaster",
+      data: { item_status: "A" },
       module: "pharmacy",
       method: "GET",
       redux: {
@@ -407,6 +408,7 @@ const getData = $this => {
   } else if ($this.state.grn_for === "INV") {
     $this.props.getItems({
       uri: "/inventory/getItemMaster",
+      data: { item_status: "A" },
       module: "inventory",
       method: "GET",
       redux: {
@@ -456,6 +458,45 @@ const getData = $this => {
       }
     });
   }
+};
+
+const generateReceiptEntryReport = data => {
+  console.log("data:", data);
+  algaehApiCall({
+    uri: "/report",
+    method: "GET",
+    module: "reports",
+    headers: {
+      Accept: "blob"
+    },
+    others: { responseType: "blob" },
+    data: {
+      report: {
+        reportName:
+          data.po_from === "PHR"
+            ? "receiptEntryPharmacy"
+            : "receiptEntryInventory",
+        reportParams: [
+          {
+            name: "grn_number",
+            value: data.grn_number
+          }
+        ],
+        outputFileType: "PDF"
+      }
+    },
+    onSuccess: res => {
+      const url = URL.createObjectURL(res.data);
+      let myWindow = window.open(
+        "{{ product.metafields.google.custom_label_0 }}",
+        "_blank"
+      );
+      myWindow.document.write(
+        "<iframe src= '" + url + "' width='100%' height='100%' />"
+      );
+      myWindow.document.title = "Receipt Entry Report";
+    }
+  });
 };
 
 const PostReceiptEntry = $this => {
@@ -683,5 +724,6 @@ export {
   loctexthandle,
   PostReceiptEntry,
   PurchaseOrderSearch,
-  textEventhandle
+  textEventhandle,
+  generateReceiptEntryReport
 };

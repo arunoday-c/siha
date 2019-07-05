@@ -3,6 +3,7 @@ import moment from "moment";
 import Enumerable from "linq";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 import Options from "../../../../Options.json";
+import math from "mathjs";
 
 let texthandlerInterval = null;
 
@@ -28,7 +29,7 @@ const discounthandle = ($this, context, ctrl, e) => {
 
   if ($this.state.order_quantity <= 0) {
     $this.setState({
-      [e.target.name]: 0
+      [e.name]: 0
     });
     swalMessage({
       title: "Please Enter Quantity",
@@ -41,22 +42,22 @@ const discounthandle = ($this, context, ctrl, e) => {
     let unit_cost = 0;
     let tax_amount = 0;
     let total_amount = 0;
-    if (e.target.name === "sub_discount_percentage") {
-      sub_discount_percentage =
-        e.target.value === undefined ? "" : parseFloat(e.target.value);
+    if (e.name === "sub_discount_percentage") {
+      sub_discount_percentage = e.value === "" ? "" : parseFloat(e.value);
       sub_discount_amount =
-        e.target.value === ""
+        e.value === ""
           ? 0
           : (parseFloat($this.state.extended_price) * sub_discount_percentage) /
             100;
     } else {
-      sub_discount_amount =
-        e.target.value === undefined ? "" : parseFloat(e.target.value);
+      sub_discount_amount = e.value === "" ? "" : parseFloat(e.value);
       sub_discount_percentage =
-        e.target.value === ""
+        e.value === ""
           ? 0
           : (sub_discount_amount / parseFloat($this.state.extended_price)) *
             100;
+
+      sub_discount_percentage = math.round(sub_discount_percentage, 3);
     }
     if (sub_discount_percentage > 100) {
       swalMessage({
@@ -634,7 +635,7 @@ const dateFormater = ($this, value) => {
 
 const onchangegridcol = ($this, row, e) => {
   //
-  debugger;
+
   let name = e.name || e.target.name;
   let value =
     e.value === ""
@@ -688,6 +689,7 @@ const onchhangegriddiscount = ($this, row, e) => {
       value === ""
         ? 0
         : (parseFloat(extended_price) * sub_discount_percentage) / 100;
+    discount_amount = sub_discount_amount;
   } else if (name === "sub_discount_amount") {
     sub_discount_amount = value === "" ? "" : parseFloat(value);
     discount_amount = value === "" ? 0 : parseFloat(value);
@@ -695,6 +697,7 @@ const onchhangegriddiscount = ($this, row, e) => {
       value === ""
         ? 0
         : (sub_discount_amount / parseFloat(extended_price)) * 100;
+    sub_discount_percentage = math.round(sub_discount_percentage, 3);
   } else {
     extended_price =
       parseFloat(row.authorize_quantity) * parseFloat(row.unit_price);
@@ -715,7 +718,7 @@ const onchhangegriddiscount = ($this, row, e) => {
     });
   } else {
     //
-    debugger;
+
     extended_cost = parseFloat(extended_price) - parseFloat(discount_amount);
     row["unit_cost"] =
       $this.state.hims_f_procurement_po_header_id !== null

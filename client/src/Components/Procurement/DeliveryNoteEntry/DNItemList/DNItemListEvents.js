@@ -424,12 +424,6 @@ const OnChangeDeliveryQty = ($this, context, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
-  const latest_added = _.filter($this.state.dn_entry_detail, f => {
-    return f.item_id == item_details.item_id;
-  });
-
-  let delivery_quantity = _.sumBy(latest_added, s => parseFloat(s.dn_quantity));
-
   let entered_dn_quantity =
     parseFloat(
       $this.state.po_entry_detail[$this.state.selected_row_index].dn_quantity
@@ -457,7 +451,6 @@ const OnChangeDeliveryQty = ($this, context, e) => {
         type: "warning"
       });
     } else {
-      debugger;
       extended_price = parseFloat(item_details.unit_price) * parseFloat(value);
       discount_amount = (extended_price * discount_percentage) / 100;
       extended_cost = extended_price - discount_amount;
@@ -473,12 +466,6 @@ const OnChangeDeliveryQty = ($this, context, e) => {
         appendSymbol: false
       });
       tax_amount = getAmountFormart(tax_amount, { appendSymbol: false });
-
-      item_details["quantity_outstanding"] =
-        parseFloat(item_details.po_quantity) -
-        parseFloat(item_details.quantity_recieved_todate) -
-        parseFloat(delivery_quantity) -
-        parseFloat(value);
 
       item_details["extended_price"] = parseFloat(extended_price);
       item_details["extended_cost"] = parseFloat(extended_cost);
@@ -521,7 +508,6 @@ const AddtoList = ($this, context) => {
 
   let _po_entry_detail = $this.state.po_entry_detail;
 
-  debugger;
   if (
     (parseFloat($this.state.dn_quantity) === 0 ||
       $this.state.dn_quantity === "" ||
@@ -591,6 +577,11 @@ const AddtoList = ($this, context) => {
     let delivery_quantity = _.sumBy(latest_added, s =>
       parseFloat(s.dn_quantity)
     );
+
+    item_details["quantity_outstanding"] =
+      parseFloat(item_details.po_quantity) -
+      parseFloat(item_details.quantity_recieved_todate) -
+      parseFloat(delivery_quantity);
     item_details.dn_quantity = delivery_quantity;
 
     _po_entry_detail[$this.state.selected_row_index] = item_details;

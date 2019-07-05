@@ -25,7 +25,7 @@ const LocationchangeTexts = ($this, ctrl, e) => {
 
 const numberchangeTexts = ($this, e) => {
   let name = e.name || e.target.name;
-  let value = e.value || e.target.value;
+  let value = e.value === "" ? null : e.value || e.target.value;
   let extended_cost = 0;
 
   if (name === "quantity") {
@@ -39,8 +39,8 @@ const numberchangeTexts = ($this, e) => {
 
 const getItemUom = ($this, purchase_cost) => {
   algaehApiCall({
-    uri: "/pharmacy/getItemMasterAndItemUom",
-    module: "pharmacy",
+    uri: "/inventory/getItemMasterAndItemUom",
+    module: "inventory",
     method: "GET",
 
     onSuccess: response => {
@@ -110,8 +110,10 @@ const itemchangeText = ($this, e) => {
     required_batchno: e.selected.exp_date_not_required,
     item_code: e.selected.item_code,
     // unit_cost: e.selected.purchase_cost,
-    sales_price: e.selected.standard_fee,
-    purchase_uom_id: e.selected.purchase_uom_id
+    sales_price: e.selected.sales_price,
+    purchase_uom_id: e.selected.purchase_uom_id,
+    stock_uom_desc: e.selected.stock_uom_desc,
+    sales_uom_desc: e.selected.sales_uom_desc
   });
 };
 
@@ -153,10 +155,7 @@ const AddItems = $this => {
           sales_price: $this.state.sales_price,
           expiry_date: $this.state.expiry_date,
           quantity: $this.state.quantity,
-          unit_cost:
-            (parseFloat($this.state.unit_cost) *
-              parseFloat($this.state.quantity)) /
-            parseFloat($this.state.conversion_factor),
+          unit_cost: $this.state.unit_cost,
           extended_cost: $this.state.extended_cost,
           conversion_factor: $this.state.conversion_factor,
           item_code: $this.state.item_code,
@@ -239,6 +238,24 @@ const getCtrlCode = ($this, docNumber) => {
           data.postEnable = false;
         }
         data.dataExitst = true;
+
+        data.location_id = null;
+        data.item_category_id = null;
+        data.item_group_id = null;
+        data.item_id = null;
+        data.batchno = null;
+        data.vendor_batchno = null;
+        data.expiry_date = null;
+        data.quantity = 0;
+        data.unit_cost = 0;
+        data.uom_id = null;
+        data.sales_price = 0;
+        data.conversion_fact = null;
+        data.extended_cost = 0;
+        data.grn_number = null;
+        data.sales_uom = null;
+        data.purchase_uom_id = null;
+
         $this.setState(data);
         AlgaehLoader({ show: false });
       }
@@ -357,7 +374,9 @@ const ClearData = $this => {
     postEnable: true,
     dataExitst: false,
     posted: "N",
-    item_code: null
+    item_code: null,
+    sales_price: 0,
+    grn_number: null
   });
 };
 
