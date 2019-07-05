@@ -369,7 +369,7 @@ class DNItemList extends Component {
                     </div>
                     <div className="portlet-body">
                       <div className="row">
-                        <div className="col-lg-12" id="DNGrid">
+                        <div className="col-12 margin-bottom-15" id="DNGrid">
                           <AlgaehDataGrid
                             id="DN_details"
                             columns={[
@@ -936,42 +936,46 @@ class DNItemList extends Component {
                             }}
                           />
                         </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-lg-12">
-                  <div className="row">
-                    <div className="col" />
+                        <div className="col-12">
+                          <div className="row">
+                            <div className="col" style={{ textAlign: "right" }}>
+                              <div className="row">
+                                <div className="col-4">
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Sub Total"
+                                    }}
+                                  />
+                                  <h6>
+                                    {getAmountFormart(this.state.sub_total)}
+                                  </h6>
+                                </div>
+                                <div className="col-4">
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Discount Amount"
+                                    }}
+                                  />
+                                  <h6>
+                                    {getAmountFormart(
+                                      this.state.detail_discount
+                                    )}
+                                  </h6>
+                                </div>
 
-                    <div className="col-lg-5" style={{ textAlign: "right" }}>
-                      <div className="row">
-                        <div className="col-lg-4">
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "Sub Total"
-                            }}
-                          />
-                          <h6>{getAmountFormart(this.state.sub_total)}</h6>
-                        </div>
-                        <div className="col-lg-4">
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "Discount Amount"
-                            }}
-                          />
-                          <h6>
-                            {getAmountFormart(this.state.detail_discount)}
-                          </h6>
-                        </div>
-
-                        <div className="col-lg-4">
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "Net Payable"
-                            }}
-                          />
-                          <h6>{getAmountFormart(this.state.net_payable)}</h6>
+                                <div className="col-4">
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Net Payable"
+                                    }}
+                                  />
+                                  <h6>
+                                    {getAmountFormart(this.state.net_payable)}
+                                  </h6>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
