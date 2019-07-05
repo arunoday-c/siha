@@ -4,20 +4,36 @@
     <div class="print-body">
 
         <section>
+            <section>
 
-  <table class="tableForLabel" cell-padding="0">
+                <table class="tableForLabel" cell-padding="0">
 
-      <tr><td><label class="textEnLft">VAT Reg No.</label>:<span class="valueText">{{header.tax_number}}</span><label class="textArRht">الرقم الضريبي</label></td></tr>
-        <tr>
-                    <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
-                </tr>
-                  <tr><td><label class="textEnLft">Patient Name</label>:<span class="valueText">{{header.patient_full_name}}</span><label class="textArRht">الإسم</label></td><td><label class="textEnLft">Visit ID</label>:<span class="valueText">{{header.visit_code}}</span><label class="textArRht">  رقم الزيارة</label></td></tr>
-                <tr><td><label class="textEnLft">MR No</label>:<span class="valueText">{{header.patient_code}}</span><label class="textArRht">رقم الملف</label></td><td><label class="textEnLft">Reg. Date</label>:<span class="valueText">{{dateTime header.registration_date "date"}}</span><label class="textArRht">  تاريخ التسجيل</label></td></tr>
-                      <tr>
-                    <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
-                </tr>
-            
-            </table>
+                    <tr>
+                        <td colspan="2"><label class="textEnLft">Settlement No</label>:<span
+                                class="valueText">{{pos_credit_number}}</span>
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td><label class="textEnLft">Patient Code</label>:<span
+                                class="valueText">{{patient_code}}</span>
+                        </td>
+                        <td><label class="textEnLft">Patient Name</label>:<span class="valueText">{{full_name}}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label class="textEnLft">Receipt Number</label>:<span
+                                class="valueText">{{receipt_number}}</span>
+                        </td>
+                        <td><label class="textEnLft">Receipt Date</label>:<span
+                                class="valueText">{{pos_credit_date}}</span>
+                        </td>
+                    </tr>
+
+                </table>
+
+
+            </section>
 
 
         </section>
@@ -26,29 +42,62 @@
                 <thead>
                     <tr>
                         <th>Sl No.</th>
-                        <th>Bill No.</th>
+                        <th>POS Bill No.</th>
                         <th>Bill Amt.</th>
+                        <th>Bill Date</th>
                         <th>Credit Amt.</th>
-                        <th>Previous Balance Amt.</th>
-                        <th>Receipt Amt.</th>
                         <th>Balance Amt.</th>
+                        <th>Receipt Amt.</th>
+                        <th>Remaining Balance Amt.</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {{#each detailList}}
+                    {{#each details}}
                     <tr>
                         <td>{{inc @index}}</td>
-                       <td>{{bill_code}}</td>
-                       <td>{{bill_amt}</td>
-                       <td>{{credit_amt}}</td>
-                       <td>{{pre_bal_amt}}</td>
-                       <td>{{recei_amt}}</td>
-                       <td>{{bal_amt}}</td>
+                        <td>{{pos_number}}</td>
+                        <td>{{bill_amount}}</td>
+                        <td>{{pos_date}}</td>
+                        <td>{{credit_amount}}</td>
+                        <td>{{previous_balance}}</td>
+                        <td>{{receipt_amount}}</td>
+                        <td>{{balance_amount}}</td>
                     </tr>
                     {{/each}}
 
                 </tbody>
             </table>
+            <table class="tableTotal">
+                <tr class="bold">
+
+                    <td>Total Recivevable Amt.</td>
+                    <td>{{recievable_amount}}</td>
+
+                </tr>
+                <tr>
+                    <td>Write off Amt.</td>
+                    <td>{{write_off_amount}}</td>
+                </tr>
+                <tr>
+                    <td>By Cash</td>
+                    <td>{{total_cash}}</td>
+                </tr>
+                <tr>
+                    <td>By Card</td>
+                    <td>{{total_card}}</td>
+                </tr>
+                <tr>
+                    <td>By Cheque</td>
+                    <td>{{total_check}}</td>
+                </tr>
+
+                <tr class="bold">
+                    <td>Total Receipt Amt.</td>
+                    <td>{{total_reciept_amount}}</td>
+                </tr>
+
+
+
             </table>
         </section>
     </div>

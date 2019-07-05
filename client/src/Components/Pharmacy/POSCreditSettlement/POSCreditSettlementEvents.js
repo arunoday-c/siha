@@ -369,8 +369,8 @@ const generatePOSCreditSettlementReceipt = $this => {
         reportName: "posCreditSettlementReceipt",
         reportParams: [
           {
-            name: "credit_number",
-            value: $this.credit_number
+            name: "pos_credit_number",
+            value: $this.pos_credit_number
           }
         ],
         outputFileType: "PDF"
