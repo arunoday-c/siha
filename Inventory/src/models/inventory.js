@@ -923,10 +923,7 @@ module.exports = {
         _strQry = "and hims_d_inventory_item_master_id=?";
         intValues.push(req.query.hims_d_inventory_item_master_id);
       }
-      if (req.query.item_status != null) {
-        _strQry = "and item_status=?";
-        intValues.push(req.query.item_status);
-      }
+
       _mysql
         .executeQuery({
           query:
