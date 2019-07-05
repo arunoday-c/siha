@@ -57,7 +57,6 @@ class DeliveryNoteEntry extends Component {
       getCtrlCode(this, this.props.delivery_note_number);
     }
 
-    debugger;
     if (
       this.props.purchase_number !== undefined &&
       this.props.purchase_number.length !== 0

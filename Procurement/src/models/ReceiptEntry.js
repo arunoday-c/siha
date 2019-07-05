@@ -399,7 +399,9 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "SELECT * from  hims_f_procurement_dn_detail where hims_f_procurement_dn_header_id=?",
+            "SELECT DNB.* from  hims_f_procurement_dn_detail DND, hims_f_procurement_dn_batches DNB \
+            where DND.hims_f_procurement_dn_detail_id = DNB.hims_f_procurement_dn_detail_id \
+            and hims_f_procurement_dn_header_id=?",
           values: [req.query.dn_header_id],
           printQuery: true
         })

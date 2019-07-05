@@ -67,7 +67,7 @@ class DeptUserDetails extends Component {
         }
       }
     });
-    debugger;
+
     if (this.state.HIMS_Active === true) {
       if (
         this.props.depservices === undefined ||

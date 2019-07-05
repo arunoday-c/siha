@@ -169,7 +169,6 @@ class AddAdvanceModal extends PureComponent {
   }
 
   SaveAdvance(context, e) {
-    debugger;
     const err = Validations(this, this);
 
     if (!err) {

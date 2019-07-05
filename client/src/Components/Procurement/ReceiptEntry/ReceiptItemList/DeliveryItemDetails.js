@@ -195,7 +195,15 @@ class DNItemList extends Component {
                       resizable: false
                     }
                   },
+                  {
+                    fieldName: "batchno",
+                    label: <AlgaehLabel label={{ forceLabel: "Batch  No." }} />,
 
+                    others: {
+                      minWidth: 150,
+                      resizable: false
+                    }
+                  },
                   {
                     fieldName: "dn_quantity",
                     label: (
@@ -205,31 +213,6 @@ class DNItemList extends Component {
                   {
                     fieldName: "free_qty",
                     label: <AlgaehLabel label={{ forceLabel: "Free Qty" }} />
-                  },
-
-                  {
-                    fieldName: "quantity_outstanding",
-                    label: (
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Qty Outstanding"
-                        }}
-                      />
-                    ),
-                    disabled: true,
-                    others: { minWidth: 140 }
-                  },
-                  {
-                    fieldName: "quantity_recieved_todate",
-                    label: (
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Qty Received till date"
-                        }}
-                      />
-                    ),
-                    disabled: true,
-                    others: { minWidth: 150 }
                   },
                   {
                     fieldName: "discount_percentage",
@@ -418,5 +401,30 @@ export default withRouter(
     minWidth: 150,
     resizable: false
   }
+
+  {
+    fieldName: "quantity_outstanding",
+    label: (
+      <AlgaehLabel
+        label={{
+          forceLabel: "Qty Outstanding"
+        }}
+      />
+    ),
+    disabled: true,
+    others: { minWidth: 140 }
+  },
+  {
+    fieldName: "quantity_recieved_todate",
+    label: (
+      <AlgaehLabel
+        label={{
+          forceLabel: "Qty Received till date"
+        }}
+      />
+    ),
+    disabled: true,
+    others: { minWidth: 150 }
+  },
 },*/
 }

@@ -52,6 +52,7 @@ class OrderProcedureItems extends Component {
     ) {
       this.props.getItems({
         uri: "/inventory/getItemMaster",
+        data: { item_status: "A" },
         module: "inventory",
         method: "GET",
         redux: {

@@ -69,7 +69,6 @@ class InvPointOfSale extends Component {
         visit_id: this.state.visit_id
       },
       onSuccess: response => {
-        
         if (response.data.success) {
           that.setState({ openOCAF: true, OCAFData: response.data.records });
         }
@@ -114,7 +113,7 @@ class InvPointOfSale extends Component {
       this.props.getItems({
         uri: "/inventory/getItemMaster",
         module: "inventory",
-        data: { item_type: "OITM" },
+        data: { item_type: "OITM", item_status: "A" },
         method: "GET",
         redux: {
           type: "ITEM_GET_DATA",
@@ -204,7 +203,6 @@ class InvPointOfSale extends Component {
   }
 
   render() {
-    
     const _posLocation =
       this.props.poslocations === undefined ? [] : this.props.poslocations;
 

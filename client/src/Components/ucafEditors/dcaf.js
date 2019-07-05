@@ -72,7 +72,6 @@ export default class DcafEditor extends Component {
               loading: false
             });
             if (response.data.success === true) {
-              debugger;
               const data = response.data.records.hims_f_dcaf_header[0];
               const insurance =
                 response.data.records.hims_f_dcaf_insurance_details[0];

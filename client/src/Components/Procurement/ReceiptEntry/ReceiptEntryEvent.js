@@ -357,6 +357,7 @@ const getData = $this => {
   if ($this.state.grn_for === "PHR") {
     $this.props.getItems({
       uri: "/pharmacy/getItemMaster",
+      data: { item_status: "A" },
       module: "pharmacy",
       method: "GET",
       redux: {
@@ -407,6 +408,7 @@ const getData = $this => {
   } else if ($this.state.grn_for === "INV") {
     $this.props.getItems({
       uri: "/inventory/getItemMaster",
+      data: { item_status: "A" },
       module: "inventory",
       method: "GET",
       redux: {

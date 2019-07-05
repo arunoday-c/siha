@@ -218,7 +218,8 @@ class PurchaseOrderList extends Component {
                         others: {
                           maxWidth: 100,
                           resizable: false,
-                          style: { textAlign: "center" }
+                          style: { textAlign: "center" },
+                          filterable: false
                         }
                       },
                       {
@@ -245,7 +246,8 @@ class PurchaseOrderList extends Component {
                         others: {
                           maxWidth: 200,
                           resizable: false,
-                          style: { textAlign: "left" }
+                          style: { textAlign: "left" },
+                          filterable: false
                         }
                       },
                       {
@@ -287,7 +289,8 @@ class PurchaseOrderList extends Component {
                         others: {
                           maxWidth: 200,
                           resizable: false,
-                          style: { textAlign: "center" }
+                          style: { textAlign: "center" },
+                          filterable: false
                         }
                       }
                     ]}
@@ -295,6 +298,7 @@ class PurchaseOrderList extends Component {
                     dataSource={{
                       data: this.state.purchase_list
                     }}
+                    filter={true}
                     noDataText="No data available for location"
                     paging={{ page: 0, rowsPerPage: 10 }}
                   />

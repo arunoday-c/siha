@@ -56,7 +56,7 @@ module.exports = {
               strQuery += mysql.format(
                 "select * from (select D.*,(COALESCE(quantity,0)-COALESCE(return_quantity,0))\
                   as re_quantity,extended_cost as gross_amount,net_extended_cost as net_amout ,\
-                  patient_responsibility as patient_resp, IL.avgcost as average_cost  from \
+                  patient_responsibility as patient_resp  from \
                   hims_f_pharmacy_pos_detail D, hims_m_item_location IL where\
                   IL.item_id = D.item_id AND IL.batchno = D.batchno and  IL.pharmacy_location_id=? \
                   and pharmacy_pos_header_id=? and D.record_status='A') as A where re_quantity>0;",

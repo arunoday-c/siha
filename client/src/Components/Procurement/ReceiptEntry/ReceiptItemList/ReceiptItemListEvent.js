@@ -30,7 +30,7 @@ const assignDataandclear = ($this, context, stock_detail, assignData) => {
     [assignData]: stock_detail,
     completed: "N",
     addedItem: true,
-    saveEnable: false,
+    saveEnable: true,
     phar_item_category: null,
     phar_item_group: null,
     phar_item_id: null,
@@ -54,7 +54,7 @@ const assignDataandclear = ($this, context, stock_detail, assignData) => {
     context.updateState({
       [assignData]: stock_detail,
       addedItem: true,
-      saveEnable: false,
+      saveEnable: true,
       completed: "N",
       phar_item_category: null,
       phar_item_group: null,
@@ -144,25 +144,6 @@ const updateReceiptDetail = ($this, context, row) => {
     parseFloat(s.discount_amount)
   );
 
-  let saveBtn = false;
-  let postBtn = false;
-  if ($this.state.hims_f_procurement_grn_header_id === null) {
-    saveBtn = false;
-    postBtn = true;
-  } else if (
-    $this.state.hims_f_procurement_grn_header_id !== null &&
-    $this.state.posted === "N"
-  ) {
-    saveBtn = true;
-    postBtn = false;
-  } else if (
-    $this.state.hims_f_procurement_grn_header_id !== null &&
-    $this.state.posted === "Y"
-  ) {
-    saveBtn = true;
-    postBtn = true;
-  }
-
   $this.setState({
     receipt_entry_detail: receipt_entry_detail,
     sub_total: sub_total,
@@ -174,8 +155,6 @@ const updateReceiptDetail = ($this, context, row) => {
 
   if (context !== undefined) {
     context.updateState({
-      saveEnable: saveBtn,
-      postEnable: postBtn,
       receipt_entry_detail: receipt_entry_detail,
       sub_total: sub_total,
       net_total: net_total,

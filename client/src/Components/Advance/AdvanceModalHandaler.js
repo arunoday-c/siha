@@ -120,7 +120,6 @@ const datehandle = ($this, ctrl, e) => {
 const Validations = ($this, e) => {
   let isError = false;
 
-  debugger;
   if (
     $this.state.card_number.length !== 0 &&
     parseFloat($this.state.card_amount) >= 0

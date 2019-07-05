@@ -148,18 +148,18 @@ class DNItemList extends Component {
                             </span>
 
                             <span>
-                              Deliverd Qty:{" "}
+                              Deliverd Qty:
                               <span>{parseFloat(item.dn_quantity)}</span>
                             </span>
                             <span>
-                              Qty Pending to Receive:{" "}
+                              Qty Pending to Receive:
                               <span>
                                 {parseFloat(item.quantity_outstanding)}
                               </span>
                             </span>
 
                             <span>
-                              Qty. Received Till Date:{" "}
+                              Qty. Received Till Date:
                               <span>
                                 {parseFloat(item.quantity_recieved_todate)}
                               </span>

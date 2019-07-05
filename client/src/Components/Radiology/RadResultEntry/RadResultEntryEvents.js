@@ -73,7 +73,6 @@ const UpdateRadOrder = ($this, value) => {
       type: "warning"
     });
   } else {
-    debugger;
     let inputobj = {};
     let status = "",
       report_type = "",

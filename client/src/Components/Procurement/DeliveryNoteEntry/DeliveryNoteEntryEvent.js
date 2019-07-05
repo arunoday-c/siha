@@ -173,7 +173,6 @@ const PurchaseOrderSearch = ($this, e) => {
 };
 
 const getPurchaseDetails = ($this, row) => {
-  debugger;
   AlgaehLoader({ show: true });
   algaehApiCall({
     uri: "/PurchaseOrderEntry/getPurchaseOrderEntry",
@@ -545,7 +544,6 @@ const getCtrlCode = ($this, docNumber, row) => {
           }
           data.dn_entry_detail = dn_entry_detail;
 
-          debugger;
           if (
             $this.props.delivery_note_number !== undefined &&
             $this.props.delivery_note_number.length !== 0
@@ -585,6 +583,7 @@ const getData = $this => {
   if ($this.state.dn_from === "PHR") {
     $this.props.getItems({
       uri: "/pharmacy/getItemMaster",
+      data: { item_status: "A" },
       module: "pharmacy",
       method: "GET",
       redux: {
@@ -635,6 +634,7 @@ const getData = $this => {
   } else if ($this.state.dn_from === "INV") {
     $this.props.getItems({
       uri: "/inventory/getItemMaster",
+      data: { item_status: "A" },
       module: "inventory",
       method: "GET",
       redux: {
