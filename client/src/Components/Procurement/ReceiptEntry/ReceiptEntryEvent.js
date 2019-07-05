@@ -478,8 +478,8 @@ const generateReceiptEntryReport = data => {
             : "receiptEntryInventory",
         reportParams: [
           {
-            name: "receipt_number",
-            value: data.receipt_number
+            name: "grn_number",
+            value: data.grn_number
           }
         ],
         outputFileType: "PDF"
