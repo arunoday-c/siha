@@ -59,7 +59,6 @@ class RadResultEntry extends Component {
     }
   }
   componentWillReceiveProps(newProps) {
-    debugger;
     if (
       newProps.selectedPatient !== undefined &&
       (newProps.radschlist === undefined || newProps.radschlist.length === 0)
@@ -114,7 +113,6 @@ class RadResultEntry extends Component {
   }
 
   render() {
-    debugger;
     let validateDisable =
       this.state.exam_status === "CO"
         ? this.state.status === "RA"

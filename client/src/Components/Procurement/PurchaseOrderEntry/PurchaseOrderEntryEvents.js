@@ -143,7 +143,6 @@ const RequisitionSearch = ($this, e) => {
       callBack(text);
     },
     onRowSelect: row => {
-      debugger;
       algaehApiCall({
         uri:
           $this.state.po_from === "PHR"
@@ -382,6 +381,7 @@ const getData = ($this, po_from) => {
   if (po_from === "PHR") {
     $this.props.getItems({
       uri: "/pharmacy/getItemMaster",
+      data: { item_status: "A" },
       module: "pharmacy",
       method: "GET",
       redux: {
@@ -435,6 +435,7 @@ const getData = ($this, po_from) => {
   } else if (po_from === "INV") {
     $this.props.getItems({
       uri: "/inventory/getItemMaster",
+      data: { item_status: "A" },
       module: "inventory",
       method: "GET",
       redux: {
@@ -568,7 +569,6 @@ const generatePOReceiptNoPrice = data => {
 };
 
 const AuthorizePOEntry = $this => {
-  debugger;
   let stock_detail =
     $this.state.po_from === "PHR"
       ? $this.state.pharmacy_stock_detail

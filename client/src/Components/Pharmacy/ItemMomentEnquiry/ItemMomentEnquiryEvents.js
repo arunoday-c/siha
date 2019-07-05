@@ -4,7 +4,6 @@ import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 const changeTexts = ($this, ctrl, e) => {
-  debugger;
   e = ctrl || e;
   let name = e.name || e.target.name;
   let value =
@@ -96,4 +95,66 @@ const ProcessItemMoment = $this => {
   });
 };
 
-export { changeTexts, dateFormater, datehandle, ProcessItemMoment };
+const dateValidate = ($this, value, e) => {
+  let inRange = false;
+  if (e.target.name === "from_date") {
+    inRange = moment(value).isAfter(
+      moment($this.state.to_date).format("YYYY-MM-DD")
+    );
+    if (inRange) {
+      swalMessage({
+        title: "From Date cannot be grater than To Date.",
+        type: "warning"
+      });
+      e.target.focus();
+      $this.setState({
+        [e.target.name]: null
+      });
+    }
+
+    inRange = moment(value).isAfter(moment().format("YYYY-MM-DD"));
+    if (inRange) {
+      swalMessage({
+        title: "From Date cannot be Future Date.",
+        type: "warning"
+      });
+      e.target.focus();
+      $this.setState({
+        [e.target.name]: null
+      });
+    }
+  } else if (e.target.name === "to_date") {
+    inRange = moment(value).isBefore(
+      moment($this.state.from_date).format("YYYY-MM-DD")
+    );
+    if (inRange) {
+      swalMessage({
+        title: "To Date cannot be less than From Date.",
+        type: "warning"
+      });
+      e.target.focus();
+      $this.setState({
+        [e.target.name]: null
+      });
+    }
+    inRange = moment(value).isAfter(moment().format("YYYY-MM-DD"));
+    if (inRange) {
+      swalMessage({
+        title: "To Date cannot be Future Date.",
+        type: "warning"
+      });
+      e.target.focus();
+      $this.setState({
+        [e.target.name]: null
+      });
+    }
+  }
+};
+
+export {
+  changeTexts,
+  dateFormater,
+  datehandle,
+  ProcessItemMoment,
+  dateValidate
+};

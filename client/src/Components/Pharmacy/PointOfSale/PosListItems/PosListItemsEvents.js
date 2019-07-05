@@ -236,7 +236,6 @@ const itemchangeText = ($this, context, e, ctrl) => {
   let name = ctrl;
   if ($this.state.location_id !== null) {
     if (e.service_id !== null) {
-      debugger;
       let value = e.hims_d_item_master_id;
 
       algaehApiCall({
@@ -963,7 +962,7 @@ const calculateAmount = ($this, context, row, ctrl, e) => {
   let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
 
   row[e.target.name] = parseFloat(e.target.value);
-  debugger;
+
   let inputParam = [
     {
       hims_d_services_id: row.service_id,
@@ -1449,7 +1448,7 @@ const SelectBatchDetails = ($this, row, context, e) => {
 
   let _pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
   const _index = _pharmacy_stock_detail.indexOf(row);
-  debugger;
+
   row["batchno"] = e.selected.batchno;
   row["expiry_date"] = e.selected.expiry_date;
   row["qtyhand"] =

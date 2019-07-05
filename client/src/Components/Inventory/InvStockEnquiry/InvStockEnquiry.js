@@ -53,6 +53,7 @@ class InvStockEnquiry extends Component {
     if (this.props.itemlist === undefined || this.props.itemlist.length === 0) {
       this.props.getItems({
         uri: "/inventory/getItemMaster",
+        data: { item_status: "A" },
         module: "inventory",
         method: "GET",
         redux: {
@@ -283,9 +284,9 @@ class InvStockEnquiry extends Component {
                         </span>
                       );
                     },
-                          className: row => {
-                            return "greenCell";
-                          }
+                    className: row => {
+                      return "greenCell";
+                    }
                   },
                   {
                     fieldName: "stocking_uom_id",

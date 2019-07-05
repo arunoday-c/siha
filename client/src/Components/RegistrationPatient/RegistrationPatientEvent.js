@@ -95,7 +95,6 @@ const ShowRefundScreen = ($this, e) => {
 };
 
 const ClearData = ($this, from, patcode) => {
-  debugger;
   AlgaehLoader({ show: true });
   let IOputs = emptyObject;
   let counter_id = null;
@@ -332,7 +331,6 @@ const generateReceipt = $this => {
 };
 
 const getCtrlCode = ($this, patcode) => {
-  debugger;
   // AlgaehLoader({ show: true });
   let provider_id = $this.props.provider_id || null;
   let sub_department_id = $this.props.sub_department_id || null;
@@ -393,7 +391,7 @@ const getCtrlCode = ($this, patcode) => {
         )._d;
 
         data.patientRegistration.advanceEnable = false;
-        debugger;
+
         $this.setState(data.patientRegistration, () => {
           AlgaehLoader({ show: false });
           if (fromAppoinment === true) {

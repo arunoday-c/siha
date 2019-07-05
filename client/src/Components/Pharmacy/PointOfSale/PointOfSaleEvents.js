@@ -459,8 +459,6 @@ const SavePosEnrty = $this => {
     delete posdata.patInsuranceFrontImg;
     delete posdata.patInsuranceBackImg;
 
-    debugger;
-
     algaehApiCall({
       uri: callUri,
       module: "pharmacy",
@@ -468,7 +466,6 @@ const SavePosEnrty = $this => {
       data: posdata,
       onSuccess: response => {
         if (response.data.success) {
-          debugger;
           let _arrayImages = [];
           if (
             _patInsuranceFrontImg !== undefined &&
@@ -587,7 +584,6 @@ const PostPosEntry = $this => {
       if (willDelete.value) {
         AlgaehLoader({ show: true });
         GenerateReciept($this, that => {
-          debugger;
           $this.state.posted = "Y";
           $this.state.transaction_type = "POS";
           $this.state.transaction_id =
@@ -775,7 +771,6 @@ const VisitSearch = ($this, e) => {
                   mappingName: "existinsurance"
                 },
                 afterSuccess: data => {
-                  debugger;
                   data[0].insurance_yesno = "Y";
                   data[0].mode_of_pay = "2";
                   data[0].effective_start_date =

@@ -62,7 +62,9 @@ class InvInitialStock extends Component {
       posted: "N",
       grn_number: null,
       postEnable: true,
-      dataExitst: false
+      dataExitst: false,
+      stock_uom_desc: null,
+      sales_uom_desc: null
     };
   }
 
@@ -128,6 +130,12 @@ class InvInitialStock extends Component {
   }
 
   render() {
+    const stock_uom_desc =
+      this.state.stock_uom_desc === null ? "-----" : this.state.stock_uom_desc;
+
+    const sales_uom_desc =
+      this.state.sales_uom_desc === null ? "-----" : this.state.sales_uom_desc;
+
     return (
       <React.Fragment>
         <div>
@@ -386,7 +394,7 @@ class InvInitialStock extends Component {
                   <AlagehFormGroup
                     div={{ className: "col-lg-3 form-group" }}
                     label={{
-                      forceLabel: "Unit Cost",
+                      forceLabel: "Unit Cost" + "(" + stock_uom_desc + ")",
                       isImp: true
                     }}
                     textBox={{
@@ -404,7 +412,7 @@ class InvInitialStock extends Component {
                   <AlagehFormGroup
                     div={{ className: "col-3 form-group" }}
                     label={{
-                      forceLabel: "Sales Price",
+                      forceLabel: "Sales Price" + "(" + sales_uom_desc + ")",
                       isImp: true
                     }}
                     textBox={{
