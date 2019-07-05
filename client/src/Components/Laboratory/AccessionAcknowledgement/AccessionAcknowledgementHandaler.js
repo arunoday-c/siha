@@ -9,14 +9,9 @@ const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
-  $this.setState(
-    {
-      [name]: value
-    },
-    () => {
-      getSampleCollectionDetails($this);
-    }
-  );
+  $this.setState({
+    [name]: value
+  });
 };
 
 const PatientSearch = ($this, e) => {
@@ -128,7 +123,18 @@ const AcceptandRejectSample = ($this, row, AccRej) => {
       type: "warning"
     });
   } else {
+    debugger;
+
     if (row.sample_status === "N") {
+      if (AccRej === "R") {
+        if ($this.state.remarks === null || $this.state.remarks === "") {
+          swalMessage({
+            title: "Remarks is mandatory",
+            type: "error"
+          });
+          return;
+        }
+      }
       let inputobj = {
         hims_d_lab_sample_id: row.hims_d_lab_sample_id,
         order_id: row.hims_f_lab_order_id,
