@@ -15,10 +15,10 @@ class ActiveMedication extends Component {
   }
 
   render() {
-    const latest_mediction =
-      this.props.latest_mediction === undefined
+    const active_medication =
+      this.props.active_medication === undefined
         ? []
-        : this.props.latest_mediction;
+        : this.props.active_medication;
     return (
       <div>
         <div className="popupInner">
@@ -128,7 +128,7 @@ class ActiveMedication extends Component {
               ]}
               keyId="item_id"
               dataSource={{
-                data: latest_mediction
+                data: active_medication
               }}
               paging={{ page: 0, rowsPerPage: 10 }}
             />

@@ -34,6 +34,7 @@ import { setGlobal } from "../../../utils/GlobalFunctions";
 import "./basicSubjective.css";
 import _ from "lodash";
 import moment from "moment";
+import { Dimmer, Loader } from "semantic-ui-react";
 class BasicSubjective extends Component {
   constructor(props) {
     super(props);
@@ -58,7 +59,9 @@ class BasicSubjective extends Component {
       isPregnancy: true,
       hims_f_episode_chief_complaint_id: null,
       recent_mediction: [],
-      all_mediction: []
+      all_mediction: [],
+      active_medication: [],
+      loadingUnderMedication: true
     };
     this.isMale = String(Window["global"]["gender"]) === "Male" ? true : false;
     this.chiefComplaintMaxLength = 200;
@@ -157,25 +160,36 @@ class BasicSubjective extends Component {
   }
 
   getPatientMedications() {
-    algaehApiCall({
-      uri: "/orderMedication/getPatientMedications",
-      data: { patient_id: Window.global["current_patient"] },
-      method: "GET",
-      onSuccess: response => {
-        if (response.data.success) {
-          this.setState({
-            recent_mediction: response.data.records.latest_mediction,
-            all_mediction: response.data.records.all_mediction
-          });
-        }
+    this.setState(
+      {
+        loadingUnderMedication: true
       },
-      onFailure: error => {
-        swalMessage({
-          title: error.message,
-          type: "error"
+      () => {
+        algaehApiCall({
+          uri: "/orderMedication/getPatientMedications",
+          data: { patient_id: Window.global["current_patient"] },
+          method: "GET",
+          onSuccess: response => {
+            const data = { loadingUnderMedication: false };
+            if (response.data.success) {
+              data["recent_mediction"] = response.data.records.latest_mediction;
+              data["all_mediction"] = response.data.records.all_mediction;
+              data["active_medication"] =
+                response.data.records.active_medication;
+            }
+            this.setState({
+              ...data
+            });
+          },
+          onFailure: error => {
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
         });
       }
-    });
+    );
   }
 
   getPatientEncounterDetails() {
@@ -403,7 +417,7 @@ class BasicSubjective extends Component {
     const _finalDiagnosis = Enumerable.from(_diagnosis)
       .where(w => w.final_daignosis === "Y")
       .toArray();
-    const recentMediction = _.chain(this.state.recent_mediction)
+    const recentMediction = _.chain(this.state.active_medication)
       .groupBy(g => moment(g.prescription_date).format("YYYYMMDD"))
       .map((details, key) => {
         const month = moment(key, "YYYYMMDD").format("MMM");
@@ -476,6 +490,7 @@ class BasicSubjective extends Component {
                 />
               </li>
               <Plan
+                mainState={this}
                 openMedication={this.state.openMedication}
                 onClose={this.showMedication.bind(this)}
                 vat_applicable={this.props.vat_applicable}
@@ -488,6 +503,7 @@ class BasicSubjective extends Component {
                 />
               </li>
               <Plan
+                mainState={this}
                 openDiet={this.state.openDiet}
                 onClose={this.closeDietPlan.bind(this)}
               />
@@ -501,6 +517,7 @@ class BasicSubjective extends Component {
                 />
               </li>
               <Plan
+                mainState={this}
                 openMedicaldata={this.state.openMedicaldata}
                 onClose={this.showMedicalData.bind(this)}
               />
@@ -841,40 +858,54 @@ class BasicSubjective extends Component {
 
                   <div className="portlet-body">
                     <div className="activeMedication">
-                      {recentMediction.map((item, index) => (
-                        <div key={index} className="activeMedDateList">
-                          <div className="medcineDate">
-                            <span>{item.month}</span>
-                            <h3>{item.day}</h3>
-                            <span>{item.year}</span>
+                      {this.state.loadingUnderMedication ? (
+                        <Dimmer active>
+                          <Loader inline="centered">Loading</Loader>
+                        </Dimmer>
+                      ) : (
+                        <React.Fragment>
+                          {recentMediction.map((item, index) => (
+                            <div key={index} className="activeMedDateList">
+                              <div className="medcineDate">
+                                <span>{item.month}</span>
+                                <h3>{item.day}</h3>
+                                <span>{item.year}</span>
 
-                            <div className="printOnHover">
-                              <i className="fas fa-print" />
+                                <div className="printOnHover">
+                                  <i className="fas fa-print" />
+                                </div>
+                              </div>
+                              <div className="medcineList">
+                                <ul>
+                                  {item.details.map((medicine, indexD) => (
+                                    <li key={indexD}>
+                                      <b>
+                                        {medicine.item_description !== undefined
+                                          ? medicine.item_description.replace(
+                                              /\w+/g,
+                                              _.capitalize
+                                            )
+                                          : medicine.item_description}
+                                      </b>
+                                      {/* <small><span>4 ml</span> - <span>12 hourly (1-1-1)</span> * <span>5 days</span></small>*/}
+                                      <small>{medicine.instructions}</small>
+                                      <small>
+                                        Medicine end date :{" "}
+                                        {moment(medicine.enddate).format(
+                                          "DD dddd MMMM YYYY"
+                                        )}
+                                      </small>
+                                      <div className="reOrderOnHover">
+                                        <i className="fas fa-retweet" />
+                                      </div>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
                             </div>
-                          </div>
-                          <div className="medcineList">
-                            <ul>
-                              {item.details.map((medicine, indexD) => (
-                                <li key={indexD}>
-                                  <b>
-                                    {medicine.item_description !== undefined
-                                      ? medicine.item_description.replace(
-                                          /\w+/g,
-                                          _.capitalize
-                                        )
-                                      : medicine.item_description}
-                                  </b>
-                                  {/* <small><span>4 ml</span> - <span>12 hourly (1-1-1)</span> * <span>5 days</span></small>*/}
-                                  <small>{medicine.instructions}</small>
-                                  <div className="reOrderOnHover">
-                                    <i className="fas fa-retweet" />
-                                  </div>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        </div>
-                      ))}
+                          ))}
+                        </React.Fragment>
+                      )}
                     </div>
                   </div>
                 </div>

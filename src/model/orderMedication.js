@@ -592,12 +592,32 @@ let getPatientMedications = (req, res, next) => {
             })
             .ToArray();
         }
+        const actMedic = new LINQ(result)
+          .Select(s => {
+            const endDate = moment(s.start_date)
+              .add(s.no_of_days, "days")
+              .format("YYYY-MM-DD HH:mm:ss");
 
-        // let latest_mediction = result[0]
-        // let all_mediction = result[1];
+            return {
+              ...s,
+              enddate: endDate,
+              active:
+                parseInt(moment().format("YYYYMMDD")) <=
+                parseInt(
+                  moment(endDate, "YYYY-MM-DD HH:mm:ss").format("YYYYMMDD")
+                )
+                  ? true
+                  : false
+            };
+          })
+          .ToArray();
+        const active_medication = new LINQ(actMedic)
+          .Where(w => w.active == true)
+          .ToArray();
         req.records = {
           latest_mediction,
-          all_mediction
+          all_mediction,
+          active_medication
         };
 
         next();

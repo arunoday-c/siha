@@ -175,17 +175,13 @@ class OrderMedication extends Component {
       PRESCRIPTION_FREQ_DURATION,
       f => f.value === this.state.frequency_time
     );
-    if (
-      frequency !== undefined &&
-      frequencyType !== undefined &&
-      consume !== undefined
-    ) {
+    if (frequency !== undefined && frequencyType !== undefined) {
       this.setState({
         instructions: `Use ${this.state.dosage} Unit(s),${
           frequency.name
-        } Time(s) ${frequencyType.name} '${consume.name}' for ${
-          this.state.no_of_days
-        } day(s)`
+        } Time(s) ${frequencyType.name} '${
+          consume !== undefined ? consume.name : ""
+        }' for ${this.state.no_of_days} day(s)`
       });
     }
   }
