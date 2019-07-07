@@ -742,9 +742,9 @@
           color: #fff !important;
           border-color: #00dac4; }
       :global .algaeh-modal .popupFooter .btn-left {
-        float: left  !important;
-        margin-right: 10px  !important;
-        margin-left: 0px  !important; }
+        float: left !important;
+        margin-right: 10px !important;
+        margin-left: 0px !important; }
   :global .algaeh-modal-Ar {
     margin: 3% auto 0;
     background-color: #fff;
@@ -820,9 +820,9 @@
       padding-bottom: 4px;
       height: 40px; }
       :global .algaeh-modal-Ar .popupFooter .button-left {
-        float: left  !important;
-        margin-right: 10px  !important;
-        margin-left: 0px  !important; }
+        float: left !important;
+        margin-right: 10px !important;
+        margin-left: 0px !important; }
       :global .algaeh-modal-Ar .popupFooter button {
         float: left;
         margin-right: 10px;
@@ -1195,6 +1195,8 @@
       margin-left: 0 !important; }
   .arabic_component .bk-bn {
     left: 100px; }
+  .arabic_component .Image-cropper {
+    direction: ltr; }
 
 .ar_comp .algaeh-modal {
   direction: rtl;

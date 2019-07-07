@@ -152,7 +152,7 @@ class PersonalDetails extends Component {
                     <AlagehFormGroup
                       div={{ className: "col-2 mandatory" }}
                       label={{
-                        fieldName: "employee_code",
+                        forceLabel: "Emp. Code",
                         isImp: true
                       }}
                       textBox={{
@@ -208,7 +208,7 @@ class PersonalDetails extends Component {
                       }}
                     />
                     <AlgaehDateHandler
-                      div={{ className: "col-2 mandatory" }}
+                      div={{ className: "col-lg-3 mandatory" }}
                       label={{ fieldName: "date_of_birth", isImp: true }}
                       textBox={{
                         className: "txt-fld",
