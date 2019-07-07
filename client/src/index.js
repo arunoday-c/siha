@@ -9,6 +9,7 @@ import thunk from "redux-thunk";
 import { applyMiddleware, createStore } from "redux";
 import "./index.css";
 import "./styles/site.css";
+
 // import * as serviceWorker from "./serviceWorker";
 
 const middleware =
@@ -16,23 +17,10 @@ const middleware =
     ? applyMiddleware(thunk, logger)
     : applyMiddleware(thunk);
 
-// const theme = createMuiTheme({
-//   palette: {
-//     primary: {
-//       light: "#34b8bc",
-//       main: "#34b8bc",
-//       dark: "#3A95AA",
-//       contrastText: "#fff"
-//     }
-//   }
-// });
-
 const store = createStore(AlagehReducers, middleware);
 
 ReactDOM.render(
-  // <MuiThemeProvider theme={theme}>
   <Provider store={store}>{routes}</Provider>,
-  // </MuiThemeProvider>,
   document.getElementById("root")
 );
 

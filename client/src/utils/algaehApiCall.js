@@ -207,6 +207,7 @@ export function algaehApiCall(options) {
             settings.onSuccess(response);
         })
         .catch(err => {
+          AlgaehLoader({ show: false });
           if (
             settings.cancelRequestId !== undefined ||
             settings.cancelRequestId !== null ||
@@ -215,9 +216,9 @@ export function algaehApiCall(options) {
             if (axios.isCancel(err)) {
               if (process.env.NODE_ENV === "development")
                 console.warn("Request canceled :", err.message);
-              AlgaehLoader({
-                show: false
-              });
+              // AlgaehLoader({
+              //   show: false
+              // });
             }
           }
 
@@ -313,7 +314,7 @@ export function algaehApiCall(options) {
                 });
               }
             }
-            AlgaehLoader({ show: false });
+            //AlgaehLoader({ show: false });
           }
 
           // ReactDOM.unmountComponentAtNode(
