@@ -429,6 +429,7 @@ class AddBillingForm extends Component {
                             fieldName: "shift_id",
                             isImp: true
                           }}
+                          userPrefernce={true}
                           selector={{
                             name: "shift_id",
                             className: "select-fld",
