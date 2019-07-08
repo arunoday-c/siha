@@ -87,6 +87,42 @@ const ClearData = ($this, e) => {
   $this.setState(IOputs);
 };
 
+const generateMaterialTransPhar = data => {
+  // console.log("data:", data);
+  algaehApiCall({
+    uri: "/report",
+    method: "GET",
+    module: "reports",
+    headers: {
+      Accept: "blob"
+    },
+    others: { responseType: "blob" },
+    data: {
+      report: {
+        reportName: "MaterialTransferPhar",
+        reportParams: [
+          {
+            name: "transfer_number",
+            value: data.transfer_number
+          }
+        ],
+        outputFileType: "PDF"
+      }
+    },
+    onSuccess: res => {
+      const url = URL.createObjectURL(res.data);
+      let myWindow = window.open(
+        "{{ product.metafields.google.custom_label_0 }}",
+        "_blank"
+      );
+      myWindow.document.write(
+        "<iframe src= '" + url + "' width='100%' height='100%' />"
+      );
+      myWindow.document.title = "Material Transfer Receipt";
+    }
+  });
+};
+
 const SaveTransferEntry = $this => {
   AlgaehLoader({ show: true });
   $this.state.completed = "Y";
@@ -381,5 +417,6 @@ export {
   RequisitionSearch,
   LocationchangeTexts,
   checkBoxEvent,
-  getRequisitionDetails
+  getRequisitionDetails,
+  generateMaterialTransPhar
 };
