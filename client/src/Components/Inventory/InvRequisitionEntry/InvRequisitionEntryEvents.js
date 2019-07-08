@@ -98,11 +98,7 @@ const SaveRequisitionEntry = $this => {
   });
 };
 
-const generateMaterialReqInv = (
-  material_requisition_number,
-  rpt_name,
-  rpt_desc
-) => {
+const generateMaterialReqInv = (data, rpt_name, rpt_desc) => {
   algaehApiCall({
     uri: "/report",
     method: "GET",
@@ -117,7 +113,7 @@ const generateMaterialReqInv = (
         reportParams: [
           {
             name: "material_requisition_number",
-            value: material_requisition_number
+            value: data.material_requisition_number
           }
         ],
         outputFileType: "PDF"
