@@ -74,28 +74,6 @@ class CreditDetails extends Component {
                             />
                           </label>
                         );
-                      },
-                      editorTemplate: row => {
-                        return (
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              value="Front Desk"
-                              onChange={includeHandler.bind(
-                                this,
-                                this,
-                                context,
-                                row
-                              )}
-                              checked={row.include === "Y" ? true : false}
-                              disabled={
-                                this.state.hims_f_pos_credit_header_id !== null
-                                  ? true
-                                  : false
-                              }
-                            />
-                          </label>
-                        );
                       }
                     },
 
@@ -135,7 +113,7 @@ class CreditDetails extends Component {
                       label: (
                         <AlgaehLabel label={{ fieldName: "receipt_amount" }} />
                       ),
-                      editorTemplate: row => {
+                      displayTemplate: row => {
                         return (
                           <AlagehFormGroup
                             div={{}}
@@ -147,7 +125,12 @@ class CreditDetails extends Component {
                               className: "txt-fld",
                               name: "receipt_amount",
                               events: {
-                                onChange: onchangegridcol.bind(this, this, row)
+                                onChange: onchangegridcol.bind(
+                                  this,
+                                  this,
+                                  context,
+                                  row
+                                )
                               },
                               others: {
                                 placeholder: "0.00"
@@ -169,9 +152,9 @@ class CreditDetails extends Component {
                   dataSource={{
                     data: this.state.criedtdetails
                   }}
-                  isEditable={!this.state.Billexists}
+                  // isEditable={!this.state.Billexists}
                   paging={{ page: 0, rowsPerPage: 5 }}
-                  byForceEvents={true}
+                  // byForceEvents={true}
                   events={{
                     onDelete: deleteCridetSettlement.bind(this, this, context),
                     onEdit: EditGrid.bind(this, this, context),
@@ -191,7 +174,8 @@ class CreditDetails extends Component {
                       name: "remarks",
                       value: this.state.remarks,
                       others: {
-                        disabled: this.state.Billexists
+                        disabled:
+                          this.state.Billexists || !this.state.receipt_amount
                       }
                     }}
                   />
@@ -222,7 +206,8 @@ class CreditDetails extends Component {
                         onChange: writeOffhandle.bind(this, this, context)
                       },
                       others: {
-                        disabled: this.state.Billexists
+                        disabled:
+                          this.state.Billexists || !this.state.receipt_amount
                       }
                     }}
                   />
