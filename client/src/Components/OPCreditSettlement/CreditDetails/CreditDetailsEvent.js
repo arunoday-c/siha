@@ -14,7 +14,8 @@ const writeOffhandle = ($this, context, ctrl, e) => {
     context.updateState({
       [e.target.name]: e.target.value,
       recievable_amount: recievable_amount,
-      cash_amount: recievable_amount
+      unbalanced_amount: recievable_amount,
+      cash_amount: 0
     });
   }
 };
@@ -66,7 +67,7 @@ const deleteCridetSettlement = ($this, context) => {
       receipt_amount: receipt_amount,
       write_off_amount: 0,
       recievable_amount: receipt_amount,
-      cash_amount: receipt_amount
+      unbalanced_amount: receipt_amount
     });
   }
 };
@@ -88,7 +89,8 @@ const updateCridetSettlement = ($this, context) => {
       receipt_amount: receipt_amount,
       write_off_amount: 0,
       recievable_amount: receipt_amount,
-      cash_amount: receipt_amount
+      unbalanced_amount: receipt_amount,
+      cash_amount: 0
     });
   }
 };
@@ -129,6 +131,8 @@ const includeHandler = ($this, context, row, e) => {
   $this.setState(
     {
       receipt_amount: receipt_amount,
+      unbalanced_amount: receipt_amount,
+      cash_amount: 0,
       write_off_amount: 0,
       include: include,
       criedtdetails: _criedtdetails,
