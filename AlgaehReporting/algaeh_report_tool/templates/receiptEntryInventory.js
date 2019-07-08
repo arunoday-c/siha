@@ -14,7 +14,9 @@ const executePDF = function executePDFMethod(options) {
 
       options.mysql
         .executeQuery({
-          query: `select hims_f_procurement_grn_header_id,grn_number,grn_for,dn_header_id
+          query: `select  date_format('${
+            input.invoice_date
+          }    ','%d-%m-%Y')  as invoice_date, hims_f_procurement_grn_header_id,grn_number,grn_for,date(grn_date) as grn_date,dn_header_id
             ,D.hims_f_procurement_grn_detail_id,H.sub_total,detail_discount ,H.net_total  ,H.total_tax ,H.net_payable 
             from  hims_f_procurement_grn_header H inner join  hims_f_procurement_grn_detail D 
             on H.hims_f_procurement_grn_header_id=D.grn_header_id
@@ -111,10 +113,23 @@ const executePDF = function executePDFMethod(options) {
             });
           });
 
-          resolve({ ...grn_details[0], details: outputArray });
-          // utilities
-          //   .logger()
-          //   .log("output: ", { ...grn_details[0], details: outputArray });
+          resolve({
+            ...grn_details[0],
+            inovice_number: input.inovice_number,
+            location_description: outputArray[0].location_description,
+            vendor_name: outputArray[0].vendor_name,
+            purchase_number: outputArray[0].purchase_number,
+            po_date: outputArray[0].po_date,
+            details: outputArray
+          });
+          // utilities.logger().log("output: ", {
+          //   ...grn_details[0],
+          //   location_description: outputArray[0].location_description,
+          //   vendor_name: outputArray[0].vendor_name,
+          //   purchase_number: outputArray[0].purchase_number,
+          //   po_date: outputArray[0].po_date,
+          //   details: outputArray
+          // });
         })
         .catch(error => {
           options.mysql.releaseConnection();
