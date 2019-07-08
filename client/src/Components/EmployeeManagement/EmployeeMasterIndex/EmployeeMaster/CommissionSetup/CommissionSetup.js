@@ -198,7 +198,7 @@ class CommissionSetup extends Component {
                 </div>
 
                 <div className="row" style={{ marginTop: "10px" }}>
-                  <div className="col-lg-12">
+                  <div className="col-lg-12" id="servtypCommissionGrid_Cntr">
                     <AlgaehDataGrid
                       id="servtyp_commission"
                       columns={[
@@ -306,7 +306,7 @@ class CommissionSetup extends Component {
                             ? []
                             : this.state.servTypeCommission
                       }}
-                      paging={{ page: 0, rowsPerPage: 5 }}
+                      paging={{ page: 0, rowsPerPage: 10 }}
                     />
                   </div>
                 </div>

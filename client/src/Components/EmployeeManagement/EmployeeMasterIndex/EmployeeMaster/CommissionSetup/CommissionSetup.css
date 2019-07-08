@@ -19,3 +19,6 @@
   padding: 0;
   padding-top: 20px;
   cursor: pointer; }
+
+.hptl-phase1-uom-Add-form #servtypCommissionGrid_Cntr .ReactTable {
+  max-height: 50vh !important; }

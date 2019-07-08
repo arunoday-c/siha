@@ -23,4 +23,9 @@
     padding-top: 20px;
     cursor: pointer;
   }
+  #servtypCommissionGrid_Cntr {
+    .ReactTable {
+      max-height: 50vh !important;
+    }
+  }
 }

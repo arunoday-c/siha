@@ -168,6 +168,10 @@ body {
   margin-left: 10px;
   text-align: left;
 }
+
+.valueTextSick {
+  text-align: left;
+}
 .footerTotalUp {
   font-weight: bold !important;
   text-align: right;
