@@ -2578,59 +2578,56 @@ let updatePatientPhysicalExam = (req, res, next) => {
 
 //created by irfan: to get
 let getVitalsHeaderMaster = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
+    // if (req.db == null) {
+    //   next(httpStatus.dataBaseNotInitilizedError());
+    // }
+    // let db = req.db;
 
-    db.getConnection((error, connection) => {
-      if (error) {
-        next(error);
-      }
-      connection.query(
-        "with vitals (hims_d_vitals_header_id,vitals_name, uom, general,display,mandatory,vital_short_name) as \
-        ( \
-        SELECT H.hims_d_vitals_header_id, vitals_name, uom, general,display,mandatory,vital_short_name FROM hims_d_vitals_header H \
-         where general='Y' and H.record_status='A' \
-          UNION ALL \
-          select H.hims_d_vitals_header_id, vitals_name, uom, general,display,mandatory,vital_short_name from hims_d_vitals_header H,hims_m_department_vital_mapping M \
-         where general='N' and H.record_status='A' and H.hims_d_vitals_header_id =M.vital_header_id and  M.department_id=?  \
-        ) \
-        SELECT hims_d_vitals_header_id,vitals_name, uom, general,display,mandatory,vital_short_name from vitals",
-        [req.userIdentity.sub_department_id],
-
-        (error, result) => {
-          if (error) {
-            releaseDBConnection(db, connection);
-            next(error);
-          } else {
-            const vitalDetails = new LINQ(result)
-              .Select(s => {
-                return s.hims_d_vitals_header_id;
-              })
-              .ToArray();
-            console.log("vitalDetails", vitalDetails);
-            connection.query(
+    _mysql
+      .executeQuery({
+        query:
+          "with vitals (hims_d_vitals_header_id,vitals_name, uom, general,display,mandatory,vital_short_name) as \
+    ( \
+    SELECT H.hims_d_vitals_header_id, vitals_name, uom, general,display,mandatory,vital_short_name FROM hims_d_vitals_header H \
+     where general='Y' and H.record_status='A' \
+      UNION ALL \
+      select H.hims_d_vitals_header_id, vitals_name, uom, general,display,mandatory,vital_short_name from hims_d_vitals_header H,hims_m_department_vital_mapping M \
+     where general='N' and H.record_status='A' and H.hims_d_vitals_header_id =M.vital_header_id and  M.department_id=?  \
+    ) \
+    SELECT hims_d_vitals_header_id,vitals_name, uom, general,display,mandatory,vital_short_name from vitals",
+        values: [req.userIdentity.sub_department_id]
+      })
+      .then(result => {
+        const vitalDetails = new LINQ(result)
+          .Select(s => {
+            return s.hims_d_vitals_header_id;
+          })
+          .ToArray();
+        _mysql
+          .executeQuery({
+            query:
               "select hims_d_vitals_details_id,vitals_header_id,gender,min_age,max_age,min_value,max_value from hims_d_vitals_details where vitals_header_id in (?)",
-              [vitalDetails],
-              (error, detailResult) => {
-                if (error) {
-                  releaseDBConnection(db, connection);
-                  next(error);
-                } else {
-                  console.log("detailResult", detailResult);
-                  releaseDBConnection(db, connection);
-                  req.records = result;
-                  next();
-                }
-              }
-            );
-          }
-        }
-      );
-    });
+            values: [vitalDetails],
+            printQuery: true
+          })
+          .then(detailResult => {
+            _mysql.releaseConnection();
+            req.records = result;
+            next();
+          })
+          .catch(error => {
+            _mysql.releaseConnection();
+            next(error);
+          });
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };

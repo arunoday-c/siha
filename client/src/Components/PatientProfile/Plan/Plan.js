@@ -17,7 +17,6 @@ import { removeGlobal } from "../../../utils/GlobalFunctions";
 class Plan extends Component {
   constructor(props) {
     super(props);
-
     this.state = { pageDisplay: "OrderMedication", sidBarOpen: true };
   }
 
@@ -44,36 +43,37 @@ class Plan extends Component {
     });
   };
 
-  getPatientMedications() {
-    algaehApiCall({
-      uri: "/orderMedication/getPatientMedications",
-      data: { patient_id: Window.global["current_patient"] },
-      method: "GET",
-      onSuccess: response => {
-        if (response.data.success) {
-          this.setState({
-            latest_mediction: response.data.records.latest_mediction,
-            all_mediction: response.data.records.all_mediction
-          });
-        }
-      },
-      onFailure: error => {
-        swalMessage({
-          title: error.message,
-          type: "error"
-        });
-      }
-    });
-  }
+  // getPatientMedications() {
+  //   algaehApiCall({
+  //     uri: "/orderMedication/getPatientMedications",
+  //     data: { patient_id: Window.global["current_patient"] },
+  //     method: "GET",
+  //     onSuccess: response => {
+  //       if (response.data.success) {
+  //         this.setState({
+  //           latest_mediction: response.data.records.latest_mediction,
+  //           all_mediction: response.data.records.all_mediction,
+  //           active_medication: response.data.records.active_medication
+  //         });
+  //       }
+  //     },
+  //     onFailure: error => {
+  //       swalMessage({
+  //         title: error.message,
+  //         type: "error"
+  //       });
+  //     }
+  //   });
+  // }
   componentWillUnmount() {
     if (Window.global["orderMedicationState"] !== null) {
       removeGlobal("orderMedicationState");
     }
   }
 
-  componentDidMount() {
-    this.getPatientMedications();
-  }
+  // componentDidMount() {
+  //   this.getPatientMedications();
+  // }
 
   render() {
     return (
@@ -133,6 +133,7 @@ class Plan extends Component {
             {this.state.pageDisplay === "OrderMedication" ? (
               <OrderMedication
                 vat_applicable={this.props.vat_applicable}
+                refreshState={this.props.mainState}
                 onclosePopup={e => {
                   removeGlobal("orderMedicationState");
                   this.setState({ pageDisplay: "OrderMedication" }, () => {
@@ -148,7 +149,7 @@ class Plan extends Component {
                     this.props.onClose && this.props.onClose(e);
                   });
                 }}
-                latest_mediction={this.state.latest_mediction}
+                active_medication={this.props.mainState.state.active_medication}
               />
             ) : this.state.pageDisplay === "MedicationHistory" ? (
               <MedicationHistory
@@ -158,7 +159,7 @@ class Plan extends Component {
                     this.props.onClose && this.props.onClose(e);
                   });
                 }}
-                all_mediction={this.state.all_mediction}
+                all_mediction={this.props.mainState.state.all_mediction}
               />
             ) : null}
           </AlgaehModalPopUp>

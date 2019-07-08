@@ -17,7 +17,8 @@ import {
   RequisitionSearch,
   LocationchangeTexts,
   checkBoxEvent,
-  getRequisitionDetails
+  getRequisitionDetails,
+  generateMaterialTransPhar
 } from "./TransferEntryEvents";
 import "./TransferEntry.css";
 import "../../../styles/site.css";
@@ -90,7 +91,7 @@ class TransferEntry extends Component {
       getRequisitionDetails(
         this,
         this.props.hims_f_pharamcy_material_header_id,
-        this.props.from_location_id
+        this.props.from_location
       );
     }
   }
@@ -173,6 +174,22 @@ class TransferEntry extends Component {
                   </h6>
                 </div>
               </div>
+            }
+            printArea={
+              this.state.transfer_number !== null
+                ? {
+                    menuitems: [
+                      {
+                        label: "Print Receipt",
+                        events: {
+                          onClick: () => {
+                            generateMaterialTransPhar(this.state);
+                          }
+                        }
+                      }
+                    ]
+                  }
+                : ""
             }
             selectedLang={this.state.selectedLang}
           />

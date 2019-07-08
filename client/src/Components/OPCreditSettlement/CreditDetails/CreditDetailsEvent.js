@@ -5,7 +5,7 @@ const writeOffhandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
 
   let recievable_amount =
-    parseFloat($this.state.reciept_amount) - parseFloat(e.target.value);
+    parseFloat($this.state.receipt_amount) - parseFloat(e.target.value);
   $this.setState({
     [e.target.name]: e.target.value,
     recievable_amount: recievable_amount
@@ -14,12 +14,13 @@ const writeOffhandle = ($this, context, ctrl, e) => {
     context.updateState({
       [e.target.name]: e.target.value,
       recievable_amount: recievable_amount,
-      cash_amount: recievable_amount
+      unbalanced_amount: recievable_amount,
+      cash_amount: 0
     });
   }
 };
 
-const EditGrid = ($this, context) => {
+const EditGrid = ($this, context, row) => {
   let saveEnable = true;
 
   if ($this.state.hims_f_credit_header_id !== null) {
@@ -45,7 +46,6 @@ const CancelGrid = ($this, context, cancelRow) => {
     }
     context.updateState({
       saveEnable: saveEnable,
-
       criedtdetails: _criedtdetails
     });
   }
@@ -54,7 +54,7 @@ const CancelGrid = ($this, context, cancelRow) => {
 const deleteCridetSettlement = ($this, context) => {
   let saveEnable = true;
 
-  let reciept_amount = Enumerable.from($this.state.criedtdetails).sum(w =>
+  let receipt_amount = Enumerable.from($this.state.criedtdetails).sum(w =>
     parseFloat(w.receipt_amount)
   );
 
@@ -64,10 +64,10 @@ const deleteCridetSettlement = ($this, context) => {
   if (context !== null) {
     context.updateState({
       saveEnable: saveEnable,
-      reciept_amount: reciept_amount,
+      receipt_amount: receipt_amount,
       write_off_amount: 0,
-      recievable_amount: reciept_amount,
-      cash_amount: reciept_amount
+      recievable_amount: receipt_amount,
+      unbalanced_amount: receipt_amount
     });
   }
 };
@@ -75,44 +75,45 @@ const deleteCridetSettlement = ($this, context) => {
 const updateCridetSettlement = ($this, context) => {
   let saveEnable = false;
 
-  let reciept_amount = Enumerable.from($this.state.criedtdetails).sum(w =>
-    parseFloat(w.receipt_amount)
-  );
+  let receipt_amount = Enumerable.from($this.state.criedtdetails)
+    .where("!!$.receipt_amount") // don't be afraid, meet $ aka lambda selector from Linq, lookup the docs.
+    .sum(w => parseFloat(w.receipt_amount));
 
   if ($this.state.hims_f_credit_header_id !== null) {
     saveEnable = true;
   }
+
   if (context !== null) {
     context.updateState({
       saveEnable: saveEnable,
-      reciept_amount: reciept_amount,
+      receipt_amount: receipt_amount,
       write_off_amount: 0,
-      recievable_amount: reciept_amount,
-      cash_amount: reciept_amount
+      recievable_amount: receipt_amount,
+      unbalanced_amount: receipt_amount,
+      cash_amount: 0
     });
   }
 };
 
 const includeHandler = ($this, context, row, e) => {
   let _criedtdetails = $this.state.criedtdetails;
-  let reciept_amount = 0;
+  let receipt_amount = 0;
   let include = "Y";
   let saveEnable = true;
+
   if (e.target.checked === true) {
     row["receipt_amount"] = row["previous_balance"];
     row["balance_amount"] = 0;
-    reciept_amount =
-      row["receipt_amount"] + parseFloat($this.state.reciept_amount);
+    receipt_amount =
+      row["receipt_amount"] + parseFloat($this.state.receipt_amount);
     row["include"] = "Y";
   } else if (e.target.checked === false) {
-    reciept_amount =
-      parseFloat($this.state.reciept_amount) - row["receipt_amount"];
+    receipt_amount =
+      parseFloat($this.state.receipt_amount) - row["receipt_amount"];
     row["receipt_amount"] = 0;
     row["balance_amount"] = row["previous_balance"];
-
     row["include"] = "N";
   }
-  //   row.update();
 
   for (let k = 0; k < _criedtdetails.length; k++) {
     if (_criedtdetails[k].bill_header_id === row.bill_header_id) {
@@ -127,33 +128,54 @@ const includeHandler = ($this, context, row, e) => {
     saveEnable = false;
   }
 
-  if (context !== null) {
-    context.updateState({
-      reciept_amount: reciept_amount,
+  $this.setState(
+    {
+      receipt_amount: receipt_amount,
+      unbalanced_amount: receipt_amount,
+      cash_amount: 0,
       write_off_amount: 0,
-      recievable_amount: reciept_amount,
-      cash_amount: reciept_amount,
       include: include,
       criedtdetails: _criedtdetails,
       saveEnable: saveEnable
-    });
-  }
+    },
+    updateCridetSettlement($this, context) // to calculate total receipt amount
+  );
 };
 
-const onchangegridcol = ($this, row, e) => {
+const onchangegridcol = ($this, context, row, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  if ($this.state.previous_balance > value) {
+  let _criedtdetails = $this.state.criedtdetails;
+
+  let balance_amount = parseFloat(row.previous_balance) - parseFloat(value);
+  balance_amount = isNaN(balance_amount) // check whether the number is NaN, trust me it's a thing
+    ? row.previous_balance
+    : balance_amount;
+
+  if (balance_amount < 0) {
     swalMessage({
       title: "Receipt Amount cannot be greater than Previous Balance",
       type: "error"
     });
+    row["balance_amount"] = row["previous_balance"];
+    row[name] = 0;
   } else {
-    let balance_amount = parseFloat(row.previous_balance) - parseFloat(value);
     row[name] = value;
     row["balance_amount"] = balance_amount;
-    row.update();
   }
+
+  for (let k = 0; k < _criedtdetails.length; k++) {
+    if (_criedtdetails[k].bill_header_id === row.bill_header_id) {
+      _criedtdetails[k] = row;
+    }
+  }
+
+  $this.setState(
+    {
+      criedtdetails: _criedtdetails
+    },
+    updateCridetSettlement($this, context) // calling update to calculate total of all receipt amounts
+  );
 };
 
 export {

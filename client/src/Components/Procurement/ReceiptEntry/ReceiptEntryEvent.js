@@ -460,6 +460,53 @@ const getData = $this => {
   }
 };
 
+const generateReceiptEntryReport = data => {
+  console.log("data:", data);
+  algaehApiCall({
+    uri: "/report",
+    method: "GET",
+    module: "reports",
+    headers: {
+      Accept: "blob"
+    },
+    others: { responseType: "blob" },
+    data: {
+      report: {
+        reportName:
+          data.grn_for === "PHR"
+            ? "receiptEntryPharmacy"
+            : "receiptEntryInventory",
+        reportParams: [
+          {
+            name: "invoice_date",
+            value: data.invoice_date
+          },
+          {
+            name: "inovice_number",
+            value: data.inovice_number
+          },
+          {
+            name: "grn_number",
+            value: data.grn_number
+          }
+        ],
+        outputFileType: "PDF"
+      }
+    },
+    onSuccess: res => {
+      const url = URL.createObjectURL(res.data);
+      let myWindow = window.open(
+        "{{ product.metafields.google.custom_label_0 }}",
+        "_blank"
+      );
+      myWindow.document.write(
+        "<iframe src= '" + url + "' width='100%' height='100%' />"
+      );
+      myWindow.document.title = "Receipt Entry Report";
+    }
+  });
+};
+
 const PostReceiptEntry = $this => {
   $this.state.posted = "Y";
   $this.state.transaction_type = "REC";
@@ -685,5 +732,6 @@ export {
   loctexthandle,
   PostReceiptEntry,
   PurchaseOrderSearch,
-  textEventhandle
+  textEventhandle,
+  generateReceiptEntryReport
 };

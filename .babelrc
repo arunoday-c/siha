@@ -1,5 +1,6 @@
 {
   "presets": ["env", "stage-0"],
-  "sourceMaps": "inline",
-  "retainLines": true
+  "sourceMaps": false,
+  "retainLines": true,
+  "ignore": ["node_modules"]
 }

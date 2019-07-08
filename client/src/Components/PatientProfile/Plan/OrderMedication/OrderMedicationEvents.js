@@ -85,6 +85,7 @@ const SaveMedication = ($this, e) => {
               medicationitems: []
             },
             () => {
+              $this.props.refreshState.getPatientMedications();
               $this.props.onclosePopup && $this.props.onclosePopup(e);
             }
           );

@@ -236,12 +236,12 @@
 
   ul.ul-legend {
     li {
-    float: left;
-    margin-right: 10px;
-    list-style: none;
-    margin-top: 3px;
-    font-size: 0.8rem;
-    line-height: 19px;
+      float: left;
+      margin-right: 10px;
+      list-style: none;
+      margin-top: 3px;
+      font-size: 0.8rem;
+      line-height: 19px;
 
       span {
         border: 1px solid #ccc;
@@ -256,43 +256,45 @@
 
   .btn-green {
     color: $color-white;
-        background-color: $primary-color;
-        border-color: darken($primary-color, 10%);
-        &:hover {
-          background-color: darken($primary-color, 10%);
-          border-color: lighten($primary-color, 10%);
-        }
-        &:focus {
-          background-color: $primary-color;
-          border-color: $primary-color;
-        }
-        &.disabled,
-        &:disabled {
-          opacity: 0.3;
-          color: $color-white;
-          background-color: $primary-color;
-          border-color: darken($primary-color, 10%);
-          cursor: not-allowed;
-        }
-        &:active {
-          background-color: $color-white;
-          border-color: $color-white;
-        }
-    i{color: #fff;}
+    background-color: $primary-color;
+    border-color: darken($primary-color, 10%);
+    &:hover {
+      background-color: darken($primary-color, 10%);
+      border-color: lighten($primary-color, 10%);
+    }
+    &:focus {
+      background-color: $primary-color;
+      border-color: $primary-color;
+    }
+    &.disabled,
+    &:disabled {
+      opacity: 0.3;
+      color: $color-white;
+      background-color: $primary-color;
+      border-color: darken($primary-color, 10%);
+      cursor: not-allowed;
+    }
+    &:active {
+      background-color: $color-white;
+      border-color: $color-white;
+    }
+    i {
+      color: #fff;
+    }
   }
   .btn-grey {
     color: lighten($color-black, 10%);
-        background-color: lighten($color-black, 90%);
-        border-color: lighten($color-black, 50%);
-        &:hover,
-        &:focus {
-          background-color: lighten($color-black, 80%);
-          border-color: lighten($color-black, 10%);
-        }
-    i{
-    color: #000;}
+    background-color: lighten($color-black, 90%);
+    border-color: lighten($color-black, 50%);
+    &:hover,
+    &:focus {
+      background-color: lighten($color-black, 80%);
+      border-color: lighten($color-black, 10%);
+    }
+    i {
+      color: #000;
+    }
   }
-
 
   /* Track */
   ::-webkit-scrollbar-track {
@@ -994,8 +996,8 @@
           text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5);
         }
       }
-      .btn:disabled{
-        cursor: not-allowed!important;
+      .btn:disabled {
+        cursor: not-allowed !important;
         opacity: 0.4;
       }
       .btn-primary {
@@ -1047,9 +1049,9 @@
       }
 
       .btn-left {
-        float: left  !important;
-        margin-right: 10px  !important;
-        margin-left: 0px  !important;
+        float: left !important;
+        margin-right: 10px !important;
+        margin-left: 0px !important;
       }
     }
   }
@@ -1124,7 +1126,6 @@
         overflow-y: auto;
         padding: 15px;
       }
-      
 
       .toggle-section {
         .nav {
@@ -1147,9 +1148,9 @@
       padding-bottom: 4px;
       height: 40px;
       .button-left {
-        float: left  !important;
-        margin-right: 10px  !important;
-        margin-left: 0px  !important;
+        float: left !important;
+        margin-right: 10px !important;
+        margin-left: 0px !important;
       }
       button {
         float: left;
@@ -1586,9 +1587,11 @@
     float: left;
     border-right: 1px solid #adaaaa;
     border-left: 0;
-  } .print-area .dropdown-menu {
+  }
+  .print-area .dropdown-menu {
     left: 5px;
-    right: inherit;}
+    right: inherit;
+  }
   .hdg_bredcrump {
     background: url("./assets/images/breadcrump_border_Ar.webp") no-repeat top
       left #fff !important;
@@ -1601,14 +1604,16 @@
     border-left: 1px dashed #d3d3d3;
     border-right: 0;
   }
-  .hptl-phase1-footer{ button {
-    font-size: 1.2rem;
-    float: left;
-  }.btn:disabled{
-    cursor: not-allowed!important;
-    opacity: 0.4;
+  .hptl-phase1-footer {
+    button {
+      font-size: 1.2rem;
+      float: left;
+    }
+    .btn:disabled {
+      cursor: not-allowed !important;
+      opacity: 0.4;
+    }
   }
-}
   .toggle-section .nav {
     padding: 0;
     right: auto;
@@ -1646,8 +1651,10 @@
     }
   }
   .bk-bn {
-
     left: 100px;
+  }
+  .Image-cropper {
+    direction: ltr;
   }
 }
 .ar_comp {

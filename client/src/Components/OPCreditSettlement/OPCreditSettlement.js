@@ -199,13 +199,16 @@ class OPCreditSettlement extends Component {
 					<MyContext.Provider
 						value={{
 							state: this.state,
-							updateState: (obj) => {
+							updateState: (obj, callback) => {
 								this.setState({ ...this.state, ...obj }, () => {
 									Object.keys(obj).map((key) => {
 										if (key === 'patient_code') {
 											this.getPatientDetails(this);
 										}
 									});
+									if(typeof callback === "function") {
+										callback()
+									}
 								});
 							}
 						}}

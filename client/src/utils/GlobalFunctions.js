@@ -677,3 +677,46 @@ export function retry(fn, retriesLeft = 5, interval = 1000) {
       });
   });
 }
+export function saveUserPrefernce(options) {
+  return new Promise((resolve, reject) => {
+    try {
+      let _screenName = getCookie("ScreenName").replace("/", "");
+      algaehApiCall({
+        uri: "/userPreferences/save",
+        data: {
+          screenName: _screenName,
+          identifier: options.name,
+          value: options.value,
+          name: options.name
+        },
+        method: "POST",
+        onSuccess: response => {
+          resolve(response);
+        }
+      });
+    } catch (e) {
+      reject(e);
+      console.error(e.toString());
+    }
+  });
+}
+export function getUserPreferences(options) {
+  return new Promise((resolve, reject) => {
+    try {
+      let _screenName = getCookie("ScreenName").replace("/", "");
+      algaehApiCall({
+        uri: "/userPreferences/get",
+        data: {
+          screenName: _screenName,
+          identifier: options.name
+        },
+        method: "GET",
+        onSuccess: response => {
+          resolve(response.data.records);
+        }
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+}

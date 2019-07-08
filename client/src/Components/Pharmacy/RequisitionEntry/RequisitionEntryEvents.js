@@ -110,6 +110,41 @@ const SaveRequisitionEntry = $this => {
   });
 };
 
+const generateMaterialReqPhar = (data, rpt_name, rpt_desc) => {
+  algaehApiCall({
+    uri: "/report",
+    method: "GET",
+    module: "reports",
+    headers: {
+      Accept: "blob"
+    },
+    others: { responseType: "blob" },
+    data: {
+      report: {
+        reportName: "MaterialReqPhar",
+        reportParams: [
+          {
+            name: "material_requisition_number",
+            value: data.material_requisition_number
+          }
+        ],
+        outputFileType: "PDF"
+      }
+    },
+    onSuccess: res => {
+      const url = URL.createObjectURL(res.data);
+      let myWindow = window.open(
+        "{{ product.metafields.google.custom_label_0 }}",
+        "_blank"
+      );
+      myWindow.document.write(
+        "<iframe src= '" + url + "' width='100%' height='100%' />"
+      );
+      myWindow.document.title = "Material Requisition - Pharmacy";
+    }
+  });
+};
+
 const AuthorizeRequisitionEntry = ($this, authorize) => {
   debugger;
   let auth_qty = Enumerable.from($this.state.pharmacy_stock_detail).any(
@@ -125,7 +160,7 @@ const AuthorizeRequisitionEntry = ($this, authorize) => {
   }
   let authorize1 = "";
   let authorize2 = "";
-  if (authorize === "authorize1") {
+  if (authorize === "Authorize1") {
     $this.state.authorize1 = "Y";
     authorize1 = "Y";
     authorize2 = "N";
@@ -230,5 +265,6 @@ export {
   ClearData,
   SaveRequisitionEntry,
   AuthorizeRequisitionEntry,
-  LocationchangeTexts
+  LocationchangeTexts,
+  generateMaterialReqPhar
 };

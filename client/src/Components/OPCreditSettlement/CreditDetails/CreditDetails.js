@@ -21,6 +21,7 @@ import {
   onchangegridcol
 } from "./CreditDetailsEvent";
 import { getAmountFormart } from "../../../utils/GlobalFunctions";
+import { swalMessage } from "../../../utils/algaehApiCall";
 
 class CreditDetails extends Component {
   constructor(props) {
@@ -30,13 +31,35 @@ class CreditDetails extends Component {
 
   componentWillMount() {
     let InputOutput = this.props.SettlementIOputs;
-    this.setState({ ...this.state, ...InputOutput });
+    this.setState({ ...this.state, ...InputOutput }, () =>
+      console.log(this.state, "from mount")
+    );
   }
 
   componentDidMount() {}
 
   componentWillReceiveProps(nextProps) {
     this.setState(nextProps.SettlementIOputs);
+  }
+
+  changeText(e) {
+    const { name, value } = e.target;
+    this.setState({
+      [name]: value
+    });
+  }
+
+  checkRemarks(e) {
+    e.preventDefault();
+    if (e.target.value) {
+      if (!this.state.remarks) {
+        swalMessage({
+          title: "Please Enter Remarks",
+          type: "warning"
+        });
+        document.getElementsByName("remarks")[0].focus();
+      }
+    }
   }
 
   render() {
@@ -53,29 +76,18 @@ class CreditDetails extends Component {
                     {
                       fieldName: "include",
                       label: <AlgaehLabel label={{ fieldName: "include" }} />,
+                      // displayTemplate: row => {
+                      //   let displayElement;
+                      //   if (row.include === "Y") {
+                      //     displayElement = "Yes";
+                      //   } else if (row.include === "N") {
+                      //     displayElement = "No";
+                      //   } else {
+                      //     displayElement = "---";
+                      //   }
+                      //   return <span>{displayElement}</span>;
+                      // },
                       displayTemplate: row => {
-                        return (
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              value="Front Desk"
-                              onChange={includeHandler.bind(
-                                this,
-                                this,
-                                context,
-                                row
-                              )}
-                              checked={row.include === "Y" ? true : false}
-                              disabled={
-                                this.state.hims_f_credit_header_id !== null
-                                  ? true
-                                  : false
-                              }
-                            />
-                          </label>
-                        );
-                      },
-                      editorTemplate: row => {
                         return (
                           <label className="checkbox inline">
                             <input
@@ -135,7 +147,7 @@ class CreditDetails extends Component {
                       label: (
                         <AlgaehLabel label={{ fieldName: "receipt_amount" }} />
                       ),
-                      editorTemplate: row => {
+                      displayTemplate: row => {
                         return (
                           <AlagehFormGroup
                             div={{}}
@@ -147,7 +159,12 @@ class CreditDetails extends Component {
                               className: "txt-fld",
                               name: "receipt_amount",
                               events: {
-                                onChange: onchangegridcol.bind(this, this, row)
+                                onChange: onchangegridcol.bind(
+                                  this,
+                                  this,
+                                  context,
+                                  row
+                                )
                               },
                               others: {
                                 placeholder: "0.00"
@@ -169,9 +186,9 @@ class CreditDetails extends Component {
                   dataSource={{
                     data: this.state.criedtdetails
                   }}
-                  isEditable={!this.state.Billexists}
+                  // isEditable={!this.state.Billexists}
                   paging={{ page: 0, rowsPerPage: 5 }}
-                  byForceEvents={true}
+                  // byForceEvents={true}
                   events={{
                     onDelete: deleteCridetSettlement.bind(this, this, context),
                     onEdit: EditGrid.bind(this, this, context),
@@ -184,14 +201,19 @@ class CreditDetails extends Component {
                   <AlagehFormGroup
                     div={{ className: "col-lg-6" }}
                     label={{
-                      fieldName: "remarks"
+                      fieldName: "remarks",
+                      isImp: this.state.write_off_amount ? true : false
                     }}
                     textBox={{
                       className: "txt-fld",
                       name: "remarks",
                       value: this.state.remarks,
+                      events: {
+                        onChange: this.changeText.bind(this)
+                      },
                       others: {
-                        disabled: this.state.Billexists
+                        disabled:
+                          this.state.Billexists || !this.state.receipt_amount
                       }
                     }}
                   />
@@ -203,7 +225,7 @@ class CreditDetails extends Component {
                         // forceLabel: "hgjhghj"
                       }}
                     />
-                    <h6>{getAmountFormart(this.state.reciept_amount)}</h6>
+                    <h6>{getAmountFormart(this.state.receipt_amount)}</h6>
                   </div>
 
                   <AlagehFormGroup
@@ -222,7 +244,9 @@ class CreditDetails extends Component {
                         onChange: writeOffhandle.bind(this, this, context)
                       },
                       others: {
-                        disabled: this.state.Billexists
+                        disabled:
+                          this.state.Billexists || !this.state.receipt_amount,
+                        onBlur: this.checkRemarks.bind(this)
                       }
                     }}
                   />
