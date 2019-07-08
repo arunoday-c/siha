@@ -473,10 +473,18 @@ const generateReceiptEntryReport = data => {
     data: {
       report: {
         reportName:
-          data.po_from === "PHR"
+          data.grn_for === "PHR"
             ? "receiptEntryPharmacy"
             : "receiptEntryInventory",
         reportParams: [
+          {
+            name: "invoice_date",
+            value: data.invoice_date
+          },
+          {
+            name: "inovice_number",
+            value: data.inovice_number
+          },
           {
             name: "grn_number",
             value: data.grn_number
