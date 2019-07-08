@@ -7,27 +7,31 @@ export default function ConsumptionItemsEvents() {
     getCtrlCode: ($this, docNumber) => {
       AlgaehLoader({ show: true });
 
-      algaehApiCall({
-        uri: "/inventoryconsumption/getInventoryConsumption",
-        module: "inventory",
-        method: "GET",
-        data: { consumption_number: docNumber },
-        onSuccess: response => {
-          if (response.data.success === true) {
-            let data = response.data.records;
-            data.saveEnable = true;
+      let IOputs = ConsumptionIOputs.inputParam();
+      $this.setState(IOputs, () => {
+        algaehApiCall({
+          uri: "/inventoryconsumption/getInventoryConsumption",
+          module: "inventory",
+          method: "GET",
+          data: { consumption_number: docNumber },
+          onSuccess: response => {
+            if (response.data.success === true) {
+              let data = response.data.records;
+              data.saveEnable = true;
 
-            data.addedItem = true;
-            $this.setState(data);
-            AlgaehLoader({ show: false });
+              data.addedItem = true;
+              data.ItemDisable = true;
+              $this.setState(data);
+              AlgaehLoader({ show: false });
+            }
+          },
+          onFailure: err => {
+            swalMessage({
+              title: err.message,
+              type: "error"
+            });
           }
-        },
-        onFailure: err => {
-          swalMessage({
-            title: err.message,
-            type: "error"
-          });
-        }
+        });
       });
     },
 

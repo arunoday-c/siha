@@ -8,6 +8,8 @@ import Label from "../Wrapper/label";
 import Cleave from "cleave.js/react";
 import NumberFormat from "react-number-format";
 import { Input, TextArea } from "semantic-ui-react";
+import _ from "lodash";
+
 export default class FormGroup extends PureComponent {
   constructor(props) {
     super(props);
@@ -64,6 +66,7 @@ export default class FormGroup extends PureComponent {
   }
   onKeyPressHandler(evt) {
     try {
+      debugger;
       if (evt.keyCode === 69) return false;
 
       if (evt.target.min !== "" && !isNaN(evt.target.value)) {
@@ -110,6 +113,27 @@ export default class FormGroup extends PureComponent {
     //   return false;
     // }
     // return true;
+  }
+
+  onKeyDowneventHadaler(evt) {
+    debugger;
+    if (
+      this.props.textBox.dontAllowKeys !== undefined &&
+      Array.isArray(this.props.textBox.dontAllowKeys)
+    ) {
+      const _key = _.find(
+        this.props.textBox.dontAllowKeys,
+        f => String(f).toUpperCase() === String(evt.key).toUpperCase()
+      );
+      if (_key !== undefined) {
+        evt.preventDefault();
+        return false;
+      } else {
+        return true;
+      }
+    } else {
+      return true;
+    }
   }
 
   getKeyCode(decimal) {
@@ -302,6 +326,10 @@ export default class FormGroup extends PureComponent {
       } else if (this.props.textBox.number !== undefined) {
         const min =
           this.props.textBox.number.allowNegative === false ? { min: 0 } : {};
+        const keyDownEvent =
+          this.props.textBox.dontAllowKeys !== undefined
+            ? { onKeyPress: this.onKeyDowneventHadaler.bind(this) }
+            : {};
         return (
           <Input
             type="number"
@@ -313,6 +341,7 @@ export default class FormGroup extends PureComponent {
             {...min}
             {...this.props.textBox.others}
             {..._class}
+            {...keyDownEvent}
             pattern="\d+((\.|,)\d+)?"
             onKeyUp={this.onKeyPressHandler.bind(this)}
           />

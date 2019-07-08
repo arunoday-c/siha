@@ -277,6 +277,7 @@ class PosListItems extends Component {
                                 className: "txt-fld",
                                 name: "quantity",
                                 value: this.state.quantity,
+                                dontAllowKeys: ["-", "e"],
                                 events: {
                                   onChange: numberchangeTexts.bind(
                                     this,
@@ -298,6 +299,7 @@ class PosListItems extends Component {
                                 isImp: false
                               }}
                               textBox={{
+                                decimal: { allowNegative: false },
                                 className: "txt-fld",
                                 name: "discount_percentage",
                                 value: this.state.discount_percentage,
@@ -309,7 +311,6 @@ class PosListItems extends Component {
                                   )
                                 },
                                 others: {
-                                  type: "number",
                                   tabIndex: "4",
                                   disabled:
                                     this.state.insured === "Y" ? true : false
@@ -556,6 +557,7 @@ class PosListItems extends Component {
                                             value: row.quantity,
                                             className: "txt-fld",
                                             name: "quantity",
+                                            dontAllowKeys: ["-", "e"],
                                             events: {
                                               onChange: qtyonchangegridcol.bind(
                                                 this,
@@ -730,6 +732,7 @@ class PosListItems extends Component {
                                           <AlagehFormGroup
                                             div={{}}
                                             textBox={{
+                                              decimal: { allowNegative: false },
                                               value: row.discount_percentage,
                                               className: "txt-fld",
                                               name: "discount_percentage",
@@ -745,8 +748,8 @@ class PosListItems extends Component {
                                                 onFocus: e => {
                                                   e.target.oldvalue =
                                                     e.target.value;
-                                                },
-                                                type: "number"
+                                                }
+                                                // type: "number"
                                               }
                                             }}
                                           />
@@ -773,6 +776,7 @@ class PosListItems extends Component {
                                           <AlagehFormGroup
                                             div={{}}
                                             textBox={{
+                                              decimal: { allowNegative: false },
                                               value: row.discount_amount,
                                               className: "txt-fld",
                                               name: "discount_amount",
@@ -788,8 +792,8 @@ class PosListItems extends Component {
                                                 onFocus: e => {
                                                   e.target.oldvalue =
                                                     e.target.value;
-                                                },
-                                                type: "number"
+                                                }
+                                                // type: "number"
                                               }
                                             }}
                                           />

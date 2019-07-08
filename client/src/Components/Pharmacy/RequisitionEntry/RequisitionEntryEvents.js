@@ -2,7 +2,7 @@
 // import FrontDesk from "../../../Search/FrontDesk.json";
 // import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
-// import Enumerable from "linq";
+import Enumerable from "linq";
 import RequisitionIOputs from "../../../Models/Requisition";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
@@ -15,53 +15,58 @@ const changeTexts = ($this, ctrl, e) => {
 
 const getCtrlCode = ($this, docNumber) => {
   AlgaehLoader({ show: true });
-  $this.props.getRequisitionEntry({
-    uri: "/requisitionEntry/getrequisitionEntry",
-    module: "pharmacy",
-    method: "GET",
-    printInput: true,
-    data: { material_requisition_number: docNumber },
-    redux: {
-      type: "POS_ENTRY_GET_DATA",
-      mappingName: "requisitionentry"
-    },
-    afterSuccess: data => {
-      if (
-        $this.props.material_requisition_number !== undefined &&
-        $this.props.material_requisition_number.length !== 0
-      ) {
-        data.authorizeEnable = false;
-        data.ClearDisable = true;
 
-        for (let i = 0; i < data.pharmacy_stock_detail.length; i++) {
-          data.pharmacy_stock_detail[i].quantity_authorized =
-            data.authorize1 === "N"
-              ? data.pharmacy_stock_detail[i].quantity_required
-              : data.pharmacy_stock_detail[i].quantity_authorized;
-          data.pharmacy_stock_detail[i].quantity_outstanding =
-            data.authorize1 === "N"
-              ? data.pharmacy_stock_detail[i].quantity_required
-              : data.pharmacy_stock_detail[i].quantity_outstanding;
+  let IOputs = RequisitionIOputs.inputParam();
+  $this.setState(IOputs, () => {
+    $this.props.getRequisitionEntry({
+      uri: "/requisitionEntry/getrequisitionEntry",
+      module: "pharmacy",
+      method: "GET",
+      printInput: true,
+      data: { material_requisition_number: docNumber },
+      redux: {
+        type: "POS_ENTRY_GET_DATA",
+        mappingName: "requisitionentry"
+      },
+      afterSuccess: data => {
+        data.cannotDelete = true;
+        if (
+          $this.props.material_requisition_number !== undefined &&
+          $this.props.material_requisition_number.length !== 0
+        ) {
+          data.authorizeEnable = false;
+          data.ClearDisable = true;
 
-          data.pharmacy_stock_detail[i].operation = "+";
+          for (let i = 0; i < data.pharmacy_stock_detail.length; i++) {
+            data.pharmacy_stock_detail[i].quantity_authorized =
+              data.authorize1 === "N"
+                ? data.pharmacy_stock_detail[i].quantity_required
+                : data.pharmacy_stock_detail[i].quantity_authorized;
+            data.pharmacy_stock_detail[i].quantity_outstanding =
+              data.authorize1 === "N"
+                ? data.pharmacy_stock_detail[i].quantity_required
+                : data.pharmacy_stock_detail[i].quantity_outstanding;
+
+            data.pharmacy_stock_detail[i].operation = "+";
+          }
         }
-      }
-      data.saveEnable = true;
+        data.saveEnable = true;
 
-      if (data.posted === "Y") {
-        data.postEnable = true;
-      } else {
-        data.postEnable = false;
-      }
-      // if (data.visit_id !== null) {
-      //   data.case_type = "OP";
-      // }
+        if (data.posted === "Y") {
+          data.postEnable = true;
+        } else {
+          data.postEnable = false;
+        }
+        // if (data.visit_id !== null) {
+        //   data.case_type = "OP";
+        // }
 
-      data.addedItem = true;
-      data.ItemDisable = true;
-      $this.setState(data, () => {});
-      AlgaehLoader({ show: false });
-    }
+        data.addedItem = true;
+        data.ItemDisable = true;
+        $this.setState(data, () => {});
+        AlgaehLoader({ show: false });
+      }
+    });
   });
 };
 
@@ -81,7 +86,10 @@ const SaveRequisitionEntry = $this => {
         $this.setState({
           material_requisition_number:
             response.data.records.material_requisition_number,
-          saveEnable: true
+          saveEnable: true,
+          addItemButton: true,
+          ItemDisable: true,
+          cannotDelete: true
           // authorizeEnable: false
         });
 
@@ -103,6 +111,18 @@ const SaveRequisitionEntry = $this => {
 };
 
 const AuthorizeRequisitionEntry = ($this, authorize) => {
+  debugger;
+  let auth_qty = Enumerable.from($this.state.pharmacy_stock_detail).any(
+    w => parseFloat(w.authorize_quantity) === 0 || w.authorize_quantity === null
+  );
+
+  if (auth_qty === true) {
+    swalMessage({
+      title: "Please enter Authorize Quantity.",
+      type: "warning"
+    });
+    return;
+  }
   let authorize1 = "";
   let authorize2 = "";
   if (authorize === "authorize1") {
@@ -153,30 +173,53 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
   if (location === "From") {
     type = "from_location_type";
     if ($this.state.to_location_id === value) {
-      swalMessage({
-        title: "From Location and To Location Cannot be Same ",
-        type: "error"
+      $this.setState({ [name]: null, [type]: null }, () => {
+        swalMessage({
+          title: "From Location and To Location Cannot be Same ",
+          type: "error"
+        });
       });
-      $this.setState({ [name]: null });
     } else {
       $this.setState({
         [name]: value,
         [type]: e.selected.location_type,
         requistion_type: "MR",
-        to_location_id: null,
-        to_location_type: null
+
+        addItemButton: true,
+        item_category_id: null,
+        item_group_id: null,
+        item_id: null,
+        quantity_required: 0,
+
+        item_uom: null,
+        from_qtyhand: 0,
+        to_qtyhand: 0
       });
     }
   } else if (location === "To") {
     type = "to_location_type";
     if ($this.state.from_location_id === value) {
-      swalMessage({
-        title: "From Location and To Location Cannot be Same ",
-        type: "error"
+      $this.setState({ [name]: null, [type]: null }, () => {
+        swalMessage({
+          title: "From Location and To Location Cannot be Same ",
+          type: "error"
+        });
       });
-      $this.setState({ [name]: null });
     } else {
-      $this.setState({ [name]: value, [type]: e.selected.location_type });
+      $this.setState({
+        [name]: value,
+        [type]: e.selected.location_type,
+
+        addItemButton: true,
+        item_category_id: null,
+        item_group_id: null,
+        item_id: null,
+        quantity_required: 0,
+
+        item_uom: null,
+        from_qtyhand: 0,
+        to_qtyhand: 0
+      });
     }
   }
 };

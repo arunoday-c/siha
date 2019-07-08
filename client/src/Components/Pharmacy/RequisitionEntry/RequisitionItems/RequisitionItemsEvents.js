@@ -14,6 +14,7 @@ const UomchangeTexts = ($this, ctrl, e) => {
 };
 
 const numberchangeTexts = ($this, context, e) => {
+  debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value === "" ? 0 : e.target.value;
   if (value < 0) {
@@ -33,30 +34,53 @@ const numberchangeTexts = ($this, context, e) => {
 
 const itemchangeText = ($this, context, e) => {
   let name = e.name || e.target.name;
+  if (
+    $this.state.from_location_id === null ||
+    $this.state.to_location_id === null
+  ) {
+    swalMessage({
+      title: "Please select From and To Location.",
+      type: "warning"
+    });
+    $this.setState({ item_id: null });
+    return;
+  }
   if ($this.state.requistion_type === "PR") {
-    if ($this.state.from_location_id !== null) {
-      let value = e.value || e.target.value;
+    let value = e.value || e.target.value;
 
-      $this.props.getSelectedItemDetais({
-        uri: "/pharmacy/getItemMasterAndItemUom",
-        module: "pharmacy",
-        method: "GET",
-        data: {
-          // location_id: $this.state.from_location_id,
-          hims_d_item_master_id: value
-        },
-        redux: {
-          type: "ITEMS_UOM_DETAILS_GET_DATA",
-          mappingName: "itemdetaillist"
-        },
-        afterSuccess: data => {
-          if (data.length > 0) {
-            getItemLocationStock($this, context, {
-              location_id: $this.state.from_location_id,
-              item_id: value,
-              set: "From"
-            });
-            $this.setState({
+    $this.props.getSelectedItemDetais({
+      uri: "/pharmacy/getItemMasterAndItemUom",
+      module: "pharmacy",
+      method: "GET",
+      data: {
+        // location_id: $this.state.from_location_id,
+        hims_d_item_master_id: value
+      },
+      redux: {
+        type: "ITEMS_UOM_DETAILS_GET_DATA",
+        mappingName: "itemdetaillist"
+      },
+      afterSuccess: data => {
+        if (data.length > 0) {
+          getItemLocationStock($this, context, {
+            location_id: $this.state.from_location_id,
+            item_id: value,
+            set: "From"
+          });
+          $this.setState({
+            [name]: value,
+            item_category_id: e.selected.category_id,
+            item_uom: e.selected.sales_uom_id,
+
+            item_group_id: e.selected.group_id,
+            quantity: 1,
+            addItemButton: false,
+
+            ItemUOM: data
+          });
+
+          if (context !== undefined) {
+            context.updateState({
               [name]: value,
               item_category_id: e.selected.category_id,
               item_uom: e.selected.sales_uom_id,
@@ -67,54 +91,52 @@ const itemchangeText = ($this, context, e) => {
 
               ItemUOM: data
             });
-
-            if (context !== undefined) {
-              context.updateState({
-                [name]: value,
-                item_category_id: e.selected.category_id,
-                item_uom: e.selected.sales_uom_id,
-
-                item_group_id: e.selected.group_id,
-                quantity: 1,
-                addItemButton: false,
-
-                ItemUOM: data
-              });
-            }
           }
         }
-      });
-    }
+      }
+    });
   } else {
-    if ($this.state.to_location_id !== null) {
-      let value = e.value || e.target.value;
+    let value = e.value || e.target.value;
 
-      $this.props.getSelectedItemDetais({
-        uri: "/pharmacy/getItemMasterAndItemUom",
-        module: "pharmacy",
-        method: "GET",
-        data: {
-          // location_id: $this.state.to_location_id,
-          hims_d_item_master_id: value
-        },
-        redux: {
-          type: "ITEMS_UOM_DETAILS_GET_DATA",
-          mappingName: "itemdetaillist"
-        },
-        afterSuccess: data => {
-          if (data.length > 0) {
-            getItemLocationStock($this, context, {
-              location_id: $this.state.to_location_id,
-              item_id: value,
-              set: "To"
-            });
+    $this.props.getSelectedItemDetais({
+      uri: "/pharmacy/getItemMasterAndItemUom",
+      module: "pharmacy",
+      method: "GET",
+      data: {
+        // location_id: $this.state.to_location_id,
+        hims_d_item_master_id: value
+      },
+      redux: {
+        type: "ITEMS_UOM_DETAILS_GET_DATA",
+        mappingName: "itemdetaillist"
+      },
+      afterSuccess: data => {
+        if (data.length > 0) {
+          getItemLocationStock($this, context, {
+            location_id: $this.state.to_location_id,
+            item_id: value,
+            set: "To"
+          });
 
-            getItemLocationStock($this, context, {
-              location_id: $this.state.from_location_id,
-              item_id: value,
-              set: "From"
-            });
-            $this.setState({
+          getItemLocationStock($this, context, {
+            location_id: $this.state.from_location_id,
+            item_id: value,
+            set: "From"
+          });
+          $this.setState({
+            [name]: value,
+            item_category_id: e.selected.category_id,
+            item_uom: e.selected.sales_uom_id,
+
+            item_group_id: e.selected.group_id,
+            quantity: 1,
+            addItemButton: false,
+
+            ItemUOM: data
+          });
+
+          if (context !== undefined) {
+            context.updateState({
               [name]: value,
               item_category_id: e.selected.category_id,
               item_uom: e.selected.sales_uom_id,
@@ -125,45 +147,30 @@ const itemchangeText = ($this, context, e) => {
 
               ItemUOM: data
             });
-
-            if (context !== undefined) {
-              context.updateState({
-                [name]: value,
-                item_category_id: e.selected.category_id,
-                item_uom: e.selected.sales_uom_id,
-
-                item_group_id: e.selected.group_id,
-                quantity: 1,
-                addItemButton: false,
-
-                ItemUOM: data
-              });
-            }
-          } else {
-            swalMessage({
-              title: "No Stock Avaiable for selected Item.",
-              type: "warning"
-            });
           }
-        }
-      });
-    } else {
-      $this.setState(
-        {
-          [name]: null
-        },
-        () => {
+        } else {
           swalMessage({
-            title: "Please select Location.",
+            title: "No Stock Avaiable for selected Item.",
             type: "warning"
           });
         }
-      );
-    }
+      }
+    });
   }
 };
 
 const AddItems = ($this, context) => {
+  if (
+    $this.state.from_location_id === null ||
+    $this.state.to_location_id === null
+  ) {
+    swalMessage({
+      title: "Please select From and To Location.",
+      type: "warning"
+    });
+
+    return;
+  }
   if ($this.state.item_id === null) {
     swalMessage({
       title: "Select Item.",
@@ -239,11 +246,20 @@ const deleteRequisitionDetail = ($this, context, row) => {
       pharmacy_stock_detail.splice(i, 1);
     }
   }
+  let saveEnable =
+    $this.props.requisition_auth === true
+      ? true
+      : pharmacy_stock_detail.length > 0
+      ? false
+      : true;
+  let authBtnEnable = pharmacy_stock_detail.length > 0 ? false : true;
   $this.setState({ pharmacy_stock_detail: pharmacy_stock_detail });
 
   if (context !== undefined) {
     context.updateState({
-      pharmacy_stock_detail: pharmacy_stock_detail
+      pharmacy_stock_detail: pharmacy_stock_detail,
+      saveEnable: saveEnable,
+      authBtnEnable: authBtnEnable
     });
   }
 };
@@ -271,6 +287,7 @@ const updatePosDetail = ($this, context, row) => {
 };
 
 const onchangegridcol = ($this, context, row, e) => {
+  debugger;
   let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -289,7 +306,7 @@ const onchangegridcol = ($this, context, row, e) => {
     // row.update();
   } else {
     row[name] = value;
-    row["quantity_outstanding"] = value;
+    row["quantity_outstanding"] = value === "" ? 0 : value;
 
     pharmacy_stock_detail[row.rowIdx] = row;
     $this.setState({ pharmacy_stock_detail: pharmacy_stock_detail });
@@ -303,7 +320,6 @@ const onchangegridcol = ($this, context, row, e) => {
 };
 
 const getItemLocationStock = ($this, context, value) => {
-  
   $this.props.getItemLocationStock({
     uri: "/pharmacyGlobal/getItemLocationStock",
     module: "pharmacy",
@@ -317,7 +333,8 @@ const getItemLocationStock = ($this, context, value) => {
       mappingName: "itemBatch"
     },
     afterSuccess: data => {
-      if (data.length !== 0) {
+      debugger;
+      if (data.length > 0) {
         let total_quantity = 0;
         for (let i = 0; i < data.length; i++) {
           let qtyhand = data[i].qtyhand;
@@ -343,6 +360,11 @@ const getItemLocationStock = ($this, context, value) => {
             });
           }
         }
+      } else {
+        context.updateState({
+          to_qtyhand: null,
+          from_qtyhand: null
+        });
       }
     }
   });

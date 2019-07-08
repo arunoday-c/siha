@@ -35,31 +35,57 @@ const numberchangeTexts = ($this, context, e) => {
 
 const itemchangeText = ($this, context, e) => {
   let name = e.name || e.target.name;
+  if (
+    $this.state.from_location_id === null ||
+    $this.state.to_location_id === null
+  ) {
+    swalMessage({
+      title: "Please select From and To Location.",
+      type: "warning"
+    });
+    return;
+  }
   if ($this.state.requistion_type === "PR") {
-    if ($this.state.from_location_id !== null) {
-      let value = e.value || e.target.value;
+    let value = e.value || e.target.value;
 
-      $this.props.getSelectedItemDetais({
-        uri: "/inventory/getItemMasterAndItemUom",
-        module: "inventory",
-        method: "GET",
-        data: {
-          // location_id: $this.state.to_location_id,
-          hims_d_inventory_item_master_id: value
-        },
-        redux: {
-          type: "ITEMS_UOM_DETAILS_GET_DATA",
-          mappingName: "inventoryitemdetaillist"
-        },
-        afterSuccess: data => {
-          if (data.length > 0) {
-            getItemLocationStock($this, context, {
-              location_id: $this.state.from_location_id,
-              item_id: value,
-              set: "From"
-            });
+    $this.props.getSelectedItemDetais({
+      uri: "/inventory/getItemMasterAndItemUom",
+      module: "inventory",
+      method: "GET",
+      data: {
+        // location_id: $this.state.to_location_id,
+        hims_d_inventory_item_master_id: value
+      },
+      redux: {
+        type: "ITEMS_UOM_DETAILS_GET_DATA",
+        mappingName: "inventoryitemdetaillist"
+      },
+      afterSuccess: data => {
+        if (data.length > 0) {
+          getItemLocationStock($this, context, {
+            location_id: $this.state.from_location_id,
+            item_id: value,
+            set: "From"
+          });
 
-            $this.setState({
+          $this.setState({
+            [name]: value,
+            item_description: e.selected.item_description,
+            item_code: e.selected.item_code,
+            item_category_id: e.selected.category_id,
+            item_uom: e.selected.sales_uom_id,
+
+            item_group_id: e.selected.group_id,
+            quantity: 1,
+            barcode: e.selected.barcode,
+            addItemButton: false,
+
+            ItemUOM: data,
+            uom_description: data[0].uom_description
+          });
+
+          if (context !== undefined) {
+            context.updateState({
               [name]: value,
               item_description: e.selected.item_description,
               item_code: e.selected.item_code,
@@ -67,82 +93,68 @@ const itemchangeText = ($this, context, e) => {
               item_uom: e.selected.sales_uom_id,
 
               item_group_id: e.selected.group_id,
-              quantity: 1,
               barcode: e.selected.barcode,
+              quantity: 1,
               addItemButton: false,
 
-              ItemUOM: data,
-              uom_description: data[0].uom_description
-            });
-
-            if (context !== undefined) {
-              context.updateState({
-                [name]: value,
-                item_description: e.selected.item_description,
-                item_code: e.selected.item_code,
-                item_category_id: e.selected.category_id,
-                item_uom: e.selected.sales_uom_id,
-
-                item_group_id: e.selected.group_id,
-                barcode: e.selected.barcode,
-                quantity: 1,
-                addItemButton: false,
-
-                ItemUOM: data
-              });
-            }
-          } else {
-            swalMessage({
-              title: "No Stock Avaiable for selected Item.",
-              type: "warning"
+              ItemUOM: data
             });
           }
-        }
-      });
-    } else {
-      $this.setState(
-        {
-          [name]: null
-        },
-        () => {
+        } else {
           swalMessage({
-            title: "Please select Location.",
+            title: "No Stock Avaiable for selected Item.",
             type: "warning"
           });
         }
-      );
-    }
+      }
+    });
   } else {
-    if ($this.state.to_location_id !== null) {
-      let value = e.value || e.target.value;
+    let value = e.value || e.target.value;
 
-      $this.props.getSelectedItemDetais({
-        uri: "/inventory/getItemMasterAndItemUom",
-        module: "inventory",
-        method: "GET",
-        data: {
-          // location_id: $this.state.to_location_id,
-          hims_d_inventory_item_master_id: value
-        },
-        redux: {
-          type: "ITEMS_UOM_DETAILS_GET_DATA",
-          mappingName: "inventoryitemdetaillist"
-        },
-        afterSuccess: data => {
-          if (data.length > 0) {
-            getItemLocationStock($this, context, {
-              location_id: $this.state.to_location_id,
-              item_id: value,
-              set: "To"
-            });
+    $this.props.getSelectedItemDetais({
+      uri: "/inventory/getItemMasterAndItemUom",
+      module: "inventory",
+      method: "GET",
+      data: {
+        // location_id: $this.state.to_location_id,
+        hims_d_inventory_item_master_id: value
+      },
+      redux: {
+        type: "ITEMS_UOM_DETAILS_GET_DATA",
+        mappingName: "inventoryitemdetaillist"
+      },
+      afterSuccess: data => {
+        if (data.length > 0) {
+          getItemLocationStock($this, context, {
+            location_id: $this.state.to_location_id,
+            item_id: value,
+            set: "To"
+          });
 
-            getItemLocationStock($this, context, {
-              location_id: $this.state.from_location_id,
-              item_id: value,
-              set: "From"
-            });
+          getItemLocationStock($this, context, {
+            location_id: $this.state.from_location_id,
+            item_id: value,
+            set: "From"
+          });
 
-            $this.setState({
+          $this.setState({
+            [name]: value,
+            item_description: e.selected.item_description,
+            item_code: e.selected.item_code,
+            item_category_id: e.selected.category_id,
+            item_uom: e.selected.sales_uom_id,
+
+            item_group_id: e.selected.group_id,
+            quantity: 1,
+            barcode: e.selected.barcode,
+            addItemButton: false,
+
+            ItemUOM: data,
+            uom_description: data[0].uom_description
+          });
+
+          if (context !== undefined) {
+            context.updateState({
               [name]: value,
               item_description: e.selected.item_description,
               item_code: e.selected.item_code,
@@ -150,55 +162,36 @@ const itemchangeText = ($this, context, e) => {
               item_uom: e.selected.sales_uom_id,
 
               item_group_id: e.selected.group_id,
-              quantity: 1,
               barcode: e.selected.barcode,
+              quantity: 1,
               addItemButton: false,
 
-              ItemUOM: data,
-              uom_description: data[0].uom_description
-            });
-
-            if (context !== undefined) {
-              context.updateState({
-                [name]: value,
-                item_description: e.selected.item_description,
-                item_code: e.selected.item_code,
-                item_category_id: e.selected.category_id,
-                item_uom: e.selected.sales_uom_id,
-
-                item_group_id: e.selected.group_id,
-                barcode: e.selected.barcode,
-                quantity: 1,
-                addItemButton: false,
-
-                ItemUOM: data
-              });
-            }
-          } else {
-            swalMessage({
-              title: "No Stock Avaiable for selected Item.",
-              type: "warning"
+              ItemUOM: data
             });
           }
-        }
-      });
-    } else {
-      $this.setState(
-        {
-          [name]: null
-        },
-        () => {
+        } else {
           swalMessage({
-            title: "Please select Location.",
+            title: "No Stock Avaiable for selected Item.",
             type: "warning"
           });
         }
-      );
-    }
+      }
+    });
   }
 };
 
 const AddItems = ($this, context) => {
+  if (
+    $this.state.from_location_id === null ||
+    $this.state.to_location_id === null
+  ) {
+    swalMessage({
+      title: "Please select From and To Location.",
+      type: "warning"
+    });
+    return;
+  }
+
   if ($this.state.item_id === null) {
     swalMessage({
       title: "Select Item.",
@@ -230,7 +223,8 @@ const AddItems = ($this, context) => {
     inventory_stock_detail.push(ItemInput);
     $this.setState({
       inventory_stock_detail: inventory_stock_detail,
-      addedItem: true,
+
+      addItemButton: true,
       item_category_id: null,
       item_group_id: null,
       item_id: null,
@@ -244,7 +238,8 @@ const AddItems = ($this, context) => {
     if (context !== undefined) {
       context.updateState({
         inventory_stock_detail: inventory_stock_detail,
-        addedItem: true,
+
+        addItemButton: true,
         saveEnable: false,
         item_category_id: null,
         item_group_id: null,
@@ -273,11 +268,21 @@ const deleteRequisitionDetail = ($this, context, row) => {
       inventory_stock_detail.splice(i, 1);
     }
   }
+  let saveEnable =
+    $this.props.requisition_auth === true
+      ? true
+      : inventory_stock_detail.length > 0
+      ? false
+      : true;
+  let authBtnEnable = inventory_stock_detail.length > 0 ? false : true;
+
   $this.setState({ inventory_stock_detail: inventory_stock_detail });
 
   if (context !== undefined) {
     context.updateState({
-      inventory_stock_detail: inventory_stock_detail
+      inventory_stock_detail: inventory_stock_detail,
+      saveEnable: saveEnable,
+      authBtnEnable: authBtnEnable
     });
   }
 };
@@ -315,8 +320,8 @@ const onchangegridcol = ($this, context, row, e) => {
       type: "warning"
     });
   } else {
-    row[name] = value === "" ? null : value;
-    row["quantity_outstanding"] = value;
+    row[name] = value;
+    row["quantity_outstanding"] = value === "" ? 0 : value;
 
     inventory_stock_detail[row.rowIdx] = row;
     $this.setState({ inventory_stock_detail: inventory_stock_detail });
@@ -369,6 +374,11 @@ const getItemLocationStock = ($this, context, value) => {
             });
           }
         }
+      } else {
+        context.updateState({
+          to_qtyhand: null,
+          from_qtyhand: null
+        });
       }
     }
   });

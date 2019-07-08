@@ -405,7 +405,7 @@ class InvInitialStock extends Component {
                       events: {
                         onChange: numberchangeTexts.bind(this, this)
                       },
-                      others: { autoComplete: "off" }
+                      others: { autoComplete: "off", type: "number" }
                     }}
                   />
 
@@ -424,7 +424,8 @@ class InvInitialStock extends Component {
                         onChange: salesPriceEvent.bind(this, this)
                       },
                       others: {
-                        autoComplete: "off"
+                        autoComplete: "off",
+                        type: "number"
                       }
                     }}
                   />

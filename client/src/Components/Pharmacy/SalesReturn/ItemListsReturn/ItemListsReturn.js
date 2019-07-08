@@ -156,7 +156,12 @@ class ItemListsReturn extends Component {
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Sold Qty" }} />
                         ),
-                        disabled: true,
+                        displayTemplate: row => {
+                          return <span>{parseFloat(row.quantity)}</span>;
+                        },
+                        editorTemplate: row => {
+                          return <span>{parseFloat(row.quantity)}</span>;
+                        },
                         others: {
                           minWidth: 90
                         }
@@ -166,14 +171,31 @@ class ItemListsReturn extends Component {
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Return Qty" }} />
                         ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {row.return_quantity !== ""
+                                ? parseFloat(row.return_quantity)
+                                : ""}
+                            </span>
+                          );
+                        },
                         editorTemplate: row => {
                           return (
                             <AlagehFormGroup
                               div={{}}
                               textBox={{
-                                value: row.return_quantity,
+                                number: {
+                                  allowNegative: false,
+                                  thousandSeparator: ","
+                                },
+                                value:
+                                  row.return_quantity !== ""
+                                    ? parseFloat(row.return_quantity)
+                                    : "",
                                 className: "txt-fld",
                                 name: "return_quantity",
+                                dontAllowKeys: ["-", "e"],
                                 events: {
                                   onChange: calculateAmount.bind(
                                     this,
@@ -251,7 +273,16 @@ class ItemListsReturn extends Component {
                             </span>
                           );
                         },
-                        disabled: true,
+                        editorTemplate: row => {
+                          return (
+                            <span>
+                              {getAmountFormart(row.unit_cost, {
+                                appendSymbol: false
+                              })}
+                            </span>
+                          );
+                        },
+
                         others: {
                           minWidth: 90
                         }
@@ -271,7 +302,15 @@ class ItemListsReturn extends Component {
                             </span>
                           );
                         },
-                        disabled: true
+                        editorTemplate: row => {
+                          return (
+                            <span>
+                              {getAmountFormart(row.extended_cost, {
+                                appendSymbol: false
+                              })}
+                            </span>
+                          );
+                        }
                       },
                       {
                         fieldName: "discount_percentage",
@@ -281,8 +320,7 @@ class ItemListsReturn extends Component {
                               forceLabel: "discount %"
                             }}
                           />
-                        ),
-                        disabled: true
+                        )
                       },
                       {
                         fieldName: "discount_amout",
@@ -298,7 +336,15 @@ class ItemListsReturn extends Component {
                             </span>
                           );
                         },
-                        disabled: true
+                        editorTemplate: row => {
+                          return (
+                            <span>
+                              {getAmountFormart(row.discount_amout, {
+                                appendSymbol: false
+                              })}
+                            </span>
+                          );
+                        }
                       },
 
                       {
@@ -317,14 +363,26 @@ class ItemListsReturn extends Component {
                             </span>
                           );
                         },
-                        disabled: true
+                        editorTemplate: row => {
+                          return (
+                            <span>
+                              {getAmountFormart(row.net_extended_cost, {
+                                appendSymbol: false
+                              })}
+                            </span>
+                          );
+                        }
                       }
                     ]}
                     keyId="service_type_id"
                     dataSource={{
                       data: this.state.pharmacy_stock_detail
                     }}
-                    isEditable={true}
+                    isEditable={
+                      this.state.hims_f_pharmcy_sales_return_header_id === null
+                        ? true
+                        : false
+                    }
                     paging={{ page: 0, rowsPerPage: 10 }}
                     byForceEvents={true}
                     events={{
@@ -386,16 +444,6 @@ class ItemListsReturn extends Component {
                             />
                             <h6>{getAmountFormart(this.state.copay_amount)}</h6>
                           </div>
-                          {/* <div className="col-lg-6">
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "Sec Copay Amount"
-                              }}
-                            />
-                            <h6>
-                              {getAmountFormart(this.state.sec_copay_amount)}
-                            </h6>
-                          </div> */}
                         </div>
                         <div className="row">
                           <div className="col-lg-12 patientRespo">
@@ -487,52 +535,6 @@ class ItemListsReturn extends Component {
                               </div>
                             </div>
                           </div>
-
-                          {/* <div className="col-lg-12">
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "Secondary Company"
-                              }}
-                            />
-                            <div className="row insurance-details">
-                              <div className="col-5">
-                                <AlgaehLabel
-                                  label={{
-                                    forceLabel: "Responsibility"
-                                  }}
-                                />
-                                <h6>
-                                  {getAmountFormart(
-                                    this.state.sec_company_responsibility
-                                  )}
-                                </h6>
-                              </div>
-
-                              <div className="col-3">
-                                <AlgaehLabel
-                                  label={{
-                                    forceLabel: "Tax"
-                                  }}
-                                />
-                                <h6>
-                                  {getAmountFormart(this.state.sec_company_tax)}
-                                </h6>
-                              </div>
-
-                              <div className="col-4">
-                                <AlgaehLabel
-                                  label={{
-                                    forceLabel: "Payable"
-                                  }}
-                                />
-                                <h6>
-                                  {getAmountFormart(
-                                    this.state.sec_company_payable
-                                  )}
-                                </h6>
-                              </div>
-                            </div>
-                          </div> */}
                         </div>
                       </div>
                     </div>

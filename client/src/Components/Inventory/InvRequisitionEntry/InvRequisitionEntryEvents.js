@@ -2,6 +2,7 @@ import _ from "lodash";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import RequisitionIOputs from "../../../Models/InventoryRequisition";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import Enumerable from "linq";
 
 const requisitionEvent = ($this, ctrl, e) => {
   e = ctrl || e;
@@ -14,50 +15,53 @@ const requisitionEvent = ($this, ctrl, e) => {
 const getCtrlCode = ($this, docNumber) => {
   AlgaehLoader({ show: true });
 
-  $this.props.getRequisitionEntry({
-    uri: "/inventoryrequisitionEntry/getinventoryrequisitionEntry",
-    module: "inventory",
-    method: "GET",
-    printInput: true,
-    data: { material_requisition_number: docNumber },
-    redux: {
-      type: "INV_REQ_ENTRY_GET_DATA",
-      mappingName: "inventoryrequisitionentry"
-    },
-    afterSuccess: data => {
-      if (
-        $this.props.material_requisition_number !== undefined &&
-        $this.props.material_requisition_number.length !== 0
-      ) {
-        data.authorizeEnable = false;
-        data.ClearDisable = true;
+  let IOputs = RequisitionIOputs.inputParam();
+  $this.setState(IOputs, () => {
+    $this.props.getRequisitionEntry({
+      uri: "/inventoryrequisitionEntry/getinventoryrequisitionEntry",
+      module: "inventory",
+      method: "GET",
+      printInput: true,
+      data: { material_requisition_number: docNumber },
+      redux: {
+        type: "INV_REQ_ENTRY_GET_DATA",
+        mappingName: "inventoryrequisitionentry"
+      },
+      afterSuccess: data => {
+        if (
+          $this.props.material_requisition_number !== undefined &&
+          $this.props.material_requisition_number.length !== 0
+        ) {
+          data.authorizeEnable = false;
+          data.ClearDisable = true;
 
-        for (let i = 0; i < data.inventory_stock_detail.length; i++) {
-          data.inventory_stock_detail[i].quantity_authorized =
-            data.authorize1 === "N"
-              ? data.inventory_stock_detail[i].quantity_required
-              : data.inventory_stock_detail[i].quantity_authorized;
+          for (let i = 0; i < data.inventory_stock_detail.length; i++) {
+            data.inventory_stock_detail[i].quantity_authorized =
+              data.authorize1 === "N"
+                ? data.inventory_stock_detail[i].quantity_required
+                : data.inventory_stock_detail[i].quantity_authorized;
 
-          data.inventory_stock_detail[i].quantity_outstanding =
-            data.authorize1 === "N"
-              ? data.inventory_stock_detail[i].quantity_required
-              : data.inventory_stock_detail[i].quantity_outstanding;
+            data.inventory_stock_detail[i].quantity_outstanding =
+              data.authorize1 === "N"
+                ? data.inventory_stock_detail[i].quantity_required
+                : data.inventory_stock_detail[i].quantity_outstanding;
 
-          data.inventory_stock_detail[i].operation = "+";
+            data.inventory_stock_detail[i].operation = "+";
+          }
         }
-      }
-      data.saveEnable = true;
+        data.saveEnable = true;
 
-      if (data.posted === "Y") {
-        data.postEnable = true;
-      } else {
-        data.postEnable = false;
+        if (data.posted === "Y") {
+          data.postEnable = true;
+        } else {
+          data.postEnable = false;
+        }
+        data.ItemDisable = true;
+        data.addedItem = true;
+        $this.setState(data, () => {});
+        AlgaehLoader({ show: false });
       }
-      data.ItemDisable = true;
-      data.addedItem = true;
-      $this.setState(data, () => {});
-      AlgaehLoader({ show: false });
-    }
+    });
   });
 };
 
@@ -99,6 +103,17 @@ const SaveRequisitionEntry = $this => {
 };
 
 const AuthorizeRequisitionEntry = ($this, authorize) => {
+  let auth_qty = Enumerable.from($this.state.inventory_stock_detail).any(
+    w => parseFloat(w.authorize_quantity) === 0 || w.authorize_quantity === null
+  );
+  if (auth_qty === true) {
+    swalMessage({
+      title: "Please enter Authorize Quantity.",
+      type: "warning"
+    });
+    return;
+  }
+
   let authorize1 = "";
   let authorize2 = "";
   if (authorize === "authorize1") {
@@ -148,33 +163,51 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
 
   if (location === "From") {
     if ($this.state.to_location_id === value) {
-      swalMessage({
-        title: "From Location and To Location Cannot be Same ",
-        type: "error"
+      $this.setState({ [name]: null, from_location_type: null }, () => {
+        swalMessage({
+          title: "From Location and To Location Cannot be Same ",
+          type: "error"
+        });
       });
-      $this.setState({ [name]: null });
     } else {
       $this.setState({
         [name]: value,
         from_location_type: e.selected.location_type,
         requistion_type: "MR",
-        to_location_id: null,
-        to_location_type: null,
-        from_location_name: e.selected.location_description
+        from_location_name: e.selected.location_description,
+
+        item_category_id: null,
+        item_group_id: null,
+        item_id: null,
+        quantity_required: 0,
+        barcode: null,
+        item_uom: null,
+        from_qtyhand: 0,
+        to_qtyhand: 0
       });
     }
   } else if (location === "To") {
     if ($this.state.from_location_id === value) {
-      swalMessage({
-        title: "From Location and To Location Cannot be Same ",
-        type: "error"
+      $this.setState({ [name]: null, to_location_type: null }, () => {
+        swalMessage({
+          title: "From Location and To Location Cannot be Same ",
+          type: "error"
+        });
       });
-      $this.setState({ [name]: null });
     } else {
       $this.setState({
         [name]: value,
         to_location_type: e.selected.location_type,
-        to_location_name: e.selected.location_description
+        to_location_name: e.selected.location_description,
+
+        item_category_id: null,
+        item_group_id: null,
+        item_id: null,
+        quantity_required: 0,
+        barcode: null,
+        item_uom: null,
+        from_qtyhand: 0,
+        to_qtyhand: 0
       });
     }
   }

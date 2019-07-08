@@ -99,7 +99,10 @@ const deleteDNDetail = ($this, row, context) => {
   // }
   let _dn_index_data = dn_entry_detail.indexOf(row);
   dn_entry_detail.splice(_dn_index_data, 1);
-  let getDeleteRowData = _.find(po_entry_detail, f => f.item_id == row.item_id);
+  let getDeleteRowData = _.find(
+    po_entry_detail,
+    f => f.item_id === row.item_id
+  );
 
   let _index = po_entry_detail.indexOf(getDeleteRowData);
 
@@ -112,7 +115,7 @@ const deleteDNDetail = ($this, row, context) => {
   po_entry_detail[_index] = getDeleteRowData;
   let getDnDetailToDelete = _.find(
     po_entry_detail[_index].dn_entry_detail,
-    f => f.dn_detail_index == row.dn_detail_index
+    f => f.dn_detail_index === row.dn_detail_index
   );
 
   let _dn_index = po_entry_detail[_index].dn_entry_detail.indexOf(
@@ -568,7 +571,7 @@ const AddtoList = ($this, context) => {
     );
 
     const latest_added = _.filter(dn_entry_detail, f => {
-      return f.item_id == _item_details.item_id;
+      return f.item_id === _item_details.item_id;
     });
     // _.find(
     //   dn_entry_detail,
