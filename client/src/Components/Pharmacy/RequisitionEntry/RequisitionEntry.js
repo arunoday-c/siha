@@ -12,7 +12,8 @@ import {
   ClearData,
   SaveRequisitionEntry,
   AuthorizeRequisitionEntry,
-  LocationchangeTexts
+  LocationchangeTexts,
+  generateMaterialReqPhar
 } from "./RequisitionEntryEvents";
 import "./RequisitionEntry.css";
 import "../../../styles/site.css";
@@ -159,6 +160,22 @@ class RequisitionEntry extends Component {
                   </h6>
                 </div>
               </div>
+            }
+            printArea={
+              this.state.material_requisition_number !== null
+                ? {
+                    menuitems: [
+                      {
+                        label: "Print Receipt",
+                        events: {
+                          onClick: () => {
+                            generateMaterialReqPhar(this.state);
+                          }
+                        }
+                      }
+                    ]
+                  }
+                : ""
             }
             selectedLang={this.state.selectedLang}
           />

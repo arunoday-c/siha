@@ -98,6 +98,45 @@ const SaveRequisitionEntry = $this => {
   });
 };
 
+const generateMaterialReqInv = (
+  material_requisition_number,
+  rpt_name,
+  rpt_desc
+) => {
+  algaehApiCall({
+    uri: "/report",
+    method: "GET",
+    module: "reports",
+    headers: {
+      Accept: "blob"
+    },
+    others: { responseType: "blob" },
+    data: {
+      report: {
+        reportName: "MaterialReqInv",
+        reportParams: [
+          {
+            name: "material_requisition_number",
+            value: material_requisition_number
+          }
+        ],
+        outputFileType: "PDF"
+      }
+    },
+    onSuccess: res => {
+      const url = URL.createObjectURL(res.data);
+      let myWindow = window.open(
+        "{{ product.metafields.google.custom_label_0 }}",
+        "_blank"
+      );
+      myWindow.document.write(
+        "<iframe src= '" + url + "' width='100%' height='100%' />"
+      );
+      myWindow.document.title = "Material Requisition - Inventory";
+    }
+  });
+};
+
 const AuthorizeRequisitionEntry = ($this, authorize) => {
   let authorize1 = "";
   let authorize2 = "";
@@ -186,5 +225,6 @@ export {
   SaveRequisitionEntry,
   AuthorizeRequisitionEntry,
   LocationchangeTexts,
-  requisitionEvent
+  requisitionEvent,
+  generateMaterialReqInv
 };

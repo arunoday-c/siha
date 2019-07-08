@@ -1,0 +1,53 @@
+{{{importStyle 'css/creditinvoice.css'}}}
+
+<body>
+    <div class="print-body">
+        <section>
+
+            <table class="tableForLabel" cell-padding="0">
+
+                <tr>
+                    <td><label class="textEnLft">Request No.</label>:<span class="valueText">{{purchase_number}}</span>
+                    </td>
+                    <td><label class="textEnLft">Request From</label>:<span class="valueText">{{grn_number}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label class="textEnLft">Request Date</label>:<span class="valueText">{{po_date}}</span></td>
+                    <td><label class="textEnLft">Request To</label>:<span class="valueText">{{grn_date}}</span></td>
+                </tr>
+
+
+            </table>
+
+
+        </section>
+        <section>
+            <table class="tableForData" style="margin:0;padding:0;">
+                <thead>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>Item Name</th>
+                        <th>Item Category</th>
+                        <th>UOM</th>
+                        <th>Qty Required</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each batches}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                        <td>Item Name</td>
+                        <td>Item Category</td>
+                        <td>UOM</td>
+                        <td>Qty Required</td>
+                    </tr>
+                    {{/each }}
+                </tbody>
+            </table>
+        </section>
+        </section>
+
+
+    </div>
+</body>
