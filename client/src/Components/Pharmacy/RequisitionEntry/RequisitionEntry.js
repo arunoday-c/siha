@@ -367,8 +367,8 @@ class RequisitionEntry extends Component {
                         label={{
                           forceLabel:
                             this.state.authorize1 === "N"
-                              ? "Authorize1"
-                              : "Authorize2",
+                              ? "Authorize 1"
+                              : "Authorize 2",
                           returnText: true
                         }}
                       />

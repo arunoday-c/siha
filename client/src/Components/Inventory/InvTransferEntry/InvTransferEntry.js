@@ -17,7 +17,8 @@ import {
   RequisitionSearch,
   LocationchangeTexts,
   checkBoxEvent,
-  getRequisitionDetails
+  getRequisitionDetails,
+  generateMaterialTransInv
 } from "./InvTransferEntryEvents";
 import "./InvTransferEntry.css";
 import "../../../styles/site.css";
@@ -198,33 +199,10 @@ class InvTransferEntry extends Component {
                 ? {
                     menuitems: [
                       {
-                        label: "Print Report",
+                        label: "Print Receipt",
                         events: {
                           onClick: () => {
-                            AlgaehReport({
-                              report: {
-                                fileName: "Inventory/TransferEntry"
-                              },
-                              data: {
-                                transfer_number: this.state.transfer_number,
-                                transfer_date: moment(
-                                  this.state.transfer_date
-                                ).format(Options.datetimeFormat),
-                                requisition_number: this.state
-                                  .material_requisition_number,
-                                from_location:
-                                  from_location_name.length > 0
-                                    ? from_location_name[0].location_description
-                                    : "",
-                                to_location:
-                                  display.length > 0
-                                    ? display[0].location_description
-                                    : "",
-                                inventoryitemuom: this.props.inventoryitemuom,
-                                inventory_stock_detail: this.state
-                                  .inventory_stock_detail
-                              }
-                            });
+                            generateMaterialTransInv(this.state);
                           }
                         }
                       }
@@ -232,6 +210,46 @@ class InvTransferEntry extends Component {
                   }
                 : ""
             }
+            // printArea={
+
+            //   this.state.transfer_number !== null
+            //     ? {
+            //         menuitems: [
+            //           {
+            //             label: "Print Report",
+            //             events: {
+            //               onClick: () => {
+            //                 AlgaehReport({
+            //                   report: {
+            //                     fileName: "Inventory/TransferEntry"
+            //                   },
+            //                   data: {
+            //                     transfer_number: this.state.transfer_number,
+            //                     transfer_date: moment(
+            //                       this.state.transfer_date
+            //                     ).format(Options.datetimeFormat),
+            //                     requisition_number: this.state
+            //                       .material_requisition_number,
+            //                     from_location:
+            //                       from_location_name.length > 0
+            //                         ? from_location_name[0].location_description
+            //                         : "",
+            //                     to_location:
+            //                       display.length > 0
+            //                         ? display[0].location_description
+            //                         : "",
+            //                     inventoryitemuom: this.props.inventoryitemuom,
+            //                     inventory_stock_detail: this.state
+            //                       .inventory_stock_detail
+            //                   }
+            //                 });
+            //               }
+            //             }
+            //           }
+            //         ]
+            //       }
+            //     : ""
+            // }
             selectedLang={this.state.selectedLang}
           />
 

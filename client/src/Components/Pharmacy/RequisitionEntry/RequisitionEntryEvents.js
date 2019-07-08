@@ -144,7 +144,7 @@ const generateMaterialReqPhar = (
 const AuthorizeRequisitionEntry = ($this, authorize) => {
   let authorize1 = "";
   let authorize2 = "";
-  if (authorize === "authorize1") {
+  if (authorize === "Authorize1") {
     $this.state.authorize1 = "Y";
     authorize1 = "Y";
     authorize2 = "N";
