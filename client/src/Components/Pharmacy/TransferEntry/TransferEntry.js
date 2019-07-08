@@ -91,7 +91,7 @@ class TransferEntry extends Component {
       getRequisitionDetails(
         this,
         this.props.hims_f_pharamcy_material_header_id,
-        this.props.from_location_id
+        this.props.from_location
       );
     }
   }

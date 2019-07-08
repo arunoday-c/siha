@@ -108,7 +108,7 @@ class InvTransferEntry extends Component {
       getRequisitionDetails(
         this,
         this.props.hims_f_inventory_material_header_id,
-        this.props.from_location_id
+        this.props.from_location
       );
     }
   }
