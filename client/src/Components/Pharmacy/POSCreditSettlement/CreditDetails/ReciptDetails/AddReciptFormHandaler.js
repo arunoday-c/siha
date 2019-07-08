@@ -27,6 +27,33 @@ const texthandle = ($this, context, ctrl, e) => {
   }
 };
 
+const calculateUnbalanced = ($this, context) => {
+  let cash = parseFloat($this.state.cash_amount) || 0;
+  let card = parseFloat($this.state.card_amount) || 0;
+  let cheque = parseFloat($this.state.cheque_amount) || 0;
+  let receive = parseFloat($this.state.recievable_amount) || 0;
+
+  let unbalanced_amount = receive - (cash + card + cheque);
+  if (unbalanced_amount < 0) {
+    swalMessage({
+      title: "Please enter correct amount",
+      type: "error"
+    });
+    context.updateState({
+      unbalanced_amount: $this.state.recievable_amount,
+      cash_amount: 0,
+      card_amount: 0,
+      cheque_amount: 0
+    });
+  }
+
+  if (context !== null) {
+    context.updateState({
+      unbalanced_amount
+    });
+  }
+};
+
 const calculateRecipt = ($this, context, e) => {
   let serviceInput = {
     isReceipt: true,
@@ -64,6 +91,14 @@ const calculateRecipt = ($this, context, e) => {
 
 const cashtexthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
+  if (e.target.value === undefined) {
+    context.updateState(
+      {
+        [e.target.name]: e.target.value
+      },
+      () => calculateUnbalanced($this, context)
+    );
+  }
 
   if (e.target.value > 0) {
     let cash_amount = parseFloat(e.target.value);
@@ -77,27 +112,17 @@ const cashtexthandle = ($this, context, ctrl, e) => {
         title: "Warning",
         icon: "warning"
       });
-      $this.setState(
+      context.updateState(
         {
-          [e.target.name]: 0,
-          errorInCash: true
+          [e.target.name]: 0
         },
-        () => {
-          $this.setState({ errorInCash: false });
-        }
+        () => calculateRecipt($this, context)
       );
     } else {
-      $this.setState(
-        {
-          [e.target.name]: e.target.value
-        },
-        () => {
-          calculateRecipt($this, context);
-        }
-      );
-
       if (context !== null) {
-        context.updateState({ [e.target.name]: e.target.value });
+        context.updateState({ [e.target.name]: e.target.value }, () =>
+          calculateUnbalanced($this, context)
+        );
       }
     }
   }
@@ -105,7 +130,15 @@ const cashtexthandle = ($this, context, ctrl, e) => {
 
 const cardtexthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
-  if (e.target.value > 0) {
+  if (e.target.value === undefined) {
+    context.updateState(
+      {
+        [e.target.name]: e.target.value
+      },
+      () => calculateUnbalanced($this, context)
+    );
+  }
+  if (e.target.value && e.target.value > 0) {
     let cash_amount = parseFloat($this.state.cash_amount);
     let card_amount = parseFloat(e.target.value);
     let cheque_amount = parseFloat($this.state.cheque_amount);
@@ -117,27 +150,17 @@ const cardtexthandle = ($this, context, ctrl, e) => {
         title: "Warning",
         icon: "warning"
       });
-      $this.setState(
+      context.updateState(
         {
-          [e.target.name]: 0,
-          errorInCard: true
+          [e.target.name]: 0
         },
-        () => {
-          $this.setState({ errorInCard: false });
-        }
+        () => calculateRecipt($this, context)
       );
     } else {
-      $this.setState(
-        {
-          [e.target.name]: e.target.value
-        },
-        () => {
-          calculateRecipt($this, context);
-        }
-      );
-
       if (context !== null) {
-        context.updateState({ [e.target.name]: e.target.value });
+        context.updateState({ [e.target.name]: e.target.value }, () =>
+          calculateUnbalanced($this, context)
+        );
       }
     }
   }
@@ -145,6 +168,15 @@ const cardtexthandle = ($this, context, ctrl, e) => {
 
 const chequetexthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
+
+  if (e.target.value === undefined) {
+    context.updateState(
+      {
+        [e.target.name]: e.target.value
+      },
+      () => calculateUnbalanced($this, context)
+    );
+  }
 
   if (e.target.value > 0) {
     let cash_amount = parseFloat($this.state.cash_amount);
@@ -158,27 +190,17 @@ const chequetexthandle = ($this, context, ctrl, e) => {
         title: "Warning",
         icon: "warning"
       });
-      $this.setState(
+      context.updateState(
         {
-          [e.target.name]: 0,
-          errorInCheck: true
+          [e.target.name]: 0
         },
-        () => {
-          $this.setState({ errorInCheck: false });
-        }
+        () => calculateRecipt($this, context)
       );
     } else {
-      $this.setState(
-        {
-          [e.target.name]: e.target.value
-        },
-        () => {
-          calculateRecipt($this, context);
-        }
-      );
-
       if (context !== null) {
-        context.updateState({ [e.target.name]: e.target.value });
+        context.updateState({ [e.target.name]: e.target.value }, () =>
+          calculateUnbalanced($this, context)
+        );
       }
     }
   }
@@ -196,69 +218,47 @@ const datehandle = ($this, context, ctrl, e) => {
 
 const checkcashhandaler = ($this, context, e) => {
   let Cashchecked = e.target.checked;
-  $this.setState(
-    {
-      Cashchecked: Cashchecked,
-      cash_amount: 0
-    },
-    () => {
-      calculateRecipt($this, context, e);
-    }
-  );
 
   if (context !== undefined) {
-    context.updateState({
-      cash_amount: 0,
-      Cashchecked: Cashchecked
-    });
+    context.updateState(
+      {
+        cash_amount: 0,
+        Cashchecked: Cashchecked
+      },
+      () => calculateUnbalanced($this, context)
+    );
   }
 };
 
 const checkcardhandaler = ($this, context, e) => {
   let Cardchecked = e.target.checked;
-  $this.setState(
-    {
-      Cardchecked: Cardchecked,
-      card_amount: 0,
-      card_check_number: null,
-      expiry_date: null
-    },
-    () => {
-      calculateRecipt($this, context, e);
-    }
-  );
 
   if (context !== undefined) {
-    context.updateState({
-      card_amount: 0,
-      card_check_number: null,
-      expiry_date: null,
-      Cardchecked: Cardchecked
-    });
+    context.updateState(
+      {
+        card_amount: 0,
+        card_check_number: null,
+        expiry_date: null,
+        Cardchecked: Cardchecked
+      },
+      () => calculateUnbalanced($this, context)
+    );
   }
 };
 
 const checkcheckhandaler = ($this, context, e) => {
   let Checkchecked = e.target.checked;
-  $this.setState(
-    {
-      Checkchecked: Checkchecked,
-      cheque_amount: 0,
-      cheque_number: null,
-      cheque_date: null
-    },
-    () => {
-      calculateRecipt($this, context, e);
-    }
-  );
 
   if (context !== undefined) {
-    context.updateState({
-      cheque_amount: 0,
-      cheque_number: null,
-      cheque_date: null,
-      Checkchecked: Checkchecked
-    });
+    context.updateState(
+      {
+        cheque_amount: 0,
+        cheque_number: null,
+        cheque_date: null,
+        Checkchecked: Checkchecked
+      },
+      () => calculateUnbalanced($this, context)
+    );
   }
 };
 
@@ -299,5 +299,6 @@ export {
   checkcardhandaler,
   checkcheckhandaler,
   calculateRecipt,
-  countertexthandle
+  countertexthandle,
+  calculateUnbalanced
 };
