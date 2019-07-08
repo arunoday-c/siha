@@ -111,10 +111,22 @@ const executePDF = function executePDFMethod(options) {
             });
           });
 
-          resolve({ ...grn_details[0], details: outputArray });
-          // utilities
-          //   .logger()
-          //   .log("output: ", { ...grn_details[0], details: outputArray });
+          resolve({
+            ...grn_details[0],
+            location_description: outputArray[0].location_description,
+            vendor_name: outputArray[0].vendor_name,
+            purchase_number: outputArray[0].purchase_number,
+            po_date: outputArray[0].po_date,
+            details: outputArray
+          });
+          // utilities.logger().log("output: ", {
+          //   ...grn_details[0],
+          //   location_description: outputArray[0].location_description,
+          //   vendor_name: outputArray[0].vendor_name,
+          //   purchase_number: outputArray[0].purchase_number,
+          //   po_date: outputArray[0].po_date,
+          //   details: outputArray
+          // });
         })
         .catch(error => {
           options.mysql.releaseConnection();
