@@ -99,10 +99,7 @@ const generateMaterialTransPhar = data => {
     others: { responseType: "blob" },
     data: {
       report: {
-        reportName:
-          data.direct_transfer === "Y"
-            ? "MaterialTransferPharDirect"
-            : "MaterialTransferPhar",
+        reportName: "MaterialTransferPhar",
         reportParams: [
           {
             name: "transfer_number",
