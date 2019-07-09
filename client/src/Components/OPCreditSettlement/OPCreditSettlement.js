@@ -250,7 +250,9 @@ class OPCreditSettlement extends Component {
                 className="btn btn-primary"
                 onClick={SaveOPCreidt.bind(this, this)}
                 disabled={
-                  this.state.saveEnable || this.state.unbalanced_amount != 0
+                  this.state.saveEnable ||
+                  this.state.receipt_amount == 0 ||
+                  this.state.unbalanced_amount != 0
                 }
               >
                 <AlgaehLabel
