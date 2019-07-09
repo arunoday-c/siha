@@ -3,14 +3,14 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import ReciptDetails from "./ReciptDetails/AddReciptForm";
-import { AlgaehActions } from "../../../../actions/algaehActions";
+import { AlgaehActions } from "../../actions/algaehActions";
 import "./CreditDetails.css";
 import {
   AlgaehLabel,
   AlgaehDataGrid,
   AlagehFormGroup
-} from "../../../Wrapper/algaehWrapper";
-import MyContext from "../../../../utils/MyContext.js";
+} from "../Wrapper/algaehWrapper";
+import MyContext from "../../utils/MyContext.js";
 import {
   writeOffhandle,
   EditGrid,
@@ -20,7 +20,8 @@ import {
   includeHandler,
   onchangegridcol
 } from "./CreditDetailsEvent";
-import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import { getAmountFormart } from "../../utils/GlobalFunctions";
+import { swalMessage } from "../../utils/algaehApiCall";
 
 class CreditDetails extends Component {
   constructor(props) {
@@ -39,7 +40,30 @@ class CreditDetails extends Component {
     this.setState(nextProps.SettlementIOputs);
   }
 
+  changeText(e) {
+    const { name, value } = e.target;
+    this.setState({
+      [name]: value
+    });
+  }
+
+  checkRemarks(e) {
+    e.preventDefault();
+    if (e.target.value) {
+      if (!this.state.remarks) {
+        swalMessage({
+          title: "Please Enter Remarks",
+          type: "warning"
+        });
+        document.getElementsByName("remarks")[0].focus();
+      }
+    }
+  }
+
   render() {
+    const check_header = this.props.fromPos
+      ? "hims_f_pos_credit_header_id"
+      : "hims_f_credit_header_id";
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -53,6 +77,17 @@ class CreditDetails extends Component {
                     {
                       fieldName: "include",
                       label: <AlgaehLabel label={{ fieldName: "include" }} />,
+                      // displayTemplate: row => {
+                      //   let displayElement;
+                      //   if (row.include === "Y") {
+                      //     displayElement = "Yes";
+                      //   } else if (row.include === "N") {
+                      //     displayElement = "No";
+                      //   } else {
+                      //     displayElement = "---";
+                      //   }
+                      //   return <span>{displayElement}</span>;
+                      // },
                       displayTemplate: row => {
                         return (
                           <label className="checkbox inline">
@@ -66,11 +101,7 @@ class CreditDetails extends Component {
                                 row
                               )}
                               checked={row.include === "Y" ? true : false}
-                              disabled={
-                                this.state.hims_f_pos_credit_header_id !== null
-                                  ? true
-                                  : false
-                              }
+                              disabled={this.state[check_header] !== null}
                             />
                           </label>
                         );
@@ -78,9 +109,9 @@ class CreditDetails extends Component {
                     },
 
                     {
-                      fieldName: "pos_number",
+                      fieldName: "bill_number",
                       label: (
-                        <AlgaehLabel label={{ fieldName: "pos_number" }} />
+                        <AlgaehLabel label={{ fieldName: "bill_number" }} />
                       ),
                       disabled: true
                     },
@@ -118,10 +149,13 @@ class CreditDetails extends Component {
                           <AlagehFormGroup
                             div={{}}
                             textBox={{
+                              value: row.receipt_amount,
+                              disabled:
+                                this.state[check_header] !== null ||
+                                row.include !== "Y",
                               decimal: {
                                 allowNegative: false
                               },
-                              value: row.receipt_amount,
                               className: "txt-fld",
                               name: "receipt_amount",
                               events: {
@@ -155,24 +189,28 @@ class CreditDetails extends Component {
                   // isEditable={!this.state.Billexists}
                   paging={{ page: 0, rowsPerPage: 5 }}
                   // byForceEvents={true}
-                  events={{
-                    onDelete: deleteCridetSettlement.bind(this, this, context),
-                    onEdit: EditGrid.bind(this, this, context),
-                    onCancel: CancelGrid.bind(this, this, context),
-                    onDone: updateCridetSettlement.bind(this, this, context)
-                  }}
+                  // events={{
+                  //   onDelete: deleteCridetSettlement.bind(this, this, context),
+                  //   onEdit: EditGrid.bind(this, this, context),
+                  //   onCancel: CancelGrid.bind(this, this, context),
+                  //   onDone: updateCridetSettlement.bind(this, this, context)
+                  // }}
                 />
                 {/* </div> */}
                 <div className="row">
                   <AlagehFormGroup
                     div={{ className: "col-lg-6" }}
                     label={{
-                      fieldName: "remarks"
+                      fieldName: "remarks",
+                      isImp: this.state.write_off_amount ? true : false
                     }}
                     textBox={{
                       className: "txt-fld",
                       name: "remarks",
                       value: this.state.remarks,
+                      events: {
+                        onChange: this.changeText.bind(this)
+                      },
                       others: {
                         disabled:
                           this.state.Billexists || !this.state.receipt_amount
@@ -187,7 +225,7 @@ class CreditDetails extends Component {
                         // forceLabel: "hgjhghj"
                       }}
                     />
-                    <h6>{getAmountFormart(this.state.reciept_amount)}</h6>
+                    <h6>{getAmountFormart(this.state.receipt_amount)}</h6>
                   </div>
 
                   <AlagehFormGroup
@@ -207,7 +245,8 @@ class CreditDetails extends Component {
                       },
                       others: {
                         disabled:
-                          this.state.Billexists || !this.state.receipt_amount
+                          this.state.Billexists || !this.state.receipt_amount,
+                        onBlur: this.checkRemarks.bind(this)
                       }
                     }}
                   />
