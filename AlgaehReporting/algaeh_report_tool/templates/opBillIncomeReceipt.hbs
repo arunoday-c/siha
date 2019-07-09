@@ -6,33 +6,45 @@
         <section>
             <table class="tableForData" cell-padding="0">
                 <thead>
-                     <tr>
-    <th>Sl No.</th>
-    <th>Receipt Date</th>
-    <th>Patient Code</th>
-    <th>Patient Name</th>
-    <th>Dept. Name</th>
-    <th>Doctor Name</th>
-    <th>Cash</th>
-    <th>Card</th>
-    <th>Cheque</th>
-  </tr>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>receipt_number</th>
+                        <th>Receipt Date</th>
+                        <th>Patient Code</th>
+                        <th>Patient Name</th>
+                        <th>Dept. Name</th>
+                        <th>Doctor Name</th>
+                        <th>Cash</th>
+                        <th>Card</th>
+                        <th>Cheque</th>
+                        <th>total</th>
+                    </tr>
                 </thead>
                 <tbody>
                     {{#each details}}
                     <tr>
                         <td>{{inc @index}}</td>
+                        <td>{{receipt_number}}</td>
                         <td>{{receipt_date}}</td>
                         <td>{{patient_code}}</td>
                         <td>{{full_name}}</td>
-                        <td>{{sub_department_code}}</td>
+
                         <td>{{sub_department_name}}</td>
-                        <td>Cash</td>
-                        <td>Card</td>
-                        <td>Cheque</td>
+                        <td>{{doctor_name}}</td>
+                        <td>{{cash}}</td>
+                        <td>{{card}}</td>
+                        <td>{{cheque}}</td>
+                        <td>{{total}}</td>
+
                     </tr>
                     {{/each }}
-              
+
+
+                    <td>Cash:{{total_cash}}</td>
+                    <td>Card:{{total_card}}</td>
+                    <td>Cheque:{{total_check}}</td>
+                    <td>total:{{total_collection}}</td>
+
                 </tbody>
             </table>
         </section>

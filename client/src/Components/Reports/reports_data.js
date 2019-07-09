@@ -280,10 +280,6 @@ const Hims_Reports = [
         reportName: "opBillIncomeReceipt",
         requireIframe: true,
 
-        // template_name: "Income/ReceiptList",
-        // reportQuery: "opBillReceipt",
-        // module: "IncomeModule",
-
         reportParameters: [
           {
             className: "col-2",
@@ -353,45 +349,93 @@ const Hims_Reports = [
             }
           },
 
+          // {
+          //   className: "col-2",
+          //   type: "dropdown",
+          //   name: "sub_department_id",
+          //   initialLoad: true,
+          //   isImp: false,
+          //   label: "Select Department",
+          //   link: {
+          //     uri: "/department/get/subdepartment"
+          //   },
+          //   dataSource: {
+          //     textField: "sub_department_name",
+          //     valueField: "hims_d_sub_department_id",
+          //     data: undefined
+          //   }
+          // },
+          // {
+          //   className: "col-2",
+          //   type: "dropdown",
+          //   name: "doctor",
+          //   initialLoad: true,
+          //   isImp: false,
+          //   label: "Select Doctor",
+          //   link: {
+          //     uri: "/employee/get",
+          //     // uri: "/employee/get?isdoctor='Y'",
+          //     module: "hrManagement",
+          //     data: {
+          //       isdoctor: "Y"
+          //     }
+          //   },
+          //   dataSource: {
+          //     textField: "full_name",
+          //     valueField: "hims_d_employee_id",
+          //     data: undefined
+          //   }
+          // },
+
+          //-------------oo
           {
-            className: "col-2",
             type: "dropdown",
-            name: "V.sub_department_id",
+            name: "sub_department_id",
             initialLoad: true,
             isImp: false,
             label: "Select Department",
             link: {
-              uri: "/department/get/subdepartment"
+              uri: "/department/get/get_All_Doctors_DepartmentWise",
+              module: "masterSettings"
+            },
+            manupulation: (response, reportState, stateProperty) => {
+              reportState.setState({
+                [stateProperty]: response.records.departmets
+              });
             },
             dataSource: {
               textField: "sub_department_name",
-              valueField: "hims_d_sub_department_id",
+              valueField: "sub_department_id",
               data: undefined
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                reportState.setState({
+                  sub_department_id: currentEvent.value,
+                  provider_id_list: currentEvent.selected.doctors
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  provider_id_list: []
+                });
+              }
             }
           },
           {
-            className: "col-2",
             type: "dropdown",
-            name: "",
+            name: "provider_id",
             initialLoad: true,
             isImp: false,
-            label: "Select Doctor",
-            link: {
-              uri: "/employee/get",
-              // uri: "/employee/get?isdoctor='Y'",
-              module: "hrManagement",
-              data: {
-                isdoctor: "Y"
-              }
-            },
+            label: "Filter by Doctor",
             dataSource: {
               textField: "full_name",
-              valueField: "hims_d_employee_id",
+              valueField: "employee_id",
               data: undefined
             }
           }
         ]
-        //reportParameters: () => <Finance ui="asset_warty_exp_rep" />
       }
     ]
   },
