@@ -1,10 +1,10 @@
 import moment from "moment";
-import { successfulMessage } from "../../../../utils/GlobalFunctions";
+import { successfulMessage } from "../../../utils/GlobalFunctions";
 import {
   algaehApiCall,
   swalMessage,
   getCookie
-} from "../../../../utils/algaehApiCall";
+} from "../../../utils/algaehApiCall";
 
 const texthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;

@@ -24,3 +24,10 @@
     cursor: pointer;
   }
 }
+
+#servtypCommissionGrid_Cntr,
+#serviceTypeCommissionGrid_Cntr {
+  .ReactTable {
+    max-height: 40vh !important;
+  }
+}

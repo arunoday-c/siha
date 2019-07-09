@@ -81,7 +81,7 @@ const itemchangeText = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   getItemUom($this, e.selected.purchase_cost);
-
+  debugger;
   $this.setState({
     [name]: value,
     item_category_id: e.selected.category_id,
@@ -104,6 +104,7 @@ const AddItems = $this => {
     alertTypeIcon: "warning",
     querySelector: "data-validate='InvIntialStock'",
     onSuccess: () => {
+      debugger;
       if ($this.state.quantity === 0) {
         swalMessage({
           title: "Quantity, cannot be zero.",
@@ -205,51 +206,78 @@ const dateFormater = value => {
 
 const getCtrlCode = ($this, docNumber) => {
   AlgaehLoader({ show: true });
-  algaehApiCall({
-    uri: "/initialstock/getPharmacyInitialStock",
-    module: "pharmacy",
-    method: "GET",
-    data: { document_number: docNumber },
-    onSuccess: response => {
-      if (response.data.success === true) {
-        let data = response.data.records;
-        data.saveEnable = true;
 
-        if (data.posted === "Y") {
-          data.postEnable = true;
-        } else {
-          data.postEnable = false;
-        }
-        data.dataExitst = true;
-
-        data.location_id = null;
-        data.item_category_id = null;
-        data.item_group_id = null;
-        data.item_id = null;
-        data.batchno = null;
-        data.vendor_batchno = null;
-        data.expiry_date = null;
-        data.quantity = 0;
-        data.unit_cost = 0;
-        data.uom_id = null;
-        data.sales_price = 0;
-        data.conversion_fact = null;
-        data.extended_cost = 0;
-        data.grn_number = null;
-        data.sales_uom = null;
-        data.purchase_uom_id = null;
-        $this.setState(data);
-        AlgaehLoader({ show: false });
-      }
+  $this.setState(
+    {
+      description: "",
+      pharmacy_stock_detail: [],
+      document_number: null,
+      location_id: null,
+      item_category_id: null,
+      item_group_id: null,
+      item_id: null,
+      batchno: null,
+      vendor_batchno: null,
+      expiry_date: null,
+      quantity: 0,
+      unit_cost: 0,
+      uom_id: null,
+      conversion_fact: null,
+      extended_cost: 0,
+      saveEnable: true,
+      postEnable: true,
+      dataExitst: false,
+      sales_price: 0,
+      grn_number: null
     },
-    onFailure: error => {
-      AlgaehLoader({ show: false });
-      swalMessage({
-        title: error.message,
-        type: "error"
+    () => {
+      algaehApiCall({
+        uri: "/initialstock/getPharmacyInitialStock",
+        module: "pharmacy",
+        method: "GET",
+        data: { document_number: docNumber },
+        onSuccess: response => {
+          if (response.data.success === true) {
+            let data = response.data.records;
+            data.saveEnable = true;
+
+            if (data.posted === "Y") {
+              data.postEnable = true;
+            } else {
+              data.postEnable = false;
+            }
+            data.dataExitst = true;
+
+            data.location_id = null;
+            data.item_category_id = null;
+            data.item_group_id = null;
+            data.item_id = null;
+            data.batchno = null;
+            data.vendor_batchno = null;
+            data.expiry_date = null;
+            data.quantity = 0;
+            data.unit_cost = 0;
+            data.uom_id = null;
+            data.sales_price = 0;
+            data.conversion_fact = null;
+            data.extended_cost = 0;
+            data.grn_number = null;
+            data.sales_uom = null;
+            data.purchase_uom_id = null;
+            $this.setState(data);
+            AlgaehLoader({ show: false });
+          }
+        },
+        onFailure: error => {
+          AlgaehLoader({ show: false });
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
+        }
       });
     }
-  });
+  );
 };
 
 const SaveInitialStock = $this => {

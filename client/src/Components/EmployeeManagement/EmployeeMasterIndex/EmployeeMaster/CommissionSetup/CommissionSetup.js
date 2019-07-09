@@ -198,9 +198,9 @@ class CommissionSetup extends Component {
                 </div>
 
                 <div className="row" style={{ marginTop: "10px" }}>
-                  <div className="col-lg-12">
+                  <div className="col-lg-12" id="serviceCommissionGrid_Cntr">
                     <AlgaehDataGrid
-                      id="servtyp_commission"
+                      // id="serv_commission"
                       columns={[
                         {
                           fieldName: "action",
@@ -247,9 +247,9 @@ class CommissionSetup extends Component {
                             return (
                               <span>
                                 {display !== undefined && display.length !== 0
-                                  ? this.state.selectedLang === "en"
-                                    ? display[0].service_type
-                                    : display[0].arabic_service_type
+                                  ? this.state.selectedLang === "ar"
+                                    ? display[0].arabic_service_type
+                                    : display[0].service_type
                                   : ""}
                               </span>
                             );
@@ -306,7 +306,7 @@ class CommissionSetup extends Component {
                             ? []
                             : this.state.servTypeCommission
                       }}
-                      paging={{ page: 0, rowsPerPage: 5 }}
+                      paging={{ page: 0, rowsPerPage: 10 }}
                     />
                   </div>
                 </div>
@@ -335,9 +335,9 @@ class CommissionSetup extends Component {
                       value: this.state.service_type_id,
                       dataSource: {
                         textField:
-                          this.state.selectedLang === "en"
-                            ? "service_type"
-                            : "arabic_service_type",
+                          this.state.selectedLang === "ar"
+                            ? "arabic_service_type"
+                            : "service_type",
                         valueField: "hims_d_service_type_id",
                         data: this.props.empservicetype
                       },
@@ -363,9 +363,9 @@ class CommissionSetup extends Component {
                       value: this.state.services_id,
                       dataSource: {
                         textField:
-                          this.state.selectedLang === "en"
-                            ? "service_name"
-                            : "arabic_service_name",
+                          this.state.selectedLang === "ar"
+                            ? "arabic_service_name"
+                            : "service_name",
                         valueField: "hims_d_services_id",
                         data: this.props.empservices
                       },
@@ -453,9 +453,12 @@ class CommissionSetup extends Component {
                 </div>
 
                 <div className="row" style={{ marginTop: "10px" }}>
-                  <div className="col-lg-12">
+                  <div
+                    className="col-lg-12"
+                    id="serviceTypeCommissionGrid_Cntr"
+                  >
                     <AlgaehDataGrid
-                      id="service_commission"
+                      // id="service_commission"
                       columns={[
                         {
                           fieldName: "action",
@@ -502,9 +505,9 @@ class CommissionSetup extends Component {
                             return (
                               <span>
                                 {display !== undefined && display.length !== 0
-                                  ? this.state.selectedLang === "en"
-                                    ? display[0].service_type
-                                    : display[0].arabic_service_type
+                                  ? this.state.selectedLang === "ar"
+                                    ? display[0].arabic_service_type
+                                    : display[0].service_type
                                   : ""}
                               </span>
                             );
@@ -528,9 +531,9 @@ class CommissionSetup extends Component {
                             return (
                               <span>
                                 {display !== null && display.length !== 0
-                                  ? this.state.selectedLang === "en"
-                                    ? display[0].service_name
-                                    : display[0].arabic_service_name
+                                  ? this.state.selectedLang === "ar"
+                                    ? display[0].arabic_service_name
+                                    : display[0].service_name
                                   : ""}
                               </span>
                             );
@@ -587,7 +590,7 @@ class CommissionSetup extends Component {
                             ? []
                             : this.state.serviceComm
                       }}
-                      paging={{ page: 0, rowsPerPage: 5 }}
+                      paging={{ page: 0, rowsPerPage: 10 }}
                     />
                   </div>
                 </div>

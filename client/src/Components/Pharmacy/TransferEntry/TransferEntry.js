@@ -91,7 +91,7 @@ class TransferEntry extends Component {
       getRequisitionDetails(
         this,
         this.props.hims_f_pharamcy_material_header_id,
-        this.props.from_location_id
+        this.props.from_location
       );
     }
   }
@@ -265,6 +265,12 @@ class TransferEntry extends Component {
                           ),
                           others: {
                             disabled: this.state.dataExists
+                          },
+                          onClear: () => {
+                            this.setState({
+                              from_location_id: null,
+                              from_location_type: null
+                            });
                           }
                         }}
                       />
@@ -363,7 +369,16 @@ class TransferEntry extends Component {
                             valueField: "hims_d_pharmacy_location_id",
                             data: this.props.locations
                           },
-                          onChange: LocationchangeTexts.bind(this, this, "To")
+                          onChange: LocationchangeTexts.bind(this, this, "To"),
+                          others: {
+                            disabled: this.state.dataExists
+                          },
+                          onClear: () => {
+                            this.setState({
+                              to_location_id: null,
+                              to_location_type: null
+                            });
+                          }
                         }}
                       />
 

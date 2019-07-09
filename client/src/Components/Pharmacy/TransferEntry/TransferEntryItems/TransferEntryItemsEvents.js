@@ -68,6 +68,18 @@ const numberchangeTexts = ($this, context, e) => {
 };
 
 const AddItems = ($this, context) => {
+  if (
+    $this.state.from_location_id === null ||
+    $this.state.to_location_id === null
+  ) {
+    swalMessage({
+      title: "Please select From and To Location.",
+      type: "warning"
+    });
+
+    return;
+  }
+
   if (parseFloat($this.state.quantity) <= 0) {
     swalMessage({
       title: "Enter the Quantity",
@@ -76,16 +88,26 @@ const AddItems = ($this, context) => {
     return;
   }
 
-  let ItemInput = {
-    item_description: $this.state.item_description,
-    item_id: $this.state.item_id,
-    item_category_id: $this.state.item_category,
-    item_group_id: $this.state.item_group_id,
+  let stock_detail = $this.state.stock_detail;
+  let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+  let _pharmacy_stock_detail = [];
+  let BatchExists = _.filter(
+    pharmacy_stock_detail,
+    f => f.batchno === $this.state.batchno
+  );
 
-    quantity_transferred: $this.state.quantity,
-    uom_transferred_id: $this.state.uom_id,
-    removed: "N"
-  };
+  if (BatchExists.length > 0) {
+    swalMessage({
+      title: "Selected Batch Already Exists",
+      type: "warning"
+    });
+    return;
+  }
+
+  let Item_Exists = _.find(
+    stock_detail,
+    f => f.item_id === $this.state.item_id
+  );
 
   let ItemBatchInput = {
     item_id: $this.state.item_id,
@@ -101,12 +123,34 @@ const AddItems = ($this, context) => {
     uom_transferred_id: $this.state.uom_id,
     sales_price: $this.state.sales_price
   };
-  let stock_detail = $this.state.stock_detail;
-  let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+  if (Item_Exists !== undefined) {
+    let item_index = stock_detail.indexOf(Item_Exists);
 
-  pharmacy_stock_detail.push(ItemBatchInput);
-  ItemInput.pharmacy_stock_detail = pharmacy_stock_detail;
-  stock_detail.push(ItemInput);
+    let pharmacy_stock_length =
+      stock_detail[item_index].pharmacy_stock_detail.length;
+
+    ItemBatchInput.pharmacy_stock_index = pharmacy_stock_length;
+    stock_detail[item_index].pharmacy_stock_detail.push(ItemBatchInput);
+    pharmacy_stock_detail.push(ItemBatchInput);
+  } else {
+    let ItemInput = {
+      item_description: $this.state.item_description,
+      item_id: $this.state.item_id,
+      item_category_id: $this.state.item_category,
+      item_group_id: $this.state.item_group_id,
+
+      quantity_transferred: $this.state.quantity,
+      uom_transferred_id: $this.state.uom_id,
+      removed: "N"
+    };
+
+    ItemBatchInput.pharmacy_stock_index = 0;
+    _pharmacy_stock_detail.push(ItemBatchInput);
+    pharmacy_stock_detail.push(ItemBatchInput);
+    ItemInput.pharmacy_stock_detail = _pharmacy_stock_detail;
+    stock_detail.push(ItemInput);
+  }
+  debugger;
 
   $this.setState({
     stock_detail: stock_detail,
@@ -126,7 +170,8 @@ const AddItems = ($this, context) => {
     Batch_Items: [],
     addItemButton: true,
     item_description: "",
-    saveEnable: false
+    saveEnable: false,
+    uom_description: null
   });
   if (context !== undefined) {
     context.updateState({
@@ -147,7 +192,8 @@ const AddItems = ($this, context) => {
       Batch_Items: [],
       addItemButton: true,
       item_description: "",
-      saveEnable: false
+      saveEnable: false,
+      uom_description: null
     });
   }
 };
@@ -158,11 +204,13 @@ const datehandle = ($this, ctrl, e) => {
   });
 };
 
-const deleteTransEntryDetail = ($this, context, e, rowId) => {
+const deleteTransEntryDetail = ($this, context, row, rowId) => {
   let display =
     $this.props.itemlist === undefined
       ? []
-      : $this.props.itemlist.filter(f => f.hims_d_item_master_id === e.item_id);
+      : $this.props.itemlist.filter(
+          f => f.hims_d_item_master_id === row.item_id
+        );
 
   swal({
     title: "Are you sure want to delete ?" + display[0].item_description + "?",
@@ -174,20 +222,51 @@ const deleteTransEntryDetail = ($this, context, e, rowId) => {
     cancelButtonText: "No"
   }).then(willDelete => {
     if (willDelete.value) {
+      debugger;
       let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
-      pharmacy_stock_detail.splice(rowId, 1);
+      let stock_detail = $this.state.stock_detail;
+
+      let getDeleteRowData = _.find(
+        stock_detail,
+        f => f.item_id === row.item_id
+      );
+
+      let _index = stock_detail.indexOf(getDeleteRowData);
+
+      let getPharStockToDelete = _.find(
+        stock_detail[_index].pharmacy_stock_detail,
+        f => f.pharmacy_stock_index === row.pharmacy_stock_index
+      );
+
+      let _pharmacy_stock_index = stock_detail[
+        _index
+      ].pharmacy_stock_detail.indexOf(getPharStockToDelete);
+
+      stock_detail[_index].pharmacy_stock_detail.splice(
+        _pharmacy_stock_index,
+        1
+      );
+
+      if (stock_detail[_index].pharmacy_stock_detail.length === 0) {
+        stock_detail.splice(_index, 1);
+      }
+
+      let _phar_index = pharmacy_stock_detail.indexOf(row);
+      pharmacy_stock_detail.splice(_phar_index, 1);
 
       if (pharmacy_stock_detail.length === 0) {
         if (context !== undefined) {
           context.updateState({
             pharmacy_stock_detail: pharmacy_stock_detail,
+            stock_detail: stock_detail,
             saveEnable: true
           });
         }
       } else {
         if (context !== undefined) {
           context.updateState({
-            pharmacy_stock_detail: pharmacy_stock_detail
+            pharmacy_stock_detail: pharmacy_stock_detail,
+            stock_detail: stock_detail
           });
         }
       }

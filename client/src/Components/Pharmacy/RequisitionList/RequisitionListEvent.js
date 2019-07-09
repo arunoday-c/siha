@@ -54,10 +54,10 @@ const getRequisitionList = $this => {
     inpObj.to_date = $this.state.to_date;
   }
 
-  if ($this.state.from_location_id !== null) {
+  if ($this.state.from_location_id) {
     inpObj.from_location_id = $this.state.from_location_id;
   }
-  if ($this.state.to_location_id !== null) {
+  if ($this.state.to_location_id) {
     inpObj.to_location_id = $this.state.to_location_id;
   }
 

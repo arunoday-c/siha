@@ -15,43 +15,59 @@ const changeTexts = ($this, ctrl, e) => {
 const getCtrlCode = ($this, docNumber) => {
   AlgaehLoader({ show: true });
 
-  algaehApiCall({
-    uri: "/salesReturn/getsalesReturn",
-    module: "pharmacy",
-    method: "GET",
-    data: { sales_return_number: docNumber },
-    onSuccess: response => {
-      if (response.data.success) {
-        let data = response.data.records;
-        data.saveEnable = true;
-        data.patient_payable_h = data.patient_payable;
+  let IOputs = SalesReturnputs.inputParam();
+  IOputs.patient_payable_h = 0;
+  IOputs.mode_of_pa = "";
+  IOputs.pay_cash = "CA";
+  IOputs.pay_card = "CD";
+  IOputs.pay_cheque = "CH";
+  IOputs.cash_amount = 0;
+  IOputs.card_check_number = "";
+  IOputs.card_date = null;
+  IOputs.card_amount = 0;
+  IOputs.cheque_number = "";
+  IOputs.cheque_date = null;
+  IOputs.cheque_amount = 0;
+  IOputs.advance = 0;
+  $this.setState(IOputs, () => {
+    algaehApiCall({
+      uri: "/salesReturn/getsalesReturn",
+      module: "pharmacy",
+      method: "GET",
+      data: { sales_return_number: docNumber },
+      onSuccess: response => {
+        if (response.data.success) {
+          let data = response.data.records;
+          data.saveEnable = true;
+          data.patient_payable_h = data.patient_payable;
 
-        if (data.posted === "Y") {
-          data.postEnable = true;
-        } else {
-          data.postEnable = false;
-        }
+          if (data.posted === "Y") {
+            data.postEnable = true;
+          } else {
+            data.postEnable = false;
+          }
 
-        if (data.receiptdetails.length !== 0) {
-          for (let i = 0; i < data.receiptdetails.length; i++) {
-            if (data.receiptdetails[i].pay_type === "CA") {
-              data.Cashchecked = true;
-              data.cash_amount = data.receiptdetails[i].amount;
+          if (data.receiptdetails.length !== 0) {
+            for (let i = 0; i < data.receiptdetails.length; i++) {
+              if (data.receiptdetails[i].pay_type === "CA") {
+                data.Cashchecked = true;
+                data.cash_amount = data.receiptdetails[i].amount;
+              }
             }
           }
-        }
 
-        $this.setState(data);
+          $this.setState(data);
+        }
+        AlgaehLoader({ show: false });
+      },
+      onFailure: error => {
+        AlgaehLoader({ show: false });
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
       }
-      AlgaehLoader({ show: false });
-    },
-    onFailure: error => {
-      AlgaehLoader({ show: false });
-      swalMessage({
-        title: error.message,
-        type: "error"
-      });
-    }
+    });
   });
 };
 
