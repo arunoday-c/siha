@@ -304,29 +304,31 @@ class DisplayOPBilling extends PureComponent {
                       </div>
 
                       {this.state.deductable_amount === 0 ? null : (
-                        <div className="row">
-                          <div className="col-6">
-                            <AlgaehLabel
-                              label={{
-                                fieldName: "deductable_percentage"
-                              }}
-                            />
-                            <h6>
-                              {this.state.deductable_percentage
-                                ? this.state.deductable_percentage + "%"
-                                : "0.00%"}
-                            </h6>
-                          </div>
+                        <div className="col-12">
+                          <div className="row">
+                            <div className="col-6">
+                              <AlgaehLabel
+                                label={{
+                                  fieldName: "deductable_percentage"
+                                }}
+                              />
+                              <h6>
+                                {this.state.deductable_percentage
+                                  ? this.state.deductable_percentage + "%"
+                                  : "0.00%"}
+                              </h6>
+                            </div>
 
-                          <div className="col-6">
-                            <AlgaehLabel
-                              label={{
-                                fieldName: "deductable_amount"
-                              }}
-                            />
-                            <h6>
-                              {getAmountFormart(this.state.deductable_amount)}
-                            </h6>
+                            <div className="col-6">
+                              <AlgaehLabel
+                                label={{
+                                  fieldName: "deductable_amount"
+                                }}
+                              />
+                              <h6>
+                                {getAmountFormart(this.state.deductable_amount)}
+                              </h6>
+                            </div>
                           </div>
                         </div>
                       )}
