@@ -185,7 +185,12 @@ class ItemMomentEnquiry extends Component {
                         data: this.props.locations
                       },
 
-                      onChange: changeTexts.bind(this, this)
+                      onChange: changeTexts.bind(this, this),
+                      onClear: () => {
+                        this.setState({
+                          location_id: null
+                        });
+                      }
                     }}
                   />
 

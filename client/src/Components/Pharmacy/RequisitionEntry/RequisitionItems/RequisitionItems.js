@@ -181,6 +181,7 @@ class RequisitionItems extends Component {
                           className: "txt-fld",
                           name: "quantity_required",
                           value: this.state.quantity_required,
+                          dontAllowKeys: ["-", "e"],
                           events: {
                             onChange: numberchangeTexts.bind(
                               this,
@@ -251,6 +252,16 @@ class RequisitionItems extends Component {
                                     <i
                                       className="fas fa-trash-alt"
                                       aria-hidden="true"
+                                      style={{
+                                        pointerEvents:
+                                          this.state.cannotDelete === true
+                                            ? "none"
+                                            : "",
+                                        opacity:
+                                          this.state.cannotDelete === true
+                                            ? "0.1"
+                                            : ""
+                                      }}
                                       onClick={deleteRequisitionDetail.bind(
                                         this,
                                         this,
@@ -262,7 +273,10 @@ class RequisitionItems extends Component {
                                 );
                               },
                               others: {
-                                show:this.state.requisition_auth === true ? false:true
+                                show:
+                                  this.state.requisition_auth === true
+                                    ? false
+                                    : true
                               }
                             },
                             {
@@ -452,7 +466,25 @@ class RequisitionItems extends Component {
                                   label={{ forceLabel: "To Qty in Hand" }}
                                 />
                               ),
-                              disabled: true
+                              displayTemplate: row => {
+                                debugger;
+                                return (
+                                  <span>
+                                    {row.to_qtyhand === null
+                                      ? 0
+                                      : parseFloat(row.to_qtyhand)}
+                                  </span>
+                                );
+                              },
+                              editorTemplate: row => {
+                                return (
+                                  <span>
+                                    {row.to_qtyhand === null
+                                      ? 0
+                                      : parseFloat(row.to_qtyhand)}
+                                  </span>
+                                );
+                              }
                             },
                             {
                               fieldName: "from_qtyhand",
@@ -461,7 +493,24 @@ class RequisitionItems extends Component {
                                   label={{ forceLabel: "From Qty in Hand" }}
                                 />
                               ),
-                              disabled: true
+                              displayTemplate: row => {
+                                return (
+                                  <span>
+                                    {row.from_qtyhand === null
+                                      ? 0
+                                      : parseFloat(row.from_qtyhand)}
+                                  </span>
+                                );
+                              },
+                              editorTemplate: row => {
+                                return (
+                                  <span>
+                                    {row.from_qtyhand === null
+                                      ? 0
+                                      : parseFloat(row.from_qtyhand)}
+                                  </span>
+                                );
+                              }
                             },
 
                             {
@@ -471,7 +520,24 @@ class RequisitionItems extends Component {
                                   label={{ forceLabel: "Quantity Required" }}
                                 />
                               ),
-                              disabled: true
+                              displayTemplate: row => {
+                                return (
+                                  <span>
+                                    {row.quantity_required === null
+                                      ? 0
+                                      : parseFloat(row.quantity_required)}
+                                  </span>
+                                );
+                              },
+                              editorTemplate: row => {
+                                return (
+                                  <span>
+                                    {row.quantity_required === null
+                                      ? 0
+                                      : parseFloat(row.quantity_required)}
+                                  </span>
+                                );
+                              }
                             },
                             {
                               fieldName: "quantity_authorized",
@@ -482,14 +548,28 @@ class RequisitionItems extends Component {
                                   }}
                                 />
                               ),
+                              displayTemplate: row => {
+                                return (
+                                  <span>
+                                    {row.quantity_authorized === null
+                                      ? 0
+                                      : parseFloat(row.quantity_authorized)}
+                                  </span>
+                                );
+                              },
                               editorTemplate: row => {
                                 return (
                                   <AlagehFormGroup
                                     div={{}}
                                     textBox={{
-                                      value: row.quantity_authorized,
+                                      number: { allowNegative: false },
+                                      value:
+                                        row.quantity_authorized !== ""
+                                          ? parseFloat(row.quantity_authorized)
+                                          : "",
                                       className: "txt-fld",
                                       name: "quantity_authorized",
+                                      dontAllowKeys: ["-", "e"],
                                       events: {
                                         onChange: onchangegridcol.bind(
                                           this,
@@ -500,7 +580,7 @@ class RequisitionItems extends Component {
                                       },
                                       others: {
                                         disabled: this.state.authorizeEnable,
-                                        type: "number",
+                                        min: 0,
                                         algaeh_required: "true",
                                         errormessage:
                                           "Please enter Authorized Quantity ..",
@@ -519,7 +599,24 @@ class RequisitionItems extends Component {
                                   label={{ forceLabel: "Quantity OutStanding" }}
                                 />
                               ),
-                              disabled: true
+                              displayTemplate: row => {
+                                return (
+                                  <span>
+                                    {row.quantity_outstanding === null
+                                      ? 0
+                                      : parseFloat(row.quantity_outstanding)}
+                                  </span>
+                                );
+                              },
+                              editorTemplate: row => {
+                                return (
+                                  <span>
+                                    {row.quantity_outstanding === null
+                                      ? 0
+                                      : parseFloat(row.quantity_outstanding)}
+                                  </span>
+                                );
+                              }
                             }
                           ]}
                           keyId="service_type_id"

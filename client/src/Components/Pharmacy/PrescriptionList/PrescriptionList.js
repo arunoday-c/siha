@@ -45,7 +45,7 @@ class PrescriptionList extends Component {
     getMedicationList(this, this);
   }
 
-  changeDateFormat({ value }) {
+  changeDateFormat(value) {
     if (value !== null) {
       return moment(value).format(Options.dateFormat);
     }

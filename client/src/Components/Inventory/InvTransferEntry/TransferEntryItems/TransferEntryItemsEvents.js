@@ -63,6 +63,18 @@ const numberchangeTexts = ($this, context, e) => {
 };
 
 const AddItems = ($this, context) => {
+  if (
+    $this.state.from_location_id === null ||
+    $this.state.to_location_id === null
+  ) {
+    swalMessage({
+      title: "Please select From and To Location.",
+      type: "warning"
+    });
+
+    return;
+  }
+
   if (parseFloat($this.state.quantity) <= 0) {
     swalMessage({
       title: "Enter the Quantity",
@@ -70,16 +82,27 @@ const AddItems = ($this, context) => {
     });
     return;
   }
-  let ItemInput = {
-    item_description: $this.state.item_description,
-    item_id: $this.state.item_id,
-    item_category_id: $this.state.item_category,
-    item_group_id: $this.state.item_group_id,
 
-    quantity_transferred: $this.state.quantity,
-    uom_transferred_id: $this.state.uom_id,
-    removed: "N"
-  };
+  let stock_detail = $this.state.stock_detail;
+  let inventory_stock_detail = $this.state.inventory_stock_detail;
+  let _inventory_stock_detail = [];
+  let BatchExists = _.filter(
+    inventory_stock_detail,
+    f => f.batchno === $this.state.batchno
+  );
+
+  if (BatchExists.length > 0) {
+    swalMessage({
+      title: "Selected Batch Already Exists",
+      type: "warning"
+    });
+    return;
+  }
+
+  let Item_Exists = _.find(
+    stock_detail,
+    f => f.item_id === $this.state.item_id
+  );
 
   let ItemBatchInput = {
     item_id: $this.state.item_id,
@@ -95,12 +118,33 @@ const AddItems = ($this, context) => {
     uom_transferred_id: $this.state.uom_id,
     sales_price: $this.state.sales_price
   };
-  let stock_detail = $this.state.stock_detail;
-  let inventory_stock_detail = $this.state.inventory_stock_detail;
+  if (Item_Exists !== undefined) {
+    let item_index = stock_detail.indexOf(Item_Exists);
 
-  inventory_stock_detail.push(ItemBatchInput);
-  ItemInput.inventory_stock_detail = inventory_stock_detail;
-  stock_detail.push(ItemInput);
+    let inventory_stock_length =
+      stock_detail[item_index].inventory_stock_detail.length;
+
+    ItemBatchInput.inventory_stock_index = inventory_stock_length;
+    stock_detail[item_index].inventory_stock_detail.push(ItemBatchInput);
+    inventory_stock_detail.push(ItemBatchInput);
+  } else {
+    let ItemInput = {
+      item_description: $this.state.item_description,
+      item_id: $this.state.item_id,
+      item_category_id: $this.state.item_category,
+      item_group_id: $this.state.item_group_id,
+
+      quantity_transferred: $this.state.quantity,
+      uom_transferred_id: $this.state.uom_id,
+      removed: "N"
+    };
+
+    ItemBatchInput.inventory_stock_index = 0;
+    _inventory_stock_detail.push(ItemBatchInput);
+    inventory_stock_detail.push(ItemBatchInput);
+    ItemInput.inventory_stock_detail = _inventory_stock_detail;
+    stock_detail.push(ItemInput);
+  }
 
   $this.setState({
     stock_detail: stock_detail,
@@ -120,7 +164,8 @@ const AddItems = ($this, context) => {
     Batch_Items: [],
     addItemButton: true,
     item_description: "",
-    saveEnable: false
+    saveEnable: false,
+    uom_description: null
   });
   if (context !== undefined) {
     context.updateState({
@@ -141,7 +186,8 @@ const AddItems = ($this, context) => {
       Batch_Items: [],
       addItemButton: true,
       item_description: "",
-      saveEnable: false
+      saveEnable: false,
+      uom_description: null
     });
   }
 };
@@ -152,12 +198,12 @@ const datehandle = ($this, ctrl, e) => {
   });
 };
 
-const deleteTransEntryDetail = ($this, context, e, rowId) => {
+const deleteTransEntryDetail = ($this, context, row, rowId) => {
   let display =
     $this.props.inventoryitemlist === undefined
       ? []
       : $this.props.inventoryitemlist.filter(
-          f => f.hims_d_inventory_item_master_id === e.item_id
+          f => f.hims_d_inventory_item_master_id === row.item_id
         );
 
   swal({
@@ -170,20 +216,51 @@ const deleteTransEntryDetail = ($this, context, e, rowId) => {
     cancelButtonText: "No"
   }).then(willDelete => {
     if (willDelete.value) {
+      debugger;
       let inventory_stock_detail = $this.state.inventory_stock_detail;
-      inventory_stock_detail.splice(rowId, 1);
+      let stock_detail = $this.state.stock_detail;
+
+      let getDeleteRowData = _.find(
+        stock_detail,
+        f => f.item_id === row.item_id
+      );
+
+      let _index = stock_detail.indexOf(getDeleteRowData);
+
+      let getPharStockToDelete = _.find(
+        stock_detail[_index].inventory_stock_detail,
+        f => f.inventory_stock_index === row.inventory_stock_index
+      );
+
+      let _pharmacy_stock_index = stock_detail[
+        _index
+      ].inventory_stock_detail.indexOf(getPharStockToDelete);
+
+      stock_detail[_index].inventory_stock_detail.splice(
+        _pharmacy_stock_index,
+        1
+      );
+
+      if (stock_detail[_index].inventory_stock_detail.length === 0) {
+        stock_detail.splice(_index, 1);
+      }
+
+      let _inv_index = inventory_stock_detail.indexOf(row);
+      inventory_stock_detail.splice(_inv_index, 1);
 
       if (inventory_stock_detail.length === 0) {
         if (context !== undefined) {
           context.updateState({
             inventory_stock_detail: inventory_stock_detail,
+            stock_detail: stock_detail,
             saveEnable: true
           });
         }
       } else {
         if (context !== undefined) {
           context.updateState({
-            inventory_stock_detail: inventory_stock_detail
+            inventory_stock_detail: inventory_stock_detail,
+            stock_detail: stock_detail
           });
         }
       }
@@ -431,6 +508,9 @@ const AddSelectedBatches = ($this, context) => {
 };
 
 const itemchangeText = ($this, context, e, ctrl) => {
+  if ($this.state.cannotEdit === true) {
+    return;
+  }
   let name = ctrl;
   if (
     $this.state.from_location_id !== null &&

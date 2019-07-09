@@ -265,8 +265,10 @@ class RequisitionItems extends Component {
                                 );
                               },
                               others: {
-                               
-                                show:this.state.requisition_auth === true ? false:true
+                                show:
+                                  this.state.requisition_auth === true
+                                    ? false
+                                    : true
                               }
                             },
                             {
@@ -494,9 +496,11 @@ class RequisitionItems extends Component {
                                   <AlagehFormGroup
                                     div={{}}
                                     textBox={{
+                                      number: { allowNegative: false },
                                       value: row.quantity_authorized,
                                       className: "txt-fld",
                                       name: "quantity_authorized",
+                                      dontAllowKeys: ["-", "e"],
                                       events: {
                                         onChange: onchangegridcol.bind(
                                           this,
@@ -507,7 +511,7 @@ class RequisitionItems extends Component {
                                       },
                                       others: {
                                         disabled: this.state.authorizeEnable,
-                                        type: "number",
+
                                         algaeh_required: "true",
                                         errormessage:
                                           "Please enter Authorized Quantity ..",

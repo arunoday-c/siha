@@ -188,6 +188,7 @@ class TransferEntryItems extends Component {
                           ref={attReg => {
                             this.attReg = attReg;
                           }}
+                          others={{ disabled: this.state.dataExitst }}
                         />
                         <div className="col">
                           <AlgaehLabel
@@ -333,15 +334,26 @@ class TransferEntryItems extends Component {
                               ),
                               displayTemplate: row => {
                                 return (
-                                  <span
-                                    onClick={deleteTransEntryDetail.bind(
-                                      this,
-                                      this,
-                                      context,
-                                      row
-                                    )}
-                                  >
-                                    <i className="fas fa-trash-alt" />
+                                  <span>
+                                    <i
+                                      className="fas fa-trash-alt"
+                                      style={{
+                                        pointerEvents:
+                                          this.state.cannotEdit === true
+                                            ? "none"
+                                            : "",
+                                        opacity:
+                                          this.state.cannotEdit === true
+                                            ? "0.1"
+                                            : ""
+                                      }}
+                                      onClick={deleteTransEntryDetail.bind(
+                                        this,
+                                        this,
+                                        context,
+                                        row
+                                      )}
+                                    />
                                   </span>
                                 );
                               }
@@ -831,9 +843,12 @@ class TransferEntryItems extends Component {
                                   />
                                 ),
                                 displayTemplate: row => {
+                                  debugger;
                                   return (
                                     <span>
-                                      {dateFormater(this, row.expiry_date)}
+                                      {row.expiry_date !== null
+                                        ? dateFormater(this, row.expiry_date)
+                                        : null}
                                     </span>
                                   );
                                 },

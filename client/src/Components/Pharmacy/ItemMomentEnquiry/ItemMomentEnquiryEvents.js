@@ -4,14 +4,10 @@ import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 const changeTexts = ($this, ctrl, e) => {
+  debugger;
   e = ctrl || e;
   let name = e.name || e.target.name;
-  let value =
-    e.value === ""
-      ? null
-      : e.value || e.target.value === ""
-      ? null
-      : e.target.value;
+  let value = e.value || e.target.value;
   $this.setState({ [name]: value });
 };
 
@@ -48,7 +44,7 @@ const ProcessItemMoment = $this => {
   if ($this.state.item_code_id !== null) {
     inputObj.item_code_id = $this.state.item_code_id;
   }
-  if ($this.state.barcode !== null) {
+  if ($this.state.barcode !== null && $this.state.barcode !== "") {
     inputObj.barcode = $this.state.barcode;
   }
   if ($this.state.transaction_type !== null) {
@@ -64,6 +60,7 @@ const ProcessItemMoment = $this => {
       Options.dateFormatYear
     );
   }
+  debugger;
 
   algaehApiCall({
     uri: "/pharmacyGlobal/getItemMoment",
