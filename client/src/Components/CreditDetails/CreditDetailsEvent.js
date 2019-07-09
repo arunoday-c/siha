@@ -1,18 +1,33 @@
-import { swalMessage } from "../../../../utils/algaehApiCall";
+import { swalMessage } from "../../utils/algaehApiCall";
 import Enumerable from "linq";
 
 const writeOffhandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
+  let { name, value } = e.target;
+  let recievable_amount;
 
-  let recievable_amount =
-    parseFloat($this.state.receipt_amount) - parseFloat(e.target.value);
+  if (value) {
+    recievable_amount =
+      parseFloat($this.state.receipt_amount) - parseFloat(e.target.value);
+    if (recievable_amount < 0) {
+      recievable_amount = parseFloat($this.state.receipt_amount);
+      value = 0;
+      swalMessage({
+        title: "Write off amount cannot be greater than Receipt amount",
+        type: "error"
+      });
+    }
+  } else {
+    recievable_amount = parseFloat($this.state.receipt_amount);
+  }
+
   $this.setState({
-    [e.target.name]: e.target.value,
+    [name]: value,
     recievable_amount: recievable_amount
   });
   if (context !== null) {
     context.updateState({
-      [e.target.name]: e.target.value,
+      [name]: value,
       recievable_amount: recievable_amount,
       unbalanced_amount: recievable_amount,
       cash_amount: 0
@@ -20,66 +35,17 @@ const writeOffhandle = ($this, context, ctrl, e) => {
   }
 };
 
-const EditGrid = ($this, context, row) => {
-  let saveEnable = true;
-
-  if ($this.state.hims_f_credit_header_id !== null) {
-    saveEnable = true;
-  }
-  if (context !== null) {
-    context.updateState({
-      saveEnable: saveEnable
-    });
-  }
-};
-
-const CancelGrid = ($this, context, cancelRow) => {
-  let saveEnable = false;
-
-  if ($this.state.hims_f_credit_header_id !== null) {
-    saveEnable = true;
-  }
-  if (context !== null) {
-    let _criedtdetails = $this.state.criedtdetails;
-    if (cancelRow !== undefined) {
-      _criedtdetails[cancelRow.rowIdx] = cancelRow;
-    }
-    context.updateState({
-      saveEnable: saveEnable,
-      criedtdetails: _criedtdetails
-    });
-  }
-};
-
-const deleteCridetSettlement = ($this, context) => {
-  let saveEnable = true;
-
-  let receipt_amount = Enumerable.from($this.state.criedtdetails).sum(w =>
-    parseFloat(w.receipt_amount)
-  );
-
-  if ($this.state.hims_f_credit_header_id !== null) {
-    saveEnable = true;
-  }
-  if (context !== null) {
-    context.updateState({
-      saveEnable: saveEnable,
-      receipt_amount: receipt_amount,
-      write_off_amount: 0,
-      recievable_amount: receipt_amount,
-      unbalanced_amount: receipt_amount
-    });
-  }
-};
-
 const updateCridetSettlement = ($this, context) => {
+  const check_header = $this.props.fromPos
+    ? "hims_f_pos_credit_header_id"
+    : "hims_f_credit_header_id";
   let saveEnable = false;
 
   let receipt_amount = Enumerable.from($this.state.criedtdetails)
     .where("!!$.receipt_amount") // don't be afraid, meet $ aka lambda selector from Linq, lookup the docs.
     .sum(w => parseFloat(w.receipt_amount));
 
-  if ($this.state.hims_f_credit_header_id !== null) {
+  if ($this.state[check_header] !== null) {
     saveEnable = true;
   }
 
@@ -180,9 +146,6 @@ const onchangegridcol = ($this, context, row, e) => {
 
 export {
   writeOffhandle,
-  EditGrid,
-  CancelGrid,
-  deleteCridetSettlement,
   updateCridetSettlement,
   includeHandler,
   onchangegridcol

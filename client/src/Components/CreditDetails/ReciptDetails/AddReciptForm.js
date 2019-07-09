@@ -12,7 +12,7 @@ import {
   checkcashhandaler,
   checkcardhandaler,
   checkcheckhandaler,
-  //calculateRecipt,
+  // calculateRecipt,
   countertexthandle
 } from "./AddReciptFormHandaler";
 import {
@@ -20,14 +20,14 @@ import {
   AlgaehLabel,
   AlagehFormGroup,
   AlagehAutoComplete
-} from "../../../../Wrapper/algaehWrapper";
+} from "../../Wrapper/algaehWrapper";
 
-import MyContext from "../../../../../utils/MyContext";
+import MyContext from "../../../utils/MyContext";
 import "./AddReciptForm.css";
-import "./../../../../../styles/site.css";
+import "../../../styles/site.css";
 
-import { AlgaehActions } from "../../../../../actions/algaehActions";
-import { getAmountFormart } from "../../../../../utils/GlobalFunctions";
+import { AlgaehActions } from "../../../actions/algaehActions";
+import { getAmountFormart } from "../../../utils/GlobalFunctions";
 
 class AddReciptForm extends Component {
   constructor(props) {
