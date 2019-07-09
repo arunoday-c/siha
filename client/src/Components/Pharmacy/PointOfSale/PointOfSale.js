@@ -339,6 +339,10 @@ class PointOfSale extends Component {
                       isImp: true
                     }}
                     textBox={{
+                      number: {
+                        allowNegative: false
+                      },
+                      dontAllowKeys: ["-", "e"],
                       className: "txt-fld",
                       name: "mobile_number",
                       value: this.state.mobile_number,

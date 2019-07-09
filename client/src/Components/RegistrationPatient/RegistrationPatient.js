@@ -442,6 +442,7 @@ class RegistrationPatient extends Component {
                               response.data.records.patient_visit_id,
                             hims_f_billing_header_id:
                               response.data.records.hims_f_billing_header_id,
+                            primary_network_id: this.state.primary_network_id,
                             saveEnable: true,
                             insuranceYes: true,
                             hideInsurance: true,
@@ -552,37 +553,6 @@ class RegistrationPatient extends Component {
                           })
                         );
                       }
-                      // if (_patSecInsuranceFrontImg !== undefined) {
-                      //   _arrayImages.push(
-                      //     new Promise((resolve, reject) => {
-                      //       _patSecInsuranceFrontImg.SavingImageOnServer(
-                      //         undefined,
-                      //         undefined,
-                      //         undefined,
-                      //         $this.state.secondary_card_number + "_sec_front",
-                      //         () => {
-                      //           resolve();
-                      //         }
-                      //       );
-                      //     })
-                      //   );
-                      // }
-                      //
-                      // if (_patSecInsuranceBackImg !== undefined) {
-                      //   _arrayImages.push(
-                      //     new Promise((resolve, reject) => {
-                      //       _patSecInsuranceBackImg.SavingImageOnServer(
-                      //         undefined,
-                      //         undefined,
-                      //         undefined,
-                      //         $this.state.secondary_card_number + "_sec_back",
-                      //         () => {
-                      //           resolve();
-                      //         }
-                      //       );
-                      //     })
-                      //   );
-                      // }
 
                       Promise.all(_arrayImages).then(result => {
                         AlgaehLoader({ show: false });
@@ -596,6 +566,7 @@ class RegistrationPatient extends Component {
                               response.data.records.patient_visit_id,
                             hims_f_billing_header_id:
                               response.data.records.hims_f_billing_header_id,
+                            primary_network_id: this.state.primary_network_id,
                             saveEnable: true,
                             insuranceYes: true,
                             hideInsurance: true,
@@ -631,11 +602,18 @@ class RegistrationPatient extends Component {
               }
             });
           } else {
+            this.setState({
+              primary_network_id: this.state.primary_network_id
+            });
             swalMessage({
               title: "Please receive the amount.",
               type: "error"
             });
           }
+        } else {
+          this.setState({
+            primary_network_id: this.state.primary_network_id
+          });
         }
       }
     });

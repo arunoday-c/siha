@@ -165,6 +165,7 @@ const AuthorizeRequisitionEntry = ($this, authorize) => {
     authorize1 = "Y";
     authorize2 = "N";
   } else if (authorize === "authorize2") {
+    $this.state.authorize1 = "Y";
     $this.state.authorie2 = "Y";
     authorize1 = "Y";
     authorize2 = "Y";

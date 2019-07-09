@@ -24,7 +24,8 @@ import {
   EditGrid,
   CancelGrid,
   onquantitycol,
-  ondiscountgridcol
+  ondiscountgridcol,
+  calculateAmount
 } from "./AddOPBillingHandaler";
 import ReciptForm from "../ReciptDetails/AddReciptForm";
 import { AlgaehActions } from "../../../../actions/algaehActions";
@@ -215,63 +216,6 @@ class AddOPBillingForm extends Component {
         message: "Selected Service already exists.",
         title: "Warning",
         icon: "warning"
-      });
-    }
-  }
-  //Calculate Row Detail
-  calculateAmount(row, ctrl, e) {
-    e = e || ctrl;
-
-    if (e.target.value !== e.target.oldvalue) {
-      let $this = this;
-      let billdetails = this.state.billdetails;
-
-      row[e.target.name] = parseFloat(
-        e.target.value === "" ? 0 : e.target.value
-      );
-      let inputParam = [
-        {
-          hims_d_services_id: row.services_id,
-          vat_applicable: this.state.vat_applicable,
-          quantity: row.quantity,
-          discount_amout:
-            e.target.name === "discount_percentage" ? 0 : row.discount_amout,
-          discount_percentage:
-            e.target.name === "discount_amout" ? 0 : row.discount_percentage,
-
-          insured: this.state.insured,
-          primary_insurance_provider_id: this.state.insurance_provider_id,
-          primary_network_office_id: this.state
-            .hims_d_insurance_network_office_id,
-          primary_network_id: this.state.network_id,
-          sec_insured: this.state.sec_insured,
-          secondary_insurance_provider_id: this.state
-            .secondary_insurance_provider_id,
-          secondary_network_id: this.state.secondary_network_id,
-          secondary_network_office_id: this.state.secondary_network_office_id
-        }
-      ];
-
-      algaehApiCall({
-        uri: "/billing/getBillDetails",
-        module: "billing",
-        method: "POST",
-        data: inputParam,
-        onSuccess: response => {
-          if (response.data.success) {
-            let data = response.data.records;
-
-            extend(row, data.billdetails[0]);
-            billdetails[row.rowIdx] = row;
-            $this.setState({ billdetails: billdetails });
-          }
-        },
-        onFailure: error => {
-          swalMessage({
-            title: error.message,
-            type: "error"
-          });
-        }
       });
     }
   }
@@ -661,10 +605,7 @@ class AddOPBillingForm extends Component {
                                   },
                                   others: {
                                     placeholder: "0.00",
-                                    onBlur: this.calculateAmount.bind(
-                                      this,
-                                      row
-                                    ),
+                                    // onBlur: calculateAmount.bind(this, row),
                                     onFocus: e => {
                                       e.target.oldvalue = e.target.value;
                                     },
@@ -708,10 +649,7 @@ class AddOPBillingForm extends Component {
                                   },
                                   others: {
                                     placeholder: "0.00",
-                                    onBlur: this.calculateAmount.bind(
-                                      this,
-                                      row
-                                    ),
+                                    // onBlur: calculateAmount.bind(this, row),
                                     onFocus: e => {
                                       e.target.oldvalue = e.target.value;
                                     },
@@ -1041,11 +979,7 @@ class AddOPBillingForm extends Component {
                                   ? true
                                   : this.state.applydiscount,
                               placeholder: "0.00",
-                              onBlur: billheaderCalculation.bind(
-                                this,
-                                this,
-                                context
-                              ),
+
                               onFocus: e => {
                                 e.target.oldvalue = e.target.value;
                               }
@@ -1072,11 +1006,7 @@ class AddOPBillingForm extends Component {
                                   ? true
                                   : this.state.applydiscount,
                               placeholder: "0.00",
-                              onBlur: billheaderCalculation.bind(
-                                this,
-                                this,
-                                context
-                              ),
+
                               onFocus: e => {
                                 e.target.oldvalue = e.target.value;
                               }
@@ -1129,10 +1059,6 @@ class AddOPBillingForm extends Component {
                               placeholder: "0.00",
                               disabled:
                                 this.state.Billexists === true ? true : false
-                              // onBlur: credittextCal.bind(this, this),
-                              // onFocus: e => {
-                              //   e.target.oldvalue = e.target.value;
-                              // }
                             }
                           }}
                         />

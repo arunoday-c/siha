@@ -84,6 +84,7 @@ const insurancehandle = ($this, context, e) => {
       type: "warning"
     });
   } else {
+    debugger;
     $this.setState(
       {
         primary_insurance_provider_id: e.selected.insurance_provider_id,
@@ -238,6 +239,8 @@ const InsuranceDetails = ($this, context, e) => {
 
                 network_id: row.hims_d_insurance_network_id,
                 network_office_id: row.hims_d_insurance_network_office_id,
+                hims_d_insurance_network_office_id:
+                  row.hims_d_insurance_network_office_id,
                 network_type: row.network_type,
 
                 policy_number: row.policy_number,
@@ -321,6 +324,8 @@ const InsuranceDetails = ($this, context, e) => {
 
             network_id: row.hims_d_insurance_network_id,
             network_office_id: row.hims_d_insurance_network_office_id,
+            hims_d_insurance_network_office_id:
+              row.hims_d_insurance_network_office_id,
             network_type: row.network_type,
             primary_effective_start_date: row.net_effective_start_date,
             primary_effective_end_date: row.net_effective_end_date,

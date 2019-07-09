@@ -181,6 +181,31 @@ class TransferEntryItems extends Component {
                             inventory_location_id: inventory_location_id
                           }}
                           onClick={itemchangeText.bind(this, this, context)}
+                          onClear={() => {
+                            context.updateState({
+                              item_id: null,
+                              item_category: null,
+                              uom_id: null,
+                              service_id: null,
+                              item_group_id: null,
+                              quantity: 0,
+                              expiry_date: null,
+                              batchno: null,
+                              grn_no: null,
+                              qtyhand: null,
+                              barcode: null,
+                              ItemUOM: [],
+                              Batch_Items: [],
+                              addItemButton: true,
+                              item_description: null,
+                              sales_uom_id: null,
+                              sales_conversion_factor: null,
+                              uom_description: null,
+                              stocking_uom: null,
+                              conversion_factor: null,
+                              sales_qtyhand: null
+                            });
+                          }}
                           ref={attReg => {
                             this.attReg = attReg;
                           }}

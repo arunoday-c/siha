@@ -906,7 +906,7 @@ module.exports = {
              D.extended_cost as gross_amt,D.net_extended_cost as net_amount,D.quantity as requested_quantity, IM.item_description as insurance_service_name \
              from hims_f_pharmacy_pos_header H, hims_f_pharmacy_pos_detail D, hims_d_item_master IM where\
              H.hims_f_pharmacy_pos_header_id=D.pharmacy_pos_header_id and\
-             D.item_id=IM.hims_d_item_master and H.pos_number=? and D.pre_approval='Y' ",
+             D.item_id=IM.hims_d_item_master_id and H.pos_number=? and D.pre_approval='Y' ",
           values: [pos_number],
           printQuery: true
         })

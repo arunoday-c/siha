@@ -83,7 +83,8 @@ const assignDataandclear = (
       net_payable: net_payable,
       total_tax: total_tax,
       detail_discount: detail_discount,
-      addItemButton: true
+      addItemButton: true,
+      saveEnable: true
     });
   }
 };
@@ -372,12 +373,7 @@ const printBarcode = ($this, row, e) => {
 const onChangeTextEventHandaler = ($this, context, e) => {
   let item_details = $this.state.item_details;
   let name = e.name || e.target.name;
-  let value =
-    e.value === ""
-      ? null
-      : e.value || e.target.value === ""
-      ? null
-      : e.target.value;
+  let value = e.value || e.target.value;
   if (name === "sales_price" || name === "unit_price") {
     if (parseFloat(value) < 0) {
       swalMessage({
@@ -503,7 +499,8 @@ const OnChangeDeliveryQty = ($this, context, e) => {
 };
 
 const AddtoList = ($this, context) => {
-  let dn_entry_detail = $this.state.dn_entry_detail;
+  let dn_entry_detail = extend([], $this.state.dn_entry_detail);
+  let _dn_entry_detail = extend([], $this.state.dn_entry_detail);
 
   let item_details = extend({}, $this.state.item_details);
   let _item_details = extend({}, $this.state.item_details);
@@ -549,28 +546,28 @@ const AddtoList = ($this, context) => {
       type: "warning"
     });
   } else {
-    dn_entry_detail.push(_item_details);
-    let sub_total = Enumerable.from(dn_entry_detail).sum(s =>
+    _dn_entry_detail.push(_item_details);
+    let sub_total = Enumerable.from(_dn_entry_detail).sum(s =>
       parseFloat(s.extended_price)
     );
 
-    let net_total = Enumerable.from(dn_entry_detail).sum(s =>
+    let net_total = Enumerable.from(_dn_entry_detail).sum(s =>
       parseFloat(s.net_extended_cost)
     );
 
-    let net_payable = Enumerable.from(dn_entry_detail).sum(s =>
+    let net_payable = Enumerable.from(_dn_entry_detail).sum(s =>
       parseFloat(s.total_amount)
     );
 
-    let total_tax = Enumerable.from(dn_entry_detail).sum(s =>
+    let total_tax = Enumerable.from(_dn_entry_detail).sum(s =>
       parseFloat(s.tax_amount)
     );
 
-    let detail_discount = Enumerable.from(dn_entry_detail).sum(s =>
+    let detail_discount = Enumerable.from(_dn_entry_detail).sum(s =>
       parseFloat(s.discount_amount)
     );
 
-    const latest_added = _.filter(dn_entry_detail, f => {
+    const latest_added = _.filter(_dn_entry_detail, f => {
       return f.item_id === _item_details.item_id;
     });
     // _.find(
@@ -580,6 +577,12 @@ const AddtoList = ($this, context) => {
     let delivery_quantity = _.sumBy(latest_added, s =>
       parseFloat(s.dn_quantity)
     );
+
+    _item_details["quantity_outstanding"] =
+      parseFloat(_item_details.po_quantity) -
+      parseFloat(_item_details.quantity_recieved_todate) -
+      parseFloat(delivery_quantity);
+    dn_entry_detail.push(_item_details);
 
     item_details["quantity_outstanding"] =
       parseFloat(item_details.po_quantity) -
@@ -631,7 +634,8 @@ const AddtoList = ($this, context) => {
       net_payable: net_payable,
       total_tax: total_tax,
       detail_discount: detail_discount,
-      free_qty: null
+      free_qty: null,
+      saveEnable: false
     });
   }
 };

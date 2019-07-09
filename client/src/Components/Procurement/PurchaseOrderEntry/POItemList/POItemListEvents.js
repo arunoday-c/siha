@@ -27,9 +27,12 @@ const texthandle = ($this, context, e) => {
 const discounthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
 
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
   if ($this.state.order_quantity <= 0) {
     $this.setState({
-      [e.name]: 0
+      [name]: 0
     });
     swalMessage({
       title: "Please Enter Quantity",
@@ -42,17 +45,17 @@ const discounthandle = ($this, context, ctrl, e) => {
     let unit_cost = 0;
     let tax_amount = 0;
     let total_amount = 0;
-    if (e.name === "sub_discount_percentage") {
-      sub_discount_percentage = e.value === "" ? "" : parseFloat(e.value);
+    if (name === "sub_discount_percentage") {
+      sub_discount_percentage = value === "" ? "" : parseFloat(value);
       sub_discount_amount =
-        e.value === ""
+        value === ""
           ? 0
           : (parseFloat($this.state.extended_price) * sub_discount_percentage) /
             100;
     } else {
-      sub_discount_amount = e.value === "" ? "" : parseFloat(e.value);
+      sub_discount_amount = value === "" ? "" : parseFloat(value);
       sub_discount_percentage =
-        e.value === ""
+        value === ""
           ? 0
           : (sub_discount_amount / parseFloat($this.state.extended_price)) *
             100;
@@ -637,12 +640,7 @@ const onchangegridcol = ($this, row, e) => {
   //
 
   let name = e.name || e.target.name;
-  let value =
-    e.value === ""
-      ? null
-      : e.value || e.target.value === ""
-      ? null
-      : e.target.value;
+  let value = e.value || e.target.value;
   if (parseFloat(value) > parseFloat(row.total_quantity)) {
     swalMessage({
       title: "Authorize Quantity cannot be greater than Ordered Quantity.",
@@ -654,7 +652,7 @@ const onchangegridcol = ($this, row, e) => {
       type: "warning"
     });
   } else {
-    if (value !== null) {
+    if (value !== "") {
       row[name] = value;
       row["quantity_outstanding"] = value;
       row["rejected_quantity"] = row.total_quantity - value;

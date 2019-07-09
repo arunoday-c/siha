@@ -254,6 +254,16 @@ class RequisitionItems extends Component {
                                     <i
                                       className="fas fa-trash-alt"
                                       aria-hidden="true"
+                                      style={{
+                                        pointerEvents:
+                                          this.state.cannotDelete === true
+                                            ? "none"
+                                            : "",
+                                        opacity:
+                                          this.state.cannotDelete === true
+                                            ? "0.1"
+                                            : ""
+                                      }}
                                       onClick={deleteRequisitionDetail.bind(
                                         this,
                                         this,

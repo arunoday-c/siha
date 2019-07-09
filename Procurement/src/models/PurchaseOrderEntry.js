@@ -30,6 +30,11 @@ module.exports = {
         .then(headerResult => {
           if (headerResult.length != 0) {
             let strQuery = "";
+
+            let strCondition = "";
+            if (req.query.from === "DN") {
+              strCondition = " and quantity_outstanding > 0";
+            }
             if (headerResult[0].po_from == "INV") {
               strQuery = mysql.format(
                 "select PD.`hims_f_procurement_po_detail_id`, PD.`procurement_header_id`, PD.`phar_item_category`,\
@@ -47,7 +52,8 @@ module.exports = {
                     hims_d_inventory_item_master IM ,hims_d_inventory_uom IU, hims_d_inventory_uom STOCK_UOM, hims_d_services S \
                     where PD.inv_item_id = IM.hims_d_inventory_item_master_id\
                    and PD.inventory_uom_id = IU.hims_d_inventory_uom_id and IM.stocking_uom_id = STOCK_UOM.hims_d_inventory_uom_id and IM.service_id = S.hims_d_services_id\
-                   and procurement_header_id=?",
+                   and procurement_header_id=?" +
+                  strCondition,
                 [headerResult[0].hims_f_procurement_po_header_id]
               );
             } else if (headerResult[0].po_from == "PHR") {
@@ -63,7 +69,8 @@ module.exports = {
                 PU.uom_description,STOCK_UOM.uom_description  as stock_uom_description, S.standard_fee as sales_price,IM.sales_uom_id\
                 from hims_f_procurement_po_detail PD, hims_d_item_master IM ,hims_d_pharmacy_uom PU, hims_d_pharmacy_uom STOCK_UOM, hims_d_services S\
                 where PD.phar_item_id = IM.hims_d_item_master_id and PD.pharmacy_uom_id = PU.hims_d_pharmacy_uom_id \
-                and IM.stocking_uom_id = STOCK_UOM.hims_d_pharmacy_uom_id and IM.service_id = S.hims_d_services_id and procurement_header_id=?",
+                and IM.stocking_uom_id = STOCK_UOM.hims_d_pharmacy_uom_id and IM.service_id = S.hims_d_services_id and procurement_header_id=?" +
+                  strCondition,
                 [headerResult[0].hims_f_procurement_po_header_id]
               );
             }

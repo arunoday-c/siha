@@ -34,6 +34,7 @@ const getCtrlCode = ($this, docNumber) => {
         ) {
           data.authorizeEnable = false;
           data.ClearDisable = true;
+          data.cannotDelete = true;
 
           for (let i = 0; i < data.inventory_stock_detail.length; i++) {
             data.inventory_stock_detail[i].quantity_authorized =
@@ -81,7 +82,8 @@ const SaveRequisitionEntry = $this => {
         $this.setState({
           material_requisition_number:
             response.data.records.material_requisition_number,
-          saveEnable: true
+          saveEnable: true,
+          cannotDelete: true
           // authorizeEnable: false
         });
 
@@ -157,6 +159,7 @@ const AuthorizeRequisitionEntry = ($this, authorize) => {
     authorize2 = "N";
   } else if (authorize === "authorize2") {
     $this.state.authorie2 = "Y";
+    $this.state.authorize1 = "Y";
     authorize1 = "Y";
     authorize2 = "Y";
   }

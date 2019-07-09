@@ -20,7 +20,8 @@ import {
   InsuranceDetails,
   radioChange,
   enddatehandle,
-  clearinsurancehandle
+  clearinsurancehandle,
+  dateValidate
 } from "./InsuranceHandler";
 import AlgaehFileUploader from "../../../Wrapper/algaehFileUpload";
 import variableJson from "../../../../utils/GlobalVariables.json";
@@ -227,7 +228,8 @@ class AddInsuranceForm extends Component {
                       }}
                       minDate={new Date()}
                       events={{
-                        onChange: enddatehandle.bind(this, this, context)
+                        onChange: enddatehandle.bind(this, this, context),
+                        onBlur: dateValidate.bind(this, this, context)
                       }}
                       value={this.state.effective_end_date}
                       disabled={this.state.insuranceYes}

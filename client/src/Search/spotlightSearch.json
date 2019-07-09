@@ -624,7 +624,25 @@
         "label": "Generic Name"
       },
       {
+        "fieldName": "group_description",
+        "label": "Item Group"
+      },
+      {
         "fieldName": "barcode",
+        "label": "Barcode"
+      }
+    ],
+    "pharopeningstock": [
+      {
+        "fieldName": "item_description",
+        "label": "Item Name"
+      },
+      {
+        "fieldName": "category_desc",
+        "label": "Item Category"
+      },
+      {
+        "fieldName": "generic_name",
         "label": "Generic Name"
       }
     ]
@@ -693,6 +711,10 @@
       },
       {
         "fieldName": "category_desc",
+        "label": "Item Category"
+      },
+      {
+        "fieldName": "group_description",
         "label": "Item Category"
       }
     ]
