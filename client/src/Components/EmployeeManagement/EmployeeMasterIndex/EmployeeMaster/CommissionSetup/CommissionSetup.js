@@ -198,9 +198,9 @@ class CommissionSetup extends Component {
                 </div>
 
                 <div className="row" style={{ marginTop: "10px" }}>
-                  <div className="col-lg-12">
+                  <div className="col-lg-12" id="serviceCommissionGrid_Cntr">
                     <AlgaehDataGrid
-                      id="servtyp_commission"
+                      // id="serv_commission"
                       columns={[
                         {
                           fieldName: "action",
@@ -306,7 +306,7 @@ class CommissionSetup extends Component {
                             ? []
                             : this.state.servTypeCommission
                       }}
-                      paging={{ page: 0, rowsPerPage: 5 }}
+                      paging={{ page: 0, rowsPerPage: 10 }}
                     />
                   </div>
                 </div>
@@ -453,9 +453,12 @@ class CommissionSetup extends Component {
                 </div>
 
                 <div className="row" style={{ marginTop: "10px" }}>
-                  <div className="col-lg-12">
+                  <div
+                    className="col-lg-12"
+                    id="serviceTypeCommissionGrid_Cntr"
+                  >
                     <AlgaehDataGrid
-                      id="service_commission"
+                      // id="service_commission"
                       columns={[
                         {
                           fieldName: "action",
@@ -587,7 +590,7 @@ class CommissionSetup extends Component {
                             ? []
                             : this.state.serviceComm
                       }}
-                      paging={{ page: 0, rowsPerPage: 5 }}
+                      paging={{ page: 0, rowsPerPage: 10 }}
                     />
                   </div>
                 </div>

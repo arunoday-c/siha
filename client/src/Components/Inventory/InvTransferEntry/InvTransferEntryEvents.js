@@ -104,10 +104,7 @@ const generateMaterialTransInv = data => {
     others: { responseType: "blob" },
     data: {
       report: {
-        reportName:
-          data.direct_transfer === "Y"
-            ? "MaterialTransferInvDirect"
-            : "MaterialTransferInv",
+        reportName: "MaterialTransferInv",
         reportParams: [
           {
             name: "transfer_number",

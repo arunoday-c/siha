@@ -12,13 +12,16 @@
                     </td>
                     <td><label class="textEnLft">Request From</label>:<span class="valueText">{{from_location}}</span>
                     </td>
-                    <td><label class="textEnLft">Branch</label>:<span class="valueText">{{hospital_name}}</span>
-                    </td>
                 </tr>
                 <tr>
                     <td><label class="textEnLft">Request Date</label>:<span class="valueText">{{requistion_date}}</span>
                     </td>
                     <td><label class="textEnLft">Request To</label>:<span class="valueText">{{to_location}}</span></td>
+
+                </tr>
+                <tr>
+                    <td><label class="textEnLft">Branch</label>:<span class="valueText">{{hospital_name}}</span>
+                    </td>
                     <td><label class="textEnLft">requistion_type</label>:<span
                             class="valueText">{{requistion_type}}</span></td>
                 </tr>
@@ -35,12 +38,10 @@
                         <th>Sl No.</th>
                         <th>Item Name</th>
                         <th>category_desc</th>
-
                         <th>UOM</th>
-                        <th>Qty Required</th>
-                        <th>quantity_authorized</th>
-                        <th>quantity_recieved</th>
-                        <th>quantity_outstanding</th>
+                        <th>Qty Req.</th>
+                        <th>Qty Auth.</th>
+                        {{!-- <th>Qty Recieved</th> --}}
 
                     </tr>
                 </thead>
@@ -50,13 +51,10 @@
                         <td>{{inc @index}}</td>
                         <td>{{item_description}}</td>
                         <td>{{category_desc}}</td>
-
                         <td>{{uom_description}}</td>
                         <td>{{quantity_required}}</td>
                         <td>{{quantity_authorized}}</td>
-                        <td>{{quantity_recieved}}</td>
-                        <td>{{quantity_outstanding}}</td>
-
+                        {{!-- <td>{{quantity_recieved}}</td> --}}
                     </tr>
                     {{/each }}
                 </tbody>
