@@ -76,15 +76,16 @@ body {
   padding: 5px 3px;
   text-align: left;
 }
+
+.print-body .tableForData .tableSubHdg {
+  font-weight: bold;
+  background: #f2f2f2;
+  border-bottom: 1px dotted #979797;
+  padding: 5px 3px;
+  text-align: left;
+}
 .print-body .tableForData .tableSubHdg small {
   font-weight: normal;
-}
-.print-body .tableForData .tableSubTotal {
-  font-weight: bold;
-  background: #f7f7f7;
-  border-top: 1px dashed #979797;
-  padding: 5px 3px;
-  text-align: right;
 }
 
 .print-body .tableForData th {
@@ -260,4 +261,69 @@ body {
   background: rgb(247, 247, 247);
   margin-bottom: 10px;
   border-bottom: 1px dashed #ccc;
+}
+
+.print-body .tableHeaderForData {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #bebebe;
+  font-weight: normal;
+  border-bottom: 2px dotted #bebebe;
+  margin-bottom: 2px;
+}
+
+.print-body .tableHeaderForData thead {
+  margin: 0;
+  padding: 0;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.print-body .tableHeaderForData tbody {
+  margin: 0;
+  padding: 0;
+}
+
+.print-body .tableHeaderForData .tableSubHdg {
+  font-weight: 400;
+  background: #f2f2f2;
+  border-bottom: 1px dotted #979797;
+  padding: 5px 3px;
+  text-align: left;
+}
+
+.print-body .tableHeaderForData .tableSubHdg {
+  font-weight: 400;
+  background: #f2f2f2;
+  border-bottom: 1px dotted #979797;
+  padding: 5px 3px;
+  text-align: left;
+}
+.print-body .tableHeaderForData .tableSubHdg small {
+  font-weight: normal;
+}
+
+.print-body .tableHeaderForData th {
+  border-bottom: 2px solid #dadada !important;
+  vertical-align: middle !important;
+  background-color: #f1f1f1 !important;
+  padding: 5px;
+  text-transform: uppercase;
+  text-align: center;
+  border-right: 1px solid #bebebe;
+  font-size: 10px;
+}
+.print-body .tableHeaderForData th p {
+  font-size: 11px;
+  padding: 0;
+  margin: 3px 0 0;
+  font-family: "Calibri", sans-serif;
+}
+
+.print-body .tableHeaderForData td {
+  border: 1px solid #ccc;
+  padding: 3px;
+  margin: 0;
+  font-size: 12px;
+  text-align: center;
 }
