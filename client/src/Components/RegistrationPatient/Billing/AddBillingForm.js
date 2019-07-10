@@ -442,7 +442,12 @@ class AddBillingForm extends Component {
                               valueField: "hims_d_shift_id",
                               data: this.props.shifts
                             },
-                            onChange: texthandle.bind(this, this, context)
+                            onChange: texthandle.bind(this, this, context),
+                            onClear: () => {
+                              this.setState({
+                                shift_id: null
+                              });
+                            }
                           }}
                         />
                       </div>

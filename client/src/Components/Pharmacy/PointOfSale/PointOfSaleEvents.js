@@ -785,6 +785,7 @@ const VisitSearch = ($this, e) => {
                     data[0].primary_effective_start_date;
                   data[0].network_office_id =
                     data[0].hims_d_insurance_network_office_id;
+                  data[0].sub_insurance_id = data[0].sub_insurance_provider_id;
                   $this.setState(data[0], () => {
                     getMedicationList($this);
                   });

@@ -224,7 +224,8 @@ const InsuranceDetails = ($this, context, e) => {
 
               policy_number: row.policy_number,
               effective_start_date: row.net_effective_start_date,
-              effective_end_date: row.effective_end_date
+              effective_end_date: row.effective_end_date,
+              sub_insurance_id: row.hims_d_insurance_sub_id
             });
 
             if (context !== null) {
@@ -245,7 +246,8 @@ const InsuranceDetails = ($this, context, e) => {
                 effective_start_date: row.net_effective_start_date,
 
                 effective_end_date: row.effective_end_date,
-                card_number: null
+                card_number: null,
+                sub_insurance_id: row.hims_d_insurance_sub_id
               });
             }
           }
@@ -458,7 +460,6 @@ const radioChange = ($this, context, e) => {
 };
 
 const dateValidate = ($this, context, value, event) => {
-  
   let inRange = moment(value).isBefore(
     moment($this.state.effective_start_date).format("YYYY-MM-DD")
   );

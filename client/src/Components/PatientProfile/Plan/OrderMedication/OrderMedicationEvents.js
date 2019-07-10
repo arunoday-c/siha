@@ -63,6 +63,7 @@ const SaveMedication = ($this, e) => {
         $this.state.hims_d_insurance_network_office_id,
       network_id: $this.state.network_id,
       sub_insurance_provider_id: $this.state.sub_insurance_provider_id,
+      sub_insurance_id: $this.state.sub_insurance_provider_id,
 
       medicationitems: $this.state.medicationitems
     };

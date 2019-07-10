@@ -402,7 +402,12 @@ class AddConsultationForm extends Component {
                                     ? false
                                     : true
                               },
-                              onChange: texthandle.bind(this, this, context)
+                              onChange: texthandle.bind(this, this, context),
+                              onClear: () => {
+                                this.setState({
+                                  treatment_plan_id: null
+                                });
+                              }
                             }}
                           />
                         </div>

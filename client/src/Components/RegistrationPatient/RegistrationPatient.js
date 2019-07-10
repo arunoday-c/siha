@@ -317,6 +317,7 @@ class RegistrationPatient extends Component {
   }
 
   SavePatientDetails(e) {
+    let primary_policy_num = this.state.primary_policy_num;
     SetBulkState({
       state: this,
       callback: () => {
@@ -460,7 +461,8 @@ class RegistrationPatient extends Component {
                                 ProcessInsure: true,
                                 existingPatient: true,
                                 popUpGenereted: true,
-                                advanceEnable: false
+                                advanceEnable: false,
+                                primary_policy_num: primary_policy_num
                               },
                               () => {
                                 if (
@@ -590,7 +592,8 @@ class RegistrationPatient extends Component {
                                 sec_insuranceYes: true,
                                 ProcessInsure: true,
                                 existingPatient: true,
-                                popUpGenereted: true
+                                popUpGenereted: true,
+                                primary_policy_num: primary_policy_num
                               },
                               () => {
                                 if (
@@ -612,9 +615,15 @@ class RegistrationPatient extends Component {
                             type: "error",
                             title: response.data.records.message
                           });
+                          this.setState({
+                            primary_policy_num: primary_policy_num
+                          });
                         }
                       },
                       onFailure: error => {
+                        this.setState({
+                          primary_policy_num: primary_policy_num
+                        });
                         AlgaehLoader({ show: false });
                         swalMessage({
                           title: error.message,
@@ -629,8 +638,14 @@ class RegistrationPatient extends Component {
                   title: "Please receive the amount.",
                   type: "error"
                 });
+                this.setState({ primary_policy_num: primary_policy_num });
               }
+            } else {
+              this.setState({ primary_policy_num: primary_policy_num });
             }
+          },
+          onCatch: () => {
+            this.setState({ primary_policy_num: primary_policy_num });
           }
         });
       }

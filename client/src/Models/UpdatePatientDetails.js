@@ -42,7 +42,8 @@ export default {
 
       forceRefresh: undefined,
       Rerender: false,
-      saveEnable: true
+      saveEnable: true,
+      selectedLang: "en"
     };
     return output;
   }
