@@ -52,7 +52,7 @@ let getPreAprovalList = (req, res, next) => {
         insurance_network_office_id,valid_upto,\
         service_id,SR.service_code, icd_code, requested_date, requested_by, requested_mode,\
         requested_quantity, submission_type, insurance_service_name, SA.doctor_id, SA.patient_id,visit_id,\
-        PAT.patient_code,PAT.full_name, refer_no, gross_amt,\
+        PAT.patient_code,PAT.full_name, refer_no, gross_amt,billing_updated,\
         net_amount, approved_amount, approved_no, apprv_remarks, apprv_date, rejected_reason,\
         apprv_status,SA.created_date,SA.created_by, SD.chart_type \
         from ((hims_f_service_approval SA inner join hims_f_patient PAT ON SA.patient_id=PAT.hims_d_patient_id) \
@@ -129,7 +129,7 @@ let getMedicationAprovalList = (req, res, next) => {
         requested_quantity, submission_type, insurance_service_name, SA.doctor_id, SA.patient_id,visit_id,\
         PAT.patient_code,PAT.full_name, refer_no, gross_amt,\
         net_amount, approved_amount, approved_no, apprv_remarks, apprv_date, rejected_reason,\
-        apprv_status,SA.created_date,SA.created_by, SD.chart_type \
+        apprv_status,SA.created_date,SA.created_by, SD.chart_type,billing_updated \
         from ((hims_f_medication_approval SA left join hims_f_patient PAT ON SA.patient_id=PAT.hims_d_patient_id) \
         inner join \
         hims_d_services SR on SR.hims_d_services_id=SA.service_id left join \
@@ -810,37 +810,37 @@ let getOrderServices = (req, res, next) => {
 
 //ordered services update
 let updateOrderedServices = (req, res, next) => {
-  debugFunction("updateOrderedServices");
+  const _mysql = new algaehMysql({ path: keyPath });
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-    db.getConnection((error, connection) => {
-      if (error) {
-        next(error);
+    new Promise((resolve, reject) => {
+      try {
+        getBillDetailsFunctionality(req, res, next, resolve);
+      } catch (e) {
+        reject(e);
       }
+    }).then(result => {
+      let inputParam = result.billdetails[0];
+      console.log("call back result", inputParam);
 
-      new Promise((resolve, reject) => {
-        try {
-          getBillDetailsFunctionality(req, res, next, resolve);
-        } catch (e) {
-          reject(e);
-        }
-      }).then(result => {
-        let inputParam = result.billdetails[0];
-        debugLog("call back result", inputParam);
-
-        let input = extend({}, req.body[0]);
-        debugLog("id:", input.hims_f_ordered_services_id);
-
-        connection.query(
-          "UPDATE hims_f_ordered_services SET service_type_id=?,services_id=?,insurance_yesno=?,\
-          pre_approval=?,apprv_status=?,quantity=?,unit_cost=?,gross_amount=?,discount_amout=?,discount_percentage=?,net_amout=?,\
-          copay_percentage=?,copay_amount=?,deductable_amount=?,deductable_percentage=?,tax_inclusive=?,patient_tax=?,company_tax=?,total_tax=?,patient_resp=?,patient_payable=?,\
-          comapany_resp=?,company_payble=?,sec_company=?,sec_deductable_percentage=?,sec_deductable_amount=?,sec_company_res=?,sec_company_tax=?,sec_company_paybale=?,\
-          sec_copay_percntage=?,sec_copay_amount=?,updated_date=?, updated_by=? WHERE `record_status`='A' AND `hims_f_ordered_services_id`=? ",
-          [
+      let input = extend({}, req.body[0]);
+      console.log("id:", input.hims_f_ordered_services_id);
+      console.log(
+        "hims_f_service_approval_id:",
+        input.hims_f_service_approval_id
+      );
+      _mysql
+        .executeQuery({
+          query:
+            "UPDATE hims_f_ordered_services SET service_type_id=?, services_id=?, insurance_yesno=?, \
+              pre_approval=?, apprv_status=?, quantity=?, unit_cost=?, gross_amount=?, discount_amout=?,\
+              discount_percentage=?, net_amout=?, copay_percentage=?, copay_amount=?, deductable_amount=?,\
+              deductable_percentage=?, tax_inclusive=?, patient_tax=?, company_tax=?, total_tax=?, \
+              patient_resp=?, patient_payable=?, comapany_resp=?, company_payble=?, sec_company=?, \
+              sec_deductable_percentage=?, sec_deductable_amount=?, sec_company_res=?, sec_company_tax=?,\
+              sec_company_paybale=?, sec_copay_percntage=?, sec_copay_amount=?, updated_date=?, updated_by=? \
+              WHERE `record_status`='A' AND `hims_f_ordered_services_id`=?; \
+              UPDATE hims_f_service_approval SET billing_updated ='Y' where hims_f_service_approval_id=?;",
+          values: [
             inputParam.service_type_id,
             inputParam.services_id,
             inputParam.insurance_yesno,
@@ -874,22 +874,107 @@ let updateOrderedServices = (req, res, next) => {
             inputParam.sec_copay_amount,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
-            input.hims_f_ordered_services_id
+            input.hims_f_ordered_services_id,
+            input.hims_f_service_approval_id
           ],
-          (error, result) => {
-            releaseDBConnection(db, connection);
-            if (error) {
-              next(error);
-            }
-            req.records = result;
-            next();
-          }
-        );
-      });
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
     });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
+  // try {
+  //   if (req.db == null) {
+  //     next(httpStatus.dataBaseNotInitilizedError());
+  //   }
+  //   let db = req.db;
+  //   db.getConnection((error, connection) => {
+  //     if (error) {
+  //       next(error);
+  //     }
+  //
+  //     new Promise((resolve, reject) => {
+  //       try {
+  //         getBillDetailsFunctionality(req, res, next, resolve);
+  //       } catch (e) {
+  //         reject(e);
+  //       }
+  //     }).then(result => {
+  //       let inputParam = result.billdetails[0];
+  //       debugLog("call back result", inputParam);
+  //
+  //       let input = extend({}, req.body[0]);
+  //       debugLog("id:", input.hims_f_ordered_services_id);
+  //       console.log("openFrom", input.openFrom);
+  //
+  //       connection.query(
+  //         "UPDATE hims_f_ordered_services SET service_type_id=?,services_id=?,insurance_yesno=?,\
+  //         pre_approval=?,apprv_status=?,quantity=?,unit_cost=?,gross_amount=?,discount_amout=?,discount_percentage=?,net_amout=?,\
+  //         copay_percentage=?,copay_amount=?,deductable_amount=?,deductable_percentage=?,tax_inclusive=?,patient_tax=?,company_tax=?,total_tax=?,patient_resp=?,patient_payable=?,\
+  //         comapany_resp=?,company_payble=?,sec_company=?,sec_deductable_percentage=?,sec_deductable_amount=?,sec_company_res=?,sec_company_tax=?,sec_company_paybale=?,\
+  //         sec_copay_percntage=?,sec_copay_amount=?,updated_date=?, updated_by=? WHERE `record_status`='A' AND `hims_f_ordered_services_id`=?; UPDATE hims_f_service_approval SET billing_updated ='Y' where hims_f_service_approval_id=?;" +
+  //           strQuery,
+  //         [
+  //           inputParam.service_type_id,
+  //           inputParam.services_id,
+  //           inputParam.insurance_yesno,
+  //           inputParam.pre_approval,
+  //           input.apprv_status,
+  //           inputParam.quantity,
+  //           inputParam.unit_cost,
+  //           inputParam.gross_amount,
+  //           inputParam.discount_amout,
+  //           inputParam.discount_percentage,
+  //           inputParam.net_amout,
+  //           inputParam.copay_percentage,
+  //           inputParam.copay_amount,
+  //           inputParam.deductable_amount,
+  //           inputParam.deductable_percentage,
+  //           inputParam.tax_inclusive,
+  //           inputParam.patient_tax,
+  //           inputParam.company_tax,
+  //           inputParam.total_tax,
+  //           inputParam.patient_resp,
+  //           inputParam.patient_payable,
+  //           inputParam.comapany_resp,
+  //           inputParam.company_payble,
+  //           inputParam.sec_company,
+  //           inputParam.sec_deductable_percentage,
+  //           inputParam.sec_deductable_amount,
+  //           inputParam.sec_company_res,
+  //           inputParam.sec_company_tax,
+  //           inputParam.sec_company_paybale,
+  //           inputParam.sec_copay_percntage,
+  //           inputParam.sec_copay_amount,
+  //           new Date(),
+  //           req.userIdentity.algaeh_d_app_user_id,
+  //           input.hims_f_ordered_services_id,
+  //           input.hims_f_service_approval_id
+  //         ],
+  //         (error, result) => {
+  //           releaseDBConnection(db, connection);
+  //           if (error) {
+  //             next(error);
+  //           }
+  //           req.records = result;
+  //           next();
+  //         }
+  //       );
+  //     });
+  //   });
+  // } catch (e) {
+  //   next(e);
+  // }
 };
 
 //ordered services update as billed
@@ -952,38 +1037,73 @@ let updateOrderedServicesBilled = (req, res, next) => {
 
 //ordered services update as billed
 let updatePrescriptionDetail = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-    db.getConnection((error, connection) => {
-      if (error) {
-        next(error);
-      }
-
-      let input = extend({}, req.body[0]);
-
-      connection.query(
-        "UPDATE hims_f_prescription_detail SET apprv_status = ?, approved_amount=?,pre_approval = 'N' WHERE `hims_f_prescription_detail_id`=? ",
-        [
+    let input = extend({}, req.body[0]);
+    console.log("apprv_status: ", input.apprv_status);
+    let insurance_yesno = input.apprv_status === "RJ" ? "N" : "N";
+    console.log("insurance_yesno: ", insurance_yesno);
+    _mysql
+      .executeQuery({
+        query:
+          "UPDATE hims_f_prescription_detail SET apprv_status = ?, insured=?, approved_amount=?,pre_approval = 'N' WHERE `hims_f_prescription_detail_id`=?; UPDATE hims_f_medication_approval SET billing_updated ='Y' where hims_f_medication_approval_id=?;",
+        values: [
           input.apprv_status,
+          insurance_yesno,
           input.approved_amount,
-          input.hims_f_prescription_detail_id
+          input.hims_f_prescription_detail_id,
+          input.hims_f_medication_approval_id
         ],
-        (error, result) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          req.records = result;
-          next();
-        }
-      );
-    });
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
+  // try {
+  //   if (req.db == null) {
+  //     next(httpStatus.dataBaseNotInitilizedError());
+  //   }
+  //   let db = req.db;
+  //   db.getConnection((error, connection) => {
+  //     if (error) {
+  //       next(error);
+  //     }
+  //
+  //     let input = extend({}, req.body[0]);
+  //     let insurance_yesno = input.apprv_status === "RJ" ? "N" : "N";
+  //
+  //     connection.query(
+  //       "UPDATE hims_f_prescription_detail SET apprv_status = ?, insured=?, approved_amount=?,pre_approval = 'N' WHERE `hims_f_prescription_detail_id`=?; UPDATE hims_f_medication_approval SET billing_updated ='Y' where hims_f_medication_approval_id=?;",
+  //       [
+  //         input.apprv_status,
+  //         insurance_yesno,
+  //         input.approved_amount,
+  //         input.hims_f_prescription_detail_id,
+  //         input.hims_f_medication_approval_id
+  //       ],
+  //       (error, result) => {
+  //         releaseDBConnection(db, connection);
+  //         if (error) {
+  //           next(error);
+  //         }
+  //         req.records = result;
+  //         next();
+  //       }
+  //     );
+  //   });
+  // } catch (e) {
+  //   next(e);
+  // }
 };
 
 let insertInvOrderedServices = (req, res, next) => {

@@ -9,6 +9,7 @@ import "./../../../styles/site.css";
 import "./PreApprovalStatus.css";
 import MyContext from "../../../utils/MyContext.js";
 import { UpdatePreApproval } from "./PreApprovalStatusEvent";
+import _ from "lodash";
 
 export default class PreApprovalStatus extends PureComponent {
   constructor(props) {
@@ -23,6 +24,15 @@ export default class PreApprovalStatus extends PureComponent {
   };
 
   render() {
+    debugger;
+    let services_details =
+      this.props.selected_services !== null
+        ? _.filter(this.props.selected_services.services_details, f => {
+            return f.billing_updated === "N";
+          })
+        : [];
+
+    let billing_Verefird = services_details.length > 0 ? false : true;
     return (
       <React.Fragment>
         <div>
@@ -51,6 +61,7 @@ export default class PreApprovalStatus extends PureComponent {
                   />
                   <ApprovalDetails
                     selected_services={this.props.selected_services}
+                    openFrom={this.props.openFrom}
                   />
                   <Attachments />
                 </div>
@@ -62,6 +73,7 @@ export default class PreApprovalStatus extends PureComponent {
                       <button
                         className="btn btn-primary"
                         onClick={UpdatePreApproval.bind(this, this)}
+                        disabled={billing_Verefird === true ? true : false}
                       >
                         Update
                       </button>

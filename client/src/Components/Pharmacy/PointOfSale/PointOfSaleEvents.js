@@ -831,6 +831,7 @@ const getMedicationList = $this => {
     },
     afterSuccess: data => {
       if (data.length > 0) {
+        debugger;
         AddItems($this, data);
       } else {
         $this.setState({

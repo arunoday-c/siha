@@ -120,62 +120,77 @@ const datehandle = ($this, ctrl, e) => {
 const Validations = ($this, e) => {
   let isError = false;
 
-  if (
-    $this.state.card_number.length !== 0 &&
-    parseFloat($this.state.card_amount) >= 0
-  ) {
-    isError = true;
-    swalMessage({
-      title: "Invalid. Card amount cannot be zero.",
-      type: "error"
-    });
+  if ($this.state.Cashchecked === true) {
+    if (parseFloat($this.state.cash_amount) === 0) {
+      isError = true;
+      swalMessage({
+        title: "Please enter the Cash Amount",
+        type: "error"
+      });
 
-    document.querySelector("[name='card_amount']").focus();
-    return isError;
-  } else if (
-    $this.state.card_number.length !== 0 &&
-    $this.state.card_date === null
-  ) {
-    isError = true;
-    swalMessage({
-      title: "Invalid. Card expiry date is mandatory.",
-      type: "error"
-    });
+      document.querySelector("[name='cash_amount']").focus();
+      return isError;
+    }
+  }
 
-    document.querySelector("[name='card_date']").focus();
-    return isError;
-  } else if (
-    $this.state.cheque_number.length !== 0 &&
-    parseFloat($this.state.cheque_amount) >= 0
-  ) {
-    isError = true;
-    swalMessage({
-      title: "Invalid. Check amount cannot be zero.",
-      type: "error"
-    });
+  if ($this.state.Cardchecked === true) {
+    if (parseFloat($this.state.card_amount) === 0) {
+      isError = true;
+      swalMessage({
+        title: "Please enter the Card Amount",
+        type: "error"
+      });
 
-    document.querySelector("[name='cheque_amount']").focus();
-    return isError;
-  } else if (
-    $this.state.cheque_number.length !== 0 &&
-    $this.state.cheque_date === null
-  ) {
-    isError = true;
-    swalMessage({
-      title: "Invalid. Check expiry date is mandatory.",
-      type: "error"
-    });
+      // document.querySelector("[name='card_amount']").focus();
+      return isError;
+    } else if (
+      $this.state.card_number === null ||
+      $this.state.card_number === ""
+    ) {
+      isError = true;
+      swalMessage({
+        title: "Card Number date is mandatory.",
+        type: "error"
+      });
 
-    document.querySelector("[name='cheque_date']").focus();
-    return isError;
-  } else if (parseFloat($this.state.total_amount) < 0) {
+      // document.querySelector("[name='card_date']").focus();
+      return isError;
+    }
+  }
+
+  if ($this.state.Checkchecked === true) {
+    if (parseFloat($this.state.cheque_amount) === 0) {
+      isError = true;
+      swalMessage({
+        title: "Please enter the Cheque Amount",
+        type: "error"
+      });
+
+      // document.querySelector("[name='cheque_amount']").focus();
+      return isError;
+    } else if (
+      $this.state.cheque_number === null ||
+      $this.state.cheque_number === ""
+    ) {
+      isError = true;
+      swalMessage({
+        title: "Card Number date is mandatory.",
+        type: "error"
+      });
+
+      // document.querySelector("[name='card_date']").focus();
+      return isError;
+    }
+  }
+
+  if (parseFloat($this.state.total_amount) === 0) {
     isError = true;
     swalMessage({
       title: "Invalid. Please enter the amount.",
       type: "error"
     });
 
-    document.querySelector("[name='cash_amount']").focus();
+    // document.querySelector("[name='cash_amount']").focus();
     return isError;
   } else if (
     $this.props.Advance === false &&
@@ -184,59 +199,12 @@ const Validations = ($this, e) => {
   ) {
     isError = true;
     swalMessage({
-      title: "Invalid. Refund Amount cannot be grester than Advance Taken.",
+      title: "Invalid. Refund Amount cannot be greater than Advance Taken.",
       type: "error"
     });
 
-    document.querySelector("[name='cash_amount']").focus();
+    // document.querySelector("[name='cash_amount']").focus();
     return isError;
-  }
-
-  if (parseFloat($this.state.card_amount) > 0) {
-    if ($this.state.card_number === null || $this.state.card_number === "") {
-      isError = true;
-      swalMessage({
-        title: "Invalid. Card Number cannot be blank.",
-        type: "error"
-      });
-
-      return isError;
-    }
-
-    if ($this.state.card_date === null || $this.state.card_date === "") {
-      isError = true;
-      swalMessage({
-        title: "Invalid. Card Date Cannot be blank.",
-        type: "error"
-      });
-
-      return isError;
-    }
-  }
-
-  if (parseFloat($this.state.cheque_amount) > 0) {
-    if (
-      $this.state.cheque_number === null ||
-      $this.state.cheque_number === ""
-    ) {
-      isError = true;
-      swalMessage({
-        title: "Invalid. Check Number cannot be blank.",
-        type: "error"
-      });
-
-      return isError;
-    }
-
-    if ($this.state.cheque_date === null || $this.state.cheque_date === "") {
-      isError = true;
-      swalMessage({
-        title: "Invalid. Cheque Date Cannot be blank.",
-        type: "error"
-      });
-
-      return isError;
-    }
   }
 };
 

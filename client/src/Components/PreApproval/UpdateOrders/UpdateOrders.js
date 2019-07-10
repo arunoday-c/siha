@@ -18,24 +18,25 @@ export default class VerifyOrders extends PureComponent {
     };
   }
 
-  checkHandle(row, e) {
-    if (row.checkselect === 0) {
-      row.checkselect = 1;
-    } else {
-      row.checkselect = 0;
-    }
-  }
+  // checkHandle(row, e) {
+  //   if (row.checkselect === 0) {
+  //     row.checkselect = 1;
+  //   } else {
+  //     row.checkselect = 0;
+  //   }
+  // }
 
   onClose = e => {
     this.props.onClose && this.props.onClose(e);
   };
 
   componentWillReceiveProps(nextProps) {
+    debugger;
     if (nextProps.selected_services !== null) {
       let InputOutput = nextProps.selected_services;
-      for (let i = 0; i < InputOutput.services_details.length; i++) {
-        InputOutput.services_details[i].checkselect = 1;
-      }
+      // for (let i = 0; i < InputOutput.services_details.length; i++) {
+      //   InputOutput.services_details[i].checkselect = 1;
+      // }
       this.setState({ ...this.state, ...InputOutput });
     }
   }
@@ -95,6 +96,12 @@ export default class VerifyOrders extends PureComponent {
                             return (
                               <span>
                                 <i
+                                  style={{
+                                    pointerEvents:
+                                      row.billing_updated === "Y" ? "none" : "",
+                                    opacity:
+                                      row.billing_updated === "Y" ? "0.1" : ""
+                                  }}
                                   className="fas fa-clipboard-check"
                                   onClick={UpdateOrders.bind(this, this, row)}
                                 />

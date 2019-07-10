@@ -359,6 +359,10 @@ const AddItems = $this => {
             parseFloat($this.state.dispense);
           medicationobj["generic_name"] = $this.state.generic_name;
           medicationobj["item_description"] = $this.state.item_description;
+          medicationobj["insurance_service_name"] =
+            $this.state.item_description;
+
+          medicationobj["doctor_id"] = $this.state.provider_id;
           if (medicationobj.pre_approval === "Y") {
             swalMessage({
               title: "Selected Item is Pre Approval",

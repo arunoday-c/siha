@@ -779,6 +779,7 @@ module.exports = {
                   qtyhand: 0,
                   expiry_date: null,
                   insured: item_details.insured,
+                  insurance_yesno: item_details.insured,
                   pre_approval: item_details.pre_approval,
                   prescribed_qty: item_details.dispense,
                   item_description: s.item_description,

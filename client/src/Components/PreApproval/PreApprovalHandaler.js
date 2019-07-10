@@ -89,6 +89,7 @@ const getPreAprovalList = $this => {
         let pre_approval_Services = Enumerable.from(data)
           .groupBy("$.patient_id", null, (k, g) => {
             let firstRecordSet = Enumerable.from(g).firstOrDefault();
+            debugger;
             return {
               patient_code: firstRecordSet.patient_code,
               full_name: firstRecordSet.full_name,
@@ -101,6 +102,9 @@ const getPreAprovalList = $this => {
               icd_code: firstRecordSet.icd_code,
               number_of_Services: g.getSource().length,
               apprv_status: firstRecordSet.apprv_status,
+              billing_updated: firstRecordSet.billing_updated,
+              billing_Verefird:
+                firstRecordSet.billing_updated === "Y" ? true : false,
 
               services_details: g.getSource()
             };
@@ -158,7 +162,6 @@ const openUCAFReport = ($this, row) => {
 };
 
 const getMedicationAprovalList = $this => {
-  
   let inputobj = {};
 
   if ($this.state.date !== null) {

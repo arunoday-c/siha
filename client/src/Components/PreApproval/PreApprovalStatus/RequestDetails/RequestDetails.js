@@ -127,7 +127,11 @@ class PatientDetails extends PureComponent {
                                   valueField: "value",
                                   data: GlobalVariables.FORMAT_REQMODE
                                 },
-                                onChange: texthandle.bind(this, this, row)
+                                onChange: texthandle.bind(this, this, row),
+                                others: {
+                                  disabled:
+                                    row.billing_updated === "Y" ? true : false
+                                }
                               }}
                             />
                           );
@@ -148,6 +152,10 @@ class PatientDetails extends PureComponent {
                                 name: "refer_no",
                                 events: {
                                   onChange: texthandle.bind(this, this, row)
+                                },
+                                others: {
+                                  disabled:
+                                    row.billing_updated === "Y" ? true : false
                                 }
                               }}
                             />
@@ -160,6 +168,7 @@ class PatientDetails extends PureComponent {
                       data: this.state.services_details
                     }}
                     isEditable={true}
+                    actions={{ allowDelete: false }}
                     paging={{ page: 0, rowsPerPage: 5 }}
                     events={{
                       onDelete: deleteServices.bind(this, context),
