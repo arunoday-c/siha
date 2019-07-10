@@ -1,181 +1,205 @@
 .phySchSetup {
-	#schedule-ul {
-		margin: 0;
-		padding: 0;
-		list-style: none;
-		min-height: 59.5vh;
-		max-height: 59.5vh;
-		width: 100%;
-		overflow-y: auto;
-		overflow-x: hidden;
-		li {
-			border-bottom: 1px solid #ccc;
-			padding: 5px 10px;
-			width: 100%;
-			h3 {
-				font-size: 1rem;
-				margin-bottom: 5px;
-			}
-			p {
-				font-size: 0.8rem;
-				margin: 0 0 3px;
-				padding: 0;
-				display: inline-block;
-				width: 50%;
-				span {
-					display: inline-block;
-					margin: 0 0 0 3px;
-					font-weight: bold;
-				}
-				&:nth-child(odd) {
-					text-align: right;
-				}
-			}
-			&:nth-child(odd) {
-				background: #eee;
-			}
-			&:hover {
-				background: #ccc;
-				cursor: pointer;
-			}
-		}
-		.noDataStyle {
-			text-align: center;
-			color: #bbb;
-			h1 {
-				font-size: 5rem;
-				padding-top: 20vh;
-			}
-			p {
-				font-size: 1.3rem;
-			}
-		}
-	}
-	.viewScheduleDetails {
-		min-height: 88vh;
-		max-height: 88vh;
-		.noDataStyle {
-			text-align: center;
-			color: #bbb;
-			h1 {
-				font-size: 5rem;
-				padding-top: 25vh;
-			}
-			p {
-				font-size: 1.3rem;
-			}
-		}
-	}
+  #schedule-ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    min-height: 59.5vh;
+    max-height: 59.5vh;
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    li {
+      border-bottom: 1px solid #ccc;
+      padding: 5px 10px;
+      width: 100%;
+      h3 {
+        font-size: 1rem;
+        margin-bottom: 5px;
+      }
+      p {
+        font-size: 0.8rem;
+        margin: 0 0 3px;
+        padding: 0;
+        display: inline-block;
+        width: 50%;
+        span {
+          display: inline-block;
+          margin: 0 0 0 3px;
+          font-weight: bold;
+        }
+        &:nth-child(odd) {
+          text-align: right;
+        }
+      }
+      &:nth-child(odd) {
+        background: #eee;
+      }
+      &:hover {
+        background: #ccc;
+        cursor: pointer;
+      }
+    }
+    .noDataStyle {
+      text-align: center;
+      color: #bbb;
+      h1 {
+        font-size: 5rem;
+        padding-top: 20vh;
+      }
+      p {
+        font-size: 1.3rem;
+      }
+    }
+  }
+  .viewScheduleDetails {
+    min-height: 88vh;
+    max-height: 88vh;
+    .noDataStyle {
+      text-align: center;
+      color: #bbb;
+      h1 {
+        font-size: 5rem;
+        padding-top: 25vh;
+      }
+      p {
+        font-size: 1.3rem;
+      }
+    }
+  }
 }
 
 .bold-text {
-	font-weight: bold !important;
-	width: 100%;
-	border-top: 1px dashed #c1c1c1;
-	padding-top: 5px;
+  font-weight: bold !important;
+  width: 100%;
+  border-top: 1px dashed #c1c1c1;
+  padding-top: 5px;
 }
 .physicianList {
-	min-height: 60vh;
-	max-height: 60vh;
-	padding: 0;
-	margin: 0;
-	border-radius: 0;
-	ul {
-		padding: 0;
-		margin: 0;
-		list-style: none;
-		li {
-			padding: 0;
-			margin: 0;
-			border-bottom: 1px solid #ccc;
-			list-style: none;
-			.checkBoxPhy {
-				margin: 10px;
-				display: inline-block;
-			}
-			span {
-				display: inline-block;
-				width: auto;
-				padding: 10px;
-				border-left: 1px solid #ccc;
-			}
-		}
-	}
+  min-height: 60vh;
+  max-height: 60vh;
+  padding: 0;
+  margin: 0;
+  border: 1px solid #ccc;
+  border-radius: 0;
+  ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    li {
+      padding: 0;
+      margin: 0;
+      border-bottom: 1px solid #ccc;
+      list-style: none;
+      .checkBoxPhy {
+        margin: 10px;
+        display: inline-block;
+        width: 20px;
+        position: relative;
+
+        input[type="checkbox"] {
+          opacity: 0;
+        }
+
+        input[type="checkbox"]:checked + i {
+          opacity: 1;
+        }
+
+        i {
+          opacity: 0;
+          color: #007468;
+          position: absolute;
+          top: 3px;
+          left: 4px;
+        }
+      }
+      .physicianListName {
+        display: inline-block;
+        width: calc(100% - 40px);
+        padding: 10px;
+        border-left: 1px solid #ccc;
+      }
+      &:hover {
+        background: #00a796 !important;
+        color: #fff;
+        cursor: pointer;
+      }
+    }
+  }
 }
 .scheduledDocList {
-	min-height: 70vh;
-	max-height: 70vh;
-	padding: 0;
-	margin: 0;
-	border-radius: 0;
-	border: 1px solid #ccc;
-	ul {
-		padding: 15px 0 0;
-		margin: 0;
-		list-style: none;
-		li {
-			padding: 0;
-			margin: 0;
-			border-bottom: 1px solid #ccc;
-			list-style: none;
-			.checkBoxPhy {
-				margin: 10px;
-				display: inline-block;
-			}
-			span {
-				display: inline-block;
-				width: calc(100% - 70px);
-				padding: 10px 3px 10px 5px;
-				border-left: 1px solid #ccc;
-			}
-			i.fa-pen {
-				padding: 7px;
-				border: 1px solid #ccc;
-				float: left;
-				border-radius: 50%;
-				margin: 5px 2px 0 3px;
-				width: 28px;
-				height: 28px;
-				text-align: center;
-				font-size: 0.8rem;
-				&:hover {
-					color: #fff;
-					background-color: #00a796;
-					border-color: #007468;
-					cursor: pointer;
-				}
-			}
-			i.fa-trash-alt {
-				padding: 7px;
-				border: 1px solid #ccc;
-				float: left;
-				border-radius: 50%;
-				margin: 5px 2px 0 3px;
-				width: 28px;
-				height: 28px;
-				text-align: center;
-				font-size: 0.8rem;
-				&:hover {
-					color: #fff;
-					background-color: #c21f02;
-					border-color: #490202;
-					cursor: pointer;
-				}
-			}
-		}
-	}
+  min-height: 70vh;
+  max-height: 70vh;
+  padding: 0;
+  margin: 0;
+  border-radius: 0;
+  border: 1px solid #ccc;
+  ul {
+    padding: 15px 0 0;
+    margin: 0;
+    list-style: none;
+    li {
+      padding: 0;
+      margin: 0;
+      border-bottom: 1px solid #ccc;
+      list-style: none;
+      .checkBoxPhy {
+        margin: 10px;
+        display: inline-block;
+      }
+      span {
+        display: inline-block;
+        width: calc(100% - 70px);
+        padding: 10px 3px 10px 5px;
+        border-left: 1px solid #ccc;
+      }
+      i.fa-pen {
+        padding: 7px;
+        border: 1px solid #ccc;
+        float: left;
+        border-radius: 50%;
+        margin: 5px 2px 0 3px;
+        width: 28px;
+        height: 28px;
+        text-align: center;
+        font-size: 0.8rem;
+        &:hover {
+          color: #fff;
+          background-color: #00a796;
+          border-color: #007468;
+          cursor: pointer;
+        }
+      }
+      i.fa-trash-alt {
+        padding: 7px;
+        border: 1px solid #ccc;
+        float: left;
+        border-radius: 50%;
+        margin: 5px 2px 0 3px;
+        width: 28px;
+        height: 28px;
+        text-align: center;
+        font-size: 0.8rem;
+        &:hover {
+          color: #fff;
+          background-color: #c21f02;
+          border-color: #490202;
+          cursor: pointer;
+        }
+      }
+    }
+  }
 }
 .daysSpan {
-	margin-top: 5px;
-	span {
-		border: 1px solid #ccc;
-		padding: 3px 5px;
-		text-align: center;
-		font-size: 1rem;
-	}
+  margin-top: 5px;
+  span {
+    border: 1px solid #ccc;
+    padding: 3px 5px;
+    text-align: center;
+    font-size: 1rem;
+  }
 }
 
 .hide-feature {
-	display: none;
-	opacity: 0;
+  display: none;
+  opacity: 0;
 }

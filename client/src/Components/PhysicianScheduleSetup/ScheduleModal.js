@@ -341,23 +341,27 @@ export default function ScheduleModal(props) {
                 <div className="row">
                   <div className="col">
                     <label>Doctors</label>
-                    <div className="bordered-layout physicianList">
+                    <div className="physicianList">
                       <ul>
                         {props.state.doctors.map((data, index) => {
                           return (
                             <li
                               key={index}
                               onClick={e =>
-                                e.currentTarget.firstElementChild.click()
+                                e.currentTarget.firstElementChild.firstElementChild.click()
                               }
                             >
-                              <input
-                                className="checkBoxPhy"
-                                row={JSON.stringify(data)}
-                                onChange={props.checkHandle}
-                                type="checkbox"
-                              />
-                              <span>{data.full_name}</span>
+                              <span className="checkBoxPhy">
+                                <input
+                                  row={JSON.stringify(data)}
+                                  onChange={props.checkHandle}
+                                  type="checkbox"
+                                />
+                                <i className="fas fa-check" />
+                              </span>
+                              <span className="physicianListName">
+                                {data.full_name}
+                              </span>
                             </li>
                           );
                         })}
