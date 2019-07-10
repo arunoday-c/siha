@@ -497,8 +497,10 @@ module.exports = {
           sendingObject.sheet_discount_amount = 0;
 
           if (inputParam.sheet_discount_amount > 0) {
-            sendingObject.sheet_discount_percentage =
-              (inputParam.sheet_discount_amount / inputParam.gross_total) * 100;
+            sendingObject.sheet_discount_percentage = math.round(
+              (inputParam.sheet_discount_amount / inputParam.gross_total) * 100,
+              3
+            );
 
             sendingObject.sheet_discount_amount =
               inputParam.sheet_discount_amount;
@@ -1701,7 +1703,7 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                   unit_cost: unit_cost,
                   gross_amount: gross_amount,
                   discount_amout: discount_amout,
-                  discount_percentage: discount_percentage,
+                  discount_percentage: math.round(discount_percentage, 3),
                   net_amout: net_amout,
                   patient_resp: patient_resp,
                   patient_payable: patient_payable,

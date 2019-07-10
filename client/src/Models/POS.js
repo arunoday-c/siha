@@ -122,7 +122,9 @@ export default {
       delete_pharmacy_stock: [],
       posCancelled: false,
       InvoiceEnable: false,
-      OTItemAddDis: false
+      OTItemAddDis: false,
+      patInsuranceFrontImg: undefined,
+      patInsuranceBackImg: undefined
     };
     return output;
   }

@@ -1,4 +1,5 @@
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
+import extend from "extend";
 
 const serviceTypeHandeler = ($this, context, e) => {
   if (e.value === undefined) {
@@ -125,7 +126,7 @@ const discounthandle = ($this, context, ctrl, e) => {
   if (sheet_discount_percentage > 100) {
     swalMessage({
       title: "Discount % cannot be greater than 100.",
-      type: "warning"
+      type: "Warning"
     });
     $this.setState({
       sheet_discount_percentage: $this.state.sheet_discount_percentage
@@ -139,11 +140,16 @@ const discounthandle = ($this, context, ctrl, e) => {
   } else if (sheet_discount_amount > $this.state.patient_payable) {
     swalMessage({
       title: "Discount Amount cannot be greater than Patient Share.",
-      type: "warning"
+      type: "Warning"
     });
-    $this.setState({
-      sheet_discount_amount: $this.state.sheet_discount_amount
-    });
+    $this.setState(
+      {
+        sheet_discount_amount: $this.state.sheet_discount_amount
+      },
+      () => {
+        billheaderCalculation($this, context);
+      }
+    );
 
     if (context !== null) {
       context.updateState({
@@ -151,10 +157,15 @@ const discounthandle = ($this, context, ctrl, e) => {
       });
     }
   } else {
-    $this.setState({
-      sheet_discount_percentage: sheet_discount_percentage,
-      sheet_discount_amount: sheet_discount_amount
-    });
+    $this.setState(
+      {
+        sheet_discount_percentage: sheet_discount_percentage,
+        sheet_discount_amount: sheet_discount_amount
+      },
+      () => {
+        billheaderCalculation($this, context);
+      }
+    );
 
     if (context !== null) {
       context.updateState({
@@ -262,6 +273,7 @@ const ondiscountgridcol = ($this, row, e) => {
   }
   row[name] = value;
   row.update();
+  calculateAmount($this, row, e);
 };
 
 const onquantitycol = ($this, row, e) => {
@@ -363,6 +375,60 @@ const CancelGrid = ($this, context, cancelRow) => {
     });
   }
 };
+
+const calculateAmount = ($this, row, e) => {
+  // e = e || ctrl;
+  debugger;
+  if (e.target.value !== e.target.oldvalue) {
+    let billdetails = $this.state.billdetails;
+
+    row[e.target.name] = parseFloat(e.target.value === "" ? 0 : e.target.value);
+    let inputParam = [
+      {
+        hims_d_services_id: row.services_id,
+        vat_applicable: $this.state.vat_applicable,
+        quantity: row.quantity,
+        discount_amout:
+          e.target.name === "discount_percentage" ? 0 : row.discount_amout,
+        discount_percentage:
+          e.target.name === "discount_amout" ? 0 : row.discount_percentage,
+
+        insured: $this.state.insured,
+        primary_insurance_provider_id: $this.state.insurance_provider_id,
+        primary_network_office_id:
+          $this.state.hims_d_insurance_network_office_id,
+        primary_network_id: $this.state.network_id,
+        sec_insured: $this.state.sec_insured,
+        secondary_insurance_provider_id:
+          $this.state.secondary_insurance_provider_id,
+        secondary_network_id: $this.state.secondary_network_id,
+        secondary_network_office_id: $this.state.secondary_network_office_id
+      }
+    ];
+
+    algaehApiCall({
+      uri: "/billing/getBillDetails",
+      module: "billing",
+      method: "POST",
+      data: inputParam,
+      onSuccess: response => {
+        if (response.data.success) {
+          let data = response.data.records;
+
+          extend(row, data.billdetails[0]);
+          billdetails[row.rowIdx] = row;
+          $this.setState({ billdetails: billdetails });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+  }
+};
 export {
   serviceTypeHandeler,
   serviceHandeler,
@@ -376,5 +442,6 @@ export {
   EditGrid,
   CancelGrid,
   onquantitycol,
-  ondiscountgridcol
+  ondiscountgridcol,
+  calculateAmount
 };

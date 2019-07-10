@@ -385,6 +385,7 @@ class AddPatientForm extends Component {
                             thousandSeparator: ",",
                             allowNegative: false
                           },
+                          dontAllowKeys: ["-", "e"],
                           events: {
                             onChange: setAge.bind(this, this)
                           },
@@ -416,6 +417,7 @@ class AddPatientForm extends Component {
                             thousandSeparator: ",",
                             allowNegative: false
                           },
+                          dontAllowKeys: ["-", "e"],
                           events: {
                             onChange: setAge.bind(this, this)
                           },
@@ -447,6 +449,7 @@ class AddPatientForm extends Component {
                             thousandSeparator: ",",
                             allowNegative: false
                           },
+                          dontAllowKeys: ["-", "e"],
                           events: {
                             onChange: setAge.bind(this, this)
                           },
@@ -471,6 +474,7 @@ class AddPatientForm extends Component {
                           number: {
                             allowNegative: false
                           },
+                          dontAllowKeys: ["-", "e"],
                           // events: {
                           //   onChange: texthandle.bind(this, this, context)
                           // },

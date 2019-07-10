@@ -34,6 +34,8 @@ import "../../../styles/site.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
 import { getAmountFormart } from "../../../utils/GlobalFunctions";
+import AlgaehAutoSearch from "../../Wrapper/autoSearch";
+import spotlightSearch from "../../../Search/spotlightSearch.json";
 
 class InitialStock extends Component {
   constructor(props) {
@@ -266,7 +268,60 @@ class InitialStock extends Component {
                     }}
                   />
 
-                  <AlagehAutoComplete
+                  <AlgaehAutoSearch
+                    div={{ className: "col-3" }}
+                    label={{ forceLabel: "Item Name" }}
+                    title="Search Items"
+                    id="item_id_search"
+                    template={result => {
+                      return (
+                        <section className="resultSecStyles">
+                          <div className="row">
+                            <div className="col-8">
+                              <h4 className="title">
+                                {result.item_description}
+                              </h4>
+                              <small>{result.generic_name}</small>
+                              <small>{result.stock_uom_desc}</small>
+                            </div>
+                            {/*<div className="col-4">
+                              <h6 className="price">
+                                {getAmountFormart(
+                                  result.standard_fee
+                                )}
+                              </h6>
+                            </div>*/}
+                          </div>
+                        </section>
+                      );
+                    }}
+                    name="item_id"
+                    columns={spotlightSearch.pharmacy.pharopeningstock}
+                    displayField="item_description"
+                    value={this.state.item_description}
+                    searchName="pharopeningstock"
+                    onClick={itemchangeText.bind(this, this)}
+                    onClear={() => {
+                      this.setState({
+                        item_category_id: null,
+                        item_group_id: null,
+                        uom_id: null,
+                        sales_uom: null,
+                        required_batchno: null,
+                        item_code: null,
+                        unit_cost: 0,
+                        sales_price: 0,
+                        purchase_uom_id: null,
+                        stock_uom_desc: null,
+                        sales_uom_desc: null
+                      });
+                    }}
+                    ref={attReg => {
+                      this.attReg = attReg;
+                    }}
+                  />
+
+                  {/*<AlagehAutoComplete
                     div={{ className: "col-3 form-group" }}
                     label={{ forceLabel: "Item Name", isImp: true }}
                     selector={{
@@ -281,7 +336,7 @@ class InitialStock extends Component {
                       },
                       onChange: itemchangeText.bind(this, this)
                     }}
-                  />
+                  />*/}
                   <AlagehAutoComplete
                     div={{ className: "col-3 form-group" }}
                     label={{ forceLabel: "Item Category", isImp: true }}

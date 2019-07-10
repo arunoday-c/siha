@@ -116,11 +116,14 @@ const selectedHandeler = ($this, context, e) => {
         alertTypeIcon: "warning",
         querySelector: "data-validate='demographicDetails'",
         onSuccess: () => {
+          debugger;
           if (
             $this.state.insured === "Y" &&
-            ($this.state.primary_insurance_provider_id == null ||
-              $this.state.primary_network_office_id == null ||
-              $this.state.primary_network_id == null)
+            ($this.state.primary_insurance_provider_id === null ||
+              $this.state.primary_network_office_id === null ||
+              $this.state.primary_network_id === null ||
+              $this.state.primary_card_number === null ||
+              $this.state.primary_card_number === "")
           ) {
             $this.setState(
               {

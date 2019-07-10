@@ -34,6 +34,8 @@ import "../../../styles/site.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
 import { getAmountFormart } from "../../../utils/GlobalFunctions";
+import AlgaehAutoSearch from "../../Wrapper/autoSearch";
+import spotlightSearch from "../../../Search/spotlightSearch.json";
 
 class InvInitialStock extends Component {
   constructor(props) {
@@ -252,8 +254,52 @@ class InvInitialStock extends Component {
                       }
                     }}
                   />
+                  <AlgaehAutoSearch
+                    div={{ className: "col-3" }}
+                    label={{ forceLabel: "Item Name" }}
+                    title="Search Items"
+                    id="item_id_search"
+                    template={result => {
+                      return (
+                        <section className="resultSecStyles">
+                          <div className="row">
+                            <div className="col-8">
+                              <h4 className="title">
+                                {result.item_description}
+                              </h4>
+                              <small>{result.stock_uom_desc}</small>
+                            </div>
+                          </div>
+                        </section>
+                      );
+                    }}
+                    name="item_id"
+                    columns={spotlightSearch.Items.Invitemmaster}
+                    displayField="item_description"
+                    value={this.state.item_description}
+                    searchName="invopeningstock"
+                    onClick={itemchangeText.bind(this, this)}
+                    onClear={() => {
+                      this.setState({
+                        item_category_id: null,
+                        item_group_id: null,
+                        uom_id: null,
+                        sales_uom: null,
+                        required_batchno: null,
+                        item_code: null,
+                        unit_cost: 0,
+                        sales_price: 0,
+                        purchase_uom_id: null,
+                        stock_uom_desc: null,
+                        sales_uom_desc: null
+                      });
+                    }}
+                    ref={attReg => {
+                      this.attReg = attReg;
+                    }}
+                  />
 
-                  <AlagehAutoComplete
+                  {/*<AlagehAutoComplete
                     div={{ className: "col-lg-3 form-group" }}
                     label={{ forceLabel: "Item Name", isImp: true }}
                     selector={{
@@ -276,7 +322,7 @@ class InvInitialStock extends Component {
                       },
                       autoComplete: "off"
                     }}
-                  />
+                  />*/}
                   <AlagehAutoComplete
                     div={{ className: "col-lg-3 form-group" }}
                     label={{ forceLabel: "Item Category", isImp: true }}
