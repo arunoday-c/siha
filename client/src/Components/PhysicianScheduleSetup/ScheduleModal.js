@@ -20,12 +20,12 @@ export default function ScheduleModal(props) {
       <div className="popupInner">
         <div className="col-lg-12 divInner">
           <div className="row">
-            <div className="col-9 divInnerLeft">
+            <div className="col divInnerLeft">
               <div className="row">
                 <AlagehAutoComplete
                   div={{ className: "col-3" }}
                   label={{
-                    forceLabel: "Selected Department Name",
+                    forceLabel: "Select Dept.",
                     isImp: true
                   }}
                   selector={{
