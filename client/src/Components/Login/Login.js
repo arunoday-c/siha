@@ -285,7 +285,9 @@ export default class Login extends Component {
             <div className="loginFooter">
               <p>
                 COPYRIGHT © 2018. ALL RIGHTS RESERVED.{" "}
-                <a href="http://algaeh.com/">ALGAEH TECHNOLOGIES PVT. LTD.</a>
+                <a href="http://algaeh.com/" targe="_blank">
+                  ALGAEH TECHNOLOGIES PVT. LTD.
+                </a>
               </p>
             </div>
           </div>

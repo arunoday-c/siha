@@ -40,7 +40,6 @@ let getPatientDCAF = (req, res, next) => {
         }
 
         if (result[0].length == 0) {
-          console.log("forceReplace", _input.forceReplace);
           _mysql
             .executeQuery({
               query:
@@ -401,7 +400,7 @@ const updateDcafDetails = (req, res, next) => {
 
   try {
     const input = req.body;
-    console.log("input:", input);
+
     _mysql
       .executeQuery({
         query:

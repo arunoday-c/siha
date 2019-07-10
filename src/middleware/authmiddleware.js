@@ -9,7 +9,6 @@ const SECRET = config.default.SECRETKey;
 
 let authenticate = expressjwt({ secret: SECRET });
 
-//console.log("dum:", dum);
 let generateAccessToken = (req, res, next) => {
   req.token = req.token || {};
   req.result.success = req.result.success || false;

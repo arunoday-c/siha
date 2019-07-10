@@ -77,25 +77,25 @@ const getItemUom = ($this, purchase_cost) => {
   });
 };
 
-const itemchangeText = ($this, e) => {
-  let name = e.name || e.target.name;
-  let value = e.value || e.target.value;
-  getItemUom($this, e.selected.purchase_cost);
-  debugger;
+const itemchangeText = ($this, e, ctrl) => {
+  let name = ctrl;
+  let value = e.hims_d_item_master_id;
+  getItemUom($this, e.purchase_cost);
+
   $this.setState({
     [name]: value,
-    item_category_id: e.selected.category_id,
-    item_group_id: e.selected.group_id,
-    uom_id: e.selected.stocking_uom_id,
-    sales_uom: e.selected.sales_uom_id,
-    required_batchno: e.selected.exp_date_not_required,
-    item_code: e.selected.item_code,
+    item_category_id: e.category_id,
+    item_group_id: e.group_id,
+    uom_id: e.stocking_uom_id,
+    sales_uom: e.sales_uom_id,
+    required_batchno: e.exp_date_not_required,
+    item_code: e.item_code,
     // unit_cost: e.selected.purchase_cost,
-    sales_price: e.selected.sales_price,
-    batchno: "B" + e.selected.batch_no,
-    purchase_uom_id: e.selected.purchase_uom_id,
-    stock_uom_desc: e.selected.stock_uom_desc,
-    sales_uom_desc: e.selected.sales_uom_desc
+    sales_price: e.sales_price,
+    batchno: "B" + e.batch_no,
+    purchase_uom_id: e.purchase_uom_id,
+    stock_uom_desc: e.stock_uom_desc,
+    sales_uom_desc: e.sales_uom_desc
   });
 };
 
@@ -104,7 +104,6 @@ const AddItems = $this => {
     alertTypeIcon: "warning",
     querySelector: "data-validate='InvIntialStock'",
     onSuccess: () => {
-      debugger;
       if ($this.state.quantity === 0) {
         swalMessage({
           title: "Quantity, cannot be zero.",

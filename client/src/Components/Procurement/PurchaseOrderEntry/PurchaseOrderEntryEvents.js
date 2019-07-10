@@ -305,7 +305,8 @@ const SavePOEnrty = $this => {
           purchase_number: response.data.records.purchase_number,
           hims_f_procurement_po_header_id:
             response.data.records.hims_f_procurement_po_header_id,
-          saveEnable: true
+          saveEnable: true,
+          dataExitst: true
         });
 
         swalMessage({
@@ -327,53 +328,80 @@ const SavePOEnrty = $this => {
 
 const getCtrlCode = ($this, docNumber) => {
   AlgaehLoader({ show: true });
-  $this.props.getPurchaseOrderEntry({
-    uri: "/PurchaseOrderEntry/getPurchaseOrderEntry",
-    module: "procurement",
-    method: "GET",
-    printInput: true,
-    data: { purchase_number: docNumber },
-    redux: {
-      type: "PO_ENTRY_GET_DATA",
-      mappingName: "purchaseorderentry"
-    },
-    afterSuccess: data => {
-      getData($this, data.po_from);
-      if (
-        $this.props.purchase_number !== undefined &&
-        $this.props.purchase_number.length !== 0
-      ) {
-        data.authorizeEnable = false;
-        data.ItemDisable = true;
-        data.ClearDisable = true;
+  let IOputs = POEntry.inputParam();
 
-        for (let i = 0; i < data.po_entry_detail.length; i++) {
-          data.po_entry_detail[i].authorize_quantity =
-            data.authorize1 === "N"
-              ? data.po_entry_detail[i].total_quantity
-              : data.po_entry_detail[i].authorize_quantity;
-          data.po_entry_detail[i].quantity_outstanding =
-            data.authorize1 === "N"
-              ? data.po_entry_detail[i].total_quantity
-              : data.po_entry_detail[i].quantity_outstanding;
-          data.po_entry_detail[i].rejected_quantity =
-            parseFloat(data.po_entry_detail[i].total_quantity) -
-            parseFloat(data.po_entry_detail[i].authorize_quantity);
+  IOputs.dataExitst = false;
+  $this.setState(IOputs, () => {
+    algaehApiCall({
+      uri: "/PurchaseOrderEntry/getPurchaseOrderEntry",
+      module: "procurement",
+      method: "GET",
+      data: { purchase_number: docNumber },
+      onSuccess: response => {
+        if (response.data.success) {
+          let data = response.data.records;
+          getData($this, data.po_from);
+          if (
+            $this.props.purchase_number !== undefined &&
+            $this.props.purchase_number.length !== 0
+          ) {
+            data.authorizeEnable = false;
+            data.ItemDisable = true;
+            data.ClearDisable = true;
+
+            for (let i = 0; i < data.po_entry_detail.length; i++) {
+              data.po_entry_detail[i].authorize_quantity =
+                data.authorize1 === "N"
+                  ? data.po_entry_detail[i].total_quantity
+                  : data.po_entry_detail[i].authorize_quantity;
+              data.po_entry_detail[i].quantity_outstanding =
+                data.authorize1 === "N"
+                  ? data.po_entry_detail[i].total_quantity
+                  : data.po_entry_detail[i].quantity_outstanding;
+              data.po_entry_detail[i].rejected_quantity =
+                parseFloat(data.po_entry_detail[i].total_quantity) -
+                parseFloat(data.po_entry_detail[i].authorize_quantity);
+            }
+          }
+          data.saveEnable = true;
+          data.dataExitst = true;
+
+          if (data.po_from === "PHR") {
+            $this.state.pharmacy_stock_detail = data.po_entry_detail;
+          } else {
+            $this.state.inventory_stock_detail = data.po_entry_detail;
+          }
+
+          data.addedItem = true;
+          $this.setState(data);
+          AlgaehLoader({ show: false });
+
+          // $this.setState({ ...response.data.records });
         }
+        AlgaehLoader({ show: false });
+      },
+      onFailure: error => {
+        AlgaehLoader({ show: false });
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
       }
-      data.saveEnable = true;
-      data.dataExitst = true;
-
-      if (data.po_from === "PHR") {
-        $this.state.pharmacy_stock_detail = data.po_entry_detail;
-      } else {
-        $this.state.inventory_stock_detail = data.po_entry_detail;
-      }
-
-      data.addedItem = true;
-      $this.setState(data);
-      AlgaehLoader({ show: false });
-    }
+    });
+    // $this.props.getPurchaseOrderEntry({
+    //   uri: "/PurchaseOrderEntry/getPurchaseOrderEntry",
+    //   module: "procurement",
+    //   method: "GET",
+    //   printInput: true,
+    //   data: { purchase_number: docNumber },
+    //   redux: {
+    //     type: "PO_ENTRY_GET_DATA",
+    //     mappingName: "purchaseorderentry"
+    //   },
+    //   afterSuccess: data => {
+    //
+    //   }
+    // });
   });
 };
 
@@ -574,7 +602,7 @@ const AuthorizePOEntry = $this => {
       ? $this.state.pharmacy_stock_detail
       : $this.state.inventory_stock_detail;
   let auth_qty = Enumerable.from(stock_detail).any(
-    w => parseFloat(w.authorize_quantity) === 0 || w.authorize_quantity === null
+    w => parseFloat(w.authorize_quantity) === 0 || w.authorize_quantity === ""
   );
   if (auth_qty === true) {
     swalMessage({

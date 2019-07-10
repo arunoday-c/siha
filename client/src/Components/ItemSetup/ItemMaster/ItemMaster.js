@@ -307,9 +307,14 @@ class ItemMaster extends Component {
                         isImp: true
                       }}
                       textBox={{
+                        number: {
+                          allowNegative: false,
+                          thousandSeparator: ","
+                        },
                         className: "txt-fld",
                         name: "reorder_qty",
                         value: this.state.reorder_qty,
+                        dontAllowKeys: ["-", "e"],
                         events: {
                           onChange: numberEventHandaler.bind(this, this)
                         },
@@ -348,6 +353,7 @@ class ItemMaster extends Component {
                             fieldName: "vat_percent"
                           }}
                           textBox={{
+                            decimal: { allowNegative: false },
                             className: "txt-fld",
                             name: "vat_percent",
                             value: this.state.vat_percent,
@@ -356,10 +362,7 @@ class ItemMaster extends Component {
                             },
                             others: {
                               disabled:
-                                this.state.vat_applicable === "Y"
-                                  ? false
-                                  : true,
-                              type: "number"
+                                this.state.vat_applicable === "Y" ? false : true
                             }
                           }}
                         />
@@ -430,9 +433,14 @@ class ItemMaster extends Component {
                         fieldName: "conversion_factor"
                       }}
                       textBox={{
+                        number: {
+                          allowNegative: false,
+                          thousandSeparator: ","
+                        },
                         className: "txt-fld",
                         name: "conversion_factor",
                         value: this.state.conversion_factor,
+                        dontAllowKeys: ["-", "e"],
                         events: {
                           onChange: texthandle.bind(this, this)
                         },
@@ -715,12 +723,12 @@ class ItemMaster extends Component {
                         isImp: true
                       }}
                       textBox={{
+                        decimal: { allowNegative: false },
                         className: "txt-fld",
                         name: "purchase_cost",
                         value: this.state.purchase_cost,
                         others: {
-                          min: 0,
-                          type: "number"
+                          min: 0
                         },
                         events: {
                           onChange: numberEventHandaler.bind(this, this)

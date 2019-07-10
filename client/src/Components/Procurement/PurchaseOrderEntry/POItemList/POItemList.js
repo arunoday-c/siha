@@ -194,6 +194,7 @@ class POItemList extends Component {
                           },
                           className: "txt-fld",
                           name: "order_quantity",
+                          dontAllowKeys: ["-", "e"],
                           value: this.state.order_quantity,
                           events: {
                             onChange: numberchangeTexts.bind(
@@ -230,7 +231,19 @@ class POItemList extends Component {
                         }}
                       />
 
-                      <AlagehFormGroup
+                      <div className="col">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Extended Price"
+                          }}
+                        />
+                        <h6>
+                          {this.state.extended_price
+                            ? this.state.extended_price
+                            : "-----------"}
+                        </h6>
+                      </div>
+                      {/*<AlagehFormGroup
                         div={{ className: "col" }}
                         label={{
                           forceLabel: "Extended Price"
@@ -247,7 +260,7 @@ class POItemList extends Component {
                             disabled: true
                           }
                         }}
-                      />
+                      />*/}
 
                       <AlagehFormGroup
                         div={{ className: "col" }}
@@ -255,6 +268,7 @@ class POItemList extends Component {
                           forceLabel: "Discount %"
                         }}
                         textBox={{
+                          decimal: { allowNegative: false },
                           value: this.state.sub_discount_percentage,
                           className: "txt-fld",
                           name: "sub_discount_percentage",
@@ -265,8 +279,7 @@ class POItemList extends Component {
                             disabled: this.state.dataExitst,
                             min: 0,
                             max: 100,
-                            onBlur: AssignData.bind(this, this),
-                            type: "number"
+                            onBlur: AssignData.bind(this, this)
                           }
                         }}
                       />
@@ -277,6 +290,7 @@ class POItemList extends Component {
                           forceLabel: "Discount Amount"
                         }}
                         textBox={{
+                          decimal: { allowNegative: false },
                           value: this.state.sub_discount_amount,
                           className: "txt-fld",
                           name: "sub_discount_amount",
@@ -285,13 +299,24 @@ class POItemList extends Component {
                           },
                           others: {
                             disabled: this.state.dataExitst,
-                            onBlur: AssignData.bind(this, this),
-                            type: "number"
+                            onBlur: AssignData.bind(this, this)
                           }
                         }}
                       />
 
-                      <AlagehFormGroup
+                      <div className="col">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Extended Cost"
+                          }}
+                        />
+                        <h6>
+                          {this.state.extended_cost
+                            ? this.state.extended_cost
+                            : "-----------"}
+                        </h6>
+                      </div>
+                      {/*<AlagehFormGroup
                         div={{ className: "col" }}
                         label={{
                           forceLabel: "Extended Cost"
@@ -308,7 +333,7 @@ class POItemList extends Component {
                             disabled: true
                           }
                         }}
-                      />
+                      />*/}
                     </div>
                   </div>
                   <div className="row">
@@ -620,7 +645,7 @@ class POItemList extends Component {
                                 />
                               ),
                               displayTemplate: row => {
-                                return row.authorize_quantity !== null
+                                return row.authorize_quantity !== ""
                                   ? parseFloat(row.authorize_quantity)
                                   : 0;
                               },
@@ -629,12 +654,17 @@ class POItemList extends Component {
                                   <AlagehFormGroup
                                     div={{}}
                                     textBox={{
+                                      number: {
+                                        allowNegative: false,
+                                        thousandSeparator: ","
+                                      },
                                       value:
-                                        row.authorize_quantity !== null
+                                        row.authorize_quantity !== ""
                                           ? parseFloat(row.authorize_quantity)
                                           : null,
                                       className: "txt-fld",
                                       name: "authorize_quantity",
+                                      dontAllowKeys: ["-", "e"],
                                       events: {
                                         onChange: onchangegridcol.bind(
                                           this,
@@ -644,7 +674,12 @@ class POItemList extends Component {
                                       },
                                       others: {
                                         disabled: this.state.authorizeEnable,
-                                        type: "number"
+                                        min: 0,
+                                        algaeh_required: "true",
+                                        errormessage:
+                                          "Please enter Authorized Quantity ..",
+                                        checkvalidation:
+                                          "value ==='' || value ==='0'"
                                       }
                                     }}
                                   />
@@ -663,7 +698,7 @@ class POItemList extends Component {
                                   <AlagehFormGroup
                                     div={{}}
                                     textBox={{
-                                      // decimal: { allowNegative: false },
+                                      decimal: { allowNegative: false },
                                       value: row.sub_discount_percentage,
                                       className: "txt-fld",
                                       name: "sub_discount_percentage",
@@ -680,8 +715,7 @@ class POItemList extends Component {
                                           this,
                                           this,
                                           row
-                                        ),
-                                        type: "number"
+                                        )
                                       }
                                     }}
                                   />
@@ -712,7 +746,7 @@ class POItemList extends Component {
                                   <AlagehFormGroup
                                     div={{}}
                                     textBox={{
-                                      // decimal: { allowNegative: false },
+                                      decimal: { allowNegative: false },
                                       value: row.sub_discount_amount,
                                       className: "txt-fld",
                                       name: "sub_discount_amount",
@@ -729,8 +763,7 @@ class POItemList extends Component {
                                           this,
                                           this,
                                           row
-                                        ),
-                                        type: "number"
+                                        )
                                       }
                                     }}
                                   />
@@ -801,12 +834,12 @@ class POItemList extends Component {
                                 />
                               ),
                               displayTemplate: row => {
-                                return row.quantity_outstanding !== null
+                                return row.quantity_outstanding !== ""
                                   ? parseFloat(row.quantity_outstanding)
                                   : 0;
                               },
                               editorTemplate: row => {
-                                return row.quantity_outstanding !== null
+                                return row.quantity_outstanding !== ""
                                   ? parseFloat(row.quantity_outstanding)
                                   : 0;
                               },
@@ -825,12 +858,12 @@ class POItemList extends Component {
                                 />
                               ),
                               displayTemplate: row => {
-                                return row.rejected_quantity !== null
+                                return row.rejected_quantity !== ""
                                   ? parseFloat(row.rejected_quantity)
                                   : 0;
                               },
                               editorTemplate: row => {
-                                return row.rejected_quantity !== null
+                                return row.rejected_quantity !== ""
                                   ? parseFloat(row.rejected_quantity)
                                   : 0;
                               },

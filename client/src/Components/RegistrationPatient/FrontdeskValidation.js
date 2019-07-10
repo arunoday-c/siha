@@ -117,6 +117,7 @@ export function Validations(state) {
       state.state.primary_network_office_id === null ||
       state.state.primary_network_id === null ||
       state.state.primary_card_number === null ||
+      state.state.primary_card_number === "" ||
       state.state.primary_effective_start_date === null ||
       state.state.primary_effective_end_date === null)
   ) {

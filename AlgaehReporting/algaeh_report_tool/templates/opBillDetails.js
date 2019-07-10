@@ -51,7 +51,7 @@ const executePDF = function executePDFMethod(options) {
         })
         .catch(error => {
           options.mysql.releaseConnection();
-          console.log("error", error);
+          
         });
     } catch (e) {
       reject(e);

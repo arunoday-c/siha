@@ -191,8 +191,6 @@ module.exports = {
           req.body.transaction_id = headerResult.insertId;
           req.body.year = year;
           req.body.period = period;
-          console.log("headerResult: ", headerResult.insertId);
-          console.log("po_entry_detail: ", input.po_entry_detail.length);
           let dn_entry_detail = [];
 
           for (let i = 0; i < input.po_entry_detail.length; i++) {
@@ -203,6 +201,8 @@ module.exports = {
             // }
             updateItemMaster({
               stock_detail: input.po_entry_detail[i].dn_entry_detail,
+              po_entry_detail: input.po_entry_detail,
+              stock_insert_detail: i,
               _mysql: _mysql,
               req: req,
               next: next,
@@ -216,7 +216,8 @@ module.exports = {
                   .executeQuery({
                     query:
                       "INSERT INTO hims_f_procurement_dn_detail ( phar_item_category,phar_item_group,phar_item_id,\
-                      inv_item_category_id,inv_item_group_id,inv_item_id,po_quantity,dn_quantity,quantity_outstanding,\
+                      inv_item_category_id,inv_item_group_id,inv_item_id,po_quantity,dn_quantity,\
+                      quantity_outstanding,\
                       pharmacy_uom_id,inventory_uom_id,unit_cost,extended_cost,discount_percentage,discount_amount,\
                       net_extended_cost,tax_percentage,tax_amount,total_amount,item_type,quantity_recieved_todate,\
                       batchno_expiry_required,batchno,expiry_date,purchase_order_header_id,purchase_order_detail_id,\
@@ -592,68 +593,71 @@ module.exports = {
         dn_entry_detail = inputParam.inventory_stock_detail;
       }
 
-      const partial_recived = new LINQ(dn_entry_detail)
-        .Where(w => w.quantity_outstanding != 0)
-        .ToArray();
+      let details = dn_entry_detail;
 
-      if (partial_recived.length > 0) {
-        complete = "N";
+      let qry = "";
+      for (let i = 0; i < details.length; i++) {
+        qry += mysql.format(
+          "UPDATE hims_f_procurement_po_detail SET `quantity_outstanding`=?\
+        where `hims_f_procurement_po_detail_id`=? ;",
+          [details[i].quantity_outstanding, details[i].purchase_order_detail_id]
+        );
       }
-
       _mysql
         .executeQuery({
-          query:
-            "UPDATE `hims_f_procurement_po_header` SET `is_completed`=?, `completed_date`=?, `updated_by` = ?,`updated_date` = ? \
-          WHERE `hims_f_procurement_po_header_id`=?",
-          values: [
-            complete,
-            new Date(),
-            req.userIdentity.algaeh_d_app_user_id,
-            new Date(),
-            inputParam.purchase_order_id
-          ],
+          query: qry,
           printQuery: true
         })
-        .then(headerResult => {
-          utilities.logger().log("headerResult: ");
-          if (headerResult != null) {
-            let details = dn_entry_detail;
+        .then(update_detailResult => {
+          _mysql
+            .executeQuery({
+              query:
+                "select  D.quantity_outstanding from hims_f_procurement_po_header H, hims_f_procurement_po_detail D\
+                 WHERE H.hims_f_procurement_po_header_id = D.procurement_header_id and\
+                hims_f_procurement_po_header_id=?",
+              values: [inputParam.purchase_order_id],
+              printQuery: true
+            })
+            .then(detailResult => {
+              //Update
+              const partial_recived = new LINQ(detailResult)
+                .Where(w => w.quantity_outstanding != 0)
+                .ToArray();
 
-            let qry = "";
+              if (partial_recived.length > 0) {
+                complete = "N";
+              }
 
-            for (let i = 0; i < details.length; i++) {
-              qry += mysql.format(
-                "UPDATE hims_f_procurement_po_detail SET `quantity_outstanding`=?\
-              where `hims_f_procurement_po_detail_id`=? ;",
-                [
-                  details[i].quantity_outstanding,
-                  details[i].purchase_order_detail_id
-                ]
-              );
-            }
-            _mysql
-              .executeQuery({
-                query: qry,
-                printQuery: true
-              })
-              .then(detailResult => {
-                // _mysql.commitTransaction(() => {
-                //   _mysql.releaseConnection();
-                req.porecords = detailResult;
-                next();
-                // });
-              })
-              .catch(e => {
-                _mysql.rollBackTransaction(() => {
-                  next(e);
+              _mysql
+                .executeQuery({
+                  query:
+                    "UPDATE `hims_f_procurement_po_header` SET `is_completed`=?, `completed_date`=?, `updated_by` = ?,`updated_date` = ? \
+                  WHERE `hims_f_procurement_po_header_id`=?",
+                  values: [
+                    complete,
+                    new Date(),
+                    req.userIdentity.algaeh_d_app_user_id,
+                    new Date(),
+                    inputParam.purchase_order_id
+                  ],
+                  printQuery: true
+                })
+                .then(headerResult => {
+                  utilities.logger().log("headerResult: ");
+                  req.porecords = headerResult;
+                  next();
+                })
+                .catch(e => {
+                  _mysql.rollBackTransaction(() => {
+                    next(e);
+                  });
                 });
+            })
+            .catch(e => {
+              _mysql.rollBackTransaction(() => {
+                next(e);
               });
-          } else {
-            _mysql.rollBackTransaction(() => {
-              req.records = {};
-              next();
             });
-          }
         })
         .catch(e => {
           _mysql.rollBackTransaction(() => {
@@ -741,12 +745,23 @@ function updateItemMaster(options) {
       let _mysql = options._mysql;
       let req = options.req;
       let stock_detail = options.stock_detail;
+      let stock_insert_detail = options.stock_insert_detail;
+      let po_entry_detail = options.po_entry_detail;
 
       const utilities = new algaehUtilities();
 
       utilities.logger().log("updateItemMaster: ", stock_detail);
+      utilities.logger().log("stock_insert_detail: ", stock_insert_detail);
 
       for (let i = 0; i < stock_detail.length; i++) {
+        utilities.logger().log("i: ", i);
+        let prev_length =
+          stock_insert_detail > 0
+            ? po_entry_detail[stock_insert_detail - 1].dn_entry_detail.length +
+              i
+            : i;
+
+        utilities.logger().log("prev_length: ", prev_length);
         let strQuery = "";
         if (dn_from == "PHR") {
           strQuery += mysql.format(
@@ -789,8 +804,25 @@ function updateItemMaster(options) {
             console.log("barcode", barcode);
 
             if (dn_from == "PHR") {
-              req.body.pharmacy_stock_detail[i].batchno = "B" + resultString;
-              req.body.pharmacy_stock_detail[i].barcode = barcode;
+              // req.body.pharmacy_stock_detail;
+              // let SelectedItem = _.filter(req.body.pharmacy_stock_detail, f => {
+              //   return f.item_id === stock_detail[i].item_id;
+              // });
+              // utilities.logger().log("SelectedItem: ", SelectedItem);
+              // for (let j = 0; j < SelectedItem.length; j++) {
+              //   let _phr_index = req.body.pharmacy_stock_detail.indexOf(
+              //     SelectedItem[j]
+              //   );
+              //   utilities.logger().log("_phr_index: ", _phr_index);
+              //   SelectedItem[j].barcode = barcode;
+              //   SelectedItem[j].batchno = "B" + resultString;
+              //   req.body.pharmacy_stock_detail[_phr_index] = SelectedItem[j];
+              // }
+
+              console.log("prev_length", prev_length);
+              req.body.pharmacy_stock_detail[prev_length].batchno =
+                "B" + resultString;
+              req.body.pharmacy_stock_detail[prev_length].barcode = barcode;
 
               utilities
                 .logger()

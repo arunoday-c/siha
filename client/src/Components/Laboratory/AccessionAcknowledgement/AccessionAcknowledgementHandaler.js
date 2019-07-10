@@ -123,7 +123,7 @@ const AcceptandRejectSample = ($this, row, AccRej) => {
       type: "warning"
     });
   } else {
-    debugger;
+    
 
     if (row.sample_status === "N") {
       if (AccRej === "R") {

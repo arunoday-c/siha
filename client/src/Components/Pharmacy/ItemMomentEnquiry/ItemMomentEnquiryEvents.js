@@ -4,7 +4,6 @@ import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 const changeTexts = ($this, ctrl, e) => {
-  debugger;
   e = ctrl || e;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -60,7 +59,6 @@ const ProcessItemMoment = $this => {
       Options.dateFormatYear
     );
   }
-  debugger;
 
   algaehApiCall({
     uri: "/pharmacyGlobal/getItemMoment",

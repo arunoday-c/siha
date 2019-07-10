@@ -52,7 +52,8 @@ export default {
       dn_quantity: null,
       // fromPurList: false,
       location_name: null,
-      vendor_name: null
+      vendor_name: null,
+      itemEnter: true
     };
     return output;
   }

@@ -974,7 +974,6 @@ let getPatientVitals = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   try {
     let inputs = req.query;
-    console.log("inputs", inputs);
     _mysql
       .executeQuery({
         query:
@@ -1531,7 +1530,6 @@ let updatePatientChiefComplaints = (req, res, next) => {
               inputParam[i].hims_f_episode_chief_complaint_id
             ]
           );
-          console.log("qry: ", qry);
         }
 
         connection.query(qry, (error, updateResult) => {
@@ -2947,7 +2945,6 @@ let updatePatientEncounter = (req, res, next) => {
   //     strQuery += " , other_signs = '" + inputData.other_signs + "'";
   //   }
 
-  //   console.log("strQuery", strQuery);
   //   if (strQuery != "") {
   //     db.getConnection((error, connection) => {
   //       connection.query(
@@ -2981,7 +2978,6 @@ let getPatientEncounter = (req, res, next) => {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
-    console.log("req.query.encounter_id", req.query.encounter_id);
     let db = req.db;
     db.getConnection((error, connection) => {
       connection.query(

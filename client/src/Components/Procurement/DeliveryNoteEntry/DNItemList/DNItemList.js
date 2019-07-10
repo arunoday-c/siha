@@ -85,14 +85,17 @@ class DNItemList extends Component {
       item_details: item_details,
       dn_quantity: dn_quantity,
       free_qty: 0,
-      addItemButton: false
+      addItemButton: false,
+      itemEnter: false
     });
 
     context.updateState({
       item_details: item_details,
       dn_quantity: dn_quantity,
       free_qty: 0,
-      addItemButton: false
+      addItemButton: false,
+      itemEnter: false,
+      expiry_date: null
     });
   }
 
@@ -214,6 +217,7 @@ class DNItemList extends Component {
                           isImp: true
                         }}
                         textBox={{
+                          decimal: { allowNegative: false },
                           value:
                             this.state.item_details === null
                               ? null
@@ -228,7 +232,10 @@ class DNItemList extends Component {
                             )
                           },
                           others: {
-                            type: "number"
+                            disabled:
+                              this.state.posted === "Y"
+                                ? true
+                                : this.state.itemEnter
                           }
                         }}
                       />
@@ -249,7 +256,10 @@ class DNItemList extends Component {
                             )
                           },
                           others: {
-                            disabled: this.state.posted === "Y" ? true : false
+                            disabled:
+                              this.state.posted === "Y"
+                                ? true
+                                : this.state.itemEnter
                           }
                         }}
                       />
@@ -266,7 +276,11 @@ class DNItemList extends Component {
                           name: "expiry_date"
                         }}
                         minDate={new Date()}
-                        disabled={this.state.posted === "Y" ? true : false}
+                        disabled={
+                          this.state.posted === "Y"
+                            ? true
+                            : this.state.itemEnter
+                        }
                         events={{
                           onChange: onDateTextEventHandaler.bind(
                             this,
@@ -286,6 +300,7 @@ class DNItemList extends Component {
                           isImp: true
                         }}
                         textBox={{
+                          decimal: { allowNegative: false },
                           value:
                             this.state.item_details === null
                               ? null
@@ -300,7 +315,10 @@ class DNItemList extends Component {
                             )
                           },
                           others: {
-                            type: "number"
+                            disabled:
+                              this.state.posted === "Y"
+                                ? true
+                                : this.state.itemEnter
                           }
                         }}
                       />
@@ -318,6 +336,7 @@ class DNItemList extends Component {
                           value: this.state.dn_quantity,
                           className: "txt-fld",
                           name: "dn_quantity",
+                          dontAllowKeys: ["-", "e"],
                           events: {
                             onChange: OnChangeDeliveryQty.bind(
                               this,
@@ -326,7 +345,10 @@ class DNItemList extends Component {
                             )
                           },
                           others: {
-                            type: "number"
+                            disabled:
+                              this.state.posted === "Y"
+                                ? true
+                                : this.state.itemEnter
                           }
                         }}
                       />
@@ -344,12 +366,19 @@ class DNItemList extends Component {
                           value: this.state.free_qty,
                           className: "txt-fld",
                           name: "free_qty",
+                          dontAllowKeys: ["-", "e"],
                           events: {
                             onChange: numberEventHandaler.bind(
                               this,
                               this,
                               context
                             )
+                          },
+                          others: {
+                            disabled:
+                              this.state.posted === "Y"
+                                ? true
+                                : this.state.itemEnter
                           }
                         }}
                       />

@@ -307,49 +307,54 @@ const SaveReceiptEnrty = $this => {
 const getCtrlCode = ($this, docNumber, row) => {
   AlgaehLoader({ show: true });
 
-  algaehApiCall({
-    uri: "/ReceiptEntry/getReceiptEntry",
-    module: "procurement",
-    method: "GET",
-    data: { grn_number: docNumber },
-    onSuccess: response => {
-      if (response.data.success) {
-        let data = response.data.records;
-        if (
-          $this.props.grn_number !== undefined &&
-          $this.props.grn_number.length !== 0
-        ) {
-          data.authorizeEnable = false;
-          data.ItemDisable = true;
-          data.ClearDisable = true;
-        }
-        data.saveEnable = true;
-        data.dataExitst = true;
+  let IOputs = ReceiptEntryInv.inputParam();
 
-        data.addedItem = true;
-        if (data.posted === "Y") {
-          data.postEnable = true;
-        } else {
-          data.postEnable = false;
+  IOputs.dataExitst = false;
+  $this.setState(IOputs, () => {
+    algaehApiCall({
+      uri: "/ReceiptEntry/getReceiptEntry",
+      module: "procurement",
+      method: "GET",
+      data: { grn_number: docNumber },
+      onSuccess: response => {
+        if (response.data.success) {
+          let data = response.data.records;
+          if (
+            $this.props.grn_number !== undefined &&
+            $this.props.grn_number.length !== 0
+          ) {
+            data.authorizeEnable = false;
+            data.ItemDisable = true;
+            data.ClearDisable = true;
+          }
+          data.saveEnable = true;
+          data.dataExitst = true;
+
+          data.addedItem = true;
+          if (data.posted === "Y") {
+            data.postEnable = true;
+          } else {
+            data.postEnable = false;
+          }
+          data.location_name = row.loc_description;
+          data.vendor_name = row.vendor_name;
+          $this.setState(data, () => {
+            getData($this);
+          });
+          AlgaehLoader({ show: false });
+
+          // $this.setState({ ...response.data.records });
         }
-        data.location_name = row.loc_description;
-        data.vendor_name = row.vendor_name;
-        $this.setState(data, () => {
-          getData($this);
-        });
         AlgaehLoader({ show: false });
-
-        // $this.setState({ ...response.data.records });
+      },
+      onFailure: error => {
+        AlgaehLoader({ show: false });
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
       }
-      AlgaehLoader({ show: false });
-    },
-    onFailure: error => {
-      AlgaehLoader({ show: false });
-      swalMessage({
-        title: error.message,
-        type: "error"
-      });
-    }
+    });
   });
 };
 

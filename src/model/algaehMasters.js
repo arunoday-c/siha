@@ -548,7 +548,6 @@ let getRoleBaseActiveModules = (req, res, next) => {
           let ResScreen = result[1];
 
           let outputArray = [];
-          // console.log("userIdentity:", req.userIdentity);
           if (ResModules.length > 0) {
             for (let i = 0; i < ResModules.length; i++) {
               const obj = {
@@ -2155,7 +2154,6 @@ let assignScreens = (req, res, next) => {
                     });
                   })
                   .catch(error => {
-                    console.log("error:", error);
                     _mysql.rollBackTransaction(() => {
                       next(error);
                     });
@@ -2164,7 +2162,6 @@ let assignScreens = (req, res, next) => {
                 //inserion error
 
                 _mysql.rollBackTransaction(() => {
-                  console.log("error3:", error);
                   next(error);
                 });
                 req.records = {
@@ -2176,7 +2173,6 @@ let assignScreens = (req, res, next) => {
               }
             })
             .catch(error => {
-              console.log("error4:", error);
               _mysql.rollBackTransaction(() => {
                 next(error);
               });
@@ -2184,14 +2180,12 @@ let assignScreens = (req, res, next) => {
         } else if (delRes !== null) {
           //commit
 
-          console.log("wwwww:", "wwwww");
           _mysql.commitTransaction(() => {
             _mysql.releaseConnection();
             req.records = delRes;
             next();
           });
         } else {
-          console.log("error99:", "error");
           // _mysql.rollBackTransaction(() => {
           //   next(error);
           // });
@@ -2345,7 +2339,6 @@ let method1 = (req, res, next) => {
       });
     })
     .catch(e => {
-      console.log("error", e);
       _mysql.rollBackTransaction(() => {
         next(e);
       });

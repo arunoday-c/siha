@@ -87,8 +87,10 @@ module.exports = {
           .executeQuery({
             query: `SELECT * from  hims_f_inventory_transfer_header \
           where hospital_id=? and from_location_id=? and to_location_id=? ${strQty};
-          select D.* from  hims_f_inventory_transfer_header H inner join  hims_f_inventory_transfer_detail D
-          on H.hims_f_inventory_transfer_header_id=D.transfer_header_id where hospital_id=?
+          select D.*,IM.item_description, IU.uom_description from  hims_f_inventory_transfer_header H inner join \
+          hims_f_inventory_transfer_detail D on H.hims_f_inventory_transfer_header_id = D.transfer_header_id \
+          inner join hims_d_inventory_item_master IM on D.item_id=IM.hims_d_inventory_item_master_id \
+          inner join hims_d_inventory_uom IU on D.uom_transferred_id=IU.hims_d_inventory_uom_id where hospital_id=?
           and H.from_location_id=? and H.to_location_id=? ${strQty};
           select S.* from  hims_f_inventory_transfer_header H
           inner join  hims_f_inventory_transfer_detail D on H.hims_f_inventory_transfer_header_id=D.transfer_header_id

@@ -146,7 +146,6 @@ const generateMaterialReqPhar = (data, rpt_name, rpt_desc) => {
 };
 
 const AuthorizeRequisitionEntry = ($this, authorize) => {
-  debugger;
   let auth_qty = Enumerable.from($this.state.pharmacy_stock_detail).any(
     w => parseFloat(w.authorize_quantity) === 0 || w.authorize_quantity === null
   );
@@ -165,6 +164,7 @@ const AuthorizeRequisitionEntry = ($this, authorize) => {
     authorize1 = "Y";
     authorize2 = "N";
   } else if (authorize === "authorize2") {
+    $this.state.authorize1 = "Y";
     $this.state.authorie2 = "Y";
     authorize1 = "Y";
     authorize2 = "Y";
