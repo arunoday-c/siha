@@ -465,6 +465,12 @@ class RegistrationPatient extends Component {
                           type: "success"
                         });
                       });
+                    } else {
+                      AlgaehLoader({ show: false });
+                      swalMessage({
+                        title: response.data.records.message,
+                        type: "error"
+                      });
                     }
                   },
                   onFailure: error => {
@@ -617,6 +623,12 @@ class RegistrationPatient extends Component {
                           title: "Done Successfully",
                           type: "success"
                         });
+                      });
+                    } else {
+                      AlgaehLoader({ show: false });
+                      swalMessage({
+                        title: response.data.records.message,
+                        type: "error"
                       });
                     }
                   },

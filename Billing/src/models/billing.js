@@ -758,7 +758,7 @@ module.exports = {
   },
 
   addCashHandover: (req, res, next) => {
-    console.log("addCashHandover");
+    //console.log("addCashHandover");
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
     // const utilities = new algaehUtilities();
@@ -766,8 +766,10 @@ module.exports = {
 
     try {
       let inputParam = { ...req.body };
-
+      // req.body.receipt_header_id
       // utilities.logger().log("inputParam Cash: ", inputParam);
+
+      // console.log("ident:",   req.userIdentity);
       if (
         inputParam.receiptdetails == null ||
         inputParam.receiptdetails.length == 0
@@ -777,9 +779,8 @@ module.exports = {
           "Please select atleast one payment mode."
         );
         next(genErr);
-      }
-      console.log("fff:", req.userIdentity.hospital_id);
-      if (
+        return;
+      } else if (
         req.userIdentity.group_type == "C" ||
         req.userIdentity.group_type == "FD" ||
         req.userIdentity.user_type == "C"
@@ -810,10 +811,7 @@ module.exports = {
             }
             new Promise((resolve, reject) => {
               try {
-                if (
-                  checkShiftStatus.length == null ||
-                  checkShiftStatus.length == ""
-                ) {
+                if (!checkShiftStatus.length > 0) {
                   _mysql
                     .executeQueryWithTransaction({
                       query:
@@ -938,12 +936,14 @@ module.exports = {
                   no_of_cheques += parseFloat(
                     selectCurrentCash[0].no_of_cheques
                   );
+
                   _mysql
                     .executeQuery({
                       query:
                         "update hims_f_cash_handover_detail set expected_cash=?,expected_card=?,\
                   expected_cheque=?,no_of_cheques=?,updated_date=?,updated_by=? where record_status='A' \
-                  and hims_f_cash_handover_detail_id=?;",
+                  and hims_f_cash_handover_detail_id=?;\
+                  update hims_f_receipt_header set cash_handover_detail_id=? where hims_f_receipt_header_id=?;",
                       values: [
                         expected_cash,
                         expected_card,
@@ -951,7 +951,9 @@ module.exports = {
                         no_of_cheques,
                         new Date(),
                         req.userIdentity.algaeh_d_app_user_id,
-                        hims_f_cash_handover_detail_id
+                        hims_f_cash_handover_detail_id,
+                        hims_f_cash_handover_detail_id,
+                        req.body.receipt_header_id
                       ],
                       printQuery: true
                     })
@@ -963,6 +965,14 @@ module.exports = {
                           next();
                         });
                       } else {
+
+                        req.records = {
+
+                          
+                            internal_error: false,
+                            message: ""
+                          
+                        };
                         next();
                       }
                     })
@@ -988,11 +998,21 @@ module.exports = {
         if (req.connection == null) {
           _mysql.commitTransaction(() => {
             _mysql.releaseConnection();
-            req.records = { mesage: "not a cahsier" };
+            req.records = {
+              internal_error: true,
+              mesage: "Current user is not a Cahsier"
+            };
             next();
           });
         } else {
-          next();
+          req.records = {
+            internal_error: true,
+            message: "Current user is not a Cahsier"
+          };
+          _mysql.rollBackTransaction(() => {
+           
+            next();
+          });
         }
       }
     } catch (e) {

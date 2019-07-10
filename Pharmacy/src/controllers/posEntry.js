@@ -17,6 +17,7 @@ import { updateIntoItemLocation } from "../models/commonFunction";
 const { addReceiptEntry, getReceiptEntry } = algaehPath(
   "algaeh-billing/src/models/receiptentry"
 );
+const { addCashHandover } = algaehPath("algaeh-billing/src/models/billing");
 import algaehUtilities from "algaeh-utilities/utilities";
 
 export default () => {
@@ -89,6 +90,24 @@ export default () => {
   api.post(
     "/addandpostPosEntry",
     addReceiptEntry,
+    addCashHandover,
+    (req, res, next) => {
+      if (
+        req.records.internal_error != undefined &&
+        req.records.internal_error == true
+      ) {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: false,
+
+          records: {
+            internal_error: req.records.internal_error,
+            message: req.records.message
+          }
+        });
+      } else {
+        next();
+      }
+    },
     addPosEntry,
     updateIntoItemLocation,
     (req, res, next) => {
@@ -117,6 +136,24 @@ export default () => {
   api.put(
     "/postPosEntry",
     addReceiptEntry,
+    addCashHandover,
+    (req, res, next) => {
+      if (
+        req.records.internal_error != undefined &&
+        req.records.internal_error == true
+      ) {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: false,
+
+          records: {
+            internal_error: req.records.internal_error,
+            message: req.records.message
+          }
+        });
+      } else {
+        next();
+      }
+    },
     updatePosEntry,
     updateIntoItemLocation,
     (req, res, next) => {
