@@ -14,8 +14,6 @@ const executePDF = function executePDFMethod(options) {
         input[para["name"]] = para["value"];
       });
 
-      // console.log("input:", input);
-
       let employee = "";
       let project = "";
       let groupBy = " PWP.employee_id ";
@@ -89,7 +87,6 @@ const executePDF = function executePDFMethod(options) {
         })
         .catch(error => {
           options.mysql.releaseConnection();
-          console.log("error", error);
         });
     } catch (e) {
       reject(e);

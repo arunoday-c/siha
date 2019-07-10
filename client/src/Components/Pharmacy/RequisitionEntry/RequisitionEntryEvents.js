@@ -146,7 +146,6 @@ const generateMaterialReqPhar = (data, rpt_name, rpt_desc) => {
 };
 
 const AuthorizeRequisitionEntry = ($this, authorize) => {
-  debugger;
   let auth_qty = Enumerable.from($this.state.pharmacy_stock_detail).any(
     w => parseFloat(w.authorize_quantity) === 0 || w.authorize_quantity === null
   );

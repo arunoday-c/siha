@@ -458,7 +458,7 @@ const radioChange = ($this, context, e) => {
 };
 
 const dateValidate = ($this, context, value, event) => {
-  debugger;
+  
   let inRange = moment(value).isBefore(
     moment($this.state.effective_start_date).format("YYYY-MM-DD")
   );

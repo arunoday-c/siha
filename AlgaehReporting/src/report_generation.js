@@ -33,7 +33,6 @@ const compile = async function(templateName, data) {
     //
     return comp;
   } catch (error) {
-    console.log("Error in compile", compile);
     return "";
   }
 
@@ -285,7 +284,6 @@ module.exports = {
           _inputParam["hospital_id"] = req.userIdentity["hospital_id"];
           _inputParam["crypto"] = req.userIdentity;
 
-          console.log("input:", _inputParam);
           const _reportCount = data[0].length;
           if (_reportCount > 0) {
             let _reportOutput = [];
@@ -322,7 +320,6 @@ module.exports = {
               _mysql
                 .executeQuery(queryObject)
                 .then(result => {
-                  //console.log("result", result);
                   const _path = path.join(
                     process.cwd(),
                     "algaeh_report_tool/templates/Output",
@@ -510,9 +507,7 @@ module.exports = {
                         result = resultReq;
                         startGenerate();
                       })
-                      .catch(error => {
-                        console.log("Error", error);
-                      });
+                      .catch(error => {});
                   } else {
                     if (
                       _data.data_manupulation != null &&
@@ -527,7 +522,6 @@ module.exports = {
                 })
                 .catch(error => {
                   _mysql.releaseConnection();
-                  console.log("Error In query execution : ", error);
                   res.status(400).send({ error: JSON.stringify(error) });
                 });
             }
@@ -730,9 +724,7 @@ module.exports = {
                             result = resultReq;
                             startGenerate();
                           })
-                          .catch(error => {
-                            console.log("Error", error);
-                          });
+                          .catch(error => {});
                       } else {
                         if (
                           resourceTemplate.data_manupulation != null &&
@@ -1098,9 +1090,7 @@ module.exports = {
                         result = resultReq;
                         startGenerate();
                       })
-                      .catch(error => {
-                        console.log("Error", error);
-                      });
+                      .catch(error => {});
                   } else {
                     if (
                       _data.data_manupulation != null &&
@@ -1127,7 +1117,6 @@ module.exports = {
           }
         })
         .catch(error => {
-          console.log("Error Showing :", error);
           _mysql.releaseConnection();
           res.writeHead(400, { "Content-Type": "text/plain" });
           res.write(error);

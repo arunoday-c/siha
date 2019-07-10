@@ -203,7 +203,6 @@ let selectSubDepartment = (req, res, next) => {
           " order by hims_d_sub_department_id desc",
         where.values,
         (error, result) => {
-          console.log("Result", result);
           releaseDBConnection(db, connection);
           if (error) {
             next(error);
@@ -348,7 +347,6 @@ let selectdoctors = (req, res, next) => {
       //     }
       //     // req.records = result;
       //     //sbdepartment = extend(sbdepartment, result.body);
-      //     // console.log(sbdepartment);
       //     //next();
       //   }
       // );

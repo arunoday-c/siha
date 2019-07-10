@@ -68,7 +68,6 @@ let apiAuth = (req, res, next) => {
       .then(result => {
         _mysql.releaseConnection();
         if (result.length > 0) {
-          // console.log("result", result);
           req.result = {
             success: true,
             results: result[0]["username"],

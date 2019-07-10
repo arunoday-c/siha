@@ -80,7 +80,7 @@ var compile = function () {
             _context.prev = 11;
             _context.t0 = _context["catch"](0);
 
-            console.log("Error in compile", compile);
+           
             return _context.abrupt("return", "");
 
           case 15:
@@ -316,7 +316,7 @@ module.exports = {
                   _inputParam["hospital_id"] = req.userIdentity["hospital_id"];
                   _inputParam["crypto"] = req.userIdentity;
 
-                  console.log("input:", _inputParam);
+                  
                   var _reportCount = data[0].length;
                   if (_reportCount > 0) {
                     var i;
@@ -352,7 +352,7 @@ module.exports = {
                         }
 
                         _mysql.executeQuery(queryObject).then(function (result) {
-                          //console.log("result", result);
+                         
                           var _path = _path3.default.join(process.cwd(), "algaeh_report_tool/templates/Output", _data.report_name + (0, _moment2.default)().format("YYYYMMDDHHmmss"));
                           var _reportType = "PDF";
                           var _supportingJS = _path3.default.join(process.cwd(), "algaeh_report_tool/templates", _data.report_name + ".js");
@@ -545,7 +545,7 @@ module.exports = {
                               result = resultReq;
                               startGenerate();
                             }).catch(function (error) {
-                              console.log("Error", error);
+                              
                             });
                           } else {
                             if (_data.data_manupulation != null && _data.data_manupulation != "") {
@@ -557,7 +557,7 @@ module.exports = {
                           }
                         }).catch(function (error) {
                           _mysql.releaseConnection();
-                          console.log("Error In query execution : ", error);
+                         
                           res.status(400).send({ error: JSON.stringify(error) });
                         });
                       };
@@ -571,12 +571,12 @@ module.exports = {
                   }
                 }).catch(function (error) {
                   _mysql.releaseConnection();
-                  console.log("Error in report table query execution : ", JSON.stringify(error));
+                 
                   res.status(400).send({ error: JSON.stringify(error) });
                 });
               } catch (e) {
                 _mysql.releaseConnection();
-                console.log("Error in try catch : ", JSON.stringify(error));
+                
                 res.status(400).send({ error: JSON.stringify(e) });
               }
 
@@ -780,7 +780,7 @@ module.exports = {
                               result = resultReq;
                               startGenerate();
                             }).catch(function (error) {
-                              console.log("Error", error);
+                              
                             });
                           } else {
                             if (resourceTemplate.data_manupulation != null && resourceTemplate.data_manupulation != "") {
@@ -1179,7 +1179,7 @@ module.exports = {
                             result = resultReq;
                             startGenerate();
                           }).catch(function (error) {
-                            console.log("Error", error);
+                            
                           });
                         } else {
                           if (_data.data_manupulation != null && _data.data_manupulation != "") {
@@ -1208,7 +1208,7 @@ module.exports = {
                     res.end();
                   }
                 }).catch(function (error) {
-                  console.log("Error Showing :", error);
+                
                   _mysql.releaseConnection();
                   res.writeHead(400, { "Content-Type": "text/plain" });
                   res.write(error);

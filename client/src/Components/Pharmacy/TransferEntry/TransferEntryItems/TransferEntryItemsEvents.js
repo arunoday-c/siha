@@ -150,7 +150,7 @@ const AddItems = ($this, context) => {
     ItemInput.pharmacy_stock_detail = _pharmacy_stock_detail;
     stock_detail.push(ItemInput);
   }
-  debugger;
+  
 
   $this.setState({
     stock_detail: stock_detail,
@@ -222,7 +222,7 @@ const deleteTransEntryDetail = ($this, context, row, rowId) => {
     cancelButtonText: "No"
   }).then(willDelete => {
     if (willDelete.value) {
-      debugger;
+      
       let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
       let stock_detail = $this.state.stock_detail;
 

@@ -378,7 +378,7 @@ const CancelGrid = ($this, context, cancelRow) => {
 
 const calculateAmount = ($this, row, e) => {
   // e = e || ctrl;
-  debugger;
+  
   if (e.target.value !== e.target.oldvalue) {
     let billdetails = $this.state.billdetails;
 

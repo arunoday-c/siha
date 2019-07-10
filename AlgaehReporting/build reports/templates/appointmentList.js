@@ -64,7 +64,7 @@ const executePDF = function executePDFMethod(options) {
           resolve({ groupdetails: data });
         })
         .catch(error => {
-          console.log("error", error);
+          
           options.mysql.releaseConnection();
         });
     } catch (e) {

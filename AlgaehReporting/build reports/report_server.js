@@ -146,11 +146,11 @@ app.use("/api/v1/pentahoreport", function (req, res) {
   var _outputFile = _jsonParam.outputFileName + "." + (_jsonParam.outputFileType == "EXCEL" ? "xlsx" : _jsonParam.outputFileType);
   exec("java -jar " + _path + "/pentaho_reporting.jar " + argumentString, function (err, stdout, stderr) {
     if (err) {
-      console.log(err);
+     
       res.writeHead(400, { "Content-Type": "text/plain" });
       res.end(err);
     }
-    console.log(stdout);
+   
     var _outFile = _path3.default.join(_path, "Output", _outputFile);
 
     _fs3.default.exists(_outFile, function (exists) {

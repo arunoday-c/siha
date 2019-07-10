@@ -61,7 +61,6 @@ if (salary.length > 0) {
       let gratuity = results[3];
       let accrual = results[4];
       let contributions = results[5];
-      //   console.log("accrual:",accrual);
 
       let sum_basic = 0;
       let sum_employe_plus_emplyr = 0;

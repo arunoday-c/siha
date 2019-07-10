@@ -12,8 +12,6 @@ const executePDF = function executePDFMethod(options) {
         input[para["name"]] = para["value"];
       });
 
-      console.log("input:", input);
-
       if (input.hospital_id > 0) {
         str += ` and AM.hospital_id= ${input.hospital_id}`;
       }
@@ -55,8 +53,6 @@ const executePDF = function executePDFMethod(options) {
         })
         .catch(error => {
           options.mysql.releaseConnection();
-
-          console.log("error", error);
         });
     } catch (e) {
       reject(e);

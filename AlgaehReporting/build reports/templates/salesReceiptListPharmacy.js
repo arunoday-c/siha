@@ -1,22 +1,22 @@
 const executePDF = function executePDFMethod(options) {
-	const _ = options.loadash;
-	return new Promise(function(resolve, reject) {
-		try {
-			let str = '';
-			let input = {};
-			let params = options.args.reportParams;
+  const _ = options.loadash;
+  return new Promise(function(resolve, reject) {
+    try {
+      let str = "";
+      let input = {};
+      let params = options.args.reportParams;
 
-			params.forEach((para) => {
-				input[para['name']] = para['value'];
-			});
+      params.forEach(para => {
+        input[para["name"]] = para["value"];
+      });
 
-			if (input.cashier_id > 0) {
-				str += ` and RH.created_by= ${input.cashier_id}`;
-			}
+      if (input.cashier_id > 0) {
+        str += ` and RH.created_by= ${input.cashier_id}`;
+      }
 
-			options.mysql
-				.executeQuery({
-					query: `	select RH.receipt_number,PH.pos_number,RH.created_date as collected_time,
+      options.mysql
+        .executeQuery({
+          query: `	select RH.receipt_number,PH.pos_number,RH.created_date as collected_time,
 		   date(RH.receipt_date) as receipt_date ,CASE WHEN PH.pos_customer_type='OP' THEN 
 		  P.full_name else PH.patient_name END as patient_full_name ,
 		  CASE WHEN PH.pos_customer_type='OP' THEN   P.patient_code else null END as mrn_no ,  
@@ -32,106 +32,114 @@ const executePDF = function executePDFMethod(options) {
 		  and  PH.hospital_id=? and   RH.hospital_id=? and PH.cancelled='N' and PH.posted='Y'and PH.location_id=?
 		  and date(RH.receipt_date) between date(?) and date(?)
 		   and RH.created_date between ? and ? ${str} ;`,
-					values: [
-						input.hospital_id,
-						input.hospital_id,
-						input.location_id,
-						input.from_date,
-						input.to_date,
-						input.from_date + ' ' + input.from_time,
-						input.to_date + ' ' + input.to_time
-					],
+          values: [
+            input.hospital_id,
+            input.hospital_id,
+            input.location_id,
+            input.from_date,
+            input.to_date,
+            input.from_date + " " + input.from_time,
+            input.to_date + " " + input.to_time
+          ],
 
-					printQuery: true
-				})
-				.then((rawResult) => {
-					let result = [];
+          printQuery: true
+        })
+        .then(rawResult => {
+          let result = [];
 
-					if (input.pay_type == 'CD' || input.pay_type == 'CH' || input.pay_type == 'CA') {
-						let ids = _.chain(rawResult)
-							.filter((f) => f.pay_type == input.pay_type)
-							.map((obj) => obj.hims_f_receipt_header_id)
-							.value();
+          if (
+            input.pay_type == "CD" ||
+            input.pay_type == "CH" ||
+            input.pay_type == "CA"
+          ) {
+            let ids = _.chain(rawResult)
+              .filter(f => f.pay_type == input.pay_type)
+              .map(obj => obj.hims_f_receipt_header_id)
+              .value();
 
-						ids.map((val) => {
-							result.push(..._.filter(rawResult, (f) => f.hims_f_receipt_header_id == val));
-						});
-					} else {
-						result = rawResult;
-					}
+            ids.map(val => {
+              result.push(
+                ..._.filter(rawResult, f => f.hims_f_receipt_header_id == val)
+              );
+            });
+          } else {
+            result = rawResult;
+          }
 
-					const data = _.chain(result)
-						.groupBy((g) => g.hims_f_receipt_header_id)
-						.map(function(item, key) {
-							const cash = _.chain(item)
-								.filter((f) => f.pay_type == 'CA')
-								.sumBy((s) => parseFloat(s.amount))
-								.value()
-								.toFixed(3);
+          const data = _.chain(result)
+            .groupBy(g => g.hims_f_receipt_header_id)
+            .map(function(item, key) {
+              const cash = _.chain(item)
+                .filter(f => f.pay_type == "CA")
+                .sumBy(s => parseFloat(s.amount))
+                .value()
+                .toFixed(3);
 
-							const card = _.chain(item)
-								.filter((f) => f.pay_type == 'CD')
-								.sumBy((s) => parseFloat(s.amount))
-								.value()
-								.toFixed(3);
-							const check = _.chain(item)
-								.filter((f) => f.pay_type == 'CH')
-								.sumBy((s) => parseFloat(s.amount))
-								.value()
-								.toFixed(3);
-							return {
-								receipt_number: item[0]['receipt_number'],
-								pos_number: item[0]['pos_number'],
-								receipt_date: item[0]['receipt_date'],
-								patient_full_name: item[0]['patient_full_name'],
-								mrn_no: item[0]['mrn_no'],
-								total_amount: item[0]['total_amount'],
-								cash: cash,
-								card: card,
-								check: check,
-								cashier: item[0]['cashier'],
-								collected_time: item[0]['collected_time']
-							};
-						})
-						.value();
+              const card = _.chain(item)
+                .filter(f => f.pay_type == "CD")
+                .sumBy(s => parseFloat(s.amount))
+                .value()
+                .toFixed(3);
+              const check = _.chain(item)
+                .filter(f => f.pay_type == "CH")
+                .sumBy(s => parseFloat(s.amount))
+                .value()
+                .toFixed(3);
+              return {
+                receipt_number: item[0]["receipt_number"],
+                pos_number: item[0]["pos_number"],
+                receipt_date: item[0]["receipt_date"],
+                patient_full_name: item[0]["patient_full_name"],
+                mrn_no: item[0]["mrn_no"],
+                total_amount: item[0]["total_amount"],
+                cash: cash,
+                card: card,
+                check: check,
+                cashier: item[0]["cashier"],
+                collected_time: item[0]["collected_time"]
+              };
+            })
+            .value();
 
-					const total_cash = _.chain(result)
-						.filter((f) => f.pay_type == 'CA')
-						.sumBy((s) => parseFloat(s.amount))
-						.value()
-						.toFixed(3);
+          const total_cash = _.chain(result)
+            .filter(f => f.pay_type == "CA")
+            .sumBy(s => parseFloat(s.amount))
+            .value()
+            .toFixed(3);
 
-					const total_card = _.chain(result)
-						.filter((f) => f.pay_type == 'CD')
-						.sumBy((s) => parseFloat(s.amount))
-						.value()
-						.toFixed(3);
+          const total_card = _.chain(result)
+            .filter(f => f.pay_type == "CD")
+            .sumBy(s => parseFloat(s.amount))
+            .value()
+            .toFixed(3);
 
-					const total_check = _.chain(result)
-						.filter((f) => f.pay_type == 'CH')
-						.sumBy((s) => parseFloat(s.amount))
-						.value()
-						.toFixed(3);
-					const total_sum = parseFloat(total_cash) + parseFloat(total_card) + parseFloat(total_check);
+          const total_check = _.chain(result)
+            .filter(f => f.pay_type == "CH")
+            .sumBy(s => parseFloat(s.amount))
+            .value()
+            .toFixed(3);
+          const total_sum =
+            parseFloat(total_cash) +
+            parseFloat(total_card) +
+            parseFloat(total_check);
 
-					const output = {
-						details: data,
-						total_cash: total_cash,
-						total_card: total_card,
-						total_check: total_check,
-						total_sum: total_sum.toFixed(3)
-					};
-					resolve(output);
-				})
-				.catch((error) => {
-					options.mysql.releaseConnection();
-					console.log('error', error);
-				});
+          const output = {
+            details: data,
+            total_cash: total_cash,
+            total_card: total_card,
+            total_check: total_check,
+            total_sum: total_sum.toFixed(3)
+          };
+          resolve(output);
+        })
+        .catch(error => {
+          options.mysql.releaseConnection();
+        });
 
-			//----------------------------------
-		} catch (e) {
-			reject(e);
-		}
-	});
+      //----------------------------------
+    } catch (e) {
+      reject(e);
+    }
+  });
 };
 module.exports = { executePDF };

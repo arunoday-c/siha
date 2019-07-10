@@ -108,7 +108,7 @@ let addPatientPrescriptionBAckup = (req, res, next) => {
                     })
                     .ToArray();
 
-                  console.log("services...", services.length);
+                  
                   if (services.length > 0) {
                     servicesForPreAproval.push(input.patient_id);
                     servicesForPreAproval.push(input.provider_id);
@@ -252,7 +252,7 @@ let addPatientPrescriptionBAckup = (req, res, next) => {
 
 //created by irfan: to add Patient Prescription
 let addPatientPrescription = (req, res, next) => {
-  console.log("addPatientPrescription");
+  
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -359,7 +359,6 @@ let addPatientPrescription = (req, res, next) => {
                           releaseDBConnection(db, connection);
                           next(error);
                         }
-                        // console.log("detail_res:", detail_res);
 
                         let insertArr = [];
                         for (let i = 0; i < detail_res.length; i++) {
@@ -421,7 +420,7 @@ let addPatientPrescription = (req, res, next) => {
                             ],
                             (error, resultPreAprvl) => {
                               if (error) {
-                                console.log("Error 1 Here result ", error);
+                                
                                 connection.rollback(() => {
                                   releaseDBConnection(db, connection);
                                   next(error);
@@ -445,7 +444,6 @@ let addPatientPrescription = (req, res, next) => {
                             }
                           );
                         } else {
-                          console.log("Commit result ");
                           connection.commit(error => {
                             if (error) {
                               connection.rollback(() => {
@@ -464,7 +462,6 @@ let addPatientPrescription = (req, res, next) => {
                       }
                     );
                   } else {
-                    console.log("Else: ");
 
                     connection.commit(error => {
                       if (error) {
