@@ -868,7 +868,7 @@ class TransferEntryItems extends Component {
                                   />
                                 ),
                                 displayTemplate: row => {
-                                  debugger;
+                                  
                                   return (
                                     <span>
                                       {row.expiry_date !== null

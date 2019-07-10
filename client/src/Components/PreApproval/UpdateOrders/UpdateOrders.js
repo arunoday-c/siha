@@ -31,7 +31,6 @@ export default class VerifyOrders extends PureComponent {
   };
 
   componentWillReceiveProps(nextProps) {
-    debugger;
     if (nextProps.selected_services !== null) {
       let InputOutput = nextProps.selected_services;
       // for (let i = 0; i < InputOutput.services_details.length; i++) {

@@ -467,7 +467,7 @@ class RequisitionItems extends Component {
                                 />
                               ),
                               displayTemplate: row => {
-                                debugger;
+                                
                                 return (
                                   <span>
                                     {row.to_qtyhand === null

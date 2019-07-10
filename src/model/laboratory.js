@@ -80,9 +80,7 @@ let getLabOrderedServices = (req, res, next) => {
             : " AND " + where.condition),
         where.values
       );
-      console.log("-----------------------------------");
-      console.log("MyQuery :", queryCondition);
-      console.log("-----------------------------------");
+     
       db.query(
         queryCondition,
 

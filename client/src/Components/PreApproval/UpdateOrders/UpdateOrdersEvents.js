@@ -6,7 +6,6 @@ const UpdateOrders = ($this, row) => {
   let _index = services_details.indexOf(row);
 
   if (row.apprv_status === "AP" || row.apprv_status === "RJ") {
-    debugger;
     if ($this.props.openFrom === "S") {
       dataSend = [
         {

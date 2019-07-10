@@ -36,6 +36,23 @@ export default () => {
     newReceiptData,
     addBillData,
     addCashHandover,
+    (req, res, next) => {
+      if (
+        req.records.internal_error != undefined &&
+        req.records.internal_error == true
+      ) {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: false,
+
+          records: {
+            internal_error: req.records.internal_error,
+            message: req.records.message
+          }
+        });
+      } else {
+        next();
+      }
+    },
     addEpisodeEncounterData,
 
     (req, res, next) => {
@@ -54,6 +71,22 @@ export default () => {
     newReceiptData,
     addBillData,
     addCashHandover,
+    (req, res, next) => {
+      if (
+        req.records.internal_error != undefined &&
+        req.records.internal_error == true
+      ) {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: false,
+          records: {
+            internal_error: req.records.internal_error,
+            message: req.records.message
+          }
+        });
+      } else {
+        next();
+      }
+    },
     addEpisodeEncounterData,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({

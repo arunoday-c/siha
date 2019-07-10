@@ -102,7 +102,6 @@ const executePDF = function executePDFMethod(options) {
                     item["hims_f_procurement_dn_detail_id"]
                   );
                 });
-                //   console.log("batches:", batches);
                 delivery_items.push({ ...item, batches });
               });
 
@@ -130,7 +129,7 @@ const executePDF = function executePDFMethod(options) {
         })
         .catch(error => {
           options.mysql.releaseConnection();
-          console.log("error", error);
+          
         });
     } catch (e) {
       reject(e);

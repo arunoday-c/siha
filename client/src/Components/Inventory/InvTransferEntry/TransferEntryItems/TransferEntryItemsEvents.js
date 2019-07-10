@@ -216,7 +216,7 @@ const deleteTransEntryDetail = ($this, context, row, rowId) => {
     cancelButtonText: "No"
   }).then(willDelete => {
     if (willDelete.value) {
-      debugger;
+      
       let inventory_stock_detail = $this.state.inventory_stock_detail;
       let stock_detail = $this.state.stock_detail;
 

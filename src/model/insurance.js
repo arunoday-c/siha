@@ -1090,8 +1090,7 @@ let addPlanAndPolicy = (req, res, next) => {
 
                   //code
                 }
-                console.log("Defined price from ", obj.price_from);
-                console.log("emp m ", obj.employer);
+
                 //----------------------------------end of service insurance
 
                 connection.query(

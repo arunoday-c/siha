@@ -335,6 +335,11 @@ const SavePosCreidt = $this => {
                 title: "Done Successfully",
                 type: "success"
               });
+            } else {
+              swalMessage({
+                title: response.data.records.message,
+                type: "error"
+              });
             }
           },
           onFailure: error => {

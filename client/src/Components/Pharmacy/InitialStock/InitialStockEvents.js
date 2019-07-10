@@ -81,7 +81,7 @@ const itemchangeText = ($this, e, ctrl) => {
   let name = ctrl;
   let value = e.hims_d_item_master_id;
   getItemUom($this, e.purchase_cost);
-  debugger;
+
   $this.setState({
     [name]: value,
     item_category_id: e.category_id,
@@ -104,7 +104,6 @@ const AddItems = $this => {
     alertTypeIcon: "warning",
     querySelector: "data-validate='InvIntialStock'",
     onSuccess: () => {
-      debugger;
       if ($this.state.quantity === 0) {
         swalMessage({
           title: "Quantity, cannot be zero.",

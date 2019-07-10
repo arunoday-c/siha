@@ -698,6 +698,12 @@ const PostPosEntry = $this => {
                 });
 
                 AlgaehLoader({ show: false });
+              } else {
+                AlgaehLoader({ show: false });
+                swalMessage({
+                  title: response.data.records.message,
+                  type: "error"
+                });
               }
             },
             onFailure: error => {
@@ -831,7 +837,6 @@ const getMedicationList = $this => {
     },
     afterSuccess: data => {
       if (data.length > 0) {
-        debugger;
         AddItems($this, data);
       } else {
         $this.setState({

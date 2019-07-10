@@ -81,7 +81,6 @@ class RegistrationPatient extends Component {
     ) {
       getCtrlCode(this, this.props.patient_code);
     } else {
-      debugger;
       const { patient_details } = this.props;
       if (patient_details) {
         this.setState(
@@ -477,6 +476,12 @@ class RegistrationPatient extends Component {
                               type: "success"
                             });
                           });
+                        } else {
+                          AlgaehLoader({ show: false });
+                          swalMessage({
+                            type: "error",
+                            title: response.data.records.message
+                          });
                         }
                       },
                       onFailure: error => {
@@ -600,6 +605,12 @@ class RegistrationPatient extends Component {
                               title: "Done Successfully",
                               type: "success"
                             });
+                          });
+                        } else {
+                          AlgaehLoader({ show: false });
+                          swalMessage({
+                            type: "error",
+                            title: response.data.records.message
                           });
                         }
                       },

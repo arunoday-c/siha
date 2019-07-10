@@ -57,7 +57,6 @@ class PatientDetails extends PureComponent {
   };
 
   render() {
-    debugger;
     return (
       <React.Fragment>
         <MyContext.Consumer>

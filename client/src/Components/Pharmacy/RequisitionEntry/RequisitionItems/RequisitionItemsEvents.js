@@ -14,7 +14,6 @@ const UomchangeTexts = ($this, ctrl, e) => {
 };
 
 const numberchangeTexts = ($this, context, e) => {
-  debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value === "" ? 0 : e.target.value;
   if (value < 0) {
@@ -287,7 +286,6 @@ const updatePosDetail = ($this, context, row) => {
 };
 
 const onchangegridcol = ($this, context, row, e) => {
-  debugger;
   let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -333,7 +331,6 @@ const getItemLocationStock = ($this, context, value) => {
       mappingName: "itemBatch"
     },
     afterSuccess: data => {
-      debugger;
       if (data.length > 0) {
         let total_quantity = 0;
         for (let i = 0; i < data.length; i++) {

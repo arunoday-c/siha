@@ -38,7 +38,6 @@ let getPreAprovalList = (req, res, next) => {
     delete req.query.doctor_id;
     delete req.query.patient_id;
 
-    console.log("req query:", req.query);
 
     let where = whereCondition(extend(preAprovalWhere, req.query));
 
@@ -113,7 +112,6 @@ let getMedicationAprovalList = (req, res, next) => {
     delete req.query.doctor_id;
     delete req.query.patient_id;
 
-    console.log("req query:", req.query);
 
     let where = whereCondition(extend(preAprovalWhere, req.query));
 

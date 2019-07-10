@@ -66,7 +66,6 @@ export default class FormGroup extends PureComponent {
   }
   onKeyPressHandler(evt) {
     try {
-      debugger;
       if (evt.keyCode === 69) return false;
 
       if (evt.target.min !== "" && !isNaN(evt.target.value)) {
@@ -116,7 +115,6 @@ export default class FormGroup extends PureComponent {
   }
 
   onKeyDowneventHadaler(evt) {
-    debugger;
     if (
       this.props.textBox.dontAllowKeys !== undefined &&
       Array.isArray(this.props.textBox.dontAllowKeys)

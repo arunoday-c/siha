@@ -26,7 +26,7 @@ const executePDF = function executePDFMethod(options) {
             str += ` and V.doctor_id= ${input.provider_id}`;
           }
 
-          qry = ` select A.receipt_number , receipt_date ,patient_code,full_name ,sub_department_code,
+          qry = ` select A.receipt_number , date_format(receipt_date,'%d-%m-%Y') as receipt_date ,patient_code,full_name ,sub_department_code,
           sub_department_name,employee_code,doctor_name,sum(cash) as cash ,sum(card) as card,sum(cheque) as cheque,sum(amount)as total
            from(select hims_f_billing_header_id,BH.patient_id,BH.visit_id ,
           RH.hims_f_receipt_header_id, RH.receipt_number, 
@@ -49,7 +49,7 @@ const executePDF = function executePDFMethod(options) {
           break;
 
         case "AD":
-          qry = ` select pay_type,amount,patient_code,full_name ,receipt_date,receipt_number,
+          qry = ` select pay_type,amount,patient_code,full_name ,date_format(receipt_date,'%d-%m-%Y') as receipt_date,receipt_number,
           sum(cash) as cash ,sum(card) as card,sum(cheque) as cheque,sum(amount)as total
           from   (select PA.hims_f_patient_id,PA.hims_f_receipt_header_id,PA.transaction_type,
           RH.receipt_number,  receipt_date, RD.pay_type,RD.amount,P.patient_code,P.full_name ,
@@ -94,7 +94,7 @@ const executePDF = function executePDFMethod(options) {
         //       break;
 
         case "OPC":
-          qry = `select credit_number,receipt_number,receipt_date,pay_type,amount,patient_code ,full_name 
+          qry = `select credit_number,receipt_number,date_format(receipt_date,'%d-%m-%Y') as receipt_date,pay_type,amount,patient_code ,full_name 
          ,sum(cash) as cash ,sum(card) as card,sum(cheque) as cheque,sum(amount)as total
          from ( select C.credit_number,C.patient_id ,RH.hims_f_receipt_header_id,RH.receipt_number,  receipt_date,
          RD.hims_f_receipt_details_id,RD.pay_type,RD.amount,P.patient_code,P.full_name ,
@@ -173,7 +173,7 @@ const executePDF = function executePDFMethod(options) {
         })
         .catch(error => {
           options.mysql.releaseConnection();
-          console.log("error", error);
+          
         });
     } catch (e) {
       reject(e);

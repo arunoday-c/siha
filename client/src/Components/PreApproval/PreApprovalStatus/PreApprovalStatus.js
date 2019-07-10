@@ -24,7 +24,6 @@ export default class PreApprovalStatus extends PureComponent {
   };
 
   render() {
-    debugger;
     let services_details =
       this.props.selected_services !== null
         ? _.filter(this.props.selected_services.services_details, f => {

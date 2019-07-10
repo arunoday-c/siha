@@ -191,8 +191,6 @@ module.exports = {
           req.body.transaction_id = headerResult.insertId;
           req.body.year = year;
           req.body.period = period;
-          console.log("headerResult: ", headerResult.insertId);
-          console.log("po_entry_detail: ", input.po_entry_detail.length);
           let dn_entry_detail = [];
 
           for (let i = 0; i < input.po_entry_detail.length; i++) {

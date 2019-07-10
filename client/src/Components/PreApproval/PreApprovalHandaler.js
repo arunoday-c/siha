@@ -89,7 +89,7 @@ const getPreAprovalList = $this => {
         let pre_approval_Services = Enumerable.from(data)
           .groupBy("$.patient_id", null, (k, g) => {
             let firstRecordSet = Enumerable.from(g).firstOrDefault();
-            debugger;
+
             return {
               patient_code: firstRecordSet.patient_code,
               full_name: firstRecordSet.full_name,

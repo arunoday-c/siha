@@ -10,7 +10,6 @@ let searchData = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   try {
     let inputParam = req.query;
-    //  console.log("Query based Parameters", inputParam);
     if (inputParam.searchName == null || inputParam.searchName == "")
       next(
         httpStatus.generateError(
