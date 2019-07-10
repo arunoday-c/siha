@@ -123,37 +123,26 @@ class PatientDetails extends PureComponent {
                 },
                 onChange: null
               }}
-            />{" "}
-            <AlagehAutoComplete
-              div={{ className: "col" }}
-              label={{
-                fieldName: "department_id"
-              }}
-              selector={{
-                name: "department_id",
-                className: "select-fld",
-                value: this.state.department_id,
-                dataSource: {
-                  textField: "insurance_provider_name",
-                  valueField: "hims_d_insurance_provider_id",
-                  data:
-                    this.props.insurarProviders === undefined
-                      ? []
-                      : this.props.insurarProviders
-                },
-                others: {
-                  disabled: true
-                },
-                onChange: null
-              }}
             />
+            <div className="col">
+              <AlgaehLabel
+                label={{
+                  fieldName: "department_id"
+                }}
+              />
+              <h6>
+                {this.state.sub_department_name
+                  ? this.state.sub_department_name
+                  : "--------"}
+              </h6>
+            </div>
             <div className="col">
               <AlgaehLabel
                 label={{
                   fieldName: "card_no"
                 }}
               />
-              <h6>{this.state.card_no ? this.state.card_no : "Card No."}</h6>
+              <h6>{this.state.card_no ? this.state.card_no : "--------"}</h6>
             </div>
           </div>
         </div>
