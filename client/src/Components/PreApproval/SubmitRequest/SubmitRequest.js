@@ -35,9 +35,9 @@ export default class SubmitRequest extends PureComponent {
   componentWillReceiveProps(nextProps) {
     if (nextProps.selected_services !== null) {
       let InputOutput = nextProps.selected_services;
-      for (let i = 0; i < InputOutput.services_details.length; i++) {
-        InputOutput.services_details[i].checkselect = 1;
-      }
+      // for (let i = 0; i < InputOutput.services_details.length; i++) {
+      //   InputOutput.services_details[i].checkselect = 1;
+      // }
       this.setState({ ...this.state, ...InputOutput });
     }
   }

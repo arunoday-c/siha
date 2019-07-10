@@ -990,7 +990,7 @@ const calculateAmount = ($this, context, row, ctrl, e) => {
       discount_percentage:
         e.target.name === "discount_amount" ? 0 : row.discount_percentage,
 
-      insured: $this.state.insured,
+      insured: row.insurance_yesno,
       primary_insurance_provider_id: $this.state.insurance_provider_id,
       primary_network_office_id: $this.state.hims_d_insurance_network_office_id,
       primary_network_id: $this.state.network_id,

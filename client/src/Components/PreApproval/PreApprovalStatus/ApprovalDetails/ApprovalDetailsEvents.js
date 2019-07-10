@@ -89,4 +89,25 @@ const updateServices = ($this, context, row) => {
 };
 const deleteServices = ($this, context, row) => {};
 
-export { texthandle, datehandle, updateServices, deleteServices, numberhandle };
+const dateValidate = ($this, row, value, event) => {
+  let inRange = moment(value).isBefore(moment().format("YYYY-MM-DD"));
+  if (inRange) {
+    swalMessage({
+      title: "Valid Upto date cannot be past Date.",
+      type: "warning"
+    });
+    event.target.focus();
+    row[event.target.name] = null;
+    row.update();
+    $this.setState({ append: !$this.state.append });
+  }
+};
+
+export {
+  texthandle,
+  datehandle,
+  updateServices,
+  deleteServices,
+  numberhandle,
+  dateValidate
+};

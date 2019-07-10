@@ -113,6 +113,7 @@ class PreApproval extends Component {
       },
       () => {
         getPreAprovalList(this, this);
+        getMedicationAprovalList(this, this);
       }
     );
   }
@@ -181,30 +182,6 @@ class PreApproval extends Component {
   render() {
     return (
       <div className="hptl-pre-approval-details">
-        {/* <BreadCrumb
-          title={
-            <AlgaehLabel label={{ fieldName: "form_name", align: "ltr" }} />
-          }
-          breadStyle={this.props.breadStyle}
-          pageNavPath={[
-            {
-              pageName: (
-                <AlgaehLabel
-                  label={{
-                    fieldName: "form_home",
-                    align: "ltr"
-                  }}
-                />
-              )
-            },
-            {
-              pageName: (
-                <AlgaehLabel label={{ fieldName: "form_name", align: "ltr" }} />
-              )
-            }
-          ]}
-        /> */}
-
         <div className="row inner-top-search" style={{ paddingBottom: "10px" }}>
           <div className="col-lg-12">
             <div className="row">
@@ -217,94 +194,6 @@ class PreApproval extends Component {
                 }}
                 value={this.state.date}
               />
-
-              {/*<AlagehAutoComplete
-                div={{ className: "col" }}
-                label={{
-                  fieldName: "insurance_id"
-                }}
-                selector={{
-                  name: "insurance_id",
-                  className: "select-fld",
-                  value: this.state.insurance_id,
-                  dataSource: {
-                    textField: "insurance_provider_name",
-                    valueField: "hims_d_insurance_provider_id",
-                    data:
-                      this.props.insurarProviders === undefined
-                        ? []
-                        : this.props.insurarProviders
-                  },
-                  onChange: texthandle.bind(this, this)
-                }}
-              />
-
-              <AlagehAutoComplete
-                div={{ className: "col" }}
-                label={{
-                  fieldName: "dis_status"
-                }}
-                selector={{
-                  name: "dis_status",
-                  className: "select-fld",
-                  value: this.state.dis_status,
-                  dataSource: {
-                    textField: "name",
-                    valueField: "value",
-                    data: variableJson.FORMAT_APPSTATUS
-                  },
-                  onChange: texthandle.bind(this, this)
-                }}
-              />
-
-              <AlagehAutoComplete
-                div={{ className: "col" }}
-                label={{
-                  fieldName: "doctor_id"
-                }}
-                selector={{
-                  name: "doctor_id",
-                  className: "select-fld",
-                  value: this.state.doctor_id,
-                  dataSource: {
-                    textField: "full_name",
-                    valueField: "employee_id",
-                    data:
-                      this.props.deptanddoctors === undefined
-                        ? []
-                        : this.props.deptanddoctors.doctors
-                  },
-                  onChange: texthandle.bind(this, this)
-                }}
-              />
-
-              <AlagehFormGroup
-                div={{ className: "col" }}
-                label={{
-                  fieldName: "patient_code"
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "patient_code",
-                  value: this.state.patient_code,
-                  events: {
-                    onChange: texthandle.bind(this, this)
-                  },
-                  disabled: true
-                }}
-              />
-
-              <div className="col-lg-1 form-group print_actions">
-                <span
-                  className="fas fa-search"
-                  style={{
-                    fontSize: " 1.2rem",
-                    marginTop: "6px",
-                    paddingBottom: "10px"
-                  }}
-                  onClick={PatientSearch.bind(this, this)}
-                />
-              </div>*/}
             </div>
           </div>
         </div>
@@ -341,6 +230,18 @@ class PreApproval extends Component {
                                 />
 
                                 <i
+                                  style={{
+                                    pointerEvents:
+                                      row.apprv_status === "AP" ||
+                                      row.apprv_status === "RJ"
+                                        ? ""
+                                        : "none",
+                                    opacity:
+                                      row.apprv_status === "AP" ||
+                                      row.apprv_status === "RJ"
+                                        ? ""
+                                        : "0.1"
+                                  }}
                                   className="fas fa-check"
                                   onClick={VerifyOrderModel.bind(
                                     this,
@@ -374,6 +275,7 @@ class PreApproval extends Component {
                             minWidth: 150
                           }
                         },
+
                         {
                           fieldName: "full_name",
                           label: (
@@ -518,6 +420,18 @@ class PreApproval extends Component {
                                 />
 
                                 <i
+                                  style={{
+                                    pointerEvents:
+                                      row.apprv_status === "AP" ||
+                                      row.apprv_status === "RJ"
+                                        ? ""
+                                        : "none",
+                                    opacity:
+                                      row.apprv_status === "AP" ||
+                                      row.apprv_status === "RJ"
+                                        ? ""
+                                        : "0.1"
+                                  }}
                                   className="fas fa-check"
                                   onClick={VerifyOrderModel.bind(
                                     this,

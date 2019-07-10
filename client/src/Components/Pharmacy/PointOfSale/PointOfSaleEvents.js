@@ -698,6 +698,12 @@ const PostPosEntry = $this => {
                 });
 
                 AlgaehLoader({ show: false });
+              } else {
+                AlgaehLoader({ show: false });
+                swalMessage({
+                  title: response.data.records.message,
+                  type: "error"
+                });
               }
             },
             onFailure: error => {

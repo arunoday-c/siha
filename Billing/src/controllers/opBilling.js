@@ -1,6 +1,10 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import { newReceiptData, addBillData } from "../models/billing";
+import {
+  newReceiptData,
+  addBillData,
+  addCashHandover
+} from "../models/billing";
 import {
   addOpBIlling,
   updateOrderedServicesBilled,
@@ -26,6 +30,24 @@ export default () => {
     addOpBIlling,
     newReceiptData,
     addBillData,
+    addCashHandover,
+    (req, res, next) => {
+      if (
+        req.records.internal_error != undefined &&
+        req.records.internal_error == true
+      ) {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: false,
+
+          records: {
+            internal_error: req.records.internal_error,
+            message: req.records.message
+          }
+        });
+      } else {
+        next();
+      }
+    },
     updateOrderedServicesBilled,
     updateOrderedConsumablessBilled,
     updateLabOrderedBilled,
