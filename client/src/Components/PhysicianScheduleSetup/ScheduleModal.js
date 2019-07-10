@@ -66,25 +66,6 @@ export default function ScheduleModal(props) {
               <input type="checkbox" id="default_slot" />
               <span>Set Default Slot</span>
             </div> */}
-                <AlagehAutoComplete
-                  div={{ className: "col-3" }}
-                  label={{
-                    fieldName: "sel_slot_time",
-                    isImp: true
-                  }}
-                  selector={{
-                    name: "slot",
-                    className: "select-fld",
-                    value: props.state.slot,
-
-                    dataSource: {
-                      textField: "name",
-                      valueField: "value",
-                      data: GlobalVariables.SLOTS
-                    },
-                    onChange: props.dropDownHandler
-                  }}
-                />
               </div>
               <div className="row">
                 <div className="col-6">
@@ -93,7 +74,7 @@ export default function ScheduleModal(props) {
                   </label>
                   <div className="row">
                     <AlgaehDateHandler
-                      div={{ className: "col" }}
+                      div={{ className: "col-6" }}
                       label={{ forceLabel: "From Date", isImp: true }}
                       textBox={{
                         className: "txt-fld",
@@ -106,7 +87,7 @@ export default function ScheduleModal(props) {
                       minDate={new Date()}
                     />
                     <AlgaehDateHandler
-                      div={{ className: "col" }}
+                      div={{ className: "col-6" }}
                       label={{ forceLabel: "To Date", isImp: true }}
                       textBox={{
                         className: "txt-fld",
@@ -338,6 +319,28 @@ export default function ScheduleModal(props) {
             </div>
             {props.state.openEdit ? null : (
               <div className="col-3 divInnerRight">
+                <div className="row">
+                  {" "}
+                  <AlagehAutoComplete
+                    div={{ className: "col-12" }}
+                    label={{
+                      fieldName: "sel_slot_time",
+                      isImp: true
+                    }}
+                    selector={{
+                      name: "slot",
+                      className: "select-fld",
+                      value: props.state.slot,
+
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: GlobalVariables.SLOTS
+                      },
+                      onChange: props.dropDownHandler
+                    }}
+                  />
+                </div>
                 <div className="row">
                   <div className="col">
                     <label>Doctors</label>

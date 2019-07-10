@@ -230,7 +230,7 @@ class PhySchSetup extends Component {
             data.provider_id
           );
           swalMessage({
-            title: "Schedule updated successfully . .",
+            title: "Schedule Updated Successfully",
             type: "success"
           });
         }
@@ -251,13 +251,14 @@ class PhySchSetup extends Component {
       .toArray();
 
     swal({
-      title: "Delete Schedule: " + data.description + "?",
+      title: "Delete Schedule?",
+      text: data.description,
       type: "warning",
       showCancelButton: true,
       confirmButtonText: "Delete",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
+      cancelButtonText: "Cancel"
     }).then(willDelete => {
       if (willDelete.value) {
         algaehApiCall({
@@ -275,29 +276,31 @@ class PhySchSetup extends Component {
           onSuccess: response => {
             if (response.data.success) {
               swalMessage({
-                title: "Record updated successfully",
+                title: "Schedule Deleted Successfully",
                 type: "success"
               });
               this.clearState();
             } else {
               swalMessage({
-                title: response.data.records.message,
+                // title: response.data.records.message,
+                title: "Network Error, Try Again",
                 type: "error"
               });
             }
           },
           onFailure: error => {
             swalMessage({
-              title: error.message,
+              // title: error.message,
+              title: "Network Error, Try Again",
               type: "error"
             });
           }
         });
       } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
-        });
+        // swalMessage({
+        //   title: "Delete request cancelled",
+        //   type: "error"
+        // });
       }
     });
   }
@@ -345,16 +348,23 @@ class PhySchSetup extends Component {
           })
       );
     } else if (this.state.description.length === 0) {
-      this.setState({
-        description_error: true,
-        description_error_text: "Please Enter the Description"
-      });
+      this.setState(
+        {
+          description_error: true,
+          description_error_text: "Please Enter the Description"
+        },
+        () =>
+          swalMessage({
+            title: "Please enter the description",
+            type: "warning"
+          })
+      );
     } else if (this.state.schedule_detail.length === 0) {
       swalMessage({
         title: "Please Select Doctors to add to this schedule.",
         type: "warning"
       });
-    } else if (this.state.slot.length === 0) {
+    } else if (this.state.openScheduler && this.state.slot.length === 0) {
       swalMessage({
         title: "Please Select a Slot.",
         type: "warning"

@@ -75,8 +75,8 @@
   padding-top: 5px;
 }
 .physicianList {
-  min-height: 60vh;
-  max-height: 60vh;
+  min-height: 55vh;
+  max-height: 55vh;
   padding: 0;
   margin: 0;
   border: 1px solid #ccc;
@@ -192,8 +192,7 @@
 .daysSpan {
   margin-top: 5px;
   span {
-    border: 1px solid #ccc;
-    padding: 3px 5px;
+    padding-right: 5px;
     text-align: center;
     font-size: 1rem;
   }
