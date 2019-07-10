@@ -353,7 +353,6 @@ class UpdatePatientForm extends Component {
                         label={{ fieldName: "hijiri_date", isImp: true }}
                         textBox={{ className: "txt-fld" }}
                         maxDate={new Date()}
-                        //maxDate={this.state.CurrentDate}
                         disabled={this.state.existingPatient}
                         value={this.state.hijiri_date}
                       />
@@ -375,12 +374,12 @@ class UpdatePatientForm extends Component {
                           number: {
                             thousandSeparator: ","
                           },
+                          dontAllowKeys: ["-", "e"],
                           events: {
                             onChange: setAge.bind(this, this)
                           },
                           others: {
                             tabIndex: "7"
-                            // placeholder: "Y"
                           }
                         }}
                       />
@@ -404,12 +403,12 @@ class UpdatePatientForm extends Component {
                           number: {
                             thousandSeparator: ","
                           },
+                          dontAllowKeys: ["-", "e"],
                           events: {
                             onChange: setAge.bind(this, this)
                           },
                           others: {
                             tabIndex: "8"
-                            // placeholder: "M"
                           }
                         }}
                       />
@@ -433,12 +432,12 @@ class UpdatePatientForm extends Component {
                           number: {
                             thousandSeparator: ","
                           },
+                          dontAllowKeys: ["-", "e"],
                           events: {
                             onChange: setAge.bind(this, this)
                           },
                           others: {
                             tabIndex: "9"
-                            // placeholder: "D"
                           }
                         }}
                       />
@@ -453,10 +452,13 @@ class UpdatePatientForm extends Component {
                           value: this.state.contact_number,
                           className: "txt-fld",
                           name: "contact_number",
-
+                          number: {
+                            allowNegative: false
+                          },
                           events: {
                             onChange: texthandle.bind(this, this)
                           },
+                          dontAllowKeys: ["-", "e"],
                           others: {
                             onBlur: texthandle.bind(this, this),
                             tabIndex: "10",
@@ -492,7 +494,6 @@ class UpdatePatientForm extends Component {
                           }
                         }}
                       />
-
                       <AlagehAutoComplete
                         div={{ className: "col-lg-3 mandatory" }}
                         label={{
@@ -540,7 +541,8 @@ class UpdatePatientForm extends Component {
                             tabIndex: "13"
                           }
                         }}
-                      /> {requied_emp_id === "Y" ? (
+                      />{" "}
+                      {requied_emp_id === "Y" ? (
                         <AlagehFormGroup
                           div={{ className: "col-3 form-group mandatory" }}
                           label={{
@@ -553,7 +555,8 @@ class UpdatePatientForm extends Component {
                             value: this.state.employee_id,
                             events: {
                               onChange: texthandle.bind(this, this)
-                            }, others: {
+                            },
+                            others: {
                               type: "text",
                               tabIndex: "14"
                             }
@@ -587,7 +590,7 @@ class UpdatePatientForm extends Component {
                             tabIndex: "17"
                           }
                         }}
-                      /> 
+                      />
                       <AlagehAutoComplete
                         div={{ className: "col-lg-3" }}
                         label={{
@@ -660,7 +663,6 @@ class UpdatePatientForm extends Component {
                           }
                         }}
                       />
-                      
                     </div>
 
                     <div className="row paddin-bottom-5">
@@ -707,8 +709,6 @@ class UpdatePatientForm extends Component {
                           }
                         }}
                       />
-
-                    
                     </div>
                   </div>
                   <div className="col-lg-4 secondary-details">

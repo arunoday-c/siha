@@ -392,10 +392,7 @@ class DeptUserDetails extends Component {
                         value: this.state.sub_department,
 
                         dataSource: {
-                          textField:
-                            this.state.selectedLang === "en"
-                              ? "sub_department_name"
-                              : "arabic_sub_department_name",
+                          textField: "sub_department_name",
                           valueField: "hims_d_sub_department_id",
                           data: this.props.subdepartment
                         },
@@ -496,10 +493,7 @@ class DeptUserDetails extends Component {
                         className: "select-fld",
                         value: this.state.reporting_to,
                         dataSource: {
-                          textField:
-                            this.state.selectedLang === "en"
-                              ? "full_name"
-                              : "arabic_name",
+                          textField: "full_name",
                           valueField: "hims_d_employee_id",
                           data: this.props.all_employees
                         },
@@ -525,10 +519,7 @@ class DeptUserDetails extends Component {
                         className: "select-fld",
                         value: this.state.services_id,
                         dataSource: {
-                          textField:
-                            this.state.selectedLang === "en"
-                              ? "service_name"
-                              : "arabic_service_name",
+                          textField: "service_name",
                           valueField: "hims_d_services_id",
                           data: _depservices
                         },

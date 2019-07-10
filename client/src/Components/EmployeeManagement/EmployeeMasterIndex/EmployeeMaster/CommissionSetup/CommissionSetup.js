@@ -106,10 +106,7 @@ class CommissionSetup extends Component {
                       className: "select-fld",
                       value: this.state.service_type_typ_id,
                       dataSource: {
-                        textField:
-                          this.state.selectedLang === "en"
-                            ? "service_type"
-                            : "arabic_service_type",
+                        textField: "service_type",
                         valueField: "hims_d_service_type_id",
                         data: this.props.empservicetype
                       },
@@ -334,10 +331,7 @@ class CommissionSetup extends Component {
                       className: "select-fld",
                       value: this.state.service_type_id,
                       dataSource: {
-                        textField:
-                          this.state.selectedLang === "ar"
-                            ? "arabic_service_type"
-                            : "service_type",
+                        textField: "service_type",
                         valueField: "hims_d_service_type_id",
                         data: this.props.empservicetype
                       },
@@ -362,10 +356,7 @@ class CommissionSetup extends Component {
                       className: "select-fld",
                       value: this.state.services_id,
                       dataSource: {
-                        textField:
-                          this.state.selectedLang === "ar"
-                            ? "arabic_service_name"
-                            : "service_name",
+                        textField: "service_name",
                         valueField: "hims_d_services_id",
                         data: this.props.empservices
                       },
