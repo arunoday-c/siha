@@ -648,12 +648,27 @@ class Appointment extends PureComponent {
     });
   }
 
-  dateHandler(selectedDate) {
+  editDateHandler(selectedDate) {
     this.setState({ edit_appt_date: selectedDate }, () => {
       const provider_id = this.state.edit_provider_id;
       this.getTimeSlotsForDropDown(provider_id);
     });
   }
+
+  editDateValidate = (value, event) => {
+    let inRange = moment(value).isBefore(moment().format("YYYY-MM-DD"));
+    if (inRange) {
+      swalMessage({
+        title: "Appointment date cannot be past Date.",
+        type: "warning"
+      });
+      event.target.focus();
+      this.setState({
+        [event.target.name]: null,
+        edit_appt_time: null
+      });
+    }
+  };
 
   texthandle(e) {
     this.setState({ [e.target.name]: e.target.value });
@@ -1312,7 +1327,7 @@ class Appointment extends PureComponent {
                 return (
                   <li key={index}>
                     <span onClick={this.openEditModal.bind(this, item, null)}>
-                    {item.patient_name}
+                      {item.patient_name}
                     </span>
                     <b onClick={this.cancelAppt.bind(this, item)}>x</b>
                   </li>
@@ -1658,7 +1673,8 @@ class Appointment extends PureComponent {
         setState={this.setState}
         texthandle={e => this.texthandle(e)}
         handleClose={e => this.handleClose(e)}
-        dateHandler={selectedDate => this.dateHandler(selectedDate)}
+        editDateHandler={selectedDate => this.editDateHandler(selectedDate)}
+        editDateValidate={this.editDateValidate}
         dropDownHandle={e => this.dropDownHandle(e)}
         nullifyState={name => this.nullifyState(name)}
         updatePatientAppointment={data => this.updatePatientAppointment(data)}

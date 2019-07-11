@@ -93,15 +93,16 @@ function AppointmentComponent(props) {
                         }}
                         minDate={new Date()}
                         events={{
-                          onChange: props.dateHandler
+                          onChange: props.editDateHandler,
+                          onBlur: props.editDateValidate
                         }}
                         value={props.state.edit_appt_date}
                       />
                       <AlagehAutoComplete
                         div={{ className: "col-3 form-group mandatory" }}
                         label={{
-                          fieldName: "appoTime"
-                          // isImp: true
+                          fieldName: "appoTime",
+                          isImp: true
                         }}
                         selector={{
                           name: "edit_appt_time",
