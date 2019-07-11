@@ -455,14 +455,14 @@ function AppointmentComponent(props) {
                           valueField: "value",
                           data: GlobalVariables.NO_OF_SLOTS
                         },
-                        onChange: props.dropDownHandle,
-                        others: {
-                          checkvalidation: "$value >" + props.state.maxSlots,
-                          errormessage:
-                            "Maximum " +
-                            props.state.maxSlots +
-                            " slot(s) avilable "
-                        }
+                        onChange: props.dropDownHandle
+                        // others: {
+                        //   checkvalidation: "$value >" + props.state.maxSlots,
+                        //   errormessage:
+                        //     "Maximum " +
+                        //     props.state.maxSlots +
+                        //     " slot(s) avilable "
+                        // }
                       }}
                     />
                   </div>
