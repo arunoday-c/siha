@@ -302,8 +302,8 @@ class PhySchSetup extends Component {
     });
   }
 
-  checkHandle(e) {
-    let myRow = JSON.parse(e.currentTarget.getAttribute("row"));
+  checkHandle = (myRow, index) => {
+    const { doctors } = this.state;
     let docsArray = this.state.schedule_detail;
     myRow.schedule_status = this.state.schedule_status;
     myRow.default_slot = this.state.slot;
@@ -321,14 +321,17 @@ class PhySchSetup extends Component {
       .firstOrDefault();
     if (item !== undefined) {
       docsArray.splice(docsArray.indexOf(item), 1);
+      doctors[index].isDocChecked = false;
     } else {
       docsArray.push(myRow);
+      doctors[index].isDocChecked = true;
     }
 
     this.setState({
-      schedule_detail: docsArray
+      schedule_detail: docsArray,
+      doctors
     });
-  }
+  };
 
   saveApptSchedule(e) {
     e.preventDefault();
@@ -564,7 +567,7 @@ class PhySchSetup extends Component {
       let dept = Enumerable.from(this.state.departments)
         .where(w => w.sub_dept_id === this.state[value.name])
         .firstOrDefault();
-      this.setState({ doctors: dept.doctors });
+      this.setState({ doctors: dept.doctors, schedule_detail: [] });
     });
   }
 
@@ -1183,6 +1186,7 @@ class PhySchSetup extends Component {
           dropDownHandler={this.dropDownHandler.bind(this)}
           changeDate={this.changeDate.bind(this)}
           changeChecks={this.changeChecks.bind(this)}
+          isDoctorAdded={this.isDoctorAdded}
           checkHandle={this.checkHandle.bind(this)}
           saveApptSchedule={this.saveApptSchedule.bind(this)}
         />

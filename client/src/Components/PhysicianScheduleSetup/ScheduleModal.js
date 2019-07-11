@@ -353,8 +353,11 @@ export default function ScheduleModal(props) {
                             >
                               <span className="checkBoxPhy">
                                 <input
-                                  row={JSON.stringify(data)}
-                                  onChange={props.checkHandle}
+                                  checked={data.isDocChecked || false}
+                                  value={data.isDocChecked || false}
+                                  onChange={() =>
+                                    props.checkHandle(data, index)
+                                  }
                                   type="checkbox"
                                 />
                                 <i className="fas fa-check" />
