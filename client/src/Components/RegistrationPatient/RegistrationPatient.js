@@ -75,43 +75,14 @@ class RegistrationPatient extends Component {
     let IOputs = emptyObject;
     IOputs.selectedLang = prevLang;
     this.setState(IOputs);
+
     if (
       this.props.patient_code !== undefined &&
       this.props.patient_code.length !== 0
     ) {
       getCtrlCode(this, this.props.patient_code);
     } else {
-      const { patient_details } = this.props;
-      if (patient_details) {
-        this.setState(
-          {
-            full_name: patient_details.patient_name,
-            arabic_name: patient_details.arabic_patient_name,
-            gender: patient_details.patient_gender,
-            age: patient_details.patient_age,
-            contact_number: patient_details.patient_phone,
-            title_id: patient_details.title_id,
-            date_of_birth: patient_details.date_of_birth,
-            sub_department_id: this.props.sub_department_id,
-            department_id: this.props.department_id,
-            provider_id: this.props.provider_id,
-            doctor_id: this.props.provider_id,
-            visit_type: this.props.visit_type,
-            hims_d_services_id: this.props.hims_d_services_id,
-            saveEnable: false,
-            clearEnable: true,
-            consultation: "Y",
-            appointment_patient: "Y",
-            billdetail: false,
-            appointment_id: this.state.hims_f_patient_appointment_id
-          },
-          () => {
-            if (this.props.fromAppoinment === true) {
-              generateBillDetails(this, this);
-            }
-          }
-        );
-      }
+      getCashiersAndShiftMAP(this, this);
     }
 
     this.props.setSelectedInsurance({
@@ -148,8 +119,6 @@ class RegistrationPatient extends Component {
         });
       }
     }
-
-    getCashiersAndShiftMAP(this, this);
 
     let _screenName = getCookie("ScreenName").replace("/", "");
     algaehApiCall({

@@ -26,7 +26,9 @@ import {
   discountCal,
   cashtexthCal,
   cardtexthCal,
-  chequetexthCal
+  chequetexthCal,
+  makeZero,
+  makeDiscountZero
 } from "./AddBillingDetails";
 
 import MyContext from "../../../utils/MyContext.js";
@@ -218,7 +220,7 @@ class AddBillingForm extends Component {
                           },
                           others: {
                             placeholder: "0.00",
-                            // onBlur: advanceAdjustCal.bind(this, this, context),
+                            onBlur: makeZero.bind(this, this, context),
                             onFocus: e => {
                               e.target.oldvalue = e.target.value;
                             }
@@ -240,7 +242,7 @@ class AddBillingForm extends Component {
                           },
                           others: {
                             placeholder: "0.00",
-                            // onBlur: discountCal.bind(this, this, context),
+                            onBlur: makeDiscountZero.bind(this, this, context),
                             onFocus: e => {
                               e.target.oldvalue = e.target.value;
                             }
@@ -265,7 +267,7 @@ class AddBillingForm extends Component {
                           },
                           others: {
                             placeholder: "0.00",
-                            // onBlur: discountCal.bind(this, this, context),
+                            onBlur: makeZero.bind(this, this, context),
                             onFocus: e => {
                               e.target.oldvalue = e.target.value;
                             }
@@ -289,13 +291,6 @@ class AddBillingForm extends Component {
                         />
                         <h6>{getAmountFormart(this.state.advance_amount)}</h6>
                       </div>
-                      {/* <div className="col-lg-3 last-box-label">
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "bill_amount"
-                        }}
-                      />
-                    </div> */}
 
                       <div className="col">
                         <AlgaehLabel
@@ -321,7 +316,7 @@ class AddBillingForm extends Component {
                           },
                           others: {
                             placeholder: "0.00",
-                            // onBlur: credittextCal.bind(this, this, context),
+                            onBlur: makeZero.bind(this, this, context),
                             onFocus: e => {
                               e.target.oldvalue = e.target.value;
                             }

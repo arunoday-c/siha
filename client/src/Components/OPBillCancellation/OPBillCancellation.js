@@ -12,7 +12,6 @@ import MyContext from "../../utils/MyContext.js";
 import AlgaehLabel from "../Wrapper/label.js";
 import BillingIOputs from "../../Models/BillCancellation";
 import PatRegIOputs from "../../Models/RegistrationPatient";
-import { getCookie } from "../../utils/algaehApiCall";
 import {
   ClearData,
   Validations,
@@ -22,8 +21,11 @@ import {
   generateReceipt
 } from "./OPBillCancellationEvents";
 import { AlgaehActions } from "../../actions/algaehActions";
-import { successfulMessage } from "../../utils/GlobalFunctions";
-import { algaehApiCall } from "../../utils/algaehApiCall.js";
+import {
+  swalMessage,
+  algaehApiCall,
+  getCookie
+} from "../../utils/algaehApiCall.js";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
 
 import AlgaehReport from "../Wrapper/printReports";
@@ -48,7 +50,8 @@ class OPBillCancellation extends Component {
       cheque_number: "",
       cheque_date: null,
       cheque_amount: 0,
-      advance: 0
+      advance: 0,
+      cancel_remarks: null
     };
   }
 
@@ -116,10 +119,9 @@ class OPBillCancellation extends Component {
       this.state.Cardchecked === false &&
       this.state.Checkchecked === false
     ) {
-      successfulMessage({
-        message: "Please select receipt type.",
-        title: "Error",
-        icon: "error"
+      swalMessage({
+        title: "Please select receipt type.",
+        type: "error"
       });
     } else {
       if (this.state.cash_amount > 0 || this.state.Cashchecked === true) {
@@ -193,19 +195,22 @@ class OPBillCancellation extends Component {
                   response.data.records.hims_f_bill_cancel_header_id,
                 saveEnable: true
               });
-              successfulMessage({
-                message: "Done Successfully",
-                title: "Success",
-                icon: "success"
+              swalMessage({
+                title: "Done Successfully",
+                type: "success"
+              });
+            } else {
+              swalMessage({
+                title: response.data.records.message,
+                type: "error"
               });
             }
           },
           onFailure: error => {
             AlgaehLoader({ show: false });
-            successfulMessage({
-              message: error.response.data.message || error.message,
-              title: "Error",
-              icon: "error"
+            swalMessage({
+              title: error.response.data.message || error.message,
+              type: "error"
             });
           }
         });

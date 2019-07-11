@@ -103,15 +103,16 @@ const Validations = $this => {
     });
 
     return isError;
-  } else if ($this.state.counter_id === null) {
-    isError = true;
-    swalMessage({
-      type: "warning",
-      title: "Counter is Mandatory."
-    });
-
-    return isError;
   }
+  // else if ($this.state.counter_id === null) {
+  //   isError = true;
+  //   swalMessage({
+  //     type: "warning",
+  //     title: "Counter is Mandatory."
+  //   });
+  //
+  //   return isError;
+  // }
 };
 
 const getCashiersAndShiftMAP = $this => {
