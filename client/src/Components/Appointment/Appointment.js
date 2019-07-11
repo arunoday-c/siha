@@ -656,7 +656,7 @@ class Appointment extends PureComponent {
   }
 
   editDateValidate = (value, event) => {
-    let inRange = moment(value).isBefore(moment().format("YYYY-MM-DD"));
+    let inRange = moment(value).isBefore(moment(), "day");
     if (inRange) {
       swalMessage({
         title: "Appointment date cannot be past Date.",
