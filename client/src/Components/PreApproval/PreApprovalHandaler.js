@@ -102,9 +102,8 @@ const getPreAprovalList = $this => {
               icd_code: firstRecordSet.icd_code,
               number_of_Services: g.getSource().length,
               apprv_status: firstRecordSet.apprv_status,
-              billing_updated: firstRecordSet.billing_updated,
-              billing_Verefird:
-                firstRecordSet.billing_updated === "Y" ? true : false,
+              card_no: firstRecordSet.card_no,
+              sub_department_name: firstRecordSet.sub_department_name,
 
               services_details: g.getSource()
             };

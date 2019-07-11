@@ -38,7 +38,6 @@ let getPreAprovalList = (req, res, next) => {
     delete req.query.doctor_id;
     delete req.query.patient_id;
 
-
     let where = whereCondition(extend(preAprovalWhere, req.query));
 
     debugLog("where conditn:", where);
@@ -53,12 +52,14 @@ let getPreAprovalList = (req, res, next) => {
         requested_quantity, submission_type, insurance_service_name, SA.doctor_id, SA.patient_id,visit_id,\
         PAT.patient_code,PAT.full_name, refer_no, gross_amt,billing_updated,\
         net_amount, approved_amount, approved_no, apprv_remarks, apprv_date, rejected_reason,\
-        apprv_status,SA.created_date,SA.created_by, SD.chart_type \
+        apprv_status,SA.created_date,SA.created_by, SD.chart_type, SD.sub_department_name, \
+        PI.primary_card_number as card_no \
         from ((hims_f_service_approval SA inner join hims_f_patient PAT ON SA.patient_id=PAT.hims_d_patient_id) \
-        inner join \
-        hims_d_services SR on SR.hims_d_services_id=SA.service_id inner join \
-        hims_f_patient_visit V on V.hims_f_patient_visit_id=SA.visit_id inner join \
-        hims_d_sub_department SD on SD.hims_d_sub_department_id=V.sub_department_id) WHERE SA.record_status='A' AND " +
+        inner join hims_d_services SR on SR.hims_d_services_id=SA.service_id \
+        inner join hims_f_patient_visit V on V.hims_f_patient_visit_id=SA.visit_id \
+        inner join hims_m_patient_insurance_mapping PI on PI.patient_visit_id=SA.visit_id \
+        inner join hims_d_sub_department SD on SD.hims_d_sub_department_id=V.sub_department_id) \
+        WHERE SA.record_status='A' AND " +
           where.condition,
         where.values,
 
@@ -111,7 +112,6 @@ let getMedicationAprovalList = (req, res, next) => {
     delete req.query.created_date;
     delete req.query.doctor_id;
     delete req.query.patient_id;
-
 
     let where = whereCondition(extend(preAprovalWhere, req.query));
 
