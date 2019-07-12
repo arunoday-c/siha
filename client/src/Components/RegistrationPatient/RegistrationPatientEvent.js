@@ -428,7 +428,7 @@ const getCtrlCode = ($this, patcode, row) => {
         )._d;
 
         data.patientRegistration.advanceEnable = false;
-        debugger;
+
         if (data.bill_criedt.length > 0) {
           data.patientRegistration.due_amount = _.sumBy(data.bill_criedt, s =>
             parseFloat(s.balance_credit)

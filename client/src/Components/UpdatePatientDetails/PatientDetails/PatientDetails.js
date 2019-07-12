@@ -374,7 +374,7 @@ class UpdatePatientForm extends Component {
                           number: {
                             thousandSeparator: ","
                           },
-                          dontAllowKeys: ["-", "e"],
+                          dontAllowKeys: ["-", "e", "."],
                           events: {
                             onChange: setAge.bind(this, this)
                           },
@@ -403,7 +403,7 @@ class UpdatePatientForm extends Component {
                           number: {
                             thousandSeparator: ","
                           },
-                          dontAllowKeys: ["-", "e"],
+                          dontAllowKeys: ["-", "e", "."],
                           events: {
                             onChange: setAge.bind(this, this)
                           },
@@ -432,7 +432,7 @@ class UpdatePatientForm extends Component {
                           number: {
                             thousandSeparator: ","
                           },
-                          dontAllowKeys: ["-", "e"],
+                          dontAllowKeys: ["-", "e", "."],
                           events: {
                             onChange: setAge.bind(this, this)
                           },
@@ -458,7 +458,7 @@ class UpdatePatientForm extends Component {
                           events: {
                             onChange: texthandle.bind(this, this)
                           },
-                          dontAllowKeys: ["-", "e"],
+                          dontAllowKeys: ["-", "e", "."],
                           others: {
                             onBlur: texthandle.bind(this, this),
                             tabIndex: "10",

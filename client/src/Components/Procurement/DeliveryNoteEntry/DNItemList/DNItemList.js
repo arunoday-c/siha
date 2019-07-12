@@ -336,7 +336,7 @@ class DNItemList extends Component {
                           value: this.state.dn_quantity,
                           className: "txt-fld",
                           name: "dn_quantity",
-                          dontAllowKeys: ["-", "e"],
+                          dontAllowKeys: ["-", "e", "."],
                           events: {
                             onChange: OnChangeDeliveryQty.bind(
                               this,
@@ -366,7 +366,7 @@ class DNItemList extends Component {
                           value: this.state.free_qty,
                           className: "txt-fld",
                           name: "free_qty",
-                          dontAllowKeys: ["-", "e"],
+                          dontAllowKeys: ["-", "e", "."],
                           events: {
                             onChange: numberEventHandaler.bind(
                               this,

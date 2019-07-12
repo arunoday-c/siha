@@ -298,6 +298,7 @@ class TransferEntryItems extends Component {
                               allowNegative: false,
                               thousandSeparator: ","
                             },
+                            dontAllowKeys: ["-", "e", "."],
                             className: "txt-fld",
                             name: "quantity",
                             value: this.state.quantity,
@@ -868,7 +869,6 @@ class TransferEntryItems extends Component {
                                   />
                                 ),
                                 displayTemplate: row => {
-                                  
                                   return (
                                     <span>
                                       {row.expiry_date !== null
@@ -1092,6 +1092,11 @@ class TransferEntryItems extends Component {
                                         <AlagehFormGroup
                                           div={{}}
                                           textBox={{
+                                            number: {
+                                              allowNegative: false,
+                                              thousandSeparator: ","
+                                            },
+                                            dontAllowKeys: ["-", "e", "."],
                                             value: row.quantity_transfer,
                                             className: "txt-fld",
                                             name: "quantity_transfer",
@@ -1104,7 +1109,6 @@ class TransferEntryItems extends Component {
                                               )
                                             },
                                             others: {
-                                              type: "number",
                                               algaeh_required: "true",
                                               errormessage:
                                                 "Please enter Transferred Quantity ..",

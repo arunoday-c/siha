@@ -58,17 +58,7 @@ class OPBilling extends Component {
     this.setState({ ...this.state, ...IOputs });
   }
 
-  //Created by Adnan
-  checkShiftAvailabliity() {
-    //if shift is available assign shift.
-    //if shift is not available create shift.
-  }
-  //Created by Adnan
-
   componentDidMount() {
-    //Created by Adnan
-    this.checkShiftAvailabliity();
-    // Created by Adnan
     let prevLang = getCookie("Language");
     this.setState({
       selectedLang: prevLang
@@ -185,7 +175,6 @@ class OPBilling extends Component {
       },
       onSuccess: response => {
         if (response.data.success) {
-          debugger;
           let data = response.data.records;
 
           let x = Enumerable.from($this.props.patienttype)

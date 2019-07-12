@@ -342,7 +342,6 @@ class PhySchSetup extends Component {
 
   //need to rewrite this function in future, coz it's not DRY!!
   formValidation = () => {
-    debugger;
     const {
       sub_department_id,
       description,

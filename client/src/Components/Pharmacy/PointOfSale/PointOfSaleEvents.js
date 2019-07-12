@@ -16,6 +16,7 @@ import {
 } from "../../../utils/GlobalFunctions";
 import Enumerable from "linq";
 import _ from "lodash";
+import moment from "moment";
 
 const changeTexts = ($this, ctrl, e) => {
   e = ctrl || e;
@@ -407,12 +408,22 @@ const Validations = $this => {
       document.querySelector("[name='cheque_date']").focus();
       return isError;
     }
-  } else if ($this.state.unbalanced_amount > 0) {
+  }
+  if ($this.state.unbalanced_amount > 0) {
     isError = true;
 
     swalMessage({
       type: "warning",
       title: "Unbanalced Amount should nullify."
+    });
+
+    return isError;
+  } else if ($this.state.shift_id === null) {
+    isError = true;
+
+    swalMessage({
+      type: "warning",
+      title: "Select Shift."
     });
 
     return isError;
@@ -680,6 +691,7 @@ const PostPosEntry = $this => {
                       hims_f_pharmacy_pos_header_id:
                         response.data.records.hims_f_pharmacy_pos_header_id ||
                         $this.state.hims_f_pharmacy_pos_header_id,
+                      receipt_number: response.data.records.receipt_number,
                       year: response.data.records.year,
                       period: response.data.records.period,
                       postEnable: true,
@@ -1039,6 +1051,31 @@ const generateReport = ($this, rpt_name, rpt_desc) => {
     }
   });
 };
+
+const getCashiersAndShiftMAP = $this => {
+  let year = moment().format("YYYY");
+  let month = moment().format("M");
+
+  algaehApiCall({
+    uri: "/shiftAndCounter/getCashiersAndShiftMAP",
+    module: "masterSettings",
+    method: "GET",
+    data: { year: year, month: month, for: "T" },
+    onSuccess: response => {
+      if (response.data.success) {
+        if (response.data.records.length > 0) {
+          $this.setState({ shift_id: response.data.records[0].shift_id });
+        }
+      }
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
+};
 export {
   changeTexts,
   getCtrlCode,
@@ -1053,5 +1090,6 @@ export {
   getMedicationList,
   CancelPosEntry,
   getPosEntry,
-  generateReport
+  generateReport,
+  getCashiersAndShiftMAP
 };

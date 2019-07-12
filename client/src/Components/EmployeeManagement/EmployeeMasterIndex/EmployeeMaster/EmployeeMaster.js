@@ -58,12 +58,6 @@ class EmployeeMaster extends Component {
     });
   }
 
-  SideMenuBarOpen(sidOpen) {
-    this.setState({
-      sidBarOpen: sidOpen
-    });
-  }
-
   onClose = e => {
     this.props.onClose && this.props.onClose(e);
     let IOputs = EmpMasterIOputs.inputParam();

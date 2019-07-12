@@ -306,7 +306,7 @@ class PosListItems extends Component {
                                 className: "txt-fld",
                                 name: "quantity",
                                 value: this.state.quantity,
-                                dontAllowKeys: ["-", "e"],
+                                dontAllowKeys: ["-", "e", "."],
                                 events: {
                                   onChange: numberchangeTexts.bind(
                                     this,
@@ -586,7 +586,7 @@ class PosListItems extends Component {
                                             value: row.quantity,
                                             className: "txt-fld",
                                             name: "quantity",
-                                            dontAllowKeys: ["-", "e"],
+                                            dontAllowKeys: ["-", "e", "."],
                                             events: {
                                               onChange: qtyonchangegridcol.bind(
                                                 this,

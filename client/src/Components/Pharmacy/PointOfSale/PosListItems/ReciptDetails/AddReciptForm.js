@@ -16,7 +16,8 @@ import {
 import {
   AlgaehDateHandler,
   AlgaehLabel,
-  AlagehFormGroup
+  AlagehFormGroup,
+  AlagehAutoComplete
 } from "../../../../Wrapper/algaehWrapper";
 
 import MyContext from "../../../../../utils/MyContext";
@@ -42,6 +43,20 @@ class AddReciptForm extends Component {
 
   componentWillReceiveProps(nextProps) {
     this.setState(nextProps.POSIOputs);
+  }
+
+  componentDidMount() {
+    if (this.props.shifts === undefined || this.props.shifts.length === 0) {
+      this.props.getShifts({
+        uri: "/shiftAndCounter/getShiftMaster",
+        module: "masterSettings",
+        method: "GET",
+        redux: {
+          type: "CTRY_GET_DATA",
+          mappingName: "shifts"
+        }
+      });
+    }
   }
 
   render() {
@@ -76,6 +91,33 @@ class AddReciptForm extends Component {
                         : "DD/MM/YYYY"}
                     </h6>
                   </div>
+                  <AlagehAutoComplete
+                    div={{ className: "col-lg-3" }}
+                    label={{
+                      forceLabel: "Shift",
+                      isImp: true
+                    }}
+                    userPrefernce={true}
+                    selector={{
+                      name: "shift_id",
+                      className: "select-fld",
+                      value: this.state.shift_id,
+                      dataSource: {
+                        textField: "shift_description",
+                        valueField: "hims_d_shift_id",
+                        data: this.props.shifts
+                      },
+                      others: {
+                        disabled: this.state.dataExitst
+                      },
+                      onChange: texthandle.bind(this, this, context),
+                      onClear: () => {
+                        this.setState({
+                          shift_id: null
+                        });
+                      }
+                    }}
+                  />
                 </div>
                 <hr style={{ margin: 0 }} />
 
@@ -302,6 +344,7 @@ class AddReciptForm extends Component {
 
 function mapStateToProps(state) {
   return {
+    shifts: state.shifts,
     posheader: state.posheader
   };
 }
@@ -309,6 +352,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
+      getShifts: AlgaehActions,
       reciptCalculations: AlgaehActions
     },
     dispatch

@@ -192,6 +192,7 @@ class ConsumptionItems extends Component {
                             allowNegative: false,
                             thousandSeparator: ","
                           },
+                          dontAllowKeys: ["-", "e", "."],
                           className: "txt-fld",
                           name: "quantity",
                           value: this.state.quantity,

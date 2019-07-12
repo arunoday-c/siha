@@ -428,7 +428,7 @@ class InvInitialStock extends Component {
                       className: "txt-fld",
                       name: "quantity",
                       value: this.state.quantity,
-                      dontAllowKeys: ["-", "e"],
+                      dontAllowKeys: ["-", "e", "."],
                       events: {
                         onChange: numberchangeTexts.bind(this, this)
                       },
