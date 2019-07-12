@@ -30,7 +30,7 @@ class OfficalDetails extends Component {
       date_of_releaving_label: "Date of leaving",
       accomodation_provided: false,
       reliving_date: undefined,
-      employee_status: null,
+      // employee_status: null,
       inactive_date: undefined,
       selectedLang: getCookie("Language")
     };

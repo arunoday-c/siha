@@ -101,7 +101,7 @@ class PatientDetails extends PureComponent {
                                   thousandSeparator: ",",
                                   allowNegative: false
                                 },
-                                dontAllowKeys: ["-", "e"],
+                                dontAllowKeys: ["-", "e", "."],
                                 events: {
                                   onChange: numberhandle.bind(this, this, row)
                                 },

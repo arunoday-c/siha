@@ -169,7 +169,8 @@ const AddItems = $this => {
           saveEnable: false,
           grn_number: null,
           sales_uom: null,
-          purchase_uom_id: null
+          purchase_uom_id: null,
+          item_description: ""
         });
       }
     }

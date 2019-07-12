@@ -90,6 +90,7 @@ export default () => {
   api.post(
     "/addandpostPosEntry",
     addReceiptEntry,
+    addPosEntry,
     addCashHandover,
     (req, res, next) => {
       if (
@@ -108,7 +109,6 @@ export default () => {
         next();
       }
     },
-    addPosEntry,
     updateIntoItemLocation,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
@@ -136,6 +136,7 @@ export default () => {
   api.put(
     "/postPosEntry",
     addReceiptEntry,
+    updatePosEntry,
     addCashHandover,
     (req, res, next) => {
       if (
@@ -154,7 +155,6 @@ export default () => {
         next();
       }
     },
-    updatePosEntry,
     updateIntoItemLocation,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({

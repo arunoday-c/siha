@@ -64,6 +64,10 @@ export default () => {
 
   api.get(
     "/getPatientwiseBill",
+    (req, res, next) => {
+      delete req.connection;
+      next();
+    },
     getPatientwiseBill,
 
     (req, res, next) => {

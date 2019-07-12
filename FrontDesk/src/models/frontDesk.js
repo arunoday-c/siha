@@ -85,7 +85,12 @@ module.exports = {
                 printQuery: true
               })
               .then(visit_detsils => {
-                _mysql.releaseConnection();
+                req.connection = {
+                  connection: _mysql.connection,
+                  isTransactionConnection: _mysql.isTransactionConnection,
+                  pool: _mysql.pool
+                };
+                // _mysql.releaseConnection();
                 let result = {
                   patientRegistration: patient_details[1][0],
                   visitDetails: visit_detsils

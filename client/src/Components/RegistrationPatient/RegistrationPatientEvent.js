@@ -9,6 +9,7 @@ import {
 import extend from "extend";
 import moment from "moment";
 import { AlgaehOpenContainer } from "../../utils/GlobalFunctions";
+import _ from "lodash";
 
 const emptyObject = extend(
   PatRegIOputs.inputParam(),
@@ -366,7 +367,7 @@ const generateReceipt = $this => {
   });
 };
 
-const getCtrlCode = ($this, patcode) => {
+const getCtrlCode = ($this, patcode, row) => {
   AlgaehLoader({ show: true });
   let provider_id = $this.props.provider_id || null;
   let sub_department_id = $this.props.sub_department_id || null;
@@ -427,6 +428,14 @@ const getCtrlCode = ($this, patcode) => {
         )._d;
 
         data.patientRegistration.advanceEnable = false;
+
+        if (data.bill_criedt.length > 0) {
+          data.patientRegistration.due_amount = _.sumBy(data.bill_criedt, s =>
+            parseFloat(s.balance_credit)
+          );
+        } else {
+          data.patientRegistration.due_amount = 0;
+        }
 
         $this.setState(data.patientRegistration, () => {
           AlgaehLoader({ show: false });

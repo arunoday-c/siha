@@ -6,7 +6,6 @@ import {
   AlgaehModalPopUp
 } from "../Wrapper/algaehWrapper";
 import GlobalVariables from "../../utils/GlobalVariables.json";
-import Enumerable from "linq";
 
 export default function ScheduleModal(props) {
   return (

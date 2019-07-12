@@ -238,7 +238,7 @@ class InvItemMaster extends Component {
                         className: "txt-fld",
                         name: "reorder_qty",
                         value: this.state.reorder_qty,
-                        dontAllowKeys: ["-", "e"],
+                        dontAllowKeys: ["-", "e", "."],
                         events: {
                           onChange: numberEventHandaler.bind(this, this)
                         },
@@ -362,7 +362,7 @@ class InvItemMaster extends Component {
                         className: "txt-fld",
                         name: "conversion_factor",
                         value: this.state.conversion_factor,
-                        dontAllowKeys: ["-", "e"],
+                        dontAllowKeys: ["-", "e", "."],
                         events: {
                           onChange: texthandle.bind(this, this)
                         },

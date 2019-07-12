@@ -156,7 +156,12 @@ class AddReciptForm extends Component {
                       others: {
                         disabled: this.state.Billexists
                       },
-                      onChange: texthandle.bind(this, this, context)
+                      onChange: texthandle.bind(this, this, context),
+                      onClear: () => {
+                        this.setState({
+                          shift_id: null
+                        });
+                      }
                     }}
                   />
                 </div>

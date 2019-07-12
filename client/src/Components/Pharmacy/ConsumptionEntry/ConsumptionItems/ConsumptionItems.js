@@ -192,7 +192,7 @@ class ConsumptionItems extends Component {
                           className: "txt-fld",
                           name: "quantity",
                           value: this.state.quantity,
-                          dontAllowKeys: ["-", "e"],
+                          dontAllowKeys: ["-", "e", "."],
                           events: {
                             onChange: this.numberchangeTexts.bind(this, context)
                           },

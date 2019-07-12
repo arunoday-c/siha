@@ -20,7 +20,8 @@ import {
   PostPosEntry,
   nationalityhandle,
   CancelPosEntry,
-  generateReport
+  generateReport,
+  getCashiersAndShiftMAP
 } from "./PointOfSaleEvents";
 // getCtrlCode,
 import "./PointOfSale.css";
@@ -143,6 +144,7 @@ class PointOfSale extends Component {
         });
       }
     });
+    getCashiersAndShiftMAP(this, this);
   }
 
   onKeyPress(e) {
@@ -342,7 +344,7 @@ class PointOfSale extends Component {
                       number: {
                         allowNegative: false
                       },
-                      dontAllowKeys: ["-", "e"],
+                      dontAllowKeys: ["-", "e", "."],
                       className: "txt-fld",
                       name: "mobile_number",
                       value: this.state.mobile_number,

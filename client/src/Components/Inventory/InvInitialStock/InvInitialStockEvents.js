@@ -25,7 +25,7 @@ const LocationchangeTexts = ($this, ctrl, e) => {
 
 const numberchangeTexts = ($this, e) => {
   let name = e.name || e.target.name;
-  let value = e.value === "" ? null : e.value || e.target.value;
+  let value = e.value || e.target.value;
   let extended_cost = 0;
 
   if (name === "quantity") {
@@ -189,7 +189,8 @@ const AddItems = $this => {
           grn_number: null,
           sales_uom: null,
           purchase_uom_id: null,
-          conversion_factor: null
+          conversion_factor: null,
+          item_description: ""
         });
       }
     }

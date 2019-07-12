@@ -195,7 +195,7 @@ class ItemListsReturn extends Component {
                                     : "",
                                 className: "txt-fld",
                                 name: "return_quantity",
-                                dontAllowKeys: ["-", "e"],
+                                dontAllowKeys: ["-", "e", "."],
                                 events: {
                                   onChange: calculateAmount.bind(
                                     this,

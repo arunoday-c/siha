@@ -194,7 +194,7 @@ class POItemList extends Component {
                           },
                           className: "txt-fld",
                           name: "order_quantity",
-                          dontAllowKeys: ["-", "e"],
+                          dontAllowKeys: ["-", "e", "."],
                           value: this.state.order_quantity,
                           events: {
                             onChange: numberchangeTexts.bind(
@@ -664,7 +664,7 @@ class POItemList extends Component {
                                           : null,
                                       className: "txt-fld",
                                       name: "authorize_quantity",
-                                      dontAllowKeys: ["-", "e"],
+                                      dontAllowKeys: ["-", "e", "."],
                                       events: {
                                         onChange: onchangegridcol.bind(
                                           this,

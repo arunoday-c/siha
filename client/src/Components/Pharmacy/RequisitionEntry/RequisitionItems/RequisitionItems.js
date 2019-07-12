@@ -181,7 +181,7 @@ class RequisitionItems extends Component {
                           className: "txt-fld",
                           name: "quantity_required",
                           value: this.state.quantity_required,
-                          dontAllowKeys: ["-", "e"],
+                          dontAllowKeys: ["-", "e", "."],
                           events: {
                             onChange: numberchangeTexts.bind(
                               this,
@@ -467,7 +467,6 @@ class RequisitionItems extends Component {
                                 />
                               ),
                               displayTemplate: row => {
-                                
                                 return (
                                   <span>
                                     {row.to_qtyhand === null
@@ -569,7 +568,7 @@ class RequisitionItems extends Component {
                                           : "",
                                       className: "txt-fld",
                                       name: "quantity_authorized",
-                                      dontAllowKeys: ["-", "e"],
+                                      dontAllowKeys: ["-", "e", "."],
                                       events: {
                                         onChange: onchangegridcol.bind(
                                           this,
