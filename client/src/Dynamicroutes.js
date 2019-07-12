@@ -1,5 +1,5 @@
 import React from "react";
-import _ from "lodash";
+import hasIn from "lodash/hasIn";
 import { retry } from "./utils/GlobalFunctions";
 import PrescriptionList from "./Components/Pharmacy/PrescriptionList/PrescriptionList";
 import StockEnquiry from "./Components/Pharmacy/StockEnquiry/StockEnquiry";
@@ -471,7 +471,7 @@ const DirectRoutes = props => {
   if (props.componet === "Dashboard") {
     const appRole = sessionStorage.getItem("appRole");
     if (appRole !== undefined) {
-      const filter = _.hasIn(PageToPlot, appRole);
+      const filter = hasIn(PageToPlot, appRole);
       if (filter === true) {
         PlotPage = PageToPlot[appRole];
       }
