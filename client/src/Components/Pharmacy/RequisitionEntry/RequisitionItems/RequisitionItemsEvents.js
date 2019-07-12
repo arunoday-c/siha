@@ -1,5 +1,6 @@
 import moment from "moment";
 import { swalMessage } from "../../../../utils/algaehApiCall.js";
+import _ from "lodash";
 
 const UomchangeTexts = ($this, ctrl, e) => {
   e = ctrl || e;
@@ -332,30 +333,27 @@ const getItemLocationStock = ($this, context, value) => {
     },
     afterSuccess: data => {
       if (data.length > 0) {
-        let total_quantity = 0;
-        for (let i = 0; i < data.length; i++) {
-          let qtyhand = data[i].qtyhand;
-          total_quantity = parseFloat(total_quantity) + parseFloat(qtyhand);
-        }
+        // let total_quantity = 0;
+        let total_quantity = _.sumBy(data, s => {
+          return parseFloat(s.qtyhand);
+        });
+
         if (value.set === "To") {
           $this.setState({
             to_qtyhand: total_quantity
           });
 
-          if (context !== undefined) {
-            context.updateState({
-              to_qtyhand: total_quantity
-            });
-          }
+          context.updateState({
+            to_qtyhand: total_quantity
+          });
         } else if (value.set === "From") {
           $this.setState({
             from_qtyhand: total_quantity
           });
-          if (context !== undefined) {
-            context.updateState({
-              from_qtyhand: total_quantity
-            });
-          }
+
+          context.updateState({
+            from_qtyhand: total_quantity
+          });
         }
       } else {
         context.updateState({

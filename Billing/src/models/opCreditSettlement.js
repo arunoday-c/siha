@@ -232,20 +232,37 @@ module.exports = {
   },
 
   getPatientwiseBill: (req, res, next) => {
-    const _mysql = new algaehMysql();
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
     try {
+      let patient_id = "";
+
+      if (req.connection == null) {
+        patient_id = req.query.patient_id;
+      } else {
+        console.log(
+          "req.records.patientRegistration: ",
+          req.records.patientRegistration.hims_d_patient_id
+        );
+        patient_id = req.records.patientRegistration.hims_d_patient_id;
+      }
       _mysql
         .executeQuery({
           query:
             "SELECT * from hims_f_billing_header  \
           WHERE record_status='A' AND balance_credit>0 AND patient_id=? \
              order by hims_f_billing_header_id desc",
-          values: [req.query.patient_id],
+          values: [patient_id],
           printQuery: true
         })
         .then(result => {
           _mysql.releaseConnection();
-          req.records = result;
+          if (req.connection == null) {
+            req.records = result;
+          } else {
+            req.bill_criedt = { bill_criedt: result };
+          }
+
           next();
         })
         .catch(error => {
