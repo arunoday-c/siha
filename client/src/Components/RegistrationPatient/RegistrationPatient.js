@@ -336,6 +336,7 @@ class RegistrationPatient extends Component {
                       onSuccess: response => {
                         // AlgaehLoader({ show: false });
                         if (response.data.success) {
+                          AlgaehLoader({ show: false });
                           let _arrayImages = [];
                           if (_patImage !== undefined) {
                             _arrayImages.push(
@@ -472,6 +473,7 @@ class RegistrationPatient extends Component {
                       onSuccess: response => {
                         // AlgaehLoader({ show: false });
                         if (response.data.success) {
+                          AlgaehLoader({ show: false });
                           let _arrayImages = [];
                           if (_patImage !== undefined) {
                             _arrayImages.push(
