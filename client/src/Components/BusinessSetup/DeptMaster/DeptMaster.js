@@ -32,6 +32,10 @@ class DeptMaster extends Component {
     const Inventory_Active = _.filter(Activated_Modueles, f => {
       return f.module_code === "INVTRY";
     });
+
+    const HIMS_Active = _.filter(Activated_Modueles, f => {
+      return f.module_code === "FTDSK";
+    });
     this.state = {
       allDepartments: [],
       subDepartments: [],
@@ -39,7 +43,8 @@ class DeptMaster extends Component {
       effective_start_date: new Date(),
       showSubDeptModal: false,
       chart_type: null,
-      Inventory_Active: Inventory_Active.length > 0 ? true : false
+      Inventory_Active: Inventory_Active.length > 0 ? true : false,
+      HIMS_Active: HIMS_Active.length > 0 ? true : false
     };
 
     this.getLocation();
@@ -554,27 +559,29 @@ class DeptMaster extends Component {
                   }}
                 />
 
-                <AlagehAutoComplete
-                  div={{ className: "col" }}
-                  label={{ forceLabel: "Chart Type" }}
-                  selector={{
-                    name: "chart_type",
-                    className: "select-fld",
-                    value: this.state.chart_type,
-                    dataSource: {
-                      textField: "name",
-                      valueField: "value",
-                      data: GlobalVariables.CHART_TYPE
-                    },
+                {this.state.HIMS_Active === true ? (
+                  <AlagehAutoComplete
+                    div={{ className: "col" }}
+                    label={{ forceLabel: "Chart Type" }}
+                    selector={{
+                      name: "chart_type",
+                      className: "select-fld",
+                      value: this.state.chart_type,
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: GlobalVariables.CHART_TYPE
+                      },
 
-                    onChange: this.textHandle.bind(this),
-                    onClear: () => {
-                      this.setState({
-                        chart_type: null
-                      });
-                    }
-                  }}
-                />
+                      onChange: this.textHandle.bind(this),
+                      onClear: () => {
+                        this.setState({
+                          chart_type: null
+                        });
+                      }
+                    }}
+                  />
+                ) : null}
 
                 <AlgaehDateHandler
                   div={{ className: "col" }}
@@ -946,24 +953,25 @@ class DeptMaster extends Component {
                 helperText: this.state.department_name_arabic_error_text
               }}
             />
-
-            <AlagehAutoComplete
-              div={{ className: "col" }}
-              label={{
-                fieldName: "department_type"
-              }}
-              selector={{
-                name: "department_type",
-                className: "select-fld",
-                value: this.state.department_type,
-                dataSource: {
-                  textField: "name",
-                  valueField: "value",
-                  data: GlobalVariables.DEPT_TYPE
-                },
-                onChange: this.dropDownHandle.bind(this)
-              }}
-            />
+            {this.state.HIMS_Active === true ? (
+              <AlagehAutoComplete
+                div={{ className: "col" }}
+                label={{
+                  fieldName: "department_type"
+                }}
+                selector={{
+                  name: "department_type",
+                  className: "select-fld",
+                  value: this.state.department_type,
+                  dataSource: {
+                    textField: "name",
+                    valueField: "value",
+                    data: GlobalVariables.DEPT_TYPE
+                  },
+                  onChange: this.dropDownHandle.bind(this)
+                }}
+              />
+            ) : null}
 
             <AlgaehDateHandler
               div={{ className: "col" }}

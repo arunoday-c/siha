@@ -37,7 +37,8 @@
                                     <td colspan="5">Patient File Number: <span>{{header.patient_code}}</span></td>
                                 </tr>
                                 <tr>
-                                    <td colspan="2">Date of Visit: <span>{{header.visit_date}}</span></td>  <td colspan="3"> Single ( {{#if header.patient_marital_status "Single"}}
+                                    <td colspan="2">Date of Visit: <span>{{header.visit_date}}</span></td>
+                                    <td colspan="3"> Single ( {{#if header.patient_marital_status "Single"}}
                                         <span>&#10004;</span>
                                         {{/if}}
                                         ) | Married ( {{#if header.patient_marital_status "Married"}}
@@ -46,15 +47,15 @@
                                         ) </td>
                                 </tr>
                                 <tr>
-                                  <td>New Visit ( {{#if header.new_visit_patient "Y"}}
-                                      <span>&#10004;</span>
-                                      {{/if}} )</td>
-                                  <td>Follow Up ( {{#if header.new_visit_patient "N"}}
-                                      <span>&#10004;</span>
-                                      {{/if}} )</td>
-                                  <td>Refill ( )</td>
-                                  <td>Walk In ( )</td>
-                                  <td>Referal ( )</td>
+                                    <td>New Visit ( {{#if header.new_visit_patient "Y"}}
+                                        <span>&#10004;</span>
+                                        {{/if}} )</td>
+                                    <td>Follow Up ( {{#if header.new_visit_patient "N"}}
+                                        <span>&#10004;</span>
+                                        {{/if}} )</td>
+                                    <td>Refill ( )</td>
+                                    <td>Walk In ( )</td>
+                                    <td>Referal ( )</td>
                                 </tr>
 
                             </tbody>
@@ -65,29 +66,41 @@
                         <table class="innerTable">
                             <tbody>
                                 <tr>
-                                    <td colspan="3"><b>Print/Fill in clear letters or Emboss Card:</b></td>
+                                    <td><b>Print/Fill in clear letters or Emboss Card:</b></td>
                                 </tr>
                                 <tr>
-                                    <td colspan="3">Insured Name:
-                                        <span>{{insurance.0.primary_insurance_company_name}}</span></td>
-                                </tr>
-                                <tr>
-                                    <td colspan="">ID.Card No.: <span>{{insurance.0.primary_card_number}}</span></td>
-                                    <td colspan="">Sex: <span>{{insurance.0.sex}}</span></td>
-                                    <td colspan="">Age: <span>{{insurance.0.age}}Y</span></td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2">Policy Holder: <span>{{insurance.0.policyholder}}</span></td>
-                                    <td colspan="1">Policy Number: <span>{{insurance.0.primary_policy_num}}</span></td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2">Expiry Date: <span>{{insurance.0.primary_effective_end_date}}</span>
+                                    <td>
+                                        <table class="IDImgSection">
+                                            <tr>
+                                                <td><img src={{ imageUrl insurance 0 "primary_card_number" "_front" "Patients" reqHeader }}
+                                                        alt="Insurance ID Card"></td>
+                                            </tr>
+                                        </table>
+                                        <!-- <table class="IDTextSection">
+                                                        <tr>
+                                                            <td colspan="3">Insured Name:
+                                                                <span>{{firstElement insurance 0 "primary_insurance_company_name"}}</span></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="">ID.Card No.: <span>{{firstElement insurance 0 "primary_card_number"}}</span></td>
+                                                            <td colspan="">Sex: <span>{{firstElement insurance 0 "sex"}}</span></td>
+                                                            <td colspan="">Age: <span>{{firstElement insurance 0 "age"}}Y</span></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="2">Policy Holder: <span>{{firstElement insurance 0 "policyholder"}}</span></td>
+                                                            <td colspan="1">Policy Number: <span>{{firstElement insurance 0 "primary_policy_num"}}</span></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="2">Expiry Date: <span>{{firstElement insurance 0 "primary_effective_end_date"}}</span>
+                                                            </td>
+                                                            <td colspan="1">Class: <span>{{firstElement insurance 0 "class"}}</span></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="3">Approval: <span>{{firstElement insurance 0 "approval"}}</span></td>
+                    
+                                                        </tr>
+                                                      </table> -->
                                     </td>
-                                    <td colspan="1">Class: <span>{{insurance.0.class}}</span></td>
-                                </tr>
-                                <tr>
-                                    <td colspan="3">Approval: <span>{{insurance.0.approval}}</span></td>
-
                                 </tr>
                             </tbody>
                         </table>
@@ -153,20 +166,20 @@
                                                     <td>V/A</td>
                                                 </tr>
                                                 <tr>
-                                                  <td>{{header.dv_left_sch}}</td>
-                                                  <td>{{header.dv_left_cyl}}</td>
-                                                  <td>{{header.dv_left_axis}}</td>
-                                                  <td>{{header.dv_left_prism}}</td>
-                                                  <td>{{header.dv_left_vision}}</td>
-                                                  <td>{{header.eye_pd1}}</td>
+                                                    <td>{{header.dv_left_sch}}</td>
+                                                    <td>{{header.dv_left_cyl}}</td>
+                                                    <td>{{header.dv_left_axis}}</td>
+                                                    <td>{{header.dv_left_prism}}</td>
+                                                    <td>{{header.dv_left_vision}}</td>
+                                                    <td>{{header.eye_pd1}}</td>
                                                 </tr>
                                                 <tr>
-                                                  <td>{{header.nv_left_sch}}</td>
-                                                  <td>{{header.nv_left_cyl}}</td>
-                                                  <td>{{header.nv_left_axis}}</td>
-                                                  <td>{{header.nv_left_prism}}</td>
-                                                  <td>{{header.nv_left_vision}}</td>
-                                                  <td>{{header.eye_pd2}}</td>
+                                                    <td>{{header.nv_left_sch}}</td>
+                                                    <td>{{header.nv_left_cyl}}</td>
+                                                    <td>{{header.nv_left_axis}}</td>
+                                                    <td>{{header.nv_left_prism}}</td>
+                                                    <td>{{header.nv_left_vision}}</td>
+                                                    <td>{{header.eye_pd2}}</td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -187,7 +200,8 @@
                                         <tbody>
                                             <tr>
                                                 <td style="text-align: left">Bifocal:</td>
-                                                <td style="text-align: left">Add:<span>{{header.right_bifocal_add}}</span></td>
+                                                <td style="text-align: left">
+                                                    Add:<span>{{header.right_bifocal_add}}</span></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -198,7 +212,8 @@
                                         <tbody>
                                             <tr>
                                                 <td style="text-align: left">Vertex:</td>
-                                                <td style="text-align: left">Add:<span>{{header.vertical_add}}</span></td>
+                                                <td style="text-align: left">Add:<span>{{header.vertical_add}}</span>
+                                                </td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -209,7 +224,8 @@
                                         <tbody>
                                             <tr>
                                                 <td style="text-align: left">Bifocal:</td>
-                                                <td style="text-align: left">Add:<span>{{header.left_bifocal_add}}</span></td>
+                                                <td style="text-align: left">
+                                                    Add:<span>{{header.left_bifocal_add}}</span></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -244,7 +260,7 @@
                                     <span>&#10004;</span>
                                     {{/if}} )</td>
                             </tr>
-                            </table>
+                        </table>
                         <table class="innerTable">
                             <tr>
                                 <td colspan="3">
@@ -310,26 +326,32 @@
                             <tr>
                                 <td> Contact Lenses Type: <b>
                                         Permanent ( {{#if header.contact_lense_type "P"}}
-                                    <span>&#10004;</span>
-                                    {{/if}}
-                                    ) | Disposable ( {{#if header.contact_lense_type "D"}}
-                                    <span>&#10004;</span>
-                                    {{/if}}
-                                    )</b>
-                                </td> <td>/ Frames: <b>Yes ( {{#if header.frames "Y"}}
-                                    <span>&#10004;</span>
-                                    {{/if}}
-                                    ) | No ( {{#if header.frames "N"}}
-                                    <span>&#10004;</span>
-                                    {{/if}}
-                                    )</b>
-                                </td><td>/ No. of Pairs: <b>{{header.no_pairs}}</b> Nos</td>
+                                        <span>&#10004;</span>
+                                        {{/if}}
+                                        ) | Disposable ( {{#if header.contact_lense_type "D"}}
+                                        <span>&#10004;</span>
+                                        {{/if}}
+                                        )</b>
+                                </td>
+                                <td>/ Frames: <b>Yes ( {{#if header.frames "Y"}}
+                                        <span>&#10004;</span>
+                                        {{/if}}
+                                        ) | No ( {{#if header.frames "N"}}
+                                        <span>&#10004;</span>
+                                        {{/if}}
+                                        )</b>
+                                </td>
+                                <td>/ No. of Pairs: <b>{{header.no_pairs}}</b> Nos</td>
                             </tr>
                         </table>
-                       
+
                         <table class="innerTable">
-                            <tr><td>Estimated Cost: <b>{{header.estimated_cost}}</b></td><td>Lenses: <b>{{header.lense_cost}}</b> Qty</td><td>Frames: <b>{{header.frame_cost}}</b> Qty</td></tr>
-                           
+                            <tr>
+                                <td>Estimated Cost: <b>{{header.estimated_cost}}</b></td>
+                                <td>Lenses: <b>{{header.lense_cost}}</b> Qty</td>
+                                <td>Frames: <b>{{header.frame_cost}}</b> Qty</td>
+                            </tr>
+
                         </table>
                     </td>
                 </tr>

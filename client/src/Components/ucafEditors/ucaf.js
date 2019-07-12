@@ -6,7 +6,6 @@ import {
   AlgaehDataGrid,
   AlgaehLabel
 } from "../Wrapper/algaehWrapper";
-import { algaehApiCall } from "../../utils/algaehApiCall";
 import _ from "lodash";
 import AlgaehFileUploader from "../Wrapper/algaehFileUpload";
 import EditorEvents from "./EditorEvents";
