@@ -37,8 +37,15 @@ header {
   border-left: 1px solid #007468;
   padding-left: 3px;
   margin-right: 4px; }
-  .appLogoCntr .appLogoOnly {
+  .appLogoCntr .appLogoHIMSOnly {
     background: url(../../../assets/svg/HIMS_LOGO_ONLY.svg) no-repeat center left;
+    background-size: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    height: 40px; }
+  .appLogoCntr .appLogoHRMSOnly {
+    background: url(../../../assets/svg/HRMS_LOGO_ONLY.svg) no-repeat center left;
     background-size: 100%;
     width: 100%;
     margin: 0;

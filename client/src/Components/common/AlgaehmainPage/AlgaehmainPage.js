@@ -554,7 +554,11 @@ class PersistentDrawer extends React.Component {
             <i className="fas fa-bars fa-lg" />
           </div>
           <div className="navbar-brand appLogoCntr">
-            <p className="appLogoOnly" />
+            {this.state.Hims_active === true ? (
+              <p className="appLogoHIMSOnly" />
+            ) : (
+              <p className="appLogoHRMSOnly" />
+            )}
           </div>
 
           <h5 className="topNavbar-title mr-auto">
