@@ -3,7 +3,8 @@ import utlities from "algaeh-utilities";
 import {
   addOpBillCancellation,
   getBillCancellation,
-  updateOPBilling
+  updateOPBilling,
+  updateEncounterDetails
 } from "../models/opBillCancellation";
 import { getReceiptEntry, addReceiptEntry } from "../models/receiptentry";
 
@@ -14,6 +15,17 @@ export default () => {
     "/addOpBillCancellation",
     addReceiptEntry,
     addOpBillCancellation,
+    updateEncounterDetails,
+    (req, res, next) => {
+      if (req.patientencounter.internal_error == true) {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: false,
+          records: req.patientencounter
+        });
+      } else {
+        next();
+      }
+    },
     updateOPBilling,
 
     (req, res, next) => {

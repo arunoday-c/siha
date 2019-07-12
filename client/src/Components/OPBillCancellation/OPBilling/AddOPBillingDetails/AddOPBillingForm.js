@@ -14,16 +14,9 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 import DisplayOPBilling from "../../../BillDetails/BillDetails";
 import {
-  // serviceTypeHandeler,
-  // serviceHandeler,
-  // discounthandle,
-  // adjustadvance,
-  // billheaderCalculation,
-  // onchangegridcol,
   credittexthandle,
-  credittextCal
-  // EditGrid,
-  // CancelGrid
+  credittextCal,
+  makeZero
 } from "./AddOPBillingHandaler";
 import ReciptForm from "../ReciptDetails/ReciptForm";
 import { AlgaehActions } from "../../../../actions/algaehActions";
@@ -599,17 +592,19 @@ class AddOPBillingForm extends Component {
                           />
                           <h6>{getAmountFormart(this.state.copay_amount)}</h6>
                         </div>
-                        <div className="col-lg-6">
-                          <AlgaehLabel
-                            label={{
-                              fieldName: "deductable_amount"
-                            }}
-                          />
-                          <h6>
-                            {getAmountFormart(this.state.deductable_amount)}
-                          </h6>
-                        </div>
-                        {/* <div className="col-lg-6">
+
+                        {/*
+                          <div className="col-lg-6">
+                            <AlgaehLabel
+                              label={{
+                                fieldName: "deductable_amount"
+                              }}
+                            />
+                            <h6>
+                              {getAmountFormart(this.state.deductable_amount)}
+                            </h6>
+                          </div>
+                          <div className="col-lg-6">
                           <AlgaehLabel
                             label={{
                               fieldName: "seco_copay_amount"
@@ -896,7 +891,7 @@ class AddOPBillingForm extends Component {
                             },
                             others: {
                               placeholder: "0.00",
-                              onBlur: credittextCal.bind(this, this),
+                              onBlur: makeZero.bind(this, this, context),
                               onFocus: e => {
                                 e.target.oldvalue = e.target.value;
                               }

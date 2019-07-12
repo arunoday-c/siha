@@ -1,5 +1,7 @@
 import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
+import algaehUtilities from "algaeh-utilities/utilities";
+import appsettings from "algaeh-utilities/appsettings.json";
 
 module.exports = {
   addOpBillCancellation: (req, res, next) => {
@@ -26,13 +28,15 @@ module.exports = {
           _mysql
             .executeQuery({
               query:
-                "INSERT INTO hims_f_bill_cancel_header ( bill_cancel_number, patient_id, visit_id, from_bill_id,receipt_header_id,\
-                    incharge_or_provider, bill_cancel_date, advance_amount,advance_adjust, discount_amount, sub_total_amount \
-                    , total_tax,  billing_status, sheet_discount_amount, sheet_discount_percentage, net_amount, net_total \
-                    , company_res, sec_company_res, patient_res, patient_payable, company_payable, sec_company_payable \
-                    , patient_tax, company_tax, sec_company_tax, net_tax, credit_amount, payable_amount \
-                    , created_by, created_date, updated_by, updated_date, copay_amount, sec_copay_amount ,deductable_amount, sec_deductable_amount,hospital_id) \
-                    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                "INSERT INTO hims_f_bill_cancel_header ( bill_cancel_number, patient_id, visit_id,\
+                  from_bill_id,receipt_header_id, incharge_or_provider, bill_cancel_date, advance_amount,\
+                  advance_adjust, discount_amount, sub_total_amount, total_tax,  billing_status,\
+                  sheet_discount_amount, sheet_discount_percentage, net_amount, net_total, company_res,\
+                  sec_company_res, patient_res, patient_payable, company_payable, sec_company_payable, \
+                  patient_tax, company_tax, sec_company_tax, net_tax, credit_amount, payable_amount, \
+                  created_by, created_date, updated_by, updated_date, copay_amount, sec_copay_amount,\
+                  deductable_amount, sec_deductable_amount, cancel_remarks, hospital_id ) \
+                    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
               values: [
                 bill_cancel_number,
                 inputParam.patient_id,
@@ -73,6 +77,7 @@ module.exports = {
                 inputParam.sec_copay_amount,
                 inputParam.deductable_amount,
                 inputParam.sec_deductable_amount,
+                inputParam.cancel_remarks,
                 req.userIdentity.hospital_id
               ],
               printQuery: true
@@ -254,6 +259,88 @@ module.exports = {
             next(error);
           });
         });
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(error);
+      });
+    }
+  },
+
+  updateEncounterDetails: (req, res, next) => {
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
+    try {
+      let inputParam = { ...req.body };
+      const utilities = new algaehUtilities();
+      utilities
+        .logger()
+        .log("updateEncounterDetails: ", inputParam.billdetails);
+
+      const bill_consultation = _.filter(
+        inputParam.billdetails,
+        f =>
+          f.service_type_id ==
+          appsettings.hims_d_service_type.service_type_id.Consultation
+      );
+      utilities.logger().log("bill_consultation: ", bill_consultation.length);
+      if (bill_consultation.length > 0) {
+        _mysql
+          .executeQuery({
+            query:
+              "SELECT encounter_id, checked_in FROM `hims_f_patient_encounter` WHERE `visit_id`=?",
+            values: [inputParam.visit_id],
+            printQuery: true
+          })
+          .then(patient_encounter => {
+            utilities
+              .logger()
+              .log("checked_in: ", patient_encounter[0].checked_in);
+            if (patient_encounter[0].checked_in == "Y") {
+              req.patientencounter = {
+                internal_error: true,
+                message: "Already Consultation done you cannot cancel"
+              };
+              _mysql.rollBackTransaction(() => {
+                next();
+              });
+            } else {
+              _mysql
+                .executeQuery({
+                  query:
+                    "UPDATE `hims_f_patient_encounter` SET `cancelled`=?, `cancelled_by` = ?,`created_date` = ? \
+                  WHERE `visit_id`=?",
+                  values: [
+                    "Y",
+                    req.userIdentity.algaeh_d_app_user_id,
+                    new Date(),
+                    inputParam.visit_id
+                  ],
+                  printQuery: true
+                })
+                .then(result => {
+                  req.patientencounter = {
+                    ...result[0],
+                    ...{
+                      internal_error: false
+                    }
+                  };
+                  next();
+                })
+                .catch(e => {
+                  _mysql.rollBackTransaction(() => {
+                    next(error);
+                  });
+                });
+            }
+          })
+          .catch(e => {
+            _mysql.rollBackTransaction(() => {
+              next(error);
+            });
+          });
+      } else {
+        next();
+      }
     } catch (e) {
       _mysql.rollBackTransaction(() => {
         next(error);

@@ -29,6 +29,7 @@ const ClearData = ($this, e) => {
       );
       IOputs.patient_payable_h = 0;
       IOputs.counter_id = counter_id;
+      IOputs.cancel_remarks = null;
       $this.setState({ ...$this.state, ...IOputs });
     }
   });
@@ -100,15 +101,28 @@ const Validations = $this => {
     });
 
     return isError;
-  } else if ($this.state.counter_id === null) {
+  } else if (
+    $this.state.cancel_remarks === null ||
+    $this.state.cancel_remarks === ""
+  ) {
     isError = true;
     swalMessage({
       type: "warning",
-      title: "Counter is Mandatory."
+      title: "Cancellation Reason is Mandatory."
     });
 
     return isError;
   }
+
+  // else if ($this.state.counter_id === null) {
+  //   isError = true;
+  //   swalMessage({
+  //     type: "warning",
+  //     title: "Counter is Mandatory."
+  //   });
+  //
+  //   return isError;
+  // }
 };
 
 const getCashiersAndShiftMAP = $this => {

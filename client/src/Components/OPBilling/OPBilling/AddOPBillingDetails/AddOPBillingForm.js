@@ -25,7 +25,9 @@ import {
   CancelGrid,
   onquantitycol,
   ondiscountgridcol,
-  calculateAmount
+  calculateAmount,
+  makeZero,
+  makeDiscountZero
 } from "./AddOPBillingHandaler";
 import ReciptForm from "../ReciptDetails/AddReciptForm";
 import { AlgaehActions } from "../../../../actions/algaehActions";
@@ -605,7 +607,7 @@ class AddOPBillingForm extends Component {
                                   },
                                   others: {
                                     placeholder: "0.00",
-                                    // onBlur: calculateAmount.bind(this, row),
+
                                     onFocus: e => {
                                       e.target.oldvalue = e.target.value;
                                     },
@@ -649,7 +651,7 @@ class AddOPBillingForm extends Component {
                                   },
                                   others: {
                                     placeholder: "0.00",
-                                    // onBlur: calculateAmount.bind(this, row),
+
                                     onFocus: e => {
                                       e.target.oldvalue = e.target.value;
                                     },
@@ -944,11 +946,7 @@ class AddOPBillingForm extends Component {
                             },
                             others: {
                               placeholder: "0.00",
-                              onBlur: billheaderCalculation.bind(
-                                this,
-                                this,
-                                context
-                              ),
+                              onBlur: makeZero.bind(this, this, context),
                               onFocus: e => {
                                 e.target.oldvalue = e.target.value;
                               },
@@ -979,7 +977,11 @@ class AddOPBillingForm extends Component {
                                   ? true
                                   : this.state.applydiscount,
                               placeholder: "0.00",
-
+                              onBlur: makeDiscountZero.bind(
+                                this,
+                                this,
+                                context
+                              ),
                               onFocus: e => {
                                 e.target.oldvalue = e.target.value;
                               }
@@ -1057,6 +1059,7 @@ class AddOPBillingForm extends Component {
                             },
                             others: {
                               placeholder: "0.00",
+                              onBlur: makeZero.bind(this, this, context),
                               disabled:
                                 this.state.Billexists === true ? true : false
                             }

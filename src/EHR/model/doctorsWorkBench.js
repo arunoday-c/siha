@@ -687,42 +687,8 @@ let getEncounterReview = (req, res, next) => {
 //created by irfan: get MYDAY in doctors work bench , to show list of todays patients
 let getMyDay = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
-  // let getMydayWhere = {
-  //   provider_id: req.userIdentity.employee_id,
-  //   sub_department_id: req.userIdentity.sub_department_id
-  // };
 
   try {
-    // if (req.db == null) {
-    //   next(httpStatus.dataBaseNotInitilizedError());
-    // }
-    // let db = req.db;
-    // let dateDiff = "";
-    // if (req.query.fromDate != null && req.query.toDate != null) {
-    //   dateDiff +=
-    //     " date(E.created_date) BETWEEN date('" +
-    //     moment(req.query.fromDate).format(formater.dbFormat.date) +
-    //     "') AND date('" +
-    //     moment(req.query.toDate).format(formater.dbFormat.date) +
-    //     "')";
-    //   delete req.query.fromDate;
-    //   delete req.query.toDate;
-    // } else if (req.query.toDate != null) {
-    //   dateDiff = " date(E.created_date) = date('" + req.query.toDate + "')";
-    //   delete req.query.toDate;
-    // }
-
-    // let statusFlag = "";
-    // if (req.query.status == "A") {
-    //   statusFlag = " E.status <> 'V' AND";
-    //   delete req.query.status;
-    // } else if (req.query.status == "V") {
-    //   statusFlag = " E.status='V' AND";
-    //   delete req.query.status;
-    // }
-
-    // let where = whereCondition(extend(getMydayWhere, req.query));
-
     let _query = "";
     _query += _mysql.mysqlQueryFormat(
       " provider_id=? and sub_department_id=? and ",
@@ -765,15 +731,17 @@ let getMyDay = (req, res, next) => {
     _mysql
       .executeQuery({
         query:
-          "select  E.hims_f_patient_encounter_id,P.patient_code,P.full_name,P.gender,P.age,E.patient_id ,V.appointment_patient,V.new_visit_patient,E.provider_id,E.`status`,E.nurse_examine,E.checked_in,\
-         E.payment_type,E.episode_id,E.encounter_id,E.`source`,E.updated_date as encountered_date,E.visit_id ,sub_department_id,SD.chart_type,SD.vitals_mandatory,	P.primary_id_no, \
-	ID.identity_document_name from hims_f_patient_encounter E\
-         INNER JOIN hims_f_patient P ON E.patient_id=P.hims_d_patient_id \
+          "select  E.hims_f_patient_encounter_id, P.patient_code, P.full_name, P.gender, P.age, E.patient_id,\
+            V.appointment_patient, V.new_visit_patient, E.provider_id, E.`status`, E.nurse_examine, E.checked_in,\
+            E.payment_type, E.episode_id, E.encounter_id, E.`source`, E.updated_date as encountered_date, \
+            E.visit_id, sub_department_id, SD.chart_type, SD.vitals_mandatory,	P.primary_id_no, \
+	          ID.identity_document_name, V.visit_expiery_date, V.visit_status from hims_f_patient_encounter E\
+            INNER JOIN hims_f_patient P ON E.patient_id=P.hims_d_patient_id \
             inner join hims_f_patient_visit V on E.visit_id=V.hims_f_patient_visit_id  \
             inner join hims_d_sub_department SD on sub_department_id=SD.hims_d_sub_department_id  \
             left join hims_d_identity_document ID on  \
-ID.hims_d_identity_document_id = P.primary_identity_id \
-            where E.record_status='A' AND  V.record_status='A' and v.hospital_id=? AND " +
+            ID.hims_d_identity_document_id = P.primary_identity_id \
+            where E.cancelled='N' and E.record_status='A' AND  V.record_status='A' and v.hospital_id=? AND " +
           _query,
         values: [req.userIdentity.hospital_id],
         printQuery: true
@@ -787,35 +755,6 @@ ID.hims_d_identity_document_id = P.primary_identity_id \
         _mysql.releaseConnection();
         next(error);
       });
-
-    // db.getConnection((error, connection) => {
-    //   if (error) {
-    //     next(error);
-    //   }
-    //   db.query(
-    //     "select  E.hims_f_patient_encounter_id,P.patient_code,P.full_name,E.patient_id ,V.appointment_patient,E.provider_id,E.`status`,E.nurse_examine,E.checked_in,\
-    //      E.payment_type,E.episode_id,E.encounter_id,E.`source`,E.updated_date as encountered_date,E.visit_id ,sub_department_id from hims_f_patient_encounter E\
-    //      INNER JOIN hims_f_patient P ON E.patient_id=P.hims_d_patient_id \
-    //         inner join hims_f_patient_visit V on E.visit_id=V.hims_f_patient_visit_id  where E.record_status='A' AND  V.record_status='A' AND " +
-    //       statusFlag +
-    //       "" +
-    //       dateDiff +
-    //       " AND " +
-    //       where.condition +
-    //       " order by E.updated_date desc",
-    //     where.values,
-
-    //     (error, result) => {
-    //       releaseDBConnection(db, connection);
-    //       if (error) {
-    //         next(error);
-    //       }
-
-    //       req.records = result;
-    //       next();
-    //     }
-    //   );
-    // });
   } catch (e) {
     _mysql.releaseConnection();
     next(e);
@@ -868,8 +807,8 @@ let updatdePatEncntrStatus = (req, res, next) => {
 
                 if (updateResult != null) {
                   connection.query(
-                    "UPDATE  hims_f_patient_encounter SET  `status`='W',encounter_id=?,updated_by=?,updated_date=? WHERE\
-         hims_f_patient_encounter_id=? AND  record_status='A';",
+                    "UPDATE  hims_f_patient_encounter SET `checked_in` = 'Y', `status`='W', encounter_id=?,\
+                     updated_by=?, updated_date=? WHERE hims_f_patient_encounter_id=? AND  record_status='A';",
                     [
                       currentEncounterNo,
                       req.body.updated_by,

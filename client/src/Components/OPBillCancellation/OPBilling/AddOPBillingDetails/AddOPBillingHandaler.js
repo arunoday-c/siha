@@ -175,27 +175,35 @@ const onchangegridcol = ($this, row, e) => {
 
 const credittexthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
-
-  if (e.target.value > $this.state.net_amount) {
-    successfulMessage({
-      message: "Criedt amount cannot be greater than Net amount",
-      title: "Warning",
-      icon: "warning"
-    });
-  } else {
-    $this.setState(
-      {
-        [e.target.name]: e.target.value
-      },
-      () => {
-        // credittextCal($this, e);
-      }
-    );
-
+  if (e.target.value === undefined) {
     if (context !== null) {
       context.updateState({
-        [e.target.name]: e.target.value
+        sheet_discount_percentage: "",
+        sheet_discount_amount: ""
       });
+    }
+  } else {
+    if (parseFloat(e.target.value) > parseFloat($this.state.net_amount)) {
+      successfulMessage({
+        message: "Criedt amount cannot be greater than Net amount",
+        title: "Warning",
+        icon: "warning"
+      });
+    } else {
+      $this.setState(
+        {
+          [e.target.name]: e.target.value
+        },
+        () => {
+          credittextCal($this, e);
+        }
+      );
+
+      if (context !== null) {
+        context.updateState({
+          [e.target.name]: e.target.value
+        });
+      }
     }
   }
 };
@@ -245,6 +253,16 @@ const CancelGrid = ($this, context, cancelRow) => {
     });
   }
 };
+
+const makeZero = ($this, context, e) => {
+  if (e.target.value === "") {
+    if (context !== null) {
+      context.updateState({
+        [e.target.name]: 0
+      });
+    }
+  }
+};
 export {
   serviceTypeHandeler,
   serviceHandeler,
@@ -256,5 +274,6 @@ export {
   credittexthandle,
   credittextCal,
   EditGrid,
-  CancelGrid
+  CancelGrid,
+  makeZero
 };

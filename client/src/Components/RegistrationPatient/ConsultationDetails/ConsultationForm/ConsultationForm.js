@@ -290,7 +290,7 @@ class AddConsultationForm extends Component {
                     />
                   </div>
                   <div className="row">
-                    <div className="col-lg-4 maternityRadio">
+                    {/*<div className="col-lg-4 maternityRadio">
                       <AlgaehLabel
                         label={{
                           fieldName:
@@ -314,9 +314,9 @@ class AddConsultationForm extends Component {
                           <span className={hideMaternity}>Yes</span>
                         </label>
                       </div>
-                    </div>
+                    </div>*/}
 
-                    <div className="col-lg-8">
+                    <div className="col-lg-12">
                       {this.state.department_type === "D" &&
                       this.state.hims_d_patient_id !== null ? (
                         <div className="row">

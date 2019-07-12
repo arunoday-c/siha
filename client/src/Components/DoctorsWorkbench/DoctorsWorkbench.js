@@ -222,6 +222,40 @@ class DoctorsWorkbench extends Component {
     this.setState({ selectedHDate: dt, activeDateHeader: dt });
   }
 
+  OpenPatientProfile(data) {
+    if (data.visit_status === "C") {
+      swalMessage({
+        title: "Visit is closed, Cannot proceed further",
+        type: "error"
+      });
+      return;
+    }
+
+    let inRange = moment(data.visit_expiery_date).isBefore(
+      moment().format("YYYY-MM-DD")
+    );
+    if (inRange) {
+      swalMessage({
+        title: "Visit is Expired, Cannot proceed further",
+        type: "error"
+      });
+      return;
+    }
+
+    setGlobal({
+      vitals_mandatory: data.vitals_mandatory,
+      "EHR-STD": "PatientProfile",
+      current_patient: data.patient_id,
+      episode_id: data.episode_id,
+      visit_id: data.visit_id,
+      encounter_id: data.encounter_id,
+      provider_id: data.provider_id,
+      chart_type: data.chart_type,
+      gender: data.gender
+    });
+    document.getElementById("ehr-router").click();
+  }
+
   render() {
     return (
       <div className="doctor_workbench">
@@ -400,20 +434,10 @@ class DoctorsWorkbench extends Component {
                             return (
                               <span
                                 className="pat-code"
-                                onClick={() => {
-                                  setGlobal({
-                                    vitals_mandatory: data.vitals_mandatory,
-                                    "EHR-STD": "PatientProfile",
-                                    current_patient: data.patient_id,
-                                    episode_id: data.episode_id,
-                                    visit_id: data.visit_id,
-                                    encounter_id: data.encounter_id,
-                                    provider_id: data.provider_id,
-                                    chart_type: data.chart_type,
-                                    gender: data.gender
-                                  });
-                                  document.getElementById("ehr-router").click();
-                                }}
+                                onClick={this.OpenPatientProfile.bind(
+                                  this,
+                                  data
+                                )}
                               >
                                 {data.patient_code}
                               </span>

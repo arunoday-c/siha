@@ -50,7 +50,8 @@ let algaehSearchConfig = (searchName, req) => {
           "select SQL_CALC_FOUND_ROWS  full_name, patient_code, contact_number, nationality_id,pv.visit_code, pv.visit_date,\
           pv.patient_id, pv.hims_f_patient_visit_id, \
           pv.insured, pv.sec_insured,pv.episode_id FROM hims_f_patient,hims_f_patient_visit pv where  \
-          pv.patient_id=hims_f_patient.hims_d_patient_id and pv.record_status='A' and pv.hospital_id=" +
+          pv.patient_id=hims_f_patient.hims_d_patient_id and pv.record_status='A' and\
+          date(pv.visit_expiery_date) > date(now()) and pv.hospital_id=" +
           hospitalId,
         orderBy: "pv.hims_f_patient_visit_id desc"
       },
@@ -310,8 +311,9 @@ let algaehSearchConfig = (searchName, req) => {
         searchQuery:
           "select SQL_CALC_FOUND_ROWS hims_f_billing_header_id, bill_number, bill_date, PAT.patient_code, PAT.full_name, PAT.contact_number,\
           PATV.visit_code from hims_f_billing_header BH inner join hims_f_patient as PAT on  \
-          BH.patient_id = PAT.hims_d_patient_id inner join hims_f_patient_visit as PATV on BH.visit_id = PATV.hims_f_patient_visit_id\
-          where BH.record_status ='A' and cancelled='N' and BH.hospital_id=" +
+          BH.patient_id = PAT.hims_d_patient_id inner join hims_f_patient_visit as PATV on \
+          BH.visit_id = PATV.hims_f_patient_visit_id where BH.record_status ='A' and \
+          cancelled='N' and BH.hospital_id=" +
           hospitalId,
         orderBy: "hims_f_billing_header_id desc"
       },
