@@ -90,10 +90,11 @@
     margin: 5% auto 0;
     width: 320px;
     .companyLogo {
-      background: url(../../assets/svg/HIMS_LOGO_ONLY.svg) no-repeat center;
-      height: 70px;
-      background-size: 70%;
+      background: url(../../assets/svg/algaeh_product_logo.svg) no-repeat center;
+      height: 120px;
+      background-size: 100%;
       width: 100%;
+      margin-bottom: 10px;
     }
   }
   .frgtPass {
@@ -170,7 +171,7 @@
   }
 }
 .bg {
-  background-image: url("../../assets/images/login_bg_HIMS.webp");
+  background-image: url("../../assets/images/login_bg_global.jpg");
   position: absolute;
   height: 100%;
   background-position: center center;
