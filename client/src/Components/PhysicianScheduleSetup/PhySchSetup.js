@@ -357,7 +357,8 @@ class PhySchSetup extends Component {
       thursday,
       friday,
       saturday,
-      sunday
+      sunday,
+      openEdit
     } = this.state;
     console.log(this.state, "from validation");
     const type = "warning";
@@ -379,7 +380,7 @@ class PhySchSetup extends Component {
         type
       });
       return false;
-    } else if (!slot) {
+    } else if (!openEdit && !slot) {
       swalMessage({
         title: "Please Select a Slot.",
         type
@@ -669,10 +670,10 @@ class PhySchSetup extends Component {
         sub_department_id: docs.sub_dept_id,
         description: docs.schedule_description,
         scheduleDoctors: docs.doctorsList,
-        from_break_hr1: docs.from_break_hr1,
-        to_break_hr1: docs.to_break_hr1,
-        from_break_hr2: docs.from_break_hr2,
-        to_break_hr2: docs.to_break_hr2,
+        from_break_hr1: docs.work_break1 === "Y" ? docs.from_break_hr1 : null,
+        to_break_hr1: docs.work_break1 === "Y" ? docs.to_break_hr1 : null,
+        from_break_hr2: docs.work_break2 === "Y" ? docs.from_break_hr2 : null,
+        to_break_hr2: docs.work_break2 === "Y" ? docs.to_break_hr2 : null,
         from_work_hr: docs.from_work_hr,
         to_work_hr: docs.to_work_hr,
         work_break1: docs.work_break1,
@@ -692,7 +693,6 @@ class PhySchSetup extends Component {
   }
 
   isPastSchedule(docs) {
-    console.log(this.state.from_break_hr2, this.state.to_break_hr2);
     const { to_date } = docs;
     const result = moment(to_date).isBefore(moment().format("YYYY-MM-DD"));
     this.setState({
