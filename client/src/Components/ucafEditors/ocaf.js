@@ -1,16 +1,9 @@
 import React, { Component } from "react";
 import "./udocaf.css";
-import {
-  AlagehFormGroup,
-  AlgaehDateHandler,
-  AlgaehDataGrid,
-  AlgaehLabel,
-  AlagehAutoComplete
-} from "../Wrapper/algaehWrapper";
-import { algaehApiCall } from "../../utils/algaehApiCall";
+import { AlagehFormGroup, AlgaehDateHandler } from "../Wrapper/algaehWrapper";
 import _ from "lodash";
-import GlobalVariables from "../../utils/GlobalVariables.json";
-import EditorEvents from "./EditorEvents"
+import AlgaehFileUploader from "../Wrapper/algaehFileUpload";
+import EditorEvents from "./EditorEvents";
 
 export default class OcafEditor extends Component {
   constructor(props) {
@@ -24,95 +17,92 @@ export default class OcafEditor extends Component {
       insurance_approved: "",
       ocaf_data: undefined,
 
-      patient_marital_status:null,
-      dv_right_sch:null,
-      dv_right_cyl:null,
-      dv_right_axis:null,
-      dv_right_vision:null,
-      nv_right_sch:null,
-      nv_right_cyl:null,
-      nv_right_axis:null,
-      nv_right_vision:null,
-      dv_left_sch:null,
-      dv_left_cyl:null,
-      dv_left_axis:null,
-      dv_left_vision:null,
-      nv_left_sch:null,
-      nv_left_cyl:null,
-      nv_left_axis:null,
-      nv_left_vision:null,
+      patient_marital_status: null,
+      dv_right_sch: null,
+      dv_right_cyl: null,
+      dv_right_axis: null,
+      dv_right_vision: null,
+      nv_right_sch: null,
+      nv_right_cyl: null,
+      nv_right_axis: null,
+      nv_right_vision: null,
+      dv_left_sch: null,
+      dv_left_cyl: null,
+      dv_left_axis: null,
+      dv_left_vision: null,
+      nv_left_sch: null,
+      nv_left_cyl: null,
+      nv_left_axis: null,
+      nv_left_vision: null,
 
+      frames: null,
+      no_pairs: null,
+      estimated_cost: 0,
+      lense_cost: 0,
+      frame_cost: 0,
 
-      frames:null,
-      no_pairs:null,
-      estimated_cost:0,
-      lense_cost:0,
-      frame_cost:0,
-
-      multi_coated:false,
-      varilux:false,
-      light:false,
-      aspheric:false,
-      bifocal:false,
-      medium:false,
-      lenticular:false,
-      single_vision:false,
-      dark:false,
-      safety_thickness:false,
-      anti_reflecting_coating:false,
-      photosensitive:false,
-      high_index:false,
-      colored:false,
-      anti_scratch:false,
-      contact_lense_type:null,
-      resgular_lense_type:"N"
+      multi_coated: false,
+      varilux: false,
+      light: false,
+      aspheric: false,
+      bifocal: false,
+      medium: false,
+      lenticular: false,
+      single_vision: false,
+      dark: false,
+      safety_thickness: false,
+      anti_reflecting_coating: false,
+      photosensitive: false,
+      high_index: false,
+      colored: false,
+      anti_scratch: false,
+      contact_lense_type: null,
+      resgular_lense_type: "N"
     };
   }
 
-  componentDidMount(){
-    
+  componentDidMount() {
     // this.props.dataProps.hims_f_ocaf_header
     // this.props.dataProps.hims_f_ocaf_insurance_details
-    if(this.props.dataProps.hims_f_ocaf_header !== undefined &&
-      this.props.dataProps.hims_f_ocaf_header.length > 0){
-        
-        let data = this.props.dataProps.hims_f_ocaf_header[0];
-        let insurance = this.props.dataProps.hims_f_ocaf_insurance_details[0]
+    if (
+      this.props.dataProps.hims_f_ocaf_header !== undefined &&
+      this.props.dataProps.hims_f_ocaf_header.length > 0
+    ) {
+      let data = this.props.dataProps.hims_f_ocaf_header[0];
+      let insurance = this.props.dataProps.hims_f_ocaf_insurance_details[0];
 
-        // data
-        data.multi_coated=data.multi_coated === "Y"?true:false,
-        data.varilux=data.varilux === "Y"?true:false,
-        data.light=data.light === "Y"?true:false,
-        data.aspheric=data.aspheric === "Y"?true:false,
-        data.bifocal=data.bifocal === "Y"?true:false,
-        data.medium=data.medium === "Y"?true:false,
-        data.lenticular=data.lenticular === "Y"?true:false,
-        data.single_vision=data.single_vision === "Y"?true:false,
-        data.dark=data.dark === "Y"?true:false,
-        data.safety_thickness=data.safety_thickness === "Y"?true:false,
-        data.anti_reflecting_coating=data.anti_reflecting_coating === "Y"?true:false,
-        data.photosensitive=data.photosensitive === "Y"?true:false,
-        data.high_index=data.high_index === "Y"?true:false,
-        data.colored=data.colored === "Y"?true:false,
-        data.anti_scratch=data.anti_scratch === "Y"?true:false,
-        this.setState({...this.state, ...data, ...insurance})
+      // data
+      (data.multi_coated = data.multi_coated === "Y" ? true : false),
+        (data.varilux = data.varilux === "Y" ? true : false),
+        (data.light = data.light === "Y" ? true : false),
+        (data.aspheric = data.aspheric === "Y" ? true : false),
+        (data.bifocal = data.bifocal === "Y" ? true : false),
+        (data.medium = data.medium === "Y" ? true : false),
+        (data.lenticular = data.lenticular === "Y" ? true : false),
+        (data.single_vision = data.single_vision === "Y" ? true : false),
+        (data.dark = data.dark === "Y" ? true : false),
+        (data.safety_thickness = data.safety_thickness === "Y" ? true : false),
+        (data.anti_reflecting_coating =
+          data.anti_reflecting_coating === "Y" ? true : false),
+        (data.photosensitive = data.photosensitive === "Y" ? true : false),
+        (data.high_index = data.high_index === "Y" ? true : false),
+        (data.colored = data.colored === "Y" ? true : false),
+        (data.anti_scratch = data.anti_scratch === "Y" ? true : false),
+        this.setState({ ...this.state, ...data, ...insurance });
     }
   }
 
-  ChangeEventHandler(e){
-    EditorEvents().ChangeEventHandler(this,e)
+  ChangeEventHandler(e) {
+    EditorEvents().ChangeEventHandler(this, e);
   }
-  radioChange(e){
-    EditorEvents().radioChange(this,e)
+  radioChange(e) {
+    EditorEvents().radioChange(this, e);
   }
-  saveAndPrintOcaf(){
-    EditorEvents().saveAndPrintOcaf(this)
+  saveAndPrintOcaf() {
+    EditorEvents().saveAndPrintOcaf(this);
   }
 
-  componentWillReceiveProps(newProps){
-    
-
-  }
+  componentWillReceiveProps(newProps) {}
 
   render() {
     const _isPrimary = "primary";
@@ -164,7 +154,7 @@ export default class OcafEditor extends Component {
                             }
                           }}
                         /> */}
-                          <div className="col-6">
+                        <div className="col-6">
                           <label>Insurance Company Name</label>
                           <h6>{this.state.primary_insurance_company_name}</h6>
                         </div>
@@ -185,9 +175,11 @@ export default class OcafEditor extends Component {
                             }
                           }}
                         /> */}
-                          <div className="col-6">
+                        <div className="col-6">
                           <label>TPA Company Name</label>
-                          <h6>{this.state.primary_tpa_insurance_company_name}</h6>
+                          <h6>
+                            {this.state.primary_tpa_insurance_company_name}
+                          </h6>
                         </div>
                         {/* <AlagehFormGroup
                           div={{ className: "col-4 form-group" }}
@@ -206,7 +198,7 @@ export default class OcafEditor extends Component {
                             }
                           }}
                         /> */}
-                          <div className="col-6">
+                        <div className="col-6">
                           <label>Patient File Number</label>
                           <h6>{this.state.patient_code}</h6>
                         </div>
@@ -226,7 +218,7 @@ export default class OcafEditor extends Component {
                             }
                           }}
                         /> */}
-                          <div className="col-6">
+                        <div className="col-6">
                           <label>Department</label>
                           <h6>{this.state.sub_department_name}</h6>
                         </div>
@@ -246,11 +238,11 @@ export default class OcafEditor extends Component {
                             }
                           }}
                         /> */}
-                          <div className="col-6">
+                        <div className="col-6">
                           <label>Date of Visit</label>
                           <h6>{this.state.visit_date}</h6>
                         </div>
-{/*                         
+                        {/*                         
                         <AlgaehDateHandler
                           div={{ className: "col-4 form-group" }}
                           label={{
@@ -273,10 +265,9 @@ export default class OcafEditor extends Component {
                             <input
                               type="radio"
                               name="patient_marital_status"
-                              value = "Single"
+                              value="Single"
                               checked={
-                                this.state.patient_marital_status ===
-                                "Single"
+                                this.state.patient_marital_status === "Single"
                                   ? true
                                   : false
                               }
@@ -288,10 +279,9 @@ export default class OcafEditor extends Component {
                             <input
                               type="radio"
                               name="patient_marital_status"
-                              value = "Married"
+                              value="Married"
                               checked={
-                                this.state.patient_marital_status ===
-                                "Married"
+                                this.state.patient_marital_status === "Married"
                                   ? true
                                   : false
                               }
@@ -348,156 +338,184 @@ export default class OcafEditor extends Component {
                       </div>
                     </div>
                   </div>
+
                   <div className="col-5">
                     <div className="IDCardUcaf">
                       <div className="row">
                         <div className="col-12">
                           <h5>Print/Fill in clear letters or Emboss Card:</h5>
                         </div>
-                        <AlagehFormGroup
-                          div={{ className: "col-6 form-group" }}
-                          label={{
-                            forceLabel: "Insured Name",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "",
-                            value: this.state.patient_full_name,
-                            events: {},
-                            option: {
-                              type: "text"
-                            }
-                          }}
-                        />
-                        <AlagehFormGroup
-                          div={{ className: "col-6 form-group" }}
-                          label={{
-                            forceLabel: "ID. Card No.",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "",
-                            value:this.state.primary_card_number,
-                            events: {},
-                            option: {
-                              type: "text"
-                            }
-                          }}
-                        />
-                        <AlagehFormGroup
-                          div={{ className: "col-4 form-group" }}
-                          label={{
-                            forceLabel: "Sex",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "",
-                            value: this.state.patient_gender,
-                            events: {},
-                            option: {
-                              type: "text"
-                            }
-                          }}
-                        />
-                        <AlagehFormGroup
-                          div={{ className: "col-4 form-group" }}
-                          label={{
-                            forceLabel: "Age",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "",
-                            value: this.state.age_in_years,
-                            events: {},
-                            option: {
-                              type: "text"
-                            }
-                          }}
-                        />
-                        <AlagehFormGroup
-                          div={{ className: "col-4 form-group" }}
-                          label={{
-                            forceLabel: "Class",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "",
-                            value: this.state.class,
-                            events: {},
-                            option: {
-                              type: "text"
-                            }
-                          }}
-                        />
-                        <AlagehFormGroup
-                          div={{ className: "col-6 form-group" }}
-                          label={{
-                            forceLabel: "Policy Holder",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "",
-                            value:
-                              this.state.insurance_holder === undefined
-                                ? this.state.insurance_holder === ""
-                                  ? this.state.patient_full_name
-                                  : this.state.insurance_holder
-                                : this.state.insurance_holder,
-                            events: {},
-                            option: {
-                              type: "text"
-                            }
-                          }}
-                        />
-                        <AlagehFormGroup
-                          div={{ className: "col-6 form-group" }}
-                          label={{
-                            forceLabel: "Policy No.",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "",
-                            value:this.state.primary_policy_num,
-                            events: {},
-                            option: {
-                              type: "text"
-                            }
-                          }}
-                        />
-                        <AlgaehDateHandler
-                          div={{ className: "col-6" }}
-                          label={{ forceLabel: "Expiry Date", isImp: false }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: ""
-                          }}
-                          value={this.state.primary_effective_end_date}
-                          maxDate={new Date()}
-                          events={{}}
-                        />
-                        <AlagehFormGroup
-                          div={{ className: "col-6 form-group" }}
-                          label={{
-                            forceLabel: "Approval",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "insurance_approved",
-                            value: this.state.insurance_approved,
-                            events: {},
-                            option: {
-                              type: "text"
-                            }
-                          }}
-                        />
+
+                        {this.state.showImgArea ? (
+                          <div className="col-12">
+                            <div className="row popupIDImg">
+                              <AlgaehFileUploader
+                                noImage="insurance-card-front"
+                                name="patInsuranceFrontImg"
+                                accept="image/*"
+                                textAltMessage="Insurance Card Front Side"
+                                showActions={false}
+                                serviceParameters={{
+                                  uniqueID:
+                                    this.state.primary_card_number + "_front",
+                                  fileType: "Patients"
+                                }}
+                              />
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="col-12">
+                            <div className="row">
+                              <AlagehFormGroup
+                                div={{ className: "col-6 form-group" }}
+                                label={{
+                                  forceLabel: "Insured Name",
+                                  isImp: false
+                                }}
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "",
+                                  value: this.state.patient_full_name,
+                                  events: {},
+                                  option: {
+                                    type: "text"
+                                  }
+                                }}
+                              />
+                              <AlagehFormGroup
+                                div={{ className: "col-6 form-group" }}
+                                label={{
+                                  forceLabel: "ID. Card No.",
+                                  isImp: false
+                                }}
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "",
+                                  value: this.state.primary_card_number,
+                                  events: {},
+                                  option: {
+                                    type: "text"
+                                  }
+                                }}
+                              />
+                              <AlagehFormGroup
+                                div={{ className: "col-4 form-group" }}
+                                label={{
+                                  forceLabel: "Sex",
+                                  isImp: false
+                                }}
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "",
+                                  value: this.state.patient_gender,
+                                  events: {},
+                                  option: {
+                                    type: "text"
+                                  }
+                                }}
+                              />{" "}
+                              <AlagehFormGroup
+                                div={{ className: "col-4 form-group" }}
+                                label={{
+                                  forceLabel: "Age",
+                                  isImp: false
+                                }}
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "",
+                                  value: this.state.age_in_years,
+                                  events: {},
+                                  option: {
+                                    type: "text"
+                                  }
+                                }}
+                              />{" "}
+                              <AlagehFormGroup
+                                div={{ className: "col-4 form-group" }}
+                                label={{
+                                  forceLabel: "Class",
+                                  isImp: false
+                                }}
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "",
+                                  value: this.state.class,
+                                  events: {},
+                                  option: {
+                                    type: "text"
+                                  }
+                                }}
+                              />
+                              <AlagehFormGroup
+                                div={{ className: "col-6 form-group" }}
+                                label={{
+                                  forceLabel: "Policy Holder",
+                                  isImp: false
+                                }}
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "",
+                                  value:
+                                    this.state.insurance_holder === undefined
+                                      ? this.state.insurance_holder === ""
+                                        ? this.state.patient_full_name
+                                        : this.state.insurance_holder
+                                      : this.state.insurance_holder,
+                                  events: {},
+                                  option: {
+                                    type: "text"
+                                  }
+                                }}
+                              />{" "}
+                              <AlagehFormGroup
+                                div={{ className: "col-6 form-group" }}
+                                label={{
+                                  forceLabel: "Policy No.",
+                                  isImp: false
+                                }}
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "",
+                                  value: this.state.primary_policy_num,
+                                  events: {},
+                                  option: {
+                                    type: "text"
+                                  }
+                                }}
+                              />
+                              <AlgaehDateHandler
+                                div={{ className: "col-6" }}
+                                label={{
+                                  forceLabel: "Expiry Date",
+                                  isImp: false
+                                }}
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: ""
+                                }}
+                                value={this.state.primary_effective_end_date}
+                                maxDate={new Date()}
+                                events={{}}
+                              />
+                              <AlagehFormGroup
+                                div={{ className: "col-6 form-group" }}
+                                label={{
+                                  forceLabel: "Approval",
+                                  isImp: false
+                                }}
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "insurance_approved",
+                                  value: this.state.insurance_approved,
+                                  events: {},
+                                  option: {
+                                    type: "text"
+                                  }
+                                }}
+                              />
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -507,7 +525,10 @@ export default class OcafEditor extends Component {
                   <div className="col-12">
                     <div className="attendingPhysician">
                       <div className="row">
-                        <div className="col-6 table-responsive" style={{padding:0}}>
+                        <div
+                          className="col-6 table-responsive"
+                          style={{ padding: 0 }}
+                        >
                           <table className="table table-bordered table-sm">
                             <thead>
                               <tr>
@@ -564,8 +585,7 @@ export default class OcafEditor extends Component {
                                 </td>
 
                                 <td>
-
-                                <h6>{this.state.dv_right_axis}</h6>
+                                  <h6>{this.state.dv_right_axis}</h6>
                                   {/* <AlagehAutoComplete
                                     div={{ className: "" }}
                                     selector={{
@@ -584,7 +604,7 @@ export default class OcafEditor extends Component {
                                 </td>
 
                                 <td>
-                                <h6>{this.state.dv_right_prism}</h6>
+                                  <h6>{this.state.dv_right_prism}</h6>
                                   {/* <AlagehFormGroup
                                     div={{ className: "" }}
                                     textBox={{
@@ -600,7 +620,7 @@ export default class OcafEditor extends Component {
                                 </td>
 
                                 <td>
-                                <h6>{this.state.dv_right_vision}</h6>
+                                  <h6>{this.state.dv_right_vision}</h6>
                                   {/* <AlagehAutoComplete
                                     div={{ className: "" }}
                                     selector={{
@@ -621,7 +641,7 @@ export default class OcafEditor extends Component {
                               <tr>
                                 <td>Near</td>
                                 <td>
-                                <h6>{this.state.nv_right_sch}</h6>
+                                  <h6>{this.state.nv_right_sch}</h6>
                                   {/* <AlagehAutoComplete
                                     div={{ className: "" }}
                                     selector={{
@@ -639,7 +659,7 @@ export default class OcafEditor extends Component {
                                   /> */}
                                 </td>
                                 <td>
-                                <h6>{this.state.nv_right_cyl}</h6>
+                                  <h6>{this.state.nv_right_cyl}</h6>
                                   {/* <AlagehAutoComplete
                                     div={{ className: "" }}
                                     selector={{
@@ -658,7 +678,7 @@ export default class OcafEditor extends Component {
                                 </td>
 
                                 <td>
-                                <h6>{this.state.nv_right_axis}</h6>
+                                  <h6>{this.state.nv_right_axis}</h6>
                                   {/* <AlagehAutoComplete
                                     div={{ className: "" }}
                                     selector={{
@@ -677,7 +697,7 @@ export default class OcafEditor extends Component {
                                 </td>
 
                                 <td>
-                                <h6>{this.state.nv_right_prism}</h6>
+                                  <h6>{this.state.nv_right_prism}</h6>
                                   {/* <AlagehFormGroup
                                     div={{ className: "" }}
                                     div={{ className: "" }}
@@ -694,7 +714,7 @@ export default class OcafEditor extends Component {
                                 </td>
 
                                 <td>
-                                <h6>{this.state.nv_right_vision}</h6>
+                                  <h6>{this.state.nv_right_vision}</h6>
                                   {/* <AlagehAutoComplete
                                     div={{ className: "" }}
                                     selector={{
@@ -711,12 +731,14 @@ export default class OcafEditor extends Component {
                                     }}
                                   /> */}
                                 </td>
-
                               </tr>
                             </tbody>
                           </table>
                         </div>
-                        <div className="col-6 table-responsive" style={{padding:0}}>
+                        <div
+                          className="col-6 table-responsive"
+                          style={{ padding: 0 }}
+                        >
                           <table className="table table-bordered table-sm">
                             <thead>
                               <tr>
@@ -734,9 +756,8 @@ export default class OcafEditor extends Component {
                                 <td>PD</td>
                               </tr>
                               <tr>
-
                                 <td>
-                                <h6>{this.state.dv_left_sch}</h6>
+                                  <h6>{this.state.dv_left_sch}</h6>
                                   {/* <AlagehAutoComplete
                                     div={{ className: "" }}
                                     selector={{
@@ -754,7 +775,7 @@ export default class OcafEditor extends Component {
                                   /> */}
                                 </td>
                                 <td>
-                                <h6>{this.state.dv_left_cyl}</h6>
+                                  <h6>{this.state.dv_left_cyl}</h6>
                                   {/* <AlagehAutoComplete
                                     div={{ className: "" }}
                                     selector={{
@@ -773,7 +794,7 @@ export default class OcafEditor extends Component {
                                 </td>
 
                                 <td>
-                                <h6>{this.state.dv_left_axis}</h6>
+                                  <h6>{this.state.dv_left_axis}</h6>
                                   {/* <AlagehAutoComplete
                                     div={{ className: "" }}
                                     selector={{
@@ -792,7 +813,7 @@ export default class OcafEditor extends Component {
                                 </td>
 
                                 <td>
-                                <h6>{this.state.dv_left_prism}</h6>
+                                  <h6>{this.state.dv_left_prism}</h6>
                                   {/* <AlagehFormGroup
                                     div={{ className: "" }}
                                     textBox={{
@@ -810,7 +831,7 @@ export default class OcafEditor extends Component {
                                 </td>
 
                                 <td>
-                                <h6>{this.state.dv_left_vision}</h6>
+                                  <h6>{this.state.dv_left_vision}</h6>
                                   {/* <AlagehAutoComplete
                                     div={{ className: "" }}
                                     selector={{
@@ -827,9 +848,9 @@ export default class OcafEditor extends Component {
                                     }}
                                   /> */}
                                 </td>
-<td>
-                                <h6>{this.state.eye_pd1}</h6>
-                                {/* <AlagehFormGroup
+                                <td>
+                                  <h6>{this.state.eye_pd1}</h6>
+                                  {/* <AlagehFormGroup
                                   div={{ className: "" }}
                                   textBox={{
                                     className: "txt-fld",
@@ -846,9 +867,8 @@ export default class OcafEditor extends Component {
                                 </td>
                               </tr>
                               <tr>
-
                                 <td>
-                                <h6>{this.state.nv_left_sch}</h6>
+                                  <h6>{this.state.nv_left_sch}</h6>
                                   {/* <AlagehAutoComplete
                                     div={{ className: "" }}
                                     selector={{
@@ -866,7 +886,7 @@ export default class OcafEditor extends Component {
                                   /> */}
                                 </td>
                                 <td>
-                                <h6>{this.state.nv_left_cyl}</h6>
+                                  <h6>{this.state.nv_left_cyl}</h6>
                                   {/* <AlagehAutoComplete
                                     div={{ className: "" }}
                                     selector={{
@@ -885,7 +905,7 @@ export default class OcafEditor extends Component {
                                 </td>
 
                                 <td>
-                                <h6>{this.state.nv_left_axis}</h6>
+                                  <h6>{this.state.nv_left_axis}</h6>
                                   {/* <AlagehAutoComplete
                                     div={{ className: "" }}
                                     selector={{
@@ -904,7 +924,7 @@ export default class OcafEditor extends Component {
                                 </td>
 
                                 <td>
-                                <h6>{this.state.nv_left_prism}</h6>
+                                  <h6>{this.state.nv_left_prism}</h6>
                                   {/* <AlagehFormGroup
                                     div={{ className: "" }}
                                     textBox={{
@@ -922,7 +942,7 @@ export default class OcafEditor extends Component {
                                 </td>
 
                                 <td>
-                                <h6>{this.state.nv_left_vision}</h6>
+                                  <h6>{this.state.nv_left_vision}</h6>
                                   {/* <AlagehAutoComplete
                                     div={{ className: "" }}
                                     selector={{
@@ -939,9 +959,9 @@ export default class OcafEditor extends Component {
                                     }}
                                   /> */}
                                 </td>
-<td>
-                                <h6>{this.state.eye_pd2}</h6>
-                                {/* <AlagehFormGroup
+                                <td>
+                                  <h6>{this.state.eye_pd2}</h6>
+                                  {/* <AlagehFormGroup
                                   div={{ className: "" }}
                                   textBox={{
                                     className: "txt-fld",
@@ -956,7 +976,6 @@ export default class OcafEditor extends Component {
                                   }}
                                 /> */}
                                 </td>
-
                               </tr>
                             </tbody>
                           </table>
@@ -972,7 +991,7 @@ export default class OcafEditor extends Component {
                             name: "right_bifocal_add",
                             value: this.state.right_bifocal_add,
                             events: {
-                              onChange:this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this)
                             },
                             option: {
                               type: "text"
@@ -991,7 +1010,7 @@ export default class OcafEditor extends Component {
                             name: "vertical_add",
                             value: this.state.vertical_add,
                             events: {
-                              onChange:this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this)
                             },
                             option: {
                               type: "text"
@@ -1010,14 +1029,13 @@ export default class OcafEditor extends Component {
                             name: "left_bifocal_add",
                             value: this.state.left_bifocal_add,
                             events: {
-                              onChange:this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this)
                             },
                             option: {
                               type: "text"
                             }
                           }}
                         />
-
                       </div>
                     </div>
                   </div>
@@ -1218,7 +1236,11 @@ export default class OcafEditor extends Component {
                               type="radio"
                               name="contact_lense_type"
                               value="P"
-                              checked={this.state.contact_lense_type === "P"?true : false}
+                              checked={
+                                this.state.contact_lense_type === "P"
+                                  ? true
+                                  : false
+                              }
                               onChange={this.radioChange.bind(this)}
                             />
                             <span>Permanent</span>
@@ -1228,7 +1250,11 @@ export default class OcafEditor extends Component {
                               type="radio"
                               value="D"
                               name="contact_lense_type"
-                              checked={this.state.contact_lense_type === "D"?true : false}
+                              checked={
+                                this.state.contact_lense_type === "D"
+                                  ? true
+                                  : false
+                              }
                               onChange={this.radioChange.bind(this)}
                             />
                             <span>Disposable</span>
@@ -1241,7 +1267,7 @@ export default class OcafEditor extends Component {
                               type="radio"
                               name="frames"
                               value="Y"
-                              checked={this.state.frames === "Y"?true : false}
+                              checked={this.state.frames === "Y" ? true : false}
                               onChange={this.radioChange.bind(this)}
                             />
                             <span>Yes</span>
@@ -1251,7 +1277,7 @@ export default class OcafEditor extends Component {
                               type="radio"
                               name="frames"
                               value="N"
-                              checked={this.state.frames === "N"?true : false}
+                              checked={this.state.frames === "N" ? true : false}
                               onChange={this.radioChange.bind(this)}
                             />
                             <span>No</span>
@@ -1268,7 +1294,7 @@ export default class OcafEditor extends Component {
                             name: "no_pairs",
                             value: this.state.no_pairs,
                             events: {
-                              onChange:this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this)
                             },
                             others: {
                               type: "number"
@@ -1286,7 +1312,7 @@ export default class OcafEditor extends Component {
                             name: "estimated_cost",
                             value: this.state.estimated_cost,
                             events: {
-                              onChange:this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this)
                             },
                             option: {
                               type: "text"
@@ -1304,7 +1330,7 @@ export default class OcafEditor extends Component {
                             name: "lense_cost",
                             value: this.state.lense_cost,
                             events: {
-                              onChange:this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this)
                             },
                             option: {
                               type: "text"
@@ -1322,7 +1348,7 @@ export default class OcafEditor extends Component {
                             name: "frame_cost",
                             value: this.state.frame_cost,
                             events: {
-                              onChange:this.ChangeEventHandler.bind(this)
+                              onChange: this.ChangeEventHandler.bind(this)
                             },
                             option: {
                               type: "text"

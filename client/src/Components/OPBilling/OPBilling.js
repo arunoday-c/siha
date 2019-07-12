@@ -426,9 +426,8 @@ class OPBilling extends Component {
             data: Inputobj,
             method: "POST",
             onSuccess: response => {
-              AlgaehLoader({ show: false });
-
               if (response.data.success) {
+                AlgaehLoader({ show: false });
                 $this.setState({
                   bill_number: response.data.records.bill_number,
                   receipt_number: response.data.records.receipt_number,
@@ -444,6 +443,12 @@ class OPBilling extends Component {
                   message: "Done Successfully",
                   title: "Success",
                   icon: "success"
+                });
+              } else {
+                AlgaehLoader({ show: false });
+                swalMessage({
+                  type: "error",
+                  title: response.data.records.message
                 });
               }
             },

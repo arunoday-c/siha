@@ -760,7 +760,6 @@ module.exports = {
   },
 
   addCashHandover: (req, res, next) => {
-    //console.log("addCashHandover");
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
     // const utilities = new algaehUtilities();
@@ -771,16 +770,16 @@ module.exports = {
       // req.body.receipt_header_id
       // utilities.logger().log("inputParam Cash: ", inputParam);
 
-      // console.log("ident:",   req.userIdentity);
       if (
         inputParam.receiptdetails == null ||
         inputParam.receiptdetails.length == 0
       ) {
-        const genErr = httpStatus.generateError(
-          httpStatus.badRequest,
-          "Please select atleast one payment mode."
-        );
-        next(genErr);
+        req.records = {
+          internal_error: true,
+          message: "No receipt details"
+        };
+        _mysql.rollBackTransaction(() => {});
+        next();
         return;
       } else if (
         req.userIdentity.group_type == "C" ||
@@ -967,14 +966,14 @@ module.exports = {
                           next();
                         });
                       } else {
+                        if (req.records) {
+                          req.records["internal_error"] = false;
+                        } else {
+                          req.records = {
+                            internal_error: false
+                          };
+                        }
 
-                        req.records = {
-
-                          
-                            internal_error: false,
-                            message: ""
-                          
-                        };
                         next();
                       }
                     })
@@ -1002,7 +1001,7 @@ module.exports = {
             _mysql.releaseConnection();
             req.records = {
               internal_error: true,
-              mesage: "Current user is not a Cahsier"
+              message: "Current user is not a Cahsier in"
             };
             next();
           });
@@ -1012,7 +1011,6 @@ module.exports = {
             message: "Current user is not a Cahsier"
           };
           _mysql.rollBackTransaction(() => {
-           
             next();
           });
         }
@@ -1466,7 +1464,6 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
 
                 patient_payable = math.round(patient_resp + patient_tax, 2);
 
-                console.log("approved_amount", approved_amount);
                 if (approved_amount !== 0) {
                   let diff_val = approved_amount - comapany_resp;
                   patient_payable = math.round(patient_payable + diff_val, 2);
