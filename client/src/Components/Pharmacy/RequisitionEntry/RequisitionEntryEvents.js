@@ -157,9 +157,10 @@ const AuthorizeRequisitionEntry = ($this, authorize) => {
     });
     return;
   }
+
   let authorize1 = "";
   let authorize2 = "";
-  if (authorize === "Authorize1") {
+  if (authorize === "authorize1") {
     $this.state.authorize1 = "Y";
     authorize1 = "Y";
     authorize2 = "N";

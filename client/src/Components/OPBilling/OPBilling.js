@@ -26,7 +26,7 @@ import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall.js";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
 import Enumerable from "linq";
 import AlgaehReport from "../Wrapper/printReports";
-
+import _ from "lodash";
 import moment from "moment";
 import Options from "../../Options.json";
 
@@ -179,9 +179,13 @@ class OPBilling extends Component {
       uri: "/frontDesk/get",
       module: "frontDesk",
       method: "GET",
-      data: { patient_code: this.state.patient_code, expiry_visit: "N" },
+      data: {
+        patient_code: this.state.patient_code,
+        expiry_visit: "N"
+      },
       onSuccess: response => {
         if (response.data.success) {
+          debugger;
           let data = response.data.records;
 
           let x = Enumerable.from($this.props.patienttype)
@@ -235,6 +239,14 @@ class OPBilling extends Component {
             data.patientRegistration.applydiscount = false;
           }
           data.patientRegistration.addNewService = false;
+
+          if (data.bill_criedt.length > 0) {
+            data.patientRegistration.due_amount = _.sumBy(data.bill_criedt, s =>
+              parseFloat(s.balance_credit)
+            );
+          } else {
+            data.patientRegistration.due_amount = 0;
+          }
           this.setState(data.patientRegistration, () => {
             selectVisit($this);
           });

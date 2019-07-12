@@ -8,6 +8,7 @@ import "./PatientDetails.css";
 import { AlgaehLabel, AlagehAutoComplete } from "../../Wrapper/algaehWrapper";
 import MyContext from "../../../utils/MyContext.js";
 import { PatientSearch, selectVisit } from "./DisPatientHandlers";
+import { getAmountFormart } from "../../../utils/GlobalFunctions";
 
 import moment from "moment";
 class DisPatientForm extends Component {
@@ -178,6 +179,14 @@ class DisPatientForm extends Component {
                         ) : (
                           <h6 style={{ color: "green" }}> Settled </h6>
                         )}
+                      </div>
+                    ) : null}
+                    {this.state.due_amount > 0 ? (
+                      <div className="col">
+                        <AlgaehLabel label={{ forceLabel: "Due Amount" }} />
+                        <h6 style={{ color: "red" }}>
+                          {getAmountFormart(this.state.due_amount)}
+                        </h6>
                       </div>
                     ) : null}
                   </div>

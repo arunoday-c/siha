@@ -25,7 +25,7 @@ class RequisitionSwitch extends Component {
           Window.global["material_requisition_number"],
         hims_f_pharamcy_material_header_id:
           Window.global["hims_f_pharamcy_material_header_id"],
-        from_location_id: Window.global["from_location_id"]
+        from_location_id: Window.global["to_location_id"]
       },
       () => {
         this.changeDisplays(Window.global["RQ-STD"]);

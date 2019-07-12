@@ -6,6 +6,7 @@ import {
 import ItemSetup from "../../../Models/ItemSetup";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import _ from "lodash";
+import AlgaehLoader from "../../Wrapper/fullPageLoader";
 
 const Validations = $this => {
   let isError = false;
@@ -109,6 +110,7 @@ const InsertUpdateItems = $this => {
       const err = Validations($this);
 
       if (!err) {
+        AlgaehLoader({ show: true });
         if ($this.state.hims_d_item_master_id === null) {
           $this.state.service_code = $this.state.item_code;
           $this.state.service_type_id = "12";
@@ -134,6 +136,7 @@ const InsertUpdateItems = $this => {
                   title: "Saved successfully . ."
                 });
               }
+              AlgaehLoader({ show: false });
             }
           });
         } else {
@@ -154,6 +157,7 @@ const InsertUpdateItems = $this => {
                   title: "Updated successfully . ."
                 });
               }
+              AlgaehLoader({ show: false });
             }
           });
         }
