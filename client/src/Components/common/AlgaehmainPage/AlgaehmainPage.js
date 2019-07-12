@@ -8,13 +8,52 @@ import {
   getCookie
 } from "../../../utils/algaehApiCall";
 import DirectRoutes from "../../../Dynamicroutes";
-import { AlgaehCloseContainer } from "../../../utils/GlobalFunctions";
+import {
+  AlgaehCloseContainer,
+  AlgaehOpenContainer
+} from "../../../utils/GlobalFunctions";
 import Enumarable from "linq";
 import swal from "sweetalert2";
 
 class PersistentDrawer extends React.Component {
   constructor(props) {
     super(props);
+    const Activated_Modueles =
+      sessionStorage.getItem("ModuleDetails") !== null
+        ? JSON.parse(
+            AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
+          )
+        : [];
+    let Hims_active = false;
+    let Hrms_active = false;
+    let Pharma_active = false;
+    let Invento_active = false;
+    let Lab_active = false;
+    let Rad_active = false;
+
+    for (let i = 0; i < Activated_Modueles.length; i++) {
+      const item = Activated_Modueles[i];
+      switch (item.module_code) {
+        case "FTDSK":
+          Hims_active = true;
+          break;
+        case "HRMNGMT":
+          Hrms_active = true;
+          break;
+        case "PHCY":
+          Pharma_active = true;
+          break;
+        case "INVTRY":
+          Invento_active = true;
+          break;
+        case "LAB":
+          Lab_active = true;
+          break;
+        case "RAD":
+          Rad_active = true;
+          break;
+      }
+    }
     this.state = {
       sideopen: false,
       class: "",
@@ -41,7 +80,13 @@ class PersistentDrawer extends React.Component {
       isSelectedByForce: false,
       menuList: [],
       scrollPosition: 0,
-      lang_className: " english_component"
+      lang_className: " english_component",
+      Hims_active: Hims_active,
+      Hrms_active: Hrms_active,
+      Pharma_active: Pharma_active,
+      Invento_active: Invento_active,
+      Lab_active: Lab_active,
+      Rad_active: Rad_active
     };
     const _userName = getCookie("userName");
     const _keyResources = getCookie("keyResources");
