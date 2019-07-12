@@ -274,7 +274,7 @@ class InvRequisitionList extends Component {
                                       RQ_Screen: "InvTransferEntry",
                                       hims_f_inventory_material_header_id:
                                         row.hims_f_inventory_material_header_id,
-                                      from_location: row.from_location_id
+                                      from_location: row.to_location_id
                                     });
                                   }}
                                 />

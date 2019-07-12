@@ -26,7 +26,7 @@ import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall.js";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
 import Enumerable from "linq";
 import AlgaehReport from "../Wrapper/printReports";
-
+import _ from "lodash";
 import moment from "moment";
 import Options from "../../Options.json";
 
@@ -179,9 +179,13 @@ class OPBilling extends Component {
       uri: "/frontDesk/get",
       module: "frontDesk",
       method: "GET",
-      data: { patient_code: this.state.patient_code, expiry_visit: "N" },
+      data: {
+        patient_code: this.state.patient_code,
+        expiry_visit: "N"
+      },
       onSuccess: response => {
         if (response.data.success) {
+          debugger;
           let data = response.data.records;
 
           let x = Enumerable.from($this.props.patienttype)
@@ -235,6 +239,14 @@ class OPBilling extends Component {
             data.patientRegistration.applydiscount = false;
           }
           data.patientRegistration.addNewService = false;
+
+          if (data.bill_criedt.length > 0) {
+            data.patientRegistration.due_amount = _.sumBy(data.bill_criedt, s =>
+              parseFloat(s.balance_credit)
+            );
+          } else {
+            data.patientRegistration.due_amount = 0;
+          }
           this.setState(data.patientRegistration, () => {
             selectVisit($this);
           });
@@ -414,9 +426,8 @@ class OPBilling extends Component {
             data: Inputobj,
             method: "POST",
             onSuccess: response => {
-              AlgaehLoader({ show: false });
-
               if (response.data.success) {
+                AlgaehLoader({ show: false });
                 $this.setState({
                   bill_number: response.data.records.bill_number,
                   receipt_number: response.data.records.receipt_number,
@@ -432,6 +443,12 @@ class OPBilling extends Component {
                   message: "Done Successfully",
                   title: "Success",
                   icon: "success"
+                });
+              } else {
+                AlgaehLoader({ show: false });
+                swalMessage({
+                  type: "error",
+                  title: response.data.records.message
                 });
               }
             },

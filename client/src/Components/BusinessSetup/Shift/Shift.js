@@ -236,7 +236,7 @@ class Shift extends Component {
               }}
             />
             <AlagehFormGroup
-              div={{ className: "col form-group" }}
+              div={{ className: "col-3 form-group" }}
               label={{
                 fieldName: "shift_description",
                 isImp: true
@@ -251,7 +251,7 @@ class Shift extends Component {
               }}
             />
             <AlagehFormGroup
-              div={{ className: "col form-group arabic-txt-fld" }}
+              div={{ className: "col-3 form-group arabic-txt-fld" }}
               label={{
                 fieldName: "arabic_name",
                 isImp: true
@@ -324,7 +324,7 @@ class Shift extends Component {
               div={{ className: "col form-group" }}
               label={{
                 forceLabel: "In Time 2",
-                isImp: true
+                isImp: false
               }}
               textBox={{
                 className: "txt-fld",
@@ -342,7 +342,7 @@ class Shift extends Component {
               div={{ className: "col form-group" }}
               label={{
                 forceLabel: "Out Time 2",
-                isImp: true
+                isImp: false
               }}
               textBox={{
                 className: "txt-fld",
@@ -358,7 +358,7 @@ class Shift extends Component {
             />
 
             <div className="col-2">
-              <label>Break</label>
+              <label>Shift End On</label>
               <div className="customRadio">
                 <label className="radio inline">
                   <input

@@ -8,10 +8,11 @@ import {
 } from "../Wrapper/algaehWrapper";
 import { algaehApiCall } from "../../utils/algaehApiCall";
 import _ from "lodash";
-import EditorEvents from "./EditorEvents";
 import ButtonType from "../Wrapper/algaehButton";
 import Swal from "sweetalert2";
 import moment from "moment";
+import AlgaehFileUploader from "../Wrapper/algaehFileUpload";
+import EditorEvents from "./EditorEvents";
 export default class DcafEditor extends Component {
   constructor(props) {
     super(props);
@@ -300,7 +301,20 @@ export default class DcafEditor extends Component {
 
                         {this.state.showImgArea ? (
                           <div className="col-12">
-                            <div className="row">Image Comes Here</div>
+                            <div className="row popupIDImg">
+                              <AlgaehFileUploader
+                                noImage="insurance-card-front"
+                                name="patInsuranceFrontImg"
+                                accept="image/*"
+                                textAltMessage="Insurance Card Front Side"
+                                showActions={false}
+                                serviceParameters={{
+                                  uniqueID:
+                                    this.state.primary_card_number + "_front",
+                                  fileType: "Patients"
+                                }}
+                              />
+                            </div>
                           </div>
                         ) : (
                           <div className="col-12">

@@ -96,7 +96,8 @@ export default {
       ProcessInsure: true,
       applydiscount: true,
       billDetails: true,
-      balance_credit: null
+      balance_credit: null,
+      due_amount: 0
     };
     return output;
   }

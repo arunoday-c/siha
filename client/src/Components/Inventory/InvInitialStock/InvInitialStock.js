@@ -428,6 +428,7 @@ class InvInitialStock extends Component {
                       className: "txt-fld",
                       name: "quantity",
                       value: this.state.quantity,
+                      dontAllowKeys: ["-", "e"],
                       events: {
                         onChange: numberchangeTexts.bind(this, this)
                       },
@@ -451,7 +452,7 @@ class InvInitialStock extends Component {
                       events: {
                         onChange: numberchangeTexts.bind(this, this)
                       },
-                      others: { autoComplete: "off", type: "number" }
+                      others: { autoComplete: "off" }
                     }}
                   />
 
@@ -470,8 +471,7 @@ class InvInitialStock extends Component {
                         onChange: salesPriceEvent.bind(this, this)
                       },
                       others: {
-                        autoComplete: "off",
-                        type: "number"
+                        autoComplete: "off"
                       }
                     }}
                   />
