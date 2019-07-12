@@ -331,15 +331,15 @@ class PersistentDrawer extends React.Component {
     this.setState({ onlyToggeleMenu: _putData, ...isModfySelect });
   }
 
-  componentDidUpdate(prevProps) {
-    const _offSet =
-      document.querySelector("[menuselected]") === null
-        ? 0
-        : document.querySelector("[menuselected]").getBoundingClientRect().top;
+  // componentDidUpdate(prevProps) {
+  //   const _offSet =
+  //     document.querySelector("[menuselected]") === null
+  //       ? 0
+  //       : document.querySelector("[menuselected]").getBoundingClientRect().top;
 
-    if (this.scrollLeftPanel !== undefined && this.scrollLeftPanel !== null)
-      this.scrollLeftPanel.scrollTop = _offSet;
-  }
+  //   if (this.scrollLeftPanel !== undefined && this.scrollLeftPanel !== null)
+  //     this.scrollLeftPanel.scrollTop = _offSet;
+  // }
 
   TriggerPath(submenu, module_id, e) {
     const name = submenu.page_to_redirect.replace(/\s/g, ""); // e.currentTarget.getAttribute("name");
