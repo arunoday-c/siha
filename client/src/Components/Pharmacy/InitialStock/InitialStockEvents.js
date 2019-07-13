@@ -28,9 +28,9 @@ const numberchangeTexts = ($this, e) => {
   let extended_cost = 0;
 
   if (name === "quantity") {
-    extended_cost = $this.state.unit_cost * value;
+    extended_cost = parseFloat($this.state.unit_cost) * value;
   } else if (name === "unit_cost") {
-    extended_cost = $this.state.quantity * value;
+    extended_cost = parseFloat($this.state.quantity) * value;
   }
   extended_cost = math.round(extended_cost, 2);
   $this.setState({ [name]: value, extended_cost: extended_cost });
@@ -209,6 +209,7 @@ const getCtrlCode = ($this, docNumber) => {
 
   $this.setState(
     {
+      item_description: "",
       description: "",
       pharmacy_stock_detail: [],
       document_number: null,
@@ -340,6 +341,7 @@ const deleteInitialStock = ($this, row) => {
 };
 const ClearData = $this => {
   $this.setState({
+    item_description: "",
     description: "",
     pharmacy_stock_detail: [],
     document_number: null,
@@ -407,7 +409,7 @@ const PostInitialStock = $this => {
   });
 };
 
-const printBarcode = ($this, row, e) => {
+const printBarcode = ($this, row) => {
   AlgaehReport({
     report: {
       fileName: "sampleBarcode",
@@ -427,6 +429,47 @@ const printBarcode = ($this, row, e) => {
   });
 };
 
+const onChamgeGridQuantity = ($this, row, e) => {
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  let extended_cost = 0;
+  if (value !== "") {
+    extended_cost = parseFloat(row.unit_cost) * value;
+
+    extended_cost = math.round(extended_cost, 2);
+    row[name] = value;
+    row["extended_cost"] = extended_cost;
+    row.update();
+  } else {
+    row[name] = value;
+    row["extended_cost"] = extended_cost;
+    row.update();
+  }
+};
+
+const updateInitialStock = ($this, row) => {
+  let authBtnEnable = true;
+  let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+  let _index = pharmacy_stock_detail.indexOf(row);
+  pharmacy_stock_detail[_index] = row;
+
+  $this.setState({
+    saveEnable: !$this.state.saveEnable,
+    pharmacy_stock_detail: pharmacy_stock_detail
+  });
+};
+
+const EditGrid = ($this, cancelRow) => {
+  let _pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+  if (cancelRow !== undefined) {
+    _pharmacy_stock_detail[cancelRow.rowIdx] = cancelRow;
+  }
+  $this.setState({
+    saveEnable: !$this.state.saveEnable,
+    pharmacy_stock_detail: _pharmacy_stock_detail
+  });
+};
+
 export {
   changeTexts,
   itemchangeText,
@@ -442,5 +485,8 @@ export {
   PostInitialStock,
   printBarcode,
   salesPriceEvent,
-  dateValidate
+  dateValidate,
+  updateInitialStock,
+  onChamgeGridQuantity,
+  EditGrid
 };

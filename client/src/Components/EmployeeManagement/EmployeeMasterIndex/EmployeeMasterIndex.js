@@ -26,7 +26,8 @@ class EmployeeMasterIndex extends Component {
       employeeDetailsPop: {},
       Employeedetails: [],
       selectedLang: "en",
-      editEmployee: false
+      editEmployee: false,
+      forceRender: false
     };
   }
 
@@ -85,8 +86,8 @@ class EmployeeMasterIndex extends Component {
   CloseModel(e) {
     this.setState(
       {
-        ...this.state,
-        isOpen: !this.state.isOpen
+        isOpen: !this.state.isOpen,
+        afterClose: true
       },
       () => {
         getEmployeeDetails(this, this);
@@ -182,6 +183,7 @@ class EmployeeMasterIndex extends Component {
               <div className="col-lg-12" id="employeeIndexGrid">
                 <AlgaehDataGrid
                   id="employee_grid"
+                  forceRender={this.state.forceRender}
                   columns={[
                     {
                       fieldName: "action",

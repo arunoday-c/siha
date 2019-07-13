@@ -20,7 +20,6 @@ import { getCookie } from "../../../../utils/algaehApiCall";
 import { InsertUpdateEmployee } from "./EmployeeMasterEvents";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import { AlgaehOpenContainer } from "../../../../utils/GlobalFunctions";
-import _ from "lodash";
 
 class EmployeeMaster extends Component {
   constructor(props) {
@@ -29,7 +28,7 @@ class EmployeeMaster extends Component {
     let Activated_Modueles = JSON.parse(
       AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
     );
-    const HIMS_Active = _.filter(Activated_Modueles, f => {
+    const HIMS_Active = Activated_Modueles.filter(f => {
       return f.module_code === "FTDSK";
     });
     this.state = {
@@ -59,13 +58,16 @@ class EmployeeMaster extends Component {
   }
 
   onClose = e => {
-    this.props.onClose && this.props.onClose(e);
-    let IOputs = EmpMasterIOputs.inputParam();
+    // let IOputs = EmpMasterIOputs.inputParam();
 
-    this.setState({
-      pageDisplay: "PersonalDetails",
-      ...IOputs
-    });
+    // this.setState(
+    //   {
+    //     pageDisplay: "PersonalDetails",
+    //     ...IOputs
+    //   },
+    //   () => this.props.onClose && this.props.onClose(e)
+    // );
+    this.props.onClose && this.props.onClose(e);
   };
 
   componentDidMount() {
@@ -153,62 +155,96 @@ class EmployeeMaster extends Component {
       let IOputs = newProps.employeeDetailsPop;
       IOputs.Applicable = IOputs.isdoctor === "Y" ? true : false;
       IOputs.samechecked = IOputs.same_address === "Y" ? true : false;
-      this.setState(
-        {
-          personalDetails: { ...this.state.personalDetails, ...IOputs }
-        },
-        () => {
-          if (this.state.personalDetails.present_country_id === null) return;
-          if (
-            this.state.personalDetails.present_country_id !==
-            newProps.present_country_id
-          ) {
-            let country = Enumerable.from(this.props.countries)
-              .where(
-                w =>
-                  w.hims_d_country_id ===
-                  this.state.personalDetails.present_country_id
-              )
-              .firstOrDefault();
 
-            let states = country !== undefined ? country.states : [];
-            if (this.props.countries !== undefined && states.length !== 0) {
+      if (IOputs.present_country_id === null) {
+        this.setState({
+          personalDetails: { ...this.state.personalDetails, ...IOputs }
+        });
+        return;
+      }
+      if (IOputs.present_country_id !== newProps.present_country_id) {
+        let country = Enumerable.from(this.props.countries)
+          .where(w => w.hims_d_country_id === IOputs.present_country_id)
+          .firstOrDefault();
+
+        let states = country !== undefined ? country.states : [];
+        if (this.props.countries !== undefined && states.length !== 0) {
+          if (newProps.present_state_id !== IOputs.present_state_id) {
+            let cities = Enumerable.from(states)
+              .where(w => w.hims_d_state_id === IOputs.present_state_id)
+              .firstOrDefault();
+            if (IOputs.present_country_id === IOputs.permanent_country_id) {
+              IOputs.countrystates = states;
+              IOputs.cities = cities !== undefined ? cities.cities : [];
+              IOputs.precountrystates = states;
+              IOputs.precities = cities !== undefined ? cities.cities : [];
+              IOputs.present_cities = cities !== undefined ? cities.cities : [];
+              IOputs.present_state_id = IOputs.present_state_id;
+              IOputs.present_city_id = IOputs.present_city_id;
+              IOputs.samechecked = "Y";
+              // this.updateEmployeeTabs({
+              //   IOputscountrystates: states,
+              //   cities: cities !== undefined ? cities.cities : [],
+              //   precountrystates: states,
+              //   precities: cities !== undefined ? cities.cities : [],
+              //   present_cities: cities !== undefined ? cities.cities : [],
+              //   present_state_id: IOputs.present_state_id,
+              //   present_city_id: IOputs.present_city_id,
+              //   samechecked: "Y"
+              // });
+            } else {
+              country = Enumerable.from(this.props.countries)
+                .where(w => w.hims_d_country_id === IOputs.permanent_country_id)
+                .firstOrDefault();
+
+              let pres_states = country !== undefined ? country.states : [];
               if (
-                newProps.present_state_id !==
-                this.state.personalDetails.present_state_id
+                this.props.countries !== undefined &&
+                pres_states.length !== 0
               ) {
-                let cities = Enumerable.from(states)
-                  .where(
-                    w =>
-                      w.hims_d_state_id ===
-                      this.state.personalDetails.present_state_id
-                  )
-                  .firstOrDefault();
-                if (cities !== undefined) {
-                  this.updateEmployeeTabs({
-                    countrystates: states,
-                    cities: cities.cities,
-                    precountrystates: states,
-                    precities: cities.cities,
-                    present_cities: cities.cities,
-                    present_state_id: this.state.personalDetails
-                      .present_state_id,
-                    present_city_id: this.state.personalDetails.present_city_id
-                  });
-                } else {
-                  this.updateEmployeeTabs({
-                    countrystates: states,
-                    precountrystates: states,
-                    // present_cities: cities.cities,
-                    present_state_id: this.state.personalDetails
-                      .present_state_id
-                  });
+                if (newProps.permanent_state_id !== IOputs.permanent_state_id) {
+                  let pres_cities = Enumerable.from(pres_states)
+                    .where(w => w.hims_d_state_id === IOputs.permanent_state_id)
+                    .firstOrDefault();
+
+                  IOputs.countrystates = states;
+                  IOputs.cities = cities !== undefined ? cities.cities : [];
+                  IOputs.present_cities =
+                    cities !== undefined ? cities.cities : [];
+
+                  IOputs.precountrystates = pres_states;
+                  IOputs.precities =
+                    pres_cities !== undefined ? pres_cities.cities : [];
+                  IOputs.present_state_id = IOputs.present_state_id;
+                  IOputs.present_city_id = IOputs.present_city_id;
+
+                  IOputs.permanent_city_id = IOputs.permanent_city_id;
+                  IOputs.permanent_city_id = IOputs.permanent_city_id;
+                  IOputs.samechecked = "N";
+                  // this.updateEmployeeTabs({
+                  //   countrystates: states,
+                  //   cities: cities !== undefined ? cities.cities : [],
+                  //   present_cities: cities !== undefined ? cities.cities : [],
+                  //
+                  //   precountrystates: pres_states,
+                  //   precities:
+                  //     pres_cities !== undefined ? pres_cities.cities : [],
+                  //   present_state_id: IOputs.present_state_id,
+                  //   present_city_id: IOputs.present_city_id,
+                  //
+                  //   permanent_city_id: IOputs.permanent_city_id,
+                  //   permanent_city_id: IOputs.permanent_city_id,
+                  //   samechecked: "N"
+                  // });
                 }
               }
             }
           }
         }
-      );
+      }
+      this.setState({
+        personalDetails: { ...this.state.personalDetails, ...IOputs }
+      });
     } else {
       this.setState({
         personalDetails: { ...EmpMasterIOputs.inputParam() }

@@ -120,7 +120,7 @@ class PersonalDetails extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState(nextProps.EmpMasterIOputs.state.personalDetails, () => {});
+    this.setState(nextProps.EmpMasterIOputs.state.personalDetails);
     // this.setState(, () => {});
   }
 

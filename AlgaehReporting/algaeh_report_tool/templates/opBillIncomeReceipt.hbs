@@ -31,20 +31,19 @@
 
                         <td>{{sub_department_name}}</td>
                         <td>{{doctor_name}}</td>
-                        <td>{{cash}}</td>
-                        <td>{{card}}</td>
-                        <td>{{cheque}}</td>
-                        <td>{{total}}</td>
+                        <td class="numberFld">{{cash}}</td>
+                        <td class="numberFld">{{card}}</td>
+                        <td class="numberFld">{{cheque}}</td>
+                        <td class="numberFld">{{total}}</td>
 
                     </tr>
-                    {{/each }}
-
-
-                    <td>Cash:{{total_cash}}</td>
-                    <td>Card:{{total_card}}</td>
-                    <td>Cheque:{{total_check}}</td>
-                    <td>total:{{total_collection}}</td>
-
+                    {{/each }}<tr class="footerTotalDown">
+                        <td colspan="7">Total</td>
+                        <td>{{total_cash}}</td>
+                        <td>{{total_card}}</td>
+                        <td>{{total_check}}</td>
+                        <td>{{total_collection}}</td>
+                    </tr>
                 </tbody>
             </table>
         </section>
