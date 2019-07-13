@@ -374,601 +374,571 @@ class DeptUserDetails extends Component {
                   }}
                 />
               </div>
-              {this.state.HIMS_Active === true ? (
-                <div className="">
-                  <h5>
-                    <span>Define Department</span>
-                  </h5>
-                  <div className="row" data-validate="deptUserdtl">
-                    <AlagehAutoComplete
-                      div={{ className: "col " }}
-                      label={{
-                        fieldName: "sub_department_id",
-                        isImp: true
-                      }}
-                      selector={{
-                        name: "sub_department",
-                        className: "select-fld",
-                        value: this.state.sub_department,
 
-                        dataSource: {
-                          textField: "sub_department_name",
-                          valueField: "hims_d_sub_department_id",
-                          data: this.props.subdepartment
-                        },
+              <h5>
+                <span>Define Department</span>
+              </h5>
+              <div className="row" data-validate="deptUserdtl">
+                <AlagehAutoComplete
+                  div={{ className: "col " }}
+                  label={{
+                    fieldName: "sub_department_id",
+                    isImp: true
+                  }}
+                  selector={{
+                    name: "sub_department",
+                    className: "select-fld",
+                    value: this.state.sub_department,
 
-                        onChange: departmenttexthandle.bind(this, this),
-                        onClear: () => {
-                          this.setState({
-                            sub_department: null
-                          });
-                        }
-                      }}
-                    />
+                    dataSource: {
+                      textField: "sub_department_name",
+                      valueField: "hims_d_sub_department_id",
+                      data: this.props.subdepartment
+                    },
 
-                    <AlagehAutoComplete
-                      div={{ className: "col " }}
-                      label={{
-                        fieldName: "speciality_id"
-                      }}
-                      selector={{
-                        name: "speciality_id",
-                        className: "select-fld",
-                        value: this.state.speciality_id,
+                    onChange: departmenttexthandle.bind(this, this),
+                    onClear: () => {
+                      this.setState({
+                        sub_department: null
+                      });
+                    }
+                  }}
+                />
 
-                        dataSource: {
-                          textField: "speciality_name",
-                          valueField: "hims_d_employee_speciality_id",
-                          data: this.props.empdepspeciality
-                        },
+                <AlagehAutoComplete
+                  div={{ className: "col " }}
+                  label={{
+                    fieldName: "speciality_id"
+                  }}
+                  selector={{
+                    name: "speciality_id",
+                    className: "select-fld",
+                    value: this.state.speciality_id,
 
-                        onChange: specialitytexthandle.bind(this, this),
-                        onClear: () => {
-                          this.setState({
-                            speciality_id: null
-                          });
-                        }
-                      }}
-                    />
+                    dataSource: {
+                      textField: "speciality_name",
+                      valueField: "hims_d_employee_speciality_id",
+                      data: this.props.empdepspeciality
+                    },
 
-                    <AlagehAutoComplete
-                      div={{ className: "col " }}
-                      label={{
-                        fieldName: "category_id"
-                      }}
-                      selector={{
-                        name: "category_id",
-                        className: "select-fld",
-                        value: this.state.category_id,
+                    onChange: specialitytexthandle.bind(this, this),
+                    onClear: () => {
+                      this.setState({
+                        speciality_id: null
+                      });
+                    }
+                  }}
+                />
 
-                        dataSource: {
-                          textField: "employee_category_name",
-                          valueField: "hims_m_category_speciality_mappings_id",
-                          data: this.props.specimapcategory
-                        },
+                <AlagehAutoComplete
+                  div={{ className: "col " }}
+                  label={{
+                    fieldName: "category_id"
+                  }}
+                  selector={{
+                    name: "category_id",
+                    className: "select-fld",
+                    value: this.state.category_id,
 
-                        onChange: categorytexthandle.bind(this, this),
-                        onClear: () => {
-                          this.setState({
-                            category_id: null
-                          });
-                        }
-                      }}
-                    />
+                    dataSource: {
+                      textField: "employee_category_name",
+                      valueField: "hims_m_category_speciality_mappings_id",
+                      data: this.props.specimapcategory
+                    },
 
-                    <AlagehAutoComplete
-                      div={{ className: "col " }}
-                      label={{
-                        forceLabel: "Emp. Designation",
-                        isImp: true
-                      }}
-                      selector={{
-                        name: "designation_id",
-                        className: "select-fld",
-                        value: this.state.designation_id,
-                        dataSource: {
-                          textField: "designation",
-                          valueField: "hims_d_designation_id",
-                          data: this.props.designations
-                        },
-                        onChange: texthandle.bind(this, this),
-                        others: {
-                          tabIndex: "2"
-                        },
-                        onClear: () => {
-                          this.setState({
-                            designation_id: null
-                          });
-                        }
-                      }}
-                    />
-                    <AlagehAutoComplete
-                      div={{ className: "col " }}
-                      label={{
-                        forceLabel: "Reporting to",
-                        isImp: true
-                      }}
-                      selector={{
-                        name: "reporting_to",
-                        className: "select-fld",
-                        value: this.state.reporting_to,
-                        dataSource: {
-                          textField: "full_name",
-                          valueField: "hims_d_employee_id",
-                          data: this.props.all_employees
-                        },
-                        onChange: texthandle.bind(this, this),
-                        others: {
-                          tabIndex: "2"
-                        },
-                        onClear: () => {
-                          this.setState({
-                            reporting_to: null
-                          });
-                        }
-                      }}
-                    />
+                    onChange: categorytexthandle.bind(this, this),
+                    onClear: () => {
+                      this.setState({
+                        category_id: null
+                      });
+                    }
+                  }}
+                />
 
-                    <AlagehAutoComplete
-                      div={{ className: "col" }}
-                      label={{
-                        fieldName: "services_id"
-                      }}
-                      selector={{
-                        name: "services_id",
-                        className: "select-fld",
-                        value: this.state.services_id,
-                        dataSource: {
-                          textField: "service_name",
-                          valueField: "hims_d_services_id",
-                          data: _depservices
-                        },
-                        others: {
-                          disabled: _isDoctor === "Y" ? false : true
-                        },
-                        onChange: texthandle.bind(this, this),
-                        onClear: () => {
-                          this.setState({
-                            services_id: null
-                          });
-                        }
-                      }}
-                    />
+                <AlagehAutoComplete
+                  div={{ className: "col " }}
+                  label={{
+                    forceLabel: "Emp. Designation",
+                    isImp: true
+                  }}
+                  selector={{
+                    name: "designation_id",
+                    className: "select-fld",
+                    value: this.state.designation_id,
+                    dataSource: {
+                      textField: "designation",
+                      valueField: "hims_d_designation_id",
+                      data: this.props.designations
+                    },
+                    onChange: texthandle.bind(this, this),
+                    others: {
+                      tabIndex: "2"
+                    },
+                    onClear: () => {
+                      this.setState({
+                        designation_id: null
+                      });
+                    }
+                  }}
+                />
+                <AlagehAutoComplete
+                  div={{ className: "col " }}
+                  label={{
+                    forceLabel: "Reporting to",
+                    isImp: true
+                  }}
+                  selector={{
+                    name: "reporting_to",
+                    className: "select-fld",
+                    value: this.state.reporting_to,
+                    dataSource: {
+                      textField: "full_name",
+                      valueField: "hims_d_employee_id",
+                      data: this.props.all_employees
+                    },
+                    onChange: texthandle.bind(this, this),
+                    others: {
+                      tabIndex: "2"
+                    },
+                    onClear: () => {
+                      this.setState({
+                        reporting_to: null
+                      });
+                    }
+                  }}
+                />
 
-                    <AlgaehDateHandler
-                      div={{ className: "col " }}
-                      label={{
-                        fieldName: "from_date",
-                        isImp: true
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "from_date"
-                      }}
-                      events={{
-                        onChange: datehandle.bind(this, this),
-                        onClear: () => {
-                          this.setState({
-                            from_date: null
-                          });
-                        }
-                      }}
-                      value={this.state.from_date}
-                    />
+                <AlagehAutoComplete
+                  div={{ className: "col" }}
+                  label={{
+                    fieldName: "services_id"
+                  }}
+                  selector={{
+                    name: "services_id",
+                    className: "select-fld",
+                    value: this.state.services_id,
+                    dataSource: {
+                      textField: "service_name",
+                      valueField: "hims_d_services_id",
+                      data: _depservices
+                    },
+                    others: {
+                      disabled: _isDoctor === "Y" ? false : true
+                    },
+                    onChange: texthandle.bind(this, this),
+                    onClear: () => {
+                      this.setState({
+                        services_id: null
+                      });
+                    }
+                  }}
+                />
 
-                    <div className="col-1" style={{ paddingTop: "19px" }}>
-                      <button
-                        className="btn btn-primary"
-                        onClick={AddDeptUser.bind(this, this)}
-                      >
-                        Add
-                      </button>
-                    </div>
-                  </div>
-                  <div className="row">
-                    <div
-                      className="col-lg-12"
-                      style={{ paddingTop: 10, paddingBottom: 10 }}
-                    >
-                      <AlgaehDataGrid
-                        id="dpet_user_grid"
-                        columns={[
-                          {
-                            fieldName: "from_date",
-                            label: (
-                              <AlgaehLabel label={{ fieldName: "from_date" }} />
-                            ),
-                            displayTemplate: row => {
-                              return (
-                                <span>
-                                  {row.from_date === null ||
-                                  row.from_date === undefined
-                                    ? ""
-                                    : dateFormater(this, row.from_date)}
-                                </span>
-                              );
-                            },
-                            editorTemplate: row => {
-                              return (
-                                <span>
-                                  {row.from_date === null ||
-                                  row.from_date === undefined
-                                    ? ""
-                                    : dateFormater(this, row.from_date)}
-                                </span>
-                              );
-                            }
-                          },
-                          {
-                            fieldName: "to_date",
-                            label: (
-                              <AlgaehLabel label={{ fieldName: "end_date" }} />
-                            ),
-                            displayTemplate: row => {
-                              return (
-                                <span>
-                                  {row.to_date === null ||
-                                  row.to_date === undefined
-                                    ? ""
-                                    : dateFormater(this, row.to_date)}
-                                </span>
-                              );
-                            },
-                            editorTemplate: row => {
-                              return (
-                                <span>
-                                  {row.to_date === null ||
-                                  row.to_date === undefined
-                                    ? ""
-                                    : dateFormater(this, row.to_date)}
-                                </span>
-                              );
-                            }
-                          },
-                          {
-                            fieldName: "dep_status",
-                            label: (
-                              <AlgaehLabel
-                                label={{ fieldName: "dep_status" }}
-                              />
-                            ),
-                            displayTemplate: row => {
-                              return row.dep_status === "A"
-                                ? "Active"
-                                : "Inactive";
-                            },
-                            editorTemplate: row => {
-                              return (
-                                <AlagehAutoComplete
-                                  div={{}}
-                                  selector={{
-                                    name: "dep_status",
-                                    className: "select-fld",
-                                    value: row.dep_status,
-                                    dataSource: {
-                                      textField: "name",
-                                      valueField: "value",
-                                      data: GlobalVariables.FORMAT_STATUS
-                                    },
-                                    onChange: onchangegridcolstatus.bind(
-                                      this,
-                                      this,
-                                      row
-                                    ),
-                                    others: {
-                                      errormessage: "Status - cannot be blank",
-                                      required: true
-                                    }
-                                  }}
-                                />
-                              );
-                            }
-                          },
-                          {
-                            fieldName: "sub_department_id",
-                            label: (
-                              <AlgaehLabel
-                                label={{ fieldName: "sub_department_id" }}
-                              />
-                            ),
-                            displayTemplate: row => {
-                              let display =
-                                this.props.subdepartment === undefined
-                                  ? []
-                                  : this.props.subdepartment.filter(
-                                      f =>
-                                        f.hims_d_sub_department_id ===
-                                        row.sub_department_id
-                                    );
+                <AlgaehDateHandler
+                  div={{ className: "col " }}
+                  label={{
+                    fieldName: "from_date",
+                    isImp: true
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "from_date"
+                  }}
+                  events={{
+                    onChange: datehandle.bind(this, this),
+                    onClear: () => {
+                      this.setState({
+                        from_date: null
+                      });
+                    }
+                  }}
+                  value={this.state.from_date}
+                />
 
-                              return (
-                                <span>
-                                  {display !== undefined && display.length !== 0
-                                    ? this.state.selectedLang === "en"
-                                      ? display[0].sub_department_name
-                                      : display[0].arabic_sub_department_name
-                                    : ""}
-                                </span>
-                              );
-                            },
-                            editorTemplate: row => {
-                              let display =
-                                this.props.subdepartment === undefined
-                                  ? []
-                                  : this.props.subdepartment.filter(
-                                      f =>
-                                        f.hims_d_sub_department_id ===
-                                        row.sub_department_id
-                                    );
-
-                              return (
-                                <span>
-                                  {display !== undefined && display.length !== 0
-                                    ? this.state.selectedLang === "en"
-                                      ? display[0].sub_department_name
-                                      : display[0].arabic_sub_department_name
-                                    : ""}
-                                </span>
-                              );
-                            }
-                          },
-                          {
-                            fieldName: "speciality_id",
-                            label: (
-                              <AlgaehLabel
-                                label={{ fieldName: "speciality_id" }}
-                              />
-                            ),
-                            displayTemplate: row => {
-                              let display =
-                                this.props.empspeciality === undefined
-                                  ? []
-                                  : this.props.empspeciality.filter(
-                                      f =>
-                                        f.hims_d_employee_speciality_id ===
-                                        row.speciality_id
-                                    );
-
-                              return (
-                                <span>
-                                  {display !== undefined && display.length !== 0
-                                    ? this.state.selectedLang === "en"
-                                      ? display[0].speciality_name
-                                      : display[0].arabic_sub_department_name
-                                    : ""}
-                                </span>
-                              );
-                            },
-                            editorTemplate: row => {
-                              let display =
-                                this.props.empspeciality === undefined
-                                  ? []
-                                  : this.props.empspeciality.filter(
-                                      f =>
-                                        f.hims_d_employee_speciality_id ===
-                                        row.speciality_id
-                                    );
-
-                              return (
-                                <span>
-                                  {display !== undefined && display.length !== 0
-                                    ? this.state.selectedLang === "en"
-                                      ? display[0].speciality_name
-                                      : display[0].arabic_sub_department_name
-                                    : ""}
-                                </span>
-                              );
-                            }
-                          },
-                          {
-                            fieldName: "category_id",
-                            label: (
-                              <AlgaehLabel
-                                label={{ fieldName: "category_id" }}
-                              />
-                            ),
-                            displayTemplate: row => {
-                              let display =
-                                this.props.specimapcategorylist === undefined
-                                  ? []
-                                  : this.props.specimapcategorylist.filter(
-                                      f =>
-                                        f.hims_m_category_speciality_mappings_id ===
-                                        row.category_id
-                                    );
-
-                              return (
-                                <span>
-                                  {display !== undefined && display.length !== 0
-                                    ? this.state.selectedLang === "en"
-                                      ? display[0].employee_category_name
-                                      : display[0].arabic_sub_department_name
-                                    : ""}
-                                </span>
-                              );
-                            },
-                            editorTemplate: row => {
-                              let display =
-                                this.props.specimapcategorylist === undefined
-                                  ? []
-                                  : this.props.specimapcategorylist.filter(
-                                      f =>
-                                        f.hims_m_category_speciality_mappings_id ===
-                                        row.category_id
-                                    );
-
-                              return (
-                                <span>
-                                  {display !== undefined && display.length !== 0
-                                    ? this.state.selectedLang === "en"
-                                      ? display[0].employee_category_name
-                                      : display[0].arabic_sub_department_name
-                                    : ""}
-                                </span>
-                              );
-                            }
-                          },
-
-                          {
-                            fieldName: "employee_designation_id",
-                            label: (
-                              <AlgaehLabel
-                                label={{ forceLabel: "Designation" }}
-                              />
-                            ),
-
-                            displayTemplate: row => {
-                              let display =
-                                this.props.designations === undefined
-                                  ? []
-                                  : this.props.designations.filter(
-                                      f =>
-                                        f.hims_d_designation_id ===
-                                        row.employee_designation_id
-                                    );
-
-                              return (
-                                <span>
-                                  {display !== undefined && display.length !== 0
-                                    ? display[0].designation
-                                    : ""}
-                                </span>
-                              );
-                            },
-                            editorTemplate: row => {
-                              return (
-                                <AlagehAutoComplete
-                                  div={{}}
-                                  selector={{
-                                    name: "employee_designation_id",
-                                    className: "select-fld",
-                                    value: row.employee_designation_id,
-                                    dataSource: {
-                                      textField: "designation",
-                                      valueField: "hims_d_designation_id",
-                                      data: this.props.designations
-                                    },
-                                    onChange: onchangegridcol.bind(
-                                      this,
-                                      this,
-                                      row
-                                    )
-                                  }}
-                                />
-                              );
-                            }
-                          },
-                          {
-                            fieldName: "reporting_to_id",
-                            label: (
-                              <AlgaehLabel
-                                label={{ forceLabel: "Reporting To" }}
-                              />
-                            ),
-                            displayTemplate: row => {
-                              let display =
-                                this.props.all_employees === undefined
-                                  ? []
-                                  : this.props.all_employees.filter(
-                                      f =>
-                                        f.hims_d_employee_id ===
-                                        row.reporting_to_id
-                                    );
-
-                              return (
-                                <span>
-                                  {display !== undefined && display.length !== 0
-                                    ? display[0].full_name
-                                    : ""}
-                                </span>
-                              );
-                            },
-                            editorTemplate: row => {
-                              return (
-                                <AlagehAutoComplete
-                                  div={{}}
-                                  selector={{
-                                    name: "reporting_to_id",
-                                    className: "select-fld",
-                                    value: row.reporting_to_id,
-                                    dataSource: {
-                                      textField: "full_name",
-                                      valueField: "hims_d_employee_id",
-                                      data: this.props.all_employees
-                                    },
-                                    onChange: onchangegridcol.bind(
-                                      this,
-                                      this,
-                                      row
-                                    )
-                                  }}
-                                />
-                              );
-                            }
-                          },
-                          {
-                            fieldName: "services_id",
-                            label: (
-                              <AlgaehLabel
-                                label={{ fieldName: "services_id" }}
-                              />
-                            ),
-                            displayTemplate: row => {
-                              let display =
-                                this.props.depservices === undefined
-                                  ? []
-                                  : this.props.depservices.filter(
-                                      f =>
-                                        f.hims_d_services_id === row.services_id
-                                    );
-
-                              return (
-                                <span>
-                                  {display !== undefined && display.length !== 0
-                                    ? this.state.selectedLang === "en"
-                                      ? display[0].service_name
-                                      : display[0].arabic_service_name
-                                    : ""}
-                                </span>
-                              );
-                            },
-                            editorTemplate: row => {
-                              let display =
-                                this.props.depservices === undefined
-                                  ? []
-                                  : this.props.depservices.filter(
-                                      f =>
-                                        f.hims_d_services_id === row.services_id
-                                    );
-
-                              return (
-                                <span>
-                                  {display !== undefined && display.length !== 0
-                                    ? this.state.selectedLang === "en"
-                                      ? display[0].service_name
-                                      : display[0].arabic_service_name
-                                    : ""}
-                                </span>
-                              );
-                            }
-                          }
-                        ]}
-                        keyId="department_user_id"
-                        dataSource={{
-                          data: this.state.deptDetails
-                        }}
-                        paging={{ page: 0, rowsPerPage: 5 }}
-                        isEditable={true}
-                        events={{
-                          onDelete: deleteDeptUser.bind(this, this),
-                          onEdit: row => {},
-                          onDone: updateDeptUser.bind(this, this)
-                        }}
-                      />
-                    </div>
-                  </div>
+                <div className="col-1" style={{ paddingTop: "19px" }}>
+                  <button
+                    className="btn btn-primary"
+                    onClick={AddDeptUser.bind(this, this)}
+                  >
+                    Add
+                  </button>
                 </div>
-              ) : null}
+              </div>
+              <div className="row">
+                <div
+                  className="col-lg-12"
+                  style={{ paddingTop: 10, paddingBottom: 10 }}
+                >
+                  <AlgaehDataGrid
+                    id="dpet_user_grid"
+                    columns={[
+                      {
+                        fieldName: "from_date",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "from_date" }} />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {row.from_date === null ||
+                              row.from_date === undefined
+                                ? ""
+                                : dateFormater(this, row.from_date)}
+                            </span>
+                          );
+                        },
+                        editorTemplate: row => {
+                          return (
+                            <span>
+                              {row.from_date === null ||
+                              row.from_date === undefined
+                                ? ""
+                                : dateFormater(this, row.from_date)}
+                            </span>
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "to_date",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "end_date" }} />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {row.to_date === null || row.to_date === undefined
+                                ? ""
+                                : dateFormater(this, row.to_date)}
+                            </span>
+                          );
+                        },
+                        editorTemplate: row => {
+                          return (
+                            <span>
+                              {row.to_date === null || row.to_date === undefined
+                                ? ""
+                                : dateFormater(this, row.to_date)}
+                            </span>
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "dep_status",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "dep_status" }} />
+                        ),
+                        displayTemplate: row => {
+                          return row.dep_status === "A" ? "Active" : "Inactive";
+                        },
+                        editorTemplate: row => {
+                          return (
+                            <AlagehAutoComplete
+                              div={{}}
+                              selector={{
+                                name: "dep_status",
+                                className: "select-fld",
+                                value: row.dep_status,
+                                dataSource: {
+                                  textField: "name",
+                                  valueField: "value",
+                                  data: GlobalVariables.FORMAT_STATUS
+                                },
+                                onChange: onchangegridcolstatus.bind(
+                                  this,
+                                  this,
+                                  row
+                                ),
+                                others: {
+                                  errormessage: "Status - cannot be blank",
+                                  required: true
+                                }
+                              }}
+                            />
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "sub_department_id",
+                        label: (
+                          <AlgaehLabel
+                            label={{ fieldName: "sub_department_id" }}
+                          />
+                        ),
+                        displayTemplate: row => {
+                          let display =
+                            this.props.subdepartment === undefined
+                              ? []
+                              : this.props.subdepartment.filter(
+                                  f =>
+                                    f.hims_d_sub_department_id ===
+                                    row.sub_department_id
+                                );
+
+                          return (
+                            <span>
+                              {display !== undefined && display.length !== 0
+                                ? this.state.selectedLang === "en"
+                                  ? display[0].sub_department_name
+                                  : display[0].arabic_sub_department_name
+                                : ""}
+                            </span>
+                          );
+                        },
+                        editorTemplate: row => {
+                          let display =
+                            this.props.subdepartment === undefined
+                              ? []
+                              : this.props.subdepartment.filter(
+                                  f =>
+                                    f.hims_d_sub_department_id ===
+                                    row.sub_department_id
+                                );
+
+                          return (
+                            <span>
+                              {display !== undefined && display.length !== 0
+                                ? this.state.selectedLang === "en"
+                                  ? display[0].sub_department_name
+                                  : display[0].arabic_sub_department_name
+                                : ""}
+                            </span>
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "speciality_id",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "speciality_id" }} />
+                        ),
+                        displayTemplate: row => {
+                          let display =
+                            this.props.empspeciality === undefined
+                              ? []
+                              : this.props.empspeciality.filter(
+                                  f =>
+                                    f.hims_d_employee_speciality_id ===
+                                    row.speciality_id
+                                );
+
+                          return (
+                            <span>
+                              {display !== undefined && display.length !== 0
+                                ? this.state.selectedLang === "en"
+                                  ? display[0].speciality_name
+                                  : display[0].arabic_sub_department_name
+                                : ""}
+                            </span>
+                          );
+                        },
+                        editorTemplate: row => {
+                          let display =
+                            this.props.empspeciality === undefined
+                              ? []
+                              : this.props.empspeciality.filter(
+                                  f =>
+                                    f.hims_d_employee_speciality_id ===
+                                    row.speciality_id
+                                );
+
+                          return (
+                            <span>
+                              {display !== undefined && display.length !== 0
+                                ? this.state.selectedLang === "en"
+                                  ? display[0].speciality_name
+                                  : display[0].arabic_sub_department_name
+                                : ""}
+                            </span>
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "category_id",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "category_id" }} />
+                        ),
+                        displayTemplate: row => {
+                          let display =
+                            this.props.specimapcategorylist === undefined
+                              ? []
+                              : this.props.specimapcategorylist.filter(
+                                  f =>
+                                    f.hims_m_category_speciality_mappings_id ===
+                                    row.category_id
+                                );
+
+                          return (
+                            <span>
+                              {display !== undefined && display.length !== 0
+                                ? this.state.selectedLang === "en"
+                                  ? display[0].employee_category_name
+                                  : display[0].arabic_sub_department_name
+                                : ""}
+                            </span>
+                          );
+                        },
+                        editorTemplate: row => {
+                          let display =
+                            this.props.specimapcategorylist === undefined
+                              ? []
+                              : this.props.specimapcategorylist.filter(
+                                  f =>
+                                    f.hims_m_category_speciality_mappings_id ===
+                                    row.category_id
+                                );
+
+                          return (
+                            <span>
+                              {display !== undefined && display.length !== 0
+                                ? this.state.selectedLang === "en"
+                                  ? display[0].employee_category_name
+                                  : display[0].arabic_sub_department_name
+                                : ""}
+                            </span>
+                          );
+                        }
+                      },
+
+                      {
+                        fieldName: "employee_designation_id",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Designation" }} />
+                        ),
+
+                        displayTemplate: row => {
+                          let display =
+                            this.props.designations === undefined
+                              ? []
+                              : this.props.designations.filter(
+                                  f =>
+                                    f.hims_d_designation_id ===
+                                    row.employee_designation_id
+                                );
+
+                          return (
+                            <span>
+                              {display !== undefined && display.length !== 0
+                                ? display[0].designation
+                                : ""}
+                            </span>
+                          );
+                        },
+                        editorTemplate: row => {
+                          return (
+                            <AlagehAutoComplete
+                              div={{}}
+                              selector={{
+                                name: "employee_designation_id",
+                                className: "select-fld",
+                                value: row.employee_designation_id,
+                                dataSource: {
+                                  textField: "designation",
+                                  valueField: "hims_d_designation_id",
+                                  data: this.props.designations
+                                },
+                                onChange: onchangegridcol.bind(this, this, row)
+                              }}
+                            />
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "reporting_to_id",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Reporting To" }} />
+                        ),
+                        displayTemplate: row => {
+                          let display =
+                            this.props.all_employees === undefined
+                              ? []
+                              : this.props.all_employees.filter(
+                                  f =>
+                                    f.hims_d_employee_id === row.reporting_to_id
+                                );
+
+                          return (
+                            <span>
+                              {display !== undefined && display.length !== 0
+                                ? display[0].full_name
+                                : ""}
+                            </span>
+                          );
+                        },
+                        editorTemplate: row => {
+                          return (
+                            <AlagehAutoComplete
+                              div={{}}
+                              selector={{
+                                name: "reporting_to_id",
+                                className: "select-fld",
+                                value: row.reporting_to_id,
+                                dataSource: {
+                                  textField: "full_name",
+                                  valueField: "hims_d_employee_id",
+                                  data: this.props.all_employees
+                                },
+                                onChange: onchangegridcol.bind(this, this, row)
+                              }}
+                            />
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "services_id",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "services_id" }} />
+                        ),
+                        displayTemplate: row => {
+                          let display =
+                            this.props.depservices === undefined
+                              ? []
+                              : this.props.depservices.filter(
+                                  f => f.hims_d_services_id === row.services_id
+                                );
+
+                          return (
+                            <span>
+                              {display !== undefined && display.length !== 0
+                                ? this.state.selectedLang === "en"
+                                  ? display[0].service_name
+                                  : display[0].arabic_service_name
+                                : ""}
+                            </span>
+                          );
+                        },
+                        editorTemplate: row => {
+                          let display =
+                            this.props.depservices === undefined
+                              ? []
+                              : this.props.depservices.filter(
+                                  f => f.hims_d_services_id === row.services_id
+                                );
+
+                          return (
+                            <span>
+                              {display !== undefined && display.length !== 0
+                                ? this.state.selectedLang === "en"
+                                  ? display[0].service_name
+                                  : display[0].arabic_service_name
+                                : ""}
+                            </span>
+                          );
+                        }
+                      }
+                    ]}
+                    keyId="department_user_id"
+                    dataSource={{
+                      data: this.state.deptDetails
+                    }}
+                    paging={{ page: 0, rowsPerPage: 5 }}
+                    isEditable={true}
+                    events={{
+                      onDelete: deleteDeptUser.bind(this, this),
+                      onEdit: row => {},
+                      onDone: updateDeptUser.bind(this, this)
+                    }}
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </div>

@@ -27,7 +27,10 @@ import {
   ClearData,
   PostInitialStock,
   printBarcode,
-  salesPriceEvent
+  salesPriceEvent,
+  updateInitialStock,
+  onChamgeGridQuantity,
+  EditGrid
 } from "./InvInitialStockEvents";
 import "./InvInitialStock.css";
 import "../../../styles/site.css";
@@ -428,7 +431,6 @@ class InvInitialStock extends Component {
                       className: "txt-fld",
                       name: "quantity",
                       value: this.state.quantity,
-                      dontAllowKeys: ["-", "e", "."],
                       events: {
                         onChange: numberchangeTexts.bind(this, this)
                       },
@@ -498,7 +500,7 @@ class InvInitialStock extends Component {
                   <div className="col-lg-3">
                     <button
                       className="btn btn-primary"
-                      style={{ marginTop: "24px" }}
+                      style={{ marginTop: 21 }}
                       onClick={AddItems.bind(this, this)}
                       disabled={this.state.dataExitst}
                     >
@@ -508,30 +510,51 @@ class InvInitialStock extends Component {
                 </div>
               </div>
             </div>
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-body">
+            <div
+              className="portlet portlet-bordered"
+              style={{ marginBottom: 30 }}
+            >
+              <div className="portlet-body" id="initialStockCntr">
                 <AlgaehDataGrid
                   id="initial_stock"
                   columns={[
                     {
                       fieldName: "action",
-                      label: <AlgaehLabel label={{ forceLabel: "Action" }} />,
+                      label: <AlgaehLabel label={{ forceLabel: "Print" }} />,
                       displayTemplate: row => {
-                        return this.state.saveEnable === true ? (
+                        return (
                           <span>
                             <i
-                              className="fas fa-barcode"
+                              style={{
+                                pointerEvents:
+                                  this.state.dataExitst === false ? "none" : "",
+                                opacity:
+                                  this.state.dataExitst === false ? "0.1" : ""
+                              }}
                               onClick={printBarcode.bind(this, this, row)}
-                            />
-                          </span>
-                        ) : (
-                          <span>
-                            <i
-                              className="fas fa-times"
-                              onClick={deleteInitialStock.bind(this, this, row)}
+                              className="fas fa-barcode"
                             />
                           </span>
                         );
+                      },
+                      editorTemplate: row => {
+                        return (
+                          <span>
+                            <i
+                              style={{
+                                pointerEvents:
+                                  this.state.dataExitst === false ? "none" : "",
+                                opacity:
+                                  this.state.dataExitst === false ? "0.1" : ""
+                              }}
+                              onClick={printBarcode.bind(this, this, row)}
+                              className="fas fa-barcode"
+                            />
+                          </span>
+                        );
+                      },
+                      others: {
+                        filterable: false
                       }
                     },
                     {
@@ -555,7 +578,28 @@ class InvInitialStock extends Component {
                           </span>
                         );
                       },
-                      disabled: true
+                      editorTemplate: row => {
+                        let display =
+                          this.props.inventorylocations === undefined
+                            ? []
+                            : this.props.inventorylocations.filter(
+                                f =>
+                                  f.hims_d_inventory_location_id ===
+                                  row.location_id
+                              );
+
+                        return (
+                          <span>
+                            {display !== undefined && display.length !== 0
+                              ? display[0].location_description
+                              : ""}
+                          </span>
+                        );
+                      },
+                      others: {
+                        minWidth: 150,
+                        filterable: false
+                      }
                     },
 
                     {
@@ -581,9 +625,27 @@ class InvInitialStock extends Component {
                           </span>
                         );
                       },
-                      disabled: true,
+                      editorTemplate: row => {
+                        let display =
+                          this.props.inventoryitemcategory === undefined
+                            ? []
+                            : this.props.inventoryitemcategory.filter(
+                                f =>
+                                  f.hims_d_inventory_tem_category_id ===
+                                  row.item_category_id
+                              );
+
+                        return (
+                          <span>
+                            {display !== undefined && display.length !== 0
+                              ? display[0].category_desc
+                              : ""}
+                          </span>
+                        );
+                      },
                       others: {
-                        minWidth: 250
+                        minWidth: 250,
+                        filterable: false
                       }
                     },
 
@@ -610,9 +672,28 @@ class InvInitialStock extends Component {
                           </span>
                         );
                       },
-                      disabled: true,
+                      editorTemplate: row => {
+                        let display =
+                          this.props.inventoryitemgroup === undefined
+                            ? []
+                            : this.props.inventoryitemgroup.filter(
+                                f =>
+                                  f.hims_d_inventory_item_group_id ===
+                                  row.item_group_id
+                              );
+
+                        return (
+                          <span>
+                            {display !== undefined && display.length !== 0
+                              ? display[0].group_description
+                              : ""}
+                          </span>
+                        );
+                      },
+
                       others: {
-                        minWidth: 150
+                        minWidth: 150,
+                        filterable: false
                       }
                     },
 
@@ -639,9 +720,27 @@ class InvInitialStock extends Component {
                           </span>
                         );
                       },
-                      disabled: true,
+                      editorTemplate: row => {
+                        let display =
+                          this.props.inventoryitemlist === undefined
+                            ? []
+                            : this.props.inventoryitemlist.filter(
+                                f =>
+                                  f.hims_d_inventory_item_master_id ===
+                                  row.item_id
+                              );
+
+                        return (
+                          <span>
+                            {display !== undefined && display.length !== 0
+                              ? display[0].item_description
+                              : ""}
+                          </span>
+                        );
+                      },
+
                       others: {
-                        minWidth: 150
+                        minWidth: 250
                       }
                     },
                     {
@@ -651,8 +750,10 @@ class InvInitialStock extends Component {
                           label={{ forceLabel: "Vendor Batch No." }}
                         />
                       ),
+                      disabled: true,
                       others: {
-                        minWidth: 150
+                        minWidth: 150,
+                        filterable: false
                       }
                     },
                     {
@@ -662,14 +763,51 @@ class InvInitialStock extends Component {
                       ),
                       displayTemplate: row => {
                         return <span>{dateFormater(row.expiry_date)}</span>;
-                      }
+                      },
+                      editorTemplate: row => {
+                        return <span>{dateFormater(row.expiry_date)}</span>;
+                      },
+                      others: { filterable: false }
                     },
                     {
                       fieldName: "quantity",
                       label: <AlgaehLabel label={{ forceLabel: "Quantity" }} />,
                       displayTemplate: row => {
-                        return parseFloat(row.quantity);
-                      }
+                        return row.quantity !== ""
+                          ? parseFloat(row.quantity)
+                          : "";
+                      },
+                      editorTemplate: row => {
+                        return (
+                          <AlagehFormGroup
+                            div={{}}
+                            textBox={{
+                              number: { allowNegative: false },
+                              value:
+                                row.quantity !== ""
+                                  ? parseFloat(row.quantity)
+                                  : "",
+                              className: "txt-fld",
+                              name: "quantity",
+                              dontAllowKeys: ["-", "e", "."],
+                              events: {
+                                onChange: onChamgeGridQuantity.bind(
+                                  this,
+                                  this,
+                                  row
+                                )
+                              },
+                              others: {
+                                min: 0,
+                                algaeh_required: "true",
+                                errormessage: "Please enter Quantity ..",
+                                checkvalidation: "value ==='' || value ==='0'"
+                              }
+                            }}
+                          />
+                        );
+                      },
+                      others: { filterable: false }
                     },
                     {
                       fieldName: "unit_cost",
@@ -684,7 +822,17 @@ class InvInitialStock extends Component {
                             })}
                           </span>
                         );
-                      }
+                      },
+                      editorTemplate: row => {
+                        return (
+                          <span>
+                            {getAmountFormart(row.unit_cost, {
+                              appendSymbol: false
+                            })}
+                          </span>
+                        );
+                      },
+                      others: { filterable: false }
                     },
                     {
                       fieldName: "sales_price",
@@ -699,7 +847,17 @@ class InvInitialStock extends Component {
                             })}
                           </span>
                         );
-                      }
+                      },
+                      editorTemplate: row => {
+                        return (
+                          <span>
+                            {getAmountFormart(row.sales_price, {
+                              appendSymbol: false
+                            })}
+                          </span>
+                        );
+                      },
+                      others: { filterable: false }
                     },
                     {
                       fieldName: "extended_cost",
@@ -714,7 +872,17 @@ class InvInitialStock extends Component {
                             })}
                           </span>
                         );
-                      }
+                      },
+                      editorTemplate: row => {
+                        return (
+                          <span>
+                            {getAmountFormart(row.extended_cost, {
+                              appendSymbol: false
+                            })}
+                          </span>
+                        );
+                      },
+                      others: { filterable: false }
                     },
                     {
                       fieldName: "grn_number",
@@ -723,8 +891,10 @@ class InvInitialStock extends Component {
                           label={{ forceLabel: "Receipt No. (GRN)" }}
                         />
                       ),
+                      disabled: true,
                       others: {
-                        minWidth: 120
+                        minWidth: 130,
+                        filterable: false
                       }
                     }
                   ]}
@@ -732,12 +902,15 @@ class InvInitialStock extends Component {
                   dataSource={{
                     data: this.state.inventory_stock_detail
                   }}
-                  // isEditable={true}
+                  isEditable={!this.state.dataExitst}
+                  byForceEvents={true}
+                  filter={true}
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
-                    //   onDelete: deleteServices.bind(this, this),
-                    onEdit: row => {}
-                    // onDone: this.updateBillDetail.bind(this)
+                    onDelete: deleteInitialStock.bind(this, this),
+                    onEdit: EditGrid.bind(this, this),
+                    onCancel: EditGrid.bind(this, this),
+                    onDone: updateInitialStock.bind(this, this)
                   }}
                 />
               </div>

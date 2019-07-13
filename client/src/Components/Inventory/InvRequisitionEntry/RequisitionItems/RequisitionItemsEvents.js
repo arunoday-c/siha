@@ -218,7 +218,8 @@ const AddItems = ($this, context) => {
       item_description: $this.state.item_description,
       item_code: $this.state.item_code,
       uom_description: $this.state.uom_description,
-      barcode: $this.state.barcode
+      barcode: $this.state.barcode,
+      quantity_outstanding: 0
     };
     inventory_stock_detail.push(ItemInput);
     $this.setState({
@@ -359,20 +360,17 @@ const getItemLocationStock = ($this, context, value) => {
             to_qtyhand: total_quantity
           });
 
-          if (context !== undefined) {
-            context.updateState({
-              to_qtyhand: total_quantity
-            });
-          }
+          context.updateState({
+            to_qtyhand: total_quantity
+          });
         } else if (value.set === "From") {
           $this.setState({
             from_qtyhand: total_quantity
           });
-          if (context !== undefined) {
-            context.updateState({
-              from_qtyhand: total_quantity
-            });
-          }
+
+          context.updateState({
+            from_qtyhand: total_quantity
+          });
         }
       } else {
         context.updateState({
