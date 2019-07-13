@@ -83,10 +83,19 @@ export default () => {
 
   api.post("/addCashierToShift", addCashierToShift, (req, res, next) => {
     let result = req.records;
-    res.status(utlities.httpStatus().ok).json({
-      success: true,
-      records: result
-    });
+
+    if (result.invalid_input == true) {
+      res.status(utlities.httpStatus().ok).json({
+        success: false,
+        records: result
+      });
+    } else {
+      res.status(utlities.httpStatus().ok).json({
+        success: true,
+        records: result
+      });
+    }
+
     next();
   });
 

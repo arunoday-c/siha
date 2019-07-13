@@ -268,6 +268,7 @@ module.exports = {
       next(e);
     }
   },
+  // crated by :irfan
   addCashierToShift: (req, res, next) => {
     let inputParam = req.body;
     const _mysql = new algaehMysql();
@@ -275,24 +276,69 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "INSERT INTO `hims_m_cashier_shift` (cashier_id, shift_id, from_date, to_date,  created_date, created_by, updated_date, updated_by)\
-          VALUE(?,?,?,?,?,?,?,?)",
+            "select hims_m_cashier_shift_id ,cashier_id,from_date,to_date \
+ from hims_m_cashier_shift where cashier_id=? and shift_id=?   and \
+((  date(?)>=date(from_date) and date(?)<=date(to_date)) or ( date(?)>=date(from_date) and   date(?)<=date(to_date))\
+or (date(from_date)>= date(?) and date(from_date)<=date(?) ) or(date(to_date)>=date(?) and date(to_date)<= date(?)) );",
           values: [
             inputParam.cashier_id,
             inputParam.shift_id,
+
+            inputParam.from_date,
             inputParam.from_date,
             inputParam.to_date,
-            new Date(),
-            req.userIdentity.algaeh_d_app_user_id,
-            new Date(),
-            req.userIdentity.algaeh_d_app_user_id
+            inputParam.to_date,
+            inputParam.from_date,
+            inputParam.to_date,
+            inputParam.from_date,
+            inputParam.to_date
           ],
           printQuery: true
         })
-        .then(result => {
-          _mysql.releaseConnection();
-          req.records = result;
-          next();
+        .then(ExResult => {
+          // _mysql.releaseConnection();
+          // req.records = result;
+          // next();
+
+          if (ExResult.length > 0) {
+            console.log("ExResult", ExResult);
+            _mysql.releaseConnection();
+            req.records = {
+              invalid_input: true,
+              message: `cashier has shift from ${ExResult[0]["from_date"]} to ${
+                ExResult[0]["to_date"]
+              } `
+            };
+            next();
+          } else {
+            _mysql
+              .executeQuery({
+                query:
+                  "INSERT INTO `hims_m_cashier_shift` (cashier_id, shift_id, from_date,\
+                   to_date,  created_date, created_by, updated_date, updated_by)\
+              VALUE(?,?,?,?,?,?,?,?)",
+                values: [
+                  inputParam.cashier_id,
+                  inputParam.shift_id,
+                  inputParam.from_date,
+                  inputParam.to_date,
+                  new Date(),
+                  req.userIdentity.algaeh_d_app_user_id,
+                  new Date(),
+                  req.userIdentity.algaeh_d_app_user_id
+                ],
+                printQuery: true
+              })
+              .then(result => {
+                _mysql.releaseConnection();
+                req.records = result;
+                next();
+              })
+              .catch(error => {
+                _mysql.releaseConnection();
+                next(error);
+              });
+          }
         })
         .catch(error => {
           _mysql.releaseConnection();
@@ -303,6 +349,7 @@ module.exports = {
       next(e);
     }
   },
+  // crated by :irfan
   getCashiersAndShiftMAP: (req, res, next) => {
     let input = req.query;
     const _mysql = new algaehMysql();
@@ -370,6 +417,7 @@ module.exports = {
       next(e);
     }
   },
+
   deleteCashiersAndShiftMAP: (req, res, next) => {
     let inputParam = req.body;
     const _mysql = new algaehMysql();

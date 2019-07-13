@@ -137,13 +137,18 @@ class UserShiftMapping extends Component {
             to_date: this.state.to_date
           },
           onSuccess: response => {
-            if (response.data.records) {
+            if (response.data.success) {
               swalMessage({
                 title: "Record added successfully",
                 type: "success"
               });
               this.resetSaveState();
               this.getMappedUsers();
+            } else {
+              swalMessage({
+                title: response.data.records.message,
+                type: "error"
+              });
             }
           },
           onFailure: error => {
