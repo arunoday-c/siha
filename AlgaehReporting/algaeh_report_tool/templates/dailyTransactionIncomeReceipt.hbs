@@ -1,0 +1,69 @@
+{{{importStyle 'css/creditinvoice.css'}}}
+
+<body>
+    <div class="print-body">
+        <section>
+
+            <table class="tableForLabel" cell-padding="0">
+
+                <tr>
+                    <td colspan="2"><label class="textEnLft">Branch</label>:<span
+                            class="valueText">{{material_requisition_number}}</span>
+                    </td>
+                </tr>
+
+
+            </table>
+
+
+        </section>
+        <section>
+            <table class="tableForData" style="margin:0;padding:0;">
+                <tdead>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>Inv/ Bill No.</th>
+                        <th>Bill Date.</th>
+                        <th>Service</th>
+                        <th>Patient Code</th>
+                        <th>Patient Name</th>
+                        <th>Patient Share</th>
+                        <th>Company Share</th>
+                        <th>Patient Vat</th>
+                        <th>Company Vat</th>
+                        <th>Total Vat</th>
+                        <th>Total Bill Amt.</th>
+                        <th>Balance Due</th>
+
+
+                    </tr>
+                    </thead>
+                    <tbody>{{#each detail}}
+                        <tr>
+                            <td colspan="11" class="tableSubHdg">{{Doctor_name}}/{{department_name}}</td>
+                        </tr>
+                        {{#each details}}
+                        <tr>
+                            <td>Sl No.</td>
+                            <td>Inv/ Bill No.</td>
+                            <td>Bill Date.</td>
+                            <td>Service</td>
+                            <td>Patient Code</td>
+                            <td>Patient Name</td>
+                            <td>Patient Share</td>
+                            <td>Company Share</td>
+                            <td>Patient Vat</td>
+                            <td>Company Vat</td>
+                            <td>Total Vat</td>
+                            <td>Total Bill Amt.</td>
+                            <td>Balance Due</td>
+                        </tr>
+                        {{/each }}{{/each }}
+                    </tbody>
+            </table>
+        </section>
+        </section>
+
+
+    </div>
+</body>
