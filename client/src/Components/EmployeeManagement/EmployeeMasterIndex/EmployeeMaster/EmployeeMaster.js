@@ -186,25 +186,69 @@ class EmployeeMaster extends Component {
                       this.state.personalDetails.present_state_id
                   )
                   .firstOrDefault();
-                if (cities !== undefined) {
+                if (
+                  this.state.personalDetails.present_country_id ===
+                  this.state.personalDetails.permanent_country_id
+                ) {
                   this.updateEmployeeTabs({
                     countrystates: states,
-                    cities: cities.cities,
+                    cities: cities !== undefined ? cities.cities : [],
                     precountrystates: states,
-                    precities: cities.cities,
-                    present_cities: cities.cities,
+                    precities: cities !== undefined ? cities.cities : [],
+                    present_cities: cities !== undefined ? cities.cities : [],
                     present_state_id: this.state.personalDetails
                       .present_state_id,
-                    present_city_id: this.state.personalDetails.present_city_id
+                    present_city_id: this.state.personalDetails.present_city_id,
+                    samechecked: "Y"
                   });
                 } else {
-                  this.updateEmployeeTabs({
-                    countrystates: states,
-                    precountrystates: states,
-                    // present_cities: cities.cities,
-                    present_state_id: this.state.personalDetails
-                      .present_state_id
-                  });
+                  country = Enumerable.from(this.props.countries)
+                    .where(
+                      w =>
+                        w.hims_d_country_id ===
+                        this.state.personalDetails.permanent_country_id
+                    )
+                    .firstOrDefault();
+
+                  let pres_states = country !== undefined ? country.states : [];
+                  if (
+                    this.props.countries !== undefined &&
+                    pres_states.length !== 0
+                  ) {
+                    if (
+                      newProps.permanent_state_id !==
+                      this.state.personalDetails.permanent_state_id
+                    ) {
+                      let pres_cities = Enumerable.from(pres_states)
+                        .where(
+                          w =>
+                            w.hims_d_state_id ===
+                            this.state.personalDetails.permanent_state_id
+                        )
+                        .firstOrDefault();
+
+                      this.updateEmployeeTabs({
+                        countrystates: states,
+                        cities: cities !== undefined ? cities.cities : [],
+                        present_cities:
+                          cities !== undefined ? cities.cities : [],
+
+                        precountrystates: pres_states,
+                        precities:
+                          pres_cities !== undefined ? pres_cities.cities : [],
+                        present_state_id: this.state.personalDetails
+                          .present_state_id,
+                        present_city_id: this.state.personalDetails
+                          .present_city_id,
+
+                        permanent_city_id: this.state.personalDetails
+                          .permanent_city_id,
+                        permanent_city_id: this.state.personalDetails
+                          .permanent_city_id,
+                        samechecked: "N"
+                      });
+                    }
+                  }
                 }
               }
             }

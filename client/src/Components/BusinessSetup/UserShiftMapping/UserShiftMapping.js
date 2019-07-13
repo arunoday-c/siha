@@ -22,7 +22,9 @@ class UserShiftMapping extends Component {
       cashiers_list: [],
       cashiers: [],
       year: moment(new Date()).format("YYYY"),
-      month: moment(new Date()).format("M")
+      month: moment(new Date()).format("M"),
+      from_date: null,
+      to_date: null
     };
     this.getShifts();
     this.getCashiers();
@@ -126,6 +128,19 @@ class UserShiftMapping extends Component {
     AlgaehValidation({
       alertTypeIcon: "warning",
       onSuccess: () => {
+        if (this.state.from_date === null) {
+          swalMessage({
+            title: "From Date, is Mandatory",
+            type: "warning"
+          });
+          return;
+        } else if (this.state.to_date === null) {
+          swalMessage({
+            title: "To Date, is Mandatory",
+            type: "warning"
+          });
+          return;
+        }
         algaehApiCall({
           uri: "/shiftAndCounter/addCashierToShift",
           module: "masterSettings",
@@ -137,13 +152,18 @@ class UserShiftMapping extends Component {
             to_date: this.state.to_date
           },
           onSuccess: response => {
-            if (response.data.records) {
+            if (response.data.success) {
               swalMessage({
                 title: "Record added successfully",
                 type: "success"
               });
               this.resetSaveState();
               this.getMappedUsers();
+            } else {
+              swalMessage({
+                title: response.data.records.message,
+                type: "error"
+              });
             }
           },
           onFailure: error => {
@@ -172,7 +192,7 @@ class UserShiftMapping extends Component {
             title: "Record updated successfully",
             type: "success"
           });
-          // this.getMappedUsers();
+          this.getMappedUsers();
         }
       },
       onFailure: error => {
@@ -272,7 +292,7 @@ class UserShiftMapping extends Component {
               });
 
               this.getMappedUsers();
-            } else if (!response.data.records.success) {
+            } else {
               swalMessage({
                 title: response.data.records.message,
                 type: "error"
@@ -339,7 +359,7 @@ class UserShiftMapping extends Component {
 
             <AlgaehDateHandler
               div={{ className: "col-2" }}
-              label={{ forceLabel: "From Date" }}
+              label={{ forceLabel: "From Date", isImp: true }}
               textBox={{ className: "txt-fld", name: "from_date" }}
               events={{
                 onChange: this.datehandle.bind(this),
@@ -349,7 +369,7 @@ class UserShiftMapping extends Component {
             />
             <AlgaehDateHandler
               div={{ className: "col-2" }}
-              label={{ forceLabel: "To Date" }}
+              label={{ forceLabel: "To Date", isImp: true }}
               textBox={{ className: "txt-fld", name: "to_date" }}
               events={{
                 onChange: this.datehandle.bind(this),
