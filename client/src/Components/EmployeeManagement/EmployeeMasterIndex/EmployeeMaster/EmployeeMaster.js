@@ -20,7 +20,6 @@ import { getCookie } from "../../../../utils/algaehApiCall";
 import { InsertUpdateEmployee } from "./EmployeeMasterEvents";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import { AlgaehOpenContainer } from "../../../../utils/GlobalFunctions";
-import _ from "lodash";
 
 class EmployeeMaster extends Component {
   constructor(props) {
@@ -29,7 +28,7 @@ class EmployeeMaster extends Component {
     let Activated_Modueles = JSON.parse(
       AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
     );
-    const HIMS_Active = _.filter(Activated_Modueles, f => {
+    const HIMS_Active = Activated_Modueles.filter(f => {
       return f.module_code === "FTDSK";
     });
     this.state = {
@@ -59,13 +58,16 @@ class EmployeeMaster extends Component {
   }
 
   onClose = e => {
-    this.props.onClose && this.props.onClose(e);
-    let IOputs = EmpMasterIOputs.inputParam();
+    // let IOputs = EmpMasterIOputs.inputParam();
 
-    this.setState({
-      pageDisplay: "PersonalDetails",
-      ...IOputs
-    });
+    // this.setState(
+    //   {
+    //     pageDisplay: "PersonalDetails",
+    //     ...IOputs
+    //   },
+    //   () => this.props.onClose && this.props.onClose(e)
+    // );
+    this.props.onClose && this.props.onClose(e);
   };
 
   componentDidMount() {
