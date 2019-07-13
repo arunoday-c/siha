@@ -1,4 +1,5 @@
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import AlgaehLoader from "../../Wrapper/fullPageLoader";
 
 const getEmployeeDetails = $this => {
   algaehApiCall({
@@ -10,7 +11,10 @@ const getEmployeeDetails = $this => {
       if (response.data.success) {
         let data = response.data.records;
         if (data.length > 0) {
-          $this.setState({ Employeedetails: data });
+          $this.setState(
+            { Employeedetails: data, forceRender: !!$this.state.afterClose },
+            () => $this.setState({ forceRender: false })
+          );
         }
       }
     },
@@ -19,6 +23,7 @@ const getEmployeeDetails = $this => {
         title: error.message,
         type: "error"
       });
+      AlgaehLoader({ show: false });
     }
   });
 };
