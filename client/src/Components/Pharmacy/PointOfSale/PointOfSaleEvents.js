@@ -16,7 +16,6 @@ import {
 } from "../../../utils/GlobalFunctions";
 import Enumerable from "linq";
 import _ from "lodash";
-import moment from "moment";
 
 const changeTexts = ($this, ctrl, e) => {
   e = ctrl || e;
@@ -1053,18 +1052,24 @@ const generateReport = ($this, rpt_name, rpt_desc) => {
 };
 
 const getCashiersAndShiftMAP = $this => {
-  let year = moment().format("YYYY");
-  let month = moment().format("M");
-
   algaehApiCall({
     uri: "/shiftAndCounter/getCashiersAndShiftMAP",
     module: "masterSettings",
     method: "GET",
-    data: { year: year, month: month, for: "T" },
+    data: { for: "T" },
     onSuccess: response => {
       if (response.data.success) {
         if (response.data.records.length > 0) {
-          $this.setState({ shift_id: response.data.records[0].shift_id });
+          $this.setState(
+            {
+              shift_assinged: response.data.records
+            },
+            () => {
+              $this.setState({
+                shift_id: response.data.records[0].shift_id
+              });
+            }
+          );
         }
       }
     },

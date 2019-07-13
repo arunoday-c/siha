@@ -5,7 +5,6 @@ import {
   swalMessage,
   getCookie
 } from "../../../utils/algaehApiCall";
-import moment from "moment";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import FrontDesk from "../../../Search/FrontDesk.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
@@ -171,19 +170,24 @@ const Validations = $this => {
 };
 
 const getCashiersAndShiftMAP = $this => {
-  let year = moment().format("YYYY");
-
-  let month = moment().format("MM");
-
   algaehApiCall({
     uri: "/shiftAndCounter/getCashiersAndShiftMAP",
     module: "masterSettings",
     method: "GET",
-    data: { year: year, month: month, for: "T" },
+    data: { for: "T" },
     onSuccess: response => {
       if (response.data.success) {
         if (response.data.records.length > 0) {
-          $this.setState({ shift_id: response.data.records[0].shift_id });
+          $this.setState(
+            {
+              shift_assinged: response.data.records
+            },
+            () => {
+              $this.setState({
+                shift_id: response.data.records[0].shift_id
+              });
+            }
+          );
         }
       }
     },

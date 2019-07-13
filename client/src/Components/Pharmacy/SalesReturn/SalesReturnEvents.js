@@ -359,6 +359,37 @@ const ViewInsurance = ($this, e) => {
   });
 };
 
+const getCashiersAndShiftMAP = $this => {
+  algaehApiCall({
+    uri: "/shiftAndCounter/getCashiersAndShiftMAP",
+    module: "masterSettings",
+    method: "GET",
+    data: { for: "T" },
+    onSuccess: response => {
+      if (response.data.success) {
+        if (response.data.records.length > 0) {
+          $this.setState(
+            {
+              shift_assinged: response.data.records
+            },
+            () => {
+              $this.setState({
+                shift_id: response.data.records[0].shift_id
+              });
+            }
+          );
+        }
+      }
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
+};
+
 export {
   changeTexts,
   getCtrlCode,
@@ -366,5 +397,6 @@ export {
   SaveSalesReturn,
   POSSearch,
   getPOSEntry,
-  ViewInsurance
+  ViewInsurance,
+  getCashiersAndShiftMAP
 };

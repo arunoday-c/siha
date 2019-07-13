@@ -369,7 +369,7 @@ let getCashiersAndShiftMAP = (req, res, next) => {
     db.getConnection((error, connection) => {
       connection.query(
         `select hims_m_cashier_shift_id ,cashier_id,shift_id,from_date,to_date,\
-        E.full_name as cashier_name,shift_description\
+        E.full_name as cashier_name,shift_description,S.arabic_name\
         from hims_m_cashier_shift CS inner join algaeh_d_app_user U on CS.cashier_id=U.algaeh_d_app_user_id\
         inner join  hims_d_employee E on U.employee_id=E.hims_d_employee_id\
         inner join hims_d_shift S on CS.shift_id=S.hims_d_shift_id\

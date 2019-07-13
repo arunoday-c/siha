@@ -10,7 +10,8 @@ import {
   ClearData,
   SaveSalesReturn,
   POSSearch,
-  ViewInsurance
+  ViewInsurance,
+  getCashiersAndShiftMAP
 } from "./SalesReturnEvents";
 import "./SalesReturn.css";
 import "../../../styles/site.css";
@@ -79,6 +80,7 @@ class SalesReturn extends Component {
         }
       });
     }
+    getCashiersAndShiftMAP(this, this);
   }
 
   componentWillReceiveProps(nextProps) {

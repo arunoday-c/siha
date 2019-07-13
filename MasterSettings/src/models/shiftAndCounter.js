@@ -275,13 +275,13 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "INSERT INTO `hims_m_cashier_shift` (cashier_id, shift_id, year,month,  created_date, created_by, updated_date, updated_by)\
+            "INSERT INTO `hims_m_cashier_shift` (cashier_id, shift_id, from_date, to_date,  created_date, created_by, updated_date, updated_by)\
           VALUE(?,?,?,?,?,?,?,?)",
           values: [
             inputParam.cashier_id,
             inputParam.shift_id,
-            inputParam.year,
-            inputParam.month,
+            inputParam.from_date,
+            inputParam.to_date,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
@@ -308,43 +308,21 @@ module.exports = {
     const _mysql = new algaehMysql();
 
     try {
-      let _strAppend = "";
-      let inputValues = [];
-
-      if (input.hims_m_cashier_shift_id != null) {
-        _strAppend += " and hims_m_cashier_shift_id=?";
-        inputValues.push(input.hims_m_cashier_shift_id);
-      }
-
-      if (input.year != null) {
-        _strAppend += " and year=?";
-        inputValues.push(input.year);
-      }
-
-      if (input.month != null) {
-        _strAppend += " and month=?";
-        inputValues.push(input.month);
-      }
-
-      if (input.for == "T") {
-        _strAppend += " and cashier_id=?";
-        inputValues.push(req.userIdentity.algaeh_d_app_user_id);
-        delete input.for;
-      } else {
-        delete input.for;
+      let str = "";
+      if (req.query.for == "T") {
+        str = ` and curdate() between from_date and to_date and CS.cashier_id=${
+          req.userIdentity.algaeh_d_app_user_id
+        } `;
       }
 
       _mysql
         .executeQuery({
-          query:
-            "select hims_m_cashier_shift_id, cashier_id, shift_id,shift_description, year, month,\
-            hims_d_employee_department_id,EDM.employee_id,E.full_name as cashier_name\
-            from hims_m_cashier_shift CS,hims_d_shift S,hims_d_employee E ,hims_m_employee_department_mappings EDM\
-            where CS.record_status='A' and S.record_status='A' and CS.shift_id=S.hims_d_shift_id \
-            and CS.cashier_id=EDM.user_id  and EDM.employee_id=E.hims_d_employee_id" +
-            _strAppend +
-            " order by hims_m_cashier_shift_id desc",
-          values: inputValues,
+          query: `select hims_m_cashier_shift_id ,cashier_id,shift_id,from_date,to_date,\
+          E.full_name as cashier_name,shift_description\
+          from hims_m_cashier_shift CS inner join algaeh_d_app_user U on CS.cashier_id=U.algaeh_d_app_user_id\
+          inner join  hims_d_employee E on U.employee_id=E.hims_d_employee_id\
+          inner join hims_d_shift S on CS.shift_id=S.hims_d_shift_id\
+          where CS.record_status='A' ${str}`,
           printQuery: true
         })
         .then(result => {

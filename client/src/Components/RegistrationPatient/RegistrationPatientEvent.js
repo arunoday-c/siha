@@ -205,11 +205,20 @@ const getCashiersAndShiftMAP = $this => {
     uri: "/shiftAndCounter/getCashiersAndShiftMAP",
     module: "masterSettings",
     method: "GET",
-    data: { year: year, month: month, for: "T" },
+    data: { for: "T" },
     onSuccess: response => {
       if (response.data.success) {
         if (response.data.records.length > 0) {
-          $this.setState({ shift_id: response.data.records[0].shift_id });
+          $this.setState(
+            {
+              shift_assinged: response.data.records
+            },
+            () => {
+              $this.setState({
+                shift_id: response.data.records[0].shift_id
+              });
+            }
+          );
         }
 
         if ($this.props.fromAppoinment === true) {

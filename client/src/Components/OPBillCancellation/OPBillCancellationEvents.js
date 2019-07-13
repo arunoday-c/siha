@@ -6,7 +6,7 @@ import {
   swalMessage,
   getCookie
 } from "../../utils/algaehApiCall";
-import moment from "moment";
+
 import AlgaehLoader from "../Wrapper/fullPageLoader";
 import Enumerable from "linq";
 
@@ -30,7 +30,9 @@ const ClearData = ($this, e) => {
       IOputs.patient_payable_h = 0;
       IOputs.counter_id = counter_id;
       IOputs.cancel_remarks = null;
-      $this.setState({ ...$this.state, ...IOputs });
+      $this.setState({ ...$this.state, ...IOputs }, () => {
+        getCashiersAndShiftMAP($this);
+      });
     }
   });
 };
@@ -126,20 +128,23 @@ const Validations = $this => {
 };
 
 const getCashiersAndShiftMAP = $this => {
-  let year = moment().format("YYYY");
-
-  let month = moment().format("MM");
-
   algaehApiCall({
     uri: "/shiftAndCounter/getCashiersAndShiftMAP",
     module: "masterSettings",
     method: "GET",
-    data: { year: year, month: month, for: "T" },
+    data: { for: "T" },
     onSuccess: response => {
-      if (response.data.success) {
-        if (response.data.records.length > 0) {
-          $this.setState({ shift_id: response.data.records[0].shift_id });
-        }
+      if (response.data.records.length > 0) {
+        $this.setState(
+          {
+            shift_assinged: response.data.records
+          },
+          () => {
+            $this.setState({
+              shift_id: response.data.records[0].shift_id
+            });
+          }
+        );
       }
     },
     onFailure: error => {

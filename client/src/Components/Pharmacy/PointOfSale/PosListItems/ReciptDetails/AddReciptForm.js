@@ -45,20 +45,6 @@ class AddReciptForm extends Component {
     this.setState(nextProps.POSIOputs);
   }
 
-  componentDidMount() {
-    if (this.props.shifts === undefined || this.props.shifts.length === 0) {
-      this.props.getShifts({
-        uri: "/shiftAndCounter/getShiftMaster",
-        module: "masterSettings",
-        method: "GET",
-        redux: {
-          type: "CTRY_GET_DATA",
-          mappingName: "shifts"
-        }
-      });
-    }
-  }
-
   render() {
     return (
       <React.Fragment>
@@ -104,8 +90,8 @@ class AddReciptForm extends Component {
                       value: this.state.shift_id,
                       dataSource: {
                         textField: "shift_description",
-                        valueField: "hims_d_shift_id",
-                        data: this.props.shifts
+                        valueField: "shift_id",
+                        data: this.state.shift_assinged
                       },
                       others: {
                         disabled: this.state.dataExitst
@@ -344,7 +330,6 @@ class AddReciptForm extends Component {
 
 function mapStateToProps(state) {
   return {
-    shifts: state.shifts,
     posheader: state.posheader
   };
 }
@@ -352,7 +337,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getShifts: AlgaehActions,
       reciptCalculations: AlgaehActions
     },
     dispatch

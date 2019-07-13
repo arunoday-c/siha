@@ -5,12 +5,14 @@ import {
   AlagehAutoComplete,
   AlagehFormGroup,
   AlgaehDataGrid,
-  AlgaehLabel
+  AlgaehLabel,
+  AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import moment from "moment";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import swal from "sweetalert2";
+import Options from "../../../Options.json";
 
 class UserShiftMapping extends Component {
   constructor(props) {
@@ -71,6 +73,12 @@ class UserShiftMapping extends Component {
     });
   }
 
+  dateFormater(value) {
+    if (value !== null) {
+      return moment(value).format(Options.dateFormat);
+    }
+  }
+
   getCashiers() {
     algaehApiCall({
       uri: "/shiftAndCounter/getCashiers",
@@ -125,8 +133,8 @@ class UserShiftMapping extends Component {
           data: {
             cashier_id: this.state.cashier_id,
             shift_id: this.state.hims_d_shift_id,
-            year: this.state.year,
-            month: this.state.month
+            from_date: this.state.from_date,
+            to_date: this.state.to_date
           },
           onSuccess: response => {
             if (response.data.records) {
@@ -174,6 +182,68 @@ class UserShiftMapping extends Component {
         });
       }
     });
+  }
+
+  datehandle(ctrl, e) {
+    this.setState({
+      [e]: moment(ctrl)._d
+    });
+  }
+
+  dateValidate(value, e) {
+    let inRange = false;
+    if (e.target.name === "from_date") {
+      inRange = moment(value).isAfter(
+        moment(this.state.to_date).format("YYYY-MM-DD")
+      );
+      if (inRange) {
+        swalMessage({
+          title: "From Date cannot be grater than To Date.",
+          type: "warning"
+        });
+        e.target.focus();
+        this.setState({
+          [e.target.name]: null
+        });
+      }
+
+      inRange = moment(value).isBefore(moment().format("YYYY-MM-DD"));
+      if (inRange) {
+        swalMessage({
+          title: "From Date cannot be Past Date.",
+          type: "warning"
+        });
+        e.target.focus();
+        this.setState({
+          [e.target.name]: null
+        });
+      }
+    } else if (e.target.name === "to_date") {
+      inRange = moment(value).isBefore(
+        moment(this.state.from_date).format("YYYY-MM-DD")
+      );
+      if (inRange) {
+        swalMessage({
+          title: "To Date cannot be less than From Date.",
+          type: "warning"
+        });
+        e.target.focus();
+        this.setState({
+          [e.target.name]: null
+        });
+      }
+      inRange = moment(value).isBefore(moment().format("YYYY-MM-DD"));
+      if (inRange) {
+        swalMessage({
+          title: "To Date cannot be Past Date.",
+          type: "warning"
+        });
+        e.target.focus();
+        this.setState({
+          [e.target.name]: null
+        });
+      }
+    }
   }
 
   deleteCashiersAndShiftMAP(data) {
@@ -267,7 +337,28 @@ class UserShiftMapping extends Component {
               }}
             />
 
-            <AlagehAutoComplete
+            <AlgaehDateHandler
+              div={{ className: "col-2" }}
+              label={{ forceLabel: "From Date" }}
+              textBox={{ className: "txt-fld", name: "from_date" }}
+              events={{
+                onChange: this.datehandle.bind(this),
+                onBlur: this.dateValidate.bind(this)
+              }}
+              value={this.state.from_date}
+            />
+            <AlgaehDateHandler
+              div={{ className: "col-2" }}
+              label={{ forceLabel: "To Date" }}
+              textBox={{ className: "txt-fld", name: "to_date" }}
+              events={{
+                onChange: this.datehandle.bind(this),
+                onBlur: this.dateValidate.bind(this)
+              }}
+              value={this.state.to_date}
+            />
+
+            {/*<AlagehAutoComplete
               div={{ className: "col" }}
               label={{
                 fieldName: "select_month"
@@ -304,7 +395,7 @@ class UserShiftMapping extends Component {
                   min: moment().year()
                 }
               }}
-            />
+            />*/}
 
             <div className="col">
               <button
@@ -357,121 +448,31 @@ class UserShiftMapping extends Component {
                   }
                 },
                 {
-                  fieldName: "month",
-                  label: <AlgaehLabel label={{ forceLabel: "Month" }} />,
+                  fieldName: "from_date",
+                  label: <AlgaehLabel label={{ forceLabel: "From Date" }} />,
                   displayTemplate: row => {
-                    return (
-                      <span>
-                        {row.month === "1"
-                          ? "January"
-                          : row.month === "2"
-                          ? "February"
-                          : row.month === "3"
-                          ? "March"
-                          : row.month === "4"
-                          ? "April"
-                          : row.month === "5"
-                          ? "May"
-                          : row.month === "6"
-                          ? "June"
-                          : row.month === "7"
-                          ? "July"
-                          : row.month === "8"
-                          ? "August"
-                          : row.month === "9"
-                          ? "September"
-                          : row.month === "10"
-                          ? "October"
-                          : row.month === "11"
-                          ? "November"
-                          : row.month === "12"
-                          ? "December"
-                          : null}
-                      </span>
-                      // <AlagehAutoComplete
-                      //   div={{ className: "col" }}
-                      //   selector={{
-                      //     sort:"off",name: "month",
-                      //     className: "select-fld",
-                      //     value: row.month,
-                      //     dataSource: {
-                      //       textField: "name",
-                      //       valueField: "value",
-                      //       data: GlobalVariables.MONTHS
-                      //     },
-                      //     others: {
-                      //       disabled: true
-                      //     },
-                      //     onChange: this.changeGridEditors.bind(this, row)
-                      //   }}
-                      // />
-                    );
+                    return <span>{this.dateFormater(row.from_date)}</span>;
                   },
                   editorTemplate: row => {
-                    return (
-                      <span>
-                        {row.month === "1"
-                          ? "January"
-                          : row.month === "2"
-                          ? "February"
-                          : row.month === "3"
-                          ? "March"
-                          : row.month === "4"
-                          ? "April"
-                          : row.month === "5"
-                          ? "May"
-                          : row.month === "6"
-                          ? "June"
-                          : row.month === "7"
-                          ? "July"
-                          : row.month === "8"
-                          ? "August"
-                          : row.month === "9"
-                          ? "September"
-                          : row.month === "10"
-                          ? "October"
-                          : row.month === "11"
-                          ? "November"
-                          : row.month === "12"
-                          ? "December"
-                          : null}
-                      </span>
-
-                      // <AlagehAutoComplete
-                      //   div={{ className: "col" }}
-                      //   selector={{
-                      //     sort:"off",name: "month",
-                      //     className: "select-fld",
-                      //     value: row.month,
-                      //     dataSource: {
-                      //       textField: "name",
-                      //       valueField: "value",
-                      //       data: GlobalVariables.MONTHS
-                      //     },
-                      //     others: {
-                      //       errormessage: "Month - cannot be blank",
-                      //       required: true,
-                      //       disabled: true
-                      //     },
-                      //     onChange: this.changeGridEditors.bind(this, row)
-                      //   }}
-                      // />
-                    );
+                    return <span>{this.dateFormater(row.from_date)}</span>;
                   }
                 },
                 {
-                  fieldName: "year",
-
-                  label: <AlgaehLabel label={{ forceLabel: "Year" }} />,
+                  fieldName: "to_date",
+                  label: <AlgaehLabel label={{ forceLabel: "To Date" }} />,
+                  displayTemplate: row => {
+                    return <span>{this.dateFormater(row.to_date)}</span>;
+                  },
                   editorTemplate: row => {
-                    return <span>{row.year}</span>;
+                    return <span>{this.dateFormater(row.from_date)}</span>;
                   }
                 }
               ]}
               keyId="hims_m_cashier_shift_id"
               dataSource={{
                 data: this.state.cashiers_list
-              }}  filter={true}
+              }}
+              filter={true}
               isEditable={true}
               paging={{ page: 0, rowsPerPage: 10 }}
               events={{

@@ -42,18 +42,6 @@ class AddReciptForm extends Component {
   }
 
   componentDidMount() {
-    if (this.props.shifts === undefined || this.props.shifts.length === 0) {
-      this.props.getShifts({
-        uri: "/shiftAndCounter/getShiftMaster",
-        module: "masterSettings",
-        method: "GET",
-        redux: {
-          type: "CTRY_GET_DATA",
-          mappingName: "shifts"
-        }
-      });
-    }
-
     if (this.props.counters === undefined || this.props.counters.length === 0) {
       this.props.getCounters({
         uri: "/shiftAndCounter/getCounterMaster",
@@ -139,8 +127,8 @@ class AddReciptForm extends Component {
                           this.state.selectedLang === "en"
                             ? "shift_description"
                             : "arabic_name",
-                        valueField: "hims_d_shift_id",
-                        data: this.props.shifts
+                        valueField: "shift_id",
+                        data: this.state.shift_assinged
                       },
                       others: {
                         disabled: this.state.Billexists
@@ -232,7 +220,6 @@ class AddReciptForm extends Component {
 
 function mapStateToProps(state) {
   return {
-    shifts: state.shifts,
     counters: state.counters
   };
 }
@@ -240,7 +227,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getShifts: AlgaehActions,
       getCounters: AlgaehActions
     },
     dispatch

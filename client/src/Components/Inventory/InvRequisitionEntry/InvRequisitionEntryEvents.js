@@ -28,13 +28,13 @@ const getCtrlCode = ($this, docNumber) => {
         mappingName: "inventoryrequisitionentry"
       },
       afterSuccess: data => {
+        data.cannotDelete = true;
         if (
           $this.props.material_requisition_number !== undefined &&
           $this.props.material_requisition_number.length !== 0
         ) {
           data.authorizeEnable = false;
           data.ClearDisable = true;
-          data.cannotDelete = true;
 
           for (let i = 0; i < data.inventory_stock_detail.length; i++) {
             data.inventory_stock_detail[i].quantity_authorized =
