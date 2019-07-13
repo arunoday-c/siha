@@ -135,7 +135,7 @@ export default class AuthorizationSetup extends Component {
                 cursor: "pointer"
               }}
               name={"level_" + data}
-              onClick={this.employeeSearch.bind(this)}
+              onClick={this.employeeSearch.bind(this, "N")}
             />
           </div>
         </div>
@@ -143,7 +143,7 @@ export default class AuthorizationSetup extends Component {
     ));
   }
 
-  employeeSearch(e) {
+  employeeSearch(employee, e) {
     if (this.state.auth_type === null || this.state.auth_type === undefined) {
       swalMessage({
         title: "Please Select an Auth Type",
@@ -165,7 +165,10 @@ export default class AuthorizationSetup extends Component {
         },
         searchName: "users",
         uri: "/gloabelSearch/get",
-        inputs: " E.sub_department_id=" + this.state.sub_department_id,
+        inputs:
+          employee == "Y"
+            ? " E.sub_department_id=" + this.state.sub_department_id
+            : null,
         onContainsChange: (text, serchBy, callBack) => {
           callBack(text);
         },
@@ -321,7 +324,7 @@ export default class AuthorizationSetup extends Component {
                       paddingLeft: 3,
                       cursor: "pointer"
                     }}
-                    onClick={this.employeeSearch.bind(this)}
+                    onClick={this.employeeSearch.bind(this, "Y")}
                   />
                 </div>
               </div>

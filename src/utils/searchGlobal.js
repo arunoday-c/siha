@@ -454,9 +454,9 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "users",
         searchQuery:
-          "select algaeh_d_app_user_id,E.full_name as full_name ,employee_code,arabic_name,E.sub_department_id,primary_contact_no,sex\
+          "select SQL_CALC_FOUND_ROWS algaeh_d_app_user_id,E.full_name as full_name ,employee_code,arabic_name,E.sub_department_id,primary_contact_no,sex\
           from algaeh_d_app_user U inner join  hims_m_user_employee UM on U.algaeh_d_app_user_id=UM.user_id\
-          inner join hims_d_employee E on UM.employee_id=E.hims_d_employee_id where UM.hospital_id=" +
+          inner join hims_d_employee E on UM.employee_id=E.hims_d_employee_id where E.record_status='A' and UM.hospital_id=" +
           hospitalId,
         orderBy: "algaeh_d_app_user_id desc"
       },
