@@ -117,15 +117,6 @@ class AddBillingForm extends Component {
                           {/* Bill Details */}
                         </button>
 
-                        {this.state.due_amount > 0 ? (
-                          <div className="col">
-                            <AlgaehLabel label={{ forceLabel: "Due Amount" }} />
-                            <h6 style={{ color: "red" }}>
-                              {getAmountFormart(this.state.due_amount)}
-                            </h6>
-                          </div>
-                        ) : null}
-
                         <DisplayOPBilling
                           HeaderCaption={
                             <AlgaehLabel
@@ -144,6 +135,14 @@ class AddBillingForm extends Component {
                           onClose={this.ShowBillDetails.bind(this)}
                         />
                       </div>
+                      {this.state.due_amount > 0 ? (
+                        <div className="col">
+                          <AlgaehLabel label={{ forceLabel: "Due Amount" }} />
+                          <h6 style={{ color: "red" }}>
+                            {getAmountFormart(this.state.due_amount)}
+                          </h6>
+                        </div>
+                      ) : null}
                     </div>
                     <hr style={{ margin: "0.3rem 0rem" }} />
                     <div className="row primary-box-container">
