@@ -30,36 +30,10 @@ function AppointmentComponent(props) {
               }}
               openPopup={props.state.openPatEdit}
             >
-              <div
-                className="col-lg-12"
-                //   style={{ width: "55vw" }}
-                data-validate="editApptDiv"
-              >
-                {/* <div className="popupHeader">
-                    <div className="row">
-                      <div className="col-lg-8">
-                        <h4>
-                          {getLabelFromLanguage({
-                            fieldName: "editAppo"
-                          })}
-                        </h4>
-                      </div>
-                      <div className="col-lg-4">
-                        <button
-                          type="button"
-                          className=""
-                          onClick={props.handleClose}
-                        >
-                          <i className="fas fa-times-circle" />
-                        </button>
-                      </div>
-                    </div>
-                  </div> */}
-                {/* <div className="popupInner">
-                    <div className="col-lg-12"> */}
+              <div className="col-lg-12" data-validate="editApptDiv">
                 <div className="row">
                   <div className="col-lg-12 popRightDiv">
-                    <div className="row">
+                    <div className="row margin-top-15">
                       <AlagehAutoComplete
                         div={{ className: "col-4 form-group mandatory" }}
                         label={{
@@ -79,7 +53,7 @@ function AppointmentComponent(props) {
                         }}
                       />
                       <AlgaehDateHandler
-                        div={{ className: "col-3 form-group mandatory" }}
+                        div={{ className: "col form-group mandatory" }}
                         label={{
                           fieldName: "appoDate",
                           isImp: true
@@ -99,7 +73,7 @@ function AppointmentComponent(props) {
                         value={props.state.edit_appt_date}
                       />
                       <AlagehAutoComplete
-                        div={{ className: "col-3 form-group mandatory" }}
+                        div={{ className: "col form-group mandatory" }}
                         label={{
                           fieldName: "appoTime",
                           isImp: true
@@ -118,7 +92,7 @@ function AppointmentComponent(props) {
                         }}
                       />
                       <AlagehAutoComplete
-                        div={{ className: "col-2 form-group mandatory " }}
+                        div={{ className: "col form-group mandatory " }}
                         label={{
                           fieldName: "selectSlot",
                           isImp: true

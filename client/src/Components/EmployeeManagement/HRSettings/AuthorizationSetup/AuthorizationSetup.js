@@ -3,7 +3,8 @@ import "./AuthorizationSetup.css";
 import {
   AlgaehLabel,
   AlagehAutoComplete,
-  AlgaehDataGrid
+  AlgaehDataGrid,
+  AlagehFormGroup
 } from "../../../Wrapper/algaehWrapper";
 import { AUTH_TYPE } from "../../../../utils/GlobalVariables.json";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
@@ -341,152 +342,297 @@ export default class AuthorizationSetup extends Component {
         </div>
         <div className="row">
           {/* row starts here*/}
-          <div className="col-12">
+          <div className="col-4">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-body">
-                <div className="row">
-                  {this.getAuthLevleSelectors()}
-
-                  {/* Select Employee End here Here */}
-
-                  <div className="col-12 margin-top-15">
+                <div className="row empSearchSection">
+                  <AlagehFormGroup
+                    div={{ className: "col-12" }}
+                    label={{
+                      forceLabel: "Search",
+                      isImp: true
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "search_employee",
+                      value: "",
+                      events: {}
+                    }}
+                  />
+                </div>
+                <div className="row employeeListUL">
+                  <ul className="">
+                    <li>
+                      <h5>Employee Name</h5>
+                      <p>Employee Code</p>
+                    </li>{" "}
+                    <li>
+                      <h5>Employee Name</h5>
+                      <p>Employee Code</p>
+                    </li>{" "}
+                    <li>
+                      <h5>Employee Name</h5>
+                      <p>Employee Code</p>
+                    </li>{" "}
+                    <li>
+                      <h5>Employee Name</h5>
+                      <p>Employee Code</p>
+                    </li>{" "}
+                    <li>
+                      <h5>Employee Name</h5>
+                      <p>Employee Code</p>
+                    </li>{" "}
+                    <li>
+                      <h5>Employee Name</h5>
+                      <p>Employee Code</p>
+                    </li>{" "}
+                    <li>
+                      <h5>Employee Name</h5>
+                      <p>Employee Code</p>
+                    </li>{" "}
+                    <li>
+                      <h5>Employee Name</h5>
+                      <p>Employee Code</p>
+                    </li>{" "}
+                    <li>
+                      <h5>Employee Name</h5>
+                      <p>Employee Code</p>
+                    </li>{" "}
+                    <li>
+                      <h5>Employee Name</h5>
+                      <p>Employee Code</p>
+                    </li>{" "}
+                    <li>
+                      <h5>Employee Name</h5>
+                      <p>Employee Code</p>
+                    </li>{" "}
+                    <li>
+                      <h5>Employee Name</h5>
+                      <p>Employee Code</p>
+                    </li>{" "}
+                    <li>
+                      <h5>Employee Name</h5>
+                      <p>Employee Code</p>
+                    </li>{" "}
+                    <li>
+                      <h5>Employee Name</h5>
+                      <p>Employee Code</p>
+                    </li>{" "}
+                    <li>
+                      <h5>Employee Name</h5>
+                      <p>Employee Code</p>
+                    </li>{" "}
+                    <li>
+                      <h5>Employee Name</h5>
+                      <p>Employee Code</p>
+                    </li>{" "}
+                    <li>
+                      <h5>Employee Name</h5>
+                      <p>Employee Code</p>
+                    </li>{" "}
+                    <li>
+                      <h5>Employee Name</h5>
+                      <p>Employee Code</p>
+                    </li>{" "}
+                    <li>
+                      <h5>Employee Name</h5>
+                      <p>Employee Code</p>
+                    </li>{" "}
+                    <li>
+                      <h5>Employee Name</h5>
+                      <p>Employee Code</p>
+                    </li>{" "}
+                    <li>
+                      <h5>Employee Name</h5>
+                      <p>Employee Code</p>
+                    </li>{" "}
+                    <li>
+                      <h5>Employee Name</h5>
+                      <p>Employee Code</p>
+                    </li>{" "}
+                    <li>
+                      <h5>Employee Name</h5>
+                      <p>Employee Code</p>
+                    </li>{" "}
+                    <li>
+                      <h5>Employee Name</h5>
+                      <p>Employee Code</p>
+                    </li>{" "}
+                    <li>
+                      <h5>Employee Name</h5>
+                      <p>Employee Code</p>
+                    </li>{" "}
+                    <li>
+                      <h5>Employee Name</h5>
+                      <p>Employee Code</p>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="col-8">
+            <div className="row">
+              <div className="col-12">
+                <div className="portlet portlet-bordered margin-bottom-15">
+                  <div className="portlet-body">
                     <div className="row">
-                      <div className="col">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Selected Authorization Type"
-                          }}
-                        />
-                        <h6>
-                          {this.state.selected_auth_type
-                            ? this.state.selected_auth_type
-                            : "------"}
-                        </h6>
-                      </div>
-                      <div className="col">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Selected Department"
-                          }}
-                        />
-                        <h6>
-                          {this.state.selected_dept
-                            ? this.state.selected_dept
-                            : "------"}
-                        </h6>
-                      </div>
-                      <div className="col">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Selected Employee"
-                          }}
-                        />
-                        <h6>
-                          {this.state.no_employees === "ALL" ? "ALL" : "NAME"}
-                        </h6>
-                      </div>
-                      <div className="col margin-top-15">
-                        <button
-                          onClick={this.assignAuthLevels.bind(this)}
-                          className="btn btn-primary"
-                          style={{ float: "right", marginLeft: 5 }}
-                        >
-                          Add
-                        </button>
-                        <button
-                          className="btn btn-default"
-                          style={{ float: "right", marginLeft: 5 }}
-                        >
-                          Clear
-                        </button>
+                      {this.getAuthLevleSelectors()}
+
+                      {/* Select Employee End here Here */}
+
+                      <div className="col-12 margin-top-15">
+                        <div className="row">
+                          <div className="col">
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Selected Authorization Type"
+                              }}
+                            />
+                            <h6>
+                              {this.state.selected_auth_type
+                                ? this.state.selected_auth_type
+                                : "------"}
+                            </h6>
+                          </div>
+                          <div className="col">
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Selected Department"
+                              }}
+                            />
+                            <h6>
+                              {this.state.selected_dept
+                                ? this.state.selected_dept
+                                : "------"}
+                            </h6>
+                          </div>
+                          <div className="col">
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Selected Employee"
+                              }}
+                            />
+                            <h6>
+                              {this.state.no_employees === "ALL"
+                                ? "ALL"
+                                : "NAME"}
+                            </h6>
+                          </div>
+                          <div className="col margin-top-15">
+                            <button
+                              onClick={this.assignAuthLevels.bind(this)}
+                              className="btn btn-primary"
+                              style={{ float: "right", marginLeft: 5 }}
+                            >
+                              Add
+                            </button>
+                            <button
+                              className="btn btn-default"
+                              style={{ float: "right", marginLeft: 5 }}
+                            >
+                              Clear
+                            </button>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-        {/* row end here*/}
-        <div className="row">
-          <div className="col-12">
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">
-                    Employee Authorization List
-                  </h3>
-                </div>
-              </div>
-              <div className="portlet-body">
-                <div className="row">
-                  <div className="col-12" id="EmployeeAuthGrid_Cntr">
-                    <AlgaehDataGrid
-                      id="EmployeeAuthGrid"
-                      datavalidate="EmployeeAuthGrid"
-                      columns={[
-                        {
-                          fieldName: "EmpCode",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Employee Code" }}
-                            />
-                          )
-                        },
-                        {
-                          fieldName: "EmpName",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Employee Name" }}
-                            />
-                          )
-                        },
-                        {
-                          fieldName: "DeptName",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Dept. Name" }} />
-                          )
-                        },
-                        {
-                          fieldName: "AuthOne",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Auth. 1" }} />
-                          )
-                        },
-                        {
-                          fieldName: "AuthTwo",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Auth. 2" }} />
-                          )
-                        },
-                        {
-                          fieldName: "AuthThree",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Auth. 3" }} />
-                          )
-                        },
-                        {
-                          fieldName: "AuthFour",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Auth. 4" }} />
-                          )
-                        },
-                        {
-                          fieldName: "AuthFinal",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Auth. Final" }}
-                            />
-                          )
-                        }
-                      ]}
-                      keyId=""
-                      dataSource={{ data: [] }}
-                      isEditable={true}
-                      paging={{ page: 0, rowsPerPage: 10 }}
-                      events={{}}
-                      others={{}}
-                    />
+            {/* row end here*/}
+            <div className="row">
+              <div className="col-12">
+                <div className="portlet portlet-bordered margin-bottom-15">
+                  <div className="portlet-title">
+                    <div className="caption">
+                      <h3 className="caption-subject">
+                        Employee Authorization List
+                      </h3>
+                    </div>
+                  </div>
+                  <div className="portlet-body">
+                    <div className="row">
+                      <div className="col-12" id="EmployeeAuthGrid_Cntr">
+                        <AlgaehDataGrid
+                          id="EmployeeAuthGrid"
+                          datavalidate="EmployeeAuthGrid"
+                          columns={[
+                            {
+                              fieldName: "EmpCode",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Employee Code" }}
+                                />
+                              )
+                            },
+                            {
+                              fieldName: "EmpName",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Employee Name" }}
+                                />
+                              )
+                            },
+                            {
+                              fieldName: "DeptName",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Dept. Name" }}
+                                />
+                              )
+                            },
+                            {
+                              fieldName: "AuthOne",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Auth. 1" }}
+                                />
+                              )
+                            },
+                            {
+                              fieldName: "AuthTwo",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Auth. 2" }}
+                                />
+                              )
+                            },
+                            {
+                              fieldName: "AuthThree",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Auth. 3" }}
+                                />
+                              )
+                            },
+                            {
+                              fieldName: "AuthFour",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Auth. 4" }}
+                                />
+                              )
+                            },
+                            {
+                              fieldName: "AuthFinal",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Auth. Final" }}
+                                />
+                              )
+                            }
+                          ]}
+                          keyId=""
+                          dataSource={{ data: [] }}
+                          isEditable={true}
+                          paging={{ page: 0, rowsPerPage: 10 }}
+                          events={{}}
+                          others={{}}
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

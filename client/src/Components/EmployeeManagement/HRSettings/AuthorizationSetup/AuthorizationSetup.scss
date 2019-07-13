@@ -3,3 +3,39 @@
     max-height: 40vh !important;
   }
 }
+.empSearchSection {
+  border-bottom: 1px solid #d6d6d6;
+  padding-bottom: 15px;
+  margin-bottom: 15px;
+}
+.employeeListUL {
+  padding: 0;
+  margin: 0;
+  border-radius: 0;
+  border: 1px solid #ccc;
+  ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    width: 100%;
+    min-height: 55vh !important;
+    max-height: 55vh !important;
+    overflow: hidden;
+    overflow-y: auto;
+    li {
+      padding: 3px 10px;
+      margin: 0;
+      border-bottom: 1px solid #ccc;
+      list-style: none;
+      h5 {
+        margin: 0 0 5px;
+        padding: 0;
+      }
+      p {
+        padding: 0;
+        margin: 0;
+        font-size: 0.8rem;
+      }
+    }
+  }
+}
