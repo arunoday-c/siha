@@ -87,8 +87,60 @@ class PatientDetails extends PureComponent {
                       {
                         fieldName: "requested_quantity",
                         label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Requested Qty" }}
+                          />
+                        ),
+                        others: {
+                          show: this.props.openFrom === "M" ? true : false
+                        },
+                        disabled: true
+                      },
+                      {
+                        fieldName: "approved_qty",
+                        label: (
                           <AlgaehLabel label={{ fieldName: "qty_appr" }} />
                         ),
+                        others: {
+                          show: this.props.openFrom === "M" ? true : false
+                        },
+                        editorTemplate: row => {
+                          return (
+                            <AlagehFormGroup
+                              div={{}}
+                              textBox={{
+                                value: row.approved_qty,
+                                className: "txt-fld",
+                                name: "approved_qty",
+                                number: {
+                                  thousandSeparator: ",",
+                                  allowNegative: false
+                                },
+                                dontAllowKeys: ["-", "e", "."],
+                                events: {
+                                  onChange: numberhandle.bind(this, this, row)
+                                },
+                                others: {
+                                  disabled:
+                                    this.props.openFrom === "M"
+                                      ? row.billing_updated === "Y"
+                                        ? true
+                                        : false
+                                      : true
+                                }
+                              }}
+                            />
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "requested_quantity",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "qty_appr" }} />
+                        ),
+                        others: {
+                          show: this.props.openFrom === "M" ? false : true
+                        },
                         editorTemplate: row => {
                           return (
                             <AlagehFormGroup

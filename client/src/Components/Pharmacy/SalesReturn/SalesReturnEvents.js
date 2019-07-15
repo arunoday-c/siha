@@ -4,6 +4,7 @@ import AlgaehLoader from "../../Wrapper/fullPageLoader";
 // import Enumerable from "linq";
 import SalesReturnputs from "../../../Models/SalesReturn";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import _ from "lodash";
 
 const changeTexts = ($this, ctrl, e) => {
   e = ctrl || e;
@@ -149,6 +150,18 @@ const GenerateReciept = ($this, callBack) => {
 };
 
 const SaveSalesReturn = $this => {
+  debugger;
+  const return_qty_zero = _.filter(
+    $this.state.pharmacy_stock_detail,
+    f => f.return_quantity === 0 || f.return_quantity === null
+  );
+  if (return_qty_zero.length > 0) {
+    swalMessage({
+      type: "warning",
+      title: "Please Enter the return quantity for each item in the list."
+    });
+    return;
+  }
   AlgaehLoader({ show: true });
   GenerateReciept($this, that => {
     let inputObj = $this.state;

@@ -121,7 +121,7 @@ let getMedicationAprovalList = (req, res, next) => {
         next(error);
       }
       db.query(
-        "SELECT hims_f_medication_approval_id,prescription_detail_id,insurance_provider_id,sub_insurance_id,\
+        "SELECT hims_f_medication_approval_id,approved_qty,prescription_detail_id,insurance_provider_id,sub_insurance_id,\
         network_id,insurance_network_office_id,\
         service_id,SR.service_code, requested_date, requested_by, requested_mode,\
         requested_quantity, submission_type, insurance_service_name, SA.doctor_id, SA.patient_id,visit_id,\

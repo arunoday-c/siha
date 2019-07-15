@@ -202,6 +202,7 @@ class OrderingServices extends Component {
         dummy_company_payble: 0,
         approval_limit_yesno: "N",
         insurance_service_name: null,
+        service_name: "",
         saved: true,
 
         insured: "N",

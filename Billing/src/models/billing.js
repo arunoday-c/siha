@@ -1101,7 +1101,7 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
           let records = result[m];
 
           req.body[m].service_type_id = result[m].service_type_id;
-          req.body[m].services_id = servicesDetails.hims_d_services_id;
+          req.body[m].services_id = result[m].hims_d_services_id;
 
           //Calculation Declarations
           const utilities = new algaehUtilities();
@@ -1300,6 +1300,8 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                     : "N"
                   : "N";
               utilities.logger().log("covered: ", covered);
+              utilities.logger().log("pre_approval: ", pre_approval);
+              utilities.logger().log("apprv_status: ", apprv_status);
               if (
                 covered == "N" ||
                 (pre_approval == "Y" && apprv_status == "RJ")
@@ -1307,6 +1309,9 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                 insured = "N";
               }
 
+              utilities
+                .logger()
+                .log("approval_limit_yesno: ", approval_limit_yesno);
               if (approval_limit_yesno == "Y") {
                 pre_approval = "Y";
               }
@@ -1464,7 +1469,10 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
 
                 patient_payable = math.round(patient_resp + patient_tax, 2);
 
-                if (approved_amount !== 0) {
+                console.log("approved_amount: ", approved_amount);
+                console.log("unit_cost: ", unit_cost);
+
+                if (approved_amount !== 0 && approved_amount < unit_cost) {
                   let diff_val = approved_amount - comapany_resp;
                   patient_payable = math.round(patient_payable + diff_val, 2);
                   patient_resp = math.round(patient_resp + diff_val, 2);
@@ -1678,6 +1686,20 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                 sec_company_paybale =
                   sec_unit_cost - patient_resp + sec_company_tax;
               }
+              utilities
+                .logger()
+                .log(
+                  "hims_d_services_id: ",
+                  servicesDetails.hims_d_services_id
+                );
+              utilities
+                .logger()
+                .log("service_type_id: ", records.service_type_id);
+
+              utilities
+                .logger()
+                .log("hims_d_services_id: ", records.hims_d_services_id);
+
               let out = extend(
                 {
                   hims_f_billing_details_id: null,
@@ -1715,7 +1737,7 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                 {
                   service_type_id: records.service_type_id,
                   service_name: records.service_name,
-                  services_id: servicesDetails.hims_d_services_id,
+                  services_id: records.hims_d_services_id,
                   quantity: quantity,
                   unit_cost: unit_cost,
                   gross_amount: gross_amount,
@@ -1738,7 +1760,7 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                   sec_copay_amount: sec_copay_amount,
                   sec_company_res: sec_company_res,
                   sec_company_paybale: sec_company_paybale,
-                  pre_approval: pre_approval,
+                  pre_approval: insured == "Y" ? pre_approval : "N",
                   insurance_yesno: insured,
                   preapp_limit_exceed: preapp_limit_exceed,
                   approval_amt: approval_amt,

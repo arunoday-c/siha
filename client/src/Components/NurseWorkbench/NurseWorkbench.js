@@ -1724,6 +1724,10 @@ class NurseWorkbench extends Component {
                                   isImp: false
                                 }}
                                 textBox={{
+                                  number: {
+                                    allowNegative: false
+                                  },
+                                  dontAllowKeys: ["-", "e"],
                                   className: "txt-fld",
                                   name: "duration",
                                   number: true,
