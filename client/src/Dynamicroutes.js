@@ -19,11 +19,10 @@ import InvoiceGeneration from "./Components/InsuranceClaims/InvoiceGeneration/In
 import ItemMomentEnquiry from "./Components/Pharmacy/ItemMomentEnquiry/ItemMomentEnquiry";
 import DoctorsWorkbench from "./Components/Workbench/Workbench";
 import NurseWorkbench from "./Components/Workbench/Workbench";
+import CommonDashboard from "./Components/Dashboard/Dashboard";
 
 const PageToPlot = {
-  Dashboard: React.lazy(() =>
-    retry(() => import("./Components/Dashboard/hr-dashboard"))
-  ),
+  Dashboard: CommonDashboard,
   // 7: React.lazy(() =>
   //   retry(() => import("./Components/Dashboard/frontdesk-dashboard"))
   // ),
@@ -42,10 +41,10 @@ const PageToPlot = {
   // 14: React.lazy(() =>
   //   retry(() => import("./Components/Dashboard/inventory-dashboard"))
   // ),
-  // FrontDesk: React.lazy(() =>
-  //   retry(() => import("./Components/RegistrationPatient/RegistrationPatient"))
-  // ),
 
+  FrontDesk: React.lazy(() =>
+    retry(() => import("./Components/RegistrationPatient/RegistrationPatient"))
+  ),
   UpdatePatientDetails: React.lazy(() =>
     retry(() =>
       import("./Components/UpdatePatientDetails/UpdatePatientDetails")
