@@ -205,6 +205,7 @@ class Appointment extends PureComponent {
       onRowSelect: row => {
         // console.log("Selected Row:", row);
         this.setState({
+          fromSearch: true,
           patient_code: row.patient_code,
           patient_id: row.hims_d_patient_id,
           patient_name: row.full_name,
