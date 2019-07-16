@@ -18,7 +18,8 @@ export default class AuthorizationSetup extends Component {
       sub_depts: [],
       no_employees: "ALL",
       no_auths: 0,
-      options: {}
+      options: {},
+      employee_list: []
     };
     this.getSubDepartments();
     this.getOptions();
@@ -82,10 +83,28 @@ export default class AuthorizationSetup extends Component {
         break;
 
       case "sub_department_id":
-        this.setState({
-          [value.name]: value.value,
-          selected_dept: value.selected.sub_department_name
+        algaehApiCall({
+          uri: "/employee/get",
+          module: "hrManagement",
+          method: "GET",
+          data: { sub_department_id: value.value },
+          onSuccess: response => {
+            if (response.data.success) {
+              this.setState({
+                [value.name]: value.value,
+                selected_dept: value.selected.sub_department_name,
+                employee_list: response.data.records
+              });
+            }
+          },
+          onFailure: error => {
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
         });
+
         break;
 
       default:
@@ -308,7 +327,6 @@ export default class AuthorizationSetup extends Component {
                 <div className="col">
                   <AlgaehLabel label={{ forceLabel: "Select a Employee." }} />
                   <h6>
-                    {" "}
                     {this.state.selected_dept
                       ? this.state.selected_dept
                       : "------"}
@@ -332,7 +350,7 @@ export default class AuthorizationSetup extends Component {
             </div>
           ) : null}
           {/* Select EMployee ENd here */}
-          {/* 
+          {/*
           <div className="col">
             <button
               type="button"
@@ -364,111 +382,19 @@ export default class AuthorizationSetup extends Component {
                   />
                 </div>
                 <div className="row employeeListUL">
-                  <ul className="">
-                    <li>
-                      <h5>Employee Name</h5>
-                      <p>Employee Code</p>
-                    </li>{" "}
-                    <li>
-                      <h5>Employee Name</h5>
-                      <p>Employee Code</p>
-                    </li>{" "}
-                    <li>
-                      <h5>Employee Name</h5>
-                      <p>Employee Code</p>
-                    </li>{" "}
-                    <li>
-                      <h5>Employee Name</h5>
-                      <p>Employee Code</p>
-                    </li>{" "}
-                    <li>
-                      <h5>Employee Name</h5>
-                      <p>Employee Code</p>
-                    </li>{" "}
-                    <li>
-                      <h5>Employee Name</h5>
-                      <p>Employee Code</p>
-                    </li>{" "}
-                    <li>
-                      <h5>Employee Name</h5>
-                      <p>Employee Code</p>
-                    </li>{" "}
-                    <li>
-                      <h5>Employee Name</h5>
-                      <p>Employee Code</p>
-                    </li>{" "}
-                    <li>
-                      <h5>Employee Name</h5>
-                      <p>Employee Code</p>
-                    </li>{" "}
-                    <li>
-                      <h5>Employee Name</h5>
-                      <p>Employee Code</p>
-                    </li>{" "}
-                    <li>
-                      <h5>Employee Name</h5>
-                      <p>Employee Code</p>
-                    </li>{" "}
-                    <li>
-                      <h5>Employee Name</h5>
-                      <p>Employee Code</p>
-                    </li>{" "}
-                    <li>
-                      <h5>Employee Name</h5>
-                      <p>Employee Code</p>
-                    </li>{" "}
-                    <li>
-                      <h5>Employee Name</h5>
-                      <p>Employee Code</p>
-                    </li>{" "}
-                    <li>
-                      <h5>Employee Name</h5>
-                      <p>Employee Code</p>
-                    </li>{" "}
-                    <li>
-                      <h5>Employee Name</h5>
-                      <p>Employee Code</p>
-                    </li>{" "}
-                    <li>
-                      <h5>Employee Name</h5>
-                      <p>Employee Code</p>
-                    </li>{" "}
-                    <li>
-                      <h5>Employee Name</h5>
-                      <p>Employee Code</p>
-                    </li>{" "}
-                    <li>
-                      <h5>Employee Name</h5>
-                      <p>Employee Code</p>
-                    </li>{" "}
-                    <li>
-                      <h5>Employee Name</h5>
-                      <p>Employee Code</p>
-                    </li>{" "}
-                    <li>
-                      <h5>Employee Name</h5>
-                      <p>Employee Code</p>
-                    </li>{" "}
-                    <li>
-                      <h5>Employee Name</h5>
-                      <p>Employee Code</p>
-                    </li>{" "}
-                    <li>
-                      <h5>Employee Name</h5>
-                      <p>Employee Code</p>
-                    </li>{" "}
-                    <li>
-                      <h5>Employee Name</h5>
-                      <p>Employee Code</p>
-                    </li>{" "}
-                    <li>
-                      <h5>Employee Name</h5>
-                      <p>Employee Code</p>
-                    </li>{" "}
-                    <li>
-                      <h5>Employee Name</h5>
-                      <p>Employee Code</p>
-                    </li>
+                  <ul className="reqTransList">
+                    {this.state.employee_list.map((employee, index) => {
+                      return (
+                        <li>
+                          <div className="itemReq">
+                            <h6>{employee.full_name}</h6>
+                            <span>
+                              <span>{employee.employee_code}</span>
+                            </span>
+                          </div>
+                        </li>
+                      );
+                    })}
                   </ul>
                 </div>
               </div>
