@@ -1,0 +1,8 @@
+{
+  "run": [
+"Core",
+"DocumentManagement",
+"HrManagement",
+ "MasterSettings"
+  ]
+}

@@ -417,7 +417,7 @@ module.exports = {
       });
   },
   //created by irfan: to create new schedule and add doctors in this schedule
-  addDoctorsSchedule: (req, res, next) => {
+  addDoctorsScheduleBCKP_16_july_2019: (req, res, next) => {
     const _mysql = new algaehMysql();
     let input = req.body;
 
@@ -767,6 +767,247 @@ module.exports = {
             next(e);
           });
         });
+    }
+  },
+  //created by irfan: to create new schedule and add doctors in this schedule
+  addDoctorsSchedule: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const utilities = new algaehUtilities();
+    let input = req.body;
+
+    let from_month = moment(input.from_date).format("M");
+    //let to_month = moment(input.to_date).format("M");
+
+    if (
+      moment(input.from_date).format("YYYYMMDD") < moment().format("YYYYMMDD")
+    ) {
+      req.records = {
+        schedule_exist: true,
+        message: "Cant create Schedule for the Past dates"
+      };
+      next();
+      return;
+    } else if (input.from_work_hr > input.to_work_hr) {
+      req.records = {
+        schedule_exist: true,
+        message: "Schedule Time Cant be PM to AM "
+      };
+      next();
+      return;
+    } else if (input.from_work_hr == "00:00" && input.to_work_hr == "00:00") {
+      req.records = {
+        schedule_exist: true,
+        message: "To Time Can't be Greater Than 11:59 PM"
+      };
+      next();
+      return;
+    } else {
+      const working_days = [];
+
+      const inputDays = [
+        input.sunday,
+        input.monday,
+        input.tuesday,
+        input.wednesday,
+        input.thursday,
+        input.friday,
+        input.saturday
+      ];
+      for (let d = 0; d < 7; d++) {
+        if (inputDays[d] == "Y") {
+          working_days.push(d);
+        }
+      }
+
+      const newDateList = getDaysArray(
+        new Date(input.from_date),
+        new Date(input.to_date),
+        working_days
+      );
+
+      if (newDateList.length > 365) {
+        req.records = {
+          schedule_exist: true,
+          message: "You cant have a Schedule More than 365 days "
+        };
+        next();
+        return;
+      } else {
+        // utilities.logger().log("newDateList: ", newDateList);
+        if (input.schedule_detail.length > 0) {
+          const providers = input.schedule_detail.map(data => {
+            return data.provider_id;
+          });
+
+          _mysql
+            .executeQuery({
+              query: `SELECT H.hims_d_appointment_schedule_header_id, D.hims_d_appointment_schedule_detail_id,\
+                H.schedule_description, TIME_FORMAT(H.from_work_hr, "%H:%i") as  from_work_hr,TIME_FORMAT(H.to_work_hr, "%H:%i") as  to_work_hr,\
+                D.provider_id,D.schedule_date,E.full_name FROM hims_d_appointment_schedule_header H \
+                INNER JOIN hims_d_appointment_schedule_detail D ON\
+                H.hims_d_appointment_schedule_header_id = D.appointment_schedule_header_id \
+                left join hims_d_employee E on D.provider_id=E.hims_d_employee_id\
+                WHERE H.record_status = 'A' AND D.record_status = 'A' and D.provider_id in (?) \
+                and schedule_date between date(?) and date(?); `,
+              values: [providers, input.from_date, input.to_date],
+              printQuery: false
+            })
+            .then(ExistingDates => {
+              //  utilities.logger().log("ExistingDates: ", ExistingDates);
+
+              const clashing_dates = [];
+
+              newDateList.forEach(n_date => {
+                const schedule = ExistingDates.filter(data => {
+                  if (
+                    data.schedule_date == moment(n_date).format("YYYY-MM-DD")
+                  ) {
+                    return data;
+                  }
+                });
+
+                clashing_dates.push(...schedule);
+              });
+
+              //utilities.logger().log("clashing_dates: ", clashing_dates);
+
+              let time_clash = {};
+
+              if (clashing_dates.length > 0) {
+                time_clash = clashing_dates.find(element => {
+                  if (
+                    (element.from_work_hr <= input.from_work_hr &&
+                      element.to_work_hr > input.from_work_hr) ||
+                    (element.from_work_hr < input.to_work_hr &&
+                      element.to_work_hr > input.from_work_hr) ||
+                    (input.from_work_hr <= element.from_work_hr &&
+                      input.to_work_hr > element.from_work_hr)
+                  ) {
+                    return element;
+                  }
+                });
+              }
+
+              // console.log("time clash33:", time_clash);
+              if (
+                time_clash != undefined &&
+                Object.keys(time_clash).length > 0
+              ) {
+                req.records = {
+                  message: `${time_clash["full_name"]} has schedule on ${
+                    time_clash["schedule_date"]
+                  }`,
+                  schedule_exist: true
+                };
+                next();
+                return;
+              } else {
+                const doctorSchedule = [];
+
+                input.schedule_detail.forEach(doctor => {
+                  newDateList.forEach(n_date => {
+                    doctorSchedule.push({
+                      provider_id: doctor["provider_id"],
+                      clinic_id: doctor["clinic_id"],
+                      slot: doctor["slot"],
+                      schedule_date: n_date
+                    });
+                  });
+                });
+
+                _mysql
+                  .executeQueryWithTransaction({
+                    query:
+                      "INSERT INTO `hims_d_appointment_schedule_header` (sub_dept_id,schedule_description,`month`,`year`,from_date,to_date,\
+                  from_work_hr,to_work_hr,work_break1,from_break_hr1,to_break_hr1,work_break2,from_break_hr2,to_break_hr2,monday,tuesday,wednesday,\
+                  thursday,friday,saturday,sunday,created_by,created_date,updated_by,updated_date,hospital_id)\
+                  VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                    values: [
+                      input.sub_dept_id,
+                      input.schedule_description,
+                      from_month,
+                      input.year,
+                      input.from_date,
+                      input.to_date,
+                      input.from_work_hr,
+                      input.to_work_hr,
+                      input.work_break1,
+                      input.from_break_hr1,
+                      input.to_break_hr1,
+                      input.work_break2,
+                      input.from_break_hr2,
+                      input.to_break_hr2,
+                      input.monday,
+                      input.tuesday,
+                      input.wednesday,
+                      input.thursday,
+                      input.friday,
+                      input.saturday,
+                      input.sunday,
+                      req.userIdentity.algaeh_d_app_user_id,
+                      new Date(),
+                      req.userIdentity.algaeh_d_app_user_id,
+                      new Date(),
+                      req.userIdentity.hospital_id
+                    ],
+                    printQuery: false
+                  })
+                  .then(result => {
+                    const insurtColumns = [
+                      "provider_id",
+                      "clinic_id",
+                      "slot",
+                      "schedule_date"
+                    ];
+
+                    _mysql
+                      .executeQuery({
+                        query:
+                          "INSERT INTO hims_d_appointment_schedule_detail(??) VALUES ?",
+                        values: doctorSchedule,
+                        includeValues: insurtColumns,
+                        extraValues: {
+                          appointment_schedule_header_id: result.insertId,
+                          created_date: new Date(),
+                          created_by: req.userIdentity.algaeh_d_app_user_id,
+                          updated_date: new Date(),
+                          updated_by: req.userIdentity.algaeh_d_app_user_id
+                        },
+                        bulkInsertOrUpdate: true
+                      })
+                      .then(schedule_detailResult => {
+                        _mysql.commitTransaction(() => {
+                          _mysql.releaseConnection();
+                          req.records = schedule_detailResult;
+                          next();
+                        });
+                      })
+                      .catch(e => {
+                        _mysql.rollBackTransaction(() => {
+                          next(e);
+                        });
+                      });
+                  })
+                  .catch(e => {
+                    _mysql.rollBackTransaction(() => {
+                      next(e);
+                    });
+                  });
+              }
+            })
+            .catch(e => {
+              _mysql.releaseConnection();
+              next(e);
+            });
+        } else {
+          req.records = {
+            schedule_exist: true,
+            message: "Please select doctors"
+          };
+          next();
+          return;
+        }
+      }
     }
   },
 
@@ -1194,32 +1435,6 @@ module.exports = {
       });
   },
 
-  //created by irfan: to delete Doctor From Schedule
-  // deleteDoctorFromSchedule: (req, res, next) => {
-  //   const _mysql = new algaehMysql();
-  //   let input = req.body;
-  //   _mysql
-  //     .executeQuery({
-  //       query:
-  //         " update hims_d_appointment_schedule_detail set record_status='I',updated_by=?,updated_date=?\
-  //         where record_status='A' and appointment_schedule_header_id=? and provider_id=?;",
-  //       values: [
-  //         req.userIdentity.algaeh_d_app_user_id,
-  //         new Date(),
-  //         input.appointment_schedule_header_id,
-  //         input.provider_id
-  //       ]
-  //     })
-  //     .then(result => {
-  //       _mysql.releaseConnection();
-  //       req.records = result;
-  //       next();
-  //     })
-  //     .catch(e => {
-  //       _mysql.releaseConnection();
-  //       next(e);
-  //     });
-  // },
   //created by irfan: to delete Doctor From Schedule
   deleteDoctorFromSchedule: (req, res, next) => {
     const _mysql = new algaehMysql();
@@ -1887,32 +2102,7 @@ module.exports = {
         next(e);
       });
   },
-  //created by irfan:
-  // deleteSchedule: (req, res, next) => {
-  //   const _mysql = new algaehMysql();
-  //   let input = req.body;
 
-  //   _mysql
-  //     .executeQuery({
-  //       query:
-  //         "update hims_d_appointment_schedule_header set record_status='I' ,updated_by=?,updated_date=?\
-  //         where hims_d_appointment_schedule_header_id=?;",
-  //       values: [
-  //         req.userIdentity.algaeh_d_app_user_id,
-  //         new Date(),
-  //         input.hims_d_appointment_schedule_header_id
-  //       ]
-  //     })
-  //     .then(result => {
-  //       _mysql.releaseConnection();
-  //       req.records = result;
-  //       next();
-  //     })
-  //     .catch(e => {
-  //       _mysql.releaseConnection();
-  //       next(e);
-  //     });
-  // },
   //created by irfan: to deleteSchedule
   deleteSchedule: (req, res, next) => {
     const _mysql = new algaehMysql();
@@ -2031,6 +2221,8 @@ function getDaysArray(start, end, days) {
     if (days.indexOf(day) > -1) {
       arr.push(dat);
     }
+
+    //moment(dat).format("YYYY-MM-DD")
     // if (nightShift == 1) {
     //   if (days.indexOf(day) > -1) {
     //     arr.push(dat);
