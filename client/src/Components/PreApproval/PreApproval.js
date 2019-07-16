@@ -47,6 +47,7 @@ class PreApproval extends Component {
       patient_code: null,
       patient_id: null,
       date: moment(new Date())._d,
+      to_date: moment(new Date())._d,
       dis_status: null,
       doctor_id: null,
       insurance_id: null,
@@ -194,7 +195,7 @@ class PreApproval extends Component {
                   onChange: datehandle.bind(this, this)
                 }}
                 value={this.state.date}
-              />{" "}
+              />
               <AlgaehDateHandler
                 div={{ className: "col-2" }}
                 label={{ forceLabel: "To Date" }}
@@ -203,7 +204,7 @@ class PreApproval extends Component {
                 events={{
                   onChange: datehandle.bind(this, this)
                 }}
-                value={this.state.date}
+                value={this.state.to_date}
               />
             </div>
           </div>
