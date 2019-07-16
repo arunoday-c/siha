@@ -32,7 +32,7 @@ class IDType extends Component {
     this.baseState = this.state;
   }
 
-      initCall() {
+  initCall() {
     let that = this;
     algaehApiCall({
       uri: "/init/",
@@ -47,7 +47,8 @@ class IDType extends Component {
           const placeHolder =
             response.data.records.length > 0 ? response.data.records[0] : {};
           that.setState({
-        identity_document_code_placeHolder: placeHolder.identity_document_code
+            identity_document_code_placeHolder:
+              placeHolder.identity_document_code
           });
         }
       }
@@ -58,7 +59,7 @@ class IDType extends Component {
     this.setState({ [e.target.name]: e.target.value });
   }
 
-  dateFormater({ value }) {
+  dateFormater(value) {
     return String(moment(value).format("DD-MM-YYYY"));
   }
 
@@ -243,10 +244,11 @@ class IDType extends Component {
                   value: this.state.identity_document_code,
                   events: {
                     onChange: this.changeTexts.bind(this)
-                  },   others: {
-                          tabIndex: "1",
-                            placeholder: this.state.identity_document_code_placeHolder
-                        }
+                  },
+                  others: {
+                    tabIndex: "1",
+                    placeholder: this.state.identity_document_code_placeHolder
+                  }
                 }}
               />
 

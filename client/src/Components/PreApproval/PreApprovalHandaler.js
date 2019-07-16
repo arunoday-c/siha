@@ -21,15 +21,36 @@ const texthandle = ($this, e) => {
 };
 
 const datehandle = ($this, ctrl, e) => {
-  $this.setState(
-    {
-      [e]: moment(ctrl)._d
-    },
-    () => {
-      getPreAprovalList($this);
-      getMedicationAprovalList($this);
+  let intFailure = false;
+  if (e === "ate") {
+    if (Date.parse($this.state.to_date) < Date.parse(moment(ctrl)._d)) {
+      intFailure = true;
+      swalMessage({
+        title: "From Date cannot be grater than To Date.",
+        type: "warning"
+      });
     }
-  );
+  } else if (e === "to_date") {
+    if (Date.parse(moment(ctrl)._d) < Date.parse($this.state.date)) {
+      intFailure = true;
+      swalMessage({
+        title: "To Date cannot be less than From Date.",
+        type: "warning"
+      });
+    }
+  }
+
+  if (intFailure === false) {
+    $this.setState(
+      {
+        [e]: moment(ctrl)._d
+      },
+      () => {
+        getPreAprovalList($this);
+        getMedicationAprovalList($this);
+      }
+    );
+  }
 };
 
 const PatientSearch = ($this, e) => {
@@ -62,6 +83,11 @@ const getPreAprovalList = $this => {
 
   if ($this.state.date !== null) {
     inputobj.created_date = moment($this.state.date).format(
+      Options.dateFormatYear
+    );
+  }
+  if ($this.state.to_date !== null) {
+    inputobj.to_date = moment($this.state.to_date).format(
       Options.dateFormatYear
     );
   }
@@ -165,6 +191,12 @@ const getMedicationAprovalList = $this => {
 
   if ($this.state.date !== null) {
     inputobj.created_date = moment($this.state.date).format(
+      Options.dateFormatYear
+    );
+  }
+
+  if ($this.state.to_date !== null) {
+    inputobj.to_date = moment($this.state.to_date).format(
       Options.dateFormatYear
     );
   }

@@ -33,7 +33,7 @@ class InsuranceCardClass extends Component {
     this.setState({ [e.target.name]: e.target.value });
   }
 
-  dateFormater({ value }) {
+  dateFormater(value) {
     return String(moment(value).format("DD-MM-YYYY"));
   }
 
@@ -176,7 +176,6 @@ class InsuranceCardClass extends Component {
   }
 
   render() {
-    
     return (
       <div className="InsuranceCardClass">
         <div className="container-fluid">
@@ -283,7 +282,6 @@ class InsuranceCardClass extends Component {
                     fieldName: "created_by",
                     label: <AlgaehLabel label={{ fieldName: "created_by" }} />,
                     displayTemplate: row => {
-                      
                       let display =
                         this.props.userdrtails === undefined
                           ? []

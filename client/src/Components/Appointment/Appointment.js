@@ -500,7 +500,7 @@ class Appointment extends PureComponent {
                         : null,
                     width:
                       response.data.records !== undefined
-                        ? 253 * response.data.records.length
+                        ? 318 * response.data.records.length
                         : 0
                   });
                 }
@@ -1339,10 +1339,17 @@ class Appointment extends PureComponent {
               {_otherPatients.map((item, index) => {
                 return (
                   <li key={index}>
-                    <span onClick={this.openEditModal.bind(this, item, null)}>
+                    <p onClick={this.openEditModal.bind(this, item, null)}>
                       {item.patient_name}
+                    </p>
+                    <span>
+                      <i className="fas fa-check" />
+                      <i className="fas fa-clock" />
+                      <i
+                        className="fas fa-times"
+                        onClick={this.cancelAppt.bind(this, item)}
+                      />
                     </span>
-                    <b onClick={this.cancelAppt.bind(this, item)}>x</b>
                   </li>
                 );
               })}
@@ -1408,7 +1415,7 @@ class Appointment extends PureComponent {
       ? {
           colSpan: 2,
           style: {
-            width: "240px",
+            width: "300px",
             background: "rgb(255, 238, 214)",
             textTransform: "uppercase"
           }

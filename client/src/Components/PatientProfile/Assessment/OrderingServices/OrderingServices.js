@@ -31,6 +31,7 @@ import { AlgaehActions } from "../../../../actions/algaehActions";
 import { getCookie } from "../../../../utils/algaehApiCall";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import ButtonType from "../../../Wrapper/algaehButton";
 import _ from "lodash";
 class OrderingServices extends Component {
   constructor(props) {
@@ -763,12 +764,20 @@ class OrderingServices extends Component {
                 <div className="row">
                   <div className="col-lg-12">
                     <span className="float-right">
-                      <button
-                        className="btn btn-primary"
+                      <ButtonType
+                        classname="btn-primary"
                         onClick={SaveOrdersServices.bind(this, this)}
-                        disabled={this.state.saved}
+                        label={{
+                          forceLabel: "Save Service",
+                          returnText: true
+                        }}
+                        others={{ disabled: this.state.saved }}
+                      />
+                      <button
+                        className="btn btn-default"
+                        onClick={this.onClose.bind(this)}
                       >
-                        Save
+                        Cancel
                       </button>
                     </span>
                   </div>
