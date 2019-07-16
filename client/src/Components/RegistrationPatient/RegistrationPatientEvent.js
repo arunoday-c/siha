@@ -161,7 +161,7 @@ const ClearData = ($this, from, patcode) => {
             data: []
           }
         });
-        getCashiersAndShiftMAP($this);
+        getCashiersAndShiftMAP($this, "NA");
         if (from === "pat_code") {
           getCtrlCode($this, patcode);
         } else {
@@ -196,7 +196,7 @@ const getHospitalDetails = $this => {
   });
 };
 
-const getCashiersAndShiftMAP = $this => {
+const getCashiersAndShiftMAP = ($this, type) => {
   AlgaehLoader({ show: true });
   let year = moment().format("YYYY");
   let month = moment().format("M");
@@ -221,7 +221,7 @@ const getCashiersAndShiftMAP = $this => {
           );
         }
 
-        if ($this.props.fromAppoinment === true) {
+        if ($this.props.fromAppoinment === true && type === "A") {
           const { patient_details } = $this.props;
           if (patient_details) {
             $this.setState(

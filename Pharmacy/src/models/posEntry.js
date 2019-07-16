@@ -603,7 +603,7 @@ module.exports = {
               "select itmloc.item_id, itmloc.pharmacy_location_id, itmloc.batchno, itmloc.expirydt, itmloc.qtyhand, \
                 itmloc.grnno, itmloc.sales_uom, itmloc.barcode, item.item_description, itmloc.sale_price,   \
                 itmloc.avgcost from hims_m_item_location as itmloc inner join hims_d_item_master as item on itmloc.item_id = item.hims_d_item_master_id  \
-                where item_id in (?) and pharmacy_location_id in (?) and qtyhand > 0 and expirydt > CURDATE() order by expirydt",
+                where item_id in (?) and pharmacy_location_id in (?) and qtyhand > 0 and (expirydt > CURDATE()|| exp_date_not_required='Y')  order by expirydt",
             values: [item_ids, location_ids],
             printQuery: true
           })
@@ -904,7 +904,7 @@ module.exports = {
             "SELECT H.patient_name, H.insurance_provider_id, H.sub_insurance_provider_id as sub_insurance_id,\
              H.network_id,H.network_office_id as insurance_network_office_id, \
              D.hims_f_pharmacy_pos_detail_id as pharmacy_pos_detail_id, D.item_id, D.service_id,\
-             D.extended_cost as gross_amt,D.net_extended_cost as net_amount,D.quantity as requested_quantity, IM.item_description as insurance_service_name \
+             D.extended_cost as gross_amt,D.net_extended_cost as net_amount,D.quantity as requested_quantity, D.quantity as approved_qty,IM.item_description as insurance_service_name \
              from hims_f_pharmacy_pos_header H, hims_f_pharmacy_pos_detail D, hims_d_item_master IM where\
              H.hims_f_pharmacy_pos_header_id=D.pharmacy_pos_header_id and\
              D.item_id=IM.hims_d_item_master_id and H.pos_number=? and D.pre_approval='Y' ",
@@ -919,6 +919,7 @@ module.exports = {
               "item_id",
               "service_id",
               "requested_quantity",
+              "approved_qty",
               "insurance_service_name",
               "gross_amt",
               "net_amount",

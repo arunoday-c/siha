@@ -1330,7 +1330,11 @@ const onchangegridcol = ($this, context, row, e) => {
         type: "warning"
       });
       row[name] = 0;
-      // pharmacy_stock_detail[_index] = row;
+      row["discount_amount"] = 0;
+      pharmacy_stock_detail[_index] = row;
+      $this.setState({
+        pharmacy_stock_detail: pharmacy_stock_detail
+      });
       return;
     }
     if (parseFloat(value) < 0) {
@@ -1339,7 +1343,11 @@ const onchangegridcol = ($this, context, row, e) => {
         type: "warning"
       });
       row[name] = 0;
-      // pharmacy_stock_detail[_index] = row;
+      row["discount_amount"] = 0;
+      pharmacy_stock_detail[_index] = row;
+      $this.setState({
+        pharmacy_stock_detail: pharmacy_stock_detail
+      });
       return;
     }
   } else if (name === "discount_amount") {
@@ -1349,7 +1357,10 @@ const onchangegridcol = ($this, context, row, e) => {
         type: "warning"
       });
       row[name] = 0;
-      // pharmacy_stock_detail[_index] = row;
+      pharmacy_stock_detail[_index] = row;
+      $this.setState({
+        pharmacy_stock_detail: pharmacy_stock_detail
+      });
       return;
     }
     if (parseFloat(row.extended_cost) < parseFloat(value)) {
@@ -1358,7 +1369,10 @@ const onchangegridcol = ($this, context, row, e) => {
         type: "warning"
       });
       row[name] = 0;
-      // pharmacy_stock_detail[_index] = row;
+      pharmacy_stock_detail[_index] = row;
+      $this.setState({
+        pharmacy_stock_detail: pharmacy_stock_detail
+      });
       return;
     }
   }

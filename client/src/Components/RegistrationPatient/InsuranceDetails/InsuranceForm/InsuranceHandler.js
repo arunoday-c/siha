@@ -84,7 +84,6 @@ const insurancehandle = ($this, context, e) => {
       type: "warning"
     });
   } else {
-    
     $this.setState(
       {
         primary_insurance_provider_id: e.selected.insurance_provider_id,

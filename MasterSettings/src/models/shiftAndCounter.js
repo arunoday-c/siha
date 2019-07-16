@@ -243,14 +243,13 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "select algaeh_d_app_group_id,EDM.user_id as cashier_id,G.group_type,hims_d_employee_id,\
-          employee_code,E.full_name as cashier_name          \
-          from algaeh_d_app_group G         inner join algaeh_d_app_roles R\
-          on G.algaeh_d_app_group_id=R.app_group_id     \
-          inner join algaeh_m_role_user_mappings RU on R.app_d_app_roles_id=RU.role_id     \
-          inner join hims_m_employee_department_mappings EDM on RU.user_id=EDM.user_id\
-          inner join hims_d_employee  E on EDM.employee_id=E.hims_d_employee_id\
-          where group_type in('C') order by cashier_id desc",
+            "select E.employee_code,E.full_name as cashier_name,algaeh_d_app_user_id as cashier_id \
+            from hims_m_user_employee UM \
+            inner join algaeh_d_app_user U on UM.user_id=U.algaeh_d_app_user_id\
+            inner join hims_d_employee  E on U.employee_id=E.hims_d_employee_id\
+            where UM.record_status='A' and U.record_status='A' and E.record_status='A' \
+            and UM.hospital_id=1 and  E.employee_status='A' and U.user_status='A' and U.user_type='C'\
+            order by cashier_id desc;",
           //   values: inputValues,
           printQuery: true
         })

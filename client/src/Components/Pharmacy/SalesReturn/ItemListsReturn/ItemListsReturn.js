@@ -16,7 +16,8 @@ import {
   updateSalesReturnDetail,
   calculateAmount,
   EditGrid,
-  CancelGrid
+  CancelGrid,
+  makeZeroIngrid
 } from "./ItemListsReturnEvents";
 
 import { AlgaehActions } from "../../../../actions/algaehActions";
@@ -210,7 +211,13 @@ class ItemListsReturn extends Component {
                                       .hims_f_pharmcy_sales_return_header_id !==
                                     null
                                       ? true
-                                      : false
+                                      : false,
+                                  onBlur: makeZeroIngrid.bind(
+                                    this,
+                                    this,
+                                    context,
+                                    row
+                                  )
                                 }
                               }}
                             />
@@ -320,7 +327,8 @@ class ItemListsReturn extends Component {
                               forceLabel: "discount %"
                             }}
                           />
-                        )
+                        ),
+                        disabled: true
                       },
                       {
                         fieldName: "discount_amout",

@@ -248,7 +248,12 @@ class PointOfSale extends Component {
                     style={{ marginTop: "auto", padding: 0 }}
                   >
                     <span
-                      style={{ cursor: "pointer" }}
+                      style={{
+                        cursor: "pointer",
+                        pointerEvents: this.state.hims_f_pharmacy_pos_header_id
+                          ? "none"
+                          : ""
+                      }}
                       className="fas fa-search fa-2x"
                       onClick={VisitSearch.bind(this, this)}
                     />

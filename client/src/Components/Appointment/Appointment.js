@@ -8,6 +8,7 @@ import {
 } from "../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 import Enumerable from "linq";
+import isEmpty from "lodash/isEmpty";
 import algaehLoader from "../Wrapper/fullPageLoader";
 import FrontDesk from "../../Search/FrontDesk.json";
 import AlgaehSearch from "../Wrapper/globalSearch";
@@ -649,10 +650,7 @@ class Appointment extends PureComponent {
   }
 
   editDateHandler(selectedDate) {
-    this.setState({ edit_appt_date: selectedDate }, () => {
-      const provider_id = this.state.edit_provider_id;
-      this.getTimeSlotsForDropDown(provider_id);
-    });
+    this.setState({ edit_appt_date: selectedDate });
   }
 
   editDateValidate = (value, event) => {
@@ -665,8 +663,15 @@ class Appointment extends PureComponent {
       event.target.focus();
       this.setState({
         [event.target.name]: null,
-        edit_appt_time: null
+        edit_appt_time: null,
+        timeSlots: [],
+        schAvailable: false
       });
+    } else {
+      const provider_id = this.state.edit_provider_id;
+      if (moment(value).isValid()) {
+        this.getTimeSlotsForDropDown(provider_id);
+      }
     }
   };
 
@@ -778,7 +783,6 @@ class Appointment extends PureComponent {
   openEditModal(patient, data, e) {
     e.preventDefault();
 
-    this.getTimeSlotsForDropDown(patient.provider_id);
     let maxSlots = 1;
     const _currentRow = e.target.parentElement.parentNode.sectionRowIndex + 1;
     const _allRows =
@@ -814,13 +818,16 @@ class Appointment extends PureComponent {
       });
     } else {
       let openPatEdit = false;
-      if (data === null) {
+      if (
+        data !== null &&
+        data.hims_d_appointment_status_id === this.state.RescheduleId
+      ) {
         openPatEdit = true;
       }
       this.setState(
         {
           openPatEdit,
-          edit_appointment_status_id: patient.appointment_status_id,
+          edit_appointment_status_id: data.hims_d_appointment_status_id,
           edit_appt_date: patient.appointment_date,
           edit_appt_time: patient.appointment_from_time,
           edit_contact_number: patient.contact_number,
@@ -839,12 +846,17 @@ class Appointment extends PureComponent {
           edit_appointment_date: patient.appointment_date,
           patient_code: patient.patient_code,
           edit_no_of_slots: patient.number_of_slot,
-          edit_is_stand_by: patient.is_stand_by,
+          edit_is_stand_by: openPatEdit ? "N" : patient.is_stand_by,
           edit_title_id: patient.title_id
         },
         () => {
-          if (data !== null) {
+          if (
+            data !== null &&
+            data.hims_d_appointment_status_id !== this.state.RescheduleId
+          ) {
             this.updatePatientAppointment(data);
+          } else {
+            this.getTimeSlotsForDropDown(patient.provider_id);
           }
         }
       );
@@ -1503,7 +1515,7 @@ class Appointment extends PureComponent {
                     onDragStart={this.drag.bind(this)}
                   >
                     <span
-                      onClick={this.openEditModal.bind(this, patient, null)}
+                    // onClick={this.openEditModal.bind(this, patient, null)}
                     >
                       {patient.patient_name}
                       <br />
@@ -1578,22 +1590,69 @@ class Appointment extends PureComponent {
   }
 
   getTimeSlotsForDropDown(id) {
-    const schedule = this.state.appointmentSchedule;
-    const [data] = schedule.filter(doc => doc.provider_id === id);
-    const result = generateTimeslotsForDoctor(data);
-    let timeSlots = [];
-    let activeDate = this.state.edit_appt_date;
-    result.forEach(time => {
-      if (time !== "break") {
-        if (!this.isInactiveTimeSlot(time, activeDate)) {
-          timeSlots.push({
-            name: moment(time, "HH:mm:ss").format("hh:mm a"),
-            value: time
+    let schedule;
+    let data;
+    let apptDate = this.state.edit_appt_date;
+    let send_data = {
+      sub_dept_id: this.state.sub_department_id,
+      schedule_date: moment(this.state.edit_appt_date).format("YYYY-MM-DD"),
+      provider_id: this.state.edit_provider_id
+    };
+    algaehApiCall({
+      uri: "/appointment/getDoctorScheduleDateWise",
+      module: "frontDesk",
+      method: "GET",
+      data: send_data,
+      onSuccess: response => {
+        if (response.data.success && response.data.records.length > 0) {
+          schedule = response.data.records;
+          data = schedule.filter(
+            doc => doc.provider_id === this.state.edit_provider_id
+          );
+          const result = generateTimeslotsForDoctor(data[0]);
+          let timeSlots = [];
+          result.forEach(time => {
+            if (time !== "break") {
+              if (
+                !this.isInactiveTimeSlot(time, apptDate) &&
+                isEmpty(
+                  this.plotPatients({
+                    time,
+                    slot: data[0].slot,
+                    patients: data[0].patientList
+                  })
+                )
+              ) {
+                timeSlots.push({
+                  name: moment(time, "HH:mm:ss").format("hh:mm a"),
+                  value: time
+                });
+              }
+            }
+          });
+          return this.setState({ timeSlots, schAvailable: true });
+        } else {
+          swalMessage({
+            title: "There is no schedule Available for the doctor",
+            type: "error"
+          });
+          return this.setState({
+            timeSlots: [],
+            schAvailable: false
           });
         }
+      },
+      onFailure: response => {
+        swalMessage({
+          title: "There is no schedule Available for the doctor",
+          type: "error"
+        });
+        return this.setState({
+          timeSlots: [],
+          schAvailable: false
+        });
       }
     });
-    return this.setState({ timeSlots });
   }
 
   generateTimeslots(data) {
@@ -1653,18 +1712,6 @@ class Appointment extends PureComponent {
 
     return <React.Fragment>{tds}</React.Fragment>;
   }
-  // getSnapshotBeforeUpdate() {
-  //   const doctorCntr = document.getElementsByClassName("tg");
-  //   if (doctorCntr !== undefined && doctorCntr.length > 0) {
-  //     const _completeWidth = doctorCntr[0].width * doctorCntr.length;
-  //     return { width: _completeWidth };
-  //     // this.setState({ outerStyles: { width: _completeWidth } }, () => {
-  //     //
-  //     // });
-  //   }
-  //   return null;
-  // }
-  //componentDidUpdate(props, prevState, snapshot) {}
 
   render() {
     return (

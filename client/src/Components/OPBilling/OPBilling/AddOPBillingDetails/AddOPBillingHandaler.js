@@ -250,10 +250,21 @@ const onchangegridcol = ($this, row, e) => {
   row.update();
 };
 
-const ondiscountgridcol = ($this, row, e) => {
+const ondiscountgridcol = ($this, context, row, e) => {
+  debugger;
+
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   let oldvalue = e.oldvalue || e.target.oldvalue;
+  let billdetails = $this.state.billdetails;
+  let _index = billdetails.indexOf(row);
+  if (value === undefined) {
+    row["discount_percentage"] = "";
+    row["discount_amout"] = "";
+    billdetails[_index] = row;
+    $this.setState({ billdetails: billdetails });
+    return;
+  }
 
   if (name === "discount_percentage") {
     if (parseFloat(value) > 100) {
@@ -262,7 +273,8 @@ const ondiscountgridcol = ($this, row, e) => {
         type: "warning"
       });
       row[name] = oldvalue;
-      row.update();
+      billdetails[_index] = row;
+      $this.setState({ billdetails: billdetails });
       return;
     }
     if (parseFloat(value) < 0) {
@@ -271,7 +283,8 @@ const ondiscountgridcol = ($this, row, e) => {
         type: "warning"
       });
       row[name] = oldvalue;
-      row.update();
+      billdetails[_index] = row;
+      $this.setState({ billdetails: billdetails });
       return;
     }
   } else if (name === "discount_amout") {
@@ -281,7 +294,8 @@ const ondiscountgridcol = ($this, row, e) => {
         type: "warning"
       });
       row[name] = oldvalue;
-      row.update();
+      billdetails[_index] = row;
+      $this.setState({ billdetails: billdetails });
       return;
     }
     if (parseFloat(value) < 0) {
@@ -290,13 +304,14 @@ const ondiscountgridcol = ($this, row, e) => {
         type: "warning"
       });
       row[name] = oldvalue;
-      row.update();
+      billdetails[_index] = row;
+      $this.setState({ billdetails: billdetails });
       return;
     }
   }
   row[name] = value;
-  row.update();
-  calculateAmount($this, row, e);
+  // row.update();
+  calculateAmount($this, context, row, e);
 };
 
 const onquantitycol = ($this, row, e) => {
@@ -408,7 +423,7 @@ const CancelGrid = ($this, context, cancelRow) => {
   }
 };
 
-const calculateAmount = ($this, row, e) => {
+const calculateAmount = ($this, context, row, e) => {
   // e = e || ctrl;
 
   if (e.target.value !== e.target.oldvalue) {
@@ -448,8 +463,34 @@ const calculateAmount = ($this, row, e) => {
           let data = response.data.records;
 
           extend(row, data.billdetails[0]);
+
           billdetails[row.rowIdx] = row;
-          $this.setState({ billdetails: billdetails });
+          $this.setState({ billdetails: billdetails }, () => {
+            algaehApiCall({
+              uri: "/billing/billingCalculations",
+              module: "billing",
+              method: "POST",
+              data: { billdetails: $this.state.billdetails },
+              onSuccess: response => {
+                if (response.data.success) {
+                  response.data.records.patient_payable_h =
+                    response.data.records.patient_payable ||
+                    this.state.patient_payable;
+                  response.data.records.saveEnable = false;
+                  response.data.records.addNewService = false;
+                  if (context !== null) {
+                    context.updateState({ ...response.data.records });
+                  }
+                }
+              },
+              onFailure: error => {
+                swalMessage({
+                  title: error.message,
+                  type: "error"
+                });
+              }
+            });
+          });
         }
       },
       onFailure: error => {
@@ -482,6 +523,20 @@ const makeDiscountZero = ($this, context, e) => {
     }
   }
 };
+
+const makeZeroIngrid = ($this, context, row, e) => {
+  debugger;
+  if (e.target.value === "") {
+    row["discount_amout"] = 0;
+    row["discount_percentage"] = 0;
+    let billdetails = $this.state.billdetails;
+    let _index = billdetails.indexOf(row);
+    billdetails[_index] = row;
+    context.updateState({
+      billdetails: billdetails
+    });
+  }
+};
 export {
   serviceTypeHandeler,
   serviceHandeler,
@@ -498,5 +553,6 @@ export {
   ondiscountgridcol,
   calculateAmount,
   makeZero,
-  makeDiscountZero
+  makeDiscountZero,
+  makeZeroIngrid
 };
