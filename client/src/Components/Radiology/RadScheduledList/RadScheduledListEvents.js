@@ -148,7 +148,9 @@ const openResultEntry = ($this, row) => {
               ? $this.state.user_id
               : Template.technician_id;
 
-          row.exam_start_date_time = new Date(row.exam_start_date_time);
+          row.exam_start_date_time = row.exam_start_date_time
+            ? new Date(row.exam_start_date_time)
+            : null;
           Template.Templatelist = response.data.records;
           $this.setState({
             resultEntry: !$this.state.resultEntry,

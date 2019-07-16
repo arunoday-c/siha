@@ -146,11 +146,6 @@ class Appointment extends PureComponent {
             },
             onFailure: error => {}
           });
-        } else {
-          swalMessage({
-            title: "Not cancelled",
-            type: "error"
-          });
         }
       });
     }
@@ -205,6 +200,7 @@ class Appointment extends PureComponent {
       onRowSelect: row => {
         // console.log("Selected Row:", row);
         this.setState({
+          fromSearch: true,
           patient_code: row.patient_code,
           patient_id: row.hims_d_patient_id,
           patient_name: row.full_name,
@@ -963,11 +959,6 @@ class Appointment extends PureComponent {
                 });
               }
             }
-          } else {
-            swalMessage({
-              title: "Not cancelled",
-              type: "error"
-            });
           }
         });
       }
@@ -1342,8 +1333,18 @@ class Appointment extends PureComponent {
                       {item.patient_name}
                     </p>
                     <span>
-                      <i className="fas fa-check" />
-                      <i className="fas fa-clock" />
+                      <i
+                        className="fas fa-check"
+                        onClick={this.openEditModal.bind(this, item, {
+                          hims_d_appointment_status_id: this.state.checkInId
+                        })}
+                      />
+                      <i
+                        className="fas fa-clock"
+                        onClick={this.openEditModal.bind(this, item, {
+                          hims_d_appointment_status_id: this.state.RescheduleId
+                        })}
+                      />
                       <i
                         className="fas fa-times"
                         onClick={this.cancelAppt.bind(this, item)}
@@ -1373,9 +1374,7 @@ class Appointment extends PureComponent {
               className="dynPatient"
               style={{ background: "#f2f2f2" }}
             >
-              <span
-                onClick={this.openEditModal.bind(this, _firstPatient, null)}
-              >
+              <span>
                 {_firstPatient.patient_name}
                 <br />
                 {_firstPatient.contact_number}

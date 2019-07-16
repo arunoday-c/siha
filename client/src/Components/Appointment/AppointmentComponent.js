@@ -37,7 +37,7 @@ function AppointmentComponent(props) {
                     <div className="row margin-top-15">
                       <AlagehFormGroup
                         div={{
-                          className: "col-5  form-group mandatory"
+                          className: "col-6  form-group mandatory"
                         }}
                         label={{
                           fieldName: "full_name",
@@ -46,7 +46,8 @@ function AppointmentComponent(props) {
                         textBox={{
                           className: "txt-fld",
                           name: "patient_name",
-                          value: props.state.patient_name,
+                          value: props.state.edit_patient_name,
+                          disabled: true,
                           events: {
                             onChange: props.texthandle
                           }
@@ -64,9 +65,10 @@ function AppointmentComponent(props) {
                           className: "txt-fld",
                           name: "contact_number",
                           others: {
-                            type: "number"
+                            type: "number",
+                            disabled: true
                           },
-                          value: props.state.contact_number,
+                          value: props.state.edit_contact_number,
                           events: {
                             onChange: props.texthandle
                           }
@@ -290,6 +292,9 @@ function AppointmentComponent(props) {
                           valueField: "his_d_title_id",
                           data: props.state.titles
                         },
+                        others: {
+                          disabled: props.state.fromSearch || false
+                        },
                         onChange: props.dropDownHandle,
                         onClear: props.dropDownHandle
                       }}
@@ -307,6 +312,9 @@ function AppointmentComponent(props) {
                         className: "txt-fld",
                         name: "patient_name",
                         value: props.state.patient_name,
+                        others: {
+                          disabled: props.state.fromSearch || false
+                        },
                         events: {
                           onChange: props.texthandle
                         }
@@ -324,6 +332,9 @@ function AppointmentComponent(props) {
                         className: "txt-fld",
                         name: "arabic_name",
                         value: props.state.arabic_name,
+                        others: {
+                          disabled: props.state.fromSearch || false
+                        },
                         events: {
                           onChange: props.texthandle
                         }
@@ -342,7 +353,10 @@ function AppointmentComponent(props) {
                       }}
                       textBox={{
                         className: "txt-fld",
-                        name: "date_of_birth"
+                        name: "date_of_birth",
+                        others: {
+                          disabled: props.state.fromSearch || false
+                        }
                       }}
                       maxDate={new Date()}
                       events={{
@@ -371,6 +385,9 @@ function AppointmentComponent(props) {
                           onBlur: props.validateAge
                         },
                         value: props.state.age,
+                        others: {
+                          disabled: props.state.fromSearch || false
+                        },
                         events: {
                           onChange: props.dobHandler
                         }
@@ -393,6 +410,9 @@ function AppointmentComponent(props) {
                           textField: "name",
                           valueField: "value",
                           data: GlobalVariables.FORMAT_GENDER
+                        },
+                        others: {
+                          disabled: props.state.fromSearch || false
                         },
                         onChange: props.dropDownHandle
                       }}
@@ -436,6 +456,9 @@ function AppointmentComponent(props) {
                           type: "number"
                         },
                         value: props.state.contact_number,
+                        others: {
+                          disabled: props.state.fromSearch || false
+                        },
                         events: {
                           onChange: props.texthandle
                         }
@@ -454,6 +477,9 @@ function AppointmentComponent(props) {
                         className: "txt-fld",
                         name: "email",
                         value: props.state.email,
+                        others: {
+                          disabled: props.state.fromSearch || false
+                        },
                         events: {
                           onChange: props.texthandle
                         }
@@ -474,6 +500,9 @@ function AppointmentComponent(props) {
                         className: "txt-fld",
                         name: "appointment_remarks",
                         value: props.state.appointment_remarks,
+                        others: {
+                          disabled: props.state.fromSearch || false
+                        },
                         events: {
                           onChange: props.texthandle
                         }
