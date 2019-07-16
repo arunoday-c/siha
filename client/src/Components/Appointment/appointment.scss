@@ -2,7 +2,7 @@
 
 .appoPopupWidth {
   .algaeh-modal {
-    width: 65vw;
+    width: 40vw;
   }
 }
 
@@ -65,7 +65,7 @@
           border: 1px solid #e2e2c8 !important;
           font-size: 0.8rem;
           padding: 0;
-          width: 120px;
+          width: 150px;
           font-weight: normal;
         }
       }
@@ -75,15 +75,13 @@
       overflow: auto;
       display: grid;
       td.tg-baqh {
-        width: 120px;
-
         word-break: normal;
         border: 1px solid lightgrey;
         text-align: center;
         position: relative;
         padding: 20px 0 5px 0;
         height: auto;
-        width: 120px;
+        width: 150px;
         vertical-align: top;
       }
       td.highlight-Drop {
@@ -94,7 +92,7 @@
         ); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
       }
       td[colspan]:not([colspan="1"]) {
-        width: 240px;
+        width: 300px;
         height: 10px;
         padding: 0;
         margin: 0;
@@ -168,7 +166,7 @@
           z-index: 9;
           background: #fefcf4;
           text-align: left;
-          left: -1px;
+          left: 1px;
           top: auto;
           width: 85%;
           margin: auto 10px;
@@ -180,22 +178,33 @@
             padding: 5px;
             list-style: none;
             border-bottom: 1px solid #e2dfcb;
-            b {
-              padding: 0px 4px;
-              border: 1px solid #e1decc;
-              display: block;
-              float: right;
-              margin-top: 0;
-              border-radius: 100%;
-              width: 16px;
-              height: 16px;
-              line-height: 11px;
-              color: #e8514a;
-              background: #fefcf4;
+            text-align: center;
+            p {
+              margin-bottom: 4px;
             }
-            b:hover {
-              color: #fff;
-              background: #e8514a;
+            span {
+              width: 100%;
+              display: block;
+              i {
+                position: relative;
+                width: 24px;
+                height: 24px;
+                border: 1px solid #ccc9b6;
+                border-radius: 25%;
+                line-height: 22px;
+                text-align: center;
+                font-size: 0.8rem;
+                margin: 2px 5px;
+                color: #6b674d;
+                background: #fefcf4;
+                display: inline-block;
+                top: 0 !important;
+                &:hover {
+                  border: 1px solid #6b674d;
+                  color: #000;
+                  cursor: pointer;
+                }
+              }
             }
           }
           li:hover {

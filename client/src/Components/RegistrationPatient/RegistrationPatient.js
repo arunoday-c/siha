@@ -81,8 +81,9 @@ class RegistrationPatient extends Component {
       this.props.patient_code.length !== 0
     ) {
       getCtrlCode(this, this.props.patient_code);
+      getCashiersAndShiftMAP(this, this, "NA");
     } else {
-      getCashiersAndShiftMAP(this, this);
+      getCashiersAndShiftMAP(this, this, "A");
     }
 
     this.props.setSelectedInsurance({

@@ -317,7 +317,7 @@ export default function ScheduleModal(props) {
               </div>
             </div>
             {props.state.openEdit ? null : (
-              <div className="col-3 divInnerRight">
+              <div className="col-4 divInnerRight">
                 <div className="row">
                   {" "}
                   <AlagehAutoComplete
@@ -366,6 +366,22 @@ export default function ScheduleModal(props) {
                               </span>
                               <span className="physicianListName">
                                 {data.full_name}
+                              </span>
+                              <span className="physicianListSlot">
+                                {/* <AlagehAutoComplete
+                                  div={{ className: "col-12" }}
+                                  selector={{
+                                    name: "slot",
+                                    className: "select-fld",
+                                    value: "",
+                                    dataSource: {
+                                      textField: "name",
+                                      valueField: "value",
+                                      data: ""
+                                    },
+                                    onChange: ""
+                                  }}
+                                /> */}
                               </span>
                             </li>
                           );

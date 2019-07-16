@@ -89,7 +89,12 @@ module.exports = {
 
       _mysql
         .generateRunningNumber({
-          modules: ["INV_NUM"]
+          modules: ["INV_NUM"],
+          tableName: "hims_f_app_numgen",
+          identity: {
+            algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
+            hospital_id: req.userIdentity["x-branch"]
+          }
         })
         .then(invoce_no => {
           _mysql
@@ -137,7 +142,7 @@ module.exports = {
                 req.userIdentity.hospital_id
               ],
 
-              printQuery: false
+              printQuery: true
             })
             .then(headerResult => {
               //   _mysql.releaseConnection();
@@ -145,7 +150,7 @@ module.exports = {
 
               //   next();
 
-              if (headerResult.length > 0) {
+              if (headerResult.insertId > 0) {
                 const insertColumns = [
                   "bill_header_id",
                   "bill_detail_id",
@@ -169,10 +174,10 @@ module.exports = {
                 ];
                 _mysql
                   .executeQueryWithTransaction({
-                    query: "insert into hims_f_invoice_details values ?",
+                    query: "insert into hims_f_invoice_details (??) values ? ",
 
-                    values: input.Invoice_Detail,
                     includeValues: insertColumns,
+                    values: input.Invoice_Detail,
                     extraValues: {
                       invoice_header_id: headerResult.insertId,
                       created_date: new Date(),
@@ -180,7 +185,8 @@ module.exports = {
                       created_by: req.userIdentity.algaeh_d_app_user_id,
                       updated_by: req.userIdentity.algaeh_d_app_user_id
                     },
-                    bulkInsertOrUpdate: true
+                    bulkInsertOrUpdate: true,
+                    printQuery: true
                   })
                   .then(detailResult => {
                     let _tempBillHeaderIds = new LINQ(req.body.Invoice_Detail)
@@ -227,7 +233,7 @@ module.exports = {
                       _mysql.rollBackTransaction(() => {
                         req.records = {
                           invalid_data: true,
-                          message: "please send correct  data"
+                          message: "please send proper  input"
                         };
                         next();
                         return;

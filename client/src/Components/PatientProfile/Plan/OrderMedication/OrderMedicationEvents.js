@@ -317,6 +317,7 @@ const AddItems = $this => {
       instructions: $this.state.instructions,
       dispense: $this.state.dispense,
       requested_quantity: $this.state.dispense,
+      approved_qty: $this.state.dispense,
       insured: $this.state.insured,
       item_status: "A"
     };

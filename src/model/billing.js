@@ -1362,8 +1362,10 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                   total_tax = math.round(patient_tax + company_tax, 2);
 
                   patient_payable = math.round(patient_resp + patient_tax, 2);
+                  console.log("approved_amount: ", approved_amount);
+                  console.log("unit_cost: ", unit_cost);
 
-                  if (approved_amount !== 0) {
+                  if (approved_amount !== 0 && approved_amount < unit_cost) {
                     let diff_val = approved_amount - comapany_resp;
                     patient_payable = math.round(patient_payable + diff_val, 2);
                     patient_resp = math.round(patient_resp + diff_val, 2);

@@ -27,7 +27,8 @@ import {
   ondiscountgridcol,
   calculateAmount,
   makeZero,
-  makeDiscountZero
+  makeDiscountZero,
+  makeZeroIngrid
 } from "./AddOPBillingHandaler";
 import ReciptForm from "../ReciptDetails/AddReciptForm";
 import { AlgaehActions } from "../../../../actions/algaehActions";
@@ -223,6 +224,7 @@ class AddOPBillingForm extends Component {
   }
 
   updateBillDetail(context, row, e) {
+    debugger;
     algaehApiCall({
       uri: "/billing/billingCalculations",
       module: "billing",
@@ -441,6 +443,32 @@ class AddOPBillingForm extends Component {
                       id="Bill_details"
                       columns={[
                         {
+                          fieldName: "actions",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Action" }} />
+                          ),
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                <i
+                                  style={{
+                                    pointerEvents: this.state.Billexists
+                                      ? "none"
+                                      : "",
+                                    opacity: this.state.Billexists ? "0.1" : ""
+                                  }}
+                                  onClick={this.deleteBillDetail.bind(
+                                    this,
+                                    context,
+                                    row
+                                  )}
+                                  className="fas fa-trash-alt"
+                                />
+                              </span>
+                            );
+                          }
+                        },
+                        {
                           fieldName: "service_type_id",
                           label: (
                             <AlgaehLabel
@@ -590,11 +618,12 @@ class AddOPBillingForm extends Component {
                               label={{ fieldName: "discount_percentage" }}
                             />
                           ),
-                          editorTemplate: row => {
+                          displayTemplate: row => {
                             return (
                               <AlagehFormGroup
                                 div={{}}
                                 textBox={{
+                                  decimal: { allowNegative: false },
                                   value: row.discount_percentage,
                                   className: "txt-fld",
                                   name: "discount_percentage",
@@ -602,16 +631,22 @@ class AddOPBillingForm extends Component {
                                     onChange: ondiscountgridcol.bind(
                                       this,
                                       this,
+                                      context,
                                       row
                                     )
                                   },
                                   others: {
                                     placeholder: "0.00",
-
+                                    disabled: this.state.Billexists,
+                                    onBlur: makeZeroIngrid.bind(
+                                      this,
+                                      this,
+                                      context,
+                                      row
+                                    ),
                                     onFocus: e => {
                                       e.target.oldvalue = e.target.value;
-                                    },
-                                    type: "number"
+                                    }
                                   }
                                 }}
                               />
@@ -634,11 +669,12 @@ class AddOPBillingForm extends Component {
                               </span>
                             );
                           },
-                          editorTemplate: row => {
+                          displayTemplate: row => {
                             return (
                               <AlagehFormGroup
                                 div={{}}
                                 textBox={{
+                                  decimal: { allowNegative: false },
                                   value: row.discount_amout,
                                   className: "txt-fld",
                                   name: "discount_amout",
@@ -646,16 +682,22 @@ class AddOPBillingForm extends Component {
                                     onChange: ondiscountgridcol.bind(
                                       this,
                                       this,
+                                      context,
                                       row
                                     )
                                   },
                                   others: {
                                     placeholder: "0.00",
-
+                                    disabled: this.state.Billexists,
+                                    onBlur: makeZeroIngrid.bind(
+                                      this,
+                                      this,
+                                      context,
+                                      row
+                                    ),
                                     onFocus: e => {
                                       e.target.oldvalue = e.target.value;
-                                    },
-                                    type: "number"
+                                    }
                                   }
                                 }}
                               />
@@ -684,7 +726,7 @@ class AddOPBillingForm extends Component {
                       dataSource={{
                         data: this.state.billdetails
                       }}
-                      isEditable={!this.state.Billexists}
+                      // isEditable={!this.state.Billexists}
                       actions={{
                         allowEdit: !this.state.Billexists,
                         allowDelete: !this.state.Billexists

@@ -108,7 +108,6 @@ let addPatientPrescriptionBAckup = (req, res, next) => {
                     })
                     .ToArray();
 
-                  
                   if (services.length > 0) {
                     servicesForPreAproval.push(input.patient_id);
                     servicesForPreAproval.push(input.provider_id);
@@ -161,7 +160,8 @@ let addPatientPrescriptionBAckup = (req, res, next) => {
                             "visit_id",
                             "gross_amt",
                             "net_amount",
-                            "requested_quantity"
+                            "requested_quantity",
+                            "approved_qty"
                           ];
 
                           connection.query(
@@ -252,7 +252,6 @@ let addPatientPrescriptionBAckup = (req, res, next) => {
 
 //created by irfan: to add Patient Prescription
 let addPatientPrescription = (req, res, next) => {
-  
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -386,6 +385,7 @@ let addPatientPrescription = (req, res, next) => {
                             "item_id",
                             "service_id",
                             "requested_quantity",
+                            "approved_qty",
                             "insurance_service_name",
                             "doctor_id",
                             "gross_amt",
@@ -395,8 +395,9 @@ let addPatientPrescription = (req, res, next) => {
                           connection.query(
                             "INSERT INTO hims_f_medication_approval(" +
                               insurtCols.join(",") +
-                              ",created_by,updated_by,created_date,updated_date,insurance_provider_id,sub_insurance_id,\
-                              network_id,insurance_network_office_id,patient_id,visit_id,hospital_id) VALUES ?",
+                              ",created_by,updated_by,created_date,updated_date,insurance_provider_id,\
+                              sub_insurance_id, network_id, insurance_network_office_id, patient_id, visit_id,\
+                               hospital_id) VALUES ?",
                             [
                               jsonArrayToObject({
                                 sampleInputObject: insurtCols,
@@ -420,7 +421,6 @@ let addPatientPrescription = (req, res, next) => {
                             ],
                             (error, resultPreAprvl) => {
                               if (error) {
-                                
                                 connection.rollback(() => {
                                   releaseDBConnection(db, connection);
                                   next(error);
@@ -462,7 +462,6 @@ let addPatientPrescription = (req, res, next) => {
                       }
                     );
                   } else {
-
                     connection.commit(error => {
                       if (error) {
                         connection.rollback(() => {

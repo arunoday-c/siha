@@ -306,6 +306,7 @@ const calculateAmount = ($this, row, context, e) => {
 
   let name = e.target.name;
   let value = e.target.value === "" ? "" : e.target.value;
+  let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
   if (parseFloat(value) < 0) {
     swalMessage({
       title: "Return Qty cannot be less than or equal to Zero",
@@ -318,9 +319,7 @@ const calculateAmount = ($this, row, context, e) => {
     });
   } else {
     if (value !== "") {
-      let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
-
-      row[name] = value !== "" ? parseFloat(value) : "";
+      row[name] = parseFloat(value);
       let inputParam = [
         {
           hims_d_services_id: row.service_id,
@@ -373,6 +372,13 @@ const calculateAmount = ($this, row, context, e) => {
             });
           }
         }
+      });
+    } else {
+      row[name] = value;
+      pharmacy_stock_detail[row.rowIdx] = row;
+
+      context.updateState({
+        pharmacy_stock_detail: pharmacy_stock_detail
       });
     }
   }
@@ -467,6 +473,18 @@ const CancelGrid = ($this, context, cancelRow) => {
     });
   }
 };
+
+const makeZeroIngrid = ($this, context, row, e) => {
+  if (e.target.value === "") {
+    row["return_quantity"] = 0;
+    let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+    let _index = pharmacy_stock_detail.indexOf(row);
+    pharmacy_stock_detail[_index] = row;
+    context.updateState({
+      pharmacy_stock_detail: pharmacy_stock_detail
+    });
+  }
+};
 export {
   discounthandle,
   changeTexts,
@@ -479,5 +497,6 @@ export {
   calculateAmount,
   adjustadvance,
   EditGrid,
-  CancelGrid
+  CancelGrid,
+  makeZeroIngrid
 };

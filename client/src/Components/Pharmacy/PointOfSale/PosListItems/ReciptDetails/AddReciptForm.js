@@ -94,7 +94,12 @@ class AddReciptForm extends Component {
                         data: this.state.shift_assinged
                       },
                       others: {
-                        disabled: this.state.dataExitst
+                        disabled:
+                          this.state.postEnable === true
+                            ? true
+                            : this.state.posCancelled === true
+                            ? true
+                            : false
                       },
                       onChange: texthandle.bind(this, this, context),
                       onClear: () => {

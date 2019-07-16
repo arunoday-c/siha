@@ -23,6 +23,7 @@
         <table class="tableForData" cell-padding="0">
             <thead>
                 <tr>
+                    <th>Sl No.</th>
                     <th>Analyte</th>
                     <th>Result</th>
                     <th>Unit</th>
@@ -38,11 +39,15 @@
                 </tr>
                 {{#each groupDetail}}
                 <tr>
+                    <td>{{inc @index}}</td>
                     <td>{{analyte_name}}</td>
                     <td>{{result}}</td>
                     <td>{{result_unit}}</td>
                     <td>{{normal_low }}-{{normal_high}}</td>
                     <td>{{critical_low}}-{{critical_high}}</td>
+                </tr>
+                <tr>
+                    <td colspan="5">{{testComment}}</td>
                 </tr>
                 {{/each}}
                 {{/each}}

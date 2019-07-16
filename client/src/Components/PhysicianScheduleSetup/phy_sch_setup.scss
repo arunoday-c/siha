@@ -92,8 +92,8 @@
       list-style: none;
       .checkBoxPhy {
         margin: 10px;
-        display: inline-block;
         width: 20px;
+        float: left;
         position: relative;
 
         input[type="checkbox"] {
@@ -114,9 +114,15 @@
       }
       .physicianListName {
         display: inline-block;
-        width: calc(100% - 40px);
+        width: calc(100% - 140px);
         padding: 10px;
         border-left: 1px solid #ccc;
+        border-right: 1px solid #ccc;
+      }
+      .physicianListSlot {
+        float: right;
+        width: 100px;
+        padding: 10px;
       }
       &:hover {
         background: #00a796 !important;

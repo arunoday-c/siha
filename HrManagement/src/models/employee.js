@@ -63,6 +63,10 @@ module.exports = {
         if (req.query.isdoctor != null) {
           _strAppend += " and isdoctor='Y'";
         }
+        if (req.query.sub_department_id != null) {
+          _strAppend +=
+            " and sub_department_id='" + req.query.sub_department_id + "'";
+        }
 
         _mysql
           .executeQuery({
