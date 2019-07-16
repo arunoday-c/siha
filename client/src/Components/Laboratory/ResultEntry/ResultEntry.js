@@ -25,7 +25,8 @@ import {
   onReRun,
   resultEntryUpdate,
   onchangegridresult,
-  onchangeAmend
+  onchangeAmend,
+  generateLabResultReport
 } from "./ResultEntryEvents";
 import AlgaehReport from "../../Wrapper/printReports";
 
@@ -782,7 +783,7 @@ class ResultEntry extends Component {
             <div className="col-lg-12">
               <button
                 className="btn btn-primary"
-                onClick={this.showReport.bind(
+                onClick={generateLabResultReport.bind(
                   this,
                   display !== null && display.length !== 0
                     ? display[0].full_name
@@ -792,6 +793,19 @@ class ResultEntry extends Component {
               >
                 Print
               </button>
+
+              {/* <button
+                className="btn btn-primary"
+                onClick={this.showReport.bind(
+                  this,
+                  display !== null && display.length !== 0
+                    ? display[0].full_name
+                    : ""
+                )}
+                disabled={this.state.status === "V" ? false : true}
+              >
+                Print
+              </button> */}
 
               <button
                 type="button"

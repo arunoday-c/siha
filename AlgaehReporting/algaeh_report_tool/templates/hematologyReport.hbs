@@ -1,65 +1,58 @@
 {{{importStyle 'css/creditinvoice.css'}}}
+<div class="print-body">
+    <section>
+        <h2><span>Patient Details</span></h2>
+        <table class="tableForLabel" cell-padding="0">
+            <tr>
+                <td><label>رقم الملف الطبي / Reg. Number</label></td>
+                <td> <span>{{header.patient_code}}</span></td>
+            </tr>
+            <tr>
+                <td><label>اسم المريض / Patient Name</label></td>
+                <td><span>{{header.patient_name}}</span></td>
+            </tr>
+            <tr>
+                <td><label>اسم الطبيب / Doctor</label></td>
+                <td> <span>{{header.doctor_name}}</span></td>
+            </tr>
+        </table>
+    </section>
+    <section>
+        <h2><span>Bill Details</span></h2>
 
-<body>
-    <div class="print-body">
-        <section>
+        <table class="tableForData" cell-padding="0">
+            <thead>
+                <tr>
+                    <th>Sl No.</th>
+                    <th>Analyte</th>
+                    <th>Result</th>
+                    <th>Unit</th>
+                    <th>Normal Range</th>
+                    <th>Critical Range</th>
+                </tr>
+            </thead>
+            <tbody>
 
-            <table class="tableForLabel" cell-padding="0">
+                {{#each details}}
                 <tr>
-                    <td colspan="2"><label class="textEnLft">Investigation Name</label>:<span
-                            class="valueText">{{investigation_name}}</span>
-                    </td>
+                    <td colspan="5" class="tableSubHdg">{{firstElement groupDetail 0 "investigation_name"}}</td>
+                </tr>
+                {{#each groupDetail}}
+                <tr>
+                    <td>{{inc @index}}</td>
+                    <td>{{analyte_name}}</td>
+                    <td>{{result}}</td>
+                    <td>{{result_unit}}</td>
+                    <td>{{normal_low }}-{{normal_high}}</td>
+                    <td>{{critical_low}}-{{critical_high}}</td>
                 </tr>
                 <tr>
-                    <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
+                    <td colspan="5">{{testComment}}</td>
                 </tr>
-                <tr>
-                    <td><label class="textEnLft">Report No.</label>:<span class="valueText">{{report_no}}</span>
-                    </td>
-                    <td><label class="textEnLft">Report Date</label>:<span class="valueText">{{report_date}}</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td><label class="textEnLft">Patient No.</label>:<span class="valueText">{{report_no}}</span>
-                    </td>
-                    <td><label class="textEnLft">Patient Name</label>:<span class="valueText">{{report_date}}</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
-                </tr>
-                <tr>
-                    <td colspan="2"><label class="textEnLft">Doctor Name</label>:<span
-                            class="valueText">{{doctor_name}}</span>
-                    </td>
-                </tr>
-            </table>
-        </section>
-        <section>
-            <table class="tableForData" style="margin:0;padding:0;">
-                <tdead>
-                    <tr>
-                        <th>Sl No.</th>
-                        <th>Analyte Name</th>
-                        <th>Normal Range (low-High)</th>
-                        <th>Critical Range (low-High)</th>
-                        <th>Result</th>
-                        <th>Unit</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        {{#each details}}
-                        <tr>
-                            <td>Sl No.</td>
-                            <td>Analyte Name</td>
-                            <td>Normal Range (low-High)</td>
-                            <td>Critical Range (low-High)</td>
-                            <td>Result</td>
-                            <td>Unit</td>
-                        </tr>
-                        {{/each }}
-                    </tbody>
-            </table>
-        </section>
-    </div>
-</body>
+                {{/each}}
+                {{/each}}
+            </tbody>
+        </table>
+    </section>
+    <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer>
+</div>
