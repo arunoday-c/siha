@@ -14,3 +14,6 @@
 .hptl-pre-approval-status .main_div {
   height: 85vh;
   overflow: auto; }
+
+.posPreAppPopup .algaeh-modal {
+  width: 55vw; }

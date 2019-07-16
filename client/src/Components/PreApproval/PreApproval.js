@@ -186,9 +186,20 @@ class PreApproval extends Component {
           <div className="col-lg-12">
             <div className="row">
               <AlgaehDateHandler
-                div={{ className: "col" }}
-                label={{ fieldName: "date" }}
+                div={{ className: "col-2" }}
+                label={{ forceLabel: "From Date" }}
                 textBox={{ className: "txt-fld", name: "date" }}
+                maxDate={new Date()}
+                events={{
+                  onChange: datehandle.bind(this, this)
+                }}
+                value={this.state.date}
+              />{" "}
+              <AlgaehDateHandler
+                div={{ className: "col-2" }}
+                label={{ forceLabel: "To Date" }}
+                textBox={{ className: "txt-fld", name: "date" }}
+                maxDate={new Date()}
                 events={{
                   onChange: datehandle.bind(this, this)
                 }}

@@ -9,7 +9,7 @@ import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../actions/algaehActions";
 // import { getCookie } from "../../utils/algaehApiCall.js";
 // import { getAmountFormart } from "../../utils/GlobalFunctions";
-import DashBoardEvents from "./DashBoardEvents";
+// import DashBoardEvents from "./DashBoardEvents";
 
 // const AdmissionsReadmissionData = {
 //   datasets: [
@@ -406,7 +406,7 @@ class Dashboard extends Component {
       showDetails: "d-none",
       sample_collection: []
     };
-    DashBoardEvents().getSampleCollectionDetails(this);
+    // DashBoardEvents().getSampleCollectionDetails(this);
   }
 
   showDetailHandler(event) {

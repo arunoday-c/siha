@@ -45,7 +45,6 @@ class PreApprovalStatus extends PureComponent {
   };
 
   texthandle(ctrl, e) {
-    
     e = e || ctrl;
     let name = e.name || e.target.name;
     let value = e.value === "" ? null : e.value || e.target.value;
@@ -91,7 +90,6 @@ class PreApprovalStatus extends PureComponent {
   }
 
   saveApproval(e) {
-    
     if (this.state.apprv_status === "AP") {
       if (parseFloat(this.state.approved_amount) === 0) {
         swalMessage({
@@ -195,124 +193,118 @@ class PreApprovalStatus extends PureComponent {
       <React.Fragment>
         <div>
           <AlgaehModalPopUp
+            class="posPreAppPopup"
             events={{
               onClose: this.onClose.bind(this)
             }}
             title="Details for Pre Approval"
             openPopup={this.props.open}
           >
-            <div className="col-lg-12 popupInner">
-              <div className="row">
-                {/*<div className="col">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Item Name"
-                    }}
-                  />
-                  <h6>
-                    {this.props.item_description
-                      ? this.props.item_description
-                        ? this.state.insurance_service_name
-                        : "--------"
-                      : "--------"}
-                  </h6>
-                </div>*/}
-                <div className="col">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Requested Qty"
-                    }}
-                  />
-                  <h6>
-                    {this.state.requested_quantity
-                      ? this.state.requested_quantity
-                      : "--------"}
-                  </h6>
-                </div>
+            <div className="popupInner">
+              <div className="popRightDiv">
+                <div className="row">
+                  <div className="col-3">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Requested Qty"
+                      }}
+                    />
+                    <h6>
+                      {this.state.requested_quantity
+                        ? this.state.requested_quantity
+                        : "--------"}
+                    </h6>
+                  </div>
 
-                <div className="col">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Gross Amount"
-                    }}
-                  />
-                  <h6>
-                    {this.state.gross_amt ? this.state.gross_amt : "--------"}
-                  </h6>
-                </div>
-                <div className="col">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Net Amount"
-                    }}
-                  />
-                  <h6>
-                    {this.state.net_amount ? this.state.net_amount : "--------"}
-                  </h6>
-                </div>
+                  <div className="col-3">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Gross Amount"
+                      }}
+                    />
+                    <h6>
+                      {this.state.gross_amt ? this.state.gross_amt : "--------"}
+                    </h6>
+                  </div>
+                  <div className="col-3">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Net Amount"
+                      }}
+                    />
+                    <h6>
+                      {this.state.net_amount
+                        ? this.state.net_amount
+                        : "--------"}
+                    </h6>
+                  </div>
 
-                <AlagehAutoComplete
-                  div={{ className: "col" }}
-                  label={{
-                    forceLabel: "Approval Status"
-                  }}
-                  selector={{
-                    name: "apprv_status",
-                    className: "select-fld",
-                    value: this.state.apprv_status,
-                    dataSource: {
-                      textField: "name",
-                      valueField: "value",
-                      data: GlobalVariables.FORMAT_APPSTATUS
-                    },
-                    onChange: this.texthandle.bind(this)
-                  }}
-                />
-
-                <AlagehFormGroup
-                  div={{ className: "col" }}
-                  label={{
-                    forceLabel: "Approval Amount"
-                  }}
-                  textBox={{
-                    decimal: { allowNegative: false },
-                    value: this.state.approved_amount,
-                    className: "txt-fld",
-                    name: "approved_amount",
-                    events: {
+                  <AlagehAutoComplete
+                    div={{ className: "col-4" }}
+                    label={{
+                      forceLabel: "Approval Status"
+                    }}
+                    selector={{
+                      name: "apprv_status",
+                      className: "select-fld",
+                      value: this.state.apprv_status,
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: GlobalVariables.FORMAT_APPSTATUS
+                      },
                       onChange: this.texthandle.bind(this)
-                    },
-                    others: {
-                      disabled: this.state.apprv_status === "AP" ? false : true
-                    }
-                  }}
-                />
-                <AlagehFormGroup
-                  div={{ className: "col" }}
-                  label={{
-                    forceLabel: "Approval Number"
-                  }}
-                  textBox={{
-                    value: this.state.approved_no,
-                    className: "txt-fld",
-                    name: "approved_no",
-                    events: {
-                      onChange: this.texthandle.bind(this)
-                    }
-                  }}
-                />
-
-                <div className="col">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Approval/Rejected Date"
                     }}
                   />
-                  <h6>
-                    {this.state.apprv_date
-                      ? moment(this.state.apprv_date).format(Options.dateFormat)
-                      : "--------"}
-                  </h6>
+
+                  <AlagehFormGroup
+                    div={{ className: "col" }}
+                    label={{
+                      forceLabel: "Approved Amt"
+                    }}
+                    textBox={{
+                      decimal: { allowNegative: false },
+                      value: this.state.approved_amount,
+                      className: "txt-fld",
+                      name: "approved_amount",
+                      events: {
+                        onChange: this.texthandle.bind(this)
+                      },
+                      others: {
+                        disabled:
+                          this.state.apprv_status === "AP" ? false : true
+                      }
+                    }}
+                  />
+                  <AlagehFormGroup
+                    div={{ className: "col" }}
+                    label={{
+                      forceLabel: "Approval No."
+                    }}
+                    textBox={{
+                      value: this.state.approved_no,
+                      className: "txt-fld",
+                      name: "approved_no",
+                      events: {
+                        onChange: this.texthandle.bind(this)
+                      }
+                    }}
+                  />
+
+                  <div className="col">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Approval/ Rejected Date"
+                      }}
+                    />
+                    <h6>
+                      {this.state.apprv_date
+                        ? moment(this.state.apprv_date).format(
+                            Options.dateFormat
+                          )
+                        : "--------"}
+                    </h6>
+                  </div>
                 </div>
               </div>
             </div>

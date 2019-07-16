@@ -22,29 +22,29 @@ import NurseWorkbench from "./Components/Workbench/Workbench";
 
 const PageToPlot = {
   Dashboard: React.lazy(() =>
-    retry(() => import("./Components/Dashboard/Dashboard"))
-  ),
-  7: React.lazy(() =>
-    retry(() => import("./Components/Dashboard/frontdesk-dashboard"))
-  ),
-  8: React.lazy(() =>
-    retry(() => import("./Components/Dashboard/doctor-dashboard"))
-  ),
-  11: React.lazy(() =>
-    retry(() => import("./Components/Dashboard/lab-dashboard"))
-  ),
-  12: React.lazy(() =>
     retry(() => import("./Components/Dashboard/hr-dashboard"))
   ),
-  13: React.lazy(() =>
-    retry(() => import("./Components/Dashboard/pharmacy-dashboard"))
-  ),
-  14: React.lazy(() =>
-    retry(() => import("./Components/Dashboard/inventory-dashboard"))
-  ),
-  FrontDesk: React.lazy(() =>
-    retry(() => import("./Components/RegistrationPatient/RegistrationPatient"))
-  ),
+  // 7: React.lazy(() =>
+  //   retry(() => import("./Components/Dashboard/frontdesk-dashboard"))
+  // ),
+  // 8: React.lazy(() =>
+  //   retry(() => import("./Components/Dashboard/doctor-dashboard"))
+  // ),
+  // 11: React.lazy(() =>
+  //   retry(() => import("./Components/Dashboard/lab-dashboard"))
+  // ),
+  // 12: React.lazy(() =>
+  //   retry(() => import("./Components/Dashboard/hr-dashboard"))
+  // ),
+  // 13: React.lazy(() =>
+  //   retry(() => import("./Components/Dashboard/pharmacy-dashboard"))
+  // ),
+  // 14: React.lazy(() =>
+  //   retry(() => import("./Components/Dashboard/inventory-dashboard"))
+  // ),
+  // FrontDesk: React.lazy(() =>
+  //   retry(() => import("./Components/RegistrationPatient/RegistrationPatient"))
+  // ),
 
   UpdatePatientDetails: React.lazy(() =>
     retry(() =>

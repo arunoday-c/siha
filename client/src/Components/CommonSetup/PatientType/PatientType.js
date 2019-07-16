@@ -34,7 +34,7 @@ class PatientType extends Component {
     this.baseState = this.state;
   }
 
-      initCall() {
+  initCall() {
     let that = this;
     algaehApiCall({
       uri: "/init/",
@@ -49,7 +49,7 @@ class PatientType extends Component {
           const placeHolder =
             response.data.records.length > 0 ? response.data.records[0] : {};
           that.setState({
-         patient_type_code_placeHolder: placeHolder.patient_type_code
+            patient_type_code_placeHolder: placeHolder.patient_type_code
           });
         }
       }
@@ -72,7 +72,7 @@ class PatientType extends Component {
       });
     }
   }
-  dateFormater({ value }) {
+  dateFormater(value) {
     return String(moment(value).format("DD-MM-YYYY"));
   }
 
@@ -237,10 +237,11 @@ class PatientType extends Component {
                   value: this.state.patient_type_code,
                   events: {
                     onChange: this.changeTexts.bind(this)
-                  },   others: {
-                          tabIndex: "1",
-                            placeholder: this.state.patient_type_code_placeHolder
-                        }
+                  },
+                  others: {
+                    tabIndex: "1",
+                    placeholder: this.state.patient_type_code_placeHolder
+                  }
                 }}
               />
 

@@ -119,14 +119,14 @@ class LabSpecimen extends Component {
                 id="visa_grd"
                 columns={[
                   {
-                    fieldName: "description",
+                    fieldName: "SpeDescription",
                     label: <AlgaehLabel label={{ fieldName: "type_desc" }} />,
                     editorTemplate: row => {
                       return (
                         <AlagehFormGroup
                           div={{}}
                           textBox={{
-                            value: row.description,
+                            value: row.SpeDescription,
                             className: "txt-fld",
                             name: "description",
                             events: {

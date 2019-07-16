@@ -115,7 +115,7 @@ class CommonSetup extends Component {
                   }
                 </li>
               ) : null}
-              {this.state.HIMS_Active === true ? (
+              {/*{this.state.HIMS_Active === true ? (
                 <li
                   algaehtabs={"InsuranceCardClass"}
                   className={"nav-item tab-button"}
@@ -129,7 +129,7 @@ class CommonSetup extends Component {
                     />
                   }
                 </li>
-              ) : null}
+                ) : null}*/}
             </ul>
           </div>
         </div>

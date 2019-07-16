@@ -15,7 +15,11 @@ import GlobalVariables from "../../../utils/GlobalVariables";
 import swal from "sweetalert2";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { FORMAT_YESNO } from "../../../utils/GlobalVariables.json";
-import { algaehApiCall, swalMessage, getCookie } from "../../../utils/algaehApiCall";
+import {
+  algaehApiCall,
+  swalMessage,
+  getCookie
+} from "../../../utils/algaehApiCall";
 import { setGlobal, AlgaehValidation } from "../../../utils/GlobalFunctions";
 import Options from "../../../Options.json";
 
@@ -42,7 +46,7 @@ class VisitType extends Component {
 
     this.baseState = this.state;
   }
-   initCall() {
+  initCall() {
     let that = this;
     algaehApiCall({
       uri: "/init/",
@@ -57,7 +61,7 @@ class VisitType extends Component {
           const placeHolder =
             response.data.records.length > 0 ? response.data.records[0] : {};
           that.setState({
-           visit_type_code_placeHolder: placeHolder.visit_type_code
+            visit_type_code_placeHolder: placeHolder.visit_type_code
           });
         }
       }
@@ -159,7 +163,7 @@ class VisitType extends Component {
     }
   }
 
-  dateFormater({ value }) {
+  dateFormater(value) {
     if (value !== null) {
       return moment(value).format(Options.dateFormat);
     }
@@ -302,10 +306,11 @@ class VisitType extends Component {
                     value: this.state.visit_type_code,
                     events: {
                       onChange: this.changeTexts.bind(this)
-                    },   others: {
-                          tabIndex: "1",
-                            placeholder: this.state.visit_type_code_placeHolder
-                        }
+                    },
+                    others: {
+                      tabIndex: "1",
+                      placeholder: this.state.visit_type_code_placeHolder
+                    }
                   }}
                 />
 

@@ -293,7 +293,9 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "SELECT *, description as SpeDescription FROM `hims_d_lab_specimen` WHERE `record_status`='A' " +
+            "SELECT `hims_d_lab_specimen_id`, `description` as SpeDescription, `specimen_status`, `created_date`, \
+            `created_by`, `updated_date`, `updated_by`, `record_status`  FROM `hims_d_lab_specimen` \
+            WHERE `record_status`='A'" +
             _strAppend +
             "order by hims_d_lab_specimen_id desc",
           values: intValue,
