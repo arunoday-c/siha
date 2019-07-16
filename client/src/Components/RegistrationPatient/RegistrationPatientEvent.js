@@ -9,6 +9,7 @@ import {
 import extend from "extend";
 import moment from "moment";
 import { AlgaehOpenContainer } from "../../utils/GlobalFunctions";
+import _ from "lodash";
 
 const emptyObject = extend(
   PatRegIOputs.inputParam(),
@@ -160,7 +161,7 @@ const ClearData = ($this, from, patcode) => {
             data: []
           }
         });
-        getCashiersAndShiftMAP($this);
+        getCashiersAndShiftMAP($this, "NA");
         if (from === "pat_code") {
           getCtrlCode($this, patcode);
         } else {
@@ -195,7 +196,8 @@ const getHospitalDetails = $this => {
   });
 };
 
-const getCashiersAndShiftMAP = $this => {
+const getCashiersAndShiftMAP = ($this, type) => {
+  AlgaehLoader({ show: true });
   let year = moment().format("YYYY");
   let month = moment().format("M");
 
@@ -203,11 +205,55 @@ const getCashiersAndShiftMAP = $this => {
     uri: "/shiftAndCounter/getCashiersAndShiftMAP",
     module: "masterSettings",
     method: "GET",
-    data: { year: year, month: month, for: "T" },
+    data: { for: "T" },
     onSuccess: response => {
       if (response.data.success) {
         if (response.data.records.length > 0) {
-          $this.setState({ shift_id: response.data.records[0].shift_id });
+          $this.setState(
+            {
+              shift_assinged: response.data.records
+            },
+            () => {
+              $this.setState({
+                shift_id: response.data.records[0].shift_id
+              });
+            }
+          );
+        }
+
+        if ($this.props.fromAppoinment === true && type === "A") {
+          const { patient_details } = $this.props;
+          if (patient_details) {
+            $this.setState(
+              {
+                full_name: patient_details.patient_name,
+                arabic_name: patient_details.arabic_patient_name,
+                gender: patient_details.patient_gender,
+                age: patient_details.patient_age,
+                contact_number: patient_details.patient_phone,
+                title_id: patient_details.title_id,
+                date_of_birth: patient_details.date_of_birth,
+                sub_department_id: $this.props.sub_department_id,
+                department_id: $this.props.department_id,
+                provider_id: $this.props.provider_id,
+                doctor_id: $this.props.provider_id,
+                visit_type: $this.props.visit_type,
+                hims_d_services_id: $this.props.hims_d_services_id,
+                saveEnable: false,
+                clearEnable: true,
+                consultation: "Y",
+                appointment_patient: "Y",
+                billdetail: false,
+                appointment_id: $this.state.hims_f_patient_appointment_id
+              },
+              () => {
+                AlgaehLoader({ show: false });
+                if ($this.props.fromAppoinment === true) {
+                  generateBillDetails($this);
+                }
+              }
+            );
+          }
         }
       }
       AlgaehLoader({ show: false });
@@ -330,8 +376,8 @@ const generateReceipt = $this => {
   });
 };
 
-const getCtrlCode = ($this, patcode) => {
-  // AlgaehLoader({ show: true });
+const getCtrlCode = ($this, patcode, row) => {
+  AlgaehLoader({ show: true });
   let provider_id = $this.props.provider_id || null;
   let sub_department_id = $this.props.sub_department_id || null;
   let visit_type = $this.props.visit_type || null;
@@ -391,6 +437,14 @@ const getCtrlCode = ($this, patcode) => {
         )._d;
 
         data.patientRegistration.advanceEnable = false;
+
+        if (data.bill_criedt.length > 0) {
+          data.patientRegistration.due_amount = _.sumBy(data.bill_criedt, s =>
+            parseFloat(s.balance_credit)
+          );
+        } else {
+          data.patientRegistration.due_amount = 0;
+        }
 
         $this.setState(data.patientRegistration, () => {
           AlgaehLoader({ show: false });

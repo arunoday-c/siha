@@ -311,6 +311,7 @@ class HospitalServices extends PureComponent {
                         fieldName: "vat_percent"
                       }}
                       textBox={{
+                        decimal: { allowNegative: false },
                         className: "txt-fld",
                         name: "vat_percent",
                         value: this.state.vat_percent,
@@ -319,8 +320,7 @@ class HospitalServices extends PureComponent {
                         },
                         others: {
                           disabled:
-                            this.state.Applicable === true ? false : true,
-                          type: "number"
+                            this.state.Applicable === true ? false : true
                         }
                       }}
                     />

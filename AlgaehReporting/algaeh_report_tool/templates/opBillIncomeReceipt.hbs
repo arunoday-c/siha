@@ -6,33 +6,44 @@
         <section>
             <table class="tableForData" cell-padding="0">
                 <thead>
-                     <tr>
-    <th>Sl No.</th>
-    <th>Receipt Date</th>
-    <th>Patient Code</th>
-    <th>Patient Name</th>
-    <th>Dept. Name</th>
-    <th>Doctor Name</th>
-    <th>Cash</th>
-    <th>Card</th>
-    <th>Cheque</th>
-  </tr>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>receipt_number</th>
+                        <th>Receipt Date</th>
+                        <th>Patient Code</th>
+                        <th>Patient Name</th>
+                        <th>Dept. Name</th>
+                        <th>Doctor Name</th>
+                        <th>Cash</th>
+                        <th>Card</th>
+                        <th>Cheque</th>
+                        <th>total</th>
+                    </tr>
                 </thead>
                 <tbody>
                     {{#each details}}
                     <tr>
                         <td>{{inc @index}}</td>
+                        <td>{{receipt_number}}</td>
                         <td>{{receipt_date}}</td>
                         <td>{{patient_code}}</td>
                         <td>{{full_name}}</td>
-                        <td>{{sub_department_code}}</td>
+
                         <td>{{sub_department_name}}</td>
-                        <td>Cash</td>
-                        <td>Card</td>
-                        <td>Cheque</td>
+                        <td>{{doctor_name}}</td>
+                        <td class="numberFld">{{cash}}</td>
+                        <td class="numberFld">{{card}}</td>
+                        <td class="numberFld">{{cheque}}</td>
+                        <td class="numberFld">{{total}}</td>
+
                     </tr>
-                    {{/each }}
-              
+                    {{/each }}<tr class="footerTotalDown">
+                        <td colspan="7">Total</td>
+                        <td>{{total_cash}}</td>
+                        <td>{{total_card}}</td>
+                        <td>{{total_check}}</td>
+                        <td>{{total_collection}}</td>
+                    </tr>
                 </tbody>
             </table>
         </section>

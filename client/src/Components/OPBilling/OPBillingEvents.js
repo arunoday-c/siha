@@ -6,7 +6,7 @@ import {
   swalMessage,
   getCookie
 } from "../../utils/algaehApiCall";
-import moment from "moment";
+
 import Enumerable from "linq";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
 
@@ -32,7 +32,9 @@ const ClearData = ($this, e) => {
       IOputs.s_service_type = null;
       IOputs.s_service = null;
       IOputs.pageDisplay = "BillingDetails";
-      $this.setState({ ...$this.state, ...IOputs });
+      $this.setState({ ...$this.state, ...IOputs }, () => {
+        getCashiersAndShiftMAP($this);
+      });
     }
   });
 };
@@ -103,32 +105,36 @@ const Validations = $this => {
     });
 
     return isError;
-  } else if ($this.state.counter_id === null) {
-    isError = true;
-    swalMessage({
-      type: "warning",
-      title: "Counter is Mandatory."
-    });
-
-    return isError;
   }
+  // else if ($this.state.counter_id === null) {
+  //   isError = true;
+  //   swalMessage({
+  //     type: "warning",
+  //     title: "Counter is Mandatory."
+  //   });
+  //
+  //   return isError;
+  // }
 };
 
 const getCashiersAndShiftMAP = $this => {
-  let year = moment().format("YYYY");
-
-  let month = moment().format("MM");
-
   algaehApiCall({
     uri: "/shiftAndCounter/getCashiersAndShiftMAP",
     module: "masterSettings",
     method: "GET",
-    data: { year: year, month: month, for: "T" },
+    data: { for: "T" },
     onSuccess: response => {
-      if (response.data.success) {
-        if (response.data.records.length > 0) {
-          $this.setState({ shift_id: response.data.records[0].shift_id });
-        }
+      if (response.data.records.length > 0) {
+        $this.setState(
+          {
+            shift_assinged: response.data.records
+          },
+          () => {
+            $this.setState({
+              shift_id: response.data.records[0].shift_id
+            });
+          }
+        );
       }
     },
     onFailure: error => {

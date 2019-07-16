@@ -192,6 +192,7 @@ class ConsumptionItems extends Component {
                           className: "txt-fld",
                           name: "quantity",
                           value: this.state.quantity,
+                          dontAllowKeys: ["-", "e", "."],
                           events: {
                             onChange: this.numberchangeTexts.bind(this, context)
                           },
@@ -256,6 +257,16 @@ class ConsumptionItems extends Component {
                                   <span>
                                     <i
                                       className="fas fa-trash-alt"
+                                      style={{
+                                        pointerEvents:
+                                          this.state.ItemDisable === true
+                                            ? "none"
+                                            : "",
+                                        opacity:
+                                          this.state.ItemDisable === true
+                                            ? "0.1"
+                                            : ""
+                                      }}
                                       onClick={this.deleteConsumptionDetail.bind(
                                         this,
                                         context,

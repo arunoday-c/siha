@@ -63,6 +63,7 @@ const SaveMedication = ($this, e) => {
         $this.state.hims_d_insurance_network_office_id,
       network_id: $this.state.network_id,
       sub_insurance_provider_id: $this.state.sub_insurance_provider_id,
+      sub_insurance_id: $this.state.sub_insurance_provider_id,
 
       medicationitems: $this.state.medicationitems
     };
@@ -316,6 +317,7 @@ const AddItems = $this => {
       instructions: $this.state.instructions,
       dispense: $this.state.dispense,
       requested_quantity: $this.state.dispense,
+      approved_qty: $this.state.dispense,
       insured: $this.state.insured,
       item_status: "A"
     };
@@ -359,6 +361,10 @@ const AddItems = $this => {
             parseFloat($this.state.dispense);
           medicationobj["generic_name"] = $this.state.generic_name;
           medicationobj["item_description"] = $this.state.item_description;
+          medicationobj["insurance_service_name"] =
+            $this.state.item_description;
+
+          medicationobj["doctor_id"] = $this.state.provider_id;
           if (medicationobj.pre_approval === "Y") {
             swalMessage({
               title: "Selected Item is Pre Approval",

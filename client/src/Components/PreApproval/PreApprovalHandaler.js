@@ -21,15 +21,36 @@ const texthandle = ($this, e) => {
 };
 
 const datehandle = ($this, ctrl, e) => {
-  $this.setState(
-    {
-      [e]: moment(ctrl)._d
-    },
-    () => {
-      getPreAprovalList($this);
-      getMedicationAprovalList($this);
+  let intFailure = false;
+  if (e === "ate") {
+    if (Date.parse($this.state.to_date) < Date.parse(moment(ctrl)._d)) {
+      intFailure = true;
+      swalMessage({
+        title: "From Date cannot be grater than To Date.",
+        type: "warning"
+      });
     }
-  );
+  } else if (e === "to_date") {
+    if (Date.parse(moment(ctrl)._d) < Date.parse($this.state.date)) {
+      intFailure = true;
+      swalMessage({
+        title: "To Date cannot be less than From Date.",
+        type: "warning"
+      });
+    }
+  }
+
+  if (intFailure === false) {
+    $this.setState(
+      {
+        [e]: moment(ctrl)._d
+      },
+      () => {
+        getPreAprovalList($this);
+        getMedicationAprovalList($this);
+      }
+    );
+  }
 };
 
 const PatientSearch = ($this, e) => {
@@ -65,6 +86,11 @@ const getPreAprovalList = $this => {
       Options.dateFormatYear
     );
   }
+  if ($this.state.to_date !== null) {
+    inputobj.to_date = moment($this.state.to_date).format(
+      Options.dateFormatYear
+    );
+  }
 
   if ($this.state.dis_status !== null) {
     inputobj.apprv_status = $this.state.dis_status;
@@ -89,6 +115,7 @@ const getPreAprovalList = $this => {
         let pre_approval_Services = Enumerable.from(data)
           .groupBy("$.patient_id", null, (k, g) => {
             let firstRecordSet = Enumerable.from(g).firstOrDefault();
+
             return {
               patient_code: firstRecordSet.patient_code,
               full_name: firstRecordSet.full_name,
@@ -101,6 +128,8 @@ const getPreAprovalList = $this => {
               icd_code: firstRecordSet.icd_code,
               number_of_Services: g.getSource().length,
               apprv_status: firstRecordSet.apprv_status,
+              card_no: firstRecordSet.card_no,
+              sub_department_name: firstRecordSet.sub_department_name,
 
               services_details: g.getSource()
             };
@@ -158,11 +187,16 @@ const openUCAFReport = ($this, row) => {
 };
 
 const getMedicationAprovalList = $this => {
-  
   let inputobj = {};
 
   if ($this.state.date !== null) {
     inputobj.created_date = moment($this.state.date).format(
+      Options.dateFormatYear
+    );
+  }
+
+  if ($this.state.to_date !== null) {
+    inputobj.to_date = moment($this.state.to_date).format(
       Options.dateFormatYear
     );
   }

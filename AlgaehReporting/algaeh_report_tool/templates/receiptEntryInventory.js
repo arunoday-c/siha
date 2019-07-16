@@ -14,13 +14,15 @@ const executePDF = function executePDFMethod(options) {
 
       options.mysql
         .executeQuery({
-          query: `select hims_f_procurement_grn_header_id,grn_number,grn_for,dn_header_id
+          query: `select  date_format('${
+            input.invoice_date
+          }    ','%d-%m-%Y')  as invoice_date, hims_f_procurement_grn_header_id,grn_number,grn_for,date_format(grn_date,'%d-%m-%Y') as grn_date,dn_header_id
             ,D.hims_f_procurement_grn_detail_id,H.sub_total,detail_discount ,H.net_total  ,H.total_tax ,H.net_payable 
             from  hims_f_procurement_grn_header H inner join  hims_f_procurement_grn_detail D 
             on H.hims_f_procurement_grn_header_id=D.grn_header_id
             where H.hospital_id=? and H.grn_number=? and grn_for='INV';
-           select  dn_from, hims_f_procurement_dn_header_id,delivery_note_number,date(dn_date)as dn_date,H.sub_total,H.detail_discount,H.net_total,
-           H.total_tax,H.net_payable ,L.location_description  ,V.vendor_name ,PO.purchase_number,date(PO.po_date) as po_date
+           select  dn_from, hims_f_procurement_dn_header_id,delivery_note_number,   date_format(dn_date,'%d-%m-%Y') as dn_date,H.sub_total,H.detail_discount,H.net_total,
+           H.total_tax,H.net_payable ,L.location_description  ,V.vendor_name ,PO.purchase_number,  date_format(PO.po_date,'%d-%m-%Y')as po_date
            from hims_f_procurement_grn_header GH inner join  hims_f_procurement_grn_detail GD 
            on GH.hims_f_procurement_grn_header_id=GD.grn_header_id  inner join 
            hims_f_procurement_dn_header H  on GD.dn_header_id=H.hims_f_procurement_dn_header_id inner join hims_f_procurement_po_header PO on
@@ -100,7 +102,7 @@ const executePDF = function executePDFMethod(options) {
                     item["hims_f_procurement_dn_detail_id"]
                   );
                 });
-                //   console.log("batches:", batches);
+                
                 delivery_items.push({ ...item, batches });
               });
 
@@ -111,14 +113,27 @@ const executePDF = function executePDFMethod(options) {
             });
           });
 
-          resolve({ ...grn_details[0], details: outputArray });
-          // utilities
-          //   .logger()
-          //   .log("output: ", { ...grn_details[0], details: outputArray });
+          resolve({
+            ...grn_details[0],
+            inovice_number: input.inovice_number,
+            location_description: outputArray[0].location_description,
+            vendor_name: outputArray[0].vendor_name,
+            purchase_number: outputArray[0].purchase_number,
+            po_date: outputArray[0].po_date,
+            details: outputArray
+          });
+          // utilities.logger().log("output: ", {
+          //   ...grn_details[0],
+          //   location_description: outputArray[0].location_description,
+          //   vendor_name: outputArray[0].vendor_name,
+          //   purchase_number: outputArray[0].purchase_number,
+          //   po_date: outputArray[0].po_date,
+          //   details: outputArray
+          // });
         })
         .catch(error => {
           options.mysql.releaseConnection();
-          console.log("error", error);
+          
         });
     } catch (e) {
       reject(e);

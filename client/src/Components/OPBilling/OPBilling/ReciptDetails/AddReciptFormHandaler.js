@@ -50,7 +50,10 @@ const calculateRecipt = ($this, context, e) => {
             response.data.records.patient_payable_h =
               response.data.records.patient_payable ||
               $this.state.patient_payable;
-            context.updateState({ ...response.data.records });
+            context.updateState({
+              ...response.data.records,
+              saveEnable: false
+            });
           }
         }
       },
@@ -77,7 +80,7 @@ const calculateRecipt = ($this, context, e) => {
 const cashtexthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
 
-  if (e.target.value > 0) {
+  if (parseFloat(e.target.value) > 0) {
     let cash_amount = parseFloat(e.target.value);
     let card_amount = parseFloat($this.state.card_amount);
     let cheque_amount = parseFloat($this.state.cheque_amount);
@@ -104,7 +107,10 @@ const cashtexthandle = ($this, context, ctrl, e) => {
       });
 
       if (context !== null) {
-        context.updateState({ [e.target.name]: e.target.value });
+        context.updateState({
+          [e.target.name]: e.target.value,
+          saveEnable: true
+        });
       }
     }
   }
@@ -112,7 +118,7 @@ const cashtexthandle = ($this, context, ctrl, e) => {
 
 const cardtexthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
-  if (e.target.value > 0) {
+  if (parseFloat(e.target.value) > 0) {
     let cash_amount = parseFloat($this.state.cash_amount);
     let card_amount = parseFloat(e.target.value);
     let cheque_amount = parseFloat($this.state.cheque_amount);
@@ -139,7 +145,10 @@ const cardtexthandle = ($this, context, ctrl, e) => {
       });
 
       if (context !== null) {
-        context.updateState({ [e.target.name]: e.target.value });
+        context.updateState({
+          [e.target.name]: e.target.value,
+          saveEnable: true
+        });
       }
     }
   }
@@ -148,7 +157,7 @@ const cardtexthandle = ($this, context, ctrl, e) => {
 const chequetexthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
 
-  if (e.target.value > 0) {
+  if (parseFloat(e.target.value) > 0) {
     let cash_amount = parseFloat($this.state.cash_amount);
     let card_amount = parseFloat($this.state.card_amount);
     let cheque_amount = parseFloat(e.target.value);
@@ -175,7 +184,10 @@ const chequetexthandle = ($this, context, ctrl, e) => {
       });
 
       if (context !== null) {
-        context.updateState({ [e.target.name]: e.target.value });
+        context.updateState({
+          [e.target.name]: e.target.value,
+          saveEnable: true
+        });
       }
     }
   }

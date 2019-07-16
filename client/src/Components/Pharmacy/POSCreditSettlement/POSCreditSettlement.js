@@ -4,7 +4,8 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import CreditDetails from "./CreditDetails/CreditDetails";
+// import CreditDetails from "./CreditDetails/CreditDetails";
+import CreditDetails from "../../CreditDetails";
 
 import SettlementIOputs from "../../../Models/POSCreditSettlement";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
@@ -271,18 +272,21 @@ class POSCreditSettlement extends Component {
           <MyContext.Provider
             value={{
               state: this.state,
-              updateState: obj => {
+              updateState: (obj, callback) => {
                 this.setState({ ...this.state, ...obj }, () => {
                   Object.keys(obj).map(key => {
                     if (key === "patient_code") {
                       this.getPatientDetails(this);
                     }
                   });
+                  if (typeof callback === "function") {
+                    callback();
+                  }
                 });
               }
             }}
           >
-            <CreditDetails SettlementIOputs={this.state} />
+            <CreditDetails SettlementIOputs={this.state} fromPos={true} />
             {/* <ReciptDetails SettlementIOputs={this.state} /> */}
             {/* <DisplayInsuranceDetails BillingIOputs={this.state} /> */}
             {/* <OPBillingDetails BillingIOputs={this.state} /> */}
@@ -296,7 +300,11 @@ class POSCreditSettlement extends Component {
                 type="button"
                 className="btn btn-primary"
                 onClick={SavePosCreidt.bind(this, this)}
-                disabled={this.state.saveEnable}
+                disabled={
+                  this.state.saveEnable ||
+                  this.state.receipt_amount == 0 ||
+                  this.state.unbalanced_amount != 0
+                }
               >
                 <AlgaehLabel
                   label={{ fieldName: "btn_save", returnText: true }}

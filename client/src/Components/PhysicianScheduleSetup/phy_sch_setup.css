@@ -59,10 +59,11 @@
   padding-top: 5px; }
 
 .physicianList {
-  min-height: 60vh;
-  max-height: 60vh;
+  min-height: 55vh;
+  max-height: 55vh;
   padding: 0;
   margin: 0;
+  border: 1px solid #ccc;
   border-radius: 0; }
   .physicianList ul {
     padding: 0;
@@ -75,12 +76,33 @@
       list-style: none; }
       .physicianList ul li .checkBoxPhy {
         margin: 10px;
-        display: inline-block; }
-      .physicianList ul li span {
+        width: 20px;
+        float: left;
+        position: relative; }
+        .physicianList ul li .checkBoxPhy input[type="checkbox"] {
+          opacity: 0; }
+        .physicianList ul li .checkBoxPhy input[type="checkbox"]:checked + i {
+          opacity: 1; }
+        .physicianList ul li .checkBoxPhy i {
+          opacity: 0;
+          color: #007468;
+          position: absolute;
+          top: 3px;
+          left: 4px; }
+      .physicianList ul li .physicianListName {
         display: inline-block;
-        width: auto;
+        width: calc(100% - 140px);
         padding: 10px;
-        border-left: 1px solid #ccc; }
+        border-left: 1px solid #ccc;
+        border-right: 1px solid #ccc; }
+      .physicianList ul li .physicianListSlot {
+        float: right;
+        width: 100px;
+        padding: 10px; }
+      .physicianList ul li:hover {
+        background: #00a796 !important;
+        color: #fff;
+        cursor: pointer; }
 
 .scheduledDocList {
   min-height: 70vh;
@@ -140,8 +162,7 @@
 .daysSpan {
   margin-top: 5px; }
   .daysSpan span {
-    border: 1px solid #ccc;
-    padding: 3px 5px;
+    padding-right: 5px;
     text-align: center;
     font-size: 1rem; }
 

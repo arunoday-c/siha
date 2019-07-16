@@ -6,7 +6,6 @@ import {
   AlgaehModalPopUp
 } from "../Wrapper/algaehWrapper";
 import GlobalVariables from "../../utils/GlobalVariables.json";
-import Enumerable from "linq";
 
 export default function ScheduleModal(props) {
   return (
@@ -20,12 +19,12 @@ export default function ScheduleModal(props) {
       <div className="popupInner">
         <div className="col-lg-12 divInner">
           <div className="row">
-            <div className="col-9 divInnerLeft">
+            <div className="col divInnerLeft">
               <div className="row">
                 <AlagehAutoComplete
                   div={{ className: "col-3" }}
                   label={{
-                    forceLabel: "Selected Department Name",
+                    forceLabel: "Select Dept.",
                     isImp: true
                   }}
                   selector={{
@@ -66,25 +65,6 @@ export default function ScheduleModal(props) {
               <input type="checkbox" id="default_slot" />
               <span>Set Default Slot</span>
             </div> */}
-                <AlagehAutoComplete
-                  div={{ className: "col-3" }}
-                  label={{
-                    fieldName: "sel_slot_time",
-                    isImp: true
-                  }}
-                  selector={{
-                    name: "slot",
-                    className: "select-fld",
-                    value: props.state.slot,
-
-                    dataSource: {
-                      textField: "name",
-                      valueField: "value",
-                      data: GlobalVariables.SLOTS
-                    },
-                    onChange: props.dropDownHandler
-                  }}
-                />
               </div>
               <div className="row">
                 <div className="col-6">
@@ -93,7 +73,7 @@ export default function ScheduleModal(props) {
                   </label>
                   <div className="row">
                     <AlgaehDateHandler
-                      div={{ className: "col" }}
+                      div={{ className: "col-6" }}
                       label={{ forceLabel: "From Date", isImp: true }}
                       textBox={{
                         className: "txt-fld",
@@ -106,7 +86,7 @@ export default function ScheduleModal(props) {
                       minDate={new Date()}
                     />
                     <AlgaehDateHandler
-                      div={{ className: "col" }}
+                      div={{ className: "col-6" }}
                       label={{ forceLabel: "To Date", isImp: true }}
                       textBox={{
                         className: "txt-fld",
@@ -337,27 +317,72 @@ export default function ScheduleModal(props) {
               </div>
             </div>
             {props.state.openEdit ? null : (
-              <div className="col-3 divInnerRight">
+              <div className="col-4 divInnerRight">
+                <div className="row">
+                  {" "}
+                  <AlagehAutoComplete
+                    div={{ className: "col-12" }}
+                    label={{
+                      fieldName: "sel_slot_time",
+                      isImp: true
+                    }}
+                    selector={{
+                      name: "slot",
+                      className: "select-fld",
+                      value: props.state.slot,
+
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: GlobalVariables.SLOTS
+                      },
+                      onChange: props.dropDownHandler
+                    }}
+                  />
+                </div>
                 <div className="row">
                   <div className="col">
                     <label>Doctors</label>
-                    <div className="bordered-layout physicianList">
+                    <div className="physicianList">
                       <ul>
                         {props.state.doctors.map((data, index) => {
                           return (
                             <li
                               key={index}
                               onClick={e =>
-                                e.currentTarget.firstElementChild.click()
+                                e.currentTarget.firstElementChild.firstElementChild.click()
                               }
                             >
-                              <input
-                                className="checkBoxPhy"
-                                row={JSON.stringify(data)}
-                                onChange={props.checkHandle}
-                                type="checkbox"
-                              />
-                              <span>{data.full_name}</span>
+                              <span className="checkBoxPhy">
+                                <input
+                                  checked={data.isDocChecked || false}
+                                  value={data.isDocChecked || false}
+                                  onChange={() =>
+                                    props.checkHandle(data, index)
+                                  }
+                                  type="checkbox"
+                                />
+                                <i className="fas fa-check" />
+                              </span>
+                              <span className="physicianListName">
+                                {data.full_name}
+                              </span>
+                              <span className="physicianListSlot">
+                                {/* <AlagehAutoComplete
+                                  div={{ className: "col-12" }}
+                                  selector={{
+                                    name: "slot",
+                                    className: "select-fld",
+                                    value: "",
+                                    dataSource: {
+                                      textField: "name",
+                                      valueField: "value",
+                                      data: ""
+                                    },
+                                    onChange: ""
+                                  }}
+                                /> */}
+                              </span>
                             </li>
                           );
                         })}

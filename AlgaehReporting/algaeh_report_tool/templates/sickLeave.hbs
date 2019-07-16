@@ -6,30 +6,86 @@
         <section>
 
 
-  <table class="tableForLabel" cell-padding="0">
+            <table class="tableForLabel" cell-padding="0">
 
-    <tr><td><label class="textEnLft">Patient Name</label>:<span class="valueText">{{header.patient_full_name}}</span></span><label class="textArRht">  الإسم</label></td><td><label class="textEnLft">Visit Date</label>:<span class="valueText">{{dateTime header.visit_date "date"}}</span><label class="textArRht">  رقم الزيارة</label></td></tr>
-                <tr><td><label class="textEnLft">MR No</label>:<span class="valueText">{{header.patient_code}}</span><label class="textArRht">  رقم الملف</label></td><td><label class="textEnLft">Reg. Date</label>:<span class="valueText">{{dateTime header.registration_date "date"}}</span><label class="textArRht">  تاريخ التسجيل</label></td></tr>
-                 <tr>
+                <tr>
+                    <td><label class="textEnLft">Patient Name</label>:<span
+                            class="valueText">{{header.patient_full_name}}</span></span><label class="textArRht">
+                            الإسم</label></td>
+                    <td><label class="textEnLft">Visit Date</label>:<span
+                            class="valueText">{{dateTime header.visit_date "date"}}</span><label class="textArRht"> رقم
+                            الزيارة</label></td>
+                </tr>
+                <tr>
+                    <td><label class="textEnLft">MR No</label>:<span
+                            class="valueText">{{header.patient_code}}</span><label class="textArRht"> رقم الملف</label>
+                    </td>
+                    <td><label class="textEnLft">Reg. Date</label>:<span
+                            class="valueText">{{dateTime header.registration_date "date"}}</span><label
+                            class="textArRht"> تاريخ التسجيل</label></td>
+                </tr>
+                <tr>
                     <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
                 </tr>
-               <tr><td><label class="textEnLft">Doctor</label>:<span class="valueText">{{header.full_name}}</span><label class="textArRht">  إسم الطبيب</label></td><td><label class="textEnLft">Department</label>:<span class="valueText">{{header.sub_department_name}}</span><label class="textArRht">قسم</label></td></tr>
+                <tr>
+                    <td><label class="textEnLft">Doctor</label>:<span
+                            class="valueText">{{header.full_name}}</span><label class="textArRht"> إسم الطبيب</label>
+                    </td>
+                    <td><label class="textEnLft">Department</label>:<span
+                            class="valueText">{{header.sub_department_name}}</span><label class="textArRht">قسم</label>
+                    </td>
+                </tr>
 
             </table>
 
 
         </section>
         <section>
-            <table class="tableForData" cell-padding="0">
+            <table class="tableForLabel" cell-padding="0">
                 <tbody>
 
-                  <tr><td><label class="textEnLft">Clinical Examination</label>:<span class="valueText">{{header.comment}}</span><label class="textArRht">الفحص الاكلينيكي</label></td></tr>
-                  <tr><td><label class="textEnLft">Diagnosis</label>:<span class="valueText">{{header.icd_description}}</span><label class="textArRht">التشخيص</label></td></tr>
-                  <tr><td><label class="textEnLft">Treatment</label>:<span class="valueText">Treatment Details</span><label class="textArRht">العلاج</label></td></tr>
-                  <tr><td><label class="textEnLft">From</label>:<span class="valueText">{{header.from_date}}</span><label class="textArRht">منتاريخ</label></td></tr>
-                  <tr><td><label class="textEnLft">To</label>:<span class="valueText">{{header.to_date}}</span><label class="textArRht">الىتاريخ</label></td></tr>
-                  <tr><td><label class="textEnLft">No. of Rest Days</label>:<span class="valueText">{{header.no_of_days}}</span><label class="textArRht">تاريخ المريض</label></td></tr>
-                  <tr><td><label class="textEnLft">Remarks</label>:<span class="valueText">{{header.remarks}}</span><label class="textArRht">الملاحظات</label></td></tr>
+                    <tr>
+                        <td style="width: 15%"><label class="">Clinical Examination</label>:</td>
+                        <td><span class="valueTextSick">{{header.comment}}</span></td>
+                        <td style="width: 15%;text-align:right"><label class="">الفحص
+                                الاكلينيكي</label></td>
+                    </tr>
+                    <tr>
+                        <td><label class="">Diagnosis</label>:</td>
+                        <td><span class="valueTextSick">{{header.icd_description}}</span></td>
+                        <td style="text-align:right"><label class="">التشخيص</label></td>
+                    </tr>
+                    <tr>
+                        <td><label class="">Treatment</label>:</td>
+                        <td><span class="valueTextSick">Treatment Details</span></td>
+                        <td style="text-align:right"><label class="">العلاج</label></td>
+                    </tr>
+                    <tr>
+                        <td><label class="">From</label>:
+                        </td>
+                        <td><span class="valueTextSick">{{header.from_date}}</span>
+                        </td>
+                        <td style="text-align:right"><label class="">منتاريخ</label></td>
+                    </tr>
+                    <tr>
+                        <td><label class="">To</label>:</td>
+                        <td><span class="valueTextSick">{{header.to_date}}</span>
+                        </td>
+                        <td style="text-align:right"><label class="">الىتاريخ</label></td>
+                    </tr>
+                    <tr>
+                        <td><label class="">No. of Rest Days</label>:</td>
+                        <td><span class="valueTextSick">{{header.no_of_days}}</span></td>
+                        <td style="text-align:right"><label class="">تاريخ
+                                المريض</label></td>
+                    </tr>
+                    <tr>
+                        <td><label class="">Remarks</label>:
+                        </td>
+                        <td><span class="valueTextSick">{{header.remarks}}</span>
+                        </td>
+                        <td style="text-align:right"><label class="">الملاحظات</label></td>
+                    </tr>
 
                 </tbody>
             </table>

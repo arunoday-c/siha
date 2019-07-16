@@ -345,39 +345,35 @@ let addCashierToShift = (req, res, next) => {
 
 //created by irfan: to
 let getCashiersAndShiftMAP = (req, res, next) => {
-  let selectWhere = {
-    hims_m_cashier_shift_id: "ALL",
-    cashier_id: "ALL",
-    month: "ALL",
-    year: "ALL"
-  };
+  // let selectWhere = {
+  //   hims_m_cashier_shift_id: "ALL",
+  //   cashier_id: "ALL",
+  //   month: "ALL",
+  //   year: "ALL"
+  // };
 
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
+
+    let str = "";
     if (req.query.for == "T") {
-      extend(selectWhere, {
-        cashier_id: req.body.created_by
-      });
-      delete req.query.for;
-    } else {
-      delete req.query.for;
+      str = ` and curdate() between from_date and to_date and CS.cashier_id=${
+        req.userIdentity.algaeh_d_app_user_id
+      } `;
     }
 
-    let where = whereCondition(extend(selectWhere, req.query));
+    //let where = whereCondition(extend(selectWhere, req.query));
     db.getConnection((error, connection) => {
       connection.query(
-        "select hims_m_cashier_shift_id, cashier_id, shift_id,shift_description, year, month,\
-            hims_d_employee_department_id,EDM.employee_id,E.full_name as cashier_name\
-            from hims_m_cashier_shift CS,hims_d_shift S,hims_d_employee E ,hims_m_employee_department_mappings EDM\
-              where CS.record_status='A' and S.record_status='A' and CS.shift_id=S.hims_d_shift_id \
-              and CS.cashier_id=EDM.user_id  and EDM.employee_id=E.hims_d_employee_id\
-               and " +
-          where.condition +
-          "order by hims_m_cashier_shift_id desc",
-        where.values,
+        `select hims_m_cashier_shift_id ,cashier_id,shift_id,from_date,to_date,\
+        E.full_name as cashier_name,shift_description,S.arabic_name\
+        from hims_m_cashier_shift CS inner join algaeh_d_app_user U on CS.cashier_id=U.algaeh_d_app_user_id\
+        inner join  hims_d_employee E on U.employee_id=E.hims_d_employee_id\
+        inner join hims_d_shift S on CS.shift_id=S.hims_d_shift_id\
+        where CS.record_status='A' ${str}`,
 
         (error, result) => {
           releaseDBConnection(db, connection);

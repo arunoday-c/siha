@@ -12,7 +12,8 @@ import {
   ClearData,
   SaveRequisitionEntry,
   AuthorizeRequisitionEntry,
-  LocationchangeTexts
+  LocationchangeTexts,
+  generateMaterialReqInv
 } from "./InvRequisitionEntryEvents";
 import "./InvRequisitionEntry.css";
 import "../../../styles/site.css";
@@ -182,41 +183,49 @@ class InvRequisitionEntry extends Component {
                 ? {
                     menuitems: [
                       {
-                        label: "Print Report",
+                        label: "Print Receipt",
                         events: {
                           onClick: () => {
-                            AlgaehReport({
-                              report: {
-                                fileName: "Inventory/MaterialRequisition"
-                              },
-                              data: {
-                                requisition_number: this.state
-                                  .material_requisition_number,
-                                requistion_date: moment(
-                                  this.state.requistion_date
-                                ).format(Options.datetimeFormat),
-
-                                requistion_type:
-                                  this.state.requistion_type === "PR"
-                                    ? "Purchase Requisition"
-                                    : "Material Requisition",
-
-                                from_location:
-                                  from_location_name.length > 0
-                                    ? from_location_name[0].location_description
-                                    : "",
-                                to_location:
-                                  to_location_name.length > 0
-                                    ? to_location_name[0].location_description
-                                    : [],
-
-                                inventory_stock_detail: this.state
-                                  .inventory_stock_detail
-                              }
-                            });
+                            generateMaterialReqInv(this.state);
                           }
                         }
                       }
+                      // {
+                      //   label: "Print Report",
+                      //   events: {
+                      //     onClick: () => {
+                      //       AlgaehReport({
+                      //         report: {
+                      //           fileName: "Inventory/MaterialRequisition"
+                      //         },
+                      //         data: {
+                      //           requisition_number: this.state
+                      //             .material_requisition_number,
+                      //           requistion_date: moment(
+                      //             this.state.requistion_date
+                      //           ).format(Options.datetimeFormat),
+
+                      //           requistion_type:
+                      //             this.state.requistion_type === "PR"
+                      //               ? "Purchase Requisition"
+                      //               : "Material Requisition",
+
+                      //           from_location:
+                      //             from_location_name.length > 0
+                      //               ? from_location_name[0].location_description
+                      //               : "",
+                      //           to_location:
+                      //             to_location_name.length > 0
+                      //               ? to_location_name[0].location_description
+                      //               : [],
+
+                      //           inventory_stock_detail: this.state
+                      //             .inventory_stock_detail
+                      //         }
+                      //       });
+                      //     }
+                      //   }
+                      // }
                     ]
                   }
                 : ""
@@ -411,8 +420,8 @@ class InvRequisitionEntry extends Component {
                         label={{
                           forceLabel:
                             this.state.authorize1 === "N"
-                              ? "Authorize1"
-                              : "Authorize2",
+                              ? "Authorize 1"
+                              : "Authorize 2",
                           returnText: true
                         }}
                       />

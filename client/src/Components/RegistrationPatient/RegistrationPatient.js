@@ -22,7 +22,10 @@ import {
   getCookie
 } from "../../utils/algaehApiCall.js";
 import AddAdvanceModal from "../Advance/AdvanceModal";
-import { imageToByteArray } from "../../utils/GlobalFunctions";
+import {
+  imageToByteArray,
+  AlgaehValidation
+} from "../../utils/GlobalFunctions";
 import { setGlobal } from "../../utils/GlobalFunctions";
 import { AlgaehActions } from "../../actions/algaehActions";
 import AlgaehReport from "../Wrapper/printReports";
@@ -72,43 +75,15 @@ class RegistrationPatient extends Component {
     let IOputs = emptyObject;
     IOputs.selectedLang = prevLang;
     this.setState(IOputs);
+
     if (
       this.props.patient_code !== undefined &&
       this.props.patient_code.length !== 0
     ) {
       getCtrlCode(this, this.props.patient_code);
+      getCashiersAndShiftMAP(this, this, "NA");
     } else {
-      const { patient_details } = this.props;
-      if (patient_details) {
-        this.setState(
-          {
-            full_name: patient_details.patient_name,
-            arabic_name: patient_details.arabic_patient_name,
-            gender: patient_details.patient_gender,
-            age: patient_details.patient_age,
-            contact_number: patient_details.patient_phone,
-            title_id: patient_details.title_id,
-            date_of_birth: patient_details.date_of_birth,
-            sub_department_id: this.props.sub_department_id,
-            department_id: this.props.department_id,
-            provider_id: this.props.provider_id,
-            doctor_id: this.props.provider_id,
-            visit_type: this.props.visit_type,
-            hims_d_services_id: this.props.hims_d_services_id,
-            saveEnable: false,
-            clearEnable: true,
-            consultation: "Y",
-            appointment_patient: "Y",
-            billdetail: false,
-            appointment_id: this.state.hims_f_patient_appointment_id
-          },
-          () => {
-            if (this.props.fromAppoinment === true) {
-              generateBillDetails(this, this);
-            }
-          }
-        );
-      }
+      getCashiersAndShiftMAP(this, this, "A");
     }
 
     this.props.setSelectedInsurance({
@@ -145,8 +120,6 @@ class RegistrationPatient extends Component {
         });
       }
     }
-
-    getCashiersAndShiftMAP(this, this);
 
     let _screenName = getCookie("ScreenName").replace("/", "");
     algaehApiCall({
@@ -314,329 +287,339 @@ class RegistrationPatient extends Component {
   }
 
   SavePatientDetails(e) {
+    let primary_policy_num = this.state.primary_policy_num;
     SetBulkState({
       state: this,
       callback: () => {
-        const err = Validations(this);
+        AlgaehValidation({
+          alertTypeIcon: "warning",
+          querySelector: "data-validate='demographicDetails'",
+          onSuccess: () => {
+            const err = Validations(this);
 
-        if (!err) {
-          AlgaehLoader({ show: true });
-          if (this.state.unbalanced_amount === 0) {
-            this.GenerateReciept($this => {
-              let patientdata = {};
+            if (!err) {
+              AlgaehLoader({ show: true });
+              if (this.state.unbalanced_amount === 0) {
+                this.GenerateReciept($this => {
+                  let patientdata = {};
 
-              if ($this.state.filePreview !== null) {
-                patientdata = {
-                  ...$this.state,
-                  patient_Image: imageToByteArray($this.state.filePreview)
-                };
-              } else {
-                patientdata = $this.state;
-              }
-              const _patImage = $this.state.patientImage;
-              const _patientIdCard = $this.state.patientIdCard;
-              const _patInsuranceFrontImg = $this.state.patInsuranceFrontImg;
-              const _patInsuranceBackImg = $this.state.patInsuranceBackImg;
-              const _patSecInsuranceFrontImg =
-                $this.state.patSecInsuranceFrontImg;
-              const _patSecInsuranceBackImg =
-                $this.state.patSecInsuranceBackImg;
-              delete patientdata.patSecInsuranceFrontImg;
-              delete patientdata.patientIdCard;
-              delete patientdata.patInsuranceFrontImg;
-              delete patientdata.patInsuranceBackImg;
-              delete patientdata.patSecInsuranceBackImg;
-              delete patientdata.patientImage;
-              delete patientdata.countrystates;
-              delete patientdata.cities;
-              if ($this.state.hims_d_patient_id === null) {
-                algaehApiCall({
-                  uri: "/frontDesk/add",
-                  module: "frontDesk",
-                  data: patientdata,
-                  method: "POST",
-                  onSuccess: response => {
-                    // AlgaehLoader({ show: false });
-                    if (response.data.success) {
-                      let _arrayImages = [];
-                      if (_patImage !== undefined) {
-                        _arrayImages.push(
-                          new Promise((resolve, reject) => {
-                            _patImage.SavingImageOnServer(
-                              undefined,
-                              undefined,
-                              undefined,
-                              response.data.records.patient_code,
-                              () => {
-                                resolve();
-                              }
+                  if ($this.state.filePreview !== null) {
+                    patientdata = {
+                      ...$this.state,
+                      patient_Image: imageToByteArray($this.state.filePreview)
+                    };
+                  } else {
+                    patientdata = $this.state;
+                  }
+                  const _patImage = $this.state.patientImage;
+                  const _patientIdCard = $this.state.patientIdCard;
+                  const _patInsuranceFrontImg =
+                    $this.state.patInsuranceFrontImg;
+                  const _patInsuranceBackImg = $this.state.patInsuranceBackImg;
+                  const _patSecInsuranceFrontImg =
+                    $this.state.patSecInsuranceFrontImg;
+                  const _patSecInsuranceBackImg =
+                    $this.state.patSecInsuranceBackImg;
+                  delete patientdata.patSecInsuranceFrontImg;
+                  delete patientdata.patientIdCard;
+                  delete patientdata.patInsuranceFrontImg;
+                  delete patientdata.patInsuranceBackImg;
+                  delete patientdata.patSecInsuranceBackImg;
+                  delete patientdata.patientImage;
+                  delete patientdata.countrystates;
+                  delete patientdata.cities;
+                  if ($this.state.hims_d_patient_id === null) {
+                    algaehApiCall({
+                      uri: "/frontDesk/add",
+                      module: "frontDesk",
+                      data: patientdata,
+                      method: "POST",
+                      onSuccess: response => {
+                        // AlgaehLoader({ show: false });
+                        if (response.data.success) {
+                          AlgaehLoader({ show: false });
+                          let _arrayImages = [];
+                          if (_patImage !== undefined) {
+                            _arrayImages.push(
+                              new Promise((resolve, reject) => {
+                                _patImage.SavingImageOnServer(
+                                  undefined,
+                                  undefined,
+                                  undefined,
+                                  response.data.records.patient_code,
+                                  () => {
+                                    resolve();
+                                  }
+                                );
+                              })
                             );
-                          })
-                        );
-                      }
-                      if (_patientIdCard !== undefined) {
-                        _arrayImages.push(
-                          new Promise((resolve, reject) => {
-                            _patientIdCard.SavingImageOnServer(
-                              undefined,
-                              undefined,
-                              undefined,
-                              $this.state.primary_id_no,
-                              () => {
-                                resolve();
-                              }
-                            );
-                          })
-                        );
-                      }
-
-                      if (
-                        _patInsuranceFrontImg !== undefined &&
-                        this.state.insured === "Y"
-                      ) {
-                        _arrayImages.push(
-                          new Promise((resolve, reject) => {
-                            _patInsuranceFrontImg.SavingImageOnServer(
-                              undefined,
-                              undefined,
-                              undefined,
-                              $this.state.primary_card_number + "_front",
-                              () => {
-                                resolve();
-                              }
-                            );
-                          })
-                        );
-                      }
-                      if (
-                        _patInsuranceBackImg !== undefined &&
-                        this.state.insured === "Y"
-                      ) {
-                        _arrayImages.push(
-                          new Promise((resolve, reject) => {
-                            _patInsuranceBackImg.SavingImageOnServer(
-                              undefined,
-                              undefined,
-                              undefined,
-                              $this.state.primary_card_number + "_back",
-                              () => {
-                                resolve();
-                              }
-                            );
-                          })
-                        );
-                      }
-
-                      Promise.all(_arrayImages).then(result => {
-                        AlgaehLoader({ show: false });
-
-                        $this.setState(
-                          {
-                            patient_code: response.data.records.patient_code,
-                            bill_number: response.data.records.bill_number,
-                            receipt_number:
-                              response.data.records.receipt_number,
-                            hims_d_patient_id:
-                              response.data.records.hims_d_patient_id,
-                            patient_visit_id:
-                              response.data.records.patient_visit_id,
-                            hims_f_billing_header_id:
-                              response.data.records.hims_f_billing_header_id,
-                            saveEnable: true,
-                            insuranceYes: true,
-                            hideInsurance: true,
-                            sec_insuranceYes: true,
-                            ProcessInsure: true,
-                            existingPatient: true,
-                            popUpGenereted: true,
-                            advanceEnable: false
-                          },
-                          () => {
-                            if (
-                              typeof $this.props.updateAppointmentStatus ===
-                              "function"
-                            ) {
-                              $this.props.updateAppointmentStatus();
-                            }
                           }
-                        );
+                          if (_patientIdCard !== undefined) {
+                            _arrayImages.push(
+                              new Promise((resolve, reject) => {
+                                _patientIdCard.SavingImageOnServer(
+                                  undefined,
+                                  undefined,
+                                  undefined,
+                                  $this.state.primary_id_no,
+                                  () => {
+                                    resolve();
+                                  }
+                                );
+                              })
+                            );
+                          }
+
+                          if (
+                            _patInsuranceFrontImg !== undefined &&
+                            this.state.insured === "Y"
+                          ) {
+                            _arrayImages.push(
+                              new Promise((resolve, reject) => {
+                                _patInsuranceFrontImg.SavingImageOnServer(
+                                  undefined,
+                                  undefined,
+                                  undefined,
+                                  $this.state.primary_card_number + "_front",
+                                  () => {
+                                    resolve();
+                                  }
+                                );
+                              })
+                            );
+                          }
+                          if (
+                            _patInsuranceBackImg !== undefined &&
+                            this.state.insured === "Y"
+                          ) {
+                            _arrayImages.push(
+                              new Promise((resolve, reject) => {
+                                _patInsuranceBackImg.SavingImageOnServer(
+                                  undefined,
+                                  undefined,
+                                  undefined,
+                                  $this.state.primary_card_number + "_back",
+                                  () => {
+                                    resolve();
+                                  }
+                                );
+                              })
+                            );
+                          }
+
+                          Promise.all(_arrayImages).then(result => {
+                            AlgaehLoader({ show: false });
+
+                            $this.setState(
+                              {
+                                patient_code:
+                                  response.data.records.patient_code,
+                                bill_number: response.data.records.bill_number,
+                                receipt_number:
+                                  response.data.records.receipt_number,
+                                hims_d_patient_id:
+                                  response.data.records.hims_d_patient_id,
+                                patient_visit_id:
+                                  response.data.records.patient_visit_id,
+                                hims_f_billing_header_id:
+                                  response.data.records
+                                    .hims_f_billing_header_id,
+
+                                saveEnable: true,
+                                insuranceYes: true,
+                                hideInsurance: true,
+                                sec_insuranceYes: true,
+                                ProcessInsure: true,
+                                existingPatient: true,
+                                popUpGenereted: true,
+                                advanceEnable: false,
+                                primary_policy_num: primary_policy_num
+                              },
+                              () => {
+                                if (
+                                  typeof $this.props.updateAppointmentStatus ===
+                                  "function"
+                                ) {
+                                  $this.props.updateAppointmentStatus();
+                                }
+                              }
+                            );
+                            swalMessage({
+                              title: "Done Successfully",
+                              type: "success"
+                            });
+                          });
+                        } else {
+                          AlgaehLoader({ show: false });
+                          swalMessage({
+                            type: "error",
+                            title: response.data.records.message
+                          });
+                        }
+                      },
+                      onFailure: error => {
+                        AlgaehLoader({ show: false });
                         swalMessage({
-                          title: "Done Successfully",
-                          type: "success"
+                          title: error.message,
+                          type: "error"
                         });
-                      });
-                    }
-                  },
-                  onFailure: error => {
-                    AlgaehLoader({ show: false });
-                    swalMessage({
-                      title: error.message,
-                      type: "error"
+                      }
+                    });
+                  } else {
+                    algaehApiCall({
+                      uri: "/frontDesk/update",
+                      module: "frontDesk",
+                      data: patientdata,
+                      method: "POST",
+                      onSuccess: response => {
+                        // AlgaehLoader({ show: false });
+                        if (response.data.success) {
+                          AlgaehLoader({ show: false });
+                          let _arrayImages = [];
+                          if (_patImage !== undefined) {
+                            _arrayImages.push(
+                              new Promise((resolve, reject) => {
+                                _patImage.SavingImageOnServer(
+                                  undefined,
+                                  undefined,
+                                  undefined,
+                                  $this.state.patient_code,
+                                  () => {
+                                    resolve();
+                                  }
+                                );
+                              })
+                            );
+                          }
+                          if (_patientIdCard !== undefined) {
+                            _arrayImages.push(
+                              new Promise((resolve, reject) => {
+                                _patientIdCard.SavingImageOnServer(
+                                  undefined,
+                                  undefined,
+                                  undefined,
+                                  $this.state.primary_id_no,
+                                  () => {
+                                    resolve();
+                                  }
+                                );
+                              })
+                            );
+                          }
+
+                          if (
+                            _patInsuranceFrontImg !== undefined &&
+                            this.state.insured === "Y"
+                          ) {
+                            _arrayImages.push(
+                              new Promise((resolve, reject) => {
+                                _patInsuranceFrontImg.SavingImageOnServer(
+                                  undefined,
+                                  undefined,
+                                  undefined,
+                                  $this.state.primary_card_number + "_front",
+                                  () => {
+                                    resolve();
+                                  }
+                                );
+                              })
+                            );
+                          }
+                          if (
+                            _patInsuranceBackImg !== undefined &&
+                            this.state.insured === "Y"
+                          ) {
+                            _arrayImages.push(
+                              new Promise((resolve, reject) => {
+                                _patInsuranceBackImg.SavingImageOnServer(
+                                  undefined,
+                                  undefined,
+                                  undefined,
+                                  $this.state.primary_card_number + "_back",
+                                  () => {
+                                    resolve();
+                                  }
+                                );
+                              })
+                            );
+                          }
+
+                          Promise.all(_arrayImages).then(result => {
+                            AlgaehLoader({ show: false });
+
+                            $this.setState(
+                              {
+                                bill_number: response.data.records.bill_number,
+                                receipt_number:
+                                  response.data.records.receipt_number,
+                                patient_visit_id:
+                                  response.data.records.patient_visit_id,
+                                hims_f_billing_header_id:
+                                  response.data.records
+                                    .hims_f_billing_header_id,
+
+                                saveEnable: true,
+                                insuranceYes: true,
+                                hideInsurance: true,
+                                sec_insuranceYes: true,
+                                ProcessInsure: true,
+                                existingPatient: true,
+                                popUpGenereted: true,
+                                primary_policy_num: primary_policy_num
+                              },
+                              () => {
+                                if (
+                                  typeof $this.props.updateAppointmentStatus ===
+                                  "function"
+                                ) {
+                                  $this.props.updateAppointmentStatus();
+                                }
+                              }
+                            );
+                            swalMessage({
+                              title: "Done Successfully",
+                              type: "success"
+                            });
+                          });
+                        } else {
+                          AlgaehLoader({ show: false });
+                          swalMessage({
+                            type: "error",
+                            title: response.data.records.message
+                          });
+                          this.setState({
+                            primary_policy_num: primary_policy_num
+                          });
+                        }
+                      },
+                      onFailure: error => {
+                        this.setState({
+                          primary_policy_num: primary_policy_num
+                        });
+                        AlgaehLoader({ show: false });
+                        swalMessage({
+                          title: error.message,
+                          type: "error"
+                        });
+                      }
                     });
                   }
                 });
               } else {
-                algaehApiCall({
-                  uri: "/frontDesk/update",
-                  module: "frontDesk",
-                  data: patientdata,
-                  method: "POST",
-                  onSuccess: response => {
-                    // AlgaehLoader({ show: false });
-                    if (response.data.success) {
-                      let _arrayImages = [];
-                      if (_patImage !== undefined) {
-                        _arrayImages.push(
-                          new Promise((resolve, reject) => {
-                            _patImage.SavingImageOnServer(
-                              undefined,
-                              undefined,
-                              undefined,
-                              $this.state.patient_code,
-                              () => {
-                                resolve();
-                              }
-                            );
-                          })
-                        );
-                      }
-                      if (_patientIdCard !== undefined) {
-                        _arrayImages.push(
-                          new Promise((resolve, reject) => {
-                            _patientIdCard.SavingImageOnServer(
-                              undefined,
-                              undefined,
-                              undefined,
-                              $this.state.primary_id_no,
-                              () => {
-                                resolve();
-                              }
-                            );
-                          })
-                        );
-                      }
-
-                      if (
-                        _patInsuranceFrontImg !== undefined &&
-                        this.state.insured === "Y"
-                      ) {
-                        _arrayImages.push(
-                          new Promise((resolve, reject) => {
-                            _patInsuranceFrontImg.SavingImageOnServer(
-                              undefined,
-                              undefined,
-                              undefined,
-                              $this.state.primary_card_number + "_front",
-                              () => {
-                                resolve();
-                              }
-                            );
-                          })
-                        );
-                      }
-                      if (
-                        _patInsuranceBackImg !== undefined &&
-                        this.state.insured === "Y"
-                      ) {
-                        _arrayImages.push(
-                          new Promise((resolve, reject) => {
-                            _patInsuranceBackImg.SavingImageOnServer(
-                              undefined,
-                              undefined,
-                              undefined,
-                              $this.state.primary_card_number + "_back",
-                              () => {
-                                resolve();
-                              }
-                            );
-                          })
-                        );
-                      }
-                      // if (_patSecInsuranceFrontImg !== undefined) {
-                      //   _arrayImages.push(
-                      //     new Promise((resolve, reject) => {
-                      //       _patSecInsuranceFrontImg.SavingImageOnServer(
-                      //         undefined,
-                      //         undefined,
-                      //         undefined,
-                      //         $this.state.secondary_card_number + "_sec_front",
-                      //         () => {
-                      //           resolve();
-                      //         }
-                      //       );
-                      //     })
-                      //   );
-                      // }
-                      //
-                      // if (_patSecInsuranceBackImg !== undefined) {
-                      //   _arrayImages.push(
-                      //     new Promise((resolve, reject) => {
-                      //       _patSecInsuranceBackImg.SavingImageOnServer(
-                      //         undefined,
-                      //         undefined,
-                      //         undefined,
-                      //         $this.state.secondary_card_number + "_sec_back",
-                      //         () => {
-                      //           resolve();
-                      //         }
-                      //       );
-                      //     })
-                      //   );
-                      // }
-
-                      Promise.all(_arrayImages).then(result => {
-                        AlgaehLoader({ show: false });
-
-                        $this.setState(
-                          {
-                            bill_number: response.data.records.bill_number,
-                            receipt_number:
-                              response.data.records.receipt_number,
-                            patient_visit_id:
-                              response.data.records.patient_visit_id,
-                            hims_f_billing_header_id:
-                              response.data.records.hims_f_billing_header_id,
-                            saveEnable: true,
-                            insuranceYes: true,
-                            hideInsurance: true,
-                            sec_insuranceYes: true,
-                            ProcessInsure: true,
-                            existingPatient: true,
-                            popUpGenereted: true
-                          },
-                          () => {
-                            if (
-                              typeof $this.props.updateAppointmentStatus ===
-                              "function"
-                            ) {
-                              $this.props.updateAppointmentStatus();
-                            }
-                          }
-                        );
-                        swalMessage({
-                          title: "Done Successfully",
-                          type: "success"
-                        });
-                      });
-                    }
-                  },
-                  onFailure: error => {
-                    AlgaehLoader({ show: false });
-                    swalMessage({
-                      title: error.message,
-                      type: "error"
-                    });
-                  }
+                swalMessage({
+                  title: "Please receive the amount.",
+                  type: "error"
                 });
+                this.setState({ primary_policy_num: primary_policy_num });
               }
-            });
-          } else {
-            swalMessage({
-              title: "Please receive the amount.",
-              type: "error"
-            });
+            } else {
+              this.setState({ primary_policy_num: primary_policy_num });
+            }
+          },
+          onCatch: () => {
+            this.setState({ primary_policy_num: primary_policy_num });
           }
-        }
+        });
       }
     });
   }

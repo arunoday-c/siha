@@ -18,12 +18,21 @@ import {
 const { newReceiptData, addBillData, addCashHandover } = algaehPath(
   "algaeh-billing/src/models/billing"
 );
+
+const { getPatientwiseBill } = algaehPath(
+  "algaeh-billing/src/models/opCreditSettlement"
+);
+
 export default () => {
   const api = Router();
-  api.get("/get", selectFrontDesk, (req, res, next) => {
+  api.get("/get", selectFrontDesk, getPatientwiseBill, (req, res, next) => {
+    let _billriedt = req.bill_criedt;
+    let _frontdesk = req.records;
+
+    let result = { ..._frontdesk, ..._billriedt };
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: req.records
+      records: result
     });
   });
 
@@ -36,6 +45,23 @@ export default () => {
     newReceiptData,
     addBillData,
     addCashHandover,
+    (req, res, next) => {
+      if (
+        req.records.internal_error != undefined &&
+        req.records.internal_error == true
+      ) {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: false,
+
+          records: {
+            internal_error: req.records.internal_error,
+            message: req.records.message
+          }
+        });
+      } else {
+        next();
+      }
+    },
     addEpisodeEncounterData,
 
     (req, res, next) => {
@@ -54,6 +80,22 @@ export default () => {
     newReceiptData,
     addBillData,
     addCashHandover,
+    (req, res, next) => {
+      if (
+        req.records.internal_error != undefined &&
+        req.records.internal_error == true
+      ) {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: false,
+          records: {
+            internal_error: req.records.internal_error,
+            message: req.records.message
+          }
+        });
+      } else {
+        next();
+      }
+    },
     addEpisodeEncounterData,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({

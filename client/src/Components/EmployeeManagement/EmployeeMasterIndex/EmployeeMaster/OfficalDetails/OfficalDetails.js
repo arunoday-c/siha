@@ -30,7 +30,7 @@ class OfficalDetails extends Component {
       date_of_releaving_label: "Date of leaving",
       accomodation_provided: false,
       reliving_date: undefined,
-      employee_status: null,
+      // employee_status: null,
       inactive_date: undefined,
       selectedLang: getCookie("Language")
     };
@@ -166,10 +166,7 @@ class OfficalDetails extends Component {
                     value: this.state.sub_department_id,
 
                     dataSource: {
-                      textField:
-                        this.state.selectedLang === "en"
-                          ? "sub_department_name"
-                          : "arabic_sub_department_name",
+                      textField: "sub_department_name",
                       valueField: "hims_d_sub_department_id",
                       data: this.props.subdepartment
                     },
@@ -279,10 +276,7 @@ class OfficalDetails extends Component {
                     className: "select-fld",
                     value: this.state.employee_status,
                     dataSource: {
-                      textField:
-                        this.state.selectedLang === "en"
-                          ? "name"
-                          : "arabic_name",
+                      textField: "name",
                       valueField: "value",
                       data: variableJson.EMPLOYEE_STATUS
                     },

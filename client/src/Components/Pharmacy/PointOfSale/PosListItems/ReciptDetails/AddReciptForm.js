@@ -16,7 +16,8 @@ import {
 import {
   AlgaehDateHandler,
   AlgaehLabel,
-  AlagehFormGroup
+  AlagehFormGroup,
+  AlagehAutoComplete
 } from "../../../../Wrapper/algaehWrapper";
 
 import MyContext from "../../../../../utils/MyContext";
@@ -76,6 +77,38 @@ class AddReciptForm extends Component {
                         : "DD/MM/YYYY"}
                     </h6>
                   </div>
+                  <AlagehAutoComplete
+                    div={{ className: "col-lg-3" }}
+                    label={{
+                      forceLabel: "Shift",
+                      isImp: true
+                    }}
+                    userPrefernce={true}
+                    selector={{
+                      name: "shift_id",
+                      className: "select-fld",
+                      value: this.state.shift_id,
+                      dataSource: {
+                        textField: "shift_description",
+                        valueField: "shift_id",
+                        data: this.state.shift_assinged
+                      },
+                      others: {
+                        disabled:
+                          this.state.postEnable === true
+                            ? true
+                            : this.state.posCancelled === true
+                            ? true
+                            : false
+                      },
+                      onChange: texthandle.bind(this, this, context),
+                      onClear: () => {
+                        this.setState({
+                          shift_id: null
+                        });
+                      }
+                    }}
+                  />
                 </div>
                 <hr style={{ margin: 0 }} />
 

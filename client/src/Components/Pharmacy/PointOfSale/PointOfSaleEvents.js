@@ -407,12 +407,22 @@ const Validations = $this => {
       document.querySelector("[name='cheque_date']").focus();
       return isError;
     }
-  } else if ($this.state.unbalanced_amount > 0) {
+  }
+  if ($this.state.unbalanced_amount > 0) {
     isError = true;
 
     swalMessage({
       type: "warning",
       title: "Unbanalced Amount should nullify."
+    });
+
+    return isError;
+  } else if ($this.state.shift_id === null) {
+    isError = true;
+
+    swalMessage({
+      type: "warning",
+      title: "Select Shift."
     });
 
     return isError;
@@ -680,6 +690,7 @@ const PostPosEntry = $this => {
                       hims_f_pharmacy_pos_header_id:
                         response.data.records.hims_f_pharmacy_pos_header_id ||
                         $this.state.hims_f_pharmacy_pos_header_id,
+                      receipt_number: response.data.records.receipt_number,
                       year: response.data.records.year,
                       period: response.data.records.period,
                       postEnable: true,
@@ -698,6 +709,12 @@ const PostPosEntry = $this => {
                 });
 
                 AlgaehLoader({ show: false });
+              } else {
+                AlgaehLoader({ show: false });
+                swalMessage({
+                  title: response.data.records.message,
+                  type: "error"
+                });
               }
             },
             onFailure: error => {
@@ -779,6 +796,7 @@ const VisitSearch = ($this, e) => {
                     data[0].primary_effective_start_date;
                   data[0].network_office_id =
                     data[0].hims_d_insurance_network_office_id;
+                  data[0].sub_insurance_id = data[0].sub_insurance_provider_id;
                   $this.setState(data[0], () => {
                     getMedicationList($this);
                   });
@@ -1032,6 +1050,37 @@ const generateReport = ($this, rpt_name, rpt_desc) => {
     }
   });
 };
+
+const getCashiersAndShiftMAP = $this => {
+  algaehApiCall({
+    uri: "/shiftAndCounter/getCashiersAndShiftMAP",
+    module: "masterSettings",
+    method: "GET",
+    data: { for: "T" },
+    onSuccess: response => {
+      if (response.data.success) {
+        if (response.data.records.length > 0) {
+          $this.setState(
+            {
+              shift_assinged: response.data.records
+            },
+            () => {
+              $this.setState({
+                shift_id: response.data.records[0].shift_id
+              });
+            }
+          );
+        }
+      }
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
+};
 export {
   changeTexts,
   getCtrlCode,
@@ -1046,5 +1095,6 @@ export {
   getMedicationList,
   CancelPosEntry,
   getPosEntry,
-  generateReport
+  generateReport,
+  getCashiersAndShiftMAP
 };

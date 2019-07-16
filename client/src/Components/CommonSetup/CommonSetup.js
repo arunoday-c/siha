@@ -12,12 +12,22 @@ import VisitType from "./VisitType/VisitType";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../actions/algaehActions";
 import InsuranceCardClass from "./InsuranceCardClass/InsuranceCardClass";
+import { AlgaehOpenContainer } from "../../utils/GlobalFunctions";
+import _ from "lodash";
 
 class CommonSetup extends Component {
   constructor(props) {
     super(props);
-
-    this.state = { pageDisplay: "VisitType", sidBarOpen: true };
+    let Activated_Modueles = JSON.parse(
+      AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
+    );
+    const HIMS_Active = _.filter(Activated_Modueles, f => {
+      return f.module_code === "FTDSK";
+    });
+    this.state = {
+      pageDisplay: HIMS_Active.length > 0 ? "VisitType" : "VisaType",
+      HIMS_Active: HIMS_Active.length > 0 ? true : false
+    };
   }
 
   openTab(e) {
@@ -29,12 +39,6 @@ class CommonSetup extends Component {
     var specified = e.currentTarget.getAttribute("algaehtabs");
     this.setState({
       pageDisplay: specified
-    });
-  }
-
-  SideMenuBarOpen(sidOpen) {
-    this.setState({
-      sidBarOpen: sidOpen
     });
   }
 
@@ -55,19 +59,21 @@ class CommonSetup extends Component {
         <div className="row">
           <div className="tabMaster toggle-section">
             <ul className="nav">
-              <li
-                algaehtabs={"VisitType"}
-                className={"nav-item tab-button active"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "visit_type"
-                    }}
-                  />
-                }
-              </li>
+              {this.state.HIMS_Active === true ? (
+                <li
+                  algaehtabs={"VisitType"}
+                  className={"nav-item tab-button active"}
+                  onClick={this.openTab.bind(this)}
+                >
+                  {
+                    <AlgaehLabel
+                      label={{
+                        fieldName: "visit_type"
+                      }}
+                    />
+                  }
+                </li>
+              ) : null}
               <li
                 algaehtabs={"VisaType"}
                 className={"nav-item tab-button"}
@@ -94,32 +100,36 @@ class CommonSetup extends Component {
                   />
                 }
               </li>
-              <li
-                algaehtabs={"PatientType"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "patient_type"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"InsuranceCardClass"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "insurance_card_class"
-                    }}
-                  />
-                }
-              </li>
+              {this.state.HIMS_Active === true ? (
+                <li
+                  algaehtabs={"PatientType"}
+                  className={"nav-item tab-button"}
+                  onClick={this.openTab.bind(this)}
+                >
+                  {
+                    <AlgaehLabel
+                      label={{
+                        fieldName: "patient_type"
+                      }}
+                    />
+                  }
+                </li>
+              ) : null}
+              {/*{this.state.HIMS_Active === true ? (
+                <li
+                  algaehtabs={"InsuranceCardClass"}
+                  className={"nav-item tab-button"}
+                  onClick={this.openTab.bind(this)}
+                >
+                  {
+                    <AlgaehLabel
+                      label={{
+                        fieldName: "insurance_card_class"
+                      }}
+                    />
+                  }
+                </li>
+                ) : null}*/}
             </ul>
           </div>
         </div>

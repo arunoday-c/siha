@@ -28,9 +28,9 @@ const numberchangeTexts = ($this, e) => {
   let extended_cost = 0;
 
   if (name === "quantity") {
-    extended_cost = $this.state.unit_cost * value;
+    extended_cost = parseFloat($this.state.unit_cost) * value;
   } else if (name === "unit_cost") {
-    extended_cost = $this.state.quantity * value;
+    extended_cost = parseFloat($this.state.quantity) * value;
   }
   extended_cost = math.round(extended_cost, 2);
   $this.setState({ [name]: value, extended_cost: extended_cost });
@@ -77,25 +77,25 @@ const getItemUom = ($this, purchase_cost) => {
   });
 };
 
-const itemchangeText = ($this, e) => {
-  let name = e.name || e.target.name;
-  let value = e.value || e.target.value;
-  getItemUom($this, e.selected.purchase_cost);
+const itemchangeText = ($this, e, ctrl) => {
+  let name = ctrl;
+  let value = e.hims_d_item_master_id;
+  getItemUom($this, e.purchase_cost);
 
   $this.setState({
     [name]: value,
-    item_category_id: e.selected.category_id,
-    item_group_id: e.selected.group_id,
-    uom_id: e.selected.stocking_uom_id,
-    sales_uom: e.selected.sales_uom_id,
-    required_batchno: e.selected.exp_date_not_required,
-    item_code: e.selected.item_code,
+    item_category_id: e.category_id,
+    item_group_id: e.group_id,
+    uom_id: e.stocking_uom_id,
+    sales_uom: e.sales_uom_id,
+    required_batchno: e.exp_date_not_required,
+    item_code: e.item_code,
     // unit_cost: e.selected.purchase_cost,
-    sales_price: e.selected.sales_price,
-    batchno: "B" + e.selected.batch_no,
-    purchase_uom_id: e.selected.purchase_uom_id,
-    stock_uom_desc: e.selected.stock_uom_desc,
-    sales_uom_desc: e.selected.sales_uom_desc
+    sales_price: e.sales_price,
+    batchno: "B" + e.batch_no,
+    purchase_uom_id: e.purchase_uom_id,
+    stock_uom_desc: e.stock_uom_desc,
+    sales_uom_desc: e.sales_uom_desc
   });
 };
 
@@ -169,7 +169,8 @@ const AddItems = $this => {
           saveEnable: false,
           grn_number: null,
           sales_uom: null,
-          purchase_uom_id: null
+          purchase_uom_id: null,
+          item_description: ""
         });
       }
     }
@@ -205,51 +206,79 @@ const dateFormater = value => {
 
 const getCtrlCode = ($this, docNumber) => {
   AlgaehLoader({ show: true });
-  algaehApiCall({
-    uri: "/initialstock/getPharmacyInitialStock",
-    module: "pharmacy",
-    method: "GET",
-    data: { document_number: docNumber },
-    onSuccess: response => {
-      if (response.data.success === true) {
-        let data = response.data.records;
-        data.saveEnable = true;
 
-        if (data.posted === "Y") {
-          data.postEnable = true;
-        } else {
-          data.postEnable = false;
-        }
-        data.dataExitst = true;
-
-        data.location_id = null;
-        data.item_category_id = null;
-        data.item_group_id = null;
-        data.item_id = null;
-        data.batchno = null;
-        data.vendor_batchno = null;
-        data.expiry_date = null;
-        data.quantity = 0;
-        data.unit_cost = 0;
-        data.uom_id = null;
-        data.sales_price = 0;
-        data.conversion_fact = null;
-        data.extended_cost = 0;
-        data.grn_number = null;
-        data.sales_uom = null;
-        data.purchase_uom_id = null;
-        $this.setState(data);
-        AlgaehLoader({ show: false });
-      }
+  $this.setState(
+    {
+      item_description: "",
+      description: "",
+      pharmacy_stock_detail: [],
+      document_number: null,
+      location_id: null,
+      item_category_id: null,
+      item_group_id: null,
+      item_id: null,
+      batchno: null,
+      vendor_batchno: null,
+      expiry_date: null,
+      quantity: 0,
+      unit_cost: 0,
+      uom_id: null,
+      conversion_fact: null,
+      extended_cost: 0,
+      saveEnable: true,
+      postEnable: true,
+      dataExitst: false,
+      sales_price: 0,
+      grn_number: null
     },
-    onFailure: error => {
-      AlgaehLoader({ show: false });
-      swalMessage({
-        title: error.message,
-        type: "error"
+    () => {
+      algaehApiCall({
+        uri: "/initialstock/getPharmacyInitialStock",
+        module: "pharmacy",
+        method: "GET",
+        data: { document_number: docNumber },
+        onSuccess: response => {
+          if (response.data.success === true) {
+            let data = response.data.records;
+            data.saveEnable = true;
+
+            if (data.posted === "Y") {
+              data.postEnable = true;
+            } else {
+              data.postEnable = false;
+            }
+            data.dataExitst = true;
+
+            data.location_id = null;
+            data.item_category_id = null;
+            data.item_group_id = null;
+            data.item_id = null;
+            data.batchno = null;
+            data.vendor_batchno = null;
+            data.expiry_date = null;
+            data.quantity = 0;
+            data.unit_cost = 0;
+            data.uom_id = null;
+            data.sales_price = 0;
+            data.conversion_fact = null;
+            data.extended_cost = 0;
+            data.grn_number = null;
+            data.sales_uom = null;
+            data.purchase_uom_id = null;
+            $this.setState(data);
+            AlgaehLoader({ show: false });
+          }
+        },
+        onFailure: error => {
+          AlgaehLoader({ show: false });
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
+        }
       });
     }
-  });
+  );
 };
 
 const SaveInitialStock = $this => {
@@ -312,6 +341,7 @@ const deleteInitialStock = ($this, row) => {
 };
 const ClearData = $this => {
   $this.setState({
+    item_description: "",
     description: "",
     pharmacy_stock_detail: [],
     document_number: null,
@@ -379,7 +409,7 @@ const PostInitialStock = $this => {
   });
 };
 
-const printBarcode = ($this, row, e) => {
+const printBarcode = ($this, row) => {
   AlgaehReport({
     report: {
       fileName: "sampleBarcode",
@@ -399,6 +429,47 @@ const printBarcode = ($this, row, e) => {
   });
 };
 
+const onChamgeGridQuantity = ($this, row, e) => {
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  let extended_cost = 0;
+  if (value !== "") {
+    extended_cost = parseFloat(row.unit_cost) * value;
+
+    extended_cost = math.round(extended_cost, 2);
+    row[name] = value;
+    row["extended_cost"] = extended_cost;
+    row.update();
+  } else {
+    row[name] = value;
+    row["extended_cost"] = extended_cost;
+    row.update();
+  }
+};
+
+const updateInitialStock = ($this, row) => {
+  let authBtnEnable = true;
+  let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+  let _index = pharmacy_stock_detail.indexOf(row);
+  pharmacy_stock_detail[_index] = row;
+
+  $this.setState({
+    saveEnable: !$this.state.saveEnable,
+    pharmacy_stock_detail: pharmacy_stock_detail
+  });
+};
+
+const EditGrid = ($this, cancelRow) => {
+  let _pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+  if (cancelRow !== undefined) {
+    _pharmacy_stock_detail[cancelRow.rowIdx] = cancelRow;
+  }
+  $this.setState({
+    saveEnable: !$this.state.saveEnable,
+    pharmacy_stock_detail: _pharmacy_stock_detail
+  });
+};
+
 export {
   changeTexts,
   itemchangeText,
@@ -414,5 +485,8 @@ export {
   PostInitialStock,
   printBarcode,
   salesPriceEvent,
-  dateValidate
+  dateValidate,
+  updateInitialStock,
+  onChamgeGridQuantity,
+  EditGrid
 };

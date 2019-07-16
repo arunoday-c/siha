@@ -3,20 +3,23 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import moment from "moment";
-import { texthandle, countertexthandle } from "./AddReciptFormHandaler";
+import "./AddReciptForm.css";
+import "./../../../../styles/site.css";
+
+import { maxCharactersLeft } from "../../../../utils/algaehApiCall";
+import MyContext from "../../../../utils/MyContext";
+import { AlgaehActions } from "../../../../actions/algaehActions";
+
 import {
-  //AlgaehDateHandler,
   AlgaehLabel,
   AlagehFormGroup,
   AlagehAutoComplete
 } from "../../../Wrapper/algaehWrapper";
-
-import MyContext from "../../../../utils/MyContext";
-import "./AddReciptForm.css";
-import "./../../../../styles/site.css";
-
-import { AlgaehActions } from "../../../../actions/algaehActions";
-// import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import {
+  texthandle,
+  countertexthandle,
+  textAreaEvent
+} from "./AddReciptFormHandaler";
 
 class AddReciptForm extends Component {
   constructor(props) {
@@ -26,6 +29,7 @@ class AddReciptForm extends Component {
       errorInCard: false,
       errorInCheck: false
     };
+    this.cancel_remarks_MaxLength = 200;
   }
 
   componentWillMount() {
@@ -38,18 +42,6 @@ class AddReciptForm extends Component {
   }
 
   componentDidMount() {
-    if (this.props.shifts === undefined || this.props.shifts.length === 0) {
-      this.props.getShifts({
-        uri: "/shiftAndCounter/getShiftMaster",
-        module: "masterSettings",
-        method: "GET",
-        redux: {
-          type: "CTRY_GET_DATA",
-          mappingName: "shifts"
-        }
-      });
-    }
-
     if (this.props.counters === undefined || this.props.counters.length === 0) {
       this.props.getCounters({
         uri: "/shiftAndCounter/getCounterMaster",
@@ -95,7 +87,7 @@ class AddReciptForm extends Component {
                         : "DD/MM/YYYY"}
                     </h6>
                   </div>
-                  <AlagehAutoComplete
+                  {/*<AlagehAutoComplete
                     div={{ className: "col-lg-3" }}
                     label={{
                       fieldName: "counter_id",
@@ -118,7 +110,7 @@ class AddReciptForm extends Component {
                       },
                       onChange: countertexthandle.bind(this, this, context)
                     }}
-                  />
+                  />*/}
 
                   <AlagehAutoComplete
                     div={{ className: "col-lg-3" }}
@@ -135,8 +127,8 @@ class AddReciptForm extends Component {
                           this.state.selectedLang === "en"
                             ? "shift_description"
                             : "arabic_name",
-                        valueField: "hims_d_shift_id",
-                        data: this.props.shifts
+                        valueField: "shift_id",
+                        data: this.state.shift_assinged
                       },
                       others: {
                         disabled: this.state.Billexists
@@ -151,7 +143,7 @@ class AddReciptForm extends Component {
                 {/* Cash */}
                 <div className="row secondary-box-container">
                   <div
-                    className="customCheckbox col-lg-3"
+                    className="customCheckbox col-2"
                     style={{ border: "none", marginTop: "28px" }}
                   >
                     <label className="checkbox" style={{ color: "#212529" }}>
@@ -167,7 +159,7 @@ class AddReciptForm extends Component {
                     </label>
                   </div>
                   <AlagehFormGroup
-                    div={{ className: "col-lg-2" }}
+                    div={{ className: "col-2" }}
                     label={{
                       fieldName: "amount",
                       isImp: true
@@ -186,179 +178,35 @@ class AddReciptForm extends Component {
                       }
                     }}
                   />
-                </div>
-                {/* Card */}
-                {/* <div className="row secondary-box-container">
-                  <div
-                    className="customCheckbox col-lg-3"
-                    style={{ border: "none", marginTop: "28px" }}
-                  >
-                    <label className="checkbox" style={{ color: "#212529" }}>
-                      <input
-                        type="checkbox"
-                        name="Pay by Card"
-                        checked={this.state.Cardchecked}
-                        onChange={checkcardhandaler.bind(this, this, context)}
-                        disabled={this.state.Billexists}
-                      />
-                      <span style={{ fontSize: "0.8rem" }}>Pay by Card</span>
-                    </label>
-                  </div>
 
-                  <AlagehFormGroup
-                    div={{ className: "col-lg-2" }}
-                    label={{
-                      fieldName: "amount",
-                      isImp: true
-                    }}
-                    textBox={{
-                      decimal: { allowNegative: false },
-                      disabled: !this.state.Cardchecked,
-                      className: "txt-fld",
-                      name: "card_amount",
-                      error: this.state.errorInCard,
-                      value: this.state.card_amount,
-                      events: {
-                        onChange: cardtexthandle.bind(this, this, context)
-                      },
-                      others: {
-                        disabled: !this.state.Cardchecked,
-                        placeholder: "0.00",
-                        onBlur: calculateRecipt.bind(this, this, context),
-                        onFocus: e => {
-                          e.target.oldvalue = e.target.value;
-                        }
-                      }
-                    }}
-                  />
-                  <AlagehFormGroup
-                    div={{ className: "col" }}
-                    label={{
-                      fieldName: "card_check_number"
-                    }}
-                    textBox={{
-                      disabled: !this.state.Cardchecked,
-                      className: "txt-fld",
-                      name: "card_check_number",
-                      value: this.state.card_check_number,
-                      events: {
-                        onChange: texthandle.bind(this, this, context)
-                      },
-                      others: {
-                        disabled: !this.state.Cardchecked
-                      }
-                    }}
-                  />
-
-                  <AlgaehDateHandler
-                    div={{ className: "col" }}
-                    label={{
-                      fieldName: "expiry_date"
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "card_date"
-                    }}
-                    disabled={!this.state.Cardchecked}
-                    minDate={new Date()}
-                    events={{
-                      onChange: datehandle.bind(this, this, context)
-                    }}
-                    value={this.state.card_date}
-                  />
-                </div> */}
-                {/* Check */}
-                {/* <div className="row secondary-box-container">
-                  <div
-                    className="customCheckbox col-lg-3"
-                    style={{ border: "none", marginTop: "28px" }}
-                  >
-                    <label className="checkbox" style={{ color: "#212529" }}>
-                      <input
-                        type="checkbox"
-                        name="Pay by Cheque"
-                        checked={this.state.Checkchecked}
-                        onChange={checkcheckhandaler.bind(this, this, context)}
-                        disabled={this.state.Billexists}
-                      />
-                      <span style={{ fontSize: "0.8rem" }}>Pay by Cheque</span>
-                    </label>
-                  </div>
-                  <AlagehFormGroup
-                    div={{ className: "col-lg-2" }}
-                    label={{
-                      fieldName: "amount",
-                      isImp: true
-                    }}
-                    textBox={{
-                      disabled: !this.state.Checkchecked,
-                      decimal: { allowNegative: false },
-                      className: "txt-fld",
-                      name: "cheque_amount",
-                      error: this.state.errorInCheck,
-                      value: this.state.cheque_amount,
-                      events: {
-                        onChange: chequetexthandle.bind(this, this, context)
-                      },
-                      others: {
-                        "data-receipt": "true",
-                        disabled: !this.state.Checkchecked,
-                        placeholder: "0.00",
-                        onBlur: calculateRecipt.bind(this, this, context),
-                        onFocus: e => {
-                          e.target.oldvalue = e.target.value;
-                        }
-                      }
-                    }}
-                  />
-
-                  <AlagehFormGroup
-                    div={{ className: "col" }}
-                    label={{
-                      fieldName: "card_check_number"
-                    }}
-                    textBox={{
-                      disabled: !this.state.Checkchecked,
-                      className: "txt-fld",
-                      name: "cheque_number",
-                      value: this.state.cheque_number,
-                      events: {
-                        onChange: texthandle.bind(this, this, context)
-                      },
-                      others: {
-                        disabled: !this.state.Checkchecked
-                      }
-                    }}
-                  />
-
-                  <AlgaehDateHandler
-                    div={{ className: "col" }}
-                    label={{
-                      fieldName: "expiry_date"
-                    }}
-                    disabled={!this.state.Checkchecked}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "cheque_date"
-                    }}
-                    minDate={new Date()}
-                    events={{
-                      onChange: datehandle.bind(this, this, context)
-                    }}
-                    value={this.state.cheque_date}
-                  />
-                </div> */}
-                {/* <div className="row secondary-box-container">
-                  <div className="col-lg-3" />
-                  <div className="col-lg-5">
+                  <div className="col-8">
                     <AlgaehLabel
                       label={{
-                        fieldName: "unbalanced_amount"
+                        forceLabel: "Cancellation Reason",
+                        isImp: true
                       }}
                     />
-                    <h6>{getAmountFormart(this.state.unbalanced_amount)}</h6>
+                    <textarea
+                      value={
+                        this.state.cancel_remarks === null
+                          ? ""
+                          : this.state.cancel_remarks
+                      }
+                      name="cancel_remarks"
+                      onChange={textAreaEvent.bind(this, this, context)}
+                      maxLength={this.cancel_remarks_MaxLength}
+                    />
+
+                    <small className="float-right">
+                      Max Char.{" "}
+                      {maxCharactersLeft(
+                        this.cancel_remarks_MaxLength,
+                        this.state.cancel_remarks
+                      )}
+                      /{this.cancel_remarks_MaxLength}
+                    </small>
                   </div>
-                </div> */}
+                </div>
               </div>
               <br />
             </div>
@@ -372,7 +220,6 @@ class AddReciptForm extends Component {
 
 function mapStateToProps(state) {
   return {
-    shifts: state.shifts,
     counters: state.counters
   };
 }
@@ -380,7 +227,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getShifts: AlgaehActions,
       getCounters: AlgaehActions
     },
     dispatch

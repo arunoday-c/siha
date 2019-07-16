@@ -31,7 +31,6 @@ let getReport = (req, res, next) => {
     }
     let inputs = req.query.inputs == null ? "" : req.query.inputs;
 
-    console.log("inputs: ", req.query);
     const _groupby =
       queryConfig.groupBy != null ? " " + queryConfig.groupBy + " " : "";
 

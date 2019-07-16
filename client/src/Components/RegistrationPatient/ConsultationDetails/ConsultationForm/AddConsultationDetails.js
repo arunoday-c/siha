@@ -118,22 +118,31 @@ const selectedHandeler = ($this, context, e) => {
         onSuccess: () => {
           if (
             $this.state.insured === "Y" &&
-            ($this.state.primary_insurance_provider_id == null ||
-              $this.state.primary_network_office_id == null ||
-              $this.state.primary_network_id == null)
+            ($this.state.primary_insurance_provider_id === null ||
+              $this.state.primary_network_office_id === null ||
+              $this.state.primary_network_id === null ||
+              $this.state.primary_card_number === null ||
+              $this.state.primary_card_number === "")
           ) {
-            $this.setState(
-              {
-                [e.name]: null
-              },
-              () => {
-                swalMessage({
-                  title:
-                    "Please select the primary insurance details properly.",
-                  type: "error"
-                });
-              }
-            );
+            context.updateState({
+              [e.name]: null
+            });
+            swalMessage({
+              title: "Please select the primary insurance details properly.",
+              type: "error"
+            });
+            // $this.setState(
+            //   {
+            //     [e.name]: null
+            //   },
+            //   () => {
+            //     swalMessage({
+            //       title:
+            //         "Please select the primary insurance details properly.",
+            //       type: "error"
+            //     });
+            //   }
+            // );
           } else {
             $this.setState(
               {
@@ -181,135 +190,156 @@ const selectedHandeler = ($this, context, e) => {
 };
 
 const doctorselectedHandeler = ($this, context, e) => {
-  if ($this.state.sub_department_id !== null) {
-    let doctor_name = e.selected.full_name;
+  SetBulkState({
+    state: $this,
+    callback: () => {
+      if (
+        $this.state.insured === "Y" &&
+        ($this.state.primary_insurance_provider_id == null ||
+          $this.state.primary_network_office_id == null ||
+          $this.state.primary_network_id == null)
+      ) {
+        $this.setState(
+          {
+            [e.name]: null
+          },
+          () => {
+            context.updateState({
+              [e.name]: null
+            });
+            swalMessage({
+              title: "Please select the primary insurance details properly.",
+              type: "error"
+            });
+          }
+        );
 
-    if ($this.state.hims_d_patient_id != null) {
-      if (e.selected.services_id !== null) {
-        let intputObj = {
-          sub_department_id: $this.state.sub_department_id,
-          doctor_id: e.value,
-          patient_id: $this.state.patient_id
-        };
-        algaehApiCall({
-          uri: "/visit/checkVisitExists",
-          module: "frontDesk",
-          method: "get",
-          data: intputObj,
-          onSuccess: response => {
-            if (response.data.success === true) {
-              if (response.data.records.length > 0) {
-                swalMessage({
-                  title: "Visit already exists for select Doctor",
-                  type: "warning"
-                });
-              } else {
-                if (
-                  $this.state.insured === "Y" &&
-                  ($this.state.primary_insurance_provider_id == null ||
-                    $this.state.primary_network_office_id == null ||
-                    $this.state.primary_network_id == null)
-                ) {
+        return;
+      }
+      if ($this.state.sub_department_id !== null) {
+        let doctor_name = e.selected.full_name;
+
+        if ($this.state.hims_d_patient_id != null) {
+          if (e.selected.services_id !== null) {
+            let intputObj = {
+              sub_department_id: $this.state.sub_department_id,
+              doctor_id: e.value,
+              patient_id: $this.state.patient_id
+            };
+            algaehApiCall({
+              uri: "/visit/checkVisitExists",
+              module: "frontDesk",
+              method: "get",
+              data: intputObj,
+              onSuccess: response => {
+                if (response.data.success === true) {
+                  if (response.data.records.length > 0) {
+                    swalMessage({
+                      title: "Visit already exists for select Doctor",
+                      type: "warning"
+                    });
+                  } else {
+                    $this.setState(
+                      {
+                        [e.name]: e.value,
+                        visittypeselect: false,
+                        hims_d_services_id: e.selected.services_id,
+                        incharge_or_provider: e.value,
+                        provider_id: e.value,
+                        doctor_name: doctor_name,
+                        saveEnable: false,
+                        billdetail: false
+                      },
+                      () => {
+                        if ($this.state.existing_plan !== "Y") {
+                          generateBillDetails($this, context);
+                        }
+                      }
+                    );
+                    if (context !== null) {
+                      context.updateState({
+                        [e.name]: e.value,
+                        hims_d_services_id: e.selected.services_id,
+                        incharge_or_provider: e.value,
+                        provider_id: e.value,
+                        doctor_name: doctor_name,
+                        saveEnable: false,
+                        billdetail: false
+                      });
+                    }
+                  }
+                } else {
                   $this.setState(
                     {
                       [e.name]: null
                     },
                     () => {
                       swalMessage({
-                        title:
-                          "Please select the primary insurance details properly.",
-                        type: "error"
+                        title: response.data.message,
+                        type: "warning"
                       });
                     }
                   );
-                } else {
-                  $this.setState(
-                    {
-                      [e.name]: e.value,
-                      visittypeselect: false,
-                      hims_d_services_id: e.selected.services_id,
-                      incharge_or_provider: e.value,
-                      provider_id: e.value,
-                      doctor_name: doctor_name,
-                      saveEnable: false,
-                      billdetail: false
-                    },
-                    () => {
-                      if ($this.state.existing_plan !== "Y") {
-                        generateBillDetails($this, context);
-                      }
-                    }
-                  );
-                  if (context !== null) {
-                    context.updateState({
-                      [e.name]: e.value,
-                      hims_d_services_id: e.selected.services_id,
-                      incharge_or_provider: e.value,
-                      provider_id: e.value,
-                      doctor_name: doctor_name,
-                      saveEnable: false,
-                      billdetail: false
-                    });
-                  }
                 }
+              },
+              onFailure: error => {
+                swalMessage({
+                  title: error.message,
+                  type: "error"
+                });
               }
-            } else {
-              $this.setState(
-                {
-                  [e.name]: null
-                },
-                () => {
-                  swalMessage({
-                    title: response.data.message,
-                    type: "warning"
-                  });
-                }
-              );
-            }
-          },
-          onFailure: error => {
+            });
+          } else {
+            $this.setState({
+              [e.name]: null
+            });
             swalMessage({
-              title: error.message,
-              type: "error"
+              title: "No Service defined for the selected doctor.",
+              type: "warning"
             });
           }
-        });
-      } else {
-        $this.setState({
-          [e.name]: null
-        });
-        swalMessage({
-          title: "No Service defined for the selected doctor.",
-          type: "warning"
-        });
-      }
-    } else {
-      if (e.selected.services_id !== null) {
-        $this.setState(
-          {
-            [e.name]: e.value,
-            visittypeselect: false,
-            hims_d_services_id: e.selected.services_id,
-            incharge_or_provider: e.value,
-            provider_id: e.value,
-            doctor_name: doctor_name,
-            saveEnable: false,
-            billdetail: false
-          },
-          () => {
-            generateBillDetails($this, context);
+        } else {
+          if (e.selected.services_id !== null) {
+            $this.setState(
+              {
+                [e.name]: e.value,
+                visittypeselect: false,
+                hims_d_services_id: e.selected.services_id,
+                incharge_or_provider: e.value,
+                provider_id: e.value,
+                doctor_name: doctor_name,
+                saveEnable: false,
+                billdetail: false
+              },
+              () => {
+                generateBillDetails($this, context);
+              }
+            );
+            if (context !== null) {
+              context.updateState({
+                [e.name]: e.value,
+                hims_d_services_id: e.selected.services_id,
+                incharge_or_provider: e.value,
+                provider_id: e.value,
+                doctor_name: doctor_name,
+                saveEnable: false,
+                billdetail: false
+              });
+            }
+          } else {
+            $this.setState({
+              [e.name]: null
+            });
+            if (context !== null) {
+              context.updateState({
+                [e.name]: e.value
+              });
+            }
+            swalMessage({
+              title: "No Service defined for the selected doctor.",
+              type: "warning"
+            });
           }
-        );
-        if (context !== null) {
-          context.updateState({
-            [e.name]: e.value,
-            hims_d_services_id: e.selected.services_id,
-            incharge_or_provider: e.value,
-            provider_id: e.value,
-            doctor_name: doctor_name,
-            saveEnable: false,
-            billdetail: false
-          });
         }
       } else {
         $this.setState({
@@ -321,25 +351,12 @@ const doctorselectedHandeler = ($this, context, e) => {
           });
         }
         swalMessage({
-          title: "No Service defined for the selected doctor.",
+          title: "Please select department.",
           type: "warning"
         });
       }
     }
-  } else {
-    $this.setState({
-      [e.name]: null
-    });
-    if (context !== null) {
-      context.updateState({
-        [e.name]: e.value
-      });
-    }
-    swalMessage({
-      title: "Please select department.",
-      type: "warning"
-    });
-  }
+  });
 };
 
 const generateBillDetails = ($this, context) => {
@@ -475,27 +492,6 @@ const radioChange = ($this, context, e) => {
       });
     }
   }
-
-  // $this.setState(
-  //   {
-  //     maternity_patient: value
-  //   },
-  //   () => {
-  //     if (name === "existing_plan" && value === "Y") {
-  //       getTreatementPlans($this);
-  //       if ($this.state.doctor_id !== null) {
-  //         generateBillDetails($this, context);
-  //       }
-  //     }
-  //     if (
-  //       name === "existing_plan" &&
-  //       value === "N" &&
-  //       $this.state.doctor_id !== null
-  //     ) {
-  //       generateBillDetails($this, context);
-  //     }
-  //   }
-  // );
 };
 
 const getTreatementPlans = $this => {

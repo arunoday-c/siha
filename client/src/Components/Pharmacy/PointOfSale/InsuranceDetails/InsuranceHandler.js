@@ -68,7 +68,6 @@ const clearinsurancehandle = ($this, context, e) => {
   }
 };
 const insurancehandle = ($this, context, e) => {
-  
   let ProcessInsure = false;
   if ($this.state.doctor_id === null) {
     ProcessInsure = true;
@@ -82,7 +81,6 @@ const insurancehandle = ($this, context, e) => {
       type: "warning"
     });
   } else {
-    
     $this.setState(
       {
         primary_insurance_provider_id: e.selected.insurance_provider_id,
@@ -181,14 +179,6 @@ const enddatehandle = ($this, context, ctrl, e) => {
 };
 
 const InsuranceDetails = ($this, context, e) => {
-  
-  let ProcessInsure = false;
-  if ($this.state.doctor_id === null) {
-    ProcessInsure = true;
-  } else {
-    ProcessInsure = false;
-  }
-
   const hospital = JSON.parse(
     AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
   );
@@ -234,9 +224,8 @@ const InsuranceDetails = ($this, context, e) => {
 
               policy_number: row.policy_number,
               effective_start_date: row.net_effective_start_date,
-
               effective_end_date: row.effective_end_date,
-              ProcessInsure: ProcessInsure
+              sub_insurance_id: row.hims_d_insurance_sub_id
             });
 
             if (context !== null) {
@@ -257,7 +246,8 @@ const InsuranceDetails = ($this, context, e) => {
                 effective_start_date: row.net_effective_start_date,
 
                 effective_end_date: row.effective_end_date,
-                ProcessInsure: ProcessInsure
+                card_number: null,
+                sub_insurance_id: row.hims_d_insurance_sub_id
               });
             }
           }
@@ -279,8 +269,7 @@ const InsuranceDetails = ($this, context, e) => {
           policy_number: row.policy_number,
           effective_start_date: row.net_effective_start_date,
 
-          effective_end_date: row.effective_end_date,
-          ProcessInsure: ProcessInsure
+          effective_end_date: row.effective_end_date
         });
 
         if (context !== null) {
@@ -301,7 +290,7 @@ const InsuranceDetails = ($this, context, e) => {
             effective_start_date: row.net_effective_start_date,
 
             effective_end_date: row.effective_end_date,
-            ProcessInsure: ProcessInsure
+            card_number: null
           });
         }
       }
@@ -406,7 +395,6 @@ const radioChange = ($this, context, e) => {
   SetBulkState({
     state: $this,
     callback: () => {
-      
       let PatType = null;
       let saveEnable = false;
       let ProcessInsure = false;
@@ -471,6 +459,26 @@ const radioChange = ($this, context, e) => {
   });
 };
 
+const dateValidate = ($this, context, value, event) => {
+  let inRange = moment(value).isBefore(
+    moment($this.state.effective_start_date).format("YYYY-MM-DD")
+  );
+  if (inRange) {
+    swalMessage({
+      title: "Expiry date cannot be less than Start Date.",
+      type: "warning"
+    });
+    event.target.focus();
+    $this.setState({
+      [event.target.name]: null
+    });
+
+    if (context !== undefined) {
+      context.updateState({ [event.target.name]: null });
+    }
+  }
+};
+
 export {
   insurancehandle,
   texthandle,
@@ -478,5 +486,6 @@ export {
   InsuranceDetails,
   radioChange,
   enddatehandle,
-  clearinsurancehandle
+  clearinsurancehandle,
+  dateValidate
 };

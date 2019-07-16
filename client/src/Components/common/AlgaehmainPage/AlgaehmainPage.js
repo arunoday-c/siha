@@ -8,13 +8,52 @@ import {
   getCookie
 } from "../../../utils/algaehApiCall";
 import DirectRoutes from "../../../Dynamicroutes";
-import { AlgaehCloseContainer } from "../../../utils/GlobalFunctions";
+import {
+  AlgaehCloseContainer,
+  AlgaehOpenContainer
+} from "../../../utils/GlobalFunctions";
 import Enumarable from "linq";
 import swal from "sweetalert2";
 
 class PersistentDrawer extends React.Component {
   constructor(props) {
     super(props);
+    const Activated_Modueles =
+      sessionStorage.getItem("ModuleDetails") !== null
+        ? JSON.parse(
+            AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
+          )
+        : [];
+    let Hims_active = false;
+    let Hrms_active = false;
+    let Pharma_active = false;
+    let Invento_active = false;
+    let Lab_active = false;
+    let Rad_active = false;
+
+    for (let i = 0; i < Activated_Modueles.length; i++) {
+      const item = Activated_Modueles[i];
+      switch (item.module_code) {
+        case "FTDSK":
+          Hims_active = true;
+          break;
+        case "HRMNGMT":
+          Hrms_active = true;
+          break;
+        case "PHCY":
+          Pharma_active = true;
+          break;
+        case "INVTRY":
+          Invento_active = true;
+          break;
+        case "LAB":
+          Lab_active = true;
+          break;
+        case "RAD":
+          Rad_active = true;
+          break;
+      }
+    }
     this.state = {
       sideopen: false,
       class: "",
@@ -41,7 +80,13 @@ class PersistentDrawer extends React.Component {
       isSelectedByForce: false,
       menuList: [],
       scrollPosition: 0,
-      lang_className: " english_component"
+      lang_className: " english_component",
+      Hims_active: Hims_active,
+      Hrms_active: Hrms_active,
+      Pharma_active: Pharma_active,
+      Invento_active: Invento_active,
+      Lab_active: Lab_active,
+      Rad_active: Rad_active
     };
     const _userName = getCookie("userName");
     const _keyResources = getCookie("keyResources");
@@ -331,15 +376,15 @@ class PersistentDrawer extends React.Component {
     this.setState({ onlyToggeleMenu: _putData, ...isModfySelect });
   }
 
-  componentDidUpdate(prevProps) {
-    const _offSet =
-      document.querySelector("[menuselected]") === null
-        ? 0
-        : document.querySelector("[menuselected]").getBoundingClientRect().top;
+  // componentDidUpdate(prevProps) {
+  //   const _offSet =
+  //     document.querySelector("[menuselected]") === null
+  //       ? 0
+  //       : document.querySelector("[menuselected]").getBoundingClientRect().top;
 
-    if (this.scrollLeftPanel !== undefined && this.scrollLeftPanel !== null)
-      this.scrollLeftPanel.scrollTop = _offSet;
-  }
+  //   if (this.scrollLeftPanel !== undefined && this.scrollLeftPanel !== null)
+  //     this.scrollLeftPanel.scrollTop = _offSet;
+  // }
 
   TriggerPath(submenu, module_id, e) {
     const name = submenu.page_to_redirect.replace(/\s/g, ""); // e.currentTarget.getAttribute("name");
@@ -509,7 +554,11 @@ class PersistentDrawer extends React.Component {
             <i className="fas fa-bars fa-lg" />
           </div>
           <div className="navbar-brand appLogoCntr">
-            <p className="appLogoOnly" />
+            {this.state.Hims_active === true ? (
+              <p className="appLogoHIMSOnly" />
+            ) : (
+              <p className="appLogoHRMSOnly" />
+            )}
           </div>
 
           <h5 className="topNavbar-title mr-auto">

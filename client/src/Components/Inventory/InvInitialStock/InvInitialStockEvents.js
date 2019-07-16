@@ -25,7 +25,7 @@ const LocationchangeTexts = ($this, ctrl, e) => {
 
 const numberchangeTexts = ($this, e) => {
   let name = e.name || e.target.name;
-  let value = e.value === "" ? null : e.value || e.target.value;
+  let value = e.value || e.target.value;
   let extended_cost = 0;
 
   if (name === "quantity") {
@@ -96,24 +96,24 @@ const getItemUom = ($this, purchase_cost) => {
   // });
 };
 
-const itemchangeText = ($this, e) => {
-  let name = e.name || e.target.name;
-  let value = e.value || e.target.value;
-  getItemUom($this, e.selected.purchase_cost);
+const itemchangeText = ($this, e, ctrl) => {
+  let name = ctrl;
+  let value = e.hims_d_inventory_item_master_id;
+  getItemUom($this, e.purchase_cost);
 
   $this.setState({
     [name]: value,
-    item_category_id: e.selected.category_id,
-    item_group_id: e.selected.group_id,
-    uom_id: e.selected.stocking_uom_id,
-    sales_uom: e.selected.sales_uom_id,
-    required_batchno: e.selected.exp_date_not_required,
-    item_code: e.selected.item_code,
+    item_category_id: e.category_id,
+    item_group_id: e.group_id,
+    uom_id: e.stocking_uom_id,
+    sales_uom: e.sales_uom_id,
+    required_batchno: e.exp_date_not_required,
+    item_code: e.item_code,
     // unit_cost: e.selected.purchase_cost,
-    sales_price: e.selected.sales_price,
-    purchase_uom_id: e.selected.purchase_uom_id,
-    stock_uom_desc: e.selected.stock_uom_desc,
-    sales_uom_desc: e.selected.sales_uom_desc
+    sales_price: e.sales_price,
+    purchase_uom_id: e.purchase_uom_id,
+    stock_uom_desc: e.stock_uom_desc,
+    sales_uom_desc: e.sales_uom_desc
   });
 };
 
@@ -134,7 +134,10 @@ const AddItems = $this => {
           type: "warning"
         });
         document.querySelector("[name='unit_cost']").focus();
-      } else if ($this.state.expiry_date === null) {
+      } else if (
+        $this.state.expiry_date === null &&
+        $this.state.required_batchno === "N"
+      ) {
         swalMessage({
           title: "Select Expiry Date.",
           type: "warning"
@@ -186,7 +189,8 @@ const AddItems = $this => {
           grn_number: null,
           sales_uom: null,
           purchase_uom_id: null,
-          conversion_factor: null
+          conversion_factor: null,
+          item_description: ""
         });
       }
     }
@@ -222,80 +226,81 @@ const dateFormater = value => {
 
 const getCtrlCode = ($this, docNumber) => {
   AlgaehLoader({ show: true });
-  algaehApiCall({
-    uri: "/inventoryinitialstock/getInventoryInitialStock",
-    module: "inventory",
-    method: "GET",
-    data: { document_number: docNumber },
-    onSuccess: response => {
-      if (response.data.success === true) {
-        let data = response.data.records;
-        data.saveEnable = true;
 
-        if (data.posted === "Y") {
-          data.postEnable = true;
-        } else {
-          data.postEnable = false;
-        }
-        data.dataExitst = true;
-
-        data.location_id = null;
-        data.item_category_id = null;
-        data.item_group_id = null;
-        data.item_id = null;
-        data.batchno = null;
-        data.vendor_batchno = null;
-        data.expiry_date = null;
-        data.quantity = 0;
-        data.unit_cost = 0;
-        data.uom_id = null;
-        data.sales_price = 0;
-        data.conversion_fact = null;
-        data.extended_cost = 0;
-        data.grn_number = null;
-        data.sales_uom = null;
-        data.purchase_uom_id = null;
-
-        $this.setState(data);
-        AlgaehLoader({ show: false });
-      }
+  $this.setState(
+    {
+      item_description: "",
+      description: "",
+      inventory_stock_detail: [],
+      document_number: null,
+      location_id: null,
+      item_category_id: null,
+      item_group_id: null,
+      item_id: null,
+      vendor_batchno: null,
+      expiry_date: null,
+      quantity: 0,
+      unit_cost: 0,
+      uom_id: null,
+      conversion_fact: null,
+      extended_cost: 0,
+      saveEnable: true,
+      postEnable: true,
+      dataExitst: false,
+      posted: "N",
+      item_code: null,
+      sales_price: 0,
+      grn_number: null
     },
-    onFailure: error => {
-      AlgaehLoader({ show: false });
-      swalMessage({
-        title: error.message,
-        type: "error"
+    () => {
+      algaehApiCall({
+        uri: "/inventoryinitialstock/getInventoryInitialStock",
+        module: "inventory",
+        method: "GET",
+        data: { document_number: docNumber },
+        onSuccess: response => {
+          if (response.data.success === true) {
+            let data = response.data.records;
+            data.saveEnable = true;
+
+            if (data.posted === "Y") {
+              data.postEnable = true;
+            } else {
+              data.postEnable = false;
+            }
+            data.dataExitst = true;
+
+            data.location_id = null;
+            data.item_category_id = null;
+            data.item_group_id = null;
+            data.item_id = null;
+            data.batchno = null;
+            data.vendor_batchno = null;
+            data.expiry_date = null;
+            data.quantity = 0;
+            data.unit_cost = 0;
+            data.uom_id = null;
+            data.sales_price = 0;
+            data.conversion_fact = null;
+            data.extended_cost = 0;
+            data.grn_number = null;
+            data.sales_uom = null;
+            data.purchase_uom_id = null;
+
+            $this.setState(data);
+            AlgaehLoader({ show: false });
+          }
+        },
+        onFailure: error => {
+          AlgaehLoader({ show: false });
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
+        }
       });
     }
-  });
-  // clearInterval(intervalId);
-  // intervalId = setInterval(() => {
-  //   AlgaehLoader({ show: true });
-  //   $this.props.getInitialStock({
-  //     uri: "/inventoryinitialstock/getInventoryInitialStock",
-  //     module: "inventory",
-  //     method: "GET",
-  //     printInput: true,
-  //     data: { document_number: docNumber },
-  //     redux: {
-  //       type: "INITIAL_STOCK_GET_DATA",
-  //       mappingName: "inventoryinitialstock"
-  //     },
-  //     afterSuccess: data => {
-  //       data.saveEnable = true;
-  //
-  //       if (data.posted === "Y") {
-  //         data.postEnable = true;
-  //       } else {
-  //         data.postEnable = false;
-  //       }
-  //       data.dataExitst = true;
-  //       $this.setState(data);
-  //       AlgaehLoader({ show: false });
-  //     }
-  //   });
-  //   clearInterval(intervalId);
-  // }, 500);
+  );
 };
 
 const SaveInitialStock = $this => {
@@ -356,6 +361,7 @@ const deleteInitialStock = ($this, row) => {
 };
 const ClearData = $this => {
   $this.setState({
+    item_description: "",
     description: "",
     inventory_stock_detail: [],
     document_number: null,
@@ -448,6 +454,47 @@ const salesPriceEvent = ($this, ctrl, e) => {
   $this.setState({ [name]: value });
 };
 
+const onChamgeGridQuantity = ($this, row, e) => {
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  let extended_cost = 0;
+  if (value !== "") {
+    extended_cost = parseFloat(row.unit_cost) * value;
+
+    extended_cost = math.round(extended_cost, 2);
+    row[name] = value;
+    row["extended_cost"] = extended_cost;
+    row.update();
+  } else {
+    row[name] = value;
+    row["extended_cost"] = extended_cost;
+    row.update();
+  }
+};
+
+const updateInitialStock = ($this, row) => {
+  let authBtnEnable = true;
+  let inventory_stock_detail = $this.state.inventory_stock_detail;
+  let _index = inventory_stock_detail.indexOf(row);
+  inventory_stock_detail[_index] = row;
+
+  $this.setState({
+    saveEnable: !$this.state.saveEnable,
+    inventory_stock_detail: inventory_stock_detail
+  });
+};
+
+const EditGrid = ($this, cancelRow) => {
+  let _inventory_stock_detail = $this.state.inventory_stock_detail;
+  if (cancelRow !== undefined) {
+    _inventory_stock_detail[cancelRow.rowIdx] = cancelRow;
+  }
+  $this.setState({
+    saveEnable: !$this.state.saveEnable,
+    inventory_stock_detail: _inventory_stock_detail
+  });
+};
+
 export {
   changeTexts,
   itemchangeText,
@@ -463,5 +510,8 @@ export {
   ClearData,
   PostInitialStock,
   printBarcode,
-  salesPriceEvent
+  salesPriceEvent,
+  updateInitialStock,
+  onChamgeGridQuantity,
+  EditGrid
 };

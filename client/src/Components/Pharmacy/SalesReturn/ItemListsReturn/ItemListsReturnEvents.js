@@ -213,17 +213,6 @@ const deleteSalesReturnDetail = ($this, context, row) => {
   let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
   pharmacy_stock_detail.splice(row.rowIdx, 1);
 
-  $this.props.SalesReturnCalculations({
-    uri: "/billing/billingCalculations",
-    module: "billing",
-    method: "POST",
-    data: { billdetails: pharmacy_stock_detail },
-    redux: {
-      type: "RETURN_HEADER_GEN_GET_DATA",
-      mappingName: "salesReturn"
-    }
-  });
-
   if (pharmacy_stock_detail.length === 0) {
     if (context !== undefined) {
       context.updateState({
@@ -268,6 +257,16 @@ const deleteSalesReturnDetail = ($this, context, row) => {
       });
     }
   } else {
+    $this.props.SalesReturnCalculations({
+      uri: "/billing/billingCalculations",
+      module: "billing",
+      method: "POST",
+      data: { billdetails: pharmacy_stock_detail },
+      redux: {
+        type: "RETURN_HEADER_GEN_GET_DATA",
+        mappingName: "salesReturn"
+      }
+    });
     if (context !== undefined) {
       context.updateState({
         pharmacy_stock_detail: pharmacy_stock_detail
@@ -304,10 +303,10 @@ const updateSalesReturnDetail = ($this, context) => {
 //Calculate Row Detail
 const calculateAmount = ($this, row, context, e) => {
   // e = e || ctrl;
-  
 
   let name = e.target.name;
-  let value = e.target.value === "" ? 0 : e.target.value;
+  let value = e.target.value === "" ? "" : e.target.value;
+  let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
   if (parseFloat(value) < 0) {
     swalMessage({
       title: "Return Qty cannot be less than or equal to Zero",
@@ -319,61 +318,69 @@ const calculateAmount = ($this, row, context, e) => {
       type: "warning"
     });
   } else {
-    let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+    if (value !== "") {
+      row[name] = parseFloat(value);
+      let inputParam = [
+        {
+          hims_d_services_id: row.service_id,
+          vat_applicable: $this.state.vat_applicable,
+          quantity: row.return_quantity,
+          discount_amout:
+            name === "discount_percentage" ? 0 : row.discount_amout,
+          discount_percentage:
+            name === "discount_amout" ? 0 : row.discount_percentage,
+          unit_cost: row.unit_cost,
+          insured: $this.state.insured,
+          primary_insurance_provider_id: $this.state.insurance_provider_id,
+          primary_network_office_id:
+            $this.state.hims_d_insurance_network_office_id,
+          primary_network_id: $this.state.network_id,
+          sec_insured: $this.state.sec_insured,
+          secondary_insurance_provider_id:
+            $this.state.secondary_insurance_provider_id,
+          secondary_network_id: $this.state.secondary_network_id,
+          secondary_network_office_id: $this.state.secondary_network_office_id
+        }
+      ];
 
-    row[name] = parseFloat(value);
-    let inputParam = [
-      {
-        hims_d_services_id: row.service_id,
-        vat_applicable: $this.state.vat_applicable,
-        quantity: row.return_quantity,
-        discount_amout: name === "discount_percentage" ? 0 : row.discount_amout,
-        discount_percentage:
-          name === "discount_amout" ? 0 : row.discount_percentage,
-        unit_cost: row.unit_cost,
-        insured: $this.state.insured,
-        primary_insurance_provider_id: $this.state.insurance_provider_id,
-        primary_network_office_id:
-          $this.state.hims_d_insurance_network_office_id,
-        primary_network_id: $this.state.network_id,
-        sec_insured: $this.state.sec_insured,
-        secondary_insurance_provider_id:
-          $this.state.secondary_insurance_provider_id,
-        secondary_network_id: $this.state.secondary_network_id,
-        secondary_network_office_id: $this.state.secondary_network_office_id
-      }
-    ];
+      $this.props.generateBill({
+        uri: "/billing/getBillDetails",
+        module: "billing",
+        method: "POST",
+        data: inputParam,
+        redux: {
+          type: "BILL_GEN_GET_DATA",
+          mappingName: "xxx"
+        },
+        afterSuccess: data => {
+          data.billdetails[0].extended_cost = data.billdetails[0].gross_amount;
+          data.billdetails[0].net_extended_cost = data.billdetails[0].net_amout;
+          data.billdetails[0].quantity = row.quantity;
 
-    $this.props.generateBill({
-      uri: "/billing/getBillDetails",
-      module: "billing",
-      method: "POST",
-      data: inputParam,
-      redux: {
-        type: "BILL_GEN_GET_DATA",
-        mappingName: "xxx"
-      },
-      afterSuccess: data => {
-        data.billdetails[0].extended_cost = data.billdetails[0].gross_amount;
-        data.billdetails[0].net_extended_cost = data.billdetails[0].net_amout;
-        data.billdetails[0].quantity = row.quantity;
+          extend(row, data.billdetails[0]);
 
-        extend(row, data.billdetails[0]);
-
-        pharmacy_stock_detail[row.rowIdx] = row;
-        $this.setState({
-          pharmacy_stock_detail: pharmacy_stock_detail,
-          dataChange: true
-        });
-
-        if (context !== undefined) {
-          context.updateState({
+          pharmacy_stock_detail[row.rowIdx] = row;
+          $this.setState({
             pharmacy_stock_detail: pharmacy_stock_detail,
             dataChange: true
           });
+
+          if (context !== undefined) {
+            context.updateState({
+              pharmacy_stock_detail: pharmacy_stock_detail,
+              dataChange: true
+            });
+          }
         }
-      }
-    });
+      });
+    } else {
+      row[name] = value;
+      pharmacy_stock_detail[row.rowIdx] = row;
+
+      context.updateState({
+        pharmacy_stock_detail: pharmacy_stock_detail
+      });
+    }
   }
 };
 
@@ -466,6 +473,18 @@ const CancelGrid = ($this, context, cancelRow) => {
     });
   }
 };
+
+const makeZeroIngrid = ($this, context, row, e) => {
+  if (e.target.value === "") {
+    row["return_quantity"] = 0;
+    let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+    let _index = pharmacy_stock_detail.indexOf(row);
+    pharmacy_stock_detail[_index] = row;
+    context.updateState({
+      pharmacy_stock_detail: pharmacy_stock_detail
+    });
+  }
+};
 export {
   discounthandle,
   changeTexts,
@@ -478,5 +497,6 @@ export {
   calculateAmount,
   adjustadvance,
   EditGrid,
-  CancelGrid
+  CancelGrid,
+  makeZeroIngrid
 };

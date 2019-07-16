@@ -117,6 +117,7 @@ export function Validations(state) {
       state.state.primary_network_office_id === null ||
       state.state.primary_network_id === null ||
       state.state.primary_card_number === null ||
+      state.state.primary_card_number === "" ||
       state.state.primary_effective_start_date === null ||
       state.state.primary_effective_end_date === null)
   ) {
@@ -204,18 +205,6 @@ export function Validations(state) {
       document.querySelector("[name='card_number']").focus();
       return isError;
     }
-
-    // if (state.state.card_date === null || state.state.card_date === "") {
-    //   isError = true;
-
-    //   swalMessage({
-    //     type: "warning",
-    //     title: "Invalid. Card Date Cannot be blank."
-    //   });
-
-    //   document.querySelector("[name='card_date']").focus();
-    //   return isError;
-    // }
   }
   if (state.state.cheque_amount > 0) {
     if (
@@ -232,17 +221,5 @@ export function Validations(state) {
       document.querySelector("[name='cheque_number']").focus();
       return isError;
     }
-
-    // if (state.state.cheque_date === null || state.state.cheque_date === "") {
-    //   isError = true;
-    //
-    //   swalMessage({
-    //     type: "warning",
-    //     title: "Cheque Date Cannot be blank."
-    //   });
-    //
-    //   document.querySelector("[name='cheque_date']").focus();
-    //   return isError;
-    // }
   }
 }

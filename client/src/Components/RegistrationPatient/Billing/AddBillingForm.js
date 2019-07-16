@@ -26,7 +26,9 @@ import {
   discountCal,
   cashtexthCal,
   cardtexthCal,
-  chequetexthCal
+  chequetexthCal,
+  makeZero,
+  makeDiscountZero
 } from "./AddBillingDetails";
 
 import MyContext from "../../../utils/MyContext.js";
@@ -55,18 +57,6 @@ class AddBillingForm extends Component {
   }
 
   componentDidMount() {
-    if (this.props.shifts === undefined || this.props.shifts.length === 0) {
-      this.props.getShifts({
-        uri: "/shiftAndCounter/getShiftMaster",
-        module: "masterSettings",
-        method: "GET",
-        redux: {
-          type: "CTRY_GET_DATA",
-          mappingName: "shifts"
-        }
-      });
-    }
-
     if (this.props.counters === undefined || this.props.counters.length === 0) {
       this.props.getCounters({
         uri: "/shiftAndCounter/getCounterMaster",
@@ -145,6 +135,14 @@ class AddBillingForm extends Component {
                           onClose={this.ShowBillDetails.bind(this)}
                         />
                       </div>
+                      {this.state.due_amount > 0 ? (
+                        <div className="col">
+                          <AlgaehLabel label={{ forceLabel: "Due Amount" }} />
+                          <h6 style={{ color: "red" }}>
+                            {getAmountFormart(this.state.due_amount)}
+                          </h6>
+                        </div>
+                      ) : null}
                     </div>
                     <hr style={{ margin: "0.3rem 0rem" }} />
                     <div className="row primary-box-container">
@@ -218,7 +216,7 @@ class AddBillingForm extends Component {
                           },
                           others: {
                             placeholder: "0.00",
-                            // onBlur: advanceAdjustCal.bind(this, this, context),
+                            onBlur: makeZero.bind(this, this, context),
                             onFocus: e => {
                               e.target.oldvalue = e.target.value;
                             }
@@ -240,7 +238,7 @@ class AddBillingForm extends Component {
                           },
                           others: {
                             placeholder: "0.00",
-                            // onBlur: discountCal.bind(this, this, context),
+                            onBlur: makeDiscountZero.bind(this, this, context),
                             onFocus: e => {
                               e.target.oldvalue = e.target.value;
                             }
@@ -265,7 +263,7 @@ class AddBillingForm extends Component {
                           },
                           others: {
                             placeholder: "0.00",
-                            // onBlur: discountCal.bind(this, this, context),
+                            onBlur: makeZero.bind(this, this, context),
                             onFocus: e => {
                               e.target.oldvalue = e.target.value;
                             }
@@ -289,13 +287,6 @@ class AddBillingForm extends Component {
                         />
                         <h6>{getAmountFormart(this.state.advance_amount)}</h6>
                       </div>
-                      {/* <div className="col-lg-3 last-box-label">
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "bill_amount"
-                        }}
-                      />
-                    </div> */}
 
                       <div className="col">
                         <AlgaehLabel
@@ -321,7 +312,7 @@ class AddBillingForm extends Component {
                           },
                           others: {
                             placeholder: "0.00",
-                            // onBlur: credittextCal.bind(this, this, context),
+                            onBlur: makeZero.bind(this, this, context),
                             onFocus: e => {
                               e.target.oldvalue = e.target.value;
                             }
@@ -439,10 +430,15 @@ class AddBillingForm extends Component {
                                 this.state.selectedLang === "en"
                                   ? "shift_description"
                                   : "arabic_name",
-                              valueField: "hims_d_shift_id",
-                              data: this.props.shifts
+                              valueField: "shift_id",
+                              data: this.state.shift_assinged
                             },
-                            onChange: texthandle.bind(this, this, context)
+                            onChange: texthandle.bind(this, this, context),
+                            onClear: () => {
+                              this.setState({
+                                shift_id: null
+                              });
+                            }
                           }}
                         />
                       </div>
@@ -722,7 +718,6 @@ class AddBillingForm extends Component {
 
 function mapStateToProps(state) {
   return {
-    shifts: state.shifts,
     counters: state.counters
   };
 }
@@ -730,7 +725,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getShifts: AlgaehActions,
       getCounters: AlgaehActions
     },
     dispatch

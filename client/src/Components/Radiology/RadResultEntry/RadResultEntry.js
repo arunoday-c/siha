@@ -176,6 +176,7 @@ class RadResultEntry extends Component {
                         forceLabel: "Examination Status"
                       }}
                       selector={{
+                        sort: "off",
                         name: "exam_status",
                         className: "select-fld",
                         value: this.state.exam_status,

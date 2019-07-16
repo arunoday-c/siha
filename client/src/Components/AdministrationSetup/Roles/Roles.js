@@ -29,7 +29,7 @@ class Roles extends Component {
     this.getRoles();
   }
 
-      initCall() {
+  initCall() {
     let that = this;
     algaehApiCall({
       uri: "/init/",
@@ -44,7 +44,7 @@ class Roles extends Component {
           const placeHolder =
             response.data.records.length > 0 ? response.data.records[0] : {};
           that.setState({
-           role_code_placeHolder: placeHolder.role_code
+            role_code_placeHolder: placeHolder.role_code
           });
         }
       }
@@ -56,13 +56,13 @@ class Roles extends Component {
   }
 
   // dropDownHandle(value) {
-  //   
+  //
   //   this.setState({ [value.name]: value.value });
   // }
 
   clearState() {
     this.setState({
-      app_group_id: null,
+      // app_group_id: null,
       role_code: null,
       role_name: null,
       role_discreption: null,
@@ -245,7 +245,7 @@ class Roles extends Component {
                 selector={{
                   name: "app_group_id",
                   className: "select-fld",
-                  value: this.state.algaeh_d_app_group_id,
+                  value: this.state.app_group_id,
                   dataSource: {
                     textField: "app_group_name",
                     valueField: "algaeh_d_app_group_id",
@@ -266,10 +266,11 @@ class Roles extends Component {
                   value: this.state.role_code,
                   events: {
                     onChange: this.changeTexts.bind(this)
-                  },   others: {
-                          tabIndex: "1",
-                            placeholder: this.state.role_code_placeHolder
-                        }
+                  },
+                  others: {
+                    tabIndex: "1",
+                    placeholder: this.state.role_code_placeHolder
+                  }
                 }}
               />
               <AlagehFormGroup

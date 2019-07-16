@@ -6,28 +6,32 @@ export default function ConsumptionItemsEvents() {
   return {
     getCtrlCode: ($this, docNumber) => {
       AlgaehLoader({ show: true });
+      let IOputs = ConsumptionIOputs.inputParam();
+      $this.setState(IOputs, () => {
+        algaehApiCall({
+          uri: "/consumptionEntry/getconsumptionEntry",
+          module: "pharmacy",
+          method: "GET",
+          data: { consumption_number: docNumber },
+          onSuccess: response => {
+            if (response.data.success === true) {
+              let data = response.data.records;
+              data.saveEnable = true;
 
-      algaehApiCall({
-        uri: "/consumptionEntry/getconsumptionEntry",
-        module: "pharmacy",
-        method: "GET",
-        data: { consumption_number: docNumber },
-        onSuccess: response => {
-          if (response.data.success === true) {
-            let data = response.data.records;
-            data.saveEnable = true;
+              data.addedItem = true;
+              data.ItemDisable = true;
 
-            data.addedItem = true;
-            $this.setState(data);
-            AlgaehLoader({ show: false });
+              $this.setState(data);
+              AlgaehLoader({ show: false });
+            }
+          },
+          onFailure: err => {
+            swalMessage({
+              title: err.message,
+              type: "error"
+            });
           }
-        },
-        onFailure: err => {
-          swalMessage({
-            title: err.message,
-            type: "error"
-          });
-        }
+        });
       });
     },
     ClearData: $this => {

@@ -186,6 +186,35 @@ class PosListItems extends Component {
                                 pharmacy_location_id: pharmacy_location_id
                               }}
                               onClick={itemchangeText.bind(this, this, context)}
+                              onClear={() => {
+                                context.updateState({
+                                  item_id: null,
+                                  item_category: null,
+                                  uom_id: null,
+                                  service_id: null,
+                                  item_group_id: null,
+                                  quantity: 0,
+                                  expiry_date: null,
+                                  batchno: null,
+                                  grn_no: null,
+                                  qtyhand: null,
+                                  barcode: null,
+                                  ItemUOM: [],
+                                  Batch_Items: null,
+                                  addItemButton: true,
+                                  item_description: null,
+                                  sales_uom_id: null,
+                                  sales_conversion_factor: null,
+                                  uom_description: null,
+                                  stocking_uom: null,
+                                  conversion_factor: null,
+                                  sales_qtyhand: null,
+                                  stocking_uom_id: null,
+                                  average_cost: null,
+                                  unit_cost: 0,
+                                  Real_unit_cost: 0
+                                });
+                              }}
                               ref={attReg => {
                                 this.attReg = attReg;
                               }}
@@ -277,6 +306,7 @@ class PosListItems extends Component {
                                 className: "txt-fld",
                                 name: "quantity",
                                 value: this.state.quantity,
+                                dontAllowKeys: ["-", "e", "."],
                                 events: {
                                   onChange: numberchangeTexts.bind(
                                     this,
@@ -298,6 +328,7 @@ class PosListItems extends Component {
                                 isImp: false
                               }}
                               textBox={{
+                                decimal: { allowNegative: false },
                                 className: "txt-fld",
                                 name: "discount_percentage",
                                 value: this.state.discount_percentage,
@@ -309,7 +340,6 @@ class PosListItems extends Component {
                                   )
                                 },
                                 others: {
-                                  type: "number",
                                   tabIndex: "4",
                                   disabled:
                                     this.state.insured === "Y" ? true : false
@@ -556,6 +586,7 @@ class PosListItems extends Component {
                                             value: row.quantity,
                                             className: "txt-fld",
                                             name: "quantity",
+                                            dontAllowKeys: ["-", "e", "."],
                                             events: {
                                               onChange: qtyonchangegridcol.bind(
                                                 this,
@@ -730,6 +761,7 @@ class PosListItems extends Component {
                                           <AlagehFormGroup
                                             div={{}}
                                             textBox={{
+                                              decimal: { allowNegative: false },
                                               value: row.discount_percentage,
                                               className: "txt-fld",
                                               name: "discount_percentage",
@@ -745,8 +777,8 @@ class PosListItems extends Component {
                                                 onFocus: e => {
                                                   e.target.oldvalue =
                                                     e.target.value;
-                                                },
-                                                type: "number"
+                                                }
+                                                // type: "number"
                                               }
                                             }}
                                           />
@@ -773,6 +805,7 @@ class PosListItems extends Component {
                                           <AlagehFormGroup
                                             div={{}}
                                             textBox={{
+                                              decimal: { allowNegative: false },
                                               value: row.discount_amount,
                                               className: "txt-fld",
                                               name: "discount_amount",
@@ -788,8 +821,8 @@ class PosListItems extends Component {
                                                 onFocus: e => {
                                                   e.target.oldvalue =
                                                     e.target.value;
-                                                },
-                                                type: "number"
+                                                }
+                                                // type: "number"
                                               }
                                             }}
                                           />

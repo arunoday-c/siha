@@ -19,7 +19,8 @@ import {
   datehandle,
   updateServices,
   deleteServices,
-  numberhandle
+  numberhandle,
+  dateValidate
 } from "./ApprovalDetailsEvents";
 
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
@@ -86,8 +87,60 @@ class PatientDetails extends PureComponent {
                       {
                         fieldName: "requested_quantity",
                         label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Requested Qty" }}
+                          />
+                        ),
+                        others: {
+                          show: this.props.openFrom === "M" ? true : false
+                        },
+                        disabled: true
+                      },
+                      {
+                        fieldName: "approved_qty",
+                        label: (
                           <AlgaehLabel label={{ fieldName: "qty_appr" }} />
                         ),
+                        others: {
+                          show: this.props.openFrom === "M" ? true : false
+                        },
+                        editorTemplate: row => {
+                          return (
+                            <AlagehFormGroup
+                              div={{}}
+                              textBox={{
+                                value: row.approved_qty,
+                                className: "txt-fld",
+                                name: "approved_qty",
+                                number: {
+                                  thousandSeparator: ",",
+                                  allowNegative: false
+                                },
+                                dontAllowKeys: ["-", "e", "."],
+                                events: {
+                                  onChange: numberhandle.bind(this, this, row)
+                                },
+                                others: {
+                                  disabled:
+                                    this.props.openFrom === "M"
+                                      ? row.billing_updated === "Y"
+                                        ? true
+                                        : false
+                                      : true
+                                }
+                              }}
+                            />
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "requested_quantity",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "qty_appr" }} />
+                        ),
+                        others: {
+                          show: this.props.openFrom === "M" ? false : true
+                        },
                         editorTemplate: row => {
                           return (
                             <AlagehFormGroup
@@ -96,11 +149,21 @@ class PatientDetails extends PureComponent {
                                 value: row.requested_quantity,
                                 className: "txt-fld",
                                 name: "requested_quantity",
+                                number: {
+                                  thousandSeparator: ",",
+                                  allowNegative: false
+                                },
+                                dontAllowKeys: ["-", "e", "."],
                                 events: {
                                   onChange: numberhandle.bind(this, this, row)
                                 },
                                 others: {
-                                  type: "number"
+                                  disabled:
+                                    this.props.openFrom === "M"
+                                      ? row.billing_updated === "Y"
+                                        ? true
+                                        : false
+                                      : true
                                 }
                               }}
                             />
@@ -184,7 +247,11 @@ class PatientDetails extends PureComponent {
                                   valueField: "value",
                                   data: GlobalVariables.FORMAT_APPSTATUS
                                 },
-                                onChange: texthandle.bind(this, this, row)
+                                onChange: texthandle.bind(this, this, row),
+                                others: {
+                                  disabled:
+                                    row.billing_updated === "Y" ? true : false
+                                }
                               }}
                             />
                           );
@@ -209,6 +276,7 @@ class PatientDetails extends PureComponent {
                             <AlagehFormGroup
                               div={{}}
                               textBox={{
+                                decimal: { allowNegative: false },
                                 value: row.approved_amount,
                                 className: "txt-fld",
                                 name: "approved_amount",
@@ -216,7 +284,8 @@ class PatientDetails extends PureComponent {
                                   onChange: numberhandle.bind(this, this, row)
                                 },
                                 others: {
-                                  type: "number"
+                                  disabled:
+                                    row.billing_updated === "Y" ? true : false
                                 }
                               }}
                             />
@@ -236,6 +305,10 @@ class PatientDetails extends PureComponent {
                                 name: "approved_no",
                                 events: {
                                   onChange: texthandle.bind(this, this, row)
+                                },
+                                others: {
+                                  disabled:
+                                    row.billing_updated === "Y" ? true : false
                                 }
                               }}
                             />
@@ -278,9 +351,13 @@ class PatientDetails extends PureComponent {
                               }}
                               minDate={new Date()}
                               events={{
-                                onChange: datehandle.bind(this, this, row)
+                                onChange: datehandle.bind(this, this, row),
+                                onBlur: dateValidate.bind(this, this, row)
                               }}
                               value={row.valid_upto}
+                              disabled={
+                                row.billing_updated === "Y" ? true : false
+                              }
                             />
                           );
                         },
@@ -299,6 +376,10 @@ class PatientDetails extends PureComponent {
                                 name: "apprv_remarks",
                                 events: {
                                   onChange: texthandle.bind(this, this, row)
+                                },
+                                others: {
+                                  disabled:
+                                    row.billing_updated === "Y" ? true : false
                                 }
                               }}
                             />
@@ -311,6 +392,7 @@ class PatientDetails extends PureComponent {
                       data: this.state.services_details
                     }}
                     isEditable={true}
+                    actions={{ allowDelete: false }}
                     paging={{ page: 0, rowsPerPage: 5 }}
                     events={{
                       onDelete: deleteServices.bind(this, this, context),

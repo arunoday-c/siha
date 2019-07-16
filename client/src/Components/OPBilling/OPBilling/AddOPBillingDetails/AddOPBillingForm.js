@@ -24,7 +24,11 @@ import {
   EditGrid,
   CancelGrid,
   onquantitycol,
-  ondiscountgridcol
+  ondiscountgridcol,
+  calculateAmount,
+  makeZero,
+  makeDiscountZero,
+  makeZeroIngrid
 } from "./AddOPBillingHandaler";
 import ReciptForm from "../ReciptDetails/AddReciptForm";
 import { AlgaehActions } from "../../../../actions/algaehActions";
@@ -218,65 +222,9 @@ class AddOPBillingForm extends Component {
       });
     }
   }
-  //Calculate Row Detail
-  calculateAmount(row, ctrl, e) {
-    e = e || ctrl;
-
-    if (e.target.value !== e.target.oldvalue) {
-      let $this = this;
-      let billdetails = this.state.billdetails;
-
-      row[e.target.name] = parseFloat(
-        e.target.value === "" ? 0 : e.target.value
-      );
-      let inputParam = [
-        {
-          hims_d_services_id: row.services_id,
-          vat_applicable: this.state.vat_applicable,
-          quantity: row.quantity,
-          discount_amout:
-            e.target.name === "discount_percentage" ? 0 : row.discount_amout,
-          discount_percentage:
-            e.target.name === "discount_amout" ? 0 : row.discount_percentage,
-
-          insured: this.state.insured,
-          primary_insurance_provider_id: this.state.insurance_provider_id,
-          primary_network_office_id: this.state
-            .hims_d_insurance_network_office_id,
-          primary_network_id: this.state.network_id,
-          sec_insured: this.state.sec_insured,
-          secondary_insurance_provider_id: this.state
-            .secondary_insurance_provider_id,
-          secondary_network_id: this.state.secondary_network_id,
-          secondary_network_office_id: this.state.secondary_network_office_id
-        }
-      ];
-
-      algaehApiCall({
-        uri: "/billing/getBillDetails",
-        module: "billing",
-        method: "POST",
-        data: inputParam,
-        onSuccess: response => {
-          if (response.data.success) {
-            let data = response.data.records;
-
-            extend(row, data.billdetails[0]);
-            billdetails[row.rowIdx] = row;
-            $this.setState({ billdetails: billdetails });
-          }
-        },
-        onFailure: error => {
-          swalMessage({
-            title: error.message,
-            type: "error"
-          });
-        }
-      });
-    }
-  }
 
   updateBillDetail(context, row, e) {
+    debugger;
     algaehApiCall({
       uri: "/billing/billingCalculations",
       module: "billing",
@@ -495,6 +443,32 @@ class AddOPBillingForm extends Component {
                       id="Bill_details"
                       columns={[
                         {
+                          fieldName: "actions",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Action" }} />
+                          ),
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                <i
+                                  style={{
+                                    pointerEvents: this.state.Billexists
+                                      ? "none"
+                                      : "",
+                                    opacity: this.state.Billexists ? "0.1" : ""
+                                  }}
+                                  onClick={this.deleteBillDetail.bind(
+                                    this,
+                                    context,
+                                    row
+                                  )}
+                                  className="fas fa-trash-alt"
+                                />
+                              </span>
+                            );
+                          }
+                        },
+                        {
                           fieldName: "service_type_id",
                           label: (
                             <AlgaehLabel
@@ -644,11 +618,12 @@ class AddOPBillingForm extends Component {
                               label={{ fieldName: "discount_percentage" }}
                             />
                           ),
-                          editorTemplate: row => {
+                          displayTemplate: row => {
                             return (
                               <AlagehFormGroup
                                 div={{}}
                                 textBox={{
+                                  decimal: { allowNegative: false },
                                   value: row.discount_percentage,
                                   className: "txt-fld",
                                   name: "discount_percentage",
@@ -656,19 +631,22 @@ class AddOPBillingForm extends Component {
                                     onChange: ondiscountgridcol.bind(
                                       this,
                                       this,
+                                      context,
                                       row
                                     )
                                   },
                                   others: {
                                     placeholder: "0.00",
-                                    onBlur: this.calculateAmount.bind(
+                                    disabled: this.state.Billexists,
+                                    onBlur: makeZeroIngrid.bind(
                                       this,
+                                      this,
+                                      context,
                                       row
                                     ),
                                     onFocus: e => {
                                       e.target.oldvalue = e.target.value;
-                                    },
-                                    type: "number"
+                                    }
                                   }
                                 }}
                               />
@@ -691,11 +669,12 @@ class AddOPBillingForm extends Component {
                               </span>
                             );
                           },
-                          editorTemplate: row => {
+                          displayTemplate: row => {
                             return (
                               <AlagehFormGroup
                                 div={{}}
                                 textBox={{
+                                  decimal: { allowNegative: false },
                                   value: row.discount_amout,
                                   className: "txt-fld",
                                   name: "discount_amout",
@@ -703,19 +682,22 @@ class AddOPBillingForm extends Component {
                                     onChange: ondiscountgridcol.bind(
                                       this,
                                       this,
+                                      context,
                                       row
                                     )
                                   },
                                   others: {
                                     placeholder: "0.00",
-                                    onBlur: this.calculateAmount.bind(
+                                    disabled: this.state.Billexists,
+                                    onBlur: makeZeroIngrid.bind(
                                       this,
+                                      this,
+                                      context,
                                       row
                                     ),
                                     onFocus: e => {
                                       e.target.oldvalue = e.target.value;
-                                    },
-                                    type: "number"
+                                    }
                                   }
                                 }}
                               />
@@ -744,7 +726,7 @@ class AddOPBillingForm extends Component {
                       dataSource={{
                         data: this.state.billdetails
                       }}
-                      isEditable={!this.state.Billexists}
+                      // isEditable={!this.state.Billexists}
                       actions={{
                         allowEdit: !this.state.Billexists,
                         allowDelete: !this.state.Billexists
@@ -1006,11 +988,7 @@ class AddOPBillingForm extends Component {
                             },
                             others: {
                               placeholder: "0.00",
-                              onBlur: billheaderCalculation.bind(
-                                this,
-                                this,
-                                context
-                              ),
+                              onBlur: makeZero.bind(this, this, context),
                               onFocus: e => {
                                 e.target.oldvalue = e.target.value;
                               },
@@ -1041,7 +1019,7 @@ class AddOPBillingForm extends Component {
                                   ? true
                                   : this.state.applydiscount,
                               placeholder: "0.00",
-                              onBlur: billheaderCalculation.bind(
+                              onBlur: makeDiscountZero.bind(
                                 this,
                                 this,
                                 context
@@ -1072,11 +1050,7 @@ class AddOPBillingForm extends Component {
                                   ? true
                                   : this.state.applydiscount,
                               placeholder: "0.00",
-                              onBlur: billheaderCalculation.bind(
-                                this,
-                                this,
-                                context
-                              ),
+
                               onFocus: e => {
                                 e.target.oldvalue = e.target.value;
                               }
@@ -1127,12 +1101,9 @@ class AddOPBillingForm extends Component {
                             },
                             others: {
                               placeholder: "0.00",
+                              onBlur: makeZero.bind(this, this, context),
                               disabled:
                                 this.state.Billexists === true ? true : false
-                              // onBlur: credittextCal.bind(this, this),
-                              // onFocus: e => {
-                              //   e.target.oldvalue = e.target.value;
-                              // }
                             }
                           }}
                         />

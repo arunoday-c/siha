@@ -92,6 +92,7 @@ const CloseVisits = $this => {
     data: inputObj,
     onSuccess: response => {
       if (response.data.success) {
+        $this.setState({ saveEnable: true });
         swalMessage({
           title: "Visits Closed Succesfully...",
           type: "success"

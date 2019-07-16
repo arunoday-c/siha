@@ -185,9 +185,35 @@ class TransferEntryItems extends Component {
                             pharmacy_location_id: pharmacy_location_id
                           }}
                           onClick={itemchangeText.bind(this, this, context)}
+                          onClear={() => {
+                            context.updateState({
+                              item_id: null,
+                              item_category: null,
+                              uom_id: null,
+                              service_id: null,
+                              item_group_id: null,
+                              quantity: 0,
+                              expiry_date: null,
+                              batchno: null,
+                              grn_no: null,
+                              qtyhand: null,
+                              barcode: null,
+                              ItemUOM: [],
+                              Batch_Items: [],
+                              addItemButton: true,
+                              item_description: null,
+                              sales_uom_id: null,
+                              sales_conversion_factor: null,
+                              uom_description: null,
+                              stocking_uom: null,
+                              conversion_factor: null,
+                              sales_qtyhand: null
+                            });
+                          }}
                           ref={attReg => {
                             this.attReg = attReg;
                           }}
+                          others={{ disabled: this.state.dataExitst }}
                         />
                         <div className="col">
                           <AlgaehLabel
@@ -272,6 +298,7 @@ class TransferEntryItems extends Component {
                               allowNegative: false,
                               thousandSeparator: ","
                             },
+                            dontAllowKeys: ["-", "e", "."],
                             className: "txt-fld",
                             name: "quantity",
                             value: this.state.quantity,
@@ -333,15 +360,26 @@ class TransferEntryItems extends Component {
                               ),
                               displayTemplate: row => {
                                 return (
-                                  <span
-                                    onClick={deleteTransEntryDetail.bind(
-                                      this,
-                                      this,
-                                      context,
-                                      row
-                                    )}
-                                  >
-                                    <i className="fas fa-trash-alt" />
+                                  <span>
+                                    <i
+                                      className="fas fa-trash-alt"
+                                      style={{
+                                        pointerEvents:
+                                          this.state.cannotEdit === true
+                                            ? "none"
+                                            : "",
+                                        opacity:
+                                          this.state.cannotEdit === true
+                                            ? "0.1"
+                                            : ""
+                                      }}
+                                      onClick={deleteTransEntryDetail.bind(
+                                        this,
+                                        this,
+                                        context,
+                                        row
+                                      )}
+                                    />
                                   </span>
                                 );
                               }
@@ -833,7 +871,9 @@ class TransferEntryItems extends Component {
                                 displayTemplate: row => {
                                   return (
                                     <span>
-                                      {dateFormater(this, row.expiry_date)}
+                                      {row.expiry_date !== null
+                                        ? dateFormater(this, row.expiry_date)
+                                        : null}
                                     </span>
                                   );
                                 },
@@ -1052,6 +1092,11 @@ class TransferEntryItems extends Component {
                                         <AlagehFormGroup
                                           div={{}}
                                           textBox={{
+                                            number: {
+                                              allowNegative: false,
+                                              thousandSeparator: ","
+                                            },
+                                            dontAllowKeys: ["-", "e", "."],
                                             value: row.quantity_transfer,
                                             className: "txt-fld",
                                             name: "quantity_transfer",
@@ -1064,7 +1109,6 @@ class TransferEntryItems extends Component {
                                               )
                                             },
                                             others: {
-                                              type: "number",
                                               algaeh_required: "true",
                                               errormessage:
                                                 "Please enter Transferred Quantity ..",

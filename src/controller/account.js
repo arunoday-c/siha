@@ -35,14 +35,12 @@ export default ({ config, db }) => {
       if (result[0].length == 0) {
         next(httpStatus.generateError(httpStatus.notFound, "No record found"));
       } else {
-        // console.log("result: ", result);
         if (result[0][0]["locked"] == "N") {
           let rowDetails = result[0][0];
           debugLog("rowDetails: ", rowDetails);
           let encrypDetsil = { ...result[0][0], ...result[1][0] };
           let hospitalDetails = { ...result[1][0] };
 
-          // console.log("moduleDetails: ", moduleDetails);
           let keyData = encryption(encrypDetsil);
           // let keymoduleDetails = encryption(hospitalDetails);
 

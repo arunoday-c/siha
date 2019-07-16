@@ -449,7 +449,7 @@ const getUnitCost = ($this, context, serviceid, sales_price) => {
         mappingName: "hospitalservices"
       },
       afterSuccess: data => {
-        if (data !== undefined || data !== null) {
+        if (data.length > 0) {
           $this.setState({
             unit_cost: data[0].gross_amt,
             Real_unit_cost: data[0].gross_amt
@@ -462,8 +462,19 @@ const getUnitCost = ($this, context, serviceid, sales_price) => {
             });
           }
         } else {
+          $this.setState({
+            unit_cost: sales_price,
+            Real_unit_cost: sales_price
+          });
+
+          if (context !== undefined) {
+            context.updateState({
+              unit_cost: sales_price,
+              Real_unit_cost: sales_price
+            });
+          }
           swalMessage({
-            title: "No Service for the selected item.",
+            title: "Insurance Not Covered.",
             type: "warning"
           });
         }
@@ -624,7 +635,7 @@ const AddItems = ($this, context) => {
                   grnno: $this.state.grn_no,
                   barcode: $this.state.barcode,
                   qtyhand: $this.state.qtyhand,
-                  sales_price: $this.state.unit_cost,
+                  sale_price: $this.state.unit_cost,
                   uom_id: $this.state.uom_id,
                   conversion_factor: $this.state.conversion_factor,
                   non_prec_Item: true,
@@ -849,6 +860,7 @@ const deletePosDetail = ($this, context, row) => {
         cheque_amount: 0,
         total_amount: 0,
         saveEnable: true,
+        postEnable: true,
         unbalanced_amount: 0,
         balance_credit: 0
       });
@@ -885,6 +897,7 @@ const deletePosDetail = ($this, context, row) => {
             data.sec_copay_amount || $this.state.sec_copay_amount;
           data.addItemButton = false;
           data.saveEnable = false;
+          data.postEnable = false;
 
           if (context !== null) {
             context.updateState({ ...data });
@@ -977,7 +990,7 @@ const calculateAmount = ($this, context, row, ctrl, e) => {
       discount_percentage:
         e.target.name === "discount_amount" ? 0 : row.discount_percentage,
 
-      insured: $this.state.insured,
+      insured: row.insurance_yesno,
       primary_insurance_provider_id: $this.state.insurance_provider_id,
       primary_network_office_id: $this.state.hims_d_insurance_network_office_id,
       primary_network_id: $this.state.network_id,
@@ -1317,7 +1330,11 @@ const onchangegridcol = ($this, context, row, e) => {
         type: "warning"
       });
       row[name] = 0;
-      // pharmacy_stock_detail[_index] = row;
+      row["discount_amount"] = 0;
+      pharmacy_stock_detail[_index] = row;
+      $this.setState({
+        pharmacy_stock_detail: pharmacy_stock_detail
+      });
       return;
     }
     if (parseFloat(value) < 0) {
@@ -1326,7 +1343,11 @@ const onchangegridcol = ($this, context, row, e) => {
         type: "warning"
       });
       row[name] = 0;
-      // pharmacy_stock_detail[_index] = row;
+      row["discount_amount"] = 0;
+      pharmacy_stock_detail[_index] = row;
+      $this.setState({
+        pharmacy_stock_detail: pharmacy_stock_detail
+      });
       return;
     }
   } else if (name === "discount_amount") {
@@ -1336,7 +1357,10 @@ const onchangegridcol = ($this, context, row, e) => {
         type: "warning"
       });
       row[name] = 0;
-      // pharmacy_stock_detail[_index] = row;
+      pharmacy_stock_detail[_index] = row;
+      $this.setState({
+        pharmacy_stock_detail: pharmacy_stock_detail
+      });
       return;
     }
     if (parseFloat(row.extended_cost) < parseFloat(value)) {
@@ -1345,7 +1369,10 @@ const onchangegridcol = ($this, context, row, e) => {
         type: "warning"
       });
       row[name] = 0;
-      // pharmacy_stock_detail[_index] = row;
+      pharmacy_stock_detail[_index] = row;
+      $this.setState({
+        pharmacy_stock_detail: pharmacy_stock_detail
+      });
       return;
     }
   }

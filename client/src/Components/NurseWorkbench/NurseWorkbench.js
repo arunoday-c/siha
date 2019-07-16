@@ -19,7 +19,11 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../actions/algaehActions";
 import GlobalVariables from "../../utils/GlobalVariables.json";
-import { setGlobal, getLabelFromLanguage } from "../../utils/GlobalFunctions";
+import {
+  setGlobal,
+  getLabelFromLanguage,
+  AlgaehValidation
+} from "../../utils/GlobalFunctions";
 import config from "../../utils/config.json";
 import {
   getAllChiefComplaints,
@@ -347,30 +351,35 @@ class NurseWorkbench extends Component {
       send_data.patient_vitals = bodyArray;
       send_data.hims_f_patient_encounter_id = this.state.encounter_id;
 
-      algaehApiCall({
-        uri: "/nurseWorkBench/addPatientNurseChiefComplaints",
-        method: "POST",
-        data: send_data,
-        onSuccess: response => {
-          if (response.data.success) {
-            swalMessage({
-              title: "Recorded Successfully",
-              type: "success"
-            });
-            // var element = document.querySelectorAll("[nursing_pat]");
-            // for (var i = 0; i < element.length; i++) {
-            //   element[i].classList.remove("active");
-            // }
-            this.resetSaveState();
-            this.loadListofData();
-          }
-        },
-        onError: error => {
-          swalMessage({
-            title: error.message,
-            type: "error"
-          });
-        }
+      AlgaehValidation({
+        querySelector: "data-validate='vitalsForm'",
+        alertTypeIcon: "warning",
+        onSuccess: () =>
+          algaehApiCall({
+            uri: "/nurseWorkBench/addPatientNurseChiefComplaints",
+            method: "POST",
+            data: send_data,
+            onSuccess: response => {
+              if (response.data.success) {
+                swalMessage({
+                  title: "Recorded Successfully",
+                  type: "success"
+                });
+                // var element = document.querySelectorAll("[nursing_pat]");
+                // for (var i = 0; i < element.length; i++) {
+                //   element[i].classList.remove("active");
+                // }
+                this.resetSaveState();
+                this.loadListofData();
+              }
+            },
+            onError: error => {
+              swalMessage({
+                title: error.message,
+                type: "error"
+              });
+            }
+          })
       });
     }
   }
@@ -1109,7 +1118,10 @@ class NurseWorkbench extends Component {
 
               <div className="portlet-body" id="vitals_recording">
                 {/* Vitals Start */}
-                <div className="row margin-bottom-15">
+                <div
+                  className="row margin-bottom-15"
+                  data-validate="vitalsForm"
+                >
                   {_department_viatals.map((item, index) => {
                     const _className =
                       item.hims_d_vitals_header_id === 1
@@ -1712,6 +1724,10 @@ class NurseWorkbench extends Component {
                                   isImp: false
                                 }}
                                 textBox={{
+                                  number: {
+                                    allowNegative: false
+                                  },
+                                  dontAllowKeys: ["-", "e"],
                                   className: "txt-fld",
                                   name: "duration",
                                   number: true,

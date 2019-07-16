@@ -64,7 +64,8 @@ export default {
       po_completed: null,
       addItemButton: true,
       dummyField: false,
-      authorizeEnable: true
+      authorizeEnable: true,
+      cannotDelete: false
     };
     return output;
   }

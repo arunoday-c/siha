@@ -1,0 +1,112 @@
+{{{importStyle 'css/creditinvoice.css'}}}
+
+<body>
+    <div class="print-body">
+        <section>
+
+            <table class="tableForLabel" cell-padding="0">
+                <tr>
+                    <td><label class="textEnLft">Transferd Type</label>:<span class="valueText">{{transfer_type}}</span>
+                    </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
+                </tr>
+                <tr>
+                    <td><label class="textEnLft">Request No.</label>:<span
+                            class="valueText">{{material_requisition_number}}</span>
+                    </td>
+                    <td><label class="textEnLft">Request From</label>:<span class="valueText">{{from_location}}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label class="textEnLft">Request Date</label>:<span class="valueText">{{requistion_date}}</span>
+                    </td>
+                    <td><label class="textEnLft">Request To</label>:<span class="valueText">{{to_location}}</span></td>
+
+                </tr>
+                <tr>
+                    <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
+                </tr>
+                <tr>
+                    <td><label class="textEnLft">Transferd No.</label>:<span
+                            class="valueText">{{transfer_number}}</span>
+                    </td>
+                    <td><label class="textEnLft">Transferd Date</label>:<span class="valueText">{{transfer_date}}</span>
+                    </td>
+
+                </tr>
+                {{!-- <td><label class="textEnLft">transfer_type</label>:<span class="valueText">{{transfer_type}}</span>
+</td> --}}
+
+            </table>
+
+
+        </section>
+        <section>
+            <table class="tableForData">
+                <thead>
+                    <tr>
+                        <th>Item Name</th>
+                        <th>Item Code</th>
+                        <th>Item Category</th>
+                        {{!-- <th>Req. UOM</th> --}}
+                        <th>Trans. UOM</th>
+                        <th>Qty Req.</th>
+                        <th>Qty Auth</th>
+                        <th>Qty Trans.</th>
+                    </tr>
+                </thead>
+                {{#each details}}
+
+                <tbody>
+                    <tr>
+                        <td>{{item_description}} </td>
+                        <td>{{item_code}}</td>
+                        <td>{{category_desc}}</td>
+                        {{!-- <td>{{requested_uom}}</td> --}}
+                        <td>{{transferred_uom}}</td>
+                        <td>{{quantity_requested}}</td>
+                        <td>{{quantity_authorized}}</td>
+                        <td>{{quantity_transferred}}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td colspan="6">
+                            <table class="tableHeaderForData" style="margin:0;padding:0;">
+                                <thead>
+                                    <tr>
+                                        <th>Sl No.</th>
+                                        <th>batchno</th>
+                                        <th>Expiry Date</th>
+                                        <th>Qty Trans.</th>
+                                        <th>Unit Cost</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    {{#each batches}}
+                                    <tr>
+                                        <td>{{inc @index}}</td>
+
+                                        <td>{{batchno}}</td>
+                                        <td>{{expiry_date}}</td>
+
+                                        <td>{{quantity_transfer}}</td>
+                                        <td>{{unit_cost}}</td>
+                                    </tr>
+                                    {{/each }}
+
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>{{/each }}
+            </table>
+        </section>
+        </section>
+
+
+    </div>
+</body>

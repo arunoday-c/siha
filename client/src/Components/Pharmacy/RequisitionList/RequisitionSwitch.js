@@ -13,6 +13,8 @@ class RequisitionSwitch extends Component {
       RQ_Screen: getCookie("ScreenName").replace("/", "")
     };
     this.routeComponents = this.routeComponents.bind(this);
+    this.new_routeComponents = this.new_routeComponents.bind(this);
+    this.goBackToAuth = this.goBackToAuth.bind(this);
   }
 
   routeComponents() {
@@ -23,11 +25,32 @@ class RequisitionSwitch extends Component {
           Window.global["material_requisition_number"],
         hims_f_pharamcy_material_header_id:
           Window.global["hims_f_pharamcy_material_header_id"],
-        from_location_id: Window.global["from_location_id"]
+        from_location_id: Window.global["to_location_id"]
       },
       () => {
         this.changeDisplays(Window.global["RQ-STD"]);
       }
+    );
+  }
+
+  new_routeComponents(obj) {
+    this.setState(
+      {
+        ...obj
+      },
+      () => {
+        this.changeDisplays();
+      }
+    );
+  }
+
+  goBackToAuth() {
+    this.setState(
+      {
+        backToAuth: true,
+        RQ_Screen: "RequisitionList"
+      },
+      this.changeDisplays
     );
   }
 
@@ -37,7 +60,13 @@ class RequisitionSwitch extends Component {
 
   componentList() {
     return {
-      RequisitionList: <RequisitionList />,
+      RequisitionList: (
+        <RequisitionList
+          backToAuth={this.state.backToAuth}
+          new_routeComponents={this.new_routeComponents}
+          prev={this.state}
+        />
+      ),
       RequisitionEntry: (
         <RequisitionEntry
           material_requisition_number={this.state.material_requisition_number}
@@ -49,7 +78,7 @@ class RequisitionSwitch extends Component {
           hims_f_pharamcy_material_header_id={
             this.state.hims_f_pharamcy_material_header_id
           }
-          from_location_id={this.state.from_location_id}
+          from_location={this.state.from_location}
           requisition_auth={true}
         />
       )
@@ -92,13 +121,7 @@ class RequisitionSwitch extends Component {
                 this.state.RQ_Screen === "RequisitionList" ? "none" : "block"
             }}
             className="btn btn-default bk-bn"
-            onClick={() => {
-              setGlobal({
-                "RQ-STD": "RequisitionList"
-              });
-
-              this.routeComponents();
-            }}
+            onClick={this.goBackToAuth}
           >
             <i className="fas fa-angle-double-left fa-lg" />
             Back to List

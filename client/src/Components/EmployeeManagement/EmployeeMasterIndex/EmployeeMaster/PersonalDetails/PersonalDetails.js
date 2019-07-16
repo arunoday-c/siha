@@ -120,7 +120,7 @@ class PersonalDetails extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState(nextProps.EmpMasterIOputs.state.personalDetails, () => {});
+    this.setState(nextProps.EmpMasterIOputs.state.personalDetails);
     // this.setState(, () => {});
   }
 
@@ -234,10 +234,8 @@ class PersonalDetails extends Component {
                         className: "select-fld",
                         value: this.state.sex,
                         dataSource: {
-                          textField:
-                            this.state.selectedLang === "en"
-                              ? "name"
-                              : "arabic_name",
+                          textField: "name",
+
                           valueField: "value",
                           data: variableJson.EMP_FORMAT_GENDER
                         },
@@ -338,10 +336,7 @@ class PersonalDetails extends Component {
                         className: "select-fld",
                         value: this.state.religion_id,
                         dataSource: {
-                          textField:
-                            this.state.selectedLang === "en"
-                              ? "religion_name"
-                              : "arabic_religion_name",
+                          textField: "religion_name",
                           valueField: "hims_d_religion_id",
                           data: this.props.relegions
                         },
@@ -369,10 +364,7 @@ class PersonalDetails extends Component {
                         className: "select-fld",
                         value: this.state.marital_status,
                         dataSource: {
-                          textField:
-                            this.state.selectedLang === "en"
-                              ? "name"
-                              : "arabic_name",
+                          textField: "name",
                           valueField: "value",
                           data: variableJson.FORMAT_MARTIALSTS_EMP
                         },
@@ -395,10 +387,7 @@ class PersonalDetails extends Component {
                         className: "select-fld",
                         value: this.state.nationality,
                         dataSource: {
-                          textField:
-                            this.state.selectedLang === "en"
-                              ? "nationality"
-                              : "arabic_nationality",
+                          textField: "nationality",
                           valueField: "hims_d_nationality_id",
                           data: this.props.nationalities
                         },
@@ -445,10 +434,7 @@ class PersonalDetails extends Component {
                             className: "select-fld",
                             value: this.state.present_country_id,
                             dataSource: {
-                              textField:
-                                this.state.selectedLang === "en"
-                                  ? "country_name"
-                                  : "arabic_country_name",
+                              textField: "country_name",
                               valueField: "hims_d_country_id",
                               data: this.props.countries
                             },
@@ -475,10 +461,7 @@ class PersonalDetails extends Component {
                             className: "select-fld",
                             value: this.state.present_state_id,
                             dataSource: {
-                              textField:
-                                this.state.selectedLang === "en"
-                                  ? "state_name"
-                                  : "arabic_state_name",
+                              textField: "state_name",
                               valueField: "hims_d_state_id",
                               data: this.state.countrystates
                             },
@@ -505,10 +488,7 @@ class PersonalDetails extends Component {
                             className: "select-fld",
                             value: this.state.present_city_id,
                             dataSource: {
-                              textField:
-                                this.state.selectedLang === "en"
-                                  ? "city_name"
-                                  : "city_arabic_name",
+                              textField: "city_name",
                               valueField: "hims_d_city_id",
                               data: this.state.present_cities
                             },
@@ -586,10 +566,7 @@ class PersonalDetails extends Component {
                                 ? this.state.present_country_id
                                 : this.state.permanent_country_id,
                             dataSource: {
-                              textField:
-                                this.state.selectedLang === "en"
-                                  ? "country_name"
-                                  : "arabic_country_name",
+                              textField: "country_name",
                               valueField: "hims_d_country_id",
                               data: this.props.countries
                             },
@@ -619,10 +596,7 @@ class PersonalDetails extends Component {
                                 ? this.state.present_state_id
                                 : this.state.permanent_state_id,
                             dataSource: {
-                              textField:
-                                this.state.selectedLang === "en"
-                                  ? "state_name"
-                                  : "arabic_state_name",
+                              textField: "state_name",
                               valueField: "hims_d_state_id",
                               data:
                                 this.state.samechecked === "Y"
@@ -654,10 +628,7 @@ class PersonalDetails extends Component {
                                 ? this.state.present_city_id
                                 : this.state.permanent_city_id,
                             dataSource: {
-                              textField:
-                                this.state.selectedLang === "en"
-                                  ? "city_name"
-                                  : "city_arabic_name",
+                              textField: "city_name",
                               valueField: "hims_d_city_id",
                               data:
                                 this.state.samechecked === "Y"

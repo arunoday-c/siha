@@ -20,7 +20,8 @@ import {
   PostPosEntry,
   nationalityhandle,
   CancelPosEntry,
-  generateReport
+  generateReport,
+  getCashiersAndShiftMAP
 } from "./PointOfSaleEvents";
 // getCtrlCode,
 import "./PointOfSale.css";
@@ -143,6 +144,7 @@ class PointOfSale extends Component {
         });
       }
     });
+    getCashiersAndShiftMAP(this, this);
   }
 
   onKeyPress(e) {
@@ -246,7 +248,12 @@ class PointOfSale extends Component {
                     style={{ marginTop: "auto", padding: 0 }}
                   >
                     <span
-                      style={{ cursor: "pointer" }}
+                      style={{
+                        cursor: "pointer",
+                        pointerEvents: this.state.hims_f_pharmacy_pos_header_id
+                          ? "none"
+                          : ""
+                      }}
                       className="fas fa-search fa-2x"
                       onClick={VisitSearch.bind(this, this)}
                     />
@@ -339,6 +346,10 @@ class PointOfSale extends Component {
                       isImp: true
                     }}
                     textBox={{
+                      number: {
+                        allowNegative: false
+                      },
+                      dontAllowKeys: ["-", "e", "."],
                       className: "txt-fld",
                       name: "mobile_number",
                       value: this.state.mobile_number,

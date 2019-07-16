@@ -1564,7 +1564,7 @@ class Dental extends Component {
             className="col-lg-12 margin-bottom-15 popupInner"
             data-validate="billDentalPlan"
           >
-            <div className="row" style={{ paddingBottom: 0 }}>
+            <div className="row margin-top-15">
               <AlagehFormGroup
                 div={{ className: "col-lg-3" }}
                 label={{
@@ -1588,7 +1588,7 @@ class Dental extends Component {
               <AlagehFormGroup
                 div={{ className: "col-lg-3" }}
                 label={{
-                  fieldName: "procedure",
+                  forceLabel: "Select Procedure",
                   isImp: true
                 }}
                 textBox={{
@@ -1685,15 +1685,20 @@ class Dental extends Component {
             <hr />
             {/* Insurance Details */}
             <div className="row">
-              <div className="col-lg-6">
-                <AlgaehLabel
-                  label={{
-                    fieldName: "prim-insurance"
-                  }}
-                />
+              <div className="col-4">
+                <b>
+                  <u>
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Insurance Detailed Breakup",
+                        returnText: true
+                      }}
+                    />
+                  </u>
+                </b>
                 <div className="Paper">
                   <div className="row insurance-details">
-                    <div className="col">
+                    <div className="col-6">
                       <AlgaehLabel
                         label={{
                           fieldName: "copay_percentage"
@@ -1706,7 +1711,7 @@ class Dental extends Component {
                       </h6>
                     </div>
 
-                    <div className="col">
+                    <div className="col-6">
                       <AlgaehLabel
                         label={{
                           fieldName: "copay_amount"
@@ -1715,7 +1720,7 @@ class Dental extends Component {
                       <h6>{getAmountFormart(billDetails.copay_amount)}</h6>
                     </div>
 
-                    <div className="col-3">
+                    <div className="col-6">
                       <AlgaehLabel
                         label={{
                           fieldName: "deductable_percentage"
@@ -1728,7 +1733,7 @@ class Dental extends Component {
                       </h6>
                     </div>
 
-                    <div className="col-4">
+                    <div className="col-6">
                       <AlgaehLabel
                         label={{
                           fieldName: "deductable_amount"
@@ -1740,84 +1745,35 @@ class Dental extends Component {
                 </div>
               </div>
 
-              <div className="col-lg-6">
-                <AlgaehLabel
-                  label={{
-                    fieldName: "sec_company"
-                  }}
-                />
+              <div
+                className="col-4"
+                style={{
+                  borderLeft: "1px solid #ccc",
+                  borderRight: "1px solid #ccc"
+                }}
+              >
+                <b>
+                  <u>
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Patient Responsibility",
+                        returnText: true
+                      }}
+                    />
+                  </u>
+                </b>
                 <div className="Paper">
                   <div className="row insurance-details">
-                    <div className="col">
+                    <div className="col-7">
                       <AlgaehLabel
                         label={{
-                          fieldName: "sec_copay_percntage"
-                        }}
-                      />
-                      <h6>
-                        {billDetails.sec_copay_percntage
-                          ? billDetails.sec_copay_percntage + "%"
-                          : "0.00%"}
-                      </h6>
-                    </div>
-
-                    <div className="col">
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "sec_copay_amount"
-                        }}
-                      />
-                      <h6>{getAmountFormart(billDetails.sec_copay_amount)}</h6>
-                    </div>
-
-                    <div className="col-3">
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "sec_deductable_percentage"
-                        }}
-                      />
-                      <h6>
-                        {billDetails.sec_deductable_percentage
-                          ? billDetails.sec_deductable_percentage + "%"
-                          : "0.00%"}
-                      </h6>
-                    </div>
-
-                    <div className="col-4">
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "sec_deductable_amount"
-                        }}
-                      />
-                      <h6>
-                        {getAmountFormart(billDetails.sec_deductable_amount)}
-                      </h6>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <hr />
-            {/* Payables */}
-            <div className="row ">
-              <div className="col-lg-4">
-                <AlgaehLabel
-                  label={{
-                    fieldName: "patient_lbl"
-                  }}
-                />
-                <div className="Paper">
-                  <div className="row insurance-details">
-                    <div className="col-5">
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "responsibility_lbl"
+                          fieldName: "gross_amount"
                         }}
                       />
                       <h6>{getAmountFormart(billDetails.patient_resp)}</h6>
                     </div>
 
-                    <div className="col-3">
+                    <div className="col-5">
                       <AlgaehLabel
                         label={{
                           fieldName: "tax_lbl"
@@ -1826,7 +1782,7 @@ class Dental extends Component {
                       <h6>{getAmountFormart(billDetails.patient_tax)}</h6>
                     </div>
 
-                    <div className="col-4">
+                    <div className="col-12">
                       <AlgaehLabel
                         label={{
                           fieldName: "payable_lbl"
@@ -1837,26 +1793,30 @@ class Dental extends Component {
                   </div>
                 </div>
               </div>
-              {/* <div className="col-lg-1"> &nbsp; </div> */}
 
-              <div className="col-lg-4">
-                <AlgaehLabel
-                  label={{
-                    fieldName: "company_lbl"
-                  }}
-                />
+              <div className="col-4">
+                <b>
+                  <u>
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Company Responsibility",
+                        returnText: true
+                      }}
+                    />
+                  </u>
+                </b>
                 <div className="Paper">
                   <div className="row insurance-details">
-                    <div className="col-5">
+                    <div className="col-7">
                       <AlgaehLabel
                         label={{
-                          fieldName: "responsibility_lbl"
+                          fieldName: "gross_amount"
                         }}
                       />
                       <h6>{getAmountFormart(billDetails.comapany_resp)}</h6>
                     </div>
 
-                    <div className="col-3">
+                    <div className="col-5">
                       <AlgaehLabel
                         label={{
                           fieldName: "tax_lbl"
@@ -1865,7 +1825,7 @@ class Dental extends Component {
                       <h6>{getAmountFormart(billDetails.company_tax)}</h6>
                     </div>
 
-                    <div className="col-4">
+                    <div className="col-12">
                       <AlgaehLabel
                         label={{
                           fieldName: "payable_lbl"
@@ -1876,59 +1836,30 @@ class Dental extends Component {
                   </div>
                 </div>
               </div>
-
-              {/* <div className="col-lg-1"> &nbsp; </div> */}
-
-              <div className="col-lg-4">
-                <AlgaehLabel
-                  label={{
-                    fieldName: "sec_comp_lbl"
-                  }}
-                />
-                <div className="Paper">
-                  <div className="row insurance-details">
-                    <div className="col-5">
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "responsibility_lbl"
-                        }}
-                      />
-                      <h6>{getAmountFormart(billDetails.sec_company_res)}</h6>
-                    </div>
-
-                    <div className="col-3">
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "tax_lbl"
-                        }}
-                      />
-                      <h6>{getAmountFormart(billDetails.sec_company_tax)}</h6>
-                    </div>
-
-                    <div className="col-4">
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "payable_lbl"
-                        }}
-                      />
-                      <h6>
-                        {getAmountFormart(billDetails.sec_company_paybale)}
-                      </h6>
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
           <div className="popupFooter">
-            <div className="col-lg-12 margin-bottom-15">
-              <button
-                onClick={this.saveBill.bind(this)}
-                className="btn btn-primary"
-                style={{ float: "right" }}
-              >
-                Save
-              </button>
+            <div className="col-lg-12">
+              <div className="row">
+                <div className="col-lg-4"> &nbsp;</div>
+                <div className="col-lg-8">
+                  <button
+                    onClick={this.saveBill.bind(this)}
+                    className="btn btn-primary"
+                  >
+                    Send for Billing
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-default"
+                    onClick={e => {
+                      this.onClose(e);
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </AlgaehModalPopUp>
@@ -1952,9 +1883,9 @@ class Dental extends Component {
           title="Dental Plan"
         >
           <div className="popupInner" data-validate="addDentalPlanDiv">
-            <div className="col-lg-12">
+            <div className="col-12">
               <div className="row">
-                <div className="col-lg-12 popRightDiv">
+                <div className="col-12 popRightDiv">
                   <div className="row">
                     <AlagehFormGroup
                       div={{ className: "col-3" }}
@@ -2207,7 +2138,7 @@ class Dental extends Component {
                   value={this.state.consult_date}
                 /> */}
 
-              <div className="col-lg-2 margin-top-15">
+              <div className="col-lg-2" style={{ marginTop: 19 }}>
                 <ButtonType
                   classname="btn-primary"
                   onClick={this.addTreatementPlan.bind(this, this)}
@@ -2227,8 +2158,14 @@ class Dental extends Component {
           </div>
           <div className="portlet-body">
             <div className="row">
-              <div className="col-lg-5" data-validate="treatmentDiv">
-                <span> Treatment Plans </span>
+              <div className="col-12">
+                <h6 style={{ marginBottom: 0 }}>Treatment Plan</h6>
+              </div>
+              <div
+                className="col-12"
+                data-validate="treatmentDiv"
+                id="treatmentGridCntr"
+              >
                 <AlgaehDataGrid
                   id="treatment-grid"
                   datavalidate="data-validate='treatmentDiv'"
@@ -2392,8 +2329,17 @@ class Dental extends Component {
                   }}
                 />
               </div>
-              <div className="col-lg-7" data-validate="denGrid">
-                <span> {this.state.selected_plan}</span>
+              <div className="col-12 margin-top-15">
+                <h6 style={{ marginBottom: 0 }}>
+                  Selected Treatement: {this.state.selected_plan}
+                </h6>
+              </div>
+
+              <div
+                className="col-12"
+                data-validate="denGrid"
+                id="toothGridCntr"
+              >
                 <AlgaehDataGrid
                   id="grid_dental_treatment"
                   datavalidate="data-validate='denGrid'"
@@ -2556,12 +2502,12 @@ class Dental extends Component {
                             onClick={this.addToBill.bind(this, row)}
                             className="btn btn-primary"
                           >
-                            Add To Bill
+                            View Bill &amp; Send
                           </button>
                         ) : row.billed === "SB" ? (
-                          <span>Sent to Billing</span>
+                          <span>Billing in Progress</span>
                         ) : row.billed === "Y" ? (
-                          <span>Paid</span>
+                          <span>Billed</span>
                         ) : null;
                       },
                       editorTemplate: row => {
@@ -2570,12 +2516,12 @@ class Dental extends Component {
                             onClick={this.addToBill.bind(this, row)}
                             className="btn btn-primary"
                           >
-                            Add To Bill
+                            View Bill &amp; Send
                           </button>
                         ) : row.billed === "SB" ? (
-                          <span>Sent to Billing</span>
+                          <span>Billing in Progress</span>
                         ) : row.billed === "Y" ? (
-                          <span>Paid</span>
+                          <span>Billed</span>
                         ) : null;
                       }
                     }

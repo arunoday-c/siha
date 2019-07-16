@@ -12,7 +12,7 @@ import {
 const { addReceiptEntry, getReceiptEntry } = algaehPath(
   "algaeh-billing/src/models/receiptentry"
 );
-
+const { addCashHandover } = algaehPath("algaeh-billing/src/models/billing");
 export default () => {
   const api = Router();
   api.get(
@@ -35,6 +35,24 @@ export default () => {
     "/addPOSCreidtSettlement",
     addReceiptEntry,
     addPOSCreidtSettlement,
+    addCashHandover,
+    (req, res, next) => {
+      if (
+        req.records.internal_error != undefined &&
+        req.records.internal_error == true
+      ) {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: false,
+
+          records: {
+            internal_error: req.records.internal_error,
+            message: req.records.message
+          }
+        });
+      } else {
+        next();
+      }
+    },
     updatePOSBilling,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({

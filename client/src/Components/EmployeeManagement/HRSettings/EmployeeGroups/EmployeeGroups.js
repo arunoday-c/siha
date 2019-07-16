@@ -213,7 +213,7 @@ class EmployeeGroups extends Component {
             <AlagehFormGroup
               div={{ className: "col-lg-2" }}
               label={{
-                forceLabel: "Monthly Accural Days",
+                forceLabel: "Monthly Accrual Days",
                 isImp: true
               }}
               textBox={{

@@ -50,7 +50,8 @@ let algaehSearchConfig = (searchName, req) => {
           "select SQL_CALC_FOUND_ROWS  full_name, patient_code, contact_number, nationality_id,pv.visit_code, pv.visit_date,\
           pv.patient_id, pv.hims_f_patient_visit_id, \
           pv.insured, pv.sec_insured,pv.episode_id FROM hims_f_patient,hims_f_patient_visit pv where  \
-          pv.patient_id=hims_f_patient.hims_d_patient_id and pv.record_status='A' and pv.hospital_id=" +
+          pv.patient_id=hims_f_patient.hims_d_patient_id and pv.record_status='A' and\
+          date(pv.visit_expiery_date) > date(now()) and pv.hospital_id=" +
           hospitalId,
         orderBy: "pv.hims_f_patient_visit_id desc"
       },
@@ -310,8 +311,9 @@ let algaehSearchConfig = (searchName, req) => {
         searchQuery:
           "select SQL_CALC_FOUND_ROWS hims_f_billing_header_id, bill_number, bill_date, PAT.patient_code, PAT.full_name, PAT.contact_number,\
           PATV.visit_code from hims_f_billing_header BH inner join hims_f_patient as PAT on  \
-          BH.patient_id = PAT.hims_d_patient_id inner join hims_f_patient_visit as PATV on BH.visit_id = PATV.hims_f_patient_visit_id\
-          where BH.record_status ='A' and cancelled='N' and BH.hospital_id=" +
+          BH.patient_id = PAT.hims_d_patient_id inner join hims_f_patient_visit as PATV on \
+          BH.visit_id = PATV.hims_f_patient_visit_id where BH.record_status ='A' and \
+          cancelled='N' and BH.hospital_id=" +
           hospitalId,
         orderBy: "hims_f_billing_header_id desc"
       },
@@ -452,9 +454,9 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "users",
         searchQuery:
-          "select algaeh_d_app_user_id,E.full_name as full_name ,employee_code,arabic_name,E.sub_department_id,primary_contact_no,sex\
+          "select SQL_CALC_FOUND_ROWS algaeh_d_app_user_id,E.full_name as full_name ,employee_code,arabic_name,E.sub_department_id,primary_contact_no,sex\
           from algaeh_d_app_user U inner join  hims_m_user_employee UM on U.algaeh_d_app_user_id=UM.user_id\
-          inner join hims_d_employee E on UM.employee_id=E.hims_d_employee_id where UM.hospital_id=" +
+          inner join hims_d_employee E on UM.employee_id=E.hims_d_employee_id where E.record_status='A' and UM.hospital_id=" +
           hospitalId,
         orderBy: "algaeh_d_app_user_id desc"
       },
@@ -476,6 +478,31 @@ let algaehSearchConfig = (searchName, req) => {
         orderBy: "IM.hims_d_item_master_id desc",
         groupBy: " GROUP By hims_d_item_master_id",
         inputSequence: ["pharmacy_location_id"]
+      },
+      {
+        searchName: "pharopeningstock",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS IM.*, IC.category_desc, IE.generic_name, IG.group_description,\
+            SPU.uom_description as stock_uom_desc, SAPU.uom_description sales_uom_desc \
+            from hims_d_item_master IM,hims_d_item_category IC, hims_d_item_generic IE,\
+            hims_d_item_group IG,hims_d_pharmacy_uom SPU,hims_d_pharmacy_uom SAPU \
+            where IM.category_id = IC.hims_d_item_category_id and IM.group_id = IG.hims_d_item_group_id \
+            and IM.generic_id = IE.hims_d_item_generic_id and IM.stocking_uom_id = SPU.hims_d_pharmacy_uom_id \
+            and IM.sales_uom_id = SAPU.hims_d_pharmacy_uom_id and IM.item_status='A' ",
+        orderBy: "hims_d_item_master_id desc"
+      },
+      {
+        searchName: "invopeningstock",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS IM.*, IC.category_desc, IG.group_description,\
+            SPU.uom_description as stock_uom_desc, SAPU.uom_description sales_uom_desc \
+            from hims_d_inventory_item_master IM,hims_d_inventory_tem_category IC, hims_d_inventory_item_group IG,\
+            hims_d_inventory_uom SPU,hims_d_inventory_uom SAPU \
+            where IM.category_id = IC.hims_d_inventory_tem_category_id \
+            and IM.group_id = IG.hims_d_inventory_item_group_id \
+            and IM.stocking_uom_id = SPU.hims_d_inventory_uom_id \
+            and IM.sales_uom_id = SAPU.hims_d_inventory_uom_id and IM.item_status='A' ",
+        orderBy: "hims_d_inventory_item_master_id desc"
       },
       {
         searchName: "PharConsEntry",
@@ -508,9 +535,9 @@ let algaehSearchConfig = (searchName, req) => {
         searchName: "saleitemmaster",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS IM.hims_d_inventory_item_master_id, IM.item_description, IM.category_id, IM.sales_uom_id,IM.service_id, IM.group_id, IC.category_desc,\
-          IG.group_description, PU.uom_description,SR.standard_fee from hims_d_inventory_item_master IM, hims_d_item_category IC, hims_d_item_group IG, hims_d_inventory_uom PU, \
-          hims_d_services SR where IM.category_id = IC.hims_d_item_category_id and \
-          IM.group_id = IG.hims_d_item_group_id and IM.sales_uom_id=PU.hims_d_inventory_uom_id and \
+          IG.group_description, PU.uom_description,SR.standard_fee from hims_d_inventory_item_master IM, hims_d_inventory_tem_category IC, hims_d_inventory_item_group IG, hims_d_inventory_uom PU, \
+          hims_d_services SR where IM.category_id = IC.hims_d_inventory_tem_category_id and \
+          IM.group_id = IG.hims_d_inventory_item_group_id and IM.sales_uom_id=PU.hims_d_inventory_uom_id and \
           IM.service_id= SR.hims_d_services_id  and item_type = 'OITM' and IM.item_status='A' and \
           IM.record_status='A' and IC.record_status='A' and IG.record_status='A' ",
         orderBy: "IM.hims_d_inventory_item_master_id desc"

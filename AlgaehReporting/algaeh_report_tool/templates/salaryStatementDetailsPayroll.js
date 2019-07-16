@@ -142,7 +142,6 @@ const executePDF = function executePDFMethod(options) {
                 let gratuity = results[3];
                 let accrual = results[4];
                 let contributions = results[5];
-                //   console.log("accrual:",accrual);
 
                 let sum_basic = 0;
                 let sum_employe_plus_emplyr = 0;
@@ -226,7 +225,6 @@ const executePDF = function executePDFMethod(options) {
                       };
                     });
 
-                  // console.log("employee_earning old:", employee_earning);
 
                   // const employee_deduction = new LINQ(deductions)
                   //   .Where(
@@ -316,7 +314,6 @@ const executePDF = function executePDFMethod(options) {
                   //   .Select(s => parseFloat(s.amount))
                   //   .FirstOrDefault(0);
 
-                  //  console.log("sum_basic:", sum_basic);
 
                   // sum_basic += parseFloat(
                   //   employee_earning.find(item => item.earnings_id == basic_id)
@@ -342,7 +339,6 @@ const executePDF = function executePDFMethod(options) {
                     ? parseFloat(grat.gratuity_amount)
                     : parseFloat(0);
 
-                  // console.log("sum_gratuity:", sum_gratuity);
 
                   // sum_leave_salary += new LINQ(accrual)
                   //   .Where(w => w.employee_id == salary[i]["employee_id"])

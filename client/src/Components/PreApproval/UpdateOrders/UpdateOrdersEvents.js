@@ -1,13 +1,15 @@
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 const UpdateOrders = ($this, row) => {
-  
   let dataSend = [];
+  let services_details = $this.state.services_details;
+  let _index = services_details.indexOf(row);
 
   if (row.apprv_status === "AP" || row.apprv_status === "RJ") {
     if ($this.props.openFrom === "S") {
       dataSend = [
         {
+          hims_f_service_approval_id: row.hims_f_service_approval_id,
           hims_f_ordered_services_id: row.ordered_services_id,
           apprv_status: row.apprv_status,
 
@@ -32,6 +34,11 @@ const UpdateOrders = ($this, row) => {
         method: "PUT",
         onSuccess: response => {
           if (response.data.success) {
+            row.billing_updated = "Y";
+            services_details[_index] = row;
+            $this.setState({
+              services_details: services_details
+            });
             swalMessage({
               title: "Verified successfully . .",
               type: "success"
@@ -44,7 +51,8 @@ const UpdateOrders = ($this, row) => {
         {
           hims_f_prescription_detail_id: row.prescription_detail_id,
           apprv_status: row.apprv_status,
-          approved_amount: row.approved_amount
+          approved_amount: row.approved_amount,
+          hims_f_medication_approval_id: row.hims_f_medication_approval_id
         }
       ];
 
@@ -54,6 +62,11 @@ const UpdateOrders = ($this, row) => {
         method: "PUT",
         onSuccess: response => {
           if (response.data.success) {
+            row.billing_updated = "Y";
+            services_details[_index] = row;
+            $this.setState({
+              services_details: services_details
+            });
             swalMessage({
               title: "Verified successfully . .",
               type: "success"

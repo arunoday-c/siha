@@ -321,9 +321,13 @@ class AddPatientForm extends Component {
                             data: variableJson.FORMAT_GENDER
                           },
                           onChange: texthandle.bind(this, this),
+                          onClear: () => {
+                            this.setState({
+                              gender: null
+                            });
+                          },
                           others: {
                             disabled: this.state.existingPatient,
-
                             tabIndex: "4"
                           }
                         }}
@@ -385,6 +389,7 @@ class AddPatientForm extends Component {
                             thousandSeparator: ",",
                             allowNegative: false
                           },
+                          dontAllowKeys: ["-", "e", "."],
                           events: {
                             onChange: setAge.bind(this, this)
                           },
@@ -416,6 +421,7 @@ class AddPatientForm extends Component {
                             thousandSeparator: ",",
                             allowNegative: false
                           },
+                          dontAllowKeys: ["-", "e", "."],
                           events: {
                             onChange: setAge.bind(this, this)
                           },
@@ -447,6 +453,7 @@ class AddPatientForm extends Component {
                             thousandSeparator: ",",
                             allowNegative: false
                           },
+                          dontAllowKeys: ["-", "e", "."],
                           events: {
                             onChange: setAge.bind(this, this)
                           },
@@ -471,6 +478,7 @@ class AddPatientForm extends Component {
                           number: {
                             allowNegative: false
                           },
+                          dontAllowKeys: ["-", "e", "."],
                           // events: {
                           //   onChange: texthandle.bind(this, this, context)
                           // },
@@ -505,6 +513,11 @@ class AddPatientForm extends Component {
                             data: this.props.patienttype
                           },
                           onChange: texthandle.bind(this, this),
+                          onClear: () => {
+                            this.setState({
+                              patient_type: null
+                            });
+                          },
                           others: {
                             disabled: this.state.existingPatient,
                             tabIndex: "11"
@@ -530,6 +543,13 @@ class AddPatientForm extends Component {
                             data: this.props.countries
                           },
                           onChange: countryStatehandle.bind(this, this),
+                          onClear: () => {
+                            this.setState({
+                              country_id: null,
+                              state_id: null,
+                              city_id: null
+                            });
+                          },
                           others: {
                             disabled: this.state.existingPatient,
                             tabIndex: "12"
@@ -555,6 +575,11 @@ class AddPatientForm extends Component {
                             data: this.props.nationalities
                           },
                           onChange: nationalityhandle.bind(this, this, context),
+                          onClear: () => {
+                            this.setState({
+                              nationality_id: null
+                            });
+                          },
                           others: {
                             disabled: this.state.existingPatient,
                             tabIndex: "13"
@@ -605,6 +630,11 @@ class AddPatientForm extends Component {
                             data: variableJson.FORMAT_MARTIALSTS
                           },
                           onChange: texthandle.bind(this, this),
+                          onClear: () => {
+                            this.setState({
+                              marital_status: null
+                            });
+                          },
                           others: {
                             disabled: this.state.existingPatient,
                             tabIndex: "17"
@@ -630,6 +660,11 @@ class AddPatientForm extends Component {
                             data: this.props.relegions
                           },
                           onChange: texthandle.bind(this, this),
+                          onClear: () => {
+                            this.setState({
+                              religion_id: null
+                            });
+                          },
                           others: {
                             disabled: this.state.existingPatient,
                             tabIndex: "18"
@@ -655,6 +690,11 @@ class AddPatientForm extends Component {
                             data: this.props.visatypes
                           },
                           onChange: texthandle.bind(this, this),
+                          onClear: () => {
+                            this.setState({
+                              visa_type_id: null
+                            });
+                          },
                           others: {
                             disabled: this.state.existingPatient,
                             tabIndex: "19"
@@ -680,6 +720,12 @@ class AddPatientForm extends Component {
                             data: this.state.countrystates
                           },
                           onChange: countryStatehandle.bind(this, this),
+                          onClear: () => {
+                            this.setState({
+                              state_id: null,
+                              city_id: null
+                            });
+                          },
                           others: {
                             disabled: this.state.existingPatient,
                             tabIndex: "20"
@@ -708,6 +754,11 @@ class AddPatientForm extends Component {
                             data: this.state.cities
                           },
                           onChange: texthandle.bind(this, this),
+                          onClear: () => {
+                            this.setState({
+                              city_id: null
+                            });
+                          },
                           others: {
                             disabled: this.state.existingPatient,
                             tabIndex: "21"
@@ -816,6 +867,11 @@ class AddPatientForm extends Component {
                             data: this.props.idtypes
                           },
                           onChange: texthandle.bind(this, this),
+                          onClear: () => {
+                            this.setState({
+                              primary_identity_id: null
+                            });
+                          },
                           others: {
                             disabled: this.state.existingPatient,
                             tabIndex: "15"

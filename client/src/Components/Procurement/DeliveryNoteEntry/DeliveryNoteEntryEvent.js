@@ -179,13 +179,14 @@ const getPurchaseDetails = ($this, row) => {
     module: "procurement",
     method: "GET",
     data: {
-      purchase_number: row.purchase_number
+      purchase_number: row.purchase_number,
+      from: "DN"
     },
     onSuccess: response => {
       if (response.data.success) {
         let data = response.data.records;
         if (data !== null && data !== undefined) {
-          data.saveEnable = false;
+          // data.saveEnable = false;
 
           data.location_type = "MS";
 
@@ -221,6 +222,7 @@ const getPurchaseDetails = ($this, row) => {
               data.po_entry_detail[i].hims_f_procurement_po_detail_id;
 
             data.po_entry_detail[i].dn_entry_detail = [];
+            data.po_entry_detail[i].removed = "N";
           }
 
           if (
@@ -266,8 +268,8 @@ const SaveDNEnrty = $this => {
   const batchExpiryDate = Enumerable.from($this.state.receipt_entry_detail)
     .where(w => w.expiry_date === null)
     .toArray();
-
-  let InputObj = extend({}, $this.state);
+  
+  var InputObj = { ...$this.state };
 
   for (var j = 0; j < InputObj.po_entry_detail.length; j++) {
     if ($this.state.dn_from === "PHR") {
@@ -275,27 +277,49 @@ const SaveDNEnrty = $this => {
         InputObj.pharmacy_stock_detail === undefined ||
         InputObj.pharmacy_stock_detail.length === 0
       ) {
-        InputObj.pharmacy_stock_detail =
-          InputObj.po_entry_detail[j].dn_entry_detail;
+        if (InputObj.po_entry_detail[j].dn_entry_detail.length > 0) {
+          InputObj.pharmacy_stock_detail =
+            InputObj.po_entry_detail[j].dn_entry_detail;
+        } else {
+          $this.state.po_entry_detail[j].removed = "Y";
+        }
       } else {
-        InputObj.pharmacy_stock_detail = InputObj.pharmacy_stock_detail.concat(
-          InputObj.po_entry_detail[j].dn_entry_detail
-        );
+        if (InputObj.po_entry_detail[j].dn_entry_detail.length > 0) {
+          InputObj.pharmacy_stock_detail = InputObj.pharmacy_stock_detail.concat(
+            InputObj.po_entry_detail[j].dn_entry_detail
+          );
+        } else {
+          $this.state.po_entry_detail[j].removed = "Y";
+        }
       }
     } else {
       if (
         InputObj.inventory_stock_detail === undefined ||
         InputObj.inventory_stock_detail.length === 0
       ) {
-        InputObj.inventory_stock_detail =
-          InputObj.po_entry_detail[j].dn_entry_detail;
+        if (InputObj.po_entry_detail[j].dn_entry_detail.length > 0) {
+          InputObj.inventory_stock_detail =
+            InputObj.po_entry_detail[j].dn_entry_detail;
+        } else {
+          $this.state.po_entry_detail[j].removed = "Y";
+        }
       } else {
-        InputObj.inventory_stock_detail = InputObj.inventory_stock_detail.concat(
-          InputObj.po_entry_detail[j].dn_entry_detail
-        );
+        if (InputObj.po_entry_detail[j].dn_entry_detail.length > 0) {
+          InputObj.inventory_stock_detail = InputObj.inventory_stock_detail.concat(
+            InputObj.po_entry_detail[j].dn_entry_detail
+          );
+        } else {
+          $this.state.po_entry_detail[j].removed = "Y";
+        }
       }
     }
   }
+
+  let po_entry_detail = _.filter(InputObj.po_entry_detail, f => {
+    return f.removed === "N";
+  });
+
+  InputObj.po_entry_detail = po_entry_detail;
 
   InputObj.posted = "Y";
   InputObj.transaction_type = "DNA";
@@ -311,13 +335,6 @@ const SaveDNEnrty = $this => {
       InputObj.pharmacy_stock_detail[i].quantity =
         parseFloat(InputObj.pharmacy_stock_detail[i].dn_quantity) +
         parseFloat(InputObj.pharmacy_stock_detail[i].free_qty);
-
-      // InputObj.pharmacy_stock_detail[i].unit_cost_data =
-      //   InputObj.pharmacy_stock_detail[i].unit_cost;
-      //
-      // InputObj.pharmacy_stock_detail[i].unit_cost =
-      //   parseFloat(InputObj.pharmacy_stock_detail[i].unit_cost_data) /
-      //   parseFloat(InputObj.pharmacy_stock_detail[i].quantity);
 
       InputObj.pharmacy_stock_detail[i].uom_id =
         InputObj.pharmacy_stock_detail[i].pharmacy_uom_id;
@@ -557,6 +574,7 @@ const getCtrlCode = ($this, docNumber, row) => {
           data.cannotEdit = true;
 
           data.addedItem = true;
+          data.itemEnter = true;
           // if (row !== undefined) {
           //   data.location_name = row.loc_description;
           //   data.vendor_name = row.vendor_name;

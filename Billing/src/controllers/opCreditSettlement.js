@@ -6,6 +6,8 @@ import {
   updateOPBilling,
   getPatientwiseBill
 } from "../models/opCreditSettlement";
+import { addCashHandover } from "../models/billing";
+
 import { getReceiptEntry, addReceiptEntry } from "../models/receiptentry";
 
 export default () => {
@@ -15,6 +17,24 @@ export default () => {
     "/addCreidtSettlement",
     addReceiptEntry,
     addCreidtSettlement,
+    addCashHandover,
+    (req, res, next) => {
+      if (
+        req.records.internal_error != undefined &&
+        req.records.internal_error == true
+      ) {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: false,
+
+          records: {
+            internal_error: req.records.internal_error,
+            message: req.records.message
+          }
+        });
+      } else {
+        next();
+      }
+    },
     updateOPBilling,
 
     (req, res, next) => {
@@ -44,6 +64,10 @@ export default () => {
 
   api.get(
     "/getPatientwiseBill",
+    (req, res, next) => {
+      delete req.connection;
+      next();
+    },
     getPatientwiseBill,
 
     (req, res, next) => {

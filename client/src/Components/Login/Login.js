@@ -175,7 +175,7 @@ export default class Login extends Component {
                 <div className="row">
                   <div className="col-12">
                     <div className="companyLogo" />
-                    <h3 className="LoginCntrHdg">Login</h3>
+                    {/* <h3 className="LoginCntrHdg">Login</h3> */}
                   </div>
                   <div
                     className="col-12"
@@ -284,8 +284,10 @@ export default class Login extends Component {
             </div>
             <div className="loginFooter">
               <p>
-                COPYRIGHT © 2018. ALL RIGHTS RESERVED.{" "}
-                <a href="http://algaeh.com/">ALGAEH TECHNOLOGIES PVT. LTD.</a>
+                COPYRIGHT © 2019-2020. ALL RIGHTS RESERVED.{" "}
+                <a href="http://algaeh.com/" target="_blank">
+                  ALGAEH TECHNOLOGIES PVT. LTD.
+                </a>
               </p>
             </div>
           </div>

@@ -371,12 +371,16 @@ const onchangeAmend = ($this, row, e) => {
   let test_analytes = $this.state.test_analytes;
 
   // TO trigger re-render
-  row[name] = "";
   let l;
   for (l = 0; l < test_analytes.length; l++) {
     if (
       test_analytes[l].hims_f_ord_analytes_id === row.hims_f_ord_analytes_id
     ) {
+      if (value === "N") {
+        row[name] = "N";
+      } else {
+        row[name] = "";
+      }
       test_analytes[l] = row;
     }
   }
@@ -386,28 +390,30 @@ const onchangeAmend = ($this, row, e) => {
       test_analytes
     },
     () => {
-      swal({
-        title: "Are you sure want to Amend?",
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Yes",
-        confirmButtonColor: "#44b8bd",
-        cancelButtonColor: "#d33",
-        cancelButtonText: "No"
-      }).then(willProceed => {
-        if (willProceed.value) {
-          row[name] = value;
-          row["confirm"] = "N";
-          row["validate"] = "N";
-          row["status"] = "E";
-        } else {
-          row[name] = "N";
-        }
-        test_analytes[l - 1] = row;
-        let obj = { test_analytes };
-        willProceed.value ? (obj.status = "CL") : obj;
-        $this.setState(obj);
-      });
+      if (value === "Y") {
+        swal({
+          title: "Are you sure want to Amend?",
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Yes",
+          confirmButtonColor: "#44b8bd",
+          cancelButtonColor: "#d33",
+          cancelButtonText: "No"
+        }).then(willProceed => {
+          if (willProceed.value) {
+            row[name] = value;
+            row["confirm"] = "N";
+            row["validate"] = "N";
+            row["status"] = "E";
+          } else {
+            row[name] = "N";
+          }
+          test_analytes[l - 1] = row;
+          let obj = { test_analytes };
+          willProceed.value ? (obj.status = "CL") : obj;
+          $this.setState(obj);
+        });
+      }
     }
   );
 };

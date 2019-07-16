@@ -100,7 +100,6 @@ let getPatientOCAF = (req, res, next) => {
               //     : "";
               // errorString +=
               //   outputResult[6].length == 0 ? "Insurance is not added \n" : "";
-              // console.log("errorString", errorString);
               // if (errorString != "") {
               //   _mysql.releaseConnection();
               //   next(new Error(errorString));
@@ -157,7 +156,6 @@ let getPatientOCAF = (req, res, next) => {
                 _fields["anti_scratch"] = _out["anti_scratch"];
               }
 
-              console.log("patient_gender", _fields);
               _mysql
                 .executeQueryWithTransaction({
                   query:
@@ -338,7 +336,7 @@ const updateOcafDetails = (req, res, next) => {
 
   try {
     const input = req.body;
-    console.log("input:", input);
+
     _mysql
       .executeQuery({
         query:

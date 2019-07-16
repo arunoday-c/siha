@@ -230,7 +230,7 @@ class PhySchSetup extends Component {
             data.provider_id
           );
           swalMessage({
-            title: "Schedule updated successfully . .",
+            title: "Schedule Updated Successfully",
             type: "success"
           });
         }
@@ -251,13 +251,14 @@ class PhySchSetup extends Component {
       .toArray();
 
     swal({
-      title: "Delete Schedule: " + data.description + "?",
+      title: "Delete Schedule?",
+      text: data.description,
       type: "warning",
       showCancelButton: true,
       confirmButtonText: "Delete",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
-      cancelButtonText: "No"
+      cancelButtonText: "Cancel"
     }).then(willDelete => {
       if (willDelete.value) {
         algaehApiCall({
@@ -275,35 +276,38 @@ class PhySchSetup extends Component {
           onSuccess: response => {
             if (response.data.success) {
               swalMessage({
-                title: "Record updated successfully",
+                title: "Schedule Deleted Successfully",
                 type: "success"
               });
               this.clearState();
             } else {
               swalMessage({
-                title: response.data.records.message,
+                // title: response.data.records.message,
+                title: "Network Error, Try Again",
                 type: "error"
               });
             }
           },
           onFailure: error => {
             swalMessage({
-              title: error.message,
+              // title: error.message,
+              title: "Network Error, Try Again",
               type: "error"
             });
           }
         });
       } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
-        });
+        // swalMessage({
+        //   title: "Delete request cancelled",
+        //   type: "error"
+        // });
       }
     });
   }
 
-  checkHandle(e) {
-    let myRow = JSON.parse(e.currentTarget.getAttribute("row"));
+  checkHandle = (myRow, index) => {
+    console.log(myRow, index);
+    const { doctors } = this.state;
     let docsArray = this.state.schedule_detail;
     myRow.schedule_status = this.state.schedule_status;
     myRow.default_slot = this.state.slot;
@@ -321,50 +325,120 @@ class PhySchSetup extends Component {
       .firstOrDefault();
     if (item !== undefined) {
       docsArray.splice(docsArray.indexOf(item), 1);
+      doctors[index].isDocChecked = false;
     } else {
       docsArray.push(myRow);
+      doctors[index].isDocChecked = true;
     }
 
-    this.setState({
-      schedule_detail: docsArray
-    });
-  }
+    this.setState(
+      {
+        schedule_detail: docsArray,
+        doctors
+      },
+      console.log(this.state.schedule_detail, "from check handle")
+    );
+  };
+
+  //need to rewrite this function in future, coz it's not DRY!!
+  formValidation = () => {
+    const {
+      sub_department_id,
+      description,
+      schedule_detail,
+      slot,
+      from_date,
+      to_date,
+      from_work_hr,
+      to_work_hr,
+      monday,
+      tuesday,
+      wednesday,
+      thursday,
+      friday,
+      saturday,
+      sunday,
+      openEdit
+    } = this.state;
+    console.log(this.state, "from validation");
+    const type = "warning";
+    if (!sub_department_id) {
+      swalMessage({
+        title: "Please select a department",
+        type
+      });
+      return false;
+    } else if (!description) {
+      swalMessage({
+        title: "Please Enter the Description",
+        type
+      });
+      return false;
+    } else if (!schedule_detail.length) {
+      swalMessage({
+        title: "Please Select Doctors to add to this schedule.",
+        type
+      });
+      return false;
+    } else if (!openEdit && !slot) {
+      swalMessage({
+        title: "Please Select a Slot.",
+        type
+      });
+      return false;
+    } else if (!from_date) {
+      swalMessage({
+        title: "Please enter From Date",
+        type
+      });
+      return false;
+    } else if (!to_date) {
+      swalMessage({
+        title: "Please enter To Date",
+        type
+      });
+      return false;
+    } else if (moment(from_date).isSameOrAfter(moment(to_date), "day")) {
+      swalMessage({
+        title: "Please Select a proper date range",
+        type
+      });
+      return false;
+    } else if (!from_work_hr) {
+      swalMessage({
+        title: "Please enter From Time",
+        type
+      });
+      return false;
+    } else if (!to_work_hr) {
+      swalMessage({
+        title: "Please enter To Time",
+        type
+      });
+      return false;
+    } else if (
+      !monday &&
+      !tuesday &&
+      !wednesday &&
+      !thursday &&
+      !friday &&
+      !saturday &&
+      !sunday
+    ) {
+      swalMessage({
+        title: "Please Select Working days",
+        type
+      });
+      return false;
+    } else {
+      return true;
+    }
+  };
 
   saveApptSchedule(e) {
     e.preventDefault();
-    if (this.state.sub_department_id === null) {
-      this.setState(
-        {
-          department_error: true,
-          department_error_text: "Please select a department"
-        },
-        () =>
-          swalMessage({
-            title: "Please select a department",
-            type: "warning"
-          })
-      );
-    } else if (this.state.description.length === 0) {
-      this.setState({
-        description_error: true,
-        description_error_text: "Please Enter the Description"
-      });
-    } else if (this.state.schedule_detail.length === 0) {
-      swalMessage({
-        title: "Please Select Doctors to add to this schedule.",
-        type: "warning"
-      });
-    } else if (this.state.slot.length === 0) {
-      swalMessage({
-        title: "Please Select a Slot.",
-        type: "warning"
-      });
-    } else if (this.state.from_date > this.state.to_date) {
-      swalMessage({
-        title: "Please Select a proper date range",
-        type: "warning"
-      });
-    } else {
+    const validation = this.formValidation();
+    if (validation) {
       let month =
         this.state.month ||
         moment(this.state.from_date, "YYYY-MM-DD").format("M");
@@ -564,7 +638,7 @@ class PhySchSetup extends Component {
       let dept = Enumerable.from(this.state.departments)
         .where(w => w.sub_dept_id === this.state[value.name])
         .firstOrDefault();
-      this.setState({ doctors: dept.doctors });
+      this.setState({ doctors: dept.doctors, schedule_detail: [] });
     });
   }
 
@@ -596,10 +670,10 @@ class PhySchSetup extends Component {
         sub_department_id: docs.sub_dept_id,
         description: docs.schedule_description,
         scheduleDoctors: docs.doctorsList,
-        from_break_hr1: docs.from_break_hr1,
-        to_break_hr1: docs.to_break_hr1,
-        from_break_hr2: docs.from_break_hr2,
-        to_break_hr2: docs.to_break_hr2,
+        from_break_hr1: docs.work_break1 === "Y" ? docs.from_break_hr1 : null,
+        to_break_hr1: docs.work_break1 === "Y" ? docs.to_break_hr1 : null,
+        from_break_hr2: docs.work_break2 === "Y" ? docs.from_break_hr2 : null,
+        to_break_hr2: docs.work_break2 === "Y" ? docs.to_break_hr2 : null,
         from_work_hr: docs.from_work_hr,
         to_work_hr: docs.to_work_hr,
         work_break1: docs.work_break1,
@@ -619,7 +693,6 @@ class PhySchSetup extends Component {
   }
 
   isPastSchedule(docs) {
-    console.log(this.state.from_break_hr2, this.state.to_break_hr2);
     const { to_date } = docs;
     const result = moment(to_date).isBefore(moment().format("YYYY-MM-DD"));
     this.setState({
@@ -1183,6 +1256,7 @@ class PhySchSetup extends Component {
           dropDownHandler={this.dropDownHandler.bind(this)}
           changeDate={this.changeDate.bind(this)}
           changeChecks={this.changeChecks.bind(this)}
+          isDoctorAdded={this.isDoctorAdded}
           checkHandle={this.checkHandle.bind(this)}
           saveApptSchedule={this.saveApptSchedule.bind(this)}
         />

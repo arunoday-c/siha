@@ -283,3 +283,14 @@
     display: inline-block;
   }
 }
+#treatmentGridCntr {
+  .ReactTable {
+    max-height: 20vh !important;
+  }
+}
+
+#toothGridCntr {
+  .ReactTable {
+    max-height: 20vh !important;
+  }
+}

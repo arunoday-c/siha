@@ -4,6 +4,7 @@ import AlgaehLoader from "../../Wrapper/fullPageLoader";
 // import Enumerable from "linq";
 import SalesReturnputs from "../../../Models/SalesReturn";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import _ from "lodash";
 
 const changeTexts = ($this, ctrl, e) => {
   e = ctrl || e;
@@ -15,43 +16,59 @@ const changeTexts = ($this, ctrl, e) => {
 const getCtrlCode = ($this, docNumber) => {
   AlgaehLoader({ show: true });
 
-  algaehApiCall({
-    uri: "/salesReturn/getsalesReturn",
-    module: "pharmacy",
-    method: "GET",
-    data: { sales_return_number: docNumber },
-    onSuccess: response => {
-      if (response.data.success) {
-        let data = response.data.records;
-        data.saveEnable = true;
-        data.patient_payable_h = data.patient_payable;
+  let IOputs = SalesReturnputs.inputParam();
+  IOputs.patient_payable_h = 0;
+  IOputs.mode_of_pa = "";
+  IOputs.pay_cash = "CA";
+  IOputs.pay_card = "CD";
+  IOputs.pay_cheque = "CH";
+  IOputs.cash_amount = 0;
+  IOputs.card_check_number = "";
+  IOputs.card_date = null;
+  IOputs.card_amount = 0;
+  IOputs.cheque_number = "";
+  IOputs.cheque_date = null;
+  IOputs.cheque_amount = 0;
+  IOputs.advance = 0;
+  $this.setState(IOputs, () => {
+    algaehApiCall({
+      uri: "/salesReturn/getsalesReturn",
+      module: "pharmacy",
+      method: "GET",
+      data: { sales_return_number: docNumber },
+      onSuccess: response => {
+        if (response.data.success) {
+          let data = response.data.records;
+          data.saveEnable = true;
+          data.patient_payable_h = data.patient_payable;
 
-        if (data.posted === "Y") {
-          data.postEnable = true;
-        } else {
-          data.postEnable = false;
-        }
+          if (data.posted === "Y") {
+            data.postEnable = true;
+          } else {
+            data.postEnable = false;
+          }
 
-        if (data.receiptdetails.length !== 0) {
-          for (let i = 0; i < data.receiptdetails.length; i++) {
-            if (data.receiptdetails[i].pay_type === "CA") {
-              data.Cashchecked = true;
-              data.cash_amount = data.receiptdetails[i].amount;
+          if (data.receiptdetails.length !== 0) {
+            for (let i = 0; i < data.receiptdetails.length; i++) {
+              if (data.receiptdetails[i].pay_type === "CA") {
+                data.Cashchecked = true;
+                data.cash_amount = data.receiptdetails[i].amount;
+              }
             }
           }
-        }
 
-        $this.setState(data);
+          $this.setState(data);
+        }
+        AlgaehLoader({ show: false });
+      },
+      onFailure: error => {
+        AlgaehLoader({ show: false });
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
       }
-      AlgaehLoader({ show: false });
-    },
-    onFailure: error => {
-      AlgaehLoader({ show: false });
-      swalMessage({
-        title: error.message,
-        type: "error"
-      });
-    }
+    });
   });
 };
 
@@ -133,6 +150,18 @@ const GenerateReciept = ($this, callBack) => {
 };
 
 const SaveSalesReturn = $this => {
+  debugger;
+  const return_qty_zero = _.filter(
+    $this.state.pharmacy_stock_detail,
+    f => f.return_quantity === 0 || f.return_quantity === null
+  );
+  if (return_qty_zero.length > 0) {
+    swalMessage({
+      type: "warning",
+      title: "Please Enter the return quantity for each item in the list."
+    });
+    return;
+  }
   AlgaehLoader({ show: true });
   GenerateReciept($this, that => {
     let inputObj = $this.state;
@@ -343,6 +372,37 @@ const ViewInsurance = ($this, e) => {
   });
 };
 
+const getCashiersAndShiftMAP = $this => {
+  algaehApiCall({
+    uri: "/shiftAndCounter/getCashiersAndShiftMAP",
+    module: "masterSettings",
+    method: "GET",
+    data: { for: "T" },
+    onSuccess: response => {
+      if (response.data.success) {
+        if (response.data.records.length > 0) {
+          $this.setState(
+            {
+              shift_assinged: response.data.records
+            },
+            () => {
+              $this.setState({
+                shift_id: response.data.records[0].shift_id
+              });
+            }
+          );
+        }
+      }
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
+};
+
 export {
   changeTexts,
   getCtrlCode,
@@ -350,5 +410,6 @@ export {
   SaveSalesReturn,
   POSSearch,
   getPOSEntry,
-  ViewInsurance
+  ViewInsurance,
+  getCashiersAndShiftMAP
 };

@@ -16,75 +16,111 @@ const changeTexts = ($this, ctrl, e) => {
 const getCtrlCode = ($this, docNumber, row) => {
   AlgaehLoader({ show: true });
 
-  algaehApiCall({
-    uri: "/transferEntry/gettransferEntry",
-    module: "pharmacy",
-    method: "GET",
-    data: {
-      transfer_number: docNumber,
-      from_location_id: row.from_location_id,
-      to_location_id: row.to_location_id
-    },
-    onSuccess: response => {
-      if (response.data.success === true) {
-        let pharmacy_stock_detail = [];
-        let data = response.data.records[0];
-        for (let i = 0; i < data.stock_detail.length; i++) {
-          if (pharmacy_stock_detail.length === 0) {
-            pharmacy_stock_detail = data.stock_detail[i].pharmacy_stock_detail;
-          } else {
-            pharmacy_stock_detail = pharmacy_stock_detail.concat(
-              data.stock_detail[i].pharmacy_stock_detail
-            );
+  let IOputs = TransferIOputs.inputParam();
+  $this.setState(IOputs, () => {
+    algaehApiCall({
+      uri: "/transferEntry/gettransferEntry",
+      module: "pharmacy",
+      method: "GET",
+      data: {
+        transfer_number: docNumber,
+        from_location_id: row.from_location_id,
+        to_location_id: row.to_location_id
+      },
+      onSuccess: response => {
+        if (response.data.success === true) {
+          let pharmacy_stock_detail = [];
+          let data = response.data.records[0];
+          for (let i = 0; i < data.stock_detail.length; i++) {
+            if (pharmacy_stock_detail.length === 0) {
+              pharmacy_stock_detail =
+                data.stock_detail[i].pharmacy_stock_detail;
+            } else {
+              pharmacy_stock_detail = pharmacy_stock_detail.concat(
+                data.stock_detail[i].pharmacy_stock_detail
+              );
+            }
+          }
+          data.pharmacy_stock_detail = pharmacy_stock_detail;
+
+          for (let j = 0; j < data.pharmacy_stock_detail.length; j++) {
+            data.pharmacy_stock_detail[j].quantity_transferred =
+              data.pharmacy_stock_detail[j].quantity_transfer;
           }
 
-          // data.pharmacy_stock_detail = pharmacy_stock_detail.concat(
-          //   data.stock_detail[i].pharmacy_stock_detail
-          // );
+          data.saveEnable = true;
+          data.dataExists = true;
+
+          if (data.completed === "Y") {
+            data.postEnable = true;
+          } else {
+            data.postEnable = false;
+          }
+
+          data.cannotEdit = true;
+
+          data.dataExitst = true;
+
+          data.quantity_transferred = 0;
+          data.item_details = null;
+          data.batch_detail_view = false;
+
+          $this.setState(data);
+          AlgaehLoader({ show: false });
+
+          AlgaehLoader({ show: false });
         }
-        data.pharmacy_stock_detail = pharmacy_stock_detail;
-
-        for (let j = 0; j < data.pharmacy_stock_detail.length; j++) {
-          data.pharmacy_stock_detail[j].quantity_transferred =
-            data.pharmacy_stock_detail[j].quantity_transfer;
-        }
-
-        data.saveEnable = true;
-        data.dataExists = true;
-
-        if (data.completed === "Y") {
-          data.postEnable = true;
-        } else {
-          data.postEnable = false;
-        }
-
-        data.cannotEdit = true;
-
-        data.dataExitst = true;
-
-        data.quantity_transferred = 0;
-        data.item_details = null;
-        data.batch_detail_view = false;
-
-        $this.setState(data);
+      },
+      onFailure: error => {
         AlgaehLoader({ show: false });
-
-        AlgaehLoader({ show: false });
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
       }
-    },
-    onFailure: error => {
-      AlgaehLoader({ show: false });
-      swalMessage({
-        title: error.message,
-        type: "error"
-      });
-    }
+    });
   });
 };
 
 const ClearData = ($this, e) => {
   let IOputs = TransferIOputs.inputParam();
   $this.setState(IOputs);
+};
+
+const generateMaterialTransPhar = data => {
+  // console.log("data:", data);
+  algaehApiCall({
+    uri: "/report",
+    method: "GET",
+    module: "reports",
+    headers: {
+      Accept: "blob"
+    },
+    others: { responseType: "blob" },
+    data: {
+      report: {
+        reportName: "MaterialTransferPhar",
+        reportParams: [
+          {
+            name: "transfer_number",
+            value: data.transfer_number
+          }
+        ],
+        outputFileType: "PDF"
+      }
+    },
+    onSuccess: res => {
+      const url = URL.createObjectURL(res.data);
+      let myWindow = window.open(
+        "{{ product.metafields.google.custom_label_0 }}",
+        "_blank"
+      );
+      myWindow.document.write(
+        "<iframe src= '" + url + "' width='100%' height='100%' />"
+      );
+      myWindow.document.title = "Material Transfer Receipt";
+    }
+  });
 };
 
 const SaveTransferEntry = $this => {
@@ -350,7 +386,27 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
       });
       $this.setState({ [name]: null });
     } else {
-      $this.setState({ [name]: value, [type]: e.selected.location_type });
+      $this.setState({
+        [name]: value,
+        [type]: e.selected.location_type,
+        item_id: null,
+        item_category: null,
+        uom_id: null,
+        item_group_id: null,
+        quantity: 0,
+
+        expiry_date: null,
+        batchno: null,
+        grn_no: null,
+        qtyhand: null,
+        barcode: null,
+        ItemUOM: [],
+        Batch_Items: [],
+        addItemButton: true,
+        item_description: "",
+
+        uom_description: null
+      });
     }
   } else if (location === "To") {
     type = "to_location_type";
@@ -361,7 +417,27 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
       });
       $this.setState({ [name]: null });
     } else {
-      $this.setState({ [name]: value, [type]: e.selected.location_type });
+      $this.setState({
+        [name]: value,
+        [type]: e.selected.location_type,
+        item_id: null,
+        item_category: null,
+        uom_id: null,
+        item_group_id: null,
+        quantity: 0,
+
+        expiry_date: null,
+        batchno: null,
+        grn_no: null,
+        qtyhand: null,
+        barcode: null,
+        ItemUOM: [],
+        Batch_Items: [],
+        addItemButton: true,
+        item_description: "",
+
+        uom_description: null
+      });
     }
   }
 };
@@ -381,5 +457,6 @@ export {
   RequisitionSearch,
   LocationchangeTexts,
   checkBoxEvent,
-  getRequisitionDetails
+  getRequisitionDetails,
+  generateMaterialTransPhar
 };

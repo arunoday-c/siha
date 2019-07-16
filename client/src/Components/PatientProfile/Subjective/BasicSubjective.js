@@ -850,8 +850,8 @@ class BasicSubjective extends Component {
                         className="btn btn-primary btn-circle active"
                         onClick={this.showMedication.bind(this)}
                       >
-                        {/* <i className="fas fa-plus" /> */}
-                        <i className="fas fa-retweet" />
+                        <i className="fas fa-plus" />
+                        {/* <i className="fas fa-retweet" /> */}
                       </a>
                     </div>
                   </div>

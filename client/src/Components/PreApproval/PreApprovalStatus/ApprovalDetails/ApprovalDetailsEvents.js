@@ -39,7 +39,15 @@ const numberhandle = ($this, row, e) => {
     });
     return;
   }
-  if (name === "approved_amount") {
+  if (name === "approved_qty") {
+    if (parseFloat(value) > parseFloat(row.requested_quantity)) {
+      swalMessage({
+        title: "Approval Quantity cannot be greater Requested Quantity",
+        type: "warning"
+      });
+      return;
+    }
+  } else if (name === "approved_amount") {
     row.approved_amount =
       amount_from.company_service_price_type === "G"
         ? row.gross_amt
@@ -69,10 +77,7 @@ const datehandle = ($this, row, ctrl, e) => {
 const updateServices = ($this, context, row) => {
   let service_array = [];
 
-  if (
-    parseFloat(row.requested_quantity) <= 0 ||
-    row.requested_quantity === null
-  ) {
+  if (parseFloat(row.approved_qty) <= 0 || row.approved_qty === null) {
     swalMessage({
       title: "Please enter the quantity properly.",
       type: "warning"
@@ -89,4 +94,25 @@ const updateServices = ($this, context, row) => {
 };
 const deleteServices = ($this, context, row) => {};
 
-export { texthandle, datehandle, updateServices, deleteServices, numberhandle };
+const dateValidate = ($this, row, value, event) => {
+  let inRange = moment(value).isBefore(moment().format("YYYY-MM-DD"));
+  if (inRange) {
+    swalMessage({
+      title: "Valid Upto date cannot be past Date.",
+      type: "warning"
+    });
+    event.target.focus();
+    row[event.target.name] = null;
+    row.update();
+    $this.setState({ append: !$this.state.append });
+  }
+};
+
+export {
+  texthandle,
+  datehandle,
+  updateServices,
+  deleteServices,
+  numberhandle,
+  dateValidate
+};

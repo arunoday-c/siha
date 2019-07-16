@@ -30,22 +30,47 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 class InvRequisitionList extends Component {
   constructor(props) {
     super(props);
-    let month = moment().format("MM");
-    let year = moment().format("YYYY");
-    this.state = {
-      to_date: new Date(),
-      from_date: moment("01" + month + year, "DDMMYYYY")._d,
-      from_location_id: null,
-      to_location_id: null,
-      requisition_list: [],
-      radioYes: true,
-      authorize1: "Y",
-      status: "1"
-    };
-    getRequisitionList(this);
+    this.state = {};
   }
 
   componentDidMount() {
+    let month = moment().format("MM");
+    let year = moment().format("YYYY");
+    //to load the same list when user come back from whatever screen they went.
+    if (this.props.backToAuth) {
+      const {
+        from_date,
+        to_date,
+        from_location_id,
+        to_location_id,
+        status
+      } = this.props.prev;
+      this.setState(
+        {
+          from_date,
+          to_date,
+          from_location_id,
+          to_location_id,
+          status
+        },
+        () => getRequisitionList(this)
+      );
+    } else {
+      this.setState(
+        {
+          to_date: new Date(),
+          from_date: moment("01" + month + year, "DDMMYYYY")._d,
+          from_location_id: null,
+          to_location_id: null,
+          requisition_list: [],
+          radioYes: true,
+          authorize1: "Y",
+          status: "1"
+        },
+        () => getRequisitionList(this)
+      );
+    }
+
     this.props.getLocation({
       uri: "/inventory/getInventoryLocation",
       module: "inventory",
@@ -56,6 +81,12 @@ class InvRequisitionList extends Component {
       }
     });
   }
+
+  ourOwnMiniNavigator = obj => {
+    const { requisition_list, radioYes, authorize1, ...rest } = this.state;
+    let sendObj = Object.assign(rest, obj);
+    this.props.new_routeComponents(sendObj);
+  };
 
   render() {
     return (
@@ -228,27 +259,23 @@ class InvRequisitionList extends Component {
                                 }}
                                 className="fas fa-check"
                                 onClick={() => {
-                                  setGlobal({
-                                    "RQ-STD": "InvRequisitionEntry",
+                                  this.ourOwnMiniNavigator({
+                                    RQ_Screen: "InvRequisitionEntry",
                                     material_requisition_number:
                                       row.material_requisition_number
                                   });
-                                  document.getElementById("rq-router").click();
                                 }}
                               />
                               {row.trans_pending === true ? (
                                 <i
                                   className="fa fa-exchange-alt"
                                   onClick={() => {
-                                    setGlobal({
-                                      "RQ-STD": "InvTransferEntry",
+                                    this.ourOwnMiniNavigator({
+                                      RQ_Screen: "InvTransferEntry",
                                       hims_f_inventory_material_header_id:
                                         row.hims_f_inventory_material_header_id,
-                                      from_location_id: row.to_location_id
+                                      from_location: row.to_location_id
                                     });
-                                    document
-                                      .getElementById("rq-router")
-                                      .click();
                                   }}
                                 />
                               ) : null}

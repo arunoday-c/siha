@@ -497,8 +497,10 @@ module.exports = {
           sendingObject.sheet_discount_amount = 0;
 
           if (inputParam.sheet_discount_amount > 0) {
-            sendingObject.sheet_discount_percentage =
-              (inputParam.sheet_discount_amount / inputParam.gross_total) * 100;
+            sendingObject.sheet_discount_percentage = math.round(
+              (inputParam.sheet_discount_amount / inputParam.gross_total) * 100,
+              3
+            );
 
             sendingObject.sheet_discount_amount =
               inputParam.sheet_discount_amount;
@@ -758,7 +760,6 @@ module.exports = {
   },
 
   addCashHandover: (req, res, next) => {
-    console.log("addCashHandover");
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
     // const utilities = new algaehUtilities();
@@ -766,20 +767,21 @@ module.exports = {
 
     try {
       let inputParam = { ...req.body };
-
+      // req.body.receipt_header_id
       // utilities.logger().log("inputParam Cash: ", inputParam);
+
       if (
         inputParam.receiptdetails == null ||
         inputParam.receiptdetails.length == 0
       ) {
-        const genErr = httpStatus.generateError(
-          httpStatus.badRequest,
-          "Please select atleast one payment mode."
-        );
-        next(genErr);
-      }
-      console.log("fff:", req.userIdentity.hospital_id);
-      if (
+        req.records = {
+          internal_error: true,
+          message: "No receipt details"
+        };
+        _mysql.rollBackTransaction(() => {});
+        next();
+        return;
+      } else if (
         req.userIdentity.group_type == "C" ||
         req.userIdentity.group_type == "FD" ||
         req.userIdentity.user_type == "C"
@@ -810,10 +812,7 @@ module.exports = {
             }
             new Promise((resolve, reject) => {
               try {
-                if (
-                  checkShiftStatus.length == null ||
-                  checkShiftStatus.length == ""
-                ) {
+                if (!checkShiftStatus.length > 0) {
                   _mysql
                     .executeQueryWithTransaction({
                       query:
@@ -938,12 +937,14 @@ module.exports = {
                   no_of_cheques += parseFloat(
                     selectCurrentCash[0].no_of_cheques
                   );
+
                   _mysql
                     .executeQuery({
                       query:
                         "update hims_f_cash_handover_detail set expected_cash=?,expected_card=?,\
                   expected_cheque=?,no_of_cheques=?,updated_date=?,updated_by=? where record_status='A' \
-                  and hims_f_cash_handover_detail_id=?;",
+                  and hims_f_cash_handover_detail_id=?;\
+                  update hims_f_receipt_header set cash_handover_detail_id=? where hims_f_receipt_header_id=?;",
                       values: [
                         expected_cash,
                         expected_card,
@@ -951,7 +952,9 @@ module.exports = {
                         no_of_cheques,
                         new Date(),
                         req.userIdentity.algaeh_d_app_user_id,
-                        hims_f_cash_handover_detail_id
+                        hims_f_cash_handover_detail_id,
+                        hims_f_cash_handover_detail_id,
+                        req.body.receipt_header_id
                       ],
                       printQuery: true
                     })
@@ -963,6 +966,14 @@ module.exports = {
                           next();
                         });
                       } else {
+                        if (req.records) {
+                          req.records["internal_error"] = false;
+                        } else {
+                          req.records = {
+                            internal_error: false
+                          };
+                        }
+
                         next();
                       }
                     })
@@ -988,11 +999,20 @@ module.exports = {
         if (req.connection == null) {
           _mysql.commitTransaction(() => {
             _mysql.releaseConnection();
-            req.records = { mesage: "not a cahsier" };
+            req.records = {
+              internal_error: true,
+              message: "Current user is not a Cahsier in"
+            };
             next();
           });
         } else {
-          next();
+          req.records = {
+            internal_error: true,
+            message: "Current user is not a Cahsier"
+          };
+          _mysql.rollBackTransaction(() => {
+            next();
+          });
         }
       }
     } catch (e) {
@@ -1081,7 +1101,7 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
           let records = result[m];
 
           req.body[m].service_type_id = result[m].service_type_id;
-          req.body[m].services_id = servicesDetails.hims_d_services_id;
+          req.body[m].services_id = result[m].hims_d_services_id;
 
           //Calculation Declarations
           const utilities = new algaehUtilities();
@@ -1280,6 +1300,8 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                     : "N"
                   : "N";
               utilities.logger().log("covered: ", covered);
+              utilities.logger().log("pre_approval: ", pre_approval);
+              utilities.logger().log("apprv_status: ", apprv_status);
               if (
                 covered == "N" ||
                 (pre_approval == "Y" && apprv_status == "RJ")
@@ -1287,6 +1309,9 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                 insured = "N";
               }
 
+              utilities
+                .logger()
+                .log("approval_limit_yesno: ", approval_limit_yesno);
               if (approval_limit_yesno == "Y") {
                 pre_approval = "Y";
               }
@@ -1444,8 +1469,10 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
 
                 patient_payable = math.round(patient_resp + patient_tax, 2);
 
-                console.log("approved_amount", approved_amount);
-                if (approved_amount !== 0) {
+                console.log("approved_amount: ", approved_amount);
+                console.log("unit_cost: ", unit_cost);
+
+                if (approved_amount !== 0 && approved_amount < unit_cost) {
                   let diff_val = approved_amount - comapany_resp;
                   patient_payable = math.round(patient_payable + diff_val, 2);
                   patient_resp = math.round(patient_resp + diff_val, 2);
@@ -1659,6 +1686,20 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                 sec_company_paybale =
                   sec_unit_cost - patient_resp + sec_company_tax;
               }
+              utilities
+                .logger()
+                .log(
+                  "hims_d_services_id: ",
+                  servicesDetails.hims_d_services_id
+                );
+              utilities
+                .logger()
+                .log("service_type_id: ", records.service_type_id);
+
+              utilities
+                .logger()
+                .log("hims_d_services_id: ", records.hims_d_services_id);
+
               let out = extend(
                 {
                   hims_f_billing_details_id: null,
@@ -1696,12 +1737,12 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                 {
                   service_type_id: records.service_type_id,
                   service_name: records.service_name,
-                  services_id: servicesDetails.hims_d_services_id,
+                  services_id: records.hims_d_services_id,
                   quantity: quantity,
                   unit_cost: unit_cost,
                   gross_amount: gross_amount,
                   discount_amout: discount_amout,
-                  discount_percentage: discount_percentage,
+                  discount_percentage: math.round(discount_percentage, 3),
                   net_amout: net_amout,
                   patient_resp: patient_resp,
                   patient_payable: patient_payable,
@@ -1719,7 +1760,7 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                   sec_copay_amount: sec_copay_amount,
                   sec_company_res: sec_company_res,
                   sec_company_paybale: sec_company_paybale,
-                  pre_approval: pre_approval,
+                  pre_approval: insured == "Y" ? pre_approval : "N",
                   insurance_yesno: insured,
                   preapp_limit_exceed: preapp_limit_exceed,
                   approval_amt: approval_amt,
