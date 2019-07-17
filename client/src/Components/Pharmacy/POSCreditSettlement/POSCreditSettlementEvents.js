@@ -357,7 +357,7 @@ const SavePosCreidt = $this => {
       });
     } else {
       swalMessage({
-        title: "Please recive the amount.",
+        title: "Please collect the amount.",
         type: "error"
       });
     }
