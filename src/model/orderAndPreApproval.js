@@ -22,7 +22,7 @@ let getPreAprovalList = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   try {
     let _stringData = "";
-    let inputValues = [];
+
     if (req.query.created_date != null) {
       _stringData +=
         " and date(SA.created_date) between date('" +

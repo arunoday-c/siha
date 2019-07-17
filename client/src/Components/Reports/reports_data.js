@@ -2283,7 +2283,7 @@ export default function loadActiveReports() {
           case "FTDSK":
             result = pushData(result, Hims_Reports);
             break;
-          case "HRMNGMT":
+          case "PAYROLL":
             result = pushData(result, HR_Payroll_Reports);
             break;
           case "INS":

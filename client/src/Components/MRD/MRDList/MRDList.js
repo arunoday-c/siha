@@ -7,16 +7,18 @@ import {
   AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
 import algaehLoader from "../../Wrapper/fullPageLoader";
-// import moment from "moment";
+import moment from "moment";
 import { setGlobal } from "../../../utils/GlobalFunctions";
 
 class MRDList extends Component {
   constructor(props) {
     super(props);
+    let month = moment(new Date()).format("MM");
+    let year = moment().year();
     this.state = {
-      date_of_birth: null,
-      registration_date: null,
-      patientData: []
+      patientData: [],
+      to_date: new Date(),
+      from_date: moment("01" + month + year, "DDMMYYYY")._d
     };
     this.getPatientMrdList();
     this.baseState = this.state;
@@ -26,31 +28,66 @@ class MRDList extends Component {
     this.setState({ [e.target.name]: e.target.value });
   }
 
+  datehandle(ctrl, e) {
+    let intFailure = false;
+    if (e === "from_date") {
+      if (Date.parse(this.state.to_date) < Date.parse(moment(ctrl)._d)) {
+        intFailure = true;
+        swalMessage({
+          title: "From Date cannot be grater than To Date.",
+          type: "warning"
+        });
+      }
+    } else if (e === "to_date") {
+      if (Date.parse(moment(ctrl)._d) < Date.parse(this.state.from_date)) {
+        intFailure = true;
+        swalMessage({
+          title: "To Date cannot be less than From Date.",
+          type: "warning"
+        });
+      }
+    }
+
+    if (intFailure === false) {
+      this.setState(
+        {
+          [e]: moment(ctrl)._d
+        },
+        () => {
+          this.getPatientMrdList();
+        }
+      );
+    }
+  }
+
   getPatientMrdList(e) {
     if (e !== undefined) e.preventDefault();
+
+    // if (this.state.to_date === null) {
+    //   swalMessage({
+    //     title: "To Date cannot be null.",
+    //     type: "warning"
+    //   });
+    //   return;
+    // } else if (this.state.from_date === null) {
+    //   swalMessage({
+    //     title: "From Date cannot be null.",
+    //     type: "warning"
+    //   });
+    //   return;
+    // }
     algaehLoader({ show: true });
 
-    // let reg_date = moment(this.state.registration_date).isValid()
-    //   ? this.state.registration_date
-    //   : null;
-    // let dob = moment(this.state.date_of_birth).isValid()
-    //   ? this.state.date_of_birth
-    //   : null;
-
-    //   data: {
-    //     full_name: this.state.full_name !== "" ? this.state.full_name : null,
-    //     patient_code:
-    //       this.state.patient_code !== "" ? this.state.patient_code : null,
-    //     registration_date: reg_date,
-    //     date_of_birth: dob,
-    //     contact_number:
-    //       this.state.contact_number !== "" ? this.state.contact_number : null
-    //   },
+    let inPutObj = {
+      from_date: this.state.from_date,
+      to_date: this.state.to_date
+    };
 
     algaehApiCall({
       uri: "/mrd/getPatientMrdList",
       method: "GET",
       module: "MRD",
+      data: inPutObj,
       onSuccess: response => {
         algaehLoader({ show: false });
         if (response.data.success) {
@@ -84,17 +121,13 @@ class MRDList extends Component {
               label={{ forceLabel: "From Registration", isImp: false }}
               textBox={{
                 className: "txt-fld",
-                name: "date_of_birth"
+                name: "from_date"
               }}
               maxDate={new Date()}
               events={{
-                onChange: selectedDate => {
-                  this.setState({
-                    date_of_birth: selectedDate
-                  });
-                }
+                onChange: this.datehandle.bind(this)
               }}
-              value={this.state.date_of_birth}
+              value={this.state.from_date}
             />
 
             <AlgaehDateHandler
@@ -102,17 +135,13 @@ class MRDList extends Component {
               label={{ forceLabel: "To Registration", isImp: false }}
               textBox={{
                 className: "txt-fld",
-                name: "registration_date"
+                name: "to_date"
               }}
               maxDate={new Date()}
               events={{
-                onChange: selectedDate => {
-                  this.setState({
-                    registration_date: selectedDate
-                  });
-                }
+                onChange: this.datehandle.bind(this)
               }}
-              value={this.state.registration_date}
+              value={this.state.to_date}
             />
 
             <div className="col-lg-1">
