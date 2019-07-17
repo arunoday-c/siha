@@ -1150,41 +1150,6 @@ let updatePrescriptionDetail = (req, res, next) => {
     _mysql.releaseConnection();
     next(e);
   }
-  // try {
-  //   if (req.db == null) {
-  //     next(httpStatus.dataBaseNotInitilizedError());
-  //   }
-  //   let db = req.db;
-  //   db.getConnection((error, connection) => {
-  //     if (error) {
-  //       next(error);
-  //     }
-  //
-  //     let input = extend({}, req.body[0]);
-  //     let insurance_yesno = input.apprv_status === "RJ" ? "N" : "N";
-  //
-  //     connection.query(
-  //       "UPDATE hims_f_prescription_detail SET apprv_status = ?, insured=?, approved_amount=?,pre_approval = 'N' WHERE `hims_f_prescription_detail_id`=?; UPDATE hims_f_medication_approval SET billing_updated ='Y' where hims_f_medication_approval_id=?;",
-  //       [
-  //         input.apprv_status,
-  //         insurance_yesno,
-  //         input.approved_amount,
-  //         input.hims_f_prescription_detail_id,
-  //         input.hims_f_medication_approval_id
-  //       ],
-  //       (error, result) => {
-  //         releaseDBConnection(db, connection);
-  //         if (error) {
-  //           next(error);
-  //         }
-  //         req.records = result;
-  //         next();
-  //       }
-  //     );
-  //   });
-  // } catch (e) {
-  //   next(e);
-  // }
 };
 
 let insertInvOrderedServices = (req, res, next) => {
@@ -1379,6 +1344,174 @@ let insertInvOrderedServices = (req, res, next) => {
   }
 };
 
+//created by:irfan
+let addPackage = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  let input = req.body;
+
+  try {
+    if (input.length > 0) {
+      input.forEach(val => {
+        if (!val.package_detail.length > 0) {
+          req.records = {
+            invalid_input: true,
+            message: "Please provide valid  package detail"
+          };
+          next();
+          return;
+        }
+      });
+
+      for (let i = 0; i < input.length; i++) {
+        _mysql
+          .executeQueryWithTransaction({
+            query:
+              "INSERT INTO `hims_f_package_header` (package_id,patient_id,visit_id,doctor_id,service_type_id,services_id,insurance_yesno,insurance_provider_id,\
+                insurance_sub_id,network_id,insurance_network_office_id,policy_number,pre_approval,apprv_status,\
+                billed,quantity,unit_cost,gross_amount,discount_amout,discount_percentage,net_amout,copay_percentage,\
+                copay_amount,deductable_amount,deductable_percentage,tax_inclusive,patient_tax,company_tax,total_tax\
+                ,patient_resp,patient_payable,comapany_resp,company_payble,sec_company,sec_deductable_percentage,\
+                sec_deductable_amount,sec_company_res,sec_company_tax,sec_company_paybale,sec_copay_percntage,\
+                sec_copay_amount,advance_amount,balance_amount,actual_amount,closed,closed_type,closed_remarks,\
+                package_type,package_visit_type,hospital_id,created_by,created_date,updated_by,updated_date)\
+            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            values: [
+              input[i].package_id,
+              input[i].patient_id,
+              input[i].visit_id,
+              input[i].doctor_id,
+              input[i].service_type_id,
+              input[i].services_id,
+              input[i].insurance_yesno,
+              input[i].insurance_provider_id,
+              input[i].insurance_sub_id,
+              input[i].network_id,
+              input[i].insurance_network_office_id,
+              input[i].policy_number,
+              input[i].pre_approval,
+              input[i].apprv_status,
+              input[i].billed,
+              input[i].quantity,
+              input[i].unit_cost,
+              input[i].gross_amount,
+              input[i].discount_amout,
+              input[i].discount_percentage,
+              input[i].net_amout,
+              input[i].copay_percentage,
+              input[i].copay_amount,
+              input[i].deductable_amount,
+              input[i].deductable_percentage,
+              input[i].tax_inclusive,
+              input[i].patient_tax,
+              input[i].company_tax,
+              input[i].total_tax,
+              input[i].patient_resp,
+              input[i].patient_payable,
+              input[i].comapany_resp,
+              input[i].company_payble,
+              input[i].sec_company,
+              input[i].sec_deductable_percentage,
+              input[i].sec_deductable_amount,
+              input[i].sec_company_res,
+              input[i].sec_company_tax,
+              input[i].sec_company_paybale,
+              input[i].sec_copay_percntage,
+              input[i].sec_copay_amount,
+              input[i].advance_amount,
+              input[i].balance_amount,
+              input[i].actual_amount,
+              input[i].closed,
+              input[i].closed_type,
+              input[i].closed_remarks,
+              input[i].package_type,
+              input[i].package_visit_type,
+              input[i].hospital_id,
+
+              req.userIdentity.algaeh_d_app_user_id,
+              new Date(),
+              req.userIdentity.algaeh_d_app_user_id,
+              new Date()
+            ]
+          })
+          .then(headerRes => {
+            if (headerRes.insertId > 0) {
+              const insurtColumns = [
+                "package_header_id",
+                "service_type_id",
+                "service_id",
+                "service_amount",
+                "qty",
+                "tot_service_amount",
+                "appropriate_amount",
+                "utilized_qty"
+              ];
+
+              _mysql
+                .executeQuery({
+                  query: "INSERT INTO hims_f_package_detail (??) VALUES ?",
+                  values: input[i]["package_detail"],
+                  includeValues: insurtColumns,
+                  extraValues: {
+                    package_header_id: headerRes.insertId
+                  },
+                  bulkInsertOrUpdate: true
+                })
+                .then(detailRes => {
+                  if (detailRes.affectedRows > 0) {
+                    if (i == input.length - 1) {
+                      _mysql.commitTransaction(() => {
+                        _mysql.releaseConnection();
+                        req.records = detailRes;
+                        next();
+                      });
+                    }
+                  } else {
+                    _mysql.rollBackTransaction(() => {
+                      req.records = {
+                        invalid_input: true,
+                        message: "inValid package details"
+                      };
+                      next();
+                      return;
+                    });
+                  }
+                })
+                .catch(e => {
+                  _mysql.rollBackTransaction(() => {
+                    next(e);
+                  });
+                });
+            } else {
+              _mysql.rollBackTransaction(() => {
+                req.records = {
+                  invalid_input: true,
+                  message: "Provide valid package"
+                };
+                next();
+                return;
+              });
+            }
+          })
+          .catch(e => {
+            _mysql.rollBackTransaction(() => {
+              next(e);
+            });
+          });
+      }
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "Please provide valid Input"
+      };
+
+      next();
+      return;
+    }
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
 module.exports = {
   insertOrderedServices,
   getPreAprovalList,
@@ -1393,5 +1526,6 @@ module.exports = {
   updatePrescriptionDetail,
   getVisitConsumable,
   insertInvOrderedServices,
-  load_orders_for_bill
+  load_orders_for_bill,
+  addPackage
 };
