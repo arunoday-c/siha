@@ -199,7 +199,7 @@ class PreApproval extends Component {
               <AlgaehDateHandler
                 div={{ className: "col-2" }}
                 label={{ forceLabel: "To Date" }}
-                textBox={{ className: "txt-fld", name: "date" }}
+                textBox={{ className: "txt-fld", name: "to_date" }}
                 maxDate={new Date()}
                 events={{
                   onChange: datehandle.bind(this, this)
