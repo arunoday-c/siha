@@ -262,6 +262,8 @@ class Encounters extends Component {
   }
 
   generateReport(row, report_type) {
+    debugger;
+    let tab_name = report_type === "RAD" ? "Radiology Report" : "Lab Report";
     algaehApiCall({
       uri: "/report",
       method: "GET",
@@ -274,16 +276,24 @@ class Encounters extends Component {
         report: {
           reportName:
             report_type === "RAD" ? "radiologyReport" : "haematologyReport",
-          reportParams: [
-            {
-              name: "hims_d_patient_id",
-              value: row.patient_id
-            },
-            {
-              name: "visit_id",
-              value: row.visit_id
-            }
-          ],
+          reportParams:
+            report_type === "RAD"
+              ? [
+                  {
+                    name: "hims_f_rad_order_id",
+                    value: row.hims_f_rad_order_id
+                  }
+                ]
+              : [
+                  {
+                    name: "hims_d_patient_id",
+                    value: row.patient_id
+                  },
+                  {
+                    name: "visit_id",
+                    value: row.visit_id
+                  }
+                ],
           outputFileType: "PDF"
         }
       },
@@ -297,7 +307,7 @@ class Encounters extends Component {
         myWindow.document.write(
           "<iframe src= '" + url + "' width='100%' height='100%' />"
         );
-        myWindow.document.title = "Radiology";
+        myWindow.document.title = tab_name;
       }
     });
   }

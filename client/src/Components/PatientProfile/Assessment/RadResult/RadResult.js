@@ -9,6 +9,7 @@ import "./../../../../styles/site.css";
 import { getRadResult } from "./RadResultEvents";
 
 import { AlgaehDataGrid, AlgaehLabel } from "../../../Wrapper/algaehWrapper";
+import { algaehApiCall } from "../../../../utils/algaehApiCall";
 
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import moment from "moment";
@@ -36,7 +37,41 @@ class LabResult extends Component {
       return moment(date).format(Options.timeFormat);
     }
   };
+  generateReport(row) {
+    algaehApiCall({
+      uri: "/report",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob"
+      },
+      others: { responseType: "blob" },
+      data: {
+        report: {
+          reportName: "radiologyReport",
+          reportParams: [
+            {
+              name: "hims_f_rad_order_id",
+              value: row.hims_f_rad_order_id
+            }
+          ],
+          outputFileType: "PDF"
+        }
+      },
+      onSuccess: res => {
+        const url = URL.createObjectURL(res.data);
+        let myWindow = window.open(
+          "{{ product.metafields.google.custom_label_0 }}",
+          "_blank"
+        );
 
+        myWindow.document.write(
+          "<iframe src= '" + url + "' width='100%' height='100%' />"
+        );
+        myWindow.document.title = "Radiology Report";
+      }
+    });
+  }
   ShowCollectionModel(row, e) {
     this.setState({
       isOpen: !this.state.isOpen,
@@ -67,7 +102,15 @@ class LabResult extends Component {
                       displayTemplate: row => {
                         return (
                           <span>
-                            <i className="fas fa-file-alt" />
+                            <i
+                              style={{
+                                pointerEvents:
+                                  row.status === "RA" ? "" : "none",
+                                opacity: row.status === "RA" ? "" : "0.1"
+                              }}
+                              className="fas fa-print"
+                              onClick={this.generateReport.bind(this, row)}
+                            />
 
                             <i className="fas fa-file-image" />
                           </span>

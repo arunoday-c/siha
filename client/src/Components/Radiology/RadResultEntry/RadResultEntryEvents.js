@@ -38,7 +38,7 @@ const handleExamStatus = ($this, value) => {
     append_message = "Is it completed ";
     functionToCall = completeTest;
   } else if (value === "validate") {
-    append_message = " Validate";
+    append_message = " Validate ";
     functionToCall = validateTest;
   }
   swal({
