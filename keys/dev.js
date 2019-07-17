@@ -16,6 +16,7 @@ exports.default = {
     user: "algaeh_root",
     password: "alg_hea2018",
     database: "hims_test_db",
+    // database: "twareat_live_db",
     //database: "awdesh_db",
     // database: "hrms_shaksy_db",
     // database: "seco",
@@ -49,11 +50,11 @@ exports.default = {
     headless: true,
 
     // for windows
-    executablePath:
-      "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
+    // executablePath:
+    //   "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
 
     //for Mac
-    // executablePath:
-    //   "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+    executablePath:
+      "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
   }
 };

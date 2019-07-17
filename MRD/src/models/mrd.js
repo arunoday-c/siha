@@ -7,6 +7,19 @@ module.exports = {
   getPatientMrdList: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
+      let _stringData = "";
+
+      if (req.query.from_date != null) {
+        _stringData +=
+          " and date(registration_date) between date('" +
+          req.query.from_date +
+          "') AND date('" +
+          req.query.to_date +
+          "')";
+      } else {
+        _stringData += " and date(registration_date) <= date(now())";
+      }
+
       _mysql
         .executeQuery({
           query:
@@ -20,7 +33,9 @@ module.exports = {
             from hims_f_patient P, hims_d_nationality N,hims_d_identity_document DOC\
             where P.record_status='A' and N.record_status='A' and DOC.record_status='A' and\
             P.nationality_id=N.hims_d_nationality_id and P.primary_identity_id=DOC.hims_d_identity_document_id \
-            and P.hospital_id=? order by registration_date desc",
+            and P.hospital_id=? " +
+            _stringData +
+            "order by registration_date desc",
           values: [req.userIdentity.hospital_id],
           printQuery: true
         })

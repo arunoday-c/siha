@@ -31,12 +31,17 @@ class EmployeeMaster extends Component {
     const HIMS_Active = Activated_Modueles.filter(f => {
       return f.module_code === "FTDSK";
     });
+
+    const HRMS_Active = Activated_Modueles.filter(f => {
+      return f.module_code === "PAYROLL";
+    });
     this.state = {
       pageDisplay: "PersonalDetails",
       personalDetails: {},
       department_and_other: {},
       payroll: {},
-      HIMS_Active: HIMS_Active.length > 0 ? true : false
+      HIMS_Active: HIMS_Active.length > 0 ? true : false,
+      HRMS_Active: HRMS_Active.length > 0 ? true : false
     };
   }
 
@@ -317,19 +322,21 @@ class EmployeeMaster extends Component {
                       }
                     </li>
 
-                    <li
-                      algaehtabs={"PayRollDetails"}
-                      className={"nav-item tab-button"}
-                      onClick={this.openTab.bind(this)}
-                    >
-                      {
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Payroll Details"
-                          }}
-                        />
-                      }
-                    </li>
+                    {this.state.HRMS_Active === true ? (
+                      <li
+                        algaehtabs={"PayRollDetails"}
+                        className={"nav-item tab-button"}
+                        onClick={this.openTab.bind(this)}
+                      >
+                        {
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Payroll Details"
+                            }}
+                          />
+                        }
+                      </li>
+                    ) : null}
                     {this.state.personalDetails.isdoctor === "Y" ? (
                       <li
                         algaehtabs={"CommissionSetup"}
@@ -345,33 +352,37 @@ class EmployeeMaster extends Component {
                         }
                       </li>
                     ) : null}
-                    <li
-                      algaehtabs={"FamilyAndIdentification"}
-                      className={"nav-item tab-button"}
-                      onClick={this.openTab.bind(this)}
-                    >
-                      {
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Family & Identification Details"
-                          }}
-                        />
-                      }
-                    </li>
+                    {this.state.HRMS_Active === true ? (
+                      <li
+                        algaehtabs={"FamilyAndIdentification"}
+                        className={"nav-item tab-button"}
+                        onClick={this.openTab.bind(this)}
+                      >
+                        {
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Family & Identification Details"
+                            }}
+                          />
+                        }
+                      </li>
+                    ) : null}
 
-                    <li
-                      algaehtabs={"RulesDetails"}
-                      className={"nav-item tab-button"}
-                      onClick={this.openTab.bind(this)}
-                    >
-                      {
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Rules Details"
-                          }}
-                        />
-                      }
-                    </li>
+                    {this.state.HRMS_Active === true ? (
+                      <li
+                        algaehtabs={"RulesDetails"}
+                        className={"nav-item tab-button"}
+                        onClick={this.openTab.bind(this)}
+                      >
+                        {
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Rules Details"
+                            }}
+                          />
+                        }
+                      </li>
+                    ) : null}
                   </ul>
                 ) : (
                   <ul className="nav">
@@ -416,20 +427,21 @@ class EmployeeMaster extends Component {
                         />
                       }
                     </li>
-
-                    <li
-                      algaehtabs={"PayRollDetails"}
-                      className={"nav-item tab-button disableLi"}
-                      onClick={this.openTab.bind(this)}
-                    >
-                      {
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Payroll Details"
-                          }}
-                        />
-                      }
-                    </li>
+                    {this.state.HRMS_Active === true ? (
+                      <li
+                        algaehtabs={"PayRollDetails"}
+                        className={"nav-item tab-button disableLi"}
+                        onClick={this.openTab.bind(this)}
+                      >
+                        {
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Payroll Details"
+                            }}
+                          />
+                        }
+                      </li>
+                    ) : null}
                     {this.state.isdoctor === "Y" ? (
                       <li
                         algaehtabs={"CommissionSetup"}
@@ -445,33 +457,37 @@ class EmployeeMaster extends Component {
                         }
                       </li>
                     ) : null}
-                    <li
-                      algaehtabs={"FamilyAndIdentification"}
-                      className={"nav-item tab-button disableLi"}
-                      onClick={this.openTab.bind(this)}
-                    >
-                      {
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Family & Identification Details"
-                          }}
-                        />
-                      }
-                    </li>
+                    {this.state.HRMS_Active === true ? (
+                      <li
+                        algaehtabs={"FamilyAndIdentification"}
+                        className={"nav-item tab-button disableLi"}
+                        onClick={this.openTab.bind(this)}
+                      >
+                        {
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Family & Identification Details"
+                            }}
+                          />
+                        }
+                      </li>
+                    ) : null}
 
-                    <li
-                      algaehtabs={"RulesDetails"}
-                      className={"nav-item tab-button disableLi"}
-                      onClick={this.openTab.bind(this)}
-                    >
-                      {
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Rules Details"
-                          }}
-                        />
-                      }
-                    </li>
+                    {this.state.HRMS_Active === true ? (
+                      <li
+                        algaehtabs={"RulesDetails"}
+                        className={"nav-item tab-button disableLi"}
+                        onClick={this.openTab.bind(this)}
+                      >
+                        {
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Rules Details"
+                            }}
+                          />
+                        }
+                      </li>
+                    ) : null}
                   </ul>
                 )}
               </div>

@@ -50,42 +50,26 @@ class Appointment extends PureComponent {
     this.getDoctorsAndDepts();
     this.getAppointmentStatus();
     this.getTitles();
+  }
 
-    let x = JSON.parse(localStorage.getItem("ApptCriteria"));
-
-    // if (x !== undefined && x !== null) {
-    //   this.setState(
-    //     {
-    //       sub_department_id: x.sub_dept_id,
-    //       provider_id: x.provider_id,
-    //       activeDateHeader: x.schedule_date,
-    //       doctors: x.doctors,
-    //       byPassValidation: true
-    //     },
-    //     () => {
-    //       this.getAppointmentSchedule();
-    //     }
-    //   );
-    // }
-
-    if (x !== undefined && x !== null) {
-      this.setState(
-        {
-          sub_department_id: x.sub_dept_id,
-          provider_id: x.provider_id,
-          activeDateHeader: x.schedule_date,
-          doctors: x.doctors,
-          byPassValidation: true
-        },
-        () => {
-          if (this.props.fromRegistration) {
-            if (this.props.visitCreated) {
-              this.clearSaveState();
-            }
-            this.getAppointmentSchedule();
-          }
-        }
-      );
+  restoreOldState() {
+    if (this.props.fromRegistration) {
+      let x = JSON.parse(localStorage.getItem("ApptCriteria"));
+      if (this.props.visitCreated) {
+        this.clearSaveState();
+      }
+      if (x !== undefined && x !== null) {
+        this.setState(
+          {
+            sub_department_id: x.sub_dept_id,
+            provider_id: x.provider_id,
+            activeDateHeader: x.schedule_date,
+            doctors: x.doctors,
+            byPassValidation: true
+          },
+          () => this.getAppointmentSchedule()
+        );
+      }
     }
   }
 
@@ -351,9 +335,12 @@ class Appointment extends PureComponent {
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {
-          this.setState({
-            departments: response.data.records.departmets
-          });
+          this.setState(
+            {
+              departments: response.data.records.departmets
+            },
+            () => this.restoreOldState()
+          );
         }
       },
       onFailure: error => {
@@ -751,13 +738,10 @@ class Appointment extends PureComponent {
     }
   }
 
-  handleCheckIn(patient, data) {
+  handleCheckIn(patient) {
     setGlobal({
       "FD-STD": "RegistrationPatient"
     });
-    if (patient.is_stand_by === "Y") {
-      patient.patient_code = this.state.patient_code;
-    }
     // for new patient who are not yet registered
     if (!patient.patient_code) {
       patient.patient_age = patient.age;
@@ -1329,19 +1313,17 @@ class Appointment extends PureComponent {
               {_otherPatients.map((item, index) => {
                 return (
                   <li key={index}>
-                    <p onClick={this.openEditModal.bind(this, item, null)}>
-                      {item.patient_name}
-                    </p>
+                    <p>{item.patient_name}</p>
                     <span>
                       <i
                         className="fas fa-check"
-                        onClick={this.openEditModal.bind(this, item, {
+                        onClick={this.handlePatient.bind(this, item, {
                           hims_d_appointment_status_id: this.state.checkInId
                         })}
                       />
                       <i
                         className="fas fa-clock"
-                        onClick={this.openEditModal.bind(this, item, {
+                        onClick={this.handlePatient.bind(this, item, {
                           hims_d_appointment_status_id: this.state.RescheduleId
                         })}
                       />
@@ -1393,57 +1375,70 @@ class Appointment extends PureComponent {
       if (_firstPatient !== undefined) {
         return (
           <React.Fragment>
-            <div
-              appt-pat={JSON.stringify(_firstPatient)}
-              className="dynPatient"
-              style={{ background: "#f2f2f2" }}
-            >
-              <span>
-                {_firstPatient.patient_name}
-                <br />
-                {_firstPatient.contact_number}
-              </span>
-
-              <i
-                className="fas fa-times"
-                onClick={this.cancelAppt.bind(this, _firstPatient)}
-              />
-              <div className="appStatusListCntr">
-                <i className="fas fa-clock" />
-                <ul className="appStatusList">
-                  {status !== undefined
-                    ? status.map((data, index) => (
-                        <li
-                          key={index}
-                          onClick={this.handlePatient.bind(
-                            this,
-                            _firstPatient,
-                            data
-                          )}
-                        >
-                          <span
-                            style={{
-                              backgroundColor: data.color_code
-                            }}
-                          >
-                            {data.statusDesc}
-                          </span>
-                        </li>
-                      ))
-                    : null}
-                  <li
-                    onClick={generateReport.bind(
-                      this,
-                      _firstPatient,
-                      "appointmentSlip",
-                      "Appointment Slip"
-                    )}
-                  >
-                    <span>Print App. Slip</span>
-                  </li>
-                </ul>
+            {_firstPatient.appointment_status_id === this.state.noShowId ? (
+              <div
+                className="dynPatient"
+                style={{ background: "#f2f2f2" }}
+                draggable={false}
+              >
+                <span>
+                  {_firstPatient.patient_name} <br />
+                  {_firstPatient.contact_number}
+                </span>
               </div>
-            </div>
+            ) : (
+              <div
+                appt-pat={JSON.stringify(_firstPatient)}
+                className="dynPatient"
+                style={{ background: "#f2f2f2" }}
+              >
+                <span>
+                  {_firstPatient.patient_name}
+                  <br />
+                  {_firstPatient.contact_number}
+                </span>
+
+                <i
+                  className="fas fa-times"
+                  onClick={this.cancelAppt.bind(this, _firstPatient)}
+                />
+                <div className="appStatusListCntr">
+                  <i className="fas fa-clock" />
+                  <ul className="appStatusList">
+                    {status !== undefined
+                      ? status.map((data, index) => (
+                          <li
+                            key={index}
+                            onClick={this.handlePatient.bind(
+                              this,
+                              _firstPatient,
+                              data
+                            )}
+                          >
+                            <span
+                              style={{
+                                backgroundColor: data.color_code
+                              }}
+                            >
+                              {data.statusDesc}
+                            </span>
+                          </li>
+                        ))
+                      : null}
+                    <li
+                      onClick={generateReport.bind(
+                        this,
+                        _firstPatient,
+                        "appointmentSlip",
+                        "Appointment Slip"
+                      )}
+                    >
+                      <span>Print App. Slip</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            )}
             {this.loadSubStandBy(standByPatients)}
           </React.Fragment>
         );

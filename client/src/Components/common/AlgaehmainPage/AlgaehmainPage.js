@@ -37,7 +37,7 @@ class PersistentDrawer extends React.Component {
         case "FTDSK":
           Hims_active = true;
           break;
-        case "HRMNGMT":
+        case "PAYROLL":
           Hrms_active = true;
           break;
         case "PHCY":
@@ -134,7 +134,7 @@ class PersistentDrawer extends React.Component {
           });
 
           const HRActive = Enumarable.from(dataResponse.data.records)
-            .where(w => w.module_code === "HRMNGMT")
+            .where(w => w.module_code === "PAYROLL")
             .toArray();
 
           if (HRActive.length > 0) {

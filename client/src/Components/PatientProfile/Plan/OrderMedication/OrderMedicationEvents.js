@@ -282,11 +282,27 @@ const AddItems = $this => {
     parseInt($this.state.no_of_days, 10) < 1
   ) {
     swalMessage({
-      title: "Duration con't be zero",
+      title: "Duration can't be zero",
       type: "info"
     });
     return;
   }
+
+  if (moment($this.state.start_date).isBefore(moment(), "day")) {
+    $this.setState(
+      {
+        start_date: null
+      },
+      () => {
+        swalMessage({
+          title: "Start date must not in the past",
+          type: "error"
+        });
+      }
+    );
+    return;
+  }
+
   if (
     $this.state.item_id !== null &&
     $this.state.generic_id !== null &&
@@ -439,12 +455,19 @@ const deleteItems = ($this, row) => {
 
 const updateItems = ($this, row) => {
   let medicationitems = $this.state.medicationitems;
-  medicationitems[row.rowId] = row;
-
-  $this.setState({
-    saveMedicationEnable: false,
-    medicationitems: medicationitems
-  });
+  const { dosage, no_of_days, instructions } = row;
+  if (dosage || no_of_days || instructions) {
+    swalMessage({
+      title: "Please Enter Correct Values",
+      type: "error"
+    });
+  } else {
+    medicationitems[row.rowId] = row;
+    $this.setState({
+      saveMedicationEnable: false,
+      medicationitems: medicationitems
+    });
+  }
 };
 
 const calcuateDispense = ($this, e) => {
@@ -545,6 +568,9 @@ const getItemStock = $this => {
 const onchangegridcol = ($this, row, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
+  if (name !== "instructions") {
+    value = value && value > 0 ? value : "";
+  }
   row[name] = value;
   row.update();
 };

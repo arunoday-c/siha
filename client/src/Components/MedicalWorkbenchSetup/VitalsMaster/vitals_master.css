@@ -7,7 +7,7 @@
   list-style: none;
   border: 1px solid #d3d3d3;
   overflow: auto;
-  height: 22vh; }
+  height: 32.3vh; }
   .vitals_master ul#deptLit_Vitals li {
     border-bottom: 1px solid #d3d3d3;
     padding: 0;
@@ -21,4 +21,7 @@
       margin-right: 10px; }
 
 .vitals_master #vitalsMasterDetailCntr .ReactTable {
-  max-height: 25vh !important; }
+  max-height: 35vh !important; }
+
+.vitals_master #vital-hdr-grid .ReactTable {
+  max-height: 35vh !important; }

@@ -453,7 +453,7 @@ class OPBilling extends Component {
         });
       } else {
         successfulMessage({
-          message: "Please recive the amount.",
+          message: "Please collect the amount.",
           title: "Error",
           icon: "error"
         });

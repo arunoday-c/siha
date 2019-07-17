@@ -58,7 +58,6 @@ class FrontDesk extends Component {
             hims_d_services_id: data[0].services_id
           },
           () => {
-            console.log(this.state, "end of routeComponents");
             this.changeDisplays();
           }
         );
