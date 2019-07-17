@@ -1382,7 +1382,7 @@ class Appointment extends PureComponent {
                 draggable={false}
               >
                 <span>
-                  {_firstPatient.patient_name} <br />{" "}
+                  {_firstPatient.patient_name} <br />
                   {_firstPatient.contact_number}
                 </span>
               </div>

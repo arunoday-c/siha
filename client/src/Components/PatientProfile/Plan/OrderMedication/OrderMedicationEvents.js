@@ -439,12 +439,19 @@ const deleteItems = ($this, row) => {
 
 const updateItems = ($this, row) => {
   let medicationitems = $this.state.medicationitems;
-  medicationitems[row.rowId] = row;
-
-  $this.setState({
-    saveMedicationEnable: false,
-    medicationitems: medicationitems
-  });
+  const { dosage, no_of_days, instructions } = row;
+  if (dosage || no_of_days || instructions) {
+    swalMessage({
+      title: "Please Enter Correct Values",
+      type: "error"
+    });
+  } else {
+    medicationitems[row.rowId] = row;
+    $this.setState({
+      saveMedicationEnable: false,
+      medicationitems: medicationitems
+    });
+  }
 };
 
 const calcuateDispense = ($this, e) => {
@@ -545,6 +552,9 @@ const getItemStock = $this => {
 const onchangegridcol = ($this, row, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
+  if (name !== "instructions") {
+    value = value && value > 0 ? value : "";
+  }
   row[name] = value;
   row.update();
 };
