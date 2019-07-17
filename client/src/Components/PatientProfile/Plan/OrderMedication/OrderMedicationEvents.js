@@ -282,11 +282,27 @@ const AddItems = $this => {
     parseInt($this.state.no_of_days, 10) < 1
   ) {
     swalMessage({
-      title: "Duration con't be zero",
+      title: "Duration can't be zero",
       type: "info"
     });
     return;
   }
+
+  if (moment($this.state.start_date).isBefore(moment(), "day")) {
+    $this.setState(
+      {
+        start_date: null
+      },
+      () => {
+        swalMessage({
+          title: "Start date must not in the past",
+          type: "error"
+        });
+      }
+    );
+    return;
+  }
+
   if (
     $this.state.item_id !== null &&
     $this.state.generic_id !== null &&
