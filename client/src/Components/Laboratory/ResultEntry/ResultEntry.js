@@ -783,12 +783,7 @@ class ResultEntry extends Component {
             <div className="col-lg-12">
               <button
                 className="btn btn-primary"
-                onClick={generateLabResultReport.bind(
-                  this,
-                  display !== null && display.length !== 0
-                    ? display[0].full_name
-                    : ""
-                )}
+                onClick={generateLabResultReport.bind(this, this.state)}
                 disabled={this.state.status === "V" ? false : true}
               >
                 Print

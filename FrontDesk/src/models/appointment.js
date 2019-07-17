@@ -1837,7 +1837,7 @@ module.exports = {
         values: [input.hims_d_appointment_schedule_header_id]
       })
       .then(result => {
-const cur_schedule=result[0];
+      const cur_schedule=result[0];
       const working_days = [];
 
       const inputDays = [
