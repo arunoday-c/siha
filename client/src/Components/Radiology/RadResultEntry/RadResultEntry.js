@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -22,10 +22,11 @@ import {
 } from "../../../utils/GlobalVariables.json";
 import {
   texthandle,
-  examhandle,
+  // examhandle,
   templatehandle,
   rtehandle,
-  onvalidate
+  // onvalidate,
+  handleExamStatus
 } from "./RadResultEntryEvents";
 import AlgaehFileUploader from "../../Wrapper/algaehFileUpload";
 
@@ -112,6 +113,69 @@ class RadResultEntry extends Component {
     });
   }
 
+  completeDeactived = message => (
+    <div className="col-lg-6">
+      <button className="btn btn-primary" disabled={true}>
+        {message}
+      </button>
+    </div>
+  );
+
+  renderAction = () => {
+    let message;
+    const startAndCancel = (
+      <Fragment>
+        <div className="col-lg-6">
+          <button
+            className="btn btn-primary"
+            onClick={handleExamStatus.bind(this, this, "start")}
+          >
+            Start
+          </button>
+        </div>
+        <div className="col-lg-6">
+          <button
+            className="btn"
+            onClick={handleExamStatus.bind(this, this, "cancel")}
+          >
+            Cancel
+          </button>
+        </div>
+      </Fragment>
+    );
+    const completeActived = (
+      <div className="col-lg-6">
+        <button
+          className="btn btn-primary"
+          onClick={handleExamStatus.bind(this, this, "completed")}
+        >
+          Complete
+        </button>
+      </div>
+    );
+
+    if (
+      this.state.pre_exam_status === "CO" ||
+      this.state.exam_status === "CO"
+    ) {
+      message = "Test Completed";
+      return this.completeDeactived(message);
+    } else if (
+      this.state.pre_exam_status === "CN" ||
+      this.state.exam_status === "CN"
+    ) {
+      message = "Test Canceled";
+      return this.completeDeactived(message);
+    } else if (
+      this.state.pre_exam_status === "ST" ||
+      this.state.exam_status === "ST"
+    ) {
+      return completeActived;
+    } else {
+      return startAndCancel;
+    }
+  };
+
   render() {
     let validateDisable =
       this.state.exam_status === "CO"
@@ -169,29 +233,7 @@ class RadResultEntry extends Component {
             <div className="col-12">
               <div className="row">
                 <div className="col-4 popLeftDiv">
-                  <div className="row form-row-gap">
-                    <AlagehAutoComplete
-                      div={{ className: "col-lg-12" }}
-                      label={{
-                        forceLabel: "Examination Status"
-                      }}
-                      selector={{
-                        sort: "off",
-                        name: "exam_status",
-                        className: "select-fld",
-                        value: this.state.exam_status,
-                        dataSource: {
-                          textField: "name",
-                          valueField: "value",
-                          data: RAD_EXAM_STATUS
-                        },
-                        onChange: examhandle.bind(this, this)
-                        // others: {
-                        //   disabled: this.state.existingPatient
-                        // }
-                      }}
-                    />
-                  </div>
+                  <div className="row form-row-gap">{this.renderAction()}</div>
                   <div className="row form-row-gap">
                     <AlgaehDateHandler
                       div={{ className: "col-lg-7" }}
@@ -266,7 +308,7 @@ class RadResultEntry extends Component {
                           valueField: "algaeh_d_app_user_id",
                           data: this.props.radiologyusers
                         },
-                        onChange: examhandle.bind(this, this),
+                        // onChange: examhandle.bind(this, this),
                         others: {
                           disabled: true
                         }
@@ -454,7 +496,7 @@ class RadResultEntry extends Component {
                   <button
                     type="button"
                     className="btn btn-primary"
-                    onClick={onvalidate.bind(this, this)}
+                    onClick={handleExamStatus.bind(this, this, "validate")}
                     disabled={validateDisable}
                   >
                     Validate
