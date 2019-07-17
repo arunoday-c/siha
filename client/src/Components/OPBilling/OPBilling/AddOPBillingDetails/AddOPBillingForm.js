@@ -660,15 +660,7 @@ class AddOPBillingForm extends Component {
                               label={{ fieldName: "discount_amout" }}
                             />
                           ),
-                          displayTemplate: row => {
-                            return (
-                              <span>
-                                {getAmountFormart(row.discount_amout, {
-                                  appendSymbol: false
-                                })}
-                              </span>
-                            );
-                          },
+
                           displayTemplate: row => {
                             return (
                               <AlagehFormGroup

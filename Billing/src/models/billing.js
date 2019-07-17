@@ -1781,7 +1781,10 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                   grnno: servicesDetails.grnno,
                   uom_id: servicesDetails.sales_uom,
                   item_category: servicesDetails.item_category_id,
-                  item_group_id: servicesDetails.item_group_id
+                  item_group_id: servicesDetails.item_group_id,
+                  package_id: servicesDetails.package_id,
+                  package_visit_type: servicesDetails.package_visit_type,
+                  package_type: servicesDetails.package_type
                 }
               );
 

@@ -12,7 +12,7 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
-
+import PackageDetail from "./PackageDetail";
 import {
   serviceTypeHandeler,
   texthandle,
@@ -24,9 +24,11 @@ import {
   updateBillDetail,
   onchangegridcol,
   EditGrid,
-  makeZeroIngrid
-} from "./OrderingServicesHandaler";
-import "./OrderingServices.css";
+  makeZeroIngrid,
+  ClosePackageMaster,
+  ShowPackageMaster
+} from "./OrderingPackagesHandaler";
+import "./OrderingPackages.css";
 import "../../../../styles/site.css";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import { getCookie } from "../../../../utils/algaehApiCall";
@@ -34,7 +36,9 @@ import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 import ButtonType from "../../../Wrapper/algaehButton";
 import _ from "lodash";
-class OrderingServices extends Component {
+import NewPackage from "../../../PackageSetup/NewPackage/NewPackage";
+
+class OrderingPackages extends Component {
   constructor(props) {
     super(props);
 
@@ -74,7 +78,13 @@ class OrderingServices extends Component {
       sub_total_amount: null,
       discount_amount: null,
       net_total: null,
-      addNewService: false
+      addNewService: false,
+      package_detail: [],
+      hims_d_package_header_id: null,
+      package_visit_type: null,
+      package_type: null,
+      isOpenItems: false,
+      isOpen: false
     };
   }
 
@@ -185,6 +195,21 @@ class OrderingServices extends Component {
     }
   }
 
+  ClosePackageDetail(e) {
+    this.setState({
+      isOpenItems: !this.state.isOpenItems,
+      package_detail: []
+    });
+  }
+
+  ShowPackageDetail(row) {
+    debugger;
+    this.setState({
+      isOpenItems: !this.state.isOpenItems,
+      package_detail: row.package_detail
+    });
+  }
+
   onClose = e => {
     this.setState(
       {
@@ -222,7 +247,11 @@ class OrderingServices extends Component {
         sec_company_paybale: null,
         sub_total_amount: null,
         discount_amount: null,
-        net_total: null
+        net_total: null,
+        package_detail: [],
+        hims_d_package_header_id: null,
+        package_visit_type: null,
+        package_type: null
       },
       () => {
         this.props.onClose && this.props.onClose(e);
@@ -274,7 +303,9 @@ class OrderingServices extends Component {
                     covered,
                     pre_approval,
                     service_name,
-                    service_type
+                    service_type,
+                    p_visit_type,
+                    p_type
                   }) => {
                     let properStyle;
                     if (this.state.insured === "Y") {
@@ -296,7 +327,9 @@ class OrderingServices extends Component {
                           <h6 className="title">
                             {_.startCase(_.toLower(service_name))}
                             <span className="service_type">
-                              ({_.startCase(_.toLower(service_type))})
+                              ({_.startCase(_.toLower(service_type))}) (
+                              {_.startCase(_.toLower(p_type))}) (
+                              {_.startCase(_.toLower(p_visit_type))})
                             </span>
                           </h6>
                         </div>
@@ -310,29 +343,10 @@ class OrderingServices extends Component {
                   extraParameters={{
                     insurance_id: insurance_id
                   }}
-                  searchName="insservicemaster"
+                  searchName="inspackagemaster"
                   onClick={serviceHandeler.bind(this, this)}
                   ref={attReg => {
                     this.attReg = attReg;
-                  }}
-                />
-
-                <AlagehAutoComplete
-                  div={{ className: "col" }}
-                  label={{
-                    fieldName: "tst_type"
-                  }}
-                  selector={{
-                    name: "test_type",
-                    className: "select-fld",
-                    value: this.state.test_type,
-                    dataSource: {
-                      textField: "name",
-                      valueField: "value",
-                      data: GlobalVariables.FORMAT_PRIORITY
-                    },
-                    onChange: texthandle.bind(this, this),
-                    autoComplete: "off"
                   }}
                 />
 
@@ -343,9 +357,25 @@ class OrderingServices extends Component {
                     onClick={ProcessService.bind(this, this)}
                     disabled={this.state.addNewService}
                   >
-                    Add New Service
+                    Add Package
                   </button>
                 </div>
+
+                <div className="col">
+                  <button
+                    className="btn btn-primary"
+                    style={{ marginTop: 19 }}
+                    onClick={ShowPackageMaster.bind(this, this)}
+                  >
+                    Create New Package
+                  </button>
+                </div>
+
+                <NewPackage
+                  open={this.state.isOpen}
+                  onClose={ClosePackageMaster.bind(this, this)}
+                  from="doctor"
+                />
               </div>
 
               <div className="row">
@@ -362,6 +392,11 @@ class OrderingServices extends Component {
                               <i
                                 onClick={deleteServices.bind(this, this, row)}
                                 className="fas fa-trash-alt"
+                              />
+
+                              <i
+                                onClick={this.ShowPackageDetail.bind(this, row)}
+                                className="fas fa-eye"
                               />
                             </span>
                           );
@@ -660,7 +695,11 @@ class OrderingServices extends Component {
                   />
                 </div>
               </div>
-
+              <PackageDetail
+                show={this.state.isOpenItems}
+                onClose={this.ClosePackageDetail.bind(this)}
+                package_detail={this.state.package_detail}
+              />
               <div className="row GridTotalDetails">
                 <div className="col-lg-5" style={{ textAlign: "right" }}>
                   <div className="row">
@@ -710,16 +749,6 @@ class OrderingServices extends Component {
                       />
                       <h5>{getAmountFormart(this.state.company_payble)}</h5>
                     </div>
-                    {/* <div className="col">
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "sec_co_payable"
-                        }}
-                      />
-                      <h5>
-                        {getAmountFormart(this.state.sec_company_paybale)}
-                      </h5>
-                    </div> */}
                   </div>
                 </div>
               </div>
@@ -734,7 +763,7 @@ class OrderingServices extends Component {
                         classname="btn-primary"
                         onClick={SaveOrdersServices.bind(this, this)}
                         label={{
-                          forceLabel: "Save Service",
+                          forceLabel: "Order",
                           returnText: true
                         }}
                         others={{ disabled: this.state.saved }}
@@ -785,5 +814,5 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(OrderingServices)
+  )(OrderingPackages)
 );

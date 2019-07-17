@@ -5,16 +5,19 @@ import _ from "lodash";
 
 module.exports = {
   addPackage: (req, res, next) => {
-    const _mysql = new algaehMysql();
+    const _options = req.connection == null ? {} : req.connection;
+
+    const _mysql = new algaehMysql(_options);
     try {
       let input = { ...req.body };
       _mysql
-        .executeQueryWithTransaction({
+        .executeQuery({
           query:
             "INSERT INTO `hims_d_package_header` (`package_code`, `package_name`, `package_amount`,\
           `total_service_amount`, `profit_loss`, `pl_amount`,`package_service_id`, `package_type`,`expiry_days`,\
-          `advance_type`, `advance_amount`, `advance_percentage`, `created_date`, `created_by`, `updated_date`, `updated_by`)\
-         VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+          `advance_type`, `advance_amount`, `advance_percentage`, `package_visit_type`,\
+          `created_date`, `created_by`, `updated_date`, `updated_by`)\
+         VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
           values: [
             input.package_code,
             input.package_name,
@@ -28,6 +31,7 @@ module.exports = {
             input.advance_type,
             input.advance_amount,
             input.advance_percentage,
+            input.package_visit_type,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
@@ -41,7 +45,9 @@ module.exports = {
               "service_type_id",
               "service_id",
               "service_amount",
-              "qty"
+              "qty",
+              "tot_service_amount",
+              "appropriate_amount"
             ];
             _mysql
               .executeQuery({
@@ -61,7 +67,10 @@ module.exports = {
               .then(detailResult => {
                 _mysql.commitTransaction(() => {
                   _mysql.releaseConnection();
-                  req.records = detailResult;
+                  req.records = {
+                    hims_d_package_header_id: headerResult.insertId,
+                    package_service_id: input.package_service_id
+                  };
                   next();
                 });
               })
@@ -99,7 +108,8 @@ module.exports = {
             "select PH.hims_d_package_header_id,PH.package_code, PH.package_name, PH.package_amount,\
             PH.total_service_amount, PH.profit_loss,PH.pl_amount, PH.package_service_id, PH.package_type,\
             PH.expiry_days, PH.advance_type, PH.advance_amount, PH.advance_percentage,\
-            PD.hims_d_package_detail_id,PD.service_type_id,PD.service_id,PD.service_amount,PD.qty \
+            PH.package_visit_type, PD.hims_d_package_detail_id, PD.service_type_id, PD.service_id, \
+            PD.service_amount, PD.qty,PD.tot_service_amount \
             from hims_d_package_header PH, hims_d_package_detail PD where \
             PH.hims_d_package_header_id=PD.package_header_id " +
             _strQry +
@@ -132,7 +142,7 @@ module.exports = {
             "UPDATE `hims_d_package_header` SET `package_code`=?, `package_name`=?, `package_amount`=?,\
           `total_service_amount`=?, `profit_loss`=?, `pl_amount`=?, `package_service_id`=?, \
           `package_type`=?,`expiry_days`=?,`advance_type`=?, `advance_amount`=?, `advance_percentage`=?,\
-          `updated_date`=?, `updated_by`=? \
+          `package_visit_type`=?,`updated_date`=?, `updated_by`=? \
           WHERE record_status='A' and `hims_d_package_header_id`=?",
           values: [
             input.package_code,
@@ -147,6 +157,7 @@ module.exports = {
             input.advance_type,
             input.advance_amount,
             input.advance_percentage,
+            input.package_visit_type,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             input.hims_d_package_header_id
@@ -163,7 +174,9 @@ module.exports = {
                     "service_type_id",
                     "service_id",
                     "service_amount",
-                    "qty"
+                    "qty",
+                    "tot_service_amount",
+                    "appropriate_amount"
                   ];
 
                   _mysql

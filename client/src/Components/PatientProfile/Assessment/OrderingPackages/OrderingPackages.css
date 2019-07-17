@@ -1,0 +1,101 @@
+.hptl-phase1-ordering-services-form {
+  background: #ffff; }
+  .hptl-phase1-ordering-services-form .form-details {
+    padding: 5px;
+    padding-bottom: 5px; }
+  .hptl-phase1-ordering-services-form mark {
+    background: none;
+    color: red; }
+  .hptl-phase1-ordering-services-form .form-group {
+    margin-bottom: 0;
+    margin-top: 4px;
+    padding: 0;
+    padding-top: 20px;
+    cursor: pointer; }
+  .hptl-phase1-ordering-services-form .go-button {
+    cursor: pointer;
+    margin-bottom: -15px;
+    margin-top: -10px; }
+  .hptl-phase1-ordering-services-form #doctorOrder .ReactTable {
+    height: 33vh !important;
+    margin-bottom: 15px; }
+
+#Services_Ordering .ReactTable {
+  height: 54vh !important; }
+
+.GridTotalDetails h5 {
+  margin-top: 0;
+  font-size: 1.3rem; }
+
+.customServiceSearch .yesStyle {
+  background: #fff;
+  color: #000;
+  text-transform: initial; }
+
+.customServiceSearch .noStyle {
+  background: #fff;
+  color: #000;
+  text-transform: initial; }
+
+.customServiceSearch .padd-10 {
+  padding-left: 10px;
+  padding-right: 10px; }
+
+.customServiceSearch .results {
+  max-height: 65vh !important; }
+
+.customServiceSearch .result {
+  padding: 0 !important; }
+
+.customServiceSearch .resultSecStyles {
+  padding: 0.5rem 0 !important;
+  margin: 0; }
+
+.customServiceSearch .title {
+  font-size: 0.9rem; }
+
+.customServiceSearch .service_type {
+  font-size: 0.8rem;
+  margin: 0; }
+
+.customServiceSearch .insCovered,
+.customServiceSearch .insPreApp {
+  font-weight: normal;
+  font-style: italic;
+  font-size: 0.7rem;
+  margin-bottom: 3px;
+  float: right;
+  text-align: right; }
+  .customServiceSearch .insCovered span,
+  .customServiceSearch .insPreApp span {
+    font-weight: bold;
+    font-size: 0.7rem;
+    padding: 0 5px;
+    margin-left: 2px;
+    border-radius: 15px; }
+
+.customServiceSearch .insPreApp {
+  margin-bottom: 0; }
+
+.orange_Y_Y {
+  background: #ffd689; }
+
+.red_N_N {
+  background: #ffa3a3; }
+
+.green_Y_N {
+  background: #c4ffc4; }
+
+.white_N_N {
+  background: white; }
+
+.legendCntr .legendSpan {
+  width: 12px;
+  height: 12px;
+  margin-right: 4px;
+  vertical-align: sub; }
+
+.legendCntr span {
+  display: inline-block; }
+  .legendCntr span b:last-child {
+    margin-right: 5px; }

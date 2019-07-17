@@ -32,6 +32,7 @@ export default function PackageSetupEvent() {
                   advance_type: firstRecordSet.advance_type,
                   advance_amount: firstRecordSet.advance_amount,
                   advance_percentage: firstRecordSet.advance_percentage,
+                  package_visit_type: firstRecordSet.package_visit_type,
 
                   PakageDetail: g.getSource()
                 };
