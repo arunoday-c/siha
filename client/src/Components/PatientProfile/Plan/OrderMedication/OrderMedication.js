@@ -505,6 +505,7 @@ class OrderMedication extends Component {
                           <AlagehFormGroup
                             div={{}}
                             textBox={{
+                              number: { allowNegative: false },
                               value: row.dosage,
                               className: "txt-fld",
                               name: "dosage",
