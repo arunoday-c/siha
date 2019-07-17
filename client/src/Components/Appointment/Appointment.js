@@ -1363,9 +1363,33 @@ class Appointment extends PureComponent {
       return null;
     }
   }
+
   renderStandByMultiple(standByPatients) {
     if (standByPatients !== null && standByPatients !== undefined) {
       const _firstPatient = standByPatients[0];
+      const sel_stat_id =
+        _firstPatient !== undefined ? _firstPatient.appointment_status_id : 0;
+
+      const sel_stat = Enumerable.from(
+        this.state.appointmentStatus !== undefined
+          ? this.state.appointmentStatus
+          : []
+      )
+        .where(w => w.hims_d_appointment_status_id === sel_stat_id)
+        .firstOrDefault();
+
+      let sel_steps = sel_stat !== undefined ? sel_stat.steps : 0;
+
+      const status =
+        sel_stat_id !== null
+          ? Enumerable.from(
+              this.state.appointmentStatus !== undefined
+                ? this.state.appointmentStatus
+                : []
+            )
+              .where(w => w.steps > sel_steps)
+              .toArray()
+          : [];
       if (_firstPatient !== undefined) {
         return (
           <React.Fragment>
@@ -1384,6 +1408,41 @@ class Appointment extends PureComponent {
                 className="fas fa-times"
                 onClick={this.cancelAppt.bind(this, _firstPatient)}
               />
+              <div className="appStatusListCntr">
+                <i className="fas fa-clock" />
+                <ul className="appStatusList">
+                  {status !== undefined
+                    ? status.map((data, index) => (
+                        <li
+                          key={index}
+                          onClick={this.handlePatient.bind(
+                            this,
+                            _firstPatient,
+                            data
+                          )}
+                        >
+                          <span
+                            style={{
+                              backgroundColor: data.color_code
+                            }}
+                          >
+                            {data.statusDesc}
+                          </span>
+                        </li>
+                      ))
+                    : null}
+                  <li
+                    onClick={generateReport.bind(
+                      this,
+                      _firstPatient,
+                      "appointmentSlip",
+                      "Appointment Slip"
+                    )}
+                  >
+                    <span>Print App. Slip</span>
+                  </li>
+                </ul>
+              </div>
             </div>
             {this.loadSubStandBy(standByPatients)}
           </React.Fragment>
