@@ -78,61 +78,42 @@ class LabResult extends Component {
                       }
                     },
                     {
-                      fieldName: "service_name",
-                      label: <AlgaehLabel label={{ forceLabel: "Test" }} />
-                      // displayTemplate: row => {
-                      //   let display =
-                      //     this.props.assservices === undefined
-                      //       ? []
-                      //       : this.props.assservices.filter(
-                      //           f => f.hims_d_services_id === row.service_id
-                      //         );
-                      //
-                      //   return (
-                      //     <span>
-                      //       {display !== null && display.length !== 0
-                      //         ? display[0].service_name
-                      //         : ""}
-                      //     </span>
-                      //   );
-                      // }
-                    },
-                    {
                       fieldName: "status",
                       label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
                       displayTemplate: row => {
-                        return row.status === "O"
-                          ? "Ordered"
-                          : row.status === "S"
-                          ? "Scheduled"
-                          : row.status === "CN"
-                          ? "Cancelled"
-                          : row.status === "CF"
-                          ? "Result Confirmed"
-                          : "Result Available";
+                        return row.status === "O" ? (
+                          <span className="badge badge-light">Ordered</span>
+                        ) : row.status === "S" ? (
+                          <span className="badge badge-secondary">
+                            Scheduled
+                          </span>
+                        ) : row.status === "UP" ? (
+                          <span className="badge badge-warning">
+                            Process On Going
+                          </span>
+                        ) : row.status === "CN" ? (
+                          <span className="badge badge-danger">Cancelled</span>
+                        ) : row.status === "RC" ? (
+                          <span className="badge badge-primary">Confirmed</span>
+                        ) : (
+                          <span className="badge badge-success">Validated</span>
+                        );
+                      },
+                      others: {
+                        maxWidth: 130,
+                        resizable: false,
+                        style: { textAlign: "center" }
                       }
+                    },
+                    {
+                      fieldName: "service_name",
+                      label: <AlgaehLabel label={{ forceLabel: "Test Name" }} />
                     },
                     {
                       fieldName: "refered_name",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Ordered By" }} />
                       )
-                      // displayTemplate: row => {
-                      //   let display =
-                      //     this.props.assdeptanddoctors.doctors === undefined
-                      //       ? []
-                      //       : this.props.assdeptanddoctors.doctors.filter(
-                      //           f => f.employee_id === row.provider_id
-                      //         );
-                      //
-                      //   return (
-                      //     <span>
-                      //       {display !== null && display.length !== 0
-                      //         ? display[0].full_name
-                      //         : ""}
-                      //     </span>
-                      //   );
-                      // }
                     },
                     {
                       fieldName: "ordered_date",

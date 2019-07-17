@@ -64,10 +64,10 @@ class TestAnalytes extends PureComponent {
           {/* <div className="popupHeader">{this.props.HeaderCaption} </div> */}
           <div className="col-lg-12 popupInner">
             <div className="row">
-              <div className="col-lg-3">
+              <div className="col-2">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "patient_code"
+                    forceLabel: "Patient Code"
                   }}
                 />
                 <h6>
@@ -76,10 +76,10 @@ class TestAnalytes extends PureComponent {
                     : "Patient Code"}
                 </h6>
               </div>
-              <div className="col-lg-3">
+              <div className="col">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "full_name"
+                    forceLabel: "Patient Name"
                   }}
                 />
                 <h6>
@@ -88,7 +88,7 @@ class TestAnalytes extends PureComponent {
                     : "Patient Name"}
                 </h6>
               </div>
-              <div className="col-lg-3">
+              <div className="col-2">
                 <AlgaehLabel
                   label={{
                     forceLabel: "Service Code"
@@ -100,10 +100,10 @@ class TestAnalytes extends PureComponent {
                     : "Service Code"}
                 </h6>
               </div>
-              <div className="col-lg-3">
+              <div className="col">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Service Code"
+                    forceLabel: "Service Name"
                   }}
                 />
                 <h6>
@@ -113,13 +113,38 @@ class TestAnalytes extends PureComponent {
                 </h6>
               </div>
             </div>
-            <hr style={{ margin: "0rem" }} />
 
             <div className="row grid-details">
-              <div className="col-lg-12">
+              <div className="col-12" id="LabResultGridCntr">
                 <AlgaehDataGrid
                   id="Lab_Result_grid"
                   columns={[
+                    {
+                      fieldName: "status",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Analyte Status" }} />
+                      ),
+                      displayTemplate: row => {
+                        return row.status === "E" ? (
+                          <span className="badge badge-secondary">
+                            Result Entered
+                          </span>
+                        ) : row.status === "C" ? (
+                          <span className="badge badge-primary">Confirmed</span>
+                        ) : row.status === "V" ? (
+                          <span className="badge badge-success">Validated</span>
+                        ) : (
+                          <span className="badge badge-light">
+                            Result Not Entered
+                          </span>
+                        );
+                      },
+                      others: {
+                        maxWidth: 150,
+                        resizable: false,
+                        style: { textAlign: "center" }
+                      }
+                    },
                     {
                       fieldName: "analyte_id",
                       label: <AlgaehLabel label={{ forceLabel: "Analyte" }} />,
@@ -138,93 +163,151 @@ class TestAnalytes extends PureComponent {
                               : ""}
                           </span>
                         );
+                      },
+                      others: {
+                        minWidth: 250,
+                        resizable: false,
+                        style: { textAlign: "left" }
                       }
                     },
                     {
                       fieldName: "result",
-                      label: <AlgaehLabel label={{ forceLabel: "Result" }} />
+                      label: (
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Result"
+                          }}
+                        />
+                      ),
+                      displayTemplate: row => {
+                        return row.result;
+                      },
+                      others: {
+                        resizable: false,
+                        filterable: false,
+                        style: { textAlign: "center" }
+                      }
                     },
+
                     {
                       fieldName: "result_unit",
-                      label: <AlgaehLabel label={{ forceLabel: "Unit" }} />
+                      label: <AlgaehLabel label={{ forceLabel: "Units" }} />,
+                      others: {
+                        maxWidth: 70,
+                        resizable: false,
+                        filterable: false,
+                        style: { textAlign: "center" }
+                      }
                     },
-                    {
-                      fieldName: "normal_low",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Normal Low" }} />
-                      )
-                    },
-                    {
-                      fieldName: "normal_high",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Normal High" }} />
-                      )
-                    },
-                    {
-                      fieldName: "critical_low",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Critical Low" }} />
-                      )
-                    },
-                    {
-                      fieldName: "critical_high",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Critical High" }} />
-                      )
-                    },
+
                     {
                       fieldName: "critical_type",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Critical Type" }} />
                       ),
                       displayTemplate: row => {
-                        return row.critical_type === "N"
-                          ? "None"
-                          : row.critical_type === "CL"
-                          ? "Critical Low"
-                          : row.critical_type === "CH"
-                          ? "Critical High"
-                          : row.critical_type === "L"
-                          ? "Low"
-                          : row.critical_type === "H"
-                          ? "High"
-                          : null;
+                        return !row.critical_type ? null : row.critical_type ===
+                          "N" ? (
+                          <span className="badge badge-success">Normal</span>
+                        ) : row.critical_type === "CL" ? (
+                          <span className="badge badge-danger">
+                            Critical Low
+                          </span>
+                        ) : row.critical_type === "CH" ? (
+                          <span className="badge badge-danger">
+                            Critical High
+                          </span>
+                        ) : row.critical_type === "L" ? (
+                          <span className="badge badge-warning">Low</span>
+                        ) : (
+                          row.critical_type === "H" && (
+                            <span className="badge badge-warning">High</span>
+                          )
+                        );
                       }
                     },
                     {
-                      fieldName: "run1",
-                      label: <AlgaehLabel label={{ forceLabel: "Run1" }} />
-                    },
-                    {
-                      fieldName: "run2",
-                      label: <AlgaehLabel label={{ forceLabel: "Run2" }} />
-                    },
-                    {
-                      fieldName: "run3",
-                      label: <AlgaehLabel label={{ forceLabel: "Run3" }} />
-                    },
-                    {
-                      fieldName: "status",
+                      fieldName: "normal_low",
                       label: (
-                        <AlgaehLabel label={{ forceLabel: "Analyte Status" }} />
+                        <AlgaehLabel label={{ forceLabel: "Normal Low" }} />
+                      ),
+                      others: {
+                        resizable: false,
+                        filterable: false,
+                        style: { textAlign: "center" }
+                      }
+                    },
+                    {
+                      fieldName: "normal_high",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Normal High" }} />
+                      ),
+                      others: {
+                        resizable: false,
+                        filterable: false,
+                        style: { textAlign: "center" }
+                      }
+                    },
+                    {
+                      fieldName: "critical_low",
+                      label: (
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Critical Low"
+                          }}
+                        />
+                      ),
+                      others: {
+                        resizable: false,
+                        filterable: false,
+                        style: { textAlign: "center" }
+                      }
+                    },
+
+                    {
+                      fieldName: "critical_high",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Critical High" }} />
+                      ),
+                      others: {
+                        resizable: false,
+                        filterable: false,
+                        style: { textAlign: "center" }
+                      }
+                    },
+                    {
+                      fieldName: "remarks",
+                      label: (
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Remarks"
+                          }}
+                        />
                       ),
                       displayTemplate: row => {
-                        return row.status === "E"
-                          ? "Entered"
-                          : row.status === "C"
-                          ? "Confirmed"
-                          : row.status === "V"
-                          ? "Validated"
-                          : "Not Entered";
+                        return row.remarks;
+                      },
+                      others: {
+                        minWidth: 250,
+                        resizable: false,
+                        filterable: false
                       }
                     }
                   ]}
                   keyId="patient_code"
+                  filter="true"
                   dataSource={{
                     data: this.props.inputsparameters.test_analytes
                   }}
-                  paging={{ page: 0, rowsPerPage: 10 }}
+                  paging={{ page: 0, rowsPerPage: 30 }}
                 />
+
+                {/* keyId="patient_code"
+                  filter="true"
+                  dataSource={{
+                  data: this.props.inputsparameters.test_analytes
+                }}
+                paging={{ page: 0, rowsPerPage: 20 }} */}
               </div>
             </div>
           </div>

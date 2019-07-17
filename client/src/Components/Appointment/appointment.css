@@ -1,5 +1,8 @@
 .appoPopupWidth .algaeh-modal {
-  width: 40vw; }
+  width: 65vw; }
+
+.reScPopupWidth .algaeh-modal {
+  width: 45vw; }
 
 .appointment .appointment-outer-cntr {
   overflow-x: auto;
