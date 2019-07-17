@@ -510,7 +510,7 @@ class RadScheduledList extends Component {
                           : this.state.radtestlist
                     }}
                     noDataText="No data available for selected period"
-                    filter="true"
+                    filter={true}
                     paging={{ page: 0, rowsPerPage: 20 }}
                   />
                 </div>

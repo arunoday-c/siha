@@ -295,7 +295,7 @@ class TestAnalytes extends PureComponent {
                     }
                   ]}
                   keyId="patient_code"
-                  filter="true"
+                  filter={true}
                   dataSource={{
                     data: this.props.inputsparameters.test_analytes
                   }}
@@ -303,7 +303,7 @@ class TestAnalytes extends PureComponent {
                 />
 
                 {/* keyId="patient_code"
-                  filter="true"
+                  
                   dataSource={{
                   data: this.props.inputsparameters.test_analytes
                 }}

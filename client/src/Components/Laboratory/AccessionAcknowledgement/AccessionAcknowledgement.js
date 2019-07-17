@@ -518,7 +518,7 @@ class AccessionAcknowledgement extends Component {
                         .where(w => w.status !== "O")
                         .toArray()
                     }}
-                    filter="true"
+                    filter={true}
                     noDataText="No data available for selected period"
                     paging={{ page: 0, rowsPerPage: 20 }}
                   />

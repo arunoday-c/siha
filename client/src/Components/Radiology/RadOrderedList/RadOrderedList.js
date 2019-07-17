@@ -474,7 +474,7 @@ class RadOrderedList extends Component {
                     //     ? "underProcessClass"
                     //     : null;
                     // }}
-                    filter="true"
+                    filter={true}
                     noDataText="No data available for selected period"
                     paging={{ page: 0, rowsPerPage: 20 }}
                   />

@@ -500,7 +500,7 @@ class SampleCollection extends Component {
                     dataSource={{
                       data: this.state.sample_collection
                     }}
-                    filter="true"
+                    filter={true}
                     noDataText="No data available for selected period"
                     paging={{ page: 0, rowsPerPage: 20 }}
                   />

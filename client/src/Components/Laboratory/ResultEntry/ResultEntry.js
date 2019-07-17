@@ -741,14 +741,14 @@ class ResultEntry extends Component {
                             );
                           },
                           others: {
+                            filterable: false,
                             minWidth: 250,
-                            resizable: false,
-                            filterable: false
+                            resizable: false
                           }
                         }
                       ]}
                       keyId="patient_code"
-                      filter="true"
+                      filter={true}
                       dataSource={{
                         data: this.state.test_analytes
                       }}
