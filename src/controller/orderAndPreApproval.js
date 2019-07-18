@@ -18,7 +18,8 @@ import {
   getVisitConsumable,
   load_orders_for_bill,
   insertInvOrderedServices,
-  addPackage
+  addPackage,
+  getPatientPackage
 } from "../model/orderAndPreApproval";
 import { insertRadOrderedServices } from "../model/radiology";
 import { insertLadOrderedServices } from "../model/laboratory";
@@ -242,6 +243,19 @@ export default ({ config, db }) => {
     }
   });
   api.post("/addPackage", addPackage, (req, res, next) => {
+    if (req.records.invalid_input == true) {
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: req.records
+      });
+    } else {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  });
+  api.get("/getPatientPackage", getPatientPackage, (req, res, next) => {
     if (req.records.invalid_input == true) {
       res.status(httpStatus.ok).json({
         success: false,

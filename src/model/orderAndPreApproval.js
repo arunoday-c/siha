@@ -1512,6 +1512,82 @@ let addPackage = (req, res, next) => {
     next(e);
   }
 };
+//created by:irfan
+let getPatientPackage = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  try {
+    if (req.query.patient_id > 0) {
+      let str = "";
+      if (req.query.visit_id > 0) {
+        str += ` and H.visit_id=${req.query.visit_id} `;
+      }
+      if (req.query.package_type == "S" || req.query.package_type == "D") {
+        str += ` and H.package_type='${req.query.package_type}' `;
+      }
+      if (
+        req.query.package_visit_type == "S" ||
+        req.query.package_visit_type == "M"
+      ) {
+        str += ` and H.package_visit_type='${req.query.package_visit_type}' `;
+      }
+
+      _mysql
+        .executeQuery({
+          query: `select hims_f_package_header_id,package_id,patient_id,visit_id,doctor_id,service_type_id,services_id,insurance_yesno,insurance_provider_id,\
+          insurance_sub_id,network_id,insurance_network_office_id,policy_number,pre_approval,apprv_status,billed\
+          ,quantity,unit_cost,gross_amount,discount_amout,discount_percentage,net_amout,copay_percentage,copay_amount,\
+          deductable_amount,deductable_percentage,tax_inclusive,patient_tax,company_tax,total_tax,patient_resp,\
+          patient_payable,comapany_resp,company_payble,sec_company,sec_deductable_percentage,sec_deductable_amount,\
+          sec_company_res,sec_company_tax,sec_company_paybale,sec_copay_percntage,sec_copay_amount,advance_amount,\
+          balance_amount,actual_amount,utilize_amount,closed,closed_type,closed_remarks,package_type,package_visit_type,\
+          hospital_id from hims_f_package_header H where closed='N' and  record_status='A'\
+          and hospital_id=? and patient_id=? ${str};
+          select D.* from hims_f_package_header H  inner join hims_f_package_detail D\
+          on H.hims_f_package_header_id=D.package_header_id where H.closed='N' and  H.record_status='A'\
+          and H.hospital_id=? and H.patient_id=?;  `,
+          values: [
+            req.userIdentity.hospital_id,
+            req.query.patient_id,
+            req.userIdentity.hospital_id,
+            req.query.patient_id
+          ],
+          printQuery: true
+        })
+        .then(result => {
+          let header = result[0];
+          let details = result[1];
+          const outputArray = [];
+          header.forEach(item => {
+            const package_details = details.filter(detail => {
+              return (
+                detail["package_header_id"] == item["hims_f_package_header_id"]
+              );
+            });
+
+            outputArray.push({ ...item, package_details });
+          });
+
+          req.records = outputArray;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "Please provide patient details"
+      };
+      next();
+      return;
+    }
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+
 module.exports = {
   insertOrderedServices,
   getPreAprovalList,
@@ -1527,5 +1603,6 @@ module.exports = {
   getVisitConsumable,
   insertInvOrderedServices,
   load_orders_for_bill,
-  addPackage
+  addPackage,
+  getPatientPackage
 };
