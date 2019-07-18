@@ -3,6 +3,8 @@
 
 .reScPopupWidth .algaeh-modal {
   width: 45vw; }
+  .reScPopupWidth .algaeh-modal .popRightDiv {
+    min-height: 50vh; }
 
 .appointment .appointment-outer-cntr {
   overflow-x: auto;
