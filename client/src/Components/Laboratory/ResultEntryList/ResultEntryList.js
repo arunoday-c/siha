@@ -3,14 +3,11 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import Enumerable from "linq";
-import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 
 import "./ResultEntryList.css";
 import "./../../../styles/site.css";
 
 import {
-  texthandle,
-  PatientSearch,
   datehandle,
   getSampleCollectionDetails,
   ResultEntryModel,
@@ -21,15 +18,8 @@ import {
 import {
   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehFormGroup,
-  AlagehAutoComplete,
   AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
-
-import {
-  FORMAT_PRIORITY,
-  FORMAT_TEST_STATUS
-} from "../../../utils/GlobalVariables.json";
 
 import { AlgaehActions } from "../../../actions/algaehActions";
 import moment from "moment";
@@ -79,8 +69,6 @@ class ResultEntryList extends Component {
   }
 
   render() {
-    let _Ordered = [];
-
     let _Collected = [];
 
     let _Confirmed = [];
@@ -88,9 +76,9 @@ class ResultEntryList extends Component {
 
     let _Cancelled = [];
     if (this.state.sample_collection !== undefined) {
-      _Ordered = _.filter(this.state.sample_collection, f => {
-        return f.status === "O";
-      });
+      // _Ordered = _.filter(this.state.sample_collection, f => {
+      //   return f.status === "O";
+      // });
 
       _Collected = _.filter(this.state.sample_collection, f => {
         return f.status === "CL";
@@ -366,9 +354,9 @@ class ResultEntryList extends Component {
                           );
                         },
                         others: {
+                          filterable: false,
                           maxWidth: 70,
                           resizable: false,
-                          filterable: false,
                           style: { textAlign: "center" }
                         }
                       },
@@ -535,7 +523,7 @@ class ResultEntryList extends Component {
                         .toArray()
                       // data: this.state.sample_collection
                     }}
-                    filter="true"
+                    filter={true}
                     noDataText="No data available for selected period"
                     paging={{ page: 0, rowsPerPage: 20 }}
                   />

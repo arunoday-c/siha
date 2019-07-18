@@ -61,14 +61,12 @@ class OrderedList extends PureComponent {
   }
 
   ShowConsumableModel() {
-    
     algaehApiCall({
       uri: "/department/get/subdepartment",
       method: "GET",
       module: "masterSettings",
       onSuccess: response => {
         if (response.data.success === true) {
-          
           const Departmant_Location = _.filter(response.data.records, f => {
             return (
               f.hims_d_sub_department_id ===
@@ -249,6 +247,7 @@ class OrderedList extends PureComponent {
   }
 
   render() {
+    debugger;
     const openData = this.props.openData;
     let patient_date =
       this.props.patient_profile !== undefined
@@ -390,20 +389,7 @@ class OrderedList extends PureComponent {
                         },
                         disabled: true
                       },
-                      {
-                        fieldName: "item_notchargable",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Chargable/Not" }}
-                          />
-                        ),
-                        displayTemplate: row => {
-                          return row.item_notchargable === "Y"
-                            ? "Chargable"
-                            : "No";
-                        },
-                        disabled: true
-                      },
+
                       {
                         fieldName: "insurance_yesno",
                         label: (
@@ -587,6 +573,16 @@ class OrderedList extends PureComponent {
                         others: {
                           minWidth: 200,
                           maxWidth: 400
+                        },
+                        disabled: true
+                      },
+                      {
+                        fieldName: "item_notchargable",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Chargable" }} />
+                        ),
+                        displayTemplate: row => {
+                          return row.item_notchargable === "Y" ? "Yes" : "No";
                         },
                         disabled: true
                       },

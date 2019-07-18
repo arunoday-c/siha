@@ -143,21 +143,6 @@ class MRDList extends Component {
               }}
               value={this.state.to_date}
             />
-
-            <div className="col-lg-1">
-              <button
-                style={{
-                  cursor: "pointer",
-                  fontSize: " 1.4rem",
-                  margin: " 24px 0 0",
-                  padding: 0,
-                  background: "none",
-                  border: "none"
-                }}
-                type="submit"
-                className="fas fa-search fa-2x"
-              />
-            </div>
           </div>
         </div>
         <div className="portlet portlet-bordered margin-top-15">

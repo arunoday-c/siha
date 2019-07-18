@@ -25,6 +25,30 @@ export default class AuthorizationSetup extends Component {
     this.getOptions();
   }
 
+  clearState = () => {
+    this.setState({
+      auth_type: null,
+      no_employees: "ALL",
+      no_auths: 0,
+      options: {},
+      employee_list: [],
+      employee_id: null,
+      sub_department_id: null,
+      level_1: null,
+      level_2: null,
+      level_3: null,
+      level_4: null,
+      level_5: null,
+      level_1_employee: null,
+      level_2_employee: null,
+      level_3_employee: null,
+      level_4_employee: null,
+      level_5_employee: null,
+      selected_auth_type: null,
+      selected_dept: null
+    });
+  };
+
   getOptions() {
     algaehApiCall({
       uri: "/payrollOptions/getHrmsOptions",
@@ -32,9 +56,7 @@ export default class AuthorizationSetup extends Component {
       module: "hrManagement",
       onSuccess: res => {
         if (res.data.success) {
-          this.setState({ options: res.data.result[0] }, () => {
-            console.log("Options:", this.state.options);
-          });
+          this.setState({ options: res.data.result[0] });
         }
       },
       onFailure: err => {
@@ -155,7 +177,11 @@ export default class AuthorizationSetup extends Component {
                 cursor: "pointer"
               }}
               name={"level_" + data}
-              onClick={this.employeeSearch.bind(this, "N")}
+              onClick={this.employeeSearch.bind(
+                this,
+                "N",
+                this.setAuthLevelEmployees
+              )}
             />
           </div>
         </div>
@@ -163,7 +189,22 @@ export default class AuthorizationSetup extends Component {
     ));
   }
 
-  employeeSearch(employee, e) {
+  setAuthLevelEmployees = (row, level) => {
+    this.setState({
+      [level]: row.algaeh_d_app_user_id,
+      [level + "_employee"]: row.full_name
+    });
+  };
+
+  selectEmployee = row => {
+    this.setState({
+      employee_id: row.hims_d_employee_id,
+      full_name: row.full_name,
+      employee_code: row.employee_code
+    });
+  };
+
+  employeeSearch(employee, selectCallBack, e) {
     if (this.state.auth_type === null || this.state.auth_type === undefined) {
       swalMessage({
         title: "Please Select an Auth Type",
@@ -178,29 +219,21 @@ export default class AuthorizationSetup extends Component {
         type: "warning"
       });
     } else {
+      const isEmployee = employee === "Y";
       const _element_level = e.currentTarget.getAttribute("name");
       AlgaehSearch({
         searchGrid: {
           columns: Employee
         },
-        searchName: "users",
+        searchName: isEmployee ? "employee" : "users",
         uri: "/gloabelSearch/get",
-        inputs:
-          employee == "Y"
-            ? " E.sub_department_id=" + this.state.sub_department_id
-            : null,
+        inputs: isEmployee
+          ? " sub_department_id=" + this.state.sub_department_id
+          : null,
         onContainsChange: (text, serchBy, callBack) => {
           callBack(text);
         },
-        onRowSelect: row => {
-          this.setState(
-            {
-              [_element_level]: row.algaeh_d_app_user_id,
-              [_element_level + "_employee"]: row.full_name
-            },
-            () => {}
-          );
-        }
+        onRowSelect: row => selectCallBack(row, _element_level)
       });
     }
   }
@@ -213,7 +246,7 @@ export default class AuthorizationSetup extends Component {
   assignAuthLevels() {
     let send_data = {
       no_employees: this.state.no_employees,
-      employee_id: this.state.hims_d_employee_id,
+      employee_id: this.state.employee_id,
       sub_dept_id: this.state.sub_department_id,
       auth_type: this.state.auth_type,
       no_auths: this.state.no_auths,
@@ -325,11 +358,9 @@ export default class AuthorizationSetup extends Component {
                 }}
               >
                 <div className="col">
-                  <AlgaehLabel label={{ forceLabel: "Select a Employee." }} />
+                  <AlgaehLabel label={{ forceLabel: "Select an Employee" }} />
                   <h6>
-                    {this.state.selected_dept
-                      ? this.state.selected_dept
-                      : "------"}
+                    {this.state.full_name ? this.state.full_name : "------"}
                   </h6>
                 </div>
                 <div
@@ -343,23 +374,16 @@ export default class AuthorizationSetup extends Component {
                       paddingLeft: 3,
                       cursor: "pointer"
                     }}
-                    onClick={this.employeeSearch.bind(this, "Y")}
+                    onClick={this.employeeSearch.bind(
+                      this,
+                      "Y",
+                      this.selectEmployee
+                    )}
                   />
                 </div>
               </div>
             </div>
           ) : null}
-          {/* Select EMployee ENd here */}
-          {/*
-          <div className="col">
-            <button
-              type="button"
-              className="btn btn-primary"
-              style={{ marginTop: 21 }}
-            >
-              Load
-            </button>
-          </div> */}
         </div>
         <div className="row">
           {/* row starts here*/}
@@ -383,9 +407,9 @@ export default class AuthorizationSetup extends Component {
                 </div>
                 <div className="row employeeListUL">
                   <ul className="reqTransList">
-                    {this.state.employee_list.map((employee, index) => {
+                    {this.state.employee_list.map(employee => {
                       return (
-                        <li>
+                        <li key={employee.hims_d_employee_id}>
                           <div className="itemReq">
                             <h6>{employee.full_name}</h6>
                             <span>
@@ -445,7 +469,7 @@ export default class AuthorizationSetup extends Component {
                             <h6>
                               {this.state.no_employees === "ALL"
                                 ? "ALL"
-                                : "NAME"}
+                                : this.state.full_name || null}
                             </h6>
                           </div>
                           <div className="col margin-top-15">
@@ -459,6 +483,7 @@ export default class AuthorizationSetup extends Component {
                             <button
                               className="btn btn-default"
                               style={{ float: "right", marginLeft: 5 }}
+                              onClick={this.clearState}
                             >
                               Clear
                             </button>

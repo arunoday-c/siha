@@ -97,7 +97,7 @@ class DietAdvice extends Component {
         <div className="row" style={{ paddingBottom: "10px" }}>
           <div className="col-lg-12">
             <AlgaehDataGrid
-              id="Lab_Result_grid"
+              id="dietAdviceGrid"
               columns={[
                 {
                   fieldName: "action",
@@ -112,6 +112,10 @@ class DietAdvice extends Component {
                         />
                       </span>
                     );
+                  },
+                  others: {
+                    minWidth: 50,
+                    style: { textAlign: "center" }
                   }
                 },
                 {

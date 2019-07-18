@@ -46,7 +46,7 @@ export function generateLabResultReport(data) {
       myWindow.document.write(
         "<iframe src= '" + url + "' width='100%' height='100%' />"
       );
-      myWindow.document.title = "Hematology Test Report";
+      myWindow.document.title = "Lab Test Report";
     }
   });
 }
