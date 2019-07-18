@@ -452,7 +452,28 @@ class LeaveMaster extends Component {
       pageDisplay: "Leave",
       leaveDetails: [],
       leaveEncash: [],
-      leaveRules: []
+      leaveRules: [],
+      leave_code: "",
+      leave_description: "",
+      annual_maternity_leave: null,
+      include_weekoff: "",
+      include_holiday: "",
+      leave_mode: null,
+      leave_status: "",
+      leave_accrual: "",
+      leave_encash: "",
+      leave_type: null,
+      leave_category: null,
+      calculation_type: null,
+      encashment_percentage: "",
+      leave_carry_forward: "",
+      carry_forward_percentage: "",
+      religion_required: "",
+      religion_id: null,
+      holiday_reimbursement: "",
+      exit_permit_required: "",
+      proportionate_leave: "",
+      document_mandatory: ""
     });
   }
 
