@@ -33,7 +33,8 @@ const compile = async function(templateName, data) {
     //
     return comp;
   } catch (error) {
-    return "";
+    console.log("compile -data -", data);
+    return {};
   }
 
   // return "رقم الفاتورة";
@@ -299,6 +300,8 @@ module.exports = {
                 );
                 if (_params != undefined) {
                   _value.push(_params.value);
+                } else {
+                  _value.push(null);
                 }
                 if (_inputOrders[i] == "login_branch") {
                   _value.push(req.userIdentity["hospital_id"]);
@@ -588,6 +591,8 @@ module.exports = {
                     );
                     if (_params != undefined) {
                       _value.push(_params.value);
+                    } else {
+                      _value.push(null);
                     }
                   }
                   const _myquery = _mysql.mysqlQueryFormat(
@@ -962,10 +967,14 @@ module.exports = {
                   _inputParam.reportParams,
                   f => f.name == _inputOrders[i]
                 );
+
                 if (_params != undefined) {
                   _value.push(_params.value);
+                } else {
+                  _value.push(null);
                 }
               }
+
               let queryObject = {
                 query: _data.report_query,
                 values: _value,
@@ -1001,7 +1010,7 @@ module.exports = {
                       _data.report_header_file_name != null &&
                       _data.report_header_file_name != ""
                     ) {
-                      const _header = await compile(
+                      const _headerTemp = await compile(
                         _data.report_header_file_name,
                         {
                           reqHeader: _header,
@@ -1010,7 +1019,7 @@ module.exports = {
                           report_name_for_header: _data.report_name_for_header
                         }
                       );
-                      _pdfTemplating["headerTemplate"] = _header;
+                      _pdfTemplating["headerTemplate"] = _headerTemp;
                       _pdfTemplating["margin"] = {
                         top: "150px"
                       };
