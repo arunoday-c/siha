@@ -340,23 +340,6 @@ function LeaveEntitlement(props) {
             </label>
           </div>
         </div>
-        <div className="col  form-group">
-          <label>Exit Permit Required</label>
-          <div className="customCheckbox">
-            <label className="checkbox inline">
-              <input
-                type="checkbox"
-                name="exit_permit_required"
-                checked={
-                  myParent.state.exit_permit_required === "Y" ||
-                  myParent.state.exit_permit_required === true
-                }
-                onChange={e => myParent.changeChecks(e)}
-              />
-              <span>Yes</span>
-            </label>
-          </div>
-        </div>
         {/* 
         <div className="col form-group">
           <label>Allow Round off</label>
