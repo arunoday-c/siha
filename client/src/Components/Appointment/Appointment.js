@@ -50,42 +50,26 @@ class Appointment extends PureComponent {
     this.getDoctorsAndDepts();
     this.getAppointmentStatus();
     this.getTitles();
+  }
 
-    let x = JSON.parse(localStorage.getItem("ApptCriteria"));
-
-    // if (x !== undefined && x !== null) {
-    //   this.setState(
-    //     {
-    //       sub_department_id: x.sub_dept_id,
-    //       provider_id: x.provider_id,
-    //       activeDateHeader: x.schedule_date,
-    //       doctors: x.doctors,
-    //       byPassValidation: true
-    //     },
-    //     () => {
-    //       this.getAppointmentSchedule();
-    //     }
-    //   );
-    // }
-
-    if (x !== undefined && x !== null) {
-      this.setState(
-        {
-          sub_department_id: x.sub_dept_id,
-          provider_id: x.provider_id,
-          activeDateHeader: x.schedule_date,
-          doctors: x.doctors,
-          byPassValidation: true
-        },
-        () => {
-          if (this.props.fromRegistration) {
-            if (this.props.visitCreated) {
-              this.clearSaveState();
-            }
-            this.getAppointmentSchedule();
-          }
-        }
-      );
+  restoreOldState() {
+    if (this.props.fromRegistration) {
+      let x = JSON.parse(localStorage.getItem("ApptCriteria"));
+      if (this.props.visitCreated) {
+        this.clearSaveState();
+      }
+      if (x !== undefined && x !== null) {
+        this.setState(
+          {
+            sub_department_id: x.sub_dept_id,
+            provider_id: x.provider_id,
+            activeDateHeader: x.schedule_date,
+            doctors: x.doctors,
+            byPassValidation: true
+          },
+          () => this.getAppointmentSchedule()
+        );
+      }
     }
   }
 
@@ -146,11 +130,6 @@ class Appointment extends PureComponent {
             },
             onFailure: error => {}
           });
-        } else {
-          swalMessage({
-            title: "Not cancelled",
-            type: "error"
-          });
         }
       });
     }
@@ -205,6 +184,7 @@ class Appointment extends PureComponent {
       onRowSelect: row => {
         // console.log("Selected Row:", row);
         this.setState({
+          fromSearch: true,
           patient_code: row.patient_code,
           patient_id: row.hims_d_patient_id,
           patient_name: row.full_name,
@@ -355,9 +335,12 @@ class Appointment extends PureComponent {
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {
-          this.setState({
-            departments: response.data.records.departmets
-          });
+          this.setState(
+            {
+              departments: response.data.records.departmets
+            },
+            () => this.restoreOldState()
+          );
         }
       },
       onFailure: error => {
@@ -755,13 +738,10 @@ class Appointment extends PureComponent {
     }
   }
 
-  handleCheckIn(patient, data) {
+  handleCheckIn(patient) {
     setGlobal({
       "FD-STD": "RegistrationPatient"
     });
-    if (patient.is_stand_by === "Y") {
-      patient.patient_code = this.state.patient_code;
-    }
     // for new patient who are not yet registered
     if (!patient.patient_code) {
       patient.patient_age = patient.age;
@@ -963,11 +943,6 @@ class Appointment extends PureComponent {
                 });
               }
             }
-          } else {
-            swalMessage({
-              title: "Not cancelled",
-              type: "error"
-            });
           }
         });
       }
@@ -1338,12 +1313,20 @@ class Appointment extends PureComponent {
               {_otherPatients.map((item, index) => {
                 return (
                   <li key={index}>
-                    <p onClick={this.openEditModal.bind(this, item, null)}>
-                      {item.patient_name}
-                    </p>
+                    <p>{item.patient_name}</p>
                     <span>
-                      <i className="fas fa-check" />
-                      <i className="fas fa-clock" />
+                      <i
+                        className="fas fa-check"
+                        onClick={this.handlePatient.bind(this, item, {
+                          hims_d_appointment_status_id: this.state.checkInId
+                        })}
+                      />
+                      <i
+                        className="fas fa-clock"
+                        onClick={this.handlePatient.bind(this, item, {
+                          hims_d_appointment_status_id: this.state.RescheduleId
+                        })}
+                      />
                       <i
                         className="fas fa-times"
                         onClick={this.cancelAppt.bind(this, item)}
@@ -1362,30 +1345,100 @@ class Appointment extends PureComponent {
       return null;
     }
   }
+
   renderStandByMultiple(standByPatients) {
     if (standByPatients !== null && standByPatients !== undefined) {
       const _firstPatient = standByPatients[0];
+      const sel_stat_id =
+        _firstPatient !== undefined ? _firstPatient.appointment_status_id : 0;
+
+      const sel_stat = Enumerable.from(
+        this.state.appointmentStatus !== undefined
+          ? this.state.appointmentStatus
+          : []
+      )
+        .where(w => w.hims_d_appointment_status_id === sel_stat_id)
+        .firstOrDefault();
+
+      let sel_steps = sel_stat !== undefined ? sel_stat.steps : 0;
+
+      const status =
+        sel_stat_id !== null
+          ? Enumerable.from(
+              this.state.appointmentStatus !== undefined
+                ? this.state.appointmentStatus
+                : []
+            )
+              .where(w => w.steps > sel_steps)
+              .toArray()
+          : [];
       if (_firstPatient !== undefined) {
         return (
           <React.Fragment>
-            <div
-              appt-pat={JSON.stringify(_firstPatient)}
-              className="dynPatient"
-              style={{ background: "#f2f2f2" }}
-            >
-              <span
-                onClick={this.openEditModal.bind(this, _firstPatient, null)}
+            {_firstPatient.appointment_status_id === this.state.noShowId ? (
+              <div
+                className="dynPatient"
+                style={{ background: "#f2f2f2" }}
+                draggable={false}
               >
-                {_firstPatient.patient_name}
-                <br />
-                {_firstPatient.contact_number}
-              </span>
+                <span>
+                  {_firstPatient.patient_name} <br />
+                  {_firstPatient.contact_number}
+                </span>
+              </div>
+            ) : (
+              <div
+                appt-pat={JSON.stringify(_firstPatient)}
+                className="dynPatient"
+                style={{ background: "#f2f2f2" }}
+              >
+                <span>
+                  {_firstPatient.patient_name}
+                  <br />
+                  {_firstPatient.contact_number}
+                </span>
 
-              <i
-                className="fas fa-times"
-                onClick={this.cancelAppt.bind(this, _firstPatient)}
-              />
-            </div>
+                <i
+                  className="fas fa-times"
+                  onClick={this.cancelAppt.bind(this, _firstPatient)}
+                />
+                <div className="appStatusListCntr">
+                  <i className="fas fa-clock" />
+                  <ul className="appStatusList">
+                    {status !== undefined
+                      ? status.map((data, index) => (
+                          <li
+                            key={index}
+                            onClick={this.handlePatient.bind(
+                              this,
+                              _firstPatient,
+                              data
+                            )}
+                          >
+                            <span
+                              style={{
+                                backgroundColor: data.color_code
+                              }}
+                            >
+                              {data.statusDesc}
+                            </span>
+                          </li>
+                        ))
+                      : null}
+                    <li
+                      onClick={generateReport.bind(
+                        this,
+                        _firstPatient,
+                        "appointmentSlip",
+                        "Appointment Slip"
+                      )}
+                    >
+                      <span>Print App. Slip</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            )}
             {this.loadSubStandBy(standByPatients)}
           </React.Fragment>
         );

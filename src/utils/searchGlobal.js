@@ -571,6 +571,13 @@ let algaehSearchConfig = (searchName, req) => {
         orderBy: "IM.hims_d_inventory_item_master_id desc"
       },
       {
+        searchName: "servicepackagemas",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS * from hims_d_services S, hims_d_service_type ST where \
+          S.service_type_id = ST.hims_d_service_type_id and service_type_id in (1,2,4,5,11,12)",
+        orderBy: "hims_d_services_id desc"
+      },
+      {
         searchName: "insservicemaster",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS service_name,service_type_id,hims_d_services_id,'N' as covered,'N' as pre_approval, IT.service_type\
@@ -592,7 +599,8 @@ let algaehSearchConfig = (searchName, req) => {
           "select SQL_CALC_FOUND_ROWS service_name,service_type_id,hims_d_services_id,'N' as covered,\
             'N' as pre_approval, IT.service_type, PH.package_visit_type,PH.package_type,PH.hims_d_package_header_id,\
             CASE WHEN PH.package_visit_type='S' THEN 'Single Visit' else 'Multi Visit' END as p_visit_type,\
-            CASE WHEN PH.package_type='S' THEN 'Static' else 'Dynamic' END as p_type\
+            CASE WHEN PH.package_type='S' THEN 'Static' else 'Dynamic' END as p_type,\
+            PH.expiry_days,PH.validated_date,PH.total_service_amount\
             from hims_d_services as S,hims_d_service_type as IT, hims_d_package_header as PH \
             where hims_d_services_id not in\
             (SELECT services_id FROM hims_d_services_insurance as I,hims_d_service_type as T where  \
@@ -604,7 +612,8 @@ let algaehSearchConfig = (searchName, req) => {
             SELECT service_name,service_type_id,services_id as hims_d_services_id, covered,pre_approval, \
             T.service_type, PH.package_visit_type,PH.package_type,PH.hims_d_package_header_id,\
             CASE WHEN PH.package_visit_type='S' THEN 'Single Visit' else 'Multi Visit' END as p_visit_type,\
-            CASE WHEN PH.package_type='S' THEN 'Static' else 'Dynamic' END as p_type\
+            CASE WHEN PH.package_type='S' THEN 'Static' else 'Dynamic' END as p_type,\
+            PH.expiry_days,PH.validated_date,PH.total_service_amount\
             FROM hims_d_services_insurance as I,hims_d_service_type as T, hims_d_package_header as PH where  insurance_id=? and {mapper}  and I.service_type_id = T.hims_d_service_type_id \
             and PH.package_service_id = I.services_id and PH.package_status = 'A'\
             and I.service_type_id in (14)",

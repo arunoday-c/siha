@@ -19,34 +19,24 @@ const keyPath = require("algaeh-keys/keys");
 
 //created by irfan: check pre-aproval status and get PreAproval List
 let getPreAprovalList = (req, res, next) => {
-  let preAprovalWhere = {
-    service_id: "ALL"
-    // doctor_id: "ALL",
-    // patient_id: "ALL"
-  };
-
+  const _mysql = new algaehMysql({ path: keyPath });
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
+    let _stringData = "";
+
+    if (req.query.created_date != null) {
+      _stringData +=
+        " and date(SA.created_date) between date('" +
+        req.query.created_date +
+        "') AND date('" +
+        req.query.to_date +
+        "')";
+    } else {
+      _stringData += " and date(SA.created_date) <= date(now())";
     }
-    let db = req.db;
-
-    req.query["date(SA.created_date)"] = req.query.created_date;
-    req.query["SA.doctor_id"] = req.query.doctor_id;
-    req.query["SA.patient_id"] = req.query.patient_id;
-    delete req.query.created_date;
-    delete req.query.doctor_id;
-    delete req.query.patient_id;
-
-    let where = whereCondition(extend(preAprovalWhere, req.query));
-
-    debugLog("where conditn:", where);
-    db.getConnection((error, connection) => {
-      if (error) {
-        next(error);
-      }
-      db.query(
-        "SELECT hims_f_service_approval_id,ordered_services_id,insurance_provider_id,network_id,\
+    _mysql
+      .executeQuery({
+        query:
+          "SELECT hims_f_service_approval_id,ordered_services_id,insurance_provider_id,network_id,\
         insurance_network_office_id,valid_upto,\
         service_id,SR.service_code, icd_code, requested_date, requested_by, requested_mode,\
         requested_quantity, submission_type, insurance_service_name, SA.doctor_id, SA.patient_id,visit_id,\
@@ -59,69 +49,109 @@ let getPreAprovalList = (req, res, next) => {
         inner join hims_f_patient_visit V on V.hims_f_patient_visit_id=SA.visit_id \
         inner join hims_m_patient_insurance_mapping PI on PI.patient_visit_id=SA.visit_id \
         inner join hims_d_sub_department SD on SD.hims_d_sub_department_id=V.sub_department_id) \
-        WHERE SA.record_status='A' AND " +
-          where.condition,
-        where.values,
-
-        (error, result) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-
-          req.records = result;
-          next();
-        }
-      );
-    });
+        WHERE SA.record_status='A' " +
+          _stringData,
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
+  // try {
+  //   if (req.db == null) {
+  //     next(httpStatus.dataBaseNotInitilizedError());
+  //   }
+  //   let db = req.db;
+  //
+  //   req.query["date(SA.created_date)"] = req.query.created_date;
+  //   req.query["SA.doctor_id"] = req.query.doctor_id;
+  //   req.query["SA.patient_id"] = req.query.patient_id;
+  //   delete req.query.created_date;
+  //   delete req.query.doctor_id;
+  //   delete req.query.patient_id;
+  //
+  //   let where = whereCondition(extend(preAprovalWhere, req.query));
+  //
+  //   debugLog("where conditn:", where);
+  //   db.getConnection((error, connection) => {
+  //     if (error) {
+  //       next(error);
+  //     }
+  //     db.query(
+  //       "SELECT hims_f_service_approval_id,ordered_services_id,insurance_provider_id,network_id,\
+  //       insurance_network_office_id,valid_upto,\
+  //       service_id,SR.service_code, icd_code, requested_date, requested_by, requested_mode,\
+  //       requested_quantity, submission_type, insurance_service_name, SA.doctor_id, SA.patient_id,visit_id,\
+  //       PAT.patient_code,PAT.full_name, refer_no, gross_amt,billing_updated,\
+  //       net_amount, approved_amount, approved_no, apprv_remarks, apprv_date, rejected_reason,\
+  //       apprv_status,SA.created_date,SA.created_by, SD.chart_type, SD.sub_department_name, \
+  //       PI.primary_card_number as card_no \
+  //       from ((hims_f_service_approval SA inner join hims_f_patient PAT ON SA.patient_id=PAT.hims_d_patient_id) \
+  //       inner join hims_d_services SR on SR.hims_d_services_id=SA.service_id \
+  //       inner join hims_f_patient_visit V on V.hims_f_patient_visit_id=SA.visit_id \
+  //       inner join hims_m_patient_insurance_mapping PI on PI.patient_visit_id=SA.visit_id \
+  //       inner join hims_d_sub_department SD on SD.hims_d_sub_department_id=V.sub_department_id) \
+  //       WHERE SA.record_status='A' AND " +
+  //         where.condition,
+  //       where.values,
+  //
+  //       (error, result) => {
+  //         releaseDBConnection(db, connection);
+  //         if (error) {
+  //           next(error);
+  //         }
+  //
+  //         req.records = result;
+  //         next();
+  //       }
+  //     );
+  //   });
+  // } catch (e) {
+  //   next(e);
+  // }
 };
 
 //created by irfan: check pre-aproval status and get PreAproval List
 let getMedicationAprovalList = (req, res, next) => {
-  let preAprovalWhere = {
-    service_id: "ALL"
-  };
-
+  const _mysql = new algaehMysql({ path: keyPath });
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
+    let _stringData = "";
+    let inputValues = [];
+    if (req.query.created_date != null) {
+      _stringData +=
+        " and date(SA.created_date) between date('" +
+        req.query.created_date +
+        "') AND date('" +
+        req.query.to_date +
+        "')";
+    } else {
+      _stringData += " and date(SA.created_date) <= date(now())";
     }
-    let db = req.db;
-
-    req.query["date(SA.created_date)"] = req.query.created_date;
-    req.query["SA.doctor_id"] = req.query.doctor_id;
-    req.query["SA.patient_id"] = req.query.patient_id;
     if (req.query.item_id != null) {
-      req.query["SA.item_id"] = req.query.item_id;
-      delete req.query.item_id;
+      _stringData += " and SA.item_id=?";
+      inputValues.push(req.query.item_id);
     }
-
     if (req.query.visit_id != null) {
-      req.query["SA.visit_id"] = req.query.visit_id;
-      delete req.query.visit_id;
+      _stringData += " and SA.visit_id=?";
+      inputValues.push(req.query.visit_id);
     }
-
     if (req.query.pharmacy_pos_detail_id != null) {
-      req.query["SA.pharmacy_pos_detail_id"] = req.query.pharmacy_pos_detail_id;
-      delete req.query.pharmacy_pos_detail_id;
+      _stringData += " and SA.pharmacy_pos_detail_id=?";
+      inputValues.push(req.query.pharmacy_pos_detail_id);
     }
-
-    delete req.query.created_date;
-    delete req.query.doctor_id;
-    delete req.query.patient_id;
-
-    let where = whereCondition(extend(preAprovalWhere, req.query));
-
-    debugLog("where conditn:", where);
-    db.getConnection((error, connection) => {
-      if (error) {
-        next(error);
-      }
-      db.query(
-        "SELECT hims_f_medication_approval_id,approved_qty,prescription_detail_id,insurance_provider_id,sub_insurance_id,\
+    _mysql
+      .executeQuery({
+        query:
+          "SELECT hims_f_medication_approval_id,approved_qty,prescription_detail_id,insurance_provider_id,sub_insurance_id,\
         network_id,insurance_network_office_id,\
         service_id,SR.service_code, requested_date, requested_by, requested_mode,\
         requested_quantity, submission_type, insurance_service_name, SA.doctor_id, SA.patient_id,visit_id,\
@@ -132,24 +162,77 @@ let getMedicationAprovalList = (req, res, next) => {
         inner join \
         hims_d_services SR on SR.hims_d_services_id=SA.service_id left join \
         hims_f_patient_visit V on V.hims_f_patient_visit_id=SA.visit_id left join \
-        hims_d_sub_department SD on SD.hims_d_sub_department_id=V.sub_department_id) WHERE SA.record_status='A' AND " +
-          where.condition,
-        where.values,
-
-        (error, result) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-
-          req.records = result;
-          next();
-        }
-      );
-    });
+        hims_d_sub_department SD on SD.hims_d_sub_department_id=V.sub_department_id) WHERE SA.record_status='A' " +
+          _stringData,
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
+  // let preAprovalWhere = {
+  //   service_id: "ALL"
+  // };
+  // try {
+  //   if (req.db == null) {
+  //     next(httpStatus.dataBaseNotInitilizedError());
+  //   }
+  //   let db = req.db;
+  //
+  //   req.query["date(SA.created_date)"] = req.query.created_date;
+  //   req.query["SA.doctor_id"] = req.query.doctor_id;
+  //   req.query["SA.patient_id"] = req.query.patient_id;
+  //
+  //   delete req.query.created_date;
+  //   delete req.query.doctor_id;
+  //   delete req.query.patient_id;
+  //
+  //   let where = whereCondition(extend(preAprovalWhere, req.query));
+  //
+  //   debugLog("where conditn:", where);
+  //   db.getConnection((error, connection) => {
+  //     if (error) {
+  //       next(error);
+  //     }
+  //     db.query(
+  //       "SELECT hims_f_medication_approval_id,approved_qty,prescription_detail_id,insurance_provider_id,sub_insurance_id,\
+  //       network_id,insurance_network_office_id,\
+  //       service_id,SR.service_code, requested_date, requested_by, requested_mode,\
+  //       requested_quantity, submission_type, insurance_service_name, SA.doctor_id, SA.patient_id,visit_id,\
+  //       PAT.patient_code,PAT.full_name, refer_no, gross_amt,\
+  //       net_amount, approved_amount, approved_no, apprv_remarks, apprv_date, rejected_reason,\
+  //       apprv_status,SA.created_date,SA.created_by, SD.chart_type,billing_updated \
+  //       from ((hims_f_medication_approval SA left join hims_f_patient PAT ON SA.patient_id=PAT.hims_d_patient_id) \
+  //       inner join \
+  //       hims_d_services SR on SR.hims_d_services_id=SA.service_id left join \
+  //       hims_f_patient_visit V on V.hims_f_patient_visit_id=SA.visit_id left join \
+  //       hims_d_sub_department SD on SD.hims_d_sub_department_id=V.sub_department_id) WHERE SA.record_status='A' AND " +
+  //         where.condition,
+  //       where.values,
+  //
+  //       (error, result) => {
+  //         releaseDBConnection(db, connection);
+  //         if (error) {
+  //           next(error);
+  //         }
+  //
+  //         req.records = result;
+  //         next();
+  //       }
+  //     );
+  //   });
+  // } catch (e) {
+  //   next(e);
+  // }
 };
 
 //created by irfan:UPDATE PREAPPROVAL
@@ -1067,41 +1150,6 @@ let updatePrescriptionDetail = (req, res, next) => {
     _mysql.releaseConnection();
     next(e);
   }
-  // try {
-  //   if (req.db == null) {
-  //     next(httpStatus.dataBaseNotInitilizedError());
-  //   }
-  //   let db = req.db;
-  //   db.getConnection((error, connection) => {
-  //     if (error) {
-  //       next(error);
-  //     }
-  //
-  //     let input = extend({}, req.body[0]);
-  //     let insurance_yesno = input.apprv_status === "RJ" ? "N" : "N";
-  //
-  //     connection.query(
-  //       "UPDATE hims_f_prescription_detail SET apprv_status = ?, insured=?, approved_amount=?,pre_approval = 'N' WHERE `hims_f_prescription_detail_id`=?; UPDATE hims_f_medication_approval SET billing_updated ='Y' where hims_f_medication_approval_id=?;",
-  //       [
-  //         input.apprv_status,
-  //         insurance_yesno,
-  //         input.approved_amount,
-  //         input.hims_f_prescription_detail_id,
-  //         input.hims_f_medication_approval_id
-  //       ],
-  //       (error, result) => {
-  //         releaseDBConnection(db, connection);
-  //         if (error) {
-  //           next(error);
-  //         }
-  //         req.records = result;
-  //         next();
-  //       }
-  //     );
-  //   });
-  // } catch (e) {
-  //   next(e);
-  // }
 };
 
 let insertInvOrderedServices = (req, res, next) => {
@@ -1296,6 +1344,172 @@ let insertInvOrderedServices = (req, res, next) => {
   }
 };
 
+//created by:irfan
+let addPackage = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  let input = req.body;
+
+  try {
+    if (input.length > 0) {
+      input.forEach(val => {
+        if (!val.package_detail.length > 0) {
+          req.records = {
+            invalid_input: true,
+            message: "Please provide valid  package detail"
+          };
+          next();
+          return;
+        }
+      });
+
+      for (let i = 0; i < input.length; i++) {
+        _mysql
+          .executeQueryWithTransaction({
+            query:
+              "INSERT INTO `hims_f_package_header` (package_id,patient_id,visit_id,doctor_id,service_type_id,services_id,insurance_yesno,insurance_provider_id,\
+                insurance_sub_id,network_id,insurance_network_office_id,policy_number,pre_approval,\
+                billed,quantity,unit_cost,gross_amount,discount_amout,discount_percentage,net_amout,copay_percentage,\
+                copay_amount,deductable_amount,deductable_percentage,tax_inclusive,patient_tax,company_tax,total_tax\
+                ,patient_resp,patient_payable,comapany_resp,company_payble,sec_company,sec_deductable_percentage,\
+                sec_deductable_amount,sec_company_res,sec_company_tax,sec_company_paybale,sec_copay_percntage,\
+                sec_copay_amount,advance_amount,balance_amount,actual_amount,\
+                package_type,package_visit_type,pack_expiry_date,hospital_id,created_by,\
+                created_date,updated_by,updated_date)\
+            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            values: [
+              input[i].package_id,
+              input[i].patient_id,
+              input[i].visit_id,
+              input[i].doctor_id,
+              input[i].service_type_id,
+              input[i].services_id,
+              input[i].insurance_yesno,
+              input[i].insurance_provider_id,
+              input[i].insurance_sub_id,
+              input[i].network_id,
+              input[i].insurance_network_office_id,
+              input[i].policy_number,
+              input[i].pre_approval,
+              input[i].billed,
+              input[i].quantity,
+              input[i].unit_cost,
+              input[i].gross_amount,
+              input[i].discount_amout,
+              input[i].discount_percentage,
+              input[i].net_amout,
+              input[i].copay_percentage,
+              input[i].copay_amount,
+              input[i].deductable_amount,
+              input[i].deductable_percentage,
+              input[i].tax_inclusive,
+              input[i].patient_tax,
+              input[i].company_tax,
+              input[i].total_tax,
+              input[i].patient_resp,
+              input[i].patient_payable,
+              input[i].comapany_resp,
+              input[i].company_payble,
+              input[i].sec_company,
+              input[i].sec_deductable_percentage,
+              input[i].sec_deductable_amount,
+              input[i].sec_company_res,
+              input[i].sec_company_tax,
+              input[i].sec_company_paybale,
+              input[i].sec_copay_percntage,
+              input[i].sec_copay_amount,
+              input[i].advance_amount,
+              input[i].balance_amount,
+              input[i].unit_cost,
+              input[i].package_type,
+              input[i].package_visit_type,
+              input[i].pack_expiry_date,
+              req.userIdentity.hospital_id,
+
+              req.userIdentity.algaeh_d_app_user_id,
+              new Date(),
+              req.userIdentity.algaeh_d_app_user_id,
+              new Date()
+            ]
+          })
+          .then(headerRes => {
+            if (headerRes.insertId > 0) {
+              const insurtColumns = [
+                "package_header_id",
+                "service_type_id",
+                "service_id",
+                "service_amount",
+                "qty",
+                "tot_service_amount",
+                "appropriate_amount",
+                "utilized_qty"
+              ];
+
+              _mysql
+                .executeQuery({
+                  query: "INSERT INTO hims_f_package_detail (??) VALUES ?",
+                  values: input[i]["package_detail"],
+                  includeValues: insurtColumns,
+                  extraValues: {
+                    package_header_id: headerRes.insertId
+                  },
+                  bulkInsertOrUpdate: true
+                })
+                .then(detailRes => {
+                  if (detailRes.affectedRows > 0) {
+                    if (i == input.length - 1) {
+                      _mysql.commitTransaction(() => {
+                        _mysql.releaseConnection();
+                        req.records = detailRes;
+                        next();
+                      });
+                    }
+                  } else {
+                    _mysql.rollBackTransaction(() => {
+                      req.records = {
+                        invalid_input: true,
+                        message: "inValid package details"
+                      };
+                      next();
+                      return;
+                    });
+                  }
+                })
+                .catch(e => {
+                  _mysql.rollBackTransaction(() => {
+                    next(e);
+                  });
+                });
+            } else {
+              _mysql.rollBackTransaction(() => {
+                req.records = {
+                  invalid_input: true,
+                  message: "Provide valid package"
+                };
+                next();
+                return;
+              });
+            }
+          })
+          .catch(e => {
+            _mysql.rollBackTransaction(() => {
+              next(e);
+            });
+          });
+      }
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "Please provide valid Input"
+      };
+
+      next();
+      return;
+    }
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
 module.exports = {
   insertOrderedServices,
   getPreAprovalList,
@@ -1310,5 +1524,6 @@ module.exports = {
   updatePrescriptionDetail,
   getVisitConsumable,
   insertInvOrderedServices,
-  load_orders_for_bill
+  load_orders_for_bill,
+  addPackage
 };

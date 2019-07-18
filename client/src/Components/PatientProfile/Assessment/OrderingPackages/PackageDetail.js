@@ -7,6 +7,9 @@ import { bindActionCreators } from "redux";
 import "./OrderingPackages.css";
 import "../../../../styles/site.css";
 
+import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
+import spotlightSearch from "../../../../Search/spotlightSearch.json";
+
 import {
   AlgaehLabel,
   AlagehFormGroup,
@@ -15,29 +18,123 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 import _ from "lodash";
 import { AlgaehActions } from "../../../../actions/algaehActions";
+import { swalMessage } from "../../../../utils/algaehApiCall";
+import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 
 class PackageDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      package_detail: []
+      package_detail: [],
+      qty: 0,
+      s_service: null
     };
   }
 
   onClose = e => {
-    this.props.onClose && this.props.onClose(e);
+    this.props.onClose && this.props.onClose(this.state);
   };
 
   componentWillReceiveProps(newProps) {
     debugger;
-    if (
-      newProps.package_detail !== undefined ||
-      newProps.package_detail.length > 0
-    ) {
-      this.setState({
-        package_detail: newProps.package_detail
+    if (newProps.package_detail !== null) {
+      this.setState({ ...this.state, ...newProps.package_detail }, () => {
+        debugger;
       });
     }
+  }
+
+  serviceHandeler(e) {
+    debugger;
+    this.setState({
+      s_service: e.hims_d_services_id,
+      s_service_type: e.service_type_id,
+      insurance_service_name: e.service_name,
+      s_service_name: e.service_name,
+      s_service_amount: e.standard_fee
+    });
+  }
+
+  AddtoList(e) {
+    let package_detail = this.state.package_detail;
+    if (this.state.s_service_type === null) {
+      swalMessage({
+        type: "warning",
+        title: "Select Service Type."
+      });
+      return;
+    } else if (this.state.s_service === null) {
+      swalMessage({
+        type: "warning",
+        title: "Select Service."
+      });
+      return;
+    } else if (this.state.qty === "" || this.state.qty === 0) {
+      swalMessage({
+        type: "warning",
+        title: "Enter Quantity."
+      });
+      return;
+    }
+    let SelectedService = _.filter(package_detail, f => {
+      return (
+        f.service_type_id === this.state.s_service_type &&
+        f.service_id === this.state.s_service
+      );
+    });
+    debugger;
+    if (SelectedService.length === 0) {
+      let profit_loss = "P";
+      let InputObj = {
+        service_type_id: this.state.s_service_type,
+        service_id: this.state.s_service,
+        service_amount: this.state.s_service_amount,
+        qty: this.state.qty,
+        tot_service_amount:
+          parseFloat(this.state.qty) * parseFloat(this.state.s_service_amount)
+      };
+
+      package_detail.push(InputObj);
+      let total_service_amount = _.sumBy(package_detail, s =>
+        parseFloat(s.tot_service_amount)
+      );
+      let pl_amount =
+        parseFloat(this.state.package_amount) -
+        parseFloat(total_service_amount);
+      if (pl_amount < 0) {
+        profit_loss = "L";
+      }
+
+      for (let i = 0; i < package_detail.length; i++) {
+        let appropriate_amount =
+          parseFloat(package_detail[i].tot_service_amount) /
+          parseFloat(this.state.total_service_amount);
+        appropriate_amount =
+          appropriate_amount * parseFloat(this.state.package_amount);
+        package_detail[i].appropriate_amount = appropriate_amount;
+      }
+      this.setState({
+        package_detail: package_detail,
+
+        s_service: null,
+        s_service_amount: null,
+        total_service_amount: total_service_amount,
+        pl_amount: pl_amount,
+        profit_loss: profit_loss,
+        qty: 0
+      });
+    } else {
+      swalMessage({
+        title: "Selected Service already exists.",
+        type: "warning"
+      });
+    }
+  }
+
+  texthandle(e) {
+    this.setState({
+      [e.target.name]: e.target.value
+    });
   }
 
   render() {
@@ -53,6 +150,130 @@ class PackageDetail extends Component {
           >
             <div className="row">
               <div className="col-lg-12 popupInner">
+                {this.state.package_type === "D" ? (
+                  <div className="row">
+                    <AlgaehAutoSearch
+                      div={{ className: "col-7 customServiceSearch" }}
+                      label={{ forceLabel: "Select Service" }}
+                      title="Search Services"
+                      id="service_id_search"
+                      template={({
+                        covered,
+                        pre_approval,
+                        service_name,
+                        service_type
+                      }) => {
+                        let properStyle;
+                        if (this.state.insured === "Y") {
+                          if (covered === "Y") {
+                            if (pre_approval === "Y") {
+                              properStyle = "orange_Y_Y";
+                            } else {
+                              properStyle = "green_Y_N";
+                            }
+                          } else {
+                            properStyle = "red_N_N";
+                          }
+                        } else {
+                          properStyle = "white_N_N";
+                        }
+                        return (
+                          <div className={`row resultSecStyles ${properStyle}`}>
+                            <div className="col-12 padd-10">
+                              <h6 className="title">
+                                {_.startCase(_.toLower(service_name))}
+                                <span className="service_type">
+                                  ({_.startCase(_.toLower(service_type))})
+                                </span>
+                              </h6>
+                            </div>
+                          </div>
+                        );
+                      }}
+                      name="s_service"
+                      columns={spotlightSearch.Services.servicemaster}
+                      displayField="s_service_name"
+                      value={this.state.s_service_name}
+                      searchName="servicepackagemas"
+                      onClick={this.serviceHandeler.bind(this)}
+                      ref={attReg => {
+                        this.attReg = attReg;
+                      }}
+                    />
+
+                    <AlagehFormGroup
+                      div={{ className: "col-2" }}
+                      label={{
+                        forceLabel: "Quantity",
+                        isImp: true
+                      }}
+                      textBox={{
+                        number: {
+                          allowNegative: false,
+                          thousandSeparator: ","
+                        },
+                        className: "txt-fld",
+                        name: "qty",
+                        value: this.state.qty,
+                        dontAllowKeys: ["-", "e", "."],
+                        events: {
+                          onChange: this.texthandle.bind(this)
+                        },
+                        others: {
+                          step: "1"
+                        }
+                      }}
+                    />
+                    <div className="col-2 form-group">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "total_service_amount"
+                        }}
+                      />
+                      <h6>
+                        {getAmountFormart(this.state.total_service_amount)}
+                      </h6>
+                    </div>
+
+                    <div className="col-3 customRadio form-group">
+                      <label className="radio inline">
+                        <input
+                          type="radio"
+                          name="package_visit_type"
+                          value="S"
+                          checked={
+                            this.state.package_visit_type === "S" ? true : false
+                          }
+                          onChange={this.texthandle.bind(this)}
+                        />
+                        <span>Single Visit</span>
+                      </label>
+
+                      <label className="radio inline">
+                        <input
+                          type="radio"
+                          name="package_visit_type"
+                          value="M"
+                          checked={
+                            this.state.package_visit_type === "M" ? true : false
+                          }
+                          onChange={this.texthandle.bind(this)}
+                        />
+                        <span>Multi Visit</span>
+                      </label>
+                    </div>
+                    <div className="col-2 form-group">
+                      <button
+                        className="btn btn-primary"
+                        style={{ marginTop: 19 }}
+                        onClick={this.AddtoList.bind(this)}
+                      >
+                        Add
+                      </button>
+                    </div>
+                  </div>
+                ) : null}
+
                 <div className="popRightDiv">
                   <div className="row">
                     <div className="col-12" id="ExisitingNewItemsGrid_Cntr">

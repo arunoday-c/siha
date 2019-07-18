@@ -443,8 +443,8 @@ class DoctorsWorkbench extends Component {
                               </span>
                             );
                           },
-                          className: drow => {
-                            if (drow.checked_in === "N") return "greenCell";
+                          className: row => {
+                            return "greenCell";
                           },
                           others: {
                             width: 130,

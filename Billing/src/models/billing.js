@@ -4,6 +4,8 @@ import appsettings from "algaeh-utilities/appsettings.json";
 import { LINQ } from "node-linq";
 import math from "mathjs";
 import extend from "extend";
+import _ from "lodash";
+
 module.exports = {
   newReceiptData: (req, res, next) => {
     const _options = req.connection == null ? {} : req.connection;
@@ -1068,26 +1070,28 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
   const _mysql = new algaehMysql();
   try {
     let service_ids = null;
-    let questions = "?";
+    // let questions = "?";
 
     // const utilities = new algaehUtilities();
 
     if (Array.isArray(req.body)) {
       let len = req.body.length;
-      service_ids = new LINQ(req.body).Select(g => g.hims_d_services_id);
+      // service_ids = new LINQ(req.body).Select(g => g.hims_d_services_id);
+      service_ids = req.body.map(val => {
+        return val.hims_d_services_id;
+      });
 
-      for (let i = 1; i < len; i++) {
-        questions += ",?";
-      }
+      console.log("service_ids:", service_ids);
+      // for (let i = 1; i < len; i++) {
+      //   questions += ",?";
+      // }
     }
 
     _mysql
       .executeQuery({
         query:
-          "SELECT * FROM `hims_d_services` WHERE `hims_d_services_id` IN (" +
-          questions +
-          ") AND record_status='A'",
-        values: service_ids.items,
+          "SELECT * FROM `hims_d_services` WHERE `hims_d_services_id` IN (?) AND record_status='A'",
+        values: [service_ids],
 
         printQuery: true
       })
@@ -1098,13 +1102,25 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
         for (let m = 0; m < result.length; m++) {
           let servicesDetails = { ...req.body[m] };
 
-          let records = result[m];
+          // let records = result[m];
+          let records = _.find(
+            result,
+            f => f.hims_d_services_id === servicesDetails.hims_d_services_id
+          );
+          const utilities = new algaehUtilities();
+          utilities.logger().log("result: ", records.hims_d_services_id);
+          utilities.logger().log("body: ", servicesDetails.hims_d_services_id);
 
-          req.body[m].service_type_id = result[m].service_type_id;
-          req.body[m].services_id = result[m].hims_d_services_id;
+          utilities.logger().log("service_type_id: ", records.service_type_id);
+          utilities
+            .logger()
+            .log("hims_d_services_id: ", servicesDetails.service_type_id);
+
+          req.body[m].service_type_id = records.service_type_id;
+          req.body[m].services_id = records.hims_d_services_id;
 
           //Calculation Declarations
-          const utilities = new algaehUtilities();
+
           utilities.logger().log("unit_cost: ", servicesDetails.unit_cost);
           let unit_cost =
             servicesDetails.unit_cost == undefined
@@ -1784,13 +1800,17 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                   item_group_id: servicesDetails.item_group_id,
                   package_id: servicesDetails.package_id,
                   package_visit_type: servicesDetails.package_visit_type,
-                  package_type: servicesDetails.package_type
+                  package_type: servicesDetails.package_type,
+                  actual_amount: servicesDetails.actual_amount,
+                  pack_expiry_date: servicesDetails.expiry_date
                 }
               );
 
               outputArray.push(out);
             })
             .then(() => {
+              console.log(" am here:", m);
+
               if (m == result.length - 1) {
                 _mysql.releaseConnection();
                 return resolve({ billdetails: outputArray });

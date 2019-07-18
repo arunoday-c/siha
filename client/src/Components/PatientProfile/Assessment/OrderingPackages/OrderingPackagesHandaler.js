@@ -2,7 +2,7 @@ import swal from "sweetalert2";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import extend from "extend";
 import Enumerable from "linq";
-
+import moment from "moment";
 //Text Handaler Change
 const texthandle = ($this, ctrl, e) => {
   e = e || ctrl;
@@ -53,6 +53,17 @@ const serviceTypeHandeler = ($this, e) => {
 };
 
 const serviceHandeler = ($this, e) => {
+  debugger;
+  // let date = new Date().setDate(
+  //   new Date().getDate() + parseInt(e.expiry_days, 10)
+  // );
+
+  let expiry_date =
+    e.package_visit_type === "M"
+      ? moment()
+          .add(parseInt(e.expiry_days, 10), "days")
+          .format("YYYY-MM-DD")
+      : moment(new Date()).format("YYYY-MM-DD");
   $this.setState({
     s_service: e.hims_d_services_id,
     s_service_type: e.service_type_id,
@@ -61,7 +72,9 @@ const serviceHandeler = ($this, e) => {
 
     package_visit_type: e.package_visit_type,
     package_type: e.package_type,
-    package_id: e.hims_d_package_header_id
+    package_id: e.hims_d_package_header_id,
+    expiry_date: expiry_date,
+    actual_amount: e.total_service_amount
   });
 };
 
@@ -95,7 +108,7 @@ const ProcessService = $this => {
   // orderedList
   debugger;
 
-  let SelectedService = Enumerable.from($this.props.orderedList)
+  let SelectedService = Enumerable.from($this.props.pakageList)
     .where(
       w =>
         w.service_type_id === $this.state.s_service_type &&
@@ -134,7 +147,9 @@ const ProcessService = $this => {
           preapp_limit_amount: $this.state.preapp_limit_amount,
           package_id: $this.state.package_id,
           package_visit_type: $this.state.package_visit_type,
-          package_type: $this.state.package_type
+          package_type: $this.state.package_type,
+          expiry_date: $this.state.expiry_date,
+          actual_amount: $this.state.actual_amount
         }
       ];
 
@@ -262,7 +277,8 @@ const ProcessService = $this => {
                           // s_service_type: null,
                           s_service: null,
                           test_type: "R",
-                          service_name: ""
+                          service_name: "",
+                          expiry_date: null
                         });
 
                         algaehApiCall({
@@ -383,7 +399,8 @@ const ProcessService = $this => {
                     // s_service_type: null,
                     s_service: null,
                     test_type: "R",
-                    service_name: ""
+                    service_name: "",
+                    expiry_date: null
                   });
 
                   algaehApiCall({
@@ -519,13 +536,10 @@ const deleteServices = ($this, row, rowId) => {
 };
 //Save Order
 const SaveOrdersServices = ($this, e) => {
-  let inputObj = {
-    orderservicesdata: $this.state.orderservicesdata
-  };
   debugger;
   algaehApiCall({
-    uri: "/orderAndPreApproval/insertOrderedServices",
-    data: inputObj,
+    uri: "/orderAndPreApproval/addPackage",
+    data: $this.state.orderservicesdata,
     method: "POST",
     onSuccess: response => {
       if (response.data.success) {

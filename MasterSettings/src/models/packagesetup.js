@@ -109,7 +109,7 @@ module.exports = {
             PH.total_service_amount, PH.profit_loss,PH.pl_amount, PH.package_service_id, PH.package_type,\
             PH.expiry_days, PH.advance_type, PH.advance_amount, PH.advance_percentage,\
             PH.package_visit_type, PD.hims_d_package_detail_id, PD.service_type_id, PD.service_id, \
-            PD.service_amount, PD.qty,PD.tot_service_amount \
+            PD.service_amount, PD.qty,PD.tot_service_amount,PD.appropriate_amount \
             from hims_d_package_header PH, hims_d_package_detail PD where \
             PH.hims_d_package_header_id=PD.package_header_id " +
             _strQry +
@@ -140,7 +140,7 @@ module.exports = {
         .executeQueryWithTransaction({
           query:
             "UPDATE `hims_d_package_header` SET `package_code`=?, `package_name`=?, `package_amount`=?,\
-          `total_service_amount`=?, `profit_loss`=?, `pl_amount`=?, `package_service_id`=?, \
+          `total_service_amount`=?, `profit_loss`=?, `pl_amount`=?, \
           `package_type`=?,`expiry_days`=?,`advance_type`=?, `advance_amount`=?, `advance_percentage`=?,\
           `package_visit_type`=?,`updated_date`=?, `updated_by`=? \
           WHERE record_status='A' and `hims_d_package_header_id`=?",
@@ -151,7 +151,6 @@ module.exports = {
             input.total_service_amount,
             input.profit_loss,
             input.pl_amount,
-            input.package_service_id,
             input.package_type,
             input.expiry_days,
             input.advance_type,

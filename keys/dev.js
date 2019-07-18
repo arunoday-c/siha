@@ -16,6 +16,7 @@ exports.default = {
     user: "algaeh_root",
     password: "alg_hea2018",
     database: "hims_test_db",
+    // database: "twareat_live_db",
     //database: "awdesh_db",
     // database: "hrms_shaksy_db",
     // database: "seco",

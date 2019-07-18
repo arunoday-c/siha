@@ -79,12 +79,13 @@ class OrderingPackages extends Component {
       discount_amount: null,
       net_total: null,
       addNewService: false,
-      package_detail: [],
+      package_detail: null,
       hims_d_package_header_id: null,
       package_visit_type: null,
       package_type: null,
       isOpenItems: false,
-      isOpen: false
+      isOpen: false,
+      expiry_date: null
     };
   }
 
@@ -196,17 +197,26 @@ class OrderingPackages extends Component {
   }
 
   ClosePackageDetail(e) {
+    let orderservicesdata = this.state.orderservicesdata;
+
+    orderservicesdata[this.state.selected_row_index] = e;
     this.setState({
       isOpenItems: !this.state.isOpenItems,
-      package_detail: []
+      package_detail: null,
+      select_package_type: null,
+      selected_row_index: null,
+      orderservicesdata: orderservicesdata
     });
   }
 
   ShowPackageDetail(row) {
     debugger;
+    let orderservicesdata = this.state.orderservicesdata;
+    let selected_row_index = orderservicesdata.indexOf(row);
     this.setState({
       isOpenItems: !this.state.isOpenItems,
-      package_detail: row.package_detail
+      package_detail: row,
+      selected_row_index: row.selected_row_index
     });
   }
 
@@ -248,7 +258,7 @@ class OrderingPackages extends Component {
         sub_total_amount: null,
         discount_amount: null,
         net_total: null,
-        package_detail: [],
+        package_detail: null,
         hims_d_package_header_id: null,
         package_visit_type: null,
         package_type: null
@@ -699,6 +709,7 @@ class OrderingPackages extends Component {
                 show={this.state.isOpenItems}
                 onClose={this.ClosePackageDetail.bind(this)}
                 package_detail={this.state.package_detail}
+                select_package_type={this.state.select_package_type}
               />
               <div className="row GridTotalDetails">
                 <div className="col-lg-5" style={{ textAlign: "right" }}>
@@ -793,7 +804,7 @@ function mapStateToProps(state) {
     orderservices: state.orderservices,
     existinginsurance: state.existinginsurance,
     serviceslist: state.serviceslist,
-    orderedList: state.orderedList
+    pakageList: state.pakageList
   };
 }
 

@@ -10,6 +10,47 @@ const texthandle = ($this, e) => {
   });
 };
 
+export function generateLabResultReport(data) {
+  algaehApiCall({
+    uri: "/report",
+    method: "GET",
+    module: "reports",
+    headers: {
+      Accept: "blob"
+    },
+    others: { responseType: "blob" },
+    data: {
+      report: {
+        reportName: "hematologyTestReport",
+        reportParams: [
+          { name: "hims_d_patient_id", value: data.patient_id },
+          {
+            name: "visit_id",
+            value: data.visit_id
+          },
+          {
+            name: "hims_f_lab_order_id",
+            value: data.hims_f_lab_order_id
+          }
+        ],
+        outputFileType: "PDF"
+      }
+    },
+    onSuccess: res => {
+      const url = URL.createObjectURL(res.data);
+      let myWindow = window.open(
+        "{{ product.metafields.google.custom_label_0 }}",
+        "_blank"
+      );
+
+      myWindow.document.write(
+        "<iframe src= '" + url + "' width='100%' height='100%' />"
+      );
+      myWindow.document.title = "Hematology Test Report";
+    }
+  });
+}
+
 const UpdateLabOrder = ($this, value, status) => {
   algaehApiCall({
     uri: "/laboratory/updateLabResultEntry",

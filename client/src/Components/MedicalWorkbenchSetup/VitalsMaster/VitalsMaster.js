@@ -93,7 +93,7 @@ class VitalsMaster extends Component {
       //uri: "/department/get",
       uri: "/department/get/subdepartment",
       method: "GET",
-      module : "masterSettings",
+      module: "masterSettings",
       // data: {
       //   department_type: "CLINICAL"
       // },
@@ -352,7 +352,6 @@ class VitalsMaster extends Component {
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {
-
           let x = Enumerable.from(response.data.records)
             .where(w => w.general === "N")
             .toArray();
@@ -692,7 +691,7 @@ class VitalsMaster extends Component {
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
-                  <h3 className="caption-subject">Assign Dept.</h3>
+                  <h3 className="caption-subject">Assign to Department</h3>
                 </div>
               </div>
               <div className="row" data-validate="deptLit_Vitals">

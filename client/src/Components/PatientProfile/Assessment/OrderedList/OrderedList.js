@@ -45,7 +45,19 @@ class OrderedList extends PureComponent {
       {
         isPackOpen: !this.state.isPackOpen
       },
-      () => {}
+      () => {
+        this.props.getPakageList({
+          uri: "/orderAndPreApproval/getPatientPackage",
+          method: "GET",
+          data: {
+            patient_id: Window.global["current_patient"]
+          },
+          redux: {
+            type: "ORDER_SERVICES_GET_DATA",
+            mappingName: "pakageList"
+          }
+        });
+      }
     );
   }
 
@@ -253,6 +265,18 @@ class OrderedList extends PureComponent {
       redux: {
         type: "ORDER_SERVICES_GET_DATA",
         mappingName: "consumableorderedList"
+      }
+    });
+
+    this.props.getPakageList({
+      uri: "/orderAndPreApproval/getPatientPackage",
+      method: "GET",
+      data: {
+        patient_id: Window.global["current_patient"]
+      },
+      redux: {
+        type: "PAIENT_PACKAGE_GET_DATA",
+        mappingName: "pakageList"
       }
     });
   }
@@ -840,7 +864,10 @@ class OrderedList extends PureComponent {
                     ]}
                     keyId="list_type_id"
                     dataSource={{
-                      data: []
+                      data:
+                        this.props.pakageList === undefined
+                          ? []
+                          : this.props.pakageList
                     }}
                     paging={{ page: 0, rowsPerPage: 10 }}
                   />
@@ -896,7 +923,8 @@ function mapStateToProps(state) {
     serviceslist: state.serviceslist,
     orderedList: state.orderedList,
     patient_profile: state.patient_profile,
-    consumableorderedList: state.consumableorderedList
+    consumableorderedList: state.consumableorderedList,
+    pakageList: state.pakageList
   };
 }
 
@@ -906,7 +934,8 @@ function mapDispatchToProps(dispatch) {
       getServiceTypes: AlgaehActions,
       getServices: AlgaehActions,
       getOrderList: AlgaehActions,
-      getConsumableOrderList: AlgaehActions
+      getConsumableOrderList: AlgaehActions,
+      getPakageList: AlgaehActions
     },
     dispatch
   );
