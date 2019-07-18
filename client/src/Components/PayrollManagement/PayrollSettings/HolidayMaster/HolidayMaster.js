@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import "./holiday_master.css";
 import {
   AlagehAutoComplete,
   AlgaehLabel,
@@ -451,10 +452,7 @@ export default class HolidayMaster extends Component {
                             value={this.state.date}
                           />
 
-                          <div
-                            className="col-6 restrictedCntr"
-                            style={{ marginTop: 15, marginBottom: 15 }}
-                          >
+                          <div className="col-6 restrictedCntr margin-top-15 margin-bottom-15">
                             <label>Restricted Holiday</label>
                             <div className="customCheckbox">
                               <label className="checkbox inline">
@@ -469,7 +467,10 @@ export default class HolidayMaster extends Component {
                             </div>
                           </div>
                           <AlagehAutoComplete
-                            div={{ className: "col-6 ApplicableSelect" }}
+                            div={{
+                              className:
+                                "col-6 ApplicableSelect  margin-top-15 margin-bottom-15"
+                            }}
                             label={{
                               forceLabel: "Applicable for",
                               isImp: this.state.holiday_type
