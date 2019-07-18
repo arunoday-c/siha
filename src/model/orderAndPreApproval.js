@@ -1544,7 +1544,7 @@ let getPatientPackage = (req, res, next) => {
           and hospital_id=? and patient_id=? ${str};
           select D.* from hims_f_package_header H  inner join hims_f_package_detail D\
           on H.hims_f_package_header_id=D.package_header_id where H.closed='N' and  H.record_status='A'\
-          and H.hospital_id=? and H.patient_id=?;  `,
+          and H.hospital_id=? and H.patient_id=? ${str};  `,
           values: [
             req.userIdentity.hospital_id,
             req.query.patient_id,
