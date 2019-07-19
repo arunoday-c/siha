@@ -1066,9 +1066,9 @@ module.exports = {
   },
   getBillDetails: (req, res, next) => {
     const _mysql = new algaehMysql();
-    const utilities = new algaehUtilities();
+    //const utilities = new algaehUtilities();
 
-    req.userIdentity.hospital_id = 1;
+  
 
     try {
       if (req.body.length > 0) {
