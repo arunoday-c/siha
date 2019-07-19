@@ -89,10 +89,10 @@ const Refresh = $this => {
 const datehandle = ($this, ctrl, e) => {
   $this.setState(
     {
-      [e]: moment(ctrl)._d
+      [e]: ctrl ? moment(ctrl)._d : moment()
     },
     () => {
-      getMedicationList($this);
+      ctrl && getMedicationList($this);
     }
   );
 };

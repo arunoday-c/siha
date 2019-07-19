@@ -156,7 +156,7 @@ const AddEarnComponent = ($this, e) => {
           earn_amount: null
         },
         () => {
-          calculationTotals($this);
+          CalculateBasedonFormula($this);
         }
       );
       $this.props.EmpMasterIOputs.updateEmployeeTabs({
@@ -216,7 +216,7 @@ const AddDeductionComponent = ($this, e) => {
           dedection_amount: null
         },
         () => {
-          calculationTotals($this);
+          CalculateBasedonFormula($this);
         }
       );
       $this.props.EmpMasterIOputs.updateEmployeeTabs({
@@ -276,7 +276,7 @@ const AddContributionComponent = ($this, e) => {
           contribution_amount: null
         },
         () => {
-          calculationTotals($this);
+          CalculateBasedonFormula($this);
         }
       );
 

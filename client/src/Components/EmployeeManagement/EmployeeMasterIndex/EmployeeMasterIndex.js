@@ -209,7 +209,7 @@ class EmployeeMasterIndex extends Component {
                     {
                       fieldName: "employee_img",
                       label: (
-                        <AlgaehLabel label={{ forceLabel: "Profile Image" }} />
+                        <AlgaehLabel label={{ forceLabel: "Profile Img" }} />
                       ),
                       displayTemplate: row => (
                         <AlgaehFile
@@ -232,30 +232,8 @@ class EmployeeMasterIndex extends Component {
                       }
                     },
                     {
-                      fieldName: "employee_code",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "employee_code" }} />
-                      ),
-                      others: {
-                        resizable: false,
-                        style: { textAlign: "center" }
-                      }
-                    },
-                    {
-                      fieldName: "full_name",
-                      label: <AlgaehLabel label={{ fieldName: "full_name" }} />,
-                      others: {
-                        resizable: false,
-                        style: { textAlign: "center" }
-                      }
-                    },
-                    {
                       fieldName: "employee_status",
-                      label: (
-                        <AlgaehLabel
-                          label={{ forceLabel: "Employee Status" }}
-                        />
-                      ),
+                      label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
                       displayTemplate: row => {
                         return row.employee_status === "A" ? (
                           <span className="badge badge-success">Active</span>
@@ -270,6 +248,37 @@ class EmployeeMasterIndex extends Component {
                         ) : null;
                       },
                       others: {
+                        maxWidth: 70,
+                        resizable: false,
+                        style: { textAlign: "center" }
+                      }
+                    },
+                    {
+                      fieldName: "employee_code",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Employee ID" }} />
+                      ),
+                      others: {
+                        maxWidth: 100,
+                        resizable: false,
+                        style: { textAlign: "center" }
+                      }
+                    },
+                    {
+                      fieldName: "full_name",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Full Name" }} />
+                      ),
+                      others: {
+                        resizable: false,
+                        style: { textAlign: "center" }
+                      }
+                    },
+                    {
+                      fieldName: "sex",
+                      label: <AlgaehLabel label={{ forceLabel: "gender" }} />,
+                      others: {
+                        maxWidth: 80,
                         resizable: false,
                         style: { textAlign: "center" }
                       }
@@ -300,6 +309,7 @@ class EmployeeMasterIndex extends Component {
                         );
                       },
                       others: {
+                        maxWidth: 200,
                         resizable: false,
                         style: { textAlign: "center" }
                       }
@@ -330,26 +340,28 @@ class EmployeeMasterIndex extends Component {
                         );
                       },
                       others: {
+                        maxWidth: 150,
                         resizable: false,
                         style: { textAlign: "center" }
                       }
                     },
-                    {
-                      fieldName: "license_number",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "license_number" }} />
-                      ),
-                      others: {
-                        resizable: false,
-                        style: { textAlign: "center" }
-                      }
-                    },
+                    // {
+                    //   fieldName: "license_number",
+                    //   label: (
+                    //     <AlgaehLabel label={{ fieldName: "license_number" }} />
+                    //   ),
+                    //   others: {
+                    //     resizable: false,
+                    //     style: { textAlign: "center" }
+                    //   }
+                    // },
                     {
                       fieldName: "primary_contact_no",
                       label: (
                         <AlgaehLabel label={{ fieldName: "contact_no" }} />
                       ),
                       others: {
+                        maxWidth: 120,
                         resizable: false,
                         style: { textAlign: "center" }
                       }
@@ -358,6 +370,7 @@ class EmployeeMasterIndex extends Component {
                       fieldName: "email",
                       label: <AlgaehLabel label={{ fieldName: "email" }} />,
                       others: {
+                        maxWidth: 150,
                         resizable: false,
                         style: { textAlign: "center", wordBreak: "break-all" }
                       }

@@ -5,7 +5,7 @@
   "main": "dist",
   "scripts": {
     "mrd_server": "cross-env PORT=3016 NODE_ENV=development nodemon -w src --exec \"babel-node src/mrd_server.js \"",
-    "build": "babel src -s -D -d dist ",
+    "build": "babel --source-maps false src -s -D -d dist ",
     "dev": "npm run mrd_server",
     "api": "npm run mrd_server",
     "lint": "eslint src && eslint test",
