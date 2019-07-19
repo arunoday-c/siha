@@ -2,7 +2,15 @@
 
 .appoPopupWidth {
   .algaeh-modal {
-    width: 40vw;
+    width: 65vw;
+  }
+}
+.reScPopupWidth {
+  .algaeh-modal {
+    width: 45vw;
+    .popRightDiv {
+      min-height: 50vh;
+    }
   }
 }
 

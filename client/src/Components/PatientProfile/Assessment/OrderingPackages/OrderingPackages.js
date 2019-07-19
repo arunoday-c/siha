@@ -277,7 +277,7 @@ class OrderingPackages extends Component {
           events={{
             onClose: this.onClose.bind(this)
           }}
-          title="Order Services"
+          title="Order Packages"
           openPopup={this.props.open}
         >
           <div className="popupInner">
@@ -506,109 +506,6 @@ class OrderingPackages extends Component {
                           minWidth: 400
                         }
                       },
-                      {
-                        fieldName: "unit_cost",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "unit_cost" }} />
-                        ),
-                        disabled: true,
-                        others: {
-                          minWidth: 80
-                        }
-                      },
-                      {
-                        fieldName: "quantity",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "quantity" }} />
-                        ),
-                        disabled: true,
-                        others: {
-                          minWidth: 80
-                        }
-                      },
-
-                      {
-                        fieldName: "gross_amount",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "gross_amount" }} />
-                        ),
-                        disabled: true,
-                        others: {
-                          minWidth: 110
-                        }
-                      },
-                      {
-                        fieldName: "discount_percentage",
-                        label: (
-                          <AlgaehLabel
-                            label={{ fieldName: "discount_percentage" }}
-                          />
-                        ),
-                        displayTemplate: row => {
-                          return (
-                            <AlagehFormGroup
-                              div={{}}
-                              textBox={{
-                                decimal: { allowNegative: false },
-                                value: row.discount_percentage,
-                                className: "txt-fld",
-                                name: "discount_percentage",
-                                events: {
-                                  onChange: calculateAmount.bind(
-                                    this,
-                                    this,
-                                    row
-                                  )
-                                },
-                                others: {
-                                  disabled:
-                                    this.state.insured === "Y" ? true : false,
-                                  onBlur: makeZeroIngrid.bind(this, this, row),
-                                  onFocus: e => {
-                                    e.target.oldvalue = e.target.value;
-                                  }
-                                }
-                              }}
-                            />
-                          );
-                        }
-                      },
-                      {
-                        fieldName: "discount_amout",
-                        label: (
-                          <AlgaehLabel
-                            label={{ fieldName: "discount_amout" }}
-                          />
-                        ),
-                        displayTemplate: row => {
-                          return (
-                            <AlagehFormGroup
-                              div={{}}
-                              textBox={{
-                                decimal: { allowNegative: false },
-                                value: row.discount_amout,
-                                className: "txt-fld",
-                                name: "discount_amout",
-                                events: {
-                                  onChange: calculateAmount.bind(
-                                    this,
-                                    this,
-                                    row
-                                  )
-                                },
-                                others: {
-                                  disabled:
-                                    this.state.insured === "Y" ? true : false,
-                                  onBlur: makeZeroIngrid.bind(this, this, row),
-                                  onFocus: e => {
-                                    e.target.oldvalue = e.target.value;
-                                  }
-                                }
-                              }}
-                            />
-                          );
-                        }
-                      },
 
                       {
                         fieldName: "net_amout",
@@ -714,23 +611,6 @@ class OrderingPackages extends Component {
               <div className="row GridTotalDetails">
                 <div className="col-lg-5" style={{ textAlign: "right" }}>
                   <div className="row">
-                    <div className="col">
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "sub_ttl"
-                        }}
-                      />
-                      <h5>{getAmountFormart(this.state.sub_total_amount)}</h5>
-                    </div>
-                    <div className="col" style={{ textAlign: "right" }}>
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "dsct_amt"
-                        }}
-                      />
-                      <h5>{getAmountFormart(this.state.discount_amount)}</h5>
-                    </div>
-
                     <div className="col" style={{ textAlign: "right" }}>
                       <AlgaehLabel
                         label={{
@@ -827,3 +707,79 @@ export default withRouter(
     mapDispatchToProps
   )(OrderingPackages)
 );
+{
+  /*
+  {
+    fieldName: "discount_percentage",
+    label: (
+      <AlgaehLabel
+        label={{ fieldName: "discount_percentage" }}
+      />
+    ),
+    displayTemplate: row => {
+      return (
+        <AlagehFormGroup
+          div={{}}
+          textBox={{
+            decimal: { allowNegative: false },
+            value: row.discount_percentage,
+            className: "txt-fld",
+            name: "discount_percentage",
+            events: {
+              onChange: calculateAmount.bind(
+                this,
+                this,
+                row
+              )
+            },
+            others: {
+              disabled:
+                this.state.insured === "Y" ? true : false,
+              onBlur: makeZeroIngrid.bind(this, this, row),
+              onFocus: e => {
+                e.target.oldvalue = e.target.value;
+              }
+            }
+          }}
+        />
+      );
+    }
+  },
+  {
+    fieldName: "discount_amout",
+    label: (
+      <AlgaehLabel
+        label={{ fieldName: "discount_amout" }}
+      />
+    ),
+    displayTemplate: row => {
+      return (
+        <AlagehFormGroup
+          div={{}}
+          textBox={{
+            decimal: { allowNegative: false },
+            value: row.discount_amout,
+            className: "txt-fld",
+            name: "discount_amout",
+            events: {
+              onChange: calculateAmount.bind(
+                this,
+                this,
+                row
+              )
+            },
+            others: {
+              disabled:
+                this.state.insured === "Y" ? true : false,
+              onBlur: makeZeroIngrid.bind(this, this, row),
+              onFocus: e => {
+                e.target.oldvalue = e.target.value;
+              }
+            }
+          }}
+        />
+      );
+    }
+  },
+  */
+}

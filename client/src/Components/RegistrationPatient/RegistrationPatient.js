@@ -951,7 +951,8 @@ function mapStateToProps(state) {
     countries: state.countries,
     primaryinsurance: state.primaryinsurance,
     secondaryinsurance: state.secondaryinsurance,
-    hospitaldetails: state.hospitaldetails
+    hospitaldetails: state.hospitaldetails,
+    PatientPackageList: state.PatientPackageList
   };
 }
 
@@ -965,7 +966,8 @@ function mapDispatchToProps(dispatch) {
       getPatientInsurance: AlgaehActions,
       getCountries: AlgaehActions,
       setSelectedInsurance: AlgaehActions,
-      getHospitalDetails: AlgaehActions
+      getHospitalDetails: AlgaehActions,
+      getPatientPackage: AlgaehActions
     },
     dispatch
   );

@@ -7,6 +7,8 @@ import {
   getCookie
 } from "../../utils/algaehApiCall";
 import moment from "moment";
+import AlgaehLoader from "../Wrapper/fullPageLoader";
+import Enumerable from "linq";
 
 const ClearData = ($this, e) => {
   let _screenName = getCookie("ScreenName").replace("/", "");
@@ -137,4 +139,87 @@ const getCashiersAndShiftMAP = $this => {
   });
 };
 
-export { ClearData, Validations, getCashiersAndShiftMAP };
+const selectVisit = $this => {
+  //   let $this = this;
+
+  if ($this.state.insured === "Y") {
+    $this.props.getPatientInsurance({
+      uri: "/patientRegistration/getPatientInsurance",
+      module: "frontDesk",
+      method: "GET",
+      data: {
+        patient_id: $this.state.hims_d_patient_id,
+        patient_visit_id: $this.state.visit_id
+      },
+      redux: {
+        type: "EXIT_INSURANCE_GET_DATA",
+        mappingName: "existinsurance"
+      }
+    });
+  }
+
+  algaehApiCall({
+    uri: "/orderAndPreApproval/getPatientPackage",
+    method: "GET",
+    data: {
+      patient_id: $this.state.hims_d_patient_id
+    },
+    onSuccess: response => {
+      if (response.data.success) {
+        debugger;
+        AlgaehLoader({ show: false });
+
+        let data = response.data.records;
+
+        if (data.length > 0) {
+          let pre_approval_Required = Enumerable.from(data)
+            .where(w => w.pre_approval === "Y" && w.apprv_status === "NR")
+            .toArray();
+          for (let i = 0; i < data.length; i++) {
+            data[i].ordered_date = new Date();
+          }
+
+          for (let j = 0; j < pre_approval_Required.length; j++) {
+            var index = data.indexOf(pre_approval_Required[j]);
+            data.splice(index, 1);
+          }
+
+          if (data.length > 0) {
+            if (pre_approval_Required.length > 0) {
+              swalMessage({
+                title: "Some of the service is Pre-Approval required.",
+                type: "warning"
+              });
+            }
+
+            $this.setState({
+              billdetails: data,
+              addNewService: false
+            });
+          } else {
+            swalMessage({
+              title:
+                "All service is Pre-Approval required, Please wait for Approval.",
+              type: "warning"
+            });
+          }
+        }
+      } else {
+        $this.setState({
+          addNewService: false
+        });
+
+        AlgaehLoader({ show: false });
+      }
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
+};
+
+export { ClearData, Validations, getCashiersAndShiftMAP, selectVisit };

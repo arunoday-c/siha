@@ -434,7 +434,7 @@ class ResultEntry extends Component {
                           label: (
                             <AlgaehLabel
                               label={{
-                                forceLabel: "Run1"
+                                forceLabel: "Run 1"
                               }}
                             />
                           ),
@@ -455,7 +455,9 @@ class ResultEntry extends Component {
 
                         {
                           fieldName: "run2",
-                          label: <AlgaehLabel label={{ forceLabel: "Run2" }} />,
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Run 2" }} />
+                          ),
                           displayTemplate: row => {
                             return (
                               <span>
@@ -472,7 +474,9 @@ class ResultEntry extends Component {
                         },
                         {
                           fieldName: "run3",
-                          label: <AlgaehLabel label={{ forceLabel: "Run3" }} />,
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Run 3" }} />
+                          ),
                           displayTemplate: row => {
                             return (
                               <span>
@@ -700,16 +704,6 @@ class ResultEntry extends Component {
                             style: { textAlign: "center" }
                           }
                         },
-                        //TODO
-                        // {
-                        //   fieldName: "status",
-                        //   label: (
-                        //     <AlgaehLabel
-                        //       label={{ forceLabel: "Equipment Name" }}
-                        //     />
-                        //   )
-                        // },
-                        //TODO
                         {
                           fieldName: "remarks",
                           label: (
@@ -747,14 +741,14 @@ class ResultEntry extends Component {
                             );
                           },
                           others: {
+                            filterable: false,
                             minWidth: 250,
-                            resizable: false,
-                            filterable: false
+                            resizable: false
                           }
                         }
                       ]}
                       keyId="patient_code"
-                      filter="true"
+                      filter={true}
                       dataSource={{
                         data: this.state.test_analytes
                       }}
@@ -764,7 +758,7 @@ class ResultEntry extends Component {
                   <div className="col-12">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Comments"
+                        forceLabel: "Remarks"
                       }}
                     />
 

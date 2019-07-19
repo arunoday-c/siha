@@ -21,7 +21,7 @@ function AppointmentComponent(props) {
           <div id="appointment-module">
             {/* Edit Pop up Start */}
             <AlgaehModalPopUp
-              class="appoPopupWidth"
+              class="reScPopupWidth"
               // title={getLabelFromLanguage({
               //   fieldName: "editAppo"
               // })}

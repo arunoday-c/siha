@@ -5,6 +5,7 @@ import { LINQ } from "node-linq";
 import math from "mathjs";
 import extend from "extend";
 import _ from "lodash";
+import mysql from "mysql";
 
 module.exports = {
   newReceiptData: (req, res, next) => {
@@ -1062,6 +1063,289 @@ module.exports = {
     } catch (e) {
       _mysql.releaseConnection();
       next(error);
+    }
+  },
+
+  patientPackageAdvanceRefund: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let inputParam = { ...req.body };
+
+      if (
+        inputParam.receiptdetails == null ||
+        inputParam.receiptdetails.length == 0
+      ) {
+        next(
+          httpStatus.generateError(
+            httpStatus.badRequest,
+            "Please select atleast one service."
+          )
+        );
+      }
+      let Module_Name = "";
+      //Advance
+      if (inputParam.pay_type == "R") {
+        Module_Name = "RECEIPT";
+      } else if (inputParam.pay_type == "P") {
+        Module_Name = "REFUND";
+      }
+
+      _mysql
+        .generateRunningNumber({
+          modules: [Module_Name],
+          tableName: "hims_f_app_numgen",
+          identity: {
+            algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
+            hospital_id: req.userIdentity["x-branch"]
+          }
+        })
+        .then(generatedNumbers => {
+          _mysql
+            .executeQuery({
+              query:
+                "INSERT INTO hims_f_receipt_header (receipt_number, receipt_date, total_amount,\
+                  created_by, created_date, updated_by, updated_date, shift_id, pay_type,hospital_id) \
+                  VALUES (?,?,?,?,?,?,?,?,?,?)",
+              values: [
+                generatedNumbers[0],
+                new Date(),
+                inputParam.total_amount,
+                req.userIdentity.algaeh_d_app_user_id,
+                new Date(),
+                req.userIdentity.algaeh_d_app_user_id,
+                new Date(),
+                inputParam.shift_id,
+                inputParam.pay_type,
+                req.userIdentity.hospital_id
+              ],
+              printQuery: true
+            })
+            .then(headerRcptResult => {
+              if (
+                headerRcptResult.insertId != null &&
+                headerRcptResult.insertId != ""
+              ) {
+                req.body.receipt_header_id = headerRcptResult.insertId;
+                const receptSample = [
+                  "card_check_number",
+                  "expiry_date",
+                  "pay_type",
+                  "amount",
+                  "created_by",
+                  "updated_by",
+                  "card_type"
+                ];
+
+                _mysql
+                  .executeQuery({
+                    query: "INSERT INTO hims_f_receipt_details(??) VALUES ?",
+                    values: inputParam.receiptdetails,
+                    includeValues: receptSample,
+                    extraValues: {
+                      hims_f_receipt_header_id: headerRcptResult.insertId
+                    },
+                    bulkInsertOrUpdate: true,
+                    printQuery: true
+                  })
+                  .then(RcptDetailsRecords => {
+                    _mysql
+                      .executeQuery({
+                        query:
+                          "INSERT  INTO hims_f_patient_pakage_advance ( hims_f_patient_id, hims_f_receipt_header_id,\
+                            transaction_type, advance_amount, package_id,created_by, \
+                            created_date, updated_by, update_date,  hospital_id) VALUES (?,?,?,?,?,?,?,?,?,?) ;\
+                            SELECT advance_amount,balance_amount FROM hims_f_package_header WHERE hims_f_package_header_id=?",
+                        values: [
+                          inputParam.hims_f_patient_id,
+                          headerRcptResult.insertId,
+                          inputParam.transaction_type,
+                          inputParam.advance_amount,
+                          inputParam.package_id,
+                          req.userIdentity.algaeh_d_app_user_id,
+                          new Date(),
+                          req.userIdentity.algaeh_d_app_user_id,
+                          new Date(),
+                          req.userIdentity.hospital_id,
+                          inputParam.package_id
+                        ],
+                        printQuery: true
+                      })
+                      .then(Insert_Advance => {
+                        let existingAdvance =
+                          Insert_Advance[1][0].advance_amount;
+                        let balance_amount =
+                          Insert_Advance[1][0].balance_amount;
+
+                        let strQuery = "";
+                        if (existingAdvance != null) {
+                          if (inputParam.transaction_type == "AD") {
+                            inputParam.balance_amount =
+                              parseFloat(inputParam.advance_amount) +
+                              parseFloat(balance_amount);
+                            inputParam.advance_amount =
+                              parseFloat(inputParam.advance_amount) +
+                              parseFloat(existingAdvance);
+
+                            strQuery +=
+                              " , advance_amount='" +
+                              inputParam.advance_amount +
+                              "' , balance_amount ='" +
+                              inputParam.balance_amount +
+                              "'";
+                          } else if (inputParam.transaction_type == "RF") {
+                            inputParam.advance_amount =
+                              existingAdvance - inputParam.advance_amount;
+                            strQuery += ", `closed`='Y', closed_type='R'";
+                          }
+                        }
+
+                        _mysql
+                          .executeQuery({
+                            query:
+                              "UPDATE  `hims_f_package_header` SET `updated_by`=?, `updated_date`=?" +
+                              strQuery +
+                              " WHERE `hims_f_package_header_id`=?",
+                            values: [
+                              req.userIdentity.algaeh_d_app_user_id,
+                              new Date(),
+                              inputParam.package_id
+                            ],
+                            printQuery: true
+                          })
+                          .then(update_advance => {
+                            _mysql.commitTransaction(() => {
+                              _mysql.releaseConnection();
+                              req.records = {
+                                receipt_number: generatedNumbers[0],
+                                total_advance_amount: inputParam.advance_amount
+                              };
+                              next();
+                            });
+                          })
+                          .catch(error => {
+                            _mysql.rollBackTransaction(() => {
+                              next(error);
+                            });
+                          });
+                      })
+                      .catch(error => {
+                        _mysql.rollBackTransaction(() => {
+                          next(error);
+                        });
+                      });
+                  })
+                  .catch(error => {
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
+                    });
+                  });
+              }
+            })
+            .catch(error => {
+              _mysql.rollBackTransaction(() => {
+                next(error);
+              });
+            });
+        })
+        .catch(e => {
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
+        });
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
+  },
+
+  updatePatientPackage: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let inputParam = req.body;
+      req.body.billdetails = req.body.package_details;
+      req.body.incharge_or_provider = req.body.doctor_id;
+      req.body.billed = "Y";
+      let qry = "";
+      for (let i = 0; i < inputParam.package_details.length; i++) {
+        qry += mysql.format(
+          "UPDATE `hims_f_package_detail` SET utilized_qty=?, available_qty=? where hims_f_package_detail_id=?;",
+          [
+            inputParam.package_details[i].utilized_qty,
+            inputParam.package_details[i].available_qty,
+            inputParam.package_details[i].hims_f_package_detail_id
+          ]
+        );
+      }
+
+      _mysql
+        .executeQuery({
+          query: qry,
+          printQuery: true
+        })
+        .then(results => {
+          _mysql
+            .executeQuery({
+              query:
+                "SELECT * FROM hims_test_db.hims_f_package_detail  where package_header_id\
+                  in(select package_header_id   FROM hims_f_package_detail  where package_header_id=?\
+                  group by package_header_id having sum(available_qty)=0);",
+              values: [inputParam.hims_f_package_header_id],
+              printQuery: true
+            })
+            .then(pack_results => {
+              let strQuery = "";
+              if (pack_results.length > 0) {
+                strQuery = ", `closed`='Y', closed_type='D'";
+              }
+
+              _mysql
+                .executeQuery({
+                  query:
+                    "update hims_f_package_header set balance_amount= ?, utilize_amount=?" +
+                    strQuery +
+                    "where hims_f_package_header_id=? ",
+                  values: [
+                    inputParam.balance_amount,
+                    inputParam.utilize_amount,
+                    inputParam.hims_f_package_header_id
+                  ],
+                  printQuery: true
+                })
+                .then(update_header => {
+                  req.connection = {
+                    connection: _mysql.connection,
+                    isTransactionConnection: _mysql.isTransactionConnection,
+                    pool: _mysql.pool
+                  };
+                  // _mysql.commitTransaction(() => {
+                  //   _mysql.releaseConnection();
+                  //   req.records = update_header;
+                  //   next();
+                  // });
+                  req.records = update_header;
+                  next();
+                })
+                .catch(e => {
+                  _mysql.rollBackTransaction(() => {
+                    next(e);
+                  });
+                });
+            })
+            .catch(e => {
+              _mysql.rollBackTransaction(() => {
+                next(e);
+              });
+            });
+        })
+        .catch(e => {
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
     }
   }
 };

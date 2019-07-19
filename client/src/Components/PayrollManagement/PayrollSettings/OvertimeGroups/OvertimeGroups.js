@@ -296,7 +296,7 @@ class OvertimeGroups extends Component {
                     >
                       <label className="algaehLabelGroup">Payment Type</label>
                       <div className="row">
-                        <div className="col-12">
+                        <div className="col-12 margin-bottom-15">
                           {/* <label>Calculation Method</label> */}
                           <div className="customRadio">
                             <label className="radio inline">
@@ -328,7 +328,7 @@ class OvertimeGroups extends Component {
                             <AlagehFormGroup
                               div={{ className: "col-4" }}
                               label={{
-                                forceLabel: "Working Day Hour",
+                                forceLabel: "Working Hour",
                                 isImp: true
                               }}
                               textBox={{
@@ -349,7 +349,7 @@ class OvertimeGroups extends Component {
                             <AlagehFormGroup
                               div={{ className: "col-4" }}
                               label={{
-                                forceLabel: "Week Off Day Hour",
+                                forceLabel: "Week-off Hour",
                                 isImp: true
                               }}
                               textBox={{
@@ -392,7 +392,7 @@ class OvertimeGroups extends Component {
                             <AlagehFormGroup
                               div={{ className: "col-4" }}
                               label={{
-                                forceLabel: "Working Day Hour",
+                                forceLabel: "Working Hour",
                                 isImp: true
                               }}
                               textBox={{
@@ -413,7 +413,7 @@ class OvertimeGroups extends Component {
                             <AlagehFormGroup
                               div={{ className: "col-4" }}
                               label={{
-                                forceLabel: "Week Off Day Hour",
+                                forceLabel: "Week-off Hour",
                                 isImp: true
                               }}
                               textBox={{
@@ -453,7 +453,7 @@ class OvertimeGroups extends Component {
                             <AlagehFormGroup
                               div={{ className: "col-4" }}
                               label={{
-                                forceLabel: "Working Day Rate",
+                                forceLabel: "Working Rate",
                                 isImp: true
                               }}
                               textBox={{
@@ -474,7 +474,7 @@ class OvertimeGroups extends Component {
                             <AlagehFormGroup
                               div={{ className: "col-4" }}
                               label={{
-                                forceLabel: "Week Off Day Rate",
+                                forceLabel: "Week-off Rate",
                                 isImp: true
                               }}
                               textBox={{
@@ -524,7 +524,7 @@ class OvertimeGroups extends Component {
                         onClick={this.addOvertimeGroups.bind(this)}
                         className="btn btn-primary"
                       >
-                        Add
+                        Add to List
                       </button>
                     </div>
                   </div>

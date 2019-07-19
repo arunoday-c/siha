@@ -237,6 +237,17 @@ class OPBilling extends Component {
             data.patientRegistration.due_amount = 0;
           }
           this.setState(data.patientRegistration, () => {
+            this.props.getPatientPackage({
+              uri: "/orderAndPreApproval/getPatientPackage",
+              method: "GET",
+              data: {
+                patient_id: this.state.patient_id
+              },
+              redux: {
+                type: "ORDER_SERVICES_GET_DATA",
+                mappingName: "PatientPackageList"
+              }
+            });
             selectVisit($this);
           });
 
@@ -592,7 +603,8 @@ function mapStateToProps(state) {
     existinsurance: state.existinsurance,
     patienttype: state.patienttype,
     networkandplans: state.networkandplans,
-    deptanddoctors: state.deptanddoctors
+    deptanddoctors: state.deptanddoctors,
+    PatientPackageList: state.PatientPackageList
   };
 }
 
@@ -604,7 +616,8 @@ function mapDispatchToProps(dispatch) {
       getPatientType: AlgaehActions,
       getPatientInsurance: AlgaehActions,
       getNetworkPlans: AlgaehActions,
-      getDepartmentsandDoctors: AlgaehActions
+      getDepartmentsandDoctors: AlgaehActions,
+      getPatientPackage: AlgaehActions
     },
     dispatch
   );

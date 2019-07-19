@@ -68,8 +68,36 @@ class LabResult extends Component {
                   id="Lab_list_grid"
                   columns={[
                     {
+                      fieldName: "status",
+                      label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
+                      displayTemplate: row => {
+                        return row.status === "O" ? (
+                          <span className="badge badge-light">Ordered</span>
+                        ) : row.status === "CL" ? (
+                          <span className="badge badge-secondary">
+                            Collected
+                          </span>
+                        ) : row.status === "CN" ? (
+                          <span className="badge badge-danger">Cancelled</span>
+                        ) : row.status === "CF" ? (
+                          <span className="badge badge-primary">Confirmed</span>
+                        ) : (
+                          <span className="badge badge-success">
+                            Result Available
+                          </span>
+                        );
+                      },
+                      others: {
+                        maxWidth: 90,
+                        resizable: false,
+                        style: { textAlign: "center" }
+                      }
+                    },
+                    {
                       fieldName: "service_name",
-                      label: <AlgaehLabel label={{ forceLabel: "Test" }} />,
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Test Name" }} />
+                      ),
                       displayTemplate: row => {
                         return (
                           <span
@@ -80,21 +108,9 @@ class LabResult extends Component {
                             {row.service_name}
                           </span>
                         );
-                      }
-                    },
-                    {
-                      fieldName: "status",
-                      label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
-                      displayTemplate: row => {
-                        return row.status === "O"
-                          ? "Ordered"
-                          : row.status === "CL"
-                          ? "Collected"
-                          : row.status === "CN"
-                          ? "Cancelled"
-                          : row.status === "CF"
-                          ? "Confirmed"
-                          : "Result Available";
+                      },
+                      className: drow => {
+                        return "greenCell";
                       }
                     },
                     {

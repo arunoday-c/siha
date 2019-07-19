@@ -3,6 +3,7 @@ import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import extend from "extend";
 import Enumerable from "linq";
 import moment from "moment";
+import _ from "lodash";
 //Text Handaler Change
 const texthandle = ($this, ctrl, e) => {
   e = e || ctrl;
@@ -262,6 +263,10 @@ const ProcessService = $this => {
                               Service_data.billdetails[i].ordered_by =
                                 Window.global["provider_id"];
                               Service_data.billdetails[i].billed = "N";
+
+                              Service_data.billdetails[i].advance_amount = 0;
+                              Service_data.billdetails[i].balance_amount = 0;
+                              Service_data.billdetails[i].utilize_amount = 0;
                             })
                             .catch(error => {
                               console.error(error);
@@ -378,6 +383,9 @@ const ProcessService = $this => {
                 Window.global["provider_id"];
               data.billdetails[0].ordered_by = Window.global["provider_id"];
               data.billdetails[0].billed = "N";
+              data.billdetails[0].advance_amount = 0;
+              data.billdetails[0].balance_amount = 0;
+              data.billdetails[0].utilize_amount = 0;
               debugger;
               getPackageDetail($this, data.billdetails[0].package_id)
                 .then(result => {
@@ -464,10 +472,16 @@ const ProcessService = $this => {
 const deleteServices = ($this, row, rowId) => {
   let orderservicesdata = $this.state.orderservicesdata;
   let preserviceInput = $this.state.preserviceInput;
+
+  const get_selected_row = _.find(
+    preserviceInput,
+    f => f.hims_d_services_id === row["services_id"]
+  );
+
+  const _index = preserviceInput.indexOf(get_selected_row);
   let saved = false;
 
   orderservicesdata.splice(row.rowIdx, 1);
-
   if (orderservicesdata.length === 0) {
     saved = true;
 
@@ -482,16 +496,15 @@ const deleteServices = ($this, row, rowId) => {
   }
 
   let app_amt = $this.state.approval_amt - row["company_payble"];
-  for (var i = 0; i < preserviceInput.length; i++) {
-    if (preserviceInput[i].hims_d_services_id === row["services_id"]) {
-      preserviceInput.splice(i, 1);
-    }
-  }
+
   if ($this.state.approval_limit_yesno === "Y") {
     if (app_amt < $this.state.preapp_limit_amount) {
+      preserviceInput.splice(_index, 1);
       for (var k = 0; k < preserviceInput.length; k++) {
         preserviceInput[k].approval_limit_yesno = "N";
       }
+
+      debugger;
 
       algaehApiCall({
         uri: "/billing/getBillDetails",
@@ -501,12 +514,36 @@ const deleteServices = ($this, row, rowId) => {
         onSuccess: response => {
           if (response.data.success) {
             let data = response.data.records;
-            $this.setState({
-              orderservicesdata: data.billdetails,
-              approval_amt: app_amt,
-              preserviceInput: preserviceInput,
-              approval_limit_yesno: "N",
-              saved: saved
+
+            algaehApiCall({
+              uri: "/billing/billingCalculations",
+              module: "billing",
+              method: "POST",
+              data: { billdetails: data.billdetails },
+              onSuccess: response => {
+                if (response.data.success) {
+                  $this.setState({
+                    orderservicesdata: data.billdetails,
+                    approval_amt: app_amt,
+                    preserviceInput: preserviceInput,
+                    approval_limit_yesno: "N",
+                    saved: saved,
+                    sub_total_amount: response.data.records.sub_total_amount,
+                    discount_amount: response.data.records.discount_amount,
+                    net_total: response.data.records.net_total,
+                    patient_payable: response.data.records.patient_payable,
+                    company_payble: response.data.records.company_payble,
+                    copay_amount: response.data.records.copay_amount,
+                    sec_copay_amount: response.data.records.sec_copay_amount
+                  });
+                }
+              },
+              onFailure: error => {
+                swalMessage({
+                  title: error.message,
+                  type: "error"
+                });
+              }
             });
           }
         },

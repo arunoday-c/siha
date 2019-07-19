@@ -12,6 +12,8 @@ import AlgaehLoader from "../Wrapper/fullPageLoader";
 
 const ClearData = ($this, e) => {
   let _screenName = getCookie("ScreenName").replace("/", "");
+  let prevLang = getCookie("Language");
+
   let counter_id = 0;
   algaehApiCall({
     uri: "/userPreferences/get",
@@ -32,6 +34,7 @@ const ClearData = ($this, e) => {
       IOputs.s_service_type = null;
       IOputs.s_service = null;
       IOputs.pageDisplay = "BillingDetails";
+      IOputs.selectedLang = prevLang;
       $this.setState({ ...$this.state, ...IOputs }, () => {
         getCashiersAndShiftMAP($this);
       });

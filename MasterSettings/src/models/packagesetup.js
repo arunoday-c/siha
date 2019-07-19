@@ -109,7 +109,7 @@ module.exports = {
             PH.total_service_amount, PH.profit_loss,PH.pl_amount, PH.package_service_id, PH.package_type,\
             PH.expiry_days, PH.advance_type, PH.advance_amount, PH.advance_percentage,\
             PH.package_visit_type, PD.hims_d_package_detail_id, PD.service_type_id, PD.service_id, \
-            PD.service_amount, PD.qty,PD.tot_service_amount,PD.appropriate_amount \
+            PD.service_amount, PD.qty,PD.tot_service_amount,PD.appropriate_amount,PD.qty as available_qty \
             from hims_d_package_header PH, hims_d_package_detail PD where \
             PH.hims_d_package_header_id=PD.package_header_id " +
             _strQry +

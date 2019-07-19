@@ -129,6 +129,10 @@ class AddConsultationForm extends Component {
         : this.props.deptanddoctors.departmets;
     const hideMaternity = this.state.gender === "Female" ? "" : "hide";
 
+    const Package_Exists =
+      this.props.PatientPackageList === undefined
+        ? []
+        : this.props.PatientPackageList;
     return (
       <MyContext.Consumer>
         {context => (
@@ -417,6 +421,11 @@ class AddConsultationForm extends Component {
                 </div>
 
                 <div className="col-lg-8 secondary-details">
+                  {Package_Exists.length > 0 ? (
+                    <div className="col">
+                      <h6 style={{ color: "green" }}> Package Exists </h6>
+                    </div>
+                  ) : null}
                   <h6>{getLabelFromLanguage({ fieldName: "PastVisit" })}</h6>
                   <AlgaehDataGrid
                     columns={[
@@ -545,7 +554,8 @@ function mapStateToProps(state) {
     frontproviders: state.frontproviders,
     deptanddoctors: state.deptanddoctors,
     viewsubdept: state.viewsubdept,
-    dentalplans: state.dentalplans
+    dentalplans: state.dentalplans,
+    PatientPackageList: state.PatientPackageList
   };
 }
 
@@ -556,7 +566,8 @@ function mapDispatchToProps(dispatch) {
       getProviderDetails: AlgaehActions,
       getDepartmentsandDoctors: AlgaehActions,
       getSubDepartment: AlgaehActions,
-      getTreatmentPlan: AlgaehActions
+      getTreatmentPlan: AlgaehActions,
+      getPatientPackage: AlgaehActions
     },
     dispatch
   );

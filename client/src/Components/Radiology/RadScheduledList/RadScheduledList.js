@@ -3,15 +3,12 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 import RadResultEntry from "../RadResultEntry/RadResultEntry";
 
 import "./RadScheduledList.css";
 import "./../../../styles/site.css";
 
 import {
-  texthandle,
-  PatientSearch,
   datehandle,
   getRadTestList,
   openResultEntry,
@@ -22,15 +19,9 @@ import {
 import {
   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehFormGroup,
-  AlagehAutoComplete,
   AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
 
-import {
-  FORMAT_PRIORITY,
-  FORMAT_RAD_STATUS
-} from "../../../utils/GlobalVariables.json";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -102,7 +93,7 @@ class RadScheduledList extends Component {
         myWindow.document.write(
           "<iframe src= '" + url + "' width='100%' height='100%' />"
         );
-        myWindow.document.title = "Radiology";
+        myWindow.document.title = "Radiology Report";
       }
     });
   }
@@ -510,7 +501,7 @@ class RadScheduledList extends Component {
                           : this.state.radtestlist
                     }}
                     noDataText="No data available for selected period"
-                    filter="true"
+                    filter={true}
                     paging={{ page: 0, rowsPerPage: 20 }}
                   />
                 </div>

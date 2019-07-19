@@ -466,6 +466,18 @@ const getCtrlCode = ($this, patcode, row) => {
             mappingName: "existinsurance"
           }
         });
+
+        $this.props.getPatientPackage({
+          uri: "/orderAndPreApproval/getPatientPackage",
+          method: "GET",
+          data: {
+            patient_id: this.state.hims_d_patient_id
+          },
+          redux: {
+            type: "ORDER_SERVICES_GET_DATA",
+            mappingName: "PatientPackageList"
+          }
+        });
       }
     },
     onFailure: error => {

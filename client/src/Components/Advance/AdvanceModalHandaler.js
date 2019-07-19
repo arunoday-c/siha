@@ -120,7 +120,16 @@ const datehandle = ($this, ctrl, e) => {
 const Validations = ($this, e) => {
   let isError = false;
 
-  if ($this.state.Cashchecked === true) {
+  if ($this.state.shift_id === null) {
+    isError = true;
+    swalMessage({
+      title: "Please Select Shift.",
+      type: "error"
+    });
+
+    document.querySelector("[name='shift_id']").focus();
+    return isError;
+  } else if ($this.state.Cashchecked === true) {
     if (parseFloat($this.state.cash_amount) === 0) {
       isError = true;
       swalMessage({

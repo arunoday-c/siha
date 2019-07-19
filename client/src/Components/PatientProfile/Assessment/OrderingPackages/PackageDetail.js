@@ -38,9 +38,7 @@ class PackageDetail extends Component {
   componentWillReceiveProps(newProps) {
     debugger;
     if (newProps.package_detail !== null) {
-      this.setState({ ...this.state, ...newProps.package_detail }, () => {
-        debugger;
-      });
+      this.setState({ ...this.state, ...newProps.package_detail });
     }
   }
 
@@ -95,12 +93,11 @@ class PackageDetail extends Component {
       };
 
       package_detail.push(InputObj);
-      let total_service_amount = _.sumBy(package_detail, s =>
+      let actual_amount = _.sumBy(package_detail, s =>
         parseFloat(s.tot_service_amount)
       );
       let pl_amount =
-        parseFloat(this.state.package_amount) -
-        parseFloat(total_service_amount);
+        parseFloat(this.state.package_amount) - parseFloat(actual_amount);
       if (pl_amount < 0) {
         profit_loss = "L";
       }
@@ -108,7 +105,7 @@ class PackageDetail extends Component {
       for (let i = 0; i < package_detail.length; i++) {
         let appropriate_amount =
           parseFloat(package_detail[i].tot_service_amount) /
-          parseFloat(this.state.total_service_amount);
+          parseFloat(this.state.actual_amount);
         appropriate_amount =
           appropriate_amount * parseFloat(this.state.package_amount);
         package_detail[i].appropriate_amount = appropriate_amount;
@@ -118,7 +115,7 @@ class PackageDetail extends Component {
 
         s_service: null,
         s_service_amount: null,
-        total_service_amount: total_service_amount,
+        actual_amount: actual_amount,
         pl_amount: pl_amount,
         profit_loss: profit_loss,
         qty: 0
@@ -129,6 +126,30 @@ class PackageDetail extends Component {
         type: "warning"
       });
     }
+  }
+
+  deletePackageDetail(row, e) {
+    debugger;
+    let package_detail = this.state.package_detail;
+    let _index = package_detail.indexOf(row);
+
+    package_detail.splice(_index, 1);
+    let actual_amount = _.sumBy(package_detail, s =>
+      parseFloat(s.tot_service_amount)
+    );
+
+    for (let i = 0; i < package_detail.length; i++) {
+      let appropriate_amount =
+        parseFloat(package_detail[i].tot_service_amount) /
+        parseFloat(this.state.actual_amount);
+      appropriate_amount =
+        appropriate_amount * parseFloat(this.state.package_amount);
+      package_detail[i].appropriate_amount = appropriate_amount;
+    }
+    this.setState({
+      package_detail: package_detail,
+      actual_amount: actual_amount
+    });
   }
 
   texthandle(e) {
@@ -145,97 +166,85 @@ class PackageDetail extends Component {
             events={{
               onClose: this.onClose.bind(this)
             }}
-            title="Procedure Items"
+            title="Package Services"
             openPopup={this.props.show}
           >
             <div className="row">
               <div className="col-lg-12 popupInner">
-                {this.state.package_type === "D" ? (
-                  <div className="row">
-                    <AlgaehAutoSearch
-                      div={{ className: "col-7 customServiceSearch" }}
-                      label={{ forceLabel: "Select Service" }}
-                      title="Search Services"
-                      id="service_id_search"
-                      template={({
-                        covered,
-                        pre_approval,
-                        service_name,
-                        service_type
-                      }) => {
-                        let properStyle;
-                        if (this.state.insured === "Y") {
-                          if (covered === "Y") {
-                            if (pre_approval === "Y") {
-                              properStyle = "orange_Y_Y";
-                            } else {
-                              properStyle = "green_Y_N";
-                            }
-                          } else {
-                            properStyle = "red_N_N";
-                          }
-                        } else {
-                          properStyle = "white_N_N";
-                        }
-                        return (
-                          <div className={`row resultSecStyles ${properStyle}`}>
-                            <div className="col-12 padd-10">
-                              <h6 className="title">
-                                {_.startCase(_.toLower(service_name))}
-                                <span className="service_type">
-                                  ({_.startCase(_.toLower(service_type))})
-                                </span>
-                              </h6>
-                            </div>
-                          </div>
-                        );
-                      }}
-                      name="s_service"
-                      columns={spotlightSearch.Services.servicemaster}
-                      displayField="s_service_name"
-                      value={this.state.s_service_name}
-                      searchName="servicepackagemas"
-                      onClick={this.serviceHandeler.bind(this)}
-                      ref={attReg => {
-                        this.attReg = attReg;
-                      }}
-                    />
-
-                    <AlagehFormGroup
-                      div={{ className: "col-2" }}
-                      label={{
-                        forceLabel: "Quantity",
-                        isImp: true
-                      }}
-                      textBox={{
-                        number: {
-                          allowNegative: false,
-                          thousandSeparator: ","
-                        },
-                        className: "txt-fld",
-                        name: "qty",
-                        value: this.state.qty,
-                        dontAllowKeys: ["-", "e", "."],
-                        events: {
-                          onChange: this.texthandle.bind(this)
-                        },
-                        others: {
-                          step: "1"
-                        }
-                      }}
-                    />
-                    <div className="col-2 form-group">
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "total_service_amount"
+                <div className="popRightDiv">
+                  {this.state.package_type === "D" ? (
+                    <div className="row">
+                      <AlgaehAutoSearch
+                        div={{ className: "col-4 customServiceSearch" }}
+                        label={{ forceLabel: "Select Service" }}
+                        title="Search Services"
+                        id="service_id_search"
+                        template={result => {
+                          return (
+                            <section className="resultSecStyles">
+                              <div className="row">
+                                <div className="col-8">
+                                  <h4 className="title">
+                                    {result.service_name}
+                                  </h4>
+                                  <small>{result.service_type}</small>
+                                </div>
+                              </div>
+                            </section>
+                          );
+                        }}
+                        name="s_service"
+                        columns={spotlightSearch.Services.servicemaster}
+                        displayField="s_service_name"
+                        value={this.state.s_service_name}
+                        searchName="servicepackagemas"
+                        onClick={this.serviceHandeler.bind(this)}
+                        ref={attReg => {
+                          this.attReg = attReg;
                         }}
                       />
-                      <h6>
-                        {getAmountFormart(this.state.total_service_amount)}
-                      </h6>
-                    </div>
 
-                    <div className="col-3 customRadio form-group">
+                      <AlagehFormGroup
+                        div={{ className: "col-2" }}
+                        label={{
+                          forceLabel: "Quantity",
+                          isImp: true
+                        }}
+                        textBox={{
+                          number: {
+                            allowNegative: false,
+                            thousandSeparator: ","
+                          },
+                          className: "txt-fld",
+                          name: "qty",
+                          value: this.state.qty,
+                          dontAllowKeys: ["-", "e", "."],
+                          events: {
+                            onChange: this.texthandle.bind(this)
+                          },
+                          others: {
+                            step: "1"
+                          }
+                        }}
+                      />
+                      <div className="col-2 form-group">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Actual Amount"
+                          }}
+                        />
+                        <h6>{getAmountFormart(this.state.actual_amount)}</h6>
+                      </div>
+                      <div className="col-2 form-group">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Package Price"
+                          }}
+                        />
+                        <h6>{getAmountFormart(this.state.unit_cost)}</h6>
+                      </div>
+
+                      {/*<div className="col-3 customRadio form-group">
                       <label className="radio inline">
                         <input
                           type="radio"
@@ -261,26 +270,48 @@ class PackageDetail extends Component {
                         />
                         <span>Multi Visit</span>
                       </label>
+                    </div>*/}
+                      <div className="col-2 form-group">
+                        <button
+                          className="btn btn-primary"
+                          style={{ marginTop: 19 }}
+                          onClick={this.AddtoList.bind(this)}
+                        >
+                          Add
+                        </button>
+                      </div>
                     </div>
-                    <div className="col-2 form-group">
-                      <button
-                        className="btn btn-primary"
-                        style={{ marginTop: 19 }}
-                        onClick={this.AddtoList.bind(this)}
-                      >
-                        Add
-                      </button>
-                    </div>
-                  </div>
-                ) : null}
+                  ) : null}
 
-                <div className="popRightDiv">
                   <div className="row">
                     <div className="col-12" id="ExisitingNewItemsGrid_Cntr">
                       <AlgaehDataGrid
                         id="ExisitingNewItemsGrid"
                         datavalidate="ExisitingNewItemsGrid"
                         columns={[
+                          {
+                            fieldName: "actions",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Action" }} />
+                            ),
+                            displayTemplate: row => {
+                              return (
+                                <span>
+                                  <i
+                                    onClick={this.deletePackageDetail.bind(
+                                      this,
+                                      row
+                                    )}
+                                    className="fas fa-trash-alt"
+                                  />
+                                </span>
+                              );
+                            },
+                            others: {
+                              show:
+                                this.state.package_type === "D" ? true : false
+                            }
+                          },
                           {
                             fieldName: "service_type_id",
                             label: (

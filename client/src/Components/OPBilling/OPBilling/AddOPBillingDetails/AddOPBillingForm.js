@@ -36,7 +36,7 @@ import { successfulMessage } from "../../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 import Enumerable from "linq";
-
+import PatientPackages from "../../../PatientPackages/PatientPackages";
 class AddOPBillingForm extends Component {
   constructor(props) {
     super(props);
@@ -333,6 +333,10 @@ class AddOPBillingForm extends Component {
   }
 
   render() {
+    let Package_Exists =
+      this.props.PatientPackageList === undefined
+        ? []
+        : this.props.PatientPackageList;
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -386,7 +390,7 @@ class AddOPBillingForm extends Component {
                     }}
                   />
 
-                  <div className="col-lg-4">
+                  <div className="col-lg-2">
                     <button
                       className="btn btn-primary"
                       style={{ marginTop: "24px" }}
@@ -402,6 +406,12 @@ class AddOPBillingForm extends Component {
                       />
                     </button>
                   </div>
+
+                  {Package_Exists.length > 0 ? (
+                    <div className="col">
+                      <h6 style={{ color: "green" }}> Package Exists </h6>
+                    </div>
+                  ) : null}
 
                   <div className="col-lg-2">
                     <button
@@ -1143,7 +1153,8 @@ function mapStateToProps(state) {
   return {
     servicetype: state.servicetype,
     opbilservices: state.opbilservices,
-    opserviceslist: state.opserviceslist
+    opserviceslist: state.opserviceslist,
+    PatientPackageList: state.PatientPackageList
   };
 }
 

@@ -1,3 +1,5 @@
+const process = require("process");
+
 exports.default = {
   // API token key
   SECRETKey: "ALGAEH Technologies PVT Ltd HIMSv1",
@@ -54,7 +56,20 @@ exports.default = {
     //   "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
 
     //for Mac
-    executablePath:
-      "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+    executablePath: chromePathFinder()
   }
 };
+
+function chromePathFinder() {
+  const OS = process.platform;
+  if (OS === "win32") {
+    return "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe";
+  }
+  if (OS === "darwin") {
+    return "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
+  }
+  //for WSL not for actual link distro
+  if (OS === "linux") {
+    return "/mnt/c/Program Files (x86)/Google/Chrome/Application/chrome.exe";
+  }
+}

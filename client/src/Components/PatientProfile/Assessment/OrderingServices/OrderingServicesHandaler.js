@@ -387,11 +387,6 @@ const deleteServices = ($this, row, rowId) => {
 
   let app_amt = $this.state.approval_amt - row["company_payble"];
 
-  // for (var i = 0; i < preserviceInput.length; i++) {
-  //   if (preserviceInput[i].hims_d_services_id === row["services_id"]) {
-  //     preserviceInput.splice(i, 1);
-  //   }
-  // }
   if ($this.state.approval_limit_yesno === "Y") {
     if (app_amt < $this.state.preapp_limit_amount) {
       preserviceInput.splice(_index, 1);

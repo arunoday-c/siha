@@ -17,3 +17,7 @@
   .hptl-phase1-lab-result-form #LabTestName .ReactTable {
     max-height: 37vh !important;
     margin-bottom: 15px; }
+
+#LabResultGridCntr .ReactTable {
+  max-height: 65vh !important;
+  margin-bottom: 15px; }

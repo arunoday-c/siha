@@ -537,6 +537,7 @@ const makeZeroIngrid = ($this, context, row, e) => {
     });
   }
 };
+
 export {
   serviceTypeHandeler,
   serviceHandeler,

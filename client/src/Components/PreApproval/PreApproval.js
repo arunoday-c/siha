@@ -242,18 +242,6 @@ class PreApproval extends Component {
                                 />
 
                                 <i
-                                  style={{
-                                    pointerEvents:
-                                      row.apprv_status === "AP" ||
-                                      row.apprv_status === "RJ"
-                                        ? ""
-                                        : "none",
-                                    opacity:
-                                      row.apprv_status === "AP" ||
-                                      row.apprv_status === "RJ"
-                                        ? ""
-                                        : "0.1"
-                                  }}
                                   className="fas fa-check"
                                   onClick={VerifyOrderModel.bind(
                                     this,

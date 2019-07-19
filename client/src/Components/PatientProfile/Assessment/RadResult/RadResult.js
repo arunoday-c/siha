@@ -9,6 +9,7 @@ import "./../../../../styles/site.css";
 import { getRadResult } from "./RadResultEvents";
 
 import { AlgaehDataGrid, AlgaehLabel } from "../../../Wrapper/algaehWrapper";
+import { algaehApiCall } from "../../../../utils/algaehApiCall";
 
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import moment from "moment";
@@ -36,7 +37,41 @@ class LabResult extends Component {
       return moment(date).format(Options.timeFormat);
     }
   };
+  generateReport(row) {
+    algaehApiCall({
+      uri: "/report",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob"
+      },
+      others: { responseType: "blob" },
+      data: {
+        report: {
+          reportName: "radiologyReport",
+          reportParams: [
+            {
+              name: "hims_f_rad_order_id",
+              value: row.hims_f_rad_order_id
+            }
+          ],
+          outputFileType: "PDF"
+        }
+      },
+      onSuccess: res => {
+        const url = URL.createObjectURL(res.data);
+        let myWindow = window.open(
+          "{{ product.metafields.google.custom_label_0 }}",
+          "_blank"
+        );
 
+        myWindow.document.write(
+          "<iframe src= '" + url + "' width='100%' height='100%' />"
+        );
+        myWindow.document.title = "Radiology Report";
+      }
+    });
+  }
   ShowCollectionModel(row, e) {
     this.setState({
       isOpen: !this.state.isOpen,
@@ -67,7 +102,15 @@ class LabResult extends Component {
                       displayTemplate: row => {
                         return (
                           <span>
-                            <i className="fas fa-file-alt" />
+                            <i
+                              style={{
+                                pointerEvents:
+                                  row.status === "RA" ? "" : "none",
+                                opacity: row.status === "RA" ? "" : "0.1"
+                              }}
+                              className="fas fa-print"
+                              onClick={this.generateReport.bind(this, row)}
+                            />
 
                             <i className="fas fa-file-image" />
                           </span>
@@ -78,61 +121,42 @@ class LabResult extends Component {
                       }
                     },
                     {
-                      fieldName: "service_name",
-                      label: <AlgaehLabel label={{ forceLabel: "Test" }} />
-                      // displayTemplate: row => {
-                      //   let display =
-                      //     this.props.assservices === undefined
-                      //       ? []
-                      //       : this.props.assservices.filter(
-                      //           f => f.hims_d_services_id === row.service_id
-                      //         );
-                      //
-                      //   return (
-                      //     <span>
-                      //       {display !== null && display.length !== 0
-                      //         ? display[0].service_name
-                      //         : ""}
-                      //     </span>
-                      //   );
-                      // }
-                    },
-                    {
                       fieldName: "status",
                       label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
                       displayTemplate: row => {
-                        return row.status === "O"
-                          ? "Ordered"
-                          : row.status === "S"
-                          ? "Scheduled"
-                          : row.status === "CN"
-                          ? "Cancelled"
-                          : row.status === "CF"
-                          ? "Result Confirmed"
-                          : "Result Available";
+                        return row.status === "O" ? (
+                          <span className="badge badge-light">Ordered</span>
+                        ) : row.status === "S" ? (
+                          <span className="badge badge-secondary">
+                            Scheduled
+                          </span>
+                        ) : row.status === "UP" ? (
+                          <span className="badge badge-warning">
+                            Process On Going
+                          </span>
+                        ) : row.status === "CN" ? (
+                          <span className="badge badge-danger">Cancelled</span>
+                        ) : row.status === "RC" ? (
+                          <span className="badge badge-primary">Confirmed</span>
+                        ) : (
+                          <span className="badge badge-success">Validated</span>
+                        );
+                      },
+                      others: {
+                        maxWidth: 130,
+                        resizable: false,
+                        style: { textAlign: "center" }
                       }
+                    },
+                    {
+                      fieldName: "service_name",
+                      label: <AlgaehLabel label={{ forceLabel: "Test Name" }} />
                     },
                     {
                       fieldName: "refered_name",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Ordered By" }} />
                       )
-                      // displayTemplate: row => {
-                      //   let display =
-                      //     this.props.assdeptanddoctors.doctors === undefined
-                      //       ? []
-                      //       : this.props.assdeptanddoctors.doctors.filter(
-                      //           f => f.employee_id === row.provider_id
-                      //         );
-                      //
-                      //   return (
-                      //     <span>
-                      //       {display !== null && display.length !== 0
-                      //         ? display[0].full_name
-                      //         : ""}
-                      //     </span>
-                      //   );
-                      // }
                     },
                     {
                       fieldName: "ordered_date",
