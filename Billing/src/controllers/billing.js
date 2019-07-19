@@ -47,17 +47,17 @@ export default () => {
     }
   );
 
-  api.post(
-    "/getBillDetails",
-    getBillDetails,
+  // api.post(
+  //   "/getBillDetails",
+  //   getBillDetails,
 
-    (req, res, next) => {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: true,
-        records: req.records
-      });
-    }
-  );
+  //   (req, res, next) => {
+  //     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+  //       success: true,
+  //       records: req.records
+  //     });
+  //   }
+  // );
 
   api.get(
     "/getPakageDetails",
@@ -70,6 +70,20 @@ export default () => {
       });
     }
   );
+
+  api.post("/getBillDetails", getBillDetails, (req, res, next) => {
+    if (req.records.invalid_input == true) {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: false,
+        records: req.records
+      });
+    } else {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  });
 
   return api;
 };
