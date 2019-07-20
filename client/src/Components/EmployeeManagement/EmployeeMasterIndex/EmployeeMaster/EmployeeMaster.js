@@ -46,7 +46,7 @@ class EmployeeMaster extends Component {
   }
 
   openTab(e) {
-    var specified = e.currentTarget.getAttribute("algaehtabs");
+    let specified = e.currentTarget.getAttribute("algaehtabs");
 
     if (specified === "CommissionSetup") {
       AlgaehLoader({ show: true });

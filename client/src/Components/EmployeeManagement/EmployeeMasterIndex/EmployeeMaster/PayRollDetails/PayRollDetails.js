@@ -332,18 +332,6 @@ class PayRollDetails extends Component {
                   />
                 </div>
               </div>
-              <div className="row">
-                {" "}
-                <div className="col-12">
-                  <button
-                    className="btn btn-primary"
-                    style={{ float: "right", marginTop: 10 }}
-                    onClick={CalculateBasedonFormula.bind(this, this)}
-                  >
-                    Process
-                  </button>
-                </div>
-              </div>
             </div>
             <div className="col-lg-6 secondary-details">
               <h5>

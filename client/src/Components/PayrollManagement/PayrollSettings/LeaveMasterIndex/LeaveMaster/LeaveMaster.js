@@ -447,35 +447,108 @@ class LeaveMaster extends Component {
     });
   }
 
-  clearState() {
-    this.setState({
-      pageDisplay: "Leave",
-      leaveDetails: [],
-      leaveEncash: [],
-      leaveRules: [],
-      leave_code: "",
-      leave_description: "",
-      annual_maternity_leave: null,
-      include_weekoff: "",
-      include_holiday: "",
-      leave_mode: null,
-      leave_status: "",
-      leave_accrual: "",
-      leave_encash: "",
-      leave_type: null,
-      leave_category: null,
-      calculation_type: null,
-      encashment_percentage: "",
-      leave_carry_forward: "",
-      carry_forward_percentage: "",
-      religion_required: "",
-      religion_id: null,
-      holiday_reimbursement: "",
-      exit_permit_required: "",
-      proportionate_leave: "",
-      document_mandatory: ""
-    });
-  }
+  clearTabState = tab => {
+    tab = tab ? tab : "";
+    let clearObj = {};
+    switch (tab) {
+      case "Leave":
+        clearObj = {
+          leave_code: "",
+          leave_description: "",
+          annual_maternity_leave: null,
+          include_weekoff: "",
+          include_holiday: "",
+          leave_mode: null,
+          leave_status: "",
+          leave_accrual: "",
+          leave_encash: "",
+          leave_type: null,
+          leave_category: null,
+          calculation_type: null,
+          encashment_percentage: "",
+          leave_carry_forward: "",
+          carry_forward_percentage: "",
+          religion_required: "",
+          religion_id: null,
+          holiday_reimbursement: "",
+          exit_permit_required: "",
+          proportionate_leave: "",
+          document_mandatory: ""
+        };
+        break;
+
+      case "LeaveDetails":
+        clearObj = {
+          employee_type: null,
+          gender: null,
+          eligible_days: "",
+          max_number_days: "",
+          min_service_required: false,
+          service_years: "",
+          once_life_term: false,
+          allow_probation: false,
+          mandatory_utilize_days: "",
+          leaveDetails: []
+        };
+        break;
+
+      case "LeaveEncashment":
+        clearObj = {
+          earning_deductions: "",
+          percent: "",
+          leaveEncash: []
+        };
+        break;
+
+      case "LeaveRules":
+        clearObj = {
+          rule_earning_id: null,
+          paytype: null,
+          leaveRules: [],
+          from_value: "",
+          to_value: "",
+          value_type: null,
+          total_days: ""
+        };
+        break;
+
+      default:
+        clearObj = {
+          pageDisplay: "Leave",
+          leaveDetails: [],
+          leaveEncash: [],
+          leaveRules: [],
+          leave_code: "",
+          leave_description: "",
+          annual_maternity_leave: null,
+          include_weekoff: "",
+          include_holiday: "",
+          leave_mode: null,
+          leave_status: "",
+          leave_accrual: "",
+          leave_encash: "",
+          leave_type: null,
+          leave_category: null,
+          calculation_type: null,
+          encashment_percentage: "",
+          leave_carry_forward: "",
+          carry_forward_percentage: "",
+          religion_required: "",
+          religion_id: null,
+          holiday_reimbursement: "",
+          exit_permit_required: "",
+          proportionate_leave: "",
+          document_mandatory: ""
+        };
+        break;
+    }
+    this.setState(
+      {
+        ...clearObj
+      },
+      console.log(clearObj)
+    );
+  };
 
   updateLeaveDetail(data) {}
   updateLeaveEncash(data) {}
@@ -577,11 +650,11 @@ class LeaveMaster extends Component {
                       SAVE
                     </button>
                     <button
-                      onClick={this.props.onClose}
+                      onClick={() => this.clearTabState(this.state.pageDisplay)}
                       type="button"
                       className="btn btn-default"
                     >
-                      CANCEL
+                      CLEAR
                     </button>
                   </div>
                 </div>

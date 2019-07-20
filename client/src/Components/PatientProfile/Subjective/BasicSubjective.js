@@ -56,7 +56,7 @@ class BasicSubjective extends Component {
       severity: null,
       chronic: null,
       complaint_type: null,
-      isPregnancy: true,
+      isPregnancy: false,
       hims_f_episode_chief_complaint_id: null,
       recent_mediction: [],
       all_mediction: [],
@@ -110,10 +110,11 @@ class BasicSubjective extends Component {
 
     value.value === "PREGNANCY"
       ? this.setState({
-          isPregnancy: false
+          isPregnancy: true
         })
       : this.setState({
-          isPregnancy: true
+          isPregnancy: false,
+          lmp_days: ""
         });
   }
   datehandle(e) {
@@ -577,6 +578,7 @@ class BasicSubjective extends Component {
                             events={{
                               onChange: this.datehandle.bind(this)
                             }}
+                            dontAllow={"future"}
                             value={this.state.onset_date}
                           />
 
@@ -646,9 +648,9 @@ class BasicSubjective extends Component {
                               textBox={{
                                 className: "txt-fld",
                                 name: "lmp_days",
-                                number: true,
+                                number: { allowNegative: false },
                                 value: this.state.lmp_days,
-                                disabled: this.state.isPregnancy,
+                                disabled: !this.state.isPregnancy,
                                 events: {
                                   onChange: this.ChangeEventHandler.bind(this)
                                 }

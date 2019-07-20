@@ -742,7 +742,7 @@ module.exports = {
       });
     }
   },
-  getBillDetails: (req, res, next) => {
+  getBillDetailsBACKUP19_july_2019: (req, res, next) => {
     try {
       // const utilities = new algaehUtilities();
 
@@ -1346,6 +1346,662 @@ module.exports = {
     } catch (e) {
       _mysql.releaseConnection();
       next(e);
+    }
+  },
+  getBillDetails: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    //const utilities = new algaehUtilities();
+
+    try {
+      if (req.body.length > 0) {
+        const input = req.body;
+        const decimal_places = req.userIdentity.decimal_places;
+        const outputArray = [];
+
+        const zeroBill = input.find(item => {
+          return item.zeroBill == true;
+        });
+
+        if (zeroBill == undefined) {
+          const service_ids = input.map(val => {
+            return val.hims_d_services_id;
+          });
+
+          const is_insurance = input.filter(item => {
+            return item.insured == "Y";
+          });
+
+          let strQuery = "";
+
+          if (is_insurance.length > 0) {
+            const network_office_ids = is_insurance.map(item => {
+              return item.primary_network_office_id;
+            });
+
+            const insurance_provider_ids = is_insurance.map(item => {
+              return item.primary_insurance_provider_id;
+            });
+
+            const network_ids = is_insurance.map(item => {
+              return item.primary_network_id;
+            });
+
+            strQuery = `select hims_d_insurance_network_office_id,price_from ,copay_consultation,copay_percent,copay_percent_rad,copay_percent_trt,\
+                 copay_percent_dental,copay_medicine, preapp_limit, deductible, deductible_lab,deductible_rad, \
+               deductible_trt, deductible_medicine from hims_d_insurance_network_office where hospital_id=${
+                 req.userIdentity.hospital_id
+               }\
+               and hims_d_insurance_network_office_id in (${network_office_ids});\
+               select SI.insurance_id ,SI.services_id,IP.company_service_price_type,copay_status,copay_amt,deductable_status,\
+               deductable_amt,pre_approval,covered,net_amount,gross_amt, cpt_code \
+               from hims_d_services_insurance SI inner join hims_d_insurance_provider IP on\
+               IP.hims_d_insurance_provider_id=SI.insurance_id where SI.hospital_id=${
+                 req.userIdentity.hospital_id
+               }\
+               and SI.insurance_id in (${insurance_provider_ids}) and\
+               SI.services_id in (${service_ids})  and SI.record_status='A' and IP.record_status='A';\
+               select SIN.network_id ,SIN.services_id,IP.insurance_provider_name, IP.company_service_price_type, NET.network_type,\
+               copay_status,copay_amt,deductable_status,deductable_amt,pre_approval,covered,\
+               net_amount,gross_amt from  hims_d_services_insurance_network SIN\
+               inner join hims_d_insurance_network NET on NET.hims_d_insurance_network_id=SIN.network_id\
+               inner join hims_d_insurance_provider IP on SIN.insurance_id=IP.hims_d_insurance_provider_id \
+               where   SIN.hospital_id=${
+                 req.userIdentity.hospital_id
+               } and SIN.network_id in (${network_ids})\
+               AND SIN.services_id in (${service_ids}) and SIN.record_status='A' and NET.record_status='A';`;
+          }
+
+          _mysql
+            .executeQuery({
+              query: `select hims_d_services_id,service_code,cpt_code,service_name,arabic_service_name,service_desc,sub_department_id,\
+             service_type_id,procedure_type,standard_fee,followup_free_fee,followup_paid_fee,discount,vat_applicable,\
+             vat_percent,service_status,effective_start_date,effectice_end_date from hims_d_services\
+             where hospital_id=? and hims_d_services_id in (?);${strQuery}`,
+              values: [req.userIdentity.hospital_id, service_ids],
+              printQuery: false
+            })
+            .then(result => {
+              _mysql.releaseConnection();
+
+              const allServices = strQuery == "" ? result : result[0];
+              const allPolicy = strQuery == "" ? [] : result[1];
+              const allCompany_price = strQuery == "" ? [] : result[2];
+              const allPolicy_price = strQuery == "" ? [] : result[3];
+
+              for (let i = 0; i < input.length; i++) {
+                let servicesDetails = input[i];
+
+                const records = allServices.find(
+                  f =>
+                    f.hims_d_services_id === servicesDetails.hims_d_services_id
+                );
+
+                let unit_cost =
+                  servicesDetails.unit_cost == undefined
+                    ? 0
+                    : servicesDetails.unit_cost;
+
+                let from_pos = servicesDetails.from_pos;
+
+                let zeroBill =
+                  servicesDetails.zeroBill == undefined
+                    ? false
+                    : servicesDetails.zeroBill;
+
+                let FollowUp =
+                  servicesDetails.FollowUp == undefined
+                    ? false
+                    : servicesDetails.FollowUp;
+                let gross_amount = 0,
+                  net_amout = 0,
+                  sec_unit_cost = 0;
+
+                let patient_resp = 0,
+                  patient_payable = 0;
+
+                let copay_percentage = 0,
+                  copay_amount = 0,
+                  sec_copay_percntage = 0,
+                  sec_copay_amount = 0;
+
+                let comapany_resp = 0,
+                  company_payble = 0,
+                  sec_company_res = 0,
+                  sec_company_paybale = 0;
+
+                let patient_tax = 0,
+                  company_tax = 0,
+                  sec_company_tax = 0,
+                  total_tax = 0;
+
+                let after_dect_amout = 0,
+                  deductable_percentage = 0,
+                  deductable_amount = 0;
+
+                let sec_deductable_percentage = 0,
+                  sec_deductable_amount = 0;
+                let conversion_factor =
+                  servicesDetails.conversion_factor == undefined
+                    ? 0
+                    : servicesDetails.conversion_factor;
+
+                let quantity =
+                  servicesDetails.quantity == undefined
+                    ? 1
+                    : servicesDetails.quantity;
+
+                let discount_amout =
+                  servicesDetails.discount_amout == undefined
+                    ? 0
+                    : servicesDetails.discount_amout;
+
+                let discount_percentage =
+                  servicesDetails.discount_percentage == undefined
+                    ? 0
+                    : servicesDetails.discount_percentage;
+
+                let insured =
+                  servicesDetails.insured == undefined
+                    ? "N"
+                    : servicesDetails.insured;
+
+                let sec_insured =
+                  servicesDetails.sec_insured == undefined
+                    ? "N"
+                    : servicesDetails.sec_insured;
+
+                let approval_amt =
+                  servicesDetails.approval_amt == undefined
+                    ? 0
+                    : servicesDetails.approval_amt;
+                let approval_limit_yesno =
+                  servicesDetails.approval_limit_yesno == undefined
+                    ? "N"
+                    : servicesDetails.approval_limit_yesno;
+
+                let apprv_status =
+                  servicesDetails.apprv_status == undefined
+                    ? "NR"
+                    : servicesDetails.apprv_status;
+
+                let approved_amount =
+                  servicesDetails.approved_amount == undefined
+                    ? 0
+                    : servicesDetails.approved_amount;
+
+                let pre_approval =
+                  servicesDetails.pre_approval == undefined
+                    ? "N"
+                    : servicesDetails.pre_approval;
+
+                let vat_applicable = servicesDetails.vat_applicable;
+                let preapp_limit_exceed = "N";
+                let ser_net_amount = 0;
+                let ser_gross_amt = 0;
+                let icd_code = "";
+                let covered = "Y";
+                let preapp_limit_amount =
+                  servicesDetails.preapp_limit_amount == undefined
+                    ? 0
+                    : servicesDetails.preapp_limit_amount;
+                // insurance_price_list
+                let policydtls = {};
+                if (insured == "Y") {
+                  let prices;
+                  const cur_policy = allPolicy.find(p => {
+                    return (
+                      p.hims_d_insurance_network_office_id ==
+                      input[i]["primary_network_office_id"]
+                    );
+                  });
+
+                  if (
+                    cur_policy != undefined &&
+                    cur_policy["price_from"] == "S"
+                  ) {
+                    prices = allCompany_price.find(item => {
+                      return (
+                        item.insurance_id ==
+                          input[i]["primary_insurance_provider_id"] &&
+                        item.services_id == input[i]["hims_d_services_id"]
+                      );
+                    });
+                  }
+
+                  if (
+                    cur_policy != undefined &&
+                    cur_policy["price_from"] == "P"
+                  ) {
+                    prices = allPolicy_price.find(item => {
+                      return (
+                        item.network_id == input[i]["primary_network_id"] &&
+                        item.services_id == input[i]["hims_d_services_id"]
+                      );
+                    });
+                  }
+
+                  policydtls = { ...cur_policy, ...prices };
+                }
+
+                // console.log("policydtls:", policydtls);
+
+                //  if (Object.keys(policydtls).length > 0) {
+                console.log("Insurance there");
+
+                covered =
+                  policydtls != null
+                    ? policydtls.covered != null
+                      ? policydtls.covered
+                      : "N"
+                    : "N";
+
+                if (
+                  covered == "N" ||
+                  (pre_approval == "Y" && apprv_status == "RJ")
+                ) {
+                  insured = "N";
+                }
+
+                if (approval_limit_yesno == "Y") {
+                  pre_approval = "Y";
+                }
+
+                if (pre_approval == "N") {
+                  pre_approval =
+                    policydtls !== null ? policydtls.pre_approval : "N";
+                }
+
+                icd_code =
+                  policydtls.cpt_code !== null
+                    ? policydtls.cpt_code
+                    : records.cpt_code;
+
+                if (insured == "Y" && policydtls.covered == "Y") {
+                  ser_net_amount = policydtls.net_amount;
+                  ser_gross_amt = policydtls.gross_amt;
+
+                  if (policydtls.company_service_price_type == "N") {
+                    unit_cost =
+                      unit_cost != 0 ? unit_cost : policydtls.net_amount;
+                  } else {
+                    unit_cost =
+                      unit_cost != 0 ? unit_cost : policydtls.gross_amt;
+                  }
+
+                  // if (conversion_factor != 0) {
+                  //   unit_cost = unit_cost * conversion_factor;
+                  // }
+                  gross_amount = quantity * unit_cost;
+
+                  if (discount_amout > 0) {
+                    discount_percentage = (discount_amout / gross_amount) * 100;
+                  } else if (discount_percentage > 0) {
+                    discount_amout = (gross_amount * discount_percentage) / 100;
+                    discount_amout = math.round(discount_amout, decimal_places);
+                  }
+                  net_amout = gross_amount - discount_amout;
+
+                  //Patient And Company
+                  if (policydtls.copay_status == "Y") {
+                    copay_amount = policydtls.copay_amt;
+                    copay_percentage = (copay_amount / net_amout) * 100;
+                  } else {
+                    // utilities
+                    //   .logger()
+                    //   .log("service_type_id: ", records.service_type_id);
+                    if (
+                      appsettings.hims_d_service_type.service_type_id
+                        .Consultation == records.service_type_id
+                    ) {
+                      copay_percentage = policydtls.copay_consultation;
+                      deductable_percentage = policydtls.deductible;
+                    } else if (
+                      appsettings.hims_d_service_type.service_type_id
+                        .Procedure == records.service_type_id
+                    ) {
+                      copay_percentage = policydtls.copay_percent_trt;
+                      deductable_percentage = policydtls.deductible_trt;
+                    } else if (
+                      appsettings.hims_d_service_type.service_type_id
+                        .Provider == records.service_type_id
+                    ) {
+                      copay_percentage = policydtls.copay_percent;
+                    } else if (
+                      appsettings.hims_d_service_type.service_type_id
+                        .InventoryItem == records.service_type_id
+                    ) {
+                      //Not there
+                      copay_percentage = policydtls.copay_percent;
+                    } else if (
+                      appsettings.hims_d_service_type.service_type_id.Lab ==
+                      records.service_type_id
+                    ) {
+                      copay_percentage = policydtls.copay_percent;
+                      deductable_percentage = policydtls.deductible_lab;
+                    } else if (
+                      appsettings.hims_d_service_type.service_type_id
+                        .NursingCare == records.service_type_id
+                    ) {
+                      //Not There
+                      copay_percentage = policydtls.copay_percent;
+                    } else if (
+                      appsettings.hims_d_service_type.service_type_id
+                        .Miscellaneous == records.service_type_id
+                    ) {
+                      //Not There
+                      copay_percentage = policydtls.copay_percent;
+                    } else if (
+                      appsettings.hims_d_service_type.service_type_id
+                        .Anesthesia == records.service_type_id
+                    ) {
+                      //Not There
+                      copay_percentage = policydtls.copay_percent;
+                    } else if (
+                      appsettings.hims_d_service_type.service_type_id.Bed ==
+                      records.service_type_id
+                    ) {
+                      //Not There
+                      copay_percentage = policydtls.copay_percent;
+                    } else if (
+                      appsettings.hims_d_service_type.service_type_id.OT ==
+                      records.service_type_id
+                    ) {
+                      //Not There
+                      copay_percentage = policydtls.copay_percent;
+                    } else if (
+                      appsettings.hims_d_service_type.service_type_id
+                        .Radiology == records.service_type_id
+                    ) {
+                      copay_percentage = policydtls.copay_percent_rad;
+                      deductable_percentage = policydtls.deductible_rad;
+                    } else if (
+                      appsettings.hims_d_service_type.service_type_id
+                        .Pharmacy == records.service_type_id
+                    ) {
+                      copay_percentage = policydtls.copay_medicine;
+                      deductable_percentage = policydtls.deductible_medicine;
+                    } else if (
+                      appsettings.hims_d_service_type.service_type_id
+                        .NonService == records.service_type_id
+                    ) {
+                      //Not There
+                      copay_percentage = policydtls.copay_percent;
+                    } else if (
+                      appsettings.hims_d_service_type.service_type_id.Package ==
+                      records.service_type_id
+                    ) {
+                      //Not There
+                      copay_percentage = policydtls.copay_percent;
+                    }
+
+                    deductable_amount =
+                      (net_amout * deductable_percentage) / 100;
+                    after_dect_amout = net_amout - deductable_amount;
+                    copay_amount = (after_dect_amout * copay_percentage) / 100;
+                    copay_amount = math.round(copay_amount, decimal_places);
+                  }
+
+                  patient_resp = copay_amount + deductable_amount;
+                  comapany_resp = math.round(
+                    net_amout - patient_resp,
+                    decimal_places
+                  );
+
+                  if (vat_applicable == "Y" && records.vat_applicable == "Y") {
+                    patient_tax = math.round(
+                      (patient_resp * records.vat_percent) / 100,
+                      decimal_places
+                    );
+                  }
+
+                  if (records.vat_applicable == "Y") {
+                    company_tax = math.round(
+                      (comapany_resp * records.vat_percent) / 100,
+                      decimal_places
+                    );
+                  }
+                  total_tax = math.round(
+                    patient_tax + company_tax,
+                    decimal_places
+                  );
+
+                  patient_payable = math.round(
+                    patient_resp + patient_tax,
+                    decimal_places
+                  );
+
+                  if (approved_amount !== 0 && approved_amount < unit_cost) {
+                    let diff_val = approved_amount - comapany_resp;
+                    patient_payable = math.round(
+                      patient_payable + diff_val,
+                      decimal_places
+                    );
+                    patient_resp = math.round(
+                      patient_resp + diff_val,
+                      decimal_places
+                    );
+                    comapany_resp = comapany_resp - diff_val;
+                  }
+
+                  company_payble = net_amout - patient_resp;
+
+                  company_payble = math.round(
+                    company_payble + company_tax,
+                    decimal_places
+                  );
+
+                  preapp_limit_amount = policydtls.preapp_limit;
+                  if (policydtls.preapp_limit !== 0) {
+                    approval_amt = approval_amt + company_payble;
+                    if (approval_amt > policydtls.preapp_limit) {
+                      preapp_limit_exceed = "Y";
+                    }
+                  }
+
+                  //If primary and secondary exists
+                } else {
+                  if (FollowUp === true) {
+                    unit_cost =
+                      unit_cost != 0 ? unit_cost : records.followup_free_fee;
+                  } else {
+                    unit_cost =
+                      from_pos == "Y"
+                        ? unit_cost
+                        : unit_cost != 0
+                        ? unit_cost
+                        : records.standard_fee;
+                  }
+
+                  // if (conversion_factor != 0) {
+                  //   unit_cost = unit_cost * conversion_factor;
+                  // }
+                  gross_amount = quantity * unit_cost;
+
+                  if (discount_amout > 0) {
+                    discount_percentage = (discount_amout / gross_amount) * 100;
+                  } else if (discount_percentage > 0) {
+                    discount_amout = (gross_amount * discount_percentage) / 100;
+                    discount_amout = math.round(discount_amout, decimal_places);
+                  }
+                  net_amout = gross_amount - discount_amout;
+                  patient_resp = net_amout;
+
+                  if (vat_applicable == "Y" && records.vat_applicable == "Y") {
+                    patient_tax = math.round(
+                      (patient_resp * records.vat_percent) / 100,
+                      decimal_places
+                    );
+                    total_tax = patient_tax;
+                  }
+
+                  // patient_payable = net_amout + patient_tax;
+                  patient_payable = math.round(
+                    patient_resp + patient_tax,
+                    decimal_places
+                  );
+                }
+                // }
+                //--------------------------------------
+                console.log("fine:1");
+                let out = extend(
+                  {
+                    hims_f_billing_details_id: null,
+                    hims_f_billing_header_id: null,
+                    service_type_id: null,
+                    services_id: null,
+                    quantity: 0,
+                    unit_cost: 0,
+                    insurance_yesno: null,
+                    gross_amount: 0,
+                    discount_amout: 0,
+                    discount_percentage: 0,
+                    net_amout: 0,
+                    copay_percentage: 0,
+                    copay_amount: 0,
+                    deductable_amount: 0,
+                    deductable_percentage: 0,
+                    tax_inclusive: "N",
+                    patient_tax: 0,
+                    company_tax: 0,
+                    total_tax: 0,
+                    patient_resp: 0,
+                    patient_payable: 0,
+                    comapany_resp: 0,
+                    company_payble: 0,
+                    // sec_company: 0,
+                    sec_deductable_percentage: 0,
+                    sec_deductable_amount: 0,
+                    sec_company_res: 0,
+                    sec_company_tax: 0,
+                    sec_company_paybale: 0,
+                    sec_copay_percntage: 0,
+                    sec_copay_amount: 0
+                  },
+                  {
+                    service_type_id: records.service_type_id,
+                    service_name: records.service_name,
+                    services_id: records.hims_d_services_id,
+                    quantity: quantity,
+                    unit_cost: unit_cost,
+                    gross_amount: gross_amount,
+                    discount_amout: discount_amout,
+                    discount_percentage: math.round(
+                      discount_percentage,
+                      decimal_places
+                    ),
+                    net_amout: net_amout,
+                    patient_resp: patient_resp,
+                    patient_payable: patient_payable,
+                    copay_percentage: copay_percentage,
+                    copay_amount: copay_amount,
+
+                    comapany_resp: comapany_resp,
+                    company_payble: company_payble,
+                    patient_tax: patient_tax,
+                    company_tax: company_tax,
+                    sec_company_tax: sec_company_tax,
+                    total_tax: total_tax,
+
+                    sec_copay_percntage: sec_copay_percntage,
+                    sec_copay_amount: sec_copay_amount,
+                    sec_company_res: sec_company_res,
+                    sec_company_paybale: sec_company_paybale,
+                    pre_approval: insured == "Y" ? pre_approval : "N",
+                    insurance_yesno: insured,
+                    preapp_limit_exceed: preapp_limit_exceed,
+                    approval_amt: approval_amt,
+                    preapp_limit_amount: preapp_limit_amount,
+                    approval_limit_yesno: approval_limit_yesno,
+                    ser_net_amount: ser_net_amount,
+                    ser_gross_amt: ser_gross_amt,
+                    icd_code: icd_code,
+
+                    sec_deductable_percentage: sec_deductable_percentage,
+                    sec_deductable_amount: sec_deductable_amount,
+                    deductable_percentage: deductable_percentage,
+                    deductable_amount: deductable_amount,
+                    item_id: servicesDetails.item_id,
+                    expiry_date: servicesDetails.expirydt,
+                    batchno: servicesDetails.batchno,
+                    qtyhand: servicesDetails.qtyhand,
+                    grnno: servicesDetails.grnno,
+                    uom_id: servicesDetails.sales_uom,
+                    item_category: servicesDetails.item_category_id,
+                    item_group_id: servicesDetails.item_group_id,
+                    package_id: servicesDetails.package_id,
+                    package_visit_type: servicesDetails.package_visit_type,
+                    package_type: servicesDetails.package_type,
+                    actual_amount: servicesDetails.actual_amount,
+                    pack_expiry_date: servicesDetails.expiry_date
+                  }
+                );
+
+                outputArray.push(out);
+
+                if (i == input.length - 1) {
+                  req.records = { billdetails: outputArray };
+                  next();
+                }
+              }
+            })
+            .catch(error => {
+              _mysql.releaseConnection();
+              next(error);
+            });
+        } else {
+          let out = [
+            {
+              hims_f_billing_details_id: null,
+              hims_f_billing_header_id: null,
+              service_type_id: zeroBill.service_type_id,
+              service_name: "service_name",
+              services_id: zeroBill.hims_d_services_id,
+              quantity: 1,
+              unit_cost: 0,
+              insurance_yesno: null,
+              gross_amount: 0,
+              discount_amout: 0,
+              discount_percentage: 0,
+              net_amout: 0,
+              copay_percentage: 0,
+              copay_amount: 0,
+              deductable_amount: 0,
+              deductable_percentage: 0,
+              tax_inclusive: "N",
+              patient_tax: 0,
+              company_tax: 0,
+              total_tax: 0,
+              patient_resp: 0,
+              patient_payable: 0,
+              comapany_resp: 0,
+              company_payble: 0,
+
+              sec_deductable_percentage: 0,
+              sec_deductable_amount: 0,
+              sec_company_res: 0,
+              sec_company_tax: 0,
+              sec_company_paybale: 0,
+              sec_copay_percntage: 0,
+              sec_copay_amount: 0
+            }
+          ];
+
+          req.records = { billdetails: out };
+          next();
+          return;
+        }
+      } else {
+        req.records = {
+          invalid_input: true,
+          message: "Please provide valid Input"
+        };
+
+        next();
+        return;
+      }
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(error);
     }
   }
 };

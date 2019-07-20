@@ -185,11 +185,63 @@ class OrderMedication extends Component {
       });
     }
   }
+
   onInstructionsTextHandler(e) {
     this.setState({
       instructions: e.currentTarget.value
     });
   }
+
+  clearInputState = () => {
+    this.setState({
+      generic_name_item_description: "",
+      saveMedicationEnable: false,
+      addItemEnable: true,
+      item_id: null,
+      generic_id: null,
+      dosage: 1,
+      frequency: null,
+      no_of_days: 0,
+      dispense: null,
+      frequency_type: null,
+      frequency_time: null,
+      uom_id: null,
+      service_id: null,
+      item_category_id: null,
+      item_group_id: null,
+      pre_approval: null,
+      instructions: null,
+      generic_name: "",
+      item_description: "",
+      instructions: "",
+      total_quantity: 0
+    });
+  };
+
+  clearAction = e => {
+    {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, clear it!"
+      }).then(result => {
+        if (result.value) {
+          this.setState(
+            {
+              saveMedicationEnable: true,
+              medicationitems: []
+            },
+            this.clearInputState
+          );
+        }
+      });
+    }
+  };
+
   render() {
     return (
       <div>
@@ -340,6 +392,7 @@ class OrderMedication extends Component {
                     events={{
                       onChange: datehandle.bind(this, this)
                     }}
+                    dontAllow={"past"}
                     value={this.state.start_date}
                   />
                 </div>
@@ -655,24 +708,7 @@ class OrderMedication extends Component {
             <button
               type="button"
               className="btn btn-default"
-              onClick={e => {
-                Swal.fire({
-                  title: "Are you sure?",
-                  text: "You won't be able to revert this!",
-                  type: "warning",
-                  showCancelButton: true,
-                  confirmButtonColor: "#3085d6",
-                  cancelButtonColor: "#d33",
-                  confirmButtonText: "Yes, clear it!"
-                }).then(result => {
-                  if (result.value) {
-                    this.setState({
-                      saveMedicationEnable: true,
-                      medicationitems: []
-                    });
-                  }
-                });
-              }}
+              onClick={this.clearAction}
             >
               Clear
             </button>

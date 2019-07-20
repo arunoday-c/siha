@@ -24,7 +24,7 @@ import AlgaehFile from "../../../../Wrapper/algaehFileUpload";
 import { getCookie } from "../../../../../utils/algaehApiCall";
 import { AlgaehOpenContainer } from "../../../../../utils/GlobalFunctions";
 import { algaehApiCall } from "../../../../../utils/algaehApiCall";
-import Enumerable from "linq";
+// import Enumerable from "linq";
 
 class PersonalDetails extends Component {
   constructor(props) {

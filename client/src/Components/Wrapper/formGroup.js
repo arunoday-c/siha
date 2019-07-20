@@ -72,7 +72,12 @@ export default class FormGroup extends PureComponent {
         if (parseFloat(evt.target.value) >= parseFloat(evt.target.min)) {
           if (evt.target.max === "") return true;
         } else {
-          if (evt.target.value !== "") evt.target.value = "";
+          if (evt.target.value !== "") {
+            evt.target.value = "";
+            this.setState({
+              value: evt.target.min
+            });
+          }
           return false;
         }
       }
@@ -80,7 +85,12 @@ export default class FormGroup extends PureComponent {
         if (parseFloat(evt.target.value) <= parseFloat(evt.target.max)) {
           return true;
         } else {
-          if (evt.target.value !== "") evt.target.value = evt.target.max;
+          if (evt.target.value !== "") {
+            evt.target.value = evt.target.max;
+            this.setState({
+              value: evt.target.max
+            });
+          }
           return false;
         }
       }

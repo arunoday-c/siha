@@ -23,8 +23,11 @@ import {
   doctorselectedHandeler,
   radioChange,
   texthandle,
-  clearBillDetails
+  clearBillDetails,
+  ShowPackageUtilize,
+  ClosePackageUtilize
 } from "./AddConsultationDetails";
+import PackageUtilize from "../../../PatientProfile/PackageUtilize/PackageUtilize";
 
 class AddConsultationForm extends Component {
   constructor(props) {
@@ -32,7 +35,8 @@ class AddConsultationForm extends Component {
 
     this.state = {
       value: "",
-      doctors: []
+      doctors: [],
+      isPackUtOpen: false
     };
   }
 
@@ -106,6 +110,16 @@ class AddConsultationForm extends Component {
         }
       });
     }
+
+    this.props.getServices({
+      uri: "/serviceType/getService",
+      module: "masterSettings",
+      method: "GET",
+      redux: {
+        type: "SERVICES_GET_DATA",
+        mappingName: "serviceslist"
+      }
+    });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -423,9 +437,21 @@ class AddConsultationForm extends Component {
                 <div className="col-lg-8 secondary-details">
                   {Package_Exists.length > 0 ? (
                     <div className="col">
+                      <button
+                        className="btn btn-primary"
+                        style={{ marginTop: "24px" }}
+                        onClick={ShowPackageUtilize.bind(this, this)}
+                      >
+                        View Package
+                      </button>
                       <h6 style={{ color: "green" }}> Package Exists </h6>
                     </div>
                   ) : null}
+                  <PackageUtilize
+                    open={this.state.isPackUtOpen}
+                    onClose={ClosePackageUtilize.bind(this, this)}
+                    package_detail={this.state.package_detail}
+                  />
                   <h6>{getLabelFromLanguage({ fieldName: "PastVisit" })}</h6>
                   <AlgaehDataGrid
                     columns={[
@@ -555,7 +581,8 @@ function mapStateToProps(state) {
     deptanddoctors: state.deptanddoctors,
     viewsubdept: state.viewsubdept,
     dentalplans: state.dentalplans,
-    PatientPackageList: state.PatientPackageList
+    PatientPackageList: state.PatientPackageList,
+    serviceslist: state.serviceslist
   };
 }
 
@@ -567,7 +594,8 @@ function mapDispatchToProps(dispatch) {
       getDepartmentsandDoctors: AlgaehActions,
       getSubDepartment: AlgaehActions,
       getTreatmentPlan: AlgaehActions,
-      getPatientPackage: AlgaehActions
+      getPatientPackage: AlgaehActions,
+      getServices: AlgaehActions
     },
     dispatch
   );
