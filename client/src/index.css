@@ -340,7 +340,7 @@
     cursor: pointer;
     margin-top: 10px; }
   :global .portlet {
-    background: rgba(255, 255, 255, 0.75);
+    background: #f7f7f7;
     padding: 15px;
     border-radius: 5px; }
   :global .portlet.portlet-gray {

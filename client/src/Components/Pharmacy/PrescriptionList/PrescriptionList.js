@@ -96,6 +96,7 @@ class PrescriptionList extends Component {
                       className: "txt-fld",
                       name: "prescription_date"
                     }}
+                    dontAllow={"future"}
                     events={{
                       onChange: datehandle.bind(this, this)
                     }}

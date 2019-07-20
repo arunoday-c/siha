@@ -1423,7 +1423,7 @@ class PhySchSetup extends Component {
                         Delete Schedule
                       </button>
                       <button
-                        className={`btn btn-primary ${toHide}`}
+                        className={`btn btn-default ${toHide}`}
                         style={{ marginLeft: 15 }}
                         onClick={this.openEditSchedule.bind(this)}
                         disabled={this.state.pastSchedule}
@@ -1666,6 +1666,12 @@ class PhySchSetup extends Component {
                           )}
                         </ul>
                       </div>
+                      <button
+                        className="btn btn-primary"
+                        style={{ float: "right", marginTop: 10 }}
+                      >
+                        Add Doctor
+                      </button>
                     </div>
                   </div>
                 </div>

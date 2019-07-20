@@ -247,7 +247,6 @@ class OrderedList extends PureComponent {
   }
 
   render() {
-    debugger;
     const openData = this.props.openData;
     let patient_date =
       this.props.patient_profile !== undefined

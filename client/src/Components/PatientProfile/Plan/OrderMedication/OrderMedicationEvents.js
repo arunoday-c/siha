@@ -389,30 +389,12 @@ const AddItems = $this => {
           }
 
           medicationitems.push(medicationobj);
-          $this.setState({
-            medicationitems: medicationitems,
-            generic_name_item_description: "",
-            saveMedicationEnable: false,
-            addItemEnable: true,
-            item_id: null,
-            generic_id: null,
-            dosage: 1,
-            frequency: null,
-            no_of_days: 0,
-            dispense: null,
-            frequency_type: null,
-            frequency_time: null,
-            uom_id: null,
-            service_id: null,
-            item_category_id: null,
-            item_group_id: null,
-            pre_approval: null,
-            instructions: null,
-            generic_name: "",
-            item_description: "",
-            instructions: "",
-            total_quantity: 0
-          });
+          $this.setState(
+            {
+              medicationitems: medicationitems
+            },
+            $this.clearInputState
+          );
         }
       },
       onFailure: error => {
@@ -432,7 +414,7 @@ const AddItems = $this => {
 
 const datehandle = ($this, ctrl, e) => {
   $this.setState({
-    [e]: moment(ctrl)._d
+    [e]: ctrl ? moment(ctrl)._d : null
   });
 };
 

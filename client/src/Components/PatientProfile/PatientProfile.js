@@ -114,6 +114,94 @@ class PatientProfile extends Component {
     });
   }
 
+  printGeneralConsentForm() {
+    algaehApiCall({
+      uri: "/report",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob"
+      },
+      others: { responseType: "blob" },
+      data: {
+        report: {
+          reportName: "GeneralConsent",
+          reportParams: [
+            {
+              name: "patient_id",
+              value: Window.global["current_patient"]
+            },
+            {
+              name: "visit_id",
+              value: Window.global["visit_id"]
+            },
+            {
+              name: "episode_id",
+              value: Window.global["episode_id"]
+            }
+          ],
+          outputFileType: "PDF"
+        }
+      },
+      onSuccess: res => {
+        const url = URL.createObjectURL(res.data);
+        let myWindow = window.open(
+          "{{ product.metafields.google.custom_label_0 }}",
+          "_blank"
+        );
+
+        myWindow.document.write(
+          "<iframe src= '" + url + "' width='100%' height='100%' />"
+        );
+        myWindow.document.title = "Consent Form";
+      }
+    });
+  }
+
+  printMedicalConsentForm() {
+    algaehApiCall({
+      uri: "/report",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob"
+      },
+      others: { responseType: "blob" },
+      data: {
+        report: {
+          reportName: "MedicalConsent",
+          reportParams: [
+            {
+              name: "patient_id",
+              value: Window.global["current_patient"]
+            },
+            {
+              name: "visit_id",
+              value: Window.global["visit_id"]
+            },
+            {
+              name: "episode_id",
+              value: Window.global["episode_id"]
+            }
+          ],
+          outputFileType: "PDF"
+        }
+      },
+      onSuccess: res => {
+        const url = URL.createObjectURL(res.data);
+        let myWindow = window.open(
+          "{{ product.metafields.google.custom_label_0 }}",
+          "_blank"
+        );
+
+        myWindow.document.write(
+          "<iframe src= '" + url + "' width='100%' height='100%' />"
+        );
+        myWindow.document.title = "Consent Form";
+      }
+    });
+  }
+
   getLocation() {
     if (
       this.props.inventorylocations === undefined ||
@@ -690,6 +778,16 @@ class PatientProfile extends Component {
               </li>
               <li>
                 <span onClick={this.showSickLeave.bind(this)}>Sick Leave</span>
+              </li>
+              <li>
+                <span onClick={this.printGeneralConsentForm.bind(this)}>
+                  General Consent Form
+                </span>
+              </li>
+              <li>
+                <span onClick={this.printMedicalConsentForm.bind(this)}>
+                  Medical Consent Form
+                </span>
               </li>
               {/* <li onClick={this.openUCAFReport.bind(this, _pat_profile)}>
                 <span>UCAF Report</span>
