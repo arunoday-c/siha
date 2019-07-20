@@ -1,0 +1,121 @@
+{{{importStyle 'css/creditinvoice.css'}}}
+
+<body>
+    <div class="print-body">
+
+        <section>
+            <table class="tableForLabel" cell-padding="0">
+
+                <tr>
+                    <td><label class="textEnLft">Patient Name</label>:<span
+                            class="valueText">{{header.patient_full_name}}</span><label class="textArRht">
+                            الإسم</label></td>
+                    <td><label class="textEnLft">MR No</label>:<span
+                            class="valueText">{{header.patient_code}}</span><label class="textArRht"> رقم الملف</label>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td><label class="textEnLft">Age</label>:<span class="valueText">Yrs/ Month/ Day(s)</span><label
+                            class="textArRht">
+                            عمر</label></td>
+                    <td><label class="textEnLft">Nationality</label>:<span class="valueText"></span><label
+                            class="textArRht"> جنسية
+                        </label>
+                    </td>
+
+                </tr>
+
+                <tr>
+                    <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
+                </tr>
+                <tr>
+                    <td><label class="textEnLft">Consultant In-Charge</label>:<span
+                            class="valueText">{{header.full_name}}</span><label class="textArRht"> إسم الطبيب</label>
+                    </td>
+                    <td><label class="textEnLft">Department</label>:<span
+                            class="valueText">{{header.sub_department_name}}</span><label class="textArRht">قسم</label>
+                    </td>
+                </tr>
+
+            </table>
+
+
+
+        </section>
+        <section>
+            <table class="tableForLabel" cell-padding="0">
+                <tbody>
+
+                    <tr>
+                        <td valign="top" style="width:50%">
+                            <p>I , the undersigned</p>
+                            <p>(............................................. .... ..................................)
+                            </p>
+                            <p>on behave on patient {{header.patient_full_name}}</p>
+                            <p>MRN: {{header.patient_code}}</p>
+                            <p>I confirm that Dr.: {{header.full_name}}</p>
+                            <p>Has advised me for
+                                ......................................................................................................................................................................
+                            </p>
+                            <p>I also admit the fact that the doctor has explained the risks and the potential harms to
+                                me that may happen as result of my
+                                refusal.</p>
+                            <p><span class="border:1px solid #000;padding:10px;display:inline-block">I decided to refuse
+                                    this procedure /
+                                    treatment after explaining the therapeutic alternatives</span></p>
+                            <p>Therefore, I am fully responsible for my decision, the medical and the nursing staff are
+                                free of any liability to my action</p>
+                            <br /><br />
+                            <p>Signature:..................................</p><br />
+                            <p>Relation to Patient:..................................</p>
+                        </td>
+                        <td valign="top" style="width:50%;text-align:right;">
+                            <p>أنا الموقع أدناه</p>
+                            <p>(............................................. .... ..................................)
+                            </p>
+                            <p>{{header.patient_full_name}} : ملف طبى</p>
+                            <p>MRN: {{header.patient_code}}</p>
+                            <p>{{header.full_name}} :اقر بموجب هذا بان الطبيب</p>
+                            <p>......................................................................................................................................................................قد
+                                ابلغنى باحتياج المريض الى</p>
+                            <p>كما اقر ان الطبيب قد قام بشرح خطوره عدم الاستمرار فى العلاجج او الالتزام بالنصيحه الطبيه
+                                والمشاكل الطبيه المحتمله التى
+                                قلاد تنلات عن هذا الفعل .</p>
+                            <p><span class="border:1px solid #000;padding:10px;display:inline-block">و قد قررت رفض هذا
+                                    الإجراء / العلاج وقد اوضح لى البدائل العلاجية.</span></p>
+                            <p>كما أوضح للاى أن هلاذا مخالفلاا للنصلايحه الطبيلاه وعللاى ذللام اتحملال
+                                كاملالال المسلالا ليه علالان تصلالارفى هلالاذا واعتبلالار ان المستشلالافى واعضلالاا
+                                الفريلالاا الطبلالاى والتملالاريض المعنيلالاين بحلالاالتى معفيلالاين ملالان ا تبعلالاا
+                                قانونيه مترتبه على تصرفى هذا .</p>
+                            <br /><br />
+                            <p>..................................:توقيع ولى الأمر</p><br />
+                            <p>..................................:علاقتھ بالمریض</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td valign="top">
+                            <p>{{header.full_name}} :انا الطبيب</p>
+
+                            <p>ا كد بانى قد قدم النصيحه الطبيه، وأوضح الخطوره والمشاكل الطبيه المحتمله الى قد تنت عن
+                                عدم الالتزام بالنصيحه الطبيه و
+                                أوضح ايضا البدائل العججية المتاحة وهى</p>
+                            <br />
+                            <p>..................................................................</p><br />
+                            <p>..................................................................</p>
+                            <p>..................................:التوقيع</p><br />
+                            <p>..................................:التاريخ والوق</p>
+
+                        </td>
+                        <td valign="top" style="text-align:right"><small>في حالة عدم القدرة على الكتابة أوالتوقيع
+                                تؤخذ بصمة الإبهام
+                                في المكان المخصص للتوقيع مع إضافة الأيمن/الأيسر</small></td>
+                    </tr>
+
+
+                </tbody>
+            </table>
+
+        </section>
+    </div>
+</body>
