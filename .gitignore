@@ -7,6 +7,10 @@ apiBuild/
 nbproject/
 # ignore keys->dev
 src/keys/dev
+
+# ignore *-lock.json
+package-lock.json
+yarn.lock
 ### Linux ###
 *~
 

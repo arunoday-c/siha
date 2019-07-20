@@ -73,5 +73,37 @@ let addDentalForm = (req, res, next) => {
 };
 
 module.exports = {
-  addDentalForm
+  addDentalForm,
+  getDentalLab: (req, res, next) => {
+    const _mysql = new algaehMysql({ path: keyPath });
+    //// TODO: to sort by hospital id is required or not
+    try {
+      let input = req.query;
+      _mysql
+        .executeQuery({
+          query:
+            "select P.patient_code,concat(T.title,' ',P.full_name)as  patient_name,concat(ET.title,' ',E.full_name)as  employee_name,PL.hims_f_treatment_plan_id, \
+        PL.plan_name,D.work_status,D.due_date \
+        from hims_f_dental_form as D inner join hims_f_patient as P \
+        on P.hims_d_patient_id=D.patient_id \
+        left join hims_d_title as T on T.his_d_title_id = P.title_id \
+        inner join hims_d_employee as E on  D.provider_id=E.hims_d_employee_id \
+        left join hims_d_title as ET on ET.his_d_title_id = E.title_id  inner join hims_f_treatment_plan as PL \
+        on PL.patient_id = P.hims_d_patient_id and PL.visit_id = D.visit_id  and PL.episode_id = D.episode \
+        where date(D.due_date) >= date(?) and date(D.due_date) <= date(?)",
+          values: [input.from_due_date, input.to_due_date]
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (error) {
+      next(error);
+    }
+  }
 };
