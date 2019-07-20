@@ -375,90 +375,95 @@ export default class AlgaehFileUploader extends Component {
         : { needConvertion: that.props.needConvertion };
 
     const _splitter = dataToSave.split(",");
-    algaehApiCall({
-      uri: "/Document/save",
-      method: "POST",
-      data: _splitter[1],
-      module: "documentManagement",
-      header: {
-        "content-type": "multipart/form-data", //"application/octet-stream",
-        "x-file-details": JSON.stringify({
-          pageName: _pageName,
-          destinationName: uniqueID,
-          fileType: that.props.serviceParameters.fileType,
-          fileExtention: fileExtention,
-          ..._needConvertion
-        })
-      },
-      others: {
-        onUploadProgress: progressEvent => {
-          let percentCompleted = Math.round(
-            (progressEvent.loaded * 100) / progressEvent.total
-          );
-
-          if (percentCompleted >= 100) {
-            that.setState(
-              {
-                progressPercentage: 100,
-                showProgress: false,
-                forceRefreshed: undefined
-              },
-              () => {
-                if (
-                  that.props.onlyDragDrop !== undefined &&
-                  that.props.onlyDragDrop === true
-                ) {
-                  if (
-                    that.props.afterSave !== undefined &&
-                    typeof that.props.afterSave === "function"
-                  )
-                    that.props.afterSave({
-                      uniqueID: that.props.serviceParameters.uniqueID,
-                      fileType: that.props.serviceParameters.fileType,
-                      fileName: fileName,
-                      filePreview: dataToSave,
-                      componentType: that.props.componentType
-                    });
-                }
-              }
+    if (uniqueID) {
+      algaehApiCall({
+        uri: "/Document/save",
+        method: "POST",
+        data: _splitter[1],
+        module: "documentManagement",
+        header: {
+          "content-type": "multipart/form-data", //"application/octet-stream",
+          "x-file-details": JSON.stringify({
+            pageName: _pageName,
+            destinationName: uniqueID,
+            fileType: that.props.serviceParameters.fileType,
+            fileExtention: fileExtention,
+            ..._needConvertion
+          })
+        },
+        others: {
+          onUploadProgress: progressEvent => {
+            let percentCompleted = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total
             );
+
+            if (percentCompleted >= 100) {
+              that.setState(
+                {
+                  progressPercentage: 100,
+                  showProgress: false,
+                  forceRefreshed: undefined
+                },
+                () => {
+                  if (
+                    that.props.onlyDragDrop !== undefined &&
+                    that.props.onlyDragDrop === true
+                  ) {
+                    if (
+                      that.props.afterSave !== undefined &&
+                      typeof that.props.afterSave === "function"
+                    )
+                      that.props.afterSave({
+                        uniqueID: that.props.serviceParameters.uniqueID,
+                        fileType: that.props.serviceParameters.fileType,
+                        fileName: fileName,
+                        filePreview: dataToSave,
+                        componentType: that.props.componentType
+                      });
+                  }
+                }
+              );
+            } else {
+              that.setState({
+                progressPercentage: percentCompleted,
+                showProgress: true,
+                oldImage: undefined,
+                forceRefreshed: undefined
+              });
+            }
+          }
+        },
+        onSuccess: result => {
+          if (result.data.success) {
+            if (typeof callBack === "function") callBack("success");
+            if (this.props.serviceParameters.processDelay === undefined) {
+              swalMessage({
+                title: "File Uploaded Successfully",
+                type: "success"
+              });
+            }
           } else {
-            that.setState({
-              progressPercentage: percentCompleted,
-              showProgress: true,
-              oldImage: undefined,
-              forceRefreshed: undefined
-            });
-          }
-        }
-      },
-      onSuccess: result => {
-        if (result.data.success) {
-          if (typeof callBack === "function") callBack("success");
-          if (this.props.serviceParameters.processDelay === undefined) {
+            if (typeof callBack === "function") callBack("failure");
             swalMessage({
-              croppingDone: false,
-              title: "File Uploaded Successfully",
-              type: "success"
+              title: "File Uploding failure",
+              type: "Error"
             });
           }
-        } else {
+        },
+        onFailure: failure => {
           if (typeof callBack === "function") callBack("failure");
           swalMessage({
-            croppingDone: false,
-            title: "File Uploding failure",
-            type: "Error"
+            title: failure.message,
+            type: "failure"
           });
         }
-      },
-      onFailure: failure => {
-        if (typeof callBack === "function") callBack("failure");
-        swalMessage({
-          title: failure.message,
-          type: "failure"
-        });
-      }
-    });
+      });
+    } else {
+      swalMessage({
+        title: "Enter Mandatory Fields Before Uploading the image",
+        type: "failure"
+      });
+    }
     //};
   }
   implementProgressBar() {

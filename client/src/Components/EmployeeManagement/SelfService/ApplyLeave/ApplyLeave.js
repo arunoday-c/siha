@@ -63,19 +63,26 @@ class ApplyLeave extends Component {
   }
 
   componentDidMount() {
-    this.setState(
-      {
-        employee_id: this.props.empData.hims_d_employee_id,
-        sub_department_id: this.props.empData.sub_department_id,
-        employee_type: this.props.empData.employee_type,
-        gender: this.props.empData.sex,
-        religion_id: this.props.empData.religion_id
-      },
-      () => {
-        this.getEmployeeLeaveData();
-        this.getEmployeeLeaveHistory();
-      }
-    );
+    if (this.props.empData) {
+      this.setState(
+        {
+          employee_id: this.props.empData.hims_d_employee_id,
+          sub_department_id: this.props.empData.sub_department_id,
+          employee_type: this.props.empData.employee_type,
+          gender: this.props.empData.sex,
+          religion_id: this.props.empData.religion_id,
+          isEmployee: true
+        },
+        () => {
+          this.getEmployeeLeaveData();
+          this.getEmployeeLeaveHistory();
+        }
+      );
+    } else {
+      this.setState({
+        isEmployee: false
+      });
+    }
   }
 
   deleteLeaveApplication(data) {
@@ -544,10 +551,13 @@ class ApplyLeave extends Component {
       }
     });
   }
+
   render() {
     let leaveData = this.state.emp_leaves_data
       ? this.state.emp_leaves_data
       : [];
+    const { isEmployee } = this.state;
+    if (isEmployee === false) return null;
     return (
       <React.Fragment>
         <div className="row apply_leave">
@@ -564,7 +574,7 @@ class ApplyLeave extends Component {
                     div={{ className: "col-12 margin-bottom-15" }}
                     label={{
                       forceLabel: "Employee",
-                      isImp: true
+                      isImp: false
                     }}
                     selector={{
                       name: "employee_id",

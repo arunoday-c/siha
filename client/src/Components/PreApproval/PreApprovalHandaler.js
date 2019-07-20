@@ -22,7 +22,7 @@ const texthandle = ($this, e) => {
 
 const datehandle = ($this, ctrl, e) => {
   let intFailure = false;
-  if (e === "ate") {
+  if (e === "date") {
     if (Date.parse($this.state.to_date) < Date.parse(moment(ctrl)._d)) {
       intFailure = true;
       swalMessage({

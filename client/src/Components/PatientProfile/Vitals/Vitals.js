@@ -199,10 +199,22 @@ class Vitals extends Component {
       }
     });
   }
+
   checkMax(uom) {
     const max = uom === "%" ? { max: 100 } : {};
     return max;
   }
+
+  checkMaxForBP(name) {
+    const max =
+      name === "bp systolic"
+        ? { max: 200 }
+        : "bp diastolic"
+        ? { max: 120 }
+        : {};
+    return max;
+  }
+
   render() {
     const _department_viatals =
       this.props.department_vitals === undefined ||
@@ -356,9 +368,11 @@ class Vitals extends Component {
             <div className="col-12 popupInner">
               <div className="portlet-body" id="vitals_recording">
                 <div className="row">
-                
-                  <div className="col-12 popRightDiv" style={{paddingTop:0,paddingBottom:0}}>
-                    <div className="row vitalsAddingSec" >
+                  <div
+                    className="col-12 popRightDiv"
+                    style={{ paddingTop: 0, paddingBottom: 0 }}
+                  >
+                    <div className="row vitalsAddingSec">
                       {_department_viatals.map((item, index) => {
                         const _className =
                           item.hims_d_vitals_header_id === 1
@@ -450,6 +464,7 @@ class Vitals extends Component {
                                 others: {
                                   min: 0,
                                   ...this.checkMax(item.uom),
+                                  ...this.checkMaxForBP(_name),
                                   disabled: _disable,
                                   vitalid: item.hims_d_vitals_header_id,
                                   formula_value: String(item.uom).trim(),
@@ -542,14 +557,13 @@ class Vitals extends Component {
                       </div>
                     </div>
                     <h6>Vitals History</h6>
-                    <hr></hr>
+                    <hr />
                     {/* <div className="row">
                       <button className="btn btn-default graphView">
                         View Graph View
                       </button>
                     </div> */}
                     <div className="row">
-                     
                       <div className="col-8 vitalsTimeLineSec">
                         <div className="timeline">
                           {_vitalsGroup.map((data, index) => (
@@ -579,7 +593,8 @@ class Vitals extends Component {
                             </div>
                           ))}
                         </div>
-                      </div> <div className="col-4 vitalsChartSec">
+                      </div>
+                      <div className="col-4 vitalsChartSec">
                         <Line
                           options={{
                             scales: {

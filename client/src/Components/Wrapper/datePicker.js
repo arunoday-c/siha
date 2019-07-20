@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import Label from "../Wrapper/label";
 import "../Wrapper/wrapper.css";
-import { getCookie } from "../../utils/algaehApiCall.js";
+import { getCookie, swalMessage } from "../../utils/algaehApiCall.js";
 import moment from "moment";
 import config from "../../utils/config.json";
 import { checkSecurity } from "../../utils/GlobalFunctions";
@@ -92,19 +92,48 @@ export default class DateHandler extends PureComponent {
     }
   };
 
-  onBlur = e => {
-    if(this.props.events != undefined){
-    const configType =
-          this.props.type !== undefined && this.props.type === "time"
-            ? config.formators.time
-            : config.formators.date;
-    if (typeof this.props.events.onBlur === "function") {
-      this.props.events.onBlur(
-        moment(e.target.value, configType)._d,
-          e)
-    } 
+  dateValidation = e => {
+    const { name, value } = e.target;
+    const { dontAllow } = this.props;
+    let test, title;
+    if (dontAllow === "future") {
+      test = moment(value).isAfter(moment(), "day");
+      title = "Future date not allowed";
     }
-  }
+    if (dontAllow === "past") {
+      test = moment(value).isBefore(moment(), "day");
+      title = "Past date not allowed";
+    }
+    if (test) {
+      swalMessage({
+        title,
+        type: "error"
+      });
+      this.setState(
+        {
+          value: null
+        },
+        () => this.props.events.onChange(this.state.value, name)
+      );
+    }
+  };
+
+  onBlur = e => {
+    if (this.props.events != undefined) {
+      const configType =
+        this.props.type !== undefined && this.props.type === "time"
+          ? config.formators.time
+          : config.formators.date;
+      if (typeof this.props.events.onBlur === "function") {
+        this.props.events.onBlur(moment(e.target.value, configType)._d, e);
+      } else {
+        const { dontAllow } = this.props;
+        if (typeof dontAllow === "string") {
+          this.dateValidation(e);
+        }
+      }
+    }
+  };
 
   renderDatePicker = () => {
     const minDate =
