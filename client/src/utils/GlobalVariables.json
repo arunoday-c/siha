@@ -832,7 +832,11 @@
   ],
   "ATTENDANCE_TYPE": [
     { "name": "Monthly", "value": "M" },
-    { "name": "Daily", "value": "D" }
+    { "name": "Daily", "value": "D" },
+    {
+      "name": "Daily Manual",
+      "value": "DM"
+    }
   ],
   "OT_PAYMENTS": [
     { "name": "None", "value": "N" },
