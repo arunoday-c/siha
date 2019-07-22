@@ -205,16 +205,6 @@ class Vitals extends Component {
     return max;
   }
 
-  checkMaxForBP(name) {
-    const max =
-      name === "bp systolic"
-        ? { max: 200 }
-        : "bp diastolic"
-        ? { max: 120 }
-        : {};
-    return max;
-  }
-
   render() {
     const _department_viatals =
       this.props.department_vitals === undefined ||
@@ -464,7 +454,6 @@ class Vitals extends Component {
                                 others: {
                                   min: 0,
                                   ...this.checkMax(item.uom),
-                                  ...this.checkMaxForBP(_name),
                                   disabled: _disable,
                                   vitalid: item.hims_d_vitals_header_id,
                                   formula_value: String(item.uom).trim(),
