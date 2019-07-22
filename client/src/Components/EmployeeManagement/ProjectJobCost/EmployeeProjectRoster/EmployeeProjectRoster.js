@@ -37,7 +37,7 @@ class EmployeeProjectRoster extends Component {
     this.getSubDepartments();
     this.getHospitals();
     this.getProjects();
-    this.getDesignations();
+    // this.getDesignations();
   }
 
   getDesignations() {
@@ -45,6 +45,9 @@ class EmployeeProjectRoster extends Component {
       uri: "/hrsettings/getDesignations",
       method: "GET",
       module: "hrManagement",
+      data: {
+        sub_department_id: this.state.sub_department_id
+      },
       onSuccess: res => {
         if (res.data.success) {
           this.setState({
@@ -248,6 +251,17 @@ class EmployeeProjectRoster extends Component {
           },
           () => {
             this.getStartandMonthEnd();
+            // this.getEmployeesForProjectRoster();
+          }
+        );
+        break;
+      case "sub_department_id":
+        this.setState(
+          {
+            [value.name]: value.value
+          },
+          () => {
+            this.getDesignations();
             // this.getEmployeesForProjectRoster();
           }
         );
