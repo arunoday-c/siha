@@ -2617,15 +2617,15 @@ processYearlyLeave: (req, res, next) => {
     _mysql
       .executeQuery({
         query:
-          "select hims_d_employee_id, employee_code,full_name  as employee_name,\
+          "select hims_d_employee_id, employee_code,full_name  as employee_name,religion_id,\
                 employee_status,date_of_joining ,hospital_id ,employee_type,sex\
-                from hims_d_employee where employee_status <>'I' and  record_status='A' and hospital_id=?" +
+                from hims_d_employee where employee_status <>'I'  and hospital_id=? and  record_status='A'" +
           employee_id +
           ";\
-                select L.hims_d_leave_id,L.leave_code,LD.employee_type,LD.gender,LD.eligible_days from hims_d_leave  L \
+                select L.hims_d_leave_id,L.leave_code,L.religion_required,L.religion_id,LD.employee_type,LD.gender,LD.eligible_days from hims_d_leave  L \
                 inner join hims_d_leave_detail LD on L.hims_d_leave_id=LD.leave_header_id  and L.record_status='A' ;\
                 select hims_f_employee_yearly_leave_id,employee_id,`year` from hims_f_employee_yearly_leave\
-                 where record_status='A' and `year`=? and hospital_id=?;\
+                 where  `year`=? and hospital_id=? and record_status='A' ;\
                  select hims_f_employee_monthly_leave_id,employee_id,year,leave_id from\
                 hims_f_employee_monthly_leave where   `year`=? and hospital_id=?; ",
         values: [req.userIdentity.hospital_id,year,req.userIdentity.hospital_id, year,req.userIdentity.hospital_id],
@@ -2650,8 +2650,9 @@ processYearlyLeave: (req, res, next) => {
                 const apllicable_leavsDetail = new LINQ(AllLeaves)
                   .Where(
                     w =>
-                      w.employee_type == AllEmployees[i]["employee_type"] &&
-                      (w.gender == AllEmployees[i]["sex"] || w.gender == "BOTH")
+                     ( w.employee_type == AllEmployees[i]["employee_type"] &&
+                      (w.gender == AllEmployees[i]["sex"] || w.gender == "BOTH")&&
+                      (w.religion_required=='N'||(w.religion_required=='Y'&& w.religion_id==AllEmployees[i]["religion_id"])))
                   )
                   .Select(s => {
                     return {
@@ -2666,8 +2667,9 @@ processYearlyLeave: (req, res, next) => {
                 const apllicable_leavs = new LINQ(AllLeaves)
                   .Where(
                     w =>
-                      w.employee_type == AllEmployees[i]["employee_type"] &&
-                      (w.gender == AllEmployees[i]["sex"] || w.gender == "BOTH")
+                     ( w.employee_type == AllEmployees[i]["employee_type"] &&
+                      (w.gender == AllEmployees[i]["sex"] || w.gender == "BOTH")&&
+                      (w.religion_required=='N'||(w.religion_required=='Y'&& w.religion_id==AllEmployees[i]["religion_id"])))
                   )
                   .Select(s => s.hims_d_leave_id)
                   .ToArray();

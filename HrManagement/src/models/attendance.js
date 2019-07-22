@@ -3857,20 +3857,18 @@ module.exports = {
 					? req.query.year
 					: moment(new Date(req.query.yearAndMonth)).format('YYYY');
 
-			let selectWhere = {
-				...req.query
-			};
+			let selectWhere = req.query;
 			let selectData = '';
-			if (selectWhere.hospital_id != null) {
+			if (selectWhere.hospital_id >0) {
 				selectData += ' and AM.hospital_id=' + selectWhere.hospital_id;
 			}
-			if (selectWhere.sub_department_id != null) {
+			if (selectWhere.sub_department_id >0) {
 				selectData += ' and AM.sub_department_id=' + selectWhere.sub_department_id;
 			}
-			if (selectWhere.hims_d_employee_id != null) {
+			if (selectWhere.hims_d_employee_id >0) {
 				selectData += ' and AM.employee_id=' + selectWhere.hims_d_employee_id;
 			}
-			if (selectWhere.employee_group_id != null) {
+			if (selectWhere.employee_group_id >0) {
 				selectData += ' and E.employee_group_id=' + selectWhere.employee_group_id;
 			}
 
