@@ -23,7 +23,6 @@ exports.default = {
     database: "hrms_shaksy_db",
     // database: "seco",
     // database: "algaeh_hrms_oman_db",
-
     //database: "medical_db",
 
     multipleStatements: true,

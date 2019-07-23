@@ -4337,14 +4337,11 @@ module.exports = {
 				_mysql
 				.executeQuery({
 				  query:
-					"select attendance_starts,at_st_date  from hims_d_hrms_options",
-				 
+					"select attendance_starts,at_st_date  from hims_d_hrms_options",				 
 				})
 				.then(options => {
 			
 			if(options.length>0){
-
-
 
 				let from_date = null;
 				let to_date = null;
