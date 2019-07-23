@@ -2169,12 +2169,12 @@ module.exports = {
 			_mysql
 				.executeQuery({
 					query: `select hims_f_attendance_monthly_id,employee_id,E.employee_code,E.full_name as employee_name,\
-          year,month,AM.hospital_id,AM.sub_department_id,\
-          total_days,present_days,absent_days,total_work_days,total_weekoff_days,total_holidays,\
-          total_leave,paid_leave,unpaid_leave,total_paid_days ,pending_unpaid_leave,total_hours,total_working_hours,\
-          shortage_hours,ot_work_hours,ot_weekoff_hours from hims_f_attendance_monthly AM \
-          inner join hims_d_employee E on AM.employee_id=E.hims_d_employee_id \
-          where AM.record_status='A' and AM.year= ? and AM.month=? ${selectData} `,
+						year,month,AM.hospital_id,AM.sub_department_id,\
+						total_days,present_days,absent_days,total_work_days,total_weekoff_days,total_holidays,\
+						total_leave,paid_leave,unpaid_leave,total_paid_days ,pending_unpaid_leave,total_hours,total_working_hours,\
+						shortage_hours,ot_work_hours,ot_weekoff_hours from hims_f_attendance_monthly AM \
+						inner join hims_d_employee E on AM.employee_id=E.hims_d_employee_id \
+						where AM.record_status='A' and AM.year= ? and AM.month=? ${selectData} `,
 					values: [ year, month_number ],
 					printQuery: true
 				})
@@ -3714,25 +3714,28 @@ module.exports = {
 				.then((results) => {
 					if (results.affectedRows > 0) {
 						let employees = '';
-						if (input.hims_d_employee_id > 0) {
-							employees = ' and TS.employee_id =' + input.hims_d_employee_id;
-						}
-
+					
 						let sub_department = '';
 						if (input.sub_department_id > 0) {
 							sub_department = ' and TS.sub_department_id =' + input.sub_department_id;
 						}
 
-						let returnQry = `  select hims_f_daily_time_sheet_id,TS.sub_department_id, TS.employee_id,TS.biometric_id, TS.attendance_date, \
-            in_time, out_date, out_time, year, month, status,\
-             posted, hours, minutes, actual_hours, actual_minutes, worked_hours,consider_ot_shrtg,\
-             expected_out_date, expected_out_time ,TS.hospital_id,hims_d_employee_id,employee_code,full_name as employee_name,\
-             P.project_code,P.project_desc from  hims_f_daily_time_sheet TS \
-            inner join hims_d_employee E on TS.employee_id=E.hims_d_employee_id\
+						if (input.hims_d_employee_id > 0) {
+							sub_department=" ";
+							employees = ' and TS.employee_id =' + input.hims_d_employee_id;
+						}
 
-            left join hims_f_project_roster PR on TS.employee_id=PR.employee_id and TS.hospital_id=PR.hospital_id and TS.attendance_date=PR.attendance_date
-            left join hims_d_project P on PR.project_id=P.hims_d_project_id
-            where  TS.hospital_id=${input.hospital_id} and   TS.attendance_date between ('${input.from_date}') and ('${input.to_date}') ${sub_department} ${employees}`;
+
+						let returnQry = `select hims_f_daily_time_sheet_id,TS.sub_department_id, TS.employee_id,TS.biometric_id, TS.attendance_date, \
+											in_time, out_date, out_time, year, month, status,\
+											posted, hours, minutes, actual_hours, actual_minutes, worked_hours,consider_ot_shrtg,\
+											expected_out_date, expected_out_time ,TS.hospital_id,hims_d_employee_id,employee_code,full_name as employee_name,\
+											P.project_code,P.project_desc from  hims_f_daily_time_sheet TS \
+											inner join hims_d_employee E on TS.employee_id=E.hims_d_employee_id\
+											left join hims_f_project_roster PR on TS.employee_id=PR.employee_id and TS.hospital_id=PR.hospital_id\
+											 and TS.attendance_date=PR.attendance_date	left join hims_d_project P on PR.project_id=P.hims_d_project_id
+											where  TS.hospital_id=${input.hospital_id} and   TS.attendance_date between ('${input.from_date}') and\
+											 ('${input.to_date}') ${sub_department} ${employees}  order by attendance_date`;
 
 						_mysql
 							.executeQuery({
@@ -3740,6 +3743,7 @@ module.exports = {
 								printQuery: true
 							})
 							.then((result) => {
+								_mysql.releaseConnection();
 								//ST-whole month ot,shortage calculate
 
 								let month_actual_hours = 0;
@@ -3829,7 +3833,7 @@ module.exports = {
 								}
 								//EN-indivisual date ot,shortage calculate
 
-								_mysql.releaseConnection();
+						
 								req.records = {
 									outputArray,
 									month_actual_hours,
@@ -4348,8 +4352,8 @@ module.exports = {
 				let employee = '';
 		
 
-				let month = moment(input.yearAndMonth,"YYYY-M-DD").format('M');
-				let year = moment(input.yearAndMonth,"YYYY-M-DD").format('YYYY');
+				const month = moment(input.yearAndMonth,"YYYY-M-DD").format('M');
+				const year = moment(input.yearAndMonth,"YYYY-M-DD").format('YYYY');
 
 
 				if (input.select_wise == 'M') {
@@ -4624,12 +4628,42 @@ module.exports = {
 		let month = moment(input.from_date).format('M');
 		let year = moment(input.from_date).format('YYYY');
 
-		let from_date = moment(input.from_date).format('YYYY-MM-DD');
-		let to_date = moment(input.to_date).format('YYYY-MM-DD');
+
+
+		let from_date = null;
+		let to_date = null;
+		// let from_date = moment(input.from_date).format('YYYY-MM-DD');
+		// let to_date = moment(input.to_date).format('YYYY-MM-DD');
 
 		let dailyAttendance = [];
 
-		utilities.logger().log('am here: ', 'am here');
+		_mysql
+		.executeQuery({
+		  query:
+			"select attendance_starts,at_st_date  from hims_d_hrms_options",				 
+		})
+		.then(options => {
+
+
+
+
+	
+	if(options.length>0){
+
+
+		if(options[0]["attendance_starts"]=="PM"&&options[0]["at_st_date"]>0){
+			const temp_date=year+"-"+month+"-"+options[0]["at_st_date"];
+			console.log("temp_date:",temp_date)
+			from_date =moment(temp_date,"YYYY-M-DD").subtract(1, 'months').format("YYYY-MM-DD");
+			to_date = moment(temp_date,"YYYY-M-DD").subtract(1, 'days').format('YYYY-MM-DD');
+
+		}
+		else
+		{
+			from_date = moment(input.from_date,"YYYY-M-DD").startOf('month').format('YYYY-MM-DD');
+			to_date = moment(input.from_date,"YYYY-M-DD").endOf('month').format('YYYY-MM-DD');
+		}
+	
 		if (
 			input.hims_d_employee_id > 0 &&
 			input.hospital_id > 0 &&
@@ -4649,9 +4683,6 @@ module.exports = {
 				.then((AttenResult) => {
 					//present month
 
-					// utilities
-					// .logger()
-					// .log("AttenResult: ", AttenResult);
 
 					if (AttenResult.length > 0) {
 						for (let i = 0; i < AttenResult.length; i++) {
@@ -4719,8 +4750,10 @@ module.exports = {
 								hospital_id: AttenResult[i]['hospital_id'],
 								sub_department_id: AttenResult[i]['sub_department_id'],
 								attendance_date: AttenResult[i]['attendance_date'],
-								year: moment(AttenResult[i]['attendance_date']).format('YYYY'),
-								month: moment(AttenResult[i]['attendance_date']).format('M'),
+								// year: moment(AttenResult[i]['attendance_date']).format('YYYY'),
+								// month: moment(AttenResult[i]['attendance_date']).format('M'),
+								year: year,
+								month:month,
 								total_days: 1,
 								present_days: AttenResult[i]['status'] == 'PR' ? 1 : 0,
 								absent_days: AttenResult[i]['status'] == 'AB' ? 1 : 0,
@@ -4993,6 +5026,28 @@ module.exports = {
 			next();
 			return;
 		}
+
+	}
+	else{
+	
+		_mysql.releaseConnection();
+			req.records = {
+				message: "Please define HRMS options",
+				dataExist: false
+			};
+			next();
+
+
+	}
+
+	})
+	.catch(e => {
+		_mysql.releaseConnection();
+	  next(e);
+	});
+
+
+
 	},
 
 	loadManualTimeSheet: (req, res, next) => {
@@ -5007,30 +5062,96 @@ module.exports = {
 				input.from_date != undefined &&
 				input.to_date != undefined
 			) {
+
+
+
 				_mysql
-					.executeQuery({
-						query: `select hims_f_daily_time_sheet_id,TS.sub_department_id, TS.employee_id,TS.biometric_id, TS.attendance_date, \
-        in_time, out_date, out_time, year, month, status,\
-         posted, hours, minutes, actual_hours, actual_minutes, worked_hours,consider_ot_shrtg,\
-         expected_out_date, expected_out_time ,TS.hospital_id,hims_d_employee_id,employee_code,full_name as employee_name,\
-         P.project_code,P.project_desc from  hims_f_daily_time_sheet TS \
-        inner join hims_d_employee E on TS.employee_id=E.hims_d_employee_id\
-        left join hims_f_project_roster PR on TS.employee_id=PR.employee_id and TS.hospital_id=PR.hospital_id  and TS.attendance_date=PR.attendance_date
-        left join hims_d_project P on PR.project_id=P.hims_d_project_id
-        where  TS.hospital_id=? and  TS.attendance_date between (?) and (?) and TS.employee_id =?; `,
-						values: [ input.hospital_id, input.from_date, input.to_date, input.hims_d_employee_id ],
-						printQuery: true
-					})
-					.then((result) => {
-						_mysql.releaseConnection();
-						req.records = result;
+				.executeQuery({
+				  query:
+					"select attendance_starts,at_st_date  from hims_d_hrms_options",				 
+				})
+				.then(options => {
+			
+			if(options.length>0){
+
+				
+						let from_date = null;
+						let to_date = null;
+						const month = moment(input.from_date,"YYYY-M-DD").format('M');
+						const year = moment(input.from_date,"YYYY-M-DD").format('YYYY');
+
+							if(input.attendance_type=="MW"){
+
+										if(options[0]["attendance_starts"]=="PM"&&options[0]["at_st_date"]>0){
+											const temp_date=year+"-"+month+"-"+options[0]["at_st_date"];
+											console.log("temp_date:",temp_date)
+											from_date =moment(temp_date,"YYYY-M-DD").subtract(1, 'months').format("YYYY-MM-DD");
+											to_date = moment(temp_date,"YYYY-M-DD").subtract(1, 'days').format('YYYY-MM-DD');
+
+										}
+										else
+										{
+											from_date = moment(input.from_date,"YYYY-M-DD").startOf('month').format('YYYY-MM-DD');
+											to_date = moment(input.from_date,"YYYY-M-DD").endOf('month').format('YYYY-MM-DD');
+										}
+
+							}else{
+										from_date = moment(input.from_date,"YYYY-M-DD").format('YYYY-MM-DD');
+										to_date = moment(input.to_date,"YYYY-M-DD").format('YYYY-MM-DD');
+							}
+
+
+
+
+
+							_mysql
+							.executeQuery({
+								query: `select hims_f_daily_time_sheet_id,TS.sub_department_id, TS.employee_id,TS.biometric_id, TS.attendance_date, \
+									in_time, out_date, out_time, year, month, status,\
+									posted, hours, minutes, actual_hours, actual_minutes, worked_hours,consider_ot_shrtg,\
+									expected_out_date, expected_out_time ,TS.hospital_id,hims_d_employee_id,employee_code,full_name as employee_name,\
+									P.project_code,P.project_desc from  hims_f_daily_time_sheet TS \
+									inner join hims_d_employee E on TS.employee_id=E.hims_d_employee_id\
+									left join hims_f_project_roster PR on TS.employee_id=PR.employee_id and TS.hospital_id=PR.hospital_id  and TS.attendance_date=PR.attendance_date
+									left join hims_d_project P on PR.project_id=P.hims_d_project_id
+									where  TS.hospital_id=? and  TS.attendance_date between (?) and (?) and TS.employee_id =? order by attendance_date; `,
+								values: [ input.hospital_id, from_date, to_date, input.hims_d_employee_id ],
+								printQuery: true
+							})
+							.then((result) => {
+								_mysql.releaseConnection();
+								req.records = result;
+								next();
+							})
+							.catch((e) => {
+								_mysql.releaseConnection();
+								next(e);
+							});
+
+
+
+				}
+				else{
+				
+					_mysql.releaseConnection();
+						req.records = {
+							message: "Please define HRMS options",
+							dataExist: false
+						};
 						next();
-					})
-					.catch((e) => {
-						_mysql.releaseConnection();
-						next(e);
-					});
+
+
+				}
+
+				})
+				.catch(e => {
+					_mysql.releaseConnection();
+				  next(e);
+				});
+
+
 			} else {
+				
 				req.records = {
 					invalid_input: true,
 					message: 'Please send valid input'
