@@ -4361,7 +4361,7 @@ module.exports = {
 						const temp_date=year+"-"+month+"-"+options[0]["at_st_date"];
 						console.log("temp_date:",temp_date)
 							from_date =moment(temp_date,"YYYY-M-DD").subtract(1, 'months').format("YYYY-MM-DD");
-							to_date = moment(temp_date,"YYYY-M-DD").format('YYYY-MM-DD');
+							to_date = moment(temp_date,"YYYY-M-DD").subtract(1, 'days').format('YYYY-MM-DD');
 
 						}else{
 							from_date = moment(input.yearAndMonth,"YYYY-M-DD").startOf('month').format('YYYY-MM-DD');
