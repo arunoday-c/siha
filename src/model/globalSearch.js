@@ -33,14 +33,30 @@ let searchData = (req, res, next) => {
         : req.query.pageSize;
     //let offSet = req.query.pageNo === 0 ? limit * 1 : limit * req.query.pageNo;
     let offSet = req.query.pageNo;
-    let whereCondition =
-      req.query.fieldName == null
-        ? " "
-        : " and upper(" +
-          req.query.fieldName +
-          ") like  upper('%" +
-          req.query.fieldContains +
-          "%')";
+
+    // let whereCondition =
+    //   req.query.fieldName == null
+    //     ? " "
+    //     : " and upper(" +
+    //       req.query.fieldName +
+    //       ") like  upper('%" +
+    //       req.query.fieldContains +
+    //       "%')";
+
+    let whereCondition = " ";
+
+    if (
+      req.query.fieldName != null &&
+      req.query.fieldContains != null &&
+      req.query.fieldContains.length > 1
+    ) {
+      whereCondition =
+        " and upper(" +
+        req.query.fieldName +
+        ") like  upper('%" +
+        req.query.fieldContains +
+        "%')";
+    }
 
     const _groupby =
       queryConfig.groupBy != null ? " " + queryConfig.groupBy + " " : "";
