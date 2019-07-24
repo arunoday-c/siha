@@ -5,8 +5,19 @@ import {
   patientAdvanceRefund,
   billingCalculations,
   getBillDetails,
-  getPakageDetails
+  getPakageDetails,
+  patientPackageAdvanceRefund,
+  updatePatientPackage,
+  getEmployeeAndDepartments
 } from "../models/billing";
+
+import algaehPath from "algaeh-module-bridge";
+const { insertLadOrderedServices } = algaehPath(
+  "algaeh-laboratory/src/models/laboratory"
+);
+const { insertRadOrderedServices } = algaehPath(
+  "algaeh-radiology/src/models/radiology"
+);
 
 export default () => {
   const api = Router();
@@ -26,6 +37,17 @@ export default () => {
   api.post(
     "/patientAdvanceRefund",
     patientAdvanceRefund,
+
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+  api.post(
+    "/patientPackageAdvanceRefund",
+    patientPackageAdvanceRefund,
 
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
@@ -84,6 +106,34 @@ export default () => {
       });
     }
   });
+
+  api.put(
+    "/updatePatientPackage",
+    (req, res, next) => {
+      delete req.connection;
+      next();
+    },
+    updatePatientPackage,
+    insertLadOrderedServices,
+    insertRadOrderedServices,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+
+  api.get(
+    "/getEmployeeAndDepartments",
+    getEmployeeAndDepartments,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
 
   return api;
 };

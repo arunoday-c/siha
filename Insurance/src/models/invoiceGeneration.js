@@ -220,7 +220,10 @@ module.exports = {
                         .then(result => {
                           _mysql.commitTransaction(() => {
                             _mysql.releaseConnection();
-                            req.records = result;
+                            req.records = {
+                              invoice_number: invoce_no[0],
+                              hims_f_invoice_header_id: headerResult.insertId
+                            };
                             next();
                           });
                         })

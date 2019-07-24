@@ -11,6 +11,7 @@ import {
   AlagehAutoComplete,
   AlagehFormGroup
 } from "../../Wrapper/algaehWrapper";
+import ButtonType from "../../Wrapper/algaehButton";
 
 import { AlgaehActions } from "../../../actions/algaehActions";
 import {
@@ -39,13 +40,11 @@ class ServicePriceList extends PureComponent {
   }
 
   componentWillMount() {
-    
     let InputOutput = this.props.InsuranceSetup;
     this.setState({ ...this.state, ...InputOutput });
   }
 
   componentDidMount() {
-    
     if (this.state.insurance_provider_id !== null) {
       getPriceList(this, this);
     } else {
@@ -74,35 +73,38 @@ class ServicePriceList extends PureComponent {
     }
   }
 
-  changeChecks(e){
-
-    if(e.target.value === "P"){
-
+  changeChecks(e) {
+    this.props.initialPriceList({
+      redux: {
+        type: "PRICE_LIST_GET_DATA",
+        mappingName: "pricelist",
+        data: []
+      }
+    });
+    if (e.target.value === "P") {
       this.props.getNetworkPlans({
         uri: "/insurance/getNetworkAndNetworkOfficRecords",
         method: "GET",
         printInput: true,
         data: {
           insuranceProviderId: this.state.insurance_provider_id,
-          price_from:"P"
+          price_from: "P"
         },
         redux: {
           type: "NETWORK_PLAN_GET_DATA",
           mappingName: "pricefromplans"
         },
-        afterSuccess:data=>{
-          
-        }
+        afterSuccess: data => {}
       });
       this.setState({
         [e.target.name]: e.target.value,
-        network_id:null
+        network_id: null
       });
-    }else{
+    } else {
       getPriceList(this, this);
       this.setState({
         [e.target.name]: e.target.value,
-        network_id:null
+        network_id: null
       });
     }
   }
@@ -138,7 +140,7 @@ class ServicePriceList extends PureComponent {
                         type="radio"
                         name="view_by"
                         value="C"
-                        checked={this.state.view_by === "C"?true:false}
+                        checked={this.state.view_by === "C" ? true : false}
                         onChange={this.changeChecks.bind(this)}
                       />
                       <span>Company Price List</span>
@@ -148,33 +150,33 @@ class ServicePriceList extends PureComponent {
                         type="radio"
                         name="view_by"
                         value="P"
-                        checked={this.state.view_by === "P"?true:false}
+                        checked={this.state.view_by === "P" ? true : false}
                         onChange={this.changeChecks.bind(this)}
                       />
                       <span>Policy Price List</span>
-                    </label></div></div>
+                    </label>
+                  </div>
+                </div>
 
-                    {this.state.view_by === "P"?
-                      <AlagehAutoComplete
-                        div={{ className: "col" }}
-                        label={{
-                          forceLabel: "Select Policy"
-                        }}
-                        selector={{
-                          name: "network_id",
-                          className: "select-fld",
-                         value: this.state.network_id,
-                          dataSource: {
-                            textField: "network_type",
-                            valueField: "hims_d_insurance_network_id",
-                            data: this.props.pricefromplans
-                          },
-                         onChange: networkhandle.bind(this, this)
-                        }}
-                      />
-                    :null}
-
-
+                {this.state.view_by === "P" ? (
+                  <AlagehAutoComplete
+                    div={{ className: "col" }}
+                    label={{
+                      forceLabel: "Select Policy"
+                    }}
+                    selector={{
+                      name: "network_id",
+                      className: "select-fld",
+                      value: this.state.network_id,
+                      dataSource: {
+                        textField: "network_type",
+                        valueField: "hims_d_insurance_network_id",
+                        data: this.props.pricefromplans
+                      },
+                      onChange: networkhandle.bind(this, this)
+                    }}
+                  />
+                ) : null}
 
                 <AlagehAutoComplete
                   div={{ className: "col-2 form-group" }}
@@ -206,7 +208,7 @@ class ServicePriceList extends PureComponent {
                     Refresh List
                   </button>
                 </div>
-                </div>
+              </div>
               <div className="row">
                 <div className="col-5">
                   <div className="row">
@@ -246,18 +248,19 @@ class ServicePriceList extends PureComponent {
                       }}
                     />
 
-                    <div className="col-2" style={{ paddingLeft: 0 }}>
-                      <button
-                        className="btn btn-default"
-                        style={{ marginTop: 19 }}
+                    <div className="col-2" style={{ marginTop: 19 }}>
+                      <ButtonType
+                        classname="btn-primary"
                         onClick={bulkUpdate.bind(
                           this,
                           this,
                           "corporate_discount"
                         )}
-                      >
-                        Apply
-                      </button>
+                        label={{
+                          forceLabel: "Apply",
+                          returnText: true
+                        }}
+                      />
                     </div>
                   </div>
                 </div>
@@ -280,15 +283,16 @@ class ServicePriceList extends PureComponent {
                         },
                         onChange: texthandle.bind(this, this)
                       }}
-                    />{" "}
-                    <div className="col-2" style={{ padding: 0 }}>
-                      <button
-                        className="btn btn-default"
-                        style={{ marginTop: 19 }}
+                    />
+                    <div className="col-2" style={{ marginTop: 19 }}>
+                      <ButtonType
+                        classname="btn-primary"
                         onClick={bulkUpdate.bind(this, this, "pre_approval")}
-                      >
-                        Apply
-                      </button>
+                        label={{
+                          forceLabel: "Apply",
+                          returnText: true
+                        }}
+                      />
                     </div>
                   </div>
                 </div>
@@ -313,14 +317,15 @@ class ServicePriceList extends PureComponent {
                       }}
                     />
 
-                    <div className="col" style={{ padding: 0 }}>
-                      <button
-                        className="btn btn-default"
-                        style={{ marginTop: 19 }}
+                    <div className="col" style={{ marginTop: 19 }}>
+                      <ButtonType
+                        classname="btn-primary"
                         onClick={bulkUpdate.bind(this, this, "covered")}
-                      >
-                        Apply
-                      </button>
+                        label={{
+                          forceLabel: "Apply",
+                          returnText: true
+                        }}
+                      />
                     </div>
                   </div>
                 </div>
@@ -533,7 +538,7 @@ function mapStateToProps(state) {
   return {
     pricelist: state.pricelist,
     insservicetype: state.insservicetype,
-    pricefromplans:state.pricefromplans
+    pricefromplans: state.pricefromplans
   };
 }
 

@@ -48,7 +48,8 @@ class AddAdvanceModal extends PureComponent {
       Cashchecked: true,
       Cardchecked: false,
       Checkchecked: false,
-      lang_sets: "en_comp"
+      lang_sets: "en_comp",
+      shift_id: null
     };
   }
   componentWillMount() {
@@ -56,15 +57,17 @@ class AddAdvanceModal extends PureComponent {
     this.setState(IOputs);
   }
 
-  componentWillReceiveProps() {
-    let lang_sets = "en_comp";
-    if (Window.global.selectedLang === "ar") {
-      lang_sets = "ar_comp";
+  componentWillReceiveProps(newProps) {
+    if (newProps.PackageAdvance === undefined) {
+      let lang_sets = "en_comp";
+      if (Window.global.selectedLang === "ar") {
+        lang_sets = "ar_comp";
+      }
+      this.setState({
+        selectedLang: Window.global.selectedLang,
+        lang_sets: lang_sets
+      });
     }
-    this.setState({
-      selectedLang: Window.global.selectedLang,
-      lang_sets: lang_sets
-    });
   }
 
   componentDidMount() {
@@ -79,17 +82,17 @@ class AddAdvanceModal extends PureComponent {
         }
       });
     }
-    if (this.props.counters === undefined || this.props.counters.length === 0) {
-      this.props.getCounters({
-        uri: "/shiftAndCounter/getCounterMaster",
-        module: "masterSettings",
-        method: "GET",
-        redux: {
-          type: "CTRY_GET_DATA",
-          mappingName: "counters"
-        }
-      });
-    }
+    // if (this.props.counters === undefined || this.props.counters.length === 0) {
+    //   this.props.getCounters({
+    //     uri: "/shiftAndCounter/getCounterMaster",
+    //     module: "masterSettings",
+    //     method: "GET",
+    //     redux: {
+    //       type: "CTRY_GET_DATA",
+    //       mappingName: "counters"
+    //     }
+    //   });
+    // }
     getCashiersAndShiftMAP(this, this);
 
     let _screenName = getCookie("ScreenName").replace("/", "");
@@ -152,6 +155,11 @@ class AddAdvanceModal extends PureComponent {
           card_type: null
         });
       }
+      let package_id = null;
+      if (this.props.PackageAdvance === true) {
+        package_id = this.props.inputsparameters.package_id;
+      }
+      debugger;
 
       this.setState(
         {
@@ -159,7 +167,8 @@ class AddAdvanceModal extends PureComponent {
           hims_f_patient_id: this.props.inputsparameters.hims_f_patient_id,
           transaction_type: this.props.inputsparameters.transaction_type,
           pay_type: this.props.inputsparameters.pay_type,
-          advance_amount: this.state.total_amount
+          advance_amount: this.state.total_amount,
+          package_id: package_id
         },
         () => {
           callback(this);
@@ -172,54 +181,92 @@ class AddAdvanceModal extends PureComponent {
     const err = Validations(this, this);
 
     if (!err) {
+      debugger;
       this.GenerateReciept($this => {
         AlgaehLoader({ show: true });
-        algaehApiCall({
-          uri: "/billing/patientAdvanceRefund",
-          module: "billing",
-          method: "POST",
-          data: $this.state,
-          onSuccess: response => {
-            AlgaehLoader({ show: false });
-            if (response.data.success) {
-              let data = response.data.records;
-              $this.setState({
-                receipt_number: data.receipt_number
-              });
+        debugger;
+        if (this.props.PackageAdvance === true) {
+          algaehApiCall({
+            uri: "/billing/patientPackageAdvanceRefund",
+            module: "billing",
+            method: "POST",
+            data: $this.state,
+            onSuccess: response => {
+              AlgaehLoader({ show: false });
+              if (response.data.success) {
+                let data = response.data.records;
+                $this.setState({
+                  receipt_number: data.receipt_number
+                });
 
-              context.updateState({
-                advance_amount: data.total_advance_amount,
-                AdvanceOpen: false,
-                RefundOpen: false
-              });
-
-              if (this.props.Advance === true) {
+                context.updateState({
+                  advance_amount: data.total_advance_amount,
+                  AdvanceOpen: false,
+                  RefundOpen: false
+                });
                 swalMessage({
                   title: "Advance Collected Successfully...",
                   type: "success"
                 });
-              } else {
-                swalMessage({
-                  title: "Refunded Successfully...",
-                  type: "success"
-                });
               }
+            },
+            onFailure: error => {
+              AlgaehLoader({ show: false });
+              swalMessage({
+                title: error.message,
+                type: "error"
+              });
             }
-          },
-          onFailure: error => {
-            AlgaehLoader({ show: false });
-            swalMessage({
-              title: error.message,
-              type: "error"
-            });
-          }
-        });
+          });
+        } else {
+          algaehApiCall({
+            uri: "/billing/patientAdvanceRefund",
+            module: "billing",
+            method: "POST",
+            data: $this.state,
+            onSuccess: response => {
+              AlgaehLoader({ show: false });
+              if (response.data.success) {
+                let data = response.data.records;
+                $this.setState({
+                  receipt_number: data.receipt_number
+                });
+
+                context.updateState({
+                  advance_amount: data.total_advance_amount,
+                  AdvanceOpen: false,
+                  RefundOpen: false
+                });
+
+                if (this.props.Advance === true) {
+                  swalMessage({
+                    title: "Advance Collected Successfully...",
+                    type: "success"
+                  });
+                } else {
+                  swalMessage({
+                    title: "Refunded Successfully...",
+                    type: "success"
+                  });
+                }
+              }
+            },
+            onFailure: error => {
+              AlgaehLoader({ show: false });
+              swalMessage({
+                title: error.message,
+                type: "error"
+              });
+            }
+          });
+        }
       });
     }
   }
 
   render() {
-    let Advance = this.props.Advance;
+    let Advance =
+      this.props.Advance === true ? true : this.props.PackageAdvance;
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -258,9 +305,12 @@ class AddAdvanceModal extends PureComponent {
                           ? this.props.inputsparameters.full_name
                           : "Patient Name"}
                       </h6>
-                    </div>{" "}
-                    <AlagehAutoComplete
-                      div={{ className: "col mandatory form-group" }}
+                    </div>
+                  </div>
+                  <hr style={{ margin: "0rem" }} />
+                  <div className="row secondary-box-container">
+                    {/*  <AlagehAutoComplete
+                      div={{ className: "col-lg-3 mandatory" }}
                       label={{
                         fieldName: "shift_id",
                         isImp: true
@@ -279,10 +329,8 @@ class AddAdvanceModal extends PureComponent {
                         },
                         onChange: texthandle.bind(this, this, context)
                       }}
-                    />
-                  </div>
-                  <hr style={{ margin: "0rem" }} />
-                  {/* <div className="row secondary-box-container">
+                    />*/}
+
                     <AlagehAutoComplete
                       div={{ className: "col-lg-3 mandatory" }}
                       label={{
@@ -304,51 +352,8 @@ class AddAdvanceModal extends PureComponent {
                         onChange: countertexthandle.bind(this, this)
                       }}
                     />
-
-                  
-                    {/* <AlagehAutoComplete
-                        div={{ className: "col-lg-3 mandatory" }}
-                        label={{
-                          fieldName: "counter_id",
-                          isImp: true
-                        }}
-                        selector={{
-                          name: "decimal",
-                          className: "select-fld",
-                          value: this.state.decimal,
-                          dataSource: {
-                            textField: "name",
-                            valueField: "value",
-                            data: variableJson.FORMAT_COUNTER
-                          },
-                          onChange: texthandle.bind(this, this)
-                        }}
-                      />
-
-                      <AlagehAutoComplete
-                        div={{ className: "col-lg-3 mandatory" }}
-                        label={{
-                          fieldName: "shift_id",
-                          isImp: true
-                        }}
-                        selector={{
-                          name: "shift_id",
-                          className: "select-fld",
-                          value: this.state.shift_id,
-                          dataSource: {
-                            textField:
-                              this.state.selectedLang === "en"
-                                ? "name"
-                                : "arabic_name",
-                            valueField: "value",
-                            data: variableJson.FORMAT_SHIFT
-                          },
-                          onChange: texthandle.bind(this, this)
-                        }}
-                      /> 
                   </div>
                   <hr /> */}
-
                   {/* Payment Type */}
                   {/* Cash */}
                   <div className="row secondary-box-container">
@@ -393,7 +398,6 @@ class AddAdvanceModal extends PureComponent {
                       }}
                     />
                   </div>
-
                   {Advance === true ? (
                     <div className="">
                       {/* Card */}
@@ -566,7 +570,6 @@ class AddAdvanceModal extends PureComponent {
                       </div>
                     </div>
                   ) : null}
-
                   <hr />
                   <div className="row secondary-box-container">
                     <div className="col-lg-3">
@@ -654,16 +657,16 @@ class AddAdvanceModal extends PureComponent {
 
 function mapStateToProps(state) {
   return {
-    shifts: state.shifts,
-    counters: state.counters
+    shifts: state.shifts
+    // counters: state.counters
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getShifts: AlgaehActions,
-      getCounters: AlgaehActions
+      getShifts: AlgaehActions
+      // getCounters: AlgaehActions
     },
     dispatch
   );

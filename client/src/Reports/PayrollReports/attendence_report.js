@@ -1,7 +1,6 @@
 import { payrollHeader } from "./payrollHeader";
 import _ from "lodash";
 import "../report-style.css";
-import math from "mathjs";
 export function printReport(result) {
   if (result === undefined) return null;
   const data = result;
@@ -27,11 +26,11 @@ export function printReport(result) {
   return `
 
   <div class="print-body">
-  <header> ${payrollHeader(data, "Attendance Report")} </header> 
-   
+  <header> ${payrollHeader(data, "Attendance Report")} </header>
+
 <section>
    <div class="tbl-header">
-    <table  class="reportFixedTable" cellpadding="0" cellspacing="0" border="0"> 
+    <table  class="reportFixedTable" cellpadding="0" cellspacing="0" border="0">
         <thead >
             <tr>
                 <th>Employee Code</th>
@@ -50,10 +49,10 @@ export function printReport(result) {
                 <th>OT Hours</th>
                 <th>Shortage Hours</th>
                 <th>Week Off OT</th>
-                <th>Holiday OT</th>                
+                <th>Holiday OT</th>
             </tr>
         </thead></table></div><div class="tbl-content" style="height: 22vh" algaeh-report-table="true" >
-        <table  class="reportFixedTable" cellpadding="0" cellspacing="0" border="0"> 
+        <table  class="reportFixedTable" cellpadding="0" cellspacing="0" border="0">
         <tbody>
   ${data
     .map(
@@ -61,15 +60,15 @@ export function printReport(result) {
         `
     <tr>
     <td class="center">${list.employee_code}</td>
-     <td class="left" style="width:200px">${list.employee_name}</td>    
+     <td class="left" style="width:200px">${list.employee_name}</td>
      <td class="right">${list.total_days} </td>
      <td class="right">${list.total_work_days} </td>
      <td class="right">${list.present_days}</td>
-     <td class="right">${list.absent_days}</td>    
+     <td class="right">${list.absent_days}</td>
      <td class="right">${list.paid_leave} </td>
      <td class="right">${list.unpaid_leave} </td>
      <td class="right"  style="width:140px">${list.total_paid_days}</td>
-     <td class="right"  style="width:150px">${list.total_holidays}</td>    
+     <td class="right"  style="width:150px">${list.total_holidays}</td>
      <td class="right"  style="width:145px">${list.total_weekoff_days} </td>
      <td class="right">${
        list.total_working_hours
@@ -92,15 +91,15 @@ export function printReport(result) {
      <td class="right">${
        list.ot_holiday_hours ? list.ot_holiday_hours + " Hrs" : "00:00 Hrs"
      } </td>
-   
+
 </tr>
     `
     )
     .join("")}
-  
- 
-    </thead></table></div> 
-    
+
+
+    </thead></table></div>
+
     <div class="row reportFooterDetails">
       <div class="col"></div>
         <div class="col-2">
@@ -119,13 +118,13 @@ export function printReport(result) {
         <div class="col-2">
           <label>Total Weekoff OT</label>
           <h6>${
-            ot_weekoff_hours ? math.round(ot_weekoff_hours, 2) : "00:00"
+            ot_weekoff_hours ? ot_weekoff_hours.toFixed(2) : "00:00"
           } Hrs</h6>
         </div>
         <div class="col-2">
           <label>Total Holiday Ot</label>
           <h6>${ot_holiday_hours ? ot_holiday_hours : "00:00"} Hrs</h6>
-        </div>    
+        </div>
       </div>
     </div>
 

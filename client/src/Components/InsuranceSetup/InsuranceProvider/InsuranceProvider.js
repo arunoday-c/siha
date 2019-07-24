@@ -64,7 +64,7 @@ class InsuranceProvider extends PureComponent {
 
   componentDidMount() {
     // console.log("Data : ", this.props.insuranceprovider);
-    
+
     if (
       this.state.insurance_provider_id !== null &&
       this.state.insurance_provider_id !== undefined
@@ -260,16 +260,14 @@ class InsuranceProvider extends PureComponent {
                       isImp: true
                     }}
                     textBox={{
+                      number: { allowNegative: false },
+                      dontAllowKeys: ["-", "e", "."],
                       value: this.state.credit_period,
                       className: "txt-fld",
                       name: "credit_period",
 
                       events: {
-                        type: "number",
                         onChange: texthandle.bind(this, this, context)
-                      },
-                      others: {
-                        type: "number"
                       }
                     }}
                   />
@@ -384,6 +382,8 @@ class InsuranceProvider extends PureComponent {
                       fieldName: "preapp_valid_days"
                     }}
                     textBox={{
+                      number: { allowNegative: false },
+                      dontAllowKeys: ["-", "e", "."],
                       value: this.state.preapp_valid_days,
                       className: "txt-fld",
                       name: "preapp_valid_days",
@@ -399,6 +399,8 @@ class InsuranceProvider extends PureComponent {
                       fieldName: "claim_submit_days"
                     }}
                     textBox={{
+                      number: { allowNegative: false },
+                      dontAllowKeys: ["-", "e", "."],
                       value: this.state.claim_submit_days,
                       className: "txt-fld",
                       name: "claim_submit_days",

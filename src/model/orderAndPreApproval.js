@@ -705,21 +705,23 @@ let selectOrderServicesbyDoctor = (req, res, next) => {
     _mysql
       .executeQuery({
         query:
-          "SELECT  OS.`hims_f_ordered_services_id`, OS.`patient_id`, OS.`visit_id`, OS.`doctor_id`, OS.`service_type_id`, \
-        OS.`services_id`, OS.`test_type`, OS.`insurance_yesno`, OS.`insurance_provider_id`, OS.`insurance_sub_id`, \
-        OS.`network_id`, OS.`insurance_network_office_id`, OS.`policy_number`, OS.`pre_approval`, OS.`apprv_status`, \
-        OS.`billed`, OS.`quantity`, OS.`unit_cost`, OS.`gross_amount`, OS.`discount_amout`, OS.`discount_percentage`, \
-        OS.`net_amout`, OS.`copay_percentage`, OS.`copay_amount`, OS.`deductable_amount`, OS.`deductable_percentage`, \
-        OS.`tax_inclusive`, OS.`patient_tax`, OS.`company_tax`, OS.`total_tax`, OS.`patient_resp`, OS.`patient_payable`, \
-        OS.`comapany_resp`, OS.`company_payble`, OS.`sec_company`, OS.`sec_deductable_percentage`, OS.`sec_deductable_amount`,\
-        OS.`sec_company_res`, OS.`sec_company_tax`, OS.`sec_company_paybale`, OS.`sec_copay_percntage`, OS.`sec_copay_amount`,\
-        OS.`created_by`, OS.`created_date`, OS.`updated_by`, OS.`updated_date`, OS.`record_status`,\
-        S.`hims_d_services_id`, S.`service_code`, S.`cpt_code`, S.`service_name`, S.`arabic_service_name`, \
-        S.`service_desc`, S.`sub_department_id`, S.`hospital_id`, S.`service_type_id`, S.`procedure_type`, \
-        S.`standard_fee`, S.`followup_free_fee`, S.`followup_paid_fee`, S.`discount`, S.`vat_applicable`, \
-        S.`vat_percent`, S.`service_status` FROM `hims_f_ordered_services` OS,  `hims_d_services` S WHERE \
-        OS.services_id = S.hims_d_services_id and \
-        OS.`record_status`='A'  " +
+          "SELECT  OS.`hims_f_ordered_services_id`, OS.`patient_id`, OS.`visit_id`, OS.`doctor_id`,\
+           OS.`service_type_id`, OS.`services_id`, OS.`test_type`, OS.`insurance_yesno`, \
+           OS.`insurance_provider_id`, OS.`insurance_sub_id`, OS.`network_id`, \
+           OS.`insurance_network_office_id`, OS.`policy_number`, OS.`pre_approval`, OS.`apprv_status`, \
+           OS.`billed`, OS.`quantity`, OS.`unit_cost`, OS.`gross_amount`, OS.`discount_amout`,\
+           OS.`discount_percentage`, OS.`net_amout`, OS.`copay_percentage`, OS.`copay_amount`,\
+           OS.`deductable_amount`, OS.`deductable_percentage`, OS.`tax_inclusive`, OS.`patient_tax`,\
+           OS.`company_tax`, OS.`total_tax`, OS.`patient_resp`, OS.`patient_payable`, \
+           OS.`comapany_resp`, OS.`company_payble`, OS.`sec_company`, OS.`sec_deductable_percentage`,\
+           OS.`sec_deductable_amount`, OS.`sec_company_res`, OS.`sec_company_tax`, OS.`sec_company_paybale`,\
+           OS.`sec_copay_percntage`, OS.`sec_copay_amount`, OS.`created_by`, OS.`created_date`, OS.`updated_by`,\
+           OS.`updated_date`, OS.`record_status`, S.`hims_d_services_id`, S.`service_code`, S.`cpt_code`,\
+           S.`service_name`, S.`arabic_service_name`, S.`service_desc`, S.`sub_department_id`, S.`hospital_id`,\
+           S.`service_type_id`, S.`procedure_type`, S.`standard_fee`, S.`followup_free_fee`, \
+           S.`followup_paid_fee`, S.`discount`, S.`vat_applicable`, S.`vat_percent`, S.`service_status`,\
+           OS.`trans_package_detail_id` FROM `hims_f_ordered_services` OS,  `hims_d_services` S WHERE \
+           OS.services_id = S.hims_d_services_id and OS.`record_status`='A'  " +
           _stringData,
         values: inputValues,
         printQuery: true
@@ -793,7 +795,8 @@ let load_orders_for_bill = (req, res, next) => {
       _mysql
         .executeQuery({
           query:
-            "SELECT  OS.`hims_f_ordered_services_id`, OS.`patient_id`, OS.`visit_id`,\
+            "SELECT  OS.`hims_f_ordered_services_id`, OS.`hims_f_ordered_services_id` as ordered_services_id,\
+             OS.`patient_id`, OS.`visit_id`,\
           OS.`doctor_id`, OS.`service_type_id`, OS.`services_id`, OS.`test_type`, OS.`insurance_yesno`, \
           OS.`insurance_provider_id`, OS.`insurance_sub_id`, \
           OS.`network_id`, OS.`insurance_network_office_id`, OS.`policy_number`, OS.`pre_approval`, OS.`apprv_status`, \
@@ -825,13 +828,30 @@ let load_orders_for_bill = (req, res, next) => {
           S.`standard_fee`, S.`followup_free_fee`, S.`followup_paid_fee`, S.`discount`, S.`vat_applicable`, \
           S.`vat_percent`, S.`service_status` FROM `hims_f_ordered_inventory` OS,  `hims_d_services` S WHERE \
           OS.services_id = S.hims_d_services_id and \
-          OS.`record_status`='A' and item_notchargable='N' and  OS.visit_id=? AND OS.`billed`='N';",
-          values: [req.query.visit_id, req.query.visit_id],
+          OS.`record_status`='A' and item_notchargable='N' and  OS.visit_id=? AND OS.`billed`='N';\
+            SELECT  OS.`hims_f_package_header_id` as ordered_package_id, OS.`patient_id`, OS.`visit_id`, OS.`doctor_id`,\
+          OS.`service_type_id`, OS.`services_id`, OS.`insurance_yesno`, OS.`insurance_provider_id`,\
+          OS.`insurance_sub_id`, OS.`network_id`, OS.`insurance_network_office_id`, OS.`policy_number`,\
+          OS.`pre_approval`, OS.`apprv_status`, OS.`billed`, OS.`quantity`, OS.`unit_cost`, OS.`gross_amount`,\
+          OS.`discount_amout`, OS.`discount_percentage`, OS.`net_amout`, OS.`copay_percentage`, OS.`copay_amount`,\
+          OS.`deductable_amount`, OS.`deductable_percentage`, OS.`tax_inclusive`, OS.`patient_tax`,\
+          OS.`company_tax`, OS.`total_tax`, OS.`patient_resp`, OS.`patient_payable`,OS.`comapany_resp`,\
+          OS.`company_payble`, OS.`sec_company`, OS.`sec_deductable_percentage`, OS.`sec_deductable_amount`,\
+          OS.`sec_company_res`, OS.`sec_company_tax`, OS.`sec_company_paybale`, OS.`sec_copay_percntage`, OS.`sec_copay_amount`,OS.`created_by`, OS.`created_date`, OS.`updated_by`, OS.`updated_date`,\
+          OS.`record_status`, S.`hims_d_services_id`, S.`service_code`, S.`cpt_code`, S.`service_name`,\
+          S.`arabic_service_name`, S.`service_desc`, S.`sub_department_id`, S.`hospital_id`, S.`service_type_id`,\
+          S.`procedure_type`, S.`standard_fee`, S.`followup_free_fee`, S.`followup_paid_fee`, S.`discount`,\
+          S.`vat_applicable`, S.`vat_percent`, S.`service_status` FROM `hims_f_package_header` OS, \
+          `hims_d_services` S WHERE OS.services_id = S.hims_d_services_id and  OS.`record_status`='A' \
+          and visit_id=? AND OS.`billed`='N' AND OS.package_visit_type='S';",
+          values: [req.query.visit_id, req.query.visit_id, req.query.visit_id],
           printQuery: true
         })
         .then(result => {
           _mysql.releaseConnection();
-          req.records = result[0].concat(result[1]);
+          let final_Result = result[0].concat(result[1]);
+          final_Result = final_Result.concat(result[2]);
+          req.records = final_Result;
           next();
         })
         .catch(error => {
@@ -974,88 +994,6 @@ let updateOrderedServices = (req, res, next) => {
     _mysql.releaseConnection();
     next(e);
   }
-  // try {
-  //   if (req.db == null) {
-  //     next(httpStatus.dataBaseNotInitilizedError());
-  //   }
-  //   let db = req.db;
-  //   db.getConnection((error, connection) => {
-  //     if (error) {
-  //       next(error);
-  //     }
-  //
-  //     new Promise((resolve, reject) => {
-  //       try {
-  //         getBillDetailsFunctionality(req, res, next, resolve);
-  //       } catch (e) {
-  //         reject(e);
-  //       }
-  //     }).then(result => {
-  //       let inputParam = result.billdetails[0];
-  //       debugLog("call back result", inputParam);
-  //
-  //       let input = extend({}, req.body[0]);
-  //       debugLog("id:", input.hims_f_ordered_services_id);
-  //       console.log("openFrom", input.openFrom);
-  //
-  //       connection.query(
-  //         "UPDATE hims_f_ordered_services SET service_type_id=?,services_id=?,insurance_yesno=?,\
-  //         pre_approval=?,apprv_status=?,quantity=?,unit_cost=?,gross_amount=?,discount_amout=?,discount_percentage=?,net_amout=?,\
-  //         copay_percentage=?,copay_amount=?,deductable_amount=?,deductable_percentage=?,tax_inclusive=?,patient_tax=?,company_tax=?,total_tax=?,patient_resp=?,patient_payable=?,\
-  //         comapany_resp=?,company_payble=?,sec_company=?,sec_deductable_percentage=?,sec_deductable_amount=?,sec_company_res=?,sec_company_tax=?,sec_company_paybale=?,\
-  //         sec_copay_percntage=?,sec_copay_amount=?,updated_date=?, updated_by=? WHERE `record_status`='A' AND `hims_f_ordered_services_id`=?; UPDATE hims_f_service_approval SET billing_updated ='Y' where hims_f_service_approval_id=?;" +
-  //           strQuery,
-  //         [
-  //           inputParam.service_type_id,
-  //           inputParam.services_id,
-  //           inputParam.insurance_yesno,
-  //           inputParam.pre_approval,
-  //           input.apprv_status,
-  //           inputParam.quantity,
-  //           inputParam.unit_cost,
-  //           inputParam.gross_amount,
-  //           inputParam.discount_amout,
-  //           inputParam.discount_percentage,
-  //           inputParam.net_amout,
-  //           inputParam.copay_percentage,
-  //           inputParam.copay_amount,
-  //           inputParam.deductable_amount,
-  //           inputParam.deductable_percentage,
-  //           inputParam.tax_inclusive,
-  //           inputParam.patient_tax,
-  //           inputParam.company_tax,
-  //           inputParam.total_tax,
-  //           inputParam.patient_resp,
-  //           inputParam.patient_payable,
-  //           inputParam.comapany_resp,
-  //           inputParam.company_payble,
-  //           inputParam.sec_company,
-  //           inputParam.sec_deductable_percentage,
-  //           inputParam.sec_deductable_amount,
-  //           inputParam.sec_company_res,
-  //           inputParam.sec_company_tax,
-  //           inputParam.sec_company_paybale,
-  //           inputParam.sec_copay_percntage,
-  //           inputParam.sec_copay_amount,
-  //           new Date(),
-  //           req.userIdentity.algaeh_d_app_user_id,
-  //           input.hims_f_ordered_services_id,
-  //           input.hims_f_service_approval_id
-  //         ],
-  //         (error, result) => {
-  //           releaseDBConnection(db, connection);
-  //           if (error) {
-  //             next(error);
-  //           }
-  //           req.records = result;
-  //           next();
-  //         }
-  //       );
-  //     });
-  //   });
-  // } catch (e) {
-  //   next(e);
-  // }
 };
 
 //ordered services update as billed
@@ -1366,15 +1304,17 @@ let addPackage = (req, res, next) => {
         _mysql
           .executeQueryWithTransaction({
             query:
-              "INSERT INTO `hims_f_package_header` (package_id,patient_id,visit_id,doctor_id,service_type_id,services_id,insurance_yesno,insurance_provider_id,\
-                insurance_sub_id,network_id,insurance_network_office_id,policy_number,pre_approval,apprv_status,\
+              "INSERT INTO `hims_f_package_header` (package_id,patient_id,visit_id,doctor_id,service_type_id,services_id,insurance_yesno,\
+                insurance_provider_id,\
+                insurance_sub_id,network_id,insurance_network_office_id,policy_number,pre_approval,\
                 billed,quantity,unit_cost,gross_amount,discount_amout,discount_percentage,net_amout,copay_percentage,\
                 copay_amount,deductable_amount,deductable_percentage,tax_inclusive,patient_tax,company_tax,total_tax\
                 ,patient_resp,patient_payable,comapany_resp,company_payble,sec_company,sec_deductable_percentage,\
                 sec_deductable_amount,sec_company_res,sec_company_tax,sec_company_paybale,sec_copay_percntage,\
-                sec_copay_amount,advance_amount,balance_amount,actual_amount,closed,closed_type,closed_remarks,\
-                package_type,package_visit_type,hospital_id,created_by,created_date,updated_by,updated_date)\
-            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                sec_copay_amount,advance_amount,balance_amount,utilize_amount,actual_amount,\
+                package_type,package_visit_type,pack_expiry_date,hospital_id,created_by,\
+                created_date,updated_by,updated_date)\
+            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             values: [
               input[i].package_id,
               input[i].patient_id,
@@ -1389,7 +1329,6 @@ let addPackage = (req, res, next) => {
               input[i].insurance_network_office_id,
               input[i].policy_number,
               input[i].pre_approval,
-              input[i].apprv_status,
               input[i].billed,
               input[i].quantity,
               input[i].unit_cost,
@@ -1419,19 +1358,19 @@ let addPackage = (req, res, next) => {
               input[i].sec_copay_amount,
               input[i].advance_amount,
               input[i].balance_amount,
+              input[i].utilize_amount,
               input[i].actual_amount,
-              input[i].closed,
-              input[i].closed_type,
-              input[i].closed_remarks,
               input[i].package_type,
               input[i].package_visit_type,
-              input[i].hospital_id,
+              input[i].pack_expiry_date,
+              req.userIdentity.hospital_id,
 
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
               new Date()
-            ]
+            ],
+            printQuery: true
           })
           .then(headerRes => {
             if (headerRes.insertId > 0) {
@@ -1443,7 +1382,7 @@ let addPackage = (req, res, next) => {
                 "qty",
                 "tot_service_amount",
                 "appropriate_amount",
-                "utilized_qty"
+                "available_qty"
               ];
 
               _mysql
@@ -1516,72 +1455,67 @@ let addPackage = (req, res, next) => {
 let getPatientPackage = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   try {
+    let str = "";
     if (req.query.patient_id > 0) {
-      let str = "";
-      if (req.query.visit_id > 0) {
-        str += ` and H.visit_id=${req.query.visit_id} `;
-      }
-      if (req.query.package_type == "S" || req.query.package_type == "D") {
-        str += ` and H.package_type='${req.query.package_type}' `;
-      }
-      if (
-        req.query.package_visit_type == "S" ||
-        req.query.package_visit_type == "M"
-      ) {
-        str += ` and H.package_visit_type='${req.query.package_visit_type}' `;
-      }
+      str += ` and H.patient_id=${req.query.patient_id} `;
+    }
+    if (req.query.visit_id > 0) {
+      str += ` and H.visit_id=${req.query.visit_id} `;
+    }
+    if (req.query.package_type == "S" || req.query.package_type == "D") {
+      str += ` and H.package_type='${req.query.package_type}' `;
+    }
+    if (
+      req.query.package_visit_type == "S" ||
+      req.query.package_visit_type == "M"
+    ) {
+      str += ` and H.package_visit_type='${req.query.package_visit_type}' `;
+    }
 
-      _mysql
-        .executeQuery({
-          query: `select hims_f_package_header_id,package_id,patient_id,visit_id,doctor_id,service_type_id,services_id,insurance_yesno,insurance_provider_id,\
-          insurance_sub_id,network_id,insurance_network_office_id,policy_number,pre_approval,apprv_status,billed\
-          ,quantity,unit_cost,gross_amount,discount_amout,discount_percentage,net_amout,copay_percentage,copay_amount,\
-          deductable_amount,deductable_percentage,tax_inclusive,patient_tax,company_tax,total_tax,patient_resp,\
-          patient_payable,comapany_resp,company_payble,sec_company,sec_deductable_percentage,sec_deductable_amount,\
-          sec_company_res,sec_company_tax,sec_company_paybale,sec_copay_percntage,sec_copay_amount,advance_amount,\
-          balance_amount,actual_amount,utilize_amount,closed,closed_type,closed_remarks,package_type,package_visit_type,\
-          hospital_id from hims_f_package_header H where closed='N' and  record_status='A'\
-          and hospital_id=? and patient_id=? ${str};
-          select D.* from hims_f_package_header H  inner join hims_f_package_detail D\
-          on H.hims_f_package_header_id=D.package_header_id where H.closed='N' and  H.record_status='A'\
-          and H.hospital_id=? and H.patient_id=? ${str};  `,
-          values: [
-            req.userIdentity.hospital_id,
-            req.query.patient_id,
-            req.userIdentity.hospital_id,
-            req.query.patient_id
-          ],
-          printQuery: true
-        })
-        .then(result => {
-          let header = result[0];
-          let details = result[1];
-          const outputArray = [];
-          header.forEach(item => {
-            const package_details = details.filter(detail => {
-              return (
-                detail["package_header_id"] == item["hims_f_package_header_id"]
-              );
-            });
-
-            outputArray.push({ ...item, package_details });
+    _mysql
+      .executeQuery({
+        query: `select hims_f_package_header_id, package_id, patient_id, visit_id, doctor_id, service_type_id,\
+              services_id, insurance_yesno, insurance_provider_id, insurance_sub_id, network_id,\
+              insurance_network_office_id, policy_number, pre_approval, apprv_status, billed, quantity, \
+              unit_cost, gross_amount, discount_amout, discount_percentage, net_amout, copay_percentage, \
+              copay_amount, deductable_amount, deductable_percentage, tax_inclusive, patient_tax, company_tax,\
+              total_tax, patient_resp,patient_payable,comapany_resp, company_payble, sec_company,\
+              sec_deductable_percentage, sec_deductable_amount, sec_company_res,sec_company_tax, \
+              sec_company_paybale, sec_copay_percntage, sec_copay_amount, H.advance_amount, balance_amount,\ actual_amount, utilize_amount, closed,closed_type,closed_remarks, H.package_type,\
+              H.package_visit_type,PM.advance_amount as collect_advance,\
+              H.hospital_id, PM.package_name,P.full_name,P.patient_code \
+              from hims_f_package_header H, hims_d_package_header PM, hims_f_patient P \
+              where H.patient_id = P.hims_d_patient_id and PM.hims_d_package_header_id = H.package_id \
+              and closed='N' and  H.record_status='A' and H.hospital_id=?  ${str};
+              select D.*,0 as quantity, D.service_id as services_id from hims_f_package_header H  \
+              inner join hims_f_package_detail D\
+              on H.hims_f_package_header_id=D.package_header_id where H.closed='N' and  H.record_status='A'\
+              and H.hospital_id=?  ${str};  `,
+        values: [req.userIdentity.hospital_id, req.userIdentity.hospital_id],
+        printQuery: true
+      })
+      .then(result => {
+        let header = result[0];
+        let details = result[1];
+        const outputArray = [];
+        header.forEach(item => {
+          const package_details = details.filter(detail => {
+            return (
+              detail["package_header_id"] == item["hims_f_package_header_id"]
+            );
           });
 
-          req.records = outputArray;
-          next();
-        })
-        .catch(error => {
-          _mysql.releaseConnection();
-          next(error);
+          outputArray.push({ ...item, package_details });
         });
-    } else {
-      req.records = {
-        invalid_input: true,
-        message: "Please provide patient details"
-      };
-      next();
-      return;
-    }
+
+        _mysql.releaseConnection();
+        req.records = outputArray;
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
     _mysql.releaseConnection();
     next(e);

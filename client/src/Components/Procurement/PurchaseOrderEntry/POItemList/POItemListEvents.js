@@ -3,7 +3,6 @@ import moment from "moment";
 import Enumerable from "linq";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 import Options from "../../../../Options.json";
-import math from "mathjs";
 
 let texthandlerInterval = null;
 
@@ -60,7 +59,7 @@ const discounthandle = ($this, context, ctrl, e) => {
           : (sub_discount_amount / parseFloat($this.state.extended_price)) *
             100;
 
-      sub_discount_percentage = math.round(sub_discount_percentage, 3);
+      sub_discount_percentage = sub_discount_percentage.toFixed(3);
     }
     if (sub_discount_percentage > 100) {
       swalMessage({
@@ -695,7 +694,7 @@ const onchhangegriddiscount = ($this, row, e) => {
       value === ""
         ? 0
         : (sub_discount_amount / parseFloat(extended_price)) * 100;
-    sub_discount_percentage = math.round(sub_discount_percentage, 3);
+    sub_discount_percentage = sub_discount_percentage.toFixed(3);
   } else {
     extended_price =
       parseFloat(row.authorize_quantity) * parseFloat(row.unit_price);

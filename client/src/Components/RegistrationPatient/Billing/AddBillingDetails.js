@@ -171,33 +171,25 @@ const chequetexthandle = ($this, context, ctrl, e) => {
 const adjustadvance = ($this, context, ctrl, e) => {
   e = e || ctrl;
 
-  if (e.target.value === undefined) {
+  if (parseFloat(e.target.value) > parseFloat($this.state.advance_amount)) {
+    swalMessage({
+      title: "Adjusted amount cannot be greater than Advance amount",
+      type: "warning"
+    });
+  } else {
+    $this.setState(
+      {
+        [e.target.name]: e.target.value
+      },
+      () => {
+        billheaderCalculation($this, context);
+      }
+    );
+
     if (context !== null) {
       context.updateState({
-        [e.target.name]: ""
+        [e.target.name]: e.target.value
       });
-    }
-  } else {
-    if (parseFloat(e.target.value) > parseFloat($this.state.advance_amount)) {
-      swalMessage({
-        title: "Adjusted amount cannot be greater than Advance amount",
-        type: "warning"
-      });
-    } else {
-      $this.setState(
-        {
-          [e.target.name]: e.target.value
-        },
-        () => {
-          billheaderCalculation($this, context);
-        }
-      );
-
-      if (context !== null) {
-        context.updateState({
-          [e.target.name]: e.target.value
-        });
-      }
     }
   }
 };
@@ -205,76 +197,67 @@ const adjustadvance = ($this, context, ctrl, e) => {
 const discounthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
 
-  if (e.target.value === undefined) {
+  let sheet_discount_percentage = 0;
+  let sheet_discount_amount = 0;
+
+  if (e.target.name === "sheet_discount_percentage") {
+    sheet_discount_percentage =
+      e.target.value === "" ? "" : parseFloat(e.target.value);
+    sheet_discount_amount = 0;
+  } else {
+    sheet_discount_amount =
+      e.target.value === "" ? "" : parseFloat(e.target.value);
+    sheet_discount_percentage = 0;
+  }
+  if (sheet_discount_percentage > 100) {
+    swalMessage({
+      title: "Discount % cannot be greater than 100.",
+      type: "Warning"
+    });
+    $this.setState({
+      sheet_discount_percentage: $this.state.sheet_discount_percentage
+    });
+
     if (context !== null) {
       context.updateState({
-        sheet_discount_percentage: "",
-        sheet_discount_amount: ""
+        sheet_discount_percentage: $this.state.sheet_discount_percentage
+      });
+    }
+  } else if (sheet_discount_amount > $this.state.patient_payable) {
+    swalMessage({
+      title: "Discount Amount cannot be greater than Patient Share.",
+      type: "Warning"
+    });
+    $this.setState(
+      {
+        sheet_discount_amount: $this.state.sheet_discount_amount
+      },
+      () => {
+        billheaderCalculation($this, context);
+      }
+    );
+
+    if (context !== null) {
+      context.updateState({
+        sheet_discount_amount: $this.state.sheet_discount_amount
       });
     }
   } else {
-    let sheet_discount_percentage = 0;
-    let sheet_discount_amount = 0;
-
-    if (e.target.name === "sheet_discount_percentage") {
-      sheet_discount_percentage =
-        e.target.value === "" ? "" : parseFloat(e.target.value);
-      sheet_discount_amount = 0;
-    } else {
-      sheet_discount_amount =
-        e.target.value === "" ? "" : parseFloat(e.target.value);
-      sheet_discount_percentage = 0;
-    }
-    if (sheet_discount_percentage > 100) {
-      swalMessage({
-        title: "Discount % cannot be greater than 100.",
-        type: "Warning"
-      });
-      $this.setState({
-        sheet_discount_percentage: $this.state.sheet_discount_percentage
-      });
-
-      if (context !== null) {
-        context.updateState({
-          sheet_discount_percentage: $this.state.sheet_discount_percentage
-        });
+    $this.setState(
+      {
+        sheet_discount_percentage: sheet_discount_percentage,
+        sheet_discount_amount: sheet_discount_amount
+      },
+      () => {
+        billheaderCalculation($this, context);
       }
-    } else if (sheet_discount_amount > $this.state.patient_payable) {
-      swalMessage({
-        title: "Discount Amount cannot be greater than Patient Share.",
-        type: "Warning"
+    );
+
+    if (context !== null) {
+      context.updateState({
+        sheet_discount_percentage: sheet_discount_percentage,
+        sheet_discount_amount: sheet_discount_amount
       });
-      $this.setState(
-        {
-          sheet_discount_amount: $this.state.sheet_discount_amount
-        },
-        () => {
-          billheaderCalculation($this, context);
-        }
-      );
-
-      if (context !== null) {
-        context.updateState({
-          sheet_discount_amount: $this.state.sheet_discount_amount
-        });
-      }
-    } else {
-      $this.setState(
-        {
-          sheet_discount_percentage: sheet_discount_percentage,
-          sheet_discount_amount: sheet_discount_amount
-        },
-        () => {
-          billheaderCalculation($this, context);
-        }
-      );
-
-      if (context !== null) {
-        context.updateState({
-          sheet_discount_percentage: sheet_discount_percentage,
-          sheet_discount_amount: sheet_discount_amount
-        });
-      }
     }
   }
 };
@@ -497,43 +480,35 @@ const checkcheckhandaler = ($this, context, e) => {
 const credittexthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
 
-  if (e.target.value === undefined) {
+  if (parseFloat(e.target.value) > parseFloat($this.state.net_amount)) {
+    swalMessage({
+      title: "Criedt amount cannot be greater than Net amount",
+      type: "warning"
+    });
+    $this.setState({
+      [e.target.name]: $this.state.credit_amount
+    });
+
     if (context !== null) {
       context.updateState({
-        [e.target.name]: ""
+        [e.target.name]: $this.state.credit_amount
       });
     }
   } else {
-    if (parseFloat(e.target.value) > parseFloat($this.state.net_amount)) {
-      swalMessage({
-        title: "Criedt amount cannot be greater than Net amount",
-        type: "warning"
-      });
-      $this.setState({
-        [e.target.name]: $this.state.credit_amount
-      });
-
-      if (context !== null) {
-        context.updateState({
-          [e.target.name]: $this.state.credit_amount
-        });
+    $this.setState(
+      {
+        [e.target.name]: e.target.value
+      },
+      () => {
+        billheaderCalculation($this, context);
       }
-    } else {
-      $this.setState(
-        {
-          [e.target.name]: e.target.value
-        },
-        () => {
-          billheaderCalculation($this, context);
-        }
-      );
+    );
 
-      if (context !== null) {
-        context.updateState({
-          [e.target.name]: e.target.value,
-          balance_credit: e.target.value === "" ? 0 : e.target.value
-        });
-      }
+    if (context !== null) {
+      context.updateState({
+        [e.target.name]: e.target.value,
+        balance_credit: e.target.value === "" ? 0 : e.target.value
+      });
     }
   }
 };

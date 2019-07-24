@@ -280,7 +280,7 @@ class SampleCollectionPatient extends PureComponent {
                                   return (
                                     <span>
                                       {display !== null && display.length !== 0
-                                        ? display[0].description
+                                        ? display[0].SpeDescription
                                         : ""}
                                     </span>
                                   );

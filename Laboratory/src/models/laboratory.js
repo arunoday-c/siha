@@ -761,7 +761,7 @@ module.exports = {
       let OrderServices = new LINQ(req.body.billdetails)
         .Where(
           w =>
-            w.hims_f_ordered_services_id != null &&
+            w.hims_f_ordered_services_id > 0 &&
             w.service_type_id ==
               appsettings.hims_d_service_type.service_type_id.Lab
         )

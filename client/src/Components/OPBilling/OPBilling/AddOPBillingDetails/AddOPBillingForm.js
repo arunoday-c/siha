@@ -28,7 +28,9 @@ import {
   calculateAmount,
   makeZero,
   makeDiscountZero,
-  makeZeroIngrid
+  makeZeroIngrid,
+  ShowPackageUtilize,
+  ClosePackageUtilize
 } from "./AddOPBillingHandaler";
 import ReciptForm from "../ReciptDetails/AddReciptForm";
 import { AlgaehActions } from "../../../../actions/algaehActions";
@@ -37,11 +39,14 @@ import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 import Enumerable from "linq";
 
+import PackageUtilize from "../../../PatientProfile/PackageUtilize/PackageUtilize";
+
 class AddOPBillingForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isOpen: false
+      isOpen: false,
+      isPackUtOpen: false
     };
   }
 
@@ -70,20 +75,15 @@ class AddOPBillingForm extends Component {
       });
     }
 
-    if (
-      this.props.opbilservices === undefined ||
-      this.props.opbilservices.length === 0
-    ) {
-      this.props.getServices({
-        uri: "/serviceType/getService",
-        module: "masterSettings",
-        method: "GET",
-        redux: {
-          type: "SERVICES_GET_DATA",
-          mappingName: "opserviceslist"
-        }
-      });
-    }
+    this.props.getServices({
+      uri: "/serviceType/getService",
+      module: "masterSettings",
+      method: "GET",
+      redux: {
+        type: "SERVICES_GET_DATA",
+        mappingName: "serviceslist"
+      }
+    });
   }
 
   ShowBillDetails(e) {
@@ -252,7 +252,8 @@ class AddOPBillingForm extends Component {
 
   deleteBillDetail(context, row) {
     let serviceDetails = this.state.billdetails;
-    serviceDetails.splice(row.rowIdx, 1);
+    let _index = serviceDetails.indexOf(row);
+    serviceDetails.splice(_index, 1);
 
     if (serviceDetails.length === 0) {
       if (context !== undefined) {
@@ -333,6 +334,10 @@ class AddOPBillingForm extends Component {
   }
 
   render() {
+    let Package_Exists =
+      this.props.PatientPackageList === undefined
+        ? []
+        : this.props.PatientPackageList;
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -386,7 +391,7 @@ class AddOPBillingForm extends Component {
                     }}
                   />
 
-                  <div className="col-lg-4">
+                  <div className="col-lg-2">
                     <button
                       className="btn btn-primary"
                       style={{ marginTop: "24px" }}
@@ -402,6 +407,25 @@ class AddOPBillingForm extends Component {
                       />
                     </button>
                   </div>
+
+                  {Package_Exists.length > 0 ? (
+                    <div className="col">
+                      <button
+                        className="btn btn-primary"
+                        style={{ marginTop: "24px" }}
+                        onClick={ShowPackageUtilize.bind(this, this)}
+                      >
+                        View Package
+                      </button>
+                      <h6 style={{ color: "green" }}> Package Exists </h6>
+                    </div>
+                  ) : null}
+
+                  <PackageUtilize
+                    open={this.state.isPackUtOpen}
+                    onClose={ClosePackageUtilize.bind(this, this)}
+                    package_detail={this.state.package_detail}
+                  />
 
                   <div className="col-lg-2">
                     <button
@@ -524,9 +548,9 @@ class AddOPBillingForm extends Component {
                           ),
                           displayTemplate: row => {
                             let display =
-                              this.props.opserviceslist === undefined
+                              this.props.serviceslist === undefined
                                 ? []
-                                : this.props.opserviceslist.filter(
+                                : this.props.serviceslist.filter(
                                     f =>
                                       f.hims_d_services_id === row.services_id
                                   );
@@ -543,9 +567,9 @@ class AddOPBillingForm extends Component {
                           },
                           editorTemplate: row => {
                             let display =
-                              this.props.opserviceslist === undefined
+                              this.props.serviceslist === undefined
                                 ? []
-                                : this.props.opserviceslist.filter(
+                                : this.props.serviceslist.filter(
                                     f =>
                                       f.hims_d_services_id === row.services_id
                                   );
@@ -637,7 +661,10 @@ class AddOPBillingForm extends Component {
                                   },
                                   others: {
                                     placeholder: "0.00",
-                                    disabled: this.state.Billexists,
+                                    disabled:
+                                      this.state.insurance_yesno === "Y"
+                                        ? true
+                                        : this.state.Billexists,
                                     onBlur: makeZeroIngrid.bind(
                                       this,
                                       this,
@@ -660,15 +687,7 @@ class AddOPBillingForm extends Component {
                               label={{ fieldName: "discount_amout" }}
                             />
                           ),
-                          displayTemplate: row => {
-                            return (
-                              <span>
-                                {getAmountFormart(row.discount_amout, {
-                                  appendSymbol: false
-                                })}
-                              </span>
-                            );
-                          },
+
                           displayTemplate: row => {
                             return (
                               <AlagehFormGroup
@@ -688,7 +707,10 @@ class AddOPBillingForm extends Component {
                                   },
                                   others: {
                                     placeholder: "0.00",
-                                    disabled: this.state.Billexists,
+                                    disabled:
+                                      this.state.insurance_yesno === "Y"
+                                        ? true
+                                        : this.state.Billexists,
                                     onBlur: makeZeroIngrid.bind(
                                       this,
                                       this,
@@ -1151,7 +1173,8 @@ function mapStateToProps(state) {
   return {
     servicetype: state.servicetype,
     opbilservices: state.opbilservices,
-    opserviceslist: state.opserviceslist
+    serviceslist: state.serviceslist,
+    PatientPackageList: state.PatientPackageList
   };
 }
 
@@ -1159,7 +1182,8 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getServiceTypes: AlgaehActions,
-      getServices: AlgaehActions
+      getServices: AlgaehActions,
+      getPatientPackage: AlgaehActions
     },
     dispatch
   );

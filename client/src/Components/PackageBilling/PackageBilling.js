@@ -15,7 +15,8 @@ import { getCookie } from "../../utils/algaehApiCall";
 import {
   ClearData,
   Validations,
-  getCashiersAndShiftMAP
+  getCashiersAndShiftMAP,
+  selectVisit
 } from "./PackageBillingEvents";
 import { AlgaehActions } from "../../actions/algaehActions";
 import { successfulMessage } from "../../utils/GlobalFunctions";
@@ -23,7 +24,7 @@ import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall.js";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
 import Enumerable from "linq";
 import AlgaehReport from "../Wrapper/printReports";
-
+import _ from "lodash";
 import moment from "moment";
 import Options from "../../Options.json";
 
@@ -130,9 +131,11 @@ class PackageBilling extends Component {
       uri: "/frontDesk/get",
       module: "frontDesk",
       method: "GET",
-      data: { patient_code: this.state.patient_code },
+      data: {
+        patient_code: this.state.patient_code,
+        expiry_visit: "N"
+      },
       onSuccess: response => {
-        let todayDate = new Date();
         if (response.data.success) {
           let data = response.data.records;
 
@@ -144,22 +147,15 @@ class PackageBilling extends Component {
             )
             .toArray();
 
-          todayDate.setDate(todayDate.getDate() - 7);
           if (x !== undefined && x.length > 0) {
             data.patientRegistration.patient_type = x[0].patitent_type_desc;
           } else {
             data.patientRegistration.patient_type = "Not Selected";
           }
 
-          let visitDetails = Enumerable.from(data.visitDetails)
-            .where(
-              w =>
-                w.visit_expiery_date > moment(todayDate).format("YYYY-MM-DD") &&
-                w.visit_status === "O"
-            )
-            .toArray();
+          let last_visitDetails = data.visitDetails[0];
 
-          data.patientRegistration.visitDetails = visitDetails;
+          data.patientRegistration.visitDetails = data.visitDetails;
           data.patientRegistration.patient_id =
             data.patientRegistration.hims_d_patient_id;
           data.patientRegistration.mode_of_pay = "None";
@@ -177,10 +173,38 @@ class PackageBilling extends Component {
           data.patientRegistration.secondary_policy_number = null;
           data.patientRegistration.card_number = null;
           data.patientRegistration.secondary_effective_end_date = null;
+          data.patientRegistration.visit_id =
+            last_visitDetails.hims_f_patient_visit_id;
+          data.patientRegistration.incharge_or_provider =
+            last_visitDetails.doctor_id;
 
-          this.setState(data.patientRegistration);
+          data.patientRegistration.insured = last_visitDetails.insured;
+          data.patientRegistration.insurance_yesno = last_visitDetails.insured;
+          data.patientRegistration.sec_insured = last_visitDetails.sec_insured;
+
+          if (last_visitDetails.insured === "Y") {
+            data.patientRegistration.mode_of_pay = "Insurance";
+            data.patientRegistration.applydiscount = true;
+          } else {
+            data.patientRegistration.mode_of_pay = "Self";
+            data.patientRegistration.applydiscount = false;
+          }
+          data.patientRegistration.addNewService = false;
+
+          if (data.bill_criedt.length > 0) {
+            data.patientRegistration.due_amount = _.sumBy(data.bill_criedt, s =>
+              parseFloat(s.balance_credit)
+            );
+          } else {
+            data.patientRegistration.due_amount = 0;
+          }
+          this.setState(data.patientRegistration, () => {
+            selectVisit($this);
+          });
+
+          // visit_id
         }
-        AlgaehLoader({ show: false });
+        // AlgaehLoader({ show: false });
       },
       onFailure: error => {
         AlgaehLoader({ show: false });

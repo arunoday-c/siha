@@ -287,6 +287,7 @@ const getCtrlCode = ($this, docNumber) => {
         data.creidt_invoice = false;
         data.cash_invoice = true;
       }
+      data.dataExists = true;
       if (data.insurance_provider_id !== null) {
         $this.props.getPatientInsurance({
           uri: "/patientRegistration/getPatientInsurance",
