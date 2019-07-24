@@ -18,7 +18,9 @@ import moment from "moment";
 class LoanRequest extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
+      hims_d_employee_id: this.props.hims_d_employee_id,
       selectedLang: this.props.SelectLanguage,
       loan_master: [],
       employee_loans: [],
