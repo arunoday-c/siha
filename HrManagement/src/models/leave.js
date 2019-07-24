@@ -1504,11 +1504,13 @@ module.exports = {
                   next();
                   return;
                 } else {
+
+                  console.log ("aaa:",result[0]["leave_description"]);
                   _mysql.releaseConnection();
                   req.records = {
                     invalid_input: true,
                     message: `you dont have enough leaves for :${
-                      result[0]["leave_description"]
+                      allLeaves[0]["leave_description"]
                     } `
                   };
                   next();
@@ -1565,10 +1567,12 @@ module.exports = {
                   next();
                 } else {
                   _mysql.releaseConnection();
+
+                  
                   req.records = {
                     invalid_input: true,
                     message: `you dont have enough leaves for :${
-                      result[0]["leave_description"]
+                      allLeaves[0]["leave_description"]
                     } `
                   };
                   next();
