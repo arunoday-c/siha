@@ -19,7 +19,8 @@ import {
   OT_CALC,
   BIOMETRIC_DBS,
   SWIPE_CARD_TYPE,
-  MANUAL_TIME_TYPE
+  MANUAL_TIME_TYPE,
+  ATTN_START_TYPE
 } from "../../../../utils/GlobalVariables.json";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 
@@ -104,6 +105,19 @@ export default class AttendanceSettings extends Component {
     this.setState({
       [value.name]: value.value
     });
+  }
+
+  attnDropdownHandler(option) {
+    if (option.value === "FE") {
+      this.setState(
+        {
+          at_st_date: null
+        },
+        () => this.dropDownHandler(option)
+      );
+    } else {
+      this.dropDownHandler(option);
+    }
   }
 
   textHandler(e) {
@@ -420,6 +434,50 @@ export default class AttendanceSettings extends Component {
                     others: {
                       type: "number"
                     }
+                  }}
+                />
+
+                <AlagehAutoComplete
+                  div={{ className: "col-2 form-group" }}
+                  label={{ forceLabel: "Attendence Starts", isImp: false }}
+                  selector={{
+                    name: "attendance_starts",
+                    value: this.state.attendance_starts,
+                    className: "select-fld",
+                    dataSource: {
+                      textField: "name",
+                      valueField: "value",
+                      data: ATTN_START_TYPE
+                    },
+                    onChange: this.attnDropdownHandler.bind(this),
+                    onClear: () => {
+                      this.setState({
+                        attendance_starts: null
+                      });
+                    }
+                  }}
+                />
+
+                <AlagehAutoComplete
+                  div={{ className: "col-2 form-group" }}
+                  label={{
+                    forceLabel: "Attn. Start Date",
+                    isImp: this.state.attendance_starts === "PM"
+                  }}
+                  selector={{
+                    sort: "off",
+                    name: "at_st_date",
+                    value: this.state.at_st_date,
+                    others: {
+                      disabled: this.state.attendance_starts !== "PM"
+                    },
+                    className: "select-fld",
+                    dataSource: {
+                      textField: "name",
+                      valueField: "value",
+                      data: allDays
+                    },
+                    onChange: this.dropDownHandler.bind(this)
                   }}
                 />
                 {/* 

@@ -838,6 +838,10 @@
       "value": "DM"
     }
   ],
+  "ATTN_START_TYPE": [
+    { "name": "First Of Every Month", "value": "FE" },
+    { "name": "Previous Month", "value": "PM" }
+  ],
   "OT_PAYMENTS": [
     { "name": "None", "value": "N" },
     { "name": "Comp Off", "value": "C" },
