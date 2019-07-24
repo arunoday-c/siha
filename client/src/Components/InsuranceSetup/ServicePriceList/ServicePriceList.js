@@ -11,6 +11,7 @@ import {
   AlagehAutoComplete,
   AlagehFormGroup
 } from "../../Wrapper/algaehWrapper";
+import ButtonType from "../../Wrapper/algaehButton";
 
 import { AlgaehActions } from "../../../actions/algaehActions";
 import {
@@ -247,18 +248,19 @@ class ServicePriceList extends PureComponent {
                       }}
                     />
 
-                    <div className="col-2" style={{ paddingLeft: 0 }}>
-                      <button
-                        className="btn btn-default"
-                        style={{ marginTop: 19 }}
+                    <div className="col-2" style={{ marginTop: 19 }}>
+                      <ButtonType
+                        classname="btn-primary"
                         onClick={bulkUpdate.bind(
                           this,
                           this,
                           "corporate_discount"
                         )}
-                      >
-                        Apply
-                      </button>
+                        label={{
+                          forceLabel: "Apply",
+                          returnText: true
+                        }}
+                      />
                     </div>
                   </div>
                 </div>
@@ -281,15 +283,16 @@ class ServicePriceList extends PureComponent {
                         },
                         onChange: texthandle.bind(this, this)
                       }}
-                    />{" "}
-                    <div className="col-2" style={{ padding: 0 }}>
-                      <button
-                        className="btn btn-default"
-                        style={{ marginTop: 19 }}
+                    />
+                    <div className="col-2" style={{ marginTop: 19 }}>
+                      <ButtonType
+                        classname="btn-primary"
                         onClick={bulkUpdate.bind(this, this, "pre_approval")}
-                      >
-                        Apply
-                      </button>
+                        label={{
+                          forceLabel: "Apply",
+                          returnText: true
+                        }}
+                      />
                     </div>
                   </div>
                 </div>
@@ -314,14 +317,15 @@ class ServicePriceList extends PureComponent {
                       }}
                     />
 
-                    <div className="col" style={{ padding: 0 }}>
-                      <button
-                        className="btn btn-default"
-                        style={{ marginTop: 19 }}
+                    <div className="col" style={{ marginTop: 19 }}>
+                      <ButtonType
+                        classname="btn-primary"
                         onClick={bulkUpdate.bind(this, this, "covered")}
-                      >
-                        Apply
-                      </button>
+                        label={{
+                          forceLabel: "Apply",
+                          returnText: true
+                        }}
+                      />
                     </div>
                   </div>
                 </div>

@@ -105,8 +105,8 @@
         cursor: pointer; }
 
 .scheduledDocList {
-  min-height: 70vh;
-  max-height: 70vh;
+  min-height: 65vh;
+  max-height: 65vh;
   padding: 0;
   margin: 0;
   border-radius: 0;

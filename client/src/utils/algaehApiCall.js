@@ -244,6 +244,7 @@ export function algaehApiCall(options) {
               reader.onload = function() {
                 if (settings.onFileFailure === "function") {
                   settings.onFileFailure(reader.result);
+                  return;
                 } else {
                   console.error(reader.result);
                 }
@@ -320,6 +321,9 @@ export function algaehApiCall(options) {
           // ReactDOM.unmountComponentAtNode(
           //   document.getElementById("fullPageLoader")
           // );
+          if (typeof settings.onCatch === "function") {
+            settings.onCatch(err);
+          }
         });
     }
   });

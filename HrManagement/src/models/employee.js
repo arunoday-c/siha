@@ -58,6 +58,7 @@ module.exports = {
     const _mysql = new algaehMysql();
     return new Promise((resolve, reject) => {
       try {
+        const utilities = new algaehUtilities();
         let _strAppend = "";
 
         if (req.query.isdoctor != null) {
@@ -68,6 +69,7 @@ module.exports = {
             " and sub_department_id='" + req.query.sub_department_id + "'";
         }
 
+        utilities.logger().log("Query: ", _strAppend);
         _mysql
           .executeQuery({
             query:
@@ -507,6 +509,72 @@ module.exports = {
             and ED.category_speciality_id = CS.hims_m_category_speciality_mappings_id " +
               _stringData,
             values: inputValues,
+            printQuery: true
+          })
+          .then(result => {
+            _mysql.releaseConnection();
+            req.records = result;
+            next();
+            resolve(result);
+          })
+          .catch(e => {
+            next(e);
+            reject(e);
+          });
+      } catch (e) {
+        reject(e);
+        next(e);
+      }
+    }).catch(e => {
+      _mysql.releaseConnection();
+      next(e);
+    });
+  },
+
+  getEmployeeDepartmentsWise: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    return new Promise((resolve, reject) => {
+      try {
+        _mysql
+          .executeQuery({
+            query:
+              "SELECT SD.sub_department_name, count(*) as no_of_emp  FROM hims_d_employee E, hims_d_sub_department SD WHERE \
+            SD.hims_d_sub_department_id = E.sub_department_id and E.record_status = 'A' and E.hospital_id = ? \
+            group by SD.hims_d_sub_department_id ; ",
+            values: [req.userIdentity.hospital_id],
+            printQuery: true
+          })
+          .then(result => {
+            _mysql.releaseConnection();
+            req.records = result;
+            next();
+            resolve(result);
+          })
+          .catch(e => {
+            next(e);
+            reject(e);
+          });
+      } catch (e) {
+        reject(e);
+        next(e);
+      }
+    }).catch(e => {
+      _mysql.releaseConnection();
+      next(e);
+    });
+  },
+
+  getEmployeeDesignationWise: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    return new Promise((resolve, reject) => {
+      try {
+        _mysql
+          .executeQuery({
+            query:
+              "SELECT D.designation, count(*) as no_of_emp  FROM hims_d_employee E, hims_d_designation D WHERE \
+                D.hims_d_designation_id = E.employee_designation_id and E.record_status = 'A' and E.hospital_id = ? \
+                group by D.hims_d_designation_id ; ",
+            values: [req.userIdentity.hospital_id],
             printQuery: true
           })
           .then(result => {

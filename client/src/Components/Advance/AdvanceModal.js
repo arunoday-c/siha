@@ -278,13 +278,11 @@ class AddAdvanceModal extends PureComponent {
                 }}
                 title={this.props.HeaderCaption}
                 openPopup={this.props.show}
-                class={this.state.lang_sets}
+                class={this.state.lang_sets + "advanceRefundModal"}
               >
-                {/* <div className="algaeh-modal"> */}
-                {/* <div className="popupHeader">{this.props.HeaderCaption} </div> */}
                 <div className="col-lg-12 popupInner">
                   <div className="row">
-                    <div className="col-lg-3">
+                    <div className="col">
                       <AlgaehLabel
                         label={{
                           fieldName: "patient_code"
@@ -296,7 +294,7 @@ class AddAdvanceModal extends PureComponent {
                           : "Patient Code"}
                       </h6>
                     </div>
-                    <div className="col-lg-9">
+                    <div className="col">
                       <AlgaehLabel
                         label={{
                           fieldName: "full_name"
@@ -312,28 +310,6 @@ class AddAdvanceModal extends PureComponent {
                   <hr style={{ margin: "0rem" }} />
                   <div className="row secondary-box-container">
                     {/*  <AlagehAutoComplete
-                      div={{ className: "col-lg-3 mandatory" }}
-                      label={{
-                        fieldName: "counter_id",
-                        isImp: true
-                      }}
-                      selector={{
-                        name: "counter_id",
-                        className: "select-fld",
-                        value: this.state.counter_id,
-                        dataSource: {
-                          textField:
-                            this.state.selectedLang === "en"
-                              ? "counter_description"
-                              : "arabic_name",
-                          valueField: "hims_d_counter_id",
-                          data: this.props.counters
-                        },
-                        onChange: countertexthandle.bind(this, this)
-                      }}
-                    />*/}
-
-                    <AlagehAutoComplete
                       div={{ className: "col-lg-3 mandatory" }}
                       label={{
                         fieldName: "shift_id",
@@ -353,10 +329,31 @@ class AddAdvanceModal extends PureComponent {
                         },
                         onChange: texthandle.bind(this, this, context)
                       }}
+                    />*/}
+
+                    <AlagehAutoComplete
+                      div={{ className: "col-lg-3 mandatory" }}
+                      label={{
+                        fieldName: "counter_id",
+                        isImp: true
+                      }}
+                      selector={{
+                        name: "counter_id",
+                        className: "select-fld",
+                        value: this.state.counter_id,
+                        dataSource: {
+                          textField:
+                            this.state.selectedLang === "en"
+                              ? "counter_description"
+                              : "arabic_name",
+                          valueField: "hims_d_counter_id",
+                          data: this.props.counters
+                        },
+                        onChange: countertexthandle.bind(this, this)
+                      }}
                     />
                   </div>
-                  <hr />
-
+                  <hr /> */}
                   {/* Payment Type */}
                   {/* Cash */}
                   <div className="row secondary-box-container">
@@ -401,7 +398,6 @@ class AddAdvanceModal extends PureComponent {
                       }}
                     />
                   </div>
-
                   {Advance === true ? (
                     <div className="">
                       {/* Card */}
@@ -574,7 +570,6 @@ class AddAdvanceModal extends PureComponent {
                       </div>
                     </div>
                   ) : null}
-
                   <hr />
                   <div className="row secondary-box-container">
                     <div className="col-lg-3">
@@ -598,7 +593,7 @@ class AddAdvanceModal extends PureComponent {
                           fieldName: "total_amount"
                         }}
                       />
-                      <h5>{getAmountFormart(this.state.total_amount)}</h5>
+                      <h6>{getAmountFormart(this.state.total_amount)}</h6>
                     </div>
                     <div className="col-lg-3">
                       <AlgaehLabel

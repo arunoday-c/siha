@@ -832,7 +832,15 @@
   ],
   "ATTENDANCE_TYPE": [
     { "name": "Monthly", "value": "M" },
-    { "name": "Daily", "value": "D" }
+    { "name": "Daily", "value": "D" },
+    {
+      "name": "Daily Manual",
+      "value": "DM"
+    }
+  ],
+  "ATTN_START_TYPE": [
+    { "name": "First Of Every Month", "value": "FE" },
+    { "name": "Previous Month", "value": "PM" }
   ],
   "OT_PAYMENTS": [
     { "name": "None", "value": "N" },

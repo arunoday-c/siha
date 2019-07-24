@@ -86,7 +86,6 @@ import diagram from "../controller/diagram";
 import myInit from "../controller/myinit";
 //connect to DB
 //function(db)
-
 const config = con.default;
 
 initializedDb(db => {

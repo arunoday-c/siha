@@ -9,6 +9,7 @@ import {
   AlgaehLabel,
   AlgaehModalPopUp
 } from "../../Wrapper/algaehWrapper";
+import ButtonType from "../../Wrapper/algaehButton";
 
 import "./PackageUtilize.css";
 import "../../../styles/site.css";
@@ -528,12 +529,14 @@ class PackageUtilize extends Component {
                 <div className="row">
                   <div className="col-lg-12">
                     <span className="float-right">
-                      <button
-                        className="btn btn-primary"
+                      <ButtonType
+                        classname="btn-primary"
                         onClick={this.UtilizeService.bind(this)}
-                      >
-                        Utilize Services
-                      </button>
+                        label={{
+                          forceLabel: "Utilize Services",
+                          returnText: true
+                        }}
+                      />
                       <button
                         className="btn btn-default"
                         onClick={this.onClose.bind(this)}

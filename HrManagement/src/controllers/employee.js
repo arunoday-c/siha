@@ -21,7 +21,9 @@ import {
   getDoctorServiceCommission,
   getDoctorServiceTypeCommission,
   getEmployeesForMisED,
-  addMisEarnDedcToEmployees
+  addMisEarnDedcToEmployees,
+  getEmployeeDepartmentsWise,
+  getEmployeeDesignationWise
 } from "../models/employee";
 export default () => {
   const api = Router();
@@ -60,6 +62,28 @@ export default () => {
   api.get(
     "/getEmployeeDepartments",
     getEmployeeDepartments,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+
+  api.get(
+    "/getEmployeeDepartmentsWise",
+    getEmployeeDepartmentsWise,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+
+  api.get(
+    "/getEmployeeDesignationWise",
+    getEmployeeDesignationWise,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,

@@ -41,7 +41,8 @@ class Dental extends Component {
       scheduled_date: new Date(),
       selected_plan: "------",
       hims_d_services_id: "",
-      discount_percentage: 0
+      discount_percentage: 0,
+      dental_form_loading: false
     };
     this.getProcedures();
     this.getTreatementPlans();
@@ -1549,6 +1550,59 @@ class Dental extends Component {
   onClose = e => {
     this.setState({ openBillingModal: false });
   };
+  onClickSaveDentalForm(e) {
+    const patientDetails = Window.global;
+    let dentalFormObject = {
+      patient_id: patientDetails.current_patient,
+      visit_id: patientDetails.visit_id,
+      provider_id: patientDetails.provider_id,
+      episode: patientDetails.episode_id,
+      due_date: this.state.due_date
+    };
+    const allCheckList = this.checList.querySelectorAll("[type='checkbox']");
+    for (let i = 0; i < allCheckList.length; i++) {
+      const element = allCheckList[i];
+      dentalFormObject[element["name"]] =
+        element["checked"] === true ? "Y" : "N";
+    }
+    const that = this;
+    this.setState(
+      {
+        dental_form_loading: true
+      },
+      () => {
+        algaehApiCall({
+          uri: "/dentalForm/addDentalForm",
+          method: "POST",
+          data: dentalFormObject,
+          onSuccess: response => {
+            if (response.data.success) {
+              that.setState({
+                dental_form_loading: false
+              });
+              swalMessage({
+                title: "Updated successfully",
+                type: "success"
+              });
+            } else {
+              that.setState({
+                dental_form_loading: false
+              });
+              swalMessage({
+                title: response.data.message,
+                type: "error"
+              });
+            }
+          },
+          onCatch: err => {
+            that.setState({
+              dental_form_loading: false
+            });
+          }
+        });
+      }
+    );
+  }
   render() {
     let billDetails = this.state.billDetails;
     return (
@@ -2364,44 +2418,6 @@ class Dental extends Component {
                         );
                       },
                       editorTemplate: row => {
-                        //  let data=[];
-
-                        //  if (row.teeth_number>5 && row.teeth_number<12 ||
-
-                        //   row.teeth_number>27 && row.teeth_number<21
-                        //   ) {
-                        //   data= [
-                        //     { name: "D", value: "D" },
-                        //     { name: "I", value: "I" },
-                        //     { name: "P", value: "P" },
-                        //     { name: "L", value: "L" }
-                        //   ];
-                        //  } else {
-                        //    data =  [
-                        //     { name: "D", value: "D" },
-                        //     { name: "I", value: "I" },
-                        //     { name: "M", value: "M" },
-                        //     { name: "P", value: "P" },
-                        //     { name: "L", value: "L" }
-                        //   ];
-                        //  }
-                        //   return (
-                        //     <AlagehAutoComplete
-                        //       selector={{
-                        //         name: "surface",
-                        //         className: "select-fld",
-                        //         value: this.state.surface,
-                        //         multiselect: true,
-                        //         dataSource: {
-                        //           textField: "name",
-                        //           valueField: "value",
-                        //           data: data
-                        //         },
-                        //         onChange: () => {}
-                        //       }}
-                        //     />
-                        //   );
-
                         return (
                           <span>
                             {row.distal === "Y" ? "D " : ""}
@@ -2559,18 +2575,13 @@ class Dental extends Component {
         </div>
 
         <div className="col-12 margin-top-15">
-          <div className="row">
+          <div
+            className="row"
+            ref={c => {
+              this.checList = c;
+            }}
+          >
             <div className="col portlet portlet-bordered margin-bottom-15">
-              {/* <div className="portlet-title">
-      <div className="caption">
-       <h3 className="caption-subject">Enter Grid Name Here</h3>
-       </div>
-      <div className="actions">
-      <a className="btn btn-primary btn-circle active">
-      <i className="fas fa-pen" />
-      </a>
-      </div>
-      </div> */}
               <div className="portlet-body">
                 <div className="col">
                   <div className="row">
@@ -2581,27 +2592,30 @@ class Dental extends Component {
                           {/* <label>Working Days</label> */}
                           <div className="customCheckbox">
                             <label className="checkbox block">
-                              <input type="checkbox" name="All" />
+                              <input type="checkbox" name="bruxzir_anterior" />
                               <span>BruxZir - Anterior</span>
                             </label>
                             <label className="checkbox block">
-                              <input type="checkbox" name="sunday" />
+                              <input type="checkbox" name="ips_e_max" />
                               <span>IPS E.max</span>
                             </label>
                             <label className="checkbox block">
-                              <input type="checkbox" name="monday" />
+                              <input type="checkbox" name="lava" />
                               <span>Lava</span>
                             </label>
                             <label className="checkbox block">
-                              <input type="checkbox" name="tuesday" />
+                              <input type="checkbox" name="lumineers" />
                               <span>Lumineers</span>
                             </label>
                             <label className="checkbox block">
-                              <input type="checkbox" name="wednesday" />
+                              <input
+                                type="checkbox"
+                                name="zirconia_e_max_layered"
+                              />
                               <span>Zirconia E.Max Layered</span>
                             </label>
                             <label className="checkbox block">
-                              <input type="checkbox" name="thursday" />
+                              <input type="checkbox" name="bruxzir" />
                               <span>BruxZir</span>
                             </label>
                           </div>
@@ -2615,15 +2629,15 @@ class Dental extends Component {
                           {/* <label>Working Days</label> */}
                           <div className="customCheckbox">
                             <label className="checkbox block">
-                              <input type="checkbox" name="All" />
+                              <input type="checkbox" name="nobel" />
                               <span>Noble</span>
                             </label>
                             <label className="checkbox block">
-                              <input type="checkbox" name="sunday" />
+                              <input type="checkbox" name="white_high_nobel" />
                               <span>White High Noble</span>
                             </label>
                             <label className="checkbox block">
-                              <input type="checkbox" name="monday" />
+                              <input type="checkbox" name="non_precious" />
                               <span>Non- Precious</span>
                             </label>
                           </div>
@@ -2637,23 +2651,26 @@ class Dental extends Component {
                           {/* <label>Working Days</label> */}
                           <div className="customCheckbox">
                             <label className="checkbox block">
-                              <input type="checkbox" name="All" />
+                              <input type="checkbox" name="titanium" />
                               <span>Titanium</span>
                             </label>
                             <label className="checkbox block">
-                              <input type="checkbox" name="sunday" />
+                              <input
+                                type="checkbox"
+                                name="zirconia_w_ti_base"
+                              />
                               <span>Zirconia w/Ti-Base</span>
                             </label>
                             <label className="checkbox block">
-                              <input type="checkbox" name="monday" />
+                              <input type="checkbox" name="biomet_3i_encode" />
                               <span>Biomet 3i Encode</span>
                             </label>
                             <label className="checkbox block">
-                              <input type="checkbox" name="tuesday" />
+                              <input type="checkbox" name="screw_retained" />
                               <span>Screw Retained</span>
                             </label>
                             <label className="checkbox block">
-                              <input type="checkbox" name="wednesday" />
+                              <input type="checkbox" name="flexi" />
                               <span>Felxi</span>
                             </label>
                           </div>
@@ -2669,35 +2686,35 @@ class Dental extends Component {
                           {/* <label>Working Days</label> */}
                           <div className="customCheckbox">
                             <label className="checkbox block">
-                              <input type="checkbox" name="All" />
+                              <input type="checkbox" name="analog" />
                               <span>Analog</span>
                             </label>
                             <label className="checkbox block">
-                              <input type="checkbox" name="sunday" />
+                              <input type="checkbox" name="models" />
                               <span>Models</span>
                             </label>
                             <label className="checkbox block">
-                              <input type="checkbox" name="monday" />
+                              <input type="checkbox" name="implant_parts" />
                               <span>Implant Parts</span>
                             </label>
                             <label className="checkbox block">
-                              <input type="checkbox" name="tuesday" />
+                              <input type="checkbox" name="impression" />
                               <span>Impression</span>
                             </label>
                             <label className="checkbox block">
-                              <input type="checkbox" name="wednesday" />
+                              <input type="checkbox" name="bite" />
                               <span>Bite</span>
                             </label>
                             <label className="checkbox block">
-                              <input type="checkbox" name="thursday" />
+                              <input type="checkbox" name="shade_tab" />
                               <span>Shade Tab</span>
                             </label>{" "}
                             <label className="checkbox block">
-                              <input type="checkbox" name="thursday" />
+                              <input type="checkbox" name="others" />
                               <span>Others</span>
                             </label>{" "}
                             <label className="checkbox block">
-                              <input type="checkbox" name="thursday" />
+                              <input type="checkbox" name="photos" />
                               <span>Photos</span>
                             </label>
                           </div>
@@ -2713,7 +2730,7 @@ class Dental extends Component {
                           {/* <label>Working Days</label> */}
                           <div className="customCheckbox">
                             <label className="checkbox block">
-                              <input type="checkbox" name="All" />
+                              <input type="checkbox" name="pmma" />
                               <span>PMMA</span>
                             </label>
                           </div>
@@ -2729,11 +2746,11 @@ class Dental extends Component {
                           {/* <label>Working Days</label> */}
                           <div className="customCheckbox">
                             <label className="checkbox block">
-                              <input type="checkbox" name="All" />
+                              <input type="checkbox" name="bags" />
                               <span>Bags</span>
                             </label>
                             <label className="checkbox block">
-                              <input type="checkbox" name="sunday" />
+                              <input type="checkbox" name="rx_forms" />
                               <span>RX Forms</span>
                             </label>
                           </div>
@@ -2748,10 +2765,17 @@ class Dental extends Component {
                           label={{ forceLabel: "Due Date", isImp: false }}
                           textBox={{
                             className: "txt-fld",
-                            name: ""
+                            name: "due_date"
                           }}
-                          maxDate={new Date()}
-                          events={{}}
+                          value={this.state.due_date}
+                          minDate={new Date()}
+                          events={{
+                            onChange: selectedDate => {
+                              this.setState({
+                                due_date: selectedDate
+                              });
+                            }
+                          }}
                         />
                       </div>
                     </div>
@@ -2769,12 +2793,17 @@ class Dental extends Component {
         </div>
         <div className="row">
           <div className="col">
-            <button
-              className="btn btn-primary"
-              style={{ marginLeft: 10, float: "right" }}
-            >
-              Save
-            </button>
+            <ButtonType
+              label={{
+                forceLabel: "Save",
+                returnText: true
+              }}
+              className="btn-primary"
+              onClick={this.onClickSaveDentalForm.bind(this)}
+              others={{ style: { marginLeft: 10, float: "right" } }}
+              loading={this.state.dental_form_loading}
+            />
+
             <button className="btn btn-default" style={{ float: "right" }}>
               Clear
             </button>

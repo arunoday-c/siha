@@ -1,0 +1,180 @@
+{{{importStyle 'css/creditinvoice.css'}}}
+
+<body>
+    <div class="print-body">
+
+        <section>
+
+            <table class="tableForLabel" cell-padding="0">
+
+                <tr>
+                    <td><label class="textEnLft">Patient Name</label>:<span
+                            class="valueText">{{header.patient_full_name}}</span><label class="textArRht">
+                            الإسم</label></td>
+                    <td><label class="textEnLft">MR No</label>:<span
+                            class="valueText">{{header.patient_code}}</span><label class="textArRht"> رقم الملف</label>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td><label class="textEnLft">Age</label>:<span class="valueText">Yrs/ Month/ Day(s)</span><label
+                            class="textArRht">
+                            عمر</label></td>
+                    <td><label class="textEnLft">Nationality</label>:<span class="valueText"></span><label
+                            class="textArRht"> جنسية
+                        </label>
+                    </td>
+
+                </tr>
+
+                <tr>
+                    <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
+                </tr>
+                <tr>
+                    <td><label class="textEnLft">Consultant In-Charge</label>:<span
+                            class="valueText">{{header.full_name}}</span><label class="textArRht"> إسم الطبيب</label>
+                    </td>
+                    <td><label class="textEnLft">Department</label>:<span
+                            class="valueText">{{header.sub_department_name}}</span><label class="textArRht">قسم</label>
+                    </td>
+                </tr>
+
+            </table>
+
+
+        </section>
+        <section>
+            <table class="tableForLabel" cell-padding="0">
+                <tbody>
+
+                    <tr>
+                        <td valign="top" style="width:50%">
+                            <p>I, the undersigned on behalf of myself or as being the representative of <span>Patient
+                                    Cousin Name</span> (Patient’s name), hereby I agree to receive care in
+                                <span>Hospital
+                                    Branch Name</span> including the admission and I authorize the Hospital's physicians
+                                and allied health professionals to administer and perform medical examination,
+                                investigation (laboratory/radiological), medical treatment, non-invasive (diagnostic/
+                                treatment) procedures, during the course of my stay in the hospital as inpatient, be
+                                deemed advisable or necessary with no guarantees about the final results of the
+                                treatment. My written consent will be taken prior to any surgical, invasive procedure,
+                                or high risk treatment. I, also declare that during my stay in the hospital no claim for
+                                valuables, jewelry or lost property will be made against the Hospital since I was
+                                advised to leave these things at home.</p>
+                            <p>The expected cost has been discussed with me and I consent to pay all charges in
+                                consideration of the services will be rendered to me according to <span>Hospital Branch
+                                    Name</span> regular rates and terms. I authorize Hospital's physicians and allied
+                                health professionals to use my medical information for the purpose of insurance coverage
+                                or to provide the payer of my treatment cost with the required information. I also
+                                consent to <span>Hospital Branch Name</span> to contact me by telephone if needed
+                                regarding appointment and follow-up needs.</p>
+                        </td>
+                        <td valign="top" style="width:50%;text-align:right">
+                            <p>أوافق أنا الموقع أدناه بالأصالة عن نفسي أو بالنيابة عن <span>Patient
+                                    Cousin Name</span>(اسم المريض)
+                            </p>
+                            <p> على تلقى الرعاية الصحية فى مستشفى الجافل بما فى ذلك التنويم فى المستشفى وأفوض الأطباء
+                                العاملين به ومساعديهم من
+                                الطاقم الصحي لتقديم العناية الطبية لي وعمل الإجراءات الطبية بما في ذلك الفحوصات الفحوصات
+                                اللازمة سواء مخبرية أو
+                                إشعاعية وكذلك الإجراءات العلاجية الغير تداخلية والتي قد يعتبرونها ضرورية وذلك دون ضمان
+                                النتائج النهائية للعلاج. </p>
+                            <p>مع العلم بانه سيتم أخذ موافقتي الخطية للقيام بأي عملية جراحيه أو أي إجراء تداخلي أو أي
+                                علاج عالي الخطورة وأقر أنه
+                                خلال إقامتي بالمستشفى بعدم مطالبة المستشفى بأي مفقودات سواء مال، مجوهرات أو نحو ذلك حيث
+                                أنه طلب مني ترك هذه الأشياء
+                                بالمنزل. </p>
+                            <p>وحيث أنه قد تمت مناقشة التكلفة المتوقعة وأخذاً بالاعتبار الخدمات التي يقدمها المستشفى
+                                فإنني أوافق وألتزم بدفع كامل
+                                المستحقات المالية للمستشفى التي تترتب على أثناء إقامتي بالمستشفى. كما أفوض بهذا مستشفى
+                                الجافل والأطباء والطاقم الصحي
+                                العاملين به بتزويد شركة التأمين التي أتعامل معها او الجهة الدافعة لنفقات العلاج
+                                بالمعلومات المطلوبة من أجل التغطية
+                                التأمينية أو دفع النفقات. كما أنني اوافق على أن يتصل بي العاملون بالمستشفى هاتفيا بخصوص
+                                المواعيد والمراجعة. </p>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td valign="top"><small>In case of inability to write or sign, thumb-stamp shall be placed on
+                                the space
+                                provided for patient’s signature
+                                indicating whether it is left or right.</small></td>
+                        <td valign="top" style="text-align:right"><small>في حالة عدم القدرة على الكتابة أوالتوقيع
+                                تؤخذ بصمة الإبهام
+                                في المكان المخصص للتوقيع مع إضافة الأيمن/الأيسر</small></td>
+                    </tr>
+                    <tr>
+                        <td valign="top">By signing below, I acknowledge that, I have read, understood, and agreed with
+                            the above terms and conditions</td>
+                        <td valign="top" style="text-align:right">بالتوقيع أدناه أقر بأنني قرأت وفهمت ووافقت على البنود
+                            والشروط اعلاه</td>
+                    </tr>
+
+                </tbody>
+            </table>
+            <table class="tableForLabel" cell-padding="0" style="text-align: right">
+
+                <tr>
+                    <td>
+                        <p>التاريخ.و الوقت :</p>
+                        Date/Time
+                    </td>
+                    <td>
+                        <p>التوقيع :</p>
+                        Signature
+                    </td>
+                    <td>
+                        <p>اسم المريض</p>
+                        Patient Name
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <p>التاريخ.و الوقت</p>
+                        Date/Time
+                    </td>
+                    <td>
+                        <p>التوقيع</p>
+                        Signature
+                    </td>
+                    <td>
+                        <p>موظف الدخول</p>
+                        Admission Staff Name
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <p>التاريخ.و الوقت :</p>
+                        Date/Time
+                    </td>
+                    <td>
+                        <p>التوقيع :</p>
+                        Signature
+                    </td>
+                    <td>
+                        <p>الشاهد</p>
+                        Witness name
+                    </td>
+                </tr>
+            </table>
+            <table class="tableForLabel" cell-padding="0">
+                <tr>
+                    <td valign="top">
+                        <p>When the Patient is not capable of consenting, a representative may sign instead because of
+                            the following:</p>
+                        <p>■ The patient is a minor under 18 years age.</p>
+                        <p>■ Unconscious or mentally incompetent.</p>
+                        <p>■ Other </p>
+                    </td>
+                    <td valign="top" style="text-align:right">
+                        <p>يمكن للوصي / المفوض التوقيع نيابة عن المريض غير القادر على اتخاذ القرارات :</p>
+                        <p> اذا كان المريض قاصر او عمره اقل من۱۸ سنة ■</p>
+                        <p> اذا كان المريض في غير وعيه أو غير قادر عقلياً ■</p>
+                        <p> اضافات اخرى ■</p>
+                    </td>
+                </tr>
+            </table>
+        </section>
+    </div>
+</body>
