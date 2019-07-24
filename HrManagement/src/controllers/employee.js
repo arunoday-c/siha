@@ -246,6 +246,5 @@ export default () => {
       }
     }
   );
-
   return api;
 };

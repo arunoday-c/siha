@@ -215,6 +215,7 @@ export default function NewPackageEvent() {
               parseFloat($this.state.total_service_amount);
             appropriate_amount =
               appropriate_amount * parseFloat($this.state.package_amount);
+            appropriate_amount = appropriate_amount.toFixed(2);
             InputObj.PakageDetail[i].appropriate_amount = appropriate_amount;
           }
           debugger;
@@ -234,6 +235,9 @@ export default function NewPackageEvent() {
               onSuccess: response => {
                 if (response.data.success === true) {
                   debugger;
+                  $this.setState({
+                    approveEnable: false
+                  });
                   if ($this.state.from === "doctor") {
                     $this.props.onClose &&
                       $this.props.onClose(
@@ -250,6 +254,15 @@ export default function NewPackageEvent() {
               }
             });
           } else {
+            for (let i = 0; i < InputObj.insertPackage.length; i++) {
+              let appropriate_amount =
+                parseFloat(InputObj.insertPackage[i].tot_service_amount) /
+                parseFloat($this.state.total_service_amount);
+              appropriate_amount =
+                appropriate_amount * parseFloat($this.state.package_amount);
+              appropriate_amount = appropriate_amount.toFixed(2);
+              InputObj.insertPackage[i].appropriate_amount = appropriate_amount;
+            }
             algaehApiCall({
               uri: "/packagesetup/updatePackageSetup",
               module: "masterSettings",
@@ -329,6 +342,48 @@ export default function NewPackageEvent() {
         total_service_amount: total_service_amount,
         pl_amount: pl_amount,
         profit_loss: profit_loss
+      });
+    },
+    ApprovePackages: ($this, e) => {
+      AlgaehValidation({
+        alertTypeIcon: "warning",
+        querySelector: "data-validate='packagedata'",
+        onSuccess: () => {
+          let InputObj = $this.state;
+          if (InputObj.PakageDetail.length === 0) {
+            swalMessage({
+              type: "warning",
+              title: "Atleast One service is required in the list"
+            });
+            return;
+          }
+          for (let i = 0; i < InputObj.PakageDetail.length; i++) {
+            let appropriate_amount =
+              parseFloat(InputObj.PakageDetail[i].tot_service_amount) /
+              parseFloat($this.state.total_service_amount);
+            appropriate_amount =
+              appropriate_amount * parseFloat($this.state.package_amount);
+            appropriate_amount = appropriate_amount.toFixed(2);
+            InputObj.PakageDetail[i].appropriate_amount = appropriate_amount;
+          }
+          InputObj.approved = "Y";
+          debugger;
+          algaehApiCall({
+            uri: "/packagesetup/updatePackageSetup",
+            module: "masterSettings",
+            data: InputObj,
+            method: "PUT",
+            onSuccess: response => {
+              if (response.data.success === true) {
+                swalMessage({
+                  type: "success",
+                  title: "Updated successfully . ."
+                });
+                $this.props.onClose && $this.props.onClose(true);
+              }
+            }
+          });
+        }
       });
     }
   };

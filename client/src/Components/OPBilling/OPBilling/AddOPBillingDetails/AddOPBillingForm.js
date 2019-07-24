@@ -252,7 +252,8 @@ class AddOPBillingForm extends Component {
 
   deleteBillDetail(context, row) {
     let serviceDetails = this.state.billdetails;
-    serviceDetails.splice(row.rowIdx, 1);
+    let _index = serviceDetails.indexOf(row);
+    serviceDetails.splice(_index, 1);
 
     if (serviceDetails.length === 0) {
       if (context !== undefined) {
@@ -660,7 +661,10 @@ class AddOPBillingForm extends Component {
                                   },
                                   others: {
                                     placeholder: "0.00",
-                                    disabled: this.state.Billexists,
+                                    disabled:
+                                      this.state.insurance_yesno === "Y"
+                                        ? true
+                                        : this.state.Billexists,
                                     onBlur: makeZeroIngrid.bind(
                                       this,
                                       this,
@@ -703,7 +707,10 @@ class AddOPBillingForm extends Component {
                                   },
                                   others: {
                                     placeholder: "0.00",
-                                    disabled: this.state.Billexists,
+                                    disabled:
+                                      this.state.insurance_yesno === "Y"
+                                        ? true
+                                        : this.state.Billexists,
                                     onBlur: makeZeroIngrid.bind(
                                       this,
                                       this,

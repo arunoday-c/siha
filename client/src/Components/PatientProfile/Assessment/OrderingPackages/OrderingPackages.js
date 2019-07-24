@@ -47,10 +47,11 @@ class OrderingPackages extends Component {
       s_service: null,
       selectedLang: "en",
 
-      patient_id: Window.global["current_patient"],
-      visit_id: Window.global["visit_id"],
-      doctor_id: null,
+      patient_id: this.props.patient_id,
+      visit_id: this.props.visit_id,
+      doctor_id: this.props.provider_id,
       vat_applicable: this.props.vat_applicable,
+      provider_id: this.props.provider_id,
 
       orderservicesdata: [],
       approval_amt: 0,
@@ -184,15 +185,28 @@ class OrderingPackages extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    debugger;
     if (
       nextProps.existinginsurance !== undefined &&
       nextProps.existinginsurance.length !== 0
     ) {
       let output = nextProps.existinginsurance[0];
       output.insured = "Y";
+      output.patient_id = this.props.patient_id;
+      output.visit_id = this.props.visit_id;
+      output.doctor_id = this.props.provider_id;
+      output.provider_id = this.props.provider_id;
+      output.vat_applicable = this.props.vat_applicable;
       this.setState({ ...output });
     } else {
-      this.setState({ insured: "N" });
+      this.setState({
+        insured: "N",
+        patient_id: this.props.patient_id,
+        visit_id: this.props.visit_id,
+        doctor_id: this.props.provider_id,
+        provider_id: this.props.provider_id,
+        vat_applicable: this.props.vat_applicable
+      });
     }
   }
 
@@ -227,9 +241,10 @@ class OrderingPackages extends Component {
         s_service: null,
         selectedLang: "en",
 
-        patient_id: Window.global["current_patient"],
-        visit_id: Window.global["visit_id"],
-        doctor_id: null,
+        patient_id: this.props.patient_id,
+        visit_id: this.props.visit_id,
+        doctor_id: this.props.provider_id,
+        provider_id: this.props.provider_id,
         vat_applicable: this.props.vat_applicable,
 
         orderservicesdata: [],
@@ -270,7 +285,7 @@ class OrderingPackages extends Component {
   };
   render() {
     const insurance_id = this.state.insurance_provider_id;
-
+    const hideSomeDate = this.props.from === "Billing" ? true : false;
     return (
       <div className="hptl-phase1-ordering-services-form">
         <AlgaehModalPopUp
@@ -371,15 +386,17 @@ class OrderingPackages extends Component {
                   </button>
                 </div>
 
-                <div className="col">
-                  <button
-                    className="btn btn-primary"
-                    style={{ marginTop: 19 }}
-                    onClick={ShowPackageMaster.bind(this, this)}
-                  >
-                    Create New Package
-                  </button>
-                </div>
+                {hideSomeDate === false ? (
+                  <div className="col">
+                    <button
+                      className="btn btn-primary"
+                      style={{ marginTop: 19 }}
+                      onClick={ShowPackageMaster.bind(this, this)}
+                    >
+                      Create New Package
+                    </button>
+                  </div>
+                ) : null}
 
                 <NewPackage
                   open={this.state.isOpen}

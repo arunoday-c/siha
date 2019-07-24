@@ -4,7 +4,6 @@ import _ from "lodash";
 import { LINQ } from "node-linq";
 import mysql from "mysql";
 import algaehUtilities from "algaeh-utilities/utilities";
-import math from "mathjs";
 
 module.exports = {
   newProcessSalary: (req, res, next) => {
@@ -2984,7 +2983,6 @@ module.exports = {
                     .Select(s => parseFloat(s.airfare_amount))
                     .FirstOrDefault(0);
 
-
                   let emp_gratuity = new LINQ(gratuity)
                     .Where(w => w.employee_id == salary[i]["employee_id"])
                     .Select(s => {
@@ -4410,8 +4408,7 @@ function InsertGratuityProvision(options) {
                           return a + b;
                         }, 0) * _eligibleDays;
 
-                      _computatedAmoutSum = math.round(
-                        _computatedAmoutSum,
+                      _computatedAmoutSum = _computatedAmoutSum.toFixed(
                         decimal_places
                       );
 

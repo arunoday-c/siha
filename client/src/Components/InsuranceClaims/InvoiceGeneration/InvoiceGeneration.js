@@ -61,7 +61,8 @@ class InvoiceGeneration extends Component {
       network_office_id: null,
       select_invoice: "CH",
       creidt_invoice: false,
-      cash_invoice: true
+      cash_invoice: true,
+      dataExists: false
     };
   }
 
@@ -247,6 +248,7 @@ class InvoiceGeneration extends Component {
                   checked={this.state.cash_invoice}
                   name="cash_invoice"
                   onClick={this.selectData.bind(this)}
+                  disabled={this.state.dataExists}
                 />
                 <span>Cash Invoice</span>
               </label>
@@ -257,6 +259,7 @@ class InvoiceGeneration extends Component {
                   checked={this.state.creidt_invoice}
                   name="creidt_invoice"
                   onClick={this.selectData.bind(this)}
+                  disabled={this.state.dataExists}
                 />
                 <span>Credit Invoice</span>
               </label>

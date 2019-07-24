@@ -191,6 +191,7 @@ class PreApproval extends Component {
                 label={{ forceLabel: "From Date" }}
                 textBox={{ className: "txt-fld", name: "date" }}
                 maxDate={new Date()}
+                dontAllow={"future"}
                 events={{
                   onChange: datehandle.bind(this, this)
                 }}
@@ -201,6 +202,7 @@ class PreApproval extends Component {
                 label={{ forceLabel: "To Date" }}
                 textBox={{ className: "txt-fld", name: "to_date" }}
                 maxDate={new Date()}
+                dontAllow={"future"}
                 events={{
                   onChange: datehandle.bind(this, this)
                 }}

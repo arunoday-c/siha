@@ -498,13 +498,13 @@ module.exports = {
         _mysql
           .executeQuery({
             query:
-              "SELECT ED.hims_d_employee_department_id,ED.employee_id,ED.sub_department_id,ED.category_speciality_id,ED.user_id,\
-        ED.services_id,ED.employee_designation_id,ED.reporting_to_id,ED.from_date,ED.to_date,ED.dep_status,\
-        CS.hims_m_category_speciality_mappings_id,CS.category_id,CS.speciality_id,\
-       CS.category_speciality_status,CS.effective_start_date,CS.effective_end_date \
-       from hims_m_employee_department_mappings ED,hims_m_category_speciality_mappings CS\
-        Where ED.record_status='A' and CS.record_status='A' \
-         and ED.category_speciality_id=CS.hims_m_category_speciality_mappings_id " +
+              "SELECT ED.hims_d_employee_department_id, ED.employee_id, ED.sub_department_id,\
+            ED.category_speciality_id, ED.user_id, ED.services_id, ED.employee_designation_id, \
+            ED.reporting_to_id, ED.from_date, ED.to_date, ED.dep_status, CS.hims_m_category_speciality_mappings_id,\
+            CS.category_id, CS.speciality_id, CS.category_speciality_status, CS.effective_start_date,\
+            CS.effective_end_date from hims_m_employee_department_mappings ED, \
+            hims_m_category_speciality_mappings CS Where ED.record_status='A' and CS.record_status='A' \
+            and ED.category_speciality_id = CS.hims_m_category_speciality_mappings_id " +
               _stringData,
             values: inputValues,
             printQuery: true

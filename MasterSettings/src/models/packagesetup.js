@@ -108,7 +108,7 @@ module.exports = {
             "select PH.hims_d_package_header_id,PH.package_code, PH.package_name, PH.package_amount,\
             PH.total_service_amount, PH.profit_loss,PH.pl_amount, PH.package_service_id, PH.package_type,\
             PH.expiry_days, PH.advance_type, PH.advance_amount, PH.advance_percentage,\
-            PH.package_visit_type, PD.hims_d_package_detail_id, PD.service_type_id, PD.service_id, \
+            PH.package_visit_type, PH.approved, PD.hims_d_package_detail_id, PD.service_type_id, PD.service_id, \
             PD.service_amount, PD.qty,PD.tot_service_amount,PD.appropriate_amount,PD.qty as available_qty \
             from hims_d_package_header PH, hims_d_package_detail PD where \
             PH.hims_d_package_header_id=PD.package_header_id " +
@@ -136,14 +136,23 @@ module.exports = {
     const _mysql = new algaehMysql();
     try {
       let input = req.body;
+      let strQuery = "";
+
+      if (req.body.approved === "Y") {
+        strQuery =
+          ",approved = 'Y', approved_by = '" +
+          req.userIdentity.algaeh_d_app_user_id +
+          "', approved_date = now() ";
+      }
       _mysql
         .executeQueryWithTransaction({
           query:
             "UPDATE `hims_d_package_header` SET `package_code`=?, `package_name`=?, `package_amount`=?,\
           `total_service_amount`=?, `profit_loss`=?, `pl_amount`=?, \
           `package_type`=?,`expiry_days`=?,`advance_type`=?, `advance_amount`=?, `advance_percentage`=?,\
-          `package_visit_type`=?,`updated_date`=?, `updated_by`=? \
-          WHERE record_status='A' and `hims_d_package_header_id`=?",
+          `package_visit_type`=?,`updated_date`=?, `updated_by`=?" +
+            strQuery +
+            " WHERE record_status='A' and `hims_d_package_header_id`=?",
           values: [
             input.package_code,
             input.package_name,

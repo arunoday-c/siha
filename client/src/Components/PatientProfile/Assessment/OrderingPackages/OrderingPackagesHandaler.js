@@ -58,7 +58,17 @@ const serviceHandeler = ($this, e) => {
   // let date = new Date().setDate(
   //   new Date().getDate() + parseInt(e.expiry_days, 10)
   // );
-
+  let from_bill = $this.props.from === "Billing" ? true : false;
+  if (from_bill === true) {
+    if (e.package_visit_type === "M") {
+      $this.setState({ service_name: "" });
+      swalMessage({
+        title: "No rights to order Multi Visit Package",
+        type: "warning"
+      });
+      return;
+    }
+  }
   let expiry_date =
     e.package_visit_type === "M"
       ? moment()
@@ -214,7 +224,7 @@ const ProcessService = $this => {
                                 $this.state.patient_id;
 
                               Service_data.billdetails[i].doctor_id =
-                                Window.global["provider_id"];
+                                $this.state.provider_id;
                               Service_data.billdetails[
                                 i
                               ].insurance_provider_id =
@@ -259,9 +269,9 @@ const ProcessService = $this => {
                               Service_data.billdetails[i].patient_id =
                                 $this.state.patient_id;
                               Service_data.billdetails[i].incharge_or_provider =
-                                Window.global["provider_id"];
+                                $this.state.provider_id;
                               Service_data.billdetails[i].ordered_by =
-                                Window.global["provider_id"];
+                                $this.state.provider_id;
                               Service_data.billdetails[i].billed = "N";
 
                               Service_data.billdetails[i].advance_amount = 0;
@@ -356,7 +366,7 @@ const ProcessService = $this => {
 
               data.billdetails[0].requested_quantity =
                 data.billdetails[0].quantity;
-              data.billdetails[0].doctor_id = Window.global["provider_id"];
+              data.billdetails[0].doctor_id = $this.state.provider_id;
               data.billdetails[0].sec_company = $this.state.sec_insured;
               data.billdetails[0].test_type = $this.state.test_type;
               //If pre-approval required for selected service
@@ -380,8 +390,8 @@ const ProcessService = $this => {
               data.billdetails[0].visit_id = $this.state.visit_id;
               data.billdetails[0].patient_id = $this.state.patient_id;
               data.billdetails[0].incharge_or_provider =
-                Window.global["provider_id"];
-              data.billdetails[0].ordered_by = Window.global["provider_id"];
+                $this.state.provider_id;
+              data.billdetails[0].ordered_by = $this.state.provider_id;
               data.billdetails[0].billed = "N";
               data.billdetails[0].advance_amount = 0;
               data.billdetails[0].balance_amount = 0;
@@ -584,8 +594,8 @@ const SaveOrdersServices = ($this, e) => {
           s_service_type: null,
           s_service: null,
           selectedLang: "en",
-          patient_id: Window.global["current_patient"],
-          visit_id: Window.global["visit_id"],
+          patient_id: $this.props.patient_id,
+          visit_id: $this.props.visit_id,
           doctor_id: null,
           vat_applicable: $this.props.vat_applicable,
 

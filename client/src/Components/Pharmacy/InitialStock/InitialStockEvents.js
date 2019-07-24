@@ -2,7 +2,6 @@ import moment from "moment";
 import Options from "../../../Options.json";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
-import math from "mathjs";
 import Enumerable from "linq";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import AlgaehReport from "../../Wrapper/printReports";
@@ -32,7 +31,7 @@ const numberchangeTexts = ($this, e) => {
   } else if (name === "unit_cost") {
     extended_cost = parseFloat($this.state.quantity) * value;
   }
-  extended_cost = math.round(extended_cost, 2);
+  extended_cost = extended_cost.toFixed(2);
   $this.setState({ [name]: value, extended_cost: extended_cost });
 };
 
@@ -436,7 +435,7 @@ const onChamgeGridQuantity = ($this, row, e) => {
   if (value !== "") {
     extended_cost = parseFloat(row.unit_cost) * value;
 
-    extended_cost = math.round(extended_cost, 2);
+    extended_cost = extended_cost.toFixed(2);
     row[name] = value;
     row["extended_cost"] = extended_cost;
     row.update();

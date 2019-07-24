@@ -150,7 +150,7 @@ module.exports = {
           };
         })
         .ToArray();
-
+      utilities.logger().log("OrderServices 1: ", OrderServices);
       let qry = "";
       if (OrderServices.length > 0) {
         for (let i = 0; i < OrderServices.length; i++) {
@@ -186,6 +186,100 @@ module.exports = {
             } else {
               next();
             }
+          })
+          .catch(error => {
+            _mysql.rollBackTransaction(() => {
+              next(error);
+            });
+          });
+      } else {
+        utilities.logger().log("Else: ");
+        next();
+      }
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
+  },
+
+  updateOrderedPackageBilled: (req, res, next) => {
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
+    try {
+      const utilities = new algaehUtilities();
+      utilities.logger().log("updateOrderedPackageBilled: ");
+
+      let OrderServices = new LINQ(req.body.billdetails)
+        .Where(w => w.ordered_package_id != null)
+        .Select(s => {
+          return {
+            hims_f_package_header_id: s.ordered_package_id,
+            billed: "Y",
+            updated_date: new Date(),
+            updated_by: req.userIdentity.algaeh_d_app_user_id
+          };
+        })
+        .ToArray();
+
+      let qry = "";
+      if (OrderServices.length > 0) {
+        for (let i = 0; i < OrderServices.length; i++) {
+          qry += mysql.format(
+            "UPDATE `hims_f_package_header` SET billed=?,\
+                updated_date=?,updated_by=? where hims_f_package_header_id=?;",
+            [
+              OrderServices[i].billed,
+              moment().format("YYYY-MM-DD HH:mm"),
+              OrderServices[i].updated_by,
+              OrderServices[i].hims_f_package_header_id
+            ]
+          );
+        }
+
+        utilities.logger().log("qry: ", qry);
+
+        _mysql
+          .executeQuery({
+            query: qry,
+            printQuery: true
+          })
+          .then(updateOrder => {
+            if (req.connection == null) {
+              req.records = updateOrder;
+              next();
+            } else {
+              next();
+            }
+            // let package_header_id = _.map(OrderServices, o => {
+            //   return o.hims_f_package_header_id;
+            // });
+            // _mysql
+            //   .executeQuery({
+            //     query:
+            //       "select *,service_id as services_id, now() as created_date  from hims_f_package_detail where package_header_id in (?)",
+            //     values: [package_header_id],
+            //     printQuery: true
+            //   })
+            //   .then(package_details => {
+            //     // let data = req.body.billdetails.concat(package_details);
+            //     req.body.billdetails = req.body.billdetails.concat(
+            //       package_details
+            //     );
+            //
+            //     utilities.logger().log("billdetails: ", req.body.billdetails);
+            //
+            //     if (req.connection == null) {
+            //       req.records = updateOrder;
+            //       next();
+            //     } else {
+            //       next();
+            //     }
+            //   })
+            //   .catch(error => {
+            //     _mysql.releaseConnection();
+            //     next(error);
+            //   });
           })
           .catch(error => {
             _mysql.rollBackTransaction(() => {

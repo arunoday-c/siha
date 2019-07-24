@@ -42,7 +42,8 @@ class NewPackage extends PureComponent {
       advance_percentage: 0,
       advance_amount: 0,
       advance_type: "P",
-      qty: 1
+      qty: 1,
+      approveEnable: true
     };
   }
 
@@ -76,6 +77,8 @@ class NewPackage extends PureComponent {
       if (newProps.PackagesPop.hims_d_package_header_id !== undefined) {
         debugger;
         let IOputs = newProps.PackagesPop;
+        IOputs.approvedPack = IOputs.approved === "Y" ? true : false;
+        IOputs.approveEnable = false;
         this.setState({ ...this.state, ...IOputs });
       }
     }
@@ -148,6 +151,9 @@ class NewPackage extends PureComponent {
   makeZeroIngrid(row, e) {
     NewPackageEvent().makeZeroIngrid(this, row, e);
   }
+  ApprovePackages(e) {
+    NewPackageEvent().ApprovePackages(this, e);
+  }
   render() {
     return (
       <React.Fragment>
@@ -186,6 +192,9 @@ class NewPackage extends PureComponent {
                           value: this.state.package_code,
                           events: {
                             onChange: this.eventHandaler.bind(this)
+                          },
+                          others: {
+                            disabled: this.state.approvedPack
                           }
                         }}
                       />
@@ -202,6 +211,9 @@ class NewPackage extends PureComponent {
                           value: this.state.package_name,
                           events: {
                             onChange: this.eventHandaler.bind(this)
+                          },
+                          others: {
+                            disabled: this.state.approvedPack
                           }
                         }}
                       />
@@ -221,7 +233,8 @@ class NewPackage extends PureComponent {
                             onChange: this.pakageamtHandaler.bind(this)
                           },
                           others: {
-                            placeholder: "0.00"
+                            placeholder: "0.00",
+                            disabled: this.state.approvedPack
                           }
                         }}
                       />
@@ -266,6 +279,7 @@ class NewPackage extends PureComponent {
                                 this.state.package_type === "S" ? true : false
                               }
                               onChange={this.texthandle.bind(this)}
+                              disabled={this.state.approvedPack}
                             />
                             <span>Static</span>
                           </label>
@@ -279,6 +293,7 @@ class NewPackage extends PureComponent {
                                 this.state.package_type === "D" ? true : false
                               }
                               onChange={this.texthandle.bind(this)}
+                              disabled={this.state.approvedPack}
                             />
                             <span>Dynamic</span>
                           </label>
@@ -296,6 +311,7 @@ class NewPackage extends PureComponent {
                                 : false
                             }
                             onChange={this.texthandle.bind(this)}
+                            disabled={this.state.approvedPack}
                           />
                           <span>Single Visit</span>
                         </label>
@@ -311,6 +327,7 @@ class NewPackage extends PureComponent {
                                 : false
                             }
                             onChange={this.texthandle.bind(this)}
+                            disabled={this.state.approvedPack}
                           />
                           <span>Multi Visit</span>
                         </label>
@@ -336,7 +353,8 @@ class NewPackage extends PureComponent {
                                   onChange: this.texthandle.bind(this)
                                 },
                                 others: {
-                                  type: "number"
+                                  type: "number",
+                                  disabled: this.state.approvedPack
                                 }
                               }}
                             />
@@ -364,6 +382,9 @@ class NewPackage extends PureComponent {
                                   this.setState({
                                     advance_type: null
                                   });
+                                },
+                                others: {
+                                  disabled: this.state.approvedPack
                                 }
                               }}
                             />
@@ -387,7 +408,8 @@ class NewPackage extends PureComponent {
                                   },
                                   others: {
                                     min: 0,
-                                    max: 100
+                                    max: 100,
+                                    disabled: this.state.approvedPack
                                   }
                                 }}
                               />
@@ -407,7 +429,8 @@ class NewPackage extends PureComponent {
                                   },
                                   others: {
                                     min: 0,
-                                    max: 100
+                                    max: 100,
+                                    disabled: this.state.approvedPack
                                   }
                                 }}
                               />
@@ -441,6 +464,9 @@ class NewPackage extends PureComponent {
                           this.setState({
                             s_service_type: null
                           });
+                        },
+                        others: {
+                          disabled: this.state.approvedPack
                         }
                       }}
                     />
@@ -465,6 +491,9 @@ class NewPackage extends PureComponent {
                           this.setState({
                             s_service: null
                           });
+                        },
+                        others: {
+                          disabled: this.state.approvedPack
                         }
                       }}
                     />
@@ -488,7 +517,8 @@ class NewPackage extends PureComponent {
                           onChange: this.texthandle.bind(this)
                         },
                         others: {
-                          step: "1"
+                          step: "1",
+                          disabled: this.state.approvedPack
                         }
                       }}
                     />
@@ -497,6 +527,7 @@ class NewPackage extends PureComponent {
                         className="btn btn-primary"
                         style={{ marginTop: 19 }}
                         onClick={this.AddToList.bind(this)}
+                        disabled={this.state.approvedPack}
                       >
                         Add
                       </button>
@@ -595,7 +626,9 @@ class NewPackage extends PureComponent {
                                 />
                               ),
                               displayTemplate: row => {
-                                return (
+                                return this.state.approvedPack === true ? (
+                                  row.qty
+                                ) : (
                                   <AlagehFormGroup
                                     div={{}}
                                     textBox={{
@@ -614,7 +647,7 @@ class NewPackage extends PureComponent {
                                         )
                                       },
                                       others: {
-                                        disabled: this.state.Billexists,
+                                        disabled: this.state.approvedPack,
                                         onBlur: this.makeZeroIngrid.bind(
                                           this,
                                           row
@@ -623,6 +656,9 @@ class NewPackage extends PureComponent {
                                     }}
                                   />
                                 );
+                              },
+                              others: {
+                                style: { textAlign: "center" }
                               }
                             },
                             {
@@ -684,6 +720,7 @@ class NewPackage extends PureComponent {
                         onClick={this.InsertPackages.bind(this)}
                         type="button"
                         className="btn btn-primary"
+                        disabled={this.state.approved === "Y" ? true : false}
                       >
                         {this.state.hims_d_package_header_id === null ? (
                           <AlgaehLabel label={{ fieldName: "btnSave" }} />
@@ -691,6 +728,21 @@ class NewPackage extends PureComponent {
                           <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
                         )}
                       </button>
+
+                      {this.state.package_type === "S" ? (
+                        <button
+                          onClick={this.ApprovePackages.bind(this)}
+                          type="button"
+                          className="btn btn-primary"
+                          disabled={
+                            this.state.approved === "Y"
+                              ? true
+                              : this.state.approveEnable
+                          }
+                        >
+                          Approve
+                        </button>
+                      ) : null}
                       <button
                         onClick={e => {
                           this.onClose(e);

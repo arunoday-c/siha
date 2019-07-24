@@ -705,21 +705,23 @@ let selectOrderServicesbyDoctor = (req, res, next) => {
     _mysql
       .executeQuery({
         query:
-          "SELECT  OS.`hims_f_ordered_services_id`, OS.`patient_id`, OS.`visit_id`, OS.`doctor_id`, OS.`service_type_id`, \
-        OS.`services_id`, OS.`test_type`, OS.`insurance_yesno`, OS.`insurance_provider_id`, OS.`insurance_sub_id`, \
-        OS.`network_id`, OS.`insurance_network_office_id`, OS.`policy_number`, OS.`pre_approval`, OS.`apprv_status`, \
-        OS.`billed`, OS.`quantity`, OS.`unit_cost`, OS.`gross_amount`, OS.`discount_amout`, OS.`discount_percentage`, \
-        OS.`net_amout`, OS.`copay_percentage`, OS.`copay_amount`, OS.`deductable_amount`, OS.`deductable_percentage`, \
-        OS.`tax_inclusive`, OS.`patient_tax`, OS.`company_tax`, OS.`total_tax`, OS.`patient_resp`, OS.`patient_payable`, \
-        OS.`comapany_resp`, OS.`company_payble`, OS.`sec_company`, OS.`sec_deductable_percentage`, OS.`sec_deductable_amount`,\
-        OS.`sec_company_res`, OS.`sec_company_tax`, OS.`sec_company_paybale`, OS.`sec_copay_percntage`, OS.`sec_copay_amount`,\
-        OS.`created_by`, OS.`created_date`, OS.`updated_by`, OS.`updated_date`, OS.`record_status`,\
-        S.`hims_d_services_id`, S.`service_code`, S.`cpt_code`, S.`service_name`, S.`arabic_service_name`, \
-        S.`service_desc`, S.`sub_department_id`, S.`hospital_id`, S.`service_type_id`, S.`procedure_type`, \
-        S.`standard_fee`, S.`followup_free_fee`, S.`followup_paid_fee`, S.`discount`, S.`vat_applicable`, \
-        S.`vat_percent`, S.`service_status` FROM `hims_f_ordered_services` OS,  `hims_d_services` S WHERE \
-        OS.services_id = S.hims_d_services_id and \
-        OS.`record_status`='A'  " +
+          "SELECT  OS.`hims_f_ordered_services_id`, OS.`patient_id`, OS.`visit_id`, OS.`doctor_id`,\
+           OS.`service_type_id`, OS.`services_id`, OS.`test_type`, OS.`insurance_yesno`, \
+           OS.`insurance_provider_id`, OS.`insurance_sub_id`, OS.`network_id`, \
+           OS.`insurance_network_office_id`, OS.`policy_number`, OS.`pre_approval`, OS.`apprv_status`, \
+           OS.`billed`, OS.`quantity`, OS.`unit_cost`, OS.`gross_amount`, OS.`discount_amout`,\
+           OS.`discount_percentage`, OS.`net_amout`, OS.`copay_percentage`, OS.`copay_amount`,\
+           OS.`deductable_amount`, OS.`deductable_percentage`, OS.`tax_inclusive`, OS.`patient_tax`,\
+           OS.`company_tax`, OS.`total_tax`, OS.`patient_resp`, OS.`patient_payable`, \
+           OS.`comapany_resp`, OS.`company_payble`, OS.`sec_company`, OS.`sec_deductable_percentage`,\
+           OS.`sec_deductable_amount`, OS.`sec_company_res`, OS.`sec_company_tax`, OS.`sec_company_paybale`,\
+           OS.`sec_copay_percntage`, OS.`sec_copay_amount`, OS.`created_by`, OS.`created_date`, OS.`updated_by`,\
+           OS.`updated_date`, OS.`record_status`, S.`hims_d_services_id`, S.`service_code`, S.`cpt_code`,\
+           S.`service_name`, S.`arabic_service_name`, S.`service_desc`, S.`sub_department_id`, S.`hospital_id`,\
+           S.`service_type_id`, S.`procedure_type`, S.`standard_fee`, S.`followup_free_fee`, \
+           S.`followup_paid_fee`, S.`discount`, S.`vat_applicable`, S.`vat_percent`, S.`service_status`,\
+           OS.`trans_package_detail_id` FROM `hims_f_ordered_services` OS,  `hims_d_services` S WHERE \
+           OS.services_id = S.hims_d_services_id and OS.`record_status`='A'  " +
           _stringData,
         values: inputValues,
         printQuery: true
@@ -793,7 +795,8 @@ let load_orders_for_bill = (req, res, next) => {
       _mysql
         .executeQuery({
           query:
-            "SELECT  OS.`hims_f_ordered_services_id`, OS.`patient_id`, OS.`visit_id`,\
+            "SELECT  OS.`hims_f_ordered_services_id`, OS.`hims_f_ordered_services_id` as ordered_services_id,\
+             OS.`patient_id`, OS.`visit_id`,\
           OS.`doctor_id`, OS.`service_type_id`, OS.`services_id`, OS.`test_type`, OS.`insurance_yesno`, \
           OS.`insurance_provider_id`, OS.`insurance_sub_id`, \
           OS.`network_id`, OS.`insurance_network_office_id`, OS.`policy_number`, OS.`pre_approval`, OS.`apprv_status`, \
@@ -825,13 +828,30 @@ let load_orders_for_bill = (req, res, next) => {
           S.`standard_fee`, S.`followup_free_fee`, S.`followup_paid_fee`, S.`discount`, S.`vat_applicable`, \
           S.`vat_percent`, S.`service_status` FROM `hims_f_ordered_inventory` OS,  `hims_d_services` S WHERE \
           OS.services_id = S.hims_d_services_id and \
-          OS.`record_status`='A' and item_notchargable='N' and  OS.visit_id=? AND OS.`billed`='N';",
-          values: [req.query.visit_id, req.query.visit_id],
+          OS.`record_status`='A' and item_notchargable='N' and  OS.visit_id=? AND OS.`billed`='N';\
+            SELECT  OS.`hims_f_package_header_id` as ordered_package_id, OS.`patient_id`, OS.`visit_id`, OS.`doctor_id`,\
+          OS.`service_type_id`, OS.`services_id`, OS.`insurance_yesno`, OS.`insurance_provider_id`,\
+          OS.`insurance_sub_id`, OS.`network_id`, OS.`insurance_network_office_id`, OS.`policy_number`,\
+          OS.`pre_approval`, OS.`apprv_status`, OS.`billed`, OS.`quantity`, OS.`unit_cost`, OS.`gross_amount`,\
+          OS.`discount_amout`, OS.`discount_percentage`, OS.`net_amout`, OS.`copay_percentage`, OS.`copay_amount`,\
+          OS.`deductable_amount`, OS.`deductable_percentage`, OS.`tax_inclusive`, OS.`patient_tax`,\
+          OS.`company_tax`, OS.`total_tax`, OS.`patient_resp`, OS.`patient_payable`,OS.`comapany_resp`,\
+          OS.`company_payble`, OS.`sec_company`, OS.`sec_deductable_percentage`, OS.`sec_deductable_amount`,\
+          OS.`sec_company_res`, OS.`sec_company_tax`, OS.`sec_company_paybale`, OS.`sec_copay_percntage`, OS.`sec_copay_amount`,OS.`created_by`, OS.`created_date`, OS.`updated_by`, OS.`updated_date`,\
+          OS.`record_status`, S.`hims_d_services_id`, S.`service_code`, S.`cpt_code`, S.`service_name`,\
+          S.`arabic_service_name`, S.`service_desc`, S.`sub_department_id`, S.`hospital_id`, S.`service_type_id`,\
+          S.`procedure_type`, S.`standard_fee`, S.`followup_free_fee`, S.`followup_paid_fee`, S.`discount`,\
+          S.`vat_applicable`, S.`vat_percent`, S.`service_status` FROM `hims_f_package_header` OS, \
+          `hims_d_services` S WHERE OS.services_id = S.hims_d_services_id and  OS.`record_status`='A' \
+          and visit_id=? AND OS.`billed`='N' AND OS.package_visit_type='S';",
+          values: [req.query.visit_id, req.query.visit_id, req.query.visit_id],
           printQuery: true
         })
         .then(result => {
           _mysql.releaseConnection();
-          req.records = result[0].concat(result[1]);
+          let final_Result = result[0].concat(result[1]);
+          final_Result = final_Result.concat(result[2]);
+          req.records = final_Result;
           next();
         })
         .catch(error => {

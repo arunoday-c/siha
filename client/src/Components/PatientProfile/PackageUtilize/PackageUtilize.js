@@ -17,6 +17,7 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 import { getAmountFormart } from "../../../utils/GlobalFunctions";
 import _ from "lodash";
 import PackageUtilizeEvent from "./PackageUtilizeEvent";
+import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 
 class PackageUtilize extends Component {
   constructor(props) {
@@ -31,25 +32,37 @@ class PackageUtilize extends Component {
 
   componentWillReceiveProps(nextProps) {
     debugger;
-    if (nextProps.package_detail !== null) {
-      this.setState({ ...this.state, ...nextProps.package_detail }, () => {
-        let package_details = this.state.package_details;
-        const utilized_services = _.filter(
-          package_details,
-          f => f.utilized_qty > 0
-        );
+    if (
+      nextProps.package_detail !== null &&
+      nextProps.package_detail !== undefined
+    ) {
+      // let consultation = nextProps.from === "frontDesk" ? true : false;
+      nextProps.package_detail.consultation =
+        nextProps.from === "frontDesk" ? true : false;
+      this.setState(
+        {
+          ...this.state,
+          ...nextProps.package_detail
+        },
+        () => {
+          let package_details = this.state.package_details;
+          const utilized_services = _.filter(
+            package_details,
+            f => f.utilized_qty > 0
+          );
 
-        let available_services = [];
-        for (var i = 0; i < package_details.length; i++) {
-          if (package_details[i].qty !== package_details[i].utilized_qty) {
-            available_services.push(package_details[i]);
+          let available_services = [];
+          for (var i = 0; i < package_details.length; i++) {
+            if (package_details[i].qty !== package_details[i].utilized_qty) {
+              available_services.push(package_details[i]);
+            }
           }
+          this.setState({
+            utilized_services: utilized_services,
+            available_services: available_services
+          });
         }
-        this.setState({
-          utilized_services: utilized_services,
-          available_services: available_services
-        });
-      });
+      );
     }
   }
 
@@ -190,12 +203,40 @@ class PackageUtilize extends Component {
                         }
                       },
                       {
+                        fieldName: "utilized_qty",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Utilized Quantity" }}
+                          />
+                        ),
+                        disabled: true,
+                        others: {
+                          minWidth: 110
+                        }
+                      },
+                      {
+                        fieldName: "available_qty",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Available Quantity" }}
+                          />
+                        ),
+                        disabled: true,
+                        others: {
+                          minWidth: 80
+                        }
+                      },
+                      {
                         fieldName: "quantity",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Quantity" }} />
                         ),
                         displayTemplate: row => {
-                          return (
+                          debugger;
+                          return this.state.consultation === true &&
+                            row.service_type_id !== 1 ? (
+                            row.quantity
+                          ) : (
                             <AlagehFormGroup
                               div={{}}
                               textBox={{
@@ -222,31 +263,6 @@ class PackageUtilize extends Component {
                         disabled: true,
                         others: {
                           minWidth: 100
-                        }
-                      },
-                      {
-                        fieldName: "available_qty",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Available Quantity" }}
-                          />
-                        ),
-                        disabled: true,
-                        others: {
-                          minWidth: 80
-                        }
-                      },
-
-                      {
-                        fieldName: "utilized_qty",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Utilized Quantity" }}
-                          />
-                        ),
-                        disabled: true,
-                        others: {
-                          minWidth: 110
                         }
                       }
                     ]}

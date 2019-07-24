@@ -8,6 +8,7 @@ import {
 import {
   addOpBIlling,
   updateOrderedServicesBilled,
+  updateOrderedPackageBilled,
   updateOrderedConsumablessBilled,
   selectBill,
   getPednigBills
@@ -50,6 +51,7 @@ export default () => {
     },
     updateOrderedServicesBilled,
     updateOrderedConsumablessBilled,
+    updateOrderedPackageBilled,
     updateLabOrderedBilled,
     (req, res, next) => {
       if (req.records.LAB != null && req.records.LAB == true) {

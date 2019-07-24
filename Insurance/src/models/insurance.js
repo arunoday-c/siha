@@ -1160,7 +1160,7 @@ module.exports = {
   updatePriceListBulk: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
-      let inputparam = req.body;
+      let inputParam = req.body;
       let strQuery = "";
       let parameters = [];
       if (inputParam.update === "pre_approval") {

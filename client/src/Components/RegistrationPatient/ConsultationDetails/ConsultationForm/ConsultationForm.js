@@ -449,8 +449,9 @@ class AddConsultationForm extends Component {
                   ) : null}
                   <PackageUtilize
                     open={this.state.isPackUtOpen}
-                    onClose={ClosePackageUtilize.bind(this, this)}
+                    onClose={ClosePackageUtilize.bind(this, this, context)}
                     package_detail={this.state.package_detail}
+                    from="frontDesk"
                   />
                   <h6>{getLabelFromLanguage({ fieldName: "PastVisit" })}</h6>
                   <AlgaehDataGrid

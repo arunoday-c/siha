@@ -7,7 +7,8 @@ import {
   getBillDetails,
   getPakageDetails,
   patientPackageAdvanceRefund,
-  updatePatientPackage
+  updatePatientPackage,
+  getEmployeeAndDepartments
 } from "../models/billing";
 
 import algaehPath from "algaeh-module-bridge";
@@ -108,9 +109,24 @@ export default () => {
 
   api.put(
     "/updatePatientPackage",
+    (req, res, next) => {
+      delete req.connection;
+      next();
+    },
     updatePatientPackage,
     insertLadOrderedServices,
     insertRadOrderedServices,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+
+  api.get(
+    "/getEmployeeAndDepartments",
+    getEmployeeAndDepartments,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,

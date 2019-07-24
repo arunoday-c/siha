@@ -6,9 +6,10 @@ import {
   swalMessage,
   getCookie
 } from "../../utils/algaehApiCall";
-
+import _ from "lodash";
 import Enumerable from "linq";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
+import { AlgaehOpenContainer } from "../../utils/GlobalFunctions";
 
 const ClearData = ($this, e) => {
   let _screenName = getCookie("ScreenName").replace("/", "");
@@ -350,10 +351,147 @@ const selectVisit = $this => {
   });
 };
 
+const ShowOrderPackage = $this => {
+  $this.setState({
+    isPackOpen: !$this.state.isPackOpen
+  });
+};
+
+const ClosePackage = $this => {
+  $this.setState(
+    {
+      isPackOpen: !$this.state.isPackOpen
+    },
+    () => {
+      getPatientDetails($this);
+    }
+  );
+};
+
+const getPatientDetails = $this => {
+  AlgaehLoader({ show: true });
+
+  algaehApiCall({
+    uri: "/frontDesk/get",
+    module: "frontDesk",
+    method: "GET",
+    data: {
+      patient_code: $this.state.patient_code,
+      expiry_visit: "N"
+    },
+    onSuccess: response => {
+      if (response.data.success) {
+        debugger;
+        let data = response.data.records;
+        let hospital_id = JSON.parse(
+          AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+        );
+
+        if (
+          hospital_id.local_vat_applicable === "N" &&
+          hospital_id.default_nationality ===
+            data.patientRegistration.nationality_id
+        ) {
+          data.patientRegistration.vat_applicable = "N";
+        } else {
+          data.patientRegistration.vat_applicable = "Y";
+        }
+
+        let x = Enumerable.from($this.props.patienttype)
+          .where(
+            w =>
+              w.hims_d_patient_type_id === data.patientRegistration.patient_type
+          )
+          .toArray();
+
+        if (x !== undefined && x.length > 0) {
+          data.patientRegistration.patient_type = x[0].patitent_type_desc;
+        } else {
+          data.patientRegistration.patient_type = "Not Selected";
+        }
+
+        let last_visitDetails = data.visitDetails[0];
+
+        data.patientRegistration.visitDetails = data.visitDetails;
+        data.patientRegistration.patient_id =
+          data.patientRegistration.hims_d_patient_id;
+        data.patientRegistration.mode_of_pay = "None";
+        //Insurance
+        data.patientRegistration.insurance_provider_name = null;
+        data.patientRegistration.sub_insurance_provider_name = null;
+        data.patientRegistration.network_type = null;
+        data.patientRegistration.policy_number = null;
+        data.patientRegistration.card_number = null;
+        data.patientRegistration.effective_end_date = null;
+        //Sec
+        data.patientRegistration.secondary_insurance_provider_name = null;
+        data.patientRegistration.secondary_sub_insurance_provider_name = null;
+        data.patientRegistration.secondary_network_type = null;
+        data.patientRegistration.secondary_policy_number = null;
+        data.patientRegistration.card_number = null;
+        data.patientRegistration.secondary_effective_end_date = null;
+        data.patientRegistration.visit_id =
+          last_visitDetails.hims_f_patient_visit_id;
+        data.patientRegistration.incharge_or_provider =
+          last_visitDetails.doctor_id;
+
+        data.patientRegistration.insured = last_visitDetails.insured;
+        data.patientRegistration.insurance_yesno = last_visitDetails.insured;
+        data.patientRegistration.sec_insured = last_visitDetails.sec_insured;
+
+        if (last_visitDetails.insured === "Y") {
+          data.patientRegistration.mode_of_pay = "Insurance";
+          data.patientRegistration.applydiscount = true;
+        } else {
+          data.patientRegistration.mode_of_pay = "Self";
+          data.patientRegistration.applydiscount = false;
+        }
+        data.patientRegistration.addNewService = false;
+
+        if (data.bill_criedt.length > 0) {
+          data.patientRegistration.due_amount = _.sumBy(data.bill_criedt, s =>
+            parseFloat(s.balance_credit)
+          );
+        } else {
+          data.patientRegistration.due_amount = 0;
+        }
+        $this.setState(data.patientRegistration, () => {
+          $this.props.getPatientPackage({
+            uri: "/orderAndPreApproval/getPatientPackage",
+            method: "GET",
+            data: {
+              patient_id: $this.state.patient_id,
+              package_visit_type: "M"
+            },
+            redux: {
+              type: "ORDER_SERVICES_GET_DATA",
+              mappingName: "PatientPackageList"
+            }
+          });
+          selectVisit($this);
+        });
+
+        // visit_id
+      }
+      // AlgaehLoader({ show: false });
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
+};
+
 export {
   ClearData,
   Validations,
   getCashiersAndShiftMAP,
   generateReceipt,
-  selectVisit
+  selectVisit,
+  ShowOrderPackage,
+  ClosePackage,
+  getPatientDetails
 };

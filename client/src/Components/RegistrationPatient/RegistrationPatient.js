@@ -328,6 +328,8 @@ class RegistrationPatient extends Component {
                   delete patientdata.patientImage;
                   delete patientdata.countrystates;
                   delete patientdata.cities;
+                  delete patientdata.doctors;
+                  debugger;
                   if ($this.state.hims_d_patient_id === null) {
                     algaehApiCall({
                       uri: "/frontDesk/add",

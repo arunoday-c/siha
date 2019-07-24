@@ -354,295 +354,316 @@ const selectItemHandeler = ($this, e) => {
 }
 
 const ProcessService = ($this, e) => {
-  // orderedList
-  debugger;
+  if ($this.state.inventory_item_id !== null) {
+    let preserviceInput = $this.state.preserviceInput || [];
+    let serviceInput = [
+      {
+        insured: $this.state.insured,
+        vat_applicable: $this.props.vat_applicable,
+        hims_d_services_id: $this.state.services_id,
+        primary_insurance_provider_id: $this.state.insurance_provider_id,
+        primary_network_office_id:
+          $this.state.hims_d_insurance_network_office_id,
+        primary_network_id: $this.state.network_id,
+        sec_insured: $this.state.sec_insured,
+        secondary_insurance_provider_id:
+          $this.state.secondary_insurance_provider_id,
+        secondary_network_id: $this.state.secondary_network_id,
+        secondary_network_office_id: $this.state.secondary_network_office_id,
+        approval_amt: $this.state.approval_amt,
+        approval_limit_yesno: $this.state.approval_limit_yesno,
+        preapp_limit_amount: $this.state.preapp_limit_amount,
+        unit_cost: $this.state.unit_cost
+      }
+    ];
 
-  let SelectedService = Enumerable.from($this.props.orderedList)
-    .where(
-      w =>
-        w.service_type_id === $this.state.s_service_type &&
-        w.services_id === $this.state.s_service
-    )
-    .toArray();
+    algaehApiCall({
+      uri: "/billing/getBillDetails",
+      module: "billing",
+      method: "POST",
+      data: serviceInput,
+      onSuccess: response => {
+        if (response.data.success) {
+          let data = response.data.records;
+          if (
+            data.billdetails[0].preapp_limit_exceed === "Y" &&
+            $this.state.approval_limit_yesno === "N"
+          ) {
+            preserviceInput.push(serviceInput[0]);
+            for (let k = 0; k < preserviceInput.length; k++) {
+              preserviceInput[k].approval_limit_yesno =
+                data.billdetails[0].preapp_limit_exceed;
+            }
 
-  let PreSelectedService = Enumerable.from($this.state.orderservicesdata)
-    .where(
-      w =>
-        w.service_type_id === $this.state.s_service_type &&
-        w.services_id === $this.state.s_service
-    )
-    .toArray();
+            swal({
+              title:
+                "With this service Approval Limit exceed. Do you want to proceed, If proceeds all the selected services will be pro aproved and will be as cash.",
+              type: "warning",
+              buttons: true
+            }).then(willProceed => {
+              if (willProceed) {
+                let approval_amt = data.billdetails[0].approval_amt;
+                let approval_limit_yesno =
+                  data.billdetails[0].preapp_limit_exceed;
 
-  if (SelectedService.length === 0 && PreSelectedService.length === 0) {
-    if ($this.state.s_service_type !== null && $this.state.s_service !== null) {
-      let preserviceInput = $this.state.preserviceInput || [];
-      let serviceInput = [
-        {
-          insured: $this.state.insured,
-          vat_applicable: $this.props.vat_applicable,
-          hims_d_services_id: $this.state.s_service,
-          service_type_id: $this.state.s_service_type,
-          primary_insurance_provider_id: $this.state.insurance_provider_id,
-          primary_network_office_id:
-            $this.state.hims_d_insurance_network_office_id,
-          primary_network_id: $this.state.network_id,
-          sec_insured: $this.state.sec_insured,
-          secondary_insurance_provider_id:
-            $this.state.secondary_insurance_provider_id,
-          secondary_network_id: $this.state.secondary_network_id,
-          secondary_network_office_id: $this.state.secondary_network_office_id,
-          approval_amt: $this.state.approval_amt,
-          approval_limit_yesno: $this.state.approval_limit_yesno,
-          preapp_limit_amount: $this.state.preapp_limit_amount
-        }
-      ];
+                algaehApiCall({
+                  uri: "/billing/getBillDetails",
+                  module: "billing",
+                  method: "POST",
+                  data: serviceInput,
+                  onSuccess: response => {
+                    if (response.data.success) {
+                      let data = response.data.records;
 
-      algaehApiCall({
-        uri: "/billing/getBillDetails",
-        module: "billing",
-        method: "POST",
-        data: serviceInput,
-        onSuccess: response => {
-          if (response.data.success) {
-            let data = response.data.records;
-            if (
-              data.billdetails[0].preapp_limit_exceed === "Y" &&
-              $this.state.approval_limit_yesno === "N"
-            ) {
-              debugger;
+                      for (let i = 0; i < data.billdetails.length; i++) {
+                        data.billdetails[i].visit_id = $this.state.visit_id;
+                        data.billdetails[i].patient_id = $this.state.patient_id;
 
-              swal({
-                title: "Pre-Approval limit reached.",
-                text:
-                  "Service amount have exceeded insurance limit. If proceed all services will be senting for Pre Approval.",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Yes!",
-                confirmButtonColor: "#",
-                cancelButtonColor: "#d33",
-                cancelButtonText: "No"
-              }).then(willProceed => {
-                if (willProceed.value) {
-                  preserviceInput.push(serviceInput[0]);
-                  for (let k = 0; k < preserviceInput.length; k++) {
-                    preserviceInput[k].approval_limit_yesno =
-                      data.billdetails[0].preapp_limit_exceed;
-                  }
-                  let approval_amt = data.billdetails[0].approval_amt;
-                  let approval_limit_yesno =
-                    data.billdetails[0].preapp_limit_exceed;
+                        data.billdetails[i].doctor_id =
+                          Window.global["provider_id"];
+                        data.billdetails[i].insurance_provider_id =
+                          $this.state.insurance_provider_id;
+                        data.billdetails[i].insurance_sub_id =
+                          $this.state.sub_insurance_provider_id;
+                        data.billdetails[i].network_id = $this.state.network_id;
+                        data.billdetails[i].policy_number =
+                          $this.state.policy_number;
+                        data.billdetails[i].insurance_service_name =
+                          $this.state.insurance_service_name;
 
-                  algaehApiCall({
-                    uri: "/billing/getBillDetails",
-                    module: "billing",
-                    method: "POST",
-                    data: preserviceInput,
-                    onSuccess: response => {
-                      if (response.data.success) {
-                        let Service_data = response.data.records;
+                        data.billdetails[0].inventory_item_id =
+                          $this.state.inventory_item_id;
 
-                        for (
-                          let i = 0;
-                          i < Service_data.billdetails.length;
-                          i++
-                        ) {
-                          Service_data.billdetails[i].visit_id =
-                            $this.state.visit_id;
-                          Service_data.billdetails[i].patient_id =
-                            $this.state.patient_id;
+                        data.billdetails[0].item_id =
+                          $this.state.inventory_item_id;
+                        data.billdetails[0].item_category_id =
+                          $this.state.item_category_id;
+                        data.billdetails[0].item_group_id =
+                          $this.state.item_group_id;
 
-                          Service_data.billdetails[i].doctor_id =
-                            Window.global["provider_id"];
-                          Service_data.billdetails[i].insurance_provider_id =
-                            $this.state.insurance_provider_id;
-                          Service_data.billdetails[i].insurance_sub_id =
-                            $this.state.sub_insurance_provider_id;
-                          Service_data.billdetails[i].network_id =
-                            $this.state.network_id;
-                          Service_data.billdetails[i].policy_number =
-                            $this.state.policy_number;
-                          Service_data.billdetails[i].insurance_service_name =
-                            $this.state.insurance_service_name;
-                          Service_data.billdetails[i].sec_company =
-                            $this.state.sec_insured;
-                          // Service_data.billdetails[i].icd_code === Service_data.billdetails[0].icd_code;
-                          // Approval Table
+                        data.billdetails[0].expiry_date = $this.state.expirydt;
+                        data.billdetails[0].expirydt = $this.state.expirydt;
+                        data.billdetails[0].batchno = $this.state.batchno;
+                        data.billdetails[0].uom_id = $this.state.uom_id;
+                        data.billdetails[0].sales_uom = $this.state.uom_id;
+                        data.billdetails[0].operation = "-";
+                        data.billdetails[0].grn_number = $this.state.grnno;
+                        data.billdetails[0].qtyhand = $this.state.qtyhand;
+                        data.billdetails[0].barcode = $this.state.barcode;
+                        data.billdetails[0].extended_cost =
+                          data.billdetails[0].gross_amount;
+                        data.billdetails[0].net_total =
+                          data.billdetails[0].net_amout;
 
-                          Service_data.billdetails[
-                            i
-                          ].insurance_network_office_id =
-                            $this.state.hims_d_insurance_network_office_id;
+                        data.billdetails[0].inventory_uom_id =
+                          $this.state.uom_id;
+                        data.billdetails[0].location_type =
+                          $this.state.location_type;
 
-                          Service_data.billdetails[i].requested_quantity =
-                            Service_data.billdetails[i].quantity;
-                          Service_data.billdetails[i].test_type =
-                            $this.state.test_type;
-                        }
+                        data.billdetails[0].location_id =
+                          $this.state.inventory_location_id;
 
-                        $this.setState({
-                          orderservicesdata: Service_data.billdetails,
-                          approval_amt: approval_amt,
-                          preserviceInput: preserviceInput,
-                          approval_limit_yesno: approval_limit_yesno,
-                          saved: false,
-                          // s_service_type: null,
-                          s_service: null,
-                          test_type: "R",
-                          service_name: ""
-                        });
+                        data.billdetails[i].insurance_network_office_id =
+                          $this.state.hims_d_insurance_network_office_id;
 
-                        algaehApiCall({
-                          uri: "/billing/billingCalculations",
-                          module: "billing",
-                          method: "POST",
-                          data: { billdetails: Service_data.billdetails },
-                          onSuccess: response => {
-                            if (response.data.success) {
-                              $this.setState({
-                                sub_total_amount:
-                                  response.data.records.sub_total_amount,
-                                discount_amount:
-                                  response.data.records.discount_amount,
-                                net_total: response.data.records.net_total,
-                                patient_payable:
-                                  response.data.records.patient_payable,
-                                company_payble:
-                                  response.data.records.company_payble,
-                                copay_amount:
-                                  response.data.records.copay_amount,
-                                sec_copay_amount:
-                                  response.data.records.sec_copay_amount
-                              });
-                            }
-                          },
-                          onFailure: error => {
-                            swalMessage({
-                              title: error.message,
-                              type: "error"
+                        data.billdetails[i].requested_quantity =
+                          data.billdetails[i].quantity;
+                        data.billdetails[i].test_type = $this.state.test_type;
+                        data.billdetails[0].item_notchargable =
+                          $this.state.item_notchargable;
+                      }
+
+                      $this.setState({
+                        orderservicesdata: data.billdetails,
+                        approval_amt: approval_amt,
+                        preserviceInput: preserviceInput,
+                        approval_limit_yesno: approval_limit_yesno,
+                        saved: false
+                      });
+
+                      algaehApiCall({
+                        uri: "/billing/billingCalculations",
+                        module: "billing",
+                        method: "POST",
+                        data: { billdetails: data.billdetails },
+                        onSuccess: response => {
+                          if (response.data.success) {
+                            $this.setState({
+                              sub_total_amount:
+                                response.data.records.sub_total_amount,
+                              discount_amount:
+                                response.data.records.discount_amount,
+                              net_total: response.data.records.net_total,
+                              patient_payable:
+                                response.data.records.patient_payable,
+                              company_payble:
+                                response.data.records.company_payble,
+                              copay_amount: response.data.records.copay_amount,
+                              sec_copay_amount:
+                                response.data.records.sec_copay_amount,
+
+                              inventory_item_id: null,
+                              service_type_id: null,
+                              services_id: null,
+                              batchno: null,
+                              expirydt: null,
+                              grnno: null,
+                              barcode: null,
+                              qtyhand: null,
+                              uom_id: null,
+                              item_notchargable: "N",
+                              itemchargable: false,
+                              item_description: ""
                             });
                           }
-                        });
-                      }
-                    },
-                    onFailure: error => {
-                      swalMessage({
-                        title: error.message,
-                        type: "error"
+                        },
+                        onFailure: error => {
+                          swalMessage({
+                            title: error.message,
+                            type: "error"
+                          });
+                        }
                       });
                     }
-                  });
-                }
-              });
-            } else {
-              let existingservices = $this.state.orderservicesdata;
-
-              data.billdetails[0].visit_id = $this.state.visit_id;
-              data.billdetails[0].patient_id = $this.state.patient_id;
-
-              data.billdetails[0].insurance_provider_id =
-                $this.state.insurance_provider_id;
-              data.billdetails[0].insurance_sub_id =
-                $this.state.sub_insurance_provider_id;
-              data.billdetails[0].network_id = $this.state.network_id;
-              data.billdetails[0].policy_number = $this.state.policy_number;
-              data.billdetails[0].insurance_service_name =
-                $this.state.insurance_service_name;
-              data.billdetails[0].icd_code = "1";
-              // data.billdetails[0].icd_code === ""
-              //   ? null
-              //   : data.billdetails[0].icd_code;
-              //Approval Table TODO
-              //TODO
-
-              data.billdetails[0].insurance_network_office_id =
-                $this.state.hims_d_insurance_network_office_id;
-
-              data.billdetails[0].requested_quantity =
-                data.billdetails[0].quantity;
-              data.billdetails[0].doctor_id = Window.global["provider_id"];
-              data.billdetails[0].sec_company = $this.state.sec_insured;
-              data.billdetails[0].test_type = $this.state.test_type;
-              //If pre-approval required for selected service
-
-              if (
-                data.billdetails[0].pre_approval === "Y" &&
-                $this.state.approval_limit_yesno === "N"
-              ) {
-                swalMessage({
-                  title: "Selected Service is Pre-Approval required.",
-                  type: "warning"
-                });
-              } else if (
-                data.billdetails[0].insurance_yesno === "Y" &&
-                $this.state.approval_limit_yesno === "Y"
-              ) {
-                data.billdetails[0].pre_approval = "Y";
-              } else {
-                data.billdetails[0].pre_approval = "N";
-              }
-              if (data.billdetails.length !== 0) {
-                existingservices.splice(0, 0, data.billdetails[0]);
-              }
-              let approval_amt = data.billdetails[0].approval_amt;
-              let preapp_limit_amount = data.billdetails[0].preapp_limit_amount;
-
-              preserviceInput.push(serviceInput[0]);
-              $this.setState({
-                orderservicesdata: existingservices,
-                approval_amt: approval_amt,
-                preserviceInput: preserviceInput,
-                preapp_limit_amount: preapp_limit_amount,
-                saved: false,
-                // s_service_type: null,
-                s_service: null,
-                test_type: "R",
-                service_name: ""
-              });
-
-              algaehApiCall({
-                uri: "/billing/billingCalculations",
-                module: "billing",
-                method: "POST",
-                data: { billdetails: existingservices },
-                onSuccess: response => {
-                  if (response.data.success) {
-                    $this.setState({
-                      sub_total_amount: response.data.records.sub_total_amount,
-                      discount_amount: response.data.records.discount_amount,
-                      net_total: response.data.records.net_total,
-                      patient_payable: response.data.records.patient_payable,
-                      company_payble: response.data.records.company_payble,
-                      copay_amount: response.data.records.copay_amount,
-                      sec_copay_amount: response.data.records.sec_copay_amount
+                  },
+                  onFailure: error => {
+                    swalMessage({
+                      title: error.message,
+                      type: "error"
                     });
                   }
-                },
-                onFailure: error => {
-                  swalMessage({
-                    title: error.message,
-                    type: "error"
+                });
+              }
+            });
+          } else {
+            let existingservices = $this.state.orderservicesdata;
+
+            data.billdetails[0].visit_id = $this.state.visit_id;
+            data.billdetails[0].patient_id = $this.state.patient_id;
+
+            data.billdetails[0].insurance_provider_id =
+              $this.state.insurance_provider_id;
+            data.billdetails[0].insurance_sub_id =
+              $this.state.sub_insurance_provider_id;
+            data.billdetails[0].network_id = $this.state.network_id;
+            data.billdetails[0].policy_number = $this.state.policy_number;
+            data.billdetails[0].insurance_service_name =
+              $this.state.insurance_service_name;
+            data.billdetails[0].icd_code = "1";
+
+            data.billdetails[0].inventory_item_id =
+              $this.state.inventory_item_id;
+            data.billdetails[0].item_id = $this.state.inventory_item_id;
+            data.billdetails[0].item_category_id = $this.state.item_category_id;
+            data.billdetails[0].item_group_id = $this.state.item_group_id;
+            data.billdetails[0].expiry_date = $this.state.expirydt;
+            data.billdetails[0].expirydt = $this.state.expirydt;
+            data.billdetails[0].batchno = $this.state.batchno;
+            data.billdetails[0].uom_id = $this.state.uom_id;
+            data.billdetails[0].sales_uom = $this.state.uom_id;
+            data.billdetails[0].inventory_uom_id = $this.state.uom_id;
+            data.billdetails[0].operation = "-";
+            data.billdetails[0].grn_number = $this.state.grnno;
+            data.billdetails[0].qtyhand = $this.state.qtyhand;
+            data.billdetails[0].barcode = $this.state.barcode;
+            data.billdetails[0].location_type = $this.state.location_type;
+            data.billdetails[0].location_id = $this.state.inventory_location_id;
+            data.billdetails[0].extended_cost =
+              data.billdetails[0].gross_amount;
+            data.billdetails[0].net_total = data.billdetails[0].net_amout;
+
+            data.billdetails[0].insurance_network_office_id =
+              $this.state.hims_d_insurance_network_office_id;
+
+            data.billdetails[0].requested_quantity =
+              data.billdetails[0].quantity;
+            data.billdetails[0].doctor_id = Window.global["provider_id"];
+            data.billdetails[0].sec_company = $this.state.sec_insured;
+            data.billdetails[0].test_type = $this.state.test_type;
+            data.billdetails[0].item_notchargable =
+              $this.state.item_notchargable;
+
+            //If pre-approval required for selected service
+
+            if (
+              data.billdetails[0].pre_approval === "Y" &&
+              $this.state.approval_limit_yesno === "N"
+            ) {
+              swalMessage({
+                title: "Selected Service is Pre-Approval required.",
+                type: "warning"
+              });
+            } else {
+              data.billdetails[0].pre_approval = "N";
+            }
+            if (data.billdetails.length !== 0) {
+              existingservices.splice(0, 0, data.billdetails[0]);
+            }
+            let approval_amt = data.billdetails[0].approval_amt;
+            let preapp_limit_amount = data.billdetails[0].preapp_limit_amount;
+
+            preserviceInput.push(serviceInput[0]);
+            $this.setState({
+              orderservicesdata: existingservices,
+              approval_amt: approval_amt,
+              preserviceInput: preserviceInput,
+              preapp_limit_amount: preapp_limit_amount,
+              saved: false,
+              // s_service_type: null,
+              s_service: null,
+              test_type: "R"
+            });
+
+            algaehApiCall({
+              uri: "/billing/billingCalculations",
+              module: "billing",
+              method: "POST",
+              data: { billdetails: existingservices },
+              onSuccess: response => {
+                if (response.data.success) {
+                  $this.setState({
+                    sub_total_amount: response.data.records.sub_total_amount,
+                    discount_amount: response.data.records.discount_amount,
+                    net_total: response.data.records.net_total,
+                    patient_payable: response.data.records.patient_payable,
+                    company_payble: response.data.records.company_payble,
+                    copay_amount: response.data.records.copay_amount,
+                    sec_copay_amount: response.data.records.sec_copay_amount,
+                    inventory_item_id: null,
+                    service_type_id: null,
+                    services_id: null,
+                    batchno: null,
+                    expirydt: null,
+                    grnno: null,
+                    barcode: null,
+                    qtyhand: null,
+                    uom_id: null,
+                    item_notchargable: "N",
+                    itemchargable: false,
+                    item_description: ""
                   });
                 }
-              });
-            }
+              },
+              onFailure: error => {
+                swalMessage({
+                  title: error.message,
+                  type: "error"
+                });
+              }
+            });
           }
-        },
-        onFailure: error => {
-          swalMessage({
-            title: error.message,
-            type: "error"
-          });
         }
-      });
-    } else {
-      swalMessage({
-        title: "Please select service and service type.",
-        type: "warning"
-      });
-    }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
   } else {
     swalMessage({
-      title: "Selected Service already ordered.",
+      title: "Please select service and service type.",
       type: "warning"
     });
   }

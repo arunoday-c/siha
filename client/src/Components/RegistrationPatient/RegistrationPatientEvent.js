@@ -478,7 +478,8 @@ const getCtrlCode = ($this, patcode, row) => {
           uri: "/orderAndPreApproval/getPatientPackage",
           method: "GET",
           data: {
-            patient_id: data.patientRegistration.hims_d_patient_id
+            patient_id: data.patientRegistration.hims_d_patient_id,
+            package_visit_type: "M"
           },
           redux: {
             type: "ORDER_SERVICES_GET_DATA",
