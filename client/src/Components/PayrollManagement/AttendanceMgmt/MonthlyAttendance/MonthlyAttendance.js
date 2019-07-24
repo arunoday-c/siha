@@ -344,9 +344,9 @@ export default class MonthlyAttendance extends Component {
 
         <div className="row inner-top-search">
           <AlagehAutoComplete
-            div={{ className: "col" }}
+            div={{ className: "col-2" }}
             label={{
-              forceLabel: "Select a Year.",
+              forceLabel: "Select Year",
               isImp: true
             }}
             selector={{
@@ -368,9 +368,9 @@ export default class MonthlyAttendance extends Component {
           />
 
           <AlagehAutoComplete
-            div={{ className: "col" }}
+            div={{ className: "col-2" }}
             label={{
-              forceLabel: "Select a Month.",
+              forceLabel: "Select Month.",
               isImp: true
             }}
             selector={{
@@ -393,7 +393,7 @@ export default class MonthlyAttendance extends Component {
           />
 
           <AlagehAutoComplete
-            div={{ className: "col" }}
+            div={{ className: "col-3" }}
             label={{
               forceLabel: "Filter by Branch",
               isImp: true
@@ -417,7 +417,7 @@ export default class MonthlyAttendance extends Component {
           />
 
           <AlagehAutoComplete
-            div={{ className: "col " }}
+            div={{ className: "col-3 " }}
             label={{
               forceLabel: "Filter by Dept.",
               isImp: false
@@ -441,7 +441,7 @@ export default class MonthlyAttendance extends Component {
           />
 
           {this.state.attendance_type === "M" ? (
-            <div className="col form-group margin-top-15">
+            <div className="col form-group" style={{ marginTop: 19 }}>
               <button
                 onClick={this.processAttandance.bind(this)}
                 disabled={this.state.loader}
@@ -455,7 +455,7 @@ export default class MonthlyAttendance extends Component {
               </button>
             </div>
           ) : (
-            <div className="col form-group margin-top-15">
+            <div className="col form-group" style={{ marginTop: 19 }}>
               <button
                 onClick={this.loadAttendance.bind(this)}
                 className="btn btn-primary"

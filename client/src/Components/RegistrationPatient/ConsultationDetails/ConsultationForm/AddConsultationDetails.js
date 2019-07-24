@@ -400,6 +400,8 @@ const generateBillDetails = ($this, context) => {
     data: serviceInput,
     onSuccess: response => {
       if (response.data.success) {
+        response.data.records.follow_up = FollowUp;
+        response.data.records.existing_treat = zeroBill;
         if (context !== null) {
           context.updateState({ ...response.data.records });
         }
@@ -515,76 +517,10 @@ const texthandle = ($this, context, e) => {
   }
 };
 
-const ShowPackageUtilize = $this => {
-  $this.setState({
-    isPackUtOpen: !$this.state.isPackUtOpen,
-    package_detail: $this.props.PatientPackageList[0]
-  });
-};
-const ClosePackageUtilize = ($this, context, e) => {
-  debugger;
-  if (e.services_id === undefined) {
-    $this.setState({
-      isPackUtOpen: !$this.state.isPackUtOpen
-    });
-    return;
-  }
-  $this.setState(
-    {
-      isPackUtOpen: !$this.state.isPackUtOpen,
-      hims_d_services_id: e.services_id,
-      service_type_id: e.service_type_id,
-      incharge_or_provider: e.doctor_id,
-      provider_id: e.doctor_id,
-      doctor_id: e.doctor_id,
-      sub_department_id: e.sub_department_id,
-      visit_type: 10,
-      from_package: true,
-      visittypeselect: true,
-      utilize_amount: e.utilize_amount,
-      balance_amount: e.balance_amount,
-      hims_f_package_header_id: e.hims_f_package_header_id
-    },
-    () => {
-      generateBillDetails($this, context);
-      $this.props.getPatientPackage({
-        uri: "/orderAndPreApproval/getPatientPackage",
-        method: "GET",
-        data: { package_visit_type: "M", patient_id: $this.state.patient_id },
-        redux: {
-          type: "ORDER_SERVICES_GET_DATA",
-          mappingName: "PatientPackageList"
-        }
-      });
-    }
-  );
-
-  context.updateState({
-    hims_d_services_id: e.services_id,
-    service_type_id: e.service_type_id,
-    incharge_or_provider: e.doctor_id,
-    provider_id: e.doctor_id,
-    doctor_id: e.doctor_id,
-    sub_department_id: e.sub_department_id,
-    visit_type: 10,
-    package_details: e.package_details,
-    from_package: true,
-    saveEnable: false,
-    billdetail: false,
-    visittypeselect: true,
-    utilize_amount: e.utilize_amount,
-    balance_amount: e.balance_amount,
-    hims_f_package_header_id: e.hims_f_package_header_id,
-    consultation: "Y"
-  });
-};
-
 export {
   DeptselectedHandeler,
   selectedHandeler,
   doctorselectedHandeler,
   radioChange,
-  texthandle,
-  ShowPackageUtilize,
-  ClosePackageUtilize
+  texthandle
 };

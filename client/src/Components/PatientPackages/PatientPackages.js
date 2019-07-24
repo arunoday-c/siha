@@ -231,6 +231,7 @@ class PatientPackages extends Component {
                   open={this.state.isPackUtOpen}
                   onClose={this.ClosePackageUtilize.bind(this)}
                   package_detail={this.state.package_detail}
+                  from_billing={true}
                 />
                 <AddAdvanceModal
                   show={this.state.AdvanceOpen}
@@ -239,7 +240,7 @@ class PatientPackages extends Component {
                   HeaderCaption={
                     <AlgaehLabel
                       label={{
-                        fieldName: "refund_caption",
+                        fieldName: "advance_caption",
                         align: "ltr"
                       }}
                     />

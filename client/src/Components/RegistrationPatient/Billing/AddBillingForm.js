@@ -102,6 +102,20 @@ class AddBillingForm extends Component {
                           Process Insurance
                         </button>
                       </div> */}
+                      <div className="col-12">
+                        <h6 className="billStatusMsg">
+                          {" "}
+                          {this.state.from_package === true
+                            ? "Utilized From Package"
+                            : null}
+                          {this.state.follow_up === true
+                            ? "Follow Up Visit"
+                            : null}
+                          {this.state.existing_treat === true
+                            ? "Utilized From Existing Treatment"
+                            : null}
+                        </h6>
+                      </div>
                       <div className="col-lg-6">
                         <button
                           className="btn btn-default btn-sm"

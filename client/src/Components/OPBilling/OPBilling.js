@@ -21,7 +21,9 @@ import {
   selectVisit,
   ShowOrderPackage,
   ClosePackage,
-  getPatientDetails
+  getPatientDetails,
+  ShowPackageUtilize,
+  ClosePackageUtilize
 } from "./OPBillingEvents";
 import { AlgaehActions } from "../../actions/algaehActions";
 import { successfulMessage } from "../../utils/GlobalFunctions";
@@ -32,6 +34,7 @@ import AlgaehReport from "../Wrapper/printReports";
 import moment from "moment";
 import Options from "../../Options.json";
 import OrderingPackages from "../PatientProfile/Assessment/OrderingPackages/OrderingPackages";
+import PackageUtilize from "../PatientProfile/PackageUtilize/PackageUtilize";
 
 class OPBilling extends Component {
   constructor(props) {
@@ -371,6 +374,10 @@ class OPBilling extends Component {
   }
 
   render() {
+    let Package_Exists =
+      this.props.PatientPackageList === undefined
+        ? []
+        : this.props.PatientPackageList;
     return (
       <div className="" style={{ marginBottom: "50px" }}>
         <BreadCrumb
@@ -514,6 +521,23 @@ class OPBilling extends Component {
                   label={{ fieldName: "btn_clear", returnText: true }}
                 />
               </button>
+
+              {Package_Exists.length > 0 ? (
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={ShowPackageUtilize.bind(this, this)}
+                >
+                  View Package
+                </button>
+              ) : null}
+
+              <PackageUtilize
+                open={this.state.isPackUtOpen}
+                onClose={ClosePackageUtilize.bind(this, this)}
+                package_detail={this.state.package_detail}
+                from_billing={true}
+              />
             </div>
           </div>
         </div>

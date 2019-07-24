@@ -23,11 +23,8 @@ import {
   doctorselectedHandeler,
   radioChange,
   texthandle,
-  clearBillDetails,
-  ShowPackageUtilize,
-  ClosePackageUtilize
+  clearBillDetails
 } from "./AddConsultationDetails";
-import PackageUtilize from "../../../PatientProfile/PackageUtilize/PackageUtilize";
 
 class AddConsultationForm extends Component {
   constructor(props) {
@@ -35,8 +32,7 @@ class AddConsultationForm extends Component {
 
     this.state = {
       value: "",
-      doctors: [],
-      isPackUtOpen: false
+      doctors: []
     };
   }
 
@@ -133,6 +129,7 @@ class AddConsultationForm extends Component {
   };
 
   render() {
+    debugger;
     const vstDeatils =
       this.state.visitDetails === null ? [{}] : this.state.visitDetails;
     const doctors =
@@ -435,25 +432,13 @@ class AddConsultationForm extends Component {
                 </div>
 
                 <div className="col-lg-8 secondary-details">
-                  {Package_Exists.length > 0 ? (
-                    <div className="col">
-                      <button
-                        className="btn btn-primary"
-                        style={{ marginTop: "24px" }}
-                        onClick={ShowPackageUtilize.bind(this, this)}
-                      >
-                        View Package
-                      </button>
-                      <h6 style={{ color: "green" }}> Package Exists </h6>
-                    </div>
-                  ) : null}
-                  <PackageUtilize
-                    open={this.state.isPackUtOpen}
-                    onClose={ClosePackageUtilize.bind(this, this, context)}
-                    package_detail={this.state.package_detail}
-                    from="frontDesk"
-                  />
-                  <h6>{getLabelFromLanguage({ fieldName: "PastVisit" })}</h6>
+                  <h6>
+                    {getLabelFromLanguage({ fieldName: "PastVisit" })}{" "}
+                    {Package_Exists.length > 0 ? (
+                      <span className="packageStatus"> Package Exists </span>
+                    ) : null}
+                  </h6>
+
                   <AlgaehDataGrid
                     columns={[
                       {
@@ -595,7 +580,6 @@ function mapDispatchToProps(dispatch) {
       getDepartmentsandDoctors: AlgaehActions,
       getSubDepartment: AlgaehActions,
       getTreatmentPlan: AlgaehActions,
-      getPatientPackage: AlgaehActions,
       getServices: AlgaehActions
     },
     dispatch

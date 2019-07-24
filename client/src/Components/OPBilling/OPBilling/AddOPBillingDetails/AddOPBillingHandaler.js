@@ -509,31 +509,6 @@ const makeZeroIngrid = ($this, context, row, e) => {
   }
 };
 
-const ShowPackageUtilize = $this => {
-  $this.setState({
-    isPackUtOpen: !$this.state.isPackUtOpen,
-    package_detail: $this.props.PatientPackageList[0]
-  });
-};
-const ClosePackageUtilize = $this => {
-  $this.setState(
-    {
-      isPackUtOpen: !$this.state.isPackUtOpen
-    },
-    () => {
-      $this.props.getPatientPackage({
-        uri: "/orderAndPreApproval/getPatientPackage",
-        method: "GET",
-        data: { package_visit_type: "M", patient_id: $this.state.patient_id },
-        redux: {
-          type: "ORDER_SERVICES_GET_DATA",
-          mappingName: "PatientPackageList"
-        }
-      });
-    }
-  );
-};
-
 export {
   serviceTypeHandeler,
   serviceHandeler,
@@ -551,7 +526,5 @@ export {
   calculateAmount,
   makeZero,
   makeDiscountZero,
-  makeZeroIngrid,
-  ShowPackageUtilize,
-  ClosePackageUtilize
+  makeZeroIngrid
 };
