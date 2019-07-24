@@ -222,4 +222,15 @@ export function Validations(state) {
       return isError;
     }
   }
+
+  if (parseFloat(state.state.pack_balance_amount) < 0) {
+    isError = true;
+    swalMessage({
+      type: "warning",
+      title:
+        "Advance not sufficient for this package , please collect the advance."
+    });
+
+    return isError;
+  }
 }

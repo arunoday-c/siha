@@ -28,9 +28,7 @@ import {
   calculateAmount,
   makeZero,
   makeDiscountZero,
-  makeZeroIngrid,
-  ShowPackageUtilize,
-  ClosePackageUtilize
+  makeZeroIngrid
 } from "./AddOPBillingHandaler";
 import ReciptForm from "../ReciptDetails/AddReciptForm";
 import { AlgaehActions } from "../../../../actions/algaehActions";
@@ -38,8 +36,6 @@ import { successfulMessage } from "../../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 import Enumerable from "linq";
-
-import PackageUtilize from "../../../PatientProfile/PackageUtilize/PackageUtilize";
 
 class AddOPBillingForm extends Component {
   constructor(props) {
@@ -410,22 +406,9 @@ class AddOPBillingForm extends Component {
 
                   {Package_Exists.length > 0 ? (
                     <div className="col">
-                      <button
-                        className="btn btn-primary"
-                        style={{ marginTop: "24px" }}
-                        onClick={ShowPackageUtilize.bind(this, this)}
-                      >
-                        View Package
-                      </button>
                       <h6 style={{ color: "green" }}> Package Exists </h6>
                     </div>
                   ) : null}
-
-                  <PackageUtilize
-                    open={this.state.isPackUtOpen}
-                    onClose={ClosePackageUtilize.bind(this, this)}
-                    package_detail={this.state.package_detail}
-                  />
 
                   <div className="col-lg-2">
                     <button

@@ -309,7 +309,7 @@ class AddAdvanceModal extends PureComponent {
                   </div>
                   <hr style={{ margin: "0rem" }} />
                   <div className="row secondary-box-container">
-                    {/*  <AlagehAutoComplete
+                    <AlagehAutoComplete
                       div={{ className: "col-lg-3 mandatory" }}
                       label={{
                         fieldName: "shift_id",
@@ -329,9 +329,9 @@ class AddAdvanceModal extends PureComponent {
                         },
                         onChange: texthandle.bind(this, this, context)
                       }}
-                    />*/}
+                    />
 
-                    <AlagehAutoComplete
+                    {/*<AlagehAutoComplete
                       div={{ className: "col-lg-3 mandatory" }}
                       label={{
                         fieldName: "counter_id",
@@ -351,9 +351,9 @@ class AddAdvanceModal extends PureComponent {
                         },
                         onChange: countertexthandle.bind(this, this)
                       }}
-                    />
+                    />*/}
                   </div>
-                  <hr /> */}
+                  <hr />
                   {/* Payment Type */}
                   {/* Cash */}
                   <div className="row secondary-box-container">

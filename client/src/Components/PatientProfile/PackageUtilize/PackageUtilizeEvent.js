@@ -115,6 +115,9 @@ export default function PackageSetupEvent() {
                   "Advance not sufficient to utilize these services.Please collect the advance",
                 type: "warning"
               });
+              if ($this.props.from_billing === true) {
+                return;
+              }
             }
           }
 
@@ -173,6 +176,13 @@ export default function PackageSetupEvent() {
             });
           }
         }
+      });
+    },
+
+    ShowAdvanceScreen: $this => {
+      debugger;
+      $this.setState({
+        AdvanceOpen: !$this.state.AdvanceOpen
       });
     }
   };

@@ -16,6 +16,13 @@ const ClearData = ($this, e) => {
   let prevLang = getCookie("Language");
 
   let counter_id = 0;
+  $this.props.setSelectedInsurance({
+    redux: {
+      type: "Package_GET_DATA",
+      mappingName: "PatientPackageList",
+      data: []
+    }
+  });
   algaehApiCall({
     uri: "/userPreferences/get",
     data: {
@@ -45,6 +52,7 @@ const ClearData = ($this, e) => {
 
 const Validations = $this => {
   let isError = false;
+  debugger;
 
   if ($this.state.card_amount > 0) {
     if ($this.state.card_number === null || $this.state.card_number === "") {
@@ -106,6 +114,15 @@ const Validations = $this => {
     swalMessage({
       type: "warning",
       title: "Shift is Mandatory."
+    });
+
+    return isError;
+  } else if (parseFloat($this.state.pack_balance_amount) < 0) {
+    isError = true;
+    swalMessage({
+      type: "warning",
+      title:
+        "Advance not sufficient for this package , please collect the advance."
     });
 
     return isError;
@@ -466,6 +483,13 @@ const getPatientDetails = $this => {
             redux: {
               type: "ORDER_SERVICES_GET_DATA",
               mappingName: "PatientPackageList"
+            },
+            afterSuccess: data => {
+              if (data.length !== 0 || data.length === undefined) {
+                $this.setState({
+                  pack_balance_amount: data[0].balance_amount
+                });
+              }
             }
           });
           selectVisit($this);
@@ -485,6 +509,39 @@ const getPatientDetails = $this => {
   });
 };
 
+const ShowPackageUtilize = $this => {
+  $this.setState({
+    isPackUtOpen: !$this.state.isPackUtOpen,
+    package_detail: $this.props.PatientPackageList[0]
+  });
+};
+const ClosePackageUtilize = $this => {
+  $this.setState(
+    {
+      isPackUtOpen: !$this.state.isPackUtOpen
+    },
+    () => {
+      getPatientDetails($this);
+      $this.props.getPatientPackage({
+        uri: "/orderAndPreApproval/getPatientPackage",
+        method: "GET",
+        data: { package_visit_type: "M", patient_id: $this.state.patient_id },
+        redux: {
+          type: "ORDER_SERVICES_GET_DATA",
+          mappingName: "PatientPackageList"
+        },
+        afterSuccess: data => {
+          if (data.length !== 0 || data.length === undefined) {
+            $this.setState({
+              pack_balance_amount: data[0].balance_amount
+            });
+          }
+        }
+      });
+    }
+  );
+};
+
 export {
   ClearData,
   Validations,
@@ -493,5 +550,7 @@ export {
   selectVisit,
   ShowOrderPackage,
   ClosePackage,
-  getPatientDetails
+  getPatientDetails,
+  ShowPackageUtilize,
+  ClosePackageUtilize
 };

@@ -17,11 +17,17 @@ const emptyObject = extend(
 );
 
 const generateBillDetails = $this => {
+  debugger;
+  let zeroBill = false;
+  if ($this.state.from_package === true) {
+    zeroBill = true;
+  }
   let serviceInput = [
     {
+      zeroBill: zeroBill,
       insured: $this.state.insured,
-      //TODO change middle ware to promisify function --added by Nowshad
       vat_applicable: $this.state.vat_applicable,
+      service_type_id: $this.state.service_type_id,
       hims_d_services_id: $this.state.hims_d_services_id,
       primary_insurance_provider_id: $this.state.primary_insurance_provider_id,
       primary_network_office_id: $this.state.primary_network_office_id,
@@ -484,6 +490,13 @@ const getCtrlCode = ($this, patcode, row) => {
           redux: {
             type: "ORDER_SERVICES_GET_DATA",
             mappingName: "PatientPackageList"
+          },
+          afterSuccess: data => {
+            if (data.length !== 0 || data.length === undefined) {
+              $this.setState({
+                pack_balance_amount: data[0].balance_amount
+              });
+            }
           }
         });
       }
@@ -498,6 +511,64 @@ const getCtrlCode = ($this, patcode, row) => {
   });
 };
 
+const ShowPackageUtilize = $this => {
+  $this.setState({
+    isPackUtOpen: !$this.state.isPackUtOpen,
+    package_detail: $this.props.PatientPackageList[0]
+  });
+};
+const ClosePackageUtilize = ($this, e) => {
+  debugger;
+  if (e.services_id === undefined) {
+    $this.setState({
+      isPackUtOpen: !$this.state.isPackUtOpen
+    });
+    return;
+  }
+  $this.setState(
+    {
+      isPackUtOpen: !$this.state.isPackUtOpen,
+      hims_d_services_id: e.services_id,
+      service_type_id: e.service_type_id,
+      incharge_or_provider: e.doctor_id,
+      provider_id: e.doctor_id,
+      doctor_id: e.doctor_id,
+      sub_department_id: e.sub_department_id,
+      visit_type: 10,
+      from_package: true,
+      visittypeselect: true,
+      utilize_amount: e.utilize_amount,
+      balance_amount: e.balance_amount,
+      // appointment_patient: "Y",
+      hims_f_package_header_id: e.hims_f_package_header_id,
+      saveEnable: false,
+      billdetail: false
+    },
+    () => {
+      generateBillDetails($this);
+      $this.props.getPatientPackage({
+        uri: "/orderAndPreApproval/getPatientPackage",
+        method: "GET",
+        data: {
+          patient_id: $this.state.hims_d_patient_id,
+          package_visit_type: "M"
+        },
+        redux: {
+          type: "ORDER_SERVICES_GET_DATA",
+          mappingName: "PatientPackageList"
+        },
+        afterSuccess: data => {
+          if (data.length !== 0 || data.length === undefined) {
+            $this.setState({
+              pack_balance_amount: data[0].balance_amount
+            });
+          }
+        }
+      });
+    }
+  );
+};
+
 export {
   generateBillDetails,
   ShowRefundScreen,
@@ -508,5 +579,7 @@ export {
   closePopup,
   generateIdCard,
   generateReceipt,
-  getCtrlCode
+  getCtrlCode,
+  ShowPackageUtilize,
+  ClosePackageUtilize
 };

@@ -42,9 +42,12 @@ import {
   closePopup,
   generateIdCard,
   generateReceipt,
-  getCtrlCode
+  getCtrlCode,
+  ShowPackageUtilize,
+  ClosePackageUtilize
 } from "./RegistrationPatientEvent";
 import { SetBulkState } from "../../utils/GlobalFunctions";
+import PackageUtilize from "../PatientProfile/PackageUtilize/PackageUtilize";
 
 const emptyObject = extend(
   PatRegIOputs.inputParam(),
@@ -58,7 +61,8 @@ class RegistrationPatient extends Component {
       AdvanceOpen: false,
       RefundOpen: false,
       visittypeselect: true,
-      clearEnable: false
+      clearEnable: false,
+      isPackUtOpen: false
     };
   }
 
@@ -652,9 +656,12 @@ class RegistrationPatient extends Component {
   //Render Page Start Here
 
   render() {
+    const Package_Exists =
+      this.props.PatientPackageList === undefined
+        ? []
+        : this.props.PatientPackageList;
     return (
       <div id="attach" style={{ marginBottom: "50px" }}>
-        {/* <Barcode value='PAT-A-000017'/> */}
         <BreadCrumb
           title={
             <AlgaehLabel
@@ -662,7 +669,6 @@ class RegistrationPatient extends Component {
             />
           }
           breadStyle={this.props.breadStyle}
-          //breadWidth={this.props.breadWidth}
           pageNavPath={[
             {
               pageName: (
@@ -815,6 +821,25 @@ class RegistrationPatient extends Component {
                           }}
                         />
                       </button>
+
+                      {Package_Exists.length > 0 ? (
+                        <div className="col">
+                          <button
+                            type="button"
+                            className="btn btn-primary"
+                            onClick={ShowPackageUtilize.bind(this, this)}
+                          >
+                            View Package
+                          </button>
+                        </div>
+                      ) : null}
+                      <PackageUtilize
+                        open={this.state.isPackUtOpen}
+                        onClose={ClosePackageUtilize.bind(this, this)}
+                        package_detail={this.state.package_detail}
+                        from="frontDesk"
+                        from_billing={true}
+                      />
                     </div>
                   )}
 

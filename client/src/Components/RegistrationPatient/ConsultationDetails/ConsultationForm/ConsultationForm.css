@@ -27,3 +27,8 @@
   .hptl-phase1-add-consultation-form .hide {
     display: none;
     opacity: 0; }
+
+.packageStatus {
+  text-align: right;
+  float: right;
+  color: green; }

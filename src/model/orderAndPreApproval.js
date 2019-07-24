@@ -1459,6 +1459,12 @@ let getPatientPackage = (req, res, next) => {
     if (req.query.patient_id > 0) {
       str += ` and H.patient_id=${req.query.patient_id} `;
     }
+    if (req.query.hims_f_package_header_id > 0) {
+      str += ` and H.hims_f_package_header_id=${
+        req.query.hims_f_package_header_id
+      } `;
+    }
+
     if (req.query.visit_id > 0) {
       str += ` and H.visit_id=${req.query.visit_id} `;
     }

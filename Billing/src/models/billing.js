@@ -1170,6 +1170,8 @@ module.exports = {
                           Insert_Advance[1][0].advance_amount;
                         let balance_amount =
                           Insert_Advance[1][0].balance_amount;
+                        let utilize_amount =
+                          Insert_Advance[1][0].utilize_amount;
 
                         let strQuery = "";
                         if (existingAdvance != null) {

@@ -19,13 +19,15 @@ import { getAmountFormart } from "../../../utils/GlobalFunctions";
 import _ from "lodash";
 import PackageUtilizeEvent from "./PackageUtilizeEvent";
 import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
+import AddAdvanceModal from "../../Advance/AdvanceModal";
 
 class PackageUtilize extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      package_details: []
+      package_details: [],
+      AdvanceOpen: false
     };
   }
 
@@ -81,6 +83,43 @@ class PackageUtilize extends Component {
   }
   advanceAmount(e) {
     PackageUtilizeEvent().advanceAmount(this, e);
+  }
+
+  CloseRefundScreen(e) {
+    this.setState(
+      {
+        AdvanceOpen: !this.state.AdvanceOpen
+      },
+      () => {
+        debugger;
+        algaehApiCall({
+          uri: "/orderAndPreApproval/getPatientPackage",
+          method: "GET",
+          data: {
+            hims_f_package_header_id: this.state.hims_f_package_header_id
+          },
+          onSuccess: response => {
+            if (response.data.success) {
+              let data = response.data.records;
+              this.setState({
+                ...this.state,
+                ...data[0]
+              });
+            }
+          },
+          onFailure: error => {
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
+        });
+      }
+    );
+  }
+
+  ShowAdvanceScreen(row) {
+    PackageUtilizeEvent().ShowAdvanceScreen(this, row);
   }
   render() {
     return (
@@ -524,6 +563,23 @@ class PackageUtilize extends Component {
                 </div>
               </div>
             </div>
+            <AddAdvanceModal
+              show={this.state.AdvanceOpen}
+              onClose={this.CloseRefundScreen.bind(this)}
+              selectedLang={this.state.selectedLang}
+              HeaderCaption="Advance"
+              PackageAdvance={true}
+              inputsparameters={{
+                package_detail: this.state.package_detail,
+                transaction_type: "AD",
+                pay_type: "R",
+                hims_f_patient_id: this.state.patient_id,
+                package_id: this.state.hims_f_package_header_id,
+                advance_amount: this.state.advance_amount,
+                patient_code: this.state.patient_code,
+                full_name: this.state.full_name
+              }}
+            />
             <div className="popupFooter">
               <div className="col-lg-12">
                 <div className="row">
@@ -537,6 +593,15 @@ class PackageUtilize extends Component {
                           returnText: true
                         }}
                       />
+                      {this.props.from_billing === true ? (
+                        <button
+                          className="btn btn-default"
+                          onClick={this.ShowAdvanceScreen.bind(this)}
+                        >
+                          Collect Advance
+                        </button>
+                      ) : null}
+
                       <button
                         className="btn btn-default"
                         onClick={this.onClose.bind(this)}

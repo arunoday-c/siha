@@ -165,7 +165,9 @@ export default {
       package_details: [],
       utilize_amount: 0,
       balance_amount: 0,
-      hims_f_package_header_id: null
+      hims_f_package_header_id: null,
+      follow_up: false,
+      existing_treat: false
     };
     return output;
   }
