@@ -15,9 +15,12 @@ import {
   addEpisodeEncounterData
 } from "../models/visit";
 
-const { newReceiptData, addBillData, addCashHandover } = algaehPath(
-  "algaeh-billing/src/models/billing"
-);
+const {
+  newReceiptData,
+  addBillData,
+  addCashHandover,
+  updatePatientPackage
+} = algaehPath("algaeh-billing/src/models/billing");
 
 const { getPatientwiseBill } = algaehPath(
   "algaeh-billing/src/models/opCreditSettlement"
@@ -44,6 +47,14 @@ export default () => {
     addPatientInsuranceData,
     newReceiptData,
     addBillData,
+
+    (req, res, next) => {
+      if (req.body.from_package == true) {
+        updatePatientPackage(req, res, next);
+      } else {
+        next();
+      }
+    },
     addCashHandover,
     (req, res, next) => {
       if (
@@ -79,6 +90,13 @@ export default () => {
     addPatientInsuranceData,
     newReceiptData,
     addBillData,
+    (req, res, next) => {
+      if (req.body.from_package == true) {
+        updatePatientPackage(req, res, next);
+      } else {
+        next();
+      }
+    },
     addCashHandover,
     (req, res, next) => {
       if (

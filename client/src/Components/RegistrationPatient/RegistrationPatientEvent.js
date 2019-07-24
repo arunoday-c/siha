@@ -145,6 +145,13 @@ const ClearData = ($this, from, patcode) => {
             data: []
           }
         });
+        $this.props.setSelectedInsurance({
+          redux: {
+            type: "Package_GET_DATA",
+            mappingName: "PatientPackageList",
+            data: []
+          }
+        });
 
         $this.props.setSelectedInsurance({
           redux: {
@@ -464,6 +471,19 @@ const getCtrlCode = ($this, patcode, row) => {
           redux: {
             type: "EXIT_INSURANCE_GET_DATA",
             mappingName: "existinsurance"
+          }
+        });
+
+        $this.props.getPatientPackage({
+          uri: "/orderAndPreApproval/getPatientPackage",
+          method: "GET",
+          data: {
+            patient_id: data.patientRegistration.hims_d_patient_id,
+            package_visit_type: "M"
+          },
+          redux: {
+            type: "ORDER_SERVICES_GET_DATA",
+            mappingName: "PatientPackageList"
           }
         });
       }

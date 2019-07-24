@@ -21,7 +21,8 @@ import {
   updateBillDetail,
   onchangegridcol,
   EditGrid,
-  ItemChargable
+  ItemChargable,
+  makeZeroIngrid
 } from "./OrderConsumablesHandaler";
 import "./OrderConsumables.css";
 import "../../../../styles/site.css";
@@ -321,6 +322,20 @@ class OrderConsumables extends Component {
                     id="Services_Ordering"
                     columns={[
                       {
+                        fieldName: "actions",
+                        label: <AlgaehLabel label={{ forceLabel: "Action" }} />,
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              <i
+                                onClick={deleteServices.bind(this, this, row)}
+                                className="fas fa-trash-alt"
+                              />
+                            </span>
+                          );
+                        }
+                      },
+                      {
                         fieldName: "service_type_id",
                         label: (
                           <AlgaehLabel
@@ -440,31 +455,7 @@ class OrderConsumables extends Component {
                         label: (
                           <AlgaehLabel label={{ fieldName: "quantity" }} />
                         ),
-                        editorTemplate: row => {
-                          return (
-                            <AlagehFormGroup
-                              div={{}}
-                              textBox={{
-                                value: row.quantity,
-                                className: "txt-fld",
-                                name: "quantity",
-                                events: {
-                                  onChange: onchangegridcol.bind(
-                                    this,
-                                    this,
-                                    row
-                                  )
-                                },
-                                others: {
-                                  onBlur: calculateAmount.bind(this, this, row),
-                                  onFocus: e => {
-                                    e.target.oldvalue = e.target.value;
-                                  }
-                                }
-                              }}
-                            />
-                          );
-                        }
+                        disabled: true
                       },
 
                       {
@@ -484,7 +475,7 @@ class OrderConsumables extends Component {
                             label={{ fieldName: "discount_percentage" }}
                           />
                         ),
-                        editorTemplate: row => {
+                        displayTemplate: row => {
                           return (
                             <AlagehFormGroup
                               div={{}}
@@ -494,17 +485,16 @@ class OrderConsumables extends Component {
                                 className: "txt-fld",
                                 name: "discount_percentage",
                                 events: {
-                                  onChange: onchangegridcol.bind(
+                                  onChange: calculateAmount.bind(
                                     this,
                                     this,
                                     row
                                   )
                                 },
                                 others: {
-                                  onBlur: calculateAmount.bind(this, this, row),
-                                  onFocus: e => {
-                                    e.target.oldvalue = e.target.value;
-                                  }
+                                  disabled:
+                                    this.state.insured === "Y" ? true : false,
+                                  onBlur: makeZeroIngrid.bind(this, this, row)
                                 }
                               }}
                             />
@@ -518,7 +508,7 @@ class OrderConsumables extends Component {
                             label={{ fieldName: "discount_amout" }}
                           />
                         ),
-                        editorTemplate: row => {
+                        displayTemplate: row => {
                           return (
                             <AlagehFormGroup
                               div={{}}
@@ -528,17 +518,16 @@ class OrderConsumables extends Component {
                                 className: "txt-fld",
                                 name: "discount_amout",
                                 events: {
-                                  onChange: onchangegridcol.bind(
+                                  onChange: calculateAmount.bind(
                                     this,
                                     this,
                                     row
                                   )
                                 },
                                 others: {
-                                  onBlur: calculateAmount.bind(this, this, row),
-                                  onFocus: e => {
-                                    e.target.oldvalue = e.target.value;
-                                  }
+                                  disabled:
+                                    this.state.insured === "Y" ? true : false,
+                                  onBlur: makeZeroIngrid.bind(this, this, row)
                                 }
                               }}
                             />
@@ -623,7 +612,7 @@ class OrderConsumables extends Component {
                     dataSource={{
                       data: this.state.orderservicesdata
                     }}
-                    isEditable={true}
+                    // isEditable={true}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     byForceEvents={true}
                     events={{
@@ -745,3 +734,28 @@ export default withRouter(
     mapDispatchToProps
   )(OrderConsumables)
 );
+{
+  /*displayTemplate: row => {
+  return (
+    <AlagehFormGroup
+      div={{}}
+      textBox={{
+        value: row.quantity,
+        className: "txt-fld",
+        name: "quantity",
+        events: {
+          onChange: onchangegridcol.bind(
+            this,
+            this,
+            row
+          )
+        },
+        others: {
+          disabled:
+            this.state.insured === "Y" ? true : false
+        }
+      }}
+    />
+  );
+}*/
+}

@@ -328,6 +328,8 @@ class RegistrationPatient extends Component {
                   delete patientdata.patientImage;
                   delete patientdata.countrystates;
                   delete patientdata.cities;
+                  delete patientdata.doctors;
+                  debugger;
                   if ($this.state.hims_d_patient_id === null) {
                     algaehApiCall({
                       uri: "/frontDesk/add",
@@ -951,7 +953,8 @@ function mapStateToProps(state) {
     countries: state.countries,
     primaryinsurance: state.primaryinsurance,
     secondaryinsurance: state.secondaryinsurance,
-    hospitaldetails: state.hospitaldetails
+    hospitaldetails: state.hospitaldetails,
+    PatientPackageList: state.PatientPackageList
   };
 }
 
@@ -965,7 +968,8 @@ function mapDispatchToProps(dispatch) {
       getPatientInsurance: AlgaehActions,
       getCountries: AlgaehActions,
       setSelectedInsurance: AlgaehActions,
-      getHospitalDetails: AlgaehActions
+      getHospitalDetails: AlgaehActions,
+      getPatientPackage: AlgaehActions
     },
     dispatch
   );

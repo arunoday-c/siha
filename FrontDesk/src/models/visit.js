@@ -100,6 +100,7 @@ module.exports = {
     try {
       const inputParam = { ...req.body };
       const utilities = new algaehUtilities();
+      utilities.logger().log("insertPatientVisitData: ");
 
       let existingExparyDate = null;
       let currentPatientEpisodeNo = null;
@@ -338,13 +339,14 @@ module.exports = {
         internalInsertPatientVisitData();
       } else {
         if (req.options == null) {
-          db.rollback(() => {
-            releaseDBConnection(req.db, db);
+          _mysql.rollBackTransaction(() => {
             next(
-              httpStatus.generateError(
-                httpStatus.noContent,
-                "Please select consultation type"
-              )
+              utilities
+                .httpStatus()
+                .generateError(
+                  utilities.httpStatus().noContent,
+                  "Please select consultation type"
+                )
             );
           });
         } else {
@@ -454,7 +456,7 @@ module.exports = {
 
       const utilities = new algaehUtilities();
       /* Select statemwnt  */
-
+      utilities.logger().log("addPatientInsuranceData: ");
       utilities.logger().log("insured: ", input.insured);
 
       if (input.insured == "Y") {

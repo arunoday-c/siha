@@ -1,5 +1,7 @@
 import algaehMysql from "algaeh-mysql";
 import extend from "extend";
+import mysql from "mysql";
+
 module.exports = {
   //Addded by noor code modification
   addPatientInsuranceData: (req, res, next) => {
@@ -1160,68 +1162,67 @@ module.exports = {
   updatePriceListBulk: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
-      let inputparam = req.body;
+      let inputParam = req.body;
       let strQuery = "";
       let parameters = [];
       if (inputParam.update === "pre_approval") {
-        strQuery =
-          "UPDATE `hims_d_services_insurance` \
-        SET `pre_approval`=?,`updated_by`=?, `updated_date`=? WHERE `record_status`='A' and \
-        `insurance_id`=?";
-        parameters = [
-          inputParam.pre_approval,
-          inputParam.updated_by,
-          new Date(),
-          inputParam.insurance_id
-        ];
+        strQuery += mysql.format(
+          "UPDATE `hims_d_services_insurance` SET `pre_approval`=?,`updated_by`=?, `updated_date`=? \
+          WHERE `record_status`='A' and `insurance_id`=?",
+          [
+            inputParam.pre_approval,
+            inputParam.updated_by,
+            new Date(),
+            inputParam.insurance_id
+          ]
+        );
       } else if (inputParam.update === "covered") {
-        strQuery =
-          "UPDATE `hims_d_services_insurance` \
-        SET `covered`=?,`updated_by`=?, `updated_date`=? WHERE `record_status`='A' and \
-        `insurance_id`=?";
-        parameters = [
-          inputParam.covered,
-          inputParam.updated_by,
-          new Date(),
-          inputParam.insurance_id
-        ];
+        strQuery += mysql.format(
+          "UPDATE `hims_d_services_insurance` SET `covered`=?,`updated_by`=?, `updated_date`=? \
+          WHERE `record_status`='A' and `insurance_id`=?",
+          [
+            inputParam.covered,
+            inputParam.updated_by,
+            new Date(),
+            inputParam.insurance_id
+          ]
+        );
       } else if (inputParam.update === "corporate_discount") {
         if (inputParam.discountType === "P") {
-          strQuery =
-            "UPDATE `hims_d_services_insurance` \
-            SET `corporate_discount_percent`=?, `corporate_discount_amt`=(gross_amt*?)/100,`net_amount`=(gross_amt-(gross_amt*?)/100),\
-            `updated_by`=?, `updated_date`=? WHERE `record_status`='A' and `insurance_id`=?";
-
-          parameters = [
-            inputParam.corporate_discount,
-            inputParam.corporate_discount,
-            inputParam.corporate_discount,
-            inputParam.updated_by,
-            new Date(),
-            inputParam.insurance_id
-          ];
+          strQuery += mysql.format(
+            "UPDATE `hims_d_services_insurance` SET `corporate_discount_percent`=?,\
+            `corporate_discount_amt`=(gross_amt*?)/100, `net_amount`=(gross_amt-(gross_amt*?)/100),\
+            `updated_by`=?, `updated_date`=? WHERE `record_status`='A' and `insurance_id`=?",
+            [
+              inputParam.corporate_discount,
+              inputParam.corporate_discount,
+              inputParam.corporate_discount,
+              inputParam.updated_by,
+              new Date(),
+              inputParam.insurance_id
+            ]
+          );
         } else if (inputParam.discountType === "A") {
-          strQuery =
-            "UPDATE `hims_d_services_insurance` \
-            SET `corporate_discount_amt`=?, `corporate_discount_percent`=(?/gross_amt)*100,`net_amount`=gross_amt-?, \
-            `updated_by`=?, `updated_date`=? WHERE `record_status`='A' and `insurance_id`=?";
-
-          parameters = [
-            inputParam.corporate_discount,
-            inputParam.corporate_discount,
-            inputParam.corporate_discount,
-            inputParam.updated_by,
-            new Date(),
-            inputParam.insurance_id
-          ];
+          strQuery += mysql.format(
+            "UPDATE `hims_d_services_insurance` SET `corporate_discount_amt`=?, \
+            `corporate_discount_percent`=(?/gross_amt)*100,`net_amount`=gross_amt-?, \
+            `updated_by`=?, `updated_date`=? WHERE `record_status`='A' and `insurance_id`=?",
+            [
+              inputParam.corporate_discount,
+              inputParam.corporate_discount,
+              inputParam.corporate_discount,
+              inputParam.updated_by,
+              new Date(),
+              inputParam.insurance_id
+            ]
+          );
         }
       }
 
       _mysql
         .executeQuery({
           query: strQuery,
-          values: [parameters],
-          printQuery: false
+          printQuery: true
         })
         .then(result => {
           _mysql.releaseConnection();

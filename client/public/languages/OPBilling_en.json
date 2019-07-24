@@ -101,8 +101,8 @@
   "tax_lbl": "Vat",
   "payable_lbl": "Payable",
 
-    "patient_lbl": "Patient Responsibility",
-    "company_lbl": "Company Responsibility",
+  "patient_lbl": "Patient Responsibility",
+  "company_lbl": "Company Responsibility",
   "sec_comp_lbl": "Secondary Co.",
 
   "insurance_company": "Insurance Co.",
@@ -130,6 +130,7 @@
   "co_insurance": "Co Insurance",
 
   "btn_save": "Save",
+  "btn_order_package": "Order Package",
   "btn_clear": "Clear",
 
   "payby_cash": "Pay by Cash",

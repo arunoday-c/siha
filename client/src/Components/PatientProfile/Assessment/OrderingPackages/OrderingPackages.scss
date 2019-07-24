@@ -1,0 +1,126 @@
+.hptl-phase1-ordering-services-form {
+	background: #ffff;
+	.form-details {
+		padding: 5px;
+		padding-bottom: 5px;
+	}
+	mark {
+		background: none;
+		color: red;
+	}
+
+	.form-group {
+		margin-bottom: 0;
+		margin-top: 4px;
+		padding: 0;
+		padding-top: 20px;
+		cursor: pointer;
+	}
+
+	.go-button {
+		cursor: pointer;
+		margin-bottom: -15px;
+		margin-top: -10px;
+	}
+	#doctorOrder {
+		.ReactTable {
+			height: 33vh !important;
+			margin-bottom: 15px;
+		}
+	}
+}
+#Services_Ordering {
+	.ReactTable {
+		height: 54vh !important;
+	}
+}
+.GridTotalDetails {
+	h5 {
+		margin-top: 0;
+		font-size: 1.3rem;
+	}
+}
+.customServiceSearch {
+	.yesStyle {
+		background: #fff;
+		color: #000;
+		text-transform: initial;
+	}
+
+	.noStyle {
+		background: #fff;
+		color: #000;
+		text-transform: initial;
+	}
+	.padd-10 {
+		padding-left: 10px;
+		padding-right: 10px;
+	}
+	.results {
+		max-height: 65vh !important;
+	}
+	.result {
+		padding: 0 !important;
+	}
+	.resultSecStyles {
+		padding: 0.5rem 0 !important;
+		margin: 0;
+	}
+	.title {
+		font-size: 0.9rem;
+	}
+	.service_type {
+		font-size: 0.8rem;
+		margin: 0;
+	}
+
+	.insCovered,
+	.insPreApp {
+		font-weight: normal;
+		font-style: italic;
+		font-size: 0.7rem;
+		margin-bottom: 3px;
+		float: right;
+		text-align: right;
+		span {
+			font-weight: bold;
+			font-size: 0.7rem;
+			padding: 0 5px;
+			margin-left: 2px;
+			border-radius: 15px;
+		}
+	}
+	.insPreApp {
+		margin-bottom: 0;
+	}
+}
+.orange_Y_Y {
+	background: rgb(255, 214, 137);
+}
+
+.red_N_N {
+	background: rgb(255, 163, 163);
+}
+
+.green_Y_N {
+	background: rgb(196, 255, 196);
+}
+.white_N_N {
+	background: rgb(255, 255, 255);
+}
+.legendCntr {
+	.legendSpan {
+		width: 12px;
+		height: 12px;
+		margin-right: 4px;
+		vertical-align: sub;
+	}
+	span {
+		display: inline-block;
+		b {
+			&:last-child {
+				margin-right: 5px;
+			}
+		}
+	}
+}

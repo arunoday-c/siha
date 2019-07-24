@@ -11,7 +11,6 @@ import moment from "moment";
 import { debugLog, debugFunction } from "../utils/logging";
 import appsettings from "../utils/appsettings.json";
 import { LINQ } from "node-linq";
-import math from "mathjs";
 //import { inflate } from "zlib";
 
 let addBillData = (req, res, next) => {
@@ -797,17 +796,11 @@ let billingCalculations = (req, res, next) => {
       sendingObject.card_amount = 0;
       sendingObject.cheque_amount = 0;
 
-      sendingObject.patient_payable = math.round(
-        sendingObject.patient_payable,
-        2
-      );
-      sendingObject.total_tax = math.round(sendingObject.total_tax, 2);
-      sendingObject.patient_tax = math.round(sendingObject.patient_tax, 2);
-      sendingObject.company_tax = math.round(sendingObject.company_tax, 2);
-      sendingObject.sec_company_tax = math.round(
-        sendingObject.sec_company_tax,
-        2
-      );
+      sendingObject.patient_payable = sendingObject.patient_payable.toFixed(2);
+      sendingObject.total_tax = sendingObject.total_tax.toFixed(2);
+      sendingObject.patient_tax = sendingObject.patient_tax.toFixed(2);
+      sendingObject.company_tax = sendingObject.company_tax.toFixed(2);
+      sendingObject.sec_company_tax = sendingObject.sec_company_tax.toFixed(2);
     } else {
       //Reciept
 
@@ -830,12 +823,10 @@ let billingCalculations = (req, res, next) => {
             100;
         }
 
-        sendingObject.sheet_discount_amount = math.round(
-          sendingObject.sheet_discount_amount,
+        sendingObject.sheet_discount_amount = sendingObject.sheet_discount_amount.toFixed(
           2
         );
-        sendingObject.sheet_discount_percentage = math.round(
-          sendingObject.sheet_discount_percentage,
+        sendingObject.sheet_discount_percentage = sendingObject.sheet_discount_percentage.toFixed(
           2
         );
 
@@ -1236,7 +1227,7 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                     discount_percentage = (discount_amout / gross_amount) * 100;
                   } else if (discount_percentage > 0) {
                     discount_amout = (gross_amount * discount_percentage) / 100;
-                    discount_amout = math.round(discount_amout, 2);
+                    discount_amout = discount_amout.toFixed(2);
                   }
                   net_amout = gross_amount - discount_amout;
 
@@ -1336,39 +1327,39 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                       (net_amout * deductable_percentage) / 100;
                     after_dect_amout = net_amout - deductable_amount;
                     copay_amount = (after_dect_amout * copay_percentage) / 100;
-                    copay_amount = math.round(copay_amount, 2);
+                    copay_amount = copay_amount.toFixed(2);
                   }
 
                   debugLog("net_amout: ", net_amout);
                   debugLog("copay_amount: ", copay_amount);
                   patient_resp = copay_amount + deductable_amount;
-                  comapany_resp = math.round(net_amout - patient_resp, 2);
+                  comapany_resp = (net_amout - patient_resp).toFixed(2);
 
                   debugLog("patient_resp: ", patient_resp);
 
                   if (vat_applicable == "Y" && records.vat_applicable == "Y") {
-                    patient_tax = math.round(
-                      (patient_resp * records.vat_percent) / 100,
-                      2
-                    );
+                    patient_tax = (
+                      (patient_resp * records.vat_percent) /
+                      100
+                    ).toFixed(2);
                   }
 
                   if (records.vat_applicable == "Y") {
-                    company_tax = math.round(
-                      (comapany_resp * records.vat_percent) / 100,
-                      2
-                    );
+                    company_tax = (
+                      (comapany_resp * records.vat_percent) /
+                      100
+                    ).toFixed(2);
                   }
-                  total_tax = math.round(patient_tax + company_tax, 2);
+                  total_tax = (patient_tax + company_tax).toFixed(2);
 
-                  patient_payable = math.round(patient_resp + patient_tax, 2);
+                  patient_payable = (patient_resp + patient_tax).toFixed(2);
                   console.log("approved_amount: ", approved_amount);
                   console.log("unit_cost: ", unit_cost);
 
                   if (approved_amount !== 0 && approved_amount < unit_cost) {
                     let diff_val = approved_amount - comapany_resp;
-                    patient_payable = math.round(patient_payable + diff_val, 2);
-                    patient_resp = math.round(patient_resp + diff_val, 2);
+                    patient_payable = (patient_payable + diff_val).toFixed(2);
+                    patient_resp = (patient_resp + diff_val).toFixed(2);
                     comapany_resp = comapany_resp - diff_val;
                   }
 
@@ -1376,7 +1367,7 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
 
                   company_payble = net_amout - patient_resp;
 
-                  company_payble = math.round(company_payble + company_tax, 2);
+                  company_payble = (company_payble + company_tax).toFixed(2);
 
                   preapp_limit_amount = policydtls.preapp_limit;
                   if (policydtls.preapp_limit !== 0) {
@@ -1428,21 +1419,21 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                     discount_percentage = (discount_amout / gross_amount) * 100;
                   } else if (discount_percentage > 0) {
                     discount_amout = (gross_amount * discount_percentage) / 100;
-                    discount_amout = math.round(discount_amout, 2);
+                    discount_amout = discount_amout.toFixed(2);
                   }
                   net_amout = gross_amount - discount_amout;
                   patient_resp = net_amout;
 
                   if (vat_applicable == "Y" && records.vat_applicable == "Y") {
-                    patient_tax = math.round(
-                      (patient_resp * records.vat_percent) / 100,
-                      2
-                    );
+                    patient_tax = (
+                      (patient_resp * records.vat_percent) /
+                      100
+                    ).toFixed(2);
                     total_tax = patient_tax;
                   }
 
                   // patient_payable = net_amout + patient_tax;
-                  patient_payable = math.round(patient_resp + patient_tax, 2);
+                  patient_payable = (patient_resp + patient_tax).toFixed(2);
                 }
               })
 
@@ -1558,28 +1549,28 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                     sec_copay_amount =
                       (after_dect_amout * sec_copay_percntage) / 100;
 
-                    sec_copay_amount = math.round(sec_copay_amount, 2);
+                    sec_copay_amount = sec_copay_amount.toFixed(2);
                   }
 
                   patient_resp = sec_copay_amount + sec_deductable_amount;
                   sec_company_res = sec_unit_cost - patient_resp;
 
                   if (vat_applicable == "Y" && records.vat_applicable == "Y") {
-                    patient_tax = math.round(
-                      (patient_resp * records.vat_percent) / 100,
-                      2
-                    );
+                    patient_tax = (
+                      (patient_resp * records.vat_percent) /
+                      100
+                    ).toFixed(2);
                   }
 
                   if (records.vat_applicable == "Y") {
-                    sec_company_tax = math.round(
-                      (sec_company_res * records.vat_percent) / 100,
-                      2
-                    );
+                    sec_company_tax = (
+                      (sec_company_res * records.vat_percent) /
+                      100
+                    ).toFixed(2);
                   }
                   total_tax = patient_tax + company_tax + sec_company_res;
 
-                  patient_payable = math.round(patient_resp + patient_tax, 2);
+                  patient_payable = (patient_resp + patient_tax).toFixed(2);
                   sec_company_paybale =
                     sec_unit_cost - patient_resp + sec_company_tax;
                 }
