@@ -439,7 +439,7 @@ let getPatientTreatments = (req, res, next) => {
 
           if (result.length > 0) {
             connection.query(
-              "select hims_f_ordered_services_id,OS.patient_id,OS.doctor_id,E.full_name as doctor_name,OS.service_type_id,V.visit_date,services_id,\
+              "select hims_f_ordered_services_id,OS.patient_id,OS.doctor_id,E.full_name as doctor_name,OS.service_type_id,V.visit_date,services_id,OS.teeth_number,\
         S.service_name,S.service_desc from hims_f_ordered_services OS ,hims_f_patient_visit V,hims_d_services S,hims_d_employee E\
         where OS.record_status='A' and V.record_status='A' and S.record_status='A' and E.record_status='A' and \
         OS.visit_id=V.hims_f_patient_visit_id and OS.services_id=S.hims_d_services_id and OS.doctor_id=E.hims_d_employee_id \

@@ -62,16 +62,29 @@ class SickLeave extends Component {
     let days = 0;
     let fromDate = null;
     let toDate = null;
+    let inRange = false;
+
     if (e === "from_date" && this.state.to_date !== null) {
-      fromDate = moment(ctrl);
-      toDate = moment(this.state.to_date);
-      days = toDate.diff(fromDate, "days");
-      days = days + 1;
+      inRange = moment(e).isAfter(
+        moment(this.state.to_date).format("YYYY-MM-DD")
+      );
+
+      if (inRange === false) {
+        fromDate = moment(ctrl);
+        toDate = moment(this.state.to_date);
+        days = toDate.diff(fromDate, "days");
+        days = days + 1;
+      }
     } else if (e === "to_date" && this.state.from_date !== null) {
-      fromDate = moment(this.state.from_date);
-      toDate = moment(ctrl);
-      days = toDate.diff(fromDate, "days");
-      days = days + 1;
+      inRange = moment(e).isBefore(
+        moment(this.state.from_date).format("YYYY-MM-DD")
+      );
+      if (inRange === false) {
+        fromDate = moment(this.state.from_date);
+        toDate = moment(ctrl);
+        days = toDate.diff(fromDate, "days");
+        days = days + 1;
+      }
     }
 
     this.setState({
@@ -104,6 +117,25 @@ class SickLeave extends Component {
   };
 
   PrintSickLeave() {
+    if (this.state.from_date === null) {
+      swalMessage({
+        title: "From date cannot be blank",
+        type: "warning"
+      });
+      return;
+    } else if (this.state.to_date === null) {
+      swalMessage({
+        title: "To date cannot be blank",
+        type: "warning"
+      });
+      return;
+    } else if (this.state.remarks.length === 0) {
+      swalMessage({
+        title: "Remarks cannot be blank",
+        type: "warning"
+      });
+      return;
+    }
     algaehApiCall({
       uri: "/doctorsWorkBench/addSickLeave",
       data: this.state,
@@ -162,6 +194,41 @@ class SickLeave extends Component {
     });
   }
 
+  dateValidate(value, e) {
+    let inRange = false;
+    if (e.target.name === "from_date") {
+      inRange = moment(value).isAfter(
+        moment(this.state.to_date).format("YYYY-MM-DD")
+      );
+      if (inRange) {
+        swalMessage({
+          title: "From Date cannot be grater than To Date.",
+          type: "warning"
+        });
+        e.target.focus();
+        this.setState({
+          [e.target.name]: null,
+          no_of_days: 0
+        });
+      }
+    } else if (e.target.name === "to_date") {
+      inRange = moment(value).isBefore(
+        moment(this.state.from_date).format("YYYY-MM-DD")
+      );
+      if (inRange) {
+        swalMessage({
+          title: "To Date cannot be less than From Date.",
+          type: "warning"
+        });
+        e.target.focus();
+        this.setState({
+          [e.target.name]: null,
+          no_of_days: 0
+        });
+      }
+    }
+  }
+
   render() {
     return (
       <React.Fragment>
@@ -179,7 +246,7 @@ class SickLeave extends Component {
                 <div className="row">
                   <AlgaehDateHandler
                     div={{ className: "col-4 form-group" }}
-                    label={{ forceLabel: "From Date" }}
+                    label={{ forceLabel: "From Date", isImp: true }}
                     textBox={{
                       className: "txt-fld",
                       name: "from_date",
@@ -189,13 +256,14 @@ class SickLeave extends Component {
                     }}
                     minDate={new Date()}
                     events={{
-                      onChange: this.datehandle.bind(this)
+                      onChange: this.datehandle.bind(this),
+                      onBlur: this.dateValidate.bind(this)
                     }}
                     value={this.state.from_date}
                   />
                   <AlgaehDateHandler
                     div={{ className: "col-4 form-group" }}
-                    label={{ forceLabel: "To Date" }}
+                    label={{ forceLabel: "To Date", isImp: true }}
                     textBox={{
                       className: "txt-fld",
                       name: "to_date",
@@ -205,7 +273,8 @@ class SickLeave extends Component {
                     }}
                     minDate={new Date()}
                     events={{
-                      onChange: this.datehandle.bind(this)
+                      onChange: this.datehandle.bind(this),
+                      onBlur: this.dateValidate.bind(this)
                     }}
                     value={this.state.to_date}
                   />
@@ -231,7 +300,8 @@ class SickLeave extends Component {
                   <div className="col form-group">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Remarks"
+                        forceLabel: "Remarks",
+                        isImp: true
                       }}
                     />
                     <textarea

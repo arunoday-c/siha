@@ -439,6 +439,7 @@ class RegistrationPatient extends Component {
                                 existingPatient: true,
                                 popUpGenereted: true,
                                 advanceEnable: false,
+                                savedData: true,
                                 primary_policy_num: primary_policy_num
                               },
                               () => {
@@ -571,6 +572,7 @@ class RegistrationPatient extends Component {
                                 ProcessInsure: true,
                                 existingPatient: true,
                                 popUpGenereted: true,
+                                savedData: true,
                                 primary_policy_num: primary_policy_num
                               },
                               () => {

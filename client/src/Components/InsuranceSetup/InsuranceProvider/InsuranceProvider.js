@@ -15,7 +15,8 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 import {
   texthandle,
   numtexthandle,
-  datehandle
+  datehandle,
+  dateValidate
 } from "./InsuranceProviderHandaler";
 
 import {
@@ -219,7 +220,8 @@ class InsuranceProvider extends PureComponent {
                     }}
                     maxDate={new Date()}
                     events={{
-                      onChange: datehandle.bind(this, this, context)
+                      onChange: datehandle.bind(this, this, context),
+                      onBlur: dateValidate.bind(this, this, context)
                     }}
                     value={this.state.effective_start_date}
                   />
@@ -232,7 +234,8 @@ class InsuranceProvider extends PureComponent {
                       name: "effective_end_date"
                     }}
                     events={{
-                      onChange: datehandle.bind(this, this, context)
+                      onChange: datehandle.bind(this, this, context),
+                      onBlur: dateValidate.bind(this, this, context)
                     }}
                     value={this.state.effective_end_date}
                   />

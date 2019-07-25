@@ -647,23 +647,36 @@ const calculateAmount = ($this, row, e) => {
 
   let orderservicesdata = $this.state.orderservicesdata;
 
-  if (e.target.value === undefined) {
-    row[e.target.name] = "";
-    orderservicesdata[row.rowIdx] = row;
-    $this.setState({
-      orderservicesdata: orderservicesdata
+  let discount_percentage = 0;
+  let discount_amout = 0;
+  if (e.target.name === "discount_percentage") {
+    discount_percentage =
+      e.target.value === "" ? "" : parseFloat(e.target.value);
+    discount_amout = 0;
+  } else {
+    discount_amout = e.target.value === "" ? "" : parseFloat(e.target.value);
+    discount_percentage = 0;
+  }
+  if (parseFloat(discount_percentage) > 100) {
+    swalMessage({
+      title: "Discount % cannot be greater than 100.",
+      type: "warning"
     });
-    return;
+    discount_percentage = 0;
+  } else if (discount_amout > parseFloat(row.unit_cost)) {
+    swalMessage({
+      title: "Discount Amount cannot be greater than Unit Cost.",
+      type: "warning"
+    });
+    discount_amout = 0;
   }
   row[e.target.name] = parseFloat(e.target.value);
   let inputParam = [
     {
       hims_d_services_id: row.services_id,
       quantity: row.quantity,
-      discount_amout:
-        e.target.name === "discount_percentage" ? 0 : row.discount_amout,
-      discount_percentage:
-        e.target.name === "discount_amout" ? 0 : row.discount_percentage,
+      discount_amout: discount_amout,
+      discount_percentage: discount_percentage,
 
       insured: $this.state.insured === null ? "N" : $this.state.insured,
       vat_applicable: $this.props.vat_applicable,
