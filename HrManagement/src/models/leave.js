@@ -1513,7 +1513,6 @@ module.exports = {
                   next();
                   return;
                 } else {
-                  console.log("aaa:", result[0]["leave_description"]);
                   _mysql.releaseConnection();
                   req.records = {
                     invalid_input: true,

@@ -31,7 +31,7 @@ import {
   assignComponents,
   updateAlgaehModules,
   deleteUserLogin,
-  method1
+  getHrmsAuthLevels
 } from "../model/algaehMasters";
 
 export default ({ config, db }) => {
@@ -578,7 +578,7 @@ export default ({ config, db }) => {
     next();
   });
 
-  api.post("/method1", method1, (req, res, next) => {
+  api.get("/getHrmsAuthLevels", getHrmsAuthLevels, (req, res, next) => {
     let result = req.records;
     if (result.validUser == false) {
       res.status(httpStatus.ok).json({
