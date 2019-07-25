@@ -518,7 +518,7 @@ const Hims_Reports = [
 
 const HR_Payroll_Reports = [
   {
-    name: "Project Payroll",
+    name: "HR report",
     submenu: [
       {
         subitem: "Staff List Report",

@@ -14,6 +14,7 @@
   border-radius: 10px;
   overflow: hidden; }
   .earnings_deductions #calc-contain input[type="button"] {
+    font-size: 1.5rem;
     background: #145052;
     font-weight: 900;
     border: 1px solid #082829;
@@ -40,10 +41,12 @@
   .earnings_deductions #calc-contain .delimeter-sec {
     padding-left: 0; }
     .earnings_deductions #calc-contain .delimeter-sec input[type="button"] {
-      background: #0c3638; }
+      background: #0c3638;
+      font-size: 1.5rem; }
       .earnings_deductions #calc-contain .delimeter-sec input[type="button"]:hover {
         background: #34b8bc; }
   .earnings_deductions #calc-contain .ComponentsFormula input[type="button"] {
+    font-size: 0.8rem;
     background: #0b3638; }
     .earnings_deductions #calc-contain .ComponentsFormula input[type="button"]:hover {
       background: #34b8bc; }
@@ -51,8 +54,12 @@
     border-top: 2px solid #fff; }
     .earnings_deductions #calc-contain .submitBtn input[type="button"] {
       text-transform: uppercase;
-      background: #238286;
-      padding: 8px 0; }
+      background: #082828;
+      padding: 8px 0;
+      height: 30px;
+      font-size: 0.8rem; }
+      .earnings_deductions #calc-contain .submitBtn input[type="button"]:last-child {
+        background: #00a796; }
       .earnings_deductions #calc-contain .submitBtn input[type="button"]:hover {
         background: #34b8bc; }
 
