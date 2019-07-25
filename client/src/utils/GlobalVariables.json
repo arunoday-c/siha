@@ -895,12 +895,28 @@
     { "name": "Department", "value": "D" },
     { "name": "Project", "value": "P" }
   ],
-  "USER_TYPE": [
+  "HIMS_USER_TYPE": [
     { "name": "Admin", "value": "AD" },
     { "name": "Doctor", "value": "D" },
     { "name": "Nurse", "value": "N" },
     { "name": "Cashier", "value": "C" },
     { "name": "Lab Technician", "value": "L" },
+    { "name": "Others", "value": "O" }
+  ],
+  "HR_USER_TYPE": [
+    { "name": "Admin", "value": "AD" },
+    { "name": "HR", "value": "HR" },
+    { "name": "Payroll Manager", "value": "PM" },
+    { "name": "Others", "value": "O" }
+  ],
+  "HIMS_HR_USER_TYPE": [
+    { "name": "Admin", "value": "AD" },
+    { "name": "Doctor", "value": "D" },
+    { "name": "Nurse", "value": "N" },
+    { "name": "Cashier", "value": "C" },
+    { "name": "Lab Technician", "value": "L" },
+    { "name": "HR", "value": "HR" },
+    { "name": "Payroll Manager", "value": "PM" },
     { "name": "Others", "value": "O" }
   ],
   "GROUP_TYPE": [
