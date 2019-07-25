@@ -80,6 +80,7 @@ const executePDF = function executePDFMethod(options) {
                     return {
                       department_name: sub[0].department_name,
                       sub_department_name: sub[0].sub_department_name,
+                      dep_employee: sub.length,
 
                       details: sub
                     };
