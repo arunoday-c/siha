@@ -60,39 +60,44 @@ const executePDF = function executePDFMethod(options) {
           printQuery: true
         })
         .then(res => {
+          options.mysql.releaseConnection();
           const hospital_name = res[0][0]["hospital_name"];
           const result = res[1];
 
-          options.mysql.releaseConnection();
           if (result.length > 0) {
             const departmentWise = _.chain(result)
               .groupBy(g => g.hims_d_department_id)
               .map(m => m)
               .value();
             //  utilities.logger().log("departmentWise: ", departmentWise);
-            let sub = [];
+            let outputArray = [];
             const len = Object.keys(departmentWise).length;
             for (let i = 0; i < len; i++) {
-              sub.push(
-                ..._.chain(departmentWise[i])
-                  .groupBy(g => g.sub_department_id)
-                  .map(sub => {
-                    return {
-                      department_name: sub[0].department_name,
-                      sub_department_name: sub[0].sub_department_name,
-                      dep_employee: sub.length,
+              let dep_no_employee = 0;
+              const sub_dept = _.chain(departmentWise[i])
 
-                      details: sub
-                    };
-                  })
-                  .value()
-              );
+                .groupBy(g => g.sub_department_id)
+                .map(sub => {
+                  dep_no_employee += sub.length;
+                  return {
+                    sub_department_name: sub[0].sub_department_name,
+                    sub_no_employee: sub.length,
+                    employees: sub
+                  };
+                })
+                .value();
+
+              outputArray.push({
+                department_name: departmentWise[i][0]["department_name"],
+                dep_no_employee: dep_no_employee,
+                sub_dept: sub_dept
+              });
             }
-
+            utilities.logger().log("outputArray: ", outputArray);
             resolve({
               hospital_name: hospital_name,
               no_employees: result.length,
-              result: sub
+              result: outputArray
             });
           } else {
             resolve({
