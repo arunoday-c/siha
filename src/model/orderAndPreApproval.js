@@ -412,7 +412,8 @@ let insertOrderedServices = (req, res, next) => {
     "sec_company_paybale",
     "sec_copay_percntage",
     "sec_copay_amount",
-    "teeth_number"
+    "teeth_number",
+    "d_treatment_id"
   ];
 
   debugFunction("add order");
@@ -798,7 +799,7 @@ let load_orders_for_bill = (req, res, next) => {
             "SELECT  OS.`hims_f_ordered_services_id`, OS.`hims_f_ordered_services_id` as ordered_services_id,\
              OS.`patient_id`, OS.`visit_id`,\
           OS.`doctor_id`, OS.`service_type_id`, OS.`services_id`, OS.`test_type`, OS.`insurance_yesno`, \
-          OS.`insurance_provider_id`, OS.`insurance_sub_id`, \
+          OS.`insurance_provider_id`, OS.`insurance_sub_id`, OS.`d_treatment_id`,\
           OS.`network_id`, OS.`insurance_network_office_id`, OS.`policy_number`, OS.`pre_approval`, OS.`apprv_status`, \
           OS.`billed`, OS.`quantity`, OS.`unit_cost`, OS.`gross_amount`, OS.`discount_amout`, OS.`discount_percentage`, \
           OS.`net_amout`, OS.`copay_percentage`, OS.`copay_amount`, OS.`deductable_amount`, OS.`deductable_percentage`, \

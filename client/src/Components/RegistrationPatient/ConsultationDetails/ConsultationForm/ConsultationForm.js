@@ -171,7 +171,10 @@ class AddConsultationForm extends Component {
                           data: this.props.visittypes
                         },
                         others: {
-                          disabled: this.state.clearEnable
+                          disabled:
+                            this.state.savedData === true
+                              ? true
+                              : this.state.clearEnable
                         },
                         onChange: selectedHandeler.bind(this, this, context),
                         onClear: () => {
@@ -214,7 +217,10 @@ class AddConsultationForm extends Component {
                               : departments
                         },
                         others: {
-                          disabled: this.state.visittypeselect
+                          disabled:
+                            this.state.savedData === true
+                              ? true
+                              : this.state.visittypeselect
                         },
                         onChange: DeptselectedHandeler.bind(
                           this,
@@ -261,7 +267,10 @@ class AddConsultationForm extends Component {
                               : this.state.doctors
                         },
                         others: {
-                          disabled: this.state.visittypeselect
+                          disabled:
+                            this.state.savedData === true
+                              ? true
+                              : this.state.visittypeselect
                         },
                         onChange: doctorselectedHandeler.bind(
                           this,
@@ -288,7 +297,7 @@ class AddConsultationForm extends Component {
                       }}
                     />
 
-                    <AlgaehDateHandler
+                    {/*<AlgaehDateHandler
                       div={{ className: "col-lg-6" }}
                       label={{ fieldName: "visit_date" }}
                       textBox={{
@@ -302,7 +311,22 @@ class AddConsultationForm extends Component {
                         onChange: null
                       }}
                       value={this.state.visit_date}
-                    />
+                    />*/}
+
+                    <div className="col-lg-6">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "visit_date"
+                        }}
+                      />
+                      <h6>
+                        {this.state.visit_date
+                          ? moment(this.state.visit_date).format(
+                              Options.dateFormat
+                            )
+                          : Options.dateFormat}
+                      </h6>
+                    </div>
                   </div>
                   <div className="row">
                     {/*<div className="col-lg-4 maternityRadio">

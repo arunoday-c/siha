@@ -15,7 +15,8 @@ import {
   texthandle,
   addFollowUp,
   datehandle,
-  radioChange
+  radioChange,
+  dateValidate
 } from "./FollowUpEvents";
 
 class FollowUp extends Component {
@@ -101,7 +102,8 @@ class FollowUp extends Component {
             textBox={{ className: "txt-fld", name: "followup_date" }}
             minDate={new Date()}
             events={{
-              onChange: datehandle.bind(this, this)
+              onChange: datehandle.bind(this, this),
+              onBlur: dateValidate.bind(this, this)
             }}
             value={this.state.followup_date}
           />

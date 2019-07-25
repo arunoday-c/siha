@@ -566,6 +566,10 @@ class HistoricalData extends Component {
                         {
                           Header: "Service Description",
                           accessor: "service_desc"
+                        },
+                        {
+                          Header: "Teeth Number",
+                          accessor: "teeth_number"
                         }
                       ]}
                       defaultPageSize={10}

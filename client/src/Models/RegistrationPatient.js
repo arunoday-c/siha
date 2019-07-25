@@ -103,6 +103,7 @@ export default {
       cheque_amount: 0,
       advance: 0,
       existingPatient: false,
+      savedData: false,
       insured: "N",
       sec_insured: "N",
       insuranceYes: true,
