@@ -34,24 +34,24 @@
                 </thead>
                 <tbody>{{#each result}}
                     <tr>
-                        <td colspan="10" class="tableSubHdg">Department Name:{{department_name}}</td>
+                        <td colspan="10" class="tableSubHdg">Dept. Name: {{department_name}}</td>
                     </tr>
                     <tr>
-                        <td colspan="10" class="tableSubHdg2">Sub Department Name:{{sub_department_name}}</td>
-                        <td colspan="10" class="tableSubHdg">No employees:{{dep_employee}}</td>
+                        <td colspan="10" class="tableSubHdg2">Sub Dept. Name: {{sub_department_name}} <span>No
+                                Employees: {{dep_employee}}</span></td>
                     </tr>
                     {{#each details}}
                     <tr>
                         <td>{{inc @index}}</td>
                         <td>{{employee_code}}</td>
-                        <td>{{full_name}}</td>
+                        <td style="text-align: left;">{{full_name}}</td>
                         <td>{{sex}}</td>
-                        <th>{{designation}}</th>
-                        <th>{{date_of_joining}}</th>
-                        <th>{{nationality}}</th>
-                        <th>{{religion_name}}</th>
-                        <th>{{employee_type}}</th>
-                        <th>{{asemployee_status}}</th>
+                        <td>{{designation}}</td>
+                        <td>{{date_of_joining}}</td>
+                        <td>{{nationality}}</td>
+                        <td>{{religion_name}}</td>
+                        <td>{{employee_type}}</td>
+                        <td>{{asemployee_status}}</td>
                     </tr>
                     {{/each }}{{/each }}
 

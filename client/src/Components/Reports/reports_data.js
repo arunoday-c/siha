@@ -528,6 +528,7 @@ const HR_Payroll_Reports = [
         pageOrentation: "landscape",
         reportParameters: [
           {
+            className: "col-2",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
