@@ -51,8 +51,12 @@
     border-top: 2px solid #fff; }
     .earnings_deductions #calc-contain .submitBtn input[type="button"] {
       text-transform: uppercase;
-      background: #238286;
-      padding: 8px 0; }
+      background: #082828;
+      padding: 8px 0;
+      height: 30px;
+      font-size: 0.8rem; }
+      .earnings_deductions #calc-contain .submitBtn input[type="button"]:last-child {
+        background: #00a796; }
       .earnings_deductions #calc-contain .submitBtn input[type="button"]:hover {
         background: #34b8bc; }
 
