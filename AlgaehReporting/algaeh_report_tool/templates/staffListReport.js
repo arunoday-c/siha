@@ -39,7 +39,9 @@ const executePDF = function executePDFMethod(options) {
 
       options.mysql
         .executeQuery({
-          query: ` select hims_d_employee_id,employee_code,full_name,sex,date_of_joining,
+          query: ` 
+          select  hospital_name FROM hims_d_hospital where hims_d_hospital_id=?;
+          select hims_d_employee_id,employee_code,full_name,sex,date_of_joining,
           case employee_status when 'A' then 'ACTIVE' when 'I' then 'INACTIVE'
           when 'R' then 'RESIGNED' when 'T' then 'TERMINATED' when 'E' then 'RETIRED'
           end asemployee_status,DG.designation,N.nationality,R.religion_name,
@@ -54,10 +56,13 @@ const executePDF = function executePDFMethod(options) {
           left join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
           left join hims_d_department D on SD.department_id=D.hims_d_department_id
           where E.hospital_id=? and E.record_status='A'  ${strQuery}; `,
-          values: [input.hospital_id],
+          values: [input.hospital_id, input.hospital_id],
           printQuery: true
         })
-        .then(result => {
+        .then(res => {
+          const hospital_name = res[0][0]["hospital_name"];
+          const result = res[1];
+
           options.mysql.releaseConnection();
           if (result.length > 0) {
             const departmentWise = _.chain(result)
@@ -83,9 +88,17 @@ const executePDF = function executePDFMethod(options) {
               );
             }
 
-            resolve({ result: sub });
+            resolve({
+              hospital_name: hospital_name,
+              no_employees: result.length,
+              result: sub
+            });
           } else {
-            resolve({ result: result });
+            resolve({
+              hospital_name: hospital_name,
+              no_employees: result.length,
+              result: result
+            });
           }
         })
         .catch(e => {

@@ -5,7 +5,8 @@ import {
   RECEIPT_TYPE,
   LOCAL_TYPE,
   FORMAT_PAYTYPE,
-  EXPIRY_STATUS
+  EXPIRY_STATUS,
+  EMPLOYEE_STATUS
 } from "../../utils/GlobalVariables.json";
 import { getYears, AlgaehOpenContainer } from "../../utils/GlobalFunctions";
 import { algaehApiCall } from "../../utils/algaehApiCall";
@@ -555,6 +556,20 @@ const HR_Payroll_Reports = [
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",
               data: undefined
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "employee_status",
+            initialLoad: true,
+            isImp: false,
+            label: "Employee Status",
+            link: {},
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: EMPLOYEE_STATUS
             }
           }
         ]
