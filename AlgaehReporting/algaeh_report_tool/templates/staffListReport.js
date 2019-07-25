@@ -60,15 +60,30 @@ const executePDF = function executePDFMethod(options) {
         .then(result => {
           options.mysql.releaseConnection();
           if (result.length > 0) {
-            const groupBy = _.chain(result)
+            const departmentWise = _.chain(result)
               .groupBy(g => g.hims_d_department_id)
-              .map(function(details, key) {
-                return {
-                  details: details
-                };
-              })
+              .map(m => m)
               .value();
-            utilities.logger().log("groupBy: ", groupBy);
+            //  utilities.logger().log("departmentWise: ", departmentWise);
+            let sub = [];
+            const len = Object.keys(departmentWise).length;
+            for (let i = 0; i < len; i++) {
+              sub.push(
+                ..._.chain(departmentWise[i])
+                  .groupBy(g => g.sub_department_id)
+                  .map(sub => {
+                    return {
+                      department_name: sub[0].department_name,
+                      sub_department_name: sub[0].sub_department_name,
+
+                      details: sub
+                    };
+                  })
+                  .value()
+              );
+            }
+
+            resolve({ result: sub });
           } else {
             resolve({ result: result });
           }

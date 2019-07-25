@@ -2,7 +2,7 @@
 
 <body>
     <div class="print-body">
-        {{#hasElement employees}}
+
         <section>
             <table class="tableForLabel" cell-padding="0">
                 <tr>
@@ -30,38 +30,38 @@
 
                     </tr>
                 </thead>
-                <tbody>{{#each dep}}
+                <tbody>{{#each result}}
                     <tr>
-                        <td colspan="10" class="tableSubHdg">Department Name</td>
+                        <td colspan="10" class="tableSubHdg">Department Name:{{department_name}}</td>
                     </tr>
                     <tr>
-                        <td colspan="10" class="tableSubHdg2">Sub Department Name</td>
+                        <td colspan="10" class="tableSubHdg2">Sub Department Name:{{sub_department_name}}</td>
                     </tr>
-                    {{#each employees}}
+                    {{#each details}}
                     <tr>
                         <td>{{inc @index}}</td>
                         <td>{{employee_code}}</td>
                         <td>{{full_name}}</td>
                         <td>{{sex}}</td>
-                        <th>Designation</th>
-                        <th>Date of Joining</th>
-                        <th>Nationality</th>
-                        <th>Religion</th>
-                        <th>Emp. Type</th>
-                        <th>Emp. Status</th>
+                        <th>{{designation}}</th>
+                        <th>{{date_of_joining}}</th>
+                        <th>{{nationality}}</th>
+                        <th>{{religion_name}}</th>
+                        <th>{{employee_type}}</th>
+                        <th>{{asemployee_status}}</th>
                     </tr>
                     {{/each }}{{/each }}
 
                 </tbody>
-                {{else}}
+                {{!-- {{else}}
                 <tbody>
                     <tr>
                         <td colspan="10" class="noResultTextReport">No Records Found</td>
                     </tr>
-                </tbody>
+                </tbody> --}}
             </table>
         </section>
         {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
-        {{/hasElement }}
+
     </div>
 </body>

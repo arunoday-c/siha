@@ -546,7 +546,7 @@ const HR_Payroll_Reports = [
             type: "dropdown",
             name: "sub_department_id",
             initialLoad: true,
-            isImp: true,
+            isImp: false,
             label: "Select Department",
             link: {
               uri: "/department/get/subdepartment"
