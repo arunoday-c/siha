@@ -518,6 +518,50 @@ const Hims_Reports = [
 
 const HR_Payroll_Reports = [
   {
+    name: "Project Payroll",
+    submenu: [
+      {
+        subitem: "Staff List Report",
+        reportName: "staffListReport",
+        requireIframe: true,
+        pageOrentation: "landscape",
+        reportParameters: [
+          {
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Select branch",
+            link: {
+              uri: "/organization/getOrganization"
+            },
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "sub_department_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Select Department",
+            link: {
+              uri: "/department/get/subdepartment"
+            },
+            dataSource: {
+              textField: "sub_department_name",
+              valueField: "hims_d_sub_department_id",
+              data: undefined
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
     name: "Payroll Reports",
     submenu: [
       {

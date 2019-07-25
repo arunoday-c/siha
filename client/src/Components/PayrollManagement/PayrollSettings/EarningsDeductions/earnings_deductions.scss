@@ -16,13 +16,11 @@
     overflow: hidden;
     input[type="button"] {
       background: #145052;
-
       font-weight: 900;
-      /* border-radius: 7px; */
-      /* margin-left: 13px; */
       border: 1px solid #082829;
-      /* margin-top: 10px; */
       color: #fff;
+      height: 45px;
+      text-align: center;
 
       &:hover {
         background-color: #34b8bc;
