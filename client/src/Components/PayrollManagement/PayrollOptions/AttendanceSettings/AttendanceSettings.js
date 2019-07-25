@@ -77,28 +77,54 @@ export default class AttendanceSettings extends Component {
     });
   }
 
-  saveOptions() {
-    algaehApiCall({
-      uri: "/payrollOptions/updateHrmsOptions",
-      method: "PUT",
-      module: "hrManagement",
-      data: this.state,
-      onSuccess: res => {
-        if (res.data.success) {
-          swalMessage({
-            title: "Updated Successfully",
-            type: "success"
-          });
-          // this.getOptions();
-        }
-      },
-      onFailure: err => {
+  validateData = () => {
+    const { attendance_starts, at_end_date, at_st_date } = this.state;
+    if (attendance_starts === "PM") {
+      if (!at_end_date || !at_st_date) {
         swalMessage({
-          title: err.message,
+          title: "Please enter valid Start and End date for Attendence",
           type: "error"
         });
+        return false;
+      } else {
+        return true;
       }
-    });
+    } else if (!attendance_starts) {
+      swalMessage({
+        title: "Please select attendence start",
+        type: "error"
+      });
+      return false;
+    } else {
+      return true;
+    }
+  };
+
+  saveOptions() {
+    const isValid = this.validateData();
+    if (isValid) {
+      algaehApiCall({
+        uri: "/payrollOptions/updateHrmsOptions",
+        method: "PUT",
+        module: "hrManagement",
+        data: this.state,
+        onSuccess: res => {
+          if (res.data.success) {
+            swalMessage({
+              title: "Updated Successfully",
+              type: "success"
+            });
+            // this.getOptions();
+          }
+        },
+        onFailure: err => {
+          swalMessage({
+            title: err.message,
+            type: "error"
+          });
+        }
+      });
+    }
   }
 
   dropDownHandler(value) {
@@ -108,13 +134,12 @@ export default class AttendanceSettings extends Component {
   }
 
   attnDropdownHandler(option) {
-    if (option.value === "FE") {
-      this.setState(
-        {
-          at_st_date: null
-        },
-        () => this.dropDownHandler(option)
-      );
+    if (option.value !== "PM") {
+      this.setState({
+        [option.name]: option.value,
+        at_st_date: null,
+        at_end_date: null
+      });
     } else {
       this.dropDownHandler(option);
     }
@@ -439,7 +464,7 @@ export default class AttendanceSettings extends Component {
 
                 <AlagehAutoComplete
                   div={{ className: "col-2 form-group" }}
-                  label={{ forceLabel: "Attendence Starts", isImp: false }}
+                  label={{ forceLabel: "Attendence Starts", isImp: true }}
                   selector={{
                     name: "attendance_starts",
                     value: this.state.attendance_starts,
@@ -452,7 +477,9 @@ export default class AttendanceSettings extends Component {
                     onChange: this.attnDropdownHandler.bind(this),
                     onClear: () => {
                       this.setState({
-                        attendance_starts: null
+                        attendance_starts: null,
+                        at_st_date: null,
+                        at_end_date: null
                       });
                     }
                   }}
@@ -477,7 +504,40 @@ export default class AttendanceSettings extends Component {
                       valueField: "value",
                       data: allDays
                     },
-                    onChange: this.dropDownHandler.bind(this)
+                    onChange: this.dropDownHandler.bind(this),
+                    onClear: () => {
+                      this.setState({
+                        at_st_date: null
+                      });
+                    }
+                  }}
+                />
+
+                <AlagehAutoComplete
+                  div={{ className: "col-2 form-group" }}
+                  label={{
+                    forceLabel: "Attn. End Date",
+                    isImp: this.state.attendance_starts === "PM"
+                  }}
+                  selector={{
+                    sort: "off",
+                    name: "at_end_date",
+                    value: this.state.at_end_date,
+                    others: {
+                      disabled: this.state.attendance_starts !== "PM"
+                    },
+                    className: "select-fld",
+                    dataSource: {
+                      textField: "name",
+                      valueField: "value",
+                      data: allDays
+                    },
+                    onChange: this.dropDownHandler.bind(this),
+                    onClear: () => {
+                      this.setState({
+                        at_end_date: null
+                      });
+                    }
                   }}
                 />
                 {/* 
