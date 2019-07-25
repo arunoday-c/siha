@@ -69,7 +69,7 @@ const executePDF = function executePDFMethod(options) {
               .groupBy(g => g.hims_d_department_id)
               .map(m => m)
               .value();
-            //  utilities.logger().log("departmentWise: ", departmentWise);
+
             let outputArray = [];
             const len = Object.keys(departmentWise).length;
             for (let i = 0; i < len; i++) {
@@ -93,7 +93,7 @@ const executePDF = function executePDFMethod(options) {
                 sub_dept: sub_dept
               });
             }
-            utilities.logger().log("outputArray: ", outputArray);
+
             resolve({
               hospital_name: hospital_name,
               no_employees: result.length,

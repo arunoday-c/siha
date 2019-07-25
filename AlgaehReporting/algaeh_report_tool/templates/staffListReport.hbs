@@ -34,13 +34,17 @@
                 </thead>
                 <tbody>{{#each result}}
                     <tr>
-                        <td colspan="10" class="tableSubHdg">Dept. Name: {{department_name}}</td>
+                        <td colspan="10" class="tableSubHdg">Dept. Name: {{department_name}}
+                            <span>No
+                                Employees: {{dep_no_employee}}</span>
+                        </td>
                     </tr>
+                    {{#each sub_dept}}
                     <tr>
                         <td colspan="10" class="tableSubHdg2">Sub Dept. Name: {{sub_department_name}} <span>No
-                                Employees: {{dep_employee}}</span></td>
+                                Employees: {{sub_no_employee}}</span></td>
                     </tr>
-                    {{#each details}}
+                    {{#each employees}}
                     <tr>
                         <td>{{inc @index}}</td>
                         <td>{{employee_code}}</td>
@@ -53,7 +57,7 @@
                         <td>{{employee_type}}</td>
                         <td>{{asemployee_status}}</td>
                     </tr>
-                    {{/each }}{{/each }}
+                    {{/each }}{{/each }}{{/each }}
 
                 </tbody>
                 {{!-- {{else}}

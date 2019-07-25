@@ -549,7 +549,7 @@ const HR_Payroll_Reports = [
             name: "sub_department_id",
             initialLoad: true,
             isImp: false,
-            label: "Select Department",
+            label: "Select Sub-Department",
             link: {
               uri: "/department/get/subdepartment"
             },
