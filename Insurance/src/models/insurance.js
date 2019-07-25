@@ -583,8 +583,8 @@ module.exports = {
             input.network_type,
             input.insurance_provider_id,
             input.insurance_sub_id,
-            new Date(),
-            new Date(),
+            input.effective_start_date,
+            input.effective_end_date,
             req.userIdentity.algaeh_d_app_user_id,
             req.userIdentity.algaeh_d_app_user_id
           ],

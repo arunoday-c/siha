@@ -291,7 +291,12 @@ module.exports = {
 
       _mysql
         .generateRunningNumber({
-          modules: ["EMPLOYEE_PAYMENT"]
+          modules: ["EMPLOYEE_PAYMENT"],
+          tableName: "hims_f_app_numgen",
+          identity: {
+            algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
+            hospital_id: req.userIdentity["x-branch"]
+          }
         })
         .then(generatedNumbers => {
           payment_application_code = generatedNumbers[0];

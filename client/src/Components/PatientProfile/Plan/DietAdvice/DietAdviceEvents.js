@@ -25,6 +25,11 @@ const addDiet = $this => {
       title: "Please select Diet",
       type: "warning"
     });
+  } else if ($this.state.till_date === null) {
+    swalMessage({
+      title: "Please select Date",
+      type: "warning"
+    });
   } else {
     let inputObj = {
       patient_id: Window.global["current_patient"],
@@ -74,7 +79,6 @@ const getDietList = $this => {
 };
 
 const deleteDietAdvice = ($this, row) => {
-  
   swal({
     title: "Are you sure you want to delete Diet?",
     type: "warning",
@@ -108,4 +112,24 @@ const deleteDietAdvice = ($this, row) => {
     }
   });
 };
-export { texthandle, datehandle, addDiet, getDietList, deleteDietAdvice };
+const dateValidate = ($this, value, event) => {
+  let inRange = moment(value).isBefore(moment().format("YYYY-MM-DD"));
+  if (inRange) {
+    swalMessage({
+      title: "Cannot be past Date.",
+      type: "warning"
+    });
+    event.target.focus();
+    $this.setState({
+      [event.target.name]: null
+    });
+  }
+};
+export {
+  texthandle,
+  datehandle,
+  addDiet,
+  getDietList,
+  deleteDietAdvice,
+  dateValidate
+};

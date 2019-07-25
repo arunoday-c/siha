@@ -450,7 +450,10 @@ class Vitals extends Component {
                               textBox={{
                                 className: "txt-fld",
                                 name: _name,
-                                number: true,
+                                number: {
+                                  allowNegative: false
+                                },
+                                dontAllowKeys: ["-", "e"],
                                 others: {
                                   min: 0,
                                   ...this.checkMax(item.uom),
@@ -475,6 +478,10 @@ class Vitals extends Component {
                                 textBox={{
                                   className: "txt-fld",
                                   disabled: true,
+                                  number: {
+                                    allowNegative: false
+                                  },
+                                  dontAllowKeys: ["-", "e"],
                                   value: temperatureConvertion(
                                     this.state[_name] === ""
                                       ? 0

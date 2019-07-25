@@ -56,7 +56,12 @@ module.exports = {
             } else {
               _mysql
                 .generateRunningNumber({
-                  modules: ["EMPLOYEE_LOAN"]
+                  modules: ["EMPLOYEE_LOAN"],
+                  tableName: "hims_f_app_numgen",
+                  identity: {
+                    algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
+                    hospital_id: req.userIdentity["x-branch"]
+                  }
                 })
                 .then(numGenLeave => {
                   _mysql

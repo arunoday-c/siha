@@ -23,7 +23,8 @@ import {
   deleteSubInsurance,
   updateSubInsurance,
   onchangegridcol,
-  getSubInsuranceDetails
+  getSubInsuranceDetails,
+  dateValidate
 } from "./SubInsuranceHandaler";
 import MyContext from "../../../utils/MyContext";
 
@@ -201,7 +202,8 @@ class SubInsurance extends PureComponent {
                     }}
                     maxDate={new Date()}
                     events={{
-                      onChange: datehandle.bind(this, this)
+                      onChange: datehandle.bind(this, this),
+                      onBlur: dateValidate.bind(this, this)
                     }}
                     value={
                       this.state.effective_start_date !== null
@@ -220,7 +222,8 @@ class SubInsurance extends PureComponent {
                     minDate={new Date()}
                     maxDate={this.state.maxDate_end_date}
                     events={{
-                      onChange: datehandle.bind(this, this)
+                      onChange: datehandle.bind(this, this),
+                      onBlur: dateValidate.bind(this, this)
                     }}
                     value={
                       this.state.effective_end_date !== null

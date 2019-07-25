@@ -1,5 +1,4 @@
-import { successfulMessage } from "../../../../utils/GlobalFunctions";
-import { algaehApiCall } from "../../../../utils/algaehApiCall";
+import { swalMessage, algaehApiCall } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -23,10 +22,9 @@ const texthandle = ($this, e) => {
 
 const addFollowUp = $this => {
   if ($this.state.followup_days === 0) {
-    successfulMessage({
-      message: "Please Enter Next visit After",
-      title: "Warning",
-      icon: "warning"
+    swalMessage({
+      title: "Please Enter Next visit After",
+      type: "warning"
     });
   } else {
     let inputObj = {
@@ -44,10 +42,9 @@ const addFollowUp = $this => {
       method: "POST",
       onSuccess: response => {
         if (response.data.success) {
-          successfulMessage({
-            message: "Added Succesfully...",
-            title: "Success",
-            icon: "success"
+          swalMessage({
+            title: "Added Succesfully...",
+            type: "warning"
           });
         }
 
@@ -61,10 +58,9 @@ const addFollowUp = $this => {
         });
       },
       onFailure: error => {
-        successfulMessage({
-          message: error.message,
-          title: "Error",
-          icon: "error"
+        swalMessage({
+          title: error.message,
+          type: "error"
         });
       }
     });
@@ -97,4 +93,18 @@ const radioChange = ($this, e) => {
     followup_date: null
   });
 };
-export { texthandle, addFollowUp, datehandle, radioChange };
+
+const dateValidate = ($this, value, event) => {
+  let inRange = moment(value).isBefore(moment().format("YYYY-MM-DD"));
+  if (inRange) {
+    swalMessage({
+      title: "Cannot be past Date.",
+      type: "warning"
+    });
+    event.target.focus();
+    $this.setState({
+      [event.target.name]: null
+    });
+  }
+};
+export { texthandle, addFollowUp, datehandle, radioChange, dateValidate };

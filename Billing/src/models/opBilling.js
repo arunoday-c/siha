@@ -150,6 +150,18 @@ module.exports = {
           };
         })
         .ToArray();
+
+      let dentalTreatment = new LINQ(req.body.billdetails)
+        .Where(w => w.d_treatment_id != null)
+        .Select(s => {
+          return {
+            hims_f_dental_treatment_id: s.d_treatment_id,
+            billed: "Y",
+            updated_date: new Date(),
+            updated_by: req.userIdentity.algaeh_d_app_user_id
+          };
+        })
+        .ToArray();
       utilities.logger().log("OrderServices 1: ", OrderServices);
       let qry = "";
       if (OrderServices.length > 0) {
@@ -170,6 +182,20 @@ module.exports = {
               OrderServices[i].hims_f_ordered_services_id
             ]
           );
+        }
+        if (dentalTreatment.length > 0) {
+          for (let i = 0; i < dentalTreatment.length; i++) {
+            qry += mysql.format(
+              "UPDATE `hims_f_dental_treatment` SET billed=?,\
+                updated_date=?,updated_by=? where hims_f_dental_treatment_id=?;",
+              [
+                dentalTreatment[i].billed,
+                moment().format("YYYY-MM-DD HH:mm"),
+                dentalTreatment[i].updated_by,
+                dentalTreatment[i].hims_f_dental_treatment_id
+              ]
+            );
+          }
         }
 
         utilities.logger().log("qry: ", qry);

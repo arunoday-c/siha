@@ -1992,7 +1992,12 @@ module.exports = {
           if (leave_accrual_detail.length > 0) {
             _mysql
               .generateRunningNumber({
-                modules: ["LEAVE_ACCRUAL"]
+                modules: ["LEAVE_ACCRUAL"],
+                tableName: "hims_f_app_numgen",
+                identity: {
+                  algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
+                  hospital_id: req.userIdentity["x-branch"]
+                }
               })
               .then(generatedNumbers => {
                 let leave_salary_number = generatedNumbers[0];

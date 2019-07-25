@@ -1753,9 +1753,7 @@ module.exports = {
                     discount_percentage = (discount_amout / gross_amount) * 100;
                   } else if (discount_percentage > 0) {
                     discount_amout = (gross_amount * discount_percentage) / 100;
-                    discount_amout = toFixeddiscount_amout.toFixed(
-                      decimal_places
-                    );
+                    discount_amout = discount_amout.toFixed(decimal_places);
                   }
                   net_amout = gross_amount - discount_amout;
 
@@ -1929,7 +1927,10 @@ module.exports = {
                   gross_amount = quantity * unit_cost;
 
                   if (discount_amout > 0) {
-                    discount_percentage = (discount_amout / gross_amount) * 100;
+                    discount_percentage = (
+                      (discount_amout / gross_amount) *
+                      100
+                    ).toFixed(decimal_places);
                   } else if (discount_percentage > 0) {
                     discount_amout = (gross_amount * discount_percentage) / 100;
                     discount_amout = discount_amout.toFixed(decimal_places);
@@ -1950,6 +1951,7 @@ module.exports = {
                     decimal_places
                   );
                 }
+
                 // }
                 //--------------------------------------
                 console.log("fine:1");
@@ -1995,9 +1997,7 @@ module.exports = {
                     unit_cost: unit_cost,
                     gross_amount: gross_amount,
                     discount_amout: discount_amout,
-                    discount_percentage: discount_percentage.toFixed(
-                      decimal_places
-                    ),
+                    discount_percentage: discount_percentage,
                     net_amout: net_amout,
                     patient_resp: patient_resp,
                     patient_payable: patient_payable,
@@ -2798,6 +2798,7 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                 .logger()
                 .log("hims_d_services_id: ", records.hims_d_services_id);
 
+              discount_percentage = discount_percentage.toFixed(3);
               let out = extend(
                 {
                   hims_f_billing_details_id: null,
@@ -2840,7 +2841,7 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                   unit_cost: unit_cost,
                   gross_amount: gross_amount,
                   discount_amout: discount_amout,
-                  discount_percentage: discount_percentage.toFixed(3),
+                  discount_percentage: discount_percentage,
                   net_amout: net_amout,
                   patient_resp: patient_resp,
                   patient_payable: patient_payable,

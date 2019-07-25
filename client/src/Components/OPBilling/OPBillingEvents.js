@@ -16,7 +16,7 @@ const ClearData = ($this, e) => {
   let prevLang = getCookie("Language");
 
   let counter_id = 0;
-  $this.props.setSelectedInsurance({
+  $this.props.getPatientPackage({
     redux: {
       type: "Package_GET_DATA",
       mappingName: "PatientPackageList",
