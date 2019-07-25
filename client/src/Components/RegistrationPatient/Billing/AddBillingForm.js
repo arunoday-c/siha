@@ -102,6 +102,20 @@ class AddBillingForm extends Component {
                           Process Insurance
                         </button>
                       </div> */}
+                      <div className="col-12">
+                        <h6 className="billStatusMsg">
+                          {" "}
+                          {this.state.from_package === true
+                            ? "Utilized From Package"
+                            : null}
+                          {this.state.follow_up === true
+                            ? "Follow Up Visit"
+                            : null}
+                          {this.state.existing_treat === true
+                            ? "Utilized From Existing Treatment"
+                            : null}
+                        </h6>
+                      </div>
                       <div className="col-lg-6">
                         <button
                           className="btn btn-default btn-sm"
@@ -219,7 +233,8 @@ class AddBillingForm extends Component {
                             onBlur: makeZero.bind(this, this, context),
                             onFocus: e => {
                               e.target.oldvalue = e.target.value;
-                            }
+                            },
+                            disabled: this.state.savedData
                           }
                         }}
                       />
@@ -241,7 +256,8 @@ class AddBillingForm extends Component {
                             onBlur: makeDiscountZero.bind(this, this, context),
                             onFocus: e => {
                               e.target.oldvalue = e.target.value;
-                            }
+                            },
+                            disabled: this.state.savedData
                           }
                         }}
                       />
@@ -266,7 +282,8 @@ class AddBillingForm extends Component {
                             onBlur: makeZero.bind(this, this, context),
                             onFocus: e => {
                               e.target.oldvalue = e.target.value;
-                            }
+                            },
+                            disabled: this.state.savedData
                           }
                         }}
                       />
@@ -315,7 +332,8 @@ class AddBillingForm extends Component {
                             onBlur: makeZero.bind(this, this, context),
                             onFocus: e => {
                               e.target.oldvalue = e.target.value;
-                            }
+                            },
+                            disabled: this.state.savedData
                           },
                           security: {
                             component_code: "FD_PR_BIL",
@@ -433,7 +451,11 @@ class AddBillingForm extends Component {
                               valueField: "shift_id",
                               data: this.state.shift_assinged
                             },
+
                             onChange: texthandle.bind(this, this, context),
+                            others: {
+                              disabled: this.state.savedData
+                            },
                             onClear: () => {
                               this.setState({
                                 shift_id: null
@@ -464,6 +486,7 @@ class AddBillingForm extends Component {
                                 this,
                                 context
                               )}
+                              disabled={this.state.savedData}
                             />
 
                             <span style={{ fontSize: "0.8rem" }}>
@@ -480,7 +503,10 @@ class AddBillingForm extends Component {
                           }}
                           textBox={{
                             decimal: { allowNegative: false },
-                            disabled: !this.state.Cashchecked,
+                            disabled:
+                              this.state.savedData === true
+                                ? true
+                                : !this.state.Cashchecked,
                             className: "txt-fld",
                             name: "cash_amount",
                             error: this.state.errorInCash,
@@ -517,6 +543,7 @@ class AddBillingForm extends Component {
                                 this,
                                 context
                               )}
+                              disabled={this.state.savedData}
                             />
                             <span style={{ fontSize: "0.8rem" }}>
                               Pay by Card
@@ -531,7 +558,10 @@ class AddBillingForm extends Component {
                             isImp: true
                           }}
                           textBox={{
-                            disabled: !this.state.Cardchecked,
+                            disabled:
+                              this.state.savedData === true
+                                ? true
+                                : !this.state.Cardchecked,
                             decimal: { allowNegative: false },
                             className: "txt-fld",
                             name: "card_amount",
@@ -556,7 +586,10 @@ class AddBillingForm extends Component {
                           }}
                           textBox={{
                             card: { creditCard: true },
-                            disabled: !this.state.Cardchecked,
+                            disabled:
+                              this.state.savedData === true
+                                ? true
+                                : !this.state.Cardchecked,
                             className: "txt-fld",
                             name: "card_number",
                             value: this.state.card_number,
@@ -564,7 +597,10 @@ class AddBillingForm extends Component {
                               onChange: texthandle.bind(this, this, context)
                             },
                             others: {
-                              disabled: !this.state.Cardchecked,
+                              disabled:
+                                this.state.savedData === true
+                                  ? true
+                                  : !this.state.Cardchecked,
                               placeholder: "0000-0000-0000-0000"
                             }
                           }}
@@ -579,7 +615,11 @@ class AddBillingForm extends Component {
                             className: "txt-fld",
                             name: "card_date"
                           }}
-                          disabled={!this.state.Cardchecked}
+                          disabled={
+                            this.state.savedData === true
+                              ? true
+                              : !this.state.Cardchecked
+                          }
                           minDate={new Date()}
                           events={{
                             onChange: datehandle.bind(this, this, context)
@@ -606,6 +646,7 @@ class AddBillingForm extends Component {
                                 this,
                                 context
                               )}
+                              disabled={this.state.savedData}
                             />
                             <span style={{ fontSize: "0.8rem" }}>
                               Pay by Cheque
@@ -619,7 +660,10 @@ class AddBillingForm extends Component {
                             isImp: true
                           }}
                           textBox={{
-                            disabled: !this.state.Checkchecked,
+                            disabled:
+                              this.state.savedData === true
+                                ? true
+                                : !this.state.Checkchecked,
                             decimal: { allowNegative: false },
                             className: "txt-fld",
                             name: "cheque_amount",
@@ -633,7 +677,10 @@ class AddBillingForm extends Component {
                               )
                             },
                             others: {
-                              disabled: !this.state.Checkchecked,
+                              disabled:
+                                this.state.savedData === true
+                                  ? true
+                                  : !this.state.Checkchecked,
                               placeholder: "0.00",
                               onBlur: chequetexthCal.bind(this, this, context),
                               onFocus: e => {
@@ -649,7 +696,10 @@ class AddBillingForm extends Component {
                             fieldName: "card_check_number"
                           }}
                           textBox={{
-                            disabled: !this.state.Checkchecked,
+                            disabled:
+                              this.state.savedData === true
+                                ? true
+                                : !this.state.Checkchecked,
                             className: "txt-fld",
                             name: "cheque_number",
                             value: this.state.cheque_number,
@@ -657,7 +707,10 @@ class AddBillingForm extends Component {
                               onChange: texthandle.bind(this, this, context)
                             },
                             others: {
-                              disabled: !this.state.Checkchecked,
+                              disabled:
+                                this.state.savedData === true
+                                  ? true
+                                  : !this.state.Checkchecked,
                               placeholder: "'000000'"
                             }
                           }}
@@ -672,7 +725,11 @@ class AddBillingForm extends Component {
                             className: "txt-fld",
                             name: "cheque_date"
                           }}
-                          disabled={!this.state.Checkchecked}
+                          disabled={
+                            this.state.savedData === true
+                              ? true
+                              : !this.state.Checkchecked
+                          }
                           minDate={new Date()}
                           events={{
                             onChange: datehandle.bind(this, this, context)

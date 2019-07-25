@@ -103,6 +103,7 @@ export default {
       cheque_amount: 0,
       advance: 0,
       existingPatient: false,
+      savedData: false,
       insured: "N",
       sec_insured: "N",
       insuranceYes: true,
@@ -160,7 +161,14 @@ export default {
       employee_id: null,
       popUpGenereted: false,
       advanceEnable: true,
-      advance_amount: 0
+      advance_amount: 0,
+      from_package: false,
+      package_details: [],
+      utilize_amount: 0,
+      balance_amount: 0,
+      hims_f_package_header_id: null,
+      follow_up: false,
+      existing_treat: false
     };
     return output;
   }

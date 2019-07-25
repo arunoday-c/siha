@@ -5,6 +5,7 @@ import { bindActionCreators } from "redux";
 import moment from "moment";
 import { AlgaehDataGrid, AlgaehLabel } from "../../../Wrapper/algaehWrapper";
 import OrderingServices from "../OrderingServices/OrderingServices";
+import OrderingPackages from "../OrderingPackages/OrderingPackages";
 import OrderConsumables from "../OrderConsumables/OrderConsumables";
 import "./OrderedList.css";
 import "../../../../styles/site.css";
@@ -16,6 +17,8 @@ import {
 } from "../../../../utils/algaehApiCall";
 import Options from "../../../../Options.json";
 import OrderProcedureItems from "../OrderProcedureItems/OrderProcedureItems";
+import PackageUtilize from "../../PackageUtilize/PackageUtilize";
+
 import _ from "lodash";
 
 class OrderedList extends PureComponent {
@@ -27,7 +30,10 @@ class OrderedList extends PureComponent {
       isOpenItems: false,
       procedure_name: null,
       inventory_location_id: null,
-      isConsOpen: false
+      isConsOpen: false,
+      isPackOpen: false,
+      isPackUtOpen: false,
+      package_detail: null
     };
   }
 
@@ -36,6 +42,27 @@ class OrderedList extends PureComponent {
       ...this.state,
       isOpen: !this.state.isOpen
     });
+  }
+
+  ClosePackage(e) {
+    this.setState(
+      {
+        isPackOpen: !this.state.isPackOpen
+      },
+      () => {
+        this.props.getPakageList({
+          uri: "/orderAndPreApproval/getPatientPackage",
+          method: "GET",
+          data: {
+            patient_id: Window.global["current_patient"]
+          },
+          redux: {
+            type: "ORDER_SERVICES_GET_DATA",
+            mappingName: "pakageList"
+          }
+        });
+      }
+    );
   }
 
   CloseModel(e) {
@@ -88,6 +115,12 @@ class OrderedList extends PureComponent {
     });
   }
 
+  ShowPackageModel() {
+    this.setState({
+      isPackOpen: !this.state.isPackOpen
+    });
+  }
+
   CloseConsumableModel(e) {
     this.setState(
       {
@@ -109,7 +142,35 @@ class OrderedList extends PureComponent {
     );
   }
 
+  ShowPackageUtilize(row) {
+    debugger;
+    this.setState({
+      isPackUtOpen: !this.state.isPackUtOpen,
+      package_detail: row
+    });
+  }
+  ClosePackageUtilize() {
+    this.setState(
+      {
+        isPackUtOpen: !this.state.isPackUtOpen
+      },
+      () => {
+        this.props.getPakageList({
+          uri: "/orderAndPreApproval/getPatientPackage",
+          method: "GET",
+          data: {
+            patient_id: Window.global["current_patient"]
+          },
+          redux: {
+            type: "ORDER_SERVICES_GET_DATA",
+            mappingName: "pakageList"
+          }
+        });
+      }
+    );
+  }
   ShowProcedureModel(row, e) {
+    debugger;
     algaehApiCall({
       uri: "/serviceType/getProcedures",
       method: "GET",
@@ -238,6 +299,25 @@ class OrderedList extends PureComponent {
         mappingName: "consumableorderedList"
       }
     });
+
+    this.props.getPakageList({
+      uri: "/orderAndPreApproval/getPatientPackage",
+      method: "GET",
+      data: {
+        patient_id: Window.global["current_patient"]
+      },
+      redux: {
+        type: "PAIENT_PACKAGE_GET_DATA",
+        mappingName: "pakageList"
+      }
+    });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    debugger;
+    if (nextProps.openData !== undefined) {
+      this.setState({ openData: nextProps.openData });
+    }
   }
 
   dateFormater(value) {
@@ -247,14 +327,13 @@ class OrderedList extends PureComponent {
   }
 
   render() {
-    const openData = this.props.openData;
     let patient_date =
       this.props.patient_profile !== undefined
         ? this.props.patient_profile
         : [];
     return (
       <div className="hptl-phase1-ordering-services-form">
-        {openData === "Investigation" ? (
+        {this.state.openData === "Investigation" ? (
           <div>
             <div
               className="col-lg-12"
@@ -269,8 +348,7 @@ class OrderedList extends PureComponent {
               >
                 Order Investigation
               </button>
-            </div>
-            <div className="col-lg-12">
+
               <div className="row">
                 <div className="col-md-10 col-lg-12" id="doctorOrder">
                   <AlgaehDataGrid
@@ -320,15 +398,7 @@ class OrderedList extends PureComponent {
                           );
                         }
                       },
-                      // {
-                      //   fieldName: "test_type",
-                      //   label: <AlgaehLabel label={{ fieldName: "test_type" }} />,
-                      //   displayTemplate: row => {
-                      //     return row.test_type === "S" ? "Stat" : "Routine";
-                      //   },
 
-                      //   disabled: true
-                      // },
                       {
                         fieldName: "service_type_id",
                         label: (
@@ -367,18 +437,24 @@ class OrderedList extends PureComponent {
                           <AlgaehLabel label={{ fieldName: "services_id" }} />
                         ),
                         displayTemplate: row => {
+                          let package_service =
+                            row.trans_package_detail_id > 0
+                              ? "(Package Service)"
+                              : "";
                           let display =
                             this.props.serviceslist === undefined
                               ? []
                               : this.props.serviceslist.filter(
                                   f => f.hims_d_services_id === row.services_id
                                 );
-
+                          debugger;
                           return (
                             <span>
                               {display !== null && display.length !== 0
                                 ? display[0].service_name
                                 : ""}
+
+                              {package_service}
                             </span>
                           );
                         },
@@ -436,7 +512,7 @@ class OrderedList extends PureComponent {
                         disabled: true
                       }
                     ]}
-                    keyId="list_type_id"
+                    keyId="Inv_type_id"
                     dataSource={{
                       data:
                         this.props.orderedList === undefined
@@ -449,7 +525,7 @@ class OrderedList extends PureComponent {
               </div>
             </div>
           </div>
-        ) : (
+        ) : this.state.openData === "Consumable" ? (
           <div>
             <div
               className="col-lg-12"
@@ -464,12 +540,164 @@ class OrderedList extends PureComponent {
               >
                 Order Consumables
               </button>
+
+              <div className="col-md-10 col-lg-12" id="doctorOrder">
+                <AlgaehDataGrid
+                  id="Orderd_Consumable"
+                  columns={[
+                    {
+                      fieldName: "created_date",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "created_date" }} />
+                      ),
+                      displayTemplate: row => {
+                        return (
+                          <span>{this.dateFormater(row.created_date)}</span>
+                        );
+                      }
+                    },
+
+                    {
+                      fieldName: "service_type_id",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "service_type_id" }} />
+                      ),
+                      displayTemplate: row => {
+                        let display =
+                          this.props.servicetype === undefined
+                            ? []
+                            : this.props.servicetype.filter(
+                                f =>
+                                  f.hims_d_service_type_id ===
+                                  row.service_type_id
+                              );
+
+                        return (
+                          <span>
+                            {display !== undefined && display.length !== 0
+                              ? display[0].service_type
+                              : ""}
+                          </span>
+                        );
+                      },
+                      others: {
+                        minWidth: 100,
+                        maxWidth: 500
+                      },
+
+                      disabled: true
+                    },
+                    {
+                      fieldName: "services_id",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "services_id" }} />
+                      ),
+                      displayTemplate: row => {
+                        let display =
+                          this.props.serviceslist === undefined
+                            ? []
+                            : this.props.serviceslist.filter(
+                                f => f.hims_d_services_id === row.services_id
+                              );
+
+                        return (
+                          <span>
+                            {display !== null && display.length !== 0
+                              ? display[0].service_name
+                              : ""}
+                          </span>
+                        );
+                      },
+                      others: {
+                        minWidth: 200,
+                        maxWidth: 400
+                      },
+                      disabled: true
+                    },
+                    {
+                      fieldName: "item_notchargable",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Chargable" }} />
+                      ),
+                      displayTemplate: row => {
+                        return row.item_notchargable === "Y" ? "Yes" : "No";
+                      },
+                      disabled: true
+                    },
+                    {
+                      fieldName: "insurance_yesno",
+                      label: <AlgaehLabel label={{ fieldName: "insurance" }} />,
+                      displayTemplate: row => {
+                        return row.insurance_yesno === "Y"
+                          ? "Covered"
+                          : "Not Covered";
+                      },
+                      disabled: true
+                    },
+                    {
+                      fieldName: "pre_approval",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "pre_approval" }} />
+                      ),
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {row.pre_approval === "Y"
+                              ? "Required"
+                              : "Not Required"}
+                          </span>
+                        );
+                      },
+                      disabled: true
+                    },
+                    {
+                      fieldName: "patient_payable",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "patient_payable" }} />
+                      ),
+                      disabled: true
+                    },
+                    {
+                      fieldName: "company_payble",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "company_payble" }} />
+                      ),
+                      disabled: true
+                    }
+                  ]}
+                  keyId="Cons_type_id"
+                  dataSource={{
+                    data:
+                      this.props.consumableorderedList === undefined
+                        ? []
+                        : this.props.consumableorderedList
+                  }}
+                  paging={{ page: 0, rowsPerPage: 10 }}
+                />
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div>
+            <div
+              className="col-lg-12"
+              style={{
+                textAlign: "right",
+                paddingTop: 10
+              }}
+            >
+              <button
+                className="btn btn-primary"
+                onClick={this.ShowPackageModel.bind(this)}
+              >
+                Order Package
+              </button>
             </div>
             <div className="col-lg-12">
               <div className="row">
                 <div className="col-md-10 col-lg-12" id="doctorOrder">
                   <AlgaehDataGrid
-                    id="Orderd_list"
+                    id="Package_list"
                     columns={[
                       {
                         fieldName: "actions",
@@ -479,24 +707,8 @@ class OrderedList extends PureComponent {
                         displayTemplate: row => {
                           return (
                             <i
-                              style={{
-                                pointerEvents:
-                                  row.service_type_id === 2 ||
-                                  row.service_type_id === 14 ||
-                                  row.service_type_id === "2" ||
-                                  row.service_type_id === "14"
-                                    ? ""
-                                    : "none",
-                                opacity:
-                                  row.service_type_id === 2 ||
-                                  row.service_type_id === 14 ||
-                                  row.service_type_id === "2" ||
-                                  row.service_type_id === "14"
-                                    ? ""
-                                    : "0.1"
-                              }}
                               className="fas fa-eye"
-                              onClick={this.ShowProcedureModel.bind(this, row)}
+                              onClick={this.ShowPackageUtilize.bind(this, row)}
                             />
                           );
                         },
@@ -576,16 +788,6 @@ class OrderedList extends PureComponent {
                         disabled: true
                       },
                       {
-                        fieldName: "item_notchargable",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Chargable" }} />
-                        ),
-                        displayTemplate: row => {
-                          return row.item_notchargable === "Y" ? "Yes" : "No";
-                        },
-                        disabled: true
-                      },
-                      {
                         fieldName: "insurance_yesno",
                         label: (
                           <AlgaehLabel label={{ fieldName: "insurance" }} />
@@ -635,9 +837,9 @@ class OrderedList extends PureComponent {
                     keyId="list_type_id"
                     dataSource={{
                       data:
-                        this.props.consumableorderedList === undefined
+                        this.props.pakageList === undefined
                           ? []
-                          : this.props.consumableorderedList
+                          : this.props.pakageList
                     }}
                     paging={{ page: 0, rowsPerPage: 10 }}
                   />
@@ -651,6 +853,16 @@ class OrderedList extends PureComponent {
           open={this.state.isOpen}
           onClose={this.CloseModel.bind(this)}
           vat_applicable={this.props.vat_applicable}
+          addNew={true}
+        />
+
+        <OrderingPackages
+          open={this.state.isPackOpen}
+          onClose={this.ClosePackage.bind(this)}
+          vat_applicable={this.props.vat_applicable}
+          patient_id={Window.global["current_patient"]}
+          visit_id={Window.global["visit_id"]}
+          provider_id={Window.global["provider_id"]}
           addNew={true}
         />
 
@@ -675,6 +887,15 @@ class OrderedList extends PureComponent {
             procedure_id: this.state.hims_d_procedure_id
           }}
         />
+
+        <PackageUtilize
+          open={this.state.isPackUtOpen}
+          onClose={this.ClosePackageUtilize.bind(this)}
+          package_detail={this.state.package_detail}
+          patient_id={Window.global["current_patient"]}
+          visit_id={Window.global["visit_id"]}
+          doctor_id={Window.global["provider_id"]}
+        />
       </div>
     );
   }
@@ -686,7 +907,8 @@ function mapStateToProps(state) {
     serviceslist: state.serviceslist,
     orderedList: state.orderedList,
     patient_profile: state.patient_profile,
-    consumableorderedList: state.consumableorderedList
+    consumableorderedList: state.consumableorderedList,
+    pakageList: state.pakageList
   };
 }
 
@@ -696,7 +918,8 @@ function mapDispatchToProps(dispatch) {
       getServiceTypes: AlgaehActions,
       getServices: AlgaehActions,
       getOrderList: AlgaehActions,
-      getConsumableOrderList: AlgaehActions
+      getConsumableOrderList: AlgaehActions,
+      getPakageList: AlgaehActions
     },
     dispatch
   );

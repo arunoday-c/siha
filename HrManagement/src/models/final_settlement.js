@@ -173,7 +173,12 @@ where E.hims_d_employee_id=? ",
     try {
       _mysql
         .generateRunningNumber({
-          modules: ["FINAL_SETTLEMENT"]
+          modules: ["FINAL_SETTLEMENT"],
+          tableName: "hims_f_app_numgen",
+          identity: {
+            algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
+            hospital_id: req.userIdentity["x-branch"]
+          }
         })
         .then(newNumber => {
           if (newNumber.length === 0) {

@@ -4,7 +4,6 @@ import _ from "lodash";
 import { LINQ } from "node-linq";
 import mysql from "mysql";
 import algaehUtilities from "algaeh-utilities/utilities";
-import math from "mathjs";
 
 module.exports = {
   newProcessSalary: (req, res, next) => {
@@ -1993,7 +1992,12 @@ module.exports = {
           if (leave_accrual_detail.length > 0) {
             _mysql
               .generateRunningNumber({
-                modules: ["LEAVE_ACCRUAL"]
+                modules: ["LEAVE_ACCRUAL"],
+                tableName: "hims_f_app_numgen",
+                identity: {
+                  algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
+                  hospital_id: req.userIdentity["x-branch"]
+                }
               })
               .then(generatedNumbers => {
                 let leave_salary_number = generatedNumbers[0];
@@ -2983,7 +2987,6 @@ module.exports = {
                     .Where(w => w.employee_id == salary[i]["employee_id"])
                     .Select(s => parseFloat(s.airfare_amount))
                     .FirstOrDefault(0);
-
 
                   let emp_gratuity = new LINQ(gratuity)
                     .Where(w => w.employee_id == salary[i]["employee_id"])
@@ -4410,8 +4413,7 @@ function InsertGratuityProvision(options) {
                           return a + b;
                         }, 0) * _eligibleDays;
 
-                      _computatedAmoutSum = math.round(
-                        _computatedAmoutSum,
+                      _computatedAmoutSum = _computatedAmoutSum.toFixed(
                         decimal_places
                       );
 

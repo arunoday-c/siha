@@ -339,6 +339,9 @@ module.exports = {
             });
           });
       } else {
+        req.patientencounter = {
+          internal_error: false
+        };
         next();
       }
     } catch (e) {

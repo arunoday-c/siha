@@ -270,6 +270,5 @@ export default () => {
       }
     }
   );
-
   return api;
 };

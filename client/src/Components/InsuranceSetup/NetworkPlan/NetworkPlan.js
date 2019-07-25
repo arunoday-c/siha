@@ -21,8 +21,10 @@ import {
   datehandle,
   addNewNetwork,
   numberhandle,
-  prenumberhandle
+  prenumberhandle,
+  dateValidate
 } from "./NetworkPlanHandaler";
+import ButtonType from "../../Wrapper/algaehButton";
 
 import { FORMAT_PRICE_FROM } from "../../../utils/GlobalVariables.json";
 import MyContext from "../../../utils/MyContext";
@@ -76,7 +78,6 @@ class NetworkPlan extends PureComponent {
   }
 
   componentWillMount() {
-    
     let InputOutput = this.props.InsuranceSetup;
     this.setState({ ...this.state, ...InputOutput });
   }
@@ -238,7 +239,8 @@ class NetworkPlan extends PureComponent {
                     }}
                     maxDate={new Date()}
                     events={{
-                      onChange: datehandle.bind(this, this)
+                      onChange: datehandle.bind(this, this),
+                      onBlur: dateValidate.bind(this, this)
                     }}
                     value={
                       this.state.effective_start_date !== null
@@ -256,7 +258,8 @@ class NetworkPlan extends PureComponent {
                     minDate={new Date()}
                     maxDate={this.state.maxDate_end_date}
                     events={{
-                      onChange: datehandle.bind(this, this)
+                      onChange: datehandle.bind(this, this),
+                      onBlur: dateValidate.bind(this, this)
                     }}
                     value={
                       this.state.effective_end_date !== null
@@ -482,7 +485,7 @@ class NetworkPlan extends PureComponent {
                         }
                       }}
                     />
-                     <AlagehFormGroup
+                    <AlagehFormGroup
                       //Optometry
                       div={{ className: "col" }}
                       label={{ forceLabel: "Optometry" }}
@@ -658,7 +661,6 @@ class NetworkPlan extends PureComponent {
                         }
                       }}
                     />
-                    
                   </div>
                   <div className="row">
                     <div className="col-2">
@@ -750,13 +752,14 @@ class NetworkPlan extends PureComponent {
 
                 <div className="row">
                   <div className="col-lg-12 button-details">
-                    <button
-                      className="btn btn-primary"
+                    <ButtonType
+                      classname="btn-primary"
                       onClick={saveNetworkPlan.bind(this, this, context)}
-                      disabled={this.state.saveupdate}
-                    >
-                      Add
-                    </button>
+                      label={{
+                        forceLabel: "Add",
+                        returnText: true
+                      }}
+                    />
                     <button
                       className="btn btn-default"
                       onClick={addNewNetwork.bind(this, this)}

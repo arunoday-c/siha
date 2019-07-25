@@ -360,7 +360,12 @@ module.exports = {
 
       _mysql
         .generateRunningNumber({
-          modules: ["LEAVE_SALARY"]
+          modules: ["LEAVE_SALARY"],
+          tableName: "hims_f_app_numgen",
+          identity: {
+            algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
+            hospital_id: req.userIdentity["x-branch"]
+          }
         })
         .then(generatedNumbers => {
           leave_salary_number = generatedNumbers[0];

@@ -97,5 +97,25 @@
   "net_ttl": "Net Total",
   "pat_payable": "Patient Payable",
   "co_payable": "Co. Payable",
-  "sec_co_payable": "Secondary Co. Payable"
+  "sec_co_payable": "Secondary Co. Payable",
+
+  "package_code": "Package Code",
+  "package_name": "Package Name",
+  "package_amount": "Package Amount",
+  "total_service_amount": "Total Services Amount",
+  "profit_loss": "Profit/Loss",
+  "pl_amount": "Profit/Loss Amount",
+
+  "select_service": "Select Service",
+  "select_service_type": "Select Service Type",
+  "service_amount": "Service Amount",
+
+  "service_type_id": "Service Type",
+  "service_id": "Service",
+
+  "btnSave": "Save",
+  "btnUpdate": "Update",
+  "screen_name": "Package Setup",
+  "advance_type": "Advance Type",
+  "expiry_days": "Expiry Days"
 }

@@ -18,7 +18,12 @@ import {
   Validations,
   getCashiersAndShiftMAP,
   generateReceipt,
-  selectVisit
+  selectVisit,
+  ShowOrderPackage,
+  ClosePackage,
+  getPatientDetails,
+  ShowPackageUtilize,
+  ClosePackageUtilize
 } from "./OPBillingEvents";
 import { AlgaehActions } from "../../actions/algaehActions";
 import { successfulMessage } from "../../utils/GlobalFunctions";
@@ -26,9 +31,10 @@ import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall.js";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
 import Enumerable from "linq";
 import AlgaehReport from "../Wrapper/printReports";
-import _ from "lodash";
 import moment from "moment";
 import Options from "../../Options.json";
+import OrderingPackages from "../PatientProfile/Assessment/OrderingPackages/OrderingPackages";
+import PackageUtilize from "../PatientProfile/PackageUtilize/PackageUtilize";
 
 class OPBilling extends Component {
   constructor(props) {
@@ -49,7 +55,8 @@ class OPBilling extends Component {
       cheque_date: null,
       cheque_amount: 0,
       advance: 0,
-      addNewService: false
+      addNewService: false,
+      isPackOpen: false
     };
   }
 
@@ -158,101 +165,6 @@ class OPBilling extends Component {
   handleClose = () => {
     this.setState({ open: false });
   };
-
-  getPatientDetails($this) {
-    // clearInterval(intervalId);
-    // // let patient_type = "";
-    // intervalId = setInterval(() => {
-    AlgaehLoader({ show: true });
-
-    algaehApiCall({
-      uri: "/frontDesk/get",
-      module: "frontDesk",
-      method: "GET",
-      data: {
-        patient_code: this.state.patient_code,
-        expiry_visit: "N"
-      },
-      onSuccess: response => {
-        if (response.data.success) {
-          let data = response.data.records;
-
-          let x = Enumerable.from($this.props.patienttype)
-            .where(
-              w =>
-                w.hims_d_patient_type_id ===
-                data.patientRegistration.patient_type
-            )
-            .toArray();
-
-          if (x !== undefined && x.length > 0) {
-            data.patientRegistration.patient_type = x[0].patitent_type_desc;
-          } else {
-            data.patientRegistration.patient_type = "Not Selected";
-          }
-
-          let last_visitDetails = data.visitDetails[0];
-
-          data.patientRegistration.visitDetails = data.visitDetails;
-          data.patientRegistration.patient_id =
-            data.patientRegistration.hims_d_patient_id;
-          data.patientRegistration.mode_of_pay = "None";
-          //Insurance
-          data.patientRegistration.insurance_provider_name = null;
-          data.patientRegistration.sub_insurance_provider_name = null;
-          data.patientRegistration.network_type = null;
-          data.patientRegistration.policy_number = null;
-          data.patientRegistration.card_number = null;
-          data.patientRegistration.effective_end_date = null;
-          //Sec
-          data.patientRegistration.secondary_insurance_provider_name = null;
-          data.patientRegistration.secondary_sub_insurance_provider_name = null;
-          data.patientRegistration.secondary_network_type = null;
-          data.patientRegistration.secondary_policy_number = null;
-          data.patientRegistration.card_number = null;
-          data.patientRegistration.secondary_effective_end_date = null;
-          data.patientRegistration.visit_id =
-            last_visitDetails.hims_f_patient_visit_id;
-          data.patientRegistration.incharge_or_provider =
-            last_visitDetails.doctor_id;
-
-          data.patientRegistration.insured = last_visitDetails.insured;
-          data.patientRegistration.insurance_yesno = last_visitDetails.insured;
-          data.patientRegistration.sec_insured = last_visitDetails.sec_insured;
-
-          if (last_visitDetails.insured === "Y") {
-            data.patientRegistration.mode_of_pay = "Insurance";
-            data.patientRegistration.applydiscount = true;
-          } else {
-            data.patientRegistration.mode_of_pay = "Self";
-            data.patientRegistration.applydiscount = false;
-          }
-          data.patientRegistration.addNewService = false;
-
-          if (data.bill_criedt.length > 0) {
-            data.patientRegistration.due_amount = _.sumBy(data.bill_criedt, s =>
-              parseFloat(s.balance_credit)
-            );
-          } else {
-            data.patientRegistration.due_amount = 0;
-          }
-          this.setState(data.patientRegistration, () => {
-            selectVisit($this);
-          });
-
-          // visit_id
-        }
-        // AlgaehLoader({ show: false });
-      },
-      onFailure: error => {
-        AlgaehLoader({ show: false });
-        swalMessage({
-          title: error.message,
-          type: "error"
-        });
-      }
-    });
-  }
 
   getCtrlCode(billcode) {
     let $this = this;
@@ -462,6 +374,10 @@ class OPBilling extends Component {
   }
 
   render() {
+    let Package_Exists =
+      this.props.PatientPackageList === undefined
+        ? []
+        : this.props.PatientPackageList;
     return (
       <div className="" style={{ marginBottom: "50px" }}>
         <BreadCrumb
@@ -541,7 +457,7 @@ class OPBilling extends Component {
                 this.setState({ ...this.state, ...obj }, () => {
                   Object.keys(obj).map(key => {
                     if (key === "patient_code") {
-                      this.getPatientDetails(this);
+                      getPatientDetails(this, this);
                     }
                   });
                 });
@@ -554,6 +470,17 @@ class OPBilling extends Component {
             <OPBillingDetails BillingIOputs={this.state} />
           </MyContext.Provider>
         </div>
+
+        <OrderingPackages
+          open={this.state.isPackOpen}
+          onClose={ClosePackage.bind(this, this)}
+          vat_applicable={this.state.vat_applicable}
+          addNew={true}
+          patient_id={this.state.patient_id}
+          visit_id={this.state.visit_id}
+          provider_id={this.state.incharge_or_provider}
+          from="Billing"
+        />
 
         <div className="hptl-phase1-footer">
           <div className="row">
@@ -571,6 +498,22 @@ class OPBilling extends Component {
 
               <button
                 type="button"
+                className="btn btn-primary"
+                onClick={ShowOrderPackage.bind(this, this)}
+                disabled={
+                  this.state.patient_id === null
+                    ? true
+                    : this.state.Billexists === true
+                    ? true
+                    : false
+                }
+              >
+                <AlgaehLabel
+                  label={{ fieldName: "btn_order_package", returnText: true }}
+                />
+              </button>
+              <button
+                type="button"
                 className="btn btn-default"
                 onClick={ClearData.bind(this, this)}
               >
@@ -578,6 +521,23 @@ class OPBilling extends Component {
                   label={{ fieldName: "btn_clear", returnText: true }}
                 />
               </button>
+
+              {Package_Exists.length > 0 ? (
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={ShowPackageUtilize.bind(this, this)}
+                >
+                  View Package
+                </button>
+              ) : null}
+
+              <PackageUtilize
+                open={this.state.isPackUtOpen}
+                onClose={ClosePackageUtilize.bind(this, this)}
+                package_detail={this.state.package_detail}
+                from_billing={true}
+              />
             </div>
           </div>
         </div>
@@ -592,7 +552,8 @@ function mapStateToProps(state) {
     existinsurance: state.existinsurance,
     patienttype: state.patienttype,
     networkandplans: state.networkandplans,
-    deptanddoctors: state.deptanddoctors
+    deptanddoctors: state.deptanddoctors,
+    PatientPackageList: state.PatientPackageList
   };
 }
 
@@ -604,7 +565,8 @@ function mapDispatchToProps(dispatch) {
       getPatientType: AlgaehActions,
       getPatientInsurance: AlgaehActions,
       getNetworkPlans: AlgaehActions,
-      getDepartmentsandDoctors: AlgaehActions
+      getDepartmentsandDoctors: AlgaehActions,
+      getPatientPackage: AlgaehActions
     },
     dispatch
   );

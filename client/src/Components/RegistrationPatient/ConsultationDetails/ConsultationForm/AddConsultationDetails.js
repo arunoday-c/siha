@@ -131,19 +131,8 @@ const selectedHandeler = ($this, context, e) => {
               title: "Please select the primary insurance details properly.",
               type: "error"
             });
-            // $this.setState(
-            //   {
-            //     [e.name]: null
-            //   },
-            //   () => {
-            //     swalMessage({
-            //       title:
-            //         "Please select the primary insurance details properly.",
-            //       type: "error"
-            //     });
-            //   }
-            // );
           } else {
+            debugger;
             $this.setState(
               {
                 [e.name]: e.value,
@@ -373,8 +362,9 @@ const generateBillDetails = ($this, context) => {
   }
 
   if (
-    $this.state.department_type === "D" &&
-    $this.state.existing_plan === "Y"
+    ($this.state.department_type === "D" &&
+      $this.state.existing_plan === "Y") ||
+    $this.state.from_package === true
   ) {
     zeroBill = true;
   } else {
@@ -390,6 +380,7 @@ const generateBillDetails = ($this, context) => {
       insured: $this.state.insured,
       vat_applicable: $this.state.vat_applicable,
       hims_d_services_id: $this.state.hims_d_services_id,
+      service_type_id: $this.state.service_type_id,
       primary_insurance_provider_id: $this.state.primary_insurance_provider_id,
       primary_network_office_id: $this.state.primary_network_office_id,
       primary_network_id: $this.state.primary_network_id,
@@ -409,6 +400,8 @@ const generateBillDetails = ($this, context) => {
     data: serviceInput,
     onSuccess: response => {
       if (response.data.success) {
+        response.data.records.follow_up = FollowUp;
+        response.data.records.existing_treat = zeroBill;
         if (context !== null) {
           context.updateState({ ...response.data.records });
         }

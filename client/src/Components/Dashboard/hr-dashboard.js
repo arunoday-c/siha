@@ -245,26 +245,30 @@ class Dashboard extends Component {
                         </tr>
                       </thead>
                       <tbody>
-                        {this.state.no_of_emp_join.length > 0
-                          ? this.state.no_of_emp_join.map((row, index) => (
-                              <tr key={index}>
-                                <td className="text-center">
-                                  {row.date_of_joining}
-                                </td>
-                                <td className="text-center">
-                                  {row.employee_code}
-                                </td>
-                                <td className="text-center">{row.full_name}</td>
-                                <td className="text-center">{row.sex}</td>
-                                {/* <td className="text-center">
+                        {this.state.no_of_emp_join.length > 0 ? (
+                          this.state.no_of_emp_join.map((row, index) => (
+                            <tr key={index}>
+                              <td className="text-center">
+                                {row.date_of_joining}
+                              </td>
+                              <td className="text-center">
+                                {row.employee_code}
+                              </td>
+                              <td className="text-center">{row.full_name}</td>
+                              <td className="text-center">{row.sex}</td>
+                              {/* <td className="text-center">
                                   {row.employee_designation_id}
                                 </td>
                                 <td className="text-center">
                                   {row.nationality}
                                 </td> */}
-                              </tr>
-                            ))
-                          : null}
+                            </tr>
+                          ))
+                        ) : (
+                          <tr>
+                            <td> No New Joinee for this Month</td>
+                          </tr>
+                        )}
                       </tbody>
                     </table>
                   </div>

@@ -61,25 +61,24 @@ export default function NewPackageEvent() {
       );
     },
     AddToList: $this => {
-      let isError = false;
       if ($this.state.s_service_type === null) {
-        isError = true;
-
         swalMessage({
           type: "warning",
           title: "Select Service Type."
         });
-
-        return isError;
+        return;
       } else if ($this.state.s_service === null) {
-        isError = true;
-
         swalMessage({
           type: "warning",
           title: "Select Service."
         });
-
-        return isError;
+        return;
+      } else if ($this.state.qty === "" || $this.state.qty === 0) {
+        swalMessage({
+          type: "warning",
+          title: "Enter Quantity."
+        });
+        return;
       }
       let SelectedService = _.filter($this.state.PakageDetail, f => {
         return (
@@ -87,7 +86,7 @@ export default function NewPackageEvent() {
           f.service_id === $this.state.s_service
         );
       });
-
+      debugger;
       if (SelectedService.length === 0) {
         let PakageDetail = $this.state.PakageDetail;
         let insertPackage = $this.state.insertPackage;
@@ -97,23 +96,30 @@ export default function NewPackageEvent() {
           service_type_id: $this.state.s_service_type,
           service_id: $this.state.s_service,
           service_amount: $this.state.s_service_amount,
-          qty: $this.state.qty
+          qty: $this.state.qty,
+          tot_service_amount:
+            parseFloat($this.state.qty) *
+            parseFloat($this.state.s_service_amount)
         };
 
         if ($this.state.hims_d_package_header_id !== null) {
+          debugger;
           let InsertObj = {
             package_header_id: $this.state.hims_d_package_header_id,
             service_type_id: $this.state.s_service_type,
             service_id: $this.state.s_service,
             service_amount: $this.state.s_service_amount,
-            qty: $this.state.qty
+            qty: $this.state.qty,
+            tot_service_amount:
+              parseFloat($this.state.qty) *
+              parseFloat($this.state.s_service_amount)
           };
           insertPackage.push(InsertObj);
         }
 
         PakageDetail.push(InputObj);
         let total_service_amount = _.sumBy(PakageDetail, s =>
-          parseFloat(s.service_amount)
+          parseFloat(s.tot_service_amount)
         );
         let pl_amount =
           parseFloat($this.state.package_amount) -
@@ -170,7 +176,7 @@ export default function NewPackageEvent() {
       let profit_loss = "P";
 
       let total_service_amount = _.sumBy(PakageDetail, s =>
-        parseFloat(s.service_amount)
+        parseFloat(s.tot_service_amount)
       );
       let pl_amount =
         parseFloat($this.state.package_amount) -
@@ -193,35 +199,74 @@ export default function NewPackageEvent() {
 
       AlgaehValidation({
         alertTypeIcon: "warning",
+        querySelector: "data-validate='packagedata'",
         onSuccess: () => {
-          if ($this.state.hims_d_package_header_id === null) {
-            $this.state.service_code = $this.state.package_code;
-            $this.state.service_type_id = "14";
-            $this.state.service_name = $this.state.package_name;
-            $this.state.service_status = "A";
-            $this.state.standard_fee = $this.state.package_amount;
-            $this.state.hospital_id = JSON.parse(
+          let InputObj = $this.state;
+          if (InputObj.PakageDetail.length === 0) {
+            swalMessage({
+              type: "warning",
+              title: "Atleast One service is required in the list"
+            });
+            return;
+          }
+          for (let i = 0; i < InputObj.PakageDetail.length; i++) {
+            let appropriate_amount =
+              parseFloat(InputObj.PakageDetail[i].tot_service_amount) /
+              parseFloat($this.state.total_service_amount);
+            appropriate_amount =
+              appropriate_amount * parseFloat($this.state.package_amount);
+            appropriate_amount = appropriate_amount.toFixed(2);
+            InputObj.PakageDetail[i].appropriate_amount = appropriate_amount;
+          }
+          debugger;
+          if (InputObj.hims_d_package_header_id === null) {
+            InputObj.service_code = InputObj.package_code;
+            InputObj.service_type_id = "14";
+            InputObj.service_name = InputObj.package_name;
+            InputObj.service_status = "A";
+            InputObj.standard_fee = InputObj.package_amount;
+            InputObj.hospital_id = JSON.parse(
               AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
             ).hims_d_hospital_id;
             algaehApiCall({
               uri: "/packagesetup/addPackage",
               module: "masterSettings",
-              data: $this.state,
+              data: InputObj,
               onSuccess: response => {
                 if (response.data.success === true) {
-                  swalMessage({
-                    type: "success",
-                    title: "Saved successfully . ."
+                  debugger;
+                  $this.setState({
+                    approveEnable: false
                   });
-                  $this.props.onClose && $this.props.onClose(true);
+                  if ($this.state.from === "doctor") {
+                    $this.props.onClose &&
+                      $this.props.onClose(
+                        response.data.records.package_service_id
+                      );
+                  } else {
+                    swalMessage({
+                      type: "success",
+                      title: "Saved successfully . ."
+                    });
+                    $this.props.onClose && $this.props.onClose(true);
+                  }
                 }
               }
             });
           } else {
+            for (let i = 0; i < InputObj.insertPackage.length; i++) {
+              let appropriate_amount =
+                parseFloat(InputObj.insertPackage[i].tot_service_amount) /
+                parseFloat($this.state.total_service_amount);
+              appropriate_amount =
+                appropriate_amount * parseFloat($this.state.package_amount);
+              appropriate_amount = appropriate_amount.toFixed(2);
+              InputObj.insertPackage[i].appropriate_amount = appropriate_amount;
+            }
             algaehApiCall({
               uri: "/packagesetup/updatePackageSetup",
               module: "masterSettings",
-              data: $this.state,
+              data: InputObj,
               method: "PUT",
               onSuccess: response => {
                 if (response.data.success === true) {
@@ -239,7 +284,6 @@ export default function NewPackageEvent() {
     },
 
     discounthandle: ($this, e) => {
-      
       let advance_percentage = 0,
         advance_amount = 0;
       advance_percentage =
@@ -252,6 +296,94 @@ export default function NewPackageEvent() {
       $this.setState({
         advance_percentage: advance_percentage,
         advance_amount: advance_amount
+      });
+    },
+
+    makeZeroIngrid: ($this, row, e) => {
+      if (e.target.value === "") {
+        let PakageDetail = $this.state.PakageDetail;
+        let _index = PakageDetail.indexOf(row);
+        row[e.target.name] = 0;
+
+        PakageDetail[_index] = row;
+        $this.setState({
+          PakageDetail: PakageDetail
+        });
+      }
+    },
+    gridtexthandel: ($this, row, e) => {
+      debugger;
+      let name = e.name || e.target.name;
+      let value = e.value || e.target.value;
+      let PakageDetail = $this.state.PakageDetail;
+      let _index = PakageDetail.indexOf(row);
+      let profit_loss = "P";
+      if (value === "") {
+        row[name] = value;
+        row["tot_service_amount"] = 0;
+      } else {
+        row[name] = value;
+        row["tot_service_amount"] =
+          parseFloat(row["qty"]) * parseFloat(row["service_amount"]);
+      }
+      PakageDetail[_index] = row;
+      let total_service_amount = _.sumBy(PakageDetail, s =>
+        parseFloat(s.tot_service_amount)
+      );
+      let pl_amount =
+        parseFloat($this.state.package_amount) -
+        parseFloat(total_service_amount);
+      if (pl_amount < 0) {
+        profit_loss = "L";
+      }
+
+      $this.setState({
+        PakageDetail: PakageDetail,
+        total_service_amount: total_service_amount,
+        pl_amount: pl_amount,
+        profit_loss: profit_loss
+      });
+    },
+    ApprovePackages: ($this, e) => {
+      AlgaehValidation({
+        alertTypeIcon: "warning",
+        querySelector: "data-validate='packagedata'",
+        onSuccess: () => {
+          let InputObj = $this.state;
+          if (InputObj.PakageDetail.length === 0) {
+            swalMessage({
+              type: "warning",
+              title: "Atleast One service is required in the list"
+            });
+            return;
+          }
+          for (let i = 0; i < InputObj.PakageDetail.length; i++) {
+            let appropriate_amount =
+              parseFloat(InputObj.PakageDetail[i].tot_service_amount) /
+              parseFloat($this.state.total_service_amount);
+            appropriate_amount =
+              appropriate_amount * parseFloat($this.state.package_amount);
+            appropriate_amount = appropriate_amount.toFixed(2);
+            InputObj.PakageDetail[i].appropriate_amount = appropriate_amount;
+          }
+          InputObj.approved = "Y";
+          debugger;
+          algaehApiCall({
+            uri: "/packagesetup/updatePackageSetup",
+            module: "masterSettings",
+            data: InputObj,
+            method: "PUT",
+            onSuccess: response => {
+              if (response.data.success === true) {
+                swalMessage({
+                  type: "success",
+                  title: "Updated successfully . ."
+                });
+                $this.props.onClose && $this.props.onClose(true);
+              }
+            }
+          });
+        }
       });
     }
   };

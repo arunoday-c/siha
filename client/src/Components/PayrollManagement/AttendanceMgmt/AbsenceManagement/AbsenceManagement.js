@@ -436,9 +436,9 @@ export default class AbsenceManagement extends Component {
               <div className="portlet-body">
                 <div className="row">
                   <AlagehFormGroup
-                    div={{ className: "col form-group" }}
+                    div={{ className: "col-2" }}
                     label={{
-                      forceLabel: "Filter by Year",
+                      forceLabel: "Selected Year",
                       isImp: true
                     }}
                     textBox={{
@@ -455,9 +455,9 @@ export default class AbsenceManagement extends Component {
                   />
 
                   <AlagehAutoComplete
-                    div={{ className: "col form-group" }}
+                    div={{ className: "col-2" }}
                     label={{
-                      forceLabel: "Filter by Month",
+                      forceLabel: "Selected Month",
                       isImp: true
                     }}
                     selector={{
@@ -635,13 +635,18 @@ export default class AbsenceManagement extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "Cancel Reason" }}
                             />
-                          )
+                          ),
+                          others: {
+                            maxWidth: 200,
+                            filterable: false
+                          }
                         }
                       ]}
                       keyId="hims_f_absent_id"
                       dataSource={{ data: this.state.absents }}
                       isEditable={true}
-                      paging={{ page: 0, rowsPerPage: 10 }}
+                      filter={true}
+                      paging={{ page: 0, rowsPerPage: 20 }}
                       events={{
                         onEdit: () => {},
                         onDone: this.updateAbsent.bind(this),

@@ -287,7 +287,6 @@ let deleteUserLogin = (req, res, next) => {
   try {
     let input = extend({}, req.body);
 
-
     // "delete from hims_m_user_employee where  user_id=?;\
     // delete from algaeh_m_role_user_mappings where  user_id=?;\
     // delete from algaeh_d_app_password where  userid=?;\
@@ -302,7 +301,6 @@ let deleteUserLogin = (req, res, next) => {
             "update algaeh_d_app_user set user_status='I' ,updated_by=?,updated_date=?\
             where  algaeh_d_app_user_id=?",
           values: [
-          
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
             input.user_id
@@ -912,57 +910,6 @@ let addAlgaehScreen = (req, res, next) => {
     _mysql.releaseConnection();
     next(e);
   }
-
-  // try {
-  //   if (req.db == null) {
-  //     next(httpStatus.dataBaseNotInitilizedError());
-  //   }
-  //   let db = req.db;
-  //   let input = extend({}, req.body);
-
-  //   db.getConnection((error, connection) => {
-  //     if (error) {
-  //       next(error);
-  //     }
-  //     if (
-  //       req.userIdentity.role_type == "SU" &&
-  //       req.userIdentity.group_type == "SU"
-  //     ) {
-  //       connection.query(
-  //         "INSERT INTO `algaeh_d_app_screens` (screen_code, screen_name, page_to_redirect, module_id, other_language,  created_date, created_by, updated_date, updated_by)\
-  //           VALUE(?,?,?,?,?,?,?,?,?)",
-  //         [
-  //           input.screen_code,
-  //           input.screen_name,
-  //           input.page_to_redirect,
-  //           input.module_id,
-  //           input.other_language,
-
-  //           new Date(),
-  //           input.created_by,
-  //           new Date(),
-  //           input.updated_by
-  //         ],
-  //         (error, result) => {
-  //           releaseDBConnection(db, connection);
-  //           if (error) {
-  //             next(error);
-  //           }
-  //           req.records = result;
-  //           next();
-  //         }
-  //       );
-  //     } else {
-  //       req.records = {
-  //         validUser: false,
-  //         message: "you dont have admin privilege"
-  //       };
-  //       next();
-  //     }
-  //   });
-  // } catch (e) {
-  //   next(e);
-  // }
 };
 
 //created by irfan: to
@@ -1129,55 +1076,6 @@ let addAlgaehComponent = (req, res, next) => {
     _mysql.releaseConnection();
     next(e);
   }
-
-  // try {
-  //   if (req.db == null) {
-  //     next(httpStatus.dataBaseNotInitilizedError());
-  //   }
-  //   let db = req.db;
-  //   let input = extend({}, req.body);
-
-  //   db.getConnection((error, connection) => {
-  //     if (error) {
-  //       next(error);
-  //     }
-  //     if (
-  //       req.userIdentity.role_type == "SU" &&
-  //       req.userIdentity.group_type == "SU"
-  //     ) {
-  //       connection.query(
-  //         "INSERT INTO `algaeh_d_app_component` (screen_id, component_code, component_name,  created_date, created_by, updated_date, updated_by)\
-  //           VALUE(?,?,?,?,?,?,?)",
-  //         [
-  //           input.screen_id,
-  //           input.component_code,
-  //           input.component_name,
-
-  //           new Date(),
-  //           input.created_by,
-  //           new Date(),
-  //           input.updated_by
-  //         ],
-  //         (error, result) => {
-  //           releaseDBConnection(db, connection);
-  //           if (error) {
-  //             next(error);
-  //           }
-  //           req.records = result;
-  //           next();
-  //         }
-  //       );
-  //     } else {
-  //       req.records = {
-  //         validUser: false,
-  //         message: "you dont have admin privilege"
-  //       };
-  //       next();
-  //     }
-  //   });
-  // } catch (e) {
-  //   next(e);
-  // }
 };
 
 //created by irfan: to
@@ -1217,46 +1115,6 @@ let getAlgaehComponents = (req, res, next) => {
     _mysql.releaseConnection();
     next(e);
   }
-
-  // try {
-  //   if (req.db == null) {
-  //     next(httpStatus.dataBaseNotInitilizedError());
-  //   }
-  //   let db = req.db;
-
-  //   let screen_id = "";
-  //   if (req.query.screen_id != undefined && req.query.screen_id != null) {
-  //     screen_id = ` and screen_id=${req.query.screen_id} `;
-  //   }
-
-  //   debugLog("req.userIdentity:", req.userIdentity);
-  //   db.getConnection((error, connection) => {
-  //     if (req.userIdentity.role_type != "GN") {
-  //       connection.query(
-  //         "select  algaeh_d_app_component_id, screen_id, component_code, component_name  from algaeh_d_app_component\
-  //             where  record_status='A' " +
-  //           screen_id +
-  //           " order by algaeh_d_app_component_id desc ",
-  //         (error, result) => {
-  //           releaseDBConnection(db, connection);
-  //           if (error) {
-  //             next(error);
-  //           }
-  //           req.records = result;
-  //           next();
-  //         }
-  //       );
-  //     } else {
-  //       req.records = {
-  //         validUser: false,
-  //         message: "you dont have admin privilege"
-  //       };
-  //       next();
-  //     }
-  //   });
-  // } catch (e) {
-  //   next(e);
-  // }
 };
 
 //created by irfan: to add
@@ -1304,55 +1162,6 @@ let addAlgaehScreenElement = (req, res, next) => {
     _mysql.releaseConnection();
     next(e);
   }
-
-  // try {
-  //   if (req.db == null) {
-  //     next(httpStatus.dataBaseNotInitilizedError());
-  //   }
-  //   let db = req.db;
-  //   let input = extend({}, req.body);
-
-  //   db.getConnection((error, connection) => {
-  //     if (error) {
-  //       next(error);
-  //     }
-  //     if (
-  //       req.userIdentity.role_type == "SU" &&
-  //       req.userIdentity.group_type == "SU"
-  //     ) {
-  //       connection.query(
-  //         "INSERT INTO `algaeh_d_app_scrn_elements` ( screen_element_code, screen_element_name, component_id, created_date, created_by, updated_date, updated_by)\
-  //           VALUE(?,?,?,?,?,?,?)",
-  //         [
-  //           input.screen_element_code,
-  //           input.screen_element_name,
-  //           input.component_id,
-
-  //           new Date(),
-  //           input.created_by,
-  //           new Date(),
-  //           input.updated_by
-  //         ],
-  //         (error, result) => {
-  //           releaseDBConnection(db, connection);
-  //           if (error) {
-  //             next(error);
-  //           }
-  //           req.records = result;
-  //           next();
-  //         }
-  //       );
-  //     } else {
-  //       req.records = {
-  //         validUser: false,
-  //         message: "you dont have admin privilege"
-  //       };
-  //       next();
-  //     }
-  //   });
-  // } catch (e) {
-  //   next(e);
-  // }
 };
 
 //created by irfan: to
@@ -1392,44 +1201,6 @@ let getAlgaehScreenElement = (req, res, next) => {
     _mysql.releaseConnection();
     next(e);
   }
-
-  // try {
-  //   if (req.db == null) {
-  //     next(httpStatus.dataBaseNotInitilizedError());
-  //   }
-  //   let db = req.db;
-  //   let component_id = "";
-  //   if (req.query.component_id != undefined && req.query.component_id != null) {
-  //     component_id = ` and component_id=${req.query.component_id} `;
-  //   }
-  //   debugLog("req.userIdentity:", req.userIdentity);
-  //   db.getConnection((error, connection) => {
-  //     if (req.userIdentity.role_type != "GN") {
-  //       connection.query(
-  //         "select  algaeh_d_app_scrn_elements_id, screen_element_code, screen_element_name, component_id  from algaeh_d_app_scrn_elements\
-  //             where  record_status='A' " +
-  //           component_id +
-  //           " order by algaeh_d_app_scrn_elements_id desc",
-  //         (error, result) => {
-  //           releaseDBConnection(db, connection);
-  //           if (error) {
-  //             next(error);
-  //           }
-  //           req.records = result;
-  //           next();
-  //         }
-  //       );
-  //     } else {
-  //       req.records = {
-  //         validUser: false,
-  //         message: "you dont have admin privilege"
-  //       };
-  //       next();
-  //     }
-  //   });
-  // } catch (e) {
-  //   next(e);
-  // }
 };
 
 //created by irfan:
@@ -1454,28 +1225,6 @@ let getFormulas = (req, res, next) => {
     _mysql.releaseConnection();
     next(e);
   }
-
-  // try {
-  //   if (req.db == null) {
-  //     next(httpStatus.dataBaseNotInitilizedError());
-  //   }
-  //   let db = req.db;
-  //   db.getConnection((error, connection) => {
-  //     connection.query(
-  //       "select algaeh_d_formulas_id, formula_for, formula from algaeh_d_formulas ",
-  //       (error, result) => {
-  //         releaseDBConnection(db, connection);
-  //         if (error) {
-  //           next(error);
-  //         }
-  //         req.records = result;
-  //         next();
-  //       }
-  //     );
-  //   });
-  // } catch (e) {
-  //   next(e);
-  // }
 };
 
 //created by irfan:
@@ -1503,37 +1252,6 @@ let addFormula = (req, res, next) => {
     _mysql.releaseConnection();
     next(e);
   }
-
-  // try {
-  //   if (req.db == null) {
-  //     next(httpStatus.dataBaseNotInitilizedError());
-  //   }
-  //   let db = req.db;
-  //   let input = extend({}, req.body);
-
-  //   db.getConnection((error, connection) => {
-  //     if (error) {
-  //       next(error);
-  //     }
-
-  //     connection.query(
-  //       "INSERT INTO `algaeh_d_formulas` (algaeh_d_formulas_id, formula_for, formula)\
-  //         VALUE(?,?,?)",
-  //       [input.algaeh_d_formulas_id, input.formula_for, input.formula],
-  //       (error, result) => {
-  //         releaseDBConnection(db, connection);
-  //         if (error) {
-  //           next(error);
-  //         }
-  //         req.records = result;
-
-  //         next();
-  //       }
-  //     );
-  //   });
-  // } catch (e) {
-  //   next(e);
-  // }
 };
 
 //created by irfan:
@@ -1566,42 +1284,6 @@ let updateFormula = (req, res, next) => {
     _mysql.releaseConnection();
     next(e);
   }
-
-  // try {
-  //   if (req.db == null) {
-  //     next(httpStatus.dataBaseNotInitilizedError());
-  //   }
-  //   let db = req.db;
-  //   let input = extend({}, req.body);
-
-  //   db.getConnection((error, connection) => {
-  //     if (error) {
-  //       next(error);
-  //     }
-  //     debugLog("bode:", req.body);
-  //     connection.query(
-  //       " UPDATE algaeh_d_formulas SET algaeh_d_formulas_id = ?, formula_for = ?,\
-  //        formula = ? WHERE algaeh_d_formulas_id =?;",
-  //       [
-  //         input.algaeh_d_formulas_id,
-  //         input.formula_for,
-  //         input.formula,
-  //         input.old_formulas_id
-  //       ],
-  //       (error, result) => {
-  //         releaseDBConnection(db, connection);
-  //         if (error) {
-  //           next(error);
-  //         }
-  //         req.records = result;
-
-  //         next();
-  //       }
-  //     );
-  //   });
-  // } catch (e) {
-  //   next(e);
-  // }
 };
 
 //created by irfan:
@@ -1627,36 +1309,6 @@ let deleteFormula = (req, res, next) => {
     _mysql.releaseConnection();
     next(e);
   }
-
-  // try {
-  //   if (req.db == null) {
-  //     next(httpStatus.dataBaseNotInitilizedError());
-  //   }
-  //   let db = req.db;
-  //   let input = extend({}, req.body);
-
-  //   db.getConnection((error, connection) => {
-  //     if (error) {
-  //       next(error);
-  //     }
-
-  //     connection.query(
-  //       " DELETE FROM algaeh_d_formulas WHERE algaeh_d_formulas_id = ?;",
-  //       [input.algaeh_d_formulas_id],
-  //       (error, result) => {
-  //         releaseDBConnection(db, connection);
-  //         if (error) {
-  //           next(error);
-  //         }
-  //         req.records = result;
-
-  //         next();
-  //       }
-  //     );
-  //   });
-  // } catch (e) {
-  //   next(e);
-  // }
 };
 
 //--------ROLE BASE SCREEN ASSIGNMENT---------------
@@ -1705,51 +1357,6 @@ let deleteScreenForRole = (req, res, next) => {
     _mysql.releaseConnection();
     next(e);
   }
-
-  // try {
-  //   if (req.db == null) {
-  //     next(httpStatus.dataBaseNotInitilizedError());
-  //   }
-  //   let db = req.db;
-  //   let input = extend({}, req.body);
-
-  //   if (req.userIdentity.role_type != "GN") {
-  //     db.getConnection((error, connection) => {
-  //       if (error) {
-  //         next(error);
-  //       }
-  //       connection.query(
-  //         "delete from algaeh_m_screen_role_privilage_mapping where\
-  //          algaeh_m_screen_role_privilage_mapping_id=?",
-  //         [input.algaeh_m_screen_role_privilage_mapping_id],
-  //         (error, result) => {
-  //           releaseDBConnection(db, connection);
-  //           if (error) {
-  //             next(error);
-  //           }
-  //           if (result.affectedRows > 0) {
-  //             req.records = result;
-  //             next();
-  //           } else {
-  //             req.records = {
-  //               validUser: false,
-  //               message: "invalid input"
-  //             };
-  //             next();
-  //           }
-  //         }
-  //       );
-  //     });
-  //   } else {
-  //     req.records = {
-  //       validUser: false,
-  //       message: "you dont have admin privilege"
-  //     };
-  //     next();
-  //   }
-  // } catch (e) {
-  //   next(e);
-  // }
 };
 
 //created by irfan:
@@ -1822,99 +1429,6 @@ let deleteModuleForRole = (req, res, next) => {
     _mysql.releaseConnection();
     next(e);
   }
-  // try {
-  //   if (req.db == null) {
-  //     next(httpStatus.dataBaseNotInitilizedError());
-  //   }
-  //   let db = req.db;
-  //   let input = extend({}, req.body);
-
-  //   if (req.userIdentity.role_type != "GN") {
-  //     db.getConnection((error, connection) => {
-  //       if (error) {
-  //         next(error);
-  //       }
-
-  //       connection.beginTransaction(error => {
-  //         if (error) {
-  //           connection.rollback(() => {
-  //             releaseDBConnection(db, connection);
-  //             next(error);
-  //           });
-  //         }
-  //         connection.query(
-  //           "delete from algaeh_m_screen_role_privilage_mapping where module_role_map_id=?",
-  //           [input.algaeh_m_module_role_privilage_mapping_id],
-  //           (error, result) => {
-  //             if (error) {
-  //               connection.rollback(() => {
-  //                 releaseDBConnection(db, connection);
-  //                 next(error);
-  //               });
-  //             }
-  //             // req.records = result;
-  //             // next();
-  //             if (result.affectedRows > 0) {
-  //               connection.query(
-  //                 "delete from algaeh_m_module_role_privilage_mapping where\
-  //                  algaeh_m_module_role_privilage_mapping_id=?",
-  //                 [input.algaeh_m_module_role_privilage_mapping_id],
-  //                 (error, moduleResult) => {
-  //                   if (error) {
-  //                     connection.rollback(() => {
-  //                       releaseDBConnection(db, connection);
-  //                       next(error);
-  //                     });
-  //                   }
-  //                   if (moduleResult.affectedRows > 0) {
-  //                     connection.commit(error => {
-  //                       if (error) {
-  //                         connection.rollback(() => {
-  //                           releaseDBConnection(db, connection);
-  //                           next(error);
-  //                         });
-  //                       }
-
-  //                       releaseDBConnection(db, connection);
-  //                       req.records = moduleResult;
-  //                       next();
-  //                     });
-  //                   } else {
-  //                     connection.rollback(() => {
-  //                       releaseDBConnection(db, connection);
-  //                     });
-  //                     req.records = {
-  //                       validUser: false,
-  //                       message: "invalid input"
-  //                     };
-  //                     next();
-  //                   }
-  //                 }
-  //               );
-  //             } else {
-  //               connection.rollback(() => {
-  //                 releaseDBConnection(db, connection);
-  //               });
-  //               req.records = {
-  //                 validUser: false,
-  //                 message: "invalid input"
-  //               };
-  //               next();
-  //             }
-  //           }
-  //         );
-  //       });
-  //     });
-  //   } else {
-  //     req.records = {
-  //       validUser: false,
-  //       message: "you dont have admin privilege"
-  //     };
-  //     next();
-  //   }
-  // } catch (e) {
-  //   next(e);
-  // }
 };
 
 //created by irfan:
@@ -2319,30 +1833,157 @@ let assignComponents = (req, res, next) => {
   }
 };
 
-
 //created by irfan:
-let method1 = (req, res, next) => {
+let getHrmsAuthLevels = (req, res, next) => {
+  const curr_db = keyPath.default.mysqlDb.database;
   const _mysql = new algaehMysql({ path: keyPath });
+  if (req.userIdentity.role_type != "GN") {
+    _mysql
+      .executeQuery({
+        query:
+          " select TABLE_NAME from information_schema.TABLES\
+        where table_schema = ? and  TABLE_NAME='hims_d_hrms_options'",
+        values: [curr_db],
+        printQuery: true
+      })
+      .then(dbExist => {
+        if (dbExist.length > 0) {
+          _mysql
+            .executeQuery({
+              query:
+                " select  leave_level,loan_level from hims_d_hrms_options;",
+              printQuery: true
+            })
+            .then(result => {
+              _mysql.releaseConnection();
+              if (result.length > 0) {
+                const leave_levels = [];
+                const loan_levels = [];
+                switch (result[0]["leave_level"]) {
+                  case "1":
+                    leave_levels.push(
+                      { name: "Level 1", value: 1 },
+                      { name: "None", value: "N" }
+                    );
+                    break;
+                  case "2":
+                    leave_levels.push(
+                      { name: "Level 2", value: "AL2" },
+                      { name: "Level 1", value: "AL1" },
+                      { name: "None", value: "N" }
+                    );
+                    break;
+                  case "3":
+                    leave_levels.push(
+                      { name: "Level 3", value: "AL3" },
+                      { name: "Level 2", value: "AL2" },
+                      { name: "Level 1", value: "AL1" },
+                      { name: "None", value: "N" }
+                    );
+                    break;
+                  case "4":
+                    leave_levels.push(
+                      { name: "Level 4", value: "AL4" },
+                      { name: "Level 3", value: "AL3" },
+                      { name: "Level 2", value: "AL2" },
+                      { name: "Level 1", value: "AL1" },
+                      { name: "None", value: "N" }
+                    );
+                    break;
+                  case "5":
+                    leave_levels.push(
+                      { name: "Level 5", value: "AL5" },
+                      { name: "Level 4", value: "AL4" },
+                      { name: "Level 3", value: "AL3" },
+                      { name: "Level 2", value: "AL2" },
+                      { name: "Level 1", value: "AL1" },
+                      { name: "None", value: "N" }
+                    );
+                    break;
 
-  let input = req.body;
-  _mysql
-    .executeQueryWithTransaction({
-      query: " call method1 (?,?)",
-      values: [input.amount, req.userIdentity.username],
-      printQuery: true
-    })
-    .then(res2 => {
-      _mysql.commitTransaction(() => {
+                  default:
+                    leave_levels.push({ name: "None", value: "N" });
+                }
+                switch (result[0]["loan_level"]) {
+                  case "1":
+                    loan_levels.push(
+                      { name: "Level 1", value: 1 },
+                      { name: "None", value: "N" }
+                    );
+                    break;
+                  case "2":
+                    loan_levels.push(
+                      { name: "Level 2", value: "AL2" },
+                      { name: "Level 1", value: "AL1" },
+                      { name: "None", value: "N" }
+                    );
+                    break;
+                  case "3":
+                    loan_levels.push(
+                      { name: "Level 3", value: "AL3" },
+                      { name: "Level 2", value: "AL2" },
+                      { name: "Level 1", value: "AL1" },
+                      { name: "None", value: "N" }
+                    );
+                    break;
+                  case "4":
+                    loan_levels.push(
+                      { name: "Level 4", value: "AL4" },
+                      { name: "Level 3", value: "AL3" },
+                      { name: "Level 2", value: "AL2" },
+                      { name: "Level 1", value: "AL1" },
+                      { name: "None", value: "N" }
+                    );
+                    break;
+                  case "5":
+                    loan_levels.push(
+                      { name: "Level 5", value: "AL5" },
+                      { name: "Level 4", value: "AL4" },
+                      { name: "Level 3", value: "AL3" },
+                      { name: "Level 2", value: "AL2" },
+                      { name: "Level 1", value: "AL1" },
+                      { name: "None", value: "N" }
+                    );
+                    break;
+
+                  default:
+                    leave_levels.push({ name: "None", value: "N" });
+                }
+
+                req.records = { leave_levels, loan_levels };
+                next();
+              } else {
+                req.records = {
+                  leave_levels: [{ name: "None", value: "N" }],
+                  loan_levels: [{ name: "None", value: "N" }]
+                };
+                next();
+              }
+            })
+            .catch(e => {
+              _mysql.releaseConnection();
+              next(e);
+            });
+        } else {
+          _mysql.releaseConnection();
+          req.records = {
+            leave_levels: [{ name: "None", value: "N" }],
+            loan_levels: [{ name: "None", value: "N" }]
+          };
+          next();
+        }
+      })
+      .catch(e => {
         _mysql.releaseConnection();
-        req.records = res2;
-        next();
-      });
-    })
-    .catch(e => {
-      _mysql.rollBackTransaction(() => {
         next(e);
       });
-    });
+  } else {
+    req.records = {
+      validUser: false,
+      message: "you dont have admin privilege"
+    };
+    next();
+  }
 };
 module.exports = {
   addAlgaehGroupMAster,
@@ -2374,5 +2015,5 @@ module.exports = {
   assignComponents,
   updateAlgaehModules,
   deleteUserLogin,
-  method1
+  getHrmsAuthLevels
 };

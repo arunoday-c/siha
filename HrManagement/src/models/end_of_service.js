@@ -286,7 +286,12 @@ module.exports = {
         } else {
           _mysql
             .generateRunningNumber({
-              modules: ["END_OF_SERVICE_NO"]
+              modules: ["END_OF_SERVICE_NO"],
+              tableName: "hims_f_app_numgen",
+              identity: {
+                algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
+                hospital_id: req.userIdentity["x-branch"]
+              }
             })
             .then(result => {
               if (result.length == 0) {

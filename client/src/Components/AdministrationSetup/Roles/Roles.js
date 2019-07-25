@@ -7,12 +7,7 @@ import {
   AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-import {
-  ROLE_TYPE,
-  FORMAT_YESNO,
-  LEAVE_PRIVILEGE,
-  LOAN_PRIVILEGE
-} from "../../../utils/GlobalVariables.json";
+import { ROLE_TYPE, FORMAT_YESNO } from "../../../utils/GlobalVariables.json";
 import Enumerable from "linq";
 import swal from "sweetalert2";
 
@@ -27,6 +22,7 @@ class Roles extends Component {
     };
     this.getGroups();
     this.getRoles();
+    this.getAuthPrivilege();
   }
 
   initCall() {
@@ -224,6 +220,27 @@ class Roles extends Component {
       }
     });
   }
+  getAuthPrivilege() {
+    algaehApiCall({
+      uri: "/algaehMasters/getHrmsAuthLevels",
+      method: "GET",
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            leave_levels: res.data.records.leave_levels,
+            loan_levels: res.data.records.loan_levels
+          });
+        }
+      },
+      onError: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
   changeGridEditors(row, e) {
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
@@ -337,7 +354,7 @@ class Roles extends Component {
                   dataSource: {
                     textField: "name",
                     valueField: "value",
-                    data: LOAN_PRIVILEGE
+                    data: this.state.loan_levels
                   },
                   onChange: this.dropDownHandle.bind(this)
                 }}
@@ -356,7 +373,7 @@ class Roles extends Component {
                   dataSource: {
                     textField: "name",
                     valueField: "value",
-                    data: LEAVE_PRIVILEGE
+                    data: this.state.leave_levels
                   },
                   onChange: this.dropDownHandle.bind(this)
                 }}
@@ -545,7 +562,7 @@ class Roles extends Component {
                       />
                     ),
                     displayTemplate: row => {
-                      let x = Enumerable.from(LOAN_PRIVILEGE)
+                      let x = Enumerable.from(this.state.loan_levels)
                         .where(w => w.value === row.loan_authorize_privilege)
                         .firstOrDefault();
                       return <span>{x !== undefined ? x.name : "--"}</span>;
@@ -561,7 +578,7 @@ class Roles extends Component {
                             dataSource: {
                               textField: "name",
                               valueField: "value",
-                              data: LOAN_PRIVILEGE
+                              data: this.state.loan_levels
                             },
 
                             onChange: this.changeGridEditors.bind(this, row),
@@ -586,7 +603,7 @@ class Roles extends Component {
                       />
                     ),
                     displayTemplate: row => {
-                      let x = Enumerable.from(LEAVE_PRIVILEGE)
+                      let x = Enumerable.from(this.state.leave_levels)
                         .where(w => w.value === row.leave_authorize_privilege)
                         .firstOrDefault();
                       return <span>{x !== undefined ? x.name : "--"}</span>;
@@ -602,7 +619,7 @@ class Roles extends Component {
                             dataSource: {
                               textField: "name",
                               valueField: "value",
-                              data: LEAVE_PRIVILEGE
+                              data: this.state.leave_levels
                             },
 
                             onChange: this.changeGridEditors.bind(this, row),

@@ -9,7 +9,7 @@ module.exports = {
     const _mysql = new algaehMysql();
     try {
       _mysql
-        .executeQuery({
+        .executeQueryWithTransaction({
           query:
             "INSERT INTO `hims_d_services` (`service_code`, `cpt_code`,`service_name`, `hospital_id`,`service_type_id`, \
           `sub_department_id`,`standard_fee`, `discount`, `vat_applicable`, `vat_percent`, `effective_start_date`\
@@ -34,6 +34,11 @@ module.exports = {
           printQuery: true
         })
         .then(result => {
+          req.connection = {
+            connection: _mysql.connection,
+            isTransactionConnection: _mysql.isTransactionConnection,
+            pool: _mysql.pool
+          };
           let service_id = result.insertId;
           let package_service_id = result.insertId;
           _mysql
@@ -51,11 +56,20 @@ module.exports = {
                 service_insurance.length == 0 &&
                 service_insurance_network.length == 0
               ) {
-                _mysql.releaseConnection();
-                req.body.service_id = service_id;
-                req.body.package_service_id = package_service_id;
-                req.records = result;
-                next();
+                if (req.connection == null) {
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.body.service_id = service_id;
+                    req.body.package_service_id = package_service_id;
+                    req.records = result;
+                    next();
+                  });
+                } else {
+                  req.body.service_id = service_id;
+                  req.body.package_service_id = package_service_id;
+                  req.records = result;
+                  next();
+                }
               } else {
                 InsertintoServiceInsurance({
                   inputParam: inputParam,
@@ -75,35 +89,49 @@ module.exports = {
                       next: next
                     })
                       .then(insert_service_network => {
-                        _mysql.releaseConnection();
-                        req.body.service_id = service_id;
-                        req.body.package_service_id = package_service_id;
-                        req.records = result;
-                        next();
+                        if (req.connection == null) {
+                          _mysql.commitTransaction(() => {
+                            _mysql.releaseConnection();
+                            req.body.service_id = service_id;
+                            req.body.package_service_id = package_service_id;
+                            req.records = result;
+                            next();
+                          });
+                        } else {
+                          req.body.service_id = service_id;
+                          req.body.package_service_id = package_service_id;
+                          req.records = result;
+                          next();
+                        }
                       })
                       .catch(error => {
-                        _mysql.releaseConnection();
-                        next(error);
+                        _mysql.rollBackTransaction(() => {
+                          next(error);
+                        });
                       });
                   })
                   .catch(error => {
-                    _mysql.releaseConnection();
-                    next(error);
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
+                    });
                   });
               }
             })
             .catch(error => {
-              _mysql.releaseConnection();
-              next(error);
+              _mysql.rollBackTransaction(() => {
+                next(error);
+              });
             });
         })
         .catch(error => {
-          _mysql.releaseConnection();
-          next(error);
+          _mysql.rollBackTransaction(() => {
+            next(error);
+          });
         });
     } catch (e) {
-      _mysql.releaseConnection();
-      next(e);
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
     }
   },
 
