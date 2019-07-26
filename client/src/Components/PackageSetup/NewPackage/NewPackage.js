@@ -7,6 +7,7 @@ import "./NewPackage.css";
 import "./../../../styles/site.css";
 import {
   AlgaehLabel,
+  AlgaehDateHandler,
   AlagehFormGroup,
   AlagehAutoComplete,
   AlgaehDataGrid,
@@ -43,8 +44,13 @@ class NewPackage extends PureComponent {
       advance_amount: 0,
       advance_type: "P",
       qty: 1,
-      approveEnable: true
+      approveEnable: true,
+      approvedPack: false,
+      radioActive: true,
+      radioInactive: false,
+      package_status: "A"
     };
+    this.baseState = this.state;
   }
 
   componentDidMount() {
@@ -79,40 +85,18 @@ class NewPackage extends PureComponent {
         let IOputs = newProps.PackagesPop;
         IOputs.approvedPack = IOputs.approved === "Y" ? true : false;
         IOputs.approveEnable = false;
+        IOputs.radioActive = IOputs.package_status === "A" ? true : false;
+        IOputs.radioInactive = IOputs.package_status === "I" ? true : false;
+
         this.setState({ ...this.state, ...IOputs });
       }
     }
   }
 
   onClose = e => {
-    this.setState(
-      {
-        hims_d_package_header_id: null,
-        package_code: null,
-        package_name: null,
-        package_amount: 0,
-        total_service_amount: 0,
-        profit_loss: null,
-        pl_amount: 0,
-
-        package_type: "S",
-        package_visit_type: "S",
-        advance_percentage: 0,
-        advance_amount: 0,
-        advance_type: "P",
-        qty: 1,
-
-        PakageDetail: [],
-        deletePackage: [],
-        insertPackage: [],
-        s_service_amount: null,
-        s_service_type: null,
-        s_service: null
-      },
-      () => {
-        this.props.onClose && this.props.onClose(false);
-      }
-    );
+    this.setState(this.baseState, () => {
+      this.props.onClose && this.props.onClose(false);
+    });
   };
 
   eventHandaler(e) {
@@ -153,6 +137,17 @@ class NewPackage extends PureComponent {
   }
   ApprovePackages(e) {
     NewPackageEvent().ApprovePackages(this, e);
+  }
+  radioChange(e) {
+    NewPackageEvent().radioChange(this, e);
+  }
+
+  datehandle(ctrl, e) {
+    NewPackageEvent().datehandle(this, ctrl, e);
+  }
+
+  dateValidate(value, event) {
+    NewPackageEvent().dateValidate(this, value, event);
   }
   render() {
     return (
@@ -297,6 +292,42 @@ class NewPackage extends PureComponent {
                             />
                             <span>Dynamic</span>
                           </label>
+
+                          <label className="radio inline">
+                            <input
+                              type="radio"
+                              value="Active"
+                              checked={this.state.radioActive}
+                              onChange={this.radioChange.bind(this)}
+                            />
+                            <span>Active</span>
+                          </label>
+                          <label className="radio inline">
+                            <input
+                              type="radio"
+                              value="Inactive"
+                              checked={this.state.radioInactive}
+                              onChange={this.radioChange.bind(this)}
+                            />
+                            <span>Inactive</span>
+                          </label>
+
+                          <AlgaehDateHandler
+                            div={{ className: "col-3 form-group" }}
+                            label={{
+                              forceLabel: "Validate Till"
+                            }}
+                            minDate={new Date()}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "validated_date"
+                            }}
+                            events={{
+                              onChange: this.datehandle.bind(this),
+                              onBlur: this.dateValidate.bind(this)
+                            }}
+                            value={this.state.validated_date}
+                          />
                         </div>
                       ) : null}
                       <div className="col-3 customRadio form-group">
@@ -393,6 +424,7 @@ class NewPackage extends PureComponent {
                               <AlagehFormGroup
                                 div={{ className: "col form-group" }}
                                 label={{
+                                  forceLabel: "Advance %",
                                   isImp:
                                     this.state.package_visit_type === "M"
                                       ? true
@@ -417,7 +449,11 @@ class NewPackage extends PureComponent {
                               <AlagehFormGroup
                                 div={{ className: "col form-group" }}
                                 label={{
-                                  forceLabel: "Advance Amount"
+                                  forceLabel: "Advance Amount",
+                                  isImp:
+                                    this.state.package_visit_type === "M"
+                                      ? true
+                                      : false
                                 }}
                                 textBox={{
                                   decimal: { allowNegative: false },
@@ -720,7 +756,6 @@ class NewPackage extends PureComponent {
                         onClick={this.InsertPackages.bind(this)}
                         type="button"
                         className="btn btn-primary"
-                        disabled={this.state.approved === "Y" ? true : false}
                       >
                         {this.state.hims_d_package_header_id === null ? (
                           <AlgaehLabel label={{ fieldName: "btnSave" }} />
