@@ -27,13 +27,11 @@ const executePDF = function executePDFMethod(options) {
         strQuery += ` and E.sub_department_id=${input.sub_department_id}`;
       }
 
-      switch (input.employee_status) {
-        case "A":
-        case "I":
-        case "R":
-        case "T":
-        case "E":
-          strQuery += ` and E.employee_status='${input.employee_status}'`;
+      switch (input.sex) {
+        case "MALE":
+        case "FEMALE":
+        case "OTHER":
+          strQuery += ` and E.sex='${input.sex}'`;
           break;
       }
 
@@ -65,38 +63,17 @@ const executePDF = function executePDFMethod(options) {
           const result = res[1];
 
           if (result.length > 0) {
-            const departmentWise = _.chain(result)
-              .groupBy(g => g.hims_d_department_id)
-              .map(m => m)
+            const genderWiseEmp = _.chain(result)
+              .groupBy(g => g.sex)
+              .map(m => {
+                return { geder: m[0]["sex"], details: m };
+              })
               .value();
-            //utilities.logger().log("departmentWise:", departmentWise);
-            let outputArray = [];
-
-            for (let i = 0; i < departmentWise.length; i++) {
-              let dep_no_employee = 0;
-              const sub_dept = _.chain(departmentWise[i])
-                .groupBy(g => g.sub_department_id)
-                .map(sub => {
-                  dep_no_employee += sub.length;
-                  return {
-                    sub_department_name: sub[0].sub_department_name,
-                    sub_no_employee: sub.length,
-                    employees: sub
-                  };
-                })
-                .value();
-
-              outputArray.push({
-                department_name: departmentWise[i][0]["department_name"],
-                dep_no_employee: dep_no_employee,
-                sub_dept: sub_dept
-              });
-            }
 
             resolve({
               hospital_name: hospital_name,
               no_employees: result.length,
-              result: outputArray
+              result: genderWiseEmp
             });
           } else {
             resolve({

@@ -7,7 +7,8 @@ import {
   FORMAT_PAYTYPE,
   EXPIRY_STATUS,
   EMPLOYEE_STATUS,
-  COMPARISON
+  COMPARISON,
+  EMP_FORMAT_GENDER
 } from "../../utils/GlobalVariables.json";
 import { getYears, AlgaehOpenContainer } from "../../utils/GlobalFunctions";
 import { algaehApiCall } from "../../utils/algaehApiCall";
@@ -793,15 +794,15 @@ const HR_Payroll_Reports = [
           {
             className: "col-2",
             type: "dropdown",
-            name: "employee_status",
+            name: "sex",
             initialLoad: true,
             isImp: false,
-            label: "Employee Status",
+            label: "Employee Gender",
             link: {},
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: EMPLOYEE_STATUS
+              data: EMP_FORMAT_GENDER
             }
           }
         ]

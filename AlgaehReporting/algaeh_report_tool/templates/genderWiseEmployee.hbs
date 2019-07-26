@@ -23,6 +23,7 @@
                         <th>Sl No.</th>
                         <th>Employee Code</th>
                         <th>Employee Name</th>
+                        <th>Gender </th>
                         <th>Dept. </th>
                         <th>Sub Dept.</th>
                         <th>Designation</th>
@@ -41,15 +42,16 @@
 
                     {{#each result}}
                     <tr>
-                        <td colspan="11" class="tableSubHdg">Gender: {{sex}}
+                        <td colspan="11" class="tableSubHdg">Gender: {{geder}}
 
                         </td>
                     </tr>
-                    {{#each employees}}
+                    {{#each details}}
                     <tr>
                         <td>{{inc @index}}</td>
                         <td>{{employee_code}}</td>
                         <td style="text-align: left;">{{full_name}}</td>
+                        <td>{{sex}}</td>
                         <td>{{department_name}}</td>
                         <td>{{sub_department_name}}</td>
                         <td>{{designation}}</td>

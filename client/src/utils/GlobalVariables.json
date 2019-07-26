@@ -1628,9 +1628,8 @@
     { "name": "Delivery Completed", "value": "3" }
   ],
   "COMPARISON": [
-    { "name": ">", "value": "G" },
-    { "name": "=", "value": "E" },
-    { "name": "<", "value": "L" },
-    { "name": "BETWEEN", "value": "B" }
+    { "name": "Greater Than", "value": "G" },
+    { "name": "Equal To", "value": "E" },
+    { "name": "Less Than", "value": "L" }
   ]
 }
