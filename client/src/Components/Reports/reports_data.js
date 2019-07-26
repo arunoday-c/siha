@@ -546,13 +546,49 @@ const HR_Payroll_Reports = [
           {
             className: "col-2",
             type: "dropdown",
-            name: "sub_department_id",
+            name: "department_id",
             initialLoad: true,
             isImp: false,
-            label: "Select Sub-Department",
+            label: "Select Department",
             link: {
-              uri: "/department/get/subdepartment"
+              uri: "/department/get",
+              module: "masterSettings"
             },
+            dataSource: {
+              textField: "department_name",
+              valueField: "hims_d_department_id",
+              data: undefined
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/department/get/subdepartment",
+                  module: "masterSettings",
+                  method: "GET",
+                  data: { department_id: currentEvent.value },
+
+                  onSuccess: result => {
+                    reportState.setState({
+                      sub_department_id_list: result.data.records
+                    });
+                  }
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  sub_department_id_list: []
+                });
+              }
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "sub_department_id",
+            isImp: false,
+            label: "Select Sub-Department",
             dataSource: {
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",

@@ -69,13 +69,12 @@ const executePDF = function executePDFMethod(options) {
               .groupBy(g => g.hims_d_department_id)
               .map(m => m)
               .value();
-
+            //utilities.logger().log("departmentWise:", departmentWise);
             let outputArray = [];
-            const len = Object.keys(departmentWise).length;
-            for (let i = 0; i < len; i++) {
+
+            for (let i = 0; i < departmentWise.length; i++) {
               let dep_no_employee = 0;
               const sub_dept = _.chain(departmentWise[i])
-
                 .groupBy(g => g.sub_department_id)
                 .map(sub => {
                   dep_no_employee += sub.length;
