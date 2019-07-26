@@ -267,19 +267,25 @@ module.exports = {
       let _strQry = "";
       let intValues = [];
       if (req.query.hims_d_inventory_item_master_id != null) {
-        _strQry = "and hims_d_inventory_item_master_id=?";
+        _strQry = " and hims_d_inventory_item_master_id=?";
         intValues.push(req.query.hims_d_inventory_item_master_id);
       }
 
       if (req.query.item_type != null) {
-        _strQry = "and item_type=?";
+        _strQry = " and item_type=?";
         intValues.push(req.query.item_type);
       }
 
       if (req.query.item_status != null) {
-        _strQry = "and item_status=?";
+        _strQry = " and item_status=?";
         intValues.push(req.query.item_status);
       }
+
+      if (req.query.service_id != null) {
+        _strQry = " and service_id=?";
+        intValues.push(req.query.service_id);
+      }
+
       _mysql
         .executeQuery({
           query:

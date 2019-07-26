@@ -4,6 +4,7 @@ import {
   AlgaehValidation,
   AlgaehOpenContainer
 } from "../../../utils/GlobalFunctions";
+import moment from "moment";
 
 export default function NewPackageEvent() {
   return {
@@ -202,6 +203,46 @@ export default function NewPackageEvent() {
         querySelector: "data-validate='packagedata'",
         onSuccess: () => {
           let InputObj = $this.state;
+          if (parseFloat(InputObj.package_amount) === 0) {
+            swalMessage({
+              type: "warning",
+              title: "Enter The package amount"
+            });
+            document.querySelector("[name='package_amount']").focus();
+            return;
+          } else if (InputObj.package_visit_type === "M") {
+            if (
+              parseFloat(InputObj.expiry_days) === 0 ||
+              InputObj.expiry_days === null
+            ) {
+              swalMessage({
+                type: "warning",
+                title: "Enter Expiry Days"
+              });
+              document.querySelector("[name='expiry_days']").focus();
+              return;
+            } else if (
+              InputObj.advance_type === "P" &&
+              parseFloat(InputObj.advance_percentage) === 0
+            ) {
+              swalMessage({
+                type: "warning",
+                title: "Enter The Advance Percentage"
+              });
+              document.querySelector("[name='advance_percentage']").focus();
+              return;
+            } else if (
+              InputObj.advance_type === "A" &&
+              parseFloat(InputObj.advance_amount) === 0
+            ) {
+              swalMessage({
+                type: "warning",
+                title: "Enter The Advance Amount"
+              });
+              document.querySelector("[name='advance_amount']").focus();
+              return;
+            }
+          }
           if (InputObj.PakageDetail.length === 0) {
             swalMessage({
               type: "warning",
@@ -218,7 +259,14 @@ export default function NewPackageEvent() {
             appropriate_amount = appropriate_amount.toFixed(2);
             InputObj.PakageDetail[i].appropriate_amount = appropriate_amount;
           }
+
           debugger;
+          if (InputObj.advance_type === "P") {
+            InputObj.advance_amount =
+              (parseFloat(InputObj.package_amount) *
+                parseFloat(InputObj.advance_percentage)) /
+              100;
+          }
           if (InputObj.hims_d_package_header_id === null) {
             InputObj.service_code = InputObj.package_code;
             InputObj.service_type_id = "14";
@@ -239,16 +287,20 @@ export default function NewPackageEvent() {
                     approveEnable: false
                   });
                   if ($this.state.from === "doctor") {
-                    $this.props.onClose &&
-                      $this.props.onClose(
-                        response.data.records.package_service_id
-                      );
-                  } else {
-                    swalMessage({
-                      type: "success",
-                      title: "Saved successfully . ."
+                    $this.setState($this.baseState, () => {
+                      $this.props.onClose &&
+                        $this.props.onClose(
+                          response.data.records.package_service_id
+                        );
                     });
-                    $this.props.onClose && $this.props.onClose(true);
+                  } else {
+                    $this.setState($this.baseState, () => {
+                      swalMessage({
+                        type: "success",
+                        title: "Saved successfully . ."
+                      });
+                      $this.props.onClose && $this.props.onClose(true);
+                    });
                   }
                 }
               }
@@ -263,6 +315,10 @@ export default function NewPackageEvent() {
               appropriate_amount = appropriate_amount.toFixed(2);
               InputObj.insertPackage[i].appropriate_amount = appropriate_amount;
             }
+            const updatePakageDetail = _.filter(InputObj.PakageDetail, f => {
+              return f.hims_d_package_detail_id > 0;
+            });
+            InputObj.updatePakageDetail = updatePakageDetail;
             algaehApiCall({
               uri: "/packagesetup/updatePackageSetup",
               module: "masterSettings",
@@ -270,11 +326,13 @@ export default function NewPackageEvent() {
               method: "PUT",
               onSuccess: response => {
                 if (response.data.success === true) {
-                  swalMessage({
-                    type: "success",
-                    title: "Updated successfully . ."
+                  $this.setState($this.baseState, () => {
+                    swalMessage({
+                      type: "success",
+                      title: "Updated successfully . ."
+                    });
+                    $this.props.onClose && $this.props.onClose(true);
                   });
-                  $this.props.onClose && $this.props.onClose(true);
                 }
               }
             });
@@ -384,6 +442,62 @@ export default function NewPackageEvent() {
             }
           });
         }
+      });
+    },
+
+    radioChange: ($this, e) => {
+      let radioActive = true;
+      let radioInactive = false;
+      let package_status = "A";
+      if (e.target.value === "Active") {
+        radioActive = true;
+        radioInactive = false;
+        package_status = "A";
+      } else if (e.target.value === "Inactive") {
+        radioActive = false;
+        radioInactive = true;
+        package_status = "I";
+      }
+      $this.setState({
+        [e.target.name]: e.target.value,
+        radioInactive: radioInactive,
+        radioActive: radioActive,
+        package_status: package_status
+      });
+    },
+
+    datehandle: ($this, ctrl, e) => {
+      $this.setState({
+        [e]: moment(ctrl)._d
+      });
+    },
+
+    dateValidate: ($this, value, event) => {
+      let inRange = moment(value).isBefore(moment().format("YYYY-MM-DD"));
+      if (inRange) {
+        swalMessage({
+          title: "Expiry date cannot be past Date.",
+          type: "warning"
+        });
+        event.target.focus();
+        $this.setState({
+          [event.target.name]: null
+        });
+      }
+    },
+    CopyCreatePackage: $this => {
+      debugger;
+      let Package_data = $this.state;
+
+      Package_data.qty = 1;
+      Package_data.approveEnable = true;
+      Package_data.approvedPack = false;
+      Package_data.radioActive = true;
+      Package_data.radioInactive = false;
+      Package_data.hims_d_package_header_id = null;
+      Package_data.package_code = null;
+      $this.setState($this.baseState, () => {
+        $this.setState(Package_data);
       });
     }
   };

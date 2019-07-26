@@ -1,4 +1,5 @@
 import React from "react";
+import "./MonthlyDetail.css";
 import {
   AlgaehDataGrid,
   AlgaehModalPopUp,
@@ -49,24 +50,31 @@ function MonthlyDetail(props) {
                       return moment(row.attendance_date).format("DD-MMM-YYYY");
                     }
                   },
+                  // {
+                  //   fieldName: "year",
+                  //   label: <AlgaehLabel label={{ forceLabel: "Year" }} />
+                  // },
+                  // {
+                  //   fieldName: "month",
+                  //   label: <AlgaehLabel label={{ forceLabel: "month" }} />,
+                  //   displayTemplate: row => {
+                  //     return moment(row.month, "M").format("MMMM");
+                  //   }
+                  // },
                   {
-                    fieldName: "year",
-                    label: <AlgaehLabel label={{ forceLabel: "Year" }} />
+                    fieldName: "weekoff_days",
+                    label: <AlgaehLabel label={{ forceLabel: "weekoffs" }} />
                   },
                   {
-                    fieldName: "month",
-                    label: <AlgaehLabel label={{ forceLabel: "month" }} />
+                    fieldName: "holidays",
+                    label: <AlgaehLabel label={{ forceLabel: "holidays" }} />
                   },
-                  {
-                    fieldName: "total_days",
-                    label: <AlgaehLabel label={{ forceLabel: "Total Days" }} />
-                  },
-                  {
-                    fieldName: "total_work_days",
-                    label: (
-                      <AlgaehLabel label={{ forceLabel: "Total Work Days" }} />
-                    )
-                  },
+                  // {
+                  //   fieldName: "total_work_days",
+                  //   label: (
+                  //     <AlgaehLabel label={{ forceLabel: "Total Work Days" }} />
+                  //   )
+                  // },
                   {
                     fieldName: "present_days",
                     label: (
@@ -126,7 +134,7 @@ function MonthlyDetail(props) {
                     fieldName: "total_hours",
                     label: (
                       <AlgaehLabel
-                        label={{ forceLabel: "Total Worked Hours" }}
+                        label={{ forceLabel: "Actual Worked Hours" }}
                       />
                     ),
                     displayTemplate: row => {

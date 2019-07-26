@@ -144,9 +144,32 @@ class OrderedList extends PureComponent {
 
   ShowPackageUtilize(row) {
     debugger;
-    this.setState({
-      isPackUtOpen: !this.state.isPackUtOpen,
-      package_detail: row
+
+    algaehApiCall({
+      uri: "/department/get/subdepartment",
+      method: "GET",
+      module: "masterSettings",
+      onSuccess: response => {
+        if (response.data.success === true) {
+          const Departmant_Location = _.filter(response.data.records, f => {
+            return (
+              f.hims_d_sub_department_id ===
+              this.props.patient_profile[0].sub_department_id
+            );
+          });
+          this.setState({
+            isPackUtOpen: !this.state.isPackUtOpen,
+            package_detail: row,
+            inventory_location_id: Departmant_Location[0].inventory_location_id
+          });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
     });
   }
   ClosePackageUtilize() {
@@ -164,6 +187,17 @@ class OrderedList extends PureComponent {
           redux: {
             type: "ORDER_SERVICES_GET_DATA",
             mappingName: "pakageList"
+          }
+        });
+        this.props.getOrderList({
+          uri: "/orderAndPreApproval/selectOrderServicesbyDoctor",
+          method: "GET",
+          data: {
+            visit_id: Window.global["visit_id"]
+          },
+          redux: {
+            type: "ORDER_SERVICES_GET_DATA",
+            mappingName: "orderedList"
           }
         });
       }
@@ -895,6 +929,7 @@ class OrderedList extends PureComponent {
           patient_id={Window.global["current_patient"]}
           visit_id={Window.global["visit_id"]}
           doctor_id={Window.global["provider_id"]}
+          inventory_location_id={this.state.inventory_location_id}
         />
       </div>
     );
