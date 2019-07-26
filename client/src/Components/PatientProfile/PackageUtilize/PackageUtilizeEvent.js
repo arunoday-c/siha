@@ -252,11 +252,11 @@ export default function PackageSetupEvent() {
       }
     },
 
-    getItemLocationStock: $this => {
+    ShowBatchDetails: ($this, row) => {
       debugger;
       algaehApiCall({
         uri: "/inventory/getItemMaster",
-        data: { service_id: $this.state.service_id },
+        data: { service_id: row.service_id },
         module: "inventory",
         method: "GET",
         onSuccess: response => {
@@ -264,7 +264,7 @@ export default function PackageSetupEvent() {
             debugger;
             let inputObj = {
               item_id: response.data.records[0].hims_d_inventory_item_master_id,
-              inventory_location_id: $this.state.inventory_location_id
+              inventory_location_id: $this.props.inventory_location_id
             };
             algaehApiCall({
               uri: "/inventoryGlobal/getItemandLocationStock",
@@ -274,6 +274,7 @@ export default function PackageSetupEvent() {
               onSuccess: response => {
                 if (response.data.success === true) {
                   $this.setState({
+                    itemBatches: !$this.state.itemBatches,
                     batch_wise_item: response.data.records
                   });
                 }

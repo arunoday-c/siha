@@ -12,7 +12,7 @@ import {
 
 import { AlgaehActions } from "../../../actions/algaehActions";
 import _ from "lodash";
-import PackageUtilizeEvent from "./PackageUtilizeEvent";
+import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 
 class ConsumtionItemBatches extends PureComponent {
   constructor(props) {
@@ -40,15 +40,59 @@ class ConsumtionItemBatches extends PureComponent {
       this.setState(
         {
           inventory_location_id: newProps.inventory_location_id,
-          service_id: newProps.service_id,
+          batch_wise_item: newProps.batch_wise_item,
           location_name: Location_name[0].location_description,
           location_type: Location_name[0].location_type
         },
         () => {
-          PackageUtilizeEvent().getItemLocationStock(this);
+          // this.getItemLocationStock();
         }
       );
     }
+  }
+
+  getItemLocationStock() {
+    debugger;
+    algaehApiCall({
+      uri: "/inventory/getItemMaster",
+      data: { service_id: this.state.service_id },
+      module: "inventory",
+      method: "GET",
+      onSuccess: response => {
+        if (response.data.success === true) {
+          debugger;
+          let inputObj = {
+            item_id: response.data.records[0].hims_d_inventory_item_master_id,
+            inventory_location_id: this.state.inventory_location_id
+          };
+          algaehApiCall({
+            uri: "/inventoryGlobal/getItemandLocationStock",
+            module: "inventory",
+            method: "GET",
+            data: inputObj,
+            onSuccess: response => {
+              if (response.data.success === true) {
+                this.setState({
+                  batch_wise_item: response.data.records
+                });
+              }
+            },
+            onFailure: error => {
+              swalMessage({
+                title: error.message,
+                type: "error"
+              });
+            }
+          });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
   }
 
   onClose = e => {

@@ -46,3 +46,8 @@
 .highlightGrey {
   background: #e4e4e4;
   border: 1px solid #d3d3d3; }
+
+.packageAvail {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: bold; }

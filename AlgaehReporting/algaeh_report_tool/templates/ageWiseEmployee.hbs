@@ -23,6 +23,8 @@
                         <th>Employee Code</th>
                         <th>Employee Name</th>
                         <th>Gender</th>
+                        <th>Dept. </th>
+                        <th>Sub Dept.</th>
                         <th>Designation</th>
                         <th>Date of Joining</th>
                         <th>Nationality</th>
@@ -37,23 +39,17 @@
 
                     {{#each result}}
                     <tr>
-                        <td colspan="10" class="tableSubHdg">Dept. Name: {{department_name}}
-                            <span class="textFloatRight">No
-                                Employees: {{dep_no_employee}}</span>
+                        <td colspan="10" class="tableSubHdg">Gender: {{sex}}
+
                         </td>
-                    </tr>
-                    {{#each sub_dept}}
-                    <tr>
-                        <td colspan="10" class="tableSubHdg2">Sub Dept. Name: {{sub_department_name}} <span
-                                class="textFloatRight">No
-                                Employees: {{sub_no_employee}}</span></td>
                     </tr>
                     {{#each employees}}
                     <tr>
                         <td>{{inc @index}}</td>
                         <td>{{employee_code}}</td>
                         <td style="text-align: left;">{{full_name}}</td>
-                        <td>{{sex}}</td>
+                        <td>{{department_name}}</td>
+                        <td>{{sub_department_name}}</td>
                         <td>{{designation}}</td>
                         <td>{{date_of_joining}}</td>
                         <td>{{nationality}}</td>
@@ -61,7 +57,7 @@
                         <td>{{employee_type}}</td>
                         <td>{{asemployee_status}}</td>
                     </tr>
-                    {{/each }}{{/each }}{{/each }}
+                    {{/each }}{{/each }}
                     {{else}}
                     <tr>
                         <td colspan="10" class="noResultTextReport">No Records Found</td>

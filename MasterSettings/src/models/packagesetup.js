@@ -15,9 +15,9 @@ module.exports = {
           query:
             "INSERT INTO `hims_d_package_header` (`package_code`, `package_name`, `package_amount`,\
           `total_service_amount`, `profit_loss`, `pl_amount`,`package_service_id`, `package_type`,`expiry_days`,\
-          `advance_type`, `advance_amount`, `advance_percentage`, `package_visit_type`,`package_status`\
-          `validated_date`,`created_date`, `created_by`, `updated_date`, `updated_by`)\
-         VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+          `advance_type`, `advance_amount`, `advance_percentage`, `package_visit_type`,`package_status`,\
+          `validated_date`,`cancellation_policy`,`created_date`, `created_by`, `updated_date`, `updated_by`)\
+         VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
           values: [
             input.package_code,
             input.package_name,
@@ -34,6 +34,7 @@ module.exports = {
             input.package_visit_type,
             input.package_status,
             input.validated_date,
+            input.cancellation_policy,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
@@ -110,7 +111,7 @@ module.exports = {
             "select PH.hims_d_package_header_id,PH.package_code, PH.package_name, PH.package_amount,\
             PH.total_service_amount, PH.profit_loss,PH.pl_amount, PH.package_service_id, PH.package_type,\
             PH.expiry_days, PH.advance_type, PH.advance_amount, PH.advance_percentage,PH.package_status,\
-            PH.validated_date,\
+            PH.validated_date,PH.cancellation_policy,\
             PH.package_visit_type, PH.approved, PD.hims_d_package_detail_id, PD.service_type_id, PD.service_id, \
             PD.service_amount, PD.qty,PD.tot_service_amount,PD.appropriate_amount,PD.qty as available_qty \
             from hims_d_package_header PH, hims_d_package_detail PD where \
@@ -151,9 +152,9 @@ module.exports = {
         .executeQueryWithTransaction({
           query:
             "UPDATE `hims_d_package_header` SET `package_code`=?, `package_name`=?, `package_amount`=?,\
-          `total_service_amount`=?, `profit_loss`=?, `pl_amount`=?, \
-          `package_type`=?,`expiry_days`=?,`advance_type`=?, `advance_amount`=?, `advance_percentage`=?,\
-          `package_visit_type`=?,`package_status`=?,`validated_date`=?,`updated_date`=?, `updated_by`=?" +
+          `total_service_amount`=?, `profit_loss`=?, `pl_amount`=?, `package_type`=?, `expiry_days`=?,\
+          `advance_type`=?, `advance_amount`=?, `advance_percentage`=?, `package_visit_type`=?, `package_status`=?,\
+          `validated_date`=?,`cancellation_policy`=?,`updated_date`=?, `updated_by`=?" +
             strQuery +
             " WHERE record_status='A' and `hims_d_package_header_id`=?",
           values: [
@@ -171,6 +172,7 @@ module.exports = {
             input.package_visit_type,
             input.package_status,
             input.validated_date,
+            input.cancellation_policy,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             input.hims_d_package_header_id

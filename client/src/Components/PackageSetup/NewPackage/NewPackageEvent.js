@@ -425,6 +425,10 @@ export default function NewPackageEvent() {
             InputObj.PakageDetail[i].appropriate_amount = appropriate_amount;
           }
           InputObj.approved = "Y";
+          const updatePakageDetail = _.filter(InputObj.PakageDetail, f => {
+            return f.hims_d_package_detail_id > 0;
+          });
+          InputObj.updatePakageDetail = updatePakageDetail;
           debugger;
           algaehApiCall({
             uri: "/packagesetup/updatePackageSetup",
@@ -476,7 +480,7 @@ export default function NewPackageEvent() {
       let inRange = moment(value).isBefore(moment().format("YYYY-MM-DD"));
       if (inRange) {
         swalMessage({
-          title: "Expiry date cannot be past Date.",
+          title: "Package Validate Upto cannot be past Date.",
           type: "warning"
         });
         event.target.focus();

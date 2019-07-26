@@ -91,10 +91,11 @@ class PackageUtilize extends Component {
   }
 
   ShowBatchDetails(row) {
-    this.setState({
-      itemBatches: !this.state.itemBatches,
-      service_id: row.service_id
-    });
+    PackageUtilizeEvent().ShowBatchDetails(this, row);
+    // this.setState({
+    //   itemBatches: !this.state.itemBatches,
+    //   service_id: row.service_id
+    // });
   }
   CloseBatchDetails(e) {
     let batchno = e !== undefined ? e.batchno : null;
@@ -375,7 +376,7 @@ class PackageUtilize extends Component {
                 show={this.state.itemBatches}
                 onClose={this.CloseBatchDetails.bind(this)}
                 inventory_location_id={this.props.inventory_location_id}
-                service_id={this.state.service_id}
+                batch_wise_item={this.state.batch_wise_item}
               />
 
               {/*

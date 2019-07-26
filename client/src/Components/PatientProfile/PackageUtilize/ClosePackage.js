@@ -374,9 +374,10 @@ class ClosePackage extends PureComponent {
                     className: "txt-fld",
                     name: "cash_amount",
                     value: this.state.cash_amount,
-
+                    events: {
+                      onChange: this.texthandle.bind(this)
+                    },
                     others: {
-                      disabled: true,
                       placeholder: "0.00"
                     }
                   }}

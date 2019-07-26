@@ -797,7 +797,7 @@ let load_orders_for_bill = (req, res, next) => {
         .executeQuery({
           query:
             "SELECT  OS.`hims_f_ordered_services_id`, OS.`hims_f_ordered_services_id` as ordered_services_id,\
-             OS.`patient_id`, OS.`visit_id`,\
+             OS.`patient_id`, OS.`visit_id`,OS.`trans_package_detail_id`,\
           OS.`doctor_id`, OS.`service_type_id`, OS.`services_id`, OS.`test_type`, OS.`insurance_yesno`, \
           OS.`insurance_provider_id`, OS.`insurance_sub_id`, OS.`d_treatment_id`,\
           OS.`network_id`, OS.`insurance_network_office_id`, OS.`policy_number`, OS.`pre_approval`, OS.`apprv_status`, \

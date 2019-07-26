@@ -211,10 +211,10 @@ export default () => {
   });
 
   api.post("/notifyException", notifyException, (req, res, next) => {
-    if (typeof req.records === "string") {
-      res.status(utlities.AlgaehUtilities().httpStatus().badRequest).json({
+    if (req.records.no_exception == true) {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: false,
-        message: req.records
+        records: req.records
       });
     } else {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
