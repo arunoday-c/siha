@@ -1,9 +1,45 @@
 import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 import swal from "sweetalert2";
 import _ from "lodash";
+import moment from "moment";
 
 export default function PackageSetupEvent() {
   return {
+    texthandle: ($this, e) => {
+      let name = e.name || e.target.name;
+      let value = e.value || e.target.value;
+      let refundAmount = 0;
+      if (name === "closed_type" && value === "R") {
+        if ($this.state.cancellation_policy === "AC") {
+          refundAmount =
+            parseFloat($this.state.advance_amount) -
+            parseFloat($this.state.actual_utilize_amount);
+        } else if ($this.state.cancellation_policy === "AP") {
+          refundAmount =
+            parseFloat($this.state.advance_amount) -
+            parseFloat($this.state.utilize_amount);
+        }
+      }
+
+      if (name === "cancel_amount") {
+        if ($this.state.cancellation_policy === "AC") {
+          refundAmount =
+            parseFloat($this.state.advance_amount) -
+            parseFloat($this.state.actual_utilize_amount);
+          refundAmount = refundAmount - parseFloat(value);
+        } else if ($this.state.cancellation_policy === "AP") {
+          refundAmount =
+            parseFloat($this.state.advance_amount) -
+            parseFloat($this.state.utilize_amount);
+          refundAmount = refundAmount - parseFloat(value);
+        }
+      }
+      $this.setState({
+        [name]: value,
+        cash_amount: refundAmount,
+        total_amount: refundAmount
+      });
+    },
     onquantitycol: ($this, row, e) => {
       let name = e.name || e.target.name;
       let value = e.value || e.target.value;
@@ -61,7 +97,8 @@ export default function PackageSetupEvent() {
         return;
       }
       InputObj.package_details = package_details;
-      let utilize_amount = 0;
+      let utilize_amount = 0,
+        actual_utilize_amount = 0;
       // if (parseFloat(InputObj.advance_amount) === 0) {
       //   swalMessage({
       //     title: "Please collect the advance",
@@ -94,6 +131,12 @@ export default function PackageSetupEvent() {
                 parseFloat(InputObj.package_details[i].qty)) *
                 parseFloat(InputObj.package_details[i].quantity);
 
+            actual_utilize_amount =
+              actual_utilize_amount +
+              (parseFloat(InputObj.package_details[i].tot_service_amount) /
+                parseFloat(InputObj.package_details[i].qty)) *
+                parseFloat(InputObj.package_details[i].quantity);
+
             InputObj.package_details[i].patient_id = $this.props.patient_id;
             InputObj.package_details[i].visit_id = $this.props.visit_id;
             InputObj.package_details[i].doctor_id = $this.props.doctor_id;
@@ -104,6 +147,10 @@ export default function PackageSetupEvent() {
           if ($this.state.package_visit_type === "M") {
             InputObj.utilize_amount = (
               parseFloat(InputObj.utilize_amount) + utilize_amount
+            ).toFixed(2);
+
+            InputObj.actual_utilize_amount = (
+              parseFloat(InputObj.actual_utilize_amount) + actual_utilize_amount
             ).toFixed(2);
 
             InputObj.balance_amount =
@@ -184,6 +231,27 @@ export default function PackageSetupEvent() {
         AdvanceOpen: !$this.state.AdvanceOpen
       });
     },
+    ShowCloseScreen: $this => {
+      $this.setState({
+        closePackage: !$this.state.closePackage
+      });
+    },
+    ClosePackageScreen: ($this, e) => {
+      debugger;
+      if (e === true) {
+        $this.setState(
+          { closePackage: !$this.state.closePackage, package_details: [] },
+          () => {
+            $this.props.onClose && $this.props.onClose(e);
+          }
+        );
+      } else {
+        $this.setState({
+          closePackage: !$this.state.closePackage
+        });
+      }
+    },
+
     getItemLocationStock: $this => {
       debugger;
       algaehApiCall({
@@ -217,6 +285,31 @@ export default function PackageSetupEvent() {
                 });
               }
             });
+          }
+        },
+        onFailure: error => {
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
+        }
+      });
+    },
+
+    getCashiersAndShiftMAP: $this => {
+      let year = moment().format("YYYY");
+      let month = moment().format("MM");
+
+      algaehApiCall({
+        uri: "/shiftAndCounter/getCashiersAndShiftMAP",
+        module: "masterSettings",
+        method: "GET",
+        data: { year: year, month: month, for: "T" },
+        onSuccess: response => {
+          if (response.data.success) {
+            if (response.data.records.length > 0) {
+              $this.setState({ shift_id: response.data.records[0].shift_id });
+            }
           }
         },
         onFailure: error => {

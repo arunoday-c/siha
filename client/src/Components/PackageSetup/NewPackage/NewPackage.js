@@ -739,6 +739,23 @@ class NewPackage extends PureComponent {
                                   </span>
                                 );
                               }
+                            },
+                            {
+                              fieldName: "appropriate_amount",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Appropriate Amount" }}
+                                />
+                              ),
+                              displayTemplate: row => {
+                                return (
+                                  <span>
+                                    {getAmountFormart(row.appropriate_amount, {
+                                      appendSymbol: false
+                                    })}
+                                  </span>
+                                );
+                              }
                             }
                           ]}
                           keyId="packages_detail_grid"
