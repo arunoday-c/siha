@@ -270,7 +270,7 @@ module.exports = {
                             }
                           })
                           .then(pendingUpdaidResult => {
-                            utilities.logger().log("befor: ");
+                
                             calc(_mysql, req.body)
                               .then(deductionResult => {
                                 utilities
@@ -529,7 +529,7 @@ module.exports = {
                                 }
                               })
                               .catch(e => {
-                                utilities.logger().log("apple: ", e);
+                     
                                 _mysql.rollBackTransaction(() => {
                                   next(e);
                                 });
@@ -1343,7 +1343,7 @@ module.exports = {
               })
               .ToArray();
 
-            utilities.logger().log("allHolidays: ", allHolidays);
+            
             //s -------START OF--- get count of holidays and weekOffs betwen apllied leave range
             let week_off_Data = new LINQ(allHolidays)
               .Select(s => {
@@ -1396,7 +1396,7 @@ module.exports = {
               next();
               return;
             } else {
-              utilities.logger().log("gggg: ", from_date);
+
 
               // subtracting  week off or holidays fom LeaveApplied Days
               if (
@@ -2351,7 +2351,7 @@ module.exports = {
         printQuery: false
       })
       .then(leaveHeadResult => {
-        utilities.logger().log("leaveHeadResult: ", leaveHeadResult);
+      
 
         if (leaveHeadResult.insertId > 0) {
           new Promise((resolve, reject) => {
@@ -2378,7 +2378,7 @@ module.exports = {
                     printQuery: false
                   })
                   .then(encashResult => {
-                    utilities.logger().log("encashResult: ", encashResult);
+             
 
                     if (encashResult.insertId > 0) {
                       resolve({ encashResult });
@@ -2433,7 +2433,7 @@ module.exports = {
                       printQuery: false
                     })
                     .then(ruleResult => {
-                      utilities.logger().log("ruleResult: ", ruleResult);
+           
                       if (ruleResult.insertId > 0) {
                         resolve({ ruleResult });
                       } else {
@@ -2493,7 +2493,7 @@ module.exports = {
                         printQuery: false
                       })
                       .then(detailResult => {
-                        utilities.logger().log("detailResult: ", detailResult);
+             
 
                         if (detailResult.insertId > 0) {
                           resolve({ detailResult });
@@ -2762,7 +2762,7 @@ module.exports = {
                         printQuery: false
                       })
                       .then(yearResult => {
-                        utilities.logger().log("yearResult: ", yearResult);
+        
 
                         if (yearResult.affectedRows > 0) {
                           resolve({ yearResult });
@@ -3684,7 +3684,7 @@ module.exports = {
                         printQuery: false
                       })
                       .then(salResult => {
-                        utilities.logger().log("salResult: ", salResult);
+     
 
                         if (
                           salResult.length < 1 ||
@@ -4412,10 +4412,8 @@ function calc(db, body) {
               calculatedLeaveDays =
                 parseFloat(calculatedLeaveDays) - parseFloat(session_diff);
 
-              utilities
-                .logger()
-                .log("calculatedLeaveDays: ", calculatedLeaveDays);
-              utilities.logger().log("currentClosingBal: ", currentClosingBal);
+        
+    
 
               //checking if he has enough eligible days
               if (
@@ -4533,7 +4531,7 @@ function saveF(_mysql, req, next, input, msg) {
           }
         })
         .catch(e => {
-          // utilities.logger().log("error yy: ",e);
+
 
           _mysql.rollBackTransaction(() => {
             next(e);

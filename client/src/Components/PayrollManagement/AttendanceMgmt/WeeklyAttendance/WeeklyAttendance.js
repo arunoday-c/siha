@@ -137,7 +137,7 @@ export default class WeeklyAttendance extends Component {
           });
         } else if (!res.data.success) {
           swalMessage({
-            title: res.data.message,
+            title: res.data.records.message,
             type: "warning"
           });
         }
@@ -490,9 +490,7 @@ export default class WeeklyAttendance extends Component {
 
   getExcessShortage(data) {
     let strWorking = data.worked_hours.split(".");
-    // console.log("strWorking", strWorking);
-    // console.log("strWorking", strWorking[0]);
-    // console.log("strWorking", strWorking[1]);
+
     let excess_hr = parseFloat(strWorking[0]) - parseFloat(data.actual_hours);
     excess_hr = excess_hr < 0 ? 0 : excess_hr;
 
@@ -500,8 +498,6 @@ export default class WeeklyAttendance extends Component {
       parseFloat(strWorking[1]) - parseFloat(data.actual_minutes);
     excess_min = excess_min < 0 ? 0 : excess_min;
 
-    console.log("excess_hr", excess_hr);
-    console.log("excess_min", excess_min);
     return data.shortage_Time > 0 ? (
       <React.Fragment>
         Shortage Time:
