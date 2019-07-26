@@ -712,7 +712,8 @@ textarea {
     height: 15px;
     border-width: thin;
     background-size: 60%; }
-  .algaeh-datePicker input[type="time"]::-webkit-calendar-picker-indicator, .algaeh-datePicker input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  .algaeh-datePicker input[type="time"]::-webkit-calendar-picker-indicator,
+  .algaeh-datePicker input[type="datetime-local"]::-webkit-calendar-picker-indicator {
     color: rgba(0, 0, 0, 0);
     opacity: 1;
     display: block;
@@ -1288,7 +1289,7 @@ th {
     max-width: 33.333333%; }
   .algaeh-modal,
   .algaeh-modal-Ar {
-    max-width: 90.666667%; } }
+    max-width: 96.666667%; } }
 
 /* Large devices ( laptops and desktops, 1200px) */
 @media only screen and (min-width: 1200) {

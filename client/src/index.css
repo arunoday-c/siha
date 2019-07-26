@@ -476,7 +476,7 @@
     border-color: #01968c; }
   :global .customRadio {
     border-bottom: 1px solid #eee;
-    padding-bottom: 5px;
+    padding-bottom: 9px;
     width: 100%; }
     :global .customRadio .block {
       display: block;
@@ -532,7 +532,7 @@
       -webkit-border-radius: 100%; }
   :global .customCheckbox {
     border-bottom: 1px solid #eee;
-    padding-bottom: 5px; }
+    padding-bottom: 9px; }
     :global .customCheckbox .inline {
       display: inline-block;
       margin-right: 10px; }
@@ -616,7 +616,7 @@
       border-radius: 100%;
       box-shadow: 0 3px 8px #00000063; }
   :global .algaeh-modal {
-    margin: 3% auto 0;
+    margin: 2% auto 0;
     background-color: #fff;
     padding: 0;
     border-radius: 5px;
@@ -746,7 +746,7 @@
         margin-right: 10px !important;
         margin-left: 0px !important; }
   :global .algaeh-modal-Ar {
-    margin: 3% auto 0;
+    margin: 2% auto 0;
     background-color: #fff;
     padding: 0;
     border-radius: 5px;

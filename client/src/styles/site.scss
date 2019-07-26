@@ -1,5 +1,7 @@
 @import "./algaehCssVariables.scss";
-html{overflow: hidden;}
+html {
+  overflow: hidden;
+}
 body {
   line-height: 1.45;
   font-weight: $fontWeight;
@@ -670,8 +672,9 @@ body {
         color: $color-white !important;
         border-color: lighten($primary-color, 10%);
       }
-    }.btn:disabled{
-      cursor: not-allowed!important;
+    }
+    .btn:disabled {
+      cursor: not-allowed !important;
       opacity: 0.4;
     }
   }
@@ -857,7 +860,8 @@ textarea {
     background-size: 60%;
   }
 
-  input[type="time"]::-webkit-calendar-picker-indicator,  input[type="datetime-local"]::-webkit-calendar-picker-indicator{
+  input[type="time"]::-webkit-calendar-picker-indicator,
+  input[type="datetime-local"]::-webkit-calendar-picker-indicator {
     color: rgba(0, 0, 0, 0);
     opacity: 1;
     display: block;
@@ -938,7 +942,6 @@ input.autoselect-input:disabled {
   border-radius: 4px;
 
   .table {
-   
     border-bottom: 1.5px solid #f2f2f2;
     margin: 0;
     thead {
@@ -1361,51 +1364,50 @@ th {
     }
   }
 
-.table-nonResponsive {
-  border: 1px solid #e2e2e2;
-  border-radius: 4px;
+  .table-nonResponsive {
+    border: 1px solid #e2e2e2;
+    border-radius: 4px;
 
-  .table {
-    
-    border-bottom: 1.5px solid #f2f2f2;
-    margin: 0;
-    thead {
-      tr {
-        th {
-          border-bottom: 2px solid #34b8bc !important;
-          vertical-align: middle !important;
-          background: #e8feff !important;
+    .table {
+      border-bottom: 1.5px solid #f2f2f2;
+      margin: 0;
+      thead {
+        tr {
+          th {
+            border-bottom: 2px solid #34b8bc !important;
+            vertical-align: middle !important;
+            background: #e8feff !important;
 
-          text-transform: uppercase;
-          text-align: center;
-          label.style_Label {
-            font-weight: bold;
+            text-transform: uppercase;
+            text-align: center;
+            label.style_Label {
+              font-weight: bold;
+            }
           }
         }
       }
-    }
-    tbody {
-      height: 200px;
-      overflow: auto;
-      width: 100%;
-      tr {
-        cursor: pointer;
-      }
-      td {
-        vertical-align: middle;
-        white-space: nowrap;
+      tbody {
+        height: 200px;
+        overflow: auto;
+        width: 100%;
+        tr {
+          cursor: pointer;
+        }
+        td {
+          vertical-align: middle;
+          white-space: nowrap;
 
-        text-align: center;
+          text-align: center;
+        }
       }
-    }
-    div {
       div {
-        height: auto !important;
-        min-height: auto !important;
+        div {
+          height: auto !important;
+          min-height: auto !important;
+        }
       }
     }
   }
-}
   // .table-scroll {
   //   position: absolute;
   //   display: inline-block;
@@ -1672,7 +1674,7 @@ th {
   }
   .algaeh-modal,
   .algaeh-modal-Ar {
-    max-width: 90.666667%;
+    max-width: 96.666667%;
   }
 }
 
@@ -1931,19 +1933,19 @@ th {
   background: lighten($color-black, 90%);
 }
 .btn-loader {
-	position: relative;
-  cursor:none;
+  position: relative;
+  cursor: none;
   pointer-events: none;
-	.showBtnLoader {
-    background:none;
+  .showBtnLoader {
+    background: none;
     padding: 4px;
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     color: #fff;
-    i.fa-spin{
-    font-size: 1.5rem;
+    i.fa-spin {
+      font-size: 1.5rem;
     }
-	}
+  }
 }
