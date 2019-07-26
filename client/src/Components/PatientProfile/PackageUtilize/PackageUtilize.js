@@ -22,6 +22,7 @@ import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 import AddAdvanceModal from "../../Advance/AdvanceModal";
 import ConsumtionItemBatches from "./ConsumtionItemBatches";
 import moment from "moment";
+import ClosePackage from "./ClosePackage";
 
 class PackageUtilize extends Component {
   constructor(props) {
@@ -31,7 +32,8 @@ class PackageUtilize extends Component {
       package_details: [],
       AdvanceOpen: false,
       itemBatches: false,
-      service_id: null
+      service_id: null,
+      closePackage: false
     };
   }
 
@@ -89,10 +91,11 @@ class PackageUtilize extends Component {
   }
 
   ShowBatchDetails(row) {
-    this.setState({
-      itemBatches: !this.state.itemBatches,
-      service_id: row.service_id
-    });
+    PackageUtilizeEvent().ShowBatchDetails(this, row);
+    // this.setState({
+    //   itemBatches: !this.state.itemBatches,
+    //   service_id: row.service_id
+    // });
   }
   CloseBatchDetails(e) {
     let batchno = e !== undefined ? e.batchno : null;
@@ -143,9 +146,14 @@ class PackageUtilize extends Component {
       }
     );
   }
-
-  ShowAdvanceScreen(row) {
-    PackageUtilizeEvent().ShowAdvanceScreen(this, row);
+  ClosePackageScreen(e) {
+    PackageUtilizeEvent().ClosePackageScreen(this, e);
+  }
+  ShowAdvanceScreen() {
+    PackageUtilizeEvent().ShowAdvanceScreen(this);
+  }
+  ShowCloseScreen() {
+    PackageUtilizeEvent().ShowCloseScreen(this);
   }
   render() {
     return (
@@ -368,7 +376,7 @@ class PackageUtilize extends Component {
                 show={this.state.itemBatches}
                 onClose={this.CloseBatchDetails.bind(this)}
                 inventory_location_id={this.props.inventory_location_id}
-                service_id={this.state.service_id}
+                batch_wise_item={this.state.batch_wise_item}
               />
 
               {/*
@@ -635,6 +643,14 @@ class PackageUtilize extends Component {
                 collect_advance: this.state.collect_advance
               }}
             />
+
+            <ClosePackage
+              show={this.state.closePackage}
+              onClose={this.ClosePackageScreen.bind(this)}
+              package_detail={this.state}
+              transaction_type="RF"
+              pay_type="P"
+            />
             <div className="popupFooter">
               <div className="col-lg-12">
                 <div className="row">
@@ -654,6 +670,15 @@ class PackageUtilize extends Component {
                           onClick={this.ShowAdvanceScreen.bind(this)}
                         >
                           Collect Advance
+                        </button>
+                      ) : null}
+
+                      {this.props.from_billing === true ? (
+                        <button
+                          className="btn btn-default"
+                          onClick={this.ShowCloseScreen.bind(this)}
+                        >
+                          Close Package
                         </button>
                       ) : null}
 

@@ -530,6 +530,10 @@ class AddOPBillingForm extends Component {
                             <AlgaehLabel label={{ fieldName: "services_id" }} />
                           ),
                           displayTemplate: row => {
+                            let package_service =
+                              row.trans_package_detail_id > 0
+                                ? "(Package Service)"
+                                : "";
                             let display =
                               this.props.serviceslist === undefined
                                 ? []
@@ -545,6 +549,9 @@ class AddOPBillingForm extends Component {
                                     ? display[0].service_name
                                     : display[0].arabic_service_name
                                   : ""}
+                                <span className="packageAvail">
+                                  {package_service}
+                                </span>
                               </span>
                             );
                           },
@@ -647,6 +654,8 @@ class AddOPBillingForm extends Component {
                                     disabled:
                                       this.state.insurance_yesno === "Y"
                                         ? true
+                                        : row.trans_package_detail_id > 0
+                                        ? true
                                         : this.state.Billexists,
                                     onBlur: makeZeroIngrid.bind(
                                       this,
@@ -692,6 +701,8 @@ class AddOPBillingForm extends Component {
                                     placeholder: "0.00",
                                     disabled:
                                       this.state.insurance_yesno === "Y"
+                                        ? true
+                                        : row.trans_package_detail_id > 0
                                         ? true
                                         : this.state.Billexists,
                                     onBlur: makeZeroIngrid.bind(

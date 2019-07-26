@@ -48,7 +48,8 @@ class NewPackage extends PureComponent {
       approvedPack: false,
       radioActive: true,
       radioInactive: false,
-      package_status: "A"
+      package_status: "A",
+      cancellation_policy: "AC"
     };
     this.baseState = this.state;
   }
@@ -405,18 +406,18 @@ class NewPackage extends PureComponent {
                                     : false
                               }}
                               selector={{
-                                name: "advance_type",
+                                name: "cancellation_policy",
                                 className: "select-fld",
-                                value: this.state.advance_type,
+                                value: this.state.cancellation_policy,
                                 dataSource: {
                                   textField: "name",
                                   valueField: "value",
-                                  data: GlobalVariables.FORMAT_DISCOUNT
+                                  data: GlobalVariables.FORMAT_PACK_CAL_POLICY
                                 },
                                 onChange: this.texthandle.bind(this),
                                 onClear: () => {
                                   this.setState({
-                                    advance_type: null
+                                    cancellation_policy: null
                                   });
                                 },
                                 others: {
@@ -782,6 +783,23 @@ class NewPackage extends PureComponent {
                                 return (
                                   <span>
                                     {getAmountFormart(row.tot_service_amount, {
+                                      appendSymbol: false
+                                    })}
+                                  </span>
+                                );
+                              }
+                            },
+                            {
+                              fieldName: "appropriate_amount",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Appropriate Amount" }}
+                                />
+                              ),
+                              displayTemplate: row => {
+                                return (
+                                  <span>
+                                    {getAmountFormart(row.appropriate_amount, {
                                       appendSymbol: false
                                     })}
                                   </span>

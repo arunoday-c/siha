@@ -488,7 +488,9 @@ class OrderedList extends PureComponent {
                                 ? display[0].service_name
                                 : ""}
 
-                              {package_service}
+                              <span className="packageAvail">
+                                {package_service}
+                              </span>
                             </span>
                           );
                         },

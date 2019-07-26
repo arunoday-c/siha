@@ -151,6 +151,10 @@
     { "name": "Percentage", "arabic_name": "نسبه مئويه", "value": "P" },
     { "name": "Amount", "arabic_name": "مبلغ", "value": "A" }
   ],
+  "FORMAT_PACK_CAL_POLICY": [
+    { "name": "Actual Amount", "value": "AC" },
+    { "name": "Appropriate Amount", "value": "AP" }
+  ],
   "PAIN_SCALE": [
     { "name": "No Hurt", "arabic_name": "لا ألم", "value": "NH", "score": 0 },
     {
