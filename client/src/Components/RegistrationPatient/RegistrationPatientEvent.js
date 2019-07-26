@@ -535,11 +535,12 @@ const ClosePackageUtilize = ($this, e) => {
       doctor_id: e.doctor_id,
       sub_department_id: e.sub_department_id,
       visit_type: 10,
+      package_details: e.package_details,
       from_package: true,
       visittypeselect: true,
       utilize_amount: e.utilize_amount,
       balance_amount: e.balance_amount,
-      // appointment_patient: "Y",
+      consultation: "Y",
       hims_f_package_header_id: e.hims_f_package_header_id,
       saveEnable: false,
       billdetail: false

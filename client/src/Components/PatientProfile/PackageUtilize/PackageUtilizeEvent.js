@@ -180,9 +180,51 @@ export default function PackageSetupEvent() {
     },
 
     ShowAdvanceScreen: $this => {
-      debugger;
       $this.setState({
         AdvanceOpen: !$this.state.AdvanceOpen
+      });
+    },
+    getItemLocationStock: $this => {
+      debugger;
+      algaehApiCall({
+        uri: "/inventory/getItemMaster",
+        data: { service_id: $this.state.service_id },
+        module: "inventory",
+        method: "GET",
+        onSuccess: response => {
+          if (response.data.success === true) {
+            debugger;
+            let inputObj = {
+              item_id: response.data.records[0].hims_d_inventory_item_master_id,
+              inventory_location_id: $this.state.inventory_location_id
+            };
+            algaehApiCall({
+              uri: "/inventoryGlobal/getItemandLocationStock",
+              module: "inventory",
+              method: "GET",
+              data: inputObj,
+              onSuccess: response => {
+                if (response.data.success === true) {
+                  $this.setState({
+                    batch_wise_item: response.data.records
+                  });
+                }
+              },
+              onFailure: error => {
+                swalMessage({
+                  title: error.message,
+                  type: "error"
+                });
+              }
+            });
+          }
+        },
+        onFailure: error => {
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
+        }
       });
     }
   };

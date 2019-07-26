@@ -180,12 +180,22 @@ class AddAdvanceModal extends PureComponent {
   SaveAdvance(context, e) {
     const err = Validations(this, this);
 
+    let advance_amt =
+      parseFloat(this.props.inputsparameters.advance_amount) +
+      parseFloat(this.state.total_amount);
+    if (advance_amt < parseFloat(this.props.inputsparameters.collect_advance)) {
+      swalMessage({
+        title: "Collect Amount Cannot be less tha package advance amount",
+        type: "warning"
+      });
+      return;
+    }
     if (!err) {
       debugger;
       this.GenerateReciept($this => {
         AlgaehLoader({ show: true });
         debugger;
-        if (this.props.PackageAdvance === true) {
+        if ($this.props.PackageAdvance === true) {
           algaehApiCall({
             uri: "/billing/patientPackageAdvanceRefund",
             module: "billing",
@@ -330,6 +340,23 @@ class AddAdvanceModal extends PureComponent {
                         onChange: texthandle.bind(this, this, context)
                       }}
                     />
+
+                    {this.props.PackageAdvance === true ? (
+                      <div className="col">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Package Advance"
+                          }}
+                        />
+                        <h6>
+                          {this.props.inputsparameters.collect_advance
+                            ? getAmountFormart(
+                                this.props.inputsparameters.collect_advance
+                              )
+                            : getAmountFormart("0")}
+                        </h6>
+                      </div>
+                    ) : null}
 
                     {/*<AlagehAutoComplete
                       div={{ className: "col-lg-3 mandatory" }}
