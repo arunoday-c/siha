@@ -81,13 +81,13 @@ body {
 }
 
 .print-body .tableForData .tableSubHdg2 {
-  background: #f2f2f2;
+  background: #fffff5;
   border-bottom: 1px dotted #979797;
   padding: 5px 3px;
   text-align: left;
 }
 
-.print-body .tableForData .tableSubHdg2 span {
+.print-body span.textFloatRight {
   text-align: right;
   float: right;
 }
