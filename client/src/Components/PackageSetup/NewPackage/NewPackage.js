@@ -83,7 +83,12 @@ class NewPackage extends PureComponent {
       if (newProps.PackagesPop.hims_d_package_header_id !== undefined) {
         debugger;
         let IOputs = newProps.PackagesPop;
-        IOputs.approvedPack = IOputs.approved === "Y" ? true : false;
+        IOputs.approvedPack =
+          IOputs.approved === "Y"
+            ? true
+            : IOputs.package_status === "I"
+            ? true
+            : false;
         IOputs.approveEnable = false;
         IOputs.radioActive = IOputs.package_status === "A" ? true : false;
         IOputs.radioInactive = IOputs.package_status === "I" ? true : false;
@@ -148,6 +153,10 @@ class NewPackage extends PureComponent {
 
   dateValidate(value, event) {
     NewPackageEvent().dateValidate(this, value, event);
+  }
+
+  CopyCreatePackage() {
+    NewPackageEvent().CopyCreatePackage(this);
   }
   render() {
     return (
@@ -756,6 +765,9 @@ class NewPackage extends PureComponent {
                         onClick={this.InsertPackages.bind(this)}
                         type="button"
                         className="btn btn-primary"
+                        disabled={
+                          this.state.package_status === "I" ? true : false
+                        }
                       >
                         {this.state.hims_d_package_header_id === null ? (
                           <AlgaehLabel label={{ fieldName: "btnSave" }} />
@@ -786,6 +798,19 @@ class NewPackage extends PureComponent {
                         className="btn btn-default"
                       >
                         Cancel
+                      </button>
+
+                      <button
+                        onClick={this.CopyCreatePackage.bind(this)}
+                        type="button"
+                        className="btn btn-primary"
+                        disabled={
+                          this.state.hims_d_package_header_id === null
+                            ? true
+                            : false
+                        }
+                      >
+                        Copy & Create
                       </button>
                     </div>
                   </div>

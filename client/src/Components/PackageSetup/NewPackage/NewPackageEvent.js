@@ -484,6 +484,21 @@ export default function NewPackageEvent() {
           [event.target.name]: null
         });
       }
+    },
+    CopyCreatePackage: $this => {
+      debugger;
+      let Package_data = $this.state;
+
+      Package_data.qty = 1;
+      Package_data.approveEnable = true;
+      Package_data.approvedPack = false;
+      Package_data.radioActive = true;
+      Package_data.radioInactive = false;
+      Package_data.hims_d_package_header_id = null;
+      Package_data.package_code = null;
+      $this.setState($this.baseState, () => {
+        $this.setState(Package_data);
+      });
     }
   };
 }

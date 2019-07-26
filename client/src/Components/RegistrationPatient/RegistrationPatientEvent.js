@@ -519,7 +519,7 @@ const ShowPackageUtilize = $this => {
 };
 const ClosePackageUtilize = ($this, e) => {
   debugger;
-  if (e.services_id === undefined) {
+  if (e === undefined || e.services_id === undefined) {
     $this.setState({
       isPackUtOpen: !$this.state.isPackUtOpen
     });
