@@ -4341,7 +4341,7 @@ module.exports = {
 				_mysql
 				.executeQuery({
 				  query:
-					"select attendance_starts,at_st_date  from hims_d_hrms_options",				 
+					"select attendance_starts,at_st_date,at_end_date  from hims_d_hrms_options",				 
 				})
 				.then(options => {
 			
@@ -4357,11 +4357,12 @@ module.exports = {
 
 
 				if (input.select_wise == 'M') {
-						if(options[0]["attendance_starts"]=="PM"&&options[0]["at_st_date"]>0){
-						const temp_date=year+"-"+month+"-"+options[0]["at_st_date"];
-						console.log("temp_date:",temp_date)
-							from_date =moment(temp_date,"YYYY-M-DD").subtract(1, 'months').format("YYYY-MM-DD");
-							to_date = moment(temp_date,"YYYY-M-DD").subtract(1, 'days').format('YYYY-MM-DD');
+						if(options[0]["attendance_starts"]=="PM"&&options[0]["at_st_date"]>0&&options[0]["at_end_date"]>0){
+							const f_date=year+"-"+month+"-"+options[0]["at_st_date"];
+							const t_date=year+"-"+month+"-"+options[0]["at_end_date"];
+							
+							from_date =moment(f_date,"YYYY-M-DD").subtract(1, 'months').format("YYYY-MM-DD");
+							to_date = moment(t_date,"YYYY-M-DD").format('YYYY-MM-DD');
 
 						}else{
 							from_date = moment(input.yearAndMonth,"YYYY-M-DD").startOf('month').format('YYYY-MM-DD');
@@ -4640,17 +4641,18 @@ module.exports = {
 		_mysql
 		.executeQuery({
 		  query:
-			"select attendance_starts,at_st_date  from hims_d_hrms_options",				 
+			"select attendance_starts,at_st_date,at_end_date  from hims_d_hrms_options",				 
 		})
 		.then(options => {
 					if(options.length>0){
 
 
-						if(options[0]["attendance_starts"]=="PM"&&options[0]["at_st_date"]>0){
-							const temp_date=year+"-"+month+"-"+options[0]["at_st_date"];
-							console.log("temp_date:",temp_date)
-							from_date =moment(temp_date,"YYYY-M-DD").subtract(1, 'months').format("YYYY-MM-DD");
-							to_date = moment(temp_date,"YYYY-M-DD").subtract(1, 'days').format('YYYY-MM-DD');
+						if(options[0]["attendance_starts"]=="PM"&&options[0]["at_st_date"]>0&&options[0]["at_end_date"]>0){
+							const f_date=year+"-"+month+"-"+options[0]["at_st_date"];
+							const t_date=year+"-"+month+"-"+options[0]["at_end_date"];
+							
+							from_date =moment(f_date,"YYYY-M-DD").subtract(1, 'months').format("YYYY-MM-DD");
+							to_date = moment(t_date,"YYYY-M-DD").format('YYYY-MM-DD');
 
 						}
 						else
@@ -5063,7 +5065,7 @@ module.exports = {
 				_mysql
 				.executeQuery({
 				  query:
-					"select attendance_starts,at_st_date  from hims_d_hrms_options",				 
+					"select attendance_starts,at_st_date,at_end_date  from hims_d_hrms_options",				 
 				})
 				.then(options => {
 			
@@ -5077,11 +5079,12 @@ module.exports = {
 
 							if(input.attendance_type=="MW"){
 
-										if(options[0]["attendance_starts"]=="PM"&&options[0]["at_st_date"]>0){
-											const temp_date=year+"-"+month+"-"+options[0]["at_st_date"];
-											console.log("temp_date:",temp_date)
-											from_date =moment(temp_date,"YYYY-M-DD").subtract(1, 'months').format("YYYY-MM-DD");
-											to_date = moment(temp_date,"YYYY-M-DD").subtract(1, 'days').format('YYYY-MM-DD');
+										if(options[0]["attendance_starts"]=="PM"&&options[0]["at_st_date"]>0&&options[0]["at_end_date"]>0){
+											const f_date=year+"-"+month+"-"+options[0]["at_st_date"];
+											const t_date=year+"-"+month+"-"+options[0]["at_end_date"];
+											
+											from_date =moment(f_date,"YYYY-M-DD").subtract(1, 'months').format("YYYY-MM-DD");
+											to_date = moment(t_date,"YYYY-M-DD").format('YYYY-MM-DD');
 
 										}
 										else
