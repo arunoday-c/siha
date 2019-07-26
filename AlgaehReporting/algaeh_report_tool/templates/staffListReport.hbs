@@ -32,7 +32,10 @@
 
                     </tr>
                 </thead>
-                <tbody>{{#each result}}
+                <tbody>
+                    {{#hasElement result}}
+
+                    {{#each result}}
                     <tr>
                         <td colspan="10" class="tableSubHdg">Dept. Name: {{department_name}}
                             <span>No
@@ -58,14 +61,12 @@
                         <td>{{asemployee_status}}</td>
                     </tr>
                     {{/each }}{{/each }}{{/each }}
-
-                </tbody>
-                {{!-- {{else}}
-                <tbody>
+                    {{else}}
                     <tr>
                         <td colspan="10" class="noResultTextReport">No Records Found</td>
-                    </tr>
-                </tbody> --}}
+                    </tr>{{/hasElement }}
+                </tbody>
+
             </table>
         </section>
         {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
