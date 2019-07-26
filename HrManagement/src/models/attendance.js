@@ -240,7 +240,7 @@ module.exports = {
 										input.employee_id,
 										input.attendance_date
 									],
-									printQuery: true
+									printQuery: false
 								})
 								.then((result2) => {
 									_mysql.commitTransaction(() => {
@@ -339,7 +339,7 @@ module.exports = {
 						' order by\
           hims_f_attendance_regularize_id desc ;',
 					values: [ req.userIdentity.hospital_id ],
-					printQuery: true
+					printQuery: false
 				})
 				.then((result) => {
 					_mysql.releaseConnection();
@@ -537,7 +537,7 @@ module.exports = {
                   inner join hims_f_leave_application LA on  PL.leave_application_id=LA.hims_f_leave_application_id\
                   where LA.status='APR' and  year=? and month=? and PL.hospital_id=?",
 									values: inputValues,
-									printQuery: true
+									printQuery: false
 								})
 								.then((result) => {
 									utilities.logger().log('Result[0]: ', result[0]);
@@ -1019,10 +1019,10 @@ module.exports = {
 			_mysql
 				.executeQuery({
 					query: 'select standard_working_hours from hims_d_hrms_options',
-					printQuery: true
+					printQuery: false
 				})
 				.then((result) => {
-					utilities.logger().log('standard_working_hours: ', result[0]['standard_working_hours']);
+				//	utilities.logger().log('standard_working_hours: ', result[0]['standard_working_hours']);
 
 					const IncludeValues = [
 						'employee_id',
@@ -1045,9 +1045,9 @@ module.exports = {
 						let actual_hours = input[i].status == 'PR' ? result[0]['standard_working_hours'] : 0;
 						_strQry += _mysql.mysqlQueryFormat(
 							'INSERT INTO `hims_f_daily_time_sheet` (employee_id,attendance_date,in_time,out_date,out_time,hours,\
-                minutes,worked_hours,sub_department_id,status,year,month,hospital_id, actual_hours,project_id) \
-                 VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE `in_time`=?,`out_date`=?,`hours`=?,\
-                 `minutes`=?,`worked_hours`=?,`status`=?,`actual_hours`=?, `project_id`=?;',
+							minutes,worked_hours,sub_department_id,status,year,month,hospital_id, actual_hours,project_id) \
+							VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE `in_time`=?,`out_date`=?,`hours`=?,\
+							`minutes`=?,`worked_hours`=?,`status`=?,`actual_hours`=?, `project_id`=?;',
 							[
 								input[i].employee_id,
 								input[i].attendance_date,
@@ -1055,7 +1055,7 @@ module.exports = {
 								input[i].out_date,
 								input[i].out_time,
 								input[i].hours,
-								input[i].minutes,
+								input[i].minutes>0?input[i].minutes:0,
 								input[i].worked_hours,
 								input[i].sub_department_id,
 								input[i].status,
@@ -1068,19 +1068,22 @@ module.exports = {
 								input[i].in_time,
 								input[i].out_date,
 								input[i].hours,
-								input[i].minutes,
+								input[i].minutes>0?input[i].minutes:0,
 								input[i].worked_hours,
 								input[i].status,
 								actual_hours,
 								input[i].project_id
 							]
 						);
+
+
+					
 					}
 
 					_mysql
 						.executeQuery({
 							query: _strQry,
-							printQuery: true
+							printQuery: false
 						})
 						.then((result) => {
 							_mysql.releaseConnection();
@@ -1234,7 +1237,7 @@ module.exports = {
 									from_date,
 									to_date
 								],
-								printQuery: true
+								printQuery: false
 							})
 							.then((result) => {
 								allHolidays = result[0];
@@ -1830,7 +1833,7 @@ module.exports = {
 							stringData +
 							' group by employee_id',
 						values: [ year, month, input.hospital_id ],
-						printQuery: true
+						printQuery: false
 					})
 					.then((result) => {
 						utilities.logger().log('result: ', result);
@@ -1904,7 +1907,7 @@ module.exports = {
 									updated_by: req.userIdentity.algaeh_d_app_user_id
 								},
 								bulkInsertOrUpdate: true,
-								printQuery: true
+								printQuery: false
 							})
 							.then((result) => {
 								_mysql.releaseConnection();
@@ -2023,7 +2026,7 @@ module.exports = {
 									pendingYear,
 									pendingMonth
 								],
-								printQuery: true
+								printQuery: false
 							})
 							.then((results) => {
 								attResult = results[0];
@@ -2109,7 +2112,7 @@ module.exports = {
 											updated_by: req.userIdentity.algaeh_d_app_user_id
 										},
 										bulkInsertOrUpdate: true,
-										printQuery: true
+										printQuery: false
 									})
 									.then((result) => {
 										_mysql.releaseConnection();
@@ -2176,7 +2179,7 @@ module.exports = {
 						inner join hims_d_employee E on AM.employee_id=E.hims_d_employee_id \
 						where AM.record_status='A' and AM.year= ? and AM.month=? ${selectData} `,
 					values: [ year, month_number ],
-					printQuery: true
+					printQuery: false
 				})
 				.then((result) => {
 					_mysql.releaseConnection();
@@ -2215,7 +2218,7 @@ module.exports = {
 				.executeQuery({
 					query: _QueryDtl,
 					values: _values,
-					printQuery: true
+					printQuery: false
 				})
 				.then((result) => {
 					if (result.length > 0) {
@@ -2248,7 +2251,7 @@ module.exports = {
 						_mysql
 							.executeQuery({
 								query: _query,
-								printQuery: true
+								printQuery: false
 							})
 							.then((attandance) => {
 								_mysql.releaseConnection();
@@ -2300,7 +2303,7 @@ module.exports = {
              date(attendance_date)>=date(?) and date(attendance_date) <=date(?) \
              and (status='EX' or status='AB') ${employee_id};`,
 					values: [ input.hospital_id, input.from_date, input.to_date ],
-					printQuery: true
+					printQuery: false
 				})
 				.then((result) => {
 					if (result.length > 0) {
@@ -2498,7 +2501,7 @@ module.exports = {
                   date(?) and date(?) and  TS.employee_id=E.hims_d_employee_id ' +
 						stringData,
 					values: [ input.hospital_id, from_date, to_date ],
-					printQuery: true
+					printQuery: false
 				})
 				.then((result) => {
 					// utilities.logger().log("result: ",result);
@@ -2647,7 +2650,7 @@ module.exports = {
                       date(?)  group by employee_id;',
 											values: [ input.hospital_id, year, month, from_date, to_date ],
 
-											printQuery: true
+											printQuery: false
 										})
 										.then((attResult) => {
 											let insertArray = [];
@@ -2719,7 +2722,7 @@ module.exports = {
 														updated_by: req.userIdentity.algaeh_d_app_user_id
 													},
 													bulkInsertOrUpdate: true,
-													printQuery: true
+													printQuery: false
 												})
 												.then((result) => {
 													_mysql.releaseConnection();
@@ -2917,7 +2920,7 @@ module.exports = {
 										input.hospital_id
 									],
 
-									printQuery: true
+									printQuery: false
 								})
 								.then((result) => {
 									let AttenResult = result[0];
@@ -3407,7 +3410,7 @@ module.exports = {
 																pendingMonth
 															],
 
-															printQuery: true
+															printQuery: false
 														})
 														.then((results) => {
 															let attResult = results[0];
@@ -3554,7 +3557,7 @@ module.exports = {
 																			req.userIdentity.algaeh_d_app_user_id
 																	},
 																	bulkInsertOrUpdate: true,
-																	printQuery: true
+																	printQuery: false
 																})
 																.then((result) => {
 																	_mysql.releaseConnection();
@@ -3624,7 +3627,7 @@ module.exports = {
           from_session,to_session,absent_reason,absent_duration,status,cancel from hims_f_absent A left  join algaeh_d_app_user U on\
           A.updated_by= U.algaeh_d_app_user_id  where A.employee_id=? and status='NFD' and cancel='N';",
 						values: [ req.query.employee_id, req.query.employee_id ],
-						printQuery: true
+						printQuery: false
 					})
 					.then((result) => {
 						_mysql.releaseConnection();
@@ -3740,7 +3743,7 @@ module.exports = {
 						_mysql
 							.executeQuery({
 								query: returnQry,
-								printQuery: true
+								printQuery: false
 							})
 							.then((result) => {
 								_mysql.releaseConnection();
@@ -3878,7 +3881,7 @@ module.exports = {
 				query:
 					'select * from hims_f_daily_attendance  where hospital_id=? and year=? and month=? and employee_id=?;',
 				values: [ input.hospital_id, input.year, input.month, input.employee_id ],
-				printQuery: true
+				printQuery: false
 			})
 			.then((result) => {
 				_mysql.releaseConnection();
@@ -3926,7 +3929,7 @@ module.exports = {
 					query:
 						'update hims_f_attendance_monthly set shortage_hours= ?,ot_work_hours=? where hims_f_attendance_monthly_id=?',
 					values: [ input.shortage_hours, input.ot_work_hours, input.hims_f_attendance_monthly_id ],
-					printQuery: true
+					printQuery: false
 				})
 				.then((result) => {
 					_mysql.releaseConnection();
@@ -4003,7 +4006,7 @@ module.exports = {
               E.hospital_id=? " +
 							strDQuery,
 						values: inputDValue,
-						printQuery: true
+						printQuery: false
 					})
 					.then((time_sheet) => {
 						_mysql.releaseConnection();
@@ -4052,7 +4055,7 @@ module.exports = {
                 select hims_d_holiday_id,holiday_date,holiday_description,weekoff,holiday,holiday_type,religion_id\
                 from hims_d_holiday  where hospital_id=? and date(holiday_date) between date('${from_date}') and date('${to_date}');    `,
 						values: [ input.branch_id, from_date, to_date, input.branch_id, input.branch_id ],
-						printQuery: true
+						printQuery: false
 					})
 					.then((result) => {
 						// _mysql.releaseConnection();
@@ -4326,7 +4329,7 @@ module.exports = {
               E.hospital_id=? " +
 							strDQuery,
 						values: inputDValue,
-						printQuery: true
+						printQuery: false
 					})
 					.then((time_sheet) => {
 						_mysql.releaseConnection();
@@ -4394,7 +4397,7 @@ module.exports = {
 							select hims_d_holiday_id,holiday_date,holiday_description,weekoff,holiday,holiday_type,religion_id\
 							from hims_d_holiday  where hospital_id=? and date(holiday_date) between date('${from_date}') and date('${to_date}');    `,
 									values: [ input.branch_id, from_date, to_date, input.branch_id, input.branch_id ],
-						printQuery: true
+						printQuery: false
 					})
 					.then((result) => {
 						_mysql.releaseConnection();
@@ -4675,7 +4678,7 @@ module.exports = {
 							from hims_f_daily_time_sheet TS inner join hims_d_employee E on TS.employee_id=E.hims_d_employee_id\
 							where TS.hospital_id=? and year=? and month=? and  employee_id=? and attendance_date between date(?) and date(?);`,
 									values: [ input.hospital_id, year, month, input.hims_d_employee_id, from_date, to_date ],
-									printQuery: true
+									printQuery: false
 								})
 								.then((AttenResult) => {
 									//present month
@@ -4835,7 +4838,7 @@ module.exports = {
 												includeValues: insurtColumns,
 												values: dailyAttendance,
 												bulkInsertOrUpdate: true,
-												printQuery: true
+												printQuery: false
 											})
 											.then((insertResult) => {
 												// _mysql.releaseConnection();
@@ -4876,7 +4879,7 @@ module.exports = {
 															from_date,
 															to_date
 														],
-														printQuery: true
+														printQuery: false
 													})
 													.then((results) => {
 														let DilayResult = results[0];
@@ -4964,7 +4967,7 @@ module.exports = {
 																			' INSERT IGNORE INTO hims_f_project_wise_payroll(??) VALUES ? ',
 																		values: projectWisePayroll,
 																		includeValues: insertCol,
-																		printQuery: true,
+																		printQuery: false,
 
 																		bulkInsertOrUpdate: true
 																	})
@@ -5114,7 +5117,7 @@ module.exports = {
 									left join hims_d_project P on PR.project_id=P.hims_d_project_id
 									where  TS.hospital_id=? and  TS.attendance_date between (?) and (?) and TS.employee_id =? order by attendance_date; `,
 								values: [ input.hospital_id, from_date, to_date, input.hims_d_employee_id ],
-								printQuery: true
+								printQuery: false
 							})
 							.then((result) => {
 								_mysql.releaseConnection();
@@ -5393,7 +5396,7 @@ function insertTimeSheet(
 				_mysql
 					.executeQuery({
 						query: returnQry,
-						printQuery: true
+						printQuery: false
 					})
 					.then((result) => {
 						// _mysql.commitTransaction(() => {
