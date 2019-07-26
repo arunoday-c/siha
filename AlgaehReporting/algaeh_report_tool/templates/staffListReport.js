@@ -44,7 +44,7 @@ const executePDF = function executePDFMethod(options) {
           select hims_d_employee_id,employee_code,full_name,sex,date_of_joining,
           case employee_status when 'A' then 'ACTIVE' when 'I' then 'INACTIVE'
           when 'R' then 'RESIGNED' when 'T' then 'TERMINATED' when 'E' then 'RETIRED'
-          end asemployee_status,DG.designation,N.nationality,R.religion_name,
+          end as employee_status,DG.designation,N.nationality,R.religion_name,
           E.sub_department_id, SD.sub_department_name,D.hims_d_department_id,D.department_name,
           case employee_type when  'PE' then  'PERMANENT' when  'CO' then  'CONTRACT'
           when  'PB' then  'PROBATION' when  'LC' then  'LOCUM'

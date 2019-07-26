@@ -10,6 +10,12 @@
                             class="textArRht">لشركة</label></td>
                     <td><label class="textEnLft">No Employees</label>:<span
                             class="valueText">{{no_employees}}</span><label class="textArRht">لشركة</label></td>
+
+                <tr>
+                    <td colspan="10" class="textEnLft">Age: {{return_age}}
+
+                    </td>
+                </tr>
                 </tr>
             </table>
 
@@ -22,6 +28,7 @@
                         <th>Sl No.</th>
                         <th>Employee Code</th>
                         <th>Employee Name</th>
+                        <th>Age</th>
                         <th>Gender</th>
                         <th>Dept. </th>
                         <th>Sub Dept.</th>
@@ -37,17 +44,15 @@
                 <tbody>
                     {{#hasElement result}}
 
-                    {{#each result}}
-                    <tr>
-                        <td colspan="10" class="tableSubHdg">Gender: {{sex}}
 
-                        </td>
-                    </tr>
-                    {{#each employees}}
+
+                    {{#each result}}
                     <tr>
                         <td>{{inc @index}}</td>
                         <td>{{employee_code}}</td>
                         <td style="text-align: left;">{{full_name}}</td>
+                        <td>{{new_age}}</td>
+                        <td>{{sex}}</td>
                         <td>{{department_name}}</td>
                         <td>{{sub_department_name}}</td>
                         <td>{{designation}}</td>
@@ -55,9 +60,9 @@
                         <td>{{nationality}}</td>
                         <td>{{religion_name}}</td>
                         <td>{{employee_type}}</td>
-                        <td>{{asemployee_status}}</td>
+                        <td>{{employee_status}}</td>
                     </tr>
-                    {{/each }}{{/each }}
+                    {{/each }}
                     {{else}}
                     <tr>
                         <td colspan="10" class="noResultTextReport">No Records Found</td>

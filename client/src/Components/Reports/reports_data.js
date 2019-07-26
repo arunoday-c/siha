@@ -6,7 +6,8 @@ import {
   LOCAL_TYPE,
   FORMAT_PAYTYPE,
   EXPIRY_STATUS,
-  EMPLOYEE_STATUS
+  EMPLOYEE_STATUS,
+  COMPARISON
 } from "../../utils/GlobalVariables.json";
 import { getYears, AlgaehOpenContainer } from "../../utils/GlobalFunctions";
 import { algaehApiCall } from "../../utils/algaehApiCall";
@@ -688,15 +689,29 @@ const HR_Payroll_Reports = [
           {
             className: "col-2",
             type: "dropdown",
-            name: "employee_status",
+            name: "age_range",
             initialLoad: true,
             isImp: false,
-            label: "Employee Status",
+            label: "SELECT RANGE",
             link: {},
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: EMPLOYEE_STATUS
+              data: COMPARISON
+            }
+          },
+          {
+            className: "col-2",
+            type: "text",
+            name: "age",
+            initialLoad: false,
+            isImp: false,
+            label: "ENTER AGE",
+            link: {},
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: undefined
             }
           }
         ]

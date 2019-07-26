@@ -27,13 +27,30 @@ const executePDF = function executePDFMethod(options) {
         strQuery += ` and E.sub_department_id=${input.sub_department_id}`;
       }
 
-      switch (input.employee_status) {
-        case "A":
-        case "I":
-        case "R":
-        case "T":
+      let return_age = "ALL";
+      let isAge = "";
+
+      switch (input.age_range) {
+        case "L":
+          if (input.age > 0) {
+            isAge = ` where  new_age <= ${input.age}`;
+            return_age = ` Less/Equal to ${input.age}`;
+          }
+
+          break;
+        case "G":
+          if (input.age > 0) {
+            isAge = ` where  new_age >= ${input.age}`;
+            return_age = ` Greater/Equal ${input.age}`;
+          }
+
+          break;
         case "E":
-          strQuery += ` and E.employee_status='${input.employee_status}'`;
+          if (input.age > 0) {
+            isAge = ` where new_age = ${input.age}`;
+            return_age = ` Equal to ${input.age}`;
+          }
+
           break;
       }
 
@@ -41,10 +58,11 @@ const executePDF = function executePDFMethod(options) {
         .executeQuery({
           query: ` 
           select  hospital_name FROM hims_d_hospital where hims_d_hospital_id=?;
-          select hims_d_employee_id,employee_code,full_name,sex,date_of_joining,
+          select * from (select hims_d_employee_id,employee_code,full_name,sex,date_of_joining,
+          E.date_of_birth, TIMESTAMPDIFF(YEAR, E.date_of_birth, CURDATE()) AS new_age,
           case employee_status when 'A' then 'ACTIVE' when 'I' then 'INACTIVE'
           when 'R' then 'RESIGNED' when 'T' then 'TERMINATED' when 'E' then 'RETIRED'
-          end asemployee_status,DG.designation,N.nationality,R.religion_name,
+          end as  employee_status,DG.designation,N.nationality,R.religion_name,
           E.sub_department_id, SD.sub_department_name,D.hims_d_department_id,D.department_name,
           case employee_type when  'PE' then  'PERMANENT' when  'CO' then  'CONTRACT'
           when  'PB' then  'PROBATION' when  'LC' then  'LOCUM'
@@ -55,7 +73,7 @@ const executePDF = function executePDFMethod(options) {
           left join hims_d_nationality N on E.nationality=N.hims_d_nationality_id
           left join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
           left join hims_d_department D on SD.department_id=D.hims_d_department_id
-          where E.hospital_id=? and E.record_status='A'  ${strQuery}; `,
+          where E.hospital_id=? and E.record_status='A'  ${strQuery} )as EM ${isAge} order by new_age ; `,
           values: [input.hospital_id, input.hospital_id],
           printQuery: true
         })
@@ -64,47 +82,12 @@ const executePDF = function executePDFMethod(options) {
           const hospital_name = res[0][0]["hospital_name"];
           const result = res[1];
 
-          if (result.length > 0) {
-            const departmentWise = _.chain(result)
-              .groupBy(g => g.hims_d_department_id)
-              .map(m => m)
-              .value();
-            //utilities.logger().log("departmentWise:", departmentWise);
-            let outputArray = [];
-
-            for (let i = 0; i < departmentWise.length; i++) {
-              let dep_no_employee = 0;
-              const sub_dept = _.chain(departmentWise[i])
-                .groupBy(g => g.sub_department_id)
-                .map(sub => {
-                  dep_no_employee += sub.length;
-                  return {
-                    sub_department_name: sub[0].sub_department_name,
-                    sub_no_employee: sub.length,
-                    employees: sub
-                  };
-                })
-                .value();
-
-              outputArray.push({
-                department_name: departmentWise[i][0]["department_name"],
-                dep_no_employee: dep_no_employee,
-                sub_dept: sub_dept
-              });
-            }
-
-            resolve({
-              hospital_name: hospital_name,
-              no_employees: result.length,
-              result: outputArray
-            });
-          } else {
-            resolve({
-              hospital_name: hospital_name,
-              no_employees: result.length,
-              result: result
-            });
-          }
+          resolve({
+            return_age: return_age,
+            hospital_name: hospital_name,
+            no_employees: result.length,
+            result: result
+          });
         })
         .catch(e => {
           console.log("e:", e);

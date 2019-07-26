@@ -1605,7 +1605,6 @@
     { "name": "General user", "value": "GN" }
   ],
 
-
   "REQUSITION_STATUS": [
     { "name": "All", "value": "0" },
     { "name": "Pending To Authorize 1", "value": "1" },
@@ -1623,5 +1622,11 @@
     { "name": "Pending To Authorize", "value": "1" },
     { "name": "Delivery Pending", "value": "2" },
     { "name": "Delivery Completed", "value": "3" }
+  ],
+  "COMPARISON": [
+    { "name": ">", "value": "G" },
+    { "name": "=", "value": "E" },
+    { "name": "<", "value": "L" },
+    { "name": "BETWEEN", "value": "B" }
   ]
 }
