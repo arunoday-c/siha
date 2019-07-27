@@ -67,7 +67,6 @@ export default function DashBoardEvents() {
 
         onSuccess: response => {
           if (response.data.success) {
-            debugger;
             let no_of_employees = response.data.records.length;
 
             let no_of_emp_join = _.filter(response.data.records, function(
@@ -117,7 +116,6 @@ export default function DashBoardEvents() {
 
         onSuccess: response => {
           if (response.data.success) {
-            debugger;
             let no_of_employees = response.data.records;
 
             let labels = [];
@@ -160,7 +158,6 @@ export default function DashBoardEvents() {
         data: { hospital_id: HospitalId },
         onSuccess: response => {
           if (response.data.success) {
-            debugger;
             let no_of_employees = response.data.records;
 
             let labels = [];

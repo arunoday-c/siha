@@ -77,12 +77,10 @@ class NewPackage extends PureComponent {
   }
 
   componentWillReceiveProps(newProps) {
-    debugger;
     if (newProps.from !== undefined && newProps.from === "doctor") {
       this.setState({ from: newProps.from, package_type: "D" });
     } else {
       if (newProps.PackagesPop.hims_d_package_header_id !== undefined) {
-        debugger;
         let IOputs = newProps.PackagesPop;
         IOputs.approvedPack =
           IOputs.approved === "Y"

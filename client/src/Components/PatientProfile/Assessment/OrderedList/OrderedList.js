@@ -143,7 +143,7 @@ class OrderedList extends PureComponent {
   }
 
   ShowPackageUtilize(row) {
-    debugger;
+    
 
     algaehApiCall({
       uri: "/department/get/subdepartment",
@@ -204,7 +204,7 @@ class OrderedList extends PureComponent {
     );
   }
   ShowProcedureModel(row, e) {
-    debugger;
+    
     algaehApiCall({
       uri: "/serviceType/getProcedures",
       method: "GET",
@@ -348,7 +348,7 @@ class OrderedList extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger;
+    
     if (nextProps.openData !== undefined) {
       this.setState({ openData: nextProps.openData });
     }
@@ -481,7 +481,7 @@ class OrderedList extends PureComponent {
                               : this.props.serviceslist.filter(
                                   f => f.hims_d_services_id === row.services_id
                                 );
-                          debugger;
+                          
                           return (
                             <span>
                               {display !== null && display.length !== 0

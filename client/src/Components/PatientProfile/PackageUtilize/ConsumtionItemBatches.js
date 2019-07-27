@@ -25,7 +25,7 @@ class ConsumtionItemBatches extends PureComponent {
   }
 
   componentWillReceiveProps(newProps) {
-    debugger;
+    
     let Location_name =
       this.props.inventorylocations !== undefined &&
       this.props.inventorylocations.length > 0
@@ -52,7 +52,7 @@ class ConsumtionItemBatches extends PureComponent {
   }
 
   getItemLocationStock() {
-    debugger;
+    
     algaehApiCall({
       uri: "/inventory/getItemMaster",
       data: { service_id: this.state.service_id },
@@ -60,7 +60,7 @@ class ConsumtionItemBatches extends PureComponent {
       method: "GET",
       onSuccess: response => {
         if (response.data.success === true) {
-          debugger;
+          
           let inputObj = {
             item_id: response.data.records[0].hims_d_inventory_item_master_id,
             inventory_location_id: this.state.inventory_location_id

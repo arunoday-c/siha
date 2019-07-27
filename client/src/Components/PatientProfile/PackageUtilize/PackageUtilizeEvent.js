@@ -56,7 +56,7 @@ export default function PackageSetupEvent() {
       let package_details = $this.state.package_details;
       const _index = package_details.indexOf(row);
 
-      debugger;
+      
 
       row[name] = value;
       package_details[_index] = row;
@@ -76,7 +76,7 @@ export default function PackageSetupEvent() {
       }
     },
     UtilizeService: ($this, e) => {
-      debugger;
+      
       let InputObj = $this.state;
 
       if (InputObj.package_visit_type === "S" && InputObj.billed === "N") {
@@ -206,7 +206,7 @@ export default function PackageSetupEvent() {
               data: $this.state,
               onSuccess: response => {
                 if (response.data.success) {
-                  debugger;
+                  
                   $this.props.onClose && $this.props.onClose(e);
                   swalMessage({
                     title: "Successful...",
@@ -237,7 +237,7 @@ export default function PackageSetupEvent() {
       });
     },
     ClosePackageScreen: ($this, e) => {
-      debugger;
+      
       if (e === true) {
         $this.setState(
           { closePackage: !$this.state.closePackage, package_details: [] },
@@ -253,7 +253,7 @@ export default function PackageSetupEvent() {
     },
 
     ShowBatchDetails: ($this, row) => {
-      debugger;
+      
       algaehApiCall({
         uri: "/inventory/getItemMaster",
         data: { service_id: row.service_id },
@@ -261,7 +261,7 @@ export default function PackageSetupEvent() {
         method: "GET",
         onSuccess: response => {
           if (response.data.success === true) {
-            debugger;
+            
             let inputObj = {
               item_id: response.data.records[0].hims_d_inventory_item_master_id,
               inventory_location_id: $this.props.inventory_location_id

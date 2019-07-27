@@ -17,7 +17,7 @@ const emptyObject = extend(
 );
 
 const generateBillDetails = $this => {
-  debugger;
+  
   let zeroBill = false;
   if ($this.state.from_package === true) {
     zeroBill = true;
@@ -518,7 +518,7 @@ const ShowPackageUtilize = $this => {
   });
 };
 const ClosePackageUtilize = ($this, e) => {
-  debugger;
+  
   if (e === undefined || e.services_id === undefined) {
     $this.setState({
       isPackUtOpen: !$this.state.isPackUtOpen

@@ -87,7 +87,7 @@ export default function NewPackageEvent() {
           f.service_id === $this.state.s_service
         );
       });
-      debugger;
+
       if (SelectedService.length === 0) {
         let PakageDetail = $this.state.PakageDetail;
         let insertPackage = $this.state.insertPackage;
@@ -104,7 +104,6 @@ export default function NewPackageEvent() {
         };
 
         if ($this.state.hims_d_package_header_id !== null) {
-          debugger;
           let InsertObj = {
             package_header_id: $this.state.hims_d_package_header_id,
             service_type_id: $this.state.s_service_type,
@@ -260,7 +259,6 @@ export default function NewPackageEvent() {
             InputObj.PakageDetail[i].appropriate_amount = appropriate_amount;
           }
 
-          debugger;
           if (InputObj.advance_type === "P") {
             InputObj.advance_amount =
               (parseFloat(InputObj.package_amount) *
@@ -282,7 +280,6 @@ export default function NewPackageEvent() {
               data: InputObj,
               onSuccess: response => {
                 if (response.data.success === true) {
-                  debugger;
                   $this.setState({
                     approveEnable: false
                   });
@@ -370,7 +367,6 @@ export default function NewPackageEvent() {
       }
     },
     gridtexthandel: ($this, row, e) => {
-      debugger;
       let name = e.name || e.target.name;
       let value = e.value || e.target.value;
       let PakageDetail = $this.state.PakageDetail;
@@ -429,7 +425,7 @@ export default function NewPackageEvent() {
             return f.hims_d_package_detail_id > 0;
           });
           InputObj.updatePakageDetail = updatePakageDetail;
-          debugger;
+
           algaehApiCall({
             uri: "/packagesetup/updatePackageSetup",
             module: "masterSettings",
@@ -490,7 +486,6 @@ export default function NewPackageEvent() {
       }
     },
     CopyCreatePackage: $this => {
-      debugger;
       let Package_data = $this.state;
 
       Package_data.qty = 1;

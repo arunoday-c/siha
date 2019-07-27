@@ -44,7 +44,7 @@ class PackageUtilize extends Component {
       nextProps.package_detail !== null &&
       nextProps.package_detail !== undefined
     ) {
-      debugger;
+      
       nextProps.package_detail.consultation =
         nextProps.from === "frontDesk" ? true : false;
       this.setState(

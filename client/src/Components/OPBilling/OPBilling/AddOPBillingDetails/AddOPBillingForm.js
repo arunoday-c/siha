@@ -220,7 +220,7 @@ class AddOPBillingForm extends Component {
   }
 
   updateBillDetail(context, row, e) {
-    debugger;
+    
     algaehApiCall({
       uri: "/billing/billingCalculations",
       module: "billing",

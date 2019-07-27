@@ -132,7 +132,7 @@ const selectedHandeler = ($this, context, e) => {
               type: "error"
             });
           } else {
-            debugger;
+            
             $this.setState(
               {
                 [e.name]: e.value,

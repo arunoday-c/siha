@@ -449,6 +449,9 @@ const PageToPlot = {
       import("./Components/EmployeeManagement/ProjectJobCost/ProjectJobCost")
     )
   ),
+  OrgChart: React.lazy(() =>
+    retry(() => import("./Components/OrgChart/OrgChart"))
+  ),
   AppSetup: React.lazy(() =>
     retry(() => import("./Components/AppSetup/AppSetup"))
   ),

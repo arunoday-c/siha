@@ -73,7 +73,7 @@ class ClosePackage extends PureComponent {
   };
 
   componentWillReceiveProps(newProps) {
-    debugger;
+    
     if (newProps.package_detail !== undefined) {
       let InputObj = newProps.package_detail;
       InputObj.Cashchecked = true;
@@ -95,7 +95,7 @@ class ClosePackage extends PureComponent {
       card_type: null
     });
 
-    debugger;
+    
 
     this.setState(
       {
@@ -115,7 +115,7 @@ class ClosePackage extends PureComponent {
   }
 
   CloseRefund(e) {
-    debugger;
+    
     if (
       this.state.closed_remarks === null ||
       this.state.closed_remarks === ""
@@ -127,7 +127,7 @@ class ClosePackage extends PureComponent {
       return;
     }
     this.GenerateReciept($this => {
-      debugger;
+      
       algaehApiCall({
         uri: "/billing/patientPackageAdvanceRefund",
         module: "billing",
@@ -157,7 +157,7 @@ class ClosePackage extends PureComponent {
   }
 
   ClosePackage() {
-    debugger;
+    
     if (this.state.closed_remarks.length <= 0) {
       swalMessage({
         title: "Enter Remarks...",

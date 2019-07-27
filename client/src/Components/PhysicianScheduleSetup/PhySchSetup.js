@@ -353,7 +353,7 @@ class PhySchSetup extends Component {
 
   checkHandleAdd = (myRow, index) => {
     console.log(myRow);
-    debugger;
+    
     const { availDoctors } = this.state;
     let docsArray = this.state.schedule_detail;
     myRow.schedule_status = this.state.schedule_status;
