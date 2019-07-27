@@ -16,8 +16,6 @@ const executePDF = function executePDFMethod(options) {
 
       utilities.logger().log("input: ", input);
 
-      let outputArray = [];
-
       let strQuery = "";
 
       if (input.department_id > 0) {
@@ -70,7 +68,7 @@ const executePDF = function executePDFMethod(options) {
               .map(m => m)
               .value();
             //utilities.logger().log("departmentWise:", departmentWise);
-            let outputArray = [];
+            const outputArray = [];
 
             for (let i = 0; i < departmentWise.length; i++) {
               let dep_no_employee = 0;

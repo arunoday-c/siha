@@ -10,6 +10,8 @@
                             class="textArRht">لشركة</label></td>
                     <td><label class="textEnLft">No Employees</label>:<span
                             class="valueText">{{no_employees}}</span><label class="textArRht">لشركة</label></td>
+                    <td><label class="textEnLft">Date Of Joining</label>:<span
+                            class="valueText">{{return_input}}</span><label class="textArRht">لشركة</label></td>
                 </tr>
             </table>
 
@@ -39,13 +41,8 @@
                 <tbody>
                     {{#hasElement result}}
 
-                    {{#each result}}
-                    <tr>
-                        <td colspan="10" class="tableSubHdg">Nationality: {{nationality}}
 
-                        </td>
-                    </tr>
-                    {{#each employees}}
+                    {{#each result}}
                     <tr>
                         <td>{{inc @index}}</td>
                         <td>{{employee_code}}</td>
@@ -60,7 +57,7 @@
                         <td>{{employee_type}}</td>
                         <td>{{asemployee_status}}</td>
                     </tr>
-                    {{/each }}{{/each }}
+                    {{/each }}
                     {{else}}
                     <tr>
                         <td colspan="10" class="noResultTextReport">No Records Found</td>
