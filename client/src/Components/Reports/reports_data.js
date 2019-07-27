@@ -8,7 +8,8 @@ import {
   EXPIRY_STATUS,
   EMPLOYEE_STATUS,
   COMPARISON,
-  EMP_FORMAT_GENDER
+  EMP_FORMAT_GENDER,
+  DATE_OF_JOIN
 } from "../../utils/GlobalVariables.json";
 import { getYears, AlgaehOpenContainer } from "../../utils/GlobalFunctions";
 import { algaehApiCall } from "../../utils/algaehApiCall";
@@ -884,15 +885,17 @@ const HR_Payroll_Reports = [
           {
             className: "col-2",
             type: "dropdown",
-            name: "employee_status",
+            name: "nationality_id",
             initialLoad: true,
             isImp: false,
-            label: "Employee Status",
-            link: {},
+            label: "Select nationality",
+            link: {
+              uri: "/masters/get/nationality"
+            },
             dataSource: {
-              textField: "name",
-              valueField: "value",
-              data: EMPLOYEE_STATUS
+              textField: "nationality",
+              valueField: "hims_d_nationality_id",
+              data: undefined
             }
           }
         ]
@@ -974,15 +977,18 @@ const HR_Payroll_Reports = [
           {
             className: "col-2",
             type: "dropdown",
-            name: "employee_status",
+            name: "designation_id",
             initialLoad: true,
             isImp: false,
-            label: "Employee Status",
-            link: {},
+            label: "Select designation",
+            link: {
+              uri: "/hrsettings/getDesignations",
+              module: "hrManagement"
+            },
             dataSource: {
-              textField: "name",
-              valueField: "value",
-              data: EMPLOYEE_STATUS
+              textField: "designation",
+              valueField: "hims_d_designation_id",
+              data: undefined
             }
           }
         ]
@@ -1064,15 +1070,43 @@ const HR_Payroll_Reports = [
           {
             className: "col-2",
             type: "dropdown",
-            name: "employee_status",
+            name: "date_of_join",
             initialLoad: true,
             isImp: false,
-            label: "Employee Status",
+            label: "Joined",
             link: {},
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: EMPLOYEE_STATUS
+              data: DATE_OF_JOIN
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "year",
+            isImp: false,
+            initialLoad: true,
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: allYears
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            sort: "off",
+            name: "month",
+            isImp: false,
+            initialLoad: true,
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: MONTHS
+            },
+            others: {
+              sort: "off"
             }
           }
         ]

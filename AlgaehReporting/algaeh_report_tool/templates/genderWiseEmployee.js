@@ -16,8 +16,6 @@ const executePDF = function executePDFMethod(options) {
 
       utilities.logger().log("input: ", input);
 
-      let outputArray = [];
-
       let strQuery = "";
 
       if (input.department_id > 0) {
@@ -66,7 +64,11 @@ const executePDF = function executePDFMethod(options) {
             const genderWiseEmp = _.chain(result)
               .groupBy(g => g.sex)
               .map(m => {
-                return { geder: m[0]["sex"], details: m };
+                return {
+                  geder: m[0]["sex"],
+                  no_employee: m.length,
+                  details: m
+                };
               })
               .value();
 
