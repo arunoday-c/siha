@@ -9,7 +9,8 @@ import {
   EMPLOYEE_STATUS,
   COMPARISON,
   EMP_FORMAT_GENDER,
-  DATE_OF_JOIN
+  DATE_OF_JOIN,
+  EMPLOYEE_TYPE
 } from "../../utils/GlobalVariables.json";
 import { getYears, AlgaehOpenContainer } from "../../utils/GlobalFunctions";
 import { algaehApiCall } from "../../utils/algaehApiCall";
@@ -610,6 +611,20 @@ const HR_Payroll_Reports = [
               textField: "name",
               valueField: "value",
               data: EMPLOYEE_STATUS
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "employee_type",
+            initialLoad: true,
+            isImp: false,
+            label: "Employee Type",
+            link: {},
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: EMPLOYEE_TYPE
             }
           }
         ]

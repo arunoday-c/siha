@@ -35,6 +35,14 @@ const executePDF = function executePDFMethod(options) {
           break;
       }
 
+      switch (input.employee_type) {
+        case "PB":
+        case "PE":
+        case "CO":
+          strQuery += ` and E.employee_type='${input.employee_type}'`;
+          break;
+      }
+
       options.mysql
         .executeQuery({
           query: ` 

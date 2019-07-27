@@ -583,7 +583,8 @@
   ],
   "EMPLOYEE_TYPE": [
     { "name": "Permanent", "value": "PE" },
-    { "name": "Contract", "value": "CO" }
+    { "name": "Contract", "value": "CO" },
+    { "name": "Probation", "value": "PB" }
   ],
   "EMP_APPT_TYPE": [
     { "name": "Agency", "value": "A" },
