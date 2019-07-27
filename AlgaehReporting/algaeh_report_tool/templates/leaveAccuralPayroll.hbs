@@ -6,17 +6,17 @@
         <section>
             <table class="tableForData" cell-padding="0">
                 <thead>
-                     <tr>
-    <th>Sl No.</th>
-    <th>Employee Code</th>
-    <th>Employee Name</th>
-    <th>Department</th>
-    <th>Leave Days</th>
-    <th>Leave Salary</th>
-    <th>Airfare Amt.</th>
-  </tr>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>Employee Code</th>
+                        <th>Employee Name</th>
+                        <th>Department</th>
+                        <th>Leave Days</th>
+                        <th>Leave Salary</th>
+                        <th>Airfare Amt.</th>
+                    </tr>
                 </thead>
-                <tbody>
+                <tbody>{{#hasElement detailsList}}
                     {{#each detailsList}}
                     <tr>
                         <td>{{inc @index}}</td>
@@ -28,7 +28,11 @@
                         <td>{{airfare_amount}}</td>
                     </tr>
                     {{/each }}
-              
+                    {{else}}
+                    <tr>
+                        <td colspan="7" class="noResultTextReport">No Records Found</td>
+                    </tr>{{/hasElement }}
+
                 </tbody>
             </table>
         </section>

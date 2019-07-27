@@ -6,24 +6,20 @@
         <section>
             <table class="tableForLabel" cell-padding="0">
                 <tr>
-                    <td><label class="textEnLft">Branch</label>:<span class="valueText">{{hospital_name}}</span><label
-                            class="textArRht">لشركة</label></td>
-                    <td><label class="textEnLft">No Employees</label>:<span
-                            class="valueText">{{no_employees}}</span><label class="textArRht">لشركة</label></td>
+                    <td><label class="textEnLft">Branch</label>:<span class="valueText">{{hospital_name}}</span></td>
+                    <td><label class="textEnLft">No Employees</label>:<span class="valueText">{{no_employees}}</span>
+                    </td>
                 </tr>
             </table>
-
-
         </section>
+
         <section>
             <table class="tableForData" cell-padding="0">
                 <thead>
                     <tr>
-                    <tr>
                         <th>Sl No.</th>
                         <th>Employee Code</th>
                         <th>Employee Name</th>
-                        <th>Designation</th>
                         <th>Gender</th>
                         <th>Dept. </th>
                         <th>Sub Dept.</th>
@@ -32,8 +28,6 @@
                         <th>Religion</th>
                         <th>Emp. Type</th>
                         <th>Emp. Status</th>
-
-                    </tr>
                     </tr>
                 </thead>
                 <tbody>
@@ -42,10 +36,7 @@
                     {{#each result}}
                     <tr>
                         <td colspan="11" class="tableSubHdg">Designation: {{designation}}
-
-                        </td>
-                        <td colspan="11" class="tableSubHdg">No Employees: {{no_employee}}
-
+                            <span class="textFloatRight">No Employees: {{no_employee}}</span>
                         </td>
                     </tr>
                     {{#each employees}}
@@ -53,7 +44,6 @@
                         <td>{{inc @index}}</td>
                         <td>{{employee_code}}</td>
                         <td style="text-align: left;">{{full_name}}</td>
-                        <td>{{designation}}</td>
                         <td>{{sex}}</td>
                         <td>{{department_name}}</td>
                         <td>{{sub_department_name}}</td>
