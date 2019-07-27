@@ -14,7 +14,7 @@ const executePDF = function executePDFMethod(options) {
         input[para["name"]] = para["value"];
       });
 
-      utilities.logger().log("input: ", input);
+      //  utilities.logger().log("input: ", input);
 
       let strQuery = "";
 
