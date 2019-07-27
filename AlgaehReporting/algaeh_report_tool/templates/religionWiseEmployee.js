@@ -24,8 +24,8 @@ const executePDF = function executePDFMethod(options) {
       if (input.sub_department_id > 0) {
         strQuery += ` and E.sub_department_id=${input.sub_department_id}`;
       }
-      if (input.nationality_id > 0) {
-        strQuery += ` and E.nationality=${input.nationality_id}`;
+      if (input.religion_id > 0) {
+        strQuery += ` and E.religion_id=${input.religion_id}`;
       }
 
       options.mysql
@@ -39,7 +39,7 @@ const executePDF = function executePDFMethod(options) {
           E.sub_department_id, SD.sub_department_name,D.hims_d_department_id,D.department_name,
           case employee_type when  'PE' then  'PERMANENT' when  'CO' then  'CONTRACT'
           when  'PB' then  'PROBATION' when  'LC' then  'LOCUM'
-          when  'VC' then  'VISITING CONSULTANT'end as employee_type,hims_d_nationality_id
+          when  'VC' then  'VISITING CONSULTANT'end as employee_type,hims_d_religion_id
           from hims_d_employee E left join hims_d_designation DG on
           E.employee_designation_id=DG.hims_d_designation_id
           left join hims_d_religion R on E.religion_id=R.hims_d_religion_id
@@ -57,10 +57,10 @@ const executePDF = function executePDFMethod(options) {
 
           if (result.length > 0) {
             const nationgWiseEmp = _.chain(result)
-              .groupBy(g => g.hims_d_nationality_id)
+              .groupBy(g => g.hims_d_religion_id)
               .map(m => {
                 return {
-                  nationality: m[0]["nationality"],
+                  religion: m[0]["religion_name"],
                   no_employee: m.length,
                   employees: m
                 };

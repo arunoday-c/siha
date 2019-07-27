@@ -997,10 +997,10 @@ const HR_Payroll_Reports = [
             isImp: false,
             label: "Select Religion",
             link: {
-              uri: "/masters/get/religion"
+              uri: "/masters/get/relegion"
             },
             dataSource: {
-              textField: "nationality",
+              textField: "religion_name",
               valueField: "hims_d_religion_id",
               data: undefined
             }
