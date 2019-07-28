@@ -53,7 +53,7 @@ class ManualAttendance extends Component {
       select_wise: "M",
       employee_id: null,
       employee_name: null,
-      attendance_date: null,
+      attendance_date: new Date(),
       date_range: false
     };
     ManualAttendanceEvents().getSubDepartment(this);
@@ -204,31 +204,8 @@ class ManualAttendance extends Component {
     return (
       <div id="ManualAttendanceScreen">
         <div className="row inner-top-search" data-validate="loadEmployee">
-          <div className="col">
-            <div className="customRadio">
-              <label className="radio block">
-                <input
-                  type="radio"
-                  checked={this.state.month_wise}
-                  name="month_wise"
-                  onClick={this.selectData.bind(this)}
-                />
-                <span>Month Wise</span>
-              </label>
-
-              <label className="radio block">
-                <input
-                  type="radio"
-                  checked={this.state.date_range}
-                  name="date_range"
-                  onClick={this.selectData.bind(this)}
-                />
-                <span>Date Range</span>
-              </label>
-            </div>
-          </div>
           <AlagehAutoComplete
-            div={{ className: "col" }}
+            div={{ className: "col-3" }}
             label={{
               forceLabel: "Select a Branch.",
               isImp: true
@@ -250,14 +227,36 @@ class ManualAttendance extends Component {
               }
             }}
           />
+          <div className="col-2">
+            <div className="customRadio">
+              <label className="radio block">
+                <input
+                  type="radio"
+                  checked={this.state.month_wise}
+                  name="month_wise"
+                  onClick={this.selectData.bind(this)}
+                />
+                <span>Month Wise</span>
+              </label>
 
+              <label className="radio block">
+                <input
+                  type="radio"
+                  checked={this.state.date_range}
+                  name="date_range"
+                  onClick={this.selectData.bind(this)}
+                />
+                <span>Day Wise</span>
+              </label>
+            </div>
+          </div>
           {this.state.select_wise === "M" ? (
             <div className="col">
               <div className="row">
                 <AlagehAutoComplete
-                  div={{ className: "col" }}
+                  div={{ className: "col-3" }}
                   label={{
-                    forceLabel: "Select a Month.",
+                    forceLabel: "Select Month.",
                     isImp: this.state.select_wise === "M" ? true : false
                   }}
                   selector={{
@@ -296,7 +295,7 @@ class ManualAttendance extends Component {
                       </h6>
                     </div>
                     <div
-                      className="col-lg-3"
+                      className="col-3"
                       style={{ borderLeft: "1px solid #ced4d8" }}
                     >
                       <i
@@ -316,6 +315,23 @@ class ManualAttendance extends Component {
           ) : (
             <div className="col">
               <div className="row">
+                {" "}
+                <AlgaehDateHandler
+                  div={{ className: "col-3" }}
+                  label={{
+                    forceLabel: "Select Date",
+                    isImp: this.state.select_wise === "D" ? true : false
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "attendance_date"
+                  }}
+                  maxDate={new Date()}
+                  events={{
+                    onChange: this.datehandle.bind(this)
+                  }}
+                  value={this.state.attendance_date}
+                />
                 <AlagehAutoComplete
                   div={{ className: "col" }}
                   label={{
@@ -342,29 +358,13 @@ class ManualAttendance extends Component {
                     }
                   }}
                 />
-                <AlgaehDateHandler
-                  div={{ className: "col" }}
-                  label={{
-                    forceLabel: "Select Date",
-                    isImp: this.state.select_wise === "D" ? true : false
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "attendance_date"
-                  }}
-                  maxDate={new Date()}
-                  events={{
-                    onChange: this.datehandle.bind(this)
-                  }}
-                  value={this.state.attendance_date}
-                />
               </div>
             </div>
           )}
 
           <div className="col-1 form-group">
             <button
-              style={{ marginTop: 21 }}
+              style={{ marginTop: 19 }}
               className="btn btn-default"
               onClick={this.LoadData.bind(this)}
             >
@@ -549,7 +549,7 @@ class ManualAttendance extends Component {
                       keyId="hims_f_daily_time_sheet_id"
                       dataSource={{ data: this.state.employee_details }}
                       isEditable={false}
-                      paging={{ page: 0, rowsPerPage: 20 }}
+                      paging={{ page: 0, rowsPerPage: 31 }}
                       tool={{
                         fileName: "Daily Time Sheet",
                         extraColumns: [],

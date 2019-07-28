@@ -15,6 +15,7 @@ import {
 } from "../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 import "./phy_sch_setup.css";
+import AddDoctorModal from "./AddDoctorModal";
 
 class PhySchSetup extends Component {
   constructor(props) {
@@ -25,6 +26,7 @@ class PhySchSetup extends Component {
       scheduleList: [],
       scheduleDoctors: [],
       schedule_detail: [],
+      availDoctors: [],
       year: moment().year(),
       month: null,
       from_date: "",
@@ -95,11 +97,24 @@ class PhySchSetup extends Component {
     });
   }
 
+  openAddDoctorModal = () => {
+    const { doctors, scheduleDoctors } = this.state;
+    let docIds = scheduleDoctors.map(({ provider_id }) => provider_id);
+    let availDoctors = doctors.filter(
+      item => !docIds.includes(item.provider_id)
+    );
+    this.setState({
+      openAddDoctor: true,
+      availDoctors
+    });
+  };
+
   resetSaveState() {
     this.setState({
       description: "",
       openEdit: false,
       openScheduler: false,
+      openAddDoctor: false,
       all: false,
       monday: false,
       tuesday: false,
@@ -306,7 +321,6 @@ class PhySchSetup extends Component {
   }
 
   checkHandle = (myRow, index) => {
-    console.log(myRow, index);
     const { doctors } = this.state;
     let docsArray = this.state.schedule_detail;
     myRow.schedule_status = this.state.schedule_status;
@@ -331,13 +345,92 @@ class PhySchSetup extends Component {
       doctors[index].isDocChecked = true;
     }
 
-    this.setState(
-      {
-        schedule_detail: docsArray,
-        doctors
-      },
-      console.log(this.state.schedule_detail, "from check handle")
-    );
+    this.setState({
+      schedule_detail: docsArray,
+      doctors
+    });
+  };
+
+  checkHandleAdd = (myRow, index) => {
+    console.log(myRow);
+    
+    const { availDoctors } = this.state;
+    let docsArray = this.state.schedule_detail;
+    myRow.schedule_status = this.state.schedule_status;
+    myRow.slot = this.state.sch_slot;
+    myRow.from_work_hr = this.state.from_work_hr;
+    myRow.to_work_hr = this.state.to_work_hr;
+    myRow.work_break1 = this.state.work_break1;
+    myRow.work_break2 = this.state.work_break2;
+    myRow.from_break_hr1 = this.state.from_break_hr1;
+    myRow.to_break_hr1 = this.state.to_break_hr1;
+    myRow.from_break_hr2 = this.state.from_break_hr2;
+    myRow.to_break_hr2 = this.state.to_break_hr2;
+
+    const item = Enumerable.from(this.state.schedule_detail)
+      .where(w => w.provider_id === myRow.provider_id)
+      .firstOrDefault();
+    if (item !== undefined) {
+      docsArray.splice(docsArray.indexOf(item), 1);
+      availDoctors[index].isDocChecked = false;
+    } else {
+      docsArray.push(myRow);
+      availDoctors[index].isDocChecked = true;
+    }
+
+    this.setState({
+      schedule_detail: docsArray,
+      availDoctors
+    });
+  };
+
+  addDoctorsToSchedule = () => {
+    const {
+      hims_d_appointment_schedule_header_id,
+      schedule_detail
+    } = this.state;
+    if (!hims_d_appointment_schedule_header_id) {
+      swalMessage({
+        title: "Please select the correct schedule",
+        type: "error"
+      });
+      return null;
+    } else if (!Array.isArray(schedule_detail) && !schedule_detail.length) {
+      swalMessage({
+        title: "Please select doctors",
+        type: "error"
+      });
+    } else {
+      algaehApiCall({
+        uri: "/appointment/addDoctorToExistingSchedule",
+        module: "frontDesk",
+        method: "POST",
+        data: {
+          hims_d_appointment_schedule_header_id,
+          schedule_detail
+        },
+        onSuccess: response => {
+          if (response.data.success) {
+            swalMessage({
+              title: "Schedule added successfully . .",
+              type: "success"
+            });
+            this.getApptSchedule();
+          } else if (response.data.success === false) {
+            swalMessage({
+              title: response.data.records.message,
+              type: "warning"
+            });
+          }
+        },
+        onFailure: response => {
+          swalMessage({
+            title: response.data.records.message,
+            type: "warning"
+          });
+        }
+      });
+    }
   };
 
   //need to rewrite this function in future, coz it's not DRY!!
@@ -675,6 +768,7 @@ class PhySchSetup extends Component {
         from_break_hr2: docs.work_break2 === "Y" ? docs.from_break_hr2 : null,
         to_break_hr2: docs.work_break2 === "Y" ? docs.to_break_hr2 : null,
         from_work_hr: docs.from_work_hr,
+        sch_slot: docs.doctorsList[0].slot,
         to_work_hr: docs.to_work_hr,
         work_break1: docs.work_break1,
         work_break2: docs.work_break2,
@@ -901,7 +995,9 @@ class PhySchSetup extends Component {
         openScheduler: false,
         openModifier: false,
         openEdit: false,
-        schedule_detail: []
+        openAddDoctor: false,
+        schedule_detail: [],
+        availDoctors: []
       },
       () => this.resetSaveState()
     );
@@ -1256,13 +1352,19 @@ class PhySchSetup extends Component {
           dropDownHandler={this.dropDownHandler.bind(this)}
           changeDate={this.changeDate.bind(this)}
           changeChecks={this.changeChecks.bind(this)}
-          isDoctorAdded={this.isDoctorAdded}
           checkHandle={this.checkHandle.bind(this)}
           saveApptSchedule={this.saveApptSchedule.bind(this)}
         />
 
         {/* Schedule Modal End */}
-
+        <AddDoctorModal
+          title="Select Doctors to add"
+          isOpen={this.state.openAddDoctor}
+          availDoctors={this.state.availDoctors}
+          handleClose={this.handleClose.bind(this)}
+          checkHandle={this.checkHandleAdd.bind(this)}
+          addDoctorsToSchedule={this.addDoctorsToSchedule}
+        />
         <div className="row margin-top-15">
           <div className="col-3" style={{ paddingRight: 0 }}>
             <div className="portlet portlet-bordered margin-bottom-15">
@@ -1669,6 +1771,7 @@ class PhySchSetup extends Component {
                       <button
                         className="btn btn-primary"
                         style={{ float: "right", marginTop: 10 }}
+                        onClick={this.openAddDoctorModal}
                       >
                         Add Doctor
                       </button>

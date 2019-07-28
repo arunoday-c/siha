@@ -4,7 +4,6 @@ import _ from "lodash";
 import { LINQ } from "node-linq";
 import mysql from "mysql";
 import algaehUtilities from "algaeh-utilities/utilities";
-import math from "mathjs";
 
 module.exports = {
   newProcessSalary: (req, res, next) => {
@@ -131,7 +130,7 @@ module.exports = {
             }
             const month_name = moment(input.month, "MM").format("MMMM");
 
-            let strQuery =
+            let str_Query =
               "select hims_f_employee_monthly_leave_id, employee_id, year, leave_id,L.calculation_type, availed_till_date," +
               avail_till_date +
               "as avail_till_date," +
@@ -149,7 +148,7 @@ module.exports = {
               avail_till_date +
               " <=to_value )\
                     and  employee_id in (?) and year=? union all	";
-            strQuery +=
+            str_Query +=
               "select hims_f_employee_monthly_leave_id, employee_id, year, leave_id,L.calculation_type, availed_till_date," +
               avail_till_date +
               "as avail_till_date," +
@@ -202,7 +201,7 @@ module.exports = {
               delete from hims_f_salary_deductions where salary_header_id in (?);\
               delete from hims_f_salary_earnings where salary_header_id in (?);\
               delete from hims_f_salary where hims_f_salary_id in (?);" +
-                  strQuery,
+                  str_Query,
                 values: [
                   _myemp,
                   _myemp,
@@ -1993,7 +1992,12 @@ module.exports = {
           if (leave_accrual_detail.length > 0) {
             _mysql
               .generateRunningNumber({
-                modules: ["LEAVE_ACCRUAL"]
+                modules: ["LEAVE_ACCRUAL"],
+                tableName: "hims_f_app_numgen",
+                identity: {
+                  algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
+                  hospital_id: req.userIdentity["x-branch"]
+                }
               })
               .then(generatedNumbers => {
                 let leave_salary_number = generatedNumbers[0];
@@ -2983,7 +2987,6 @@ module.exports = {
                     .Where(w => w.employee_id == salary[i]["employee_id"])
                     .Select(s => parseFloat(s.airfare_amount))
                     .FirstOrDefault(0);
-
 
                   let emp_gratuity = new LINQ(gratuity)
                     .Where(w => w.employee_id == salary[i]["employee_id"])
@@ -4410,8 +4413,7 @@ function InsertGratuityProvision(options) {
                           return a + b;
                         }, 0) * _eligibleDays;
 
-                      _computatedAmoutSum = math.round(
-                        _computatedAmoutSum,
+                      _computatedAmoutSum = _computatedAmoutSum.toFixed(
                         decimal_places
                       );
 

@@ -15,14 +15,13 @@
     border-radius: 10px;
     overflow: hidden;
     input[type="button"] {
+      font-size: 1.5rem;
       background: #145052;
-
       font-weight: 900;
-      /* border-radius: 7px; */
-      /* margin-left: 13px; */
       border: 1px solid #082829;
-      /* margin-top: 10px; */
       color: #fff;
+      height: 45px;
+      text-align: center;
 
       &:hover {
         background-color: #34b8bc;
@@ -49,6 +48,7 @@
       padding-left: 0;
       input[type="button"] {
         background: #0c3638;
+        font-size: 1.5rem;
         &:hover {
           background: #34b8bc;
         }
@@ -56,6 +56,7 @@
     }
     .ComponentsFormula {
       input[type="button"] {
+        font-size: 0.8rem;
         background: #0b3638;
         &:hover {
           background: #34b8bc;
@@ -66,9 +67,13 @@
       border-top: 2px solid #fff;
       input[type="button"] {
         text-transform: uppercase;
-
-        background: #238286;
+        background: #082828;
         padding: 8px 0;
+        height: 30px;
+        font-size: 0.8rem;
+        &:last-child {
+          background: #00a796;
+        }
         &:hover {
           background: #34b8bc;
         }

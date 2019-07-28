@@ -28,7 +28,7 @@
     }
   },
   "dependencies": {
-    "algaeh-mysql": "^1.2.4",
+    "algaeh-mysql": "^1.2.11",
     "body-parser": "^1.18.2",
     "compression": "^1.7.3",
     "concurrently": "^3.5.1",
@@ -37,12 +37,13 @@
     "cryptr": "^4.0.0",
     "express": "^4.16.3",
     "extend": "^3.0.2",
+    "global": "^4.4.0",
+    "mathjs": "^5.1.2",
     "moment": "^2.22.1",
     "mssql": "^4.3.2",
     "node-linq": "0.0.5",
     "winston": "^2.4.2",
-    "winston-daily-rotate-file": "^3.1.4",
-    "mathjs": "^5.1.2"
+    "winston-daily-rotate-file": "^3.1.4"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

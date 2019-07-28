@@ -420,29 +420,6 @@ class AddPackageBilling extends Component {
             <div className="hptl-phase1-op-add-billing-form">
               <div className="container-fluid">
                 <div className="row margin-top-15">
-                  {/* <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
-                    label={{
-                      fieldName: "select_service_type"
-                    }}
-                    selector={{
-                      name: "s_service_type",
-                      className: "select-fld",
-                      value: this.state.s_service_type,
-                      dataSource: {
-                        textField:
-                          this.state.selectedLang === "en"
-                            ? "service_type"
-                            : "arabic_service_type",
-                        valueField: "hims_d_service_type_id",
-                        data: this.props.servicetype
-                      },
-                      others: { disabled: this.state.Billexists },
-                      onChange: serviceTypeHandeler.bind(this, this, context),
-                      onClear: serviceTypeHandeler.bind(this, this, context)
-                    }}
-                  /> */}
-
                   <AlagehAutoComplete
                     div={{ className: "col-lg-3" }}
                     label={{
@@ -482,14 +459,6 @@ class AddPackageBilling extends Component {
                   </div>
 
                   <div className="col-lg-5">
-                    {/* <button
-                      className="btn btn-default"
-                      style={{ marginTop: "24px", marginRight: "15px" }}
-                      onClick={this.ShowPackList.bind(this)}
-                      disabled={this.state.billDetails}
-                    >
-                      View Package List
-                    </button> */}
                     <button
                       className="btn btn-default"
                       style={{ marginTop: "24px" }}
@@ -763,7 +732,7 @@ class AddPackageBilling extends Component {
                   </div>
                 </div>
 
-                <div className="row">
+                {/*<div className="row">
                   <div className="col-lg-7" />
                   <div className="col-lg-5" style={{ textAlign: "right" }}>
                     <div className="row">
@@ -794,9 +763,9 @@ class AddPackageBilling extends Component {
                       </div>
                     </div>
                   </div>
-                </div>
+                </div>*/}
 
-                <div className="row">
+                {/*<div className="row">
                   <div className="col-lg-4">
                     <div
                       style={{
@@ -825,26 +794,7 @@ class AddPackageBilling extends Component {
                             {getAmountFormart(this.state.deductable_amount)}
                           </h6>
                         </div>
-                        {/* <div className="col-lg-6">
-                          <AlgaehLabel
-                            label={{
-                              fieldName: "seco_copay_amount"
-                            }}
-                          />
-                          <h6>
-                            {getAmountFormart(this.state.sec_copay_amount)}
-                          </h6>
-                        </div>
-                        <div className="col-lg-6">
-                          <AlgaehLabel
-                            label={{
-                              fieldName: "sec_deductable_amount"
-                            }}
-                          />
-                          <h6>
-                            {getAmountFormart(this.state.sec_deductable_amount)}
-                          </h6>
-                        </div> */}
+
                       </div>
                       <div className="row">
                         <div className="col-lg-12 patientRespo">
@@ -888,7 +838,7 @@ class AddPackageBilling extends Component {
                             </div>
                           </div>
                         </div>
-                        {/* <div className="col-lg-1"> &nbsp; </div> */}
+
 
                         <div className="col-lg-12">
                           <AlgaehLabel
@@ -932,49 +882,7 @@ class AddPackageBilling extends Component {
                           </div>
                         </div>
 
-                        {/* <div className="col-lg-12">
-                          <AlgaehLabel
-                            label={{
-                              fieldName: "sec_comp_lbl"
-                            }}
-                          />
-                          <div className="row insurance-details">
-                            <div className="col-5">
-                              <AlgaehLabel
-                                label={{
-                                  fieldName: "responsibility_lbl"
-                                }}
-                              />
-                              <h6>
-                                {getAmountFormart(this.state.sec_company_res)}
-                              </h6>
-                            </div>
 
-                            <div className="col-3">
-                              <AlgaehLabel
-                                label={{
-                                  fieldName: "tax_lbl"
-                                }}
-                              />
-                              <h6>
-                                {getAmountFormart(this.state.sec_company_tax)}
-                              </h6>
-                            </div>
-
-                            <div className="col-4">
-                              <AlgaehLabel
-                                label={{
-                                  fieldName: "payable_lbl"
-                                }}
-                              />
-                              <h6>
-                                {getAmountFormart(
-                                  this.state.sec_company_paybale
-                                )}
-                              </h6>
-                            </div>
-                          </div>
-                        </div> */}
                       </div>
                     </div>
                   </div>
@@ -1128,10 +1036,7 @@ class AddPackageBilling extends Component {
                               placeholder: "0.00",
                               disabled:
                                 this.state.Billexists === true ? true : false
-                              // onBlur: credittextCal.bind(this, this),
-                              // onFocus: e => {
-                              //   e.target.oldvalue = e.target.value;
-                              // }
+
                             }
                           }}
                         />
@@ -1165,7 +1070,7 @@ class AddPackageBilling extends Component {
                       <ReciptForm BillingIOputs={this.props.BillingIOputs} />
                     </div>
                   </div>
-                </div>
+                </div>*/}
               </div>
             </div>
           )}

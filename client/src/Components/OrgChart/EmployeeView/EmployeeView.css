@@ -1,0 +1,138 @@
+.EmployeeOrgView .ulSuperParent {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow: auto;
+  position: relative; }
+  .EmployeeOrgView .ulSuperParent li.liSuperChild {
+    margin: 0;
+    list-style: none;
+    position: relative;
+    width: 280px;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #00a796;
+    background: #00a796;
+    color: #fff; }
+    .EmployeeOrgView .ulSuperParent li.liSuperChild .imgSection {
+      display: inline-block;
+      width: 50px;
+      vertical-align: top; }
+      .EmployeeOrgView .ulSuperParent li.liSuperChild .imgSection img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: #ccc;
+        border: none; }
+    .EmployeeOrgView .ulSuperParent li.liSuperChild .contentSection {
+      display: inline-block;
+      width: calc(100% - 60px);
+      margin-left: 10px; }
+      .EmployeeOrgView .ulSuperParent li.liSuperChild .contentSection h1 {
+        font-size: 1rem;
+        margin: 0; }
+      .EmployeeOrgView .ulSuperParent li.liSuperChild .contentSection p {
+        margin: 0;
+        line-height: 20px; }
+    .EmployeeOrgView .ulSuperParent li.liSuperChild ul.ulParent {
+      padding: 0 0 0 14px;
+      color: rgba(0, 0, 0, 0.87);
+      margin: 0;
+      list-style: none;
+      position: fixed;
+      left: 305px;
+      top: 98px;
+      z-index: 9;
+      min-height: 86vh;
+      width: 100vw;
+      overflow: auto; }
+      .EmployeeOrgView .ulSuperParent li.liSuperChild ul.ulParent li.liChild {
+        padding: 10px;
+        border: 2px solid #d6d6d6;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        background: #fff;
+        position: relative;
+        width: 285px; }
+        .EmployeeOrgView .ulSuperParent li.liSuperChild ul.ulParent li.liChild::before {
+          content: "";
+          background: #00a796;
+          height: 3px;
+          width: 20px;
+          position: absolute;
+          top: 49%;
+          left: -14px;
+          z-index: -1; }
+        .EmployeeOrgView .ulSuperParent li.liSuperChild ul.ulParent li.liChild .ulParent {
+          position: fixed;
+          left: 305px;
+          top: 0;
+          z-index: 9;
+          min-height: 100vh;
+          width: 100vw;
+          overflow-y: auto;
+          overflow-x: hidden; }
+          .EmployeeOrgView .ulSuperParent li.liSuperChild ul.ulParent li.liChild .ulParent .ulParent {
+            position: fixed;
+            left: 305px;
+            top: 0;
+            z-index: 9;
+            min-height: 100vh;
+            width: 100vw;
+            overflow-y: auto;
+            overflow-x: hidden; }
+        .EmployeeOrgView .ulSuperParent li.liSuperChild ul.ulParent li.liChild:hover {
+          box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+          background: #00a796;
+          color: #fff;
+          cursor: pointer; }
+          .EmployeeOrgView .ulSuperParent li.liSuperChild ul.ulParent li.liChild:hover > ul {
+            display: block;
+            color: rgba(0, 0, 0, 0.87); }
+          .EmployeeOrgView .ulSuperParent li.liSuperChild ul.ulParent li.liChild:hover::after {
+            content: "";
+            background: #00a796;
+            height: 3px;
+            width: 20px;
+            position: absolute;
+            top: 49%;
+            right: -14px;
+            z-index: -1; }
+      .EmployeeOrgView .ulSuperParent li.liSuperChild ul.ulParent::before {
+        content: "";
+        background: #00a796;
+        height: 100vh;
+        width: 3px;
+        position: absolute;
+        top: 0;
+        left: 0px;
+        z-index: -1; }
+    .EmployeeOrgView .ulSuperParent li.liSuperChild:hover {
+      box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+      background: #00a796;
+      color: #fff;
+      cursor: pointer; }
+      .EmployeeOrgView .ulSuperParent li.liSuperChild:hover > ul {
+        display: block; }
+    .EmployeeOrgView .ulSuperParent li.liSuperChild::after {
+      content: "";
+      background: #00a796;
+      height: 3px;
+      width: 20px;
+      position: absolute;
+      top: 49%;
+      right: -14px;
+      z-index: -1; }
+  .EmployeeOrgView .ulSuperParent .clickedLi {
+    background: #00a796 !important;
+    color: #fff; }
+    .EmployeeOrgView .ulSuperParent .clickedLi::after {
+      content: "";
+      background: #00a796;
+      height: 3px;
+      width: 20px;
+      position: absolute;
+      top: 49%;
+      right: -14px;
+      z-index: -1; }

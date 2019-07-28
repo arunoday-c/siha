@@ -56,7 +56,12 @@ module.exports = {
             } else {
               _mysql
                 .generateRunningNumber({
-                  modules: ["EMPLOYEE_LOAN"]
+                  modules: ["EMPLOYEE_LOAN"],
+                  tableName: "hims_f_app_numgen",
+                  identity: {
+                    algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
+                    hospital_id: req.userIdentity["x-branch"]
+                  }
                 })
                 .then(numGenLeave => {
                   _mysql
@@ -215,49 +220,40 @@ module.exports = {
       loan_closed = ` and LA.loan_closed='${req.query.loan_closed}' `;
     }
 
-    if (req.userIdentity.leave_authorize_privilege != "N") {
-      const _mysql = new algaehMysql();
-      _mysql
-        .executeQuery({
-          query:
-            "select hims_f_loan_application_id,loan_application_number, loan_skip_months , employee_id,loan_id,L.loan_code,L.loan_description,\
+    // if (req.userIdentity.loan_authorize_privilege != "N") {
+    const _mysql = new algaehMysql();
+    _mysql
+      .executeQuery({
+        query:
+          "select hims_f_loan_application_id,loan_application_number, loan_skip_months , employee_id,loan_id,L.loan_code,L.loan_description,\
           L.loan_account,L.loan_limit_type,L.loan_maximum_amount,LA.application_reason,\
           loan_application_date,loan_authorized,authorized_date,authorized_by,loan_closed,loan_amount,approved_amount,\
           start_month,start_year,loan_tenure,pending_tenure,installment_amount,pending_loan,authorized1_by,authorized1_date,\
           authorized1,authorized2_by,authorized2_date,authorized2 ,E.full_name as employee_name ,E.employee_code from hims_f_loan_application LA  inner join \
           hims_d_loan L on LA.loan_id=L.hims_d_loan_id  inner join hims_d_employee E on LA.employee_id=E.hims_d_employee_id\
            and E.record_status='A' where L.record_status='A' and LA.hospital_id=? " +
-            employee +
-            "" +
-            range +
-            "" +
-            auth_level +
-            "" +
-            loan_issued +
-            "" +
-            loan_closed,
-          values: [req.userIdentity.hospital_id],
+          employee +
+          "" +
+          range +
+          "" +
+          auth_level +
+          "" +
+          loan_issued +
+          "" +
+          loan_closed,
+        values: [req.userIdentity.hospital_id],
 
-          printQuery: true
-        })
-        .then(result => {
-          _mysql.releaseConnection();
-          req.records = result;
-          next();
-        })
-        .catch(e => {
-          _mysql.releaseConnection();
-          next(e);
-        });
-    } else {
-      req.records = {
-        invalid_input: true,
-        message: "you dont have admin privilege "
-      };
-
-      next();
-      return;
-    }
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
   },
   //created by irfan:
   getLoanLevels(req, res, next) {

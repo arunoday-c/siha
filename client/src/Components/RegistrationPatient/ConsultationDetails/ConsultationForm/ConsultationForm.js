@@ -106,6 +106,16 @@ class AddConsultationForm extends Component {
         }
       });
     }
+
+    this.props.getServices({
+      uri: "/serviceType/getService",
+      module: "masterSettings",
+      method: "GET",
+      redux: {
+        type: "SERVICES_GET_DATA",
+        mappingName: "serviceslist"
+      }
+    });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -119,6 +129,7 @@ class AddConsultationForm extends Component {
   };
 
   render() {
+    
     const vstDeatils =
       this.state.visitDetails === null ? [{}] : this.state.visitDetails;
     const doctors =
@@ -129,6 +140,10 @@ class AddConsultationForm extends Component {
         : this.props.deptanddoctors.departmets;
     const hideMaternity = this.state.gender === "Female" ? "" : "hide";
 
+    const Package_Exists =
+      this.props.PatientPackageList === undefined
+        ? []
+        : this.props.PatientPackageList;
     return (
       <MyContext.Consumer>
         {context => (
@@ -156,7 +171,10 @@ class AddConsultationForm extends Component {
                           data: this.props.visittypes
                         },
                         others: {
-                          disabled: this.state.clearEnable
+                          disabled:
+                            this.state.savedData === true
+                              ? true
+                              : this.state.clearEnable
                         },
                         onChange: selectedHandeler.bind(this, this, context),
                         onClear: () => {
@@ -199,7 +217,10 @@ class AddConsultationForm extends Component {
                               : departments
                         },
                         others: {
-                          disabled: this.state.visittypeselect
+                          disabled:
+                            this.state.savedData === true
+                              ? true
+                              : this.state.visittypeselect
                         },
                         onChange: DeptselectedHandeler.bind(
                           this,
@@ -246,7 +267,10 @@ class AddConsultationForm extends Component {
                               : this.state.doctors
                         },
                         others: {
-                          disabled: this.state.visittypeselect
+                          disabled:
+                            this.state.savedData === true
+                              ? true
+                              : this.state.visittypeselect
                         },
                         onChange: doctorselectedHandeler.bind(
                           this,
@@ -273,7 +297,7 @@ class AddConsultationForm extends Component {
                       }}
                     />
 
-                    <AlgaehDateHandler
+                    {/*<AlgaehDateHandler
                       div={{ className: "col-lg-6" }}
                       label={{ fieldName: "visit_date" }}
                       textBox={{
@@ -287,7 +311,22 @@ class AddConsultationForm extends Component {
                         onChange: null
                       }}
                       value={this.state.visit_date}
-                    />
+                    />*/}
+
+                    <div className="col-lg-6">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "visit_date"
+                        }}
+                      />
+                      <h6>
+                        {this.state.visit_date
+                          ? moment(this.state.visit_date).format(
+                              Options.dateFormat
+                            )
+                          : Options.dateFormat}
+                      </h6>
+                    </div>
                   </div>
                   <div className="row">
                     {/*<div className="col-lg-4 maternityRadio">
@@ -417,7 +456,13 @@ class AddConsultationForm extends Component {
                 </div>
 
                 <div className="col-lg-8 secondary-details">
-                  <h6>{getLabelFromLanguage({ fieldName: "PastVisit" })}</h6>
+                  <h6>
+                    {getLabelFromLanguage({ fieldName: "PastVisit" })}{" "}
+                    {Package_Exists.length > 0 ? (
+                      <span className="packageStatus"> Package Exists </span>
+                    ) : null}
+                  </h6>
+
                   <AlgaehDataGrid
                     columns={[
                       {
@@ -545,7 +590,9 @@ function mapStateToProps(state) {
     frontproviders: state.frontproviders,
     deptanddoctors: state.deptanddoctors,
     viewsubdept: state.viewsubdept,
-    dentalplans: state.dentalplans
+    dentalplans: state.dentalplans,
+    PatientPackageList: state.PatientPackageList,
+    serviceslist: state.serviceslist
   };
 }
 
@@ -556,7 +603,8 @@ function mapDispatchToProps(dispatch) {
       getProviderDetails: AlgaehActions,
       getDepartmentsandDoctors: AlgaehActions,
       getSubDepartment: AlgaehActions,
-      getTreatmentPlan: AlgaehActions
+      getTreatmentPlan: AlgaehActions,
+      getServices: AlgaehActions
     },
     dispatch
   );

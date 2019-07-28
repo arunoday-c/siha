@@ -1,7 +1,6 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
 import {
-  processAttendanceOLD,
   markAbsent,
   cancelAbsent,
   getAllAbsentEmployee,
@@ -28,19 +27,6 @@ import {
 } from "../models/attendance";
 export default () => {
   const api = Router();
-  api.get("/processAttendanceOLD", processAttendanceOLD, (req, res, next) => {
-    if (req.records.no_data == true) {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: false,
-        result: req.records
-      });
-    } else {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: true,
-        result: req.records
-      });
-    }
-  });
 
   api.post("/markAbsent", markAbsent, (req, res, next) => {
     if (req.records.no_data == true) {
@@ -225,10 +211,10 @@ export default () => {
   });
 
   api.post("/notifyException", notifyException, (req, res, next) => {
-    if (typeof req.records === "string") {
-      res.status(utlities.AlgaehUtilities().httpStatus().badRequest).json({
+    if (req.records.no_exception == true) {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: false,
-        message: req.records
+        records: req.records
       });
     } else {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({

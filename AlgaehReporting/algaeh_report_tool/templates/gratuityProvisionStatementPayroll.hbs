@@ -6,15 +6,15 @@
         <section>
             <table class="tableForData" cell-padding="0">
                 <thead>
-                     <tr>
-    <th>Sl No.</th>
-    <th>Employee Code</th>
-    <th>Employee Name</th>
-    <th>Department</th>
-    <th>Gratuity Amt.</th>
-  </tr>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>Employee Code</th>
+                        <th>Employee Name</th>
+                        <th>Department</th>
+                        <th>Gratuity Amt.</th>
+                    </tr>
                 </thead>
-                <tbody>
+                <tbody>{{#hasElement details}}
                     {{#each details}}
                     <tr>
                         <td>{{inc @index}}</td>
@@ -24,7 +24,10 @@
                         <td>{{gratuity_amount}}</td>
                     </tr>
                     {{/each }}
-              
+                    {{else}}
+                    <tr>
+                        <td colspan="5" class="noResultTextReport">No Records Found</td>
+                    </tr>{{/hasElement }}
                 </tbody>
             </table>
         </section>

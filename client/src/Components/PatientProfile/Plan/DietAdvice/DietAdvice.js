@@ -20,7 +20,8 @@ import {
   datehandle,
   addDiet,
   getDietList,
-  deleteDietAdvice
+  deleteDietAdvice,
+  dateValidate
 } from "./DietAdviceEvents";
 
 class DietAdvice extends Component {
@@ -58,17 +59,18 @@ class DietAdvice extends Component {
       <div className="hptl-diet-advice-form">
         <div className="row" style={{ paddingBottom: "10px" }}>
           <AlgaehDateHandler
-            div={{ className: "col-5" }}
+            div={{ className: "col-5", isImp: true }}
             label={{ forceLabel: "Till Date" }}
             textBox={{ className: "txt-fld", name: "till_date" }}
             minDate={new Date()}
             events={{
-              onChange: datehandle.bind(this, this)
+              onChange: datehandle.bind(this, this),
+              onBlur: dateValidate.bind(this, this)
             }}
             value={this.state.till_date}
           />
           <AlagehAutoComplete
-            div={{ className: "col-5" }}
+            div={{ className: "col-5", isImp: true }}
             label={{ forceLabel: "Diet" }}
             selector={{
               name: "diet_id",

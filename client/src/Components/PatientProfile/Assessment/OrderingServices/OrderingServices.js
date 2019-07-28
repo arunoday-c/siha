@@ -23,7 +23,8 @@ import {
   calculateAmount,
   updateBillDetail,
   onchangegridcol,
-  EditGrid
+  EditGrid,
+  makeZeroIngrid
 } from "./OrderingServicesHandaler";
 import "./OrderingServices.css";
 import "../../../../styles/site.css";
@@ -264,30 +265,6 @@ class OrderingServices extends Component {
                 </div>
               ) : null}
               <div className="row">
-                {/*
-                  <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
-                    label={{
-                      fieldName: "sel_srvc_typ"
-                    }}
-                    selector={{
-                      name: "s_service_type",
-                      className: "select-fld",
-                      value: this.state.s_service_type,
-                      dataSource: {
-                        textField:
-                          this.state.selectedLang === "en"
-                            ? "service_type"
-                            : "arabic_service_type",
-                        valueField: "hims_d_service_type_id",
-                        data: this.props.servicetype
-                      },
-                      autoComplete: "off",
-                      onChange: serviceTypeHandeler.bind(this, this)
-                    }}
-                  />
-                */}
-
                 <AlgaehAutoSearch
                   div={{ className: "col-7 customServiceSearch" }}
                   label={{ forceLabel: "Select Service" }}
@@ -322,12 +299,7 @@ class OrderingServices extends Component {
                               ({_.startCase(_.toLower(service_type))})
                             </span>
                           </h6>
-                          {/* <p className="service_type">{_.startCase(_.toLower(service_type))}</p> */}
                         </div>
-                        {/* <div className="col-3  padd-10">  <span className="insCovered">Ins. Covered <span className={covered === "Y"  ? "yesStyle" : "noStyle"}>{covered === "Y" ? "Yes" : "No"}</span></span>
-                            <span  className="insPreApp">Pre. Approval
-                              <span className={pre_approval === "Y" ? "noStyle" : "yesStyle" } > {pre_approval === "Y" ? "Yes" : "No"}</span>
-                          </span></div> */}
                       </div>
                     );
                   }}
@@ -381,6 +353,20 @@ class OrderingServices extends Component {
                   <AlgaehDataGrid
                     id="Services_Ordering"
                     columns={[
+                      {
+                        fieldName: "actions",
+                        label: <AlgaehLabel label={{ forceLabel: "Action" }} />,
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              <i
+                                onClick={deleteServices.bind(this, this, row)}
+                                className="fas fa-trash-alt"
+                              />
+                            </span>
+                          );
+                        }
+                      },
                       {
                         fieldName: "service_type_id",
                         label: (
@@ -490,31 +476,7 @@ class OrderingServices extends Component {
                         label: (
                           <AlgaehLabel label={{ fieldName: "quantity" }} />
                         ),
-                        editorTemplate: row => {
-                          return (
-                            <AlagehFormGroup
-                              div={{}}
-                              textBox={{
-                                value: row.quantity,
-                                className: "txt-fld",
-                                name: "quantity",
-                                events: {
-                                  onChange: onchangegridcol.bind(
-                                    this,
-                                    this,
-                                    row
-                                  )
-                                },
-                                others: {
-                                  onBlur: calculateAmount.bind(this, this, row),
-                                  onFocus: e => {
-                                    e.target.oldvalue = e.target.value;
-                                  }
-                                }
-                              }}
-                            />
-                          );
-                        },
+                        disabled: true,
                         others: {
                           minWidth: 80
                         }
@@ -537,7 +499,7 @@ class OrderingServices extends Component {
                             label={{ fieldName: "discount_percentage" }}
                           />
                         ),
-                        editorTemplate: row => {
+                        displayTemplate: row => {
                           return (
                             <AlagehFormGroup
                               div={{}}
@@ -547,14 +509,16 @@ class OrderingServices extends Component {
                                 className: "txt-fld",
                                 name: "discount_percentage",
                                 events: {
-                                  onChange: onchangegridcol.bind(
+                                  onChange: calculateAmount.bind(
                                     this,
                                     this,
                                     row
                                   )
                                 },
                                 others: {
-                                  onBlur: calculateAmount.bind(this, this, row),
+                                  disabled:
+                                    this.state.insured === "Y" ? true : false,
+                                  onBlur: makeZeroIngrid.bind(this, this, row),
                                   onFocus: e => {
                                     e.target.oldvalue = e.target.value;
                                   }
@@ -571,7 +535,7 @@ class OrderingServices extends Component {
                             label={{ fieldName: "discount_amout" }}
                           />
                         ),
-                        editorTemplate: row => {
+                        displayTemplate: row => {
                           return (
                             <AlagehFormGroup
                               div={{}}
@@ -581,14 +545,16 @@ class OrderingServices extends Component {
                                 className: "txt-fld",
                                 name: "discount_amout",
                                 events: {
-                                  onChange: onchangegridcol.bind(
+                                  onChange: calculateAmount.bind(
                                     this,
                                     this,
                                     row
                                   )
                                 },
                                 others: {
-                                  onBlur: calculateAmount.bind(this, this, row),
+                                  disabled:
+                                    this.state.insured === "Y" ? true : false,
+                                  onBlur: makeZeroIngrid.bind(this, this, row),
                                   onFocus: e => {
                                     e.target.oldvalue = e.target.value;
                                   }
@@ -682,7 +648,7 @@ class OrderingServices extends Component {
                     dataSource={{
                       data: this.state.orderservicesdata
                     }}
-                    isEditable={true}
+                    // isEditable={true}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     byForceEvents={true}
                     events={{

@@ -1046,6 +1046,7 @@ class EarningsDeductions extends Component {
                     </div>
                   </div>
                   <AlagehFormGroup
+                    div={{ className: "col-4 " }}
                     label={{
                       forceLabel: "Print Order",
                       isImp: this.state.print_order_by

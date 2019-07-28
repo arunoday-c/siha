@@ -944,6 +944,20 @@ class BasicSubjective extends Component {
                     </li>
 
                     <li
+                      algaehtabs={"OrderPackage"}
+                      className={"nav-item tab-button"}
+                      onClick={this.openTab.bind(this)}
+                    >
+                      {
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Order Package"
+                          }}
+                        />
+                      }
+                    </li>
+
+                    <li
                       algaehtabs={"LabResults"}
                       className={"nav-item tab-button"}
                       onClick={this.openTab.bind(this)}
@@ -982,6 +996,11 @@ class BasicSubjective extends Component {
                     <OrderedList
                       vat_applicable={this.props.vat_applicable}
                       openData="Consumable"
+                    />
+                  ) : this.state.pageDisplay === "OrderPackage" ? (
+                    <OrderedList
+                      vat_applicable={this.props.vat_applicable}
+                      openData="Package"
                     />
                   ) : this.state.pageDisplay === "LabResults" ? (
                     <LabResults />

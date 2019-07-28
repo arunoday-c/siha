@@ -26,9 +26,9 @@ export function removeGlobal(name) {
 
 export function getYears() {
   var min = new Date().getFullYear(),
-    max = min + 10;
+    max = min + 20;
 
-  min = min - 10;
+  min = min - 20;
   let allYears = [];
   for (let x = min; x <= max; x++) {
     allYears.push({ name: x, value: x });

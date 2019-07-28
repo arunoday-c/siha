@@ -2,9 +2,9 @@ import algaehMysql from "algaeh-mysql";
 import algaehUtilities from "algaeh-utilities/utilities";
 import appsettings from "algaeh-utilities/appsettings.json";
 import { LINQ } from "node-linq";
-import math from "mathjs";
 import extend from "extend";
 import _ from "lodash";
+import mysql from "mysql";
 
 module.exports = {
   newReceiptData: (req, res, next) => {
@@ -13,8 +13,8 @@ module.exports = {
     try {
       let inputParam = { ...req.body };
 
-      // const utilities = new algaehUtilities();
-      // utilities.logger().log("inputParam Receipt: ", inputParam);
+      const utilities = new algaehUtilities();
+      utilities.logger().log("newReceiptData: ");
 
       _mysql
         .executeQuery({
@@ -99,6 +99,9 @@ module.exports = {
   addBillData: (req, res, next) => {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
+
+    const utilities = new algaehUtilities();
+    utilities.logger().log("addBillData: ");
     try {
       let inputParam = { ...req.body };
       if (
@@ -470,24 +473,19 @@ module.exports = {
         sendingObject.card_amount = 0;
         sendingObject.cheque_amount = 0;
 
-        sendingObject.patient_payable = math.round(
-          sendingObject.patient_payable,
+        sendingObject.patient_payable = sendingObject.patient_payable.toFixed(
           decimal_places
         );
-        sendingObject.total_tax = math.round(
-          sendingObject.total_tax,
+        sendingObject.total_tax = sendingObject.total_tax.toFixed(
           decimal_places
         );
-        sendingObject.patient_tax = math.round(
-          sendingObject.patient_tax,
+        sendingObject.patient_tax = sendingObject.patient_tax.toFixed(
           decimal_places
         );
-        sendingObject.company_tax = math.round(
-          sendingObject.company_tax,
+        sendingObject.company_tax = sendingObject.company_tax.toFixed(
           decimal_places
         );
-        sendingObject.sec_company_tax = math.round(
-          sendingObject.sec_company_tax,
+        sendingObject.sec_company_tax = sendingObject.sec_company_tax.toFixed(
           decimal_places
         );
       } else {
@@ -499,10 +497,10 @@ module.exports = {
           sendingObject.sheet_discount_amount = 0;
 
           if (inputParam.sheet_discount_amount > 0) {
-            sendingObject.sheet_discount_percentage = math.round(
-              (inputParam.sheet_discount_amount / inputParam.gross_total) * 100,
-              3
-            );
+            sendingObject.sheet_discount_percentage = (
+              (inputParam.sheet_discount_amount / inputParam.gross_total) *
+              100
+            ).toFixed(3);
 
             sendingObject.sheet_discount_amount =
               inputParam.sheet_discount_amount;
@@ -514,12 +512,10 @@ module.exports = {
               100;
           }
 
-          sendingObject.sheet_discount_amount = math.round(
-            sendingObject.sheet_discount_amount,
+          sendingObject.sheet_discount_amount = sendingObject.sheet_discount_amount.toFixed(
             decimal_places
           );
-          sendingObject.sheet_discount_percentage = math.round(
-            sendingObject.sheet_discount_percentage,
+          sendingObject.sheet_discount_percentage = sendingObject.sheet_discount_percentage.toFixed(
             decimal_places
           );
 
@@ -1064,11 +1060,415 @@ module.exports = {
       next(error);
     }
   },
+
+  patientPackageAdvanceRefund: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let inputParam = { ...req.body };
+
+      if (
+        inputParam.receiptdetails == null ||
+        inputParam.receiptdetails.length == 0
+      ) {
+        next(
+          httpStatus.generateError(
+            httpStatus.badRequest,
+            "Please select atleast one service."
+          )
+        );
+      }
+      let Module_Name = "";
+      //Advance
+      if (inputParam.pay_type == "R") {
+        Module_Name = "RECEIPT";
+      } else if (inputParam.pay_type == "P") {
+        Module_Name = "REFUND";
+      }
+
+      _mysql
+        .generateRunningNumber({
+          modules: [Module_Name],
+          tableName: "hims_f_app_numgen",
+          identity: {
+            algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
+            hospital_id: req.userIdentity["x-branch"]
+          }
+        })
+        .then(generatedNumbers => {
+          _mysql
+            .executeQuery({
+              query:
+                "INSERT INTO hims_f_receipt_header (receipt_number, receipt_date, total_amount,\
+                  created_by, created_date, updated_by, updated_date, shift_id, pay_type,hospital_id) \
+                  VALUES (?,?,?,?,?,?,?,?,?,?)",
+              values: [
+                generatedNumbers[0],
+                new Date(),
+                inputParam.total_amount,
+                req.userIdentity.algaeh_d_app_user_id,
+                new Date(),
+                req.userIdentity.algaeh_d_app_user_id,
+                new Date(),
+                inputParam.shift_id,
+                inputParam.pay_type,
+                req.userIdentity.hospital_id
+              ],
+              printQuery: true
+            })
+            .then(headerRcptResult => {
+              if (
+                headerRcptResult.insertId != null &&
+                headerRcptResult.insertId != ""
+              ) {
+                req.body.receipt_header_id = headerRcptResult.insertId;
+                const receptSample = [
+                  "card_check_number",
+                  "expiry_date",
+                  "pay_type",
+                  "amount",
+                  "created_by",
+                  "updated_by",
+                  "card_type"
+                ];
+
+                _mysql
+                  .executeQuery({
+                    query: "INSERT INTO hims_f_receipt_details(??) VALUES ?",
+                    values: inputParam.receiptdetails,
+                    includeValues: receptSample,
+                    extraValues: {
+                      hims_f_receipt_header_id: headerRcptResult.insertId
+                    },
+                    bulkInsertOrUpdate: true,
+                    printQuery: true
+                  })
+                  .then(RcptDetailsRecords => {
+                    _mysql
+                      .executeQuery({
+                        query:
+                          "INSERT  INTO hims_f_patient_pakage_advance ( hims_f_patient_id, hims_f_receipt_header_id,\
+                            transaction_type, advance_amount, package_id,created_by, \
+                            created_date, updated_by, update_date,  hospital_id) VALUES (?,?,?,?,?,?,?,?,?,?) ;\
+                            SELECT advance_amount,balance_amount FROM hims_f_package_header WHERE hims_f_package_header_id=?",
+                        values: [
+                          inputParam.hims_f_patient_id,
+                          headerRcptResult.insertId,
+                          inputParam.transaction_type,
+                          inputParam.advance_amount,
+                          inputParam.package_id,
+                          req.userIdentity.algaeh_d_app_user_id,
+                          new Date(),
+                          req.userIdentity.algaeh_d_app_user_id,
+                          new Date(),
+                          req.userIdentity.hospital_id,
+                          inputParam.package_id
+                        ],
+                        printQuery: true
+                      })
+                      .then(Insert_Advance => {
+                        let existingAdvance =
+                          Insert_Advance[1][0].advance_amount;
+                        let balance_amount =
+                          Insert_Advance[1][0].balance_amount;
+                        let utilize_amount =
+                          Insert_Advance[1][0].utilize_amount;
+
+                        let strQuery = "";
+                        if (existingAdvance != null) {
+                          if (inputParam.transaction_type == "AD") {
+                            inputParam.balance_amount =
+                              parseFloat(inputParam.advance_amount) +
+                              parseFloat(balance_amount);
+                            inputParam.advance_amount =
+                              parseFloat(inputParam.advance_amount) +
+                              parseFloat(existingAdvance);
+
+                            strQuery +=
+                              " , advance_amount='" +
+                              inputParam.advance_amount +
+                              "' , balance_amount ='" +
+                              inputParam.balance_amount +
+                              "'";
+                          } else if (inputParam.transaction_type == "RF") {
+                            strQuery +=
+                              ", `closed`='Y', closed_type='R', closed_remarks = '" +
+                              inputParam.closed_remarks +
+                              "'";
+                          }
+                        }
+
+                        _mysql
+                          .executeQuery({
+                            query:
+                              "UPDATE  `hims_f_package_header` SET `updated_by`=?, `updated_date`=?" +
+                              strQuery +
+                              " WHERE `hims_f_package_header_id`=?",
+                            values: [
+                              req.userIdentity.algaeh_d_app_user_id,
+                              new Date(),
+                              inputParam.package_id
+                            ],
+                            printQuery: true
+                          })
+                          .then(update_advance => {
+                            _mysql.commitTransaction(() => {
+                              _mysql.releaseConnection();
+                              req.records = {
+                                receipt_number: generatedNumbers[0],
+                                total_advance_amount: inputParam.advance_amount
+                              };
+                              next();
+                            });
+                          })
+                          .catch(error => {
+                            _mysql.rollBackTransaction(() => {
+                              next(error);
+                            });
+                          });
+                      })
+                      .catch(error => {
+                        _mysql.rollBackTransaction(() => {
+                          next(error);
+                        });
+                      });
+                  })
+                  .catch(error => {
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
+                    });
+                  });
+              }
+            })
+            .catch(error => {
+              _mysql.rollBackTransaction(() => {
+                next(error);
+              });
+            });
+        })
+        .catch(e => {
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
+        });
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
+  },
+
+  updatePatientPackage: (req, res, next) => {
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
+    const utilities = new algaehUtilities();
+    utilities.logger().log("updatePatientPackage: ");
+    try {
+      let inputParam = req.body;
+
+      utilities.logger().log("package_details: ", inputParam.package_details);
+
+      req.body.incharge_or_provider = req.body.doctor_id;
+      req.body.billed = "N";
+      let qry = "";
+      for (let i = 0; i < inputParam.package_details.length; i++) {
+        qry += mysql.format(
+          "UPDATE `hims_f_package_detail` SET utilized_qty=?, available_qty=? where hims_f_package_detail_id=?;",
+          [
+            inputParam.package_details[i].utilized_qty,
+            inputParam.package_details[i].available_qty,
+            inputParam.package_details[i].hims_f_package_detail_id
+          ]
+        );
+      }
+
+      _mysql
+        .executeQuery({
+          query: qry,
+          printQuery: true
+        })
+        .then(results => {
+          _mysql
+            .executeQuery({
+              query:
+                "SELECT * FROM hims_f_package_detail  where package_header_id\
+                  in(select package_header_id   FROM hims_f_package_detail  where package_header_id=?\
+                  group by package_header_id having sum(available_qty)=0);",
+              values: [inputParam.hims_f_package_header_id],
+              printQuery: true
+            })
+            .then(pack_results => {
+              let strQuery = "";
+              if (pack_results.length > 0) {
+                strQuery = ", `closed`='Y', closed_type='D'";
+              }
+
+              _mysql
+                .executeQuery({
+                  query:
+                    "update hims_f_package_header set balance_amount= ?, actual_utilize_amount=?,utilize_amount=?" +
+                    strQuery +
+                    "where hims_f_package_header_id=? ",
+                  values: [
+                    inputParam.balance_amount,
+                    inputParam.actual_utilize_amount,
+                    inputParam.utilize_amount,
+                    inputParam.hims_f_package_header_id
+                  ],
+                  printQuery: true
+                })
+                .then(update_header => {
+                  if (req.connection == null) {
+                    utilities.logger().log("connection : ");
+                    req.connection = {
+                      connection: _mysql.connection,
+                      isTransactionConnection: _mysql.isTransactionConnection,
+                      pool: _mysql.pool
+                    };
+                  }
+                  // _mysql.commitTransaction(() => {
+                  //   _mysql.releaseConnection();
+                  //   req.records = update_header;
+                  //   next();
+                  // });
+
+                  utilities
+                    .logger()
+                    .log("consultation : ", inputParam.consultation);
+                  if (inputParam.consultation == false) {
+                    let IncludeValues = [
+                      "patient_id",
+                      "visit_id",
+                      "doctor_id",
+                      "service_type_id",
+                      "services_id",
+                      "trans_package_detail_id"
+                    ];
+
+                    _mysql
+                      .executeQuery({
+                        query:
+                          "INSERT INTO hims_f_ordered_services(??) VALUES ?",
+                        values: inputParam.package_details,
+                        includeValues: IncludeValues,
+                        extraValues: {
+                          quantity: 1,
+                          unit_cost: 0,
+
+                          gross_amount: 0,
+                          discount_amout: 0,
+                          discount_percentage: 0,
+                          net_amout: 0,
+                          copay_percentage: 0,
+                          copay_amount: 0,
+                          deductable_amount: 0,
+                          deductable_percentage: 0,
+
+                          patient_tax: 0,
+                          company_tax: 0,
+                          total_tax: 0,
+                          patient_resp: 0,
+                          patient_payable: 0,
+                          comapany_resp: 0,
+                          company_payble: 0,
+                          sec_deductable_percentage: 0,
+                          sec_deductable_amount: 0,
+                          sec_company_res: 0,
+                          sec_company_tax: 0,
+                          sec_company_paybale: 0,
+                          sec_copay_percntage: 0,
+                          sec_copay_amount: 0,
+                          created_by: req.userIdentity.algaeh_d_app_user_id,
+                          created_date: new Date(),
+                          updated_by: req.userIdentity.algaeh_d_app_user_id,
+                          updated_date: new Date(),
+                          hospital_id: req.userIdentity["x-branch"]
+                        },
+                        bulkInsertOrUpdate: true,
+                        printQuery: true
+                      })
+                      .then(order_detail => {
+                        let patient_id;
+                        let doctor_id;
+                        let visit_id;
+                        let services = new LINQ(inputParam.package_details)
+                          .Select(s => {
+                            patient_id = s.patient_id;
+                            doctor_id = s.doctor_id;
+                            visit_id = s.visit_id;
+                            return s.services_id;
+                          })
+                          .ToArray();
+
+                        utilities.logger().log("services: ", services);
+                        let servicesForPreAproval = [];
+
+                        servicesForPreAproval.push(patient_id);
+                        servicesForPreAproval.push(doctor_id);
+                        servicesForPreAproval.push(visit_id);
+                        servicesForPreAproval.push(services);
+
+                        utilities
+                          .logger()
+                          .log(
+                            "servicesForPreAproval: ",
+                            servicesForPreAproval
+                          );
+
+                        _mysql
+                          .executeQuery({
+                            query:
+                              "SELECT hims_f_ordered_services_id,services_id,created_date, service_type_id, test_type from hims_f_ordered_services\
+                               where `patient_id`=? and `doctor_id`=? and `visit_id`=? and `services_id` in (?)",
+                            values: servicesForPreAproval,
+                            printQuery: true
+                          })
+                          .then(ordered_services => {
+                            req.body.billdetails = ordered_services;
+                            req.records = ordered_services;
+                            next();
+                          })
+                          .catch(error => {
+                            _mysql.rollBackTransaction(() => {
+                              next(error);
+                            });
+                          });
+                      })
+                      .catch(error => {
+                        _mysql.rollBackTransaction(() => {
+                          next(error);
+                        });
+                      });
+                  } else {
+                    utilities.logger().log("else consultation : ");
+                    req.records = update_header;
+                    next();
+                  }
+                })
+                .catch(e => {
+                  _mysql.rollBackTransaction(() => {
+                    next(e);
+                  });
+                });
+            })
+            .catch(e => {
+              _mysql.rollBackTransaction(() => {
+                next(e);
+              });
+            });
+        })
+        .catch(e => {
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
   getBillDetails: (req, res, next) => {
     const _mysql = new algaehMysql();
-    //const utilities = new algaehUtilities();
-
-  
+    const utilities = new algaehUtilities();
 
     try {
       if (req.body.length > 0) {
@@ -1105,36 +1505,36 @@ module.exports = {
             });
 
             strQuery = `select hims_d_insurance_network_office_id,price_from ,copay_consultation,copay_percent,copay_percent_rad,copay_percent_trt,\
-                  copay_percent_dental,copay_medicine, preapp_limit, deductible, deductible_lab,deductible_rad, \
-                deductible_trt, deductible_medicine from hims_d_insurance_network_office where hospital_id=${
-                  req.userIdentity.hospital_id
-                }\
-                and hims_d_insurance_network_office_id in (${network_office_ids});\
-                select SI.insurance_id ,SI.services_id,IP.company_service_price_type,copay_status,copay_amt,deductable_status,\
-                deductable_amt,pre_approval,covered,net_amount,gross_amt, cpt_code \
-                from hims_d_services_insurance SI inner join hims_d_insurance_provider IP on\
-                IP.hims_d_insurance_provider_id=SI.insurance_id where SI.hospital_id=${
-                  req.userIdentity.hospital_id
-                }\
-                and SI.insurance_id in (${insurance_provider_ids}) and\
-                SI.services_id in (${service_ids})  and SI.record_status='A' and IP.record_status='A';\
-                select SIN.network_id ,SIN.services_id,IP.insurance_provider_name, IP.company_service_price_type, NET.network_type,\
-                copay_status,copay_amt,deductable_status,deductable_amt,pre_approval,covered,\
-                net_amount,gross_amt from  hims_d_services_insurance_network SIN\
-                inner join hims_d_insurance_network NET on NET.hims_d_insurance_network_id=SIN.network_id\
-                inner join hims_d_insurance_provider IP on SIN.insurance_id=IP.hims_d_insurance_provider_id \ 
-                where   SIN.hospital_id=${
-                  req.userIdentity.hospital_id
-                } and SIN.network_id in (${network_ids})\
-                AND SIN.services_id in (${service_ids}) and SIN.record_status='A' and NET.record_status='A';`;
+                 copay_percent_dental,copay_medicine, preapp_limit, deductible, deductible_lab,deductible_rad, \
+               deductible_trt, deductible_medicine from hims_d_insurance_network_office where hospital_id=${
+                 req.userIdentity.hospital_id
+               }\
+               and hims_d_insurance_network_office_id in (${network_office_ids});\
+               select SI.insurance_id ,SI.services_id,IP.company_service_price_type,copay_status,copay_amt,deductable_status,\
+               deductable_amt,pre_approval,covered,net_amount,gross_amt, cpt_code \
+               from hims_d_services_insurance SI inner join hims_d_insurance_provider IP on\
+               IP.hims_d_insurance_provider_id=SI.insurance_id where SI.hospital_id=${
+                 req.userIdentity.hospital_id
+               }\
+               and SI.insurance_id in (${insurance_provider_ids}) and\
+               SI.services_id in (${service_ids})  and SI.record_status='A' and IP.record_status='A';\
+               select SIN.network_id ,SIN.services_id,IP.insurance_provider_name, IP.company_service_price_type, NET.network_type,\
+               copay_status,copay_amt,deductable_status,deductable_amt,pre_approval,covered,\
+               net_amount,gross_amt from  hims_d_services_insurance_network SIN\
+               inner join hims_d_insurance_network NET on NET.hims_d_insurance_network_id=SIN.network_id\
+               inner join hims_d_insurance_provider IP on SIN.insurance_id=IP.hims_d_insurance_provider_id \
+               where   SIN.hospital_id=${
+                 req.userIdentity.hospital_id
+               } and SIN.network_id in (${network_ids})\
+               AND SIN.services_id in (${service_ids}) and SIN.record_status='A' and NET.record_status='A';`;
           }
 
           _mysql
             .executeQuery({
               query: `select hims_d_services_id,service_code,cpt_code,service_name,arabic_service_name,service_desc,sub_department_id,\
-              service_type_id,procedure_type,standard_fee,followup_free_fee,followup_paid_fee,discount,vat_applicable,\
-              vat_percent,service_status,effective_start_date,effectice_end_date from hims_d_services\
-              where hospital_id=? and hims_d_services_id in (?);${strQuery}`,
+             service_type_id,procedure_type,standard_fee,followup_free_fee,followup_paid_fee,discount,vat_applicable,\
+             vat_percent,service_status,effective_start_date,effectice_end_date from hims_d_services\
+             where hospital_id=? and hims_d_services_id in (?);${strQuery}`,
               values: [req.userIdentity.hospital_id, service_ids],
               printQuery: false
             })
@@ -1355,7 +1755,7 @@ module.exports = {
                     discount_percentage = (discount_amout / gross_amount) * 100;
                   } else if (discount_percentage > 0) {
                     discount_amout = (gross_amount * discount_percentage) / 100;
-                    discount_amout = math.round(discount_amout, decimal_places);
+                    discount_amout = discount_amout.toFixed(decimal_places);
                   }
                   net_amout = gross_amount - discount_amout;
 
@@ -1456,46 +1856,40 @@ module.exports = {
                       (net_amout * deductable_percentage) / 100;
                     after_dect_amout = net_amout - deductable_amount;
                     copay_amount = (after_dect_amout * copay_percentage) / 100;
-                    copay_amount = math.round(copay_amount, decimal_places);
+                    copay_amount = copay_amount.toFixed(decimal_places);
                   }
 
                   patient_resp = copay_amount + deductable_amount;
-                  comapany_resp = math.round(
-                    net_amout - patient_resp,
-                    decimal_places
-                  );
+                  comapany_resp =
+                    net_amout - patient_resp.toFixed(decimal_places);
 
                   if (vat_applicable == "Y" && records.vat_applicable == "Y") {
-                    patient_tax = math.round(
-                      (patient_resp * records.vat_percent) / 100,
-                      decimal_places
-                    );
+                    patient_tax = (
+                      (patient_resp * records.vat_percent) /
+                      100
+                    ).toFixed(decimal_places);
                   }
 
                   if (records.vat_applicable == "Y") {
-                    company_tax = math.round(
-                      (comapany_resp * records.vat_percent) / 100,
-                      decimal_places
-                    );
+                    company_tax = (
+                      (comapany_resp * records.vat_percent) /
+                      100
+                    ).toFixed(decimal_places);
                   }
-                  total_tax = math.round(
-                    patient_tax + company_tax,
+                  total_tax = (patient_tax + company_tax).toFixed(
                     decimal_places
                   );
 
-                  patient_payable = math.round(
-                    patient_resp + patient_tax,
+                  patient_payable = (patient_resp + patient_tax).toFixed(
                     decimal_places
                   );
 
                   if (approved_amount !== 0 && approved_amount < unit_cost) {
                     let diff_val = approved_amount - comapany_resp;
-                    patient_payable = math.round(
-                      patient_payable + diff_val,
+                    patient_payable = (patient_payable + diff_val).toFixed(
                       decimal_places
                     );
-                    patient_resp = math.round(
-                      patient_resp + diff_val,
+                    patient_resp = (patient_resp + diff_val).toFixed(
                       decimal_places
                     );
                     comapany_resp = comapany_resp - diff_val;
@@ -1503,8 +1897,7 @@ module.exports = {
 
                   company_payble = net_amout - patient_resp;
 
-                  company_payble = math.round(
-                    company_payble + company_tax,
+                  company_payble = (company_payble + company_tax).toFixed(
                     decimal_places
                   );
 
@@ -1536,28 +1929,31 @@ module.exports = {
                   gross_amount = quantity * unit_cost;
 
                   if (discount_amout > 0) {
-                    discount_percentage = (discount_amout / gross_amount) * 100;
+                    discount_percentage = (
+                      (discount_amout / gross_amount) *
+                      100
+                    ).toFixed(decimal_places);
                   } else if (discount_percentage > 0) {
                     discount_amout = (gross_amount * discount_percentage) / 100;
-                    discount_amout = math.round(discount_amout, decimal_places);
+                    discount_amout = discount_amout.toFixed(decimal_places);
                   }
                   net_amout = gross_amount - discount_amout;
                   patient_resp = net_amout;
 
                   if (vat_applicable == "Y" && records.vat_applicable == "Y") {
-                    patient_tax = math.round(
-                      (patient_resp * records.vat_percent) / 100,
-                      decimal_places
-                    );
+                    patient_tax = (
+                      (patient_resp * records.vat_percent) /
+                      100
+                    ).toFixed(decimal_places);
                     total_tax = patient_tax;
                   }
 
                   // patient_payable = net_amout + patient_tax;
-                  patient_payable = math.round(
-                    patient_resp + patient_tax,
+                  patient_payable = (patient_resp + patient_tax).toFixed(
                     decimal_places
                   );
                 }
+
                 // }
                 //--------------------------------------
                 console.log("fine:1");
@@ -1603,10 +1999,7 @@ module.exports = {
                     unit_cost: unit_cost,
                     gross_amount: gross_amount,
                     discount_amout: discount_amout,
-                    discount_percentage: math.round(
-                      discount_percentage,
-                      decimal_places
-                    ),
+                    discount_percentage: discount_percentage,
                     net_amout: net_amout,
                     patient_resp: patient_resp,
                     patient_payable: patient_payable,
@@ -1645,7 +2038,12 @@ module.exports = {
                     grnno: servicesDetails.grnno,
                     uom_id: servicesDetails.sales_uom,
                     item_category: servicesDetails.item_category_id,
-                    item_group_id: servicesDetails.item_group_id
+                    item_group_id: servicesDetails.item_group_id,
+                    package_id: servicesDetails.package_id,
+                    package_visit_type: servicesDetails.package_visit_type,
+                    package_type: servicesDetails.package_type,
+                    actual_amount: servicesDetails.actual_amount,
+                    pack_expiry_date: servicesDetails.expiry_date
                   }
                 );
 
@@ -1662,6 +2060,8 @@ module.exports = {
               next(error);
             });
         } else {
+          utilities.logger().log("service_type_id: ", zeroBill.service_type_id);
+
           let out = [
             {
               hims_f_billing_details_id: null,
@@ -1715,6 +2115,62 @@ module.exports = {
     } catch (e) {
       _mysql.releaseConnection();
       next(error);
+    }
+  },
+  getEmployeeAndDepartments: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    return new Promise((resolve, reject) => {
+      try {
+        _mysql
+          .executeQuery({
+            query:
+              "SELECT employee_id, sub_department_id from hims_m_employee_department_mappings \
+            Where record_status='A' and services_id = ? ",
+            values: [req.query.services_id],
+            printQuery: true
+          })
+          .then(result => {
+            _mysql.releaseConnection();
+            req.records = result;
+            next();
+            resolve(result);
+          })
+          .catch(e => {
+            next(e);
+            reject(e);
+          });
+      } catch (e) {
+        reject(e);
+        next(e);
+      }
+    }).catch(e => {
+      _mysql.releaseConnection();
+      next(e);
+    });
+  },
+  closePackage: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "update hims_f_package_header set closed='Y', closed_type='C', closed_remarks=? where hims_f_package_header_id=? ",
+          values: [req.body.closed_remarks, req.body.hims_f_package_header_id],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } catch (e) {
+      reject(e);
+      next(e);
     }
   }
 };
@@ -2015,7 +2471,7 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                   discount_percentage = (discount_amout / gross_amount) * 100;
                 } else if (discount_percentage > 0) {
                   discount_amout = (gross_amount * discount_percentage) / 100;
-                  discount_amout = math.round(discount_amout, 2);
+                  discount_amout = discount_amout.toFixed(2);
                 }
                 net_amout = gross_amount - discount_amout;
 
@@ -2115,42 +2571,42 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                   deductable_amount = (net_amout * deductable_percentage) / 100;
                   after_dect_amout = net_amout - deductable_amount;
                   copay_amount = (after_dect_amout * copay_percentage) / 100;
-                  copay_amount = math.round(copay_amount, 2);
+                  copay_amount = copay_amount.toFixed(2);
                 }
 
                 patient_resp = copay_amount + deductable_amount;
-                comapany_resp = math.round(net_amout - patient_resp, 2);
+                comapany_resp = (net_amout - patient_resp).toFixed(2);
 
                 if (vat_applicable == "Y" && records.vat_applicable == "Y") {
-                  patient_tax = math.round(
-                    (patient_resp * records.vat_percent) / 100,
-                    2
-                  );
+                  patient_tax = (
+                    (patient_resp * records.vat_percent) /
+                    100
+                  ).toFixed(2);
                 }
 
                 if (records.vat_applicable == "Y") {
-                  company_tax = math.round(
-                    (comapany_resp * records.vat_percent) / 100,
-                    2
-                  );
+                  company_tax = (
+                    (comapany_resp * records.vat_percent) /
+                    100
+                  ).toFixed(2);
                 }
-                total_tax = math.round(patient_tax + company_tax, 2);
+                total_tax = (patient_tax + company_tax).toFixed(2);
 
-                patient_payable = math.round(patient_resp + patient_tax, 2);
+                patient_payable = (patient_resp + patient_tax).toFixed(2);
 
                 console.log("approved_amount: ", approved_amount);
                 console.log("unit_cost: ", unit_cost);
 
                 if (approved_amount !== 0 && approved_amount < unit_cost) {
                   let diff_val = approved_amount - comapany_resp;
-                  patient_payable = math.round(patient_payable + diff_val, 2);
-                  patient_resp = math.round(patient_resp + diff_val, 2);
+                  patient_payable = (patient_payable + diff_val).toFixed(2);
+                  patient_resp = (patient_resp + diff_val).toFixed(2);
                   comapany_resp = comapany_resp - diff_val;
                 }
 
                 company_payble = net_amout - patient_resp;
 
-                company_payble = math.round(company_payble + company_tax, 2);
+                company_payble = (company_payble + company_tax).toFixed(2);
 
                 preapp_limit_amount = policydtls.preapp_limit;
                 if (policydtls.preapp_limit !== 0) {
@@ -2206,21 +2662,21 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                   discount_percentage = (discount_amout / gross_amount) * 100;
                 } else if (discount_percentage > 0) {
                   discount_amout = (gross_amount * discount_percentage) / 100;
-                  discount_amout = math.round(discount_amout, 2);
+                  discount_amout = discount_amout.toFixed(2);
                 }
                 net_amout = gross_amount - discount_amout;
                 patient_resp = net_amout;
 
                 if (vat_applicable == "Y" && records.vat_applicable == "Y") {
-                  patient_tax = math.round(
-                    (patient_resp * records.vat_percent) / 100,
-                    2
-                  );
+                  patient_tax = (
+                    (patient_resp * records.vat_percent) /
+                    100
+                  ).toFixed(2);
                   total_tax = patient_tax;
                 }
 
                 // patient_payable = net_amout + patient_tax;
-                patient_payable = math.round(patient_resp + patient_tax, 2);
+                patient_payable = patient_resp + patient_tax.toFixed(2);
               }
             })
             .then(secpolicydtls => {
@@ -2330,28 +2786,28 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                   sec_copay_amount =
                     (after_dect_amout * sec_copay_percntage) / 100;
 
-                  sec_copay_amount = math.round(sec_copay_amount, 2);
+                  sec_copay_amount = sec_copay_amount.toFixed(2);
                 }
 
                 patient_resp = sec_copay_amount + sec_deductable_amount;
                 sec_company_res = sec_unit_cost - patient_resp;
 
                 if (vat_applicable == "Y" && records.vat_applicable == "Y") {
-                  patient_tax = math.round(
-                    (patient_resp * records.vat_percent) / 100,
-                    2
-                  );
+                  patient_tax = (
+                    (patient_resp * records.vat_percent) /
+                    100
+                  ).toFixed(2);
                 }
 
                 if (records.vat_applicable == "Y") {
-                  sec_company_tax = math.round(
-                    (sec_company_res * records.vat_percent) / 100,
-                    2
-                  );
+                  sec_company_tax = (
+                    (sec_company_res * records.vat_percent) /
+                    100
+                  ).toFixed(2);
                 }
                 total_tax = patient_tax + company_tax + sec_company_res;
 
-                patient_payable = math.round(patient_resp + patient_tax, 2);
+                patient_payable = patient_resp + patient_tax.toFixed(2);
                 sec_company_paybale =
                   sec_unit_cost - patient_resp + sec_company_tax;
               }
@@ -2369,6 +2825,7 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                 .logger()
                 .log("hims_d_services_id: ", records.hims_d_services_id);
 
+              discount_percentage = discount_percentage.toFixed(3);
               let out = extend(
                 {
                   hims_f_billing_details_id: null,
@@ -2411,7 +2868,7 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                   unit_cost: unit_cost,
                   gross_amount: gross_amount,
                   discount_amout: discount_amout,
-                  discount_percentage: math.round(discount_percentage, 3),
+                  discount_percentage: discount_percentage,
                   net_amout: net_amout,
                   patient_resp: patient_resp,
                   patient_payable: patient_payable,
@@ -2450,7 +2907,12 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                   grnno: servicesDetails.grnno,
                   uom_id: servicesDetails.sales_uom,
                   item_category: servicesDetails.item_category_id,
-                  item_group_id: servicesDetails.item_group_id
+                  item_group_id: servicesDetails.item_group_id,
+                  package_id: servicesDetails.package_id,
+                  package_visit_type: servicesDetails.package_visit_type,
+                  package_type: servicesDetails.package_type,
+                  actual_amount: servicesDetails.actual_amount,
+                  pack_expiry_date: servicesDetails.expiry_date
                 }
               );
 

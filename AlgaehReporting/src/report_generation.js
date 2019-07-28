@@ -300,11 +300,10 @@ module.exports = {
                 );
                 if (_params != undefined) {
                   _value.push(_params.value);
+                } else if (_inputOrders[i] == "login_branch") {
+                  _value.push(req.userIdentity["hospital_id"]);
                 } else {
                   _value.push(null);
-                }
-                if (_inputOrders[i] == "login_branch") {
-                  _value.push(req.userIdentity["hospital_id"]);
                 }
               }
 

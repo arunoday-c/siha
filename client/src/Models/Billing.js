@@ -97,7 +97,8 @@ export default {
       applydiscount: true,
       billDetails: true,
       balance_credit: null,
-      due_amount: 0
+      due_amount: 0,
+      pack_balance_amount: 0
     };
     return output;
   }

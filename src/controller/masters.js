@@ -96,18 +96,7 @@ export default () => {
 
   api.get(
     "/relegion",
-    (req, res, next) => {
-      getCacheData({ key: "relegion" }, result => {
-        if (result != null) {
-          res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-            success: true,
-            records: result
-          });
-        } else {
-          next();
-        }
-      });
-    },
+
     relegionMaster,
     (req, res, next) => {
       let result = req.records;

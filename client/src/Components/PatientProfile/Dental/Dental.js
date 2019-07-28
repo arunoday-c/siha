@@ -110,17 +110,29 @@ class Dental extends Component {
   }
 
   calculateDiscount(e) {
+    let discount_percentage = 0;
+    if (parseFloat(e.target.value) > 100) {
+      this.setState({
+        [e.target.name]: 0
+      });
+      swalMessage({
+        title: "Discount % cannot be greater than 100.",
+        type: "warning"
+      });
+    } else {
+      discount_percentage = e.target.value;
+      this.setState({
+        [e.target.name]: e.target.value
+      });
+    }
     let bill_dtls = { ...this.state.billDetails, ...this.state.ins_details };
-    this.setState({
-      [e.target.name]: e.target.value
-    });
 
     let inputParam = [
       {
         hims_d_services_id: bill_dtls.services_id,
         quantity: bill_dtls.quantity,
         discount_amout: 0,
-        discount_percentage: e.target.value === "" ? 0 : e.target.value,
+        discount_percentage: discount_percentage,
         insured: this.state.ins_details !== null ? "Y" : "N",
         vat_applicable: this.props.vat_applicable,
         primary_insurance_provider_id: bill_dtls.insurance_provider_id
@@ -187,6 +199,7 @@ class Dental extends Component {
   }
 
   saveBill() {
+    
     let inputObj = {
       visit_id: Window.global["visit_is"],
       patient_id: Window.global["current_patient"],
@@ -196,6 +209,7 @@ class Dental extends Component {
         {
           ...this.state.billDetails,
           ...{
+            d_treatment_id: this.state.hims_f_dental_treatment_id,
             visit_id: Window.global["visit_id"],
             patient_id: Window.global["current_patient"],
             pre_approval: "N",
@@ -309,7 +323,9 @@ class Dental extends Component {
 
                 this.setState({
                   discount_percentage: 0,
-                  billDetails: res.data.records.billdetails[0]
+                  billDetails: res.data.records.billdetails[0],
+
+                  hims_f_dental_treatment_id: row.hims_f_dental_treatment_id
                 });
               }
             }
@@ -1704,7 +1720,7 @@ class Dental extends Component {
                 <AlagehFormGroup
                   // div={{ className: "col" }}
                   textBox={{
-                    number: true,
+                    decimal: { allowNegative: false },
                     className: "txt-fld",
                     name: "discount_percentage",
                     value: this.state.discount_percentage,
@@ -1712,7 +1728,7 @@ class Dental extends Component {
                       onChange: this.calculateDiscount.bind(this)
                     },
                     others: {
-                      min: 0
+                      placeholder: "0.00"
                     }
                   }}
                 />

@@ -100,11 +100,20 @@ module.exports = {
     try {
       const _mysql = new algaehMysql();
 
+      let strQuery =
+        "SELECT hims_d_designation_id, designation_code, designation , created_date FROM `hims_d_designation` \
+      WHERE `record_status`='A' order by hims_d_designation_id desc";
+
+      if (req.query.sub_department_id) {
+        strQuery = `select hims_d_designation_id,designation_code, designation,D.created_date from hims_d_employee E \
+inner join hims_d_designation D on E.employee_designation_id=D.hims_d_designation_id \
+where E.sub_department_id=${
+          req.query.sub_department_id
+        } group by hims_d_designation_id`;
+      }
       _mysql
         .executeQuery({
-          query:
-            "SELECT hims_d_designation_id, designation_code, designation , created_date FROM `hims_d_designation` \
-          WHERE `record_status`='A' order by hims_d_designation_id desc",
+          query: strQuery,
           printQuery: true
         })
         .then(result => {
