@@ -170,6 +170,17 @@ app.use("/api/v1/pentahoreport", (req, res) => {
     }
   );
 });
+
+process.on("warning", warning => {
+  console.log("Waring := ", warning);
+});
+process.on("uncaughtException", error => {
+  console.log("uncatched Exception :=", error);
+});
+process.on("unhandledRejection", (reason, promise) => {
+  console.log("Unhandled rejection :=", { reason: reason, promise: promise });
+});
+
 app.server.listen(_port);
 console.log(`Report Server is running  on PORT  - ${_port} *`);
 export default app;
