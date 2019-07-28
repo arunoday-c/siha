@@ -385,9 +385,7 @@ module.exports = {
                       .showcompay{float:right;padding-right:5px;font-size: 08px;}
                       </style>
                       <div class="pdffooter">
-                      <span class="showreportname">${
-                        _data.report_name_for_header
-                      }</span>
+                      <span class="showreportname">${_data.report_name_for_header}</span>
                       <span>Page </span>
                       <span class="pageNumber"></span> / <span class="totalPages"></span>
                       <span class="showcompay">Powered by Algaeh Techonologies.</span>
@@ -666,9 +664,7 @@ module.exports = {
                       .showcompay{float:right;padding-right:5px;font-size: 08px;}
                       </style>
                       <div class="pdffooter">
-                      <span class="showreportname">${
-                        resourceTemplate.report_name_for_header
-                      }</span>
+                      <span class="showreportname">${resourceTemplate.report_name_for_header}</span>
                       <span>Page </span>
                       <span class="pageNumber"></span> / <span class="totalPages"></span>
                       <span class="showcompay">Powered by Algaeh Technologies.</span>
@@ -989,11 +985,13 @@ module.exports = {
               _mysql
                 .executeQuery(queryObject)
                 .then(result => {
-                  if (result.legth == 0) {
-                    res.writeHead(400, {
-                      "content-type": "text/plain"
-                    });
-                    res.write("No record");
+                  if (result.length == 0) {
+                    _mysql.releaseConnection();
+                    res.status(400).send("No records");
+                    // res.writeHead(404, {
+                    //   "content-type": "text/plain"
+                    // });
+                    // res.write("No record");
                     return;
                   }
 
@@ -1005,6 +1003,8 @@ module.exports = {
                   const _header = req.headers;
 
                   const startGenerate = async () => {
+                    _mysql.releaseConnection();
+
                     const _pdfTemplating = {};
                     if (
                       _data.report_header_file_name != null &&
@@ -1028,6 +1028,7 @@ module.exports = {
                       _data.report_footer_file_name != null &&
                       _data.report_footer_file_name != ""
                     ) {
+                      console.log("before footer");
                       _pdfTemplating["footerTemplate"] = await compile(
                         _data.report_footer_file_name,
                         {
@@ -1036,6 +1037,7 @@ module.exports = {
                           report_name_for_header: _data.report_name_for_header
                         }
                       );
+
                       _pdfTemplating["margin"] = {
                         ..._pdfTemplating["margin"],
                         bottom: "70px"
@@ -1049,9 +1051,7 @@ module.exports = {
                     .showcompay{float:right;padding-right:5px;font-size: 08px;}
                     </style>
                     <div class="pdffooter">
-                    <span class="showreportname">${
-                      _data.report_name_for_header
-                    }</span>
+                    <span class="showreportname">${_data.report_name_for_header}</span>
                     <span>Page </span>
                     <span class="pageNumber"></span> / <span class="totalPages"></span>
                     <span class="showcompay">Powered by Algaeh Techonologies.</span>
@@ -1066,20 +1066,25 @@ module.exports = {
                       ...result,
                       reqHeader: _header
                     });
+
                     if (reportRaw != "") {
-                      res.writeHead(200, {
-                        "content-type": "text/html"
-                      });
-                      res.write(
-                        reportRaw + "~@" + JSON.stringify(_pdfTemplating)
-                      );
-                      res.end();
+                      res
+                        .status(200)
+                        .send(
+                          reportRaw + "~@" + JSON.stringify(_pdfTemplating)
+                        );
+                      // res.writeHead(200, {
+                      //   "content-type": "text/html"
+                      // });
+                      // res.write(
+                      //   reportRaw + "~@" + JSON.stringify(_pdfTemplating)
+                      // );
                     } else {
-                      res.writeHead(400, {
-                        "content-type": "text/plain"
-                      });
-                      res.write("No record");
-                      res.end();
+                      res.status(400).send("No record");
+                      // res.writeHead(400, {
+                      //   "content-type": "text/plain"
+                      // });
+                      // res.write("No record");
                       return;
                     }
                   };
@@ -1114,28 +1119,30 @@ module.exports = {
                 })
                 .catch(error => {
                   _mysql.releaseConnection();
-                  res.writeHead(400, { "Content-Type": "text/plain" });
-                  res.write(error);
-                  res.end();
+                  // res.writeHead(400, { "Content-Type": "text/plain" });
+                  // res.write(error);
+                  res.status(400).send(JSON.stringify(error));
                 });
             }
           } else {
-            res.writeHead(400, { "Content-Type": "text/plain" });
-            res.write(new Error("No such report exists"));
-            res.end();
+            _mysql.releaseConnection();
+            // res.writeHead(400, { "Content-Type": "text/plain" });
+            // res.write(new Error("No such report exists"));
+            res.status(400).send("No such report exists");
           }
         })
         .catch(error => {
           _mysql.releaseConnection();
-          res.writeHead(400, { "Content-Type": "text/plain" });
-          res.write(error);
-          res.end();
+          res.status(400).send(JSON.stringify(error));
+          //   res.status(400).send(JSON.stringify(error));
+          // res.writeHead(400, { "Content-Type": "text/plain" });
+          // res.write(error);
         });
     } catch (e) {
       _mysql.releaseConnection();
-      res.writeHead(400, { "Content-Type": "text/plain" });
-      res.write(e);
-      res.end();
+      res.status(400).send(JSON.stringify(e));
+      // res.writeHead(400, { "Content-Type": "text/plain" });
+      // res.write(e);
     }
   }
 };
