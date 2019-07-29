@@ -65,7 +65,7 @@ const serviceHandeler = ($this, e) => {
 //Process and gets selectd service data with all calculation
 const ProcessService = ($this, e) => {
   // orderedList
-  debugger;
+  
 
   let SelectedService = Enumerable.from($this.props.orderedList)
     .where(
@@ -119,7 +119,7 @@ const ProcessService = ($this, e) => {
               data.billdetails[0].preapp_limit_exceed === "Y" &&
               $this.state.approval_limit_yesno === "N"
             ) {
-              debugger;
+              
 
               swal({
                 title: "Pre-Approval limit reached.",
@@ -394,7 +394,7 @@ const deleteServices = ($this, row, rowId) => {
         preserviceInput[k].approval_limit_yesno = "N";
       }
 
-      debugger;
+      
 
       algaehApiCall({
         uri: "/billing/getBillDetails",
@@ -530,7 +530,7 @@ const SaveOrdersServices = ($this, e) => {
 };
 
 const calculateAmount = ($this, row, e) => {
-  debugger;
+  
 
   let orderservicesdata = $this.state.orderservicesdata;
   let discount_percentage = 0;
@@ -682,7 +682,7 @@ const EditGrid = ($this, cancelRow) => {
 };
 
 const makeZeroIngrid = ($this, row, e) => {
-  debugger;
+  
   if (e.target.value === "") {
     let orderservicesdata = $this.state.orderservicesdata;
     let _index = orderservicesdata.indexOf(row);

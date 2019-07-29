@@ -146,7 +146,7 @@ module.exports = {
                     req.userIdentity.algaeh_d_app_user_id,
                     input.hims_f_leave_application_id
                   ],
-                  printQuery: true
+                  printQuery: false
                 })
                 .then(authResult => {
                   if (authResult.affectedRows > 0 && input.status == "R") {
@@ -206,7 +206,7 @@ module.exports = {
                     req.userIdentity.algaeh_d_app_user_id,
                     input.hims_f_leave_application_id
                   ],
-                  printQuery: true
+                  printQuery: false
                 })
                 .then(authResult => {
                   if (authResult.affectedRows > 0 && input.status == "R") {
@@ -252,7 +252,7 @@ module.exports = {
                               input.year,
                               input.employee_id
                             ],
-                            printQuery: true
+                            printQuery: false
                           })
                           .then(salResult => {
                             annual_leave_process_separately =
@@ -270,7 +270,7 @@ module.exports = {
                             }
                           })
                           .then(pendingUpdaidResult => {
-                            utilities.logger().log("befor: ");
+                
                             calc(_mysql, req.body)
                               .then(deductionResult => {
                                 utilities
@@ -481,7 +481,7 @@ module.exports = {
                                                 availed_till_date: newAvailTillDate
                                               }
                                             ],
-                                            printQuery: true
+                                            printQuery: false
                                           })
                                           .then(finalRes => {
                                             _mysql.commitTransaction(() => {
@@ -529,7 +529,7 @@ module.exports = {
                                 }
                               })
                               .catch(e => {
-                                utilities.logger().log("apple: ", e);
+                     
                                 _mysql.rollBackTransaction(() => {
                                   next(e);
                                 });
@@ -752,7 +752,7 @@ module.exports = {
                   my_religion
                 ],
 
-                printQuery: true
+                printQuery: false
               })
               .then(closeBalanceResult => {
                 currentClosingBal = closeBalanceResult[0][0].close_balance;
@@ -785,7 +785,7 @@ module.exports = {
                 from hims_f_employee_monthly_leave where      employee_id=? and year=? and leave_id=?",
                 values: [input.employee_id, year, input.leave_id],
 
-                printQuery: true
+                printQuery: false
               })
               .then(closeBalanceResult => {
                 // _mysql.releaseConnection();
@@ -812,7 +812,7 @@ module.exports = {
             include_holiday from hims_d_leave where hims_d_leave_id=?  and record_status='A'",
             values: [input.leave_id],
 
-            printQuery: true
+            printQuery: false
           })
           .then(result => {
             // _mysql.releaseConnection();
@@ -835,7 +835,7 @@ module.exports = {
                     moment(to_date).format("YYYY-MM-DD")
                   ],
 
-                  printQuery: true
+                  printQuery: false
                 })
                 .then(holidayResult => {
                   //s -------START OF--- get count of holidays and weekOffs betwen apllied leave range
@@ -1307,7 +1307,7 @@ module.exports = {
           holiday,holiday_type,religion_id  from hims_d_holiday  where date(holiday_date) between date(?) and date(?) ",
           values: [input.employee_id, year, input.leave_id, from_date, to_date],
 
-          printQuery: true
+          printQuery: false
         })
         .then(result => {
           allLeaves = result[0];
@@ -1343,7 +1343,7 @@ module.exports = {
               })
               .ToArray();
 
-            utilities.logger().log("allHolidays: ", allHolidays);
+            
             //s -------START OF--- get count of holidays and weekOffs betwen apllied leave range
             let week_off_Data = new LINQ(allHolidays)
               .Select(s => {
@@ -1396,7 +1396,7 @@ module.exports = {
               next();
               return;
             } else {
-              utilities.logger().log("gggg: ", from_date);
+
 
               // subtracting  week off or holidays fom LeaveApplied Days
               if (
@@ -1640,7 +1640,7 @@ module.exports = {
           where record_status='A' and employee_status='A' and  hims_d_employee_id=?",
             values: [input.employee_id],
 
-            printQuery: true
+            printQuery: false
           })
           .then(empResult => {
             if (
@@ -1664,7 +1664,7 @@ module.exports = {
                     [from_year, to_year]
                   ],
 
-                  printQuery: true
+                  printQuery: false
                 })
                 .then(result => {
                   if (result.length > 0) {
@@ -1694,7 +1694,7 @@ module.exports = {
                             input.employee_id
                           ],
 
-                          printQuery: true
+                          printQuery: false
                         })
                         .then(result => {
                           // DISCARDING LEAVE APPLICATION
@@ -2150,7 +2150,7 @@ module.exports = {
       and L.record_status='A' where ML.year=? and ML.employee_id=?  and  LD.employee_type=E.employee_type and  (LD.gender=E.sex or LD.gender='BOTH' )\
         order by hims_f_employee_monthly_leave_id desc;",
           values: [req.query.year, req.query.employee_id],
-          printQuery: true
+          printQuery: false
         })
         .then(result => {
           _mysql.releaseConnection();
@@ -2185,7 +2185,7 @@ module.exports = {
       EYL.employee_id=E.hims_d_employee_id  left join hims_d_sub_department SD\
       on E.sub_department_id=SD.hims_d_sub_department_id  where EYL.year=? and EYL.hospital_id=? order by hims_f_employee_yearly_leave_id desc",
           values: [req.query.year, req.userIdentity.hospital_id],
-          printQuery: true
+          printQuery: false
         })
         .then(result => {
           _mysql.releaseConnection();
@@ -2227,7 +2227,7 @@ module.exports = {
             status +
             " order by hims_f_leave_application_id desc",
           values: [req.query.employee_id],
-          printQuery: true
+          printQuery: false
         })
         .then(result => {
           _mysql.releaseConnection();
@@ -2348,10 +2348,10 @@ module.exports = {
           req.userIdentity.algaeh_d_app_user_id,
           new Date()
         ],
-        printQuery: true
+        printQuery: false
       })
       .then(leaveHeadResult => {
-        utilities.logger().log("leaveHeadResult: ", leaveHeadResult);
+      
 
         if (leaveHeadResult.insertId > 0) {
           new Promise((resolve, reject) => {
@@ -2375,10 +2375,10 @@ module.exports = {
                       updated_by: req.userIdentity.algaeh_d_app_user_id
                     },
                     bulkInsertOrUpdate: true,
-                    printQuery: true
+                    printQuery: false
                   })
                   .then(encashResult => {
-                    utilities.logger().log("encashResult: ", encashResult);
+             
 
                     if (encashResult.insertId > 0) {
                       resolve({ encashResult });
@@ -2430,10 +2430,10 @@ module.exports = {
                         leave_header_id: leaveHeadResult.insertId
                       },
                       bulkInsertOrUpdate: true,
-                      printQuery: true
+                      printQuery: false
                     })
                     .then(ruleResult => {
-                      utilities.logger().log("ruleResult: ", ruleResult);
+           
                       if (ruleResult.insertId > 0) {
                         resolve({ ruleResult });
                       } else {
@@ -2490,10 +2490,10 @@ module.exports = {
                           updated_by: req.userIdentity.algaeh_d_app_user_id
                         },
                         bulkInsertOrUpdate: true,
-                        printQuery: true
+                        printQuery: false
                       })
                       .then(detailResult => {
-                        utilities.logger().log("detailResult: ", detailResult);
+             
 
                         if (detailResult.insertId > 0) {
                           resolve({ detailResult });
@@ -2589,7 +2589,7 @@ module.exports = {
             year,
             req.userIdentity.hospital_id
           ],
-          printQuery: true
+          printQuery: false
         })
         .then(allResult => {
           // utilities.logger().log("AllEmployees: ", allResult[0]);
@@ -2759,10 +2759,10 @@ module.exports = {
                           hospital_id: req.userIdentity.hospital_id
                         },
                         bulkInsertOrUpdate: true,
-                        printQuery: true
+                        printQuery: false
                       })
                       .then(yearResult => {
-                        utilities.logger().log("yearResult: ", yearResult);
+        
 
                         if (yearResult.affectedRows > 0) {
                           resolve({ yearResult });
@@ -2812,7 +2812,7 @@ module.exports = {
                             hospital_id: req.userIdentity.hospital_id
                           },
                           bulkInsertOrUpdate: true,
-                          printQuery: true
+                          printQuery: false
                         })
                         .then(monthResult => {
                           utilities
@@ -2959,7 +2959,7 @@ module.exports = {
             "order by hims_f_leave_application_id desc",
           values: [req.userIdentity.hospital_id],
 
-          printQuery: true
+          printQuery: false
         })
         .then(result => {
           _mysql.releaseConnection();
@@ -3019,7 +3019,7 @@ module.exports = {
             input.hims_d_leave_id
           ],
 
-          printQuery: true
+          printQuery: false
         })
         .then(result => {
           _mysql.releaseConnection();
@@ -3056,7 +3056,7 @@ module.exports = {
 
           values: [req.query.leave_id],
 
-          printQuery: true
+          printQuery: false
         })
         .then(result => {
           _mysql.releaseConnection();
@@ -3108,7 +3108,7 @@ module.exports = {
             req.userIdentity.algaeh_d_app_user_id
           ],
 
-          printQuery: true
+          printQuery: false
         })
         .then(result => {
           _mysql.releaseConnection();
@@ -3142,7 +3142,7 @@ module.exports = {
             "DELETE from  hims_d_leave_encashment WHERE hims_d_leave_encashment_id=?",
           values: [req.body.hims_d_leave_encashment_id],
 
-          printQuery: true
+          printQuery: false
         })
         .then(result => {
           _mysql.releaseConnection();
@@ -3183,7 +3183,7 @@ module.exports = {
           query: "DELETE from  hims_d_leave_rule WHERE hims_d_leave_rule_id=?",
           values: [req.body.hims_d_leave_rule_id],
 
-          printQuery: true
+          printQuery: false
         })
         .then(result => {
           _mysql.releaseConnection();
@@ -3225,7 +3225,7 @@ module.exports = {
             "DELETE from  hims_d_leave_detail WHERE hims_d_leave_detail_id=?",
           values: [req.body.hims_d_leave_detail_id],
 
-          printQuery: true
+          printQuery: false
         })
         .then(result => {
           _mysql.releaseConnection();
@@ -3278,7 +3278,7 @@ module.exports = {
             req.userIdentity.algaeh_d_app_user_id
           ],
 
-          printQuery: true
+          printQuery: false
         })
         .then(result => {
           _mysql.releaseConnection();
@@ -3323,7 +3323,7 @@ module.exports = {
             input.total_days
           ],
 
-          printQuery: true
+          printQuery: false
         })
         .then(result => {
           _mysql.releaseConnection();
@@ -3358,7 +3358,7 @@ module.exports = {
 
           values: [req.query.leave_id],
 
-          printQuery: true
+          printQuery: false
         })
         .then(result => {
           _mysql.releaseConnection();
@@ -3392,7 +3392,7 @@ module.exports = {
 
           values: [req.query.leave_id],
 
-          printQuery: true
+          printQuery: false
         })
         .then(result => {
           _mysql.releaseConnection();
@@ -3443,7 +3443,7 @@ module.exports = {
             input.hims_d_leave_detail_id
           ],
 
-          printQuery: true
+          printQuery: false
         })
         .then(result => {
           _mysql.releaseConnection();
@@ -3492,7 +3492,7 @@ module.exports = {
             input.hims_d_leave_encashment_id
           ],
 
-          printQuery: true
+          printQuery: false
         })
         .then(result => {
           _mysql.releaseConnection();
@@ -3544,7 +3544,7 @@ module.exports = {
             input.hims_d_leave_rule_id
           ],
 
-          printQuery: true
+          printQuery: false
         })
         .then(result => {
           _mysql.releaseConnection();
@@ -3587,7 +3587,7 @@ module.exports = {
           and hims_f_leave_application_id=?",
           values: [req.body.employee_id, req.body.hims_f_leave_application_id],
 
-          printQuery: true
+          printQuery: false
         })
         .then(result => {
           if (result.length > 0) {
@@ -3597,7 +3597,7 @@ module.exports = {
                   "delete from hims_f_leave_application where hims_f_leave_application_id=?",
                 values: [req.body.hims_f_leave_application_id],
 
-                printQuery: true
+                printQuery: false
               })
               .then(delResult => {
                 _mysql.releaseConnection();
@@ -3668,7 +3668,7 @@ module.exports = {
              from hims_f_leave_application where hims_f_leave_application_id=? ",
                 values: [input.hims_f_leave_application_id],
 
-                printQuery: true
+                printQuery: false
               })
               .then(leaveStaus => {
                 if (leaveStaus.length > 0) {
@@ -3681,10 +3681,10 @@ module.exports = {
                       hims_f_salary where `month`=? and `year`=? and employee_id=? ",
                         values: [month_number, input.year, input.employee_id],
 
-                        printQuery: true
+                        printQuery: false
                       })
                       .then(salResult => {
-                        utilities.logger().log("salResult: ", salResult);
+     
 
                         if (
                           salResult.length < 1 ||
@@ -3733,7 +3733,7 @@ module.exports = {
                                       input.leave_id
                                     ],
 
-                                    printQuery: true
+                                    printQuery: false
                                   })
                                   .then(monthlyLeaveData => {
                                     let updateMonths = {};
@@ -3825,7 +3825,7 @@ module.exports = {
                                           }
                                         ],
 
-                                        printQuery: true
+                                        printQuery: false
                                       })
                                       .then(finalRes => {
                                         _mysql.commitTransaction(() => {
@@ -4139,7 +4139,7 @@ function calc(db, body) {
               from hims_f_employee_monthly_leave where      employee_id=? and year=? and leave_id=?",
               values: [input.employee_id, year, input.leave_id],
 
-              printQuery: true
+              printQuery: false
             })
             .then(closeBalanceResult => {
               // _mysql.releaseConnection();
@@ -4165,7 +4165,7 @@ function calc(db, body) {
           include_holiday from hims_d_leave where hims_d_leave_id=?  and record_status='A'",
             values: [input.leave_id],
 
-            printQuery: true
+            printQuery: false
           })
           .then(result => {
             // _mysql.releaseConnection();
@@ -4188,7 +4188,7 @@ function calc(db, body) {
                     moment(to_date).format("YYYY-MM-DD")
                   ],
 
-                  printQuery: true
+                  printQuery: false
                 })
                 .then(holidayResult => {
                   //s -------START OF--- get count of holidays and weekOffs betwen apllied leave range
@@ -4412,10 +4412,8 @@ function calc(db, body) {
               calculatedLeaveDays =
                 parseFloat(calculatedLeaveDays) - parseFloat(session_diff);
 
-              utilities
-                .logger()
-                .log("calculatedLeaveDays: ", calculatedLeaveDays);
-              utilities.logger().log("currentClosingBal: ", currentClosingBal);
+        
+    
 
               //checking if he has enough eligible days
               if (
@@ -4502,7 +4500,7 @@ function saveF(_mysql, req, next, input, msg) {
             req.userIdentity.algaeh_d_app_user_id
           ],
 
-          printQuery: true
+          printQuery: false
         })
         .then(result => {
           if (input.absent_id > 0) {
@@ -4533,7 +4531,7 @@ function saveF(_mysql, req, next, input, msg) {
           }
         })
         .catch(e => {
-          // utilities.logger().log("error yy: ",e);
+
 
           _mysql.rollBackTransaction(() => {
             next(e);

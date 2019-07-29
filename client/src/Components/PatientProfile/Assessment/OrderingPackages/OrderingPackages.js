@@ -185,7 +185,7 @@ class OrderingPackages extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger;
+    
     if (
       nextProps.existinginsurance !== undefined &&
       nextProps.existinginsurance.length !== 0
@@ -224,7 +224,7 @@ class OrderingPackages extends Component {
   }
 
   ShowPackageDetail(row) {
-    debugger;
+    
     let orderservicesdata = this.state.orderservicesdata;
     let selected_row_index = orderservicesdata.indexOf(row);
     this.setState({

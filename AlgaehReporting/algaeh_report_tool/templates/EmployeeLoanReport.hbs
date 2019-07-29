@@ -6,19 +6,19 @@
         <section>
             <table class="tableForData" cell-padding="0">
                 <thead>
-                     <tr>
-    <th>Sl No.</th>
-    <th>Employee Code</th>
-    <th>Employee Name</th>
-    <th>Department</th>
-    <th>Applied On</th>
-    <th>Loan Amt</th>
-    <th>Approved Amt</th>
-    <th>EMI Amt</th>
-    <th>Due Amt</th>
-  </tr>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>Employee Code</th>
+                        <th>Employee Name</th>
+                        <th>Department</th>
+                        <th>Applied On</th>
+                        <th>Loan Amt</th>
+                        <th>Approved Amt</th>
+                        <th>EMI Amt</th>
+                        <th>Due Amt</th>
+                    </tr>
                 </thead>
-                <tbody>
+                <tbody>{{#hasElement details}}
                     {{#each details}}
                     <tr>
                         <td>{{inc @index}}</td>
@@ -32,7 +32,9 @@
                         <td>{{pending_loan}}</td>
                     </tr>
                     {{/each }}
-              
+                    <tr>
+                        <td colspan="9" class="noResultTextReport">No Records Found</td>
+                    </tr>{{/hasElement }}
                 </tbody>
             </table>
         </section>

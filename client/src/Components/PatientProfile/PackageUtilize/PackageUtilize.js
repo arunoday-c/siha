@@ -20,6 +20,9 @@ import _ from "lodash";
 import PackageUtilizeEvent from "./PackageUtilizeEvent";
 import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 import AddAdvanceModal from "../../Advance/AdvanceModal";
+import ConsumtionItemBatches from "./ConsumtionItemBatches";
+import moment from "moment";
+import ClosePackage from "./ClosePackage";
 
 class PackageUtilize extends Component {
   constructor(props) {
@@ -27,19 +30,21 @@ class PackageUtilize extends Component {
 
     this.state = {
       package_details: [],
-      AdvanceOpen: false
+      AdvanceOpen: false,
+      itemBatches: false,
+      service_id: null,
+      closePackage: false
     };
   }
 
   componentDidMount() {}
 
   componentWillReceiveProps(nextProps) {
-    debugger;
     if (
       nextProps.package_detail !== null &&
       nextProps.package_detail !== undefined
     ) {
-      // let consultation = nextProps.from === "frontDesk" ? true : false;
+      
       nextProps.package_detail.consultation =
         nextProps.from === "frontDesk" ? true : false;
       this.setState(
@@ -85,13 +90,37 @@ class PackageUtilize extends Component {
     PackageUtilizeEvent().advanceAmount(this, e);
   }
 
+  ShowBatchDetails(row) {
+    PackageUtilizeEvent().ShowBatchDetails(this, row);
+    // this.setState({
+    //   itemBatches: !this.state.itemBatches,
+    //   service_id: row.service_id
+    // });
+  }
+  CloseBatchDetails(e) {
+    let batchno = e !== undefined ? e.batchno : null;
+    let expiry_date = e !== undefined ? moment(e.expirydt)._d : null;
+
+    let grn_no = e !== undefined ? e.grnno : null;
+    let qtyhand = e !== undefined ? e.qtyhand : null;
+
+    let sale_price = e !== undefined ? e.sale_price : null;
+
+    this.setState({
+      itemBatches: !this.state.itemBatches,
+      batchno: batchno,
+      expiry_date: expiry_date,
+      grn_no: grn_no,
+      qtyhand: qtyhand,
+      unit_cost: sale_price
+    });
+  }
   CloseRefundScreen(e) {
     this.setState(
       {
         AdvanceOpen: !this.state.AdvanceOpen
       },
       () => {
-        debugger;
         algaehApiCall({
           uri: "/orderAndPreApproval/getPatientPackage",
           method: "GET",
@@ -117,9 +146,14 @@ class PackageUtilize extends Component {
       }
     );
   }
-
-  ShowAdvanceScreen(row) {
-    PackageUtilizeEvent().ShowAdvanceScreen(this, row);
+  ClosePackageScreen(e) {
+    PackageUtilizeEvent().ClosePackageScreen(this, e);
+  }
+  ShowAdvanceScreen() {
+    PackageUtilizeEvent().ShowAdvanceScreen(this);
+  }
+  ShowCloseScreen() {
+    PackageUtilizeEvent().ShowCloseScreen(this);
   }
   render() {
     return (
@@ -177,6 +211,28 @@ class PackageUtilize extends Component {
                   <AlgaehDataGrid
                     id="Services_Ordering"
                     columns={[
+                      {
+                        fieldName: "actions",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Details" }} />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <i
+                              style={{
+                                pointerEvents:
+                                  row.service_type_id === 4 ? "" : "none",
+                                opacity: row.service_type_id === 4 ? "" : "0.1"
+                              }}
+                              className="fas fa-eye"
+                              onClick={this.ShowBatchDetails.bind(this, row)}
+                            />
+                          );
+                        },
+                        others: {
+                          fixed: "left"
+                        }
+                      },
                       {
                         fieldName: "service_type_id",
                         label: (
@@ -272,7 +328,6 @@ class PackageUtilize extends Component {
                           <AlgaehLabel label={{ forceLabel: "Quantity" }} />
                         ),
                         displayTemplate: row => {
-                          debugger;
                           return this.state.consultation === true &&
                             row.service_type_id !== 1 ? (
                             row.quantity
@@ -316,6 +371,13 @@ class PackageUtilize extends Component {
                   />
                 </div>
               </div>
+
+              <ConsumtionItemBatches
+                show={this.state.itemBatches}
+                onClose={this.CloseBatchDetails.bind(this)}
+                inventory_location_id={this.props.inventory_location_id}
+                batch_wise_item={this.state.batch_wise_item}
+              />
 
               {/*
                 <h6> Utilized Services </h6>
@@ -577,8 +639,17 @@ class PackageUtilize extends Component {
                 package_id: this.state.hims_f_package_header_id,
                 advance_amount: this.state.advance_amount,
                 patient_code: this.state.patient_code,
-                full_name: this.state.full_name
+                full_name: this.state.full_name,
+                collect_advance: this.state.collect_advance
               }}
+            />
+
+            <ClosePackage
+              show={this.state.closePackage}
+              onClose={this.ClosePackageScreen.bind(this)}
+              package_detail={this.state}
+              transaction_type="RF"
+              pay_type="P"
             />
             <div className="popupFooter">
               <div className="col-lg-12">
@@ -599,6 +670,15 @@ class PackageUtilize extends Component {
                           onClick={this.ShowAdvanceScreen.bind(this)}
                         >
                           Collect Advance
+                        </button>
+                      ) : null}
+
+                      {this.props.from_billing === true ? (
+                        <button
+                          className="btn btn-default"
+                          onClick={this.ShowCloseScreen.bind(this)}
+                        >
+                          Close Package
                         </button>
                       ) : null}
 

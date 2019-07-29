@@ -537,6 +537,9 @@ class OPBilling extends Component {
                 onClose={ClosePackageUtilize.bind(this, this)}
                 package_detail={this.state.package_detail}
                 from_billing={true}
+                patient_id={this.state.patient_id}
+                visit_id={this.state.visit_id}
+                doctor_id={this.state.incharge_or_provider}
               />
             </div>
           </div>

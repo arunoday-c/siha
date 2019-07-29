@@ -34,6 +34,8 @@ export default function PackageSetupEvent() {
                   advance_percentage: firstRecordSet.advance_percentage,
                   package_visit_type: firstRecordSet.package_visit_type,
                   approved: firstRecordSet.approved,
+                  package_status: firstRecordSet.package_status,
+                  cancellation_policy: firstRecordSet.cancellation_policy,
                   PakageDetail: g.getSource()
                 };
               })

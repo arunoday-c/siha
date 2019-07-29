@@ -43,7 +43,7 @@ export default function PackageSetupEvent() {
     },
 
     ShowAdvanceScreen: ($this, row) => {
-      debugger;
+      
       $this.setState({
         patient_id: row.patient_id,
         hims_f_package_header_id: row.hims_f_package_header_id,

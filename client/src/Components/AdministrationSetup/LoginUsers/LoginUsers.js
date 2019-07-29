@@ -8,17 +8,47 @@ import {
   AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
 import AlgaehAutoSearch from "../../Wrapper/autoSearch";
-import { AlgaehValidation } from "../../../utils/GlobalFunctions";
+import {
+  AlgaehValidation,
+  AlgaehOpenContainer
+} from "../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-import { USER_TYPE, FORMAT_STATUS } from "../../../utils/GlobalVariables.json";
+import {
+  HIMS_HR_USER_TYPE,
+  HIMS_USER_TYPE,
+  HR_USER_TYPE,
+  FORMAT_STATUS
+} from "../../../utils/GlobalVariables.json";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import Enumerable from "linq";
 import swal from "sweetalert2";
+import _ from "lodash";
+
 class LoginUsers extends Component {
   constructor(props) {
     super(props);
+    let Activated_Modueles = JSON.parse(
+      AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
+    );
+    const HIMS_Active = _.filter(Activated_Modueles, f => {
+      return f.module_code === "FTDSK";
+    });
+    const HRMS_Active = _.filter(Activated_Modueles, f => {
+      return f.module_code === "PAYROLL";
+    });
+
+    const USER_TYPE =
+      HIMS_Active.length > 0 && HRMS_Active.length > 0
+        ? HIMS_HR_USER_TYPE
+        : HIMS_Active.length > 0
+        ? HIMS_USER_TYPE
+        : HRMS_Active.length > 0
+        ? HR_USER_TYPE
+        : [];
+
     this.state = {
-      login_users: []
+      login_users: [],
+      PR_USER_TYPE: USER_TYPE
     };
     this.getGroups();
     this.getLoginUsers();
@@ -29,7 +59,9 @@ class LoginUsers extends Component {
     this.setState({
       employee_id: data.hims_d_employee_id,
       sub_department_id: data.sub_department_id,
-      full_name: data.full_name
+      full_name: data.full_name,
+      display_name: data.full_name,
+      username: data.full_name.split(" ")[0].toLowerCase()
     });
   }
 
@@ -37,7 +69,7 @@ class LoginUsers extends Component {
     this.setState({
       username: "",
       display_name: "",
-      effective_start_date: null,
+      //effective_start_date: null,
       password: "",
       confirm_password: "",
       app_group_id: null,
@@ -63,7 +95,8 @@ class LoginUsers extends Component {
       onSuccess: response => {
         if (response.data.success) {
           this.setState({
-            hospitals: response.data.records
+            hospitals: response.data.records,
+            hospital_id: response.data.records[0].hims_d_hospital_id
           });
         }
       },
@@ -247,7 +280,7 @@ class LoginUsers extends Component {
           data: {
             username: this.state.username,
             user_display_name: this.state.display_name,
-            effective_start_date: this.state.effective_start_date,
+            //effective_start_date: this.state.effective_start_date,
             password: this.state.password,
             app_group_id: this.state.app_group_id,
             role_id: this.state.role_id,
@@ -281,239 +314,196 @@ class LoginUsers extends Component {
   render() {
     return (
       <div className="login_users">
-        <div className="portlet portlet-bordered margin-bottom-15">
-          <div className="portlet-body">
-            <div className="row">
-              <AlagehFormGroup
-                div={{ className: "col" }}
-                label={{
-                  fieldName: "username",
-                  isImp: true
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "username",
-                  value: this.state.username,
-                  events: {
-                    onChange: this.changeTexts.bind(this)
-                  }
-                }}
-              />
-
-              <AlgaehAutoSearch
-                div={{ className: "col-lg-2" }}
-                label={{ forceLabel: "Employees" }}
-                title="Search Employees"
-                id="item_id_search"
-                template={result => {
-                  return (
-                    <section className="resultSecStyles">
-                      <div className="row">
-                        <div className="col-8">
-                          <h4 className="title">{result.employee_code}</h4>
-                          <small>{result.full_name}</small>
-                        </div>
-                        <div className="col-4" />
-                      </div>
-                    </section>
-                  );
-                }}
-                name="hims_d_employee_id"
-                columns={spotlightSearch.Employee_details.employee}
-                displayField="full_name"
-                value={this.state.full_name}
-                searchName="new_employees"
-                onClick={this.searchSelect.bind(this)}
-              />
-
-              {/* <AlagehFormGroup
-                div={{ className: "col" }}
-                label={{
-                  fieldName: "password",
-                  isImp: true
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "password",
-                  value: this.state.password,
-                  events: {
-                    onChange: this.changeTexts.bind(this)
-                  },
-                  others: {
-                    type: "password"
-                  }
-                }}
-              />
-              <AlagehFormGroup
-                div={{ className: "col" }}
-                label={{
-                  fieldName: "confirm_password",
-                  isImp: true
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "confirm_password",
-                  value: this.state.confirm_password,
-                  events: {
-                    onChange: this.changeTexts.bind(this)
-                  },
-                  others: {
-                    checkvalidation:
-                      "'$value' !=='" + this.state.password + "'",
-                    errormessage: "Passwords doesn't match",
-                    type: "Password"
-                  }
-                }}
-              /> */}
-
-              <AlagehFormGroup
-                div={{ className: "col" }}
-                label={{
-                  fieldName: "display_name",
-                  isImp: true
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "display_name",
-                  value: this.state.display_name,
-                  events: {
-                    onChange: this.changeTexts.bind(this)
-                  }
-                }}
-              />
-
-              <AlagehAutoComplete
-                div={{ className: "col" }}
-                label={{
-                  forceLabel: "User Type",
-                  isImp: true
-                }}
-                selector={{
-                  name: "user_type",
-                  className: "select-fld",
-                  value: this.state.user_type,
-                  dataSource: {
-                    textField: "name",
-                    valueField: "value",
-                    data: USER_TYPE
-                  },
-                  onChange: this.dropDownHandler.bind(this)
-                }}
-              />
-              <AlagehAutoComplete
-                div={{ className: "col" }}
-                label={{
-                  fieldName: "group",
-                  isImp: true
-                }}
-                selector={{
-                  name: "app_group_id",
-                  className: "select-fld",
-                  value: this.state.app_group_id,
-                  dataSource: {
-                    textField: "app_group_name",
-                    valueField: "algaeh_d_app_group_id",
-                    data: this.state.groups
-                  },
-                  onChange: this.dropDownHandler.bind(this)
-                }}
-              />
-
-              <AlagehAutoComplete
-                div={{ className: "col" }}
-                label={{
-                  fieldName: "role",
-                  isImp: true
-                }}
-                selector={{
-                  name: "role_id",
-                  className: "select-fld",
-                  value: this.state.role_id,
-                  dataSource: {
-                    textField: "role_name",
-                    valueField: "app_d_app_roles_id",
-                    data: this.state.roles
-                  },
-                  onChange: this.dropDownHandler.bind(this)
-                }}
-              />
-
-              <AlagehAutoComplete
-                div={{ className: "col" }}
-                label={{
-                  forceLabel: "branch",
-                  isImp: true
-                }}
-                selector={{
-                  name: "hospital_id",
-                  className: "select-fld",
-                  value: this.state.hospital_id,
-                  dataSource: {
-                    textField: "hospital_name",
-                    valueField: "hims_d_hospital_id",
-                    data: this.state.hospitals
-                  },
-                  onChange: this.dropDownHandler.bind(this)
-                }}
-              />
-
-              <AlgaehDateHandler
-                div={{ className: "col" }}
-                label={{
-                  fieldName: "effective_start_date",
-                  isImp: true
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "effective_start_date"
-                }}
-                // maxDate={new Date()}
-                events={{
-                  onChange: selDate => {
-                    this.setState({
-                      effective_start_date: selDate
-                    });
-                  }
-                }}
-                value={this.state.effective_start_date}
-              />
-
-              <div className="col">
-                <button
-                  style={{ marginTop: 21 }}
-                  onClick={this.addLoginUser.bind(this)}
-                  type="button"
-                  className="btn btn-primary"
-                >
-                  <AlgaehLabel
+        <div className="row">
+          <div className="col-3">
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-body">
+                <div className="row">
+                  {" "}
+                  <AlagehAutoComplete
+                    div={{ className: "col-12 form-group" }}
                     label={{
-                      fieldName: "add_to_list"
+                      forceLabel: "branch",
+                      isImp: true
+                    }}
+                    selector={{
+                      name: "hospital_id",
+                      className: "select-fld",
+                      value: this.state.hospital_id,
+                      dataSource: {
+                        textField: "hospital_name",
+                        valueField: "hims_d_hospital_id",
+                        data: this.state.hospitals
+                      },
+                      onChange: this.dropDownHandler.bind(this)
                     }}
                   />
-                </button>
-                <button
-                  style={{ marginTop: 21 }}
-                  onClick={this.resetSaveState.bind(this)}
-                  type="button"
-                  className="btn btn-default"
-                >
-                  <AlgaehLabel
+                  <AlgaehAutoSearch
+                    div={{ className: "col-12 form-group" }}
                     label={{
-                      forceLabel: "Clear"
+                      forceLabel: "Select Employee",
+                      isImp: true
+                    }}
+                    title="Search Employees"
+                    id="item_id_search"
+                    template={result => {
+                      return (
+                        <section className="resultSecStyles">
+                          <div className="row">
+                            <div className="col-8">
+                              <h4 className="title">{result.employee_code}</h4>
+                              <small>{result.full_name}</small>
+                            </div>
+                            <div className="col-4" />
+                          </div>
+                        </section>
+                      );
+                    }}
+                    name="hims_d_employee_id"
+                    columns={spotlightSearch.Employee_details.employee}
+                    displayField="full_name"
+                    value={this.state.full_name}
+                    searchName="new_employees"
+                    onClick={this.searchSelect.bind(this)}
+                  />
+                  <AlagehFormGroup
+                    div={{ className: "col-12 form-group" }}
+                    label={{
+                      fieldName: "display_name",
+                      isImp: true
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "display_name",
+                      value: this.state.display_name,
+                      events: {
+                        onChange: this.changeTexts.bind(this)
+                      }
                     }}
                   />
-                </button>
+                  <AlagehFormGroup
+                    div={{ className: "col-6 form-group" }}
+                    label={{
+                      fieldName: "username",
+                      isImp: true
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "username",
+                      value: this.state.username,
+                      events: {
+                        onChange: this.changeTexts.bind(this)
+                      }
+                    }}
+                  />
+                  <AlagehAutoComplete
+                    div={{ className: "col-6 form-group" }}
+                    label={{
+                      forceLabel: "User Type",
+                      isImp: true
+                    }}
+                    selector={{
+                      name: "user_type",
+                      className: "select-fld",
+                      value: this.state.user_type,
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: this.state.PR_USER_TYPE
+                      },
+                      onChange: this.dropDownHandler.bind(this)
+                    }}
+                  />
+                  <AlagehAutoComplete
+                    div={{ className: "col-6 form-group" }}
+                    label={{
+                      fieldName: "group",
+                      isImp: true
+                    }}
+                    selector={{
+                      name: "app_group_id",
+                      className: "select-fld",
+                      value: this.state.app_group_id,
+                      dataSource: {
+                        textField: "app_group_name",
+                        valueField: "algaeh_d_app_group_id",
+                        data: this.state.groups
+                      },
+                      onChange: this.dropDownHandler.bind(this)
+                    }}
+                  />
+                  <AlagehAutoComplete
+                    div={{ className: "col-6 form-group" }}
+                    label={{
+                      fieldName: "role",
+                      isImp: true
+                    }}
+                    selector={{
+                      name: "role_id",
+                      className: "select-fld",
+                      value: this.state.role_id,
+                      dataSource: {
+                        textField: "role_name",
+                        valueField: "app_d_app_roles_id",
+                        data: this.state.roles
+                      },
+                      onChange: this.dropDownHandler.bind(this)
+                    }}
+                  />
+                  {/* <AlgaehDateHandler
+                    div={{ className: "col-12 form-group" }}
+                    label={{
+                      fieldName: "effective_start_date",
+                      isImp: true
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "effective_start_date"
+                    }}
+                    // maxDate={new Date()}
+                    events={{
+                      onChange: selDate => {
+                        this.setState({
+                          effective_start_date: selDate
+                        });
+                      }
+                    }}
+                    value={this.state.effective_start_date}
+                  /> */}
+                  <div className="col-12 form-group">
+                    <button
+                      onClick={this.resetSaveState.bind(this)}
+                      type="button"
+                      className="btn btn-default"
+                    >
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Clear"
+                        }}
+                      />
+                    </button>
+                    <button
+                      style={{ marginLeft: 15 }}
+                      onClick={this.addLoginUser.bind(this)}
+                      type="button"
+                      className="btn btn-primary"
+                    >
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "add_to_list"
+                        }}
+                      />
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-
-        <div className="row">
-          <div className="col-12">
+          <div className="col-9">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
-                  <h3 className="caption-subject">Login User List</h3>
+                  <h3 className="caption-subject">Login Users List</h3>
                 </div>
               </div>
               <div className="portlet-body">
@@ -521,85 +511,12 @@ class LoginUsers extends Component {
                   <div
                     className="col-lg-12"
                     data-validate="apptClinicsDiv"
-                    id="adminGrid_Cntr"
+                    id="loginUserGrid_Cntr"
                   >
                     <AlgaehDataGrid
-                      id="login-grid"
+                      id="loginUserGrid"
                       datavalidate="data-validate='apptClinicsDiv'"
                       columns={[
-                        {
-                          fieldName: "username",
-                          label: (
-                            <AlgaehLabel label={{ fieldName: "username" }} />
-                          ),
-                          disabled: true,
-                          editorTemplate: row => {
-                            return (
-                              <AlagehFormGroup
-                                div={{ className: "col" }}
-                                textBox={{
-                                  className: "txt-fld",
-                                  name: "username",
-                                  value: row.username,
-                                  events: {
-                                    onChange: this.changeGridEditors.bind(
-                                      this,
-                                      row
-                                    )
-                                  },
-                                  others: {
-                                    errormessage:
-                                      " Description- cannot be blank",
-                                    required: true
-                                  }
-                                }}
-                              />
-                            );
-                          }
-                        },
-                        {
-                          fieldName: "user_display_name",
-                          label: (
-                            <AlgaehLabel
-                              label={{ fieldName: "display_name" }}
-                            />
-                          ),
-                          disabled: false,
-                          editorTemplate: row => {
-                            return (
-                              <AlagehFormGroup
-                                div={{ className: "col" }}
-                                textBox={{
-                                  className: "txt-fld",
-                                  name: "user_display_name",
-                                  value: row.user_display_name,
-                                  events: {
-                                    onChange: this.changeGridEditors.bind(
-                                      this,
-                                      row
-                                    )
-                                  },
-                                  others: {
-                                    errormessage:
-                                      " Description- cannot be blank",
-                                    required: true
-                                  }
-                                }}
-                              />
-                            );
-                          }
-                        },
-                        {
-                          fieldName: "app_group_name",
-                          label: <AlgaehLabel label={{ fieldName: "group" }} />,
-                          disabled: true
-                        },
-                        {
-                          fieldName: "role_name",
-                          label: <AlgaehLabel label={{ fieldName: "role" }} />,
-                          disabled: true
-                        },
-
                         {
                           fieldName: "full_name",
                           label: (
@@ -640,13 +557,75 @@ class LoginUsers extends Component {
                           disabled: true
                         },
                         {
+                          fieldName: "user_display_name",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "display_name" }}
+                            />
+                          ),
+                          disabled: false,
+                          editorTemplate: row => {
+                            return (
+                              <AlagehFormGroup
+                                div={{ className: "col" }}
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "user_display_name",
+                                  value: row.user_display_name,
+                                  events: {
+                                    onChange: this.changeGridEditors.bind(
+                                      this,
+                                      row
+                                    )
+                                  },
+                                  others: {
+                                    errormessage:
+                                      " Description- cannot be blank",
+                                    required: true
+                                  }
+                                }}
+                              />
+                            );
+                          }
+                        },
+                        {
+                          fieldName: "username",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "username" }} />
+                          ),
+                          disabled: true,
+                          editorTemplate: row => {
+                            return (
+                              <AlagehFormGroup
+                                div={{ className: "col" }}
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "username",
+                                  value: row.username,
+                                  events: {
+                                    onChange: this.changeGridEditors.bind(
+                                      this,
+                                      row
+                                    )
+                                  },
+                                  others: {
+                                    errormessage:
+                                      " Description- cannot be blank",
+                                    required: true
+                                  }
+                                }}
+                              />
+                            );
+                          }
+                        },
+                        {
                           fieldName: "user_type",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "User Type" }} />
                           ),
 
                           displayTemplate: row => {
-                            let x = Enumerable.from(USER_TYPE)
+                            let x = Enumerable.from(this.state.PR_USER_TYPE)
                               .where(w => w.value === row.user_type)
                               .firstOrDefault();
                             return (
@@ -656,7 +635,7 @@ class LoginUsers extends Component {
                             );
                           },
                           editorTemplate: row => {
-                            let x = Enumerable.from(USER_TYPE)
+                            let x = Enumerable.from(this.state.PR_USER_TYPE)
                               .where(w => w.value === row.user_type)
                               .firstOrDefault();
                             return (
@@ -665,6 +644,16 @@ class LoginUsers extends Component {
                               </span>
                             );
                           }
+                        },
+                        {
+                          fieldName: "app_group_name",
+                          label: <AlgaehLabel label={{ fieldName: "group" }} />,
+                          disabled: true
+                        },
+                        {
+                          fieldName: "role_name",
+                          label: <AlgaehLabel label={{ fieldName: "role" }} />,
+                          disabled: true
                         },
                         {
                           fieldName: "user_status",
@@ -704,7 +693,7 @@ class LoginUsers extends Component {
                         data: this.state.login_users
                       }}
                       isEditable={true}
-                      paging={{ page: 0, rowsPerPage: 10 }}
+                      paging={{ page: 0, rowsPerPage: 20 }}
                       filter={true}
                       events={{
                         onEdit: () => {},

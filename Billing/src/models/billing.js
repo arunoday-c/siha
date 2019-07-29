@@ -1190,9 +1190,10 @@ module.exports = {
                               inputParam.balance_amount +
                               "'";
                           } else if (inputParam.transaction_type == "RF") {
-                            inputParam.advance_amount =
-                              existingAdvance - inputParam.advance_amount;
-                            strQuery += ", `closed`='Y', closed_type='R'";
+                            strQuery +=
+                              ", `closed`='Y', closed_type='R', closed_remarks = '" +
+                              inputParam.closed_remarks +
+                              "'";
                           }
                         }
 
@@ -1304,11 +1305,12 @@ module.exports = {
               _mysql
                 .executeQuery({
                   query:
-                    "update hims_f_package_header set balance_amount= ?, utilize_amount=?" +
+                    "update hims_f_package_header set balance_amount= ?, actual_utilize_amount=?,utilize_amount=?" +
                     strQuery +
                     "where hims_f_package_header_id=? ",
                   values: [
                     inputParam.balance_amount,
+                    inputParam.actual_utilize_amount,
                     inputParam.utilize_amount,
                     inputParam.hims_f_package_header_id
                   ],
@@ -2145,6 +2147,31 @@ module.exports = {
       _mysql.releaseConnection();
       next(e);
     });
+  },
+  closePackage: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "update hims_f_package_header set closed='Y', closed_type='C', closed_remarks=? where hims_f_package_header_id=? ",
+          values: [req.body.closed_remarks, req.body.hims_f_package_header_id],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } catch (e) {
+      reject(e);
+      next(e);
+    }
   }
 };
 

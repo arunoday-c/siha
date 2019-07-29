@@ -199,7 +199,7 @@ class Dental extends Component {
   }
 
   saveBill() {
-    debugger;
+    
     let inputObj = {
       visit_id: Window.global["visit_is"],
       patient_id: Window.global["current_patient"],

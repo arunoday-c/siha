@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import Label from "./label";
 // import "../Wrapper/autoComplete.css";
 // import Enumarable from "linq";
@@ -9,7 +9,7 @@ import {
   getUserPreferences
 } from "../../utils/GlobalFunctions";
 import { Dropdown } from "semantic-ui-react";
-class AutoComplete extends Component {
+class AutoComplete extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -67,12 +67,12 @@ class AutoComplete extends Component {
         loader: false
       });
 
-      if (props.selector.value !== this.props.selector.value) {
-        this.setState({
-          value: props.selector.value,
-          loader: false
-        });
-      }
+      // if (props.selector.value !== this.props.selector.value) {
+      this.setState({
+        value: props.selector.value,
+        loader: false
+      });
+      //}
     }
   }
 
@@ -279,6 +279,10 @@ class AutoComplete extends Component {
       this.props.selector.onClose !== undefined
         ? { onClose: this.props.selector.onClose }
         : {};
+    const referenceValue = {
+      referencevalue: this.state.value === undefined ? "" : this.state.value
+    };
+
     return (
       <Dropdown
         disabled={isDisable}
@@ -296,7 +300,7 @@ class AutoComplete extends Component {
         searchInput={{
           autoComplete: _autocomplete,
           name: this.props.selector.name,
-          referencevalue: this.state.value,
+          ...referenceValue,
           data_role: "dropdownlist",
           type: "text",
           ..._isImportant,

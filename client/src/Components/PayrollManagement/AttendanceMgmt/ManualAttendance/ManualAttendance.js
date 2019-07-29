@@ -549,7 +549,7 @@ class ManualAttendance extends Component {
                       keyId="hims_f_daily_time_sheet_id"
                       dataSource={{ data: this.state.employee_details }}
                       isEditable={false}
-                      paging={{ page: 0, rowsPerPage: 20 }}
+                      paging={{ page: 0, rowsPerPage: 31 }}
                       tool={{
                         fileName: "Daily Time Sheet",
                         extraColumns: [],

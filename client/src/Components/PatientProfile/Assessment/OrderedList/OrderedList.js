@@ -143,10 +143,33 @@ class OrderedList extends PureComponent {
   }
 
   ShowPackageUtilize(row) {
-    debugger;
-    this.setState({
-      isPackUtOpen: !this.state.isPackUtOpen,
-      package_detail: row
+    
+
+    algaehApiCall({
+      uri: "/department/get/subdepartment",
+      method: "GET",
+      module: "masterSettings",
+      onSuccess: response => {
+        if (response.data.success === true) {
+          const Departmant_Location = _.filter(response.data.records, f => {
+            return (
+              f.hims_d_sub_department_id ===
+              this.props.patient_profile[0].sub_department_id
+            );
+          });
+          this.setState({
+            isPackUtOpen: !this.state.isPackUtOpen,
+            package_detail: row,
+            inventory_location_id: Departmant_Location[0].inventory_location_id
+          });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
     });
   }
   ClosePackageUtilize() {
@@ -166,11 +189,22 @@ class OrderedList extends PureComponent {
             mappingName: "pakageList"
           }
         });
+        this.props.getOrderList({
+          uri: "/orderAndPreApproval/selectOrderServicesbyDoctor",
+          method: "GET",
+          data: {
+            visit_id: Window.global["visit_id"]
+          },
+          redux: {
+            type: "ORDER_SERVICES_GET_DATA",
+            mappingName: "orderedList"
+          }
+        });
       }
     );
   }
   ShowProcedureModel(row, e) {
-    debugger;
+    
     algaehApiCall({
       uri: "/serviceType/getProcedures",
       method: "GET",
@@ -314,7 +348,7 @@ class OrderedList extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger;
+    
     if (nextProps.openData !== undefined) {
       this.setState({ openData: nextProps.openData });
     }
@@ -447,14 +481,16 @@ class OrderedList extends PureComponent {
                               : this.props.serviceslist.filter(
                                   f => f.hims_d_services_id === row.services_id
                                 );
-                          debugger;
+                          
                           return (
                             <span>
                               {display !== null && display.length !== 0
                                 ? display[0].service_name
                                 : ""}
 
-                              {package_service}
+                              <span className="packageAvail">
+                                {package_service}
+                              </span>
                             </span>
                           );
                         },
@@ -895,6 +931,7 @@ class OrderedList extends PureComponent {
           patient_id={Window.global["current_patient"]}
           visit_id={Window.global["visit_id"]}
           doctor_id={Window.global["provider_id"]}
+          inventory_location_id={this.state.inventory_location_id}
         />
       </div>
     );

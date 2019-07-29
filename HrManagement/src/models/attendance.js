@@ -207,7 +207,7 @@ module.exports = {
 	regularizeAttendance: (req, res, next) => {
 		let input = req.body;
 		const utilities = new algaehUtilities();
-		utilities.logger().log('regularizeAttendance: ');
+
 		if (input.regularize_status == 'REJ' || input.regularize_status == 'APR' || input.regularize_status == 'PEN') {
 			const _mysql = new algaehMysql();
 			_mysql
@@ -240,7 +240,7 @@ module.exports = {
 										input.employee_id,
 										input.attendance_date
 									],
-									printQuery: true
+									printQuery: false
 								})
 								.then((result2) => {
 									_mysql.commitTransaction(() => {
@@ -339,7 +339,7 @@ module.exports = {
 						' order by\
           hims_f_attendance_regularize_id desc ;',
 					values: [ req.userIdentity.hospital_id ],
-					printQuery: true
+					printQuery: false
 				})
 				.then((result) => {
 					_mysql.releaseConnection();
@@ -488,7 +488,6 @@ module.exports = {
 						//   or(date(date_of_joining) <= date('2019-03-31') and exit_date is null)) and
 						//   E.record_status='A' and E.hospital_id='1' and E.sub_department_id='38'  and hims_f_employee_annual_leave_id is null ;
 
-						utilities.logger().log('strQuery Data ');
 
 						let strQuery = '';
 						if (req.query.leave_salary == null || req.query.leave_salary == undefined) {
@@ -514,7 +513,7 @@ module.exports = {
 								_stringData +
 								" and  (S.salary_processed is null or  S.salary_processed='N');";
 						}
-						utilities.logger().log('strQuery ', strQuery);
+					
 						try {
 							_mysql
 								.executeQuery({
@@ -537,34 +536,29 @@ module.exports = {
                   inner join hims_f_leave_application LA on  PL.leave_application_id=LA.hims_f_leave_application_id\
                   where LA.status='APR' and  year=? and month=? and PL.hospital_id=?",
 									values: inputValues,
-									printQuery: true
+									printQuery: false
 								})
 								.then((result) => {
-									utilities.logger().log('Result[0]: ', result[0]);
+								
 									allEmployees = result[0];
 									allHolidays = result[1];
 									allAbsents = result[2];
 									allMonthlyLeaves = result[3];
 									allPendingLeaves = result[4];
 
-									// utilities.logger().log("result: ", result);
-									utilities.logger().log('allEmployees my: ', allEmployees);
-									//  utilities.logger().log("allHolidays: ", allHolidays);
-									//  utilities.logger().log("allAbsents: ", allAbsents);
-									//  utilities.logger().log("allMonthlyLeaves: ", allMonthlyLeaves);
-									//  utilities.logger().log("allPendingLeaves: ", allPendingLeaves);
+							
 
 									if (allEmployees.length > 0) {
 										employee_ = new LINQ(allEmployees)
 											.Select((s) => s.hims_d_employee_id)
 											.ToArray();
 
-										utilities.logger().log('employee_', employee_);
+									
 
 										deleteString = ` delete from hims_f_attendance_monthly  where employee_id>0 and year=${year} and
                     month=${month_number}  ${hospital} ${department}  and employee_id in (${employee_});`;
 
-										utilities.logger().log('deleteString', deleteString);
+									
 
 										//ST-----checking if yearly leaves not proccessed for any employee
 										let noYearlyLeave = new LINQ(allEmployees)
@@ -576,7 +570,7 @@ module.exports = {
 												};
 											})
 											.ToArray();
-										utilities.logger().log('noYearlyLeave: ', noYearlyLeave);
+									
 										if (noYearlyLeave.length > 0) {
 											req.records = {
 												invalid_input: true,
@@ -868,8 +862,8 @@ module.exports = {
 													resolve(attendanceArray);
 												}
 											}
-											// resolve(attendanceArray);
-											//utilities.logger().log("allEmployees: ", allEmployees);
+										
+										
 										}
 									} else {
 										if (req.connection == null) {
@@ -894,7 +888,7 @@ module.exports = {
 							reject(e);
 						}
 					}).then((attendanceResult) => {
-						utilities.logger().log('deleteString', deleteString);
+					
 						_mysql
 							.executeQueryWithTransaction({
 								query: deleteString
@@ -980,7 +974,7 @@ module.exports = {
 								}
 							})
 							.catch((e) => {
-								utilities.logger().log('e', e);
+							
 								_mysql.rollBackTransaction(() => {
 									next(e);
 								});
@@ -1014,15 +1008,15 @@ module.exports = {
 		try {
 			const utilities = new algaehUtilities();
 			const input = req.body;
-			utilities.logger().log('input: ', input);
+		
 
 			_mysql
 				.executeQuery({
 					query: 'select standard_working_hours from hims_d_hrms_options',
-					printQuery: true
+					printQuery: false
 				})
 				.then((result) => {
-					utilities.logger().log('standard_working_hours: ', result[0]['standard_working_hours']);
+
 
 					const IncludeValues = [
 						'employee_id',
@@ -1045,9 +1039,9 @@ module.exports = {
 						let actual_hours = input[i].status == 'PR' ? result[0]['standard_working_hours'] : 0;
 						_strQry += _mysql.mysqlQueryFormat(
 							'INSERT INTO `hims_f_daily_time_sheet` (employee_id,attendance_date,in_time,out_date,out_time,hours,\
-                minutes,worked_hours,sub_department_id,status,year,month,hospital_id, actual_hours,project_id) \
-                 VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE `in_time`=?,`out_date`=?,`hours`=?,\
-                 `minutes`=?,`worked_hours`=?,`status`=?,`actual_hours`=?, `project_id`=?;',
+							minutes,worked_hours,sub_department_id,status,year,month,hospital_id, actual_hours,project_id) \
+							VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE `in_time`=?,`out_date`=?,`hours`=?,\
+							`minutes`=?,`worked_hours`=?,`status`=?,`actual_hours`=?, `project_id`=?;',
 							[
 								input[i].employee_id,
 								input[i].attendance_date,
@@ -1055,7 +1049,7 @@ module.exports = {
 								input[i].out_date,
 								input[i].out_time,
 								input[i].hours,
-								input[i].minutes,
+								input[i].minutes>0?input[i].minutes:0,
 								input[i].worked_hours,
 								input[i].sub_department_id,
 								input[i].status,
@@ -1068,19 +1062,22 @@ module.exports = {
 								input[i].in_time,
 								input[i].out_date,
 								input[i].hours,
-								input[i].minutes,
+								input[i].minutes>0?input[i].minutes:0,
 								input[i].worked_hours,
 								input[i].status,
 								actual_hours,
 								input[i].project_id
 							]
 						);
+
+
+					
 					}
 
 					_mysql
 						.executeQuery({
 							query: _strQry,
-							printQuery: true
+							printQuery: false
 						})
 						.then((result) => {
 							_mysql.releaseConnection();
@@ -1104,7 +1101,7 @@ module.exports = {
 		try {
 			const utilities = new algaehUtilities();
 			const input = req.body;
-			utilities.logger().log('input: ', input);
+		
 
 			let qry = '';
 
@@ -1234,7 +1231,7 @@ module.exports = {
 									from_date,
 									to_date
 								],
-								printQuery: true
+								printQuery: false
 							})
 							.then((result) => {
 								allHolidays = result[0];
@@ -1242,11 +1239,7 @@ module.exports = {
 								AllEmployees = result[2];
 								AllShifts = result[3];
 
-								// utilities.logger().log("options: ", options);
-								// utilities.logger().log("allHolidays: ", allHolidays);
-								// utilities.logger().log("AllLeaves: ", AllLeaves);
-								// utilities.logger().log("AllEmployees: ", AllEmployees);
-								// utilities.logger().log("AllShifts: ", AllShifts);
+						
 
 								if (
 									AllEmployees.length > 0 &&
@@ -1258,7 +1251,7 @@ module.exports = {
 									if (options[0]['standard_working_hours'].toString().split('.')[1] != undefined) {
 										standard_mins = options[0]['standard_working_hours'].toString().split('.')[1];
 
-										utilities.logger().log('ACT MINS: ', standard_mins);
+								
 									}
 
 									var sql = require('mssql');
@@ -1292,14 +1285,13 @@ module.exports = {
 									sql.close();
 									sql.connect(config, function(err) {
 										if (err) {
-											utilities.logger().log('connection eror: ', 'connection eror');
+										
 											next(err);
 										}
 										// create Request object
 										var request = new sql.Request();
 
-										utilities.logger().log('from_date ', from_date);
-										utilities.logger().log('to_date ', to_date);
+					
 										// query to the biometric database and get the records
 
 										// select  TOP (100) UserID as biometric_id ,PDate as attendance_date,Punch1 as in_time,Punch2 as out_time,\
@@ -1378,7 +1370,7 @@ module.exports = {
 
 														let actual_hours = 0;
 														let actual_mins = 0;
-														utilities.logger().log('shiftData: ', shiftData);
+													
 														if (shiftData['shift_time'] > 0) {
 															actual_hours = shiftData.shift_time
 																.toString()
@@ -1397,7 +1389,7 @@ module.exports = {
 															actual_mins = standard_mins;
 														}
 
-														utilities.logger().log('actual_hours', actual_hours);
+													
 
 														//---------------------------------begin logic
 
@@ -1427,7 +1419,6 @@ module.exports = {
 																	in_time: null
 																});
 
-															// utilities.logger().log("punchIn", punchIn);
 															//--EN--punchin
 
 															//--ST--punchout
@@ -1454,7 +1445,7 @@ module.exports = {
 																	out_time: null
 																});
 
-															// utilities.logger().log("punchOut", punchOut);
+															
 															//--EN--punchout
 															if (punchIn.in_time != null && punchOut.out_time != null) {
 																let inDateTime = moment(
@@ -1496,7 +1487,7 @@ module.exports = {
 																});
 															} else {
 																//exception
-																utilities.logger().log('excption', 'am in excption');
+														
 																biometricData.push({
 																	biometric_id: punchIn.biometric_id,
 																	attendance_date: punchIn.attendance_date,
@@ -1522,7 +1513,7 @@ module.exports = {
 																});
 															}
 														} else {
-															utilities.logger().log('same day', 'same day');
+														
 
 															biometricData.push(
 																new LINQ(attendcResult)
@@ -1595,7 +1586,7 @@ module.exports = {
 													}
 
 													///----end logic
-													utilities.logger().log('biometricData', biometricData);
+											
 
 													insertTimeSheet(
 														returnQry,
@@ -1617,7 +1608,7 @@ module.exports = {
 												) {
 													singleEmployee = 'Y';
 
-													// utilities.logger().log("date_range:", "date_range");
+											
 
 													let fr_date = from_date;
 													if (AllEmployees[0]['date_of_joining'] > from_date) {
@@ -1625,7 +1616,7 @@ module.exports = {
 													}
 
 													let date_range = getDays(new Date(fr_date), new Date(to_date));
-													// utilities.logger().log("date_range:", date_range);
+								
 
 													for (let i = 0; i < date_range.length; i++) {
 														let shiftData = new LINQ(AllShifts)
@@ -1668,14 +1659,13 @@ module.exports = {
 																	.toString()
 																	.split('.')[1];
 															}
-															utilities.logger().log('actual_miadadns:', actual_mins);
-															utilities.logger().log('shiftData:', shiftData);
+													
 														} else {
 															actual_hours = standard_hours;
 															actual_mins = standard_mins;
 														}
 
-														utilities.logger().log('i ', date_range[i]);
+													
 
 														biometricData.push(
 															new LINQ(attendcResult)
@@ -1776,7 +1766,7 @@ module.exports = {
 								}
 							})
 							.catch((e) => {
-								// utilities.logger().log("error: ", e);
+							
 								_mysql.releaseConnection();
 								next(e);
 							});
@@ -1797,146 +1787,14 @@ module.exports = {
 		}
 	},
 
-	processBiometricAttendanceBkp27feb: (req, res, next) => {
-		const _mysql = new algaehMysql();
 
-		try {
-			const utilities = new algaehUtilities();
-			const input = req.query;
-			utilities.logger().log('input: ', input);
-
-			if (input.from_date != null && input.to_date != null && input.hospital_id > 0) {
-				let month = moment(input.from_date).format('M');
-				let year = moment(input.from_date).format('YYYY');
-
-				let stringData = '';
-				if (input.sub_department_id > 0) {
-					stringData += ' and sub_department_id=' + input.sub_department_id;
-				}
-				if (input.hims_d_employee_id > 0) {
-					stringData += ' and employee_id=' + input.hims_d_employee_id;
-				}
-				let insertArray = [];
-
-				_mysql
-					.executeQuery({
-						query:
-							" select employee_id,hospital_id,sub_department_id,year,month,sum(total_days)as total_days,sum(present_days)as present_days,sum(absent_days)as absent_days,\
-            sum(total_work_days)as total_work_days,sum(weekoff_days)as total_weekoff_days,sum(holidays)as total_holidays,\
-            sum(paid_leave)as paid_leave,sum(unpaid_leave)as unpaid_leave,sum(hours)as hours,sum(minutes)as minutes,\
-            COALESCE(sum(hours),0)+ COALESCE(concat(floor(sum(minutes)/60)  ,'.',sum(minutes)%60),0) as total_hours,\
-            sum(working_hours)as total_working_hours  from hims_f_daily_attendance where\
-             year=? and month=? and hospital_id=? " +
-							stringData +
-							' group by employee_id',
-						values: [ year, month, input.hospital_id ],
-						printQuery: true
-					})
-					.then((result) => {
-						utilities.logger().log('result: ', result);
-
-						for (let i = 0; i < result.length; i++) {
-							insertArray.push({
-								...result[i],
-								total_paid_days:
-									result[i]['present_days'] +
-									result[i]['paid_leave'] +
-									result[i]['total_weekoff_days'] +
-									result[i]['total_holidays'],
-								total_leave: result[i]['paid_leave'] + result[i]['unpaid_leave'],
-								total_hours: result[i]['total_hours'],
-								total_working_hours: result[i]['total_working_hours'],
-								shortage_hours:
-									parseInt(result[i]['total_working_hours']) - parseInt(result[i]['total_hours']) > 0
-										? parseInt(result[i]['total_working_hours']) -
-											parseInt(result[i]['total_hours'])
-										: 0,
-								ot_work_hours:
-									parseInt(result[i]['total_hours']) - parseInt(result[i]['total_working_hours']) > 0
-										? parseInt(result[i]['total_hours']) -
-											parseInt(result[i]['total_working_hours'])
-										: 0
-							});
-						}
-
-						utilities.logger().log('insertArray: ', insertArray);
-
-						const insurtColumns = [
-							'employee_id',
-							'year',
-							'month',
-							'hospital_id',
-							'sub_department_id',
-							'total_days',
-							'present_days',
-							'absent_days',
-							'total_work_days',
-							'total_weekoff_days',
-							'total_holidays',
-							'total_leave',
-							'paid_leave',
-							'unpaid_leave',
-							'total_paid_days',
-							'total_hours',
-							'total_working_hours',
-							'shortage_hours',
-							'ot_work_hours'
-						];
-
-						_mysql
-							.executeQuery({
-								query:
-									'INSERT INTO hims_f_attendance_monthly(??) VALUES ? ON DUPLICATE KEY UPDATE \
-                employee_id=values(employee_id),year=values(year),\
-                month=values(month),hospital_id=values(hospital_id),\
-                sub_department_id=values(sub_department_id),total_days=values(total_days),present_days=values(present_days),\
-                absent_days=values(absent_days),total_work_days=values(total_work_days),\
-                total_weekoff_days=values(total_weekoff_days),total_holidays=values(total_holidays),total_leave=values(total_leave),\
-                paid_leave=values(paid_leave),unpaid_leave=values(unpaid_leave),total_paid_days=values(total_paid_days),\
-                total_hours=values(total_hours),total_working_hours=values(total_working_hours),shortage_hours=values(shortage_hours)\
-                ,ot_work_hours=values(ot_work_hours)',
-								values: insertArray,
-								includeValues: insurtColumns,
-								extraValues: {
-									created_date: new Date(),
-									created_by: req.userIdentity.algaeh_d_app_user_id,
-									updated_date: new Date(),
-									updated_by: req.userIdentity.algaeh_d_app_user_id
-								},
-								bulkInsertOrUpdate: true,
-								printQuery: true
-							})
-							.then((result) => {
-								_mysql.releaseConnection();
-								req.records = result;
-								next();
-							})
-							.catch((e) => {
-								next(e);
-							});
-					})
-					.catch((e) => {
-						_mysql.releaseConnection();
-						next(e);
-					});
-			} else {
-				req.records = {
-					invalid_input: true,
-					message: 'Please select a branch and  date'
-				};
-				next();
-			}
-		} catch (e) {
-			next(e);
-		}
-	},
 	processBiometricAttendance: (req, res, next) => {
 		const _mysql = new algaehMysql();
 
 		try {
 			const utilities = new algaehUtilities();
 			const input = req.query;
-			utilities.logger().log('input: ', input);
+	
 
 			if (input.from_date != null && input.to_date != null && input.hospital_id > 0) {
 				let month = moment(input.from_date).format('M');
@@ -1977,7 +1835,7 @@ module.exports = {
 					.then((options) => {
 						//let options = hrms_options;
 
-						utilities.logger().log('options: ', options);
+					
 						if (input.attendance_type == 'MW') {
 							if (
 								options[0]['salary_pay_before_end_date'] == 'Y' &&
@@ -2023,12 +1881,12 @@ module.exports = {
 									pendingYear,
 									pendingMonth
 								],
-								printQuery: true
+								printQuery: false
 							})
 							.then((results) => {
 								attResult = results[0];
 								allPendingLeaves = results[1];
-								utilities.logger().log('attResult: ', attResult);
+							
 
 								for (let i = 0; i < attResult.length; i++) {
 									let pending_leaves = new LINQ(allPendingLeaves)
@@ -2063,7 +1921,7 @@ module.exports = {
 									});
 								}
 
-								utilities.logger().log('insertArray: ', insertArray);
+						
 
 								const insurtColumns = [
 									'employee_id',
@@ -2109,7 +1967,7 @@ module.exports = {
 											updated_by: req.userIdentity.algaeh_d_app_user_id
 										},
 										bulkInsertOrUpdate: true,
-										printQuery: true
+										printQuery: false
 									})
 									.then((result) => {
 										_mysql.releaseConnection();
@@ -2176,7 +2034,7 @@ module.exports = {
 						inner join hims_d_employee E on AM.employee_id=E.hims_d_employee_id \
 						where AM.record_status='A' and AM.year= ? and AM.month=? ${selectData} `,
 					values: [ year, month_number ],
-					printQuery: true
+					printQuery: false
 				})
 				.then((result) => {
 					_mysql.releaseConnection();
@@ -2215,7 +2073,7 @@ module.exports = {
 				.executeQuery({
 					query: _QueryDtl,
 					values: _values,
-					printQuery: true
+					printQuery: false
 				})
 				.then((result) => {
 					if (result.length > 0) {
@@ -2248,7 +2106,7 @@ module.exports = {
 						_mysql
 							.executeQuery({
 								query: _query,
-								printQuery: true
+								printQuery: false
 							})
 							.then((attandance) => {
 								_mysql.releaseConnection();
@@ -2300,7 +2158,7 @@ module.exports = {
              date(attendance_date)>=date(?) and date(attendance_date) <=date(?) \
              and (status='EX' or status='AB') ${employee_id};`,
 					values: [ input.hospital_id, input.from_date, input.to_date ],
-					printQuery: true
+					printQuery: false
 				})
 				.then((result) => {
 					if (result.length > 0) {
@@ -2343,13 +2201,12 @@ module.exports = {
 							})
 							.ToArray();
 
-						utilities.logger().log('absentArray: ', absentArray);
-						utilities.logger().log('excptionArray: ', excptionArray);
+				
 
 						new Promise((resolve, reject) => {
 							try {
 								if (excptionArray.length > 0) {
-									utilities.logger().log('am one: ', 'am one');
+							
 									const insurtColumns = [
 										'employee_id',
 										'attendance_date',
@@ -2377,11 +2234,11 @@ module.exports = {
 											bulkInsertOrUpdate: true
 										})
 										.then((exptionResult) => {
-											utilities.logger().log('exptionResult: ', exptionResult);
+										
 											resolve(exptionResult);
 										})
 										.catch((e) => {
-											utilities.logger().log('eroo22: ', e);
+									
 											mysql.rollBackTransaction(() => {
 												next(e);
 											});
@@ -2427,7 +2284,7 @@ module.exports = {
 										});
 									})
 									.catch((e) => {
-										utilities.logger().log('ero6: ', e);
+							
 										mysql.rollBackTransaction(() => {
 											next(e);
 										});
@@ -2442,18 +2299,17 @@ module.exports = {
 						});
 					} else {
 						_mysql.releaseConnection();
-						req.records =
-							"No exception records found for the date range '" +
-							input.from_date +
-							" - '" +
-							input.to_date +
-							"'";
+						req.records ={
+							no_exception:true,
+						message:`No exception Found From   ${input.to_date } to ${input.to_date }`
+						}
+						
 						next();
 						return;
 					}
 				})
 				.catch((error) => {
-					utilities.logger().log('ero33: ', error);
+			
 					_mysql.releaseConnection();
 					next(error);
 				});
@@ -2498,10 +2354,10 @@ module.exports = {
                   date(?) and date(?) and  TS.employee_id=E.hims_d_employee_id ' +
 						stringData,
 					values: [ input.hospital_id, from_date, to_date ],
-					printQuery: true
+					printQuery: false
 				})
 				.then((result) => {
-					// utilities.logger().log("result: ",result);
+					
 
 					if (result.length > 0) {
 						let excptions = new LINQ(result)
@@ -2515,7 +2371,7 @@ module.exports = {
 							})
 							.ToArray();
 
-						utilities.logger().log('excptions: ', excptions);
+					
 
 						if (excptions.length > 0) {
 							req.records = {
@@ -2551,12 +2407,7 @@ module.exports = {
 										ot_min = parseInt(Math.abs(diff)) % parseInt(60);
 									}
 								}
-								// utilities.logger().log("total_minutes: ", total_minutes);
-								// utilities.logger().log("worked_minutes: ", worked_minutes);
-								// utilities.logger().log("diff: ", diff);
-								// utilities.logger().log("ot_time: ", ot_time);
-								// utilities.logger().log("shortage_time: ", shortage_time);
-								// utilities.logger().log("================: ");
+						
 								dailyAttendance.push({
 									employee_id: result[i]['employee_id'],
 									hospital_id: result[i]['hospital_id'],
@@ -2647,7 +2498,7 @@ module.exports = {
                       date(?)  group by employee_id;',
 											values: [ input.hospital_id, year, month, from_date, to_date ],
 
-											printQuery: true
+											printQuery: false
 										})
 										.then((attResult) => {
 											let insertArray = [];
@@ -2719,7 +2570,7 @@ module.exports = {
 														updated_by: req.userIdentity.algaeh_d_app_user_id
 													},
 													bulkInsertOrUpdate: true,
-													printQuery: true
+													printQuery: false
 												})
 												.then((result) => {
 													_mysql.releaseConnection();
@@ -2727,13 +2578,13 @@ module.exports = {
 													next();
 												})
 												.catch((e) => {
-													utilities.logger().log('erro1: ', e);
+													
 													_mysql.releaseConnection();
 													next(e);
 												});
 										})
 										.catch((e) => {
-											utilities.logger().log('erro52: ', e);
+										
 											_mysql.releaseConnection();
 											next(e);
 										});
@@ -2840,17 +2691,12 @@ module.exports = {
 
 							lastMonth_after_cutoff_date =
 								moment(prevMonthYear).clone().format('YYYY-MM') + '-' + prevDays;
-							utilities.logger().log('lastMonth_after_cutoff_date: ', lastMonth_after_cutoff_date);
+						
 
 							lastMonth_end_date = moment(prevMonthYear).endOf('month').format('YYYY-MM-DD');
-							utilities.logger().log('lastMonth_end_date: ', lastMonth_end_date);
+					
 
-							//  let  standard_hours = options[0]["standard_working_hours"]
-							//     .toString()
-							//     .split(".")[0];
-							//   let standard_mins = options[0]["standard_working_hours"]
-							//     .toString()
-							//     .split(".")[1];
+				
 
 							_mysql
 								.executeQuery({
@@ -2917,7 +2763,7 @@ module.exports = {
 										input.hospital_id
 									],
 
-									printQuery: true
+									printQuery: false
 								})
 								.then((result) => {
 									let AttenResult = result[0];
@@ -2926,9 +2772,7 @@ module.exports = {
 									let LeaveResult = result[3];
 									let HolidayResult = result[4];
 
-									utilities.logger().log('AttenResult: ', AttenResult);
-									utilities.logger().log('RosterResult: ', RosterResult);
-									utilities.logger().log('LastTenDaysResult: ', LastTenDaysResult);
+								
 
 									let total_biom_attend = AttenResult.concat(LastTenDaysResult);
 									if (total_biom_attend.length > 0) {
@@ -2943,7 +2787,7 @@ module.exports = {
 											})
 											.ToArray();
 
-										utilities.logger().log('excptions: ', excptions);
+								
 
 										if (excptions.length > 0) {
 											req.records = {
@@ -2965,10 +2809,7 @@ module.exports = {
 													let total_minutes =
 														parseInt(AttenResult[i]['actual_hours'] * 60) +
 														parseInt(AttenResult[i]['actual_minutes']);
-													// utilities.logger().log("actual_hours: ", AttenResult[i]["actual_hours"]);
-													// utilities.logger().log("actual_minutes: ", AttenResult[i]["actual_minutes"]);
-													// utilities.logger().log("total_minutes: ", total_minutes);
-
+													
 													let worked_minutes =
 														parseInt(AttenResult[i]['hours'] * 60) +
 														parseInt(AttenResult[i]['minutes']);
@@ -2985,11 +2826,6 @@ module.exports = {
 														ot_min = parseInt(Math.abs(diff)) % parseInt(60);
 													}
 
-													// utilities.logger().log("worked_minutes: ", worked_minutes);
-													// utilities.logger().log("diff: ", diff);
-													// utilities.logger().log("ot_time: ", ot_time);
-													// utilities.logger().log("shortage_time: ", shortage_time);
-													// utilities.logger().log("================: ");
 												}
 
 												dailyAttendance.push({
@@ -3049,13 +2885,11 @@ module.exports = {
 												});
 											}
 
-											utilities.logger().log('leave_Date_range: ', leave_Date_range);
-
 											let roster_Date_range = getDays(
 												new Date(next_dayOf_cutoff),
 												new Date(to_date)
 											);
-											utilities.logger().log('roster_Date_range: ', roster_Date_range);
+									
 											//workin here
 											for (let i = 0; i < roster_Date_range.length; i++) {
 												let whichLeave = 0;
@@ -3065,17 +2899,15 @@ module.exports = {
 														roster_Date_range[i]
 													);
 
-													utilities.logger().log('leavData: ', leavData);
-													utilities
-														.logger()
-														.log('roster_Date_range[i]: ', roster_Date_range[i]);
+												
+												
 													if (leavData == true) {
 														whichLeave = leave_Date_range[k]['leave_type'];
 														break;
 													}
 												}
 
-												utilities.logger().log('roster_Date_range: ', roster_Date_range);
+									
 
 												let holiday_or_weekOff = new LINQ(HolidayResult)
 													.Where(
@@ -3097,7 +2929,7 @@ module.exports = {
 														holiday: 'N',
 														weekoff: 'N'
 													});
-												utilities.logger().log('holiday_or_weekOff: ', holiday_or_weekOff);
+												
 
 												RosterAttendance.push(
 													new LINQ(RosterResult)
@@ -3180,7 +3012,7 @@ module.exports = {
 														})
 												);
 											}
-											utilities.logger().log('RosterAttendance: ', RosterAttendance);
+											
 
 											//ST---present month roster 10 days
 											// for (let j = 0; j < RosterResult.length; j++) {
@@ -3322,12 +3154,11 @@ module.exports = {
 												});
 											}
 
-											utilities.logger().log('dailyAttendance: ', dailyAttendance);
-											utilities.logger().log('RosterAttendance: ', RosterAttendance);
+									
 
 											mergedArray = dailyAttendance.concat(RosterAttendance);
 
-											utilities.logger().log('mergedArray: ', mergedArray);
+									
 
 											const insurtColumns = [
 												'employee_id',
@@ -3407,7 +3238,7 @@ module.exports = {
 																pendingMonth
 															],
 
-															printQuery: true
+															printQuery: false
 														})
 														.then((results) => {
 															let attResult = results[0];
@@ -3554,7 +3385,7 @@ module.exports = {
 																			req.userIdentity.algaeh_d_app_user_id
 																	},
 																	bulkInsertOrUpdate: true,
-																	printQuery: true
+																	printQuery: false
 																})
 																.then((result) => {
 																	_mysql.releaseConnection();
@@ -3624,7 +3455,7 @@ module.exports = {
           from_session,to_session,absent_reason,absent_duration,status,cancel from hims_f_absent A left  join algaeh_d_app_user U on\
           A.updated_by= U.algaeh_d_app_user_id  where A.employee_id=? and status='NFD' and cancel='N';",
 						values: [ req.query.employee_id, req.query.employee_id ],
-						printQuery: true
+						printQuery: false
 					})
 					.then((result) => {
 						_mysql.releaseConnection();
@@ -3740,7 +3571,7 @@ module.exports = {
 						_mysql
 							.executeQuery({
 								query: returnQry,
-								printQuery: true
+								printQuery: false
 							})
 							.then((result) => {
 								_mysql.releaseConnection();
@@ -3878,7 +3709,7 @@ module.exports = {
 				query:
 					'select * from hims_f_daily_attendance  where hospital_id=? and year=? and month=? and employee_id=?;',
 				values: [ input.hospital_id, input.year, input.month, input.employee_id ],
-				printQuery: true
+				printQuery: false
 			})
 			.then((result) => {
 				_mysql.releaseConnection();
@@ -3926,7 +3757,7 @@ module.exports = {
 					query:
 						'update hims_f_attendance_monthly set shortage_hours= ?,ot_work_hours=? where hims_f_attendance_monthly_id=?',
 					values: [ input.shortage_hours, input.ot_work_hours, input.hims_f_attendance_monthly_id ],
-					printQuery: true
+					printQuery: false
 				})
 				.then((result) => {
 					_mysql.releaseConnection();
@@ -4003,7 +3834,7 @@ module.exports = {
               E.hospital_id=? " +
 							strDQuery,
 						values: inputDValue,
-						printQuery: true
+						printQuery: false
 					})
 					.then((time_sheet) => {
 						_mysql.releaseConnection();
@@ -4033,10 +3864,7 @@ module.exports = {
 					employee = ' and employee_id=' + input.employee_id;
 				}
 
-				utilities.logger().log('employee: ', employee);
-				// utilities.logger().log("TSEmployee: ", TSEmployee);
-				utilities.logger().log('from_date: ', from_date);
-				utilities.logger().log('to_date: ', to_date);
+			
 
 				_mysql
 					.executeQuery({
@@ -4052,7 +3880,7 @@ module.exports = {
                 select hims_d_holiday_id,holiday_date,holiday_description,weekoff,holiday,holiday_type,religion_id\
                 from hims_d_holiday  where hospital_id=? and date(holiday_date) between date('${from_date}') and date('${to_date}');    `,
 						values: [ input.branch_id, from_date, to_date, input.branch_id, input.branch_id ],
-						printQuery: true
+						printQuery: false
 					})
 					.then((result) => {
 						// _mysql.releaseConnection();
@@ -4153,7 +3981,7 @@ module.exports = {
 											)
 											.Select((s) => s.project_id)
 											.FirstOrDefault(null);
-										utilities.logger().log('projrct_on_Weekoff:', projrct_on_Weekoff);
+									
 
 										if (projrct_on_Weekoff != undefined) {
 											outputArray.push({
@@ -4191,8 +4019,7 @@ module.exports = {
 											)
 											.Select((s) => s.project_id)
 											.FirstOrDefault(null);
-										utilities.logger().log('projrct_on_holiday:', projrct_on_holiday);
-
+										
 										if (projrct_on_holiday != undefined) {
 											outputArray.push({
 												hospital_id: input.branch_id,
@@ -4326,7 +4153,7 @@ module.exports = {
               E.hospital_id=? " +
 							strDQuery,
 						values: inputDValue,
-						printQuery: true
+						printQuery: false
 					})
 					.then((time_sheet) => {
 						_mysql.releaseConnection();
@@ -4394,7 +4221,7 @@ module.exports = {
 							select hims_d_holiday_id,holiday_date,holiday_description,weekoff,holiday,holiday_type,religion_id\
 							from hims_d_holiday  where hospital_id=? and date(holiday_date) between date('${from_date}') and date('${to_date}');    `,
 									values: [ input.branch_id, from_date, to_date, input.branch_id, input.branch_id ],
-						printQuery: true
+						printQuery: false
 					})
 					.then((result) => {
 						_mysql.releaseConnection();
@@ -4465,7 +4292,7 @@ module.exports = {
 											)
 											.Select((s) => s.project_id)
 											.FirstOrDefault(null);
-										utilities.logger().log('projrct_on_Weekoff:', projrct_on_Weekoff);
+								
 
 										if (projrct_on_Weekoff != undefined) {
 											outputArray.push({
@@ -4503,7 +4330,7 @@ module.exports = {
 											)
 											.Select((s) => s.project_id)
 											.FirstOrDefault(null);
-										utilities.logger().log('projrct_on_holiday:', projrct_on_holiday);
+									
 
 										if (projrct_on_holiday != undefined) {
 											outputArray.push({
@@ -4552,7 +4379,7 @@ module.exports = {
 										})
 										.FirstOrDefault(null);
 
-									//  utilities.logger().log("roster_data:", roster_data);
+								
 
 									if (roster_data != undefined) {
 										outputArray.push(roster_data);
@@ -4675,7 +4502,7 @@ module.exports = {
 							from hims_f_daily_time_sheet TS inner join hims_d_employee E on TS.employee_id=E.hims_d_employee_id\
 							where TS.hospital_id=? and year=? and month=? and  employee_id=? and attendance_date between date(?) and date(?);`,
 									values: [ input.hospital_id, year, month, input.hims_d_employee_id, from_date, to_date ],
-									printQuery: true
+									printQuery: false
 								})
 								.then((AttenResult) => {
 									//present month
@@ -4697,9 +4524,7 @@ module.exports = {
 												let total_minutes =
 													parseInt(AttenResult[i]['actual_hours'] * 60) +
 													parseInt(AttenResult[i]['actual_minutes']);
-												// utilities.logger().log("actual_hours: ", AttenResult[i]["actual_hours"]);
-												// utilities.logger().log("actual_minutes: ", AttenResult[i]["actual_minutes"]);
-												// utilities.logger().log("total_minutes: ", total_minutes);
+										
 
 												let worked_minutes =
 													parseInt(AttenResult[i]['hours'] * 60) + parseInt(AttenResult[i]['minutes']);
@@ -4716,11 +4541,7 @@ module.exports = {
 													ot_min = parseInt(Math.abs(diff)) % parseInt(60);
 												}
 
-												// utilities.logger().log("worked_minutes: ", worked_minutes);
-												// utilities.logger().log("diff: ", diff);
-												// utilities.logger().log("ot_time: ", ot_time);
-												// utilities.logger().log("shortage_time: ", shortage_time);
-												// utilities.logger().log("================: ");
+											
 											}
 
 											if (AttenResult[i]['status'] == 'WO') {
@@ -4835,7 +4656,7 @@ module.exports = {
 												includeValues: insurtColumns,
 												values: dailyAttendance,
 												bulkInsertOrUpdate: true,
-												printQuery: true
+												printQuery: false
 											})
 											.then((insertResult) => {
 												// _mysql.releaseConnection();
@@ -4876,7 +4697,7 @@ module.exports = {
 															from_date,
 															to_date
 														],
-														printQuery: true
+														printQuery: false
 													})
 													.then((results) => {
 														let DilayResult = results[0];
@@ -4964,7 +4785,7 @@ module.exports = {
 																			' INSERT IGNORE INTO hims_f_project_wise_payroll(??) VALUES ? ',
 																		values: projectWisePayroll,
 																		includeValues: insertCol,
-																		printQuery: true,
+																		printQuery: false,
 
 																		bulkInsertOrUpdate: true
 																	})
@@ -5010,7 +4831,7 @@ module.exports = {
 									}
 								})
 								.catch((e) => {
-									utilities.logger().log('eee: ', e);
+								
 									_mysql.releaseConnection();
 									next(e);
 								});
@@ -5060,8 +4881,6 @@ module.exports = {
 				input.to_date != undefined
 			) {
 
-
-
 				_mysql
 				.executeQuery({
 				  query:
@@ -5110,15 +4929,16 @@ module.exports = {
 									expected_out_date, expected_out_time ,TS.hospital_id,hims_d_employee_id,employee_code,full_name as employee_name,\
 									P.project_code,P.project_desc from  hims_f_daily_time_sheet TS \
 									inner join hims_d_employee E on TS.employee_id=E.hims_d_employee_id\
-									left join hims_f_project_roster PR on TS.employee_id=PR.employee_id and TS.hospital_id=PR.hospital_id  and TS.attendance_date=PR.attendance_date
-									left join hims_d_project P on PR.project_id=P.hims_d_project_id
+									left join hims_f_project_roster PR on TS.employee_id=PR.employee_id and TS.hospital_id=PR.hospital_id  and TS.attendance_date=PR.attendance_date\
+									left join hims_d_project P on PR.project_id=P.hims_d_project_id\
 									where  TS.hospital_id=? and  TS.attendance_date between (?) and (?) and TS.employee_id =? order by attendance_date; `,
 								values: [ input.hospital_id, from_date, to_date, input.hims_d_employee_id ],
 								printQuery: true
 							})
-							.then((result) => {
+							.then(result => {
 								_mysql.releaseConnection();
 								req.records = result;
+
 								next();
 							})
 							.catch((e) => {
@@ -5260,7 +5080,7 @@ function insertTimeSheet(
 		} else {
 			let empHolidayweekoff = getEmployeeWeekOffsHolidays(from_date, to_date, biometricData[0], allHolidays);
 
-			utilities.logger().log('empHolidayweekoff: ', empHolidayweekoff);
+	
 			for (let i = 0; i < biometricData.length; i++) {
 				if (
 					biometricData[i]['biometric_id'] != null &&
@@ -5309,7 +5129,7 @@ function insertTimeSheet(
 						})
 						.ToArray();
 
-					utilities.logger().log('holidayweekoff: ', holidayweekoff);
+			
 					if (leave.length > 0) {
 						//check leave
 
@@ -5337,7 +5157,7 @@ function insertTimeSheet(
 							actual_minutes: 0
 						});
 					} else {
-						utilities.logger().log('DOG: ', 'DOG');
+					
 						//else mark absent
 						insertArray.push({
 							...biometricData[i],
@@ -5350,7 +5170,7 @@ function insertTimeSheet(
 			}
 		}
 
-		// utilities.logger().log("insertArray-66: ", insertArray);
+	
 
 		// let month = moment(from_date).format("M");
 		// let year = moment(from_date).format("YYYY");
@@ -5393,7 +5213,7 @@ function insertTimeSheet(
 				_mysql
 					.executeQuery({
 						query: returnQry,
-						printQuery: true
+						printQuery: false
 					})
 					.then((result) => {
 						// _mysql.commitTransaction(() => {
@@ -5522,12 +5342,12 @@ function insertTimeSheet(
 				//------------------------------------------------
 			})
 			.catch((e) => {
-				utilities.logger().log('error: ', e);
+		
 				_mysql.rollBackTransaction(() => {
 					next(e);
 				});
 			});
 	} catch (e) {
-		utilities.logger().log('error rr: ', e);
+	
 	}
 }

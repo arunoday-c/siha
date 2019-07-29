@@ -797,7 +797,7 @@ let load_orders_for_bill = (req, res, next) => {
         .executeQuery({
           query:
             "SELECT  OS.`hims_f_ordered_services_id`, OS.`hims_f_ordered_services_id` as ordered_services_id,\
-             OS.`patient_id`, OS.`visit_id`,\
+             OS.`patient_id`, OS.`visit_id`,OS.`trans_package_detail_id`,\
           OS.`doctor_id`, OS.`service_type_id`, OS.`services_id`, OS.`test_type`, OS.`insurance_yesno`, \
           OS.`insurance_provider_id`, OS.`insurance_sub_id`, OS.`d_treatment_id`,\
           OS.`network_id`, OS.`insurance_network_office_id`, OS.`policy_number`, OS.`pre_approval`, OS.`apprv_status`, \
@@ -1488,12 +1488,12 @@ let getPatientPackage = (req, res, next) => {
               copay_amount, deductable_amount, deductable_percentage, tax_inclusive, patient_tax, company_tax,\
               total_tax, patient_resp,patient_payable,comapany_resp, company_payble, sec_company,\
               sec_deductable_percentage, sec_deductable_amount, sec_company_res,sec_company_tax, \
-              sec_company_paybale, sec_copay_percntage, sec_copay_amount, H.advance_amount, balance_amount,\ actual_amount, utilize_amount, closed,closed_type,closed_remarks, H.package_type,\
-              H.package_visit_type,PM.advance_amount as collect_advance,\
-              H.hospital_id, PM.package_name,P.full_name,P.patient_code \
-              from hims_f_package_header H, hims_d_package_header PM, hims_f_patient P \
-              where H.patient_id = P.hims_d_patient_id and PM.hims_d_package_header_id = H.package_id \
-              and closed='N' and  H.record_status='A' and H.hospital_id=?  ${str};
+              sec_company_paybale, sec_copay_percntage, sec_copay_amount, H.advance_amount, balance_amount,\ actual_utilize_amount, actual_amount, utilize_amount, closed,closed_type,closed_remarks,\
+              H.package_type,H.package_visit_type,PM.advance_amount as collect_advance, H.hospital_id,\
+              PM.package_name,P.full_name,P.patient_code, PM.cancellation_policy from hims_f_package_header H, \
+              hims_d_package_header PM, hims_f_patient P where H.patient_id = P.hims_d_patient_id \
+              and PM.hims_d_package_header_id = H.package_id and closed='N' and  H.record_status='A'\
+              and H.hospital_id=?  ${str};
               select D.*,0 as quantity, D.service_id as services_id from hims_f_package_header H  \
               inner join hims_f_package_detail D\
               on H.hims_f_package_header_id=D.package_header_id where H.closed='N' and  H.record_status='A'\

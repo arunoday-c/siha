@@ -130,7 +130,7 @@ module.exports = {
             }
             const month_name = moment(input.month, "MM").format("MMMM");
 
-            let strQuery =
+            let str_Query =
               "select hims_f_employee_monthly_leave_id, employee_id, year, leave_id,L.calculation_type, availed_till_date," +
               avail_till_date +
               "as avail_till_date," +
@@ -148,7 +148,7 @@ module.exports = {
               avail_till_date +
               " <=to_value )\
                     and  employee_id in (?) and year=? union all	";
-            strQuery +=
+            str_Query +=
               "select hims_f_employee_monthly_leave_id, employee_id, year, leave_id,L.calculation_type, availed_till_date," +
               avail_till_date +
               "as avail_till_date," +
@@ -201,7 +201,7 @@ module.exports = {
               delete from hims_f_salary_deductions where salary_header_id in (?);\
               delete from hims_f_salary_earnings where salary_header_id in (?);\
               delete from hims_f_salary where hims_f_salary_id in (?);" +
-                  strQuery,
+                  str_Query,
                 values: [
                   _myemp,
                   _myemp,

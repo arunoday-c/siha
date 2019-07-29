@@ -17,7 +17,7 @@ module.exports = {
  exit_permit_required,  proportionate_leave, document_mandatory, carry_forward_percentage,\
   leave_status, religion_id , religion_required \
   from hims_d_leave where record_status='A' and leave_status='A'",
-            printQuery: true
+            printQuery: false
           })
           .then(result => {
             _mysql.releaseConnection();
@@ -73,7 +73,7 @@ module.exports = {
                left join hims_d_sub_department DEP on E.sub_department_id=DEP.hims_d_sub_department_id and DEP.record_status='A'\
            where E.record_status='A'  and E.hims_d_employee_id=?",
             values: [req.userIdentity.employee_id],
-            printQuery: true
+            printQuery: false
           })
           .then(result => {
             _mysql.releaseConnection();
@@ -110,7 +110,7 @@ module.exports = {
             left join hims_d_identity_document ID on ED.dependent_identity_type=ID.hims_d_identity_document_id \
             and ID.record_status='A' where E.record_status='A' and E.hims_d_employee_id=?",
             values: [req.userIdentity.employee_id],
-            printQuery: true
+            printQuery: false
           })
           .then(result => {
             _mysql.releaseConnection();
@@ -147,7 +147,7 @@ module.exports = {
             left join hims_d_identity_document ID on EI.identity_documents_id=ID.hims_d_identity_document_id \
             and  ID.record_status='A' where  E.record_status='A' and E.hims_d_employee_id=?",
             values: [req.userIdentity.employee_id],
-            printQuery: true
+            printQuery: false
           })
           .then(result => {
             _mysql.releaseConnection();
@@ -191,7 +191,7 @@ module.exports = {
           input.updated_by,
           input.hims_d_employee_identification_id
         ],
-        printQuery: true
+        printQuery: false
       })
       .then(result => {
         _mysql.releaseConnection();
@@ -222,7 +222,7 @@ module.exports = {
           input.updated_by,
           input.hims_d_employee_dependents_id
         ],
-        printQuery: true
+        printQuery: false
       })
       .then(result => {
         _mysql.releaseConnection();
@@ -260,7 +260,7 @@ module.exports = {
           input.updated_by,
           input.hims_d_employee_id
         ],
-        printQuery: true
+        printQuery: false
       })
       .then(result => {
         _mysql.releaseConnection();
@@ -294,7 +294,7 @@ module.exports = {
           new Date(),
           input.updated_by
         ],
-        printQuery: true
+        printQuery: false
       })
       .then(result => {
         _mysql.releaseConnection();
@@ -327,7 +327,7 @@ module.exports = {
           from hims_f_employee_advance where record_status='A' " +
             _stringData,
           values: inputValues,
-          printQuery: true
+          printQuery: false
         })
         .then(result => {
           _mysql.releaseConnection();
@@ -378,7 +378,7 @@ module.exports = {
               new Date(),
               req.userIdentity.algaeh_d_app_user_id
             ],
-            printQuery: true
+            printQuery: false
           })
           .then(employee_advance => {
             _mysql.commitTransaction(() => {
@@ -424,7 +424,7 @@ module.exports = {
           new Date(),
           input.updated_by
         ],
-        printQuery: true
+        printQuery: false
       })
       .then(result => {
         _mysql.releaseConnection();
@@ -462,7 +462,7 @@ module.exports = {
   //               new Date(),
   //               input.updated_by
   //             ],
-  //             printQuery: true
+  //             printQuery: false
   //           })
   //           .then(result => {
   //             _mysql.releaseConnection();

@@ -7,6 +7,7 @@ import "./NewPackage.css";
 import "./../../../styles/site.css";
 import {
   AlgaehLabel,
+  AlgaehDateHandler,
   AlagehFormGroup,
   AlagehAutoComplete,
   AlgaehDataGrid,
@@ -43,8 +44,14 @@ class NewPackage extends PureComponent {
       advance_amount: 0,
       advance_type: "P",
       qty: 1,
-      approveEnable: true
+      approveEnable: true,
+      approvedPack: false,
+      radioActive: true,
+      radioInactive: false,
+      package_status: "A",
+      cancellation_policy: "AC"
     };
+    this.baseState = this.state;
   }
 
   componentDidMount() {
@@ -70,49 +77,30 @@ class NewPackage extends PureComponent {
   }
 
   componentWillReceiveProps(newProps) {
-    debugger;
     if (newProps.from !== undefined && newProps.from === "doctor") {
       this.setState({ from: newProps.from, package_type: "D" });
     } else {
       if (newProps.PackagesPop.hims_d_package_header_id !== undefined) {
-        debugger;
         let IOputs = newProps.PackagesPop;
-        IOputs.approvedPack = IOputs.approved === "Y" ? true : false;
+        IOputs.approvedPack =
+          IOputs.approved === "Y"
+            ? true
+            : IOputs.package_status === "I"
+            ? true
+            : false;
         IOputs.approveEnable = false;
+        IOputs.radioActive = IOputs.package_status === "A" ? true : false;
+        IOputs.radioInactive = IOputs.package_status === "I" ? true : false;
+
         this.setState({ ...this.state, ...IOputs });
       }
     }
   }
 
   onClose = e => {
-    this.setState(
-      {
-        hims_d_package_header_id: null,
-        package_code: null,
-        package_name: null,
-        package_amount: 0,
-        total_service_amount: 0,
-        profit_loss: null,
-        pl_amount: 0,
-
-        package_type: "S",
-        package_visit_type: "S",
-        advance_percentage: 0,
-        advance_amount: 0,
-        advance_type: "P",
-        qty: 1,
-
-        PakageDetail: [],
-        deletePackage: [],
-        insertPackage: [],
-        s_service_amount: null,
-        s_service_type: null,
-        s_service: null
-      },
-      () => {
-        this.props.onClose && this.props.onClose(false);
-      }
-    );
+    this.setState(this.baseState, () => {
+      this.props.onClose && this.props.onClose(false);
+    });
   };
 
   eventHandaler(e) {
@@ -154,6 +142,21 @@ class NewPackage extends PureComponent {
   ApprovePackages(e) {
     NewPackageEvent().ApprovePackages(this, e);
   }
+  radioChange(e) {
+    NewPackageEvent().radioChange(this, e);
+  }
+
+  datehandle(ctrl, e) {
+    NewPackageEvent().datehandle(this, ctrl, e);
+  }
+
+  dateValidate(value, event) {
+    NewPackageEvent().dateValidate(this, value, event);
+  }
+
+  CopyCreatePackage() {
+    NewPackageEvent().CopyCreatePackage(this);
+  }
   render() {
     return (
       <React.Fragment>
@@ -181,7 +184,7 @@ class NewPackage extends PureComponent {
                   <div className="" data-validate="packagedata">
                     <div className="row">
                       <AlagehFormGroup
-                        div={{ className: "col form-group" }}
+                        div={{ className: "col-2 form-group" }}
                         label={{
                           fieldName: "package_code",
                           isImp: true
@@ -219,7 +222,7 @@ class NewPackage extends PureComponent {
                       />
 
                       <AlagehFormGroup
-                        div={{ className: "col form-group" }}
+                        div={{ className: "col-2 form-group" }}
                         label={{
                           fieldName: "package_amount",
                           isImp: true
@@ -258,84 +261,168 @@ class NewPackage extends PureComponent {
                         <h6>
                           {getAmountFormart(this.state.pl_amount)}
                           {this.state.profit_loss === null ? (
-                            "------"
+                            " "
                           ) : this.state.profit_loss === "P" ? (
-                            <span className="badge badge-success">Profit</span>
+                            <span className="badge badge-success"> Profit</span>
                           ) : (
-                            <span className="badge badge-danger">Loss</span>
+                            <span className="badge badge-danger"> Loss</span>
                           )}
                         </h6>
                       </div>
                     </div>
                     <div className="row">
                       {this.state.from !== "doctor" ? (
-                        <div className="col-3 customRadio form-group">
-                          <label className="radio inline">
-                            <input
-                              type="radio"
-                              name="package_type"
-                              value="S"
-                              checked={
-                                this.state.package_type === "S" ? true : false
-                              }
-                              onChange={this.texthandle.bind(this)}
-                              disabled={this.state.approvedPack}
-                            />
-                            <span>Static</span>
-                          </label>
+                        <div className="col-5">
+                          <div className="row">
+                            <div className="col">
+                              <label>Package Type</label>
 
-                          <label className="radio inline">
-                            <input
-                              type="radio"
-                              name="package_type"
-                              value="D"
-                              checked={
-                                this.state.package_type === "D" ? true : false
-                              }
-                              onChange={this.texthandle.bind(this)}
-                              disabled={this.state.approvedPack}
+                              <div className="customRadio form-group">
+                                <label className="radio block">
+                                  <input
+                                    type="radio"
+                                    name="package_type"
+                                    value="S"
+                                    checked={
+                                      this.state.package_type === "S"
+                                        ? true
+                                        : false
+                                    }
+                                    onChange={this.texthandle.bind(this)}
+                                    disabled={this.state.approvedPack}
+                                  />
+                                  <span>Static</span>
+                                </label>
+
+                                <label className="radio block">
+                                  <input
+                                    type="radio"
+                                    name="package_type"
+                                    value="D"
+                                    checked={
+                                      this.state.package_type === "D"
+                                        ? true
+                                        : false
+                                    }
+                                    onChange={this.texthandle.bind(this)}
+                                    disabled={this.state.approvedPack}
+                                  />
+                                  <span>Dynamic</span>
+                                </label>
+                              </div>
+                            </div>
+
+                            <div className="col">
+                              <label>Package Status</label>
+                              <div className="customRadio form-group">
+                                <label className="radio block">
+                                  <input
+                                    type="radio"
+                                    value="Active"
+                                    checked={this.state.radioActive}
+                                    onChange={this.radioChange.bind(this)}
+                                  />
+                                  <span>Active</span>
+                                </label>
+                                <label className="radio block">
+                                  <input
+                                    type="radio"
+                                    value="Inactive"
+                                    checked={this.state.radioInactive}
+                                    onChange={this.radioChange.bind(this)}
+                                  />
+                                  <span>Inactive</span>
+                                </label>
+                              </div>
+                            </div>
+                            <AlgaehDateHandler
+                              div={{ className: "col-5 form-group" }}
+                              label={{
+                                forceLabel: "Package Valid Upto"
+                              }}
+                              minDate={new Date()}
+                              textBox={{
+                                className: "txt-fld",
+                                name: "validated_date"
+                              }}
+                              events={{
+                                onChange: this.datehandle.bind(this),
+                                onBlur: this.dateValidate.bind(this)
+                              }}
+                              value={this.state.validated_date}
                             />
-                            <span>Dynamic</span>
-                          </label>
+                          </div>
                         </div>
                       ) : null}
-                      <div className="col-3 customRadio form-group">
-                        <label className="radio inline">
-                          <input
-                            type="radio"
-                            name="package_visit_type"
-                            value="S"
-                            checked={
-                              this.state.package_visit_type === "S"
-                                ? true
-                                : false
-                            }
-                            onChange={this.texthandle.bind(this)}
-                            disabled={this.state.approvedPack}
-                          />
-                          <span>Single Visit</span>
-                        </label>
+                      <div className="col-2">
+                        <label>Visit Type</label>
+                        <div className="customRadio form-group">
+                          <label className="radio block">
+                            <input
+                              type="radio"
+                              name="package_visit_type"
+                              value="S"
+                              checked={
+                                this.state.package_visit_type === "S"
+                                  ? true
+                                  : false
+                              }
+                              onChange={this.texthandle.bind(this)}
+                              disabled={this.state.approvedPack}
+                            />
+                            <span>Single Visit</span>
+                          </label>
 
-                        <label className="radio inline">
-                          <input
-                            type="radio"
-                            name="package_visit_type"
-                            value="M"
-                            checked={
-                              this.state.package_visit_type === "M"
-                                ? true
-                                : false
-                            }
-                            onChange={this.texthandle.bind(this)}
-                            disabled={this.state.approvedPack}
-                          />
-                          <span>Multi Visit</span>
-                        </label>
+                          <label className="radio block">
+                            <input
+                              type="radio"
+                              name="package_visit_type"
+                              value="M"
+                              checked={
+                                this.state.package_visit_type === "M"
+                                  ? true
+                                  : false
+                              }
+                              onChange={this.texthandle.bind(this)}
+                              disabled={this.state.approvedPack}
+                            />
+                            <span>Multi Visit</span>
+                          </label>
+                        </div>
                       </div>
 
                       {this.state.package_visit_type === "M" ? (
                         <div className="col">
                           <div className="row">
+                            <AlagehAutoComplete
+                              div={{ className: "col-3 form-group" }}
+                              label={{
+                                forceLabel: "Cancel Policy",
+                                isImp:
+                                  this.state.package_visit_type === "M"
+                                    ? true
+                                    : false
+                              }}
+                              selector={{
+                                name: "cancellation_policy",
+                                className: "select-fld",
+                                value: this.state.cancellation_policy,
+                                dataSource: {
+                                  textField: "name",
+                                  valueField: "value",
+                                  data: GlobalVariables.FORMAT_PACK_CAL_POLICY
+                                },
+                                onChange: this.texthandle.bind(this),
+                                onClear: () => {
+                                  this.setState({
+                                    cancellation_policy: null
+                                  });
+                                },
+                                others: {
+                                  disabled: this.state.approvedPack
+                                }
+                              }}
+                            />
                             <AlagehFormGroup
                               div={{ className: "col form-group" }}
                               label={{
@@ -360,9 +447,9 @@ class NewPackage extends PureComponent {
                             />
 
                             <AlagehAutoComplete
-                              div={{ className: "col form-group" }}
+                              div={{ className: "col-3 form-group" }}
                               label={{
-                                fieldName: "advance_type",
+                                forceLabel: "Adv. Type",
                                 isImp:
                                   this.state.package_visit_type === "M"
                                     ? true
@@ -393,6 +480,7 @@ class NewPackage extends PureComponent {
                               <AlagehFormGroup
                                 div={{ className: "col form-group" }}
                                 label={{
+                                  forceLabel: "Adv. Percent",
                                   isImp:
                                     this.state.package_visit_type === "M"
                                       ? true
@@ -417,7 +505,11 @@ class NewPackage extends PureComponent {
                               <AlagehFormGroup
                                 div={{ className: "col form-group" }}
                                 label={{
-                                  forceLabel: "Advance Amount"
+                                  forceLabel: "Adv. Amount",
+                                  isImp:
+                                    this.state.package_visit_type === "M"
+                                      ? true
+                                      : false
                                 }}
                                 textBox={{
                                   decimal: { allowNegative: false },
@@ -694,6 +786,23 @@ class NewPackage extends PureComponent {
                                   </span>
                                 );
                               }
+                            },
+                            {
+                              fieldName: "appropriate_amount",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Appropriate Amount" }}
+                                />
+                              ),
+                              displayTemplate: row => {
+                                return (
+                                  <span>
+                                    {getAmountFormart(row.appropriate_amount, {
+                                      appendSymbol: false
+                                    })}
+                                  </span>
+                                );
+                              }
                             }
                           ]}
                           keyId="packages_detail_grid"
@@ -720,7 +829,9 @@ class NewPackage extends PureComponent {
                         onClick={this.InsertPackages.bind(this)}
                         type="button"
                         className="btn btn-primary"
-                        disabled={this.state.approved === "Y" ? true : false}
+                        disabled={
+                          this.state.package_status === "I" ? true : false
+                        }
                       >
                         {this.state.hims_d_package_header_id === null ? (
                           <AlgaehLabel label={{ fieldName: "btnSave" }} />
@@ -751,6 +862,19 @@ class NewPackage extends PureComponent {
                         className="btn btn-default"
                       >
                         Cancel
+                      </button>
+
+                      <button
+                        onClick={this.CopyCreatePackage.bind(this)}
+                        type="button"
+                        className="btn btn-primary"
+                        disabled={
+                          this.state.hims_d_package_header_id === null
+                            ? true
+                            : false
+                        }
+                      >
+                        Copy & Create
                       </button>
                     </div>
                   </div>

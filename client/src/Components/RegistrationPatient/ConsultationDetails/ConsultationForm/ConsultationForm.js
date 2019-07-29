@@ -129,7 +129,7 @@ class AddConsultationForm extends Component {
   };
 
   render() {
-    debugger;
+    
     const vstDeatils =
       this.state.visitDetails === null ? [{}] : this.state.visitDetails;
     const doctors =

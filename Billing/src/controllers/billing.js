@@ -8,7 +8,8 @@ import {
   getPakageDetails,
   patientPackageAdvanceRefund,
   updatePatientPackage,
-  getEmployeeAndDepartments
+  getEmployeeAndDepartments,
+  closePackage
 } from "../models/billing";
 
 import algaehPath from "algaeh-module-bridge";
@@ -134,6 +135,13 @@ export default () => {
       });
     }
   );
+
+  api.put("/closePackage", closePackage, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
 
   return api;
 };

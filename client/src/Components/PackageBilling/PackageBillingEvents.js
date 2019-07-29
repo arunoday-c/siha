@@ -166,7 +166,7 @@ const selectVisit = $this => {
     },
     onSuccess: response => {
       if (response.data.success) {
-        debugger;
+        
         AlgaehLoader({ show: false });
 
         let data = response.data.records;

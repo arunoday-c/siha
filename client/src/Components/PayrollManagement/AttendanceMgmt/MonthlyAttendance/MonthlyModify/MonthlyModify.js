@@ -72,7 +72,7 @@ class MonthlyModify extends Component {
         <div className="popupInner">
           <div className="col-lg-12">
             <div className="row">
-              <div className="col-2">
+              <div className="col-2 form-group">
                 <AlgaehLabel
                   label={{
                     forceLabel: "Employee Code"
@@ -80,7 +80,7 @@ class MonthlyModify extends Component {
                 />
                 <h6>{this.state.employee_code}</h6>
               </div>{" "}
-              <div className="col-2">
+              <div className="col-2 form-group">
                 <AlgaehLabel
                   label={{
                     forceLabel: "Employee Name"
@@ -88,7 +88,7 @@ class MonthlyModify extends Component {
                 />
                 <h6>{this.state.employee_name}</h6>
               </div>{" "}
-              <div className="col-2">
+              <div className="col-2 form-group">
                 <AlgaehLabel
                   label={{
                     forceLabel: "Year"
@@ -96,19 +96,15 @@ class MonthlyModify extends Component {
                 />
                 <h6>{this.state.year}</h6>
               </div>{" "}
-              <div className="col-2">
+              <div className="col-2 form-group">
                 <AlgaehLabel
                   label={{
                     forceLabel: "Month"
                   }}
                 />
-                <h6>
-                  {moment(
-                    "01-" + this.state.month + "-" + this.state.year
-                  ).format("MMMM")}
-                </h6>
+                <h6>{moment(this.state.month, "M").format("MMMM")}</h6>
               </div>{" "}
-              <div className="col-2">
+              <div className="col-2 form-group">
                 <AlgaehLabel
                   label={{
                     forceLabel: "Total Days"
@@ -116,7 +112,7 @@ class MonthlyModify extends Component {
                 />
                 <h6>{this.state.total_days}</h6>
               </div>{" "}
-              <div className="col-2">
+              <div className="col-2 form-group">
                 <AlgaehLabel
                   label={{
                     forceLabel: "Total Days"
@@ -124,7 +120,7 @@ class MonthlyModify extends Component {
                 />
                 <h6>{this.state.total_days}</h6>
               </div>{" "}
-              <div className="col-2">
+              <div className="col-2 form-group">
                 <AlgaehLabel
                   label={{
                     forceLabel: "Present Days"
@@ -132,7 +128,7 @@ class MonthlyModify extends Component {
                 />
                 <h6>{this.state.present_days}</h6>
               </div>{" "}
-              <div className="col-2">
+              <div className="col-2 form-group">
                 <AlgaehLabel
                   label={{
                     forceLabel: "Absent Days"
@@ -140,7 +136,7 @@ class MonthlyModify extends Component {
                 />
                 <h6>{this.state.absent_days}</h6>
               </div>{" "}
-              <div className="col-2">
+              <div className="col-2 form-group">
                 <AlgaehLabel
                   label={{
                     forceLabel: "Total Work Days"
@@ -148,7 +144,7 @@ class MonthlyModify extends Component {
                 />
                 <h6>{this.state.total_work_days}</h6>
               </div>{" "}
-              <div className="col-2">
+              <div className="col-2 form-group">
                 <AlgaehLabel
                   label={{
                     forceLabel: "Total Weekoff Days"
@@ -156,7 +152,7 @@ class MonthlyModify extends Component {
                 />
                 <h6>{this.state.total_weekoff_days}</h6>
               </div>{" "}
-              <div className="col-2">
+              <div className="col-2 form-group">
                 <AlgaehLabel
                   label={{
                     forceLabel: "Total Holidays"
@@ -164,7 +160,7 @@ class MonthlyModify extends Component {
                 />
                 <h6>{this.state.total_holidays}</h6>
               </div>{" "}
-              <div className="col-2">
+              <div className="col-2 form-group">
                 <AlgaehLabel
                   label={{
                     forceLabel: "Total Leave(s)"
@@ -172,7 +168,7 @@ class MonthlyModify extends Component {
                 />
                 <h6>{this.state.total_leave}</h6>
               </div>{" "}
-              <div className="col-2">
+              <div className="col-2 form-group">
                 <AlgaehLabel
                   label={{
                     forceLabel: "Paid Leave(s)"
@@ -180,7 +176,7 @@ class MonthlyModify extends Component {
                 />
                 <h6>{this.state.paid_leave}</h6>
               </div>{" "}
-              <div className="col-2">
+              <div className="col-2 form-group">
                 <AlgaehLabel
                   label={{
                     forceLabel: "Unpaid Leave(s)"
@@ -188,7 +184,7 @@ class MonthlyModify extends Component {
                 />
                 <h6>{this.state.unpaid_leave}</h6>
               </div>{" "}
-              <div className="col-2">
+              <div className="col-2 form-group">
                 <AlgaehLabel
                   label={{
                     forceLabel: "Total Paid Days"
@@ -196,7 +192,7 @@ class MonthlyModify extends Component {
                 />
                 <h6>{this.state.total_paid_days}</h6>
               </div>{" "}
-              <div className="col-2">
+              <div className="col-2 form-group">
                 <AlgaehLabel
                   label={{
                     forceLabel: "Pending Unpaid Leave(s)"
@@ -204,7 +200,7 @@ class MonthlyModify extends Component {
                 />
                 <h6>{this.state.pending_unpaid_leave}</h6>
               </div>{" "}
-              <div className="col-2">
+              <div className="col-2 form-group">
                 <AlgaehLabel
                   label={{
                     forceLabel: "Total Hours"
@@ -212,7 +208,7 @@ class MonthlyModify extends Component {
                 />
                 <h6>{this.state.total_hours}</h6>
               </div>{" "}
-              <div className="col-2">
+              <div className="col-2 form-group">
                 <AlgaehLabel
                   label={{
                     forceLabel: "Total Working Hours"
@@ -220,7 +216,7 @@ class MonthlyModify extends Component {
                 />
                 <h6>{this.state.total_working_hours}</h6>
               </div>{" "}
-              <div className="col-2">
+              <div className="col-2 form-group">
                 <AlgaehLabel
                   label={{
                     forceLabel: "OT Weekoff Hours"
@@ -233,7 +229,7 @@ class MonthlyModify extends Component {
                 </h6>
               </div>{" "}
               <AlagehFormGroup
-                div={{ className: "col-2 form-group" }}
+                div={{ className: "col-2 form-group form-group" }}
                 label={{
                   forceLabel: "Shortage Hours",
                   isImp: true
@@ -252,7 +248,7 @@ class MonthlyModify extends Component {
                 }}
               />
               <AlagehFormGroup
-                div={{ className: "col-2 form-group" }}
+                div={{ className: "col-2 form-group form-group" }}
                 label={{
                   forceLabel: "OT Work Hours",
                   isImp: true
