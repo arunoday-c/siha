@@ -2,22 +2,12 @@
   .tabMaster {
     margin-bottom: 15px;
   }
-  // background: #f2f2f2;
   .business-section {
-    background: #fff;
-    border-radius: 5px;
-    border: 1px solid #d3d3d3;
-    background: #ffff;
-    padding-top: 10px;
-
     #departGrid_Cntr {
       .ReactTable {
         max-width: 98vw !important;
         max-height: 53vh !important;
       }
     }
-  }
-  .toggle-section {
-    //background-color: #f2f2f2;
   }
 }

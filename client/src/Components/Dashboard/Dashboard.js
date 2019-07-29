@@ -399,6 +399,7 @@ const CostPayerTypeDataOption = {
 
 class Dashboard extends Component {
   constructor(props) {
+    debugger;
     super(props);
     this.state = {
       sidBarOpen: true,
@@ -446,8 +447,6 @@ class Dashboard extends Component {
     // let margin = this.state.sidBarOpen ? "" : "";
     return (
       <div className="dashboard ">
-
-
         <div className="row card-deck">
           <div className="card animated fadeInUp faster">
             <div className="content">
@@ -495,9 +494,7 @@ class Dashboard extends Component {
                   Avg. Revenue per day-
                   <span>{getAmountFormart("4128.75")} </span>
                   <b onClick={this.showDetailHandler.bind(this)}>
-                    {this.state.showDetails === "d-block"
-                      ? "Hide"
-                      : "Show"}
+                    {this.state.showDetails === "d-block" ? "Hide" : "Show"}
                   </b>
                 </div>
               </div>

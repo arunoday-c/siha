@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "./business_setup.css";
 import "../../styles/site.css";
+import BranchMaster from "./BranchMaster/BranchMaster";
 import DeptMaster from "./DeptMaster/DeptMaster";
 import HolidayList from "./HolidayList/HolidayList";
 import Numbering from "./Numbering/Numbering";
@@ -28,7 +29,7 @@ class BusinessSetup extends Component {
       return f.module_code === "FTDSK";
     });
     this.state = {
-      pageDisplay: "DeptMaster",
+      pageDisplay: "BranchMaster",
       HIMS_Active: HIMS_Active.length > 0 ? true : false
     };
   }
@@ -52,8 +53,21 @@ class BusinessSetup extends Component {
           <div className="tabMaster toggle-section">
             <ul className="nav">
               <li
-                algaehtabs={"DeptMaster"}
+                algaehtabs={"BranchMaster"}
                 className={"nav-item tab-button active"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Branch"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                algaehtabs={"DeptMaster"}
+                className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
               >
                 {
@@ -195,7 +209,9 @@ class BusinessSetup extends Component {
           </div>
         </div>
         <div className="business-section">
-          {this.state.pageDisplay === "DeptMaster" ? (
+          {this.state.pageDisplay === "BranchMaster" ? (
+            <BranchMaster />
+          ) : this.state.pageDisplay === "DeptMaster" ? (
             <DeptMaster />
           ) : this.state.pageDisplay === "Holiday" ? (
             <HolidayList />
