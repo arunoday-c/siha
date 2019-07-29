@@ -161,6 +161,12 @@ class EmployeeMaster extends Component {
       IOputs.Applicable = IOputs.isdoctor === "Y" ? true : false;
       IOputs.samechecked = IOputs.same_address === "Y" ? true : false;
 
+      if (this.props.open === true && newProps.open === false) {
+        this.setState({
+          pageDisplay: "PersonalDetails"
+        });
+      }
+
       if (IOputs.present_country_id === null) {
         this.setState({
           personalDetails: { ...this.state.personalDetails, ...IOputs }
