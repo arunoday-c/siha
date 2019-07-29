@@ -73,7 +73,6 @@ class UtilizedPackageofVisit extends PureComponent {
   }
 
   DeleteOrderService(row, e) {
-    debugger;
     swal({
       title: "Are you sure you want to delete this Order?",
       type: "warning",
@@ -240,7 +239,7 @@ class UtilizedPackageofVisit extends PureComponent {
                                     f =>
                                       f.hims_d_services_id === row.services_id
                                   );
-                            debugger;
+
                             return (
                               <span>
                                 {display !== null && display.length !== 0

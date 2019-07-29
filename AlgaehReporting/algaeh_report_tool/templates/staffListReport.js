@@ -14,9 +14,7 @@ const executePDF = function executePDFMethod(options) {
         input[para["name"]] = para["value"];
       });
 
-      utilities.logger().log("input: ", input);
-
-      let outputArray = [];
+      //  utilities.logger().log("input: ", input);
 
       let strQuery = "";
 
@@ -34,6 +32,14 @@ const executePDF = function executePDFMethod(options) {
         case "T":
         case "E":
           strQuery += ` and E.employee_status='${input.employee_status}'`;
+          break;
+      }
+
+      switch (input.employee_type) {
+        case "PB":
+        case "PE":
+        case "CO":
+          strQuery += ` and E.employee_type='${input.employee_type}'`;
           break;
       }
 
@@ -70,7 +76,7 @@ const executePDF = function executePDFMethod(options) {
               .map(m => m)
               .value();
             //utilities.logger().log("departmentWise:", departmentWise);
-            let outputArray = [];
+            const outputArray = [];
 
             for (let i = 0; i < departmentWise.length; i++) {
               let dep_no_employee = 0;

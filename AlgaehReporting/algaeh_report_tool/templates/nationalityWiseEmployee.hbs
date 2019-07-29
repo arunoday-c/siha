@@ -6,10 +6,9 @@
         <section>
             <table class="tableForLabel" cell-padding="0">
                 <tr>
-                    <td><label class="textEnLft">Branch</label>:<span class="valueText">{{hospital_name}}</span><label
-                            class="textArRht">لشركة</label></td>
-                    <td><label class="textEnLft">No Employees</label>:<span
-                            class="valueText">{{no_employees}}</span><label class="textArRht">لشركة</label></td>
+                    <td><label class="textEnLft">Branch</label>:<span class="valueText">{{hospital_name}}</span></td>
+                    <td><label class="textEnLft">No Employees</label>:<span class="valueText">{{no_employees}}</span>
+                    </td>
                 </tr>
             </table>
 
@@ -28,7 +27,6 @@
                         <th>Sub Dept.</th>
                         <th>Designation</th>
                         <th>Date of Joining</th>
-                        <th>Nationality</th>
                         <th>Religion</th>
                         <th>Emp. Type</th>
                         <th>Emp. Status</th>
@@ -41,7 +39,9 @@
 
                     {{#each result}}
                     <tr>
-                        <td colspan="10" class="tableSubHdg">Nationality: {{nationality}}
+                        <td colspan="11" class="tableSubHdg">Nationality: {{nationality}}
+                            <span class="textFloatRight">No
+                                Employees: {{no_employee}}</span>
 
                         </td>
                     </tr>
@@ -55,7 +55,6 @@
                         <td>{{sub_department_name}}</td>
                         <td>{{designation}}</td>
                         <td>{{date_of_joining}}</td>
-                        <td>{{nationality}}</td>
                         <td>{{religion_name}}</td>
                         <td>{{employee_type}}</td>
                         <td>{{asemployee_status}}</td>
@@ -63,7 +62,7 @@
                     {{/each }}{{/each }}
                     {{else}}
                     <tr>
-                        <td colspan="10" class="noResultTextReport">No Records Found</td>
+                        <td colspan="11" class="noResultTextReport">No Records Found</td>
                     </tr>{{/hasElement }}
                 </tbody>
 

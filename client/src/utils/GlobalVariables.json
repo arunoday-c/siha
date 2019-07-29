@@ -583,7 +583,8 @@
   ],
   "EMPLOYEE_TYPE": [
     { "name": "Permanent", "value": "PE" },
-    { "name": "Contract", "value": "CO" }
+    { "name": "Contract", "value": "CO" },
+    { "name": "Probation", "value": "PB" }
   ],
   "EMP_APPT_TYPE": [
     { "name": "Agency", "value": "A" },
@@ -1628,9 +1629,13 @@
     { "name": "Delivery Completed", "value": "3" }
   ],
   "COMPARISON": [
-    { "name": ">", "value": "G" },
-    { "name": "=", "value": "E" },
-    { "name": "<", "value": "L" },
-    { "name": "BETWEEN", "value": "B" }
+    { "name": "Greater Than / Equal To", "value": "G" },
+    { "name": "Equal To", "value": "E" },
+    { "name": "Less Than / Equal To", "value": "L" }
+  ],
+  "DATE_OF_JOIN": [
+    { "name": "AFTER", "value": "A" },
+    { "name": "IN", "value": "I" },
+    { "name": "BEFORE", "value": "B" }
   ]
 }

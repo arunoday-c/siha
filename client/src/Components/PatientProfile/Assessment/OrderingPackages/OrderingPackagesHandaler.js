@@ -54,7 +54,7 @@ const serviceTypeHandeler = ($this, e) => {
 };
 
 const serviceHandeler = ($this, e) => {
-  debugger;
+  
   // let date = new Date().setDate(
   //   new Date().getDate() + parseInt(e.expiry_days, 10)
   // );
@@ -117,7 +117,7 @@ const getPackageDetail = ($this, package_id) => {
 //Process and gets selectd service data with all calculation
 const ProcessService = $this => {
   // orderedList
-  debugger;
+  
 
   let SelectedService = Enumerable.from($this.props.pakageList)
     .where(
@@ -176,7 +176,7 @@ const ProcessService = $this => {
               data.billdetails[0].preapp_limit_exceed === "Y" &&
               $this.state.approval_limit_yesno === "N"
             ) {
-              debugger;
+              
 
               swal({
                 title: "Pre-Approval limit reached.",
@@ -396,7 +396,7 @@ const ProcessService = $this => {
               data.billdetails[0].advance_amount = 0;
               data.billdetails[0].balance_amount = 0;
               data.billdetails[0].utilize_amount = 0;
-              debugger;
+              
               getPackageDetail($this, data.billdetails[0].package_id)
                 .then(result => {
                   data.billdetails[0].package_detail = result;
@@ -514,7 +514,7 @@ const deleteServices = ($this, row, rowId) => {
         preserviceInput[k].approval_limit_yesno = "N";
       }
 
-      debugger;
+      
 
       algaehApiCall({
         uri: "/billing/getBillDetails",
@@ -583,7 +583,7 @@ const deleteServices = ($this, row, rowId) => {
 };
 //Save Order
 const SaveOrdersServices = ($this, e) => {
-  debugger;
+  
   algaehApiCall({
     uri: "/orderAndPreApproval/addPackage",
     data: $this.state.orderservicesdata,
@@ -643,7 +643,7 @@ const SaveOrdersServices = ($this, e) => {
 };
 
 const calculateAmount = ($this, row, e) => {
-  debugger;
+  
 
   let orderservicesdata = $this.state.orderservicesdata;
 
@@ -795,7 +795,7 @@ const EditGrid = ($this, cancelRow) => {
 };
 
 const makeZeroIngrid = ($this, row, e) => {
-  debugger;
+  
   if (e.target.value === "") {
     let orderservicesdata = $this.state.orderservicesdata;
     let _index = orderservicesdata.indexOf(row);
@@ -810,7 +810,7 @@ const makeZeroIngrid = ($this, row, e) => {
 };
 
 const ClosePackageMaster = ($this, e) => {
-  debugger;
+  
   if (e === false) {
     $this.setState({
       isOpen: !$this.state.isOpen

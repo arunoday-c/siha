@@ -52,7 +52,7 @@ const ClearData = ($this, e) => {
 
 const Validations = $this => {
   let isError = false;
-  debugger;
+  
 
   if ($this.state.card_amount > 0) {
     if ($this.state.card_number === null || $this.state.card_number === "") {
@@ -398,7 +398,7 @@ const getPatientDetails = $this => {
     },
     onSuccess: response => {
       if (response.data.success) {
-        debugger;
+        
         let data = response.data.records;
         let hospital_id = JSON.parse(
           AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))

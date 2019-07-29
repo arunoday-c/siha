@@ -18,10 +18,6 @@ import {
 import algaehPath from "algaeh-module-bridge";
 import { LINQ } from "node-linq";
 
-const { addInventoryLocation } = algaehPath(
-  "algaeh-inventory/src/models/inventory"
-);
-
 export default () => {
   let api = Router();
   const utlities = new algaehUtlities();
@@ -65,6 +61,10 @@ export default () => {
     "/add/subdepartment",
     (req, res, next) => {
       if (req.body.Inventory_Active == true) {
+        const { addInventoryLocation } = algaehPath(
+          "algaeh-inventory/src/models/inventory"
+        );
+
         addInventoryLocation(req, res, next);
       } else {
         next();

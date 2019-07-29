@@ -159,7 +159,7 @@ class AddAdvanceModal extends PureComponent {
       if (this.props.PackageAdvance === true) {
         package_id = this.props.inputsparameters.package_id;
       }
-      debugger;
+      
 
       this.setState(
         {
@@ -191,10 +191,10 @@ class AddAdvanceModal extends PureComponent {
       return;
     }
     if (!err) {
-      debugger;
+      
       this.GenerateReciept($this => {
         AlgaehLoader({ show: true });
-        debugger;
+        
         if ($this.props.PackageAdvance === true) {
           algaehApiCall({
             uri: "/billing/patientPackageAdvanceRefund",

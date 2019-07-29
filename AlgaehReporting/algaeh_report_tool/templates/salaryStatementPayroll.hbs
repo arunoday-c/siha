@@ -5,16 +5,11 @@
         <section>
             <table class="tableForLabel" cell-padding="0">
                 <tr>
-                    <td><label class="textEnLft">Branch</label>:<span class="valueText">{{hospital_name}}</span><label
-                            class="textArRht">لشركة</label></td>
+                    <td><label class="textEnLft">Branch</label>:<span class="valueText">{{hospital_name}}</span></td>
                     <td><label class="textEnLft">Department</label>:<span
-                            class="valueText">{{sub_department_name}}</span><label class="textArRht">القسم</label></td>
-                </tr>
-                <tr>
-                    <td><label class="textEnLft">year</label>:<span class="valueText">{{year}}</span><label
-                            class="textArRht">لشركة</label></td>
-                    <td><label class="textEnLft">month</label>:<span class="valueText">{{month}}</span><label
-                            class="textArRht">القسم</label></td>
+                            class="valueText">{{sub_department_name}}</span></td>
+                    <td><label class="textEnLft">year</label>:<span class="valueText">{{year}}</span></td>
+                    <td><label class="textEnLft">month</label>:<span class="valueText">{{month}}</span></td>
                 </tr>
             </table>
 
@@ -54,11 +49,8 @@
 
                     {{else}}
                     <tr>
-                        <td>no content</td>
-
-                    </tr>
-
-                    {{/hasElement }}
+                        <td colspan="8" class="noResultTextReport">No Records Found</td>
+                    </tr>{{/hasElement }}
 
 
 

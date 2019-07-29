@@ -27,7 +27,6 @@ class ConsumtionItemBatches extends PureComponent {
   }
 
   componentWillReceiveProps(newProps) {
-    debugger;
     let Location_name =
       this.props.inventorylocations !== undefined &&
       this.props.inventorylocations.length > 0
@@ -91,7 +90,6 @@ class ConsumtionItemBatches extends PureComponent {
   }
 
   UtilizeGetBatchData(e) {
-    debugger;
     let batch_wise_item = this.state.batch_wise_item;
     let selected_items = _.filter(batch_wise_item, f => {
       return parseFloat(f.select_qty) > 0 && f.select_qty !== null;

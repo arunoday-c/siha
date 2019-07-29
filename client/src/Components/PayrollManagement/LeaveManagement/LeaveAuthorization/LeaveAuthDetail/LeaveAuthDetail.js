@@ -173,8 +173,44 @@ class LeaveAuthDetail extends Component {
       >
         <div className="popupInner LeaveAuthPopup">
           <div className="popRightDiv">
-            <div className="row" style={{ marginTop: 15 }}>
-              <div className="col-12">
+            <div className="row">
+              <div className="col-12 margin-bottom-15">
+                <div className="row">
+                  <div className="col">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Employee Code"
+                      }}
+                    />
+                    <h6>{this.state.data.employee_code}</h6>
+                  </div>{" "}
+                  <div className="col">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Employee"
+                      }}
+                    />
+                    <h6>{this.state.data.employee_name}</h6>
+                  </div>{" "}
+                  <div className="col">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Designation"
+                      }}
+                    />
+                    <h6>{this.state.data.designation}</h6>
+                  </div>{" "}
+                  <div className="col">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Sub Department"
+                      }}
+                    />
+                    <h6>{this.state.data.sub_department_name}</h6>
+                  </div>{" "}
+                </div>
+              </div>
+              <div className="col-5">
                 <div className="portlet portlet-bordered margin-bottom-15">
                   <div className="portlet-title">
                     <div className="caption">
@@ -182,87 +218,18 @@ class LeaveAuthDetail extends Component {
                         Current Leave Application
                       </h3>
                     </div>
-                    <div className="actions" />
                   </div>
                   <div className="portlet-body">
                     <div className="row">
-                      <div className="col">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Employee"
-                          }}
-                        />
-                        <h6>{this.state.data.employee_name}</h6>
-                      </div>
-                      <div className="col">
+                      <div className="col-3">
                         <AlgaehLabel
                           label={{
                             forceLabel: "Leave Type"
                           }}
                         />
                         <h6>{this.state.data.leave_description}</h6>
-                      </div>
-                      <div className="col">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "From Date"
-                          }}
-                        />
-                        <h6>
-                          {moment(this.state.data.from_date).format(
-                            "DD-MM-YYYY"
-                          )}
-                        </h6>
-                      </div>
-                      <div className="col">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "From Session"
-                          }}
-                        />
-                        {/* <h6>First Half</h6> */}
-                        <h6>
-                          {this.state.data.from_leave_session === "FD"
-                            ? "Full Day"
-                            : this.state.data.from_leave_session === "FH"
-                            ? "First Half"
-                            : this.state.data.from_leave_session === "SH"
-                            ? "Second Half"
-                            : "------"}
-                        </h6>
-                      </div>
-
-                      <div className="col">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "To Date"
-                          }}
-                        />
-                        {/* <h6>DD/MM/YYYY</h6> */}
-                        <h6>
-                          {moment(this.state.data.to_date).format("DD-MM-YYYY")}
-                        </h6>
-                      </div>
-
-                      <div className="col">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "To Session"
-                          }}
-                        />
-                        {/* <h6>Second Half</h6> */}
-                        <h6>
-                          {this.state.data.to_leave_session === "FD"
-                            ? "Full Day"
-                            : this.state.data.to_leave_session === "FH"
-                            ? "First Half"
-                            : this.state.data.to_leave_session === "SH"
-                            ? "Second Half"
-                            : "------"}
-                        </h6>
-                      </div>
-
-                      <div className="col">
+                      </div>{" "}
+                      <div className="col-3">
                         <AlgaehLabel
                           label={{
                             forceLabel: "Total Period"
@@ -271,7 +238,53 @@ class LeaveAuthDetail extends Component {
                         {/* <h6>5</h6> */}
                         <h6>{this.state.data.total_applied_days}</h6>
                       </div>
-
+                      <div className="col-3">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Leave From Date"
+                          }}
+                        />
+                        <h6>
+                          {moment(this.state.data.from_date).format(
+                            "DD-MM-YYYY"
+                          )}
+                          <br />
+                          <small>
+                            ({" "}
+                            {this.state.data.from_leave_session === "FD"
+                              ? "Full Day"
+                              : this.state.data.from_leave_session === "FH"
+                              ? "First Half"
+                              : this.state.data.from_leave_session === "SH"
+                              ? "Second Half"
+                              : "------"}
+                            )
+                          </small>
+                        </h6>
+                      </div>
+                      <div className="col-3">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Leave To Date"
+                          }}
+                        />
+                        {/* <h6>DD/MM/YYYY</h6> */}
+                        <h6>
+                          {moment(this.state.data.to_date).format("DD-MM-YYYY")}
+                          <br />
+                          <small>
+                            (
+                            {this.state.data.to_leave_session === "FD"
+                              ? "Full Day"
+                              : this.state.data.to_leave_session === "FH"
+                              ? "First Half"
+                              : this.state.data.to_leave_session === "SH"
+                              ? "Second Half"
+                              : "------"}
+                            )
+                          </small>
+                        </h6>
+                      </div>
                       <div className="col-12">
                         <label>Remarks</label>
                         <textarea
@@ -281,38 +294,38 @@ class LeaveAuthDetail extends Component {
                           className="textArea"
                         />
                       </div>
+                      <div className="col-12 btnFooter">
+                        {this.props.type === undefined ? (
+                          <React.Fragment>
+                            <button
+                              onClick={this.authorizeLeave.bind(this, "A")}
+                              className="btn btn-primary"
+                            >
+                              Accept
+                            </button>
+                            <button
+                              onClick={this.authorizeLeave.bind(this, "R")}
+                              className="btn btn-danger"
+                            >
+                              Reject
+                            </button>
+                          </React.Fragment>
+                        ) : null}
+                        {this.props.type === "C" ? (
+                          <button
+                            onClick={this.cancelLeave.bind(this, "R")}
+                            className="btn btn-danger"
+                          >
+                            Cancel Leave
+                          </button>
+                        ) : null}
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="col-12 btnFooter">
-                {this.props.type === undefined ? (
-                  <React.Fragment>
-                    <button
-                      onClick={this.authorizeLeave.bind(this, "A")}
-                      className="btn btn-primary"
-                    >
-                      Accept
-                    </button>
-                    <button
-                      onClick={this.authorizeLeave.bind(this, "R")}
-                      className="btn btn-danger"
-                    >
-                      Reject
-                    </button>
-                  </React.Fragment>
-                ) : null}
-                {this.props.type === "C" ? (
-                  <button
-                    onClick={this.cancelLeave.bind(this, "R")}
-                    className="btn btn-danger"
-                  >
-                    Cancel Leave
-                  </button>
-                ) : null}
-              </div>
-              <div className="col-12">
+              <div className="col-7">
                 <div className="portlet portlet-bordered margin-bottom-15">
                   <div className="portlet-title">
                     <div className="caption">
@@ -320,7 +333,6 @@ class LeaveAuthDetail extends Component {
                         Previous Leave Application
                       </h3>
                     </div>
-                    <div className="actions" />
                   </div>
                   <div className="portlet-body">
                     <div className="row">

@@ -50,7 +50,6 @@ class PackageUtilize extends Component {
       nextProps.package_detail !== null &&
       nextProps.package_detail !== undefined
     ) {
-      debugger;
       nextProps.package_detail.consultation =
         nextProps.from === "frontDesk" ? true : false;
       nextProps.package_detail.consumtion_items = [];
@@ -101,8 +100,6 @@ class PackageUtilize extends Component {
     PackageUtilizeEvent().ShowBatchDetails(this, row);
   }
   CloseBatchDetails(e) {
-    debugger;
-
     if (e !== undefined && e.selected === true) {
       let consumtion_items = this.state.consumtion_items;
       let package_details = this.state.package_details;

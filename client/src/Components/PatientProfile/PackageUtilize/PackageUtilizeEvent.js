@@ -76,7 +76,6 @@ export default function PackageSetupEvent() {
           }
         }
       }
-      debugger;
 
       row[name] = value;
       package_details[_index] = row;
@@ -96,7 +95,6 @@ export default function PackageSetupEvent() {
       }
     },
     UtilizeService: ($this, e) => {
-      debugger;
       let InputObj = $this.state;
 
       if (InputObj.package_visit_type === "S" && InputObj.billed === "N") {
@@ -118,7 +116,6 @@ export default function PackageSetupEvent() {
       if (inventory_item.length > 0) {
         if (InputObj.consumtion_items.length > 0) {
           for (let k = 0; k < inventory_item.length; k++) {
-            debugger;
             const selected_item = _.filter(
               InputObj.consumtion_items,
               f => f.service_id === inventory_item[k].service_id
@@ -247,8 +244,6 @@ export default function PackageSetupEvent() {
               }
             });
           } else {
-            debugger;
-
             algaehApiCall({
               uri: "/billing/updatePatientPackage",
               module: "billing",
@@ -256,7 +251,6 @@ export default function PackageSetupEvent() {
               data: $this.state,
               onSuccess: response => {
                 if (response.data.success) {
-                  debugger;
                   if (InputObj.consumtion_items.length > 0) {
                     InputObj.transaction_type = "CS";
                     InputObj.location_id = $this.props.inventory_location_id;
@@ -334,7 +328,6 @@ export default function PackageSetupEvent() {
       });
     },
     ClosePackageScreen: ($this, e) => {
-      debugger;
       if (e === true) {
         $this.setState(
           { closePackage: !$this.state.closePackage, package_details: [] },
@@ -350,8 +343,6 @@ export default function PackageSetupEvent() {
     },
 
     ShowBatchDetails: ($this, row) => {
-      debugger;
-
       algaehApiCall({
         uri: "/inventory/getItemMaster",
         data: { service_id: row.service_id },
@@ -359,7 +350,6 @@ export default function PackageSetupEvent() {
         method: "GET",
         onSuccess: response => {
           if (response.data.success === true) {
-            debugger;
             let inputObj = {
               item_id: response.data.records[0].hims_d_inventory_item_master_id,
               inventory_location_id: $this.props.inventory_location_id

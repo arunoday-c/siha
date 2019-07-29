@@ -262,7 +262,7 @@ class Encounters extends Component {
   }
 
   generateReport(row, report_type) {
-    debugger;
+    
     let tab_name = report_type === "RAD" ? "Radiology Report" : "Lab Report";
     algaehApiCall({
       uri: "/report",

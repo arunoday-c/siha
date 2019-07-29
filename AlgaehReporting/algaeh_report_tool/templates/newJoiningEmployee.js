@@ -4,6 +4,7 @@ const executePDF = function executePDFMethod(options) {
   return new Promise(function(resolve, reject) {
     try {
       const _ = options.loadash;
+      const moment = options.moment;
 
       const utilities = new algaehUtilities();
       let input = {};
@@ -16,10 +17,9 @@ const executePDF = function executePDFMethod(options) {
 
       utilities.logger().log("input: ", input);
 
-      let outputArray = [];
-
       let strQuery = "";
 
+      let return_input = "";
       if (input.department_id > 0) {
         strQuery += ` and SD.department_id=${input.department_id}`;
       }
@@ -27,13 +27,51 @@ const executePDF = function executePDFMethod(options) {
         strQuery += ` and E.sub_department_id=${input.sub_department_id}`;
       }
 
-      switch (input.employee_status) {
+      let start_date = moment()
+        .startOf("month")
+        .format("YYYY-MM-DD");
+      let end_date = moment()
+        .endOf("month")
+        .format("YYYY-MM-DD");
+
+      if (input.year > 0 && input.month > 0) {
+        start_date = moment(input.year + "-" + input.month, "YYYY-M")
+          .startOf("month")
+          .format("YYYY-MM-DD");
+        end_date = moment(input.year + "-" + input.month, "YYYY-M")
+          .endOf("month")
+          .format("YYYY-MM-DD");
+      } else if (input.year > 0 && !input.month > 0) {
+        start_date = moment(input.year, "YYYY")
+          .startOf("year")
+          .format("YYYY-MM-DD");
+        end_date = moment(input.year, "YYYY")
+          .endOf("year")
+          .format("YYYY-MM-DD");
+      } else if (!input.year > 0 && input.month > 0) {
+        start_date = moment(input.month, "M")
+          .startOf("month")
+          .format("YYYY-MM-DD");
+
+        end_date = moment(input.month, "M")
+          .endOf("month")
+          .format("YYYY-MM-DD");
+      }
+
+      switch (input.date_of_join) {
         case "A":
-        case "I":
-        case "R":
-        case "T":
-        case "E":
-          strQuery += ` and E.employee_status='${input.employee_status}'`;
+          strQuery += ` and E.date_of_joining > date('${end_date}')`;
+          return_input = `  After ${end_date}`;
+          break;
+        case "B":
+          strQuery += ` and E.date_of_joining < date('${start_date}')`;
+          return_input = `  Before ${start_date}`;
+          break;
+
+        default:
+          strQuery += ` and E.date_of_joining  between date('${start_date}') and date('${end_date}')`;
+
+          return_input = `  Between ${start_date} and  ${end_date}`;
           break;
       }
 
@@ -55,7 +93,7 @@ const executePDF = function executePDFMethod(options) {
           left join hims_d_nationality N on E.nationality=N.hims_d_nationality_id
           left join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
           left join hims_d_department D on SD.department_id=D.hims_d_department_id
-          where E.hospital_id=? and E.record_status='A'  ${strQuery}; `,
+          where E.hospital_id=? and E.record_status='A'  ${strQuery} order by date_of_joining desc; `,
           values: [input.hospital_id, input.hospital_id],
           printQuery: true
         })
@@ -64,47 +102,12 @@ const executePDF = function executePDFMethod(options) {
           const hospital_name = res[0][0]["hospital_name"];
           const result = res[1];
 
-          if (result.length > 0) {
-            const departmentWise = _.chain(result)
-              .groupBy(g => g.hims_d_department_id)
-              .map(m => m)
-              .value();
-            //utilities.logger().log("departmentWise:", departmentWise);
-            let outputArray = [];
-
-            for (let i = 0; i < departmentWise.length; i++) {
-              let dep_no_employee = 0;
-              const sub_dept = _.chain(departmentWise[i])
-                .groupBy(g => g.sub_department_id)
-                .map(sub => {
-                  dep_no_employee += sub.length;
-                  return {
-                    sub_department_name: sub[0].sub_department_name,
-                    sub_no_employee: sub.length,
-                    employees: sub
-                  };
-                })
-                .value();
-
-              outputArray.push({
-                department_name: departmentWise[i][0]["department_name"],
-                dep_no_employee: dep_no_employee,
-                sub_dept: sub_dept
-              });
-            }
-
-            resolve({
-              hospital_name: hospital_name,
-              no_employees: result.length,
-              result: outputArray
-            });
-          } else {
-            resolve({
-              hospital_name: hospital_name,
-              no_employees: result.length,
-              result: result
-            });
-          }
+          resolve({
+            hospital_name: hospital_name,
+            return_input: return_input,
+            no_employees: result.length,
+            result: result
+          });
         })
         .catch(e => {
           console.log("e:", e);

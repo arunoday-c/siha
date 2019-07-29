@@ -35,7 +35,7 @@ const executePDF = function executePDFMethod(options) {
 			  SD.sub_department_code,SD.sub_department_name
 			  FROM hims_f_leave_application LA inner join  hims_d_leave L on LA.leave_id=L.hims_d_leave_id
 			  inner join hims_d_employee E  on LA.employee_id=E.hims_d_employee_id
-			  inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
+			  left join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
 			  where((from_date>= ? and from_date <= ?) or (to_date >= ? and to_date <= ?) or (from_date <= ? and to_date >= ?))	${str};`,
           values: [
             input.from_date,
@@ -61,7 +61,6 @@ const executePDF = function executePDFMethod(options) {
         })
         .catch(error => {
           options.mysql.releaseConnection();
-          
         });
 
       //const result = { detailList: options.result };

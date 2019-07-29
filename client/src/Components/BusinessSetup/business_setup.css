@@ -1,12 +1,6 @@
 .business_setup .tabMaster {
   margin-bottom: 15px; }
 
-.business_setup .business-section {
-  background: #fff;
-  border-radius: 5px;
-  border: 1px solid #d3d3d3;
-  background: #ffff;
-  padding-top: 10px; }
-  .business_setup .business-section #departGrid_Cntr .ReactTable {
-    max-width: 98vw !important;
-    max-height: 53vh !important; }
+.business_setup .business-section #departGrid_Cntr .ReactTable {
+  max-width: 98vw !important;
+  max-height: 53vh !important; }

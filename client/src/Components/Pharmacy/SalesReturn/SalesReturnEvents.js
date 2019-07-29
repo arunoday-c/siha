@@ -150,7 +150,7 @@ const GenerateReciept = ($this, callBack) => {
 };
 
 const SaveSalesReturn = $this => {
-  debugger;
+  
   const return_qty_zero = _.filter(
     $this.state.pharmacy_stock_detail,
     f => f.return_quantity === 0 || f.return_quantity === null

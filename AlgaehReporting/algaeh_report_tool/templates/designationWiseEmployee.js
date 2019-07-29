@@ -16,8 +16,6 @@ const executePDF = function executePDFMethod(options) {
 
       utilities.logger().log("input: ", input);
 
-      let outputArray = [];
-
       let strQuery = "";
 
       if (input.department_id > 0) {
@@ -26,15 +24,8 @@ const executePDF = function executePDFMethod(options) {
       if (input.sub_department_id > 0) {
         strQuery += ` and E.sub_department_id=${input.sub_department_id}`;
       }
-
-      switch (input.employee_status) {
-        case "A":
-        case "I":
-        case "R":
-        case "T":
-        case "E":
-          strQuery += ` and E.employee_status='${input.employee_status}'`;
-          break;
+      if (input.designation_id > 0) {
+        strQuery += ` and E.employee_designation_id=${input.designation_id}`;
       }
 
       options.mysql
@@ -48,7 +39,7 @@ const executePDF = function executePDFMethod(options) {
           E.sub_department_id, SD.sub_department_name,D.hims_d_department_id,D.department_name,
           case employee_type when  'PE' then  'PERMANENT' when  'CO' then  'CONTRACT'
           when  'PB' then  'PROBATION' when  'LC' then  'LOCUM'
-          when  'VC' then  'VISITING CONSULTANT'end as employee_type
+          when  'VC' then  'VISITING CONSULTANT'end as employee_type,hims_d_designation_id
           from hims_d_employee E left join hims_d_designation DG on
           E.employee_designation_id=DG.hims_d_designation_id
           left join hims_d_religion R on E.religion_id=R.hims_d_religion_id
@@ -65,38 +56,21 @@ const executePDF = function executePDFMethod(options) {
           const result = res[1];
 
           if (result.length > 0) {
-            const departmentWise = _.chain(result)
-              .groupBy(g => g.hims_d_department_id)
-              .map(m => m)
+            const desigWiseEmp = _.chain(result)
+              .groupBy(g => g.hims_d_designation_id)
+              .map(m => {
+                return {
+                  designation: m[0]["designation"],
+                  no_employee: m.length,
+                  employees: m
+                };
+              })
               .value();
-            //utilities.logger().log("departmentWise:", departmentWise);
-            let outputArray = [];
-
-            for (let i = 0; i < departmentWise.length; i++) {
-              let dep_no_employee = 0;
-              const sub_dept = _.chain(departmentWise[i])
-                .groupBy(g => g.sub_department_id)
-                .map(sub => {
-                  dep_no_employee += sub.length;
-                  return {
-                    sub_department_name: sub[0].sub_department_name,
-                    sub_no_employee: sub.length,
-                    employees: sub
-                  };
-                })
-                .value();
-
-              outputArray.push({
-                department_name: departmentWise[i][0]["department_name"],
-                dep_no_employee: dep_no_employee,
-                sub_dept: sub_dept
-              });
-            }
 
             resolve({
               hospital_name: hospital_name,
               no_employees: result.length,
-              result: outputArray
+              result: desigWiseEmp
             });
           } else {
             resolve({

@@ -7,7 +7,10 @@ import {
   FORMAT_PAYTYPE,
   EXPIRY_STATUS,
   EMPLOYEE_STATUS,
-  COMPARISON
+  COMPARISON,
+  EMP_FORMAT_GENDER,
+  DATE_OF_JOIN,
+  EMPLOYEE_TYPE
 } from "../../utils/GlobalVariables.json";
 import { getYears, AlgaehOpenContainer } from "../../utils/GlobalFunctions";
 import { algaehApiCall } from "../../utils/algaehApiCall";
@@ -609,6 +612,20 @@ const HR_Payroll_Reports = [
               valueField: "value",
               data: EMPLOYEE_STATUS
             }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "employee_type",
+            initialLoad: true,
+            isImp: false,
+            label: "Employee Type",
+            link: {},
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: EMPLOYEE_TYPE
+            }
           }
         ]
       },
@@ -793,15 +810,15 @@ const HR_Payroll_Reports = [
           {
             className: "col-2",
             type: "dropdown",
-            name: "employee_status",
+            name: "sex",
             initialLoad: true,
             isImp: false,
-            label: "Employee Status",
+            label: "Employee Gender",
             link: {},
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: EMPLOYEE_STATUS
+              data: EMP_FORMAT_GENDER
             }
           }
         ]
@@ -883,15 +900,109 @@ const HR_Payroll_Reports = [
           {
             className: "col-2",
             type: "dropdown",
-            name: "employee_status",
+            name: "nationality_id",
             initialLoad: true,
             isImp: false,
-            label: "Employee Status",
-            link: {},
+            label: "Select nationality",
+            link: {
+              uri: "/masters/get/nationality"
+            },
             dataSource: {
-              textField: "name",
-              valueField: "value",
-              data: EMPLOYEE_STATUS
+              textField: "nationality",
+              valueField: "hims_d_nationality_id",
+              data: undefined
+            }
+          }
+        ]
+      },
+      {
+        subitem: "Employee - Religion Wise",
+        reportName: "religionWiseEmployee",
+        requireIframe: true,
+        pageOrentation: "landscape",
+        reportParameters: [
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Select branch",
+            link: {
+              uri: "/organization/getOrganization"
+            },
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "department_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Select Department",
+            link: {
+              uri: "/department/get",
+              module: "masterSettings"
+            },
+            dataSource: {
+              textField: "department_name",
+              valueField: "hims_d_department_id",
+              data: undefined
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/department/get/subdepartment",
+                  module: "masterSettings",
+                  method: "GET",
+                  data: { department_id: currentEvent.value },
+
+                  onSuccess: result => {
+                    reportState.setState({
+                      sub_department_id_list: result.data.records
+                    });
+                  }
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  sub_department_id_list: []
+                });
+              }
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "sub_department_id",
+            isImp: false,
+            label: "Select Sub-Department",
+            dataSource: {
+              textField: "sub_department_name",
+              valueField: "hims_d_sub_department_id",
+              data: undefined
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "religion_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Select Religion",
+            link: {
+              uri: "/masters/get/relegion"
+            },
+            dataSource: {
+              textField: "religion_name",
+              valueField: "hims_d_religion_id",
+              data: undefined
             }
           }
         ]
@@ -973,15 +1084,18 @@ const HR_Payroll_Reports = [
           {
             className: "col-2",
             type: "dropdown",
-            name: "employee_status",
+            name: "designation_id",
             initialLoad: true,
             isImp: false,
-            label: "Employee Status",
-            link: {},
+            label: "Select designation",
+            link: {
+              uri: "/hrsettings/getDesignations",
+              module: "hrManagement"
+            },
             dataSource: {
-              textField: "name",
-              valueField: "value",
-              data: EMPLOYEE_STATUS
+              textField: "designation",
+              valueField: "hims_d_designation_id",
+              data: undefined
             }
           }
         ]
@@ -1063,22 +1177,829 @@ const HR_Payroll_Reports = [
           {
             className: "col-2",
             type: "dropdown",
-            name: "employee_status",
+            name: "date_of_join",
             initialLoad: true,
             isImp: false,
-            label: "Employee Status",
+            label: "Joined",
             link: {},
             dataSource: {
               textField: "name",
               valueField: "value",
-              data: EMPLOYEE_STATUS
+              data: DATE_OF_JOIN
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "year",
+            isImp: false,
+            initialLoad: true,
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: allYears
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            sort: "off",
+            name: "month",
+            isImp: false,
+            initialLoad: true,
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: MONTHS
+            },
+            others: {
+              sort: "off"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    name: "Payroll Reports",
+    submenu: [
+      {
+        subitem: "Leave Reports",
+        reportName: "leaveReportPayroll",
+        requireIframe: true,
+        reportParameters: [
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Select branch",
+            link: {
+              uri: "/organization/getOrganization"
+            },
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "department_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Select Department",
+            link: {
+              uri: "/department/get",
+              module: "masterSettings"
+            },
+            dataSource: {
+              textField: "department_name",
+              valueField: "hims_d_department_id",
+              data: undefined
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/department/get/subdepartment",
+                  module: "masterSettings",
+                  method: "GET",
+                  data: { department_id: currentEvent.value },
+
+                  onSuccess: result => {
+                    reportState.setState({
+                      sub_department_id_list: result.data.records
+                    });
+                  }
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  sub_department_id_list: []
+                });
+              }
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "sub_department_id",
+            isImp: false,
+            label: "Select Sub-Department",
+            dataSource: {
+              textField: "sub_department_name",
+              valueField: "hims_d_sub_department_id",
+              data: undefined
+            }
+          },
+          {
+            className: "col-2",
+            type: "date",
+            name: "from_date",
+            isImp: true
+          },
+          {
+            className: "col-2",
+            type: "date",
+            name: "to_date",
+            isImp: true
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "hims_d_leave_id",
+            initialLoad: true,
+            // isImp: true,
+            link: {
+              uri: "/selfService/getLeaveMaster",
+              module: "hrManagement"
+            },
+            dataSource: {
+              textField: "leave_description",
+              valueField: "hims_d_leave_id",
+              data: undefined
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "status",
+            initialLoad: true,
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: LEAVE_STATUS
+            },
+            events: {
+              onChange: (reportState, currentValue) => {}
             }
           }
         ]
       },
       {
-        subitem: "Employee - Probation Wise",
-        reportName: "probationEmployee",
+        subitem: "Salary Statement",
+        reportName: "salaryStatementPayroll",
+        requireIframe: true,
+        reportParameters: [
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Select branch",
+            link: {
+              uri: "/organization/getOrganization"
+            },
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "department_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Select Department",
+            link: {
+              uri: "/department/get",
+              module: "masterSettings"
+            },
+            dataSource: {
+              textField: "department_name",
+              valueField: "hims_d_department_id",
+              data: undefined
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/department/get/subdepartment",
+                  module: "masterSettings",
+                  method: "GET",
+                  data: { department_id: currentEvent.value },
+
+                  onSuccess: result => {
+                    reportState.setState({
+                      sub_department_id_list: result.data.records
+                    });
+                  }
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  sub_department_id_list: []
+                });
+              }
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "sub_department_id",
+            isImp: false,
+            label: "Select Sub-Department",
+            dataSource: {
+              textField: "sub_department_name",
+              valueField: "hims_d_sub_department_id",
+              data: undefined
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "year",
+            isImp: true,
+            initialLoad: true,
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: allYears
+            }
+            // events: {
+            //   onChange: (reportState, currentValue) => {}
+            // }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            sort: "off",
+            name: "month",
+            isImp: true,
+            initialLoad: true,
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: MONTHS
+            },
+            others: {
+              sort: "off"
+            }
+          }
+        ]
+      },
+      {
+        subitem: "Leave Accrual",
+        reportName: "leaveAccuralPayroll",
+        requireIframe: true,
+        pageSize: "A4",
+        pageOrentation: "landscape", //"portrait",
+        input: "sub_department_id=?",
+        reportParameters: [
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Select branch",
+            link: {
+              uri: "/organization/getOrganization"
+            },
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "department_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Select Department",
+            link: {
+              uri: "/department/get",
+              module: "masterSettings"
+            },
+            dataSource: {
+              textField: "department_name",
+              valueField: "hims_d_department_id",
+              data: undefined
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/department/get/subdepartment",
+                  module: "masterSettings",
+                  method: "GET",
+                  data: { department_id: currentEvent.value },
+
+                  onSuccess: result => {
+                    reportState.setState({
+                      sub_department_id_list: result.data.records
+                    });
+                  }
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  sub_department_id_list: []
+                });
+              }
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "sub_department_id",
+            isImp: false,
+            label: "Select Sub-Department",
+            dataSource: {
+              textField: "sub_department_name",
+              valueField: "hims_d_sub_department_id",
+              data: undefined
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "year",
+            isImp: true,
+            initialLoad: true,
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: allYears
+            }
+            // events: {
+            //   onChange: (reportState, currentValue) => {}
+            // }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            sort: "off",
+            name: "month",
+            isImp: true,
+            initialLoad: true,
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: MONTHS
+            },
+            others: {
+              sort: "off"
+            }
+          }
+        ]
+      },
+      {
+        subitem: "Gratuity Provision",
+        reportName: "gratuityProvisionStatementPayroll",
+        input: "sub_department_id=?",
+        requireIframe: true,
+
+        reportParameters: [
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Select branch",
+            link: {
+              uri: "/organization/getOrganization"
+            },
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "department_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Select Department",
+            link: {
+              uri: "/department/get",
+              module: "masterSettings"
+            },
+            dataSource: {
+              textField: "department_name",
+              valueField: "hims_d_department_id",
+              data: undefined
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/department/get/subdepartment",
+                  module: "masterSettings",
+                  method: "GET",
+                  data: { department_id: currentEvent.value },
+
+                  onSuccess: result => {
+                    reportState.setState({
+                      sub_department_id_list: result.data.records
+                    });
+                  }
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  sub_department_id_list: []
+                });
+              }
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "sub_department_id",
+            isImp: false,
+            label: "Select Sub-Department",
+            dataSource: {
+              textField: "sub_department_name",
+              valueField: "hims_d_sub_department_id",
+              data: undefined
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "year",
+            isImp: true,
+            initialLoad: true,
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: allYears
+            }
+            // events: {
+            //   onChange: (reportState, currentValue) => {}
+            // }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            sort: "off",
+            name: "month",
+            isImp: true,
+            initialLoad: true,
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: MONTHS
+            },
+            others: {
+              sort: "off"
+            }
+          }
+        ]
+      },
+      // {
+      //   subitem: "Absent Report",
+      //   reportName: "absentReportPayroll",
+      //   requireIframe: true,
+      //   pageSize: "A4",
+      //   pageOrentation: "landscape", //"portrait",
+      //   reportParameters: [
+      //     {
+      //       className: "col-2",
+      //       type: "dropdown",
+      //       name: "hospital_id",
+      //       initialLoad: true,
+      //       isImp: true,
+      //       label: "Select branch",
+      //       link: {
+      //         uri: "/organization/getOrganization"
+      //       },
+      //       dataSource: {
+      //         textField: "hospital_name",
+      //         valueField: "hims_d_hospital_id",
+      //         data: undefined
+      //       }
+      //     },
+      //     {
+      //       className: "col-2",
+      //       type: "dropdown",
+      //       name: "department_id",
+      //       initialLoad: true,
+      //       isImp: false,
+      //       label: "Select Department",
+      //       link: {
+      //         uri: "/department/get",
+      //         module: "masterSettings"
+      //       },
+      //       dataSource: {
+      //         textField: "department_name",
+      //         valueField: "hims_d_department_id",
+      //         data: undefined
+      //       },
+      //       events: {
+      //         onChange: (reportState, currentEvent) => {
+      //           //provider_id_list CONTROL NAME AND APPEND BY _LIST
+      //           algaehApiCall({
+      //             uri: "/department/get/subdepartment",
+      //             module: "masterSettings",
+      //             method: "GET",
+      //             data: { department_id: currentEvent.value },
+
+      //             onSuccess: result => {
+      //               reportState.setState({
+      //                 sub_department_id_list: result.data.records
+      //               });
+      //             }
+      //           });
+      //         },
+      //         onClear: (reportState, currentName) => {
+      //           reportState.setState({
+      //             [currentName]: undefined,
+      //             sub_department_id_list: []
+      //           });
+      //         }
+      //       }
+      //     },
+      //     {
+      //       className: "col-2",
+      //       type: "dropdown",
+      //       name: "sub_department_id",
+      //       isImp: false,
+      //       label: "Select Sub-Department",
+      //       dataSource: {
+      //         textField: "sub_department_name",
+      //         valueField: "hims_d_sub_department_id",
+      //         data: undefined
+      //       }
+      //     },
+      //     {
+      //       className: "col-2",
+      //       type: "date",
+      //       name: "from_date",
+      //       isImp: true,
+      //       others: {
+      //         maxDate: new Date(),
+      //         minDate: null
+      //       }
+      //     },
+      //     {
+      //       className: "col-2",
+      //       type: "date",
+      //       name: "to_date",
+      //       isImp: true,
+      //       others: {
+      //         maxDate: new Date(),
+      //         minDate: null
+      //       }
+      //     }
+      //   ]
+      // },
+      {
+        subitem: "Employee Loan report",
+        reportName: "EmployeeLoanReport",
+        requireIframe: true,
+        pageSize: "A4",
+        pageOrentation: "landscape", //"portrait",
+        reportParameters: [
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Select branch",
+            link: {
+              uri: "/organization/getOrganization"
+            },
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "department_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Select Department",
+            link: {
+              uri: "/department/get",
+              module: "masterSettings"
+            },
+            dataSource: {
+              textField: "department_name",
+              valueField: "hims_d_department_id",
+              data: undefined
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/department/get/subdepartment",
+                  module: "masterSettings",
+                  method: "GET",
+                  data: { department_id: currentEvent.value },
+
+                  onSuccess: result => {
+                    reportState.setState({
+                      sub_department_id_list: result.data.records
+                    });
+                  }
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  sub_department_id_list: []
+                });
+              }
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "sub_department_id",
+            isImp: false,
+            label: "Select Sub-Department",
+            dataSource: {
+              textField: "sub_department_name",
+              valueField: "hims_d_sub_department_id",
+              data: undefined
+            }
+          },
+          {
+            className: "col-2",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            className: "col-2",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          }
+        ]
+        //reportParameters: () => <General ui="asset_warty_exp_rep" />
+      },
+      {
+        subitem: "Salary Statement Detail",
+        reportName: "salaryStatementDetailsPayroll",
+        requireIframe: true,
+        pageSize: "A3",
+        pageOrentation: "landscape", //"portrait",
+        reportParameters: [
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Select branch",
+            link: {
+              uri: "/organization/getOrganization"
+            },
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "department_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Select Department",
+            link: {
+              uri: "/department/get",
+              module: "masterSettings"
+            },
+            dataSource: {
+              textField: "department_name",
+              valueField: "hims_d_department_id",
+              data: undefined
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/department/get/subdepartment",
+                  module: "masterSettings",
+                  method: "GET",
+                  data: { department_id: currentEvent.value },
+
+                  onSuccess: result => {
+                    reportState.setState({
+                      sub_department_id_list: result.data.records
+                    });
+                  }
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  sub_department_id_list: []
+                });
+              }
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "sub_department_id",
+            isImp: false,
+            label: "Select Sub-Department",
+            dataSource: {
+              textField: "sub_department_name",
+              valueField: "hims_d_sub_department_id",
+              data: undefined
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "employee_group_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Select Employee Group",
+            link: {
+              uri: "/hrsettings/getEmployeeGroups",
+              module: "hrManagement"
+            },
+            dataSource: {
+              textField: "group_description",
+              valueField: "hims_d_employee_group_id"
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "year",
+            isImp: true,
+            initialLoad: true,
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: allYears
+            }
+            // events: {
+            //   onChange: (reportState, currentValue) => {}
+            // }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            sort: "off",
+            name: "month",
+            isImp: true,
+            initialLoad: true,
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: MONTHS
+            },
+            others: {
+              sort: "off"
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "is_local",
+            initialLoad: true,
+            // isImp: true,
+            label: "Select Type",
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: LOCAL_TYPE
+            }
+          }
+        ]
+        //reportParameters: () => <General ui="asset_warty_exp_rep" />
+      },
+      {
+        subitem: "Attendance Reports",
+        reportName: "attendanceReports",
+
         requireIframe: true,
         pageOrentation: "landscape",
         reportParameters: [
@@ -1153,411 +2074,8 @@ const HR_Payroll_Reports = [
           {
             className: "col-2",
             type: "dropdown",
-            name: "employee_status",
-            initialLoad: true,
-            isImp: false,
-            label: "Employee Status",
-            link: {},
-            dataSource: {
-              textField: "name",
-              valueField: "value",
-              data: EMPLOYEE_STATUS
-            }
-          }
-        ]
-      }
-    ]
-  },
-  {
-    name: "Payroll Reports",
-    submenu: [
-      {
-        subitem: "Leave Reports",
-        reportName: "leaveReportPayroll",
-        requireIframe: true,
-        reportParameters: [
-          {
-            className: "col-2",
-            type: "date",
-            name: "from_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
-            }
-          },
-          {
-            className: "col-2",
-            type: "date",
-            name: "to_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
-            }
-          },
-          {
-            className: "col-2",
-            type: "dropdown",
-            name: "hims_d_leave_id",
-            initialLoad: true,
-            isImp: true,
-            link: {
-              uri: "/selfService/getLeaveMaster",
-              module: "hrManagement"
-            },
-            dataSource: {
-              textField: "leave_description",
-              valueField: "hims_d_leave_id",
-              data: undefined
-            }
-          },
-          {
-            className: "col-2",
-            type: "dropdown",
-            name: "status",
-            initialLoad: true,
-            dataSource: {
-              textField: "name",
-              valueField: "value",
-              data: LEAVE_STATUS
-            },
-            events: {
-              onChange: (reportState, currentValue) => {}
-            }
-          }
-        ]
-      },
-      {
-        subitem: "Salary Statement",
-        reportName: "salaryStatementPayroll",
-        requireIframe: true,
-        reportParameters: [
-          {
-            className: "col-2",
-            type: "dropdown",
-            name: "year",
-            isImp: true,
-            initialLoad: true,
-            dataSource: {
-              textField: "name",
-              valueField: "value",
-              data: allYears
-            }
-            // events: {
-            //   onChange: (reportState, currentValue) => {}
-            // }
-          },
-          {
-            className: "col-2",
-            type: "dropdown",
-            sort: "off",
-            name: "month",
-            isImp: true,
-            initialLoad: true,
-            dataSource: {
-              textField: "name",
-              valueField: "value",
-              data: MONTHS
-            },
-            others: {
-              sort: "off"
-            }
-          },
-          {
-            className: "col-2",
-            type: "dropdown",
-            name: "hospital_id",
-            initialLoad: true,
-            isImp: true,
-            label: "Select branch",
-            link: {
-              uri: "/organization/getOrganization"
-            },
-            dataSource: {
-              textField: "hospital_name",
-              valueField: "hims_d_hospital_id",
-              data: undefined
-            }
-          },
-          {
-            className: "col-2",
-            type: "dropdown",
-            name: "sub_department_id",
-            initialLoad: true,
-            isImp: true,
-            label: "Select Department",
-            link: {
-              uri: "/department/get/subdepartment"
-            },
-            dataSource: {
-              textField: "sub_department_name",
-              valueField: "hims_d_sub_department_id",
-              data: undefined
-            }
-          }
-        ]
-      },
-      {
-        subitem: "Leave Accrual",
-        reportName: "leaveAccuralPayroll",
-        requireIframe: true,
-        pageSize: "A4",
-        pageOrentation: "landscape", //"portrait",
-        input: "sub_department_id=?",
-        reportParameters: [
-          {
-            className: "col-2",
-            type: "dropdown",
-            name: "year",
-            isImp: true,
-            initialLoad: true,
-            dataSource: {
-              textField: "name",
-              valueField: "value",
-              data: allYears
-            }
-            // events: {
-            //   onChange: (reportState, currentValue) => {}
-            // }
-          },
-          {
-            className: "col-2",
-            type: "dropdown",
-            sort: "off",
-            name: "month",
-            isImp: true,
-            initialLoad: true,
-            dataSource: {
-              textField: "name",
-              valueField: "value",
-              data: MONTHS
-            },
-            others: {
-              sort: "off"
-            }
-          },
-          {
-            className: "col-2",
-            type: "dropdown",
-            name: "hospital_id",
-            initialLoad: true,
-            isImp: true,
-            label: "Select branch",
-            link: {
-              uri: "/organization/getOrganization"
-            },
-            dataSource: {
-              textField: "hospital_name",
-              valueField: "hims_d_hospital_id",
-              data: undefined
-            }
-          },
-          {
-            className: "col-2",
-            type: "dropdown",
-            name: "sub_department_id",
-            initialLoad: true,
-            isImp: true,
-            label: "Select Department",
-            link: {
-              uri: "/department/get/subdepartment"
-            },
-            dataSource: {
-              textField: "sub_department_name",
-              valueField: "hims_d_sub_department_id",
-              data: undefined
-            }
-          }
-        ]
-      },
-      {
-        subitem: "Gratuity Provision",
-        reportName: "gratuityProvisionStatementPayroll",
-        input: "sub_department_id=?",
-        requireIframe: true,
-
-        reportParameters: [
-          {
-            className: "col-2",
-            type: "dropdown",
-            name: "year",
-            isImp: true,
-            initialLoad: true,
-            dataSource: {
-              textField: "name",
-              valueField: "value",
-              data: allYears
-            }
-            // events: {
-            //   onChange: (reportState, currentValue) => {}
-            // }
-          },
-          {
-            className: "col-2",
-            type: "dropdown",
-            sort: "off",
-            name: "month",
-            isImp: true,
-            initialLoad: true,
-            dataSource: {
-              textField: "name",
-              valueField: "value",
-              data: MONTHS
-            },
-            others: {
-              sort: "off"
-            }
-          },
-          {
-            className: "col-2",
-            type: "dropdown",
-            name: "hospital_id",
-            initialLoad: true,
-            isImp: true,
-            label: "Select branch",
-            link: {
-              uri: "/organization/getOrganization"
-            },
-            dataSource: {
-              textField: "hospital_name",
-              valueField: "hims_d_hospital_id",
-              data: undefined
-            }
-          },
-          {
-            className: "col-2",
-            type: "dropdown",
-            name: "sub_department_id",
-            initialLoad: true,
-            isImp: true,
-            label: "Select Department",
-            link: {
-              uri: "/department/get/subdepartment"
-            },
-            dataSource: {
-              textField: "sub_department_name",
-              valueField: "hims_d_sub_department_id",
-              data: undefined
-            }
-          }
-        ]
-      },
-      {
-        subitem: "Absent Report",
-        reportName: "absentReportPayroll",
-        requireIframe: true,
-        pageSize: "A4",
-        pageOrentation: "landscape", //"portrait",
-        reportParameters: [
-          {
-            className: "col-2",
-            type: "date",
-            name: "from_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
-            }
-          },
-          {
-            className: "col-2",
-            type: "date",
-            name: "to_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
-            }
-          }
-        ]
-      },
-      {
-        subitem: "Employee Loan report",
-        reportName: "EmployeeLoanReport",
-        requireIframe: true,
-        pageSize: "A4",
-        pageOrentation: "landscape", //"portrait",
-        reportParameters: [
-          {
-            type: "date",
-            name: "from_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
-            }
-          },
-          {
-            type: "date",
-            name: "to_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
-            }
-          }
-        ]
-        //reportParameters: () => <General ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Salary Statement Detail",
-        // reportUri: "/salary/detailSalaryStatement",
-        // module: "hrManagement",
-        //template_name: "PayrollReports/salary_statement_detail",
-        reportName: "salaryStatementDetailsPayroll",
-        pageOrentation: "landscape",
-        requireIframe: true,
-        reportParameters: [
-          {
-            type: "dropdown",
-            name: "year",
-            isImp: true,
-            initialLoad: true,
-            dataSource: {
-              textField: "name",
-              valueField: "value",
-              data: allYears
-            }
-            // events: {
-            //   onChange: (reportState, currentValue) => {}
-            // }
-          },
-          {
-            type: "dropdown",
-            sort: "off",
-            name: "month",
-            isImp: true,
-            initialLoad: true,
-            dataSource: {
-              textField: "name",
-              valueField: "value",
-              data: MONTHS
-            },
-            others: {
-              sort: "off"
-            }
-          },
-          {
-            type: "dropdown",
-            name: "hospital_id",
-            initialLoad: true,
-            isImp: true,
-            label: "Select branch",
-            link: {
-              uri: "/organization/getOrganization"
-            },
-            dataSource: {
-              textField: "hospital_name",
-              valueField: "hims_d_hospital_id",
-              data: undefined
-            }
-          },
-          {
-            type: "dropdown",
             name: "employee_group_id",
             initialLoad: true,
-            isImp: true,
             label: "Select Group",
             link: {
               uri: "/hrsettings/getEmployeeGroups",
@@ -1569,28 +2087,7 @@ const HR_Payroll_Reports = [
             }
           },
           {
-            type: "dropdown",
-            name: "is_local",
-            initialLoad: true,
-            // isImp: true,
-            label: "Select Type",
-            dataSource: {
-              textField: "name",
-              valueField: "value",
-              data: LOCAL_TYPE
-            }
-          }
-        ]
-        //reportParameters: () => <General ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Attendance Reports",
-        reportName: "attendanceReports",
-
-        requireIframe: true,
-        pageOrentation: "landscape",
-        reportParameters: [
-          {
+            className: "col-2",
             type: "dropdown",
             name: "year",
             sort: "off",
@@ -1607,6 +2104,7 @@ const HR_Payroll_Reports = [
             // }
           },
           {
+            className: "col-2",
             type: "dropdown",
             sort: "off",
             name: "month",
@@ -1619,35 +2117,6 @@ const HR_Payroll_Reports = [
             },
             others: {
               sort: "off"
-            }
-          },
-          {
-            type: "dropdown",
-            name: "hospital_id",
-            initialLoad: true,
-            isImp: true,
-            label: "Select branch",
-            link: {
-              uri: "/organization/getOrganization"
-            },
-            dataSource: {
-              textField: "hospital_name",
-              valueField: "hims_d_hospital_id",
-              data: undefined
-            }
-          },
-          {
-            type: "dropdown",
-            name: "employee_group_id",
-            initialLoad: true,
-            label: "Select Group",
-            link: {
-              uri: "/hrsettings/getEmployeeGroups",
-              module: "hrManagement"
-            },
-            dataSource: {
-              textField: "group_description",
-              valueField: "hims_d_employee_group_id"
             }
           }
         ]
@@ -1668,33 +2137,7 @@ const HR_Payroll_Reports = [
         pageOrentation: "landscape",
         reportParameters: [
           {
-            type: "dropdown",
-            name: "year",
-            initialLoad: true,
-            dataSource: {
-              textField: "name",
-              valueField: "value",
-              data: allYears
-            }
-            // events: {
-            //   onChange: (reportState, currentValue) => {}
-            // }
-          },
-          {
-            type: "dropdown",
-            sort: "off",
-            name: "month",
-            initialLoad: true,
-            dataSource: {
-              textField: "name",
-              valueField: "value",
-              data: MONTHS
-            },
-            others: {
-              sort: "off"
-            }
-          },
-          {
+            className: "col-2",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -1710,6 +2153,59 @@ const HR_Payroll_Reports = [
             }
           },
           {
+            className: "col-2",
+            type: "dropdown",
+            name: "department_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Select Department",
+            link: {
+              uri: "/department/get",
+              module: "masterSettings"
+            },
+            dataSource: {
+              textField: "department_name",
+              valueField: "hims_d_department_id",
+              data: undefined
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/department/get/subdepartment",
+                  module: "masterSettings",
+                  method: "GET",
+                  data: { department_id: currentEvent.value },
+
+                  onSuccess: result => {
+                    reportState.setState({
+                      sub_department_id_list: result.data.records
+                    });
+                  }
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  sub_department_id_list: []
+                });
+              }
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "sub_department_id",
+            isImp: false,
+            label: "Select Sub-Department",
+            dataSource: {
+              textField: "sub_department_name",
+              valueField: "hims_d_sub_department_id",
+              data: undefined
+            }
+          },
+          {
+            className: "col-2",
             type: "dropdown",
             name: "project_id",
             initialLoad: true,
@@ -1725,6 +2221,35 @@ const HR_Payroll_Reports = [
             // events: {
             //   onChange: (reportState, currentValue) => {}
             // }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "year",
+            initialLoad: true,
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: allYears
+            }
+            // events: {
+            //   onChange: (reportState, currentValue) => {}
+            // }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            sort: "off",
+            name: "month",
+            initialLoad: true,
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: MONTHS
+            },
+            others: {
+              sort: "off"
+            }
           }
         ]
       }

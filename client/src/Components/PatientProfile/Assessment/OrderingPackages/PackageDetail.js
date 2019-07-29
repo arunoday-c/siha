@@ -36,14 +36,14 @@ class PackageDetail extends Component {
   };
 
   componentWillReceiveProps(newProps) {
-    debugger;
+    
     if (newProps.package_detail !== null) {
       this.setState({ ...this.state, ...newProps.package_detail });
     }
   }
 
   serviceHandeler(e) {
-    debugger;
+    
     this.setState({
       s_service: e.hims_d_services_id,
       s_service_type: e.service_type_id,
@@ -80,7 +80,7 @@ class PackageDetail extends Component {
         f.service_id === this.state.s_service
       );
     });
-    debugger;
+    
     if (SelectedService.length === 0) {
       let profit_loss = "P";
       let InputObj = {
@@ -130,7 +130,7 @@ class PackageDetail extends Component {
   }
 
   deletePackageDetail(row, e) {
-    debugger;
+    
     let package_detail = this.state.package_detail;
     let _index = package_detail.indexOf(row);
 

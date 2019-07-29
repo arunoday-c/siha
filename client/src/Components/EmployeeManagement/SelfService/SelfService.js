@@ -98,34 +98,26 @@ export default class SelfService extends Component {
             </div>
             <div className="EmployeeName">
               <h6>{empDetails.full_name}</h6>
-              <p>
-                {" "}
-                <b>{empDetails.designation}</b>
-              </p>
-              <p>{empDetails.sub_department_name}</p>
             </div>
             <div className="EmployeeDemographic">
               <span>
-                {/* <i className="fas fa-user-tie" /> <b>EMP378456</b> */}
                 <i className="fas fa-user-tie" />{" "}
                 <b>{empDetails.employee_code}</b>
               </span>
               <span>
-                {/* <i className="fas fa-mobile" /> <b>+96 34765738465</b> */}
                 <i className="fas fa-mobile" />{" "}
                 <b>{empDetails.primary_contact_no}</b>
               </span>
               <span>
-                <i className="fas fa-envelope" />{" "}
-                {/* <b>fawad.nizami@hospital.com</b> */}
-                <b>{empDetails.email}</b>
+                <i className="fas fa-envelope" /> <b>{empDetails.email}</b>
+              </span>
+            </div>
+            <div className="EmployeeDemographic">
+              <span>
+                Designation: <b>{empDetails.designation}</b>
               </span>
               <span>
-                <i className="fas fa-globe-asia" />{" "}
-                <b>
-                  {empDetails.present_city_name},{empDetails.present_state_name}
-                  ,{empDetails.present_country_name}
-                </b>
+                Sub Department: <b>{empDetails.sub_department_name}</b>
               </span>
             </div>
             <div className="EmployeeDemographic">

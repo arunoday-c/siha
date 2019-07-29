@@ -16,8 +16,6 @@ const executePDF = function executePDFMethod(options) {
 
       utilities.logger().log("input: ", input);
 
-      let outputArray = [];
-
       let strQuery = "";
 
       if (input.department_id > 0) {
