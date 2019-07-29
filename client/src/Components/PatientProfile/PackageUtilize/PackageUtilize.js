@@ -23,6 +23,7 @@ import AddAdvanceModal from "../../Advance/AdvanceModal";
 import ConsumtionItemBatches from "./ConsumtionItemBatches";
 import moment from "moment";
 import ClosePackage from "./ClosePackage";
+import UtilizedPackageofVisit from "./UtilizedPackageofVisit";
 
 class PackageUtilize extends Component {
   constructor(props) {
@@ -33,8 +34,13 @@ class PackageUtilize extends Component {
       AdvanceOpen: false,
       itemBatches: false,
       service_id: null,
-      closePackage: false
+      closePackage: false,
+      consumtion_items: [],
+      selected_pack: {},
+      batch_wise_item: [],
+      visitPackageser: false
     };
+    this.baseState = this.state;
   }
 
   componentDidMount() {}
@@ -47,6 +53,7 @@ class PackageUtilize extends Component {
       debugger;
       nextProps.package_detail.consultation =
         nextProps.from === "frontDesk" ? true : false;
+      nextProps.package_detail.consumtion_items = [];
       this.setState(
         {
           ...this.state,
@@ -75,7 +82,7 @@ class PackageUtilize extends Component {
   }
 
   onClose = e => {
-    this.setState({ package_details: [] }, () => {
+    this.setState(this.baseState, () => {
       this.props.onClose && this.props.onClose(e);
     });
   };
@@ -92,28 +99,28 @@ class PackageUtilize extends Component {
 
   ShowBatchDetails(row) {
     PackageUtilizeEvent().ShowBatchDetails(this, row);
-    // this.setState({
-    //   itemBatches: !this.state.itemBatches,
-    //   service_id: row.service_id
-    // });
   }
   CloseBatchDetails(e) {
-    let batchno = e !== undefined ? e.batchno : null;
-    let expiry_date = e !== undefined ? moment(e.expirydt)._d : null;
+    debugger;
 
-    let grn_no = e !== undefined ? e.grnno : null;
-    let qtyhand = e !== undefined ? e.qtyhand : null;
+    if (e !== undefined && e.selected === true) {
+      let consumtion_items = this.state.consumtion_items;
+      let package_details = this.state.package_details;
+      package_details[this.state.selectd_row_id].quantity = e.quantity;
 
-    let sale_price = e !== undefined ? e.sale_price : null;
-
-    this.setState({
-      itemBatches: !this.state.itemBatches,
-      batchno: batchno,
-      expiry_date: expiry_date,
-      grn_no: grn_no,
-      qtyhand: qtyhand,
-      unit_cost: sale_price
-    });
+      consumtion_items = consumtion_items.concat(e.selected_items);
+      this.setState({
+        itemBatches: !this.state.itemBatches,
+        consumtion_items: consumtion_items,
+        package_details: package_details,
+        location_type: e.location_type,
+        batch_wise_item: e.batch_wise_item
+      });
+    } else {
+      this.setState({
+        itemBatches: !this.state.itemBatches
+      });
+    }
   }
   CloseRefundScreen(e) {
     this.setState(
@@ -151,6 +158,12 @@ class PackageUtilize extends Component {
   }
   ShowAdvanceScreen() {
     PackageUtilizeEvent().ShowAdvanceScreen(this);
+  }
+  ShowVistUtilizedSer() {
+    PackageUtilizeEvent().ShowVistUtilizedSer(this);
+  }
+  CloseVistUtilizedSer(e) {
+    PackageUtilizeEvent().CloseVistUtilizedSer(this, e);
   }
   ShowCloseScreen() {
     PackageUtilizeEvent().ShowCloseScreen(this);
@@ -331,6 +344,8 @@ class PackageUtilize extends Component {
                           return this.state.consultation === true &&
                             row.service_type_id !== 1 ? (
                             row.quantity
+                          ) : row.service_type_id === 4 ? (
+                            row.quantity
                           ) : (
                             <AlagehFormGroup
                               div={{}}
@@ -377,6 +392,12 @@ class PackageUtilize extends Component {
                 onClose={this.CloseBatchDetails.bind(this)}
                 inventory_location_id={this.props.inventory_location_id}
                 batch_wise_item={this.state.batch_wise_item}
+                consumtion_quantity={this.state.consumtion_quantity}
+                service_id={this.state.service_id}
+                item_category_id={this.state.item_category_id}
+                item_group_id={this.state.item_group_id}
+                selected_pack={this.state.selected_pack}
+                available_qty={this.state.available_qty}
               />
 
               {/*
@@ -651,6 +672,12 @@ class PackageUtilize extends Component {
               transaction_type="RF"
               pay_type="P"
             />
+            <UtilizedPackageofVisit
+              show={this.state.visitPackageser}
+              onClose={this.CloseVistUtilizedSer.bind(this)}
+              visit_id={this.props.visit_id}
+              patient_id={this.props.patient_id}
+            />
             <div className="popupFooter">
               <div className="col-lg-12">
                 <div className="row">
@@ -670,6 +697,16 @@ class PackageUtilize extends Component {
                           onClick={this.ShowAdvanceScreen.bind(this)}
                         >
                           Collect Advance
+                        </button>
+                      ) : null}
+
+                      {this.props.from_billing === true &&
+                      this.props.from !== "frontDesk" ? (
+                        <button
+                          className="btn btn-default"
+                          onClick={this.ShowVistUtilizedSer.bind(this)}
+                        >
+                          Package Services
                         </button>
                       ) : null}
 

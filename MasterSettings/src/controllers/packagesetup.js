@@ -5,7 +5,7 @@ import {
   getPackage,
   updatePackageSetup
 } from "../models/packagesetup";
-import { addServices } from "../models/serviceTypes";
+import { addServices, updateServicesOthrs } from "../models/serviceTypes";
 export default () => {
   let api = Router();
   const utlities = new algaehUtlities();
@@ -28,14 +28,19 @@ export default () => {
     next();
   });
 
-  api.put("/updatePackageSetup", updatePackageSetup, (req, res, next) => {
-    let result = req.records;
-    res.status(utlities.httpStatus().ok).json({
-      success: true,
-      records: result
-    });
-    next();
-  });
+  api.put(
+    "/updatePackageSetup",
+    updateServicesOthrs,
+    updatePackageSetup,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(utlities.httpStatus().ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    }
+  );
 
   return api;
 };

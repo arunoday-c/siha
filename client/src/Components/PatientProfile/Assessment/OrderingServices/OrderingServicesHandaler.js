@@ -66,22 +66,25 @@ const serviceHandeler = ($this, e) => {
 const ProcessService = ($this, e) => {
   // orderedList
   debugger;
+  let SelectedService = [];
+  let PreSelectedService = [];
+  if ($this.state.s_service_type !== 2) {
+    let SelectedService = Enumerable.from($this.props.orderedList)
+      .where(
+        w =>
+          w.service_type_id === $this.state.s_service_type &&
+          w.services_id === $this.state.s_service
+      )
+      .toArray();
 
-  let SelectedService = Enumerable.from($this.props.orderedList)
-    .where(
-      w =>
-        w.service_type_id === $this.state.s_service_type &&
-        w.services_id === $this.state.s_service
-    )
-    .toArray();
-
-  let PreSelectedService = Enumerable.from($this.state.orderservicesdata)
-    .where(
-      w =>
-        w.service_type_id === $this.state.s_service_type &&
-        w.services_id === $this.state.s_service
-    )
-    .toArray();
+    PreSelectedService = Enumerable.from($this.state.orderservicesdata)
+      .where(
+        w =>
+          w.service_type_id === $this.state.s_service_type &&
+          w.services_id === $this.state.s_service
+      )
+      .toArray();
+  }
 
   if (SelectedService.length === 0 && PreSelectedService.length === 0) {
     if ($this.state.s_service_type !== null && $this.state.s_service !== null) {

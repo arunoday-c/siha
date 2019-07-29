@@ -345,7 +345,7 @@ class AddAdvanceModal extends PureComponent {
                       <div className="col">
                         <AlgaehLabel
                           label={{
-                            forceLabel: "Package Advance"
+                            forceLabel: "Mini. Package Advance To Take"
                           }}
                         />
                         <h6>

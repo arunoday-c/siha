@@ -19,7 +19,8 @@ import {
   load_orders_for_bill,
   insertInvOrderedServices,
   addPackage,
-  getPatientPackage
+  getPatientPackage,
+  deleteOrderService
 } from "../model/orderAndPreApproval";
 import { insertRadOrderedServices } from "../model/radiology";
 import { insertLadOrderedServices } from "../model/laboratory";
@@ -267,6 +268,12 @@ export default ({ config, db }) => {
         records: req.records
       });
     }
+  });
+  api.delete("/deleteOrderService", deleteOrderService, (req, res, next) => {
+    res.status(httpStatus.ok).json({
+      success: true,
+      records: req.records
+    });
   });
 
   return api;

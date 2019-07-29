@@ -312,7 +312,7 @@ let algaehSearchConfig = (searchName, req) => {
           PATV.visit_code from hims_f_billing_header BH inner join hims_f_patient as PAT on  \
           BH.patient_id = PAT.hims_d_patient_id inner join hims_f_patient_visit as PATV on \
           BH.visit_id = PATV.hims_f_patient_visit_id where BH.record_status ='A' and \
-          cancelled='N' and BH.hospital_id=" +
+          cancelled='N' and BH.invoice_generated='N' and BH.hospital_id=" +
           hospitalId,
         orderBy: "hims_f_billing_header_id desc"
       },
@@ -605,8 +605,8 @@ let algaehSearchConfig = (searchName, req) => {
             (SELECT services_id FROM hims_d_services_insurance as I,hims_d_service_type as T where  \
             insurance_id=? and {mapper} and I.service_type_id = T.hims_d_service_type_id and \
             I.service_type_id in (14)) and {mapper} and S.service_type_id = IT.hims_d_service_type_id \
-            and PH.package_service_id = S.hims_d_services_id and PH.package_status = 'A' \
-            and S.service_type_id in (14) \
+            and PH.package_service_id = S.hims_d_services_id and PH.package_status = 'A' and PH.approved='Y' \
+            and (PH.validated_date >= CURDATE() OR PH.validated_date is null) and S.service_type_id in (14) \
             union all\
             SELECT service_name,service_type_id,services_id as hims_d_services_id, covered,pre_approval, \
             T.service_type, PH.package_visit_type,PH.package_type,PH.hims_d_package_header_id,\
@@ -614,8 +614,8 @@ let algaehSearchConfig = (searchName, req) => {
             CASE WHEN PH.package_type='S' THEN 'Static' else 'Dynamic' END as p_type,\
             PH.expiry_days,PH.validated_date,PH.total_service_amount\
             FROM hims_d_services_insurance as I,hims_d_service_type as T, hims_d_package_header as PH where  insurance_id=? and {mapper}  and I.service_type_id = T.hims_d_service_type_id \
-            and PH.package_service_id = I.services_id and PH.package_status = 'A'\
-            and I.service_type_id in (14)",
+            and PH.package_service_id = I.services_id and PH.package_status = 'A' and PH.approved='Y'\
+            and (PH.validated_date >= CURDATE() OR PH.validated_date is null) and I.service_type_id in (14)",
         orderBy: "hims_d_services_id desc",
         inputSequence: ["insurance_id", "insurance_id"]
       },

@@ -88,6 +88,7 @@ class PackageDetail extends Component {
         service_id: this.state.s_service,
         service_amount: this.state.s_service_amount,
         qty: this.state.qty,
+        available_qty: this.state.qty,
         tot_service_amount:
           parseFloat(this.state.qty) * parseFloat(this.state.s_service_amount)
       };

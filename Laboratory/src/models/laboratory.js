@@ -602,20 +602,33 @@ module.exports = {
       utilities.logger().log("inputParam: ", inputParam);
 
       let ref = null;
-      let entered_by = "";
-      let confirmed_by = "";
-      let validated_by = "";
+      let entered_by = null;
+      let confirmed_by = null;
+      let validated_by = null;
+      let strQuery = "";
       switch (inputParam.length - 1) {
         case status_C:
           //Do functionality for C here
           ref = "CF";
           confirmed_by = req.userIdentity.algaeh_d_app_user_id;
+          strQuery +=
+            ", confirmed_by='" +
+            req.userIdentity.algaeh_d_app_user_id +
+            "', confirmed_date = '" +
+            moment().format("YYYY-MM-DD HH:mm") +
+            "'  ";
           break;
 
         case status_V:
           //Do functionality for V here
           ref = "V";
           validated_by = req.userIdentity.algaeh_d_app_user_id;
+          strQuery +=
+            ", validated_by='" +
+            req.userIdentity.algaeh_d_app_user_id +
+            "', validated_date = '" +
+            moment().format("YYYY-MM-DD HH:mm") +
+            "'  ";
           break;
 
         case status_N:
@@ -626,6 +639,12 @@ module.exports = {
         case status_E:
           ref = "CL";
           entered_by = req.userIdentity.algaeh_d_app_user_id;
+          strQuery +=
+            ", entered_by='" +
+            req.userIdentity.algaeh_d_app_user_id +
+            "', entered_date = '" +
+            moment().format("YYYY-MM-DD HH:mm") +
+            "' ";
           break;
         default:
           ref = null;
@@ -688,19 +707,12 @@ module.exports = {
             _mysql
               .executeQuery({
                 query:
-                  "update hims_f_lab_order set `status`=?, run_type=?, entered_date= ?, entered_by= ?, \
-                  confirmed_date= ?,confirmed_by= ?, validated_date= ?, validated_by=?, \
-                  updated_date= ?, updated_by=?, comments=? \
-                  where hims_f_lab_order_id=? ",
+                  "update hims_f_lab_order set `status`=?, run_type=?, updated_date= ?, updated_by=?, comments=?" +
+                  strQuery +
+                  "where hims_f_lab_order_id=? ",
                 values: [
                   ref,
                   runtype[0],
-                  moment().format("YYYY-MM-DD HH:mm"),
-                  req.userIdentity.algaeh_d_app_user_id,
-                  moment().format("YYYY-MM-DD HH:mm"),
-                  req.userIdentity.algaeh_d_app_user_id,
-                  moment().format("YYYY-MM-DD HH:mm"),
-                  req.userIdentity.algaeh_d_app_user_id,
                   moment().format("YYYY-MM-DD HH:mm"),
                   req.userIdentity.algaeh_d_app_user_id,
                   inputParam[0].comments,

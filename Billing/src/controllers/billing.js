@@ -117,6 +117,7 @@ export default () => {
     updatePatientPackage,
     insertLadOrderedServices,
     insertRadOrderedServices,
+
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
