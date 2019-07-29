@@ -1,0 +1,161 @@
+.DepartmentOrgView {
+  .ulSuperParent {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    overflow: auto;
+    position: relative;
+    li.liSuperChild {
+      margin: 0;
+      list-style: none;
+      position: relative;
+      width: 280px;
+      padding: 10px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #00a796;
+      background: #00a796;
+      color: #fff;
+      .imgSection {
+        display: inline-block;
+        width: 50px;
+        vertical-align: top;
+        img {
+          width: 50px;
+          height: 50px;
+          border-radius: 50%;
+          background: #ccc;
+          border: none;
+        }
+      }
+      .contentSection {
+        display: inline-block;
+        width: calc(100% - 60px);
+        margin-left: 10px;
+        h1 {
+          font-size: 1rem;
+          margin: 0;
+        }
+        p {
+          margin: 0;
+          line-height: 20px;
+        }
+      }
+      ul.ulParent {
+        padding: 0 0 0 14px;
+        color: rgba(0, 0, 0, 0.87);
+        margin: 0;
+        list-style: none;
+        position: fixed;
+        left: 305px;
+        top: 98px;
+        z-index: 9;
+        min-height: 86vh;
+        width: 100vw;
+        overflow: auto;
+        li.liChild {
+          padding: 10px;
+          border: 2px solid #d6d6d6;
+          border-radius: 10px;
+          margin-bottom: 10px;
+          background: #fff;
+          position: relative;
+          width: 285px;
+          &::before {
+            content: "";
+            background: #00a796;
+            height: 3px;
+            width: 20px;
+            position: absolute;
+            top: 49%;
+            left: -14px;
+            z-index: -1;
+          }
+          .ulParent {
+            position: fixed;
+            left: 305px;
+            top: 0;
+            z-index: 9;
+            min-height: 100vh;
+            width: 100vw;
+            overflow-y: auto;
+            overflow-x: hidden;
+            .ulParent {
+              position: fixed;
+              left: 305px;
+              top: 0;
+              z-index: 9;
+              min-height: 100vh;
+              width: 100vw;
+              overflow-y: auto;
+              overflow-x: hidden;
+            }
+          }
+          &:hover {
+            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+            background: #00a796;
+            color: #fff;
+            cursor: pointer;
+            & > ul {
+              display: block;
+              color: rgba(0, 0, 0, 0.87);
+            }
+            &::after {
+              content: "";
+              background: #00a796;
+              height: 3px;
+              width: 20px;
+              position: absolute;
+              top: 49%;
+              right: -14px;
+              z-index: -1;
+            }
+          }
+        }
+        &::before {
+          content: "";
+          background: #00a796;
+          height: 100vh;
+          width: 3px;
+          position: absolute;
+          top: 0;
+          left: 0px;
+          z-index: -1;
+        }
+      }
+      &:hover {
+        box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+        background: #00a796;
+        color: #fff;
+        cursor: pointer;
+        & > ul {
+          display: block;
+        }
+      }
+      &::after {
+        content: "";
+        background: #00a796;
+        height: 3px;
+        width: 20px;
+        position: absolute;
+        top: 49%;
+        right: -14px;
+        z-index: -1;
+      }
+    }
+    .clickedLi {
+      background: #00a796 !important;
+      color: #fff;
+      &::after {
+        content: "";
+        background: #00a796;
+        height: 3px;
+        width: 20px;
+        position: absolute;
+        top: 49%;
+        right: -14px;
+        z-index: -1;
+      }
+    }
+  }
+}
