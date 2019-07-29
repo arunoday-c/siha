@@ -1,6 +1,6 @@
 .selfServiceModule .EmployeeProfile .EmployeeInfo-Top {
   background: white;
-  height: 110px;
+  height: 78px;
   padding: 5px 0 0;
   width: 100%;
   position: fixed;
@@ -22,10 +22,10 @@
   .selfServiceModule .EmployeeProfile .EmployeeInfo-Top .EmployeeImg {
     margin: 1px 10px; }
     .selfServiceModule .EmployeeProfile .EmployeeInfo-Top .EmployeeImg .image-drop-area {
-      min-height: 100px;
-      max-height: 100px; }
+      min-height: 65px;
+      max-height: 65px; }
       .selfServiceModule .EmployeeProfile .EmployeeInfo-Top .EmployeeImg .image-drop-area img {
-        height: 100px;
+        height: 65px;
         width: auto; }
   .selfServiceModule .EmployeeProfile .EmployeeInfo-Top .EmployeeName {
     max-width: 30%;
@@ -34,7 +34,8 @@
     border-right: 1px solid #e1e1e1;
     padding-left: 10px;
     padding-right: 10px;
-    min-height: 98px; }
+    min-height: 64px;
+    max-height: 64px; }
     .selfServiceModule .EmployeeProfile .EmployeeInfo-Top .EmployeeName h6 {
       margin-bottom: 2px;
       color: #000;
@@ -53,7 +54,8 @@
     border-right: 1px solid #e1e1e1;
     padding-left: 10px;
     padding-right: 10px;
-    min-height: 98px; }
+    min-height: 64px;
+    max-height: 64px; }
     .selfServiceModule .EmployeeProfile .EmployeeInfo-Top .EmployeeDemographic span {
       display: block;
       line-height: 1.7rem;
@@ -69,7 +71,8 @@
     border-right: 1px solid #e1e1e1;
     padding-left: 10px;
     padding-right: 10px;
-    min-height: 98px; }
+    min-height: 64px;
+    max-height: 64px; }
     .selfServiceModule .EmployeeProfile .EmployeeInfo-Top .EmployeeHospitalDetail span {
       display: block; }
       .selfServiceModule .EmployeeProfile .EmployeeInfo-Top .EmployeeHospitalDetail span b {
@@ -105,7 +108,7 @@
   color: #797979;
   text-transform: uppercase;
   position: fixed;
-  top: 163px;
+  top: 130px;
   z-index: 99; }
   .selfServiceModule .EmployeeTopNav .tabMaster {
     box-shadow: none; }
@@ -203,6 +206,6 @@
   width: 100%; }
 
 .selfServiceModule .selfService-setion {
-  margin-top: 160px;
+  margin-top: 120px;
   padding-top: 0;
   background: none; }

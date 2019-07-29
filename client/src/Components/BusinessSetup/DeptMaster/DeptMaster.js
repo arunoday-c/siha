@@ -544,7 +544,7 @@ class DeptMaster extends Component {
                 />
 
                 <AlagehFormGroup
-                  div={{ className: "col" }}
+                  div={{ className: "col arabic-txt-fld" }}
                   label={{
                     fieldName: "sub_department_name_arabic",
                     isImp: true
