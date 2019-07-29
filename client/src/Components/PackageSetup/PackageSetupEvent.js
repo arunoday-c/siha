@@ -35,7 +35,16 @@ export default function PackageSetupEvent() {
                   package_visit_type: firstRecordSet.package_visit_type,
                   approved: firstRecordSet.approved,
                   package_status: firstRecordSet.package_status,
+                  button_enable:
+                    firstRecordSet.package_status === "A" ? false : true,
                   cancellation_policy: firstRecordSet.cancellation_policy,
+                  cancellation_type: firstRecordSet.cancellation_type,
+                  cancellation_amount: firstRecordSet.cancellation_amount,
+                  cancellation_per: firstRecordSet.cancellation_per,
+                  validated_date: firstRecordSet.validated_date,
+                  vat_applicable: firstRecordSet.vat_applicable,
+                  vat_percent: firstRecordSet.vat_percent,
+                  package_service_id: firstRecordSet.package_service_id,
                   PakageDetail: g.getSource()
                 };
               })

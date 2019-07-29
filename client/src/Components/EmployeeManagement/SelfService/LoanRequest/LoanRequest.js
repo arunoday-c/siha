@@ -629,83 +629,15 @@ class LoanRequest extends Component {
                               )}
                             </span>
                           );
-                        }
-                      },
-                      {
-                        fieldName: "pending_tenure",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "No. of EMI Pending" }}
-                          />
-                        ),
-                        displayTemplate: row => {
-                          return (
-                            <span>
-                              {row.pending_tenure !== 0 ? (
-                                row.pending_tenure
-                              ) : (
-                                <span className="badge badge-success">
-                                  Closed
-                                </span>
-                              )}
-                            </span>
-                          );
-                        }
-                      },
-                      {
-                        fieldName: "pending_loan",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Balance Due" }} />
-                        ),
-                        displayTemplate: row => {
-                          return (
-                            <span>{getAmountFormart(row.pending_loan)}</span>
-                          );
-                        }
-                      },
-                      {
-                        fieldName: "approved_amount",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Approved Loan Amount" }}
-                          />
-                        ),
-                        displayTemplate: row => {
-                          return (
-                            <span>{getAmountFormart(row.approved_amount)}</span>
-                          );
-                        }
-                      },
-                      {
-                        fieldName: "loan_amount",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Requested Loan Amount" }}
-                          />
-                        ),
-                        displayTemplate: row => {
-                          return (
-                            <span>{getAmountFormart(row.loan_amount)}</span>
-                          );
-                        }
-                      },
-                      {
-                        fieldName: "loan_application_number",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Application No." }}
-                          />
-                        ),
+                        },
                         others: {
-                          minWidth: 150
+                          minWidth: 80
                         }
                       },
                       {
                         fieldName: "loan_application_date",
                         label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Loan Requested On" }}
-                          />
+                          <AlgaehLabel label={{ forceLabel: "Req. Date" }} />
                         ),
                         displayTemplate: row => {
                           return (
@@ -715,29 +647,8 @@ class LoanRequest extends Component {
                               )}
                             </span>
                           );
-                        }
-                      },
-                      {
-                        fieldName: "start_month",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Start Month" }} />
-                        ),
-                        displayTemplate: row => {
-                          return (
-                            <span>
-                              {moment(
-                                "01-" + row.start_month + "-" + row.start_year,
-                                "DD-MM-YYYY"
-                              ).format("MMMM")}
-                            </span>
-                          );
-                        }
-                      },
-                      {
-                        fieldName: "start_year",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Start Year" }} />
-                        )
+                        },
+                        others: { minWidth: 100 }
                       },
                       {
                         fieldName: "loan_description",
@@ -746,22 +657,34 @@ class LoanRequest extends Component {
                         )
                       },
                       {
-                        fieldName: "loan_tenure",
+                        fieldName: "pending_loan",
                         label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Total No. of EMI" }}
-                          />
+                          <AlgaehLabel label={{ forceLabel: "Due Amt." }} />
                         ),
                         displayTemplate: row => {
-                          return <span>{row.loan_tenure}</span>;
+                          return (
+                            <span>{getAmountFormart(row.pending_loan)}</span>
+                          );
                         }
                       },
                       {
+                        fieldName: "pending_tenure",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Due EMI" }} />
+                        ),
+                        displayTemplate: row => {
+                          return row.pending_tenure !== 0 ? (
+                            <span>{row.pending_tenure} Month</span>
+                          ) : (
+                            <span className="badge badge-success">Closed</span>
+                          );
+                        }
+                      },
+
+                      {
                         fieldName: "installment_amount",
                         label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Installment Amount" }}
-                          />
+                          <AlgaehLabel label={{ forceLabel: "EMI Amount" }} />
                         ),
                         displayTemplate: row => {
                           return (
@@ -772,12 +695,76 @@ class LoanRequest extends Component {
                         }
                       },
                       {
+                        fieldName: "loan_tenure",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Total EMI" }} />
+                        ),
+                        displayTemplate: row => {
+                          return <span>{row.loan_tenure} Month</span>;
+                        }
+                      },
+                      {
+                        fieldName: "start_year",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Deducting From" }}
+                          />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {moment(
+                                "01-" + row.start_month + "-" + row.start_year,
+                                "DD-MM-YYYY"
+                              ).format("MMMM - YYYY")}
+                            </span>
+                          );
+                        },
+                        others: { minWidth: 130 }
+                      },
+                      {
+                        fieldName: "loan_amount",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Req. Amount" }} />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>{getAmountFormart(row.loan_amount)}</span>
+                          );
+                        },
+                        others: { minWidth: 100 }
+                      },
+                      {
+                        fieldName: "approved_amount",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Appr. Amount" }} />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>{getAmountFormart(row.approved_amount)}</span>
+                          );
+                        },
+                        others: { minWidth: 100 }
+                      },
+                      {
+                        fieldName: "loan_application_number",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Request No." }} />
+                        ),
+                        others: {
+                          minWidth: 130
+                        }
+                      },
+                      {
                         fieldName: "loan_description",
                         label: (
                           <AlgaehLabel
                             label={{ forceLabel: "Reason For Loan" }}
                           />
-                        )
+                        ),
+                        others: {
+                          minWidth: 250
+                        }
                       }
                     ]}
                     keyId="hims_f_loan_application_id"
@@ -818,9 +805,7 @@ class LoanRequest extends Component {
                       {
                         fieldName: "advance_number",
                         label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Advance Request Number" }}
-                          />
+                          <AlgaehLabel label={{ forceLabel: "Request No." }} />
                         )
                       },
 
@@ -828,7 +813,7 @@ class LoanRequest extends Component {
                         fieldName: "created_date",
                         label: (
                           <AlgaehLabel
-                            label={{ forceLabel: "Advance Requested Date" }}
+                            label={{ forceLabel: "Requested Date" }}
                           />
                         ),
                         displayTemplate: row => {
@@ -843,7 +828,7 @@ class LoanRequest extends Component {
                         fieldName: "advance_amount",
                         label: (
                           <AlgaehLabel
-                            label={{ forceLabel: "Advance Amount" }}
+                            label={{ forceLabel: "Requested Amt." }}
                           />
                         ),
                         displayTemplate: row => {
@@ -852,62 +837,76 @@ class LoanRequest extends Component {
                           );
                         }
                       },
+                      {
+                        fieldName: "deducting_year",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Deduction On" }} />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {moment(
+                                "01-" +
+                                  row.deducting_month +
+                                  "-" +
+                                  row.deducting_year,
+                                "DD-MM-YYYY"
+                              ).format("MMMM - YYYY")}
+                            </span>
+                          );
+                        }
+                      },
 
                       {
                         fieldName: "advance_reason",
                         label: (
                           <AlgaehLabel
-                            label={{ forceLabel: "Advance Reason" }}
-                          />
-                        )
-                      },
-                      {
-                        fieldName: "deducting_month",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Deducting Month" }}
+                            label={{ forceLabel: "Reason for Advance" }}
                           />
                         ),
-                        displayTemplate: row => {
-                          return (
-                            <span>
-                              {row.deducting_month === "1"
-                                ? "January"
-                                : row.deducting_month === "2"
-                                ? "February"
-                                : row.deducting_month === "3"
-                                ? "March"
-                                : row.deducting_month === "4"
-                                ? "April"
-                                : row.deducting_month === "5"
-                                ? "May"
-                                : row.deducting_month === "6"
-                                ? "June"
-                                : row.deducting_month === "7"
-                                ? "July"
-                                : row.deducting_month === "8"
-                                ? "August"
-                                : row.deducting_month === "9"
-                                ? "September"
-                                : row.deducting_month === "10"
-                                ? "October"
-                                : row.deducting_month === "11"
-                                ? "November"
-                                : row.deducting_month === "12"
-                                ? "December"
-                                : null}
-                            </span>
-                          );
+                        others: {
+                          minWidth: 250
                         }
-                      },
-                      {
-                        fieldName: "deducting_year",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Deducting Year" }}
-                          />
-                        )
                       }
+                      // {
+                      //   fieldName: "deducting_month",
+                      //   label: (
+                      //     <AlgaehLabel
+                      //       label={{ forceLabel: "Deducting Month" }}
+                      //     />
+                      //   ),
+                      //   displayTemplate: row => {
+                      //     return (
+                      //       <span>
+                      //         {row.deducting_month === "1"
+                      //           ? "January"
+                      //           : row.deducting_month === "2"
+                      //           ? "February"
+                      //           : row.deducting_month === "3"
+                      //           ? "March"
+                      //           : row.deducting_month === "4"
+                      //           ? "April"
+                      //           : row.deducting_month === "5"
+                      //           ? "May"
+                      //           : row.deducting_month === "6"
+                      //           ? "June"
+                      //           : row.deducting_month === "7"
+                      //           ? "July"
+                      //           : row.deducting_month === "8"
+                      //           ? "August"
+                      //           : row.deducting_month === "9"
+                      //           ? "September"
+                      //           : row.deducting_month === "10"
+                      //           ? "October"
+                      //           : row.deducting_month === "11"
+                      //           ? "November"
+                      //           : row.deducting_month === "12"
+                      //           ? "December"
+                      //           : null}
+                      //       </span>
+                      //     );
+                      //   }
+                      // }
                     ]}
                     keyId="hims_f_employee_advance_id"
                     dataSource={{ data: this.state.employee_advance }}

@@ -22,7 +22,9 @@ class PackageSetup extends Component {
       isOpen: false,
 
       PackagesPop: {},
-      all_packages: []
+      all_packages: [],
+      vat_applicable: "N",
+      vat_percent: 0
     };
     PackageSetupEvent().getPackage(this);
   }
@@ -129,26 +131,24 @@ class PackageSetup extends Component {
                         <AlgaehLabel label={{ fieldName: "package_amount" }} />
                       )
                     },
+
                     {
-                      fieldName: "total_service_amount",
-                      label: (
-                        <AlgaehLabel
-                          label={{ fieldName: "total_service_amount" }}
-                        />
-                      )
-                    },
-                    {
-                      fieldName: "profit_loss",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "profit_loss" }} />
-                      ),
+                      fieldName: "approved",
+                      label: <AlgaehLabel label={{ forceLabel: "approved" }} />,
                       displayTemplate: row => {
-                        return row.profit_loss === "P" ? "Profit" : "Loss";
+                        return row.approved === "Y" ? "Yes" : "No";
                       }
                     },
                     {
-                      fieldName: "pl_amount",
-                      label: <AlgaehLabel label={{ fieldName: "pl_amount" }} />
+                      fieldName: "package_status",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Package Status" }} />
+                      ),
+                      displayTemplate: row => {
+                        return row.package_status === "A"
+                          ? "Active"
+                          : "Inactive";
+                      }
                     }
                   ]}
                   keyId="packages_code"

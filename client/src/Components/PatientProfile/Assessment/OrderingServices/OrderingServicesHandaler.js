@@ -65,23 +65,26 @@ const serviceHandeler = ($this, e) => {
 //Process and gets selectd service data with all calculation
 const ProcessService = ($this, e) => {
   // orderedList
-  
 
-  let SelectedService = Enumerable.from($this.props.orderedList)
-    .where(
-      w =>
-        w.service_type_id === $this.state.s_service_type &&
-        w.services_id === $this.state.s_service
-    )
-    .toArray();
+  let SelectedService = [];
+  let PreSelectedService = [];
+  if ($this.state.s_service_type !== 2) {
+    let SelectedService = Enumerable.from($this.props.orderedList)
+      .where(
+        w =>
+          w.service_type_id === $this.state.s_service_type &&
+          w.services_id === $this.state.s_service
+      )
+      .toArray();
 
-  let PreSelectedService = Enumerable.from($this.state.orderservicesdata)
-    .where(
-      w =>
-        w.service_type_id === $this.state.s_service_type &&
-        w.services_id === $this.state.s_service
-    )
-    .toArray();
+    PreSelectedService = Enumerable.from($this.state.orderservicesdata)
+      .where(
+        w =>
+          w.service_type_id === $this.state.s_service_type &&
+          w.services_id === $this.state.s_service
+      )
+      .toArray();
+  }
 
   if (SelectedService.length === 0 && PreSelectedService.length === 0) {
     if ($this.state.s_service_type !== null && $this.state.s_service !== null) {
@@ -119,8 +122,6 @@ const ProcessService = ($this, e) => {
               data.billdetails[0].preapp_limit_exceed === "Y" &&
               $this.state.approval_limit_yesno === "N"
             ) {
-              
-
               swal({
                 title: "Pre-Approval limit reached.",
                 text:
@@ -394,8 +395,6 @@ const deleteServices = ($this, row, rowId) => {
         preserviceInput[k].approval_limit_yesno = "N";
       }
 
-      
-
       algaehApiCall({
         uri: "/billing/getBillDetails",
         module: "billing",
@@ -530,8 +529,6 @@ const SaveOrdersServices = ($this, e) => {
 };
 
 const calculateAmount = ($this, row, e) => {
-  
-
   let orderservicesdata = $this.state.orderservicesdata;
   let discount_percentage = 0;
   let discount_amout = 0;
@@ -682,7 +679,6 @@ const EditGrid = ($this, cancelRow) => {
 };
 
 const makeZeroIngrid = ($this, row, e) => {
-  
   if (e.target.value === "") {
     let orderservicesdata = $this.state.orderservicesdata;
     let _index = orderservicesdata.indexOf(row);

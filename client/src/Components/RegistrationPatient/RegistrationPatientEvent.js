@@ -213,7 +213,7 @@ const getCashiersAndShiftMAP = ($this, type) => {
   AlgaehLoader({ show: true });
   let year = moment().format("YYYY");
   let month = moment().format("M");
-
+  let visit_type = _.find($this.props.visittypes, f => f.consultation === "Y");
   algaehApiCall({
     uri: "/shiftAndCounter/getCashiersAndShiftMAP",
     module: "masterSettings",
@@ -250,7 +250,7 @@ const getCashiersAndShiftMAP = ($this, type) => {
                 department_id: $this.props.department_id,
                 provider_id: $this.props.provider_id,
                 doctor_id: $this.props.provider_id,
-                visit_type: $this.props.visit_type,
+                visit_type: visit_type.hims_d_visit_type_id,
                 hims_d_services_id: $this.props.hims_d_services_id,
                 saveEnable: false,
                 clearEnable: true,
@@ -391,9 +391,10 @@ const generateReceipt = $this => {
 
 const getCtrlCode = ($this, patcode, row) => {
   AlgaehLoader({ show: true });
+  let visit_type = _.find($this.props.visittypes, f => f.consultation === "Y");
   let provider_id = $this.props.provider_id || null;
   let sub_department_id = $this.props.sub_department_id || null;
-  let visit_type = $this.props.visit_type || null;
+  // let visit_type = $this.props.visit_type || null;
   let hims_d_services_id = $this.props.hims_d_services_id || null;
   let fromAppoinment =
     $this.props.fromAppoinment === undefined
@@ -427,7 +428,7 @@ const getCtrlCode = ($this, patcode, row) => {
           data.patientRegistration.doctor_id = provider_id;
           data.patientRegistration.sub_department_id = sub_department_id;
 
-          data.patientRegistration.visit_type = visit_type;
+          data.patientRegistration.visit_type = visit_type.hims_d_visit_type_id;
           data.patientRegistration.saveEnable = false;
           data.patientRegistration.clearEnable = true;
           data.patientRegistration.hims_d_services_id = hims_d_services_id;
@@ -525,6 +526,7 @@ const ClosePackageUtilize = ($this, e) => {
     });
     return;
   }
+  let visit_type = _.find($this.props.visittypes, f => f.consultation === "Y");
   $this.setState(
     {
       isPackUtOpen: !$this.state.isPackUtOpen,
@@ -534,7 +536,7 @@ const ClosePackageUtilize = ($this, e) => {
       provider_id: e.doctor_id,
       doctor_id: e.doctor_id,
       sub_department_id: e.sub_department_id,
-      visit_type: 10,
+      visit_type: visit_type.hims_d_visit_type_id,
       package_details: e.package_details,
       from_package: true,
       visittypeselect: true,

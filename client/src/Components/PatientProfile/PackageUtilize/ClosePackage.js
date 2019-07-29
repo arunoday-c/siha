@@ -34,7 +34,8 @@ class ClosePackage extends PureComponent {
       actual_amount: 0,
       advance_amount: 0,
       utilize_amount: 0,
-      balance_amount: 0
+      balance_amount: 0,
+      receipt_date: new Date()
     };
     this.closedRemarks = 200;
   }
@@ -259,13 +260,22 @@ class ClosePackage extends PureComponent {
 
             <hr />
             <div className="row secondary-box-container">
-              <div className="col-lg-3">
+              <div className="col-lg-2">
                 <AlgaehLabel
                   label={{
                     forceLabel: "Actual Amount"
                   }}
                 />
                 <h6>{getAmountFormart(this.state.actual_amount)}</h6>
+              </div>
+
+              <div className="col-lg-2">
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Package Amount"
+                  }}
+                />
+                <h6>{getAmountFormart(this.state.unit_cost)}</h6>
               </div>
 
               <div className="col-lg-2">

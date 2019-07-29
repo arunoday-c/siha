@@ -1272,10 +1272,13 @@ module.exports = {
       let qry = "";
       for (let i = 0; i < inputParam.package_details.length; i++) {
         qry += mysql.format(
-          "UPDATE `hims_f_package_detail` SET utilized_qty=?, available_qty=? where hims_f_package_detail_id=?;",
+          "UPDATE `hims_f_package_detail` SET utilized_qty=?, available_qty=?,utilized_date=?,utilized_by=? \
+          where hims_f_package_detail_id=?;",
           [
             inputParam.package_details[i].utilized_qty,
             inputParam.package_details[i].available_qty,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
             inputParam.package_details[i].hims_f_package_detail_id
           ]
         );
@@ -1325,113 +1328,106 @@ module.exports = {
                       pool: _mysql.pool
                     };
                   }
-                  // _mysql.commitTransaction(() => {
-                  //   _mysql.releaseConnection();
-                  //   req.records = update_header;
-                  //   next();
-                  // });
 
                   utilities
                     .logger()
                     .log("consultation : ", inputParam.consultation);
+
+                  const _services = _.filter(inputParam.package_details, f => {
+                    return (
+                      f.service_type_id == 2 ||
+                      f.service_type_id == 5 ||
+                      f.service_type_id == 11
+                    );
+                  });
+                  const _inv_services = _.filter(
+                    inputParam.package_details,
+                    f => {
+                      return f.service_type_id == 4;
+                    }
+                  );
                   if (inputParam.consultation == false) {
-                    let IncludeValues = [
-                      "patient_id",
-                      "visit_id",
-                      "doctor_id",
-                      "service_type_id",
-                      "services_id",
-                      "trans_package_detail_id"
-                    ];
-
-                    _mysql
-                      .executeQuery({
-                        query:
-                          "INSERT INTO hims_f_ordered_services(??) VALUES ?",
-                        values: inputParam.package_details,
-                        includeValues: IncludeValues,
-                        extraValues: {
-                          quantity: 1,
-                          unit_cost: 0,
-
-                          gross_amount: 0,
-                          discount_amout: 0,
-                          discount_percentage: 0,
-                          net_amout: 0,
-                          copay_percentage: 0,
-                          copay_amount: 0,
-                          deductable_amount: 0,
-                          deductable_percentage: 0,
-
-                          patient_tax: 0,
-                          company_tax: 0,
-                          total_tax: 0,
-                          patient_resp: 0,
-                          patient_payable: 0,
-                          comapany_resp: 0,
-                          company_payble: 0,
-                          sec_deductable_percentage: 0,
-                          sec_deductable_amount: 0,
-                          sec_company_res: 0,
-                          sec_company_tax: 0,
-                          sec_company_paybale: 0,
-                          sec_copay_percntage: 0,
-                          sec_copay_amount: 0,
-                          created_by: req.userIdentity.algaeh_d_app_user_id,
-                          created_date: new Date(),
-                          updated_by: req.userIdentity.algaeh_d_app_user_id,
-                          updated_date: new Date(),
-                          hospital_id: req.userIdentity["x-branch"]
-                        },
-                        bulkInsertOrUpdate: true,
-                        printQuery: true
-                      })
-                      .then(order_detail => {
-                        let patient_id;
-                        let doctor_id;
-                        let visit_id;
-                        let services = new LINQ(inputParam.package_details)
-                          .Select(s => {
-                            patient_id = s.patient_id;
-                            doctor_id = s.doctor_id;
-                            visit_id = s.visit_id;
-                            return s.services_id;
-                          })
-                          .ToArray();
-
-                        utilities.logger().log("services: ", services);
-                        let servicesForPreAproval = [];
-
-                        servicesForPreAproval.push(patient_id);
-                        servicesForPreAproval.push(doctor_id);
-                        servicesForPreAproval.push(visit_id);
-                        servicesForPreAproval.push(services);
-
+                    insertOrderServices({
+                      services: _services,
+                      _mysql: _mysql,
+                      next: next,
+                      inputParam: inputParam,
+                      req: req
+                    })
+                      .then(Order_Services => {
                         utilities
                           .logger()
-                          .log(
-                            "servicesForPreAproval: ",
-                            servicesForPreAproval
-                          );
+                          .log("_inv_services : ", _inv_services.length);
+                        if (_inv_services.length > 0) {
+                          utilities.logger().log("IncludeValues : ");
+                          let IncludeValues = [
+                            "patient_id",
+                            "visit_id",
+                            "doctor_id",
+                            "service_type_id",
+                            "services_id",
+                            "trans_package_detail_id",
+                            "quantity",
+                            "inventory_item_id",
+                            "inventory_location_id",
+                            "inventory_uom_id"
+                          ];
 
-                        _mysql
-                          .executeQuery({
-                            query:
-                              "SELECT hims_f_ordered_services_id,services_id,created_date, service_type_id, test_type from hims_f_ordered_services\
-                               where `patient_id`=? and `doctor_id`=? and `visit_id`=? and `services_id` in (?)",
-                            values: servicesForPreAproval,
-                            printQuery: true
-                          })
-                          .then(ordered_services => {
-                            req.body.billdetails = ordered_services;
-                            req.records = ordered_services;
-                            next();
-                          })
-                          .catch(error => {
-                            _mysql.rollBackTransaction(() => {
-                              next(error);
+                          _mysql
+                            .executeQuery({
+                              query:
+                                "INSERT INTO hims_f_ordered_inventory(??) VALUES ?",
+                              values: _inv_services,
+                              includeValues: IncludeValues,
+                              extraValues: {
+                                unit_cost: 0,
+
+                                gross_amount: 0,
+                                discount_amout: 0,
+                                discount_percentage: 0,
+                                net_amout: 0,
+                                copay_percentage: 0,
+                                copay_amount: 0,
+                                deductable_amount: 0,
+                                deductable_percentage: 0,
+
+                                patient_tax: 0,
+                                company_tax: 0,
+                                total_tax: 0,
+                                patient_resp: 0,
+                                patient_payable: 0,
+                                comapany_resp: 0,
+                                company_payble: 0,
+                                sec_deductable_percentage: 0,
+                                sec_deductable_amount: 0,
+                                sec_company_res: 0,
+                                sec_company_tax: 0,
+                                sec_company_paybale: 0,
+                                sec_copay_percntage: 0,
+                                sec_copay_amount: 0,
+                                created_by:
+                                  req.userIdentity.algaeh_d_app_user_id,
+                                created_date: new Date(),
+                                updated_by:
+                                  req.userIdentity.algaeh_d_app_user_id,
+                                updated_date: new Date(),
+                                hospital_id: req.userIdentity["x-branch"]
+                              },
+                              bulkInsertOrUpdate: true,
+                              printQuery: true
+                            })
+                            .then(inv_order_detail => {
+                              req.records = inv_order_detail;
+                              next();
+                            })
+                            .catch(error => {
+                              _mysql.rollBackTransaction(() => {
+                                next(error);
+                              });
                             });
-                          });
+                        } else {
+                          next();
+                        }
                       })
                       .catch(error => {
                         _mysql.rollBackTransaction(() => {
@@ -1439,7 +1435,6 @@ module.exports = {
                         });
                       });
                   } else {
-                    utilities.logger().log("else consultation : ");
                     req.records = update_header;
                     next();
                   }
@@ -3017,4 +3012,125 @@ function insuranceServiceDetails(body, next, _mysql, resolve) {
   } catch (e) {
     next(e);
   }
+}
+function insertOrderServices(options) {
+  return new Promise((resolve, reject) => {
+    try {
+      const _mysql = options._mysql;
+      const _services = options.services;
+      const inputParam = options.inputParam;
+      const req = options.req;
+      const utilities = new algaehUtilities();
+      utilities.logger().log("_services : ", _services.length);
+      if (_services.length > 0) {
+        let IncludeValues = [
+          "patient_id",
+          "visit_id",
+          "doctor_id",
+          "service_type_id",
+          "services_id",
+          "trans_package_detail_id"
+        ];
+
+        _mysql
+          .executeQuery({
+            query: "INSERT INTO hims_f_ordered_services(??) VALUES ?",
+            values: _services,
+            includeValues: IncludeValues,
+            extraValues: {
+              quantity: 1,
+              unit_cost: 0,
+
+              gross_amount: 0,
+              discount_amout: 0,
+              discount_percentage: 0,
+              net_amout: 0,
+              copay_percentage: 0,
+              copay_amount: 0,
+              deductable_amount: 0,
+              deductable_percentage: 0,
+
+              patient_tax: 0,
+              company_tax: 0,
+              total_tax: 0,
+              patient_resp: 0,
+              patient_payable: 0,
+              comapany_resp: 0,
+              company_payble: 0,
+              sec_deductable_percentage: 0,
+              sec_deductable_amount: 0,
+              sec_company_res: 0,
+              sec_company_tax: 0,
+              sec_company_paybale: 0,
+              sec_copay_percntage: 0,
+              sec_copay_amount: 0,
+              created_by: req.userIdentity.algaeh_d_app_user_id,
+              created_date: new Date(),
+              updated_by: req.userIdentity.algaeh_d_app_user_id,
+              updated_date: new Date(),
+              hospital_id: req.userIdentity["x-branch"]
+            },
+            bulkInsertOrUpdate: true,
+            printQuery: true
+          })
+          .then(order_detail => {
+            let patient_id;
+            let doctor_id;
+            let visit_id;
+            let services = new LINQ(inputParam.package_details)
+              .Select(s => {
+                patient_id = s.patient_id;
+                doctor_id = s.doctor_id;
+                visit_id = s.visit_id;
+                return s.services_id;
+              })
+              .ToArray();
+
+            utilities.logger().log("services: ", services);
+            let servicesForPreAproval = [];
+
+            servicesForPreAproval.push(patient_id);
+            servicesForPreAproval.push(doctor_id);
+            servicesForPreAproval.push(visit_id);
+            servicesForPreAproval.push(services);
+
+            utilities
+              .logger()
+              .log("servicesForPreAproval: ", servicesForPreAproval);
+
+            _mysql
+              .executeQuery({
+                query:
+                  "SELECT hims_f_ordered_services_id,services_id,created_date, service_type_id, test_type from hims_f_ordered_services\
+                   where `patient_id`=? and `doctor_id`=? and `visit_id`=? and `services_id` in (?)",
+                values: servicesForPreAproval,
+                printQuery: true
+              })
+              .then(ordered_services => {
+                req.body.billdetails = ordered_services;
+                resolve();
+              })
+              .catch(error => {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                  reject(error);
+                });
+              });
+          })
+          .catch(error => {
+            _mysql.rollBackTransaction(() => {
+              options.next(error);
+              reject(error);
+            });
+          });
+      } else {
+        req.body.billdetails = [];
+        resolve();
+      }
+    } catch (e) {
+      reject(e);
+    }
+  }).catch(e => {
+    options.next(e);
+  });
 }
