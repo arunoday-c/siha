@@ -1,6 +1,7 @@
 #branchCompanyList {
   overflow-y: auto;
   overflow-x: hidden;
+  min-height: 73vh;
   max-height: 73vh;
   .branchEachList {
     border-bottom: 1px solid #d3d3d3;
@@ -21,10 +22,10 @@
         border: 1px solid #fff;
         border-radius: 50%;
         text-align: center;
-        height: 50px;
-        width: 50px;
-        line-height: 50px;
-        font-size: 1.5rem;
+        height: 40px;
+        width: 40px;
+        line-height: 40px;
+        font-size: 1.2rem;
         margin: 0 5px;
         background: #fff;
         box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
@@ -62,6 +63,7 @@
     border: 1px solid #d3d3d3;
     overflow-y: auto;
     overflow-x: hidden;
+    min-height: 66vh;
     max-height: 66vh;
     font-size: 0.85rem;
     li {
