@@ -754,10 +754,10 @@ class Appointment extends PureComponent {
       delete patient.contact_number;
       delete patient.email;
       delete patient.arabic_name;
-      return this.props.routeComponents(patient);
+      return this.props.routeComponents(patient, this.state.checkInId);
     }
 
-    return this.props.routeComponents(patient);
+    return this.props.routeComponents(patient, this.state.checkInId);
   }
 
   openEditModal(patient, data, e) {
