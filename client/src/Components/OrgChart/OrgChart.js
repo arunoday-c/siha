@@ -7,7 +7,7 @@ import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 export default class OrgChart extends Component {
   constructor(props) {
     super(props);
-    this.state = { pageDisplay: "EmployeeView" };
+    this.state = { pageDisplay: "DepartmentView" };
   }
 
   openTab(e) {
@@ -28,27 +28,27 @@ export default class OrgChart extends Component {
           <div className="tabMaster toggle-section">
             <ul className="nav">
               <li
-                algaehtabs={"EmployeeView"}
+                algaehtabs={"DepartmentView"}
                 className={"nav-item tab-button active"}
                 onClick={this.openTab.bind(this)}
               >
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Employee View"
+                      forceLabel: "Department View"
                     }}
                   />
                 }
-              </li>
+              </li>{" "}
               <li
-                algaehtabs={"DepartmentView"}
-                className={"nav-item tab-button"}
+                algaehtabs={"EmployeeView"}
+                className={"nav-item tab-button "}
                 onClick={this.openTab.bind(this)}
               >
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Department View"
+                      forceLabel: "Employee View"
                     }}
                   />
                 }

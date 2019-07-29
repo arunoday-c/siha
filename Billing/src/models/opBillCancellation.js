@@ -349,5 +349,218 @@ module.exports = {
         next(error);
       });
     }
+  },
+  checkLabSampleCollected: (req, res, next) => {
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
+    try {
+      let inputParam = { ...req.body };
+      const utilities = new algaehUtilities();
+      utilities
+        .logger()
+        .log("checkLabSampleCollected: ", inputParam.billdetails);
+
+      const Lab_Services = _.filter(
+        inputParam.billdetails,
+        f =>
+          f.service_type_id ==
+          appsettings.hims_d_service_type.service_type_id.Lab
+      );
+      utilities.logger().log("Lab_Services: ", Lab_Services.length);
+      if (Lab_Services.length > 0) {
+        let _service_id = _.map(Lab_Services, o => {
+          return o.services_id;
+        });
+        utilities.logger().log("_service_id: ", _service_id.length);
+        _mysql
+          .executeQuery({
+            query:
+              "SELECT ordered_services_id, hims_f_lab_order_id, status FROM `hims_f_lab_order` WHERE `visit_id`=? and service_id in (?)",
+            values: [inputParam.visit_id, _service_id],
+            printQuery: true
+          })
+          .then(lab_data_result => {
+            if (lab_data_result.length > 0) {
+              utilities.logger().log("checked_in: ", lab_data_result);
+              const Lab_Services_Collected = _.filter(
+                lab_data_result,
+                f => f.status != "O"
+              );
+
+              if (Lab_Services_Collected.length > 0) {
+                req.laboratory = {
+                  internal_error: true,
+                  message:
+                    "Already Sample Collected for Laboratory cannot cancel"
+                };
+                _mysql.rollBackTransaction(() => {
+                  next();
+                });
+              } else {
+                let strQry = "";
+
+                for (let i = 0; i < lab_data_result.length; i++) {
+                  strQry += _mysql.mysqlQueryFormat(
+                    "DELETE FROM hims_f_ord_analytes where order_id=?; DELETE FROM hims_f_lab_sample where order_id=?;\
+                  DELETE FROM hims_f_lab_order where hims_f_lab_order_id=?;",
+                    [
+                      lab_data_result[i].hims_f_lab_order_id,
+                      lab_data_result[i].hims_f_lab_order_id,
+                      lab_data_result[i].hims_f_lab_order_id
+                    ]
+                  );
+                  if (lab_data_result[i].ordered_services_id != null) {
+                    strQry += _mysql.mysqlQueryFormat(
+                      "UPDATE hims_f_ordered_services SET billed='N' where hims_f_ordered_services_id=?;",
+                      [lab_data_result[i].ordered_services_id]
+                    );
+                  }
+                }
+                _mysql
+                  .executeQuery({
+                    query: strQry,
+                    printQuery: true
+                  })
+                  .then(result => {
+                    req.laboratory = {
+                      ...result[0],
+                      ...{
+                        internal_error: false
+                      }
+                    };
+                    next();
+                  })
+                  .catch(e => {
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
+                    });
+                  });
+              }
+            } else {
+              req.laboratory = {
+                internal_error: false
+              };
+              next();
+            }
+          })
+          .catch(e => {
+            _mysql.rollBackTransaction(() => {
+              next(error);
+            });
+          });
+      } else {
+        req.laboratory = {
+          internal_error: false
+        };
+        next();
+      }
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(error);
+      });
+    }
+  },
+
+  checkRadSheduled: (req, res, next) => {
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
+    try {
+      let inputParam = { ...req.body };
+      const utilities = new algaehUtilities();
+      utilities.logger().log("checkRadSheduled: ", inputParam.billdetails);
+
+      const Rad_Services = _.filter(
+        inputParam.billdetails,
+        f =>
+          f.service_type_id ==
+          appsettings.hims_d_service_type.service_type_id.Radiology
+      );
+      utilities.logger().log("Rad_Services: ", Rad_Services.length);
+      if (Rad_Services.length > 0) {
+        let _service_id = _.map(Rad_Services, o => {
+          return o.services_id;
+        });
+        utilities.logger().log("Rad_service_id: ", _service_id.length);
+        _mysql
+          .executeQuery({
+            query:
+              "SELECT ordered_services_id, hims_f_rad_order_id, status FROM `hims_f_rad_order` WHERE `visit_id`=? and service_id in (?)",
+            values: [inputParam.visit_id, _service_id],
+            printQuery: true
+          })
+          .then(rad_data_result => {
+            if (rad_data_result.length > 0) {
+              utilities.logger().log("rad_date: ", rad_data_result);
+              const Rad_Services_Sheduled = _.filter(
+                rad_data_result,
+                f => f.status != "O"
+              );
+
+              if (Rad_Services_Sheduled.length > 0) {
+                req.radiology = {
+                  internal_error: true,
+                  message: "Already Sheduled for Radiology cannot cancel"
+                };
+                _mysql.rollBackTransaction(() => {
+                  next();
+                });
+              } else {
+                let strQry = "";
+
+                for (let i = 0; i < rad_data_result.length; i++) {
+                  strQry += _mysql.mysqlQueryFormat(
+                    "DELETE FROM hims_f_rad_order where hims_f_rad_order_id=?;",
+                    [rad_data_result[i].hims_f_rad_order_id]
+                  );
+                  if (rad_data_result[i].ordered_services_id != null) {
+                    strQry += _mysql.mysqlQueryFormat(
+                      "UPDATE hims_f_ordered_services SET billed='N' where hims_f_ordered_services_id=?;",
+                      [rad_data_result[i].ordered_services_id]
+                    );
+                  }
+                }
+                _mysql
+                  .executeQuery({
+                    query: strQry,
+                    printQuery: true
+                  })
+                  .then(result => {
+                    req.radiology = {
+                      ...result[0],
+                      ...{
+                        internal_error: false
+                      }
+                    };
+                    next();
+                  })
+                  .catch(e => {
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
+                    });
+                  });
+              }
+            } else {
+              req.radiology = {
+                internal_error: false
+              };
+              next();
+            }
+          })
+          .catch(e => {
+            _mysql.rollBackTransaction(() => {
+              next(error);
+            });
+          });
+      } else {
+        req.radiology = {
+          internal_error: false
+        };
+        next();
+      }
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(error);
+      });
+    }
   }
 };

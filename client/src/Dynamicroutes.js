@@ -19,7 +19,7 @@ import InvoiceGeneration from "./Components/InsuranceClaims/InvoiceGeneration/In
 import ItemMomentEnquiry from "./Components/Pharmacy/ItemMomentEnquiry/ItemMomentEnquiry";
 import DoctorsWorkbench from "./Components/Workbench/Workbench";
 import NurseWorkbench from "./Components/Workbench/Workbench";
-import CommonDashboard from "./Components/Dashboard/Dashboard";
+import CommonDashboard from "./Components/Dashboard/hr-dashboard";
 import PatientPackages from "./Components/PatientPackages/PatientPackages";
 
 const PageToPlot = {

@@ -827,7 +827,7 @@ class ApplyLeave extends Component {
                         {
                           fieldName: "actions",
                           label: (
-                            <AlgaehLabel label={{ forceLabel: "Actions" }} />
+                            <AlgaehLabel label={{ forceLabel: "Action" }} />
                           ),
                           displayTemplate: row => {
                             return (
@@ -842,7 +842,16 @@ class ApplyLeave extends Component {
                           },
                           others: {
                             filterable: false,
-                            maxWidth: 55
+                            maxWidth: 60
+                          }
+                        },
+                        {
+                          fieldName: "leave_application_code",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Leave Code" }} />
+                          ),
+                          others: {
+                            minWidth: 120
                           }
                         },
                         {
@@ -876,97 +885,18 @@ class ApplyLeave extends Component {
                               </span>
                             );
                           },
-                          editorTemplate: row => {
-                            return (
-                              <span>
-                                {row.status === "PEN" ? (
-                                  <span className="badge badge-warning">
-                                    Pending
-                                  </span>
-                                ) : row.status === "APR" ? (
-                                  <span className="badge badge-success">
-                                    Approved
-                                  </span>
-                                ) : row.status === "REJ" ? (
-                                  <span className="badge badge-danger">
-                                    Rejected
-                                  </span>
-                                ) : row.status === "CAN" ? (
-                                  <span className="badge badge-danger">
-                                    Cancelled
-                                  </span>
-                                ) : (
-                                  "------"
-                                )}
-                              </span>
-                            );
-                          }
-                        },
-                        {
-                          fieldName: "total_applied_days",
 
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Applied Days" }}
-                            />
-                          )
-                        },
-                        {
-                          fieldName: "leave_application_code",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Leave Code" }} />
-                          )
-                        },
-                        {
-                          fieldName: "application_date",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Leave Requested On" }}
-                            />
-                          ),
-                          displayTemplate: row => {
-                            return (
-                              <span>
-                                {moment(row.application_date).format(
-                                  "DD-MM-YYYY"
-                                )}
-                              </span>
-                            );
+                          others: {
+                            maxWidth: 80
                           }
                         },
                         {
                           fieldName: "leave_description",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Leave Type" }} />
-                          )
-                        },
-                        {
-                          fieldName: "from_date",
-
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Leave From" }} />
                           ),
-
-                          displayTemplate: row => {
-                            return (
-                              <span>
-                                {moment(row.from_date).format("DD-MM-YYYY")}
-                              </span>
-                            );
-                          }
-                        },
-                        {
-                          fieldName: "to_date",
-
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Leave To" }} />
-                          ),
-                          displayTemplate: row => {
-                            return (
-                              <span>
-                                {moment(row.to_date).format("DD-MM-YYYY")}
-                              </span>
-                            );
+                          others: {
+                            maxWidth: 150
                           }
                         },
                         {
@@ -985,6 +915,76 @@ class ApplyLeave extends Component {
                                   : "Not Specified"}
                               </span>
                             );
+                          },
+                          others: {
+                            minWidth: 250
+                          }
+                        },
+                        {
+                          fieldName: "total_applied_days",
+
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Applied Days" }}
+                            />
+                          ),
+                          others: {
+                            maxWidth: 150
+                          }
+                        },
+                        {
+                          fieldName: "application_date",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Requested On" }}
+                            />
+                          ),
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {moment(row.application_date).format(
+                                  "DD-MM-YYYY"
+                                )}
+                              </span>
+                            );
+                          },
+                          others: {
+                            maxWidth: 150
+                          }
+                        },
+                        {
+                          fieldName: "from_date",
+
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Leave From" }} />
+                          ),
+
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {moment(row.from_date).format("DD-MM-YYYY")}
+                              </span>
+                            );
+                          },
+                          others: {
+                            maxWidth: 150
+                          }
+                        },
+                        {
+                          fieldName: "to_date",
+
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Leave To" }} />
+                          ),
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {moment(row.to_date).format("DD-MM-YYYY")}
+                              </span>
+                            );
+                          },
+                          others: {
+                            maxWidth: 150
                           }
                         },
                         {
@@ -992,22 +992,18 @@ class ApplyLeave extends Component {
 
                           label: (
                             <AlgaehLabel
-                              label={{ forceLabel: "Authorized Level 1" }}
+                              label={{ forceLabel: "Auth. Level 1" }}
                             />
                           ),
                           displayTemplate: row => {
                             return (
                               <span>
-                                {row.authorized1 === "Y" ? "Yes" : "No"}
+                                {row.authorized1 === "Y" ? "Done" : "Pending"}
                               </span>
                             );
                           },
-                          editorTemplate: row => {
-                            return (
-                              <span>
-                                {row.authorized1 === "Y" ? "Yes" : "No"}
-                              </span>
-                            );
+                          others: {
+                            maxWidth: 150
                           }
                         },
                         {
@@ -1015,22 +1011,18 @@ class ApplyLeave extends Component {
 
                           label: (
                             <AlgaehLabel
-                              label={{ forceLabel: "Authorized Level 2" }}
+                              label={{ forceLabel: "Auth. Level 2" }}
                             />
                           ),
                           displayTemplate: row => {
                             return (
                               <span>
-                                {row.authorized2 === "Y" ? "Yes" : "No"}
+                                {row.authorized2 === "Y" ? "Done" : "Pending"}
                               </span>
                             );
                           },
-                          editorTemplate: row => {
-                            return (
-                              <span>
-                                {row.authorized2 === "Y" ? "Yes" : "No"}
-                              </span>
-                            );
+                          others: {
+                            maxWidth: 150
                           }
                         },
                         {
@@ -1038,22 +1030,18 @@ class ApplyLeave extends Component {
 
                           label: (
                             <AlgaehLabel
-                              label={{ forceLabel: "Authorized Level 3" }}
+                              label={{ forceLabel: "Auth. Level 3" }}
                             />
                           ),
                           displayTemplate: row => {
                             return (
                               <span>
-                                {row.authorized3 === "Y" ? "Yes" : "No"}
+                                {row.authorized3 === "Y" ? "Done" : "Pending"}
                               </span>
                             );
                           },
-                          editorTemplate: row => {
-                            return (
-                              <span>
-                                {row.authorized3 === "Y" ? "Yes" : "No"}
-                              </span>
-                            );
+                          others: {
+                            maxWidth: 150
                           }
                         }
                       ]}

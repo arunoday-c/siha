@@ -399,7 +399,6 @@ const CostPayerTypeDataOption = {
 
 class Dashboard extends Component {
   constructor(props) {
-    debugger;
     super(props);
     this.state = {
       sidBarOpen: true,

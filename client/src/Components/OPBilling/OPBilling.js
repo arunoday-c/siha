@@ -556,7 +556,8 @@ function mapStateToProps(state) {
     patienttype: state.patienttype,
     networkandplans: state.networkandplans,
     deptanddoctors: state.deptanddoctors,
-    PatientPackageList: state.PatientPackageList
+    PatientPackageList: state.PatientPackageList,
+    orderedList: state.orderedList
   };
 }
 
@@ -569,7 +570,8 @@ function mapDispatchToProps(dispatch) {
       getPatientInsurance: AlgaehActions,
       getNetworkPlans: AlgaehActions,
       getDepartmentsandDoctors: AlgaehActions,
-      getPatientPackage: AlgaehActions
+      getPatientPackage: AlgaehActions,
+      getOrderList: AlgaehActions
     },
     dispatch
   );

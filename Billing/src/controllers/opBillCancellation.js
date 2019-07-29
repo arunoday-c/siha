@@ -4,7 +4,9 @@ import {
   addOpBillCancellation,
   getBillCancellation,
   updateOPBilling,
-  updateEncounterDetails
+  updateEncounterDetails,
+  checkLabSampleCollected,
+  checkRadSheduled
 } from "../models/opBillCancellation";
 import { getReceiptEntry, addReceiptEntry } from "../models/receiptentry";
 
@@ -21,6 +23,28 @@ export default () => {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: false,
           records: req.patientencounter
+        });
+      } else {
+        next();
+      }
+    },
+    checkLabSampleCollected,
+    (req, res, next) => {
+      if (req.laboratory.internal_error == true) {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: false,
+          records: req.laboratory
+        });
+      } else {
+        next();
+      }
+    },
+    checkRadSheduled,
+    (req, res, next) => {
+      if (req.radiology.internal_error == true) {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: false,
+          records: req.radiology
         });
       } else {
         next();

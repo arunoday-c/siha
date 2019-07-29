@@ -477,8 +477,7 @@ const getPatientDetails = $this => {
             uri: "/orderAndPreApproval/getPatientPackage",
             method: "GET",
             data: {
-              patient_id: $this.state.patient_id,
-              package_visit_type: "M"
+              patient_id: $this.state.patient_id
             },
             redux: {
               type: "ORDER_SERVICES_GET_DATA",
@@ -510,6 +509,17 @@ const getPatientDetails = $this => {
 };
 
 const ShowPackageUtilize = $this => {
+  $this.props.getOrderList({
+    uri: "/orderAndPreApproval/selectOrderServicesbyDoctor",
+    method: "GET",
+    data: {
+      visit_id: $this.state.visit_id
+    },
+    redux: {
+      type: "ORDER_SERVICES_GET_DATA",
+      mappingName: "orderedList"
+    }
+  });
   $this.setState({
     isPackUtOpen: !$this.state.isPackUtOpen,
     package_detail: $this.props.PatientPackageList[0]
@@ -536,6 +546,18 @@ const ClosePackageUtilize = $this => {
               pack_balance_amount: data[0].balance_amount
             });
           }
+        }
+      });
+
+      $this.props.getOrderList({
+        uri: "/orderAndPreApproval/selectOrderServicesbyDoctor",
+        method: "GET",
+        data: {
+          visit_id: $this.state.visit_id
+        },
+        redux: {
+          type: "ORDER_SERVICES_GET_DATA",
+          mappingName: "orderedList"
         }
       });
     }

@@ -139,6 +139,16 @@ class RegistrationPatient extends Component {
         });
       }
     });
+
+    this.props.getVisittypes({
+      uri: "/visitType/get",
+      module: "masterSettings",
+      method: "GET",
+      redux: {
+        type: "VISITTYPE_GET_DATA",
+        mappingName: "visittypes"
+      }
+    });
   }
 
   CloseRefundScreen(e) {
@@ -981,7 +991,8 @@ function mapStateToProps(state) {
     primaryinsurance: state.primaryinsurance,
     secondaryinsurance: state.secondaryinsurance,
     hospitaldetails: state.hospitaldetails,
-    PatientPackageList: state.PatientPackageList
+    PatientPackageList: state.PatientPackageList,
+    visittypes: state.visittypes
   };
 }
 
@@ -990,7 +1001,7 @@ function mapDispatchToProps(dispatch) {
     {
       getPatientDetails: AlgaehActions,
       initialStatePatientData: AlgaehActions,
-
+      getVisittypes: AlgaehActions,
       initialStateBillGen: AlgaehActions,
       getPatientInsurance: AlgaehActions,
       getCountries: AlgaehActions,

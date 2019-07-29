@@ -49,7 +49,10 @@ class NewPackage extends PureComponent {
       radioActive: true,
       radioInactive: false,
       package_status: "A",
-      cancellation_policy: "AC"
+      cancellation_policy: "AC",
+      cancellation_per: 0,
+      cancellation_amount: 0,
+      cancellation_type: "P"
     };
     this.baseState = this.state;
   }
@@ -131,6 +134,9 @@ class NewPackage extends PureComponent {
 
   discounthandle(e) {
     NewPackageEvent().discounthandle(this, e);
+  }
+  candiscounthandle(e) {
+    NewPackageEvent().candiscounthandle(this, e);
   }
 
   gridtexthandel(row, e) {
@@ -445,7 +451,6 @@ class NewPackage extends PureComponent {
                                 }
                               }}
                             />
-
                             <AlagehAutoComplete
                               div={{ className: "col-3 form-group" }}
                               label={{
@@ -475,7 +480,6 @@ class NewPackage extends PureComponent {
                                 }
                               }}
                             />
-
                             {this.state.advance_type === "P" ? (
                               <AlagehFormGroup
                                 div={{ className: "col form-group" }}
@@ -516,6 +520,75 @@ class NewPackage extends PureComponent {
                                   value: this.state.advance_amount,
                                   className: "txt-fld",
                                   name: "advance_amount",
+                                  events: {
+                                    onChange: this.texthandle.bind(this)
+                                  },
+                                  others: {
+                                    min: 0,
+                                    max: 100,
+                                    disabled: this.state.approvedPack
+                                  }
+                                }}
+                              />
+                            )}
+
+                            <AlagehAutoComplete
+                              div={{ className: "col-3 form-group" }}
+                              label={{
+                                forceLabel: "Cancel Type"
+                              }}
+                              selector={{
+                                name: "cancellation_type",
+                                className: "select-fld",
+                                value: this.state.cancellation_type,
+                                dataSource: {
+                                  textField: "name",
+                                  valueField: "value",
+                                  data: GlobalVariables.FORMAT_DISCOUNT
+                                },
+                                onChange: this.texthandle.bind(this),
+                                onClear: () => {
+                                  this.setState({
+                                    cancellation_type: null
+                                  });
+                                },
+                                others: {
+                                  disabled: this.state.approvedPack
+                                }
+                              }}
+                            />
+                            {this.state.cancellation_type === "P" ? (
+                              <AlagehFormGroup
+                                div={{ className: "col form-group" }}
+                                label={{
+                                  forceLabel: "Cancel Percent"
+                                }}
+                                textBox={{
+                                  decimal: { allowNegative: false },
+                                  value: this.state.cancellation_per,
+                                  className: "txt-fld",
+                                  name: "cancellation_per",
+                                  events: {
+                                    onChange: this.candiscounthandle.bind(this)
+                                  },
+                                  others: {
+                                    min: 0,
+                                    max: 100,
+                                    disabled: this.state.approvedPack
+                                  }
+                                }}
+                              />
+                            ) : (
+                              <AlagehFormGroup
+                                div={{ className: "col form-group" }}
+                                label={{
+                                  forceLabel: "Cancel Amount"
+                                }}
+                                textBox={{
+                                  decimal: { allowNegative: false },
+                                  value: this.state.cancellation_amount,
+                                  className: "txt-fld",
+                                  name: "cancellation_amount",
                                   events: {
                                     onChange: this.texthandle.bind(this)
                                   },
@@ -829,9 +902,7 @@ class NewPackage extends PureComponent {
                         onClick={this.InsertPackages.bind(this)}
                         type="button"
                         className="btn btn-primary"
-                        disabled={
-                          this.state.package_status === "I" ? true : false
-                        }
+                        disabled={this.state.button_enable}
                       >
                         {this.state.hims_d_package_header_id === null ? (
                           <AlgaehLabel label={{ fieldName: "btnSave" }} />
