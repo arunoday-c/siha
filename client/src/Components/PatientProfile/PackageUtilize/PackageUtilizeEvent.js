@@ -212,22 +212,28 @@ export default function PackageSetupEvent() {
           }
 
           if ($this.state.consultation === true) {
+            debugger;
             const cons_service = _.find(
-              $this.state.package_details,
+              InputObj.package_details,
               f => f.service_type_id === 1
             );
-
+            let inputObj = {};
+            if (cons_service === null || cons_service === undefined) {
+              inputObj.employee_id = InputObj.doctor_id;
+            } else {
+              inputObj.services_id = cons_service.service_id;
+            }
             algaehApiCall({
               uri: "/billing/getEmployeeAndDepartments",
               module: "billing",
               method: "get",
-              data: { services_id: cons_service.service_id },
+              data: inputObj,
               onSuccess: response => {
                 if (response.data.success) {
                   InputObj.doctor_id = response.data.records[0].employee_id;
                   InputObj.sub_department_id =
                     response.data.records[0].sub_department_id;
-                  InputObj.services_id = cons_service.service_id;
+                  InputObj.services_id = response.data.records[0].services_id;
                   InputObj.hims_f_package_detail_id =
                     InputObj.package_details[0].hims_f_package_detail_id;
                   InputObj.quantity = InputObj.package_details[0].quantity;

@@ -84,6 +84,7 @@ class PackageSetup extends Component {
                 open={this.state.isOpen}
                 onClose={this.CloseModel.bind(this)}
                 PackagesPop={this.state.PackagesPop}
+                all_Pakage_data={this.state.all_packages}
               />
             </div>
           </div>

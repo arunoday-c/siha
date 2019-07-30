@@ -355,7 +355,11 @@ class DoctorsWorkbench extends Component {
                             </span>
                             <span className="op-sec-3">
                               <span className="opPatientStatus newVisit">
-                                New Visit
+                                {data.new_visit_patient === "Y"
+                                  ? "New Visit"
+                                  : data.new_visit_patient === "P"
+                                  ? "Package Utilize Visit"
+                                  : "Follow Up Visit"}
                               </span>
                             </span>
                           </li>
