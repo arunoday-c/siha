@@ -1,6 +1,9 @@
 import algaehMysql from "algaeh-mysql";
+import algaehUtilities from "algaeh-utilities/utilities";
+import _ from "lodash";
 
 module.exports = {
+  //created by:irfan
   addBranchMaster: (req, res, next) => {
     try {
       if (req.userIdentity.role_type != "GN") {
@@ -48,6 +51,7 @@ module.exports = {
       next(e);
     }
   },
+  //created by:irfan
   getBranchMaster: (req, res, next) => {
     try {
       if (req.userIdentity.role_type != "GN") {
@@ -83,6 +87,7 @@ module.exports = {
       next(e);
     }
   },
+  //created by:irfan
   getActiveBranches: (req, res, next) => {
     try {
       if (req.userIdentity.role_type != "GN") {
@@ -118,6 +123,7 @@ module.exports = {
       next(e);
     }
   },
+  //created by:irfan
   updateBranchMaster: (req, res, next) => {
     try {
       if (req.userIdentity.role_type != "GN") {
@@ -162,6 +168,119 @@ module.exports = {
         req.records = {
           invalid_data: true,
           message: "you dont have admin privilege"
+        };
+        next();
+      }
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+
+  //created by:irfan
+  getActiveDepartments: (req, res, next) => {
+    try {
+      if (req.userIdentity.role_type != "GN") {
+        const _mysql = new algaehMysql();
+        const utilities = new algaehUtilities();
+        _mysql
+          .executeQuery({
+            query:
+              "select hims_d_department_id,D.department_code,D.department_name,SD.department_id,\
+              hims_d_sub_department_id,SD.sub_department_code,SD.sub_department_name\
+              from hims_d_department D inner join hims_d_sub_department  SD\
+              on D.hims_d_department_id=SD.department_id\
+              where D.department_status='A' and SD.sub_department_status='A';"
+          })
+          .then(result => {
+            _mysql.releaseConnection();
+            const outputArray = _.chain(result)
+              .groupBy(g => g.hims_d_department_id)
+              .map(m => {
+                return {
+                  hims_d_department_id: m[0].hims_d_department_id,
+                  department_code: m[0].department_code,
+                  department_name: m[0].department_name,
+                  subDepts: m.map(item => {
+                    return {
+                      hims_d_sub_department_id: item.hims_d_sub_department_id,
+                      sub_department_code: item.sub_department_code,
+                      sub_department_name: item.sub_department_name
+                    };
+                  })
+                };
+              })
+              .value();
+
+            req.records = outputArray;
+            next();
+          })
+          .catch(error => {
+            _mysql.releaseConnection();
+            next(error);
+          });
+      } else {
+        req.records = {
+          invalid_data: true,
+          message: "you dont have admin privilege"
+        };
+        next();
+      }
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  //created by:irfan
+  getBranchWiseDepartments: (req, res, next) => {
+    try {
+      if (req.query.hospital_id > 0) {
+        const _mysql = new algaehMysql();
+        const utilities = new algaehUtilities();
+        _mysql
+          .executeQuery({
+            query:
+              "select hims_m_branch_dept_map_id,hims_d_department_id,D.department_code,D.department_name,SD.department_id,\
+              hims_d_sub_department_id,SD.sub_department_code,SD.sub_department_name\
+              from hims_m_branch_dept_map B  inner join hims_d_sub_department  SD \
+              on B.sub_department_id=SD.hims_d_sub_department_id \
+              inner join hims_d_department D on D.hims_d_department_id=SD.department_id\
+              where B.hospital_id=?;",
+            values: [req.query.hospital_id]
+          })
+          .then(result => {
+            _mysql.releaseConnection();
+            const outputArray = _.chain(result)
+              .groupBy(g => g.hims_d_department_id)
+              .map(m => {
+                return {
+                  hims_d_department_id: m[0].hims_d_department_id,
+                  hims_m_branch_dept_map_id: m[0].hims_m_branch_dept_map_id,
+                  department_code: m[0].department_code,
+                  department_name: m[0].department_name,
+                  subDepts: m.map(item => {
+                    return {
+                      hims_d_sub_department_id: item.hims_d_sub_department_id,
+                      sub_department_code: item.sub_department_code,
+                      sub_department_name: item.sub_department_name,
+                      hims_m_branch_dept_map_id: item.hims_m_branch_dept_map_id
+                    };
+                  })
+                };
+              })
+              .value();
+
+            req.records = outputArray;
+            next();
+          })
+          .catch(error => {
+            _mysql.releaseConnection();
+            next(error);
+          });
+      } else {
+        req.records = {
+          invalid_data: true,
+          message: "please provide branch id"
         };
         next();
       }

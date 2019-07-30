@@ -245,24 +245,6 @@ export default function ScreenAssignmentEvents() {
   };
 }
 
-// function getGroupData($this) {
-//   algaehApiCall({
-//     uri: "/algaehappuser/selectAppGroup",
-//     method: "GET",
-//     onSuccess: response => {
-//       if (response.data.success) {
-//         $this.setState({ groups: response.data.records });
-//       }
-//     },
-//     onFailure: error => {
-//       swalMessage({
-//         title: error.message,
-//         type: "error"
-//       });
-//     }
-//   });
-// }
-
 function getRoleBaseActive($this) {
   algaehApiCall({
     uri: "/algaehMasters/getRoleBaseActiveModules",

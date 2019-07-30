@@ -13,7 +13,7 @@ import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import swal from "sweetalert2";
 import { FORMAT_YESNO } from "../../../utils/GlobalVariables.json";
-
+import _ from "lodash";
 // /branchMaster/getBranchMaster
 
 export default class BranchMaster extends Component {
@@ -21,10 +21,16 @@ export default class BranchMaster extends Component {
     super(props);
     this.state = {
       allBranches: [],
-      activeBranches: []
+      activeBranches: [],
+      allDepartments: [],
+      Departments: []
     };
     this.getBranchMaster();
-    // this.getActiveBranches();
+    this.getActiveBranches();
+    this.getCurrencyMaster();
+    this.getCountryMaster();
+    this.getnationalityMaster();
+    this.getActiveDepartments();
   }
 
   clearState() {
@@ -43,13 +49,13 @@ export default class BranchMaster extends Component {
     this.setState({ [value.name]: value.value });
   }
 
-  componentDidMount() {
-    // this.getBranchMaster();
-    this.getActiveBranches();
-    this.getCurrencyMaster();
-    this.getCountryMaster();
-    this.getnationalityMaster();
-  }
+  // componentDidMount() {
+
+  //   this.getActiveBranches();
+  //   this.getCurrencyMaster();
+  //   this.getCountryMaster();
+  //   this.getnationalityMaster();
+  // }
 
   changeTexts(e) {
     const { name, value } = e.target;
@@ -77,8 +83,6 @@ export default class BranchMaster extends Component {
           this.setState({
             allBranches: response.data.records
           });
-
-          console.log("allBranches:", this.state.allBranches);
         } else {
           swalMessage({
             title: response.data.records.message,
@@ -196,6 +200,31 @@ export default class BranchMaster extends Component {
       }
     });
   }
+  getActiveDepartments() {
+    algaehApiCall({
+      uri: "/branchMaster/getActiveDepartments",
+      method: "GET",
+      module: "masterSettings",
+      onSuccess: response => {
+        if (response.data.success) {
+          this.setState({
+            allDepartments: response.data.records
+          });
+        } else {
+          swalMessage({
+            title: response.data.records.message,
+            type: "warning"
+          });
+        }
+      },
+      onError: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+  }
 
   addBranches(e) {
     e.preventDefault();
@@ -236,6 +265,214 @@ export default class BranchMaster extends Component {
         });
       }
     });
+  }
+
+  loadDetails(e) {
+    algaehApiCall({
+      uri: "/branchMaster/getBranchWiseDepartments",
+      method: "GET",
+      module: "masterSettings",
+      data: { hospital_id: e.hims_d_hospital_id },
+      onSuccess: res => {
+        if (res.data.success) {
+          let data = res.data.records;
+
+          if (data.length > 0) {
+            let allDepartments = this.state.allDepartments;
+            data.map(item => {
+              let find_dep = _.find(
+                allDepartments,
+                m => m.hims_d_department_id === item.hims_d_department_id
+              );
+              const index = allDepartments.indexOf(find_dep);
+
+              allDepartments[index] = {
+                ...allDepartments[index],
+                checked: true,
+                hims_m_branch_dept_map_id: item.hims_m_branch_dept_map_id
+              };
+
+              item.subDepts.map(sub => {
+                let find_sub = _.find(
+                  allDepartments[index]["subDepts"],
+                  s =>
+                    s.hims_d_sub_department_id === sub.hims_d_sub_department_id
+                );
+                const indexS = allDepartments[index]["subDepts"].indexOf(
+                  find_sub
+                );
+                allDepartments[index]["subDepts"][indexS] = {
+                  ...allDepartments[index]["subDepts"][indexS],
+                  checked: true,
+                  hims_m_branch_dept_map_id: sub.hims_m_branch_dept_map_id
+                };
+              });
+            });
+
+            this.setState({
+              allDepartments: allDepartments
+            });
+          } else {
+            algaehApiCall({
+              uri: "/branchMaster/getActiveDepartments",
+              method: "GET",
+              module: "masterSettings",
+              onSuccess: response => {
+                if (response.data.success) {
+                  this.setState({
+                    allDepartments: response.data.records
+                  });
+                } else {
+                  swalMessage({
+                    title: response.data.records.message,
+                    type: "warning"
+                  });
+                }
+              },
+              onError: error => {
+                swalMessage({
+                  title: error.message,
+                  type: "error"
+                });
+              }
+            });
+          }
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
+  changeDepartments(data, e) {
+    const _status = e.target.checked;
+    let val = parseInt(e.target.value, 10);
+
+    let Departments = this.state.allDepartments;
+
+    const subdepartments = data.subDepts.map(item => {
+      return {
+        ...item,
+        checked: _status ? true : false
+      };
+    });
+
+    let newDepats = _.map(Departments, f => {
+      let _sList = f.subDepts;
+      let _checked = { checked: f.checked ? true : false };
+      if (f.hims_d_department_id === val) {
+        _sList = subdepartments;
+        _checked = { checked: _status ? true : false };
+      }
+      return {
+        ...f,
+        ..._checked,
+        subDepts: _sList
+      };
+    });
+
+    this.setState({ allDepartments: newDepats });
+  }
+
+  changeSubdepartment(data, e) {
+    const _status = e.target.checked;
+    let val = parseInt(e.target.value, 10);
+
+    let Departments = this.state.allDepartments;
+
+    const _subDepart = data.subDepts.map(item => {
+      if (item.hims_d_sub_department_id === val) {
+        item.checked = _status ? true : false;
+      }
+      return {
+        ...item
+      };
+    });
+
+    const _check = _.filter(_subDepart, f => {
+      return f.checked === true;
+    });
+
+    let newDepats = _.map(Departments, f => {
+      let _sList = f.subDepts;
+      if (f.hims_d_department_id === data.hims_d_department_id) {
+        _sList = _subDepart;
+        f.checked = _check.length > 0 ? true : false;
+      }
+      return {
+        ...f,
+        subDepts: _sList
+      };
+    });
+
+    this.setState({ allDepartments: newDepats });
+  }
+
+  assignDepartments() {
+    //To build delete inputs
+    let inputObj = {};
+    const remove_sub = [];
+    const add_new_sub = [];
+
+    console.log("raw:", this.state.allDepartments);
+    this.state.allDepartments.forEach(dept => {
+      dept.subDepts.forEach(sub => {
+        if (
+          sub.hims_m_branch_dept_map_id !== undefined &&
+          sub.checked === false
+        ) {
+          remove_sub.push(sub.hims_m_branch_dept_map_id);
+        }
+      });
+    });
+
+    this.state.allDepartments.forEach(dept => {
+      dept.subDepts.forEach(sub => {
+        if (
+          sub.hims_m_branch_dept_map_id === undefined &&
+          sub.checked === true
+        ) {
+          add_new_sub.push(sub.hims_d_sub_department_id);
+        }
+      });
+    });
+
+    console.log("remove_sub:", remove_sub);
+    inputObj["remove_sub"] = remove_sub;
+    inputObj["add_new_sub"] = add_new_sub;
+
+    console.log("inputObj:", inputObj);
+
+    // algaehApiCall({
+    //   uri: "/algaehMasters/assignScreens",
+    //   method: "POST",
+    //   data: inputObj,
+    //   onSuccess: res => {
+    //     if (res.data.success) {
+    //       swalMessage({
+    //         title: "Assigned Successfully.",
+    //         type: "success"
+    //       });
+    //       $this.setState({ app_group_id: null, role_id: null, roles: [] });
+    //       getRoleBaseActive($this);
+    //     } else {
+    //       swalMessage({
+    //         title: res.data.records.message,
+    //         type: "error"
+    //       });
+    //     }
+    //   },
+    //   onFailure: err => {
+    //     swalMessage({
+    //       title: err.message,
+    //       type: "error"
+    //     });
+    //   }
+    // });
   }
 
   render() {
@@ -399,7 +636,10 @@ export default class BranchMaster extends Component {
                       <div className="row branchEachList" key={index}>
                         <div className="branchAction">
                           <i className="fas fa-pen" />
-                          <i className="fas fa-network-wired" />
+                          <i
+                            className="fas fa-network-wired"
+                            onClick={this.loadDetails.bind(this, data)}
+                          />
                         </div>
                         <div className="col-12">
                           <label>Branch Name</label>
@@ -443,314 +683,70 @@ export default class BranchMaster extends Component {
                   <h3 className="caption-subject">Map Dept. to Branch</h3>
                 </div>
               </div>
+
+              {/* ----------sssstart------------ */}
               <div className="portlet-body departmentBranchMapList">
                 <div className="row">
                   <div className="col-12">
                     <ul className="deptUl">
-                      <li>
-                        <span>
-                          <input
-                            type="checkbox"
-                            onChange=""
-                            name="modules"
-                            checked=""
-                            value=""
-                          />
-                        </span>
-                        <a>Department 1</a>
+                      {this.state.allDepartments.map((data, index) => {
+                        return (
+                          <li key={data.hims_d_department_id}>
+                            <span>
+                              <input
+                                type="checkbox"
+                                onChange={this.changeDepartments.bind(
+                                  this,
+                                  data
+                                )}
+                                name="allDepartments"
+                                checked={
+                                  data.checked === undefined
+                                    ? false
+                                    : data.checked
+                                }
+                                value={data.hims_d_department_id}
+                              />
+                            </span>
+                            <a>{data.department_name}</a>
 
-                        <ul className="subDeptUl">
-                          <li>
-                            <span>
-                              <input
-                                type="checkbox"
-                                onChange=""
-                                name="modules"
-                                checked=""
-                                value=""
-                              />
-                            </span>
-                            <a>Sub Department</a>
+                            <ul className="subDeptUl">
+                              {data.subDepts.map((sub, index) => {
+                                return (
+                                  <li key={sub.hims_d_sub_department_id}>
+                                    <span>
+                                      <input
+                                        type="checkbox"
+                                        onChange={this.changeSubdepartment.bind(
+                                          this,
+                                          data
+                                        )}
+                                        name="subDepartments"
+                                        checked={
+                                          sub.checked === undefined
+                                            ? false
+                                            : sub.checked
+                                        }
+                                        value={sub.hims_d_sub_department_id}
+                                      />
+                                    </span>
+                                    <a>{sub.sub_department_name}</a>
+                                  </li>
+                                );
+                              })}
+                            </ul>
                           </li>
-                          <li>
-                            <span>
-                              <input
-                                type="checkbox"
-                                onChange=""
-                                name="modules"
-                                checked=""
-                                value=""
-                              />
-                            </span>
-                            <a>Sub Department</a>
-                          </li>
-                          <li>
-                            <span>
-                              <input
-                                type="checkbox"
-                                onChange=""
-                                name="modules"
-                                checked=""
-                                value=""
-                              />
-                            </span>
-                            <a>Sub Department</a>
-                          </li>
-                          <li>
-                            <span>
-                              <input
-                                type="checkbox"
-                                onChange=""
-                                name="modules"
-                                checked=""
-                                value=""
-                              />
-                            </span>
-                            <a>Sub Department</a>
-                          </li>
-                          <li>
-                            <span>
-                              <input
-                                type="checkbox"
-                                onChange=""
-                                name="modules"
-                                checked=""
-                                value=""
-                              />
-                            </span>
-                            <a>Sub Department</a>
-                          </li>
-                          <li>
-                            <span>
-                              <input
-                                type="checkbox"
-                                onChange=""
-                                name="modules"
-                                checked=""
-                                value=""
-                              />
-                            </span>
-                            <a>Sub Department</a>
-                          </li>
-                          <li>
-                            <span>
-                              <input
-                                type="checkbox"
-                                onChange=""
-                                name="modules"
-                                checked=""
-                                value=""
-                              />
-                            </span>
-                            <a>Sub Department</a>
-                          </li>
-                        </ul>
-                      </li>
-                      <li>
-                        <span>
-                          <input
-                            type="checkbox"
-                            onChange=""
-                            name="modules"
-                            checked=""
-                            value=""
-                          />
-                        </span>
-                        <a>Department 1</a>
-
-                        <ul className="subDeptUl">
-                          <li>
-                            <span>
-                              <input
-                                type="checkbox"
-                                onChange=""
-                                name="modules"
-                                checked=""
-                                value=""
-                              />
-                            </span>
-                            <a>Sub Department</a>
-                          </li>
-                          <li>
-                            <span>
-                              <input
-                                type="checkbox"
-                                onChange=""
-                                name="modules"
-                                checked=""
-                                value=""
-                              />
-                            </span>
-                            <a>Sub Department</a>
-                          </li>
-                          <li>
-                            <span>
-                              <input
-                                type="checkbox"
-                                onChange=""
-                                name="modules"
-                                checked=""
-                                value=""
-                              />
-                            </span>
-                            <a>Sub Department</a>
-                          </li>
-                          <li>
-                            <span>
-                              <input
-                                type="checkbox"
-                                onChange=""
-                                name="modules"
-                                checked=""
-                                value=""
-                              />
-                            </span>
-                            <a>Sub Department</a>
-                          </li>
-                          <li>
-                            <span>
-                              <input
-                                type="checkbox"
-                                onChange=""
-                                name="modules"
-                                checked=""
-                                value=""
-                              />
-                            </span>
-                            <a>Sub Department</a>
-                          </li>
-                          <li>
-                            <span>
-                              <input
-                                type="checkbox"
-                                onChange=""
-                                name="modules"
-                                checked=""
-                                value=""
-                              />
-                            </span>
-                            <a>Sub Department</a>
-                          </li>
-                          <li>
-                            <span>
-                              <input
-                                type="checkbox"
-                                onChange=""
-                                name="modules"
-                                checked=""
-                                value=""
-                              />
-                            </span>
-                            <a>Sub Department</a>
-                          </li>
-                        </ul>
-                      </li>
-                      <li>
-                        <span>
-                          <input
-                            type="checkbox"
-                            onChange=""
-                            name="modules"
-                            checked=""
-                            value=""
-                          />
-                        </span>
-                        <a>Department 1</a>
-
-                        <ul className="subDeptUl">
-                          <li>
-                            <span>
-                              <input
-                                type="checkbox"
-                                onChange=""
-                                name="modules"
-                                checked=""
-                                value=""
-                              />
-                            </span>
-                            <a>Sub Department</a>
-                          </li>
-                          <li>
-                            <span>
-                              <input
-                                type="checkbox"
-                                onChange=""
-                                name="modules"
-                                checked=""
-                                value=""
-                              />
-                            </span>
-                            <a>Sub Department</a>
-                          </li>
-                          <li>
-                            <span>
-                              <input
-                                type="checkbox"
-                                onChange=""
-                                name="modules"
-                                checked=""
-                                value=""
-                              />
-                            </span>
-                            <a>Sub Department</a>
-                          </li>
-                          <li>
-                            <span>
-                              <input
-                                type="checkbox"
-                                onChange=""
-                                name="modules"
-                                checked=""
-                                value=""
-                              />
-                            </span>
-                            <a>Sub Department</a>
-                          </li>
-                          <li>
-                            <span>
-                              <input
-                                type="checkbox"
-                                onChange=""
-                                name="modules"
-                                checked=""
-                                value=""
-                              />
-                            </span>
-                            <a>Sub Department</a>
-                          </li>
-                          <li>
-                            <span>
-                              <input
-                                type="checkbox"
-                                onChange=""
-                                name="modules"
-                                checked=""
-                                value=""
-                              />
-                            </span>
-                            <a>Sub Department</a>
-                          </li>
-                          <li>
-                            <span>
-                              <input
-                                type="checkbox"
-                                onChange=""
-                                name="modules"
-                                checked=""
-                                value=""
-                              />
-                            </span>
-                            <a>Sub Department</a>
-                          </li>
-                        </ul>
-                      </li>
+                        );
+                      })}
                     </ul>
                   </div>
+
                   <div className="col-12">
                     <button
                       type="button"
                       className="btn btn-primary"
                       style={{ marginTop: 19, float: "right" }}
+                      onClick={this.assignDepartments.bind(this)}
                     >
                       Map to Branch
                     </button>
@@ -764,6 +760,8 @@ export default class BranchMaster extends Component {
                   </div>
                 </div>
               </div>
+
+              {/* ---------------endd------- */}
             </div>
           </div>
         </div>
