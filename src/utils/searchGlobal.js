@@ -599,7 +599,7 @@ let algaehSearchConfig = (searchName, req) => {
             'N' as pre_approval, IT.service_type, PH.package_visit_type,PH.package_type,PH.hims_d_package_header_id,\
             CASE WHEN PH.package_visit_type='S' THEN 'Single Visit' else 'Multi Visit' END as p_visit_type,\
             CASE WHEN PH.package_type='S' THEN 'Static' else 'Dynamic' END as p_type,\
-            PH.expiry_days,PH.validated_date,PH.total_service_amount\
+            PH.expiry_days,PH.validated_date,PH.total_service_amount,PH.package_code \
             from hims_d_services as S,hims_d_service_type as IT, hims_d_package_header as PH \
             where hims_d_services_id not in\
             (SELECT services_id FROM hims_d_services_insurance as I,hims_d_service_type as T where  \
@@ -612,7 +612,7 @@ let algaehSearchConfig = (searchName, req) => {
             T.service_type, PH.package_visit_type,PH.package_type,PH.hims_d_package_header_id,\
             CASE WHEN PH.package_visit_type='S' THEN 'Single Visit' else 'Multi Visit' END as p_visit_type,\
             CASE WHEN PH.package_type='S' THEN 'Static' else 'Dynamic' END as p_type,\
-            PH.expiry_days,PH.validated_date,PH.total_service_amount\
+            PH.expiry_days,PH.validated_date,PH.total_service_amount,PH.package_code \
             FROM hims_d_services_insurance as I,hims_d_service_type as T, hims_d_package_header as PH where  insurance_id=? and {mapper}  and I.service_type_id = T.hims_d_service_type_id \
             and PH.package_service_id = I.services_id and PH.package_status = 'A' and PH.approved='Y'\
             and (PH.validated_date >= CURDATE() OR PH.validated_date is null) and I.service_type_id in (14)",

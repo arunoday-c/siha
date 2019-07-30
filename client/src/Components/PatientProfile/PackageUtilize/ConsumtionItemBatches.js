@@ -147,7 +147,7 @@ class ConsumtionItemBatches extends PureComponent {
                   <div className="col">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Available Qty"
+                        forceLabel: "Package Service Qty"
                       }}
                     />
                     <h5 style={{ margin: 0 }}>{this.props.available_qty}</h5>

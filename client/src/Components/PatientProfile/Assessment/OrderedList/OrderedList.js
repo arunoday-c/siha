@@ -303,20 +303,15 @@ class OrderedList extends PureComponent {
       });
     }
 
-    if (
-      this.props.serviceslist === undefined ||
-      this.props.serviceslist.length === 0
-    ) {
-      this.props.getServices({
-        uri: "/serviceType/getService",
-        module: "masterSettings",
-        method: "GET",
-        redux: {
-          type: "SERVICES_GET_DATA",
-          mappingName: "serviceslist"
-        }
-      });
-    }
+    this.props.getServices({
+      uri: "/serviceType/getService",
+      module: "masterSettings",
+      method: "GET",
+      redux: {
+        type: "SERVICES_GET_DATA",
+        mappingName: "serviceslist"
+      }
+    });
 
     this.props.getOrderList({
       uri: "/orderAndPreApproval/selectOrderServicesbyDoctor",
@@ -838,10 +833,6 @@ class OrderedList extends PureComponent {
                         displayTemplate: row => {
                           return (
                             <i
-                              style={{
-                                pointerEvents: row.closed === "N" ? "" : "none",
-                                opacity: row.closed === "N" ? "" : "0.1"
-                              }}
                               className="fas fa-eye"
                               onClick={this.ShowPackageUtilize.bind(this, row)}
                             />

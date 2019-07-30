@@ -54,7 +54,6 @@ const serviceTypeHandeler = ($this, e) => {
 };
 
 const serviceHandeler = ($this, e) => {
-  
   // let date = new Date().setDate(
   //   new Date().getDate() + parseInt(e.expiry_days, 10)
   // );
@@ -85,7 +84,8 @@ const serviceHandeler = ($this, e) => {
     package_type: e.package_type,
     package_id: e.hims_d_package_header_id,
     expiry_date: expiry_date,
-    actual_amount: e.total_service_amount
+    actual_amount: e.total_service_amount,
+    package_code: e.package_code
   });
 };
 
@@ -117,7 +117,6 @@ const getPackageDetail = ($this, package_id) => {
 //Process and gets selectd service data with all calculation
 const ProcessService = $this => {
   // orderedList
-  
 
   let SelectedService = Enumerable.from($this.props.pakageList)
     .where(
@@ -176,8 +175,6 @@ const ProcessService = $this => {
               data.billdetails[0].preapp_limit_exceed === "Y" &&
               $this.state.approval_limit_yesno === "N"
             ) {
-              
-
               swal({
                 title: "Pre-Approval limit reached.",
                 text:
@@ -277,6 +274,8 @@ const ProcessService = $this => {
                               Service_data.billdetails[i].advance_amount = 0;
                               Service_data.billdetails[i].balance_amount = 0;
                               Service_data.billdetails[i].utilize_amount = 0;
+                              Service_data.billdetails[i].package_code =
+                                $this.state.package_code;
                             })
                             .catch(error => {
                               console.error(error);
@@ -396,7 +395,7 @@ const ProcessService = $this => {
               data.billdetails[0].advance_amount = 0;
               data.billdetails[0].balance_amount = 0;
               data.billdetails[0].utilize_amount = 0;
-              
+              data.billdetails[0].package_code = $this.state.package_code;
               getPackageDetail($this, data.billdetails[0].package_id)
                 .then(result => {
                   data.billdetails[0].package_detail = result;
@@ -514,8 +513,6 @@ const deleteServices = ($this, row, rowId) => {
         preserviceInput[k].approval_limit_yesno = "N";
       }
 
-      
-
       algaehApiCall({
         uri: "/billing/getBillDetails",
         module: "billing",
@@ -583,7 +580,6 @@ const deleteServices = ($this, row, rowId) => {
 };
 //Save Order
 const SaveOrdersServices = ($this, e) => {
-  
   algaehApiCall({
     uri: "/orderAndPreApproval/addPackage",
     data: $this.state.orderservicesdata,
@@ -643,8 +639,6 @@ const SaveOrdersServices = ($this, e) => {
 };
 
 const calculateAmount = ($this, row, e) => {
-  
-
   let orderservicesdata = $this.state.orderservicesdata;
 
   let discount_percentage = 0;
@@ -795,7 +789,6 @@ const EditGrid = ($this, cancelRow) => {
 };
 
 const makeZeroIngrid = ($this, row, e) => {
-  
   if (e.target.value === "") {
     let orderservicesdata = $this.state.orderservicesdata;
     let _index = orderservicesdata.indexOf(row);
@@ -810,13 +803,12 @@ const makeZeroIngrid = ($this, row, e) => {
 };
 
 const ClosePackageMaster = ($this, e) => {
-  
   if (e === false) {
     $this.setState({
       isOpen: !$this.state.isOpen
     });
   } else {
-    this.props.getServices({
+    $this.props.getServices({
       uri: "/serviceType/getService",
       module: "masterSettings",
       method: "GET",
@@ -825,11 +817,13 @@ const ClosePackageMaster = ($this, e) => {
         mappingName: "serviceslist"
       }
     });
+    debugger;
     $this.setState(
       {
         isOpen: !$this.state.isOpen,
-        s_service: e,
-        s_service_type: 14
+        s_service: e.package_service_id,
+        s_service_type: 14,
+        package_code: e.package_code
       },
       () => {
         ProcessService($this, e);

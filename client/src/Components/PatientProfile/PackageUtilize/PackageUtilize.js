@@ -338,10 +338,7 @@ class PackageUtilize extends Component {
                           <AlgaehLabel label={{ forceLabel: "Quantity" }} />
                         ),
                         displayTemplate: row => {
-                          return this.state.consultation === true &&
-                            row.service_type_id !== 1 ? (
-                            row.quantity
-                          ) : row.service_type_id === 4 ? (
+                          return row.service_type_id === 4 ? (
                             row.quantity
                           ) : (
                             <AlagehFormGroup
@@ -683,6 +680,7 @@ class PackageUtilize extends Component {
                       <ButtonType
                         classname="btn-primary"
                         onClick={this.UtilizeService.bind(this)}
+                        disabled={this.state.closed === "Y" ? true : false}
                         label={{
                           forceLabel: "Utilize Services",
                           returnText: true
@@ -703,7 +701,7 @@ class PackageUtilize extends Component {
                           className="btn btn-default"
                           onClick={this.ShowVistUtilizedSer.bind(this)}
                         >
-                          Package Services
+                          Utilized Services
                         </button>
                       ) : null}
 

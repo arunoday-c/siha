@@ -70,7 +70,13 @@ class OPBilling extends Component {
     this.setState({
       selectedLang: prevLang
     });
-
+    this.props.getPatientPackage({
+      redux: {
+        type: "Package_GET_DATA",
+        mappingName: "PatientPackageList",
+        data: []
+      }
+    });
     if (
       this.props.patienttype === undefined ||
       this.props.patienttype.length === 0

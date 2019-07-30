@@ -111,7 +111,10 @@ module.exports = {
       utilities.logger().log("inputParam: ", inputParam);
 
       const internalInsertPatientVisitData = () => {
-        inputParam.new_visit_patient = "Y";
+        inputParam.new_visit_patient =
+          inputParam.new_visit_patient === "N"
+            ? "Y"
+            : inputParam.new_visit_patient;
         if (inputParam.age_in_years == null) {
           let fromDate = moment(inputParam.date_of_birth);
           let toDate = new Date();
@@ -131,7 +134,8 @@ module.exports = {
         ) {
           inputParam.visit_expiery_date = existingExparyDate;
           inputParam.episode_id = currentPatientEpisodeNo;
-          inputParam.new_visit_patient = "N";
+          inputParam.new_visit_patient =
+            inputParam.new_visit_patient === "P" ? "P" : "N";
         }
 
         _mysql

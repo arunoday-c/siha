@@ -1265,8 +1265,23 @@ module.exports = {
     try {
       let inputParam = req.body;
 
-      utilities.logger().log("package_details: ", inputParam.package_details);
+      utilities.logger().log("consultation data : ", inputParam.consultation);
 
+      utilities
+        .logger()
+        .log("updatePatientPackage visit_id : ", inputParam.visit_id);
+      utilities
+        .logger()
+        .log("updatePatientPackage doctor_id : ", inputParam.doctor_id);
+
+      if (inputParam.consultation == "Y") {
+        for (let i = 0; i < inputParam.package_details.length; i++) {
+          inputParam.package_details[i].visit_id = inputParam.visit_id;
+          inputParam.package_details[i].doctor_id = inputParam.doctor_id;
+        }
+      }
+
+      utilities.logger().log("package_details: ", inputParam.package_details);
       req.body.incharge_or_provider = req.body.doctor_id;
       req.body.billed = "N";
       let qry = "";
@@ -1305,6 +1320,12 @@ module.exports = {
                 strQuery = ", `closed`='Y', closed_type='D'";
               }
 
+              utilities
+                .logger()
+                .log(
+                  "actual_utilize_amount: ",
+                  inputParam.actual_utilize_amount
+                );
               _mysql
                 .executeQuery({
                   query:
@@ -1329,10 +1350,6 @@ module.exports = {
                     };
                   }
 
-                  utilities
-                    .logger()
-                    .log("consultation : ", inputParam.consultation);
-
                   const _services = _.filter(inputParam.package_details, f => {
                     return (
                       f.service_type_id == 2 ||
@@ -1346,98 +1363,94 @@ module.exports = {
                       return f.service_type_id == 4;
                     }
                   );
-                  if (inputParam.consultation == false) {
-                    insertOrderServices({
-                      services: _services,
-                      _mysql: _mysql,
-                      next: next,
-                      inputParam: inputParam,
-                      req: req
-                    })
-                      .then(Order_Services => {
-                        utilities
-                          .logger()
-                          .log("_inv_services : ", _inv_services.length);
-                        if (_inv_services.length > 0) {
-                          utilities.logger().log("IncludeValues : ");
-                          let IncludeValues = [
-                            "patient_id",
-                            "visit_id",
-                            "doctor_id",
-                            "service_type_id",
-                            "services_id",
-                            "trans_package_detail_id",
-                            "quantity",
-                            "inventory_item_id",
-                            "inventory_location_id",
-                            "inventory_uom_id"
-                          ];
 
-                          _mysql
-                            .executeQuery({
-                              query:
-                                "INSERT INTO hims_f_ordered_inventory(??) VALUES ?",
-                              values: _inv_services,
-                              includeValues: IncludeValues,
-                              extraValues: {
-                                unit_cost: 0,
+                  utilities.logger().log("_services : ", _services);
 
-                                gross_amount: 0,
-                                discount_amout: 0,
-                                discount_percentage: 0,
-                                net_amout: 0,
-                                copay_percentage: 0,
-                                copay_amount: 0,
-                                deductable_amount: 0,
-                                deductable_percentage: 0,
+                  insertOrderServices({
+                    services: _services,
+                    _mysql: _mysql,
+                    next: next,
+                    inputParam: inputParam,
+                    req: req
+                  })
+                    .then(Order_Services => {
+                      utilities
+                        .logger()
+                        .log("_inv_services : ", _inv_services.length);
+                      if (_inv_services.length > 0) {
+                        utilities.logger().log("IncludeValues : ");
+                        let IncludeValues = [
+                          "patient_id",
+                          "visit_id",
+                          "doctor_id",
+                          "service_type_id",
+                          "services_id",
+                          "trans_package_detail_id",
+                          "quantity",
+                          "inventory_item_id",
+                          "inventory_location_id",
+                          "inventory_uom_id"
+                        ];
 
-                                patient_tax: 0,
-                                company_tax: 0,
-                                total_tax: 0,
-                                patient_resp: 0,
-                                patient_payable: 0,
-                                comapany_resp: 0,
-                                company_payble: 0,
-                                sec_deductable_percentage: 0,
-                                sec_deductable_amount: 0,
-                                sec_company_res: 0,
-                                sec_company_tax: 0,
-                                sec_company_paybale: 0,
-                                sec_copay_percntage: 0,
-                                sec_copay_amount: 0,
-                                created_by:
-                                  req.userIdentity.algaeh_d_app_user_id,
-                                created_date: new Date(),
-                                updated_by:
-                                  req.userIdentity.algaeh_d_app_user_id,
-                                updated_date: new Date(),
-                                hospital_id: req.userIdentity["x-branch"]
-                              },
-                              bulkInsertOrUpdate: true,
-                              printQuery: true
-                            })
-                            .then(inv_order_detail => {
-                              req.records = inv_order_detail;
-                              next();
-                            })
-                            .catch(error => {
-                              _mysql.rollBackTransaction(() => {
-                                next(error);
-                              });
+                        _mysql
+                          .executeQuery({
+                            query:
+                              "INSERT INTO hims_f_ordered_inventory(??) VALUES ?",
+                            values: _inv_services,
+                            includeValues: IncludeValues,
+                            extraValues: {
+                              unit_cost: 0,
+
+                              gross_amount: 0,
+                              discount_amout: 0,
+                              discount_percentage: 0,
+                              net_amout: 0,
+                              copay_percentage: 0,
+                              copay_amount: 0,
+                              deductable_amount: 0,
+                              deductable_percentage: 0,
+
+                              patient_tax: 0,
+                              company_tax: 0,
+                              total_tax: 0,
+                              patient_resp: 0,
+                              patient_payable: 0,
+                              comapany_resp: 0,
+                              company_payble: 0,
+                              sec_deductable_percentage: 0,
+                              sec_deductable_amount: 0,
+                              sec_company_res: 0,
+                              sec_company_tax: 0,
+                              sec_company_paybale: 0,
+                              sec_copay_percntage: 0,
+                              sec_copay_amount: 0,
+                              created_by: req.userIdentity.algaeh_d_app_user_id,
+                              created_date: new Date(),
+                              updated_by: req.userIdentity.algaeh_d_app_user_id,
+                              updated_date: new Date(),
+                              hospital_id: req.userIdentity["x-branch"]
+                            },
+                            bulkInsertOrUpdate: true,
+                            printQuery: true
+                          })
+                          .then(inv_order_detail => {
+                            req.records = inv_order_detail;
+                            next();
+                          })
+                          .catch(error => {
+                            _mysql.rollBackTransaction(() => {
+                              next(error);
                             });
-                        } else {
-                          next();
-                        }
-                      })
-                      .catch(error => {
-                        _mysql.rollBackTransaction(() => {
-                          next(error);
-                        });
+                          });
+                      } else {
+                        next();
+                      }
+                    })
+                    .catch(error => {
+                      _mysql.rollBackTransaction(() => {
+                        next(error);
                       });
-                  } else {
-                    req.records = update_header;
-                    next();
-                  }
+                    });
                 })
                 .catch(e => {
                   _mysql.rollBackTransaction(() => {
@@ -2129,12 +2142,19 @@ module.exports = {
     const _mysql = new algaehMysql();
     return new Promise((resolve, reject) => {
       try {
+        let strQuery = "";
+        if (req.query.services_id != null) {
+          strQuery += "and services_id = '" + req.query.services_id + "'";
+        }
+        if (req.query.employee_id != null) {
+          strQuery += "and employee_id = '" + req.query.employee_id + "'";
+        }
         _mysql
           .executeQuery({
             query:
-              "SELECT employee_id, sub_department_id from hims_m_employee_department_mappings \
-            Where record_status='A' and services_id = ? ",
-            values: [req.query.services_id],
+              "SELECT employee_id, sub_department_id, services_id from hims_m_employee_department_mappings \
+            Where record_status='A' " +
+              strQuery,
             printQuery: true
           })
           .then(result => {
@@ -3087,6 +3107,7 @@ function insertOrderServices(options) {
             printQuery: true
           })
           .then(order_detail => {
+            utilities.logger().log("order_detail: ", order_detail);
             let patient_id;
             let doctor_id;
             let visit_id;

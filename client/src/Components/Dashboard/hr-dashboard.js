@@ -91,11 +91,14 @@ class Dashboard extends Component {
       Dept_Employee: {},
       Desig_Employee: {},
       no_of_emp_join: [],
-      avg_salary: 0
+      avg_salary: 0,
+      no_of_projects: 0
     };
     DashBoardEvents().getEmployeeList(this);
     DashBoardEvents().getEmployeeDepartmentsWise(this);
     DashBoardEvents().getEmployeeDesignationWise(this);
+
+    DashBoardEvents().getProjectList(this);
   }
 
   showDetailHandler(event) {
@@ -150,7 +153,7 @@ class Dashboard extends Component {
                 <div className="col-8">
                   <div className="numbers">
                     <p>Total Project</p>
-                    {this.state.no_of_employees}
+                    {this.state.no_of_projects}
                   </div>
                 </div>
               </div>

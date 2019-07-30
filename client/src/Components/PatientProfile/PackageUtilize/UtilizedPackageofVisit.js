@@ -131,11 +131,14 @@ class UtilizedPackageofVisit extends PureComponent {
           events={{
             onClose: this.onClose.bind(this)
           }}
-          title="Close Package"
+          title="Utilized Services"
           openPopup={this.props.show}
           class={this.state.lang_sets + "advanceRefundModal"}
         >
           <div className="col-lg-12 popupInner">
+            <div className="row">
+              <h6> Only unbilled package services can Unutilize.</h6>
+            </div>
             <div className="row">
               <div
                 className="col-lg-12"

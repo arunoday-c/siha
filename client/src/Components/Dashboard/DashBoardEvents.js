@@ -190,6 +190,28 @@ export default function DashBoardEvents() {
           });
         }
       });
+    },
+
+    getProjectList: $this => {
+      algaehApiCall({
+        uri: "/hrsettings/getProjects",
+        module: "hrManagement",
+        method: "GET",
+        onSuccess: res => {
+          if (res.data.success) {
+            $this.setState({
+              no_of_projects: res.data.records.length
+            });
+          }
+        },
+
+        onFailure: err => {
+          swalMessage({
+            title: err.message,
+            type: "error"
+          });
+        }
+      });
     }
   };
 }
