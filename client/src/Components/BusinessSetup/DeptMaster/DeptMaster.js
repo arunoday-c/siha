@@ -512,7 +512,7 @@ class DeptMaster extends Component {
                 />
 
                 <AlagehFormGroup
-                  div={{ className: "col" }}
+                  div={{ className: "col mandatory" }}
                   label={{
                     fieldName: "sub_department_code",
                     isImp: true
@@ -528,7 +528,7 @@ class DeptMaster extends Component {
                 />
 
                 <AlagehFormGroup
-                  div={{ className: "col" }}
+                  div={{ className: "col mandatory" }}
                   label={{
                     fieldName: "sub_department_name",
                     isImp: true
@@ -544,7 +544,7 @@ class DeptMaster extends Component {
                 />
 
                 <AlagehFormGroup
-                  div={{ className: "col arabic-txt-fld" }}
+                  div={{ className: "col arabic-txt-fld mandatory" }}
                   label={{
                     fieldName: "sub_department_name_arabic",
                     isImp: true
@@ -584,7 +584,7 @@ class DeptMaster extends Component {
                 ) : null}
 
                 <AlgaehDateHandler
-                  div={{ className: "col" }}
+                  div={{ className: "col mandatory" }}
                   label={{ fieldName: "effective_start_date", isImp: true }}
                   textBox={{
                     className: "txt-fld",
@@ -898,114 +898,106 @@ class DeptMaster extends Component {
           </div>
         </AlgaehModalPopUp>
 
-        <div className="portlet portlet-bordered margin-bottom-15">
-          <div className="portlet-body">
-            <div className="row">
-              <div className="col-lg-12">
-                <div className="row">
-                  <AlagehFormGroup
-                    div={{ className: "col" }}
-                    label={{
-                      fieldName: "department_code",
-                      isImp: true
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "department_code",
-                      value: this.state.department_code,
-                      events: {
-                        onChange: this.textHandle.bind(this)
-                      },
-                      error: this.state.department_code_error,
-                      helperText: this.state.department_code_error_text
-                    }}
-                  />
+        <div className="row inner-top-search">
+          <AlagehFormGroup
+            div={{ className: "col form-group mandatory" }}
+            label={{
+              fieldName: "department_code",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "department_code",
+              value: this.state.department_code,
+              events: {
+                onChange: this.textHandle.bind(this)
+              },
+              error: this.state.department_code_error,
+              helperText: this.state.department_code_error_text
+            }}
+          />
 
-                  <AlagehFormGroup
-                    div={{ className: "col" }}
-                    label={{
-                      fieldName: "department_name",
-                      isImp: true
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "department_name",
-                      value: this.state.department_name,
-                      events: {
-                        onChange: this.textHandle.bind(this)
-                      },
-                      error: this.state.department_name_error,
-                      helperText: this.state.department_name_error_text
-                    }}
-                  />
+          <AlagehFormGroup
+            div={{ className: "col form-group mandatory" }}
+            label={{
+              fieldName: "department_name",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "department_name",
+              value: this.state.department_name,
+              events: {
+                onChange: this.textHandle.bind(this)
+              },
+              error: this.state.department_name_error,
+              helperText: this.state.department_name_error_text
+            }}
+          />
 
-                  <AlagehFormGroup
-                    div={{ className: "col arabic-txt-fld" }}
-                    label={{
-                      fieldName: "department_name_arabic",
-                      isImp: true
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "department_name_arabic",
-                      value: this.state.department_name_arabic,
-                      events: {
-                        onChange: this.textHandle.bind(this)
-                      },
-                      error: this.state.department_name_arabic_error,
-                      helperText: this.state.department_name_arabic_error_text
-                    }}
-                  />
-                  {this.state.HIMS_Active === true ? (
-                    <AlagehAutoComplete
-                      div={{ className: "col" }}
-                      label={{
-                        fieldName: "department_type"
-                      }}
-                      selector={{
-                        name: "department_type",
-                        className: "select-fld",
-                        value: this.state.department_type,
-                        dataSource: {
-                          textField: "name",
-                          valueField: "value",
-                          data: GlobalVariables.DEPT_TYPE
-                        },
-                        onChange: this.dropDownHandle.bind(this)
-                      }}
-                    />
-                  ) : null}
+          <AlagehFormGroup
+            div={{ className: "col form-group arabic-txt-fld mandatory" }}
+            label={{
+              fieldName: "department_name_arabic",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "department_name_arabic",
+              value: this.state.department_name_arabic,
+              events: {
+                onChange: this.textHandle.bind(this)
+              },
+              error: this.state.department_name_arabic_error,
+              helperText: this.state.department_name_arabic_error_text
+            }}
+          />
+          {this.state.HIMS_Active === true ? (
+            <AlagehAutoComplete
+              div={{ className: "col form-group" }}
+              label={{
+                fieldName: "department_type"
+              }}
+              selector={{
+                name: "department_type",
+                className: "select-fld",
+                value: this.state.department_type,
+                dataSource: {
+                  textField: "name",
+                  valueField: "value",
+                  data: GlobalVariables.DEPT_TYPE
+                },
+                onChange: this.dropDownHandle.bind(this)
+              }}
+            />
+          ) : null}
 
-                  <AlgaehDateHandler
-                    div={{ className: "col" }}
-                    label={{ fieldName: "effective_start_date", isImp: true }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "effective_start_date",
-                      error: this.state.effective_start_date_error,
-                      helperText: this.state.effective_start_date_error_text
-                    }}
-                    maxDate={new Date()}
-                    events={{
-                      onChange: date => {
-                        this.setState({ effective_start_date: date });
-                      }
-                    }}
-                    value={this.state.effective_start_date}
-                  />
+          <AlgaehDateHandler
+            div={{ className: "col form-group mandatory" }}
+            label={{ fieldName: "effective_start_date", isImp: true }}
+            textBox={{
+              className: "txt-fld",
+              name: "effective_start_date",
+              error: this.state.effective_start_date_error,
+              helperText: this.state.effective_start_date_error_text
+            }}
+            maxDate={new Date()}
+            events={{
+              onChange: date => {
+                this.setState({ effective_start_date: date });
+              }
+            }}
+            value={this.state.effective_start_date}
+          />
 
-                  <div className="col align-middle">
-                    <button
-                      className="btn btn-primary"
-                      style={{ marginTop: 21 }}
-                      onClick={this.addDepartment.bind(this)}
-                    >
-                      Add to List
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <div className="col align-middle">
+            <button
+              className="btn btn-primary"
+              style={{ marginTop: 21 }}
+              onClick={this.addDepartment.bind(this)}
+            >
+              Add to List
+            </button>
           </div>
         </div>
 

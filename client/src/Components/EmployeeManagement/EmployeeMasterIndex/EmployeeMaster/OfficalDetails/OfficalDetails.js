@@ -157,7 +157,7 @@ class OfficalDetails extends Component {
                 <AlagehAutoComplete
                   div={{ className: "col mandatory" }}
                   label={{
-                    fieldName: "sub_department_id",
+                    forceLabel: "Sub Department",
                     isImp: true
                   }}
                   selector={{

@@ -317,9 +317,7 @@ class EmployeeMasterIndex extends Component {
                     {
                       fieldName: "sub_department_id",
                       label: (
-                        <AlgaehLabel
-                          label={{ fieldName: "sub_department_id" }}
-                        />
+                        <AlgaehLabel label={{ forceLabel: "Sub Department" }} />
                       ),
                       displayTemplate: row => {
                         let display =
