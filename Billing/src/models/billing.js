@@ -756,7 +756,7 @@ module.exports = {
       next(e);
     }
   },
-
+//created by:Irfan
   addCashHandover: (req, res, next) => {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
@@ -766,7 +766,7 @@ module.exports = {
     try {
       let inputParam = { ...req.body };
       // req.body.receipt_header_id
-      // utilities.logger().log("inputParam Cash: ", inputParam);
+     utilities.logger().log("inputParam Cash: ", inputParam);
 
       if (
         inputParam.receiptdetails == null ||
@@ -1461,6 +1461,8 @@ module.exports = {
       next(e);
     }
   },
+
+  //created by:Irfan
   getBillDetails: (req, res, next) => {
     const _mysql = new algaehMysql();
     const utilities = new algaehUtilities();
@@ -1698,8 +1700,8 @@ module.exports = {
 
                 // console.log("policydtls:", policydtls);
 
-                //  if (Object.keys(policydtls).length > 0) {
-                console.log("Insurance there");
+              
+              
 
                 covered =
                   policydtls != null
@@ -1951,7 +1953,7 @@ module.exports = {
 
                 // }
                 //--------------------------------------
-                console.log("fine:1");
+                console.log("fine:calculated bill details");
                 let out = extend(
                   {
                     hims_f_billing_details_id: null,
@@ -2055,7 +2057,7 @@ module.exports = {
               next(error);
             });
         } else {
-          utilities.logger().log("service_type_id: ", zeroBill.service_type_id);
+          
 
           let out = [
             {
