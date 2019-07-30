@@ -183,33 +183,46 @@ const LoadBills = $this => {
           type: "warning"
         });
         document.querySelector("[name='select_service']").focus();
-      } else {
-        AlgaehLoader({ show: true });
-        let inpObj = {
-          incharge_or_provider: $this.state.doctor_id,
-          from_date: moment($this.state.from_date).format(
-            Options.dateFormatYear
-          ),
-          to_date: moment($this.state.to_date).format(Options.dateFormatYear),
-          select_type: $this.state.select_type,
-          service_type_id: $this.state.select_service
-        };
-
-        $this.props.getDoctorsCommission({
-          uri: "/doctorsCommission/getDoctorsCommission",
-          method: "GET",
-          data: inpObj,
-          redux: {
-            type: "BILL_DOC_COMMISSION_DATA",
-            mappingName: "billscommission"
-          },
-          afterSuccess: data => {
-            $this.setState({ billscommission: data }, () => {
-              AlgaehLoader({ show: false });
-            });
-          }
-        });
+        return;
       }
+      if ($this.state.from_date === null) {
+        swalMessage({
+          title: "Please Enter From Date",
+          type: "warning"
+        });
+        document.querySelector("[name='from_date']").focus();
+        return;
+      } else if ($this.state.to_date === null) {
+        swalMessage({
+          title: "Please Enter To Date",
+          type: "warning"
+        });
+        document.querySelector("[name='to_date']").focus();
+        return;
+      }
+      AlgaehLoader({ show: true });
+      let inpObj = {
+        incharge_or_provider: $this.state.doctor_id,
+        from_date: moment($this.state.from_date).format(Options.dateFormatYear),
+        to_date: moment($this.state.to_date).format(Options.dateFormatYear),
+        select_type: $this.state.select_type,
+        service_type_id: $this.state.select_service
+      };
+
+      $this.props.getDoctorsCommission({
+        uri: "/doctorsCommission/getDoctorsCommission",
+        method: "GET",
+        data: inpObj,
+        redux: {
+          type: "BILL_DOC_COMMISSION_DATA",
+          mappingName: "billscommission"
+        },
+        afterSuccess: data => {
+          $this.setState({ billscommission: data }, () => {
+            AlgaehLoader({ show: false });
+          });
+        }
+      });
     }
   });
 };
@@ -230,6 +243,62 @@ const ClearData = $this => {
   });
 };
 
+const dateValidate = ($this, value, e) => {
+  let inRange = false;
+  if (e.target.name === "from_date") {
+    inRange = moment(value).isAfter(
+      moment($this.state.to_date).format("YYYY-MM-DD")
+    );
+    if (inRange) {
+      swalMessage({
+        title: "From Date cannot be grater than To Date.",
+        type: "warning"
+      });
+      e.target.focus();
+      $this.setState({
+        [e.target.name]: null
+      });
+    }
+
+    inRange = moment(value).isAfter(moment().format("YYYY-MM-DD"));
+    if (inRange) {
+      swalMessage({
+        title: "From Date cannot be Future Date.",
+        type: "warning"
+      });
+      e.target.focus();
+      $this.setState({
+        [e.target.name]: null
+      });
+    }
+  } else if (e.target.name === "to_date") {
+    inRange = moment(value).isBefore(
+      moment($this.state.from_date).format("YYYY-MM-DD")
+    );
+    if (inRange) {
+      swalMessage({
+        title: "To Date cannot be less than From Date.",
+        type: "warning"
+      });
+      e.target.focus();
+      $this.setState({
+        [e.target.name]: null
+      });
+    }
+    inRange = moment(value).isAfter(moment().format("YYYY-MM-DD"));
+    if (inRange) {
+      swalMessage({
+        title: "To Date cannot be Future Date.",
+        type: "warning"
+      });
+      e.target.focus();
+      $this.setState({
+        [e.target.name]: null
+      });
+    }
+  }
+};
+
 export {
   changeTexts,
   LoadBills,
@@ -241,5 +310,6 @@ export {
   deleteDoctorCommission,
   ClearData,
   PostDoctorCommission,
-  AdjustAmountCalculate
+  AdjustAmountCalculate,
+  dateValidate
 };
