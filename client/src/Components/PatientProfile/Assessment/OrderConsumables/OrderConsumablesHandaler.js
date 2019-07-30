@@ -705,8 +705,6 @@ const deleteServices = ($this, row, rowId) => {
         preserviceInput[k].approval_limit_yesno = "N";
       }
 
-      
-
       algaehApiCall({
         uri: "/billing/getBillDetails",
         module: "billing",
@@ -779,6 +777,7 @@ const SaveOrdersServices = ($this, e) => {
     visit_id: $this.state.visit_id,
     patient_id: $this.state.patient_id,
     incharge_or_provider: Window.global["provider_id"],
+    doctor_id: Window.global["provider_id"],
     billed: "N",
     billdetails: $this.state.orderservicesdata
   };
@@ -1035,7 +1034,6 @@ const ItemChargable = ($this, e) => {
 };
 
 const makeZeroIngrid = ($this, row, e) => {
-  
   if (e.target.value === "") {
     let orderservicesdata = $this.state.orderservicesdata;
     let _index = orderservicesdata.indexOf(row);

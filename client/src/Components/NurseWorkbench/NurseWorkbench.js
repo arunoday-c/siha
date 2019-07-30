@@ -2233,6 +2233,20 @@ class NurseWorkbench extends Component {
                           />
                         }
                       </li>
+
+                      <li
+                        algaehtabs={"OrderPackage"}
+                        className={"nav-item tab-button"}
+                        onClick={this.openTab.bind(this)}
+                      >
+                        {
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Order Package"
+                            }}
+                          />
+                        }
+                      </li>
                     </ul>
                   </div>
 
@@ -2248,6 +2262,12 @@ class NurseWorkbench extends Component {
                       <OrderedList
                         vat_applicable={this.props.vat_applicable}
                         openData="Consumable"
+                      />
+                    ) : this.state.pageDisplay === "OrderPackage" &&
+                      this.state.patient_id !== null ? (
+                      <OrderedList
+                        vat_applicable={this.props.vat_applicable}
+                        openData="Package"
                       />
                     ) : null}
                   </div>
