@@ -110,18 +110,20 @@ class LoanRequest extends Component {
   }
 
   applyAdvance() {
+    const { deducting_month, deducting_year } = this.state;
+    const current_month = parseInt(moment().format("M"), 10);
+    const current_year = parseInt(moment().format("M"), 10);
+
     AlgaehValidation({
       alertTypeIcon: "warning",
       querySelector: "data-validate='loanApplyDiv'",
       onSuccess: () => {
-        if (this.state.deducting_year < moment(new Date()).format("YYYY")) {
+        if (parseInt(deducting_year, 10) < current_year) {
           swalMessage({
             title: "Cannot Request advance for past year",
             type: "warning"
           });
-        } else if (
-          this.state.deducting_month < moment(new Date()).format("M")
-        ) {
+        } else if (parseInt(deducting_month, 10) < current_month) {
           swalMessage({
             title: "Cannot Request advance for past month",
             type: "warning"
@@ -240,8 +242,8 @@ class LoanRequest extends Component {
   }
 
   dropDownHandler(value) {
-    let present_month = moment(new Date()).format("M");
-    let present_year = moment().year();
+    let present_month = parseInt(moment().format("M"));
+    let present_year = parseInt(moment().year(), 10);
 
     switch (value.name) {
       case "loan_id":
@@ -262,9 +264,14 @@ class LoanRequest extends Component {
         break;
 
       case "start_month":
+        if (value.value === null) {
+          this.setState({
+            [value.name]: null
+          });
+        }
         if (
-          present_year === this.state.start_year &&
-          value.value < present_month
+          present_year === parseInt(this.state.start_year, 10) &&
+          parseInt(value.value, 10) < present_month
         ) {
           swalMessage({
             title: "Start month must be future months",

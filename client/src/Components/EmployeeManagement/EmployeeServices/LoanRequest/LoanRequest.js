@@ -11,6 +11,8 @@ import {
   AlagehAutoComplete,
   AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
+import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
+import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import { getYears } from "../../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
@@ -19,26 +21,63 @@ class LoanRequest extends Component {
   constructor(props) {
     super(props);
 
+    this.inputRef = React.createRef();
+
     this.state = {
-      hims_d_employee_id: this.props.hims_d_employee_id,
+      hims_d_employee_id: null,
       selectedLang: this.props.SelectLanguage,
       loan_master: [],
       employee_loans: [],
       loan_limit: 0,
-      start_year: moment().year(),
+      start_year: parseInt(moment().year(), 10),
       deducting_year: moment().year(),
-      deducting_month: parseInt(moment(new Date()).format("M"), 10) + 1,
-      request_type: "LO"
+      deducting_month: parseInt(moment().format("M"), 10) + 1
+      // request_type: "LO"
     };
     this.getLoanMaster();
   }
 
+  // componentDidMount() {
+  //   let data = this.props.empData !== null ? this.props.empData : {};
+  //   this.setState(data, () => {
+  //     this.getEmployeeLoans();
+  //     this.getEmployeeAdvances();
+  //   });
+  // }
+
   componentDidMount() {
-    let data = this.props.empData !== null ? this.props.empData : {};
-    this.setState(data, () => {
-      this.getEmployeeLoans();
-      this.getEmployeeAdvances();
+    let request_type = this.props.type;
+    this.setState({
+      request_type
     });
+  }
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.type !== prevState.request_type) {
+      return {
+        request_type: nextProps.type,
+        loan_master: [],
+        employee_loans: [],
+        employee_advance: [],
+        forceRender: true
+      };
+    } else {
+      return null;
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.request_type !== prevState.request_type) {
+      this.inputRef.current.onClearHandler();
+      if (this.state.request_type === "LO") {
+        this.clearEmployee();
+        this.clearAdvanceState();
+        this.getLoanMaster();
+      } else if (this.state.request_type === "AD") {
+        this.clearEmployee();
+        this.clearState();
+      }
+    }
   }
 
   getEmployeeAdvances() {
@@ -64,6 +103,7 @@ class LoanRequest extends Component {
       }
     });
   }
+
   getEmployeeLoans() {
     algaehApiCall({
       uri: "/loan/getLoanApplication",
@@ -100,6 +140,7 @@ class LoanRequest extends Component {
       start_month: null
     });
   }
+
   clearAdvanceState() {
     this.setState({
       deducting_year: moment().year(),
@@ -109,19 +150,30 @@ class LoanRequest extends Component {
     });
   }
 
+  clearEmployee() {
+    this.setState({
+      sub_department_id: null,
+      hims_d_employee_id: null,
+      full_name: "",
+      display_name: "",
+      forceRender: false
+    });
+  }
+
   applyAdvance() {
+    const { deducting_month, deducting_year } = this.state;
+    const current_year = parseInt(moment().format("YYYY"), 10);
+    const current_month = parseInt(moment().format("M"), 10);
     AlgaehValidation({
       alertTypeIcon: "warning",
       querySelector: "data-validate='loanApplyDiv'",
       onSuccess: () => {
-        if (this.state.deducting_year < moment(new Date()).format("YYYY")) {
+        if (parseInt(deducting_year, 10) < current_year) {
           swalMessage({
             title: "Cannot Request advance for past year",
             type: "warning"
           });
-        } else if (
-          this.state.deducting_month < moment(new Date()).format("M")
-        ) {
+        } else if (parseInt(deducting_month, 10) < current_month) {
           swalMessage({
             title: "Cannot Request advance for past month",
             type: "warning"
@@ -240,8 +292,8 @@ class LoanRequest extends Component {
   }
 
   dropDownHandler(value) {
-    let present_month = moment(new Date()).format("M");
-    let present_year = moment().year();
+    let present_month = parseInt(moment().format("M"), 10);
+    let present_year = parseInt(moment().year(), 10);
 
     switch (value.name) {
       case "loan_id":
@@ -263,8 +315,8 @@ class LoanRequest extends Component {
 
       case "start_month":
         if (
-          present_year === this.state.start_year &&
-          value.value < present_month
+          present_year === parseInt(this.state.start_year, 10) &&
+          parseInt(value.value, 10) < present_month
         ) {
           swalMessage({
             title: "Start month must be future months",
@@ -310,6 +362,351 @@ class LoanRequest extends Component {
     });
   }
 
+  searchSelect(data) {
+    this.setState(
+      {
+        sub_department_id: data.sub_department_id,
+        hims_d_employee_id: data.hims_d_employee_id,
+        full_name: data.full_name,
+        display_name: data.full_name
+      },
+      () => {
+        this.getEmployeeAdvances();
+        this.getEmployeeLoans();
+      }
+    );
+  }
+
+  renderList() {
+    const { request_type } = this.state;
+    if (request_type === "LO") {
+      return (
+        <div className="portlet portlet-bordered margin-bottom-15">
+          <div className="portlet-title">
+            <div className="caption">
+              <h3 className="caption-subject">Loan Request List</h3>
+            </div>
+          </div>
+          <div className="portlet-body">
+            <div className="row">
+              <div className="col-12" id="LoanRequestList_cntr">
+                <AlgaehDataGrid
+                  key={"LO"}
+                  id="LoanRequestList_grid"
+                  columns={[
+                    {
+                      fieldName: "loan_authorized",
+                      label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {row.loan_authorized === "PEN" ? (
+                              <span className="badge badge-warning">
+                                Pending
+                              </span>
+                            ) : row.loan_authorized === "APR" ? (
+                              <span className="badge badge-success">
+                                Approved
+                              </span>
+                            ) : row.loan_authorized === "REJ" ? (
+                              <span className="badge badge-danger">
+                                Rejected
+                              </span>
+                            ) : row.loan_authorized === "IS" ? (
+                              <span className="badge badge-success">
+                                Issued
+                              </span>
+                            ) : (
+                              "------"
+                            )}
+                          </span>
+                        );
+                      },
+                      others: {
+                        minWidth: 80
+                      }
+                    },
+                    {
+                      fieldName: "loan_application_date",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Req. Date" }} />
+                      ),
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {moment(row.loan_application_date).format(
+                              "DD-MM-YYYY"
+                            )}
+                          </span>
+                        );
+                      },
+                      others: { minWidth: 100 }
+                    },
+                    {
+                      fieldName: "loan_description",
+                      label: <AlgaehLabel label={{ forceLabel: "Loan Type" }} />
+                    },
+                    {
+                      fieldName: "pending_loan",
+                      label: <AlgaehLabel label={{ forceLabel: "Due Amt." }} />,
+                      displayTemplate: row => {
+                        return (
+                          <span>{getAmountFormart(row.pending_loan)}</span>
+                        );
+                      }
+                    },
+                    {
+                      fieldName: "pending_tenure",
+                      label: <AlgaehLabel label={{ forceLabel: "Due EMI" }} />,
+                      displayTemplate: row => {
+                        return row.pending_tenure !== 0 ? (
+                          <span>{row.pending_tenure} Month</span>
+                        ) : (
+                          <span className="badge badge-success">Closed</span>
+                        );
+                      }
+                    },
+
+                    {
+                      fieldName: "installment_amount",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "EMI Amount" }} />
+                      ),
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {getAmountFormart(row.installment_amount)}
+                          </span>
+                        );
+                      }
+                    },
+                    {
+                      fieldName: "loan_tenure",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Total EMI" }} />
+                      ),
+                      displayTemplate: row => {
+                        return <span>{row.loan_tenure} Month</span>;
+                      }
+                    },
+                    {
+                      fieldName: "start_year",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Deducting From" }} />
+                      ),
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {moment(
+                              "01-" + row.start_month + "-" + row.start_year,
+                              "DD-MM-YYYY"
+                            ).format("MMMM - YYYY")}
+                          </span>
+                        );
+                      },
+                      others: { minWidth: 130 }
+                    },
+                    {
+                      fieldName: "loan_amount",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Req. Amount" }} />
+                      ),
+                      displayTemplate: row => {
+                        return <span>{getAmountFormart(row.loan_amount)}</span>;
+                      },
+                      others: { minWidth: 100 }
+                    },
+                    {
+                      fieldName: "approved_amount",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Appr. Amount" }} />
+                      ),
+                      displayTemplate: row => {
+                        return (
+                          <span>{getAmountFormart(row.approved_amount)}</span>
+                        );
+                      },
+                      others: { minWidth: 100 }
+                    },
+                    {
+                      fieldName: "loan_application_number",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Request No." }} />
+                      ),
+                      others: {
+                        minWidth: 130
+                      }
+                    },
+                    {
+                      fieldName: "loan_description",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Reason For Loan" }}
+                        />
+                      ),
+                      others: {
+                        minWidth: 250
+                      }
+                    }
+                  ]}
+                  keyId="hims_f_loan_application_id"
+                  dataSource={{
+                    data: this.state.employee_loans
+                  }}
+                  isEditable={false}
+                  paging={{ page: 0, rowsPerPage: 10 }}
+                  events={{
+                    onEdit: () => {},
+                    onDelete: () => {},
+                    onDone: () => {}
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    } else if (request_type === "AD") {
+      return (
+        <div className="portlet portlet-bordered margin-bottom-15">
+          <div className="portlet-title">
+            <div className="caption">
+              <h3 className="caption-subject">Advance Request List</h3>
+            </div>
+            {/* <div className="actions">
+                    <a className="btn btn-primary btn-circle active">
+                      <i className="fas fa-pen" />
+                    </a>
+                  </div> */}
+          </div>
+          <div className="portlet-body">
+            <div className="row">
+              <div className="col-12" id="AdvanceRequestGrid_Cntr">
+                <AlgaehDataGrid
+                  id="AdvanceRequestGrid"
+                  key={"AD"}
+                  forceRender={this.state.forceRender}
+                  datavalidate="AdvanceRequestGrid"
+                  columns={[
+                    {
+                      fieldName: "advance_number",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Request No." }} />
+                      )
+                    },
+
+                    {
+                      fieldName: "created_date",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Requested Date" }} />
+                      ),
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {moment(row.created_date).format("DD-MM-YYYY")}
+                          </span>
+                        );
+                      }
+                    },
+                    {
+                      fieldName: "advance_amount",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Requested Amt." }} />
+                      ),
+                      displayTemplate: row => {
+                        return (
+                          <span>{getAmountFormart(row.advance_amount)}</span>
+                        );
+                      }
+                    },
+                    {
+                      fieldName: "deducting_year",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Deduction On" }} />
+                      ),
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {moment(
+                              "01-" +
+                                row.deducting_month +
+                                "-" +
+                                row.deducting_year,
+                              "DD-MM-YYYY"
+                            ).format("MMMM - YYYY")}
+                          </span>
+                        );
+                      }
+                    },
+
+                    {
+                      fieldName: "advance_reason",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Reason for Advance" }}
+                        />
+                      ),
+                      others: {
+                        minWidth: 250
+                      }
+                    }
+                    // {
+                    //   fieldName: "deducting_month",
+                    //   label: (
+                    //     <AlgaehLabel
+                    //       label={{ forceLabel: "Deducting Month" }}
+                    //     />
+                    //   ),
+                    //   displayTemplate: row => {
+                    //     return (
+                    //       <span>
+                    //         {row.deducting_month === "1"
+                    //           ? "January"
+                    //           : row.deducting_month === "2"
+                    //           ? "February"
+                    //           : row.deducting_month === "3"
+                    //           ? "March"
+                    //           : row.deducting_month === "4"
+                    //           ? "April"
+                    //           : row.deducting_month === "5"
+                    //           ? "May"
+                    //           : row.deducting_month === "6"
+                    //           ? "June"
+                    //           : row.deducting_month === "7"
+                    //           ? "July"
+                    //           : row.deducting_month === "8"
+                    //           ? "August"
+                    //           : row.deducting_month === "9"
+                    //           ? "September"
+                    //           : row.deducting_month === "10"
+                    //           ? "October"
+                    //           : row.deducting_month === "11"
+                    //           ? "November"
+                    //           : row.deducting_month === "12"
+                    //           ? "December"
+                    //           : null}
+                    //       </span>
+                    //     );
+                    //   }
+                    // }
+                  ]}
+                  keyId="hims_f_employee_advance_id"
+                  dataSource={{ data: this.state.employee_advance }}
+                  isEditable={false}
+                  paging={{ page: 0, rowsPerPage: 10 }}
+                  events={{}}
+                  others={{}}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    } else {
+      return null;
+    }
+  }
+
   render() {
     let allYears = getYears();
     return (
@@ -323,7 +720,36 @@ class LoanRequest extends Component {
             </div>
             <div className="portlet-body" data-validate="loanApplyDiv">
               <div className="row">
-                <div className="col">
+                <AlgaehAutoSearch
+                  div={{ className: "col-12 form-group" }}
+                  label={{
+                    forceLabel: "Employee",
+                    isImp: true
+                  }}
+                  ref={this.inputRef}
+                  title="Search Employees"
+                  id="item_id_search"
+                  template={result => {
+                    return (
+                      <section className="resultSecStyles">
+                        <div className="row">
+                          <div className="col-8">
+                            <h4 className="title">{result.employee_code}</h4>
+                            <small>{result.full_name}</small>
+                          </div>
+                          <div className="col-4" />
+                        </div>
+                      </section>
+                    );
+                  }}
+                  name="hims_d_employee_id"
+                  columns={spotlightSearch.Employee_details.employee}
+                  displayField="full_name"
+                  value={this.state.full_name}
+                  searchName="employee"
+                  onClick={this.searchSelect.bind(this)}
+                />
+                {/* <div className="col">
                   <label>Request Type</label>
                   <div className="customRadio">
                     <label className="radio inline">
@@ -347,7 +773,7 @@ class LoanRequest extends Component {
                       <span>Advance</span>
                     </label>
                   </div>
-                </div>
+                </div> */}
               </div>
               <div className="myDiv">
                 {this.state.request_type === "LO" ? (
@@ -589,337 +1015,7 @@ class LoanRequest extends Component {
             </div>
           </div>
         </div>
-        <div className="col-9">
-          <div className="portlet portlet-bordered margin-bottom-15">
-            <div className="portlet-title">
-              <div className="caption">
-                <h3 className="caption-subject">Loan Request List</h3>
-              </div>
-            </div>
-            <div className="portlet-body">
-              <div className="row">
-                <div className="col-12" id="LoanRequestList_cntr">
-                  <AlgaehDataGrid
-                    id="LoanRequestList_grid"
-                    columns={[
-                      {
-                        fieldName: "loan_authorized",
-                        label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
-                        displayTemplate: row => {
-                          return (
-                            <span>
-                              {row.loan_authorized === "PEN" ? (
-                                <span className="badge badge-warning">
-                                  Pending
-                                </span>
-                              ) : row.loan_authorized === "APR" ? (
-                                <span className="badge badge-success">
-                                  Approved
-                                </span>
-                              ) : row.loan_authorized === "REJ" ? (
-                                <span className="badge badge-danger">
-                                  Rejected
-                                </span>
-                              ) : row.loan_authorized === "IS" ? (
-                                <span className="badge badge-success">
-                                  Issued
-                                </span>
-                              ) : (
-                                "------"
-                              )}
-                            </span>
-                          );
-                        },
-                        others: {
-                          minWidth: 80
-                        }
-                      },
-                      {
-                        fieldName: "loan_application_date",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Req. Date" }} />
-                        ),
-                        displayTemplate: row => {
-                          return (
-                            <span>
-                              {moment(row.loan_application_date).format(
-                                "DD-MM-YYYY"
-                              )}
-                            </span>
-                          );
-                        },
-                        others: { minWidth: 100 }
-                      },
-                      {
-                        fieldName: "loan_description",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Loan Type" }} />
-                        )
-                      },
-                      {
-                        fieldName: "pending_loan",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Due Amt." }} />
-                        ),
-                        displayTemplate: row => {
-                          return (
-                            <span>{getAmountFormart(row.pending_loan)}</span>
-                          );
-                        }
-                      },
-                      {
-                        fieldName: "pending_tenure",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Due EMI" }} />
-                        ),
-                        displayTemplate: row => {
-                          return row.pending_tenure !== 0 ? (
-                            <span>{row.pending_tenure} Month</span>
-                          ) : (
-                            <span className="badge badge-success">Closed</span>
-                          );
-                        }
-                      },
-
-                      {
-                        fieldName: "installment_amount",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "EMI Amount" }} />
-                        ),
-                        displayTemplate: row => {
-                          return (
-                            <span>
-                              {getAmountFormart(row.installment_amount)}
-                            </span>
-                          );
-                        }
-                      },
-                      {
-                        fieldName: "loan_tenure",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Total EMI" }} />
-                        ),
-                        displayTemplate: row => {
-                          return <span>{row.loan_tenure} Month</span>;
-                        }
-                      },
-                      {
-                        fieldName: "start_year",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Deducting From" }}
-                          />
-                        ),
-                        displayTemplate: row => {
-                          return (
-                            <span>
-                              {moment(
-                                "01-" + row.start_month + "-" + row.start_year,
-                                "DD-MM-YYYY"
-                              ).format("MMMM - YYYY")}
-                            </span>
-                          );
-                        },
-                        others: { minWidth: 130 }
-                      },
-                      {
-                        fieldName: "loan_amount",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Req. Amount" }} />
-                        ),
-                        displayTemplate: row => {
-                          return (
-                            <span>{getAmountFormart(row.loan_amount)}</span>
-                          );
-                        },
-                        others: { minWidth: 100 }
-                      },
-                      {
-                        fieldName: "approved_amount",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Appr. Amount" }} />
-                        ),
-                        displayTemplate: row => {
-                          return (
-                            <span>{getAmountFormart(row.approved_amount)}</span>
-                          );
-                        },
-                        others: { minWidth: 100 }
-                      },
-                      {
-                        fieldName: "loan_application_number",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Request No." }} />
-                        ),
-                        others: {
-                          minWidth: 130
-                        }
-                      },
-                      {
-                        fieldName: "loan_description",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Reason For Loan" }}
-                          />
-                        ),
-                        others: {
-                          minWidth: 250
-                        }
-                      }
-                    ]}
-                    keyId="hims_f_loan_application_id"
-                    dataSource={{
-                      data: this.state.employee_loans
-                    }}
-                    isEditable={false}
-                    paging={{ page: 0, rowsPerPage: 10 }}
-                    events={{
-                      onEdit: () => {},
-                      onDelete: () => {},
-                      onDone: () => {}
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="portlet portlet-bordered margin-bottom-15">
-            <div className="portlet-title">
-              <div className="caption">
-                <h3 className="caption-subject">Advance Request List</h3>
-              </div>
-              {/* <div className="actions">
-                    <a className="btn btn-primary btn-circle active">
-                      <i className="fas fa-pen" />
-                    </a>
-                  </div> */}
-            </div>
-            <div className="portlet-body">
-              <div className="row">
-                <div className="col-12" id="AdvanceRequestGrid_Cntr">
-                  <AlgaehDataGrid
-                    id="AdvanceRequestGrid"
-                    datavalidate="AdvanceRequestGrid"
-                    columns={[
-                      {
-                        fieldName: "advance_number",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Request No." }} />
-                        )
-                      },
-
-                      {
-                        fieldName: "created_date",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Requested Date" }}
-                          />
-                        ),
-                        displayTemplate: row => {
-                          return (
-                            <span>
-                              {moment(row.created_date).format("DD-MM-YYYY")}
-                            </span>
-                          );
-                        }
-                      },
-                      {
-                        fieldName: "advance_amount",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Requested Amt." }}
-                          />
-                        ),
-                        displayTemplate: row => {
-                          return (
-                            <span>{getAmountFormart(row.advance_amount)}</span>
-                          );
-                        }
-                      },
-                      {
-                        fieldName: "deducting_year",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Deduction On" }} />
-                        ),
-                        displayTemplate: row => {
-                          return (
-                            <span>
-                              {moment(
-                                "01-" +
-                                  row.deducting_month +
-                                  "-" +
-                                  row.deducting_year,
-                                "DD-MM-YYYY"
-                              ).format("MMMM - YYYY")}
-                            </span>
-                          );
-                        }
-                      },
-
-                      {
-                        fieldName: "advance_reason",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Reason for Advance" }}
-                          />
-                        ),
-                        others: {
-                          minWidth: 250
-                        }
-                      }
-                      // {
-                      //   fieldName: "deducting_month",
-                      //   label: (
-                      //     <AlgaehLabel
-                      //       label={{ forceLabel: "Deducting Month" }}
-                      //     />
-                      //   ),
-                      //   displayTemplate: row => {
-                      //     return (
-                      //       <span>
-                      //         {row.deducting_month === "1"
-                      //           ? "January"
-                      //           : row.deducting_month === "2"
-                      //           ? "February"
-                      //           : row.deducting_month === "3"
-                      //           ? "March"
-                      //           : row.deducting_month === "4"
-                      //           ? "April"
-                      //           : row.deducting_month === "5"
-                      //           ? "May"
-                      //           : row.deducting_month === "6"
-                      //           ? "June"
-                      //           : row.deducting_month === "7"
-                      //           ? "July"
-                      //           : row.deducting_month === "8"
-                      //           ? "August"
-                      //           : row.deducting_month === "9"
-                      //           ? "September"
-                      //           : row.deducting_month === "10"
-                      //           ? "October"
-                      //           : row.deducting_month === "11"
-                      //           ? "November"
-                      //           : row.deducting_month === "12"
-                      //           ? "December"
-                      //           : null}
-                      //       </span>
-                      //     );
-                      //   }
-                      // }
-                    ]}
-                    keyId="hims_f_employee_advance_id"
-                    dataSource={{ data: this.state.employee_advance }}
-                    isEditable={false}
-                    paging={{ page: 0, rowsPerPage: 10 }}
-                    events={{}}
-                    others={{}}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <div className="col-9">{this.renderList()}</div>
       </div>
     );
   }

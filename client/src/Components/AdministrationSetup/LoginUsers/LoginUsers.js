@@ -695,9 +695,12 @@ class LoginUsers extends Component {
                       isEditable={true}
                       paging={{ page: 0, rowsPerPage: 20 }}
                       filter={true}
+                      actions={{
+                        allowDelete: false
+                      }}
                       events={{
                         onEdit: () => {},
-                        onDelete: this.deleteLoginUser.bind(this),
+                        // onDelete: this.deleteLoginUser.bind(this),
                         onDone: this.updateLoginUser.bind(this)
                       }}
                     />
