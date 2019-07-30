@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import "./OrgChart.css";
 import EmployeeView from "./EmployeeView/EmployeeView";
 import DepartmentView from "./DepartmentView/DepartmentView";
+import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 export default class OrgChart extends Component {
@@ -9,6 +10,10 @@ export default class OrgChart extends Component {
     super(props);
     this.state = { pageDisplay: "DepartmentView" };
   }
+
+  // componentDidMount() {
+  //   this.getAllDepartments();
+  // }
 
   openTab(e) {
     var element = document.querySelectorAll("[algaehtabs]");
@@ -21,6 +26,48 @@ export default class OrgChart extends Component {
       pageDisplay: specified
     });
   }
+
+  getAllDepartments() {
+    algaehApiCall({
+      uri: "/department/get",
+      method: "GET",
+      module: "masterSettings",
+      onSuccess: response => {
+        if (response.data.success) {
+          this.setState({ allDepartments: response.data.records });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
+  getSubForDept(id) {
+    algaehApiCall({
+      uri: "/department/get/subdepartment",
+      method: "GET",
+      module: "masterSettings",
+      data: {
+        department_id: id
+      },
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({ subDept: res.data.records });
+        }
+      },
+      onFailure: res => {
+        swalMessage({
+          title: res.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
   render() {
     return (
       <div className="orgChartUI">
@@ -60,7 +107,12 @@ export default class OrgChart extends Component {
           {this.state.pageDisplay === "EmployeeView" ? (
             <EmployeeView />
           ) : this.state.pageDisplay === "DepartmentView" ? (
-            <DepartmentView />
+            <DepartmentView
+              dept={this.state.allDepartments}
+              subDept={this.state.subDept}
+              getSubDept={this.getSubForDept.bind(this)}
+              getDept={this.getAllDepartments.bind(this)}
+            />
           ) : null}
         </div>
       </div>

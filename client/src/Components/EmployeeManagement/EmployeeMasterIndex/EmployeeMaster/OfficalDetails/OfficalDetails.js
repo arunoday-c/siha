@@ -179,6 +179,20 @@ class OfficalDetails extends Component {
                     }
                   }}
                 />
+
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Department Name"
+                    }}
+                  />
+                  <h6>
+                    {this.state.department_name === null ||
+                    this.state.department_name === undefined
+                      ? "------"
+                      : this.state.department_name}
+                  </h6>
+                </div>
               </div>
 
               <h5>

@@ -570,7 +570,7 @@ class ApplyLeave extends Component {
               </div>
               <div className="portlet-body">
                 <div className="row">
-                  <AlagehAutoComplete
+                  {/* <AlagehAutoComplete
                     div={{ className: "col-12 margin-bottom-15" }}
                     label={{
                       forceLabel: "Employee",
@@ -590,7 +590,7 @@ class ApplyLeave extends Component {
                         disabled: true
                       }
                     }}
-                  />
+                  /> */}
                   <AlagehAutoComplete
                     div={{ className: "col-6 margin-bottom-15" }}
                     label={{
@@ -609,7 +609,8 @@ class ApplyLeave extends Component {
                       onChange: this.dropDownHandler.bind(this),
                       onClear: () => {
                         this.setState({
-                          leave_id: null
+                          leave_id: null,
+                          available_balance: 0
                         });
                       },
                       others: {
@@ -786,7 +787,7 @@ class ApplyLeave extends Component {
                     div={{ className: "col-12 margin-bottom-15" }}
                     label={{
                       forceLabel: "Reason for Leave",
-                      isImp: false
+                      isImp: true
                     }}
                     textBox={{
                       className: "txt-fld",

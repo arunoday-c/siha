@@ -84,6 +84,7 @@ export default function ScheduleModal(props) {
                       }}
                       value={props.state.from_date}
                       minDate={new Date()}
+                      disabled={props.state.openEdit}
                     />
                     <AlgaehDateHandler
                       div={{ className: "col-6" }}
@@ -96,6 +97,7 @@ export default function ScheduleModal(props) {
                         onChange: props.changeDate
                       }}
                       value={props.state.to_date}
+                      disabled={props.state.openEdit}
                     />
                   </div>
                 </div>

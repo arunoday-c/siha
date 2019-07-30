@@ -63,16 +63,12 @@ class EmployeeMaster extends Component {
   }
 
   onClose = e => {
-    // let IOputs = EmpMasterIOputs.inputParam();
-
-    // this.setState(
-    //   {
-    //     pageDisplay: "PersonalDetails",
-    //     ...IOputs
-    //   },
-    //   () => this.props.onClose && this.props.onClose(e)
-    // );
-    this.props.onClose && this.props.onClose(e);
+    this.setState(
+      {
+        pageDisplay: "PersonalDetails"
+      },
+      () => this.props.onClose && this.props.onClose(e)
+    );
   };
 
   componentDidMount() {

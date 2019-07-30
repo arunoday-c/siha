@@ -45,31 +45,31 @@ class PatientHistory extends Component {
 		//   return;
 		// }
 
-		if (this.state.social_history !== '') {
+		if (this.state.social_history) {
 			his_array.push({
 				history_type: 'SOH',
 				remarks: this.state.social_history
 			});
 		}
-		if (this.state.surgical_history !== '') {
+		if (this.state.surgical_history) {
 			his_array.push({
 				history_type: 'SGH',
 				remarks: this.state.surgical_history
 			});
 		}
-		if (this.state.medical_history !== '') {
+		if (this.state.medical_history) {
 			his_array.push({
 				history_type: 'MEH',
 				remarks: this.state.medical_history
 			});
 		}
-		if (this.state.family_history !== '') {
+		if (this.state.family_history) {
 			his_array.push({
 				history_type: 'FMH',
 				remarks: this.state.family_history
 			});
 		}
-		if (this.state.birth_history !== '') {
+		if (this.state.birth_history) {
 			his_array.push({
 				history_type: 'BRH',
 				remarks: this.state.birth_history
