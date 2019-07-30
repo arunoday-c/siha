@@ -185,11 +185,6 @@ export default class AppSetup extends Component {
                 <div className="caption">
                   <h3 className="caption-subject">Company/ Branch List</h3>
                 </div>
-                {/* <div className="actions">
-          <a className="btn btn-primary btn-circle active">
-          <i className="fas fa-pen" />
-          </a>
-          </div> */}
               </div>
               <div className="portlet-body">
                 <div className="row">
