@@ -57,25 +57,20 @@ class AddConsultationForm extends Component {
       });
     }
 
-    if (
-      this.props.frontproviders === undefined ||
-      this.props.frontproviders.length === 0
-    ) {
-      this.props.getProviderDetails({
-        uri: "/employee/get",
-        module: "hrManagement",
-        method: "GET",
-        redux: {
-          type: "DOCTOR_GET_DATA",
-          mappingName: "frontproviders"
-        },
-        afterSuccess: data => {
-          this.setState({
-            doctors: data
-          });
-        }
-      });
-    }
+    this.props.getProviderDetails({
+      uri: "/employee/get",
+      module: "hrManagement",
+      method: "GET",
+      redux: {
+        type: "DOCTOR_GET_DATA",
+        mappingName: "frontproviders"
+      },
+      afterSuccess: data => {
+        this.setState({
+          doctors: data
+        });
+      }
+    });
 
     if (
       this.props.viewsubdept === undefined ||
@@ -129,7 +124,6 @@ class AddConsultationForm extends Component {
   };
 
   render() {
-    
     const vstDeatils =
       this.state.visitDetails === null ? [{}] : this.state.visitDetails;
     const doctors =

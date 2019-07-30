@@ -62,7 +62,7 @@ class NurseWorkbench extends Component {
       provider_id: null,
       isPregnancy: true,
 
-      chief_complaint: null,
+      chief_complaint: "",
 
       duration: null,
 
@@ -694,14 +694,15 @@ class NurseWorkbench extends Component {
       current_patient: data.patient_id,
       episode_id: data.episode_id,
       visit_id: data.visit_id,
-      encounter_id: data.hims_f_patient_encounter_id
+      encounter_id: data.hims_f_patient_encounter_id,
+      provider_id: data.provider_id
     });
 
     this.props.getOrderList({
       uri: "/orderAndPreApproval/selectOrderServicesbyDoctor",
       method: "GET",
       data: {
-        visit_id: Window.global["visit_id"]
+        visit_id: data.visit_id
       },
       redux: {
         type: "ORDER_SERVICES_GET_DATA",
@@ -1699,11 +1700,7 @@ class NurseWorkbench extends Component {
                             <div className="row">
                               <div className="col-12">
                                 <textarea
-                                  value={
-                                    this.state === undefined
-                                      ? ""
-                                      : this.state.chief_complaint
-                                  }
+                                  value={this.state.chief_complaint}
                                   name="chief_complaint"
                                   onChange={this.textAreaEvent.bind(this)}
                                   maxLength={this.chiefComplaintMaxLength}

@@ -65,7 +65,7 @@ const serviceHandeler = ($this, e) => {
 //Process and gets selectd service data with all calculation
 const ProcessService = ($this, e) => {
   // orderedList
-  debugger;
+
   let SelectedService = [];
   let PreSelectedService = [];
   if ($this.state.s_service_type !== 2) {
@@ -462,7 +462,6 @@ const deleteServices = ($this, row, rowId) => {
 };
 //Save Order
 const SaveOrdersServices = ($this, e) => {
-  debugger;
   let inputObj = {
     visit_id: $this.state.visit_id,
     patient_id: $this.state.patient_id,

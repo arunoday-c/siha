@@ -17,7 +17,6 @@ const emptyObject = extend(
 );
 
 const generateBillDetails = $this => {
-  
   let zeroBill = false;
   if ($this.state.from_package === true) {
     zeroBill = true;
@@ -486,7 +485,8 @@ const getCtrlCode = ($this, patcode, row) => {
           method: "GET",
           data: {
             patient_id: data.patientRegistration.hims_d_patient_id,
-            package_visit_type: "M"
+            package_visit_type: "M",
+            closed: "N"
           },
           redux: {
             type: "ORDER_SERVICES_GET_DATA",
@@ -519,7 +519,6 @@ const ShowPackageUtilize = $this => {
   });
 };
 const ClosePackageUtilize = ($this, e) => {
-  
   if (e === undefined || e.services_id === undefined) {
     $this.setState({
       isPackUtOpen: !$this.state.isPackUtOpen
@@ -554,7 +553,8 @@ const ClosePackageUtilize = ($this, e) => {
         method: "GET",
         data: {
           patient_id: $this.state.hims_d_patient_id,
-          package_visit_type: "M"
+          package_visit_type: "M",
+          closed: "N"
         },
         redux: {
           type: "ORDER_SERVICES_GET_DATA",

@@ -788,11 +788,11 @@ let updatdePatEncntrStatus = (req, res, next) => {
           }
 
           currentEncounterNo = result[0].encounter_id;
-          debugLog("currentEncounterNo:", currentEncounterNo);
+          console.log("currentEncounterNo:", currentEncounterNo);
 
           if (currentEncounterNo > 0) {
             let nextEncounterNo = currentEncounterNo + 1;
-            debugLog("nextEncounterNo:", nextEncounterNo);
+            console.log("nextEncounterNo:", nextEncounterNo);
 
             connection.query(
               "update algaeh_d_app_config set encounter_id=?,updated_by=?,updated_date=? where param_name='VISITEXPERIDAY'",
