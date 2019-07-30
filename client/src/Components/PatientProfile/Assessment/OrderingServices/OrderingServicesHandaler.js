@@ -466,6 +466,7 @@ const SaveOrdersServices = ($this, e) => {
     visit_id: $this.state.visit_id,
     patient_id: $this.state.patient_id,
     incharge_or_provider: Window.global["provider_id"],
+    doctor_id: Window.global["provider_id"],
     ordered_by: Window.global["provider_id"],
     billed: "N",
     billdetails: $this.state.orderservicesdata

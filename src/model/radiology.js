@@ -12,6 +12,8 @@ import appsettings from "../utils/appsettings.json";
 import { debugFunction, debugLog } from "../utils/logging";
 import mysql from "mysql";
 import moment from "moment";
+import algaehMysql from "algaeh-mysql";
+const keyPath = require("algaeh-keys/keys");
 
 //created by nowshad: to get lad orders for sample collection
 let getRadOrderedServices = (req, res, next) => {
@@ -68,8 +70,84 @@ let getRadOrderedServices = (req, res, next) => {
     next(e);
   }
 };
-
 let insertRadOrderedServices = (req, res, next) => {
+  const _options = req.connection == null ? {} : req.connection;
+  const _mysql = new algaehMysql(_options);
+  try {
+    let inputParam = { ...req.body };
+    const IncludeValues = [
+      "ordered_services_id",
+      "patient_id",
+      "visit_id",
+      "provider_id",
+      "service_id",
+      "billed",
+      "ordered_date",
+      "ordered_by",
+      "test_type"
+    ];
+    let Services = req.records.ResultOfFetchOrderIds || req.body.billdetails;
+
+    const radServices = new LINQ(Services)
+      .Where(
+        w =>
+          w.service_type_id ==
+          appsettings.hims_d_service_type.service_type_id.Radiology
+      )
+      .Select(s => {
+        return {
+          ordered_services_id: s.hims_f_ordered_services_id || null,
+          patient_id: req.body.patient_id,
+          provider_id: req.body.incharge_or_provider,
+          visit_id: req.body.visit_id,
+          service_id: s.services_id,
+          billed: req.body.billed,
+          ordered_date: s.created_date,
+          ordered_by: s.ordered_by,
+          test_type: s.test_type
+        };
+      })
+      .ToArray();
+
+    if (radServices.length > 0) {
+      _mysql
+        .executeQuery({
+          query: "INSERT INTO hims_f_rad_order(??) VALUES ?",
+          values: radServices,
+          includeValues: IncludeValues,
+          extraValues: {
+            created_by: req.userIdentity.algaeh_d_app_user_id,
+            updated_by: req.userIdentity.algaeh_d_app_user_id
+          },
+          bulkInsertOrUpdate: true,
+          printQuery: true
+        })
+        .then(insert_rad_order => {
+          _mysql.commitTransaction(() => {
+            _mysql.releaseConnection();
+            req.records = insert_rad_order;
+            next();
+          });
+        })
+        .catch(e => {
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
+        });
+    } else {
+      _mysql.commitTransaction(() => {
+        _mysql.releaseConnection();
+        req.records = radServices;
+        next();
+      });
+    }
+  } catch (e) {
+    _mysql.rollBackTransaction(() => {
+      next(e);
+    });
+  }
+};
+let insertRadOrderedServicesBackUp = (req, res, next) => {
   const insurtColumns = [
     "ordered_services_id",
     "patient_id",

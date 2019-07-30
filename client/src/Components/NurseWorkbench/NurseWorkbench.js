@@ -62,7 +62,7 @@ class NurseWorkbench extends Component {
       provider_id: null,
       isPregnancy: true,
 
-      chief_complaint: null,
+      chief_complaint: "",
 
       duration: null,
 
@@ -694,8 +694,46 @@ class NurseWorkbench extends Component {
       current_patient: data.patient_id,
       episode_id: data.episode_id,
       visit_id: data.visit_id,
-      encounter_id: data.hims_f_patient_encounter_id
+      encounter_id: data.hims_f_patient_encounter_id,
+      provider_id: data.provider_id
     });
+
+    this.props.getOrderList({
+      uri: "/orderAndPreApproval/selectOrderServicesbyDoctor",
+      method: "GET",
+      data: {
+        visit_id: data.visit_id
+      },
+      redux: {
+        type: "ORDER_SERVICES_GET_DATA",
+        mappingName: "orderedList"
+      }
+    });
+
+    this.props.getConsumableOrderList({
+      uri: "/orderAndPreApproval/getVisitConsumable",
+      method: "GET",
+      data: {
+        visit_id: data.visit_id
+      },
+      redux: {
+        type: "ORDER_SERVICES_GET_DATA",
+        mappingName: "consumableorderedList"
+      }
+    });
+
+    this.props.getPakageList({
+      uri: "/orderAndPreApproval/getPatientPackage",
+      method: "GET",
+      data: {
+        patient_id: data.visit_id
+      },
+      redux: {
+        type: "PAIENT_PACKAGE_GET_DATA",
+        mappingName: "pakageList"
+      }
+    });
+
     this.setState(
       {
         patient_name: data.full_name,
@@ -799,6 +837,7 @@ class NurseWorkbench extends Component {
     }
     if (this.state.provider_id !== null) {
       inputObj.provider_id = this.state.provider_id;
+      inputObj.doctor_id = this.state.provider_id;
     }
 
     algaehApiCall({
@@ -1661,11 +1700,7 @@ class NurseWorkbench extends Component {
                             <div className="row">
                               <div className="col-12">
                                 <textarea
-                                  value={
-                                    this.state === undefined
-                                      ? ""
-                                      : this.state.chief_complaint
-                                  }
+                                  value={this.state.chief_complaint}
                                   name="chief_complaint"
                                   onChange={this.textAreaEvent.bind(this)}
                                   maxLength={this.chiefComplaintMaxLength}
@@ -2195,6 +2230,20 @@ class NurseWorkbench extends Component {
                           />
                         }
                       </li>
+
+                      <li
+                        algaehtabs={"OrderPackage"}
+                        className={"nav-item tab-button"}
+                        onClick={this.openTab.bind(this)}
+                      >
+                        {
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Order Package"
+                            }}
+                          />
+                        }
+                      </li>
                     </ul>
                   </div>
 
@@ -2210,6 +2259,12 @@ class NurseWorkbench extends Component {
                       <OrderedList
                         vat_applicable={this.props.vat_applicable}
                         openData="Consumable"
+                      />
+                    ) : this.state.pageDisplay === "OrderPackage" &&
+                      this.state.patient_id !== null ? (
+                      <OrderedList
+                        vat_applicable={this.props.vat_applicable}
+                        openData="Package"
                       />
                     ) : null}
                   </div>
@@ -2267,7 +2322,10 @@ function mapStateToProps(state) {
     patient_chief_complaints: state.patient_chief_complaints,
     department_vitals: state.department_vitals,
     allallergies: state.allallergies,
-    patient_allergies: state.patient_allergies
+    patient_allergies: state.patient_allergies,
+    consumableorderedList: state.consumableorderedList,
+    pakageList: state.pakageList,
+    orderedList: state.orderedList
   };
 }
 
@@ -2278,7 +2336,10 @@ function mapDispatchToProps(dispatch) {
       getPatientChiefComplaints: AlgaehActions,
       getDepartmentVitals: AlgaehActions,
       getAllAllergies: AlgaehActions,
-      getPatientAllergies: AlgaehActions
+      getPatientAllergies: AlgaehActions,
+      getOrderList: AlgaehActions,
+      getConsumableOrderList: AlgaehActions,
+      getPakageList: AlgaehActions
     },
     dispatch
   );

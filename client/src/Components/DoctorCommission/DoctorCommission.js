@@ -18,7 +18,8 @@ import {
   datehandle,
   ClearData,
   CalculateCommission,
-  AdjustAmountCalculate
+  AdjustAmountCalculate,
+  dateValidate
 } from "./DoctorCommissionEvents";
 import "./DoctorCommission.css";
 import "../../styles/site.css";
@@ -196,7 +197,8 @@ class DoctorCommission extends Component {
                 textBox={{ className: "txt-fld", name: "from_date" }}
                 maxDate={new Date()}
                 events={{
-                  onChange: datehandle.bind(this, this)
+                  onChange: datehandle.bind(this, this),
+                  onBlur: dateValidate.bind(this, this)
                 }}
                 value={this.state.from_date}
               />
@@ -207,7 +209,8 @@ class DoctorCommission extends Component {
                 textBox={{ className: "txt-fld", name: "to_date" }}
                 maxDate={new Date()}
                 events={{
-                  onChange: datehandle.bind(this, this)
+                  onChange: datehandle.bind(this, this),
+                  onBlur: dateValidate.bind(this, this)
                 }}
                 value={this.state.to_date}
               />

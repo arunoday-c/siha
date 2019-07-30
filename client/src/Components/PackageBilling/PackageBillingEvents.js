@@ -162,11 +162,11 @@ const selectVisit = $this => {
     uri: "/orderAndPreApproval/getPatientPackage",
     method: "GET",
     data: {
-      patient_id: $this.state.hims_d_patient_id
+      patient_id: $this.state.hims_d_patient_id,
+      closed: "N"
     },
     onSuccess: response => {
       if (response.data.success) {
-        
         AlgaehLoader({ show: false });
 
         let data = response.data.records;

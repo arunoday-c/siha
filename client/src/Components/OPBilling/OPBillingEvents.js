@@ -52,7 +52,6 @@ const ClearData = ($this, e) => {
 
 const Validations = $this => {
   let isError = false;
-  
 
   if ($this.state.card_amount > 0) {
     if ($this.state.card_number === null || $this.state.card_number === "") {
@@ -398,7 +397,6 @@ const getPatientDetails = $this => {
     },
     onSuccess: response => {
       if (response.data.success) {
-        
         let data = response.data.records;
         let hospital_id = JSON.parse(
           AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
@@ -477,7 +475,8 @@ const getPatientDetails = $this => {
             uri: "/orderAndPreApproval/getPatientPackage",
             method: "GET",
             data: {
-              patient_id: $this.state.patient_id
+              patient_id: $this.state.patient_id,
+              closed: "N"
             },
             redux: {
               type: "ORDER_SERVICES_GET_DATA",
@@ -535,7 +534,7 @@ const ClosePackageUtilize = $this => {
       $this.props.getPatientPackage({
         uri: "/orderAndPreApproval/getPatientPackage",
         method: "GET",
-        data: { package_visit_type: "M", patient_id: $this.state.patient_id },
+        data: { closed: "N", patient_id: $this.state.patient_id },
         redux: {
           type: "ORDER_SERVICES_GET_DATA",
           mappingName: "PatientPackageList"

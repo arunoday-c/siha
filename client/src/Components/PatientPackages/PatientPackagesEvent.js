@@ -9,7 +9,6 @@ export default function PackageSetupEvent() {
       $this.props.getPatientPackage({
         uri: "/orderAndPreApproval/getPatientPackage",
         method: "GET",
-        data: { package_visit_type: "M" },
         redux: {
           type: "ORDER_SERVICES_GET_DATA",
           mappingName: "PatientPackageList"
@@ -32,7 +31,6 @@ export default function PackageSetupEvent() {
           $this.props.getPatientPackage({
             uri: "/orderAndPreApproval/getPatientPackage",
             method: "GET",
-            data: { package_visit_type: "M" },
             redux: {
               type: "ORDER_SERVICES_GET_DATA",
               mappingName: "PatientPackageList"
@@ -43,7 +41,6 @@ export default function PackageSetupEvent() {
     },
 
     ShowAdvanceScreen: ($this, row) => {
-      
       $this.setState({
         patient_id: row.patient_id,
         hims_f_package_header_id: row.hims_f_package_header_id,
