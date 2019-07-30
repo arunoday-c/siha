@@ -361,6 +361,13 @@ const PageToPlot = {
       import("./Components/EmployeeManagement/SelfService/SelfService")
     )
   ),
+  EmpServ: React.lazy(() =>
+    retry(() =>
+      import(
+        "./Components/EmployeeManagement/EmployeeServices/EmployeeServices"
+      )
+    )
+  ),
   AttendanceRegularization: React.lazy(() =>
     retry(() =>
       import(

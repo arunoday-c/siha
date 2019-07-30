@@ -83,7 +83,7 @@ class AdminSetup extends Component {
                   />
                 }
               </li>
-              <li
+              {/* <li
                 algaehtabs={"ComponentElementAssignment"}
                 className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
@@ -95,7 +95,7 @@ class AdminSetup extends Component {
                     }}
                   />
                 }
-              </li>
+              </li> */}
               {/* <li
                 algaehtabs={"CategorySpeciality"}
                 className={"nav-item tab-button"}

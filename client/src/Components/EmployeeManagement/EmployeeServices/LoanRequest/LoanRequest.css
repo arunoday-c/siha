@@ -1,0 +1,14 @@
+.loan_request h5 {
+  margin: 0 0 10px;
+  padding-bottom: 2px;
+  border-bottom: 1px dashed #d3d3d3; }
+  .loan_request h5 span {
+    border-bottom: 2px solid #8c8c8c;
+    text-transform: uppercase;
+    line-height: 0; }
+
+.loan_request #LoanRequestList_cntr .ReactTable {
+  max-height: 30vh !important; }
+
+.loan_request #AdvanceRequestGrid_Cntr .ReactTable {
+  max-height: 30vh !important; }

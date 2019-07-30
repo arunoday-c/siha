@@ -8,7 +8,7 @@ class PerformanceManagement extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pageDisplay: "PerformanceReview"
+      pageDisplay: "SalaryApprisal"
     };
   }
 
@@ -31,27 +31,27 @@ class PerformanceManagement extends Component {
           <div className="tabMaster toggle-section">
             <ul className="nav">
               <li
-                algaehtabs={"PerformanceReview"}
+                algaehtabs={"SalaryApprisal"}
                 className={"nav-item tab-button active"}
                 onClick={this.openTab.bind(this)}
               >
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Performance Review"
+                      forceLabel: "SALARY APPRAISAL"
                     }}
                   />
                 }
               </li>
               <li
-                algaehtabs={"SalaryApprisal"}
-                className={"nav-item tab-button"}
+                algaehtabs={"PerformanceReview"}
+                className={"nav-item tab-button "}
                 onClick={this.openTab.bind(this)}
               >
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "SALARY APPRAISAL"
+                      forceLabel: "Performance Review"
                     }}
                   />
                 }

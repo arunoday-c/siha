@@ -1,0 +1,30 @@
+.apply_leave {
+  h5 {
+    margin: 0 0 10px;
+    padding-bottom: 2px;
+    border-bottom: 1px dashed #d3d3d3;
+    span {
+      border-bottom: 2px solid #8c8c8c;
+      
+      text-transform: uppercase;
+      line-height: 0;
+    }
+  }
+  #leaveRequestList_cntr {
+    .ReactTable {
+      max-height: 42vh !important;
+    }
+  }
+}
+
+.leaveBalanceCntr {
+  & > div {
+    overflow: hidden;
+    &:first-child {
+      border-radius: 5px 0 0 5px;
+    }
+    &:last-child {
+      border-radius: 0 5px 5px 0;
+    }
+  }
+}
