@@ -838,6 +838,10 @@ class OrderedList extends PureComponent {
                         displayTemplate: row => {
                           return (
                             <i
+                              style={{
+                                pointerEvents: row.closed === "N" ? "" : "none",
+                                opacity: row.closed === "N" ? "" : "0.1"
+                              }}
                               className="fas fa-eye"
                               onClick={this.ShowPackageUtilize.bind(this, row)}
                             />

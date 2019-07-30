@@ -37,5 +37,36 @@
   "bp": "BP (mmHg)",
   "rec_time": "Recorded Time",
   "rec_date": "Recorded Date",
-  "chief_cmpln": "Chief Complaint"
+  "chief_cmpln": "Chief Complaint",
+
+  "quantity": "Quantity",
+  "unit_cost": "Unit Cost",
+  "gross_amount": "Gross Amount",
+  "discount_percentage": "Discount %",
+  "discount_amout": "Discount Amt.",
+  "net_amout": "Net Amount",
+  "insurance": "Insurance",
+  "pre_approval": "Pre Approval",
+  "copay_percentage": "Copay %",
+  "copay_amount": "Copay Amt.",
+  "deductable_percentage": "Deductable %",
+  "deductable_amount": "Deductable Amt.",
+  "tax_inclusive": "Tax Inclusive",
+  "patient_tax": "Patient Tax",
+  "company_tax": "Company Tax",
+  "total_tax": "Total Tax",
+  "total_price": "Total Price",
+  "patient_resp": "Patient Responsible",
+  "patient_payable": "Patient Share",
+  "comapany_resp": "Co. Responsible",
+  "company_payble": "Co. Share",
+
+  "service_type_id": "Service Type",
+  "services_id": "Service",
+
+  "sub_ttl": "Sub Total",
+  "dsct_amt": "Discount Amount",
+  "net_ttl": "Net Total",
+  "pat_payable": "Patient Payable",
+  "co_payable": "Co. Payable"
 }
