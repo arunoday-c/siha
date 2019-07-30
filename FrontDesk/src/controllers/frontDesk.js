@@ -94,6 +94,7 @@ export default () => {
       if (req.body.from_package == true) {
         updatePatientPackage(req, res, next);
       } else {
+        console.log("one ");
         next();
       }
     },

@@ -101,7 +101,7 @@ module.exports = {
     const _mysql = new algaehMysql(_options);
 
     const utilities = new algaehUtilities();
-    utilities.logger().log("addBillData: ");
+    utilities.logger().log("addBillData: ", req.body);
     try {
       let inputParam = { ...req.body };
       if (
@@ -337,6 +337,7 @@ module.exports = {
                 //   _mysql.releaseConnection();
                 req.records = headerResult;
                 next();
+
                 // });
               } else {
                 next();
@@ -756,17 +757,16 @@ module.exports = {
       next(e);
     }
   },
-//created by:Irfan
+  //created by:Irfan
   addCashHandover: (req, res, next) => {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
-    // const utilities = new algaehUtilities();
-    // utilities.logger().log("addCashHandover ");
+    const utilities = new algaehUtilities();
 
     try {
       let inputParam = { ...req.body };
       // req.body.receipt_header_id
-     utilities.logger().log("inputParam Cash: ", inputParam);
+      utilities.logger().log("inputParam Cash: ", inputParam);
 
       if (
         inputParam.receiptdetails == null ||
@@ -1019,6 +1019,109 @@ module.exports = {
       });
     }
   },
+  //created by:Irfan
+  addCashHandoverNEW30_july: (req, res, next) => {
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
+    const utilities = new algaehUtilities();
+
+    const inputParam = req.body;
+
+    try {
+      if (req.userIdentity.user_type == "C" && inputParam.shift_id > 0) {
+        if (inputParam.receiptdetails.length > 0) {
+          _mysql
+            .executeQuery({
+              query:
+                "select hims_f_cash_handover_header_id, shift_id, daily_handover_date,\
+        hims_f_cash_handover_detail_id, D.casher_id,D.shift_status,D.open_date,\
+        D.expected_cash,D.expected_card,D.expected_cheque,D.no_of_cheques,D.collected_cash,D.refunded_cash\
+        from hims_f_cash_handover_header H left join hims_f_cash_handover_detail D \
+        on H.hims_f_cash_handover_header_id=D.cash_handover_header_id\
+        and date(D.open_date)=CURDATE()  and casher_id=? and shift_status='O' and D.record_status='A'\
+        where H.shift_id=? and date(H.daily_handover_date)=CURDATE() and H.hospital_id=? ",
+              values: [
+                req.userIdentity.algaeh_d_app_user_id,
+                inputParam.shift_id,
+                req.userIdentity.hospital_id
+              ],
+              printQuery: true
+            })
+            .then(reslt => {
+              if (inputParam.pay_type == "P") {
+              }
+
+              let expected_cash = 0;
+              let expected_card = 0;
+              let expected_cheque = 0;
+              let no_of_cheques = 0;
+
+              expected_cash = new LINQ(inputParam.receiptdetails)
+                .Where(w => w.pay_type == "CA")
+                .Sum(s => parseFloat(s.amount));
+
+              expected_card = new LINQ(inputParam.receiptdetails)
+                .Where(w => w.pay_type == "CD")
+                .Sum(s => parseFloat(s.amount));
+
+              expected_cheque = new LINQ(inputParam.receiptdetails)
+                .Where(w => w.pay_type == "CH")
+                .Sum(s => parseFloat(s.amount));
+
+              no_of_cheques = new LINQ(inputParam.receiptdetails)
+                .Where(w => w.pay_type == "CH")
+                .ToArray().length;
+            })
+            .catch(error => {
+              _mysql.rollBackTransaction(() => {
+                next(error);
+              });
+            });
+        } else {
+          if (req.connection == null) {
+            req.records = {
+              internal_error: true,
+              message: "No receipt details"
+            };
+            _mysql.rollBackTransaction(() => {
+              next();
+            });
+          } else {
+            req.records = {
+              internal_error: true,
+              message: "No receipt details"
+            };
+            _mysql.rollBackTransaction(() => {
+              next();
+            });
+          }
+        }
+      } else {
+        if (req.connection == null) {
+          req.records = {
+            internal_error: true,
+            message: "Current user is not a Cahsier"
+          };
+          _mysql.rollBackTransaction(() => {
+            next();
+          });
+        } else {
+          req.records = {
+            internal_error: true,
+            message: "Current user is not a Cahsier"
+          };
+          _mysql.rollBackTransaction(() => {
+            next();
+          });
+        }
+      }
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(error);
+      });
+    }
+  },
+
   getBillDetailsFunction: (req, res, next, resolve) => {
     try {
       getBillDetailsFunctionality(req, res, next, resolve);
@@ -1261,6 +1364,7 @@ module.exports = {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
     const utilities = new algaehUtilities();
+
     utilities.logger().log("updatePatientPackage: ");
     try {
       let inputParam = req.body;
@@ -1698,11 +1802,6 @@ module.exports = {
                   policydtls = { ...cur_policy, ...prices };
                 }
 
-                // console.log("policydtls:", policydtls);
-
-              
-              
-
                 covered =
                   policydtls != null
                     ? policydtls.covered != null
@@ -2070,8 +2169,6 @@ module.exports = {
               next(error);
             });
         } else {
-          
-
           let out = [
             {
               hims_f_billing_details_id: null,
@@ -2200,7 +2297,6 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
         return val.hims_d_services_id;
       });
 
-      console.log("service_ids:", service_ids);
       // for (let i = 1; i < len; i++) {
       //   questions += ",?";
       // }
@@ -2929,8 +3025,6 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
               outputArray.push(out);
             })
             .then(() => {
-              console.log(" am here:", m);
-
               if (m == result.length - 1) {
                 _mysql.releaseConnection();
                 return resolve({ billdetails: outputArray });
