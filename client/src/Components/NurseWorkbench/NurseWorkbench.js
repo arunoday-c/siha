@@ -696,6 +696,43 @@ class NurseWorkbench extends Component {
       visit_id: data.visit_id,
       encounter_id: data.hims_f_patient_encounter_id
     });
+
+    this.props.getOrderList({
+      uri: "/orderAndPreApproval/selectOrderServicesbyDoctor",
+      method: "GET",
+      data: {
+        visit_id: Window.global["visit_id"]
+      },
+      redux: {
+        type: "ORDER_SERVICES_GET_DATA",
+        mappingName: "orderedList"
+      }
+    });
+
+    this.props.getConsumableOrderList({
+      uri: "/orderAndPreApproval/getVisitConsumable",
+      method: "GET",
+      data: {
+        visit_id: data.visit_id
+      },
+      redux: {
+        type: "ORDER_SERVICES_GET_DATA",
+        mappingName: "consumableorderedList"
+      }
+    });
+
+    this.props.getPakageList({
+      uri: "/orderAndPreApproval/getPatientPackage",
+      method: "GET",
+      data: {
+        patient_id: data.visit_id
+      },
+      redux: {
+        type: "PAIENT_PACKAGE_GET_DATA",
+        mappingName: "pakageList"
+      }
+    });
+
     this.setState(
       {
         patient_name: data.full_name,
@@ -799,6 +836,7 @@ class NurseWorkbench extends Component {
     }
     if (this.state.provider_id !== null) {
       inputObj.provider_id = this.state.provider_id;
+      inputObj.doctor_id = this.state.provider_id;
     }
 
     algaehApiCall({
@@ -2267,7 +2305,10 @@ function mapStateToProps(state) {
     patient_chief_complaints: state.patient_chief_complaints,
     department_vitals: state.department_vitals,
     allallergies: state.allallergies,
-    patient_allergies: state.patient_allergies
+    patient_allergies: state.patient_allergies,
+    consumableorderedList: state.consumableorderedList,
+    pakageList: state.pakageList,
+    orderedList: state.orderedList
   };
 }
 
@@ -2278,7 +2319,10 @@ function mapDispatchToProps(dispatch) {
       getPatientChiefComplaints: AlgaehActions,
       getDepartmentVitals: AlgaehActions,
       getAllAllergies: AlgaehActions,
-      getPatientAllergies: AlgaehActions
+      getPatientAllergies: AlgaehActions,
+      getOrderList: AlgaehActions,
+      getConsumableOrderList: AlgaehActions,
+      getPakageList: AlgaehActions
     },
     dispatch
   );

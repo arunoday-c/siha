@@ -31,31 +31,15 @@ export default ({ config, db }) => {
   // created by irfan: to  insertOrderedServices
   api.post(
     "/insertOrderedServices",
-    generateDbConnection,
     insertOrderedServices,
     insertLadOrderedServices,
     insertRadOrderedServices,
     (req, res, next) => {
-      let connection = req.connection;
-      connection.commit(error => {
-        debugLog("error", error);
-        debugLog("commit error", error);
-        if (error) {
-          debugLog("roll error", error);
-          connection.rollback(() => {
-            next(error);
-          });
-        } else {
-          let result = req.records;
-          res.status(httpStatus.ok).json({
-            success: true,
-            records: result
-          });
-          next();
-        }
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: req.records
       });
-    },
-    releaseConnection
+    }
   );
 
   // created by irfan : to fetch pre approval list

@@ -497,11 +497,11 @@ module.exports = {
           sendingObject.sheet_discount_amount = 0;
 
           if (inputParam.sheet_discount_amount > 0) {
-            sendingObject.sheet_discount_percentage = (
-              (inputParam.sheet_discount_amount / inputParam.gross_total) *
-              100
-            ).toFixed(3);
-
+            sendingObject.sheet_discount_percentage =
+              (inputParam.sheet_discount_amount / inputParam.gross_total) * 100;
+            sendingObject.sheet_discount_percentage = sendingObject.sheet_discount_percentage.toFixed(
+              3
+            );
             sendingObject.sheet_discount_amount =
               inputParam.sheet_discount_amount;
           } else if (inputParam.sheet_discount_percentage > 0) {
@@ -1857,46 +1857,43 @@ module.exports = {
                   }
 
                   patient_resp = copay_amount + deductable_amount;
-                  comapany_resp =
-                    net_amout - patient_resp.toFixed(decimal_places);
-
+                  comapany_resp = net_amout - patient_resp;
+                  comapany_resp = comapany_resp.toFixed(decimal_places);
                   if (vat_applicable == "Y" && records.vat_applicable == "Y") {
-                    patient_tax = (
-                      (patient_resp * records.vat_percent) /
-                      100
-                    ).toFixed(decimal_places);
+                    patient_tax = (patient_resp * records.vat_percent) / 100;
+
+                    patient_tax = patient_tax.toFixed(decimal_places);
                   }
 
                   if (records.vat_applicable == "Y") {
-                    company_tax = (
-                      (comapany_resp * records.vat_percent) /
-                      100
-                    ).toFixed(decimal_places);
+                    company_tax = (comapany_resp * records.vat_percent) / 100;
+                    company_tax = company_tax.toFixed(decimal_places);
                   }
-                  total_tax = (patient_tax + company_tax).toFixed(
-                    decimal_places
-                  );
-
-                  patient_payable = (patient_resp + patient_tax).toFixed(
-                    decimal_places
-                  );
+                  total_tax = patient_tax + company_tax;
+                  // total_tax = total_tax.toFixed(decimal_places);
+                  patient_payable = patient_resp + patient_tax;
+                  // patient_payable = patient_payable.toFixed(decimal_places);
 
                   if (approved_amount !== 0 && approved_amount < unit_cost) {
                     let diff_val = approved_amount - comapany_resp;
                     patient_payable = (patient_payable + diff_val).toFixed(
                       decimal_places
                     );
+
                     patient_resp = (patient_resp + diff_val).toFixed(
                       decimal_places
                     );
                     comapany_resp = comapany_resp - diff_val;
+
+                    patient_payable = patient_payable.toFixed(decimal_places);
+                    patient_resp = patient_resp.toFixed(decimal_places);
+                    comapany_resp = comapany_resp.toFixed(decimal_places);
                   }
 
                   company_payble = net_amout - patient_resp;
+                  company_payble = company_payble.toFixed(decimal_places);
 
-                  company_payble = (company_payble + company_tax).toFixed(
-                    decimal_places
-                  );
+                  company_payble = company_payble + company_tax;
 
                   preapp_limit_amount = policydtls.preapp_limit;
                   if (policydtls.preapp_limit !== 0) {
@@ -1926,10 +1923,10 @@ module.exports = {
                   gross_amount = quantity * unit_cost;
 
                   if (discount_amout > 0) {
-                    discount_percentage = (
-                      (discount_amout / gross_amount) *
-                      100
-                    ).toFixed(decimal_places);
+                    discount_percentage = (discount_amout / gross_amount) * 100;
+                    discount_percentage = discount_percentage.toFixed(
+                      decimal_places
+                    );
                   } else if (discount_percentage > 0) {
                     discount_amout = (gross_amount * discount_percentage) / 100;
                     discount_amout = discount_amout.toFixed(decimal_places);
@@ -1938,17 +1935,14 @@ module.exports = {
                   patient_resp = net_amout;
 
                   if (vat_applicable == "Y" && records.vat_applicable == "Y") {
-                    patient_tax = (
-                      (patient_resp * records.vat_percent) /
-                      100
-                    ).toFixed(decimal_places);
+                    patient_tax = (patient_resp * records.vat_percent) / 100;
+                    patient_tax = patient_tax.toFixed(decimal_places);
                     total_tax = patient_tax;
                   }
 
                   // patient_payable = net_amout + patient_tax;
-                  patient_payable = (patient_resp + patient_tax).toFixed(
-                    decimal_places
-                  );
+                  patient_payable = patient_resp + patient_tax;
+                  patient_payable = patient_payable.toFixed(decimal_places);
                 }
 
                 // }

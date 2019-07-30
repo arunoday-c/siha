@@ -325,16 +325,7 @@ export default class BranchMaster extends Component {
                       onChange: this.dropDownHandler.bind(this)
                     }}
                   />
-                  {/* <AlagehAutoComplete
-                    div={{ className: "col-6 form-group" }}
-                    label={{ forceLabel: "Branch Head Office", isImp: true }}
-                    selector={{
-                      name: "",
-                      className: "select-fld",
-                      dataSource: {},
-                      others: {}
-                    }}
-                  /> */}
+
                   <AlagehAutoComplete
                     div={{ className: "col-6 form-group" }}
                     label={{ forceLabel: "Emp. ID Required", isImp: true }}
@@ -400,21 +391,12 @@ export default class BranchMaster extends Component {
                 <div className="caption">
                   <h3 className="caption-subject">Branch List</h3>
                 </div>
-                {/* <div className="actions">
-          <a className="btn btn-primary btn-circle active">
-          <i className="fas fa-pen" />
-          </a>
-          </div> */}
               </div>
               <div className="portlet-body" id="">
-                {this.state.allBranches.map((data, index) => (
-                  <div
-                    className="row"
-                    key={index}
-                    // onClick={this.loadDetails.bind(this, data)}
-                  >
-                    <div className="col-12" id="branchCompanyList">
-                      <div className="row branchEachList">
+                <div className="row">
+                  <div className="col-12" id="branchCompanyList">
+                    {this.state.allBranches.map((data, index) => (
+                      <div className="row branchEachList" key={index}>
                         <div className="branchAction">
                           <i className="fas fa-pen" />
                           <i className="fas fa-network-wired" />
@@ -448,9 +430,9 @@ export default class BranchMaster extends Component {
                           <h6>{data.hospital_address}</h6>
                         </div>
                       </div>
-                    </div>
+                    ))}
                   </div>
-                ))}
+                </div>
               </div>
             </div>
           </div>
@@ -460,11 +442,6 @@ export default class BranchMaster extends Component {
                 <div className="caption">
                   <h3 className="caption-subject">Map Dept. to Branch</h3>
                 </div>
-                {/* <div className="actions">
-          <a className="btn btn-primary btn-circle active">
-          <i className="fas fa-pen" />
-          </a>
-          </div> */}
               </div>
               <div className="portlet-body departmentBranchMapList">
                 <div className="row">
