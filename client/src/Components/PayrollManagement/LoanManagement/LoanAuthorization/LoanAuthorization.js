@@ -398,7 +398,7 @@ class LoanAuthorization extends Component {
                       {
                         fieldName: "loan_description",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "Loan Type" }} />
+                          <AlgaehLabel label={{ forceLabel: "Description" }} />
                         )
                       },
                       {

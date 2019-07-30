@@ -99,7 +99,6 @@ export default class LeaveAuthorization extends Component {
       hospital_id: this.state.hospital_id
     };
 
-
     algaehApiCall({
       uri: "/leave/authorizeLeave",
       method: "PUT",
@@ -589,6 +588,10 @@ export default class LeaveAuthorization extends Component {
                             </span>
                           );
                         }
+                      },
+                      {
+                        fieldName: "remarks",
+                        label: <AlgaehLabel label={{ forceLabel: "Reason" }} />
                       }
                     ]}
                     keyId="hims_f_leave_application_id"

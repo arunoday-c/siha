@@ -7,6 +7,8 @@ import {
   AlagehAutoComplete,
   AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
+import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
+import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
@@ -40,7 +42,6 @@ class ApplyLeave extends Component {
       ).hims_d_hospital_id
     };
     this.getLeaveTypes();
-    this.getEmployees();
   }
 
   componentWillUnmount() {
@@ -62,28 +63,28 @@ class ApplyLeave extends Component {
     return dates;
   }
 
-  componentDidMount() {
-    if (this.props.empData) {
-      this.setState(
-        {
-          employee_id: this.props.empData.hims_d_employee_id,
-          sub_department_id: this.props.empData.sub_department_id,
-          employee_type: this.props.empData.employee_type,
-          gender: this.props.empData.sex,
-          religion_id: this.props.empData.religion_id,
-          isEmployee: true
-        },
-        () => {
-          this.getEmployeeLeaveData();
-          this.getEmployeeLeaveHistory();
-        }
-      );
-    } else {
-      this.setState({
-        isEmployee: false
-      });
-    }
-  }
+  // componentDidMount() {
+  //   if (this.props.empData) {
+  //     this.setState(
+  //       {
+  //         employee_id: this.props.empData.hims_d_employee_id,
+  //         sub_department_id: this.props.empData.sub_department_id,
+  //         employee_type: this.props.empData.employee_type,
+  //         gender: this.props.empData.sex,
+  //         religion_id: this.props.empData.religion_id,
+  //         isEmployee: true
+  //       },
+  //       () => {
+  //         this.getEmployeeLeaveData();
+  //         this.getEmployeeLeaveHistory();
+  //       }
+  //     );
+  //   } else {
+  //     this.setState({
+  //       isEmployee: false
+  //     });
+  //   }
+  // }
 
   deleteLeaveApplication(data) {
     swal({
@@ -500,9 +501,9 @@ class ApplyLeave extends Component {
       data: {
         employee_id: this.state.employee_id,
         year: moment().year(),
-        gender: this.state.gender,
-        employee_type: this.state.employee_type,
-        selfservice: "Y"
+        gender: this.state.employee.gender,
+        employee_type: this.state.employee.employee_type
+        // selfservice: "Y"
       },
       onSuccess: res => {
         if (res.data.success) {
@@ -533,15 +534,25 @@ class ApplyLeave extends Component {
       }
     });
   }
+
   getEmployees() {
     algaehApiCall({
       uri: "/employee/get",
       module: "hrManagement",
+      data: {
+        hims_d_employee_id: this.state.employee_id
+      },
       method: "GET",
       onSuccess: res => {
-        this.setState({
-          employees: res.data.records
-        });
+        this.setState(
+          {
+            employee: res.data.records[0]
+          },
+          () => {
+            this.getEmployeeLeaveData();
+            this.getEmployeeLeaveHistory();
+          }
+        );
       },
       onFailure: err => {
         swalMessage({
@@ -552,12 +563,22 @@ class ApplyLeave extends Component {
     });
   }
 
+  searchSelect(data) {
+    console.log(data);
+    this.setState(
+      {
+        employee_id: data.hims_d_employee_id,
+        full_name: data.full_name,
+        display_name: data.full_name
+      },
+      () => this.getEmployees()
+    );
+  }
+
   render() {
     let leaveData = this.state.emp_leaves_data
       ? this.state.emp_leaves_data
       : [];
-    const { isEmployee } = this.state;
-    if (isEmployee === false) return null;
     return (
       <React.Fragment>
         <div className="row apply_leave">
@@ -570,7 +591,35 @@ class ApplyLeave extends Component {
               </div>
               <div className="portlet-body">
                 <div className="row">
-                  <AlagehAutoComplete
+                  <AlgaehAutoSearch
+                    div={{ className: "col-12 form-group" }}
+                    label={{
+                      forceLabel: "Employee",
+                      isImp: true
+                    }}
+                    title="Search Employees"
+                    id="item_id_search"
+                    template={result => {
+                      return (
+                        <section className="resultSecStyles">
+                          <div className="row">
+                            <div className="col-8">
+                              <h4 className="title">{result.employee_code}</h4>
+                              <small>{result.full_name}</small>
+                            </div>
+                            <div className="col-4" />
+                          </div>
+                        </section>
+                      );
+                    }}
+                    name="hims_d_employee_id"
+                    columns={spotlightSearch.Employee_details.employee}
+                    displayField="full_name"
+                    value={this.state.full_name}
+                    searchName="employee"
+                    onClick={this.searchSelect.bind(this)}
+                  />
+                  {/* <AlagehAutoComplete
                     div={{ className: "col-12 margin-bottom-15" }}
                     label={{
                       forceLabel: "Employee",
@@ -590,7 +639,7 @@ class ApplyLeave extends Component {
                         disabled: true
                       }
                     }}
-                  />
+                  /> */}
                   <AlagehAutoComplete
                     div={{ className: "col-6 margin-bottom-15" }}
                     label={{
@@ -786,7 +835,7 @@ class ApplyLeave extends Component {
                     div={{ className: "col-12 margin-bottom-15" }}
                     label={{
                       forceLabel: "Reason for Leave",
-                      isImp: false
+                      isImp: true
                     }}
                     textBox={{
                       className: "txt-fld",
