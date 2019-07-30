@@ -63,16 +63,12 @@ class EmployeeMaster extends Component {
   }
 
   onClose = e => {
-    // let IOputs = EmpMasterIOputs.inputParam();
-
-    // this.setState(
-    //   {
-    //     pageDisplay: "PersonalDetails",
-    //     ...IOputs
-    //   },
-    //   () => this.props.onClose && this.props.onClose(e)
-    // );
-    this.props.onClose && this.props.onClose(e);
+    this.setState(
+      {
+        pageDisplay: "PersonalDetails"
+      },
+      () => this.props.onClose && this.props.onClose(e)
+    );
   };
 
   componentDidMount() {
@@ -160,12 +156,6 @@ class EmployeeMaster extends Component {
       let IOputs = newProps.employeeDetailsPop;
       IOputs.Applicable = IOputs.isdoctor === "Y" ? true : false;
       IOputs.samechecked = IOputs.same_address === "Y" ? true : false;
-
-      if (this.props.open === true && newProps.open === false) {
-        this.setState({
-          pageDisplay: "PersonalDetails"
-        });
-      }
 
       if (IOputs.present_country_id === null) {
         this.setState({
