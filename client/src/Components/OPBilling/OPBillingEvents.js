@@ -521,7 +521,7 @@ const ShowPackageUtilize = $this => {
   });
   $this.setState({
     isPackUtOpen: !$this.state.isPackUtOpen,
-    package_detail: $this.props.PatientPackageList[0]
+    package_detail: $this.props.PatientPackageList
   });
 };
 const ClosePackageUtilize = $this => {

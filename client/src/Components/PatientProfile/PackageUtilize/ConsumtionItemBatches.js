@@ -261,21 +261,20 @@ class ConsumtionItemBatches extends PureComponent {
                   <div className="col-lg-12">
                     <div className="row">
                       <div className="col-lg-12">
-                        <span className="float-right">
-                          <button
-                            className="btn-primary"
-                            onClick={this.UtilizeGetBatchData.bind(this)}
-                          >
-                            Utilize
-                          </button>
+                        <button
+                          type="button"
+                          className="btn btn-primary"
+                          onClick={this.UtilizeGetBatchData.bind(this)}
+                        >
+                          Utilize
+                        </button>
 
-                          <button
-                            className="btn btn-default"
-                            onClick={this.onClose.bind(this)}
-                          >
-                            Cancel
-                          </button>
-                        </span>
+                        <button
+                          className="btn btn-default"
+                          onClick={this.onClose.bind(this)}
+                        >
+                          Cancel
+                        </button>
                       </div>
                     </div>
                   </div>

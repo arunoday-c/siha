@@ -7,7 +7,8 @@ import {
   AlagehFormGroup,
   AlgaehDataGrid,
   AlgaehLabel,
-  AlgaehModalPopUp
+  AlgaehModalPopUp,
+  AlagehAutoComplete
 } from "../../Wrapper/algaehWrapper";
 import ButtonType from "../../Wrapper/algaehButton";
 
@@ -38,7 +39,9 @@ class PackageUtilize extends Component {
       consumtion_items: [],
       selected_pack: {},
       batch_wise_item: [],
-      visitPackageser: false
+      visitPackageser: false,
+      hims_f_package_header_id: null,
+      package_utilize: false
     };
     this.baseState = this.state;
   }
@@ -46,37 +49,48 @@ class PackageUtilize extends Component {
   componentDidMount() {}
 
   componentWillReceiveProps(nextProps) {
-    if (
-      nextProps.package_detail !== null &&
-      nextProps.package_detail !== undefined
-    ) {
-      nextProps.package_detail.consultation =
-        nextProps.from === "frontDesk" ? true : false;
-      nextProps.package_detail.consumtion_items = [];
-      this.setState(
-        {
-          ...this.state,
-          ...nextProps.package_detail
-        },
-        () => {
-          let package_details = this.state.package_details;
-          const utilized_services = _.filter(
-            package_details,
-            f => f.utilized_qty > 0
-          );
+    debugger;
+    if (nextProps.from_billing === true) {
+      let consultation = nextProps.from === "frontDesk" ? true : false;
+      this.setState({
+        package_detail: nextProps.package_detail,
+        consultation: consultation,
+        consumtion_items: []
+      });
+    } else {
+      if (
+        nextProps.package_detail !== null &&
+        nextProps.package_detail !== undefined
+      ) {
+        nextProps.package_detail.consultation =
+          nextProps.from === "frontDesk" ? true : false;
+        nextProps.package_detail.consumtion_items = [];
 
-          let available_services = [];
-          for (var i = 0; i < package_details.length; i++) {
-            if (package_details[i].qty !== package_details[i].utilized_qty) {
-              available_services.push(package_details[i]);
+        this.setState(
+          {
+            ...this.state,
+            ...nextProps.package_detail
+          },
+          () => {
+            let package_details = this.state.package_details;
+            const utilized_services = _.filter(
+              package_details,
+              f => f.utilized_qty > 0
+            );
+
+            let available_services = [];
+            for (var i = 0; i < package_details.length; i++) {
+              if (package_details[i].qty !== package_details[i].utilized_qty) {
+                available_services.push(package_details[i]);
+              }
             }
+            this.setState({
+              utilized_services: utilized_services,
+              available_services: available_services
+            });
           }
-          this.setState({
-            utilized_services: utilized_services,
-            available_services: available_services
-          });
-        }
-      );
+        );
+      }
     }
   }
 
@@ -91,9 +105,6 @@ class PackageUtilize extends Component {
   }
   UtilizeService(e) {
     PackageUtilizeEvent().UtilizeService(this, e);
-  }
-  advanceAmount(e) {
-    PackageUtilizeEvent().advanceAmount(this, e);
   }
 
   ShowBatchDetails(row) {
@@ -165,6 +176,12 @@ class PackageUtilize extends Component {
   ShowCloseScreen() {
     PackageUtilizeEvent().ShowCloseScreen(this);
   }
+  onPackageChange(e) {
+    PackageUtilizeEvent().onPackageChange(this, e);
+  }
+  ChangeData(e) {
+    this.setState({ package_utilize: !this.state.package_utilize });
+  }
   render() {
     return (
       <div className="hptl-phase1-ordering-services-form">
@@ -181,39 +198,49 @@ class PackageUtilize extends Component {
                 <div className="col">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Package Name"
+                      forceLabel: "Package Code"
                     }}
                   />
-                  <h5 style={{ margin: 0 }}>{this.state.package_name}</h5>
+                  <h5 style={{ margin: 0 }}>{this.state.package_code}</h5>
                 </div>
 
-                {/*<div className="col">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Advance To Collect"
+                {this.props.from_billing === true ? (
+                  <AlagehAutoComplete
+                    div={{ className: "col-4 paddingLeft-0 " }}
+                    label={{ forceLabel: "Package Name", isImp: false }}
+                    selector={{
+                      name: "hims_f_package_header_id",
+                      className: "select-fld",
+                      value: this.state.hims_f_package_header_id,
+                      dataSource: {
+                        textField: "package_name",
+                        valueField: "hims_f_package_header_id",
+                        data: this.state.package_detail
+                      },
+                      onChange: this.onPackageChange.bind(this)
                     }}
                   />
-                  <h5 style={{ margin: 0 }}>{this.state.collect_advance}</h5>
-                </div>
-
-                <AlagehFormGroup
-                  div={{ className: "col-3" }}
-                  label={{
-                    forceLabel: "Advance Amount"
-                  }}
-                  textBox={{
-                    decimal: { allowNegative: false },
-                    value: this.state.adv_amount,
-                    className: "txt-fld",
-                    name: "adv_amount",
-                    events: {
-                      onChange: this.advanceAmount.bind(this)
-                    },
-                    others: {
-                      placeholder: "0.00"
-                    }
-                  }}
-                />*/}
+                ) : (
+                  <div className="col">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Package Name"
+                      }}
+                    />
+                    <h5 style={{ margin: 0 }}>{this.state.package_name}</h5>
+                  </div>
+                )}
+                {this.state.consultation === true ? (
+                  <label className="checkbox inline">
+                    <input
+                      type="checkbox"
+                      name="sunday"
+                      checked={this.state.package_utilize}
+                      onChange={this.ChangeData.bind(this)}
+                    />
+                    <span>Package Utilize, Dont know what to utilize</span>
+                  </label>
+                ) : null}
               </div>
 
               <div className="row">

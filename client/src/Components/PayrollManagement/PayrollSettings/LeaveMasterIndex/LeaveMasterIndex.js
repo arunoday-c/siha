@@ -51,16 +51,26 @@ export default class LeaveMasterIndex extends Component {
   }
 
   closeModal() {
-    this.setState({
-      open: false
-    });
+    this.setState(
+      {
+        open: false
+      },
+      () => {
+        this.getLeaveMaster();
+      }
+    );
   }
 
   closeEdit() {
-    this.setState({
-      openEdit: false,
-      hims_d_leave_id: null
-    });
+    this.setState(
+      {
+        openEdit: false,
+        hims_d_leave_id: null
+      },
+      () => {
+        this.getLeaveMaster();
+      }
+    );
   }
 
   changeGridEditors(data, e) {

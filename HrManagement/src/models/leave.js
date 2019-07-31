@@ -270,7 +270,6 @@ module.exports = {
                             }
                           })
                           .then(pendingUpdaidResult => {
-                
                             calc(_mysql, req.body)
                               .then(deductionResult => {
                                 utilities
@@ -529,7 +528,6 @@ module.exports = {
                                 }
                               })
                               .catch(e => {
-                     
                                 _mysql.rollBackTransaction(() => {
                                   next(e);
                                 });
@@ -1343,7 +1341,6 @@ module.exports = {
               })
               .ToArray();
 
-            
             //s -------START OF--- get count of holidays and weekOffs betwen apllied leave range
             let week_off_Data = new LINQ(allHolidays)
               .Select(s => {
@@ -1396,8 +1393,6 @@ module.exports = {
               next();
               return;
             } else {
-
-
               // subtracting  week off or holidays fom LeaveApplied Days
               if (
                 allLeaves[0].include_weekoff == "N" ||
@@ -2351,8 +2346,6 @@ module.exports = {
         printQuery: false
       })
       .then(leaveHeadResult => {
-      
-
         if (leaveHeadResult.insertId > 0) {
           new Promise((resolve, reject) => {
             try {
@@ -2378,8 +2371,6 @@ module.exports = {
                     printQuery: false
                   })
                   .then(encashResult => {
-             
-
                     if (encashResult.insertId > 0) {
                       resolve({ encashResult });
                     } else {
@@ -2433,7 +2424,6 @@ module.exports = {
                       printQuery: false
                     })
                     .then(ruleResult => {
-           
                       if (ruleResult.insertId > 0) {
                         resolve({ ruleResult });
                       } else {
@@ -2493,8 +2483,6 @@ module.exports = {
                         printQuery: false
                       })
                       .then(detailResult => {
-             
-
                         if (detailResult.insertId > 0) {
                           resolve({ detailResult });
                         } else {
@@ -2762,8 +2750,6 @@ module.exports = {
                         printQuery: false
                       })
                       .then(yearResult => {
-        
-
                         if (yearResult.affectedRows > 0) {
                           resolve({ yearResult });
                         } else {
@@ -2944,11 +2930,12 @@ module.exports = {
         LA.from_date,LA.to_date,LA.to_leave_session,LA.leave_applied_from,\
         LA.total_applied_days,LA.leave_from,LA.absent_id,LA.total_approved_days,LA.`status`\
         ,L.leave_code,L.leave_description,L.leave_type,L.leave_category,E.employee_code,\
-        E.full_name as employee_name,E.religion_id,SD.sub_department_code,SD.sub_department_name \
+        E.full_name as employee_name,E.religion_id,SD.sub_department_code,SD.sub_department_name, DE.designation \
         from hims_f_leave_application LA inner join hims_d_leave L on LA.leave_id=L.hims_d_leave_id\
         and L.record_status='A' inner join hims_d_employee E on LA.employee_id=E.hims_d_employee_id \
         and E.record_status='A' inner join hims_d_sub_department SD \
-        on LA.sub_department_id=SD.hims_d_sub_department_id  where LA.hospital_id=? and " +
+        on LA.sub_department_id=SD.hims_d_sub_department_id inner join hims_d_designation DE on\
+        E.employee_designation_id = DE.hims_d_designation_id  where LA.hospital_id=? and " +
             leave_status +
             "" +
             auth_level +
@@ -3684,8 +3671,6 @@ module.exports = {
                         printQuery: false
                       })
                       .then(salResult => {
-     
-
                         if (
                           salResult.length < 1 ||
                           (salResult.length > 0 &&
@@ -4412,9 +4397,6 @@ function calc(db, body) {
               calculatedLeaveDays =
                 parseFloat(calculatedLeaveDays) - parseFloat(session_diff);
 
-        
-    
-
               //checking if he has enough eligible days
               if (
                 currentClosingBal >= calculatedLeaveDays ||
@@ -4531,8 +4513,6 @@ function saveF(_mysql, req, next, input, msg) {
           }
         })
         .catch(e => {
-
-
           _mysql.rollBackTransaction(() => {
             next(e);
           });
