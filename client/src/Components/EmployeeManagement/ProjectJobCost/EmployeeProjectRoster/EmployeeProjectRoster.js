@@ -5,6 +5,7 @@ import {
   AlgaehLabel
 } from "../../../Wrapper/algaehWrapper";
 import ProjectAssign from "./ProjectAssign";
+import ProjectEmpAssign from "./ProjectEmpAssign";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import {
   getYears,
@@ -124,6 +125,12 @@ class EmployeeProjectRoster extends Component {
       }
     } else return;
   }
+
+  showAnother = () => {
+    this.setState({
+      openAnother: true
+    });
+  };
 
   getHospitals() {
     algaehApiCall({
@@ -663,23 +670,39 @@ class EmployeeProjectRoster extends Component {
     let allYears = getYears();
     return (
       <div className="EmployeeProjectRoster">
-        <ProjectAssign
-          data={{
-            from_date: this.state.sendDate,
-            to_date: this.state.sendDate,
-            projects: this.state.projects,
-            employees: this.state.employees,
-            hospital_id: this.state.hospital_id
-          }}
-          sendRow={this.state.sendRow}
-          open={this.state.openProjectAssign}
-          onClose={this.closeProjectAssign.bind(this)}
-        />
+        {this.state.openProjectAssign ? (
+          <ProjectAssign
+            data={{
+              from_date: this.state.sendDate,
+              to_date: this.state.sendDate,
+              projects: this.state.projects,
+              hospital_id: this.state.hospital_id
+            }}
+            sendRow={this.state.sendRow}
+            open={this.state.openProjectAssign}
+            onClose={this.closeProjectAssign.bind(this)}
+          />
+        ) : null}
         <button
           id="clsProjAsgn"
           style={{ display: "none" }}
           onClick={this.closeProjectAssign.bind(this)}
         />
+        {this.state.openAnother ? (
+          <ProjectEmpAssign
+            data={{
+              projects: this.state.projects,
+              employees: this.state.employees,
+              hospital_id: this.state.hospital_id
+            }}
+            open={this.state.openAnother}
+            onClose={() =>
+              this.setState({
+                openAnother: false
+              })
+            }
+          />
+        ) : null}
 
         <div className="row  inner-top-search">
           <AlagehAutoComplete
@@ -871,7 +894,10 @@ class EmployeeProjectRoster extends Component {
                   <span style={{ background: "#9c7d3f" }} className="legends">
                     Leave Applied (LA)
                   </span>
-                  <a className="btn btn-primary btn-circle active" onClick="">
+                  <a
+                    className="btn btn-primary btn-circle active"
+                    onClick={this.showAnother}
+                  >
                     <i className="fas fa-plus" />
                   </a>
                   {/* <EmployeeMaster
@@ -915,7 +941,13 @@ class EmployeeProjectRoster extends Component {
                           {this.state.employees.map((row, index) => (
                             <tr key={row.hims_d_employee_id}>
                               {/* <td>{row.employee_code}</td> */}
-                              <td>{row.employee_name}</td>
+                              <td>
+                                {row.employee_name}
+                                <br />
+                                {row.designation}
+                                <br />
+                                {row.employee_code}
+                              </td>
 
                               {this.plotEmployeeDates(
                                 row,
