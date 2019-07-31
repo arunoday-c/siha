@@ -18,7 +18,7 @@ import {
 import Options from "../../../../Options.json";
 import OrderProcedureItems from "../OrderProcedureItems/OrderProcedureItems";
 import PackageUtilize from "../../PackageUtilize/PackageUtilize";
-
+import swal from "sweetalert2";
 import _ from "lodash";
 
 class OrderedList extends PureComponent {
@@ -143,8 +143,6 @@ class OrderedList extends PureComponent {
   }
 
   ShowPackageUtilize(row) {
-    
-
     algaehApiCall({
       uri: "/department/get/subdepartment",
       method: "GET",
@@ -200,11 +198,21 @@ class OrderedList extends PureComponent {
             mappingName: "orderedList"
           }
         });
+        this.props.getConsumableOrderList({
+          uri: "/orderAndPreApproval/getVisitConsumable",
+          method: "GET",
+          data: {
+            visit_id: Window.global["visit_id"]
+          },
+          redux: {
+            type: "ORDER_SERVICES_GET_DATA",
+            mappingName: "consumableorderedList"
+          }
+        });
       }
     );
   }
   ShowProcedureModel(row, e) {
-    
     algaehApiCall({
       uri: "/serviceType/getProcedures",
       method: "GET",
@@ -295,20 +303,15 @@ class OrderedList extends PureComponent {
       });
     }
 
-    if (
-      this.props.serviceslist === undefined ||
-      this.props.serviceslist.length === 0
-    ) {
-      this.props.getServices({
-        uri: "/serviceType/getService",
-        module: "masterSettings",
-        method: "GET",
-        redux: {
-          type: "SERVICES_GET_DATA",
-          mappingName: "serviceslist"
-        }
-      });
-    }
+    this.props.getServices({
+      uri: "/serviceType/getService",
+      module: "masterSettings",
+      method: "GET",
+      redux: {
+        type: "SERVICES_GET_DATA",
+        mappingName: "serviceslist"
+      }
+    });
 
     this.props.getOrderList({
       uri: "/orderAndPreApproval/selectOrderServicesbyDoctor",
@@ -348,7 +351,6 @@ class OrderedList extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    
     if (nextProps.openData !== undefined) {
       this.setState({ openData: nextProps.openData });
     }
@@ -358,6 +360,77 @@ class OrderedList extends PureComponent {
     if (value !== null) {
       return moment(value).format(Options.dateFormat);
     }
+  }
+
+  DeleteOrderService(row) {
+    swal({
+      title: "Are you sure you want to delete this Order?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willDelete => {
+      if (willDelete.value) {
+        let service_type =
+          row.service_type_id === 5
+            ? "LAB"
+            : row.service_type_id === 11
+            ? "RAD"
+            : row.service_type_id === 2
+            ? "PRO"
+            : null;
+        algaehApiCall({
+          uri: "/orderAndPreApproval/deleteOrderService",
+          method: "delete",
+          data: {
+            hims_f_ordered_services_id: row.hims_f_ordered_services_id,
+            service_type: service_type,
+            trans_package_detail_id: row.trans_package_detail_id,
+            quantity: row.quantity
+          },
+          onSuccess: response => {
+            if (response.data.success === true) {
+              this.props.getOrderList({
+                uri: "/orderAndPreApproval/selectOrderServicesbyDoctor",
+                method: "GET",
+                data: {
+                  visit_id: Window.global["visit_id"]
+                },
+                redux: {
+                  type: "ORDER_SERVICES_GET_DATA",
+                  mappingName: "orderedList"
+                }
+              });
+
+              this.props.getPakageList({
+                uri: "/orderAndPreApproval/getPatientPackage",
+                method: "GET",
+                data: {
+                  patient_id: Window.global["current_patient"]
+                },
+                redux: {
+                  type: "PAIENT_PACKAGE_GET_DATA",
+                  mappingName: "pakageList"
+                }
+              });
+
+              swalMessage({
+                title: "Deleted Succesfully",
+                type: "success"
+              });
+            }
+          },
+          onFailure: error => {
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
+        });
+      }
+    });
   }
 
   render() {
@@ -395,26 +468,43 @@ class OrderedList extends PureComponent {
                         ),
                         displayTemplate: row => {
                           return (
-                            <i
-                              style={{
-                                pointerEvents:
-                                  row.service_type_id === 2 ||
-                                  row.service_type_id === 14 ||
-                                  row.service_type_id === "2" ||
-                                  row.service_type_id === "14"
-                                    ? ""
-                                    : "none",
-                                opacity:
-                                  row.service_type_id === 2 ||
-                                  row.service_type_id === 14 ||
-                                  row.service_type_id === "2" ||
-                                  row.service_type_id === "14"
-                                    ? ""
-                                    : "0.1"
-                              }}
-                              className="fas fa-eye"
-                              onClick={this.ShowProcedureModel.bind(this, row)}
-                            />
+                            <span>
+                              <i
+                                style={{
+                                  pointerEvents:
+                                    row.service_type_id === 2 ||
+                                    row.service_type_id === 14 ||
+                                    row.service_type_id === "2" ||
+                                    row.service_type_id === "14"
+                                      ? ""
+                                      : "none",
+                                  opacity:
+                                    row.service_type_id === 2 ||
+                                    row.service_type_id === 14 ||
+                                    row.service_type_id === "2" ||
+                                    row.service_type_id === "14"
+                                      ? ""
+                                      : "0.1"
+                                }}
+                                className="fas fa-eye"
+                                onClick={this.ShowProcedureModel.bind(
+                                  this,
+                                  row
+                                )}
+                              />
+                              <i
+                                style={{
+                                  pointerEvents:
+                                    row.billed === "N" ? "" : "none",
+                                  opacity: row.billed === "N" ? "" : "0.1"
+                                }}
+                                className="fas fa-trash-alt"
+                                onClick={this.DeleteOrderService.bind(
+                                  this,
+                                  row
+                                )}
+                              />
+                            </span>
                           );
                         },
                         others: {
@@ -481,7 +571,7 @@ class OrderedList extends PureComponent {
                               : this.props.serviceslist.filter(
                                   f => f.hims_d_services_id === row.services_id
                                 );
-                          
+
                           return (
                             <span>
                               {display !== null && display.length !== 0

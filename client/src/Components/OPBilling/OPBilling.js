@@ -70,7 +70,13 @@ class OPBilling extends Component {
     this.setState({
       selectedLang: prevLang
     });
-
+    this.props.getPatientPackage({
+      redux: {
+        type: "Package_GET_DATA",
+        mappingName: "PatientPackageList",
+        data: []
+      }
+    });
     if (
       this.props.patienttype === undefined ||
       this.props.patienttype.length === 0
@@ -556,7 +562,8 @@ function mapStateToProps(state) {
     patienttype: state.patienttype,
     networkandplans: state.networkandplans,
     deptanddoctors: state.deptanddoctors,
-    PatientPackageList: state.PatientPackageList
+    PatientPackageList: state.PatientPackageList,
+    orderedList: state.orderedList
   };
 }
 
@@ -569,7 +576,8 @@ function mapDispatchToProps(dispatch) {
       getPatientInsurance: AlgaehActions,
       getNetworkPlans: AlgaehActions,
       getDepartmentsandDoctors: AlgaehActions,
-      getPatientPackage: AlgaehActions
+      getPatientPackage: AlgaehActions,
+      getOrderList: AlgaehActions
     },
     dispatch
   );

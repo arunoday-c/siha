@@ -903,7 +903,7 @@ class SelfPersonalDetails extends Component {
                       }}
                     />
                     <AlagehFormGroup
-                      div={{ className: "col" }}
+                      div={{ className: "col arabic-txt-fld" }}
                       label={{
                         forceLabel: "Arabic Name",
                         isImp: true

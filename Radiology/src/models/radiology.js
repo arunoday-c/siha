@@ -171,16 +171,21 @@ module.exports = {
                 "insert hims_f_billing_header_id: ",
                 inputParam.hims_f_billing_header_id
               );
-            let result = {
-              receipt_number: inputParam.receipt_number,
-              bill_number: inputParam.bill_number,
-              hims_f_billing_header_id: inputParam.hims_f_billing_header_id
-            };
-            _mysql.commitTransaction(() => {
-              _mysql.releaseConnection();
-              req.records = result;
+            if (inputParam.consultation == "Y") {
+              req.records = insert_rad_order;
               next();
-            });
+            } else {
+              let result = {
+                receipt_number: inputParam.receipt_number,
+                bill_number: inputParam.bill_number,
+                hims_f_billing_header_id: inputParam.hims_f_billing_header_id
+              };
+              _mysql.commitTransaction(() => {
+                _mysql.releaseConnection();
+                req.records = result;
+                next();
+              });
+            }
           })
           .catch(e => {
             _mysql.rollBackTransaction(() => {
@@ -188,23 +193,32 @@ module.exports = {
             });
           });
       } else {
-        utilities.logger().log("result: ", result);
+        // utilities.logger().log("result: ", result);
+        // utilities
+        //   .logger()
+        //   .log(
+        //     "insert hims_f_billing_header_id: ",
+        //     inputParam.hims_f_billing_header_id
+        //   );
+
         utilities
           .logger()
-          .log(
-            "insert hims_f_billing_header_id: ",
-            inputParam.hims_f_billing_header_id
-          );
-        let result = {
-          receipt_number: inputParam.receipt_number,
-          bill_number: inputParam.bill_number,
-          hims_f_billing_header_id: inputParam.hims_f_billing_header_id
-        };
-        _mysql.commitTransaction(() => {
-          _mysql.releaseConnection();
-          req.records = result;
+          .log("inputParam.consultation: ", inputParam.consultation);
+        if (inputParam.consultation == "Y") {
+          req.records = radServices;
           next();
-        });
+        } else {
+          let result = {
+            receipt_number: inputParam.receipt_number,
+            bill_number: inputParam.bill_number,
+            hims_f_billing_header_id: inputParam.hims_f_billing_header_id
+          };
+          _mysql.commitTransaction(() => {
+            _mysql.releaseConnection();
+            req.records = result;
+            next();
+          });
+        }
       }
     } catch (e) {
       _mysql.rollBackTransaction(() => {

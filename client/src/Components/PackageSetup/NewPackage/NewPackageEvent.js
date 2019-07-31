@@ -202,6 +202,22 @@ export default function NewPackageEvent() {
         querySelector: "data-validate='packagedata'",
         onSuccess: () => {
           let InputObj = $this.state;
+
+          const package_code_exit = _.filter(
+            $this.props.all_Pakage_data,
+            f => f.package_code === $this.state.package_code
+          );
+
+          if (
+            $this.state.hims_d_package_header_id === null &&
+            package_code_exit.length > 0
+          ) {
+            swalMessage({
+              type: "warning",
+              title: "Package Code Already Exist."
+            });
+            return;
+          }
           if (parseFloat(InputObj.package_amount) === 0) {
             swalMessage({
               type: "warning",
@@ -249,6 +265,7 @@ export default function NewPackageEvent() {
             });
             return;
           }
+
           for (let i = 0; i < InputObj.PakageDetail.length; i++) {
             let appropriate_amount =
               parseFloat(InputObj.PakageDetail[i].tot_service_amount) /
@@ -264,6 +281,12 @@ export default function NewPackageEvent() {
               (parseFloat(InputObj.package_amount) *
                 parseFloat(InputObj.advance_percentage)) /
               100;
+          }
+          debugger;
+          if ($this.state.from === "doctor") {
+            InputObj.approved = "Y";
+          } else {
+            InputObj.approved = "N";
           }
           if (InputObj.hims_d_package_header_id === null) {
             InputObj.service_code = InputObj.package_code;
@@ -285,10 +308,12 @@ export default function NewPackageEvent() {
                   });
                   if ($this.state.from === "doctor") {
                     $this.setState($this.baseState, () => {
-                      $this.props.onClose &&
-                        $this.props.onClose(
-                          response.data.records.package_service_id
-                        );
+                      let obj = {
+                        package_service_id:
+                          response.data.records.package_service_id,
+                        package_code: InputObj.package_code
+                      };
+                      $this.props.onClose && $this.props.onClose(obj);
                     });
                   } else {
                     $this.setState($this.baseState, () => {
@@ -316,6 +341,9 @@ export default function NewPackageEvent() {
               return f.hims_d_package_detail_id > 0;
             });
             InputObj.updatePakageDetail = updatePakageDetail;
+            InputObj.standard_fee = InputObj.package_amount;
+            InputObj.service_id = InputObj.package_service_id;
+
             algaehApiCall({
               uri: "/packagesetup/updatePackageSetup",
               module: "masterSettings",
@@ -351,6 +379,22 @@ export default function NewPackageEvent() {
       $this.setState({
         advance_percentage: advance_percentage,
         advance_amount: advance_amount
+      });
+    },
+
+    candiscounthandle: ($this, e) => {
+      let cancellation_per = 0,
+        cancellation_amount = 0;
+      cancellation_per =
+        e.target.value === undefined ? "" : parseFloat(e.target.value);
+      cancellation_amount =
+        e.target.value === ""
+          ? 0
+          : (parseFloat($this.state.package_amount) * cancellation_per) / 100;
+
+      $this.setState({
+        cancellation_per: cancellation_per,
+        cancellation_amount: cancellation_amount
       });
     },
 

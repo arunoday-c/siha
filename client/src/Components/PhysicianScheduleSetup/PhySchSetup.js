@@ -8,7 +8,6 @@ import ScheduleModal from "./ScheduleModal";
 import {
   AlagehFormGroup,
   AlagehAutoComplete,
-  AlgaehDateHandler,
   AlgaehDataGrid,
   AlgaehLabel,
   AlgaehModalPopUp
@@ -353,7 +352,7 @@ class PhySchSetup extends Component {
 
   checkHandleAdd = (myRow, index) => {
     console.log(myRow);
-    
+
     const { availDoctors } = this.state;
     let docsArray = this.state.schedule_detail;
     myRow.schedule_status = this.state.schedule_status;

@@ -73,7 +73,10 @@ module.exports = {
         _mysql
           .executeQuery({
             query:
-              "SELECT *, hims_d_employee_id as employee_id  FROM hims_d_employee WHERE record_status ='A' and hospital_id=?" +
+              "SELECT E.*, hims_d_employee_id as employee_id, SD.sub_department_name, D.department_name,R.religion_name  \
+              FROM hims_d_employee E, hims_d_sub_department SD,hims_d_department D, hims_d_religion R WHERE \
+              E.record_status = 'A' and E.sub_department_id = SD.hims_d_sub_department_id and \
+              SD.department_id = D.hims_d_department_id and E.religion_id = R.hims_d_religion_id and E.hospital_id =?" +
               _strAppend,
             values: [req.userIdentity.hospital_id],
             printQuery: true

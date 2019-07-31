@@ -19,7 +19,8 @@ import {
   load_orders_for_bill,
   insertInvOrderedServices,
   addPackage,
-  getPatientPackage
+  getPatientPackage,
+  deleteOrderService
 } from "../model/orderAndPreApproval";
 import { insertRadOrderedServices } from "../model/radiology";
 import { insertLadOrderedServices } from "../model/laboratory";
@@ -30,31 +31,15 @@ export default ({ config, db }) => {
   // created by irfan: to  insertOrderedServices
   api.post(
     "/insertOrderedServices",
-    generateDbConnection,
     insertOrderedServices,
     insertLadOrderedServices,
     insertRadOrderedServices,
     (req, res, next) => {
-      let connection = req.connection;
-      connection.commit(error => {
-        debugLog("error", error);
-        debugLog("commit error", error);
-        if (error) {
-          debugLog("roll error", error);
-          connection.rollback(() => {
-            next(error);
-          });
-        } else {
-          let result = req.records;
-          res.status(httpStatus.ok).json({
-            success: true,
-            records: result
-          });
-          next();
-        }
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: req.records
       });
-    },
-    releaseConnection
+    }
   );
 
   // created by irfan : to fetch pre approval list
@@ -267,6 +252,12 @@ export default ({ config, db }) => {
         records: req.records
       });
     }
+  });
+  api.delete("/deleteOrderService", deleteOrderService, (req, res, next) => {
+    res.status(httpStatus.ok).json({
+      success: true,
+      records: req.records
+    });
   });
 
   return api;

@@ -98,6 +98,14 @@ class RegistrationPatient extends Component {
       }
     });
 
+    this.props.getPatientPackage({
+      redux: {
+        type: "Package_GET_DATA",
+        mappingName: "PatientPackageList",
+        data: []
+      }
+    });
+
     this.props.setSelectedInsurance({
       redux: {
         type: "SECONDARY_INSURANCE_DATA",
@@ -137,6 +145,16 @@ class RegistrationPatient extends Component {
         this.setState({
           counter_id: response.data.records.selectedValue
         });
+      }
+    });
+
+    this.props.getVisittypes({
+      uri: "/visitType/get",
+      module: "masterSettings",
+      method: "GET",
+      redux: {
+        type: "VISITTYPE_GET_DATA",
+        mappingName: "visittypes"
       }
     });
   }
@@ -333,7 +351,7 @@ class RegistrationPatient extends Component {
                   delete patientdata.countrystates;
                   delete patientdata.cities;
                   delete patientdata.doctors;
-                  
+
                   if ($this.state.hims_d_patient_id === null) {
                     algaehApiCall({
                       uri: "/frontDesk/add",
@@ -841,6 +859,7 @@ class RegistrationPatient extends Component {
                         package_detail={this.state.package_detail}
                         from="frontDesk"
                         from_billing={true}
+                        patient_id={this.state.patient_id}
                       />
                     </div>
                   )}
@@ -981,7 +1000,8 @@ function mapStateToProps(state) {
     primaryinsurance: state.primaryinsurance,
     secondaryinsurance: state.secondaryinsurance,
     hospitaldetails: state.hospitaldetails,
-    PatientPackageList: state.PatientPackageList
+    PatientPackageList: state.PatientPackageList,
+    visittypes: state.visittypes
   };
 }
 
@@ -990,7 +1010,7 @@ function mapDispatchToProps(dispatch) {
     {
       getPatientDetails: AlgaehActions,
       initialStatePatientData: AlgaehActions,
-
+      getVisittypes: AlgaehActions,
       initialStateBillGen: AlgaehActions,
       getPatientInsurance: AlgaehActions,
       getCountries: AlgaehActions,

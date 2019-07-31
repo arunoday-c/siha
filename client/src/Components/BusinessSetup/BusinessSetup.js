@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "./business_setup.css";
 import "../../styles/site.css";
+import BranchMaster from "./BranchMaster/BranchMaster";
 import DeptMaster from "./DeptMaster/DeptMaster";
 import HolidayList from "./HolidayList/HolidayList";
 import Numbering from "./Numbering/Numbering";
@@ -51,6 +52,19 @@ class BusinessSetup extends Component {
         <div className="row">
           <div className="tabMaster toggle-section">
             <ul className="nav">
+              {/* <li
+                algaehtabs={"BranchMaster"}
+                className={"nav-item tab-button active"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Branch"
+                    }}
+                  />
+                }
+              </li> */}
               <li
                 algaehtabs={"DeptMaster"}
                 className={"nav-item tab-button active"}
@@ -195,7 +209,9 @@ class BusinessSetup extends Component {
           </div>
         </div>
         <div className="business-section">
-          {this.state.pageDisplay === "DeptMaster" ? (
+          {this.state.pageDisplay === "BranchMaster" ? (
+            <BranchMaster />
+          ) : this.state.pageDisplay === "DeptMaster" ? (
             <DeptMaster />
           ) : this.state.pageDisplay === "Holiday" ? (
             <HolidayList />

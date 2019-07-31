@@ -117,5 +117,6 @@
   "btnUpdate": "Update",
   "screen_name": "Package Setup",
   "advance_type": "Advance Type",
-  "expiry_days": "Expiry Days"
+  "expiry_days": "Expiry Days",
+  "package_code": "Package Code"
 }

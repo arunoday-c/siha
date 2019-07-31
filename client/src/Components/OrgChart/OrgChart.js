@@ -2,13 +2,18 @@ import React, { Component } from "react";
 import "./OrgChart.css";
 import EmployeeView from "./EmployeeView/EmployeeView";
 import DepartmentView from "./DepartmentView/DepartmentView";
+import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 export default class OrgChart extends Component {
   constructor(props) {
     super(props);
-    this.state = { pageDisplay: "EmployeeView" };
+    this.state = { pageDisplay: "DepartmentView" };
   }
+
+  // componentDidMount() {
+  //   this.getAllDepartments();
+  // }
 
   openTab(e) {
     var element = document.querySelectorAll("[algaehtabs]");
@@ -21,6 +26,48 @@ export default class OrgChart extends Component {
       pageDisplay: specified
     });
   }
+
+  getAllDepartments() {
+    algaehApiCall({
+      uri: "/department/get",
+      method: "GET",
+      module: "masterSettings",
+      onSuccess: response => {
+        if (response.data.success) {
+          this.setState({ allDepartments: response.data.records });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
+  getSubForDept(id) {
+    algaehApiCall({
+      uri: "/department/get/subdepartment",
+      method: "GET",
+      module: "masterSettings",
+      data: {
+        department_id: id
+      },
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({ subDept: res.data.records });
+        }
+      },
+      onFailure: res => {
+        swalMessage({
+          title: res.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
   render() {
     return (
       <div className="orgChartUI">
@@ -28,27 +75,27 @@ export default class OrgChart extends Component {
           <div className="tabMaster toggle-section">
             <ul className="nav">
               <li
-                algaehtabs={"EmployeeView"}
+                algaehtabs={"DepartmentView"}
                 className={"nav-item tab-button active"}
                 onClick={this.openTab.bind(this)}
               >
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Employee View"
+                      forceLabel: "Department View"
                     }}
                   />
                 }
-              </li>
+              </li>{" "}
               <li
-                algaehtabs={"DepartmentView"}
-                className={"nav-item tab-button"}
+                algaehtabs={"EmployeeView"}
+                className={"nav-item tab-button "}
                 onClick={this.openTab.bind(this)}
               >
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Department View"
+                      forceLabel: "Employee View"
                     }}
                   />
                 }
@@ -60,7 +107,12 @@ export default class OrgChart extends Component {
           {this.state.pageDisplay === "EmployeeView" ? (
             <EmployeeView />
           ) : this.state.pageDisplay === "DepartmentView" ? (
-            <DepartmentView />
+            <DepartmentView
+              dept={this.state.allDepartments}
+              subDept={this.state.subDept}
+              getSubDept={this.getSubForDept.bind(this)}
+              getDept={this.getAllDepartments.bind(this)}
+            />
           ) : null}
         </div>
       </div>

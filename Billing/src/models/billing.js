@@ -473,21 +473,21 @@ module.exports = {
         sendingObject.card_amount = 0;
         sendingObject.cheque_amount = 0;
 
-        sendingObject.patient_payable = sendingObject.patient_payable.toFixed(
+        sendingObject.patient_payable = parseFloat(
+          sendingObject.patient_payable
+        ).toFixed(decimal_places);
+        sendingObject.total_tax = parseFloat(sendingObject.total_tax).toFixed(
           decimal_places
         );
-        sendingObject.total_tax = sendingObject.total_tax.toFixed(
-          decimal_places
-        );
-        sendingObject.patient_tax = sendingObject.patient_tax.toFixed(
-          decimal_places
-        );
-        sendingObject.company_tax = sendingObject.company_tax.toFixed(
-          decimal_places
-        );
-        sendingObject.sec_company_tax = sendingObject.sec_company_tax.toFixed(
-          decimal_places
-        );
+        sendingObject.patient_tax = parseFloat(
+          sendingObject.patient_tax
+        ).toFixed(decimal_places);
+        sendingObject.company_tax = parseFloat(
+          sendingObject.company_tax
+        ).toFixed(decimal_places);
+        sendingObject.sec_company_tax = parseFloat(
+          sendingObject.sec_company_tax
+        ).toFixed(decimal_places);
       } else {
         //Reciept
 
@@ -497,11 +497,11 @@ module.exports = {
           sendingObject.sheet_discount_amount = 0;
 
           if (inputParam.sheet_discount_amount > 0) {
-            sendingObject.sheet_discount_percentage = (
-              (inputParam.sheet_discount_amount / inputParam.gross_total) *
-              100
+            sendingObject.sheet_discount_percentage =
+              (inputParam.sheet_discount_amount / inputParam.gross_total) * 100;
+            sendingObject.sheet_discount_percentage = parseFloat(
+              sendingObject.sheet_discount_percentage
             ).toFixed(3);
-
             sendingObject.sheet_discount_amount =
               inputParam.sheet_discount_amount;
           } else if (inputParam.sheet_discount_percentage > 0) {
@@ -512,12 +512,12 @@ module.exports = {
               100;
           }
 
-          sendingObject.sheet_discount_amount = sendingObject.sheet_discount_amount.toFixed(
-            decimal_places
-          );
-          sendingObject.sheet_discount_percentage = sendingObject.sheet_discount_percentage.toFixed(
-            decimal_places
-          );
+          sendingObject.sheet_discount_amount = parseFloat(
+            sendingObject.sheet_discount_amount
+          ).toFixed(decimal_places);
+          sendingObject.sheet_discount_percentage = parseFloat(
+            sendingObject.sheet_discount_percentage
+          ).toFixed(decimal_places);
 
           sendingObject.net_amount =
             inputParam.gross_total - sendingObject.sheet_discount_amount;
@@ -1265,17 +1265,35 @@ module.exports = {
     try {
       let inputParam = req.body;
 
-      utilities.logger().log("package_details: ", inputParam.package_details);
+      utilities.logger().log("consultation data : ", inputParam.consultation);
 
+      utilities
+        .logger()
+        .log("updatePatientPackage visit_id : ", inputParam.visit_id);
+      utilities
+        .logger()
+        .log("updatePatientPackage doctor_id : ", inputParam.doctor_id);
+
+      if (inputParam.consultation == "Y") {
+        for (let i = 0; i < inputParam.package_details.length; i++) {
+          inputParam.package_details[i].visit_id = inputParam.visit_id;
+          inputParam.package_details[i].doctor_id = inputParam.doctor_id;
+        }
+      }
+
+      utilities.logger().log("package_details: ", inputParam.package_details);
       req.body.incharge_or_provider = req.body.doctor_id;
       req.body.billed = "N";
       let qry = "";
       for (let i = 0; i < inputParam.package_details.length; i++) {
         qry += mysql.format(
-          "UPDATE `hims_f_package_detail` SET utilized_qty=?, available_qty=? where hims_f_package_detail_id=?;",
+          "UPDATE `hims_f_package_detail` SET utilized_qty=?, available_qty=?,utilized_date=?,utilized_by=? \
+          where hims_f_package_detail_id=?;",
           [
             inputParam.package_details[i].utilized_qty,
             inputParam.package_details[i].available_qty,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
             inputParam.package_details[i].hims_f_package_detail_id
           ]
         );
@@ -1302,6 +1320,12 @@ module.exports = {
                 strQuery = ", `closed`='Y', closed_type='D'";
               }
 
+              utilities
+                .logger()
+                .log(
+                  "actual_utilize_amount: ",
+                  inputParam.actual_utilize_amount
+                );
               _mysql
                 .executeQuery({
                   query:
@@ -1325,106 +1349,92 @@ module.exports = {
                       pool: _mysql.pool
                     };
                   }
-                  // _mysql.commitTransaction(() => {
-                  //   _mysql.releaseConnection();
-                  //   req.records = update_header;
-                  //   next();
-                  // });
 
-                  utilities
-                    .logger()
-                    .log("consultation : ", inputParam.consultation);
-                  if (inputParam.consultation == false) {
-                    let IncludeValues = [
-                      "patient_id",
-                      "visit_id",
-                      "doctor_id",
-                      "service_type_id",
-                      "services_id",
-                      "trans_package_detail_id"
-                    ];
+                  const _services = _.filter(inputParam.package_details, f => {
+                    return (
+                      f.service_type_id == 2 ||
+                      f.service_type_id == 5 ||
+                      f.service_type_id == 11
+                    );
+                  });
+                  const _inv_services = _.filter(
+                    inputParam.package_details,
+                    f => {
+                      return f.service_type_id == 4;
+                    }
+                  );
 
-                    _mysql
-                      .executeQuery({
-                        query:
-                          "INSERT INTO hims_f_ordered_services(??) VALUES ?",
-                        values: inputParam.package_details,
-                        includeValues: IncludeValues,
-                        extraValues: {
-                          quantity: 1,
-                          unit_cost: 0,
+                  utilities.logger().log("_services : ", _services);
 
-                          gross_amount: 0,
-                          discount_amout: 0,
-                          discount_percentage: 0,
-                          net_amout: 0,
-                          copay_percentage: 0,
-                          copay_amount: 0,
-                          deductable_amount: 0,
-                          deductable_percentage: 0,
-
-                          patient_tax: 0,
-                          company_tax: 0,
-                          total_tax: 0,
-                          patient_resp: 0,
-                          patient_payable: 0,
-                          comapany_resp: 0,
-                          company_payble: 0,
-                          sec_deductable_percentage: 0,
-                          sec_deductable_amount: 0,
-                          sec_company_res: 0,
-                          sec_company_tax: 0,
-                          sec_company_paybale: 0,
-                          sec_copay_percntage: 0,
-                          sec_copay_amount: 0,
-                          created_by: req.userIdentity.algaeh_d_app_user_id,
-                          created_date: new Date(),
-                          updated_by: req.userIdentity.algaeh_d_app_user_id,
-                          updated_date: new Date(),
-                          hospital_id: req.userIdentity["x-branch"]
-                        },
-                        bulkInsertOrUpdate: true,
-                        printQuery: true
-                      })
-                      .then(order_detail => {
-                        let patient_id;
-                        let doctor_id;
-                        let visit_id;
-                        let services = new LINQ(inputParam.package_details)
-                          .Select(s => {
-                            patient_id = s.patient_id;
-                            doctor_id = s.doctor_id;
-                            visit_id = s.visit_id;
-                            return s.services_id;
-                          })
-                          .ToArray();
-
-                        utilities.logger().log("services: ", services);
-                        let servicesForPreAproval = [];
-
-                        servicesForPreAproval.push(patient_id);
-                        servicesForPreAproval.push(doctor_id);
-                        servicesForPreAproval.push(visit_id);
-                        servicesForPreAproval.push(services);
-
-                        utilities
-                          .logger()
-                          .log(
-                            "servicesForPreAproval: ",
-                            servicesForPreAproval
-                          );
+                  insertOrderServices({
+                    services: _services,
+                    _mysql: _mysql,
+                    next: next,
+                    inputParam: inputParam,
+                    req: req
+                  })
+                    .then(Order_Services => {
+                      utilities
+                        .logger()
+                        .log("_inv_services : ", _inv_services.length);
+                      if (_inv_services.length > 0) {
+                        utilities.logger().log("IncludeValues : ");
+                        let IncludeValues = [
+                          "patient_id",
+                          "visit_id",
+                          "doctor_id",
+                          "service_type_id",
+                          "services_id",
+                          "trans_package_detail_id",
+                          "quantity",
+                          "inventory_item_id",
+                          "inventory_location_id",
+                          "inventory_uom_id"
+                        ];
 
                         _mysql
                           .executeQuery({
                             query:
-                              "SELECT hims_f_ordered_services_id,services_id,created_date, service_type_id, test_type from hims_f_ordered_services\
-                               where `patient_id`=? and `doctor_id`=? and `visit_id`=? and `services_id` in (?)",
-                            values: servicesForPreAproval,
+                              "INSERT INTO hims_f_ordered_inventory(??) VALUES ?",
+                            values: _inv_services,
+                            includeValues: IncludeValues,
+                            extraValues: {
+                              unit_cost: 0,
+
+                              gross_amount: 0,
+                              discount_amout: 0,
+                              discount_percentage: 0,
+                              net_amout: 0,
+                              copay_percentage: 0,
+                              copay_amount: 0,
+                              deductable_amount: 0,
+                              deductable_percentage: 0,
+
+                              patient_tax: 0,
+                              company_tax: 0,
+                              total_tax: 0,
+                              patient_resp: 0,
+                              patient_payable: 0,
+                              comapany_resp: 0,
+                              company_payble: 0,
+                              sec_deductable_percentage: 0,
+                              sec_deductable_amount: 0,
+                              sec_company_res: 0,
+                              sec_company_tax: 0,
+                              sec_company_paybale: 0,
+                              sec_copay_percntage: 0,
+                              sec_copay_amount: 0,
+                              created_by: req.userIdentity.algaeh_d_app_user_id,
+                              created_date: new Date(),
+                              updated_by: req.userIdentity.algaeh_d_app_user_id,
+                              updated_date: new Date(),
+                              hospital_id: req.userIdentity["x-branch"]
+                            },
+                            bulkInsertOrUpdate: true,
                             printQuery: true
                           })
-                          .then(ordered_services => {
-                            req.body.billdetails = ordered_services;
-                            req.records = ordered_services;
+                          .then(inv_order_detail => {
+                            req.records = inv_order_detail;
                             next();
                           })
                           .catch(error => {
@@ -1432,17 +1442,15 @@ module.exports = {
                               next(error);
                             });
                           });
-                      })
-                      .catch(error => {
-                        _mysql.rollBackTransaction(() => {
-                          next(error);
-                        });
+                      } else {
+                        next();
+                      }
+                    })
+                    .catch(error => {
+                      _mysql.rollBackTransaction(() => {
+                        next(error);
                       });
-                  } else {
-                    utilities.logger().log("else consultation : ");
-                    req.records = update_header;
-                    next();
-                  }
+                    });
                 })
                 .catch(e => {
                   _mysql.rollBackTransaction(() => {
@@ -1755,7 +1763,9 @@ module.exports = {
                     discount_percentage = (discount_amout / gross_amount) * 100;
                   } else if (discount_percentage > 0) {
                     discount_amout = (gross_amount * discount_percentage) / 100;
-                    discount_amout = discount_amout.toFixed(decimal_places);
+                    discount_amout = parseFloat(discount_amout).toFixed(
+                      decimal_places
+                    );
                   }
                   net_amout = gross_amount - discount_amout;
 
@@ -1856,48 +1866,56 @@ module.exports = {
                       (net_amout * deductable_percentage) / 100;
                     after_dect_amout = net_amout - deductable_amount;
                     copay_amount = (after_dect_amout * copay_percentage) / 100;
-                    copay_amount = copay_amount.toFixed(decimal_places);
+                    copay_amount = parseFloat(copay_amount).toFixed(
+                      decimal_places
+                    );
                   }
 
                   patient_resp = copay_amount + deductable_amount;
-                  comapany_resp =
-                    net_amout - patient_resp.toFixed(decimal_places);
-
+                  comapany_resp = net_amout - patient_resp;
+                  comapany_resp = parseFloat(comapany_resp).toFixed(
+                    decimal_places
+                  );
                   if (vat_applicable == "Y" && records.vat_applicable == "Y") {
-                    patient_tax = (
-                      (patient_resp * records.vat_percent) /
-                      100
-                    ).toFixed(decimal_places);
+                    patient_tax = (patient_resp * records.vat_percent) / 100;
+
+                    patient_tax = parseFloat(patient_tax).toFixed(
+                      decimal_places
+                    );
                   }
 
                   if (records.vat_applicable == "Y") {
-                    company_tax = (
-                      (comapany_resp * records.vat_percent) /
-                      100
-                    ).toFixed(decimal_places);
+                    company_tax = (comapany_resp * records.vat_percent) / 100;
+                    company_tax = parseFloat(company_tax).toFixed(
+                      decimal_places
+                    );
                   }
-                  total_tax = (patient_tax + company_tax).toFixed(
-                    decimal_places
-                  );
-
-                  patient_payable = (patient_resp + patient_tax).toFixed(
-                    decimal_places
-                  );
+                  total_tax = patient_tax + company_tax;
+                  // total_tax = total_tax.toFixed(decimal_places);
+                  patient_payable = patient_resp + patient_tax;
+                  // patient_payable = patient_payable.toFixed(decimal_places);
 
                   if (approved_amount !== 0 && approved_amount < unit_cost) {
                     let diff_val = approved_amount - comapany_resp;
-                    patient_payable = (patient_payable + diff_val).toFixed(
-                      decimal_places
-                    );
-                    patient_resp = (patient_resp + diff_val).toFixed(
-                      decimal_places
-                    );
+                    patient_payable = patient_payable + diff_val;
+                    patient_resp = patient_resp + diff_val;
                     comapany_resp = comapany_resp - diff_val;
+
+                    patient_payable = parseFloat(patient_payable).toFixed(
+                      decimal_places
+                    );
+                    patient_resp = parseFloat(patient_resp).toFixed(
+                      decimal_places
+                    );
+                    comapany_resp = parseFloat(comapany_resp).toFixed(
+                      decimal_places
+                    );
                   }
 
                   company_payble = net_amout - patient_resp;
 
-                  company_payble = (company_payble + company_tax).toFixed(
+                  company_payble = company_payble + company_tax;
+                  company_payble = parseFloat(company_payble).toFixed(
                     decimal_places
                   );
 
@@ -1929,27 +1947,30 @@ module.exports = {
                   gross_amount = quantity * unit_cost;
 
                   if (discount_amout > 0) {
-                    discount_percentage = (
-                      (discount_amout / gross_amount) *
-                      100
+                    discount_percentage = (discount_amout / gross_amount) * 100;
+                    discount_percentage = parseFloat(
+                      discount_percentage
                     ).toFixed(decimal_places);
                   } else if (discount_percentage > 0) {
                     discount_amout = (gross_amount * discount_percentage) / 100;
-                    discount_amout = discount_amout.toFixed(decimal_places);
+                    discount_amout = parseFloat(discount_amout).toFixed(
+                      decimal_places
+                    );
                   }
                   net_amout = gross_amount - discount_amout;
                   patient_resp = net_amout;
 
                   if (vat_applicable == "Y" && records.vat_applicable == "Y") {
-                    patient_tax = (
-                      (patient_resp * records.vat_percent) /
-                      100
-                    ).toFixed(decimal_places);
+                    patient_tax = (patient_resp * records.vat_percent) / 100;
+                    patient_tax = parseFloat(patient_tax).toFixed(
+                      decimal_places
+                    );
                     total_tax = patient_tax;
                   }
 
                   // patient_payable = net_amout + patient_tax;
-                  patient_payable = (patient_resp + patient_tax).toFixed(
+                  patient_payable = patient_resp + patient_tax;
+                  patient_payable = parseFloat(patient_payable).toFixed(
                     decimal_places
                   );
                 }
@@ -2121,12 +2142,19 @@ module.exports = {
     const _mysql = new algaehMysql();
     return new Promise((resolve, reject) => {
       try {
+        let strQuery = "";
+        if (req.query.services_id != null) {
+          strQuery += "and services_id = '" + req.query.services_id + "'";
+        }
+        if (req.query.employee_id != null) {
+          strQuery += "and employee_id = '" + req.query.employee_id + "'";
+        }
         _mysql
           .executeQuery({
             query:
-              "SELECT employee_id, sub_department_id from hims_m_employee_department_mappings \
-            Where record_status='A' and services_id = ? ",
-            values: [req.query.services_id],
+              "SELECT employee_id, sub_department_id, services_id from hims_m_employee_department_mappings \
+            Where record_status='A' " +
+              strQuery,
             printQuery: true
           })
           .then(result => {
@@ -3017,4 +3045,126 @@ function insuranceServiceDetails(body, next, _mysql, resolve) {
   } catch (e) {
     next(e);
   }
+}
+function insertOrderServices(options) {
+  return new Promise((resolve, reject) => {
+    try {
+      const _mysql = options._mysql;
+      const _services = options.services;
+      const inputParam = options.inputParam;
+      const req = options.req;
+      const utilities = new algaehUtilities();
+      utilities.logger().log("_services : ", _services.length);
+      if (_services.length > 0) {
+        let IncludeValues = [
+          "patient_id",
+          "visit_id",
+          "doctor_id",
+          "service_type_id",
+          "services_id",
+          "trans_package_detail_id"
+        ];
+
+        _mysql
+          .executeQuery({
+            query: "INSERT INTO hims_f_ordered_services(??) VALUES ?",
+            values: _services,
+            includeValues: IncludeValues,
+            extraValues: {
+              quantity: 1,
+              unit_cost: 0,
+
+              gross_amount: 0,
+              discount_amout: 0,
+              discount_percentage: 0,
+              net_amout: 0,
+              copay_percentage: 0,
+              copay_amount: 0,
+              deductable_amount: 0,
+              deductable_percentage: 0,
+
+              patient_tax: 0,
+              company_tax: 0,
+              total_tax: 0,
+              patient_resp: 0,
+              patient_payable: 0,
+              comapany_resp: 0,
+              company_payble: 0,
+              sec_deductable_percentage: 0,
+              sec_deductable_amount: 0,
+              sec_company_res: 0,
+              sec_company_tax: 0,
+              sec_company_paybale: 0,
+              sec_copay_percntage: 0,
+              sec_copay_amount: 0,
+              created_by: req.userIdentity.algaeh_d_app_user_id,
+              created_date: new Date(),
+              updated_by: req.userIdentity.algaeh_d_app_user_id,
+              updated_date: new Date(),
+              hospital_id: req.userIdentity["x-branch"]
+            },
+            bulkInsertOrUpdate: true,
+            printQuery: true
+          })
+          .then(order_detail => {
+            utilities.logger().log("order_detail: ", order_detail);
+            let patient_id;
+            let doctor_id;
+            let visit_id;
+            let services = new LINQ(inputParam.package_details)
+              .Select(s => {
+                patient_id = s.patient_id;
+                doctor_id = s.doctor_id;
+                visit_id = s.visit_id;
+                return s.services_id;
+              })
+              .ToArray();
+
+            utilities.logger().log("services: ", services);
+            let servicesForPreAproval = [];
+
+            servicesForPreAproval.push(patient_id);
+            servicesForPreAproval.push(doctor_id);
+            servicesForPreAproval.push(visit_id);
+            servicesForPreAproval.push(services);
+
+            utilities
+              .logger()
+              .log("servicesForPreAproval: ", servicesForPreAproval);
+
+            _mysql
+              .executeQuery({
+                query:
+                  "SELECT hims_f_ordered_services_id,services_id,created_date, service_type_id, test_type from hims_f_ordered_services\
+                   where `patient_id`=? and `doctor_id`=? and `visit_id`=? and `services_id` in (?)",
+                values: servicesForPreAproval,
+                printQuery: true
+              })
+              .then(ordered_services => {
+                req.body.billdetails = ordered_services;
+                resolve();
+              })
+              .catch(error => {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                  reject(error);
+                });
+              });
+          })
+          .catch(error => {
+            _mysql.rollBackTransaction(() => {
+              options.next(error);
+              reject(error);
+            });
+          });
+      } else {
+        req.body.billdetails = [];
+        resolve();
+      }
+    } catch (e) {
+      reject(e);
+    }
+  }).catch(e => {
+    options.next(e);
+  });
 }

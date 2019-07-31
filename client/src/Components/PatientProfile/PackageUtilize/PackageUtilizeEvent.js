@@ -9,15 +9,20 @@ export default function PackageSetupEvent() {
       let name = e.name || e.target.name;
       let value = e.value || e.target.value;
       let refundAmount = 0;
+      let cancel_amount = 0;
       if (name === "closed_type" && value === "R") {
         if ($this.state.cancellation_policy === "AC") {
           refundAmount =
             parseFloat($this.state.advance_amount) -
             parseFloat($this.state.actual_utilize_amount);
+          cancel_amount = $this.state.can_amt;
+          refundAmount = refundAmount - parseFloat(cancel_amount);
         } else if ($this.state.cancellation_policy === "AP") {
           refundAmount =
             parseFloat($this.state.advance_amount) -
             parseFloat($this.state.utilize_amount);
+          cancel_amount = $this.state.can_amt;
+          refundAmount = refundAmount - parseFloat(cancel_amount);
         }
       }
 
@@ -26,18 +31,19 @@ export default function PackageSetupEvent() {
           refundAmount =
             parseFloat($this.state.advance_amount) -
             parseFloat($this.state.actual_utilize_amount);
-          refundAmount = refundAmount - parseFloat(value);
+          refundAmount = refundAmount - value === "" ? 0 : parseFloat(value);
         } else if ($this.state.cancellation_policy === "AP") {
           refundAmount =
             parseFloat($this.state.advance_amount) -
             parseFloat($this.state.utilize_amount);
-          refundAmount = refundAmount - parseFloat(value);
+          refundAmount = refundAmount - value === "" ? 0 : parseFloat(value);
         }
       }
       $this.setState({
         [name]: value,
         cash_amount: refundAmount,
-        total_amount: refundAmount
+        total_amount: refundAmount,
+        cancel_amount: cancel_amount
       });
     },
     onquantitycol: ($this, row, e) => {
@@ -47,7 +53,7 @@ export default function PackageSetupEvent() {
 
       if (parseFloat(value) > parseFloat(row["available_qty"])) {
         swalMessage({
-          title: "Quantity cannot be gretare than Avaiable Quantity. ",
+          title: "Quantity cannot be greater than Avaiable Quantity. ",
           type: "warning"
         });
         return;
@@ -55,8 +61,21 @@ export default function PackageSetupEvent() {
 
       let package_details = $this.state.package_details;
       const _index = package_details.indexOf(row);
+      let consumtion_items = $this.state.consumtion_items;
 
-      
+      if (value !== "") {
+        if (consumtion_items.length > 0) {
+          for (let i = 0; i < consumtion_items.length; i++) {
+            if (consumtion_items[i].service_id === row.service_id) {
+              consumtion_items[i].quantity = value;
+              consumtion_items[i].unit_cost =
+                parseFloat(value) * parseFloat(consumtion_items[i].sale_price);
+              consumtion_items[i].extended_cost =
+                parseFloat(value) * parseFloat(consumtion_items[i].sale_price);
+            }
+          }
+        }
+      }
 
       row[name] = value;
       package_details[_index] = row;
@@ -76,7 +95,6 @@ export default function PackageSetupEvent() {
       }
     },
     UtilizeService: ($this, e) => {
-      
       let InputObj = $this.state;
 
       if (InputObj.package_visit_type === "S" && InputObj.billed === "N") {
@@ -89,9 +107,39 @@ export default function PackageSetupEvent() {
         InputObj.package_details,
         f => parseFloat(f.quantity) > 0
       );
+
+      const inventory_item = _.filter(
+        InputObj.package_details,
+        f => f.service_type_id === 4 && f.quantity > 0
+      );
+
+      if (inventory_item.length > 0) {
+        if (InputObj.consumtion_items.length > 0) {
+          for (let k = 0; k < inventory_item.length; k++) {
+            const selected_item = _.filter(
+              InputObj.consumtion_items,
+              f => f.service_id === inventory_item[k].service_id
+            );
+            if (selected_item.length === 0) {
+              swalMessage({
+                title: "Please Select The batch for all Inventory Items",
+                type: "warning"
+              });
+              return;
+            }
+          }
+        } else {
+          swalMessage({
+            title: "Please Select The batch for all Inventory Items",
+            type: "warning"
+          });
+          return;
+        }
+      }
+
       if (package_details.length === 0) {
         swalMessage({
-          title: "Please Select atleast one service",
+          title: "Please Select atleast one service to Utilize",
           type: "warning"
         });
         return;
@@ -99,12 +147,7 @@ export default function PackageSetupEvent() {
       InputObj.package_details = package_details;
       let utilize_amount = 0,
         actual_utilize_amount = 0;
-      // if (parseFloat(InputObj.advance_amount) === 0) {
-      //   swalMessage({
-      //     title: "Please collect the advance",
-      //     type: "warning"
-      //   });
-      // }
+
       swal({
         title: "Confirmation.",
         text: "Are you sure you want to Utilize, Once Utilized cannot Revert?",
@@ -169,26 +212,34 @@ export default function PackageSetupEvent() {
           }
 
           if ($this.state.consultation === true) {
+            debugger;
             const cons_service = _.find(
-              $this.state.package_details,
+              InputObj.package_details,
               f => f.service_type_id === 1
             );
-
+            let inputObj = {};
+            if (cons_service === null || cons_service === undefined) {
+              inputObj.employee_id = InputObj.doctor_id;
+            } else {
+              inputObj.services_id = cons_service.service_id;
+            }
             algaehApiCall({
               uri: "/billing/getEmployeeAndDepartments",
               module: "billing",
               method: "get",
-              data: { services_id: cons_service.service_id },
+              data: inputObj,
               onSuccess: response => {
                 if (response.data.success) {
                   InputObj.doctor_id = response.data.records[0].employee_id;
                   InputObj.sub_department_id =
                     response.data.records[0].sub_department_id;
-                  InputObj.services_id = cons_service.service_id;
+                  InputObj.services_id = response.data.records[0].services_id;
                   InputObj.hims_f_package_detail_id =
                     InputObj.package_details[0].hims_f_package_detail_id;
                   InputObj.quantity = InputObj.package_details[0].quantity;
-                  $this.props.onClose && $this.props.onClose(InputObj);
+                  $this.setState($this.baseState, () => {
+                    $this.props.onClose && $this.props.onClose(InputObj);
+                  });
                 }
               },
               onFailure: error => {
@@ -206,12 +257,44 @@ export default function PackageSetupEvent() {
               data: $this.state,
               onSuccess: response => {
                 if (response.data.success) {
-                  
-                  $this.props.onClose && $this.props.onClose(e);
-                  swalMessage({
-                    title: "Successful...",
-                    type: "success"
-                  });
+                  if (InputObj.consumtion_items.length > 0) {
+                    InputObj.transaction_type = "CS";
+                    InputObj.location_id = $this.props.inventory_location_id;
+                    InputObj.inventory_stock_detail =
+                      $this.state.consumtion_items;
+                    InputObj.transaction_date = new Date();
+                    InputObj.provider_id = Window.global["provider_id"];
+                    algaehApiCall({
+                      uri: "/inventoryconsumption/addInventoryConsumption",
+                      module: "inventory",
+                      data: InputObj,
+                      onSuccess: response => {
+                        if (response.data.success === true) {
+                          $this.setState($this.baseState, () => {
+                            $this.props.onClose && $this.props.onClose(e);
+                          });
+                          swalMessage({
+                            title: "Successful...",
+                            type: "success"
+                          });
+                        }
+                      },
+                      onFailure: err => {
+                        swalMessage({
+                          title: err.message,
+                          type: "error"
+                        });
+                      }
+                    });
+                  } else {
+                    $this.setState($this.baseState, () => {
+                      $this.props.onClose && $this.props.onClose(e);
+                    });
+                    swalMessage({
+                      title: "Successful...",
+                      type: "success"
+                    });
+                  }
                 }
               },
               onFailure: error => {
@@ -226,6 +309,20 @@ export default function PackageSetupEvent() {
       });
     },
 
+    ShowVistUtilizedSer: $this => {
+      $this.setState({
+        visitPackageser: !$this.state.visitPackageser
+      });
+    },
+    CloseVistUtilizedSer: ($this, e) => {
+      if (e === true) {
+        $this.setState($this.baseState, () => {
+          $this.props.onClose && $this.props.onClose(e);
+        });
+      } else {
+        $this.setState({ visitPackageser: !$this.state.visitPackageser });
+      }
+    },
     ShowAdvanceScreen: $this => {
       $this.setState({
         AdvanceOpen: !$this.state.AdvanceOpen
@@ -237,7 +334,6 @@ export default function PackageSetupEvent() {
       });
     },
     ClosePackageScreen: ($this, e) => {
-      
       if (e === true) {
         $this.setState(
           { closePackage: !$this.state.closePackage, package_details: [] },
@@ -253,7 +349,6 @@ export default function PackageSetupEvent() {
     },
 
     ShowBatchDetails: ($this, row) => {
-      
       algaehApiCall({
         uri: "/inventory/getItemMaster",
         data: { service_id: row.service_id },
@@ -261,31 +356,61 @@ export default function PackageSetupEvent() {
         method: "GET",
         onSuccess: response => {
           if (response.data.success === true) {
-            
             let inputObj = {
               item_id: response.data.records[0].hims_d_inventory_item_master_id,
               inventory_location_id: $this.props.inventory_location_id
             };
-            algaehApiCall({
-              uri: "/inventoryGlobal/getItemandLocationStock",
-              module: "inventory",
-              method: "GET",
-              data: inputObj,
-              onSuccess: response => {
-                if (response.data.success === true) {
-                  $this.setState({
-                    itemBatches: !$this.state.itemBatches,
-                    batch_wise_item: response.data.records
+            let item_category_id = response.data.records[0].category_id;
+            let item_group_id = response.data.records[0].group_id;
+            let package_details = $this.state.package_details;
+            let _index = package_details.indexOf(row);
+            row.inventory_item_id =
+              response.data.records[0].hims_d_inventory_item_master_id;
+            row.inventory_location_id = $this.props.inventory_location_id;
+            row.inventory_uom_id = response.data.records[0].sales_uom_id;
+            package_details[_index] = row;
+            if ($this.state.batch_wise_item.length === 0) {
+              algaehApiCall({
+                uri: "/inventoryGlobal/getItemandLocationStock",
+                module: "inventory",
+                method: "GET",
+                data: inputObj,
+                onSuccess: response => {
+                  if (response.data.success === true) {
+                    let batch_data = response.data.records;
+                    for (let i = 0; i < batch_data.length; i++) {
+                      batch_data[i].select_qty = 0;
+                    }
+                    $this.setState({
+                      itemBatches: !$this.state.itemBatches,
+                      batch_wise_item: response.data.records,
+                      service_id: row.service_id,
+                      item_category_id: item_category_id,
+                      item_group_id: item_group_id,
+                      package_details: package_details,
+                      available_qty: row.available_qty,
+                      selectd_row_id: _index
+                    });
+                  }
+                },
+                onFailure: error => {
+                  swalMessage({
+                    title: error.message,
+                    type: "error"
                   });
                 }
-              },
-              onFailure: error => {
-                swalMessage({
-                  title: error.message,
-                  type: "error"
-                });
-              }
-            });
+              });
+            } else {
+              $this.setState({
+                itemBatches: !$this.state.itemBatches,
+                service_id: row.service_id,
+                item_category_id: item_category_id,
+                item_group_id: item_group_id,
+                package_details: package_details,
+                available_qty: row.available_qty,
+                selectd_row_id: _index
+              });
+            }
           }
         },
         onFailure: error => {

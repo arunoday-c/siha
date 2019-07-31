@@ -159,7 +159,6 @@ class AddAdvanceModal extends PureComponent {
       if (this.props.PackageAdvance === true) {
         package_id = this.props.inputsparameters.package_id;
       }
-      
 
       this.setState(
         {
@@ -185,16 +184,16 @@ class AddAdvanceModal extends PureComponent {
       parseFloat(this.state.total_amount);
     if (advance_amt < parseFloat(this.props.inputsparameters.collect_advance)) {
       swalMessage({
-        title: "Collect Amount Cannot be less tha package advance amount",
+        title:
+          "Collecting Amount Cannot be less than mini. package advance amount",
         type: "warning"
       });
       return;
     }
     if (!err) {
-      
       this.GenerateReciept($this => {
         AlgaehLoader({ show: true });
-        
+
         if ($this.props.PackageAdvance === true) {
           algaehApiCall({
             uri: "/billing/patientPackageAdvanceRefund",
@@ -345,7 +344,7 @@ class AddAdvanceModal extends PureComponent {
                       <div className="col">
                         <AlgaehLabel
                           label={{
-                            forceLabel: "Package Advance"
+                            forceLabel: "Mini. Package Advance To Take"
                           }}
                         />
                         <h6>

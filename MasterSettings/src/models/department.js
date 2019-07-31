@@ -152,16 +152,19 @@ module.exports = {
       if (input.department_id > 0) {
         query =
           "select hims_d_sub_department_id, sub_department_code, sub_department_name, arabic_sub_department_name,\
-            inventory_location_id,sub_department_desc, department_id, effective_start_date, effective_end_date, \
-            chart_type, sub_department_status,vitals_mandatory from  hims_d_sub_department where record_status='A' and \
-            department_id=? order by hims_d_sub_department_id desc";
+            inventory_location_id,sub_department_desc, department_id, SD.effective_start_date, SD.effective_end_date, \
+            chart_type, sub_department_status,vitals_mandatory, D.department_name  from  hims_d_sub_department SD, \
+            hims_d_department D where SD.record_status='A' and D.hims_d_department_id = SD.department_id \
+            and department_id=? order by hims_d_sub_department_id desc";
 
         values.push(input.department_id);
       } else {
         query =
           "select hims_d_sub_department_id, sub_department_code, sub_department_name, arabic_sub_department_name,\
-            inventory_location_id,sub_department_desc, department_id, effective_start_date, effective_end_date, \
-            chart_type, sub_department_status,vitals_mandatory from  hims_d_sub_department where record_status='A' \
+            inventory_location_id,sub_department_desc, department_id, SD.effective_start_date, SD.effective_end_date, \
+            chart_type, sub_department_status, vitals_mandatory, D.department_name from  \
+            hims_d_sub_department SD, hims_d_department D\
+             where SD.record_status='A' and D.hims_d_department_id = SD.department_id \
             order by hims_d_sub_department_id desc";
       }
 

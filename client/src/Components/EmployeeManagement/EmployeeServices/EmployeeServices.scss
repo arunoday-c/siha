@@ -1,0 +1,133 @@
+@import "../../../styles/algaehCssVariables.scss";
+.employeeServicesModule {
+  .EmployeeTopNav {
+    background: white;
+    height: 30px;
+    padding: 0;
+    width: 100%;
+    color: #797979;
+    text-transform: uppercase;
+    position: fixed;
+    top: 52px;
+    z-index: 99;
+    .tabMaster {
+      box-shadow: none;
+      ul {
+        position: relative;
+        li {
+          &:after {
+            display: block;
+            content: "";
+            border-bottom: 3px solid $primary-color;
+            transform: scaleX(0);
+            transition: transform 150ms ease-in-out;
+          }
+          &:hover:after {
+            transform: scaleX(1);
+          }
+          span {
+            text-transform: uppercase;
+            padding: 9px 15px 8px;
+            color: #858585;
+            cursor: pointer;
+          }
+          span.active {
+            border-bottom: 3px solid $primary-color;
+            color: #fff;
+            background: $primary-color;
+            &:hover {
+              cursor: default;
+              color: #fff;
+            }
+            &:hover:after {
+              display: none !important;
+              border: none !important;
+              cursor: pointer;
+            }
+          }
+        }
+      }
+      .Employee-quick-info {
+        color: $primary-color;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        position: absolute;
+        right: 20px;
+        li {
+          background: #ffffff;
+          color: #53bcb1;
+          padding: 4px 10px 3px;
+          cursor: pointer;
+          margin: 0 10px;
+          list-style: none;
+          display: inline-block;
+          section {
+            width: 30vw;
+            height: auto;
+            position: absolute;
+            right: 0;
+            top: 30px;
+            background: #53bdb1;
+            z-index: 9;
+            padding: 10px;
+            border-radius: 5px;
+            color: #fff;
+            display: none;
+            b.top-nav-sec-hdg {
+              text-align: center;
+              border-bottom: 1px solid #337e74;
+              margin-left: -10px;
+              margin-right: -10px;
+              padding-bottom: 11px;
+            }
+            b {
+              display: block;
+              border-bottom: 1px solid #3f9c90;
+              margin-bottom: 10px;
+              padding-bottom: 5px;
+            }
+            .listofA-D-D {
+              display: inline-block;
+              margin-right: 8px;
+              border: 1px solid #317970;
+              padding: 3px 10px;
+              margin: 0;
+              color: #fff;
+              margin-right: 5px;
+              margin-bottom: 3px;
+              border-radius: 20px;
+              background: #3f9c91;
+
+              white-space: normal;
+            }
+            p {
+              background: rgba(0, 0, 0, 0.05);
+              border-top: 1px solid #65dace;
+              margin: -10px;
+              padding: 10px;
+            }
+          }
+        }
+        li:hover {
+          background: #53bcb1;
+          color: #fff;
+          padding: 4px 10px;
+          section {
+            display: block;
+          }
+        }
+      }
+    }
+  }
+  .EmployeeContentArea {
+    margin: 100px 10px 0;
+    z-index: 1;
+    width: 100%;
+  }
+  .empService-setion {
+    margin-top: 40px;
+    padding-top: 0;
+    background: none;
+  }
+}
