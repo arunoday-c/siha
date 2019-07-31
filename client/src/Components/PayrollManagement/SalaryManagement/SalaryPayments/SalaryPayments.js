@@ -169,7 +169,7 @@ class SalaryPayment extends Component {
             <AlagehAutoComplete
               div={{ className: "col" }}
               label={{
-                forceLabel: "Select a Dept..",
+                forceLabel: "Select a Sub Dept.",
                 isImp: false
               }}
               selector={{

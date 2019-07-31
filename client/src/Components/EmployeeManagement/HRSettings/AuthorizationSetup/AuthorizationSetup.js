@@ -304,7 +304,7 @@ export default class AuthorizationSetup extends Component {
           />
           <AlagehAutoComplete
             div={{ className: "col form-group" }}
-            label={{ forceLabel: "Select Department", isImp: true }}
+            label={{ forceLabel: "Select Sub Dept.", isImp: true }}
             selector={{
               name: "sub_department_id",
               value: this.state.sub_department_id,

@@ -1,9 +1,13 @@
 import React, { Component } from "react";
-import { AlgaehDateHandler } from "../../../Wrapper/algaehWrapper";
-import AlgaehModalPopUp from "../../../Wrapper/modulePopUp";
 import "./project_assign.css";
+import {
+  AlgaehDateHandler,
+  AlagehFormGroup
+} from "../../../Wrapper/algaehWrapper";
+import AlgaehModalPopUp from "../../../Wrapper/modulePopUp";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
+import isEqual from "lodash/isEqual";
 
 class ProjectAssign extends Component {
   constructor(props) {
@@ -13,7 +17,8 @@ class ProjectAssign extends Component {
       employees: [],
       projectList: [],
       projects: [],
-      projEmp: []
+      projEmp: [],
+      allChecked: false
     };
   }
 
@@ -33,6 +38,10 @@ class ProjectAssign extends Component {
     this.setState({
       projEmp: myArray
     });
+  }
+
+  addAllEmp() {
+    const { projEmp } = this.state;
   }
 
   componentWillReceiveProps(nextProps) {
@@ -62,7 +71,8 @@ class ProjectAssign extends Component {
           });
 
         this.setState({
-          employeeList: employees
+          employeeList: employees,
+          searchEmployees: e.target.value
         });
         break;
 
@@ -74,11 +84,26 @@ class ProjectAssign extends Component {
           });
 
         this.setState({
-          projectList: projects
+          projectList: projects,
+          searchprojects: e.target.value
         });
         break;
     }
   }
+
+  checkAll = () => {
+    if (this.state.allChecked) {
+      this.setState({
+        projEmp: [],
+        allChecked: false
+      });
+    } else {
+      this.setState({
+        projEmp: this.state.employees,
+        allChecked: true
+      });
+    }
+  };
 
   processAssignment() {
     if (
@@ -155,6 +180,7 @@ class ProjectAssign extends Component {
 
     return (
       <AlgaehModalPopUp
+        class="projectAssignModal"
         openPopup={this.props.open}
         events={{
           onClose: this.props.onClose
@@ -163,11 +189,11 @@ class ProjectAssign extends Component {
       >
         <div className="popupInner" data-validate="LvEdtGrd">
           <div className="col-12">
-            <div className="row">
+            <div className="row margin-top-15">
               <AlgaehDateHandler
-                div={{ className: "col-3 margin-bottom-15" }}
+                div={{ className: "col-3 mandatory" }}
                 label={{
-                  forceLabel: "From Date",
+                  forceLabel: "Project Starts Date",
                   isImp: true
                 }}
                 textBox={{
@@ -188,9 +214,9 @@ class ProjectAssign extends Component {
                 value={this.state.from_date}
               />
               <AlgaehDateHandler
-                div={{ className: "col-3 margin-bottom-15" }}
+                div={{ className: "col-3 mandatory" }}
                 label={{
-                  forceLabel: "To Date",
+                  forceLabel: "Project End Date",
                   isImp: true
                 }}
                 textBox={{
@@ -211,10 +237,33 @@ class ProjectAssign extends Component {
                 value={this.state.to_date}
               />
             </div>
-            <div style={{ maxHeight: "400px" }} className="row">
-              <div className="col-6">
-                <h6>PROJECTS</h6>
-                <input
+            <hr />
+            <div className="row">
+              <div className="col-4">
+                <h6>Select Project</h6>
+                <div className="row">
+                  {" "}
+                  <AlagehFormGroup
+                    div={{ className: "col" }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "searchProjects",
+                      value: this.state.searchprojects,
+                      events: {
+                        onChange: this.SearchHandler.bind(this)
+                      },
+                      option: {
+                        type: "text"
+                      },
+                      others: {
+                        placeholder: "Search projects",
+                        tabIndex: "4"
+                      }
+                    }}
+                  />
+                </div>
+
+                {/* <input
                   type="text"
                   autoComplete="off"
                   name="searchprojects"
@@ -222,8 +271,7 @@ class ProjectAssign extends Component {
                   placeholder="Search projects"
                   value={this.state.searchprojects}
                   onChange={this.SearchHandler.bind(this)}
-                  tabIndex="4"
-                />
+                /> */}
                 <ul className="projectList">
                   {_projectList.map((data, index) => {
                     return (
@@ -253,39 +301,61 @@ class ProjectAssign extends Component {
                   })}
                 </ul>
               </div>
-              <div className="col-6">
-                <h6>EMPLOYEES</h6>
-                <input
-                  type="text"
-                  autoComplete="off"
-                  name="searchEmployees"
-                  className="rosterSrch"
-                  placeholder="Search Employees"
-                  value={this.state.searchEmployees}
-                  onChange={this.SearchHandler.bind(this)}
-                  tabIndex="3"
-                />
+              <div className="col-8">
+                <h6>Assign Employee</h6>
+                <div className="row">
+                  <AlagehFormGroup
+                    div={{ className: "col" }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "searchEmployees",
+                      value: this.state.searchEmployees,
+                      events: {
+                        onChange: this.SearchHandler.bind(this)
+                      },
+                      option: {
+                        type: "text"
+                      },
+                      others: {
+                        placeholder: "Search Employee",
+                        tabIndex: "3",
+                        disabled: this.state.allChecked
+                      }
+                    }}
+                  />
+                </div>
+
                 <ul className="projEmployeeList">
+                  <li>
+                    <span>
+                      <input
+                        type="checkbox"
+                        name="choose-all"
+                        checked={this.state.allChecked}
+                        onChange={this.checkAll}
+                        disabled={this.state.searchEmployees}
+                      />
+                    </span>
+                    <p>Employee Names</p>
+                  </li>
                   {_employeeList.map((data, index) => (
                     <li key={index}>
-                      <input
-                        id={data.employee_code}
-                        type="checkbox"
-                        checked={this.state.projEmp.includes(data)}
-                        onChange={this.addEmployees.bind(this, data)}
-                      />
-                      <label
-                        htmlFor={data.employee_code}
-                        style={{
-                          width: "80%"
-                        }}
-                      >
-                        {data.employee_name}
-                      </label>
+                      <span>
+                        <input
+                          id={data.employee_code}
+                          type="checkbox"
+                          checked={this.state.projEmp.includes(data)}
+                          onChange={this.addEmployees.bind(this, data)}
+                        />
+                      </span>
+                      <p htmlFor={data.employee_code}>
+                        <b>{data.employee_name}</b>
+                        <small>{data.employee_code}</small>
+                      </p>
                     </li>
                   ))}
                 </ul>
-              </div>{" "}
+              </div>
             </div>
           </div>
         </div>

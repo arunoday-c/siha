@@ -327,7 +327,7 @@ class EOSGratuity extends Component {
                         </div>
 
                         <div className="col-3">
-                          <label className="style_Label ">Department</label>
+                          <label className="style_Label ">Sub Department</label>
                           <h6>
                             {EosData.sub_department_name
                               ? EosData.sub_department_name

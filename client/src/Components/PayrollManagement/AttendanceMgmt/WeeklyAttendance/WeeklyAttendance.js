@@ -873,7 +873,7 @@ export default class WeeklyAttendance extends Component {
           <AlagehAutoComplete
             div={{ className: "col-2" }}
             label={{
-              forceLabel: "Select a Dept.",
+              forceLabel: "Select a Sub Dept.",
               isImp: false
             }}
             selector={{
