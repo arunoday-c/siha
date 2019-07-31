@@ -397,7 +397,7 @@ class DeptUserDetails extends Component {
                 <AlagehAutoComplete
                   div={{ className: "col " }}
                   label={{
-                    fieldName: "sub_department_id",
+                    forceLabel: "Sub Department",
                     isImp: true
                   }}
                   selector={{

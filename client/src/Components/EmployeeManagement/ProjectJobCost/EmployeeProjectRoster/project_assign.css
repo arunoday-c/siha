@@ -1,30 +1,50 @@
+.projectAssignModal .algaeh-modal {
+  width: 65vw; }
+
 .projEmployeeList {
-  list-style: none;
-  border: 1px solid #ccc;
-  width: auto;
-  min-width: 100px;
+  border: 1px solid #d3d3d3;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 45vh;
+  max-height: 45vh;
+  font-size: 0.85rem;
   margin: 0;
   padding: 0;
-  max-height: 45vh;
-  margin-bottom: 20px;
-  overflow-y: auto;
-  overflow-x: none; }
+  list-style: none; }
   .projEmployeeList li {
-    padding: 5px 10px;
-    text-align: left;
-    background: #fff;
-    border-bottom: 1px solid #ccc; }
-    .projEmployeeList li input[type="checkbox"] {
-      margin-right: 10px; }
-    .projEmployeeList li label {
-      padding: 7px;
-      border-left: 1px solid #ccc; }
+    border-bottom: 1px solid #d3d3d3;
+    font-weight: 500; }
+    .projEmployeeList li span {
+      width: 35px;
+      height: 35px;
+      display: inline-block;
+      padding: 0 8px;
+      text-align: center;
+      vertical-align: top; }
+      .projEmployeeList li span input {
+        margin-top: 10px; }
+    .projEmployeeList li p {
+      display: inline-block;
+      border-left: 1px solid #d3d3d3;
+      padding: 5px;
+      width: calc(100% - 35px); }
+      .projEmployeeList li p b {
+        display: block; }
     .projEmployeeList li:hover {
-      background-color: #f2f2f2; }
-    .projEmployeeList li:last-child {
-      border-bottom: none; }
-    .projEmployeeList li:nth-child(even) {
-      background-color: #f7f7f7; }
+      background-color: #00a796;
+      border-color: #007468;
+      cursor: pointer;
+      color: #fff; }
+    .projEmployeeList li:first-child {
+      background: #dbfbfb;
+      border-bottom: 2px solid #00a796; }
+      .projEmployeeList li:first-child p {
+        height: 35px;
+        line-height: 24px;
+        text-align: center; }
+      .projEmployeeList li:first-child:hover {
+        color: rgba(0, 0, 0, 0.87);
+        cursor: default; }
 
 .projectList {
   list-style: none;
@@ -33,6 +53,7 @@
   min-width: 100px;
   margin: 0;
   padding: 0;
+  min-height: 45vh;
   max-height: 45vh;
   margin-bottom: 20px;
   overflow-y: auto;
@@ -59,4 +80,10 @@
   font-size: 16px;
   padding: 12px 20px 12px 40px;
   border: 1px solid #ddd;
-  margin-bottom: 12px; }
+  margin-bottom: 12px;
+  margin: 0;
+  border-radius: 0;
+  padding: 10px;
+  background: #fbfbfb;
+  color: #fff;
+  font-size: 1rem; }
