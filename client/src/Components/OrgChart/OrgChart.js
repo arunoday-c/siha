@@ -68,6 +68,12 @@ export default class OrgChart extends Component {
     });
   }
 
+  clearSub = () => {
+    this.setState({
+      subDept: []
+    });
+  };
+
   render() {
     return (
       <div className="orgChartUI">
@@ -110,6 +116,7 @@ export default class OrgChart extends Component {
             <DepartmentView
               dept={this.state.allDepartments}
               subDept={this.state.subDept}
+              clearSub={this.clearSub}
               getSubDept={this.getSubForDept.bind(this)}
               getDept={this.getAllDepartments.bind(this)}
             />

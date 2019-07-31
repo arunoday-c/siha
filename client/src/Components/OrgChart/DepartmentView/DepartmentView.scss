@@ -9,8 +9,12 @@
     max-height: 85vh;
     overflow-y: auto;
     overflow-x: hidden;
-    margin-right: 10px;
-    padding-right: 15px;
+    // margin-right: 10px;
+    padding-right: 12px;
+    &::-webkit-scrollbar {
+      width: 0px; /* Remove scrollbar space */
+      background: transparent; /* Optional: just make scrollbar invisible */
+    }
     li.eachChild {
       margin: 0;
       list-style: none;
