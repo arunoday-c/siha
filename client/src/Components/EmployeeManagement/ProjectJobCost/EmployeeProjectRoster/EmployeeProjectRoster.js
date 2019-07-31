@@ -857,6 +857,7 @@ class EmployeeProjectRoster extends Component {
                     </b>
                   </h3>
                 </div>
+
                 <div className="actions">
                   <span style={{ background: "#3f9c62" }} className="legends">
                     Weekly Off (WO)
@@ -870,6 +871,24 @@ class EmployeeProjectRoster extends Component {
                   <span style={{ background: "#9c7d3f" }} className="legends">
                     Leave Applied (LA)
                   </span>
+                  <a className="btn btn-primary btn-circle active" onClick="">
+                    <i className="fas fa-plus" />
+                  </a>
+                  {/* <EmployeeMaster
+                    HeaderCaption={
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "employee_master",
+                          align: "ltr"
+                        }}
+                      />
+                    }
+                    open={this.state.isOpen}
+                    onClose={this.CloseModel.bind(this)}
+                    editEmployee={this.state.editEmployee}
+                    employeeDetailsPop={this.state.employeeDetailsPop}
+                    employee_status={this.state.employee_status}
+                  /> */}
                 </div>
               </div>
               <div className="portlet-body">
