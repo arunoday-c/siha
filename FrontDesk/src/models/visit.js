@@ -128,14 +128,17 @@ module.exports = {
           inputParam.age_in_days = days;
         }
 
-        if (
-          (existingExparyDate != null || existingExparyDate != undefined) &&
-          moment(existingExparyDate).format("YYYY-MM-DD") >= today
-        ) {
-          inputParam.visit_expiery_date = existingExparyDate;
-          inputParam.episode_id = currentPatientEpisodeNo;
-          inputParam.new_visit_patient =
-            inputParam.new_visit_patient === "P" ? "P" : "N";
+        if (inputParam.new_visit_patient === "P") {
+          inputParam.new_visit_patient = "P";
+        } else {
+          if (
+            (existingExparyDate != null || existingExparyDate != undefined) &&
+            moment(existingExparyDate).format("YYYY-MM-DD") >= today
+          ) {
+            inputParam.visit_expiery_date = existingExparyDate;
+            inputParam.episode_id = currentPatientEpisodeNo;
+            inputParam.new_visit_patient = "N";
+          }
         }
 
         _mysql

@@ -661,6 +661,7 @@ class LeaveEdit extends Component {
     return (
       <AlgaehModalPopUp
         openPopup={this.props.open}
+        title="Edit Details"
         events={{
           onClose: this.props.onClose
         }}
