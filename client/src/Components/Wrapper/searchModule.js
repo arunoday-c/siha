@@ -15,6 +15,7 @@ class SearchModule extends Component {
       searchBy: "",
       searchName: "",
       contains: "",
+      filterBy: "CON",
       isSpeakEnable: false,
       stop: false,
       start: false
@@ -139,12 +140,34 @@ class SearchModule extends Component {
         : e.target.title;
     const _title = "Search by " + _name;
     this.setUserSelectedValue(
-      { identifier: this.props.searchName, value: _value, name: _name },
+      {
+        identifier: this.props.searchName,
+        value: _value,
+        name: _name,
+        filterBy: this.state.filterBy
+      },
       response => {
         this.setState({ searchBy: _value, title: _title });
       }
     );
   }
+  handleOnChangeFilterBy(e) {
+    const _name = this.searchByCtrl[this.searchByCtrl.selectedIndex].text;
+    this.setState(
+      {
+        filterBy: e.target.value
+      },
+      () => {
+        this.setUserSelectedValue({
+          identifier: this.props.searchName,
+          value: this.state.searchBy,
+          name: _name,
+          filterBy: this.state.filterBy
+        });
+      }
+    );
+  }
+
   /*
        function handle onchange when user start typing a interval starts and
        ends when it continue in typing if not service call in 500 ms
@@ -181,7 +204,8 @@ class SearchModule extends Component {
                   inputs: this.props.inputs,
                   fieldName: this.state.searchBy,
                   fieldContains: this.state.contains,
-                  searchName: this.state.searchName
+                  searchName: this.state.searchName,
+                  filterBy: this.state.filterBy
                 },
                 method: "GET",
                 responseSchema: {
@@ -278,9 +302,15 @@ class SearchModule extends Component {
                 <div className="row">
                   <div className="col">
                     <div className="label">Filter by</div>
-                    <select className="filterBySelect">
-                      <option>Starts with</option>
-                      <option>contains</option>
+                    <select
+                      value={this.state.filterBy}
+                      className="filterBySelect"
+                      onChange={this.handleOnChangeFilterBy.bind(this)}
+                    >
+                      <option value="STW">Starts with</option>
+                      <option value="ENW">Ends with</option>
+                      <option value="EQU">Equals</option>
+                      <option value="CON">Contains</option>
                     </select>
                   </div>
                   <div className="col">
@@ -289,6 +319,9 @@ class SearchModule extends Component {
                       className="searchBySelect"
                       onChange={this.handleOnchnageSearchBy.bind(this)}
                       value={this.state.searchBy}
+                      ref={searchByCtrl => {
+                        this.searchByCtrl = searchByCtrl;
+                      }}
                     >
                       {this.props.searchGrid.columns.map((row, index) =>
                         row.required !== "N" ? (
