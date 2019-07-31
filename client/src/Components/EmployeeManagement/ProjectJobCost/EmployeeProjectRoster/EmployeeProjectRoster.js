@@ -109,6 +109,7 @@ class EmployeeProjectRoster extends Component {
   }
 
   showModal(row, e) {
+    debugger;
     if (e.target.tagName === "TD") {
       if (e.ctrlKey || e.metaKey) {
         e.currentTarget.lastElementChild.firstElementChild.click();

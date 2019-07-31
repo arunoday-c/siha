@@ -5,6 +5,16 @@ import moment from "moment";
 
 export default function PackageSetupEvent() {
   return {
+    onPackageChange: ($this, e) => {
+      debugger;
+      let name = e.name || e.target.name;
+      let value = e.value || e.target.value;
+
+      $this.setState({
+        ...$this.state,
+        ...e.selected
+      });
+    },
     texthandle: ($this, e) => {
       let name = e.name || e.target.name;
       let value = e.value || e.target.value;
@@ -83,19 +93,17 @@ export default function PackageSetupEvent() {
         package_details: package_details
       });
     },
-    advanceAmount: ($this, e) => {
-      if (e.target.value === undefined) {
-        $this.setState({
-          [e.target.name]: ""
-        });
-      } else {
-        $this.setState({
-          [e.target.name]: e.target.value
-        });
-      }
-    },
+
     UtilizeService: ($this, e) => {
       let InputObj = $this.state;
+
+      if (InputObj.hims_f_package_header_id === null) {
+        swalMessage({
+          title: "Please Selecte Package",
+          type: "warning"
+        });
+        return;
+      }
 
       if (InputObj.package_visit_type === "S" && InputObj.billed === "N") {
         swalMessage({
@@ -137,13 +145,14 @@ export default function PackageSetupEvent() {
         }
       }
 
-      if (package_details.length === 0) {
+      if (package_details.length === 0 && InputObj.package_utilize === false) {
         swalMessage({
           title: "Please Select atleast one service to Utilize",
           type: "warning"
         });
         return;
       }
+
       InputObj.package_details = package_details;
       let utilize_amount = 0,
         actual_utilize_amount = 0;
@@ -234,9 +243,7 @@ export default function PackageSetupEvent() {
                   InputObj.sub_department_id =
                     response.data.records[0].sub_department_id;
                   InputObj.services_id = response.data.records[0].services_id;
-                  InputObj.hims_f_package_detail_id =
-                    InputObj.package_details[0].hims_f_package_detail_id;
-                  InputObj.quantity = InputObj.package_details[0].quantity;
+
                   $this.setState($this.baseState, () => {
                     $this.props.onClose && $this.props.onClose(InputObj);
                   });
@@ -310,6 +317,13 @@ export default function PackageSetupEvent() {
     },
 
     ShowVistUtilizedSer: $this => {
+      if ($this.state.hims_f_package_header_id === null) {
+        swalMessage({
+          title: "Please Selecte Package",
+          type: "warning"
+        });
+        return;
+      }
       $this.setState({
         visitPackageser: !$this.state.visitPackageser
       });
@@ -324,11 +338,25 @@ export default function PackageSetupEvent() {
       }
     },
     ShowAdvanceScreen: $this => {
+      if ($this.state.hims_f_package_header_id === null) {
+        swalMessage({
+          title: "Please Selecte Package",
+          type: "warning"
+        });
+        return;
+      }
       $this.setState({
         AdvanceOpen: !$this.state.AdvanceOpen
       });
     },
     ShowCloseScreen: $this => {
+      if ($this.state.hims_f_package_header_id === null) {
+        swalMessage({
+          title: "Please Selecte Package",
+          type: "warning"
+        });
+        return;
+      }
       $this.setState({
         closePackage: !$this.state.closePackage
       });

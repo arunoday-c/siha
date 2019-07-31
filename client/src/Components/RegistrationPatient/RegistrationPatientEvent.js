@@ -515,7 +515,7 @@ const getCtrlCode = ($this, patcode, row) => {
 const ShowPackageUtilize = $this => {
   $this.setState({
     isPackUtOpen: !$this.state.isPackUtOpen,
-    package_detail: $this.props.PatientPackageList[0]
+    package_detail: $this.props.PatientPackageList
   });
 };
 const ClosePackageUtilize = ($this, e) => {
@@ -561,7 +561,7 @@ const ClosePackageUtilize = ($this, e) => {
       sub_department_id: e.sub_department_id,
       visit_type: visit_type.hims_d_visit_type_id,
       package_details: e.package_details,
-      from_package: true,
+      from_package: e.package_utilize === true ? false : true,
       visittypeselect: true,
       utilize_amount: e.utilize_amount,
       balance_amount: e.balance_amount,
