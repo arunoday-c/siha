@@ -271,12 +271,32 @@ class PersonalDetails extends Component {
                         },
                         others: {
                           tabIndex: "7",
-                          placeholder: "(+01)123-456-7890",
+                          placeholder: "(+968)123-456-78",
                           type: "number"
                         }
                       }}
                     />
+                    {/* <AlagehFormGroup
+                      div={{ className: "col-5" }}
+                      label={{
+                        fieldName: "email",
+                        isImp: true
+                      }}
+                      textBox={{
+                        value: this.state.email,
+                        className: "txt-fld",
+                        name: "email",
 
+                        events: {
+                          onChange: texthandle.bind(this, this)
+                        },
+                        others: {
+                          tabIndex: "8",
+                          placeholder: "Enter Work Email Address",
+                          type: "email"
+                        }
+                      }}
+                    />{" "} */}
                     <AlagehFormGroup
                       div={{ className: "col-5" }}
                       label={{
@@ -298,7 +318,6 @@ class PersonalDetails extends Component {
                         }
                       }}
                     />
-
                     <AlagehAutoComplete
                       div={{ className: "col-3" }}
                       label={{

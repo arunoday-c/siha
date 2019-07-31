@@ -553,7 +553,7 @@ class FinalSettlement extends Component {
           </div>
 
           <div className="col">
-            <label className="style_Label ">Department</label>
+            <label className="style_Label ">Sub Department</label>
             <h6>
               {FsData.sub_department_name
                 ? FsData.sub_department_name

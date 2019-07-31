@@ -48,13 +48,6 @@ const EditEmployeeMaster = ($this, row) => {
   row.updateearnComp = [];
   row.updateDeductionComp = [];
   row.updateContributeComp = [];
-  debugger;
-  let sub_department_dtl = _.find(
-    $this.props.subdepartment,
-    f => f.hims_d_sub_department_id == row.sub_department_id
-  );
-
-  row.department_name = sub_department_dtl.department_name;
 
   $this.setState({
     isOpen: !$this.state.isOpen,

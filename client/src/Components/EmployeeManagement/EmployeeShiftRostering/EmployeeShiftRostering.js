@@ -42,7 +42,6 @@ export default class EmployeeShiftRostering extends Component {
 
   showModal(row, e) {
     if (e.target.tagName === "TD") {
-      
       if (e.ctrlKey || e.metaKey) {
         e.currentTarget.lastElementChild.firstElementChild.click();
       } else {
@@ -165,7 +164,7 @@ export default class EmployeeShiftRostering extends Component {
       this.state.sub_department_id === undefined
     ) {
       swalMessage({
-        title: "Please Select a department",
+        title: "Please Select Sub Department",
         type: "warning"
       });
     } else {
@@ -924,7 +923,7 @@ export default class EmployeeShiftRostering extends Component {
 
           <AlagehAutoComplete
             div={{ className: "col-2 form-group" }}
-            label={{ forceLabel: "Select Department", isImp: true }}
+            label={{ forceLabel: "Select Sub Dept.", isImp: true }}
             selector={{
               name: "sub_department_id",
               value: this.state.sub_department_id,

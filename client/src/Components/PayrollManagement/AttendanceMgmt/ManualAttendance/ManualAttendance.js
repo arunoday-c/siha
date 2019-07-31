@@ -198,7 +198,7 @@ class ManualAttendance extends Component {
 
     const drop_Down_Label =
       this.state.manual_timesheet_entry === "D"
-        ? "Select a Dept."
+        ? "Select a Sub Dept."
         : "Select Project";
 
     return (

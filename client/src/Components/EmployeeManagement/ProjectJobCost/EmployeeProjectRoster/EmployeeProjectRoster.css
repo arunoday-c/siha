@@ -130,7 +130,8 @@
   background-color: #58b9c0; }
 
 .EmployeeProjectRoster #projectRosterTable {
-  min-height: 54vh;
+  min-height: 57vh;
+  max-height: 57vh;
   overflow: auto;
   border: 1px solid #d2d2d2; }
   .EmployeeProjectRoster #projectRosterTable .noTimeSheetData {

@@ -215,231 +215,261 @@ class CompanyAccount extends Component {
   render() {
     return (
       <div className="CompanyAccountScreen">
-        <div className="col-lg-12">
-          <div className="row">
-            <AlagehAutoComplete
-              div={{ className: "col mandatory" }}
-              label={{
-                forceLabel: "Select Employee Bank",
-                isImp: true
-              }}
-              selector={{
-                name: "bank_id",
-                className: "select-fld",
-                value: this.state.bank_id,
-                dataSource: {
-                  textField: "bank_name",
-                  valueField: "hims_d_bank_id",
-                  data: this.props.banks
-                },
-                onChange: this.bankEventhandle.bind(this),
-                onClear: () => {
-                  this.setState({
-                    bank_id: null
-                  });
-                }
-              }}
-            />
-            <AlagehFormGroup
-              div={{ className: "col mandatory" }}
-              label={{
-                forceLabel: "Account No",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "account_number",
-                value: this.state.account_number,
-                events: { onChange: this.texthandle.bind(this) },
-                option: {
-                  type: "text"
-                }
-              }}
-            />
-            <AlagehFormGroup
-              div={{ className: "col mandatory" }}
-              label={{
-                forceLabel: "Employer CR-No.",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "employer_cr_no",
-                value: this.state.employer_cr_no,
-                events: { onChange: this.texthandle.bind(this) },
-                option: {
-                  type: "text"
-                }
-              }}
-            />
+        <div className="row inner-top-search">
+          <AlagehAutoComplete
+            div={{ className: "col mandatory" }}
+            label={{
+              forceLabel: "Select Employee Bank",
+              isImp: true
+            }}
+            selector={{
+              name: "bank_id",
+              className: "select-fld",
+              value: this.state.bank_id,
+              dataSource: {
+                textField: "bank_name",
+                valueField: "hims_d_bank_id",
+                data: this.props.banks
+              },
+              onChange: this.bankEventhandle.bind(this),
+              onClear: () => {
+                this.setState({
+                  bank_id: null
+                });
+              }
+            }}
+          />
+          <AlagehFormGroup
+            div={{ className: "col mandatory" }}
+            label={{
+              forceLabel: "Account No",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "account_number",
+              value: this.state.account_number,
+              events: { onChange: this.texthandle.bind(this) },
+              option: {
+                type: "text"
+              }
+            }}
+          />
+          <AlagehFormGroup
+            div={{ className: "col mandatory" }}
+            label={{
+              forceLabel: "Employer CR-No.",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "employer_cr_no",
+              value: this.state.employer_cr_no,
+              events: { onChange: this.texthandle.bind(this) },
+              option: {
+                type: "text"
+              }
+            }}
+          />
 
-            <AlagehFormGroup
-              div={{ className: "col mandatory" }}
-              label={{
-                forceLabel: "Payer CR-No.",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "payer_cr_no",
-                value: this.state.payer_cr_no,
-                events: { onChange: this.texthandle.bind(this) },
-                option: {
-                  type: "text"
-                }
-              }}
-            />
-            <div className="col">
-              <button
-                style={{ marginTop: 21 }}
-                className="btn btn-primary"
-                onClick={this.addCompanyAccount.bind(this)}
-              >
-                Add to List
-              </button>
-            </div>
+          <AlagehFormGroup
+            div={{ className: "col mandatory form-group" }}
+            label={{
+              forceLabel: "Payer CR-No.",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "payer_cr_no",
+              value: this.state.payer_cr_no,
+              events: { onChange: this.texthandle.bind(this) },
+              option: {
+                type: "text"
+              }
+            }}
+          />
+          <div className="col">
+            <button
+              style={{ marginTop: 21 }}
+              className="btn btn-primary"
+              onClick={this.addCompanyAccount.bind(this)}
+            >
+              Add to List
+            </button>
           </div>
-          <div data-validate="companyAccountDiv" id="CompanyAccountGrid_Cntr">
-            <AlgaehDataGrid
-              id="BankMasterGrid"
-              datavalidate="data-validate='companyAccountDiv'"
-              columns={[
-                {
-                  fieldName: "bank_id",
-                  label: <AlgaehLabel label={{ forceLabel: "Bank Name" }} />,
-                  displayTemplate: row => {
-                    let display =
-                      this.props.banks === undefined
-                        ? []
-                        : this.props.banks.filter(
-                            f => f.hims_d_bank_id === row.bank_id
-                          );
+        </div>
+        <div className="portlet portlet-bordered margin-bottom-15">
+          <div className="portlet-body">
+            <div className="row">
+              <div className="col-lg-12">
+                <div
+                  data-validate="companyAccountDiv"
+                  id="CompanyAccountGrid_Cntr"
+                >
+                  <AlgaehDataGrid
+                    id="BankMasterGrid"
+                    datavalidate="data-validate='companyAccountDiv'"
+                    columns={[
+                      {
+                        fieldName: "bank_id",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Bank Name" }} />
+                        ),
+                        displayTemplate: row => {
+                          let display =
+                            this.props.banks === undefined
+                              ? []
+                              : this.props.banks.filter(
+                                  f => f.hims_d_bank_id === row.bank_id
+                                );
 
-                    return (
-                      <span>
-                        {display !== null && display.length !== 0
-                          ? display[0].bank_name
-                          : ""}
-                      </span>
-                    );
-                  },
-                  editorTemplate: row => {
-                    return (
-                      <AlagehAutoComplete
-                        div={{ className: "col" }}
-                        selector={{
-                          name: "bank_id",
-                          className: "select-fld",
-                          value: row.bank_id,
-                          dataSource: {
-                            textField: "bank_name",
-                            valueField: "hims_d_bank_id",
-                            data: this.props.banks
-                          },
-                          others: {
-                            errormessage: "Name - cannot be blank",
-                            required: true
-                          },
-                          onChange: this.changeGridEditors.bind(this, row)
-                        }}
-                      />
-                    );
-                  }
-                },
-                {
-                  fieldName: "bank_short_name",
-                  label: <AlgaehLabel label={{ forceLabel: "Short Name" }} />,
-                  disabled: true
-                },
-                {
-                  fieldName: "account_number",
-                  label: <AlgaehLabel label={{ forceLabel: "Account No." }} />,
-                  editorTemplate: row => {
-                    return (
-                      <AlagehFormGroup
-                        div={{ className: "col" }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "account_number",
-                          value: row.account_number,
-                          events: {
-                            onChange: this.changeGridEditors.bind(this, row)
-                          },
-                          others: {
-                            errormessage: "Account Number - cannot be blank",
-                            required: true
-                          }
-                        }}
-                      />
-                    );
-                  }
-                },
-                {
-                  fieldName: "employer_cr_no",
-                  label: (
-                    <AlgaehLabel label={{ forceLabel: "Employer CR-No." }} />
-                  ),
-                  editorTemplate: row => {
-                    return (
-                      <AlagehFormGroup
-                        div={{ className: "col" }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "employer_cr_no",
-                          value: row.employer_cr_no,
-                          events: {
-                            onChange: this.changeGridEditors.bind(this, row)
-                          },
-                          others: {
-                            errormessage: "Employeer Cr-No - cannot be blank",
-                            required: true
-                          }
-                        }}
-                      />
-                    );
-                  }
-                },
-                {
-                  fieldName: "payer_cr_no",
-                  label: <AlgaehLabel label={{ forceLabel: "Payer CR-No." }} />,
-                  editorTemplate: row => {
-                    return (
-                      <AlagehFormGroup
-                        div={{ className: "col" }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "payer_cr_no",
-                          value: row.payer_cr_no,
-                          events: {
-                            onChange: this.changeGridEditors.bind(this, row)
-                          },
-                          others: {
-                            errormessage: "Payer Cr-No - cannot be blank",
-                            required: true
-                          }
-                        }}
-                      />
-                    );
-                  }
-                }
-              ]}
-              keyId=""
-              dataSource={{
-                data:
-                  this.props.companyaccount === undefined
-                    ? []
-                    : this.props.companyaccount
-              }}
-              filter={true}
-              isEditable={true}
-              paging={{ page: 0, rowsPerPage: 10 }}
-              events={{
-                onEdit: () => {},
-                onDelete: this.deleteCompanyAccount.bind(this),
-                onDone: this.updateCompanyAccount.bind(this)
-              }}
-              others={{}}
-            />
+                          return (
+                            <span>
+                              {display !== null && display.length !== 0
+                                ? display[0].bank_name
+                                : ""}
+                            </span>
+                          );
+                        },
+                        editorTemplate: row => {
+                          return (
+                            <AlagehAutoComplete
+                              div={{ className: "col" }}
+                              selector={{
+                                name: "bank_id",
+                                className: "select-fld",
+                                value: row.bank_id,
+                                dataSource: {
+                                  textField: "bank_name",
+                                  valueField: "hims_d_bank_id",
+                                  data: this.props.banks
+                                },
+                                others: {
+                                  errormessage: "Name - cannot be blank",
+                                  required: true
+                                },
+                                onChange: this.changeGridEditors.bind(this, row)
+                              }}
+                            />
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "bank_short_name",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Short Name" }} />
+                        ),
+                        disabled: true
+                      },
+                      {
+                        fieldName: "account_number",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Account No." }} />
+                        ),
+                        editorTemplate: row => {
+                          return (
+                            <AlagehFormGroup
+                              div={{ className: "col" }}
+                              textBox={{
+                                className: "txt-fld",
+                                name: "account_number",
+                                value: row.account_number,
+                                events: {
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  )
+                                },
+                                others: {
+                                  errormessage:
+                                    "Account Number - cannot be blank",
+                                  required: true
+                                }
+                              }}
+                            />
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "employer_cr_no",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Employer CR-No." }}
+                          />
+                        ),
+                        editorTemplate: row => {
+                          return (
+                            <AlagehFormGroup
+                              div={{ className: "col" }}
+                              textBox={{
+                                className: "txt-fld",
+                                name: "employer_cr_no",
+                                value: row.employer_cr_no,
+                                events: {
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  )
+                                },
+                                others: {
+                                  errormessage:
+                                    "Employeer Cr-No - cannot be blank",
+                                  required: true
+                                }
+                              }}
+                            />
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "payer_cr_no",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Payer CR-No." }} />
+                        ),
+                        editorTemplate: row => {
+                          return (
+                            <AlagehFormGroup
+                              div={{ className: "col" }}
+                              textBox={{
+                                className: "txt-fld",
+                                name: "payer_cr_no",
+                                value: row.payer_cr_no,
+                                events: {
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  )
+                                },
+                                others: {
+                                  errormessage: "Payer Cr-No - cannot be blank",
+                                  required: true
+                                }
+                              }}
+                            />
+                          );
+                        }
+                      }
+                    ]}
+                    keyId=""
+                    dataSource={{
+                      data:
+                        this.props.companyaccount === undefined
+                          ? []
+                          : this.props.companyaccount
+                    }}
+                    filter={true}
+                    isEditable={true}
+                    paging={{ page: 0, rowsPerPage: 10 }}
+                    events={{
+                      onEdit: () => {},
+                      onDelete: this.deleteCompanyAccount.bind(this),
+                      onDone: this.updateCompanyAccount.bind(this)
+                    }}
+                    others={{}}
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

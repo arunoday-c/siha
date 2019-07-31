@@ -44,18 +44,48 @@ let searchData = (req, res, next) => {
     //       "%')";
 
     let whereCondition = " ";
-
     if (
       req.query.fieldName != null &&
       req.query.fieldContains != null &&
       req.query.fieldContains.length > 1
     ) {
-      whereCondition =
-        " and upper(" +
-        req.query.fieldName +
-        ") like  upper('%" +
-        req.query.fieldContains +
-        "%')";
+      const filterBy = req.query.filterBy;
+      switch (filterBy) {
+        case "STW":
+          whereCondition =
+            " and upper(" +
+            req.query.fieldName +
+            ") like  upper('" +
+            req.query.fieldContains +
+            "%')";
+          break;
+
+        case "ENW":
+          whereCondition =
+            " and upper(" +
+            req.query.fieldName +
+            ") like  upper('%" +
+            req.query.fieldContains +
+            "')";
+          break;
+        case "EQU":
+          whereCondition =
+            " and upper(" +
+            req.query.fieldName +
+            ") =  upper('" +
+            req.query.fieldContains +
+            "')";
+          break;
+
+        default:
+          whereCondition =
+            " and upper(" +
+            req.query.fieldName +
+            ") like  upper('%" +
+            req.query.fieldContains +
+            "%')";
+          break;
+      }
     }
 
     const _groupby =

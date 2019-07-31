@@ -11,7 +11,7 @@ import {
   AlgaehOpenContainer
 } from "../../../../utils/GlobalFunctions";
 import { MONTHS } from "../../../../utils/GlobalVariables.json";
-import Employee from "../../../../Search/Employee.json";
+import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import moment from "moment";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import Enumerable from "linq";
@@ -32,7 +32,9 @@ class EmployeeProjectRoster extends Component {
       ).hims_d_hospital_id,
       year: moment().year(),
       month: moment(new Date()).format("M"),
-      formatingString: this.monthFormatorString(moment().startOf("month"))
+      formatingString: this.monthFormatorString(moment().startOf("month")),
+      sub_department_id: null,
+      designation_id: null
     };
     this.getSubDepartments();
     this.getHospitals();
@@ -40,13 +42,13 @@ class EmployeeProjectRoster extends Component {
     // this.getDesignations();
   }
 
-  getDesignations() {
+  getDesignations(sub_department_id) {
     algaehApiCall({
       uri: "/hrsettings/getDesignations",
       method: "GET",
       module: "hrManagement",
       data: {
-        sub_department_id: this.state.sub_department_id
+        sub_department_id: sub_department_id
       },
       onSuccess: res => {
         if (res.data.success) {
@@ -75,7 +77,8 @@ class EmployeeProjectRoster extends Component {
       month: moment(new Date()).format("M"),
       hims_d_employee_id: null,
       emp_name: null,
-      designation_id: null
+      designation_id: null,
+      designations: []
     });
   }
 
@@ -256,15 +259,10 @@ class EmployeeProjectRoster extends Component {
         );
         break;
       case "sub_department_id":
-        this.setState(
-          {
-            [value.name]: value.value
-          },
-          () => {
-            this.getDesignations();
-            // this.getEmployeesForProjectRoster();
-          }
-        );
+        this.getDesignations(value.value);
+        this.setState({
+          [value.name]: value.value
+        });
         break;
 
       default:
@@ -525,37 +523,40 @@ class EmployeeProjectRoster extends Component {
   }
 
   employeeSearch(e) {
-    if (
-      this.state.sub_department_id === null ||
-      this.state.sub_department_id === undefined
-    ) {
-      swalMessage({
-        title: "Please Select a department",
-        type: "warning"
-      });
+    let input_data = "";
+    if (this.state.sub_department_id !== null) {
+      input_data += " sub_department_id=" + this.state.sub_department_id;
+      if (this.state.designation_id !== null) {
+        input_data +=
+          " and employee_designation_id=" + this.state.designation_id;
+      }
     } else {
-      AlgaehSearch({
-        searchGrid: {
-          columns: Employee
-        },
-        searchName: "employee",
-        uri: "/gloabelSearch/get",
-        inputs: " sub_department_id=" + this.state.sub_department_id,
-        onContainsChange: (text, serchBy, callBack) => {
-          callBack(text);
-        },
-        onRowSelect: row => {
-          let arr = this.state.employees;
-          arr.push(row);
-
-          this.setState({
-            hims_d_employee_id: row.hims_d_employee_id,
-            emp_name: row.full_name,
-            employees: arr
-          });
-        }
-      });
+      input_data = "1=1";
     }
+    AlgaehSearch({
+      searchGrid: {
+        columns: spotlightSearch.Employee_details.employee
+      },
+      searchName: "employee",
+      uri: "/gloabelSearch/get",
+      inputs: input_data,
+      onContainsChange: (text, serchBy, callBack) => {
+        callBack(text);
+      },
+      onRowSelect: row => {
+        let arr = this.state.employees;
+        arr.push(row);
+        this.getDesignations(row.sub_department_id);
+
+        this.setState({
+          hims_d_employee_id: row.hims_d_employee_id,
+          emp_name: row.full_name,
+          sub_department_id: row.sub_department_id,
+          designation_id: row.employee_designation_id,
+          employees: arr
+        });
+      }
+    });
   }
 
   getSubDepartments() {
@@ -605,75 +606,57 @@ class EmployeeProjectRoster extends Component {
   }
 
   getEmployeesForProjectRoster() {
-    if (
-      this.state.sub_department_id === null ||
-      this.state.sub_department_id === undefined
-    ) {
-      swalMessage({
-        title: "Please Select a Department to View Roster",
-        type: "warning"
-      });
-    } else if (
-      this.state.designation_id === null ||
-      this.state.designation_id === undefined
-    ) {
-      swalMessage({
-        title: "Please Select a Designation to View Roster",
-        type: "warning"
-      });
-    } else {
-      this.setState({
-        loading: true
-      });
+    this.setState({
+      loading: true
+    });
 
-      let yearMonth = this.state.year + "-" + this.state.month + "-01";
+    let yearMonth = this.state.year + "-" + this.state.month + "-01";
 
-      var fromDate = moment(yearMonth)
-        .startOf("month")
-        .format("YYYY-MM-DD");
-      var toDate = moment(yearMonth)
-        .endOf("month")
-        .format("YYYY-MM-DD");
+    var fromDate = moment(yearMonth)
+      .startOf("month")
+      .format("YYYY-MM-DD");
+    var toDate = moment(yearMonth)
+      .endOf("month")
+      .format("YYYY-MM-DD");
 
-      algaehApiCall({
-        uri: "/projectjobcosting/getEmployeesForProjectRoster",
-        method: "GET",
-        module: "hrManagement",
-        data: {
-          hims_d_employee_id: this.state.hims_d_employee_id,
-          hospital_id: this.state.hospital_id,
-          sub_department_id: this.state.sub_department_id,
-          fromDate: fromDate,
-          toDate: toDate,
-          designation_id: this.state.designation_id
-        },
-        onSuccess: res => {
-          if (res.data.success) {
-            this.setState({
-              employees: res.data.records,
-              loading: false
-            });
-          } else if (!res.data.success) {
-            swalMessage({
-              title: res.data.records.message,
-              type: "warning"
-            });
-            this.setState({
-              loading: false
-            });
-          }
-        },
-        onFailure: err => {
+    algaehApiCall({
+      uri: "/projectjobcosting/getEmployeesForProjectRoster",
+      method: "GET",
+      module: "hrManagement",
+      data: {
+        hims_d_employee_id: this.state.hims_d_employee_id,
+        hospital_id: this.state.hospital_id,
+        sub_department_id: this.state.sub_department_id,
+        fromDate: fromDate,
+        toDate: toDate,
+        designation_id: this.state.designation_id
+      },
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            employees: res.data.records,
+            loading: false
+          });
+        } else if (!res.data.success) {
           swalMessage({
-            title: err.message,
-            type: "error"
+            title: res.data.records.message,
+            type: "warning"
           });
           this.setState({
             loading: false
           });
         }
-      });
-    }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+        this.setState({
+          loading: false
+        });
+      }
+    });
   }
 
   render() {
@@ -768,7 +751,7 @@ class EmployeeProjectRoster extends Component {
 
           <AlagehAutoComplete
             div={{ className: "col form-group" }}
-            label={{ forceLabel: "Select Department", isImp: true }}
+            label={{ forceLabel: "Select Sub Dept.", isImp: true }}
             selector={{
               name: "sub_department_id",
               value: this.state.sub_department_id,
@@ -781,7 +764,9 @@ class EmployeeProjectRoster extends Component {
               onChange: this.dropDownHandler.bind(this),
               onClear: () => {
                 this.setState({
-                  sub_department_id: null
+                  sub_department_id: null,
+                  designation_id: null,
+                  designations: []
                 });
               }
             }}
@@ -789,7 +774,7 @@ class EmployeeProjectRoster extends Component {
 
           <AlagehAutoComplete
             div={{ className: "col form-group" }}
-            label={{ forceLabel: "Select Designation", isImp: true }}
+            label={{ forceLabel: "Select Designation" }}
             selector={{
               name: "designation_id",
               value: this.state.designation_id,
@@ -872,6 +857,7 @@ class EmployeeProjectRoster extends Component {
                     </b>
                   </h3>
                 </div>
+
                 <div className="actions">
                   <span style={{ background: "#3f9c62" }} className="legends">
                     Weekly Off (WO)
@@ -885,6 +871,24 @@ class EmployeeProjectRoster extends Component {
                   <span style={{ background: "#9c7d3f" }} className="legends">
                     Leave Applied (LA)
                   </span>
+                  <a className="btn btn-primary btn-circle active" onClick="">
+                    <i className="fas fa-plus" />
+                  </a>
+                  {/* <EmployeeMaster
+                    HeaderCaption={
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "employee_master",
+                          align: "ltr"
+                        }}
+                      />
+                    }
+                    open={this.state.isOpen}
+                    onClose={this.CloseModel.bind(this)}
+                    editEmployee={this.state.editEmployee}
+                    employeeDetailsPop={this.state.employeeDetailsPop}
+                    employee_status={this.state.employee_status}
+                  /> */}
                 </div>
               </div>
               <div className="portlet-body">
