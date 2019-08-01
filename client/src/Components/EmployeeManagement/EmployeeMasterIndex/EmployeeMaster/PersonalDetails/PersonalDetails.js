@@ -276,6 +276,27 @@ class PersonalDetails extends Component {
                         }
                       }}
                     />
+                    <AlagehFormGroup
+                      div={{ className: "col-4 mandatory" }}
+                      label={{
+                        forceLabel: "Work Mobile Number",
+                        isImp: true
+                      }}
+                      textBox={{
+                        value: this.state.secondary_contact_no,
+                        className: "txt-fld",
+                        name: "secondary_contact_no",
+
+                        events: {
+                          onChange: texthandle.bind(this, this)
+                        },
+                        others: {
+                          tabIndex: "7",
+                          placeholder: "(+968)123-456-78",
+                          type: "number"
+                        }
+                      }}
+                    />
                     {/* <AlagehFormGroup
                       div={{ className: "col-5" }}
                       label={{
@@ -307,6 +328,28 @@ class PersonalDetails extends Component {
                         value: this.state.email,
                         className: "txt-fld",
                         name: "email",
+
+                        events: {
+                          onChange: texthandle.bind(this, this)
+                        },
+                        others: {
+                          tabIndex: "8",
+                          placeholder: "Enter Email Address",
+                          type: "email"
+                        }
+                      }}
+                    />
+
+                    <AlagehFormGroup
+                      div={{ className: "col-5" }}
+                      label={{
+                        forceLabel: "Work Email",
+                        isImp: false
+                      }}
+                      textBox={{
+                        value: this.state.work_email,
+                        className: "txt-fld",
+                        name: "work_email",
 
                         events: {
                           onChange: texthandle.bind(this, this)

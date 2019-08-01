@@ -360,7 +360,7 @@ class EmployeeMasterIndex extends Component {
                     //   }
                     // },
                     {
-                      fieldName: "primary_contact_no",
+                      fieldName: "secondary_contact_no",
                       label: (
                         <AlgaehLabel label={{ fieldName: "contact_no" }} />
                       ),
@@ -371,7 +371,7 @@ class EmployeeMasterIndex extends Component {
                       }
                     },
                     {
-                      fieldName: "email",
+                      fieldName: "work_email",
                       label: <AlgaehLabel label={{ fieldName: "email" }} />,
                       others: {
                         maxWidth: 150,

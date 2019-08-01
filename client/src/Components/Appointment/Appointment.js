@@ -1,4 +1,9 @@
 import React, { PureComponent } from "react";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { AlgaehActions } from "../../actions/algaehActions";
+
 import "./appointment.css";
 import moment from "moment";
 import {
@@ -50,6 +55,15 @@ class Appointment extends PureComponent {
     this.getDoctorsAndDepts();
     this.getAppointmentStatus();
     this.getTitles();
+    this.props.getVisittypes({
+      uri: "/visitType/get",
+      module: "masterSettings",
+      method: "GET",
+      redux: {
+        type: "VISITTYPE_GET_DATA",
+        mappingName: "visittypes"
+      }
+    });
   }
 
   restoreOldState() {
@@ -1800,4 +1814,24 @@ class Appointment extends PureComponent {
   }
 }
 
-export default Appointment;
+function mapStateToProps(state) {
+  return {
+    visittypes: state.visittypes
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      getVisittypes: AlgaehActions
+    },
+    dispatch
+  );
+}
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Appointment)
+);
