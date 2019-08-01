@@ -873,7 +873,10 @@ class EmployeeProjectRoster extends Component {
           <div className="col-12">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
-                <div className="caption">
+                <div
+                  className="caption"
+                  style={{ borderRight: " 1px solid #000", paddingRight: 25 }}
+                >
                   <h3 className="caption-subject">
                     Project Rostering List :{" "}
                     <b style={{ color: "#33b8bc" }}>
@@ -881,7 +884,6 @@ class EmployeeProjectRoster extends Component {
                     </b>
                   </h3>
                 </div>
-
                 <div className="actions">
                   <span style={{ background: "#3f9c62" }} className="legends">
                     Weekly Off (WO)
@@ -895,12 +897,7 @@ class EmployeeProjectRoster extends Component {
                   <span style={{ background: "#9c7d3f" }} className="legends">
                     Leave Applied (LA)
                   </span>
-                  <a
-                    className="btn btn-primary btn-circle active"
-                    onClick={this.showAnother}
-                  >
-                    <i className="fas fa-plus" />
-                  </a>
+
                   {/* <EmployeeMaster
                     HeaderCaption={
                       <AlgaehLabel
@@ -916,7 +913,14 @@ class EmployeeProjectRoster extends Component {
                     employeeDetailsPop={this.state.employeeDetailsPop}
                     employee_status={this.state.employee_status}
                   /> */}
-                </div>
+                </div>{" "}
+                <button
+                  className="btn btn-primary"
+                  style={{ marginLeft: 25 }}
+                  onClick={this.showAnother}
+                >
+                  Assign to all
+                </button>
               </div>
               <div className="portlet-body">
                 <div className="col-12" id="projectRosterTable">
@@ -943,11 +947,11 @@ class EmployeeProjectRoster extends Component {
                             <tr key={row.hims_d_employee_id}>
                               {/* <td>{row.employee_code}</td> */}
                               <td>
-                                {row.employee_name}
-                                <br />
-                                {row.designation}
+                                <b> {row.employee_name}</b>
                                 <br />
                                 {row.employee_code}
+                                <br />
+                                <small> {row.designation}</small>
                               </td>
 
                               {this.plotEmployeeDates(

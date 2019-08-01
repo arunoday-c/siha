@@ -206,6 +206,7 @@ class ProjectEmpAssign extends Component {
     return (
       <AlgaehModalPopUp
         class="projectAssignModal"
+        title="Project Assign"
         openPopup={this.props.open}
         events={{
           onClose: this.props.onClose
