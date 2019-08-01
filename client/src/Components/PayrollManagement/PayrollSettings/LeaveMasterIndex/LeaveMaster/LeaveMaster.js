@@ -165,7 +165,7 @@ class LeaveMaster extends Component {
               title: "Leave Added Successfully",
               type: "success"
             });
-            this.clearState();
+            this.clearTabState();
             document.getElementById("lmi-btn").click();
           }
         },
@@ -465,9 +465,9 @@ class LeaveMaster extends Component {
           leave_type: null,
           leave_category: null,
           calculation_type: null,
-          encashment_percentage: "",
+          encashment_percentage: null,
           leave_carry_forward: "",
-          carry_forward_percentage: "",
+          carry_forward_percentage: null,
           religion_required: "",
           religion_id: null,
           holiday_reimbursement: "",
@@ -550,6 +550,11 @@ class LeaveMaster extends Component {
     );
   };
 
+  clearAndClose = () => {
+    this.clearTabState();
+    this.props.onClose();
+  };
+
   updateLeaveDetail(data) {}
   updateLeaveEncash(data) {}
   updateLeaveRule(data) {}
@@ -561,7 +566,7 @@ class LeaveMaster extends Component {
           openPopup={this.props.open}
           title="Leave Master"
           events={{
-            onClose: this.props.onClose
+            onClose: this.clearAndClose
           }}
         >
           <div className=" leaveMasterMainPage">

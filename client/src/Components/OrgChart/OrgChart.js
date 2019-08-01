@@ -22,9 +22,16 @@ export default class OrgChart extends Component {
     }
     e.currentTarget.classList.add("active");
     var specified = e.currentTarget.getAttribute("algaehtabs");
-    this.setState({
-      pageDisplay: specified
-    });
+    this.setState(
+      {
+        pageDisplay: specified
+      },
+      () => {
+        if (this.state.pageDisplay !== "Department View") {
+          this.clearState("allDepartments");
+        }
+      }
+    );
   }
 
   getAllDepartments() {
@@ -51,9 +58,9 @@ export default class OrgChart extends Component {
       uri: "/department/get/subdepartment",
       method: "GET",
       module: "masterSettings",
-      data: {
-        department_id: id
-      },
+      // data: {
+      //   department_id: id
+      // },
       onSuccess: res => {
         if (res.data.success) {
           this.setState({ subDept: res.data.records });
@@ -68,9 +75,9 @@ export default class OrgChart extends Component {
     });
   }
 
-  clearSub = () => {
+  clearState = name => {
     this.setState({
-      subDept: []
+      [name]: []
     });
   };
 
@@ -116,7 +123,7 @@ export default class OrgChart extends Component {
             <DepartmentView
               dept={this.state.allDepartments}
               subDept={this.state.subDept}
-              clearSub={this.clearSub}
+              clearState={this.clearState}
               getSubDept={this.getSubForDept.bind(this)}
               getDept={this.getAllDepartments.bind(this)}
             />

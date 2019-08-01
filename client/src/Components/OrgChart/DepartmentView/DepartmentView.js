@@ -10,7 +10,8 @@ export default class DepartmentView extends Component {
     this.state = {
       dept: [],
       subDept: [],
-      toggleDept: false
+      toggleDept: false,
+      toggleSubDept: false
     };
   }
 
@@ -28,16 +29,64 @@ export default class DepartmentView extends Component {
     }
   }
 
+  renderBlocks = (data, clickMethod) => {
+    let funcExist;
+    if (clickMethod && typeof clickMethod === "function") {
+      funcExist = true;
+    }
+    return (
+      <CSSTransition
+        in={data.condition}
+        appear={false}
+        classNames={{
+          enterActive: "eachChild animated slideInLeft faster",
+          enterDone: "eachChild",
+          exitActive: "eachChild animated slideOutLeft faster",
+          exitDone: "eachChild"
+        }}
+        unmountOnExit
+        timeout={500}
+        key={data.id}
+      >
+        <li
+          id="sub-child"
+          onClick={e => {
+            funcExist && clickMethod(data.id, e);
+          }}
+        >
+          <span className="childCount">{data.count}</span>
+          <span className="imgSection">
+            <i>{data.name.substring(0, 2).toUpperCase()}</i>
+          </span>
+          <span className="contentSection">
+            <h1>{data.name}</h1>
+          </span>
+        </li>
+      </CSSTransition>
+    );
+  };
+
+  removeClassFrom = name => {
+    name.forEach(el => {
+      if (el.classList.contains("clickedLi")) {
+        el.classList.remove("clickedLi");
+      }
+    });
+  };
+
   onBranchClick = e => {
     const { dept } = this.state;
     let check = e.currentTarget.classList.contains("clickedLi");
     if (check) {
       e.currentTarget.classList.remove("clickedLi");
       this.height = "0";
-      this.props.clearSub();
-      this.setState({
-        toggleDept: false
-      });
+      this.setState(
+        {
+          toggleDept: false,
+          toggleSubDept: false
+        },
+        () => this.props.clearState("subDept")
+      );
     } else if (Array.isArray(dept) && dept.length !== 0) {
       e.currentTarget.classList.add("clickedLi");
       this.setState({
@@ -54,17 +103,16 @@ export default class DepartmentView extends Component {
     if (check) {
       e.currentTarget.classList.remove("clickedLi");
       this.height = "0";
-      this.props.clearSub();
+      this.setState({
+        toggleSubDept: false
+      });
     } else {
       const els = document.querySelectorAll("#sub-child");
-      els.forEach(el => {
-        if (el.classList.contains("clickedLi")) {
-          el.classList.remove("clickedLi");
-        }
-      });
+      this.removeClassFrom(els);
       e.currentTarget.classList.add("clickedLi");
       this.height = "85vh";
       this.props.getSubDept(id);
+      this.setState({ toggleSubDept: true });
     }
   };
 
@@ -75,6 +123,7 @@ export default class DepartmentView extends Component {
       <div className="DepartmentOrgView">
         <div className="row">
           <div className="col-12">
+            {/* branch */}
             <ul className="eachShelf animated slideInLeft faster">
               <li className="eachChild" onClick={this.onBranchClick}>
                 <span className="childCount">{count}</span>
@@ -86,12 +135,14 @@ export default class DepartmentView extends Component {
                 </span>
               </li>
             </ul>
+
+            {/* Department */}
             <TransitionGroup component={null}>
               <ul className="eachShelf">
-                {//toggleDept?
-                dept &&
+                {dept &&
                   dept.map(item => (
                     <CSSTransition
+                      in={toggleDept}
                       appear={false}
                       classNames={{
                         enterActive: "eachChild animated slideInLeft faster",
@@ -105,7 +156,6 @@ export default class DepartmentView extends Component {
                     >
                       <li
                         id="sub-child"
-                        // className="eachChild"
                         onClick={e =>
                           this.onDeptClick(item.hims_d_department_id, e)
                         }
@@ -121,39 +171,49 @@ export default class DepartmentView extends Component {
                         </span>
                       </li>
                     </CSSTransition>
-                  ))
-                //: null
-                }
+                  ))}
               </ul>
             </TransitionGroup>
-            <ul
-              className="eachShelf"
-              style={{
-                minHeight: this.height
-              }}
-            >
-              {toggleDept
-                ? subDept &&
+
+            {/* Sub departments */}
+            <TransitionGroup component={null}>
+              <ul
+                className="eachShelf"
+                style={{
+                  minHeight: this.height
+                }}
+              >
+                {subDept &&
                   subDept.map(item => (
-                    <li
+                    <CSSTransition
+                      in={this.state.toggleSubDept}
+                      appear={false}
+                      classNames={{
+                        enterActive: "eachChild animated slideInLeft faster",
+                        enterDone: "eachChild",
+                        exitActive: "eachChild animated slideOutLeft faster",
+                        exitDone: "eachChild"
+                      }}
+                      unmountOnExit
+                      timeout={500}
                       key={item.hims_d_sub_department_id}
-                      className="eachChild animated slideInLeft faster"
                     >
-                      {/* <span className="childCount">121</span> */}
-                      <span className="imgSection">
-                        <i>
-                          {item.sub_department_name
-                            .substring(0, 2)
-                            .toUpperCase()}
-                        </i>
-                      </span>
-                      <span className="contentSection">
-                        <h1>{item.sub_department_name}</h1>
-                      </span>
-                    </li>
-                  ))
-                : null}
-            </ul>
+                      <li>
+                        <span className="imgSection">
+                          <i>
+                            {item.sub_department_name
+                              .substring(0, 2)
+                              .toUpperCase()}
+                          </i>
+                        </span>
+                        <span className="contentSection">
+                          <h1>{item.sub_department_name}</h1>
+                        </span>
+                      </li>
+                    </CSSTransition>
+                  ))}
+              </ul>
+            </TransitionGroup>
           </div>
         </div>
       </div>
