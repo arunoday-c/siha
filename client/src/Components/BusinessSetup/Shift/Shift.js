@@ -900,6 +900,9 @@ class Shift extends Component {
                   }}
                   filter={true}
                   isEditable={true}
+                  actions={{
+                    allowDelete: false
+                  }}
                   filter={true}
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
