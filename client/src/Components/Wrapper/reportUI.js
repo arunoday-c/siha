@@ -332,6 +332,7 @@ export default class ReportUI extends Component {
     if (_hasEvents !== undefined) {
       if (_hasEvents.onChange !== undefined) {
         let that = this;
+
         _hasEvents.onChange(this, e, options => {
           that.setState(options);
         });
@@ -480,6 +481,7 @@ export default class ReportUI extends Component {
           _controls.push(
             <AlagehAutoComplete
               key={i}
+              compireoldprops={true}
               div={{ className: _className }}
               label={{
                 fieldName: _param.name,

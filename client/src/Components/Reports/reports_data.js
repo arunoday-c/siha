@@ -71,7 +71,9 @@ const Hims_Reports = [
             events: {
               onChange: (reportState, currentEvent) => {
                 //provider_id_list CONTROL NAME AND APPEND BY _LIST
+
                 reportState.setState({
+                  [currentEvent.name]: currentEvent.value,
                   sub_department_id: currentEvent.value,
                   provider_id_list: currentEvent.selected.doctors
                 });

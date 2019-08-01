@@ -473,21 +473,27 @@ module.exports = {
         sendingObject.card_amount = 0;
         sendingObject.cheque_amount = 0;
 
-        sendingObject.patient_payable = parseFloat(
-          sendingObject.patient_payable
-        ).toFixed(decimal_places);
-        sendingObject.total_tax = parseFloat(sendingObject.total_tax).toFixed(
+        sendingObject.patient_payable = utilities.decimalPoints(
+          sendingObject.patient_payable,
           decimal_places
         );
-        sendingObject.patient_tax = parseFloat(
-          sendingObject.patient_tax
-        ).toFixed(decimal_places);
-        sendingObject.company_tax = parseFloat(
-          sendingObject.company_tax
-        ).toFixed(decimal_places);
-        sendingObject.sec_company_tax = parseFloat(
-          sendingObject.sec_company_tax
-        ).toFixed(decimal_places);
+        sendingObject.total_tax = utilities.decimalPoints(
+          sendingObject.total_tax,
+          decimal_places
+        );
+
+        sendingObject.patient_tax = utilities.decimalPoints(
+          sendingObject.patient_tax,
+          decimal_places
+        );
+        sendingObject.company_tax = utilities.decimalPoints(
+          sendingObject.company_tax,
+          decimal_places
+        );
+        sendingObject.sec_company_tax = utilities.decimalPoints(
+          sendingObject.sec_company_tax,
+          decimal_places
+        );
       } else {
         //Reciept
 
@@ -500,8 +506,8 @@ module.exports = {
             sendingObject.sheet_discount_percentage =
               (inputParam.sheet_discount_amount / inputParam.gross_total) * 100;
             sendingObject.sheet_discount_percentage = parseFloat(
-              sendingObject.sheet_discount_percentage
-            ).toFixed(3);
+              parseFloat(sendingObject.sheet_discount_percentage).toFixed(3)
+            );
             sendingObject.sheet_discount_amount =
               inputParam.sheet_discount_amount;
           } else if (inputParam.sheet_discount_percentage > 0) {
@@ -512,25 +518,39 @@ module.exports = {
               100;
           }
 
-          sendingObject.sheet_discount_amount = parseFloat(
-            sendingObject.sheet_discount_amount
-          ).toFixed(decimal_places);
-          sendingObject.sheet_discount_percentage = parseFloat(
-            sendingObject.sheet_discount_percentage
-          ).toFixed(decimal_places);
+          sendingObject.sheet_discount_amount = utilities.decimalPoints(
+            sendingObject.sheet_discount_amount,
+            decimal_places
+          );
+
+          sendingObject.sheet_discount_percentage = utilities.decimalPoints(
+            sendingObject.sheet_discount_percentage,
+            decimal_places
+          );
 
           sendingObject.net_amount =
-            inputParam.gross_total - sendingObject.sheet_discount_amount;
+            parseFloat(inputParam.gross_total) -
+            sendingObject.sheet_discount_amount;
+
+          sendingObject.net_amount = utilities.decimalPoints(
+            sendingObject.net_amount,
+            decimal_places
+          );
 
           if (inputParam.credit_amount > 0) {
             sendingObject.receiveable_amount =
               sendingObject.net_amount -
-              inputParam.advance_adjust -
-              inputParam.credit_amount;
+              parseFloat(inputParam.advance_adjust) -
+              parseFloat(inputParam.credit_amount);
           } else {
             sendingObject.receiveable_amount =
-              sendingObject.net_amount - inputParam.advance_adjust;
+              sendingObject.net_amount - parseFloat(inputParam.advance_adjust);
           }
+
+          sendingObject.receiveable_amount = utilities.decimalPoints(
+            sendingObject.receiveable_amount,
+            decimal_places
+          );
 
           sendingObject.cash_amount = sendingObject.receiveable_amount;
           sendingObject.card_amount = 0;
@@ -1758,21 +1778,29 @@ module.exports = {
                   //   unit_cost = unit_cost * conversion_factor;
                   // }
                   gross_amount = quantity * unit_cost;
-
+                  gross_amount = utilities.decimalPoints(
+                    gross_amount,
+                    decimal_places
+                  );
                   if (discount_amout > 0) {
                     discount_percentage = (discount_amout / gross_amount) * 100;
                   } else if (discount_percentage > 0) {
                     discount_amout = (gross_amount * discount_percentage) / 100;
-                    discount_amout = parseFloat(discount_amout).toFixed(
+                    discount_amout = utilities.decimalPoints(
+                      discount_amout,
                       decimal_places
                     );
                   }
                   net_amout = gross_amount - discount_amout;
-
+                  net_amout = utilities.decimalPoints(
+                    net_amout,
+                    decimal_places
+                  );
                   //Patient And Company
                   if (policydtls.copay_status == "Y") {
                     copay_amount = policydtls.copay_amt;
-                    copay_percentage = (copay_amount / net_amout) * 100;
+                    copay_percentage =
+                      (parseFloat(copay_amount) / net_amout) * 100;
                   } else {
                     // utilities
                     //   .logger()
@@ -1864,29 +1892,59 @@ module.exports = {
 
                     deductable_amount =
                       (net_amout * deductable_percentage) / 100;
+
+                    deductable_amount = utilities.decimalPoints(
+                      deductable_amount,
+                      decimal_places
+                    );
                     after_dect_amout = net_amout - deductable_amount;
                     copay_amount = (after_dect_amout * copay_percentage) / 100;
-                    copay_amount = parseFloat(copay_amount).toFixed(
+                    copay_amount = utilities.decimalPoints(
+                      copay_amount,
                       decimal_places
                     );
                   }
+                  utilities
+                    .logger()
+                    .log("service_type_id: ", typeof patient_resp);
+                  utilities
+                    .logger()
+                    .log("service_type_id: ", typeof copay_amount);
+                  utilities
+                    .logger()
+                    .log("service_type_id: ", typeof deductable_amount);
 
+                  // console.log(typeof patient_resp);
+                  // console.log(typeof copay_amount);
+                  // console.log(typeof deductable_amount);
                   patient_resp = copay_amount + deductable_amount;
+
+                  utilities
+                    .logger()
+                    .log("service_type_id: ", typeof patient_resp);
+
                   comapany_resp = net_amout - patient_resp;
-                  comapany_resp = parseFloat(comapany_resp).toFixed(
+                  comapany_resp = utilities.decimalPoints(
+                    comapany_resp,
                     decimal_places
                   );
+                  utilities
+                    .logger()
+                    .log("service_type_id: ", typeof comapany_resp);
+
                   if (vat_applicable == "Y" && records.vat_applicable == "Y") {
                     patient_tax = (patient_resp * records.vat_percent) / 100;
 
-                    patient_tax = parseFloat(patient_tax).toFixed(
+                    patient_tax = utilities.decimalPoints(
+                      patient_tax,
                       decimal_places
                     );
                   }
 
                   if (records.vat_applicable == "Y") {
                     company_tax = (comapany_resp * records.vat_percent) / 100;
-                    company_tax = parseFloat(company_tax).toFixed(
+                    company_tax = utilities.decimalPoints(
+                      company_tax,
                       decimal_places
                     );
                   }
@@ -1901,13 +1959,16 @@ module.exports = {
                     patient_resp = patient_resp + diff_val;
                     comapany_resp = comapany_resp - diff_val;
 
-                    patient_payable = parseFloat(patient_payable).toFixed(
+                    patient_payable = utilities.decimalPoints(
+                      patient_payable,
                       decimal_places
                     );
-                    patient_resp = parseFloat(patient_resp).toFixed(
+                    patient_resp = utilities.decimalPoints(
+                      patient_resp,
                       decimal_places
                     );
-                    comapany_resp = parseFloat(comapany_resp).toFixed(
+                    comapany_resp = utilities.decimalPoints(
+                      comapany_resp,
                       decimal_places
                     );
                   }
@@ -1915,14 +1976,12 @@ module.exports = {
                   company_payble = net_amout - patient_resp;
 
                   company_payble = company_payble + company_tax;
-                  company_payble = parseFloat(company_payble).toFixed(
-                    decimal_places
-                  );
 
-                  preapp_limit_amount = policydtls.preapp_limit;
+                  preapp_limit_amount = parseFloat(policydtls.preapp_limit);
                   if (policydtls.preapp_limit !== 0) {
-                    approval_amt = approval_amt + company_payble;
-                    if (approval_amt > policydtls.preapp_limit) {
+                    approval_amt =
+                      parseFloat(approval_amt) + parseFloat(company_payble);
+                    if (approval_amt > preapp_limit_amount) {
                       preapp_limit_exceed = "Y";
                     }
                   }
@@ -1946,14 +2005,17 @@ module.exports = {
                   // }
                   gross_amount = quantity * unit_cost;
 
+                  gross_amount = utilities.decimalPoints(
+                    gross_amount,
+                    decimal_places
+                  );
+
                   if (discount_amout > 0) {
                     discount_percentage = (discount_amout / gross_amount) * 100;
-                    discount_percentage = parseFloat(
-                      discount_percentage
-                    ).toFixed(decimal_places);
                   } else if (discount_percentage > 0) {
                     discount_amout = (gross_amount * discount_percentage) / 100;
-                    discount_amout = parseFloat(discount_amout).toFixed(
+                    discount_amout = utilities.decimalPoints(
+                      discount_amout,
                       decimal_places
                     );
                   }
@@ -1962,7 +2024,9 @@ module.exports = {
 
                   if (vat_applicable == "Y" && records.vat_applicable == "Y") {
                     patient_tax = (patient_resp * records.vat_percent) / 100;
-                    patient_tax = parseFloat(patient_tax).toFixed(
+
+                    patient_tax = utilities.decimalPoints(
+                      patient_tax,
                       decimal_places
                     );
                     total_tax = patient_tax;
@@ -1970,9 +2034,6 @@ module.exports = {
 
                   // patient_payable = net_amout + patient_tax;
                   patient_payable = patient_resp + patient_tax;
-                  patient_payable = parseFloat(patient_payable).toFixed(
-                    decimal_places
-                  );
                 }
 
                 // }
@@ -2203,6 +2264,7 @@ module.exports = {
   }
 };
 
+//Not in Use
 function getBillDetailsFunctionality(req, res, next, resolve) {
   const _mysql = new algaehMysql();
   try {

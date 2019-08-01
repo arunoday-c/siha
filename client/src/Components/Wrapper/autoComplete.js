@@ -67,12 +67,19 @@ class AutoComplete extends PureComponent {
         loader: false
       });
 
-      // if (props.selector.value !== this.props.selector.value) {
-      this.setState({
-        value: props.selector.value,
-        loader: false
-      });
-      //}
+      if (props.compireoldprops === true) {
+        if (props.selector.value !== this.props.selector.value) {
+          this.setState({
+            value: props.selector.value,
+            loader: false
+          });
+        }
+      } else {
+        this.setState({
+          value: props.selector.value,
+          loader: false
+        });
+      }
     }
   }
 
@@ -280,7 +287,7 @@ class AutoComplete extends PureComponent {
         ? { onClose: this.props.selector.onClose }
         : {};
     const referenceValue = {
-      referencevalue: this.state.value === undefined ? "" : this.state.value
+      referencevalue: this.state.value
     };
 
     return (
