@@ -265,250 +265,275 @@ class CategorySpeciality extends Component {
   render() {
     return (
       <div className="cat_spl_map">
-        <div className="col-lg-12">
-          <div className="row">
-            <AlagehAutoComplete
-              div={{ className: "col" }}
-              label={{
-                fieldName: "speciality",
-                isImp: true
-              }}
-              selector={{
-                name: "speciality_id",
-                className: "select-fld",
-                value: this.state.speciality_id,
-                dataSource: {
-                  textField: "speciality_name",
-                  valueField: "hims_d_employee_speciality_id",
-                  data: this.state.specialities
-                },
-                onChange: this.handleDropDown.bind(this)
-              }}
-            />
+        <div className="row inner-top-search">
+          <AlagehAutoComplete
+            div={{ className: "col form-group mandatory" }}
+            label={{
+              fieldName: "speciality",
+              isImp: true
+            }}
+            selector={{
+              name: "speciality_id",
+              className: "select-fld",
+              value: this.state.speciality_id,
+              dataSource: {
+                textField: "speciality_name",
+                valueField: "hims_d_employee_speciality_id",
+                data: this.state.specialities
+              },
+              onChange: this.handleDropDown.bind(this)
+            }}
+          />
 
-            <AlagehAutoComplete
-              div={{ className: "col" }}
-              label={{
-                fieldName: "category",
-                isImp: true
-              }}
-              selector={{
-                name: "category_id",
-                className: "select-fld",
-                value: this.state.category_id,
-                dataSource: {
-                  textField: "employee_category_name",
-                  valueField: "hims_employee_category_id",
-                  data: this.state.categories
-                },
-                onChange: this.handleDropDown.bind(this)
-              }}
-            />
+          <AlagehAutoComplete
+            div={{ className: "col form-group mandatory" }}
+            label={{
+              fieldName: "category",
+              isImp: true
+            }}
+            selector={{
+              name: "category_id",
+              className: "select-fld",
+              value: this.state.category_id,
+              dataSource: {
+                textField: "employee_category_name",
+                valueField: "hims_employee_category_id",
+                data: this.state.categories
+              },
+              onChange: this.handleDropDown.bind(this)
+            }}
+          />
 
-            <AlagehFormGroup
-              div={{ className: "col" }}
-              label={{
-                fieldName: "description",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "description",
-                value: this.state.description,
-                events: {
-                  onChange: this.changeTexts.bind(this)
-                }
-              }}
-            />
+          <AlagehFormGroup
+            div={{ className: "col form-group mandatory" }}
+            label={{
+              fieldName: "description",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "description",
+              value: this.state.description,
+              events: {
+                onChange: this.changeTexts.bind(this)
+              }
+            }}
+          />
 
-            <AlgaehDateHandler
-              div={{ className: "col" }}
-              label={{
-                fieldName: "effective_start_date",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "effective_start_date"
-              }}
-              // maxDate={new Date()}
-              events={{
-                onChange: selDate => {
-                  this.setState({
-                    effective_start_date: selDate
-                  });
-                }
-              }}
-              value={this.state.effective_start_date}
-            />
+          <AlgaehDateHandler
+            div={{ className: "col form-group mandatory" }}
+            label={{
+              fieldName: "effective_start_date",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "effective_start_date"
+            }}
+            // maxDate={new Date()}
+            events={{
+              onChange: selDate => {
+                this.setState({
+                  effective_start_date: selDate
+                });
+              }
+            }}
+            value={this.state.effective_start_date}
+          />
 
-            <div className="col">
-              <button
-                onClick={this.addCategorySpecialityMappings.bind(this)}
-                style={{ marginTop: 21 }}
-                className="btn btn-primary"
-              >
-                Add to list
-              </button>
-            </div>
+          <div className="col">
+            <button
+              onClick={this.addCategorySpecialityMappings.bind(this)}
+              style={{ marginTop: 21 }}
+              className="btn btn-primary"
+            >
+              Add to list
+            </button>
           </div>
-          <div data-validate="currencyDiv" id="currencyGridCntr">
-            <AlgaehDataGrid
-              datavalidate="data-validate='currencyDiv'"
-              id="currency-grid"
-              columns={[
-                {
-                  fieldName: "action",
-                  label: <AlgaehLabel label={{ fieldName: "action" }} />,
-                  displayTemplate: row => {
-                    return (
-                      <span>
-                        <i
-                          className="fas fa-trash-alt"
-                          aria-hidden="true"
-                          onClick={this.deleteCategorySpecialityMap.bind(
-                            this,
-                            row
-                          )}
-                        />
-                      </span>
-                    );
-                  },
-                  others: {
-                    maxWidth: 50,
-                    resizable: false,
-                    filterable: false,
-                  },
-                  
-                },
-                {
-                  fieldName: "speciality_id",
-                  label: <AlgaehLabel label={{ fieldName: "speciality" }} />,
-                  displayTemplate: row => {
-                    let x = Enumerable.from(this.state.specialities)
-                      .where(
-                        w =>
-                          w.hims_d_employee_speciality_id === row.speciality_id
-                      )
-                      .firstOrDefault();
+        </div>
+        <div className="portlet portlet-bordered margin-bottom-15">
+          <div className="portlet-body">
+            <div className="row">
+              <div className="col-lg-12">
+                <div data-validate="currencyDiv" id="categorySpecMapGridCntr">
+                  <AlgaehDataGrid
+                    datavalidate="data-validate='currencyDiv'"
+                    id="categorySpecMapGrid"
+                    columns={[
+                      {
+                        fieldName: "action",
+                        label: <AlgaehLabel label={{ fieldName: "action" }} />,
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              <i
+                                className="fas fa-trash-alt"
+                                aria-hidden="true"
+                                onClick={this.deleteCategorySpecialityMap.bind(
+                                  this,
+                                  row
+                                )}
+                              />
+                            </span>
+                          );
+                        },
+                        others: {
+                          maxWidth: 50,
+                          resizable: false,
+                          filterable: false
+                        }
+                      },
+                      {
+                        fieldName: "speciality_id",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "speciality" }} />
+                        ),
+                        displayTemplate: row => {
+                          let x = Enumerable.from(this.state.specialities)
+                            .where(
+                              w =>
+                                w.hims_d_employee_speciality_id ===
+                                row.speciality_id
+                            )
+                            .firstOrDefault();
 
-                    return (
-                      <span>{x !== undefined ? x.speciality_name : ""}</span>
-                    );
-                  },
-                  editorTemplate: row => {
-                    let x = Enumerable.from(this.state.specialities)
-                      .where(
-                        w =>
-                          w.hims_d_employee_speciality_id === row.speciality_id
-                      )
-                      .firstOrDefault();
+                          return (
+                            <span>
+                              {x !== undefined ? x.speciality_name : ""}
+                            </span>
+                          );
+                        },
+                        editorTemplate: row => {
+                          let x = Enumerable.from(this.state.specialities)
+                            .where(
+                              w =>
+                                w.hims_d_employee_speciality_id ===
+                                row.speciality_id
+                            )
+                            .firstOrDefault();
 
-                    return (
-                      <span>{x !== undefined ? x.speciality_name : ""}</span>
-                    );
-                  }
-                },
-                {
-                  fieldName: "category_id",
-                  label: <AlgaehLabel label={{ fieldName: "category" }} />,
-                  displayTemplate: row => {
-                    let x = Enumerable.from(this.state.categories)
-                      .where(
-                        w => w.hims_employee_category_id === row.category_id
-                      )
-                      .firstOrDefault();
+                          return (
+                            <span>
+                              {x !== undefined ? x.speciality_name : ""}
+                            </span>
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "category_id",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "category" }} />
+                        ),
+                        displayTemplate: row => {
+                          let x = Enumerable.from(this.state.categories)
+                            .where(
+                              w =>
+                                w.hims_employee_category_id === row.category_id
+                            )
+                            .firstOrDefault();
 
-                    return (
-                      <span>
-                        {x !== undefined ? x.employee_category_name : ""}
-                      </span>
-                    );
-                  },
-                  editorTemplate: row => {
-                    let x = Enumerable.from(this.state.categories)
-                      .where(
-                        w => w.hims_employee_category_id === row.category_id
-                      )
-                      .firstOrDefault();
+                          return (
+                            <span>
+                              {x !== undefined ? x.employee_category_name : ""}
+                            </span>
+                          );
+                        },
+                        editorTemplate: row => {
+                          let x = Enumerable.from(this.state.categories)
+                            .where(
+                              w =>
+                                w.hims_employee_category_id === row.category_id
+                            )
+                            .firstOrDefault();
 
-                    return (
-                      <span>
-                        {x !== undefined ? x.employee_category_name : ""}
-                      </span>
-                    );
-                  }
-                },
+                          return (
+                            <span>
+                              {x !== undefined ? x.employee_category_name : ""}
+                            </span>
+                          );
+                        }
+                      },
 
-                {
-                  fieldName: "description",
-                  label: <AlgaehLabel label={{ fieldName: "description" }} />,
-                  editorTemplate: row => {
-                    return (
-                      <AlagehFormGroup
-                        div={{ className: "col" }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "description",
-                          value: row.description,
-                          events: {
-                            onChange: this.changeGridEditors.bind(this, row)
-                          },
-                          others: {
-                            errormessage: "Description - cannot be blank",
-                            required: true
-                          }
-                        }}
-                      />
-                    );
-                  }
-                },
+                      {
+                        fieldName: "description",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "description" }} />
+                        ),
+                        editorTemplate: row => {
+                          return (
+                            <AlagehFormGroup
+                              div={{ className: "col" }}
+                              textBox={{
+                                className: "txt-fld",
+                                name: "description",
+                                value: row.description,
+                                events: {
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  )
+                                },
+                                others: {
+                                  errormessage: "Description - cannot be blank",
+                                  required: true
+                                }
+                              }}
+                            />
+                          );
+                        }
+                      },
 
-                {
-                  fieldName: "category_speciality_status",
-                  label: <AlgaehLabel label={{ fieldName: "status" }} />,
-                  displayTemplate: row => {
-                    return row.category_speciality_status === "A"
-                      ? "Active"
-                      : "Inactive";
-                  },
-                  editorTemplate: row => {
-                    return (
-                      <AlagehAutoComplete
-                        div={{}}
-                        selector={{
-                          name: "category_speciality_status",
-                          className: "select-fld",
-                          value: row.category_speciality_status,
-                          dataSource: {
-                            textField: "name",
-                            valueField: "value",
-                            data: GlobalVariables.FORMAT_STATUS
-                          },
-                          others: {
-                            errormessage: "Status - cannot be blank",
-                            required: true
-                          },
-                          onChange: this.changeGridEditors.bind(this, row)
-                        }}
-                      />
-                    );
-                  }
-                }
-              ]}
-              keyId="hims_d_counter_id"
-              dataSource={{
-                data: this.state.cat_specialities
-              }}
-              filter={true}
-              isEditable={false}
-              paging={{ page: 0, rowsPerPage: 10 }}
-              events={{
-                onEdit: () => {},
-                onDelete: this.deleteCategorySpecialityMap.bind(this),
-                onDone: () => {}
-              }}
-            />
+                      {
+                        fieldName: "category_speciality_status",
+                        label: <AlgaehLabel label={{ fieldName: "status" }} />,
+                        displayTemplate: row => {
+                          return row.category_speciality_status === "A"
+                            ? "Active"
+                            : "Inactive";
+                        },
+                        editorTemplate: row => {
+                          return (
+                            <AlagehAutoComplete
+                              div={{}}
+                              selector={{
+                                name: "category_speciality_status",
+                                className: "select-fld",
+                                value: row.category_speciality_status,
+                                dataSource: {
+                                  textField: "name",
+                                  valueField: "value",
+                                  data: GlobalVariables.FORMAT_STATUS
+                                },
+                                others: {
+                                  errormessage: "Status - cannot be blank",
+                                  required: true
+                                },
+                                onChange: this.changeGridEditors.bind(this, row)
+                              }}
+                            />
+                          );
+                        }
+                      }
+                    ]}
+                    keyId="hims_d_counter_id"
+                    dataSource={{
+                      data: this.state.cat_specialities
+                    }}
+                    filter={true}
+                    isEditable={true}
+                    actions={{
+                      allowDelete: false
+                    }}
+                    paging={{ page: 0, rowsPerPage: 10 }}
+                    events={{
+                      onEdit: () => {},
+                      onDelete: this.deleteCategorySpecialityMap.bind(this),
+                      onDone: () => {}
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

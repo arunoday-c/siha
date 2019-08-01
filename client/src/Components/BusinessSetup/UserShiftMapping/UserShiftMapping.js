@@ -318,67 +318,66 @@ class UserShiftMapping extends Component {
   render() {
     return (
       <div className="user_shift_mapping">
-        <div className="col-lg-12">
-          <div className="row">
-            <AlagehAutoComplete
-              div={{ className: "col" }}
-              label={{
-                fieldName: "shift_type",
-                isImp: true
-              }}
-              selector={{
-                name: "hims_d_shift_id",
-                className: "select-fld",
-                value: this.state.hims_d_shift_id,
-                dataSource: {
-                  textField: "shift_description",
-                  valueField: "hims_d_shift_id",
-                  data: this.state.shifts
-                },
-                onChange: this.dropDownHandle.bind(this)
-              }}
-            />
-            <AlagehAutoComplete
-              div={{ className: "col" }}
-              label={{
-                fieldName: "select_cashier",
-                isImp: true
-              }}
-              selector={{
-                name: "cashier_id",
-                className: "select-fld",
-                value: this.state.cashier_id,
-                dataSource: {
-                  textField: "cashier_name",
-                  valueField: "cashier_id",
-                  data: this.state.cashiers
-                },
-                onChange: this.dropDownHandle.bind(this)
-              }}
-            />
+        <div className="row inner-top-search">
+          <AlagehAutoComplete
+            div={{ className: "col form-group mandatory" }}
+            label={{
+              fieldName: "shift_type",
+              isImp: true
+            }}
+            selector={{
+              name: "hims_d_shift_id",
+              className: "select-fld",
+              value: this.state.hims_d_shift_id,
+              dataSource: {
+                textField: "shift_description",
+                valueField: "hims_d_shift_id",
+                data: this.state.shifts
+              },
+              onChange: this.dropDownHandle.bind(this)
+            }}
+          />
+          <AlagehAutoComplete
+            div={{ className: "col form-group mandatory" }}
+            label={{
+              fieldName: "select_cashier",
+              isImp: true
+            }}
+            selector={{
+              name: "cashier_id",
+              className: "select-fld",
+              value: this.state.cashier_id,
+              dataSource: {
+                textField: "cashier_name",
+                valueField: "cashier_id",
+                data: this.state.cashiers
+              },
+              onChange: this.dropDownHandle.bind(this)
+            }}
+          />
 
-            <AlgaehDateHandler
-              div={{ className: "col-2" }}
-              label={{ forceLabel: "From Date", isImp: true }}
-              textBox={{ className: "txt-fld", name: "from_date" }}
-              events={{
-                onChange: this.datehandle.bind(this),
-                onBlur: this.dateValidate.bind(this)
-              }}
-              value={this.state.from_date}
-            />
-            <AlgaehDateHandler
-              div={{ className: "col-2" }}
-              label={{ forceLabel: "To Date", isImp: true }}
-              textBox={{ className: "txt-fld", name: "to_date" }}
-              events={{
-                onChange: this.datehandle.bind(this),
-                onBlur: this.dateValidate.bind(this)
-              }}
-              value={this.state.to_date}
-            />
+          <AlgaehDateHandler
+            div={{ className: "col-2 form-group mandatory" }}
+            label={{ forceLabel: "From Date", isImp: true }}
+            textBox={{ className: "txt-fld", name: "from_date" }}
+            events={{
+              onChange: this.datehandle.bind(this),
+              onBlur: this.dateValidate.bind(this)
+            }}
+            value={this.state.from_date}
+          />
+          <AlgaehDateHandler
+            div={{ className: "col-2 form-group mandatory" }}
+            label={{ forceLabel: "To Date", isImp: true }}
+            textBox={{ className: "txt-fld", name: "to_date" }}
+            events={{
+              onChange: this.datehandle.bind(this),
+              onBlur: this.dateValidate.bind(this)
+            }}
+            value={this.state.to_date}
+          />
 
-            {/*<AlagehAutoComplete
+          {/*<AlagehAutoComplete
               div={{ className: "col" }}
               label={{
                 fieldName: "select_month"
@@ -417,90 +416,109 @@ class UserShiftMapping extends Component {
               }}
             />*/}
 
-            <div className="col">
-              <button
-                onClick={this.mapUserShift.bind(this)}
-                style={{ marginTop: 21 }}
-                className="btn btn-primary"
-              >
-                Add to List
-              </button>
-            </div>
+          <div className="col">
+            <button
+              onClick={this.mapUserShift.bind(this)}
+              style={{ marginTop: 21 }}
+              className="btn btn-primary"
+            >
+              Add to List
+            </button>
           </div>
-          <div data-validate="usmDiv" id="usmDivCntr">
-            <AlgaehDataGrid
-              datavalidate="data-validate='usmDiv'"
-              id="usm-grid"
-              columns={[
-                {
-                  fieldName: "shift_description",
+        </div>
+        <div className="portlet portlet-bordered margin-bottom-15">
+          <div className="portlet-body">
+            <div className="row">
+              <div className="col-lg-12">
+                <div data-validate="usmDiv" id="usmDivCntr">
+                  <AlgaehDataGrid
+                    datavalidate="data-validate='usmDiv'"
+                    id="usm-grid"
+                    columns={[
+                      {
+                        fieldName: "shift_description",
 
-                  label: <AlgaehLabel label={{ forceLabel: "Shift Type" }} />,
-                  editorTemplate: row => {
-                    return (
-                      <AlagehAutoComplete
-                        div={{ className: "col" }}
-                        selector={{
-                          name: "shift_id",
-                          className: "select-fld",
-                          value: row.shift_id,
-                          dataSource: {
-                            textField: "shift_description",
-                            valueField: "hims_d_shift_id",
-                            data: this.state.shifts
-                          },
-                          others: {
-                            errormessage: "Shift - cannot be blank",
-                            required: true
-                          },
-                          onChange: this.changeGridEditors.bind(this, row)
-                        }}
-                      />
-                    );
-                  }
-                },
-                {
-                  fieldName: "cashier_name",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Shift Type" }} />
+                        ),
+                        editorTemplate: row => {
+                          return (
+                            <AlagehAutoComplete
+                              div={{ className: "col" }}
+                              selector={{
+                                name: "shift_id",
+                                className: "select-fld",
+                                value: row.shift_id,
+                                dataSource: {
+                                  textField: "shift_description",
+                                  valueField: "hims_d_shift_id",
+                                  data: this.state.shifts
+                                },
+                                others: {
+                                  errormessage: "Shift - cannot be blank",
+                                  required: true
+                                },
+                                onChange: this.changeGridEditors.bind(this, row)
+                              }}
+                            />
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "cashier_name",
 
-                  label: <AlgaehLabel label={{ forceLabel: "Cashier" }} />,
-                  editorTemplate: row => {
-                    return <span>{row.cashier_name}</span>;
-                  }
-                },
-                {
-                  fieldName: "from_date",
-                  label: <AlgaehLabel label={{ forceLabel: "From Date" }} />,
-                  displayTemplate: row => {
-                    return <span>{this.dateFormater(row.from_date)}</span>;
-                  },
-                  editorTemplate: row => {
-                    return <span>{this.dateFormater(row.from_date)}</span>;
-                  }
-                },
-                {
-                  fieldName: "to_date",
-                  label: <AlgaehLabel label={{ forceLabel: "To Date" }} />,
-                  displayTemplate: row => {
-                    return <span>{this.dateFormater(row.to_date)}</span>;
-                  },
-                  editorTemplate: row => {
-                    return <span>{this.dateFormater(row.from_date)}</span>;
-                  }
-                }
-              ]}
-              keyId="hims_m_cashier_shift_id"
-              dataSource={{
-                data: this.state.cashiers_list
-              }}
-              filter={true}
-              isEditable={true}
-              paging={{ page: 0, rowsPerPage: 10 }}
-              events={{
-                onEdit: () => {},
-                onDelete: this.deleteCashiersAndShiftMAP.bind(this),
-                onDone: this.updateCashiersAndShiftMAP.bind(this)
-              }}
-            />
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Cashier" }} />
+                        ),
+                        editorTemplate: row => {
+                          return <span>{row.cashier_name}</span>;
+                        }
+                      },
+                      {
+                        fieldName: "from_date",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "From Date" }} />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>{this.dateFormater(row.from_date)}</span>
+                          );
+                        },
+                        editorTemplate: row => {
+                          return (
+                            <span>{this.dateFormater(row.from_date)}</span>
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "to_date",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "To Date" }} />
+                        ),
+                        displayTemplate: row => {
+                          return <span>{this.dateFormater(row.to_date)}</span>;
+                        },
+                        editorTemplate: row => {
+                          return <span>{this.dateFormater(row.to_date)}</span>;
+                        }
+                      }
+                    ]}
+                    keyId="hims_m_cashier_shift_id"
+                    dataSource={{
+                      data: this.state.cashiers_list
+                    }}
+                    filter={true}
+                    isEditable={true}
+                    paging={{ page: 0, rowsPerPage: 10 }}
+                    events={{
+                      onEdit: () => {},
+                      onDelete: this.deleteCashiersAndShiftMAP.bind(this),
+                      onDone: this.updateCashiersAndShiftMAP.bind(this)
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -225,7 +225,9 @@ class EarningsDeductions extends Component {
               this.state.specific_nationality === "true" ? "Y" : "N",
             nationality_id: this.state.nationality_id,
             print_report: this.state.print_report,
-            print_order_by: this.state.print_order_by
+            print_order_by: this.state.print_order_by,
+            annual_salary_comp:
+              this.state.annual_salary_comp === "true" ? "Y" : "N"
           },
           onSuccess: res => {
             if (res.data.success) {
@@ -357,6 +359,11 @@ class EarningsDeductions extends Component {
       case "print_report":
         this.setState({
           print_report: e.target.value
+        });
+        break;
+      case "annual_salary_comp":
+        this.setState({
+          annual_salary_comp: e.target.value
         });
         break;
       default:
@@ -996,6 +1003,21 @@ class EarningsDeductions extends Component {
                     </div>
                   </div>
                   <div className="col-4">
+                    <label>Annual Salary Component</label>
+                    <div className="customCheckbox">
+                      <label className="checkbox inline">
+                        <input
+                          type="checkbox"
+                          value="yes"
+                          name="annual_salary_comp"
+                          checked={this.state.annual_salary_comp}
+                          onChange={this.changeChecks.bind(this)}
+                        />
+                        <span>Yes</span>
+                      </label>
+                    </div>
+                  </div>
+                  <div className="col-4">
                     <label>Calculation Type</label>
                     <div className="customRadio">
                       <label className="radio inline">
@@ -1465,9 +1487,7 @@ class EarningsDeductions extends Component {
                         displayTemplate: row => {
                           return (
                             <span>
-                              {row.shortage_deduction_applicable === "Y"
-                                ? "Yes"
-                                : "No"}
+                              {row.overtime_applicable === "Y" ? "Yes" : "No"}
                             </span>
                           );
                         },
@@ -1505,9 +1525,7 @@ class EarningsDeductions extends Component {
                         displayTemplate: row => {
                           return (
                             <span>
-                              {row.shortage_deduction_applicable === "Y"
-                                ? "Yes"
-                                : "No"}
+                              {row.limit_applicable === "Y" ? "Yes" : "No"}
                             </span>
                           );
                         },
@@ -1557,7 +1575,8 @@ class EarningsDeductions extends Component {
                                 others: {
                                   errormessage:
                                     "Limit Amount - cannot be blank",
-                                  required: true
+                                  required:
+                                    row.limit_applicable === "Y" ? true : false
                                 }
                               }}
                             />
@@ -1574,7 +1593,7 @@ class EarningsDeductions extends Component {
                         displayTemplate: row => {
                           return (
                             <span>
-                              {row.shortage_deduction_applicable === "Y"
+                              {row.process_limit_required === "Y"
                                 ? "Yes"
                                 : "No"}
                             </span>
@@ -1628,7 +1647,10 @@ class EarningsDeductions extends Component {
                                 others: {
                                   errormessage:
                                     "Process Limit Days - cannot be blank",
-                                  required: true
+                                  required:
+                                    row.process_limit_required === "Y"
+                                      ? true
+                                      : false
                                 }
                               }}
                             />
@@ -1645,9 +1667,7 @@ class EarningsDeductions extends Component {
                         displayTemplate: row => {
                           return (
                             <span>
-                              {row.shortage_deduction_applicable === "Y"
-                                ? "Yes"
-                                : "No"}
+                              {row.allow_round_off === "Y" ? "Yes" : "No"}
                             </span>
                           );
                         },
@@ -1742,7 +1762,8 @@ class EarningsDeductions extends Component {
                                 others: {
                                   errormessage:
                                     "Round off Amount - cannot be blank",
-                                  required: true
+                                  required:
+                                    row.allow_round_off === "Y" ? true : false
                                 }
                               }}
                             />
