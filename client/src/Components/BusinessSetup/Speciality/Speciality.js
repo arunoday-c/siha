@@ -472,6 +472,9 @@ class Speciality extends Component {
               }}
               filter={true}
               isEditable={true}
+              actions={{
+                allowDelete: false
+              }}
               paging={{ page: 0, rowsPerPage: 10 }}
               events={{
                 onEdit: () => {},
