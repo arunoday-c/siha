@@ -70,7 +70,6 @@ export default class BranchMaster extends Component {
   dropDownHandle(value) {
     this.setState({ [value.name]: value.value });
   }
-  loadDetails(data) {}
 
   getBranchMaster() {
     debugger;
@@ -268,11 +267,21 @@ export default class BranchMaster extends Component {
   }
 
   loadDetails(e) {
+    if (e.hims_d_hospital_id > 0) {
+      this.setState({
+        hospital_id: e.hims_d_hospital_id
+      });
+    }
+
     algaehApiCall({
       uri: "/branchMaster/getBranchWiseDepartments",
       method: "GET",
       module: "masterSettings",
-      data: { hospital_id: e.hims_d_hospital_id },
+      data: {
+        hospital_id: e.hims_d_hospital_id
+          ? e.hims_d_hospital_id
+          : this.state.hospital_id
+      },
       onSuccess: res => {
         if (res.data.success) {
           let data = res.data.records;
@@ -418,7 +427,6 @@ export default class BranchMaster extends Component {
     const remove_sub = [];
     const add_new_sub = [];
 
-    console.log("raw:", this.state.allDepartments);
     this.state.allDepartments.forEach(dept => {
       dept.subDepts.forEach(sub => {
         if (
@@ -436,43 +444,49 @@ export default class BranchMaster extends Component {
           sub.hims_m_branch_dept_map_id === undefined &&
           sub.checked === true
         ) {
-          add_new_sub.push(sub.hims_d_sub_department_id);
+          add_new_sub.push({ sub_department_id: sub.hims_d_sub_department_id });
         }
       });
     });
 
-    console.log("remove_sub:", remove_sub);
     inputObj["remove_sub"] = remove_sub;
     inputObj["add_new_sub"] = add_new_sub;
+    inputObj["hospital_id"] = this.state.hospital_id;
 
     console.log("inputObj:", inputObj);
-
-    // algaehApiCall({
-    //   uri: "/algaehMasters/assignScreens",
-    //   method: "POST",
-    //   data: inputObj,
-    //   onSuccess: res => {
-    //     if (res.data.success) {
-    //       swalMessage({
-    //         title: "Assigned Successfully.",
-    //         type: "success"
-    //       });
-    //       $this.setState({ app_group_id: null, role_id: null, roles: [] });
-    //       getRoleBaseActive($this);
-    //     } else {
-    //       swalMessage({
-    //         title: res.data.records.message,
-    //         type: "error"
-    //       });
-    //     }
-    //   },
-    //   onFailure: err => {
-    //     swalMessage({
-    //       title: err.message,
-    //       type: "error"
-    //     });
-    //   }
-    // });
+    if (!remove_sub.length > 0 && !add_new_sub.length > 0) {
+      swalMessage({
+        title: "No changes found",
+        type: "warning"
+      });
+    } else {
+      algaehApiCall({
+        uri: "/branchMaster/modifyBranchMaster",
+        method: "POST",
+        module: "masterSettings",
+        data: inputObj,
+        onSuccess: res => {
+          if (res.data.success) {
+            swalMessage({
+              title: "Assigned Successfully.",
+              type: "success"
+            });
+            this.loadDetails("L");
+          } else {
+            swalMessage({
+              title: res.data.records.message,
+              type: "warning"
+            });
+          }
+        },
+        onFailure: err => {
+          swalMessage({
+            title: err.message,
+            type: "error"
+          });
+        }
+      });
+    }
   }
 
   render() {

@@ -5,7 +5,8 @@ import {
   getActiveBranches,
   updateBranchMaster,
   getActiveDepartments,
-  getBranchWiseDepartments
+  getBranchWiseDepartments,
+  modifyBranchMaster
 } from "../models/branchMaster";
 import algaehUtlities from "algaeh-utilities/utilities";
 export default () => {
@@ -118,6 +119,24 @@ export default () => {
       next();
     }
   );
+
+  api.post("/modifyBranchMaster", modifyBranchMaster, (req, res, next) => {
+    let result = req.records;
+
+    if (result.invalid_data == true) {
+      res.status(utlities.httpStatus().ok).json({
+        success: false,
+        records: result
+      });
+    } else {
+      res.status(utlities.httpStatus().ok).json({
+        success: true,
+        records: result
+      });
+    }
+
+    next();
+  });
 
   return api;
 };

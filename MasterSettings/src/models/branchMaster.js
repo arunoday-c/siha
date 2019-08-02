@@ -288,5 +288,82 @@ module.exports = {
       _mysql.releaseConnection();
       next(e);
     }
+  },
+
+  //created by:irfan
+  modifyBranchMaster: (req, res, next) => {
+    try {
+      if (req.userIdentity.role_type != "GN") {
+        const _mysql = new algaehMysql();
+        const input = req.body;
+
+        new Promise((resolve, reject) => {
+          if (input.remove_sub.length > 0) {
+            _mysql
+              .executeQuery({
+                query:
+                  "delete from hims_m_branch_dept_map where hospital_id=? and hims_m_branch_dept_map_id in (?);",
+                values: [input.hospital_id, input.remove_sub],
+                printQuery: true
+              })
+              .then(deleteRes => {
+                resolve(deleteRes);
+              })
+              .catch(error => {
+                _mysql.releaseConnection();
+                next(error);
+              });
+          } else {
+            resolve({});
+          }
+        }).then(res => {
+          if (input.add_new_sub.length > 0) {
+            _mysql
+              .executeQuery({
+                query: "INSERT INTO hims_m_branch_dept_map (??)  values ?",
+                values: input.add_new_sub,
+                extraValues: {
+                  hospital_id: input.hospital_id
+                },
+
+                bulkInsertOrUpdate: true,
+                printQuery: true
+              })
+              .then(result => {
+                _mysql.releaseConnection();
+                req.records = result;
+                next();
+              })
+              .catch(error => {
+                _mysql.releaseConnection();
+                next(error);
+              });
+          } else {
+            if (input.remove_sub.length > 0) {
+              _mysql.releaseConnection();
+              req.records = res;
+              next();
+            } else {
+              req.records = {
+                invalid_data: true,
+                message: "Please provide valid data"
+              };
+              next();
+            }
+          }
+        });
+
+        //----------------
+      } else {
+        req.records = {
+          invalid_data: true,
+          message: "you dont have admin privilege"
+        };
+        next();
+      }
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
   }
 };
