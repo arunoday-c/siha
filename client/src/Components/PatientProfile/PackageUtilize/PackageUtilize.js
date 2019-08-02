@@ -49,7 +49,6 @@ class PackageUtilize extends Component {
   componentDidMount() {}
 
   componentWillReceiveProps(nextProps) {
-    debugger;
     if (nextProps.from_billing === true) {
       let consultation = nextProps.from === "frontDesk" ? true : false;
       this.setState({

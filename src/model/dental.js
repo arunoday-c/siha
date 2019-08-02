@@ -9,6 +9,8 @@ import {
 import httpStatus from "../utils/httpStatus";
 import { LINQ } from "node-linq";
 import { debugLog } from "../utils/logging";
+import algaehMysql from "algaeh-mysql";
+const keyPath = require("algaeh-keys/keys");
 
 //created by irfan:
 let addTreatmentPlan = (req, res, next) => {
@@ -489,43 +491,115 @@ let updateDentalPlanStatus = (req, res, next) => {
 
 //created by irfan: to
 let updateDentalTreatmentStatus = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
+    let input = req.body;
 
-    db.getConnection((error, connection) => {
-      if (error) {
-        next(error);
-      }
-      let input = extend({}, req.body);
-      if (input.treatment_status == "WIP" || input.treatment_status == "CP") {
-        connection.query(
-          "update hims_f_dental_treatment set treatment_status=? ,\
-             updated_date=?, updated_by=? WHERE  `record_status`='A' and `hims_f_dental_treatment_id`=?;",
-          [
-            input.treatment_status,
-            new Date(),
-            input.updated_by,
-            input.hims_f_dental_treatment_id
-          ],
-          (error, results) => {
-            releaseDBConnection(db, connection);
-            if (error) {
-              next(error);
+    _mysql
+      .executeQueryWithTransaction({
+        query:
+          "update hims_f_dental_treatment set treatment_status=? , updated_date=?, updated_by=? \
+          WHERE  `record_status`='A' and `hims_f_dental_treatment_id`=?;",
+        values: [
+          input.treatment_status,
+          new Date(),
+          input.updated_by,
+          input.hims_f_dental_treatment_id
+        ],
+        printQuery: true
+      })
+      .then(update_result => {
+        _mysql
+          .executeQuery({
+            query:
+              "select treatment_plan_id from hims_f_dental_treatment where treatment_plan_id = ? and \
+              treatment_status !='CP';",
+            values: [input.treatment_plan_id],
+            printQuery: true
+          })
+          .then(result => {
+            if (result.length === 0) {
+              _mysql
+                .executeQuery({
+                  query:
+                    "update hims_f_treatment_plan set plan_status='C' ,updated_date=?, updated_by=? \
+                    WHERE  `hims_f_treatment_plan_id`=?;",
+                  values: [
+                    new Date(),
+                    input.updated_by,
+                    input.treatment_plan_id
+                  ],
+                  printQuery: true
+                })
+                .then(plan_result => {
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.records = plan_result;
+                    next();
+                  });
+                })
+                .catch(error => {
+                  _mysql.rollBackTransaction(() => {
+                    next(error);
+                  });
+                });
+            } else {
+              _mysql.commitTransaction(() => {
+                _mysql.releaseConnection();
+                req.records = result;
+                next();
+              });
             }
-            req.records = results;
-            next();
-          }
-        );
-      } else {
-        releaseDBConnection(db, connection);
-        req.records = { invalid_input: true };
-        next();
-      }
-    });
+          })
+          .catch(error => {
+            _mysql.rollBackTransaction(() => {
+              next(error);
+            });
+          });
+      })
+      .catch(error => {
+        _mysql.rollBackTransaction(() => {
+          next(error);
+        });
+      });
+
+    // if (req.db == null) {
+    //   next(httpStatus.dataBaseNotInitilizedError());
+    // }
+    // let db = req.db;
+    //
+    // db.getConnection((error, connection) => {
+    //   if (error) {
+    //     next(error);
+    //   }
+    //   let input = extend({}, req.body);
+    //   if (input.treatment_status == "WIP" || input.treatment_status == "CP") {
+    //     connection.query(
+    //       "update hims_f_dental_treatment set treatment_status=? ,\
+    //          updated_date=?, updated_by=? WHERE  `record_status`='A' and `hims_f_dental_treatment_id`=?;",
+    //       [
+    //         input.treatment_status,
+    //         new Date(),
+    //         input.updated_by,
+    //         input.hims_f_dental_treatment_id
+    //       ],
+    //       (error, results) => {
+    //         releaseDBConnection(db, connection);
+    //         if (error) {
+    //           next(error);
+    //         }
+    //         req.records = results;
+    //         next();
+    //       }
+    //     );
+    //   } else {
+    //     releaseDBConnection(db, connection);
+    //     req.records = { invalid_input: true };
+    //     next();
+    //   }
+    // });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };

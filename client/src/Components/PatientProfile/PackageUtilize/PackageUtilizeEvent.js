@@ -6,7 +6,6 @@ import moment from "moment";
 export default function PackageSetupEvent() {
   return {
     onPackageChange: ($this, e) => {
-      debugger;
       let name = e.name || e.target.name;
       let value = e.value || e.target.value;
 
@@ -221,7 +220,6 @@ export default function PackageSetupEvent() {
           }
 
           if ($this.state.consultation === true) {
-            debugger;
             const cons_service = _.find(
               InputObj.package_details,
               f => f.service_type_id === 1

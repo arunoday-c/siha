@@ -199,7 +199,6 @@ class Dental extends Component {
   }
 
   saveBill() {
-    
     let inputObj = {
       visit_id: Window.global["visit_is"],
       patient_id: Window.global["current_patient"],
@@ -1311,7 +1310,8 @@ class Dental extends Component {
       method: "PUT",
       data: {
         hims_f_dental_treatment_id: data.hims_f_dental_treatment_id,
-        treatment_status: data.treatment_status
+        treatment_status: data.treatment_status,
+        treatment_plan_id: data.treatment_plan_id
       },
       onSuccess: res => {
         if (res.data.success) {
@@ -1320,6 +1320,7 @@ class Dental extends Component {
             type: "success"
           });
           this.loadDentalTreatment();
+          this.getTreatementPlans();
         }
       },
       onError: err => {
