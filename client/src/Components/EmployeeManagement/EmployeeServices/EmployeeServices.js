@@ -13,24 +13,24 @@ export default class SelfService extends Component {
       regularize: {},
       leave: {}
     };
-    this.getEmployeeDetails();
+    // this.getEmployeeDetails();
   }
 
-  getEmployeeDetails() {
-    algaehApiCall({
-      uri: "/selfService/getEmployeeBasicDetails",
-      method: "GET",
-      module: "hrManagement",
-      onSuccess: res => {
-        if (res.data.success) {
-          this.setState({
-            employee_details: res.data.records[0]
-          });
-        }
-      },
-      onFailure: err => {}
-    });
-  }
+  // getEmployeeDetails() {
+  //   algaehApiCall({
+  //     uri: "/selfService/getEmployeeBasicDetails",
+  //     method: "GET",
+  //     module: "hrManagement",
+  //     onSuccess: res => {
+  //       if (res.data.success) {
+  //         this.setState({
+  //           employee_details: res.data.records[0]
+  //         });
+  //       }
+  //     },
+  //     onFailure: err => {}
+  //   });
+  // }
 
   openTab(e) {
     var element = document.querySelectorAll("[algaehtabs]");
@@ -58,10 +58,6 @@ export default class SelfService extends Component {
   // }
 
   render() {
-    let empDetails =
-      this.state.employee_details !== undefined
-        ? this.state.employee_details
-        : {};
     return (
       <div className="employeeServicesModule">
         {/* <button
@@ -96,7 +92,20 @@ export default class SelfService extends Component {
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Loan / Advance Request"
+                      forceLabel: "Loan Request"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                algaehtabs={"AdvanceRequest"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Advance Request"
                     }}
                   />
                 }
@@ -108,10 +117,15 @@ export default class SelfService extends Component {
           {this.state.pageDisplay === "ApplyLeave" ? (
             <ApplyLeave
               leave={this.state.leave}
-              empData={this.state.employee_details}
+              // empData={this.state.employee_details}
             />
           ) : this.state.pageDisplay === "LoanRequest" ? (
-            <LoanRequest empData={this.state.employee_details} />
+            <LoanRequest
+              type="LO"
+              // empData={this.state.employee_details}
+            />
+          ) : this.state.pageDisplay === "AdvanceRequest" ? (
+            <LoanRequest type="AD" />
           ) : null}
         </div>
       </div>

@@ -6,7 +6,7 @@ const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   let _notice = {};
-
+  let department_name = null;
   if (name === "notice_period") {
     if (
       $this.state.date_of_resignation === null ||
@@ -24,12 +24,18 @@ const texthandle = ($this, e) => {
     };
   }
 
+  if (name === "sub_department_id") {
+    department_name = e.selected.department_name;
+  }
+
   $this.setState({
     [name]: value,
+    department_name: department_name,
     ..._notice
   });
   $this.props.EmpMasterIOputs.updateEmployeeTabs({
     [name]: value,
+    department_name: department_name,
     ..._notice
   });
 };

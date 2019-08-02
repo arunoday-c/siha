@@ -113,6 +113,7 @@ export default {
       age_in_days: null,
       payment_type: "S",
       card_numbr: "",
+      new_visit_patient: "N",
 
       primary_insurance_provider_id: null,
       primary_sub_id: null,

@@ -51,16 +51,26 @@ export default class LeaveMasterIndex extends Component {
   }
 
   closeModal() {
-    this.setState({
-      open: false
-    });
+    this.setState(
+      {
+        open: false
+      },
+      () => {
+        this.getLeaveMaster();
+      }
+    );
   }
 
   closeEdit() {
-    this.setState({
-      openEdit: false,
-      hims_d_leave_id: null
-    });
+    this.setState(
+      {
+        openEdit: false,
+        hims_d_leave_id: null
+      },
+      () => {
+        this.getLeaveMaster();
+      }
+    );
   }
 
   changeGridEditors(data, e) {
@@ -148,7 +158,9 @@ export default class LeaveMasterIndex extends Component {
                           );
                         },
                         others: {
-                          maxWidth: 110
+                          maxWidth: 110,
+                          resizable: false,
+                          filterable: false
                         }
                       },
                       {
@@ -243,6 +255,7 @@ export default class LeaveMasterIndex extends Component {
                     keyId="hims_d_leave_id"
                     dataSource={{ data: this.state.leaves }}
                     isEditable={false}
+                    filter={true}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{}}
                     others={{}}

@@ -24,6 +24,9 @@ const executePDF = function executePDFMethod(options) {
       if (input.sub_department_id > 0) {
         strQuery += ` and E.sub_department_id=${input.sub_department_id}`;
       }
+      if (input.employee_group_id > 0) {
+        strQuery += ` and E.employee_group_id=${input.employee_group_id}`;
+      }
 
       switch (input.employee_status) {
         case "A":
@@ -54,13 +57,14 @@ const executePDF = function executePDFMethod(options) {
           E.sub_department_id, SD.sub_department_name,D.hims_d_department_id,D.department_name,
           case employee_type when  'PE' then  'PERMANENT' when  'CO' then  'CONTRACT'
           when  'PB' then  'PROBATION' when  'LC' then  'LOCUM'
-          when  'VC' then  'VISITING CONSULTANT'end as employee_type
+          when  'VC' then  'VISITING CONSULTANT'end as employee_type,group_description
           from hims_d_employee E left join hims_d_designation DG on
           E.employee_designation_id=DG.hims_d_designation_id
           left join hims_d_religion R on E.religion_id=R.hims_d_religion_id
           left join hims_d_nationality N on E.nationality=N.hims_d_nationality_id
           left join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
           left join hims_d_department D on SD.department_id=D.hims_d_department_id
+          left join hims_d_employee_group G on E.employee_group_id=G.hims_d_employee_group_id
           where E.hospital_id=? and E.record_status='A'  ${strQuery}; `,
           values: [input.hospital_id, input.hospital_id],
           printQuery: true

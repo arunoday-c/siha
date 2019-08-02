@@ -8,7 +8,11 @@ import Appointment from "../Appointment/Appointment";
 // import AppointmentAr from "../AppointmentAr/AppointmentAr";
 import RegistrationPatient from "../RegistrationPatient/RegistrationPatient";
 
-import { getCookie, algaehApiCall } from "../../utils/algaehApiCall";
+import {
+  getCookie,
+  algaehApiCall,
+  swalMessage
+} from "../../utils/algaehApiCall";
 import { removeGlobal, setGlobal } from "../../utils/GlobalFunctions";
 import { AlgaehActions } from "../../actions/algaehActions";
 
@@ -45,22 +49,30 @@ class FrontDesk extends Component {
         mappingName: "employeeSerDetails"
       },
       afterSuccess: data => {
-        this.setState(
-          {
-            FD_Screen:
-              this.state.Language === "ar"
-                ? Window.global["FD-STD"] +
-                  this.state.Language.charAt(0).toUpperCase() +
-                  this.state.Language.slice(1)
-                : Window.global["FD-STD"],
-            ...patient,
-            checkinID,
-            hims_d_services_id: data[0].services_id
-          },
-          () => {
-            this.changeDisplays();
-          }
-        );
+        if (!data[0].services_id) {
+          swalMessage({
+            title:
+              "Error: Service is not created for the doctor, Please Contact the admin",
+            type: "error"
+          });
+        } else {
+          this.setState(
+            {
+              FD_Screen:
+                this.state.Language === "ar"
+                  ? Window.global["FD-STD"] +
+                    this.state.Language.charAt(0).toUpperCase() +
+                    this.state.Language.slice(1)
+                  : Window.global["FD-STD"],
+              ...patient,
+              checkinID,
+              hims_d_services_id: data[0].services_id
+            },
+            () => {
+              this.changeDisplays();
+            }
+          );
+        }
       }
     });
   }

@@ -183,173 +183,198 @@ class Counter extends Component {
   render() {
     return (
       <div className="counter">
-        <div className="col-lg-12">
-          <form action="none">
-            <div className="row">
-              <AlagehFormGroup
-                div={{ className: "col-lg-3" }}
-                label={{
-                  fieldName: "counter_code",
-                  isImp: true
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "counter_code",
-                  value: this.state.counter_code,
-                  events: {
-                    onChange: this.changeTexts.bind(this)
-                  }
-                }}
-              />
-              <AlagehFormGroup
-                div={{ className: "col-lg-3" }}
-                label={{
-                  fieldName: "counter_description",
-                  isImp: true
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "counter_description",
-                  value: this.state.counter_description,
-                  events: {
-                    onChange: this.changeTexts.bind(this)
-                  }
-                }}
-              />
-              <AlagehFormGroup
-                div={{ className: "col-3  arabic-txt-fld" }}
-                label={{
-                  fieldName: "arabic_name",
-                  isImp: true
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "arabic_name",
-                  value: this.state.arabic_name,
-                  events: {
-                    onChange: this.changeTexts.bind(this)
-                  }
-                }}
-              />
-
-              <div className="col-lg-3">
-                <button
-                  onClick={this.addCounter.bind(this)}
-                  style={{ marginTop: 21 }}
-                  className="btn btn-primary"
-                >
-                  Add to List
-                </button>
-              </div>
-            </div>
-          </form>
-          <div data-validate="counterDiv" id="counterDivCntr">
-            <AlgaehDataGrid
-              datavalidate="data-validate='counterDiv'"
-              id="appt-status-grid"
-              columns={[
-                {
-                  fieldName: "counter_code",
-                  label: <AlgaehLabel label={{ fieldName: "counter_code" }} />,
-                  disabled: true
-                },
-                {
-                  fieldName: "counter_description",
-                  label: (
-                    <AlgaehLabel label={{ fieldName: "counter_description" }} />
-                  ),
-                  editorTemplate: row => {
-                    return (
-                      <AlagehFormGroup
-                        div={{ className: "col" }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "counter_description",
-                          value: row.counter_description,
-                          events: {
-                            onChange: this.changeGridEditors.bind(this, row)
-                          },
-                          others: {
-                            errormessage: "Description - cannot be blank",
-                            required: true
-                          }
-                        }}
-                      />
-                    );
-                  }
-                },
-                {
-                  fieldName: "arabic_name",
-                  label: <AlgaehLabel label={{ fieldName: "arabic_name" }} />,
-                  editorTemplate: row => {
-                    return (
-                      <AlagehFormGroup
-                        div={{ className: "col" }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "arabic_name",
-                          value: row.arabic_name,
-                          events: {
-                            onChange: this.changeGridEditors.bind(this, row)
-                          },
-                          others: {
-                            errormessage: "Arabic Name - cannot be blank",
-                            required: true
-                          }
-                        }}
-                      />
-                    );
-                  }
-                },
-                {
-                  fieldName: "counter_status",
-                  label: (
-                    <AlgaehLabel label={{ fieldName: "counter_status" }} />
-                  ),
-                  displayTemplate: row => {
-                    return (
-                      <span>
-                        {row.counter_status === "A" ? "Active" : "Inactive"}
-                      </span>
-                    );
-                  },
-                  editorTemplate: row => {
-                    return (
-                      <AlagehAutoComplete
-                        div={{ className: "col" }}
-                        selector={{
-                          name: "counter_status",
-                          className: "select-fld",
-                          value: row.counter_status,
-                          dataSource: {
-                            textField: "name",
-                            valueField: "value",
-                            data: GlobalVariables.FORMAT_STATUS
-                          },
-                          others: {
-                            errormessage: "Status - cannot be blank",
-                            required: true
-                          },
-                          onChange: this.changeGridEditors.bind(this, row)
-                        }}
-                      />
-                    );
-                  }
-                }
-              ]}
-              keyId="hims_d_counter_id"
-              dataSource={{
-                data: this.state.counters
+        <form action="none">
+          <div className="row inner-top-search">
+            <AlagehFormGroup
+              div={{ className: "col-3 form-group mandatory" }}
+              label={{
+                fieldName: "counter_code",
+                isImp: true
               }}
-              filter={true}
-              isEditable={true}
-              paging={{ page: 0, rowsPerPage: 10 }}
-              events={{
-                onEdit: () => {},
-                onDelete: this.deleteCounters.bind(this),
-                onDone: this.updatecounters.bind(this)
+              textBox={{
+                className: "txt-fld",
+                name: "counter_code",
+                value: this.state.counter_code,
+                events: {
+                  onChange: this.changeTexts.bind(this)
+                }
               }}
             />
+            <AlagehFormGroup
+              div={{ className: "col-3 form-group mandatory" }}
+              label={{
+                fieldName: "counter_description",
+                isImp: true
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "counter_description",
+                value: this.state.counter_description,
+                events: {
+                  onChange: this.changeTexts.bind(this)
+                }
+              }}
+            />
+            <AlagehFormGroup
+              div={{ className: "col-3  arabic-txt-fld form-group mandatory" }}
+              label={{
+                fieldName: "arabic_name",
+                isImp: true
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "arabic_name",
+                value: this.state.arabic_name,
+                events: {
+                  onChange: this.changeTexts.bind(this)
+                }
+              }}
+            />
+
+            <div className="col-lg-3">
+              <button
+                onClick={this.addCounter.bind(this)}
+                style={{ marginTop: 21 }}
+                className="btn btn-primary"
+              >
+                Add to List
+              </button>
+            </div>
+          </div>
+        </form>
+        <div className="portlet portlet-bordered margin-bottom-15">
+          <div className="portlet-body">
+            <div className="row">
+              <div className="col-lg-12">
+                <div data-validate="counterDiv" id="counterDivCntr">
+                  <AlgaehDataGrid
+                    datavalidate="data-validate='counterDiv'"
+                    id="appt-status-grid"
+                    columns={[
+                      {
+                        fieldName: "counter_code",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "counter_code" }} />
+                        ),
+                        disabled: true
+                      },
+                      {
+                        fieldName: "counter_description",
+                        label: (
+                          <AlgaehLabel
+                            label={{ fieldName: "counter_description" }}
+                          />
+                        ),
+                        editorTemplate: row => {
+                          return (
+                            <AlagehFormGroup
+                              div={{ className: "col" }}
+                              textBox={{
+                                className: "txt-fld",
+                                name: "counter_description",
+                                value: row.counter_description,
+                                events: {
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  )
+                                },
+                                others: {
+                                  errormessage: "Description - cannot be blank",
+                                  required: true
+                                }
+                              }}
+                            />
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "arabic_name",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "arabic_name" }} />
+                        ),
+                        editorTemplate: row => {
+                          return (
+                            <AlagehFormGroup
+                              div={{ className: "col" }}
+                              textBox={{
+                                className: "txt-fld",
+                                name: "arabic_name",
+                                value: row.arabic_name,
+                                events: {
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  )
+                                },
+                                others: {
+                                  errormessage: "Arabic Name - cannot be blank",
+                                  required: true
+                                }
+                              }}
+                            />
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "counter_status",
+                        label: (
+                          <AlgaehLabel
+                            label={{ fieldName: "counter_status" }}
+                          />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {row.counter_status === "A"
+                                ? "Active"
+                                : "Inactive"}
+                            </span>
+                          );
+                        },
+                        editorTemplate: row => {
+                          return (
+                            <AlagehAutoComplete
+                              div={{ className: "col" }}
+                              selector={{
+                                name: "counter_status",
+                                className: "select-fld",
+                                value: row.counter_status,
+                                dataSource: {
+                                  textField: "name",
+                                  valueField: "value",
+                                  data: GlobalVariables.FORMAT_STATUS
+                                },
+                                others: {
+                                  errormessage: "Status - cannot be blank",
+                                  required: true
+                                },
+                                onChange: this.changeGridEditors.bind(this, row)
+                              }}
+                            />
+                          );
+                        }
+                      }
+                    ]}
+                    keyId="hims_d_counter_id"
+                    dataSource={{
+                      data: this.state.counters
+                    }}
+                    filter={true}
+                    isEditable={true}
+                    actions={{
+                      allowDelete: false
+                    }}
+                    paging={{ page: 0, rowsPerPage: 10 }}
+                    events={{
+                      onEdit: () => {},
+                      onDelete: this.deleteCounters.bind(this),
+                      onDone: this.updatecounters.bind(this)
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

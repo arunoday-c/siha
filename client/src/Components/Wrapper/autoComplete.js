@@ -2,7 +2,7 @@ import React, { PureComponent } from "react";
 import Label from "./label";
 // import "../Wrapper/autoComplete.css";
 // import Enumarable from "linq";
-import _ from "lodash";
+import isEqual from "lodash/isEqual";
 import {
   checkSecurity,
   saveUserPrefernce,
@@ -29,8 +29,8 @@ class AutoComplete extends PureComponent {
           }
         : undefined;
     if (
-      !_.isEqual(props.selector, this.props.selector) ||
-      !_.isEqual(props.selector.dataSource.data, this.props.selector.dataSource)
+      !isEqual(props.selector, this.props.selector) ||
+      !isEqual(props.selector.dataSource.data, this.props.selector.dataSource)
     ) {
       const _estData = !Array.isArray(props.selector.dataSource.data)
         ? []
@@ -67,12 +67,19 @@ class AutoComplete extends PureComponent {
         loader: false
       });
 
-      // if (props.selector.value !== this.props.selector.value) {
-      this.setState({
-        value: props.selector.value,
-        loader: false
-      });
-      //}
+      if (props.compireoldprops === true) {
+        if (props.selector.value !== this.props.selector.value) {
+          this.setState({
+            value: props.selector.value,
+            loader: false
+          });
+        }
+      } else {
+        this.setState({
+          value: props.selector.value,
+          loader: false
+        });
+      }
     }
   }
 
@@ -218,7 +225,7 @@ class AutoComplete extends PureComponent {
       );
       return;
     }
-    const _selector = _.find(items.options, f => {
+    const _selector = items.options.find(f => {
       return f.value === items.value;
     });
 
@@ -280,7 +287,7 @@ class AutoComplete extends PureComponent {
         ? { onClose: this.props.selector.onClose }
         : {};
     const referenceValue = {
-      referencevalue: this.state.value === undefined ? "" : this.state.value
+      referencevalue: this.state.value
     };
 
     return (

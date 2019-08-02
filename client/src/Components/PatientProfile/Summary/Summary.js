@@ -7,7 +7,8 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 import Enumerable from "linq";
 import { getPatientHistory } from "../PatientProfileHandlers";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-import moment from "moment";
+// import moment from "moment";
+import _ from "lodash";
 
 class Summary extends Component {
   constructor(props) {
@@ -139,12 +140,10 @@ class Summary extends Component {
     const _pat_vitals =
       this.props.patient_vitals !== undefined &&
       this.props.patient_vitals.length > 0
-        ? Enumerable.from(this.props.patient_vitals)
-            .groupBy("$.visit_date", null, (k, g) => {
-              return g.getSource();
-            })
-            .orderBy(g => g.visit_date)
-            .lastOrDefault()
+        ? _.chain(this.props.patient_vitals)
+            .uniqBy(u => u.vital_id)
+            .orderBy(o => o.sequence_order)
+            .value()
         : [];
 
     let _pat_socialHistory =

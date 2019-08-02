@@ -360,7 +360,7 @@ class LoginUsers extends Component {
                       );
                     }}
                     name="hims_d_employee_id"
-                    columns={spotlightSearch.Employee_details.employee}
+                    columns={spotlightSearch.Employee_details.loginNewEmployee}
                     displayField="full_name"
                     value={this.state.full_name}
                     searchName="new_employees"
@@ -695,9 +695,12 @@ class LoginUsers extends Component {
                       isEditable={true}
                       paging={{ page: 0, rowsPerPage: 20 }}
                       filter={true}
+                      actions={{
+                        allowDelete: false
+                      }}
                       events={{
                         onEdit: () => {},
-                        onDelete: this.deleteLoginUser.bind(this),
+                        // onDelete: this.deleteLoginUser.bind(this),
                         onDone: this.updateLoginUser.bind(this)
                       }}
                     />

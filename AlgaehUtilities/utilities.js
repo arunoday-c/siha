@@ -73,6 +73,18 @@ algaehUtilities.prototype.httpStatus = function() {
   };
 };
 
+algaehUtilities.prototype.decimalPoints = function(value, decimal_point) {
+  decimal_point = decimal_point || 2;
+  let data_value = value;
+  if (typeof value === "string") {
+    data_value = parseFloat(
+      value == "" || value == null || value == undefined ? "0" : value
+    );
+  }
+
+  return parseFloat(data_value.toFixed(decimal_point));
+};
+
 algaehUtilities.prototype.logger = function(reqTracker) {
   reqTracker = reqTracker || "";
   var _logPath = path.join(process.cwd(), "/LOGS");

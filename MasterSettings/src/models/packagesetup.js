@@ -17,8 +17,8 @@ module.exports = {
           `total_service_amount`, `profit_loss`, `pl_amount`,`package_service_id`, `package_type`,`expiry_days`,\
           `advance_type`, `advance_amount`, `advance_percentage`, `package_visit_type`,`package_status`,\
           `validated_date`,`cancellation_policy`,`cancellation_per`, `cancellation_amount`,`cancellation_type`,\
-          `created_date`, `created_by`, `updated_date`, `updated_by`)\
-         VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+          `approved`, `created_date`, `created_by`, `updated_date`, `updated_by`)\
+         VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
           values: [
             input.package_code,
             input.package_name,
@@ -39,6 +39,7 @@ module.exports = {
             input.cancellation_per,
             input.cancellation_amount,
             input.cancellation_type,
+            input.approved,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),

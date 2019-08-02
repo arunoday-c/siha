@@ -234,16 +234,31 @@ class DeptUserDetails extends Component {
                 <div className="col">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Employee Department"
+                      forceLabel: "Department"
                     }}
                   />
                   <h6>
-                    {this.state.sub_department_id === null //sub_dept_name.length !== 0
-                      ? "Not Defined"
-                      : sub_dept_name.sub_department_name}
+                    {this.state.department_name === null ||
+                    this.state.department_name === undefined
+                      ? "------"
+                      : this.state.department_name}
+                  </h6>
+                </div>
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Sub Department"
+                    }}
+                  />
+                  <h6>
+                    {this.state.sub_department_name === null ||
+                    this.state.sub_department_name === undefined
+                      ? "------"
+                      : this.state.sub_department_name}
                     {/* this.state.sub_department_id */}
                   </h6>
                 </div>
+
                 <div className="col">
                   <AlgaehLabel
                     label={{
@@ -382,7 +397,7 @@ class DeptUserDetails extends Component {
                 <AlagehAutoComplete
                   div={{ className: "col " }}
                   label={{
-                    fieldName: "sub_department_id",
+                    forceLabel: "Sub Department",
                     isImp: true
                   }}
                   selector={{

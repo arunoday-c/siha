@@ -17,7 +17,6 @@ const emptyObject = extend(
 );
 
 const generateBillDetails = $this => {
-  
   let zeroBill = false;
   if ($this.state.from_package === true) {
     zeroBill = true;
@@ -486,7 +485,8 @@ const getCtrlCode = ($this, patcode, row) => {
           method: "GET",
           data: {
             patient_id: data.patientRegistration.hims_d_patient_id,
-            package_visit_type: "M"
+            package_visit_type: "M",
+            closed: "N"
           },
           redux: {
             type: "ORDER_SERVICES_GET_DATA",
@@ -515,15 +515,38 @@ const getCtrlCode = ($this, patcode, row) => {
 const ShowPackageUtilize = $this => {
   $this.setState({
     isPackUtOpen: !$this.state.isPackUtOpen,
-    package_detail: $this.props.PatientPackageList[0]
+    package_detail: $this.props.PatientPackageList
   });
 };
 const ClosePackageUtilize = ($this, e) => {
-  
   if (e === undefined || e.services_id === undefined) {
-    $this.setState({
-      isPackUtOpen: !$this.state.isPackUtOpen
-    });
+    $this.setState(
+      {
+        isPackUtOpen: !$this.state.isPackUtOpen
+      },
+      () => {
+        $this.props.getPatientPackage({
+          uri: "/orderAndPreApproval/getPatientPackage",
+          method: "GET",
+          data: {
+            patient_id: $this.state.hims_d_patient_id,
+            package_visit_type: "M",
+            closed: "N"
+          },
+          redux: {
+            type: "ORDER_SERVICES_GET_DATA",
+            mappingName: "PatientPackageList"
+          },
+          afterSuccess: data => {
+            if (data.length !== 0 || data.length === undefined) {
+              $this.setState({
+                pack_balance_amount: data[0].balance_amount
+              });
+            }
+          }
+        });
+      }
+    );
     return;
   }
   let visit_type = _.find($this.props.visittypes, f => f.consultation === "Y");
@@ -538,14 +561,16 @@ const ClosePackageUtilize = ($this, e) => {
       sub_department_id: e.sub_department_id,
       visit_type: visit_type.hims_d_visit_type_id,
       package_details: e.package_details,
-      from_package: true,
+      from_package: e.package_utilize === true ? false : true,
       visittypeselect: true,
       utilize_amount: e.utilize_amount,
       balance_amount: e.balance_amount,
+      actual_utilize_amount: e.actual_utilize_amount,
       consultation: "Y",
       hims_f_package_header_id: e.hims_f_package_header_id,
       saveEnable: false,
-      billdetail: false
+      billdetail: false,
+      new_visit_patient: "P"
     },
     () => {
       generateBillDetails($this);
@@ -554,7 +579,8 @@ const ClosePackageUtilize = ($this, e) => {
         method: "GET",
         data: {
           patient_id: $this.state.hims_d_patient_id,
-          package_visit_type: "M"
+          package_visit_type: "M",
+          closed: "N"
         },
         redux: {
           type: "ORDER_SERVICES_GET_DATA",

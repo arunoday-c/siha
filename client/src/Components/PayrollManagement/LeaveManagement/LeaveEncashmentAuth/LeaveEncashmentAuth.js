@@ -200,7 +200,7 @@ class LeaveEncashmentAuth extends Component {
             <AlagehAutoComplete
               div={{ className: "col form-group" }}
               label={{
-                forceLabel: "Filter by Departement",
+                forceLabel: "Filter by Sub Dept.",
                 isImp: false
               }}
               selector={{

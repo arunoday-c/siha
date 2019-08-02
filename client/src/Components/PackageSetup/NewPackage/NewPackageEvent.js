@@ -202,6 +202,22 @@ export default function NewPackageEvent() {
         querySelector: "data-validate='packagedata'",
         onSuccess: () => {
           let InputObj = $this.state;
+
+          const package_code_exit = _.filter(
+            $this.props.all_Pakage_data,
+            f => f.package_code === $this.state.package_code
+          );
+
+          if (
+            $this.state.hims_d_package_header_id === null &&
+            package_code_exit.length > 0
+          ) {
+            swalMessage({
+              type: "warning",
+              title: "Package Code Already Exist."
+            });
+            return;
+          }
           if (parseFloat(InputObj.package_amount) === 0) {
             swalMessage({
               type: "warning",
@@ -266,6 +282,12 @@ export default function NewPackageEvent() {
                 parseFloat(InputObj.advance_percentage)) /
               100;
           }
+
+          if ($this.state.from === "doctor") {
+            InputObj.approved = "Y";
+          } else {
+            InputObj.approved = "N";
+          }
           if (InputObj.hims_d_package_header_id === null) {
             InputObj.service_code = InputObj.package_code;
             InputObj.service_type_id = "14";
@@ -286,10 +308,12 @@ export default function NewPackageEvent() {
                   });
                   if ($this.state.from === "doctor") {
                     $this.setState($this.baseState, () => {
-                      $this.props.onClose &&
-                        $this.props.onClose(
-                          response.data.records.package_service_id
-                        );
+                      let obj = {
+                        package_service_id:
+                          response.data.records.package_service_id,
+                        package_code: InputObj.package_code
+                      };
+                      $this.props.onClose && $this.props.onClose(obj);
                     });
                   } else {
                     $this.setState($this.baseState, () => {

@@ -43,6 +43,7 @@ class Reports extends Component {
           <form action="none" style={{ width: "100%" }}>
             <div className="row padding-10">
               <AlagehAutoComplete
+                compireoldprops={true}
                 div={{ className: "col-3 form-group" }}
                 label={{ forceLabel: "Report Category", isImp: false }}
                 selector={{

@@ -154,10 +154,23 @@ class OfficalDetails extends Component {
                   }}
                 />
 
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Department"
+                    }}
+                  />
+                  <h6>
+                    {this.state.department_name === null ||
+                    this.state.department_name === undefined
+                      ? "------"
+                      : this.state.department_name}
+                  </h6>
+                </div>
                 <AlagehAutoComplete
-                  div={{ className: "col mandatory" }}
+                  div={{ className: "col-3 mandatory" }}
                   label={{
-                    fieldName: "sub_department_id",
+                    forceLabel: "Sub Department",
                     isImp: true
                   }}
                   selector={{

@@ -73,7 +73,13 @@ module.exports = {
         _mysql
           .executeQuery({
             query:
-              "SELECT *, hims_d_employee_id as employee_id  FROM hims_d_employee WHERE record_status ='A' and hospital_id=?" +
+              "SELECT E.*, hims_d_employee_id as employee_id, SD.sub_department_name, D.department_name,\
+                R.religion_name, DE.designation  FROM hims_d_employee E \
+                inner join hims_d_sub_department SD on E.sub_department_id = SD.hims_d_sub_department_id \
+                inner join hims_d_department D on SD.department_id = D.hims_d_department_id \
+                inner join hims_d_religion R on E.religion_id = R.hims_d_religion_id \
+                left join hims_d_designation DE on E.employee_designation_id = DE.hims_d_designation_id WHERE \
+                E.record_status = 'A'  and E.hospital_id =?" +
               _strAppend,
             values: [req.userIdentity.hospital_id],
             printQuery: true
@@ -107,8 +113,8 @@ module.exports = {
         _mysql
           .executeQuery({
             query:
-              "INSERT  INTO hims_d_employee (employee_code,full_name,arabic_name,\
-            date_of_birth,sex,primary_contact_no,email,blood_group,nationality,religion_id,\
+              "INSERT  INTO hims_d_employee (employee_code,full_name,arabic_name, date_of_birth, sex,\
+            primary_contact_no,secondary_contact_no,email,work_email,blood_group,nationality,religion_id,\
             marital_status,present_address,present_address2,present_pincode,present_city_id,\
             present_state_id,present_country_id,permanent_address,permanent_address2,permanent_pincode,\
             permanent_city_id,permanent_state_id,permanent_country_id,isdoctor,license_number, \
@@ -116,7 +122,7 @@ module.exports = {
             company_bank_id,employee_bank_name,employee_bank_ifsc_code,employee_account_number,mode_of_payment,\
             accomodation_provided,hospital_id,sub_department_id,overtime_group_id,employee_bank_id,\
             created_date,created_by,updated_date,updated_by) \
-            values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             values: [
               input.employee_code,
               input.full_name,
@@ -124,7 +130,9 @@ module.exports = {
               input.date_of_birth,
               input.sex,
               input.primary_contact_no,
+              input.secondary_contact_no,
               input.email,
+              input.work_email,
               input.blood_group,
               input.nationality,
               input.religion_id,
@@ -220,14 +228,16 @@ module.exports = {
         _mysql
           .executeQuery({
             query:
-              "UPDATE hims_d_employee SET employee_code=?,full_name=?,arabic_name=?,\
-          date_of_birth=?,sex=?,primary_contact_no=?,email=?,blood_group=?,nationality=?,religion_id=?,\
-          marital_status=?,present_address=?,present_address2=?,present_pincode=?,present_city_id=?,\
-          present_state_id=?,present_country_id=?,permanent_address=?,permanent_address2=?,permanent_pincode=?,\
-          permanent_city_id=?,permanent_state_id=?,permanent_country_id=?,isdoctor=?,license_number=?, \
-          date_of_joining=?,appointment_type=?,employee_type=?,reliving_date=?,notice_period=?,date_of_resignation=?,\
-          company_bank_id=?,employee_bank_name=?,employee_bank_ifsc_code=?,employee_account_number=?,mode_of_payment=?,\
-          accomodation_provided=?,hospital_id=?,gross_salary=?,total_earnings=?,total_deductions=?,total_contributions=?,\
+              "UPDATE hims_d_employee SET employee_code=?,full_name=?,arabic_name=?, date_of_birth=?, sex=?,\
+               primary_contact_no=?, secondary_contact_no=?, email=?, work_email=?, blood_group=?, nationality=?,\
+               religion_id=?, marital_status=?, present_address=?, present_address2=?, present_pincode=?,\
+               present_city_id=?, present_state_id=?, present_country_id=?, permanent_address=?,\
+              permanent_address2=?, permanent_pincode=?, permanent_city_id=?, permanent_state_id=?,\
+              permanent_country_id=?, isdoctor=?, license_number=?, date_of_joining=?, appointment_type=?,\
+              employee_type=?, reliving_date=?, notice_period=?, date_of_resignation=?, company_bank_id=?,\
+             employee_bank_name=?, employee_bank_ifsc_code=?,employee_account_number=?,mode_of_payment=?,\
+          accomodation_provided=?,hospital_id=?,gross_salary=?,total_earnings=?,total_deductions=?,\
+          total_contributions=?,\
           net_salary=?,cost_to_company=?,leave_salary_process=?,late_coming_rule=?,airfare_process=?,exit_date=?,\
           exclude_machine_data=?,gratuity_applicable=?,suspend_salary=?,pf_applicable=?,overtime_group_id=?,employee_group_id=?, \
           reporting_to_id=?,sub_department_id=?,employee_designation_id=?,employee_bank_id=?,\
@@ -240,7 +250,9 @@ module.exports = {
               input.date_of_birth,
               input.sex,
               input.primary_contact_no,
+              input.secondary_contact_no,
               input.email,
+              input.work_email,
               input.blood_group,
               input.nationality,
               input.religion_id,

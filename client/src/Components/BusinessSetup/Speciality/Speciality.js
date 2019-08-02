@@ -241,244 +241,268 @@ class Speciality extends Component {
   render() {
     return (
       <div className="speciality">
-        <div className="col-lg-12">
-          <div className="row">
-            <AlagehFormGroup
-              div={{ className: "col" }}
-              label={{
-                fieldName: "speciality_code",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "speciality_code",
-                value: this.state.speciality_code,
-                events: {
-                  onChange: this.changeTexts.bind(this)
-                }
-              }}
-            />
-            <AlagehFormGroup
-              div={{ className: "col" }}
-              label={{
-                fieldName: "speciality_name",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "speciality_name",
-                value: this.state.speciality_name,
-                events: {
-                  onChange: this.changeTexts.bind(this)
-                }
-              }}
-            />
+        <div className="row inner-top-search">
+          <AlagehFormGroup
+            div={{ className: "col form-group mandatory" }}
+            label={{
+              fieldName: "speciality_code",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "speciality_code",
+              value: this.state.speciality_code,
+              events: {
+                onChange: this.changeTexts.bind(this)
+              }
+            }}
+          />
+          <AlagehFormGroup
+            div={{ className: "col form-group mandatory" }}
+            label={{
+              fieldName: "speciality_name",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "speciality_name",
+              value: this.state.speciality_name,
+              events: {
+                onChange: this.changeTexts.bind(this)
+              }
+            }}
+          />
 
-            <AlagehFormGroup
-              div={{ className: "col arabic-txt-fld" }}
-              label={{
-                fieldName: "arabic_name",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "arabic_name",
-                value: this.state.arabic_name,
-                events: {
-                  onChange: this.changeTexts.bind(this)
-                }
-              }}
-            />
+          <AlagehFormGroup
+            div={{ className: "col arabic-txt-fld form-group mandatory" }}
+            label={{
+              fieldName: "arabic_name",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "arabic_name",
+              value: this.state.arabic_name,
+              events: {
+                onChange: this.changeTexts.bind(this)
+              }
+            }}
+          />
 
-            <AlagehAutoComplete
-              div={{ className: "col" }}
-              label={{
-                fieldName: "department",
-                isImp: true
-              }}
-              selector={{
-                name: "sub_department_id",
-                className: "select-fld",
-                value: this.state.sub_department_id,
-                dataSource: {
-                  textField: "sub_department_name",
-                  valueField: "hims_d_sub_department_id",
-                  data: this.state.departments
-                },
-                onChange: this.dropDownHandle.bind(this)
-              }}
-            />
+          <AlagehAutoComplete
+            div={{ className: "col form-group mandatory" }}
+            label={{
+              fieldName: "department",
+              isImp: true
+            }}
+            selector={{
+              name: "sub_department_id",
+              className: "select-fld",
+              value: this.state.sub_department_id,
+              dataSource: {
+                textField: "sub_department_name",
+                valueField: "hims_d_sub_department_id",
+                data: this.state.departments
+              },
+              onChange: this.dropDownHandle.bind(this)
+            }}
+          />
 
-            <div className="col margin-top-15">
-              <button
-                type="submit"
-                onClick={this.addSpeciality.bind(this)}
-                className="btn btn-primary"
-              >
-                Add to List
-              </button>
-            </div>
+          <div className="col margin-top-15">
+            <button
+              type="submit"
+              onClick={this.addSpeciality.bind(this)}
+              className="btn btn-primary"
+            >
+              Add to List
+            </button>
           </div>
-          <div
-            className="form-details"
-            data-validate="specialityDiv"
-            id="shiftGridCntr"
-          >
-            <AlgaehDataGrid
-              id="shift-grid"
-              datavalidate="data-validate='specialityDiv'"
-              columns={[
-                {
-                  fieldName: "speciality_code",
-                  label: (
-                    <AlgaehLabel label={{ fieldName: "speciality_code" }} />
-                  ),
-                  disabled: true
-                },
-                {
-                  fieldName: "speciality_name",
-                  label: (
-                    <AlgaehLabel label={{ fieldName: "speciality_name" }} />
-                  ),
-                  editorTemplate: row => {
-                    return (
-                      <AlagehFormGroup
-                        div={{ className: "col" }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "speciality_name",
-                          value: row.speciality_name,
-                          events: {
-                            onChange: this.changeGridEditors.bind(this, row)
-                          },
-                          others: {
-                            errormessage: "Name - cannot be blank",
-                            required: true
-                          }
-                        }}
-                      />
-                    );
-                  }
-                },
-                {
-                  fieldName: "arabic_name",
-                  label: <AlgaehLabel label={{ fieldName: "arabic_name" }} />,
-                  editorTemplate: row => {
-                    return (
-                      <AlagehFormGroup
-                        div={{ className: "col" }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "arabic_name",
-                          value: row.arabic_name,
-                          events: {
-                            onChange: this.changeGridEditors.bind(this, row)
-                          },
-                          others: {
-                            errormessage: "Arabic Name - cannot be blank",
-                            required: true
-                          }
-                        }}
-                      />
-                    );
-                  }
-                },
-                {
-                  fieldName: "sub_department_id",
-                  label: (
-                    <AlgaehLabel label={{ fieldName: "department_name" }} />
-                  ),
-                  displayTemplate: row => {
-                    let x = Enumerable.from(this.state.departments)
-                      .where(
-                        w =>
-                          w.hims_d_sub_department_id === row.sub_department_id
-                      )
-                      .firstOrDefault();
+        </div>
+        <div className="portlet portlet-bordered margin-bottom-15">
+          <div className="portlet-body">
+            <div className="row">
+              <div className="col-lg-12">
+                <div
+                  className="form-details"
+                  data-validate="specialityDiv"
+                  id="specialityGridCntr"
+                >
+                  <AlgaehDataGrid
+                    id="specialityGrid"
+                    datavalidate="data-validate='specialityDiv'"
+                    columns={[
+                      {
+                        fieldName: "speciality_code",
+                        label: (
+                          <AlgaehLabel
+                            label={{ fieldName: "speciality_code" }}
+                          />
+                        ),
+                        disabled: true
+                      },
+                      {
+                        fieldName: "speciality_name",
+                        label: (
+                          <AlgaehLabel
+                            label={{ fieldName: "speciality_name" }}
+                          />
+                        ),
+                        editorTemplate: row => {
+                          return (
+                            <AlagehFormGroup
+                              div={{ className: "col" }}
+                              textBox={{
+                                className: "txt-fld",
+                                name: "speciality_name",
+                                value: row.speciality_name,
+                                events: {
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  )
+                                },
+                                others: {
+                                  errormessage: "Name - cannot be blank",
+                                  required: true
+                                }
+                              }}
+                            />
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "arabic_name",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "arabic_name" }} />
+                        ),
+                        editorTemplate: row => {
+                          return (
+                            <AlagehFormGroup
+                              div={{ className: "col" }}
+                              textBox={{
+                                className: "txt-fld",
+                                name: "arabic_name",
+                                value: row.arabic_name,
+                                events: {
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  )
+                                },
+                                others: {
+                                  errormessage: "Arabic Name - cannot be blank",
+                                  required: true
+                                }
+                              }}
+                            />
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "sub_department_id",
+                        label: (
+                          <AlgaehLabel
+                            label={{ fieldName: "department_name" }}
+                          />
+                        ),
+                        displayTemplate: row => {
+                          let x = Enumerable.from(this.state.departments)
+                            .where(
+                              w =>
+                                w.hims_d_sub_department_id ===
+                                row.sub_department_id
+                            )
+                            .firstOrDefault();
 
-                    return (
-                      <span>
-                        {x !== undefined ? x.sub_department_name : ""}
-                      </span>
-                    );
-                  },
-                  editorTemplate: row => {
-                    return (
-                      <AlagehAutoComplete
-                        div={{ className: "col" }}
-                        selector={{
-                          name: "sub_department_id",
-                          className: "select-fld",
-                          value: row.sub_department_id,
-                          dataSource: {
-                            textField: "sub_department_name",
-                            valueField: "hims_d_sub_department_id",
-                            data: this.state.departments
-                          },
-                          others: {
-                            errormessage: "Status - cannot be blank",
-                            required: true
-                          },
-                          onChange: this.changeGridEditors.bind(this, row)
-                        }}
-                      />
-                    );
-                  }
-                },
-                // {
-                //   fieldName: "effective_start_date",
-                //   label: (
-                //     <AlgaehLabel
-                //       label={{ fieldName: "effective_start_date" }}
-                //     />
-                //   )
-                // },
-                {
-                  fieldName: "speciality_status",
-                  label: <label className="style_Label">Status</label>,
-                  displayTemplate: row => {
-                    return row.speciality_status === "A"
-                      ? "Active"
-                      : row.speciality_status === "I"
-                      ? "Inactive"
-                      : "----------";
-                  },
-                  editorTemplate: row => {
-                    return (
-                      <AlagehAutoComplete
-                        selector={{
-                          name: "speciality_status",
-                          className: "select-fld",
-                          value: row.speciality_status,
-                          dataSource: {
-                            textField: "name",
-                            valueField: "value",
-                            data: GlobalVariables.FORMAT_STATUS
-                          },
-                          others: {
-                            errormessage: "Status - cannot be blank",
-                            required: true
-                          },
-                          onChange: this.changeGridEditors.bind(this, row)
-                        }}
-                      />
-                    );
-                  }
-                }
-              ]}
-              keyId="hims_d_employee_speciality_id"
-              dataSource={{
-                data: this.state.specialities
-              }}
-              filter={true}
-              isEditable={true}
-              paging={{ page: 0, rowsPerPage: 10 }}
-              events={{
-                onEdit: () => {},
-                onDelete: this.deleteSpeciality.bind(this),
-                onDone: this.updateSpeciality.bind(this)
-              }}
-            />
+                          return (
+                            <span>
+                              {x !== undefined ? x.sub_department_name : ""}
+                            </span>
+                          );
+                        },
+                        editorTemplate: row => {
+                          return (
+                            <AlagehAutoComplete
+                              div={{ className: "col" }}
+                              selector={{
+                                name: "sub_department_id",
+                                className: "select-fld",
+                                value: row.sub_department_id,
+                                dataSource: {
+                                  textField: "sub_department_name",
+                                  valueField: "hims_d_sub_department_id",
+                                  data: this.state.departments
+                                },
+                                others: {
+                                  errormessage: "Status - cannot be blank",
+                                  required: true
+                                },
+                                onChange: this.changeGridEditors.bind(this, row)
+                              }}
+                            />
+                          );
+                        }
+                      },
+                      // {
+                      //   fieldName: "effective_start_date",
+                      //   label: (
+                      //     <AlgaehLabel
+                      //       label={{ fieldName: "effective_start_date" }}
+                      //     />
+                      //   )
+                      // },
+                      {
+                        fieldName: "speciality_status",
+                        label: <label className="style_Label">Status</label>,
+                        displayTemplate: row => {
+                          return row.speciality_status === "A"
+                            ? "Active"
+                            : row.speciality_status === "I"
+                            ? "Inactive"
+                            : "----------";
+                        },
+                        editorTemplate: row => {
+                          return (
+                            <AlagehAutoComplete
+                              selector={{
+                                name: "speciality_status",
+                                className: "select-fld",
+                                value: row.speciality_status,
+                                dataSource: {
+                                  textField: "name",
+                                  valueField: "value",
+                                  data: GlobalVariables.FORMAT_STATUS
+                                },
+                                others: {
+                                  errormessage: "Status - cannot be blank",
+                                  required: true
+                                },
+                                onChange: this.changeGridEditors.bind(this, row)
+                              }}
+                            />
+                          );
+                        }
+                      }
+                    ]}
+                    keyId="hims_d_employee_speciality_id"
+                    dataSource={{
+                      data: this.state.specialities
+                    }}
+                    filter={true}
+                    isEditable={true}
+                    actions={{
+                      allowDelete: false
+                    }}
+                    paging={{ page: 0, rowsPerPage: 10 }}
+                    events={{
+                      onEdit: () => {},
+                      onDelete: this.deleteSpeciality.bind(this),
+                      onDone: this.updateSpeciality.bind(this)
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -62,7 +62,7 @@ let apiAuth = (req, res, next) => {
           "SELECT  hims_d_hospital_id,hospital_code,hospital_name,arabic_hospital_name, \
           username FROM algaeh_d_api_auth,hims_d_hospital WHERE password=md5(?)\
           AND algaeh_d_api_auth.record_status='A' AND username =? and hims_d_hospital.algaeh_api_auth_id =\
-          algaeh_d_api_auth. algaeh_d_api_auth_id;select * from algaeh_d_app_module;",
+          algaeh_d_api_auth. algaeh_d_api_auth_id and hims_d_hospital.record_status='A';select * from algaeh_d_app_module;",
         values: [inputData.password, inputData.username]
       })
       .then(result => {

@@ -1001,7 +1001,7 @@ let load_orders_for_bill = (req, res, next) => {
           S.`vat_percent`, S.`service_status` FROM `hims_f_ordered_services` OS,  `hims_d_services` S WHERE \
           OS.services_id = S.hims_d_services_id and  OS.`record_status`='A' and visit_id=? AND OS.`billed`='N'; \
             SELECT  OS.`hims_f_ordered_inventory_id` as ordered_inventory_id, OS.`patient_id`, OS.`visit_id`,\
-          OS.`doctor_id`, OS.`service_type_id`, \
+          OS.`doctor_id`, OS.`service_type_id`, OS.`trans_package_detail_id`,\
           OS.`services_id`, OS.`insurance_yesno`, OS.`insurance_provider_id`, OS.`insurance_sub_id`, \
           OS.`network_id`, OS.`insurance_network_office_id`, OS.`policy_number`, OS.`pre_approval`,\
           OS.`apprv_status`, OS.`billed`, OS.`quantity`, OS.`unit_cost`, OS.`gross_amount`, OS.`discount_amout`,\
@@ -1667,6 +1667,9 @@ let getPatientPackage = (req, res, next) => {
       str += ` and H.package_visit_type='${req.query.package_visit_type}' `;
     }
 
+    if (req.query.closed != null) {
+      str += ` and H.closed='${req.query.closed}' `;
+    }
     _mysql
       .executeQuery({
         query: `select hims_f_package_header_id, package_id, patient_id, visit_id, doctor_id, service_type_id,\
@@ -1678,14 +1681,14 @@ let getPatientPackage = (req, res, next) => {
               sec_deductable_percentage, sec_deductable_amount, sec_company_res,sec_company_tax, \
               sec_company_paybale, sec_copay_percntage, sec_copay_amount, H.advance_amount, balance_amount,\ actual_utilize_amount, actual_amount, utilize_amount, closed,closed_type,closed_remarks,\
               H.package_type,H.package_visit_type,PM.advance_amount as collect_advance, H.hospital_id,\
-              PM.package_name,P.full_name,P.patient_code, PM.cancellation_policy, PM.cancellation_amount as can_amt \
-              from hims_f_package_header H, \
+              PM.package_name,P.full_name,P.patient_code, PM.cancellation_policy, \
+              PM.cancellation_amount as can_amt, PM.package_code from hims_f_package_header H, \
               hims_d_package_header PM, hims_f_patient P where H.patient_id = P.hims_d_patient_id \
-              and PM.hims_d_package_header_id = H.package_id and closed='N' and  H.record_status='A'\
+              and PM.hims_d_package_header_id = H.package_id and  H.record_status='A'\
               and H.hospital_id=?  ${str};
               select D.*,0 as quantity, D.service_id as services_id from hims_f_package_header H  \
               inner join hims_f_package_detail D\
-              on H.hims_f_package_header_id=D.package_header_id where H.closed='N' and  H.record_status='A'\
+              on H.hims_f_package_header_id=D.package_header_id where H.record_status='A'\
               and H.hospital_id=?  ${str};  `,
         values: [req.userIdentity.hospital_id, req.userIdentity.hospital_id],
         printQuery: true

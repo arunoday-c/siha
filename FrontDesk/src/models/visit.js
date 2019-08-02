@@ -111,7 +111,6 @@ module.exports = {
       utilities.logger().log("inputParam: ", inputParam);
 
       const internalInsertPatientVisitData = () => {
-        inputParam.new_visit_patient = "Y";
         if (inputParam.age_in_years == null) {
           let fromDate = moment(inputParam.date_of_birth);
           let toDate = new Date();
@@ -125,13 +124,18 @@ module.exports = {
           inputParam.age_in_days = days;
         }
 
-        if (
-          (existingExparyDate != null || existingExparyDate != undefined) &&
-          moment(existingExparyDate).format("YYYY-MM-DD") >= today
-        ) {
-          inputParam.visit_expiery_date = existingExparyDate;
-          inputParam.episode_id = currentPatientEpisodeNo;
-          inputParam.new_visit_patient = "N";
+        if (inputParam.new_visit_patient === "P") {
+          inputParam.new_visit_patient = "P";
+        } else {
+          inputParam.new_visit_patient = "Y";
+          if (
+            (existingExparyDate != null || existingExparyDate != undefined) &&
+            moment(existingExparyDate).format("YYYY-MM-DD") >= today
+          ) {
+            inputParam.visit_expiery_date = existingExparyDate;
+            inputParam.episode_id = currentPatientEpisodeNo;
+            inputParam.new_visit_patient = "N";
+          }
         }
 
         _mysql
@@ -240,11 +244,17 @@ module.exports = {
             printQuery: true
           })
           .then(expResult => {
+            utilities.logger().log("existing_plan: ", inputParam.existing_plan);
+            utilities.logger().log("expResult: ", expResult);
             if (inputParam.existing_plan === "Y") {
               inputParam.visit_expiery_date = moment(
                 expResult[0]["visit_expiery_date"]
               ).format("YYYY-MM-DD");
               inputParam.episode_id = expResult[0]["episode_id"];
+              req.body.episode_id = inputParam.episode_id;
+              utilities
+                .logger()
+                .log("existing_plan: ", inputParam.existing_plan);
               internalInsertPatientVisitData();
               //Data
             } else {

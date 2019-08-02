@@ -189,298 +189,345 @@ class BankMaster extends Component {
   render() {
     return (
       <div className="BankMasterScreen">
-        <div className="col-lg-12">
-          <div className="row">
-            <AlagehFormGroup
-              div={{ className: "col mandatory" }}
-              label={{
-                forceLabel: "Bank Full Name",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "bank_name",
-                value: this.state.bank_name,
-                events: { onChange: this.texthandle.bind(this) },
-                option: {
-                  type: "text"
-                }
-              }}
-            />
-            <AlagehFormGroup
-              div={{ className: "col mandatory" }}
-              label={{
-                forceLabel: "Bank Short Name",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "bank_short_name",
-                value: this.state.bank_short_name,
-                events: { onChange: this.texthandle.bind(this) },
-                option: {
-                  type: "text"
-                }
-              }}
-            />
-            <AlagehFormGroup
-              div={{ className: "col mandatory" }}
-              label={{
-                forceLabel: "BIC (SWIFT) Code",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "bank_code",
-                value: this.state.bank_code,
-                events: { onChange: this.texthandle.bind(this) },
-                option: {
-                  type: "text"
-                }
-              }}
-            />
+        <div className="row inner-top-search">
+          <AlagehFormGroup
+            div={{ className: "col-3 form-group mandatory" }}
+            label={{
+              forceLabel: "Bank Full Name",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "bank_name",
+              value: this.state.bank_name,
+              events: { onChange: this.texthandle.bind(this) },
+              option: {
+                type: "text"
+              }
+            }}
+          />
+          <AlagehFormGroup
+            div={{ className: "col-2 mandatory" }}
+            label={{
+              forceLabel: "Bank Short Name",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "bank_short_name",
+              value: this.state.bank_short_name,
+              events: { onChange: this.texthandle.bind(this) },
+              option: {
+                type: "text"
+              }
+            }}
+          />
+          <AlagehFormGroup
+            div={{ className: "col-2 mandatory" }}
+            label={{
+              forceLabel: "BIC (SWIFT) Code",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "bank_code",
+              value: this.state.bank_code,
+              events: { onChange: this.texthandle.bind(this) },
+              option: {
+                type: "text"
+              }
+            }}
+          />
 
-            <AlagehFormGroup
-              div={{ className: "col-4" }}
-              label={{
-                forceLabel: "Address",
-                isImp: false
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "address1",
-                value: this.state.address1,
-                events: { onChange: this.texthandle.bind(this) },
-                option: {
-                  type: "text"
-                }
-              }}
-            />
+          <AlagehFormGroup
+            div={{ className: "col-3" }}
+            label={{
+              forceLabel: "Address",
+              isImp: false
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "address1",
+              value: this.state.address1,
+              events: { onChange: this.texthandle.bind(this) },
+              option: {
+                type: "text"
+              }
+            }}
+          />
+          <AlagehFormGroup
+            div={{ className: "col-2" }}
+            label={{
+              forceLabel: "Contact Person",
+              isImp: false
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "contact_person",
+              value: this.state.contact_person,
+              events: { onChange: this.texthandle.bind(this) },
+              option: {
+                type: "text"
+              }
+            }}
+          />
+
+          <AlagehFormGroup
+            div={{ className: "col-2 form-group" }}
+            label={{
+              forceLabel: "Contact Number"
+            }}
+            textBox={{
+              value: this.state.contact_number,
+              className: "txt-fld",
+              name: "contact_number",
+
+              events: {
+                onChange: this.texthandle.bind(this)
+              },
+              others: {
+                placeholder: "(+01)123-456-7890",
+                type: "number"
+              }
+            }}
+          />
+
+          <div className="col">
+            <button
+              style={{ marginTop: 21 }}
+              className="btn btn-primary"
+              onClick={this.addBank.bind(this)}
+            >
+              Add to List
+            </button>
           </div>
-          <div className="row">
-            <AlagehFormGroup
-              div={{ className: "col" }}
-              label={{
-                forceLabel: "Contact Person",
-                isImp: false
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "contact_person",
-                value: this.state.contact_person,
-                events: { onChange: this.texthandle.bind(this) },
-                option: {
-                  type: "text"
-                }
-              }}
-            />
-
-            <AlagehFormGroup
-              div={{ className: "col" }}
-              label={{
-                forceLabel: "Contact Number"
-              }}
-              textBox={{
-                value: this.state.contact_number,
-                className: "txt-fld",
-                name: "contact_number",
-
-                events: {
-                  onChange: this.texthandle.bind(this)
-                },
-                others: {
-                  placeholder: "(+01)123-456-7890",
-                  type: "number"
-                }
-              }}
-            />
-
-            <div className="col">
-              <button
-                style={{ marginTop: 21 }}
-                className="btn btn-primary"
-                onClick={this.addBank.bind(this)}
-              >
-                Add to List
-              </button>
+        </div>
+        <div className="portlet portlet-bordered margin-bottom-15">
+          <div className="portlet-body">
+            <div className="row">
+              <div className="col-lg-12">
+                <div data-validate="bankDiv" id="BankMasterGrid_Cntr">
+                  <AlgaehDataGrid
+                    id="BankMasterGrid"
+                    datavalidate="data-validate='bankDiv'"
+                    columns={[
+                      {
+                        fieldName: "bank_name",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Bank Name" }} />
+                        ),
+                        editorTemplate: row => {
+                          return (
+                            <AlagehFormGroup
+                              div={{ className: "col" }}
+                              textBox={{
+                                className: "txt-fld",
+                                name: "bank_name",
+                                value: row.bank_name,
+                                events: {
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  )
+                                },
+                                others: {
+                                  errormessage: "Name - cannot be blank",
+                                  required: true
+                                }
+                              }}
+                            />
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "bank_short_name",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Short Name" }} />
+                        ),
+                        editorTemplate: row => {
+                          return (
+                            <AlagehFormGroup
+                              div={{ className: "col" }}
+                              textBox={{
+                                className: "txt-fld",
+                                name: "bank_short_name",
+                                value: row.bank_short_name,
+                                events: {
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  )
+                                },
+                                others: {
+                                  errormessage: "Short Name - cannot be blank",
+                                  required: true
+                                }
+                              }}
+                            />
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "bank_code",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "BIC ( SWIFT)" }} />
+                        ),
+                        editorTemplate: row => {
+                          return (
+                            <AlagehFormGroup
+                              div={{ className: "col" }}
+                              textBox={{
+                                className: "txt-fld",
+                                name: "bank_code",
+                                value: row.bank_code,
+                                events: {
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  )
+                                },
+                                others: {
+                                  errormessage: "BIC - cannot be blank",
+                                  required: true
+                                }
+                              }}
+                            />
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "address1",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Address" }} />
+                        ),
+                        editorTemplate: row => {
+                          return (
+                            <AlagehFormGroup
+                              div={{ className: "col" }}
+                              textBox={{
+                                className: "txt-fld",
+                                name: "address1",
+                                value: row.address1,
+                                events: {
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  )
+                                }
+                              }}
+                            />
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "contact_person",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Contact Person" }}
+                          />
+                        ),
+                        editorTemplate: row => {
+                          return (
+                            <AlagehFormGroup
+                              div={{ className: "col" }}
+                              textBox={{
+                                className: "txt-fld",
+                                name: "contact_person",
+                                value: row.contact_person,
+                                events: {
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  )
+                                }
+                              }}
+                            />
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "contact_number",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Contact Number" }}
+                          />
+                        ),
+                        editorTemplate: row => {
+                          return (
+                            <AlagehFormGroup
+                              div={{ className: "col" }}
+                              textBox={{
+                                className: "txt-fld",
+                                name: "contact_number",
+                                value: row.contact_number,
+                                events: {
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  )
+                                }
+                              }}
+                            />
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "active_status",
+                        label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {row.active_status === "A"
+                                ? "Active"
+                                : "Inactive"}
+                            </span>
+                          );
+                        },
+                        editorTemplate: row => {
+                          return (
+                            <AlagehAutoComplete
+                              div={{ className: "col" }}
+                              selector={{
+                                name: "active_status",
+                                className: "select-fld",
+                                value: row.active_status,
+                                dataSource: {
+                                  textField: "name",
+                                  valueField: "value",
+                                  data: GlobalVariables.FORMAT_STATUS
+                                },
+                                others: {
+                                  errormessage: "Status - cannot be blank",
+                                  required: true
+                                },
+                                onChange: this.changeGridEditors.bind(this, row)
+                              }}
+                            />
+                          );
+                        }
+                      }
+                    ]}
+                    keyId="BankMasterGrid"
+                    dataSource={{
+                      data:
+                        this.props.banks === undefined ? [] : this.props.banks
+                    }}
+                    filter={true}
+                    isEditable={true}
+                    actions={{
+                      allowDelete: false
+                    }}
+                    paging={{ page: 0, rowsPerPage: 10 }}
+                    events={{
+                      onEdit: () => {},
+                      onDelete: this.deleteBankMaster.bind(this),
+                      onDone: this.updateBankMaster.bind(this)
+                    }}
+                    others={{}}
+                  />
+                </div>
+              </div>
             </div>
-          </div>
-          <div data-validate="bankDiv" id="BankMasterGrid_Cntr">
-            <AlgaehDataGrid
-              id="BankMasterGrid"
-              datavalidate="data-validate='bankDiv'"
-              columns={[
-                {
-                  fieldName: "bank_name",
-                  label: <AlgaehLabel label={{ forceLabel: "Bank Name" }} />,
-                  editorTemplate: row => {
-                    return (
-                      <AlagehFormGroup
-                        div={{ className: "col" }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "bank_name",
-                          value: row.bank_name,
-                          events: {
-                            onChange: this.changeGridEditors.bind(this, row)
-                          },
-                          others: {
-                            errormessage: "Name - cannot be blank",
-                            required: true
-                          }
-                        }}
-                      />
-                    );
-                  }
-                },
-                {
-                  fieldName: "bank_short_name",
-                  label: <AlgaehLabel label={{ forceLabel: "Short Name" }} />,
-                  editorTemplate: row => {
-                    return (
-                      <AlagehFormGroup
-                        div={{ className: "col" }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "bank_short_name",
-                          value: row.bank_short_name,
-                          events: {
-                            onChange: this.changeGridEditors.bind(this, row)
-                          },
-                          others: {
-                            errormessage: "Short Name - cannot be blank",
-                            required: true
-                          }
-                        }}
-                      />
-                    );
-                  }
-                },
-                {
-                  fieldName: "bank_code",
-                  label: <AlgaehLabel label={{ forceLabel: "BIC ( SWIFT)" }} />,
-                  editorTemplate: row => {
-                    return (
-                      <AlagehFormGroup
-                        div={{ className: "col" }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "bank_code",
-                          value: row.bank_code,
-                          events: {
-                            onChange: this.changeGridEditors.bind(this, row)
-                          },
-                          others: {
-                            errormessage: "BIC - cannot be blank",
-                            required: true
-                          }
-                        }}
-                      />
-                    );
-                  }
-                },
-                {
-                  fieldName: "address1",
-                  label: <AlgaehLabel label={{ forceLabel: "Address" }} />,
-                  editorTemplate: row => {
-                    return (
-                      <AlagehFormGroup
-                        div={{ className: "col" }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "address1",
-                          value: row.address1,
-                          events: {
-                            onChange: this.changeGridEditors.bind(this, row)
-                          }
-                        }}
-                      />
-                    );
-                  }
-                },
-                {
-                  fieldName: "contact_person",
-                  label: (
-                    <AlgaehLabel label={{ forceLabel: "Contact Person" }} />
-                  ),
-                  editorTemplate: row => {
-                    return (
-                      <AlagehFormGroup
-                        div={{ className: "col" }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "contact_person",
-                          value: row.contact_person,
-                          events: {
-                            onChange: this.changeGridEditors.bind(this, row)
-                          }
-                        }}
-                      />
-                    );
-                  }
-                },
-                {
-                  fieldName: "contact_number",
-                  label: (
-                    <AlgaehLabel label={{ forceLabel: "Contact Number" }} />
-                  ),
-                  editorTemplate: row => {
-                    return (
-                      <AlagehFormGroup
-                        div={{ className: "col" }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "contact_number",
-                          value: row.contact_number,
-                          events: {
-                            onChange: this.changeGridEditors.bind(this, row)
-                          }
-                        }}
-                      />
-                    );
-                  }
-                },
-                {
-                  fieldName: "active_status",
-                  label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
-                  editorTemplate: row => {
-                    return (
-                      <AlagehAutoComplete
-                        div={{ className: "col" }}
-                        selector={{
-                          name: "active_status",
-                          className: "select-fld",
-                          value: row.active_status,
-                          dataSource: {
-                            textField: "name",
-                            valueField: "value",
-                            data: GlobalVariables.FORMAT_STATUS
-                          },
-                          others: {
-                            errormessage: "Status - cannot be blank",
-                            required: true
-                          },
-                          onChange: this.changeGridEditors.bind(this, row)
-                        }}
-                      />
-                    );
-                  }
-                }
-              ]}
-              keyId="BankMasterGrid"
-              dataSource={{
-                data: this.props.banks === undefined ? [] : this.props.banks
-              }}
-              filter={true}
-              isEditable={true}
-              paging={{ page: 0, rowsPerPage: 10 }}
-              events={{
-                onEdit: () => {},
-                onDelete: this.deleteBankMaster.bind(this),
-                onDone: this.updateBankMaster.bind(this)
-              }}
-              others={{}}
-            />
           </div>
         </div>
       </div>

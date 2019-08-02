@@ -8,39 +8,127 @@ import AlgaehModalPopUp from "../../../Wrapper/modulePopUp";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import isEqual from "lodash/isEqual";
-class ProjectAssign extends Component {
+
+class ProjectEmpAssign extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      employeeList: [],
+      employees: [],
       projectList: [],
       projects: [],
-      employee: {}
+      projEmp: [],
+      from_date: moment()
+        .startOf("month")
+        .format("YYYY/MM/DD"),
+      to_date: moment()
+        .endOf("month")
+        .format("YYYY/MM/DD"),
+      allChecked: false
     };
+  }
+
+  componentDidMount() {
+    if (this.props.open) {
+      this.setState({
+        ...this.props.data
+      });
+    }
   }
 
   projectHandler(data, e) {
     this.setState(data);
   }
 
-  componentDidMount() {
+  addEmployees(row) {
+    let myArray = this.state.projEmp;
+    let filtered = myArray.filter(
+      emp => emp.employee_code === row.employee_code
+    );
+    const filCheck = filtered.length === 0;
+    let newArr;
+
+    if (filCheck) {
+      myArray.push(row);
+    } else {
+      newArr = myArray.filter(emp => emp.employee_code !== row.employee_code);
+    }
+
+    this.setState(
+      {
+        projEmp: filCheck ? myArray : newArr
+      },
+      () => this.isAllChecked()
+    );
+  }
+
+  isAllChecked() {
+    const { projEmp, employees } = this.state;
+    const check = isEqual(projEmp, employees);
     this.setState({
-      employee: this.props.sendRow,
-      ...this.props.data
+      allChecked: check
     });
   }
+  // componentWillReceiveProps(nextProps) {
+  //   if (nextProps.open === true) {
+  //     let myArray = this.state.projEmp;
+  //     myArray.push(nextProps.sendRow);
+  //     this.setState({
+  //       ...nextProps.data,
+  //       projEmp: myArray
+  //     });
+  //   } else {
+  //     this.setState({
+  //       projEmp: [],
+  //       employeeList: this.state.employees,
+  //       projectList: this.state.projects
+  //     });
+  //   }
+  // }
 
   SearchHandler(e) {
-    let ProjectSearch = e.target.value.toLowerCase(),
-      projects = this.state.projects.filter(el => {
-        let searchValue = el.project_desc.toLowerCase();
-        return searchValue.indexOf(ProjectSearch) !== -1;
-      });
+    switch (e.target.name) {
+      case "searchEmployees":
+        let search = e.target.value.toLowerCase(),
+          employees = this.state.employees.filter(el => {
+            let searchValue = el.employee_name.toLowerCase();
+            return searchValue.indexOf(search) !== -1;
+          });
 
-    this.setState({
-      projectList: projects,
-      searchprojects: e.target.value
-    });
+        this.setState({
+          employeeList: employees,
+          searchEmployees: e.target.value
+        });
+        break;
+
+      default:
+        let ProjectSearch = e.target.value.toLowerCase(),
+          projects = this.state.projects.filter(el => {
+            let searchValue = el.project_desc.toLowerCase();
+            return searchValue.indexOf(ProjectSearch) !== -1;
+          });
+
+        this.setState({
+          projectList: projects,
+          searchprojects: e.target.value
+        });
+        break;
+    }
   }
+
+  checkAll = e => {
+    if (e.target.checked) {
+      this.setState({
+        projEmp: this.state.employees,
+        allChecked: true
+      });
+    } else {
+      this.setState({
+        projEmp: [],
+        allChecked: false
+      });
+    }
+  };
 
   processAssignment() {
     if (
@@ -51,7 +139,10 @@ class ProjectAssign extends Component {
         title: "Please Select a project to assign",
         type: "warning"
       });
-    } else if (!this.state.employee.hasOwnProperty("employee_code")) {
+    } else if (
+      this.state.projEmp.length === 0 ||
+      this.state.projEmp === undefined
+    ) {
       swalMessage({
         title: "Please select atleast one employee to asssign project",
         type: "warning"
@@ -69,7 +160,7 @@ class ProjectAssign extends Component {
         from_date: moment(this.state.from_date).format("YYYY-MM-DD"),
         to_date: moment(this.state.to_date).format("YYYY-MM-DD"),
         project_id: this.state.hims_d_project_id,
-        employees: [this.state.employee],
+        employees: this.state.projEmp,
         hospital_id: this.state.hospital_id
       };
 
@@ -102,16 +193,21 @@ class ProjectAssign extends Component {
   }
 
   render() {
+    const _employeeList =
+      this.state.employeeList.length === 0
+        ? this.state.employees
+        : this.state.employeeList;
+
     const _projectList =
       this.state.projectList.length === 0
         ? this.state.projects
         : this.state.projectList;
-    const { employee } = this.state;
+
     return (
       <AlgaehModalPopUp
         class="projectAssignModal"
-        openPopup={this.props.open}
         title="Project Assign"
+        openPopup={this.props.open}
         events={{
           onClose: this.props.onClose
         }}
@@ -172,6 +268,7 @@ class ProjectAssign extends Component {
               <div className="col-4">
                 <h6>Select Project</h6>
                 <div className="row">
+                  {" "}
                   <AlagehFormGroup
                     div={{ className: "col" }}
                     textBox={{
@@ -219,7 +316,10 @@ class ProjectAssign extends Component {
                           }}
                         >
                           <span>
-                            {`${data.project_desc} (${data.project_code})`}
+                            {data.project_desc +
+                              " (" +
+                              data.project_code +
+                              ") "}
                           </span>
                         </label>
                       </li>
@@ -228,7 +328,7 @@ class ProjectAssign extends Component {
                 </ul>
               </div>
               <div className="col-8">
-                {/* <h6>Assign Employee</h6>
+                <h6>Assign Employee</h6>
                 <div className="row">
                   <AlagehFormGroup
                     div={{ className: "col" }}
@@ -249,18 +349,37 @@ class ProjectAssign extends Component {
                       }
                     }}
                   />
-                </div> */}
+                </div>
 
                 <ul className="projEmployeeList">
                   <li>
-                    <p>Selected Employee</p>
+                    <span>
+                      <input
+                        type="checkbox"
+                        name="choose-all"
+                        checked={this.state.allChecked}
+                        onChange={this.checkAll}
+                        disabled={this.state.searchEmployees}
+                      />
+                    </span>
+                    <p>Employee Names</p>
                   </li>
-                  <li>
-                    <p>
-                      <b>{employee.employee_name}</b>
-                      <small>{employee.employee_code}</small>
-                    </p>
-                  </li>
+                  {_employeeList.map((data, index) => (
+                    <li key={index}>
+                      <span>
+                        <input
+                          id={data.employee_code}
+                          type="checkbox"
+                          checked={this.state.projEmp.includes(data)}
+                          onChange={this.addEmployees.bind(this, data)}
+                        />
+                      </span>
+                      <p htmlFor={data.employee_code}>
+                        <b>{data.employee_name}</b>
+                        <small>{data.employee_code}</small>
+                      </p>
+                    </li>
+                  ))}
                 </ul>
               </div>
             </div>
@@ -297,4 +416,4 @@ class ProjectAssign extends Component {
   }
 }
 
-export default ProjectAssign;
+export default ProjectEmpAssign;

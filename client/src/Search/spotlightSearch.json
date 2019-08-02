@@ -573,12 +573,22 @@
         "label": "Name"
       },
       {
-        "fieldName": "arabic_name",
-        "label": "Arabic Name"
+        "fieldName": "sub_department_name",
+        "label": "Sub Department"
       },
       {
-        "fieldName": "primary_contact_no",
-        "label": "Contact Number"
+        "fieldName": "designation",
+        "label": "Designation"
+      }
+    ],
+    "loginNewEmployee": [
+      {
+        "fieldName": "employee_code",
+        "label": "Employee Code"
+      },
+      {
+        "fieldName": "full_name",
+        "label": "Name"
       }
     ]
   },

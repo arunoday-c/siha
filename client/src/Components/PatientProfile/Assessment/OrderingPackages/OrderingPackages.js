@@ -185,7 +185,6 @@ class OrderingPackages extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    
     if (
       nextProps.existinginsurance !== undefined &&
       nextProps.existinginsurance.length !== 0
@@ -224,7 +223,6 @@ class OrderingPackages extends Component {
   }
 
   ShowPackageDetail(row) {
-    
     let orderservicesdata = this.state.orderservicesdata;
     let selected_row_index = orderservicesdata.indexOf(row);
     this.setState({
@@ -330,6 +328,7 @@ class OrderingPackages extends Component {
                     service_name,
                     service_type,
                     p_visit_type,
+                    package_code,
                     p_type
                   }) => {
                     let properStyle;
@@ -351,6 +350,7 @@ class OrderingPackages extends Component {
                         <div className="col-12 padd-10">
                           <h6 className="title">
                             {_.startCase(_.toLower(service_name))}
+                            {_.startCase(_.toLower(package_code))}
                             <span className="service_type">
                               ({_.startCase(_.toLower(service_type))}) (
                               {_.startCase(_.toLower(p_type))}) (
@@ -477,7 +477,16 @@ class OrderingPackages extends Component {
                           );
                         }
                       },
+                      {
+                        fieldName: "package_code",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "package_code" }} />
+                        ),
 
+                        others: {
+                          minWidth: 200
+                        }
+                      },
                       {
                         fieldName: "services_id",
                         label: (

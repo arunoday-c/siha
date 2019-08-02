@@ -3,6 +3,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
+import extend from "extend";
 import "./earnings_deductions.css";
 import {
   AlagehAutoComplete,
@@ -35,7 +36,10 @@ class EarningsDeductions extends Component {
       specific_nationality: false,
       nationality_id: null,
       print_report: "N",
-      print_order_by: 0
+      print_order_by: 0,
+      on_edit: false,
+      hims_d_earning_deduction_id: null,
+      annual_salary_comp: false
     };
     this.getEarningDeductions();
   }
@@ -62,8 +66,10 @@ class EarningsDeductions extends Component {
       round_off_type: null,
       round_off_amount: null,
       formula: null,
-      specific_nationality: "N",
-      nationality_id: null
+      specific_nationality: false,
+      nationality_id: null,
+      hims_d_earning_deduction_id: null,
+      annual_salary_comp: false
     });
   }
 
@@ -131,6 +137,7 @@ class EarningsDeductions extends Component {
         algaehApiCall({
           uri: "/payrollsettings/updateEarningDeduction",
           module: "hrManagement",
+          method: "PUT",
           data: {
             hims_d_earning_deduction_id: data.hims_d_earning_deduction_id,
             earning_deduction_code: data.earning_deduction_code,
@@ -188,57 +195,120 @@ class EarningsDeductions extends Component {
   addEarningsDeductions() {
     AlgaehValidation({
       alertTypeIcon: "warning",
-      onSuccess: () => {
-        algaehApiCall({
-          // uri: "/employee/addEarningDeduction",
-          uri: "/payrollsettings/addEarningDeduction",
-          module: "hrManagement",
-          method: "POST",
-          data: {
-            miscellaneous_component: this.state.miscellaneous_component
-              ? "Y"
-              : "N",
-            earning_deduction_code: this.state.earning_deduction_code,
-            earning_deduction_description: this.state
-              .earning_deduction_description,
-            short_desc: this.state.short_desc,
-            component_category: this.state.component_category,
-            calculation_method: this.state.calculation_method,
-            component_frequency: this.state.component_frequency,
-            calculation_type: this.state.calculation_type,
-            component_type: this.state.component_type,
-            shortage_deduction_applicable:
-              this.state.shortage_deduction_applicable === true ? "Y" : "N",
-            overtime_applicable:
-              this.state.overtime_applicable === true ? "Y" : "N",
-            limit_applicable: this.state.limit_applicable === true ? "Y" : "N",
-            limit_amount: this.state.limit_amount,
-            process_limit_required:
-              this.state.process_limit_required === true ? "Y" : "N",
-            process_limit_days: this.state.process_limit_days,
-            general_ledger: this.state.general_ledger,
-            allow_round_off: this.state.allow_round_off === true ? "Y" : "N",
-            round_off_type: this.state.round_off_type,
-            round_off_amount: this.state.round_off_amount,
-            formula: this.state.formula,
-            specific_nationality:
-              this.state.specific_nationality === "true" ? "Y" : "N",
-            nationality_id: this.state.nationality_id,
-            print_report: this.state.print_report,
-            print_order_by: this.state.print_order_by
-          },
-          onSuccess: res => {
-            if (res.data.success) {
-              this.clearState();
-              this.getEarningDeductions();
-              swalMessage({
-                title: "Record added successfully",
-                type: "success"
-              });
-            }
-          },
-          onFailure: err => {}
-        });
+      pageState: this,
+      onSuccess: $this => {
+        if ($this.state.hims_d_earning_deduction_id === null) {
+          algaehApiCall({
+            // uri: "/employee/addEarningDeduction",
+            uri: "/payrollsettings/addEarningDeduction",
+            module: "hrManagement",
+            method: "POST",
+            data: {
+              miscellaneous_component: $this.state.miscellaneous_component
+                ? "Y"
+                : "N",
+              earning_deduction_code: $this.state.earning_deduction_code,
+              earning_deduction_description:
+                $this.state.earning_deduction_description,
+              short_desc: $this.state.short_desc,
+              component_category: $this.state.component_category,
+              calculation_method: $this.state.calculation_method,
+              component_frequency: $this.state.component_frequency,
+              calculation_type: $this.state.calculation_type,
+              component_type: $this.state.component_type,
+              shortage_deduction_applicable:
+                $this.state.shortage_deduction_applicable === true ? "Y" : "N",
+              overtime_applicable:
+                $this.state.overtime_applicable === true ? "Y" : "N",
+              limit_applicable:
+                $this.state.limit_applicable === true ? "Y" : "N",
+              limit_amount: $this.state.limit_amount,
+              process_limit_required:
+                $this.state.process_limit_required === true ? "Y" : "N",
+              process_limit_days: $this.state.process_limit_days,
+              general_ledger: $this.state.general_ledger,
+              allow_round_off: $this.state.allow_round_off === true ? "Y" : "N",
+              round_off_type: $this.state.round_off_type,
+              round_off_amount: $this.state.round_off_amount,
+              formula: $this.state.formula,
+              specific_nationality:
+                $this.state.specific_nationality === true ? "Y" : "N",
+              nationality_id: $this.state.nationality_id,
+              print_report: $this.state.print_report,
+              print_order_by: $this.state.print_order_by,
+              annual_salary_comp:
+                $this.state.annual_salary_comp === true ? "Y" : "N"
+            },
+            onSuccess: res => {
+              if (res.data.success) {
+                $this.clearState();
+                $this.getEarningDeductions();
+                swalMessage({
+                  title: "Record added successfully",
+                  type: "success"
+                });
+              }
+            },
+            onFailure: err => {}
+          });
+        } else {
+          algaehApiCall({
+            // uri: "/employee/addEarningDeduction",
+            uri: "/payrollsettings/updateEarningDeduction",
+            module: "hrManagement",
+            method: "PUT",
+            data: {
+              hims_d_earning_deduction_id:
+                $this.state.hims_d_earning_deduction_id,
+              miscellaneous_component: $this.state.miscellaneous_component
+                ? "Y"
+                : "N",
+              earning_deduction_code: $this.state.earning_deduction_code,
+              earning_deduction_description:
+                $this.state.earning_deduction_description,
+              short_desc: $this.state.short_desc,
+              component_category: $this.state.component_category,
+              calculation_method: $this.state.calculation_method,
+              component_frequency: $this.state.component_frequency,
+              calculation_type: $this.state.calculation_type,
+              component_type: $this.state.component_type,
+              shortage_deduction_applicable:
+                $this.state.shortage_deduction_applicable === true ? "Y" : "N",
+              overtime_applicable:
+                $this.state.overtime_applicable === true ? "Y" : "N",
+              limit_applicable:
+                $this.state.limit_applicable === true ? "Y" : "N",
+              limit_amount: $this.state.limit_amount,
+              process_limit_required:
+                $this.state.process_limit_required === true ? "Y" : "N",
+              process_limit_days: $this.state.process_limit_days,
+              general_ledger: $this.state.general_ledger,
+              allow_round_off: $this.state.allow_round_off === true ? "Y" : "N",
+              round_off_type: $this.state.round_off_type,
+              round_off_amount: $this.state.round_off_amount,
+              formula: $this.state.formula,
+              specific_nationality:
+                $this.state.specific_nationality === true ? "Y" : "N",
+              nationality_id: $this.state.nationality_id,
+              print_report: $this.state.print_report,
+              print_order_by: $this.state.print_order_by,
+              annual_salary_comp:
+                $this.state.annual_salary_comp === true ? "Y" : "N",
+              record_status: "A"
+            },
+            onSuccess: res => {
+              if (res.data.success) {
+                $this.clearState();
+                $this.getEarningDeductions();
+                swalMessage({
+                  title: "Record Updated successfully",
+                  type: "success"
+                });
+              }
+            },
+            onFailure: err => {}
+          });
+        }
       }
     });
   }
@@ -359,6 +429,11 @@ class EarningsDeductions extends Component {
           print_report: e.target.value
         });
         break;
+      case "annual_salary_comp":
+        this.setState({
+          annual_salary_comp: !this.state.annual_salary_comp
+        });
+        break;
       default:
         break;
     }
@@ -396,6 +471,31 @@ class EarningsDeductions extends Component {
     this.setState({
       formula: this.state.calculator_values,
       selectCalculate: "d-none"
+    });
+  }
+
+  onEditHandler(row) {
+    let edit_data = extend({}, row);
+    edit_data.on_edit = true;
+    edit_data.displayNationality =
+      row.displayNationality === "Y" ? true : false;
+    edit_data.specific_nationality =
+      row.specific_nationality === "Y" ? true : false;
+    edit_data.allow_round_off = row.allow_round_off === "Y" ? true : false;
+    edit_data.overtime_applicable =
+      row.overtime_applicable === "Y" ? true : false;
+    edit_data.shortage_deduction_applicable =
+      row.shortage_deduction_applicable === "Y" ? true : false;
+    edit_data.limit_applicable = row.limit_applicable === "Y" ? true : false;
+    edit_data.process_limit_required =
+      row.process_limit_required === "Y" ? true : false;
+    edit_data.miscellaneous_component =
+      row.miscellaneous_component === "Y" ? true : false;
+    edit_data.annual_salary_comp =
+      row.annual_salary_comp === "Y" ? true : false;
+    this.setState({
+      ...this.state,
+      ...edit_data
     });
   }
   render() {
@@ -996,6 +1096,21 @@ class EarningsDeductions extends Component {
                     </div>
                   </div>
                   <div className="col-4">
+                    <label>Annual Salary Component</label>
+                    <div className="customCheckbox">
+                      <label className="checkbox inline">
+                        <input
+                          type="checkbox"
+                          value="yes"
+                          name="annual_salary_comp"
+                          checked={this.state.annual_salary_comp}
+                          onChange={this.changeChecks.bind(this)}
+                        />
+                        <span>Yes</span>
+                      </label>
+                    </div>
+                  </div>
+                  <div className="col-4">
                     <label>Calculation Type</label>
                     <div className="customRadio">
                       <label className="radio inline">
@@ -1064,13 +1179,24 @@ class EarningsDeductions extends Component {
                       }
                     }}
                   />
-                  <div className="col-4 form-group">
+                  <div
+                    className="col form-group"
+                    style={{ paddingTop: 19, textAlign: "right" }}
+                  >
+                    <button
+                      className="btn btn-default"
+                      id="srch-sch"
+                      style={{ marginRight: 10 }}
+                      onClick={this.clearState.bind(this)}
+                    >
+                      Cancel
+                    </button>
                     <button
                       className="btn btn-primary"
                       id="srch-sch"
                       onClick={this.addEarningsDeductions.bind(this)}
                     >
-                      Add to List
+                      {this.state.on_edit === true ? "Update" : "Add to List"}
                     </button>
                   </div>
                 </div>
@@ -1092,6 +1218,26 @@ class EarningsDeductions extends Component {
                     id="erngs-ddctns-grid"
                     datavalidate="data-validate='erngsDdctnsGrid'"
                     columns={[
+                      {
+                        fieldName: "actions",
+                        label: <AlgaehLabel label={{ forceLabel: "Action" }} />,
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              <i
+                                onClick={this.onEditHandler.bind(this, row)}
+                                className="fas fa-pen"
+                              />
+                            </span>
+                          );
+                        },
+                        others: {
+                          maxWidth: 65,
+                          resizable: false,
+                          filterable: false,
+                          style: { textAlign: "center" }
+                        }
+                      },
                       {
                         fieldName: "earning_deduction_code",
                         label: <AlgaehLabel label={{ forceLabel: "Code" }} />,
@@ -1465,9 +1611,7 @@ class EarningsDeductions extends Component {
                         displayTemplate: row => {
                           return (
                             <span>
-                              {row.shortage_deduction_applicable === "Y"
-                                ? "Yes"
-                                : "No"}
+                              {row.overtime_applicable === "Y" ? "Yes" : "No"}
                             </span>
                           );
                         },
@@ -1505,9 +1649,7 @@ class EarningsDeductions extends Component {
                         displayTemplate: row => {
                           return (
                             <span>
-                              {row.shortage_deduction_applicable === "Y"
-                                ? "Yes"
-                                : "No"}
+                              {row.limit_applicable === "Y" ? "Yes" : "No"}
                             </span>
                           );
                         },
@@ -1557,7 +1699,8 @@ class EarningsDeductions extends Component {
                                 others: {
                                   errormessage:
                                     "Limit Amount - cannot be blank",
-                                  required: true
+                                  required:
+                                    row.limit_applicable === "Y" ? true : false
                                 }
                               }}
                             />
@@ -1574,7 +1717,7 @@ class EarningsDeductions extends Component {
                         displayTemplate: row => {
                           return (
                             <span>
-                              {row.shortage_deduction_applicable === "Y"
+                              {row.process_limit_required === "Y"
                                 ? "Yes"
                                 : "No"}
                             </span>
@@ -1628,7 +1771,10 @@ class EarningsDeductions extends Component {
                                 others: {
                                   errormessage:
                                     "Process Limit Days - cannot be blank",
-                                  required: true
+                                  required:
+                                    row.process_limit_required === "Y"
+                                      ? true
+                                      : false
                                 }
                               }}
                             />
@@ -1645,9 +1791,7 @@ class EarningsDeductions extends Component {
                         displayTemplate: row => {
                           return (
                             <span>
-                              {row.shortage_deduction_applicable === "Y"
-                                ? "Yes"
-                                : "No"}
+                              {row.allow_round_off === "Y" ? "Yes" : "No"}
                             </span>
                           );
                         },
@@ -1742,7 +1886,8 @@ class EarningsDeductions extends Component {
                                 others: {
                                   errormessage:
                                     "Round off Amount - cannot be blank",
-                                  required: true
+                                  required:
+                                    row.allow_round_off === "Y" ? true : false
                                 }
                               }}
                             />
@@ -1905,10 +2050,10 @@ class EarningsDeductions extends Component {
                       data: this.state.earning_deductions
                     }}
                     filter={true}
-                    isEditable={true}
+                    // isEditable={true}
                     paging={{ page: 0, rowsPerPage: 20 }}
                     events={{
-                      onEdit: () => {},
+                      onEdit: this.onEditHandler.bind(this),
                       onDelete: this.deleteEarningsDeductions.bind(this),
                       onDone: this.updateEarningsDeductions.bind(this)
                     }}

@@ -1,10 +1,20 @@
-.DepartmentOrgView .ulSuperParent {
+.DepartmentOrgView .eachShelf {
   margin: 0;
   padding: 0;
   list-style: none;
-  overflow: auto;
-  position: relative; }
-  .DepartmentOrgView .ulSuperParent li.liSuperChild {
+  float: left;
+  border-left: 4px solid #027468;
+  padding-left: 10px;
+  max-height: 85vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 12px; }
+  .DepartmentOrgView .eachShelf::-webkit-scrollbar {
+    width: 0px;
+    /* Remove scrollbar space */
+    background: transparent;
+    /* Optional: just make scrollbar invisible */ }
+  .DepartmentOrgView .eachShelf li.eachChild {
     margin: 0;
     list-style: none;
     position: relative;
@@ -12,122 +22,76 @@
     padding: 10px;
     border-radius: 10px;
     margin-bottom: 10px;
-    border: 1px solid #00a796;
-    background: #00a796;
-    color: #fff; }
-    .DepartmentOrgView .ulSuperParent li.liSuperChild .imgSection {
+    border: 2px solid #d6d6d6;
+    background: #fff; }
+    .DepartmentOrgView .eachShelf li.eachChild .childCount {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      background: #fff;
+      width: auto;
+      height: 30px;
+      border-radius: 0 0 0 10px;
+      color: #00a796;
+      text-align: center;
+      line-height: 26px;
+      z-index: 1;
+      padding: 0 5px;
+      font-size: 0.8rem;
+      border: 2px solid #d6d6d6;
+      font-weight: bold; }
+    .DepartmentOrgView .eachShelf li.eachChild .imgSection {
       display: inline-block;
       width: 50px;
       vertical-align: top; }
-      .DepartmentOrgView .ulSuperParent li.liSuperChild .imgSection img {
+      .DepartmentOrgView .eachShelf li.eachChild .imgSection img {
         width: 50px;
         height: 50px;
         border-radius: 50%;
         background: #ccc;
         border: none; }
-    .DepartmentOrgView .ulSuperParent li.liSuperChild .contentSection {
+      .DepartmentOrgView .eachShelf li.eachChild .imgSection i {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        background: #ccc;
+        display: inline-block;
+        line-height: 36px;
+        text-align: center;
+        font-size: 1.2rem; }
+    .DepartmentOrgView .eachShelf li.eachChild .contentSection {
       display: inline-block;
       width: calc(100% - 60px);
       margin-left: 10px; }
-      .DepartmentOrgView .ulSuperParent li.liSuperChild .contentSection h1 {
+      .DepartmentOrgView .eachShelf li.eachChild .contentSection h1 {
         font-size: 1rem;
-        margin: 0; }
-      .DepartmentOrgView .ulSuperParent li.liSuperChild .contentSection p {
+        margin: 0;
+        line-height: 20px;
+        margin-top: 4px; }
+      .DepartmentOrgView .eachShelf li.eachChild .contentSection p {
         margin: 0;
         line-height: 20px; }
-    .DepartmentOrgView .ulSuperParent li.liSuperChild ul.ulParent {
-      padding: 0 0 0 14px;
-      color: rgba(0, 0, 0, 0.87);
-      margin: 0;
-      list-style: none;
-      position: fixed;
-      left: 305px;
-      top: 98px;
-      z-index: 9;
-      min-height: 86vh;
-      width: 100vw;
-      overflow: auto; }
-      .DepartmentOrgView .ulSuperParent li.liSuperChild ul.ulParent li.liChild {
-        padding: 10px;
-        border: 2px solid #d6d6d6;
-        border-radius: 10px;
-        margin-bottom: 10px;
-        background: #fff;
-        position: relative;
-        width: 285px; }
-        .DepartmentOrgView .ulSuperParent li.liSuperChild ul.ulParent li.liChild::before {
-          content: "";
-          background: #00a796;
-          height: 3px;
-          width: 20px;
-          position: absolute;
-          top: 49%;
-          left: -14px;
-          z-index: -1; }
-        .DepartmentOrgView .ulSuperParent li.liSuperChild ul.ulParent li.liChild .ulParent {
-          position: fixed;
-          left: 305px;
-          top: 0;
-          z-index: 9;
-          min-height: 100vh;
-          width: 100vw;
-          overflow-y: auto;
-          overflow-x: hidden; }
-          .DepartmentOrgView .ulSuperParent li.liSuperChild ul.ulParent li.liChild .ulParent .ulParent {
-            position: fixed;
-            left: 305px;
-            top: 0;
-            z-index: 9;
-            min-height: 100vh;
-            width: 100vw;
-            overflow-y: auto;
-            overflow-x: hidden; }
-        .DepartmentOrgView .ulSuperParent li.liSuperChild ul.ulParent li.liChild:hover {
-          box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
-          background: #00a796;
-          color: #fff;
-          cursor: pointer; }
-          .DepartmentOrgView .ulSuperParent li.liSuperChild ul.ulParent li.liChild:hover > ul {
-            display: block;
-            color: rgba(0, 0, 0, 0.87); }
-          .DepartmentOrgView .ulSuperParent li.liSuperChild ul.ulParent li.liChild:hover::after {
-            content: "";
-            background: #00a796;
-            height: 3px;
-            width: 20px;
-            position: absolute;
-            top: 49%;
-            right: -14px;
-            z-index: -1; }
-      .DepartmentOrgView .ulSuperParent li.liSuperChild ul.ulParent::before {
-        content: "";
-        background: #00a796;
-        height: 100vh;
-        width: 3px;
-        position: absolute;
-        top: 0;
-        left: 0px;
-        z-index: -1; }
-    .DepartmentOrgView .ulSuperParent li.liSuperChild:hover {
+    .DepartmentOrgView .eachShelf li.eachChild:hover {
       box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
       background: #00a796;
       color: #fff;
       cursor: pointer; }
-      .DepartmentOrgView .ulSuperParent li.liSuperChild:hover > ul {
+      .DepartmentOrgView .eachShelf li.eachChild:hover > ul {
         display: block; }
-    .DepartmentOrgView .ulSuperParent li.liSuperChild::after {
+    .DepartmentOrgView .eachShelf li.eachChild::before {
       content: "";
       background: #00a796;
       height: 3px;
       width: 20px;
       position: absolute;
       top: 49%;
-      right: -14px;
+      left: -15px;
       z-index: -1; }
-  .DepartmentOrgView .ulSuperParent .clickedLi {
+  .DepartmentOrgView .eachShelf .clickedLi {
+    border: 2px solid #027468;
     background: #00a796 !important;
     color: #fff; }
-    .DepartmentOrgView .ulSuperParent .clickedLi::after {
+    .DepartmentOrgView .eachShelf .clickedLi::after {
       content: "";
       background: #00a796;
       height: 3px;

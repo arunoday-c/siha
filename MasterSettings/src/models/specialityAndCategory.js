@@ -223,13 +223,14 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "UPDATE `hims_d_employee_speciality` SET  speciality_code=?,speciality_name=?, arabic_name=? , speciality_desc=?,\
+            "UPDATE `hims_d_employee_speciality` SET  speciality_code=?,speciality_name=?, arabic_name=? , speciality_desc=?,sub_department_id=?,\
           speciality_status=?,updated_date=?, updated_by=?  WHERE  `record_status`='A' and `hims_d_employee_speciality_id`=?;",
           values: [
             inputParam.speciality_code,
             inputParam.speciality_name,
             inputParam.arabic_name,
             inputParam.speciality_desc,
+            inputParam.sub_department_id,
             inputParam.speciality_status,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,

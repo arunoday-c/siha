@@ -71,7 +71,9 @@ const Hims_Reports = [
             events: {
               onChange: (reportState, currentEvent) => {
                 //provider_id_list CONTROL NAME AND APPEND BY _LIST
+
                 reportState.setState({
+                  [currentEvent.name]: currentEvent.value,
                   sub_department_id: currentEvent.value,
                   provider_id_list: currentEvent.selected.doctors
                 });
@@ -553,7 +555,7 @@ const HR_Payroll_Reports = [
             name: "department_id",
             initialLoad: true,
             isImp: false,
-            label: "Select Department",
+            label: "Select Dept.",
             link: {
               uri: "/department/get",
               module: "masterSettings"
@@ -592,7 +594,7 @@ const HR_Payroll_Reports = [
             type: "dropdown",
             name: "sub_department_id",
             isImp: false,
-            label: "Select Sub-Department",
+            label: "Select Sub Dept.",
             dataSource: {
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",
@@ -605,7 +607,7 @@ const HR_Payroll_Reports = [
             name: "employee_status",
             initialLoad: true,
             isImp: false,
-            label: "Employee Status",
+            label: "Select Employee Status",
             link: {},
             dataSource: {
               textField: "name",
@@ -619,12 +621,28 @@ const HR_Payroll_Reports = [
             name: "employee_type",
             initialLoad: true,
             isImp: false,
-            label: "Employee Type",
+            label: "Select Employee Type",
             link: {},
             dataSource: {
               textField: "name",
               valueField: "value",
               data: EMPLOYEE_TYPE
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "employee_group_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Select Employee Group",
+            link: {
+              uri: "/hrsettings/getEmployeeGroups",
+              module: "hrManagement"
+            },
+            dataSource: {
+              textField: "group_description",
+              valueField: "hims_d_employee_group_id"
             }
           }
         ]

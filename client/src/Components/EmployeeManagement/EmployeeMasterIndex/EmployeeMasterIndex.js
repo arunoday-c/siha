@@ -284,30 +284,13 @@ class EmployeeMasterIndex extends Component {
                       }
                     },
                     {
-                      fieldName: "employee_designation_id",
+                      fieldName: "designation",
                       label: (
                         <AlgaehLabel
                           label={{ fieldName: "employee_designation_id" }}
                         />
                       ),
-                      displayTemplate: row => {
-                        let display =
-                          this.props.designations === undefined
-                            ? []
-                            : this.props.designations.filter(
-                                f =>
-                                  f.hims_d_designation_id ===
-                                  row.employee_designation_id
-                              );
 
-                        return (
-                          <span>
-                            {display !== null && display.length !== 0
-                              ? display[0].designation
-                              : ""}
-                          </span>
-                        );
-                      },
                       others: {
                         maxWidth: 200,
                         resizable: false,
@@ -315,30 +298,34 @@ class EmployeeMasterIndex extends Component {
                       }
                     },
                     {
-                      fieldName: "sub_department_id",
-                      label: (
-                        <AlgaehLabel
-                          label={{ fieldName: "sub_department_id" }}
-                        />
-                      ),
-                      displayTemplate: row => {
-                        let display =
-                          this.props.subdepartment === undefined
-                            ? []
-                            : this.props.subdepartment.filter(
-                                f =>
-                                  f.hims_d_sub_department_id ===
-                                  row.sub_department_id
-                              );
+                      fieldName: "religion_name",
+                      label: <AlgaehLabel label={{ forceLabel: "Religion" }} />,
 
-                        return (
-                          <span>
-                            {display !== undefined && display.length !== 0
-                              ? display[0].sub_department_name
-                              : ""}
-                          </span>
-                        );
-                      },
+                      others: {
+                        maxWidth: 150,
+                        resizable: false,
+                        style: { textAlign: "center" }
+                      }
+                    },
+
+                    {
+                      fieldName: "department_name",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Department" }} />
+                      ),
+
+                      others: {
+                        maxWidth: 150,
+                        resizable: false,
+                        style: { textAlign: "center" }
+                      }
+                    },
+                    {
+                      fieldName: "sub_department_name",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Sub Department" }} />
+                      ),
+
                       others: {
                         maxWidth: 150,
                         resizable: false,
@@ -356,10 +343,8 @@ class EmployeeMasterIndex extends Component {
                     //   }
                     // },
                     {
-                      fieldName: "primary_contact_no",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "contact_no" }} />
-                      ),
+                      fieldName: "secondary_contact_no",
+                      label: <AlgaehLabel label={{ forceLabel: "Work No." }} />,
                       others: {
                         maxWidth: 120,
                         resizable: false,
@@ -367,8 +352,10 @@ class EmployeeMasterIndex extends Component {
                       }
                     },
                     {
-                      fieldName: "email",
-                      label: <AlgaehLabel label={{ fieldName: "email" }} />,
+                      fieldName: "work_email",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Work Email" }} />
+                      ),
                       others: {
                         maxWidth: 150,
                         resizable: false,

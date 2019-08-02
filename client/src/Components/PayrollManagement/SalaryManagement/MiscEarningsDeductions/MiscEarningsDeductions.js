@@ -668,7 +668,7 @@ export default class MiscEarningsDeductions extends Component {
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Department"
+                                      forceLabel: "Sub Department"
                                     }}
                                   />
                                 ),

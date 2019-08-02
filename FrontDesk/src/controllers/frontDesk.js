@@ -22,6 +22,13 @@ const {
   updatePatientPackage
 } = algaehPath("algaeh-billing/src/models/billing");
 
+const { insertLadOrderedServices } = algaehPath(
+  "algaeh-laboratory/src/models/laboratory"
+);
+const { insertRadOrderedServices } = algaehPath(
+  "algaeh-radiology/src/models/radiology"
+);
+
 const { getPatientwiseBill } = algaehPath(
   "algaeh-billing/src/models/opCreditSettlement"
 );
@@ -51,6 +58,8 @@ export default () => {
     (req, res, next) => {
       if (req.body.from_package == true) {
         updatePatientPackage(req, res, next);
+        insertLadOrderedServices(req, res, next);
+        insertRadOrderedServices(req, res, next);
       } else {
         next();
       }
@@ -95,6 +104,20 @@ export default () => {
         updatePatientPackage(req, res, next);
       } else {
         console.log("one ");
+        next();
+      }
+    },
+    (req, res, next) => {
+      if (req.body.from_package == true) {
+        insertLadOrderedServices(req, res, next);
+      } else {
+        next();
+      }
+    },
+    (req, res, next) => {
+      if (req.body.from_package == true) {
+        insertRadOrderedServices(req, res, next);
+      } else {
         next();
       }
     },

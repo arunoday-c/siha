@@ -4,7 +4,7 @@ import {
   successfulMessage,
   AlgaehValidation
 } from "../../utils/GlobalFunctions";
-import { algaehApiCall, valueReviver } from "../../utils/algaehApiCall";
+import { algaehApiCall, cancelRequest } from "../../utils/algaehApiCall";
 import { accessReport } from "../Wrapper/printReports";
 import Enumerable from "linq";
 import ReactDOM from "react-dom";
@@ -215,6 +215,7 @@ export default class ReportUI extends Component {
           const reportProperties = that.props.options.report;
 
           algaehApiCall({
+            cancelRequestId: "reportCancel",
             uri: "/report",
             module: "reports",
             method: "GET",
@@ -325,6 +326,16 @@ export default class ReportUI extends Component {
       }
     });
   }
+  cancelReportRequest(e) {
+    this.setState(
+      {
+        loading: false
+      },
+      () => {
+        cancelRequest("reportCancel");
+      }
+    );
+  }
   dropDownHandle(e) {
     const _hasEvents = Enumerable.from(this.props.options.plotUI.paramters)
       .where(w => w.name === e.name)
@@ -332,6 +343,7 @@ export default class ReportUI extends Component {
     if (_hasEvents !== undefined) {
       if (_hasEvents.onChange !== undefined) {
         let that = this;
+
         _hasEvents.onChange(this, e, options => {
           that.setState(options);
         });
@@ -480,6 +492,7 @@ export default class ReportUI extends Component {
           _controls.push(
             <AlagehAutoComplete
               key={i}
+              compireoldprops={true}
               div={{ className: _className }}
               label={{
                 fieldName: _param.name,
@@ -661,8 +674,9 @@ export default class ReportUI extends Component {
   }
 
   render() {
+    debugger;
     const _isBarcodeReport = this.props.isbarcodereport;
-
+    const report_name = this.props.options.report.displayName;
     if (this.state.hasError) {
       return null;
     }
@@ -678,10 +692,10 @@ export default class ReportUI extends Component {
           <div className="algaeh-modal">
             <div className="popupHeader">
               <div className="row">
-                <div className="col-lg-8">
-                  <h4>Print Preview</h4>
+                <div className="col-8">
+                  <h4>{report_name}</h4>
                 </div>
-                <div className="col-lg-4">
+                <div className="col-4">
                   <button
                     type="button"
                     className=""
@@ -718,12 +732,13 @@ export default class ReportUI extends Component {
                           returnText: true
                         }}
                       />
-                      {/*<button
-                        className="btn btn-primary"
-                        onClick={this.generateReport.bind(this)}
+                      <button
+                        value="Cancel Generate"
+                        className="btn btn-default"
+                        onClick={this.cancelReportRequest.bind(this)}
                       >
-                        Generate Report
-                      </button>*/}
+                        Cancel Generate
+                      </button>
                     </div>
                   </div>
                 </React.Fragment>

@@ -349,19 +349,10 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "employee",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS hims_d_employee_id, employee_code,biometric_id, title_id, full_name, arabic_name, employee_designation_id,\
-           sex, religion_id, marital_status, date_of_birth, date_of_joining, date_of_resignation, reliving_date,\
-            notice_period, exit_date, employe_exit_type, appointment_type, employee_type, present_address, present_address2,\
-             present_pincode, present_city_id, present_state_id, present_country_id, permanent_address, permanent_address2,\
-              permanent_pincode, permanent_city_id, permanent_state_id, permanent_country_id, primary_contact_no, secondary_contact_no,\
-               email, nationality, emergency_contact_person, emergency_contact_no, blood_group, isdoctor, license_number, employee_status,\
-                inactive_date, exclude_machine_data, company_bank_id, employee_bank_name, employee_bank_ifsc_code, employee_account_number,\
-                 mode_of_payment, accomodation_provided, late_coming_rule, leave_salary_process, pf_applicable,\
-                  airfare_process, entitled_daily_ot, suspend_salary, last_salary_process_date, gratuity_applicable,\
-                   contract_type, employee_group_id, weekoff_from, overtime_group_id, reporting_to_id, sub_department_id,\
-                    hospital_id, gross_salary, yearly_gross_salary, total_earnings, total_deductions, total_contributions,\
-                     net_salary, cost_to_company, effective_start_date, effective_end_date, created_date, created_by, updated_date, updated_by from hims_d_employee\
-                     where record_status='A'  and hospital_id=" +
+          "select SQL_CALC_FOUND_ROWS E.*, SD.sub_department_name, D.department_name, DS.designation from hims_d_employee E, \
+              hims_d_sub_department SD,hims_d_department D, hims_d_designation DS  WHERE E.record_status = 'A' \
+              and E.sub_department_id = SD.hims_d_sub_department_id and SD.department_id = D.hims_d_department_id and \
+              E.employee_designation_id = DS.hims_d_designation_id and E.hospital_id=" +
           hospitalId,
         orderBy: "hims_d_employee_id desc"
       },
@@ -599,7 +590,7 @@ let algaehSearchConfig = (searchName, req) => {
             'N' as pre_approval, IT.service_type, PH.package_visit_type,PH.package_type,PH.hims_d_package_header_id,\
             CASE WHEN PH.package_visit_type='S' THEN 'Single Visit' else 'Multi Visit' END as p_visit_type,\
             CASE WHEN PH.package_type='S' THEN 'Static' else 'Dynamic' END as p_type,\
-            PH.expiry_days,PH.validated_date,PH.total_service_amount\
+            PH.expiry_days,PH.validated_date,PH.total_service_amount,PH.package_code \
             from hims_d_services as S,hims_d_service_type as IT, hims_d_package_header as PH \
             where hims_d_services_id not in\
             (SELECT services_id FROM hims_d_services_insurance as I,hims_d_service_type as T where  \
@@ -612,7 +603,7 @@ let algaehSearchConfig = (searchName, req) => {
             T.service_type, PH.package_visit_type,PH.package_type,PH.hims_d_package_header_id,\
             CASE WHEN PH.package_visit_type='S' THEN 'Single Visit' else 'Multi Visit' END as p_visit_type,\
             CASE WHEN PH.package_type='S' THEN 'Static' else 'Dynamic' END as p_type,\
-            PH.expiry_days,PH.validated_date,PH.total_service_amount\
+            PH.expiry_days,PH.validated_date,PH.total_service_amount,PH.package_code \
             FROM hims_d_services_insurance as I,hims_d_service_type as T, hims_d_package_header as PH where  insurance_id=? and {mapper}  and I.service_type_id = T.hims_d_service_type_id \
             and PH.package_service_id = I.services_id and PH.package_status = 'A' and PH.approved='Y'\
             and (PH.validated_date >= CURDATE() OR PH.validated_date is null) and I.service_type_id in (14)",

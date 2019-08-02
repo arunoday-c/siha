@@ -390,7 +390,7 @@ let createUserLogin = (req, res, next) => {
                 input.user_display_name,
                 input.employee_id,
                 input.user_type,
-                input.effective_start_date,
+                new Date(),
                 new Date(),
                 input.created_by,
                 new Date(),

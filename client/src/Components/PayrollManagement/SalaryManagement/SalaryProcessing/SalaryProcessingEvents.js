@@ -69,6 +69,11 @@ const SalaryProcess = ($this, from) => {
               });
             }
           } else {
+            $this.setState({
+              salaryprocess_header: [],
+              salaryprocess_detail: [],
+              finalizeBtn: true
+            });
             AlgaehLoader({ show: false });
             swalMessage({
               title: "Invalid. Please process attendence",
@@ -78,6 +83,11 @@ const SalaryProcess = ($this, from) => {
         },
         onFailure: error => {
           AlgaehLoader({ show: false });
+          $this.setState({
+            salaryprocess_header: [],
+            salaryprocess_detail: [],
+            finalizeBtn: true
+          });
           swalMessage({
             title: error.message || error.response.data.message,
             type: "error"

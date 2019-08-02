@@ -98,6 +98,14 @@ class RegistrationPatient extends Component {
       }
     });
 
+    this.props.getPatientPackage({
+      redux: {
+        type: "Package_GET_DATA",
+        mappingName: "PatientPackageList",
+        data: []
+      }
+    });
+
     this.props.setSelectedInsurance({
       redux: {
         type: "SECONDARY_INSURANCE_DATA",
@@ -343,7 +351,7 @@ class RegistrationPatient extends Component {
                   delete patientdata.countrystates;
                   delete patientdata.cities;
                   delete patientdata.doctors;
-                  
+
                   if ($this.state.hims_d_patient_id === null) {
                     algaehApiCall({
                       uri: "/frontDesk/add",
@@ -851,6 +859,7 @@ class RegistrationPatient extends Component {
                         package_detail={this.state.package_detail}
                         from="frontDesk"
                         from_billing={true}
+                        patient_id={this.state.patient_id}
                       />
                     </div>
                   )}

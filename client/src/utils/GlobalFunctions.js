@@ -18,6 +18,18 @@ export function setGlobal(obj) {
   Window.global = windglob;
 }
 
+export function decimalPointSet(value, decimal_point) {
+  decimal_point = decimal_point || 2;
+  let data_value = value;
+  if (typeof value === "string") {
+    data_value = parseFloat(
+      value == "" || value == null || value == undefined ? "0" : value
+    );
+  }
+
+  return parseFloat(data_value.toFixed(decimal_point));
+}
+
 export function removeGlobal(name) {
   if (name !== undefined && Window.global !== undefined) {
     delete Window.global[name];

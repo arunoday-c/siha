@@ -28,36 +28,25 @@ class MRDList extends Component {
     this.setState({ [e.target.name]: e.target.value });
   }
 
-  datehandle(ctrl, e) {
+  loadData() {
     let intFailure = false;
-    if (e === "from_date") {
-      if (Date.parse(this.state.to_date) < Date.parse(moment(ctrl)._d)) {
-        intFailure = true;
-        swalMessage({
-          title: "From Date cannot be grater than To Date.",
-          type: "warning"
-        });
-      }
-    } else if (e === "to_date") {
-      if (Date.parse(moment(ctrl)._d) < Date.parse(this.state.from_date)) {
-        intFailure = true;
-        swalMessage({
-          title: "To Date cannot be less than From Date.",
-          type: "warning"
-        });
-      }
+    if (Date.parse(this.state.to_date) < Date.parse(this.state.from_date)) {
+      intFailure = true;
+      swalMessage({
+        title: "From Date cannot be grater than To Date.",
+        type: "warning"
+      });
     }
 
     if (intFailure === false) {
-      this.setState(
-        {
-          [e]: moment(ctrl)._d
-        },
-        () => {
-          this.getPatientMrdList();
-        }
-      );
+      this.getPatientMrdList();
     }
+  }
+
+  datehandle(ctrl, e) {
+    this.setState({
+      [e]: moment(ctrl)._d
+    });
   }
 
   getPatientMrdList(e) {
@@ -143,6 +132,16 @@ class MRDList extends Component {
               }}
               value={this.state.to_date}
             />
+            <div className="col">
+              <button
+                className="btn btn-primary btn-sm"
+                onClick={this.loadData.bind(this)}
+                type="button"
+                style={{ marginTop: "1.5em" }}
+              >
+                Load Data
+              </button>
+            </div>
           </div>
         </div>
         <div className="portlet portlet-bordered margin-top-15">
