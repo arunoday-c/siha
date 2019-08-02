@@ -39,7 +39,7 @@ function MonthlyDetail(props) {
           </div>
 
           <div className="row">
-            <div className="col-12 margin-bottom-15">
+            <div className="col-12 margin-bottom-15" id="monthlyDetailGridCntr">
               <AlgaehDataGrid
                 id="monthlyDetailGrid"
                 columns={[
