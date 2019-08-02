@@ -111,10 +111,6 @@ module.exports = {
       utilities.logger().log("inputParam: ", inputParam);
 
       const internalInsertPatientVisitData = () => {
-        inputParam.new_visit_patient =
-          inputParam.new_visit_patient === "N"
-            ? "Y"
-            : inputParam.new_visit_patient;
         if (inputParam.age_in_years == null) {
           let fromDate = moment(inputParam.date_of_birth);
           let toDate = new Date();
@@ -131,6 +127,7 @@ module.exports = {
         if (inputParam.new_visit_patient === "P") {
           inputParam.new_visit_patient = "P";
         } else {
+          inputParam.new_visit_patient = "Y";
           if (
             (existingExparyDate != null || existingExparyDate != undefined) &&
             moment(existingExparyDate).format("YYYY-MM-DD") >= today
@@ -247,11 +244,17 @@ module.exports = {
             printQuery: true
           })
           .then(expResult => {
+            utilities.logger().log("existing_plan: ", inputParam.existing_plan);
+            utilities.logger().log("expResult: ", expResult);
             if (inputParam.existing_plan === "Y") {
               inputParam.visit_expiery_date = moment(
                 expResult[0]["visit_expiery_date"]
               ).format("YYYY-MM-DD");
               inputParam.episode_id = expResult[0]["episode_id"];
+              req.body.episode_id = inputParam.episode_id;
+              utilities
+                .logger()
+                .log("existing_plan: ", inputParam.existing_plan);
               internalInsertPatientVisitData();
               //Data
             } else {

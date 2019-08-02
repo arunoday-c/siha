@@ -29,7 +29,6 @@ class MRDList extends Component {
   }
 
   loadData() {
-    debugger;
     let intFailure = false;
     if (Date.parse(this.state.to_date) < Date.parse(this.state.from_date)) {
       intFailure = true;

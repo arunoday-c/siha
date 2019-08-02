@@ -817,7 +817,7 @@ const ClosePackageMaster = ($this, e) => {
         mappingName: "serviceslist"
       }
     });
-    debugger;
+
     $this.setState(
       {
         isOpen: !$this.state.isOpen,

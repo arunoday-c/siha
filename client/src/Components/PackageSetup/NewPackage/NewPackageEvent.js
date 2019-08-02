@@ -282,7 +282,7 @@ export default function NewPackageEvent() {
                 parseFloat(InputObj.advance_percentage)) /
               100;
           }
-          debugger;
+
           if ($this.state.from === "doctor") {
             InputObj.approved = "Y";
           } else {

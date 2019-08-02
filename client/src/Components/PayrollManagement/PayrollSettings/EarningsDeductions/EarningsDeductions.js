@@ -197,7 +197,6 @@ class EarningsDeductions extends Component {
       alertTypeIcon: "warning",
       pageState: this,
       onSuccess: $this => {
-        debugger;
         if ($this.state.hims_d_earning_deduction_id === null) {
           algaehApiCall({
             // uri: "/employee/addEarningDeduction",
@@ -476,8 +475,6 @@ class EarningsDeductions extends Component {
   }
 
   onEditHandler(row) {
-    debugger;
-
     let edit_data = extend({}, row);
     edit_data.on_edit = true;
     edit_data.displayNationality =
