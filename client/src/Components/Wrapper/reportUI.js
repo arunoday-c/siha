@@ -4,7 +4,7 @@ import {
   successfulMessage,
   AlgaehValidation
 } from "../../utils/GlobalFunctions";
-import { algaehApiCall, valueReviver } from "../../utils/algaehApiCall";
+import { algaehApiCall, cancelRequest } from "../../utils/algaehApiCall";
 import { accessReport } from "../Wrapper/printReports";
 import Enumerable from "linq";
 import ReactDOM from "react-dom";
@@ -215,6 +215,7 @@ export default class ReportUI extends Component {
           const reportProperties = that.props.options.report;
 
           algaehApiCall({
+            cancelRequestId: "reportCancel",
             uri: "/report",
             module: "reports",
             method: "GET",
@@ -324,6 +325,16 @@ export default class ReportUI extends Component {
         }
       }
     });
+  }
+  cancelReportRequest(e) {
+    this.setState(
+      {
+        loading: false
+      },
+      () => {
+        cancelRequest("reportCancel");
+      }
+    );
   }
   dropDownHandle(e) {
     const _hasEvents = Enumerable.from(this.props.options.plotUI.paramters)
@@ -721,6 +732,13 @@ export default class ReportUI extends Component {
                           returnText: true
                         }}
                       />
+                      <button
+                        value="Cancel Generate"
+                        className="btn btn-default"
+                        onClick={this.cancelReportRequest.bind(this)}
+                      >
+                        Cancel Generate
+                      </button>
                     </div>
                   </div>
                 </React.Fragment>
