@@ -663,8 +663,9 @@ export default class ReportUI extends Component {
   }
 
   render() {
+    debugger;
     const _isBarcodeReport = this.props.isbarcodereport;
-
+    const report_name = this.props.options.report.displayName;
     if (this.state.hasError) {
       return null;
     }
@@ -680,10 +681,10 @@ export default class ReportUI extends Component {
           <div className="algaeh-modal">
             <div className="popupHeader">
               <div className="row">
-                <div className="col-lg-8">
-                  <h4>Print Preview</h4>
+                <div className="col-8">
+                  <h4>{report_name}</h4>
                 </div>
-                <div className="col-lg-4">
+                <div className="col-4">
                   <button
                     type="button"
                     className=""
@@ -720,12 +721,6 @@ export default class ReportUI extends Component {
                           returnText: true
                         }}
                       />
-                      {/*<button
-                        className="btn btn-primary"
-                        onClick={this.generateReport.bind(this)}
-                      >
-                        Generate Report
-                      </button>*/}
                     </div>
                   </div>
                 </React.Fragment>

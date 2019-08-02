@@ -255,10 +255,37 @@ class PersonalDetails extends Component {
                     <span>Personal Info.</span>
                   </h5>
                   <div className="row paddin-bottom-5">
-                    <AlagehFormGroup
-                      div={{ className: "col-4 mandatory" }}
+                    {" "}
+                    <AlagehAutoComplete
+                      div={{ className: "col-3 mandatory form-group" }}
                       label={{
-                        fieldName: "contact_no",
+                        forceLabel: "Religion",
+                        isImp: true
+                      }}
+                      selector={{
+                        name: "religion_id",
+                        className: "select-fld",
+                        value: this.state.religion_id,
+                        dataSource: {
+                          textField: "religion_name",
+                          valueField: "hims_d_religion_id",
+                          data: this.props.relegions
+                        },
+                        onChange: texthandle.bind(this, this),
+                        others: {
+                          tabIndex: "10"
+                        },
+                        onClear: () => {
+                          this.setState({
+                            religion_id: null
+                          });
+                        }
+                      }}
+                    />
+                    <AlagehFormGroup
+                      div={{ className: "col-3 mandatory" }}
+                      label={{
+                        forceLabel: "Personal Contact No.",
                         isImp: true
                       }}
                       textBox={{
@@ -271,15 +298,15 @@ class PersonalDetails extends Component {
                         },
                         others: {
                           tabIndex: "7",
-                          placeholder: "(+968)123-456-78",
+                          placeholder: "(+968)123-456-78)",
                           type: "number"
                         }
                       }}
                     />
                     <AlagehFormGroup
-                      div={{ className: "col-4 mandatory" }}
+                      div={{ className: "col-3 mandatory" }}
                       label={{
-                        forceLabel: "Work Mobile Number",
+                        forceLabel: "Work Contact No.",
                         isImp: true
                       }}
                       textBox={{
@@ -297,31 +324,10 @@ class PersonalDetails extends Component {
                         }
                       }}
                     />
-                    {/* <AlagehFormGroup
-                      div={{ className: "col-5" }}
-                      label={{
-                        fieldName: "email",
-                        isImp: true
-                      }}
-                      textBox={{
-                        value: this.state.email,
-                        className: "txt-fld",
-                        name: "email",
-
-                        events: {
-                          onChange: texthandle.bind(this, this)
-                        },
-                        others: {
-                          tabIndex: "8",
-                          placeholder: "Enter Work Email Address",
-                          type: "email"
-                        }
-                      }}
-                    />{" "} */}
                     <AlagehFormGroup
-                      div={{ className: "col-5" }}
+                      div={{ className: "col-3" }}
                       label={{
-                        fieldName: "email",
+                        forceLabel: "Personal Email Id",
                         isImp: false
                       }}
                       textBox={{
@@ -334,16 +340,15 @@ class PersonalDetails extends Component {
                         },
                         others: {
                           tabIndex: "8",
-                          placeholder: "Enter Email Address",
+                          placeholder: "Enter Personal Email Address",
                           type: "email"
                         }
                       }}
                     />
-
                     <AlagehFormGroup
-                      div={{ className: "col-5" }}
+                      div={{ className: "col-3" }}
                       label={{
-                        forceLabel: "Work Email",
+                        forceLabel: "Work Email Id",
                         isImp: false
                       }}
                       textBox={{
@@ -356,13 +361,13 @@ class PersonalDetails extends Component {
                         },
                         others: {
                           tabIndex: "8",
-                          placeholder: "Enter Email Address",
+                          placeholder: "Enter Work Email Address",
                           type: "email"
                         }
                       }}
                     />
                     <AlagehAutoComplete
-                      div={{ className: "col-3" }}
+                      div={{ className: "col-2" }}
                       label={{
                         fieldName: "blood_group"
                       }}
@@ -388,34 +393,8 @@ class PersonalDetails extends Component {
                       }}
                     />
                     <AlagehAutoComplete
-                      div={{ className: "col-4 mandatory" }}
-                      label={{
-                        forceLabel: "Religion",
-                        isImp: true
-                      }}
-                      selector={{
-                        name: "religion_id",
-                        className: "select-fld",
-                        value: this.state.religion_id,
-                        dataSource: {
-                          textField: "religion_name",
-                          valueField: "hims_d_religion_id",
-                          data: this.props.relegions
-                        },
-                        onChange: texthandle.bind(this, this),
-                        others: {
-                          tabIndex: "10"
-                        },
-                        onClear: () => {
-                          this.setState({
-                            religion_id: null
-                          });
-                        }
-                      }}
-                    />
-                    <AlagehAutoComplete
                       div={{
-                        className: "col-lg-4"
+                        className: "col-2"
                       }}
                       label={{
                         forceLabel: "Marital Status",
@@ -439,7 +418,7 @@ class PersonalDetails extends Component {
                       }}
                     />
                     <AlagehAutoComplete
-                      div={{ className: "col-lg-3" }}
+                      div={{ className: "col-2 form-group" }}
                       label={{
                         forceLabel: "Nationality",
                         isImp: false

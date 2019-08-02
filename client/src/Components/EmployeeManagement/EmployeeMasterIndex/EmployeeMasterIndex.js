@@ -344,9 +344,7 @@ class EmployeeMasterIndex extends Component {
                     // },
                     {
                       fieldName: "secondary_contact_no",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "contact_no" }} />
-                      ),
+                      label: <AlgaehLabel label={{ forceLabel: "Work No." }} />,
                       others: {
                         maxWidth: 120,
                         resizable: false,
@@ -355,7 +353,9 @@ class EmployeeMasterIndex extends Component {
                     },
                     {
                       fieldName: "work_email",
-                      label: <AlgaehLabel label={{ fieldName: "email" }} />,
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Work Email" }} />
+                      ),
                       others: {
                         maxWidth: 150,
                         resizable: false,

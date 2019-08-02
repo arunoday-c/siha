@@ -27,6 +27,7 @@
                         <th>Nationality</th>
                         <th>Religion</th>
                         <th>Emp. Type</th>
+                        <th>Emp. Group</th>
                         <th>Emp. Status</th>
 
                     </tr>
@@ -36,16 +37,16 @@
 
                     {{#each result}}
                     <tr>
-                        <td colspan="10" class="tableSubHdg">Dept. Name: {{department_name}}
+                        <td colspan="11" class="tableSubHdg">Dept. Name: {{department_name}}
                             <span class="textFloatRight">No
-                                Employees: {{dep_no_employee}}</span>
+                                Employees: <b>{{dep_no_employee}}</b></span>
                         </td>
                     </tr>
                     {{#each sub_dept}}
                     <tr>
-                        <td colspan="10" class="tableSubHdg2">Sub Dept. Name: {{sub_department_name}} <span
+                        <td colspan="11" class="tableSubHdg2">Sub Dept. Name: {{sub_department_name}} <span
                                 class="textFloatRight">No
-                                Employees: {{sub_no_employee}}</span></td>
+                                Employees: <b>{{sub_no_employee}}</b></span></td>
                     </tr>
                     {{#each employees}}
                     <tr>
@@ -58,12 +59,13 @@
                         <td>{{nationality}}</td>
                         <td>{{religion_name}}</td>
                         <td>{{employee_type}}</td>
+                        <td>{{group_description}}</td>
                         <td>{{employee_status}}</td>
                     </tr>
                     {{/each }}{{/each }}{{/each }}
                     {{else}}
                     <tr>
-                        <td colspan="10" class="noResultTextReport">No Records Found</td>
+                        <td colspan="11" class="noResultTextReport">No Records Found</td>
                     </tr>{{/hasElement }}
                 </tbody>
 
