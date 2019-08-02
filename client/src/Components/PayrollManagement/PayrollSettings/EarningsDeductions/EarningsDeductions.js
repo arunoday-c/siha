@@ -1233,6 +1233,12 @@ class EarningsDeductions extends Component {
                               />
                             </span>
                           );
+                        },
+                        others: {
+                          maxWidth: 65,
+                          resizable: false,
+                          filterable: false,
+                          style: { textAlign: "center" }
                         }
                       },
                       {
@@ -2046,7 +2052,7 @@ class EarningsDeductions extends Component {
                     dataSource={{
                       data: this.state.earning_deductions
                     }}
-                    // filter={true}
+                    filter={true}
                     // isEditable={true}
                     paging={{ page: 0, rowsPerPage: 20 }}
                     events={{

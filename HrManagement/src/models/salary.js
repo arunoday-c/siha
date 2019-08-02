@@ -3292,7 +3292,7 @@ function getOtManagement(options) {
           }
 
           final_earning_amount = _.sumBy(current_ot_amt_array, s => {
-            return s.amount;
+            return parseFloat(s.amount);
           });
 
           resolve({ current_ot_amt_array, final_earning_amount });
@@ -3461,7 +3461,7 @@ function getShortAge(options) {
         });
 
         final_deduction_amount = _.sumBy(current_shortage_amt_array, s => {
-          return s.amount;
+          return parseFloat(s.amount);
         });
 
         resolve({ current_shortage_amt_array, final_deduction_amount });
@@ -3960,7 +3960,7 @@ function getLoanDueandPayable(options) {
           });
         } else {
           total_loan_payable_amount = _.sumBy(_loanPayable, s => {
-            return s.approved_amount;
+            return parseFloat(s.approved_amount);
           });
 
           resolve({
@@ -3979,7 +3979,7 @@ function getLoanDueandPayable(options) {
         };
       });
       total_loan_due_amount = _.sumBy(current_loan_array, s => {
-        return s.loan_due_amount;
+        return parseFloat(s.loan_due_amount);
       });
       if (_loanPayable.length != 0) {
         total_loan_payable_amount = _.sumBy(_loanPayable, s => {
