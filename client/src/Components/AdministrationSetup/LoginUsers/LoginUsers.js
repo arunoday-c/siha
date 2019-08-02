@@ -360,7 +360,7 @@ class LoginUsers extends Component {
                       );
                     }}
                     name="hims_d_employee_id"
-                    columns={spotlightSearch.Employee_details.employee}
+                    columns={spotlightSearch.Employee_details.loginNewEmployee}
                     displayField="full_name"
                     value={this.state.full_name}
                     searchName="new_employees"

@@ -580,6 +580,16 @@
         "fieldName": "designation",
         "label": "Designation"
       }
+    ],
+    "loginNewEmployee": [
+      {
+        "fieldName": "employee_code",
+        "label": "Employee Code"
+      },
+      {
+        "fieldName": "full_name",
+        "label": "Name"
+      }
     ]
   },
 

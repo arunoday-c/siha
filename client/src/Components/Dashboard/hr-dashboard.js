@@ -271,8 +271,7 @@ class Dashboard extends Component {
                           ))
                         ) : (
                           <tr>
-                            <td className="text-center" colSpan="4">
-                              {" "}
+                            <td className="text-center" colSpan="6">
                               No New Joinee for this Month
                             </td>
                           </tr>
