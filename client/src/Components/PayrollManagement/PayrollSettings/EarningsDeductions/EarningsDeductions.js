@@ -1179,21 +1179,24 @@ class EarningsDeductions extends Component {
                       }
                     }}
                   />
-                  <div className="col-4 form-group">
+                  <div
+                    className="col form-group"
+                    style={{ paddingTop: 19, textAlign: "right" }}
+                  >
+                    <button
+                      className="btn btn-default"
+                      id="srch-sch"
+                      style={{ marginRight: 10 }}
+                      onClick={this.clearState.bind(this)}
+                    >
+                      Cancel
+                    </button>
                     <button
                       className="btn btn-primary"
                       id="srch-sch"
                       onClick={this.addEarningsDeductions.bind(this)}
                     >
                       {this.state.on_edit === true ? "Update" : "Add to List"}
-                    </button>
-
-                    <button
-                      className="btn btn-primary"
-                      id="srch-sch"
-                      onClick={this.clearState.bind(this)}
-                    >
-                      Clear
                     </button>
                   </div>
                 </div>
