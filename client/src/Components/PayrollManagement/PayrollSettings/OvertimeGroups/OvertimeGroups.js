@@ -823,7 +823,7 @@ class OvertimeGroups extends Component {
                       data: this.state.rate_otgroup
                     }}
                     isEditable={true}
-                    filterable
+                    filter={true}
                     paging={{ page: 0, rowsPerPage: 5 }}
                     events={{
                       onEdit: () => {},
@@ -1100,7 +1100,7 @@ class OvertimeGroups extends Component {
                       data: this.state.percentage_otgroup
                     }}
                     isEditable={true}
-                    filterable
+                    filter={true}
                     paging={{ page: 0, rowsPerPage: 5 }}
                     events={{
                       onEdit: () => {},

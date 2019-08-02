@@ -243,8 +243,10 @@ class Dashboard extends Component {
                           <th className="text-center">Employee Code</th>
                           <th className="text-center">Employee Name</th>
                           <th className="text-center">Gender</th>
+                          <th className="text-center">Designation</th>
+                          <th className="text-center">Sub Department</th>
                           {/*  <th className="text-center">Designation</th>
-                          <th className="text-center">Nationality</th> 
+                          <th className="text-center">Nationality</th>
                           <th className="text-center">Department</th>
                          <th className="text-center">Sub Department</th>*/}
                         </tr>
@@ -261,10 +263,10 @@ class Dashboard extends Component {
                               </td>
                               <td className="text-center">{row.full_name}</td>
                               <td className="text-center">{row.sex}</td>
-                              {/*  <td className="text-center">Designation</td>
-                          <td className="text-center">Nationality</td> 
-                          <td className="text-center">Department</td>
-                         <td className="text-center">Sub Department</td>*/}
+                              <td className="text-center">{row.designation}</td>
+                              <td className="text-center">
+                                {row.sub_department_name}
+                              </td>
                             </tr>
                           ))
                         ) : (

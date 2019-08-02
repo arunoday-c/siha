@@ -284,30 +284,13 @@ class EmployeeMasterIndex extends Component {
                       }
                     },
                     {
-                      fieldName: "employee_designation_id",
+                      fieldName: "designation",
                       label: (
                         <AlgaehLabel
                           label={{ fieldName: "employee_designation_id" }}
                         />
                       ),
-                      displayTemplate: row => {
-                        let display =
-                          this.props.designations === undefined
-                            ? []
-                            : this.props.designations.filter(
-                                f =>
-                                  f.hims_d_designation_id ===
-                                  row.employee_designation_id
-                              );
 
-                        return (
-                          <span>
-                            {display !== null && display.length !== 0
-                              ? display[0].designation
-                              : ""}
-                          </span>
-                        );
-                      },
                       others: {
                         maxWidth: 200,
                         resizable: false,

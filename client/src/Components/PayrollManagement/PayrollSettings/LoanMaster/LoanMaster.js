@@ -457,6 +457,7 @@ class LoanMaster extends Component {
                     data: this.state.loan_master
                   }}
                   isEditable={true}
+                  filter={true}
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
                     onEdit: () => {},
