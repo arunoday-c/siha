@@ -1,17 +1,13 @@
 import React, { Component } from "react";
 import "./BranchMaster.css";
 import {
-  AlgaehDataGrid,
-  AlgaehLabel,
   AlagehFormGroup,
   AlagehAutoComplete
-  // AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
 
-import { AlgaehActions } from "../../../actions/algaehActions";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
-import swal from "sweetalert2";
+
 import { FORMAT_YESNO } from "../../../utils/GlobalVariables.json";
 import _ from "lodash";
 // /branchMaster/getBranchMaster
@@ -21,12 +17,11 @@ export default class BranchMaster extends Component {
     super(props);
     this.state = {
       allBranches: [],
-
       allDepartments: [],
-      Departments: []
+      Departments: [],
+      editBranch: false
     };
     this.getBranchMaster();
-
     this.getCurrencyMaster();
     this.getCountryMaster();
     this.getnationalityMaster();
@@ -35,13 +30,15 @@ export default class BranchMaster extends Component {
 
   clearState() {
     this.setState({
-      hospital_name: null,
+      hims_d_hospital_id: null,
+      hospital_code: null,
       default_nationality: null,
       default_country: null,
       default_currency: null,
       hospital_name: null,
       hospital_address: null,
-      requied_emp_id: null
+      requied_emp_id: null,
+      editBranch: false
     });
   }
 
@@ -49,21 +46,11 @@ export default class BranchMaster extends Component {
     this.setState({ [value.name]: value.value });
   }
 
-  // componentDidMount() {
-
-  //   this.getCurrencyMaster();
-  //   this.getCountryMaster();
-  //   this.getnationalityMaster();
-  // }
-
   changeTexts(e) {
     const { name, value } = e.target;
-    this.setState(
-      {
-        [name]: value
-      },
-      () => console.log(this.state, "state from handle")
-    );
+    this.setState({
+      [name]: value
+    });
   }
 
   dropDownHandle(value) {
@@ -201,42 +188,81 @@ export default class BranchMaster extends Component {
 
   addBranches(e) {
     e.preventDefault();
-
-    AlgaehValidation({
-      alertTypeIcon: "warning",
-      onSuccess: () => {
-        algaehApiCall({
-          uri: "/branchMaster/addBranchMaster",
-          module: "masterSettings",
-          method: "POST",
-          data: {
-            hospital_code: this.state.hospital_code,
-            default_nationality: this.state.default_nationality,
-            default_country: this.state.default_country,
-            default_currency: this.state.default_currency,
-            hospital_name: this.state.hospital_name,
-            hospital_address: this.state.hospital_address,
-            requied_emp_id: this.state.requied_emp_id
-          },
-          onSuccess: response => {
-            if (response.data.success) {
+    console.log("hos:", this.state.hims_d_hospital_id);
+    if (this.state.hims_d_hospital_id > 0) {
+      AlgaehValidation({
+        alertTypeIcon: "warning",
+        onSuccess: () => {
+          algaehApiCall({
+            uri: "/branchMaster/updateBranchMaster",
+            module: "masterSettings",
+            method: "PUT",
+            data: {
+              hospital_code: this.state.hospital_code,
+              default_nationality: this.state.default_nationality,
+              default_country: this.state.default_country,
+              default_currency: this.state.default_currency,
+              hospital_name: this.state.hospital_name,
+              hospital_address: this.state.hospital_address,
+              requied_emp_id: this.state.requied_emp_id,
+              hospital_id: this.state.hims_d_hospital_id
+            },
+            onSuccess: response => {
+              if (response.data.success) {
+                swalMessage({
+                  title: "Record Added Successfully",
+                  type: "success"
+                });
+                this.clearState();
+                this.getBranchMaster();
+              }
+            },
+            onFailure: error => {
               swalMessage({
-                title: "Record Added Successfully",
-                type: "success"
+                title: error.message,
+                type: "error"
               });
-              this.clearSaveState();
-              this.getBranchMaster();
             }
-          },
-          onFailure: error => {
-            swalMessage({
-              title: error.message,
-              type: "error"
-            });
-          }
-        });
-      }
-    });
+          });
+        }
+      });
+    } else {
+      AlgaehValidation({
+        alertTypeIcon: "warning",
+        onSuccess: () => {
+          algaehApiCall({
+            uri: "/branchMaster/addBranchMaster",
+            module: "masterSettings",
+            method: "POST",
+            data: {
+              hospital_code: this.state.hospital_code,
+              default_nationality: this.state.default_nationality,
+              default_country: this.state.default_country,
+              default_currency: this.state.default_currency,
+              hospital_name: this.state.hospital_name,
+              hospital_address: this.state.hospital_address,
+              requied_emp_id: this.state.requied_emp_id
+            },
+            onSuccess: response => {
+              if (response.data.success) {
+                swalMessage({
+                  title: "Record Added Successfully",
+                  type: "success"
+                });
+                this.clearState();
+                this.getBranchMaster();
+              }
+            },
+            onFailure: error => {
+              swalMessage({
+                title: error.message,
+                type: "error"
+              });
+            }
+          });
+        }
+      });
+    }
   }
 
   loadDetails(e) {
@@ -247,83 +273,83 @@ export default class BranchMaster extends Component {
     }
 
     algaehApiCall({
-      uri: "/branchMaster/getBranchWiseDepartments",
+      uri: "/branchMaster/getActiveDepartments",
       method: "GET",
       module: "masterSettings",
-      data: {
-        hospital_id: e.hims_d_hospital_id
-          ? e.hims_d_hospital_id
-          : this.state.hospital_id
-      },
-      onSuccess: res => {
-        if (res.data.success) {
-          let data = res.data.records;
+      onSuccess: response => {
+        if (response.data.success) {
+          this.setState({
+            allDepartments: response.data.records
+          });
 
-          if (data.length > 0) {
-            let allDepartments = this.state.allDepartments;
-            data.map(item => {
-              let find_dep = _.find(
-                allDepartments,
-                m => m.hims_d_department_id === item.hims_d_department_id
-              );
-              const index = allDepartments.indexOf(find_dep);
+          algaehApiCall({
+            uri: "/branchMaster/getBranchWiseDepartments",
+            method: "GET",
+            module: "masterSettings",
+            data: {
+              hospital_id: e.hims_d_hospital_id
+                ? e.hims_d_hospital_id
+                : this.state.hospital_id
+            },
+            onSuccess: res => {
+              if (res.data.success) {
+                let data = res.data.records;
+                if (data.length > 0) {
+                  let allDepartments = this.state.allDepartments;
+                  data.map(item => {
+                    let find_dep = _.find(
+                      allDepartments,
+                      m => m.hims_d_department_id === item.hims_d_department_id
+                    );
+                    const index = allDepartments.indexOf(find_dep);
 
-              allDepartments[index] = {
-                ...allDepartments[index],
-                checked: true,
-                hims_m_branch_dept_map_id: item.hims_m_branch_dept_map_id
-              };
+                    allDepartments[index] = {
+                      ...allDepartments[index],
+                      checked: true,
+                      hims_m_branch_dept_map_id: item.hims_m_branch_dept_map_id
+                    };
 
-              item.subDepts.map(sub => {
-                let find_sub = _.find(
-                  allDepartments[index]["subDepts"],
-                  s =>
-                    s.hims_d_sub_department_id === sub.hims_d_sub_department_id
-                );
-                const indexS = allDepartments[index]["subDepts"].indexOf(
-                  find_sub
-                );
-                allDepartments[index]["subDepts"][indexS] = {
-                  ...allDepartments[index]["subDepts"][indexS],
-                  checked: true,
-                  hims_m_branch_dept_map_id: sub.hims_m_branch_dept_map_id
-                };
-              });
-            });
-
-            this.setState({
-              allDepartments: allDepartments
-            });
-          } else {
-            algaehApiCall({
-              uri: "/branchMaster/getActiveDepartments",
-              method: "GET",
-              module: "masterSettings",
-              onSuccess: response => {
-                if (response.data.success) {
-                  this.setState({
-                    allDepartments: response.data.records
+                    item.subDepts.map(sub => {
+                      let find_sub = _.find(
+                        allDepartments[index]["subDepts"],
+                        s =>
+                          s.hims_d_sub_department_id ===
+                          sub.hims_d_sub_department_id
+                      );
+                      const indexS = allDepartments[index]["subDepts"].indexOf(
+                        find_sub
+                      );
+                      allDepartments[index]["subDepts"][indexS] = {
+                        ...allDepartments[index]["subDepts"][indexS],
+                        checked: true,
+                        hims_m_branch_dept_map_id: sub.hims_m_branch_dept_map_id
+                      };
+                    });
                   });
-                } else {
-                  swalMessage({
-                    title: response.data.records.message,
-                    type: "warning"
+
+                  this.setState({
+                    allDepartments: allDepartments
                   });
                 }
-              },
-              onError: error => {
-                swalMessage({
-                  title: error.message,
-                  type: "error"
-                });
               }
-            });
-          }
+            },
+            onFailure: err => {
+              swalMessage({
+                title: err.message,
+                type: "error"
+              });
+            }
+          });
+        } else {
+          swalMessage({
+            title: response.data.records.message,
+            type: "warning"
+          });
         }
       },
-      onFailure: err => {
+      onError: error => {
         swalMessage({
-          title: err.message,
+          title: error.message,
           type: "error"
         });
       }
@@ -426,7 +452,6 @@ export default class BranchMaster extends Component {
     inputObj["add_new_sub"] = add_new_sub;
     inputObj["hospital_id"] = this.state.hospital_id;
 
-    console.log("inputObj:", inputObj);
     if (!remove_sub.length > 0 && !add_new_sub.length > 0) {
       swalMessage({
         title: "No changes found",
@@ -462,6 +487,20 @@ export default class BranchMaster extends Component {
         }
       });
     }
+  }
+
+  onEditBranch(data) {
+    this.setState({
+      hims_d_hospital_id: data.hims_d_hospital_id,
+      hospital_code: data.hospital_code,
+      default_nationality: data.default_nationality,
+      default_country: data.default_country,
+      default_currency: data.default_currency,
+      hospital_name: data.hospital_name,
+      hospital_address: data.hospital_address,
+      requied_emp_id: data.requied_emp_id,
+      editBranch: true
+    });
   }
 
   render() {
@@ -596,12 +635,15 @@ export default class BranchMaster extends Component {
                       style={{ float: "right" }}
                       onClick={this.addBranches.bind(this)}
                     >
-                      Add to List
+                      {this.state.editBranch === true
+                        ? "Update"
+                        : "Add to List"}
                     </button>
                     <button
                       type="button"
                       className="btn btn-default"
                       style={{ marginRight: 10, float: "right" }}
+                      onClick={this.clearState.bind(this)}
                     >
                       Clear
                     </button>
@@ -624,7 +666,10 @@ export default class BranchMaster extends Component {
                     {this.state.allBranches.map((data, index) => (
                       <div className="row branchEachList" key={index}>
                         <div className="branchAction">
-                          <i className="fas fa-pen" />
+                          <i
+                            className="fas fa-pen"
+                            onClick={this.onEditBranch.bind(this, data)}
+                          />
                           <i
                             className="fas fa-network-wired"
                             onClick={this.loadDetails.bind(this, data)}
