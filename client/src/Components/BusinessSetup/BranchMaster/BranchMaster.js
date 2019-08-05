@@ -21,12 +21,12 @@ export default class BranchMaster extends Component {
     super(props);
     this.state = {
       allBranches: [],
-      activeBranches: [],
+
       allDepartments: [],
       Departments: []
     };
     this.getBranchMaster();
-    this.getActiveBranches();
+
     this.getCurrencyMaster();
     this.getCountryMaster();
     this.getnationalityMaster();
@@ -51,7 +51,6 @@ export default class BranchMaster extends Component {
 
   // componentDidMount() {
 
-  //   this.getActiveBranches();
   //   this.getCurrencyMaster();
   //   this.getCountryMaster();
   //   this.getnationalityMaster();
@@ -174,31 +173,6 @@ export default class BranchMaster extends Component {
     });
   }
 
-  getActiveBranches() {
-    algaehApiCall({
-      uri: "/branchMaster/getActiveBranches",
-      method: "GET",
-      module: "masterSettings",
-      onSuccess: response => {
-        if (response.data.success) {
-          this.setState({
-            activeBranches: response.data.records
-          });
-        } else {
-          swalMessage({
-            title: response.data.records.message,
-            type: "warning"
-          });
-        }
-      },
-      onError: error => {
-        swalMessage({
-          title: error.message,
-          type: "error"
-        });
-      }
-    });
-  }
   getActiveDepartments() {
     algaehApiCall({
       uri: "/branchMaster/getActiveDepartments",
@@ -252,7 +226,6 @@ export default class BranchMaster extends Component {
               });
               this.clearSaveState();
               this.getBranchMaster();
-              this.getActiveBranches();
             }
           },
           onFailure: error => {
@@ -471,6 +444,8 @@ export default class BranchMaster extends Component {
               title: "Assigned Successfully.",
               type: "success"
             });
+
+            inputObj = {};
             this.loadDetails("L");
           } else {
             swalMessage({
