@@ -266,6 +266,7 @@ export default class BranchMaster extends Component {
   }
 
   loadDetails(e) {
+    this.clearState();
     if (e.hims_d_hospital_id > 0) {
       this.setState({
         hospital_id: e.hims_d_hospital_id
