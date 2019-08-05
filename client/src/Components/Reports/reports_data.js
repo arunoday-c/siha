@@ -683,6 +683,30 @@ const HR_Payroll_Reports = [
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
               data: undefined
+            },
+
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/branchMaster/getBranchWiseDepartments",
+                  module: "masterSettings",
+                  method: "GET",
+                  data: { hospital_id: currentEvent.value },
+
+                  onSuccess: result => {
+                    reportState.setState({
+                      department_id_list: result.data.records
+                    });
+                  }
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  department_id_list: []
+                });
+              }
             }
           },
           {
@@ -691,7 +715,7 @@ const HR_Payroll_Reports = [
             name: "department_id",
             initialLoad: true,
             isImp: false,
-            label: "Select Department",
+            label: "Select Dept.",
             link: {
               uri: "/department/get",
               module: "masterSettings"
@@ -703,18 +727,10 @@ const HR_Payroll_Reports = [
             },
             events: {
               onChange: (reportState, currentEvent) => {
-                //provider_id_list CONTROL NAME AND APPEND BY _LIST
-                algaehApiCall({
-                  uri: "/department/get/subdepartment",
-                  module: "masterSettings",
-                  method: "GET",
-                  data: { department_id: currentEvent.value },
-
-                  onSuccess: result => {
-                    reportState.setState({
-                      sub_department_id_list: result.data.records
-                    });
-                  }
+                reportState.setState({
+                  [currentEvent.name]: currentEvent.value,
+                  department_id: currentEvent.value,
+                  sub_department_id_list: currentEvent.selected.subDepts
                 });
               },
               onClear: (reportState, currentName) => {
@@ -730,7 +746,7 @@ const HR_Payroll_Reports = [
             type: "dropdown",
             name: "sub_department_id",
             isImp: false,
-            label: "Select Sub-Department",
+            label: "Select Sub Dept.",
             dataSource: {
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",
@@ -787,6 +803,30 @@ const HR_Payroll_Reports = [
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
               data: undefined
+            },
+
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/branchMaster/getBranchWiseDepartments",
+                  module: "masterSettings",
+                  method: "GET",
+                  data: { hospital_id: currentEvent.value },
+
+                  onSuccess: result => {
+                    reportState.setState({
+                      department_id_list: result.data.records
+                    });
+                  }
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  department_id_list: []
+                });
+              }
             }
           },
           {
@@ -795,7 +835,7 @@ const HR_Payroll_Reports = [
             name: "department_id",
             initialLoad: true,
             isImp: false,
-            label: "Select Department",
+            label: "Select Dept.",
             link: {
               uri: "/department/get",
               module: "masterSettings"
@@ -807,18 +847,10 @@ const HR_Payroll_Reports = [
             },
             events: {
               onChange: (reportState, currentEvent) => {
-                //provider_id_list CONTROL NAME AND APPEND BY _LIST
-                algaehApiCall({
-                  uri: "/department/get/subdepartment",
-                  module: "masterSettings",
-                  method: "GET",
-                  data: { department_id: currentEvent.value },
-
-                  onSuccess: result => {
-                    reportState.setState({
-                      sub_department_id_list: result.data.records
-                    });
-                  }
+                reportState.setState({
+                  [currentEvent.name]: currentEvent.value,
+                  department_id: currentEvent.value,
+                  sub_department_id_list: currentEvent.selected.subDepts
                 });
               },
               onClear: (reportState, currentName) => {
@@ -834,7 +866,7 @@ const HR_Payroll_Reports = [
             type: "dropdown",
             name: "sub_department_id",
             isImp: false,
-            label: "Select Sub-Department",
+            label: "Select Sub Dept.",
             dataSource: {
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",
@@ -877,6 +909,30 @@ const HR_Payroll_Reports = [
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
               data: undefined
+            },
+
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/branchMaster/getBranchWiseDepartments",
+                  module: "masterSettings",
+                  method: "GET",
+                  data: { hospital_id: currentEvent.value },
+
+                  onSuccess: result => {
+                    reportState.setState({
+                      department_id_list: result.data.records
+                    });
+                  }
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  department_id_list: []
+                });
+              }
             }
           },
           {
@@ -885,7 +941,7 @@ const HR_Payroll_Reports = [
             name: "department_id",
             initialLoad: true,
             isImp: false,
-            label: "Select Department",
+            label: "Select Dept.",
             link: {
               uri: "/department/get",
               module: "masterSettings"
@@ -897,18 +953,10 @@ const HR_Payroll_Reports = [
             },
             events: {
               onChange: (reportState, currentEvent) => {
-                //provider_id_list CONTROL NAME AND APPEND BY _LIST
-                algaehApiCall({
-                  uri: "/department/get/subdepartment",
-                  module: "masterSettings",
-                  method: "GET",
-                  data: { department_id: currentEvent.value },
-
-                  onSuccess: result => {
-                    reportState.setState({
-                      sub_department_id_list: result.data.records
-                    });
-                  }
+                reportState.setState({
+                  [currentEvent.name]: currentEvent.value,
+                  department_id: currentEvent.value,
+                  sub_department_id_list: currentEvent.selected.subDepts
                 });
               },
               onClear: (reportState, currentName) => {
@@ -924,7 +972,7 @@ const HR_Payroll_Reports = [
             type: "dropdown",
             name: "sub_department_id",
             isImp: false,
-            label: "Select Sub-Department",
+            label: "Select Sub Dept.",
             dataSource: {
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",
@@ -969,6 +1017,30 @@ const HR_Payroll_Reports = [
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
               data: undefined
+            },
+
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/branchMaster/getBranchWiseDepartments",
+                  module: "masterSettings",
+                  method: "GET",
+                  data: { hospital_id: currentEvent.value },
+
+                  onSuccess: result => {
+                    reportState.setState({
+                      department_id_list: result.data.records
+                    });
+                  }
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  department_id_list: []
+                });
+              }
             }
           },
           {
@@ -977,7 +1049,7 @@ const HR_Payroll_Reports = [
             name: "department_id",
             initialLoad: true,
             isImp: false,
-            label: "Select Department",
+            label: "Select Dept.",
             link: {
               uri: "/department/get",
               module: "masterSettings"
@@ -989,18 +1061,10 @@ const HR_Payroll_Reports = [
             },
             events: {
               onChange: (reportState, currentEvent) => {
-                //provider_id_list CONTROL NAME AND APPEND BY _LIST
-                algaehApiCall({
-                  uri: "/department/get/subdepartment",
-                  module: "masterSettings",
-                  method: "GET",
-                  data: { department_id: currentEvent.value },
-
-                  onSuccess: result => {
-                    reportState.setState({
-                      sub_department_id_list: result.data.records
-                    });
-                  }
+                reportState.setState({
+                  [currentEvent.name]: currentEvent.value,
+                  department_id: currentEvent.value,
+                  sub_department_id_list: currentEvent.selected.subDepts
                 });
               },
               onClear: (reportState, currentName) => {
@@ -1016,7 +1080,7 @@ const HR_Payroll_Reports = [
             type: "dropdown",
             name: "sub_department_id",
             isImp: false,
-            label: "Select Sub-Department",
+            label: "Select Sub Dept.",
             dataSource: {
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",
@@ -1061,6 +1125,30 @@ const HR_Payroll_Reports = [
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
               data: undefined
+            },
+
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/branchMaster/getBranchWiseDepartments",
+                  module: "masterSettings",
+                  method: "GET",
+                  data: { hospital_id: currentEvent.value },
+
+                  onSuccess: result => {
+                    reportState.setState({
+                      department_id_list: result.data.records
+                    });
+                  }
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  department_id_list: []
+                });
+              }
             }
           },
           {
@@ -1069,7 +1157,7 @@ const HR_Payroll_Reports = [
             name: "department_id",
             initialLoad: true,
             isImp: false,
-            label: "Select Department",
+            label: "Select Dept.",
             link: {
               uri: "/department/get",
               module: "masterSettings"
@@ -1081,18 +1169,10 @@ const HR_Payroll_Reports = [
             },
             events: {
               onChange: (reportState, currentEvent) => {
-                //provider_id_list CONTROL NAME AND APPEND BY _LIST
-                algaehApiCall({
-                  uri: "/department/get/subdepartment",
-                  module: "masterSettings",
-                  method: "GET",
-                  data: { department_id: currentEvent.value },
-
-                  onSuccess: result => {
-                    reportState.setState({
-                      sub_department_id_list: result.data.records
-                    });
-                  }
+                reportState.setState({
+                  [currentEvent.name]: currentEvent.value,
+                  department_id: currentEvent.value,
+                  sub_department_id_list: currentEvent.selected.subDepts
                 });
               },
               onClear: (reportState, currentName) => {
@@ -1108,7 +1188,7 @@ const HR_Payroll_Reports = [
             type: "dropdown",
             name: "sub_department_id",
             isImp: false,
-            label: "Select Sub-Department",
+            label: "Select Sub Dept.",
             dataSource: {
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",
@@ -1154,6 +1234,30 @@ const HR_Payroll_Reports = [
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
               data: undefined
+            },
+
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/branchMaster/getBranchWiseDepartments",
+                  module: "masterSettings",
+                  method: "GET",
+                  data: { hospital_id: currentEvent.value },
+
+                  onSuccess: result => {
+                    reportState.setState({
+                      department_id_list: result.data.records
+                    });
+                  }
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  department_id_list: []
+                });
+              }
             }
           },
           {
@@ -1162,7 +1266,7 @@ const HR_Payroll_Reports = [
             name: "department_id",
             initialLoad: true,
             isImp: false,
-            label: "Select Department",
+            label: "Select Dept.",
             link: {
               uri: "/department/get",
               module: "masterSettings"
@@ -1174,18 +1278,10 @@ const HR_Payroll_Reports = [
             },
             events: {
               onChange: (reportState, currentEvent) => {
-                //provider_id_list CONTROL NAME AND APPEND BY _LIST
-                algaehApiCall({
-                  uri: "/department/get/subdepartment",
-                  module: "masterSettings",
-                  method: "GET",
-                  data: { department_id: currentEvent.value },
-
-                  onSuccess: result => {
-                    reportState.setState({
-                      sub_department_id_list: result.data.records
-                    });
-                  }
+                reportState.setState({
+                  [currentEvent.name]: currentEvent.value,
+                  department_id: currentEvent.value,
+                  sub_department_id_list: currentEvent.selected.subDepts
                 });
               },
               onClear: (reportState, currentName) => {
@@ -1201,7 +1297,7 @@ const HR_Payroll_Reports = [
             type: "dropdown",
             name: "sub_department_id",
             isImp: false,
-            label: "Select Sub-Department",
+            label: "Select Sub Dept.",
             dataSource: {
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",
@@ -1276,6 +1372,30 @@ const HR_Payroll_Reports = [
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
               data: undefined
+            },
+
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/branchMaster/getBranchWiseDepartments",
+                  module: "masterSettings",
+                  method: "GET",
+                  data: { hospital_id: currentEvent.value },
+
+                  onSuccess: result => {
+                    reportState.setState({
+                      department_id_list: result.data.records
+                    });
+                  }
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  department_id_list: []
+                });
+              }
             }
           },
           {
@@ -1284,7 +1404,7 @@ const HR_Payroll_Reports = [
             name: "department_id",
             initialLoad: true,
             isImp: false,
-            label: "Select Department",
+            label: "Select Dept.",
             link: {
               uri: "/department/get",
               module: "masterSettings"
@@ -1296,18 +1416,10 @@ const HR_Payroll_Reports = [
             },
             events: {
               onChange: (reportState, currentEvent) => {
-                //provider_id_list CONTROL NAME AND APPEND BY _LIST
-                algaehApiCall({
-                  uri: "/department/get/subdepartment",
-                  module: "masterSettings",
-                  method: "GET",
-                  data: { department_id: currentEvent.value },
-
-                  onSuccess: result => {
-                    reportState.setState({
-                      sub_department_id_list: result.data.records
-                    });
-                  }
+                reportState.setState({
+                  [currentEvent.name]: currentEvent.value,
+                  department_id: currentEvent.value,
+                  sub_department_id_list: currentEvent.selected.subDepts
                 });
               },
               onClear: (reportState, currentName) => {
@@ -1323,7 +1435,7 @@ const HR_Payroll_Reports = [
             type: "dropdown",
             name: "sub_department_id",
             isImp: false,
-            label: "Select Sub-Department",
+            label: "Select Sub Dept.",
             dataSource: {
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",
