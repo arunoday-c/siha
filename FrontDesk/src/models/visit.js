@@ -380,77 +380,94 @@ module.exports = {
     try {
       const input = { ...req.body };
       const utilities = new algaehUtilities();
-      utilities.logger().log("input Encounter: ", input);
-      _mysql
-        .executeQuery({
-          query:
-            "insert into hims_f_patient_encounter(patient_id,provider_id,visit_id,source,\
+      if (input.consultation == "Y") {
+        utilities.logger().log("consultation: ", input);
+        _mysql
+          .executeQuery({
+            query:
+              "insert into hims_f_patient_encounter(patient_id,provider_id,visit_id,source,\
                 episode_id,age,payment_type,created_date,created_by,updated_date,updated_by,hospital_id)values(\
                  ?,?,?,?,?,?,?,?,?,?,?,?) ",
-          values: [
-            input.patient_id,
-            input.provider_id,
-            input.visit_id,
-            input.source,
-            input.episode_id,
-            input.age,
-            input.payment_type,
-            new Date(),
-            req.userIdentity.algaeh_d_app_user_id,
-            new Date(),
-            req.userIdentity.algaeh_d_app_user_id,
-            req.userIdentity.hospital_id
-          ],
-          printQuery: true
-        })
-        .then(encounter_details => {
-          _mysql
-            .executeQuery({
-              query:
-                "update hims_f_patient_appointment set visit_created='Y',updated_date=?, \
+            values: [
+              input.patient_id,
+              input.provider_id,
+              input.visit_id,
+              input.source,
+              input.episode_id,
+              input.age,
+              input.payment_type,
+              new Date(),
+              req.userIdentity.algaeh_d_app_user_id,
+              new Date(),
+              req.userIdentity.algaeh_d_app_user_id,
+              req.userIdentity.hospital_id
+            ],
+            printQuery: true
+          })
+          .then(encounter_details => {
+            _mysql
+              .executeQuery({
+                query:
+                  "update hims_f_patient_appointment set visit_created='Y',updated_date=?, \
                   updated_by=? where record_status='A' and hims_f_patient_appointment_id=?",
-              values: [
-                new Date(),
-                input.updated_by,
-                input.hims_f_patient_appointment_id
-              ],
-              printQuery: true
-            })
-            .then(patAppointment => {
-              // if (req.connection == null) {
-              //   _mysql.commitTransaction(() => {
-              //     _mysql.releaseConnection();
-              //     req.records = result;
-              //     next();
-              //   });
-              // } else {
-              //   next();
-              // }
-              let result = {
-                patient_code: input.patient_code,
-                receipt_number: input.receipt_number,
-                bill_number: input.bill_number,
-                patient_visit_id: input.visit_id,
-                hims_d_patient_id: input.patient_id,
-                hims_f_billing_header_id: input.hims_f_billing_header_id
-              };
-              _mysql.commitTransaction(() => {
-                _mysql.releaseConnection();
-                req.records = result;
-                next();
+                values: [
+                  new Date(),
+                  input.updated_by,
+                  input.hims_f_patient_appointment_id
+                ],
+                printQuery: true
+              })
+              .then(patAppointment => {
+                // if (req.connection == null) {
+                //   _mysql.commitTransaction(() => {
+                //     _mysql.releaseConnection();
+                //     req.records = result;
+                //     next();
+                //   });
+                // } else {
+                //   next();
+                // }
+                let result = {
+                  patient_code: input.patient_code,
+                  receipt_number: input.receipt_number,
+                  bill_number: input.bill_number,
+                  patient_visit_id: input.visit_id,
+                  hims_d_patient_id: input.patient_id,
+                  hims_f_billing_header_id: input.hims_f_billing_header_id
+                };
+                _mysql.commitTransaction(() => {
+                  _mysql.releaseConnection();
+                  req.records = result;
+                  next();
+                });
+              })
+              .catch(e => {
+                _mysql.rollBackTransaction(() => {
+                  next(e);
+                });
               });
-            })
-            .catch(e => {
-              _mysql.rollBackTransaction(() => {
-                next(e);
-              });
+          })
+          .catch(e => {
+            _mysql.rollBackTransaction(() => {
+              next(e);
             });
-        })
-        .catch(e => {
-          _mysql.rollBackTransaction(() => {
-            next(e);
           });
+      } else {
+        utilities.logger().log("Non consultation: ", input);
+        let result = {
+          patient_code: input.patient_code,
+          receipt_number: input.receipt_number,
+          bill_number: input.bill_number,
+          patient_visit_id: input.visit_id,
+          hims_d_patient_id: input.patient_id,
+          hims_f_billing_header_id: input.hims_f_billing_header_id
+        };
+        _mysql.commitTransaction(() => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
         });
+      }
     } catch (e) {
       _mysql.rollBackTransaction(() => {
         next(e);

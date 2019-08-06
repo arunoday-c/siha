@@ -426,21 +426,37 @@ const PostInitialStock = $this => {
 };
 
 const printBarcode = ($this, row, e) => {
-  AlgaehReport({
-    report: {
-      fileName: "sampleBarcode",
-      barcode: {
-        parameter: "bar_code",
-        options: {
-          format: "",
-          lineColor: "#0aa",
-          width: 4,
-          height: 40
-        }
+  algaehApiCall({
+    uri: "/report",
+    method: "GET",
+    module: "reports",
+    headers: {
+      Accept: "blob"
+    },
+    others: { responseType: "blob" },
+    data: {
+      report: {
+        reportName: "InventoryBarcode",
+        reportParams: [
+          {
+            name: "hims_f_inventory_stock_detail_id",
+            value: row.hims_f_inventory_stock_detail_id
+          }
+        ],
+        outputFileType: "PDF"
       }
     },
-    data: {
-      bar_code: row.barcode
+    onSuccess: res => {
+      const url = URL.createObjectURL(res.data);
+      let myWindow = window.open(
+        "{{ product.metafields.google.custom_label_0 }}",
+        "_blank"
+      );
+
+      myWindow.document.write(
+        "<iframe src= '" + url + "' width='100%' height='100%' />"
+      );
+      myWindow.document.title = "Item Barcode";
     }
   });
 };

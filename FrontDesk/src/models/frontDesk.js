@@ -64,7 +64,7 @@ module.exports = {
               var expiry_date = moment(new Date()).format("YYYY-MM-DD");
 
               _string_Data +=
-                " and date(visit_expiery_date) > date('" + expiry_date + "')";
+                " and date(visit_expiery_date) >= date('" + expiry_date + "')";
 
               _string_Data += " and visit_status='O'";
             }
