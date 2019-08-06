@@ -337,14 +337,15 @@ class OrderingServices extends Component {
                 />
 
                 <div className="col">
-                  <button
-                    className="btn btn-primary"
-                    style={{ marginTop: 19 }}
+                  <ButtonType
+                    classname="btn-primary"
                     onClick={ProcessService.bind(this, this)}
-                    disabled={this.state.addNewService}
-                  >
-                    Add New Service
-                  </button>
+                    label={{
+                      forceLabel: "Add New Service",
+                      returnText: true
+                    }}
+                    others={{ disabled: this.state.addNewService }}
+                  />
                 </div>
               </div>
 

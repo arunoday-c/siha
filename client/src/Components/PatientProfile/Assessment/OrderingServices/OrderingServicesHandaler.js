@@ -66,6 +66,7 @@ const serviceHandeler = ($this, e) => {
 const ProcessService = ($this, e) => {
   // orderedList
 
+  debugger;
   let SelectedService = [];
   let PreSelectedService = [];
   if ($this.state.s_service_type !== 2) {
@@ -117,6 +118,7 @@ const ProcessService = ($this, e) => {
         data: serviceInput,
         onSuccess: response => {
           if (response.data.success) {
+            debugger;
             let data = response.data.records;
             if (
               data.billdetails[0].preapp_limit_exceed === "Y" &&
@@ -245,6 +247,7 @@ const ProcessService = ($this, e) => {
                 }
               });
             } else {
+              debugger;
               let existingservices = $this.state.orderservicesdata;
 
               data.billdetails[0].visit_id = $this.state.visit_id;
@@ -372,7 +375,9 @@ const deleteServices = ($this, row, rowId) => {
   const _index = preserviceInput.indexOf(get_selected_row);
   let saved = false;
 
-  orderservicesdata.splice(row.rowIdx, 1);
+  const _order_index = orderservicesdata.indexOf(row);
+
+  orderservicesdata.splice(_order_index, 1);
   if (orderservicesdata.length === 0) {
     saved = true;
 
@@ -385,12 +390,11 @@ const deleteServices = ($this, row, rowId) => {
       net_total: null
     });
   }
-
+  preserviceInput.splice(_index, 1);
   let app_amt = $this.state.approval_amt - row["company_payble"];
 
   if ($this.state.approval_limit_yesno === "Y") {
     if (app_amt < $this.state.preapp_limit_amount) {
-      preserviceInput.splice(_index, 1);
       for (var k = 0; k < preserviceInput.length; k++) {
         preserviceInput[k].approval_limit_yesno = "N";
       }
