@@ -1036,7 +1036,7 @@ module.exports = {
 
 					let _strQry = '';
 					for (let i = 0; i < input.length; i++) {
-						let actual_hours = input[i].status == 'PR' ? result[0]['standard_working_hours'] : 0;
+						let actual_hours = (input[i].status == 'PR'|| input[i].status == 'AB')? result[0]['standard_working_hours'] : 0;
 						_strQry += _mysql.mysqlQueryFormat(
 							'INSERT INTO `hims_f_daily_time_sheet` (employee_id,attendance_date,in_time,out_date,out_time,hours,\
 							minutes,worked_hours,sub_department_id,status,year,month,hospital_id, actual_hours,project_id) \
@@ -1049,7 +1049,7 @@ module.exports = {
 								input[i].out_date,
 								input[i].out_time,
 								input[i].hours,
-								input[i].minutes>0?(input[i].minutes).toString().toFixed(2):0,
+								input[i].minutes>0?input[i]["minutes"]:0,
 								input[i].worked_hours,
 								input[i].sub_department_id,
 								input[i].status,
