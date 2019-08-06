@@ -1049,7 +1049,7 @@ module.exports = {
 								input[i].out_date,
 								input[i].out_time,
 								input[i].hours,
-								input[i].minutes>0?(input[i].minutes).toFixed(2):0,
+								input[i].minutes>0?(input[i].minutes).toString().toFixed(2):0,
 								input[i].worked_hours,
 								input[i].sub_department_id,
 								input[i].status,
