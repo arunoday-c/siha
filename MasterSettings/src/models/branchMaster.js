@@ -390,7 +390,7 @@ module.exports = {
               inner join hims_d_sub_department  SD \
               on B.sub_department_id=SD.hims_d_sub_department_id \
               inner join hims_d_department D on D.hims_d_department_id=SD.department_id;",
-            printQuery: true
+            printQuery: false
           })
           .then(result => {
             _mysql.releaseConnection();
