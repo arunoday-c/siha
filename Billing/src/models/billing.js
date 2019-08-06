@@ -692,10 +692,13 @@ module.exports = {
 
                         if (existingAdvance != null) {
                           if (inputParam.transaction_type == "AD") {
-                            inputParam.advance_amount += existingAdvance;
+                            inputParam.advance_amount =
+                              parseFloat(inputParam.advance_amount) +
+                              parseFloat(existingAdvance);
                           } else if (inputParam.transaction_type == "RF") {
                             inputParam.advance_amount =
-                              existingAdvance - inputParam.advance_amount;
+                              parseFloat(existingAdvance) -
+                              parseFloat(inputParam.advance_amount);
                           }
                         }
 
