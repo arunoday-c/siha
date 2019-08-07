@@ -15,14 +15,22 @@ export default () => {
   let api = Router();
   const utlities = new algaehUtlities();
 
-  api.post("/addServices", addServices, (req, res, next) => {
-    let result = req.records;
-    res.status(utlities.httpStatus().ok).json({
-      success: true,
-      records: result
-    });
-    next();
-  });
+  api.post(
+    "/addServices",
+    (req, res, next) => {
+      delete req.connection;
+      next();
+    },
+    addServices,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(utlities.httpStatus().ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    }
+  );
 
   api.put("/updateServices", updateServices, (req, res, next) => {
     let result = req.records;

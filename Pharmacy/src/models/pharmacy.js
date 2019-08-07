@@ -5,11 +5,13 @@ import algaehUtilities from "algaeh-utilities/utilities";
 
 module.exports = {
   addItemMaster: (req, res, next) => {
-    const _mysql = new algaehMysql();
+    const _options = req.connection == null ? {} : req.connection;
+
+    const _mysql = new algaehMysql(_options);
     try {
       let input = { ...req.body };
       _mysql
-        .executeQueryWithTransaction({
+        .executeQuery({
           query:
             "INSERT INTO `hims_d_item_master` (`item_code`, `item_description`, `structure_id`,\
             `generic_id`, `category_id`, `group_id`, `item_uom_id`, `purchase_uom_id`, `sales_uom_id`,\

@@ -486,10 +486,36 @@ const assignDataandclear = ($this, context, stock_detail, assignData) => {
 };
 
 const deletePODetail = ($this, context, row) => {
+  let sub_total = 0;
+  let net_total = 0;
+  let net_payable = 0;
+  let total_tax = 0;
+  let detail_discount = 0;
+
   if ($this.state.po_from === "PHR") {
     let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
 
     pharmacy_stock_detail.splice(row.rowIdx, 1);
+
+    sub_total = Enumerable.from(pharmacy_stock_detail).sum(s =>
+      parseFloat(s.extended_price)
+    );
+
+    net_total = Enumerable.from(pharmacy_stock_detail).sum(s =>
+      parseFloat(s.net_extended_cost)
+    );
+
+    net_payable = Enumerable.from(pharmacy_stock_detail).sum(s =>
+      parseFloat(s.total_amount)
+    );
+
+    total_tax = Enumerable.from(pharmacy_stock_detail).sum(s =>
+      parseFloat(s.tax_amount)
+    );
+
+    detail_discount = Enumerable.from(pharmacy_stock_detail).sum(s =>
+      parseFloat(s.sub_discount_amount)
+    );
     if (pharmacy_stock_detail.length === 0) {
       assignDataandclear(
         $this,
@@ -500,7 +526,12 @@ const deletePODetail = ($this, context, row) => {
     } else {
       if (context !== undefined) {
         context.updateState({
-          pharmacy_stock_detail: pharmacy_stock_detail
+          pharmacy_stock_detail: pharmacy_stock_detail,
+          sub_total: sub_total,
+          net_total: net_total,
+          net_payable: net_payable,
+          total_tax: total_tax,
+          detail_discount: detail_discount
         });
       }
     }
@@ -509,6 +540,26 @@ const deletePODetail = ($this, context, row) => {
       let inventory_stock_detail = $this.state.inventory_stock_detail;
 
       inventory_stock_detail.splice(row.rowIdx, 1);
+
+      sub_total = Enumerable.from(inventory_stock_detail).sum(s =>
+        parseFloat(s.extended_price)
+      );
+
+      net_total = Enumerable.from(inventory_stock_detail).sum(s =>
+        parseFloat(s.net_extended_cost)
+      );
+
+      net_payable = Enumerable.from(inventory_stock_detail).sum(s =>
+        parseFloat(s.total_amount)
+      );
+
+      total_tax = Enumerable.from(inventory_stock_detail).sum(s =>
+        parseFloat(s.tax_amount)
+      );
+
+      detail_discount = Enumerable.from(inventory_stock_detail).sum(s =>
+        parseFloat(s.sub_discount_amount)
+      );
 
       if (inventory_stock_detail.length === 0) {
         assignDataandclear(
@@ -520,7 +571,12 @@ const deletePODetail = ($this, context, row) => {
       } else {
         if (context !== undefined) {
           context.updateState({
-            inventory_stock_detail: inventory_stock_detail
+            inventory_stock_detail: inventory_stock_detail,
+            sub_total: sub_total,
+            net_total: net_total,
+            net_payable: net_payable,
+            total_tax: total_tax,
+            detail_discount: detail_discount
           });
         }
       }

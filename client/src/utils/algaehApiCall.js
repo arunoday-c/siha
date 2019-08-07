@@ -407,6 +407,15 @@ export function getCookie(cname) {
 export function valueReviver(key, value) {
   if (typeof value === "string") {
     value = String(value).trim();
+
+    if (value === null || value === undefined) {
+      return value;
+    }
+    const num = /^[-+]?[0-9]+\.[0-9]+$/;
+    let num_value = value.replace(/,/g, "");
+    if (num.test(num_value)) {
+      return parseFloat(num_value);
+    }
   }
   if (typeof value === "string" && dateFormat.test(value)) {
     return moment(value).format("YYYY-MM-DD HH:mm");
