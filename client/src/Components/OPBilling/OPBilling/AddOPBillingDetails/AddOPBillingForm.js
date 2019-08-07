@@ -220,7 +220,6 @@ class AddOPBillingForm extends Component {
   }
 
   updateBillDetail(context, row, e) {
-    
     algaehApiCall({
       uri: "/billing/billingCalculations",
       module: "billing",
@@ -363,7 +362,6 @@ class AddOPBillingForm extends Component {
                       onClear: serviceTypeHandeler.bind(this, this, context)
                     }}
                   />
-
                   <AlagehAutoComplete
                     div={{ className: "col-lg-3" }}
                     label={{
@@ -386,11 +384,10 @@ class AddOPBillingForm extends Component {
                       onClear: serviceHandeler.bind(this, this, context)
                     }}
                   />
-
                   <div className="col-lg-2">
                     <button
                       className="btn btn-primary"
-                      style={{ marginTop: "24px" }}
+                      style={{ marginTop: "19px" }}
                       onClick={this.ProcessToBill.bind(this, context)}
                       disabled={this.state.addNewService}
                     >
@@ -403,17 +400,10 @@ class AddOPBillingForm extends Component {
                       />
                     </button>
                   </div>
-
-                  {Package_Exists.length > 0 ? (
-                    <div className="col">
-                      <h6 style={{ color: "green" }}> Package Exists </h6>
-                    </div>
-                  ) : null}
-
                   <div className="col-lg-2">
                     <button
                       className="btn btn-default"
-                      style={{ marginTop: "24px" }}
+                      style={{ marginTop: "19px" }}
                       onClick={this.ShowBillDetails.bind(this)}
                       disabled={this.state.billDetails}
                     >
@@ -442,10 +432,30 @@ class AddOPBillingForm extends Component {
                       show={this.state.isOpen}
                       onClose={this.ShowBillDetails.bind(this)}
                     />
-                  </div>
+                  </div>{" "}
+                  {/* {Package_Exists.length > 0 ? (
+                    <div className="col">
+                      <h6 style={{ color: "green" }}> Package Exists </h6>
+                    </div>
+                  ) : null} */}
+                  {Package_Exists.length > 0 ? (
+                    <div className="col">
+                      <div
+                        className="alert alert-warning animated flash slow infinite"
+                        role="alert"
+                        style={{
+                          margin: "18px 0 0",
+                          padding: 5,
+                          textAlign: "center"
+                        }}
+                      >
+                        Package Exists
+                      </div>
+                    </div>
+                  ) : null}
                 </div>
                 <div className="row" style={{ marginTop: "10px" }}>
-                  <div className="col-lg-12">
+                  <div className="col-lg-12" id="opBillingGrid_Cntr">
                     <AlgaehDataGrid
                       id="Bill_details"
                       columns={[
@@ -747,7 +757,7 @@ class AddOPBillingForm extends Component {
                         allowEdit: !this.state.Billexists,
                         allowDelete: !this.state.Billexists
                       }}
-                      paging={{ page: 0, rowsPerPage: 5 }}
+                      paging={{ page: 0, rowsPerPage: 10 }}
                       byForceEvents={true}
                       events={{
                         onDelete: this.deleteBillDetail.bind(this, context),

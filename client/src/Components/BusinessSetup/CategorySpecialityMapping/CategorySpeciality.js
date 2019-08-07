@@ -360,29 +360,29 @@ class CategorySpeciality extends Component {
                     datavalidate="data-validate='currencyDiv'"
                     id="categorySpecMapGrid"
                     columns={[
-                      {
-                        fieldName: "action",
-                        label: <AlgaehLabel label={{ fieldName: "action" }} />,
-                        displayTemplate: row => {
-                          return (
-                            <span>
-                              <i
-                                className="fas fa-trash-alt"
-                                aria-hidden="true"
-                                onClick={this.deleteCategorySpecialityMap.bind(
-                                  this,
-                                  row
-                                )}
-                              />
-                            </span>
-                          );
-                        },
-                        others: {
-                          maxWidth: 50,
-                          resizable: false,
-                          filterable: false
-                        }
-                      },
+                      // {
+                      //   fieldName: "action",
+                      //   label: <AlgaehLabel label={{ fieldName: "action" }} />,
+                      //   displayTemplate: row => {
+                      //     return (
+                      //       <span>
+                      //         <i
+                      //           className="fas fa-trash-alt"
+                      //           aria-hidden="true"
+                      //           onClick={this.deleteCategorySpecialityMap.bind(
+                      //             this,
+                      //             row
+                      //           )}
+                      //         />
+                      //       </span>
+                      //     );
+                      //   },
+                      //   others: {
+                      //     maxWidth: 50,
+                      //     resizable: false,
+                      //     filterable: false
+                      //   }
+                      // },
                       {
                         fieldName: "speciality_id",
                         label: (
@@ -527,7 +527,7 @@ class CategorySpeciality extends Component {
                     paging={{ page: 0, rowsPerPage: 10 }}
                     events={{
                       onEdit: () => {},
-                      onDelete: this.deleteCategorySpecialityMap.bind(this),
+                      //onDelete: this.deleteCategorySpecialityMap.bind(this),
                       onDone: () => {}
                     }}
                   />

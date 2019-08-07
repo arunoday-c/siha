@@ -51,3 +51,6 @@
   display: block;
   font-size: 0.7rem;
   font-weight: bold; }
+
+#opbillinggrid_Cntr .ReactTable {
+  max-height: 36vh !important; }

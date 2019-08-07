@@ -238,7 +238,7 @@ class OrderingServices extends Component {
           events={{
             onClose: this.onClose.bind(this)
           }}
-          title="Order Services"
+          title="Order Investigation"
           openPopup={this.props.open}
         >
           <div className="popupInner">
@@ -267,7 +267,7 @@ class OrderingServices extends Component {
               <div className="row">
                 <AlgaehAutoSearch
                   div={{ className: "col-7 customServiceSearch" }}
-                  label={{ forceLabel: "Select Service" }}
+                  label={{ forceLabel: "Search Investigation" }}
                   title="Search Services"
                   id="service_id_search"
                   template={({
@@ -343,7 +343,7 @@ class OrderingServices extends Component {
                     onClick={ProcessService.bind(this, this)}
                     disabled={this.state.addNewService}
                   >
-                    Add New Service
+                    Add to List
                   </button>
                 </div>
               </div>

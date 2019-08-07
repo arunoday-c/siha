@@ -205,7 +205,7 @@ class OrderConsumables extends Component {
           events={{
             onClose: this.onClose.bind(this)
           }}
-          title="Order Services"
+          title="Order Consumable"
           openPopup={this.props.open}
         >
           <div className="popupInner">
@@ -232,10 +232,22 @@ class OrderConsumables extends Component {
                 </div>
               ) : null}
               <div className="row">
+                <div className="col-2">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Location Name"
+                    }}
+                  />
+                  <h6>
+                    {this.state.location_name
+                      ? this.state.location_name
+                      : "Location Name"}
+                  </h6>
+                </div>
                 <AlgaehAutoSearch
-                  div={{ className: "col-3" }}
-                  label={{ forceLabel: "Select Item" }}
-                  title="Search Services"
+                  div={{ className: "col" }}
+                  label={{ forceLabel: "Search Consumables" }}
+                  title="Search Consumables"
                   id="service_id_search"
                   template={result => {
                     return (
@@ -278,7 +290,7 @@ class OrderConsumables extends Component {
                 />
 
                 <div
-                  className="customCheckbox col-lg-2"
+                  className="customCheckbox col-2"
                   style={{ border: "none", marginTop: "19px" }}
                 >
                   <label className="checkbox" style={{ color: "#212529" }}>
@@ -292,27 +304,14 @@ class OrderConsumables extends Component {
                   </label>
                 </div>
 
-                <div className="col-3">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Location Name"
-                    }}
-                  />
-                  <h6>
-                    {this.state.location_name
-                      ? this.state.location_name
-                      : "Location Name"}
-                  </h6>
-                </div>
-
-                <div className="col-lg-3">
+                <div className="col-2">
                   <button
                     className="btn btn-primary"
-                    style={{ marginTop: "24px" }}
+                    style={{ marginTop: 19 }}
                     onClick={ProcessService.bind(this, this)}
                     disabled={this.state.addNewService}
                   >
-                    Add Item
+                    Add to List
                   </button>
                 </div>
               </div>

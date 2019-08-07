@@ -319,7 +319,7 @@ class OrderingPackages extends Component {
               <div className="row">
                 <AlgaehAutoSearch
                   div={{ className: "col-7 customServiceSearch" }}
-                  label={{ forceLabel: "Select Service" }}
+                  label={{ forceLabel: "Search Package" }}
                   title="Search Services"
                   id="service_id_search"
                   template={({
@@ -382,21 +382,18 @@ class OrderingPackages extends Component {
                     onClick={ProcessService.bind(this, this)}
                     disabled={this.state.addNewService}
                   >
-                    Add Package
-                  </button>
-                </div>
-
-                {hideSomeDate === false ? (
-                  <div className="col">
+                    Add to List
+                  </button>{" "}
+                  {hideSomeDate === false ? (
                     <button
-                      className="btn btn-primary"
+                      className="btn btn-default"
                       style={{ marginTop: 19 }}
                       onClick={ShowPackageMaster.bind(this, this)}
                     >
                       Create New Package
                     </button>
-                  </div>
-                ) : null}
+                  ) : null}
+                </div>
 
                 <NewPackage
                   open={this.state.isOpen}
