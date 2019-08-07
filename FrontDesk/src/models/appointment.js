@@ -1828,56 +1828,54 @@ module.exports = {
       next();
       return;
     } else {
-
       _mysql
-      .executeQuery({
-        query:
-          "SELECT from_work_hr,to_work_hr,from_date, to_date, monday, tuesday, wednesday, thursday, friday, saturday, sunday\
+        .executeQuery({
+          query:
+            "SELECT from_work_hr,to_work_hr,from_date, to_date, monday, tuesday, wednesday, thursday, friday, saturday, sunday\
           from hims_d_appointment_schedule_header where  record_status='A' and hims_d_appointment_schedule_header_id=?",
-        values: [input.hims_d_appointment_schedule_header_id]
-      })
-      .then(result => {
-      const cur_schedule=result[0];
-      const working_days = [];
+          values: [input.hims_d_appointment_schedule_header_id]
+        })
+        .then(result => {
+          const cur_schedule = result[0];
+          const working_days = [];
 
-      const inputDays = [
-        cur_schedule.sunday,
-        cur_schedule.monday,
-        cur_schedule.tuesday,
-        cur_schedule.wednesday,
-        cur_schedule.thursday,
-        cur_schedule.friday,
-        cur_schedule.saturday
-      ];
-      for (let d = 0; d < 7; d++) {
-        if (inputDays[d] == "Y") {
-          working_days.push(d);
-        }
-      }
+          const inputDays = [
+            cur_schedule.sunday,
+            cur_schedule.monday,
+            cur_schedule.tuesday,
+            cur_schedule.wednesday,
+            cur_schedule.thursday,
+            cur_schedule.friday,
+            cur_schedule.saturday
+          ];
+          for (let d = 0; d < 7; d++) {
+            if (inputDays[d] == "Y") {
+              working_days.push(d);
+            }
+          }
 
-      const newDateList = getDaysArray(
-        new Date(cur_schedule.from_date),
-        new Date(cur_schedule.to_date),
-        working_days
-      );
+          const newDateList = getDaysArray(
+            new Date(cur_schedule.from_date),
+            new Date(cur_schedule.to_date),
+            working_days
+          );
 
-      if (newDateList.length > 365) {
-        req.records = {
-          schedule_exist: true,
-          message: "You cant have a Schedule More than 365 days "
-        };
-        next();
-        return;
-      } else {
+          if (newDateList.length > 365) {
+            req.records = {
+              schedule_exist: true,
+              message: "You cant have a Schedule More than 365 days "
+            };
+            next();
+            return;
+          } else {
+            if (input.schedule_detail.length > 0) {
+              const providers = input.schedule_detail.map(data => {
+                return data.provider_id;
+              });
 
-        if (input.schedule_detail.length > 0) {
-          const providers = input.schedule_detail.map(data => {
-            return data.provider_id;
-          });
-
-          _mysql
-            .executeQuery({
-              query: `SELECT H.hims_d_appointment_schedule_header_id, D.hims_d_appointment_schedule_detail_id,\
+              _mysql
+                .executeQuery({
+                  query: `SELECT H.hims_d_appointment_schedule_header_id, D.hims_d_appointment_schedule_detail_id,\
                 H.schedule_description, TIME_FORMAT(H.from_work_hr, "%H:%i") as  from_work_hr,TIME_FORMAT(H.to_work_hr, "%H:%i") as  to_work_hr,\
                 D.provider_id,D.schedule_date,E.full_name FROM hims_d_appointment_schedule_header H \
                 INNER JOIN hims_d_appointment_schedule_detail D ON\
@@ -1885,72 +1883,75 @@ module.exports = {
                 left join hims_d_employee E on D.provider_id=E.hims_d_employee_id\
                 WHERE H.record_status = 'A' AND D.record_status = 'A' and D.provider_id in (?) \
                 and schedule_date between date(?) and date(?); `,
-              values: [providers, cur_schedule.from_date, cur_schedule.to_date],
-              printQuery: false
-            })
-            .then(ExistingDates => {
-              //  utilities.logger().log("ExistingDates: ", ExistingDates);
+                  values: [
+                    providers,
+                    cur_schedule.from_date,
+                    cur_schedule.to_date
+                  ],
+                  printQuery: false
+                })
+                .then(ExistingDates => {
+                  //  utilities.logger().log("ExistingDates: ", ExistingDates);
 
-              const clashing_dates = [];
+                  const clashing_dates = [];
 
-              newDateList.forEach(n_date => {
-                const schedule = ExistingDates.filter(data => {
-                  if (
-                    data.schedule_date == moment(n_date).format("YYYY-MM-DD")
-                  ) {
-                    return data;
-                  }
-                });
-
-                clashing_dates.push(...schedule);
-              });
-
-              
-              let time_clash = {};
-
-              if (clashing_dates.length > 0) {
-                time_clash = clashing_dates.find(element => {
-                  if (
-                    (element.from_work_hr <= cur_schedule.from_work_hr &&
-                      element.to_work_hr > cur_schedule.from_work_hr) ||
-                    (element.from_work_hr < cur_schedule.to_work_hr &&
-                      element.to_work_hr > cur_schedule.from_work_hr) ||
-                    (cur_schedule.from_work_hr <= element.from_work_hr &&
-                      cur_schedule.to_work_hr > element.from_work_hr)
-                  ) {
-                    return element;
-                  }
-                });
-              }
-
-              // console.log("time clash33:", time_clash);
-              if (
-                time_clash != undefined &&
-                Object.keys(time_clash).length > 0
-              ) {
-                req.records = {
-                  message: `${time_clash["full_name"]} has schedule on ${
-                    time_clash["schedule_date"]
-                  }`,
-                  schedule_exist: true
-                };
-                next();
-                return;
-              } else {
-                const doctorSchedule = [];
-
-                input.schedule_detail.forEach(doctor => {
                   newDateList.forEach(n_date => {
-                    doctorSchedule.push({
-                      provider_id: doctor["provider_id"],
-                      clinic_id: doctor["clinic_id"],
-                      slot: doctor["slot"],
-                      schedule_date: n_date
+                    const schedule = ExistingDates.filter(data => {
+                      if (
+                        data.schedule_date ==
+                        moment(n_date).format("YYYY-MM-DD")
+                      ) {
+                        return data;
+                      }
                     });
-                  });
-                });
 
-               
+                    clashing_dates.push(...schedule);
+                  });
+
+                  let time_clash = {};
+
+                  if (clashing_dates.length > 0) {
+                    time_clash = clashing_dates.find(element => {
+                      if (
+                        (element.from_work_hr <= cur_schedule.from_work_hr &&
+                          element.to_work_hr > cur_schedule.from_work_hr) ||
+                        (element.from_work_hr < cur_schedule.to_work_hr &&
+                          element.to_work_hr > cur_schedule.from_work_hr) ||
+                        (cur_schedule.from_work_hr <= element.from_work_hr &&
+                          cur_schedule.to_work_hr > element.from_work_hr)
+                      ) {
+                        return element;
+                      }
+                    });
+                  }
+
+                  // console.log("time clash33:", time_clash);
+                  if (
+                    time_clash != undefined &&
+                    Object.keys(time_clash).length > 0
+                  ) {
+                    req.records = {
+                      message: `${time_clash["full_name"]} has schedule on ${
+                        time_clash["schedule_date"]
+                      }`,
+                      schedule_exist: true
+                    };
+                    next();
+                    return;
+                  } else {
+                    const doctorSchedule = [];
+
+                    input.schedule_detail.forEach(doctor => {
+                      newDateList.forEach(n_date => {
+                        doctorSchedule.push({
+                          provider_id: doctor["provider_id"],
+                          clinic_id: doctor["clinic_id"],
+                          slot: doctor["slot"],
+                          schedule_date: n_date
+                        });
+                      });
+                    });
+
                     const insurtColumns = [
                       "provider_id",
                       "clinic_id",
@@ -1965,7 +1966,8 @@ module.exports = {
                         values: doctorSchedule,
                         includeValues: insurtColumns,
                         extraValues: {
-                          appointment_schedule_header_id: input.hims_d_appointment_schedule_header_id,
+                          appointment_schedule_header_id:
+                            input.hims_d_appointment_schedule_header_id,
                           created_date: new Date(),
                           created_by: req.userIdentity.algaeh_d_app_user_id,
                           updated_date: new Date(),
@@ -1974,40 +1976,34 @@ module.exports = {
                         bulkInsertOrUpdate: true
                       })
                       .then(schedule_detailResult => {
-                      
-                          _mysql.releaseConnection();
-                          req.records = schedule_detailResult;
-                          next();
-                       
+                        _mysql.releaseConnection();
+                        req.records = schedule_detailResult;
+                        next();
                       })
                       .catch(e => {
                         _mysql.releaseConnection();
                         next(e);
                       });
-                
-                
-              }
-            })
-            .catch(e => {
-              _mysql.releaseConnection();
-              next(e);
-            });
-        } else {
-          req.records = {
-            schedule_exist: true,
-            message: "Please select doctors"
-          };
-          next();
-          return;
-        }
-      }
-
-
-    })
-    .catch(e => {
-      _mysql.releaseConnection();
-      next(e);
-    });
+                  }
+                })
+                .catch(e => {
+                  _mysql.releaseConnection();
+                  next(e);
+                });
+            } else {
+              req.records = {
+                schedule_exist: true,
+                message: "Please select doctors"
+              };
+              next();
+              return;
+            }
+          }
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
     }
   },
   //created by irfan: to add patient appointment

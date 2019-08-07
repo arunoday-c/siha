@@ -6,7 +6,8 @@ import {
   updateBranchMaster,
   getActiveDepartments,
   getBranchWiseDepartments,
-  modifyBranchMaster
+  modifyBranchMaster,
+  getDepartmentsChart
 } from "../models/branchMaster";
 import algaehUtlities from "algaeh-utilities/utilities";
 export default () => {
@@ -121,6 +122,24 @@ export default () => {
   );
 
   api.post("/modifyBranchMaster", modifyBranchMaster, (req, res, next) => {
+    let result = req.records;
+
+    if (result.invalid_data == true) {
+      res.status(utlities.httpStatus().ok).json({
+        success: false,
+        records: result
+      });
+    } else {
+      res.status(utlities.httpStatus().ok).json({
+        success: true,
+        records: result
+      });
+    }
+
+    next();
+  });
+
+  api.get("/getDepartmentsChart", getDepartmentsChart, (req, res, next) => {
     let result = req.records;
 
     if (result.invalid_data == true) {

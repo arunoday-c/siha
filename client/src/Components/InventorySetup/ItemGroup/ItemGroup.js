@@ -147,9 +147,9 @@ class ItemGroup extends Component {
                     label: <AlgaehLabel label={{ fieldName: "category_id" }} />,
                     displayTemplate: row => {
                       let display =
-                        this.props.inventoryitemcategory === undefined
+                        this.props.invitemcategory === undefined
                           ? []
-                          : this.props.inventoryitemcategory.filter(
+                          : this.props.invitemcategory.filter(
                               f =>
                                 f.hims_d_inventory_tem_category_id ===
                                 row.category_id
@@ -174,7 +174,7 @@ class ItemGroup extends Component {
                             dataSource: {
                               textField: "category_desc",
                               valueField: "hims_d_inventory_tem_category_id",
-                              data: this.props.inventoryitemcategory
+                              data: this.props.invitemcategory
                             },
                             onChange: onchangegridcol.bind(this, this, row),
                             others: {

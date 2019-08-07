@@ -1,358 +1,647 @@
-import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-import _ from "lodash";
-
-export default function ScreenAssignmentEvents() {
-  return {
-    dropDownHandler: ($this, value) => {
-      switch (value.name) {
-        case "app_group_id":
-          getRoleBaseActive($this);
-          getRoles($this, value.value);
-          $this.setState({
-            [value.name]: value.value,
-            roles: []
-          });
-          break;
-
-        default:
-          getRoleBaseActive($this);
-          getRoleActiveModules($this, value.value);
-          $this.setState({
-            [value.name]: value.value
-          });
-          break;
-      }
-    },
-    assignScreens: $this => {
-      //To build delete inputs
-      let inputObj = { role_id: $this.state.role_id };
-      let delete_modules = [];
-      let delete_screens = [];
-      let update_screens = [];
-      let inputs = [];
-      const exist_module_data = _.filter($this.state.modules, f => {
-        return f.algaeh_m_module_role_privilage_mapping_id !== undefined;
-      });
-
-      if (exist_module_data.length > 0) {
-        //Delete
-        const removed_module_data = _.filter(exist_module_data, f => {
-          return f.checked === false;
-        });
-        if (removed_module_data.length > 0) {
-          delete_modules = removed_module_data.map(item => {
-            return item.algaeh_m_module_role_privilage_mapping_id;
-          });
-        }
-
-        const check_module_data = _.filter(exist_module_data, f => {
-          return f.checked === true;
-        });
-        for (let y = 0; y < check_module_data.length; y++) {
-          const exist_screen_data = _.filter(
-            check_module_data[y].ScreenList,
-            f => {
-              return f.algaeh_m_screen_role_privilage_mapping_id !== undefined;
-            }
-          );
-          const removed_screen_data = _.filter(exist_screen_data, f => {
-            return f.checked === false;
-          });
-          if (removed_screen_data.length > 0) {
-            delete_screens = removed_screen_data.map(item => {
-              return item.algaeh_m_screen_role_privilage_mapping_id;
-            });
-          }
-        }
-        // Update
-        const update_module_data = _.filter(exist_module_data, f => {
-          return f.checked === true;
-        });
-        if (update_module_data.length > 0) {
-          let insert_screens = [];
-          for (let k = 0; k < update_module_data.length; k++) {
-            const insert_screen_data = _.filter(
-              update_module_data[k].ScreenList,
-              f => {
-                return (
-                  f.checked === true &&
-                  f.algaeh_m_screen_role_privilage_mapping_id === undefined
-                );
+ //created by:Irfan
+ addCashHandover: (req, res, next) => {
+    
+    const _options = req.mySQl !== undefined ? req.mySQl : req.connection;
+    const _mysql = new algaehMysql(_options);
+    const utilities = new algaehUtilities();
+   
+    const inputParam = req.body;
+   // const decimal_places = req.userIdentity.decimal_places>0?req.userIdentity.decimal_places:3;
+    console.log("receiptdetails:",inputParam.receiptdetails);
+  
+    try {
+      if (req.userIdentity.user_type == "C" && inputParam.shift_id > 0) {
+        if (inputParam.receiptdetails.length > 0) {
+          _mysql
+            .executeQuery({
+              query:
+                "select hims_f_cash_handover_header_id, shift_id, daily_handover_date,\
+                  hims_f_cash_handover_detail_id, D.casher_id,D.shift_status,D.open_date,\
+                  D.expected_cheque,D.expected_card,D.no_of_cheques,D.collected_cash,D.refunded_cash\
+                  from hims_f_cash_handover_header H left join hims_f_cash_handover_detail D \
+                  on H.hims_f_cash_handover_header_id=D.cash_handover_header_id\
+                  and date(D.open_date)=CURDATE()  and casher_id=? and shift_status='O' and D.record_status='A'\
+                  where H.shift_id=? and date(H.daily_handover_date)=CURDATE() and H.hospital_id=? ",
+              values: [
+                req.userIdentity.algaeh_d_app_user_id,
+                inputParam.shift_id,
+                req.userIdentity.hospital_id
+              ],
+              printQuery: true
+            })
+            .then(result => {
+              let collected_cash = 0;
+              let expected_card = 0;
+              let expected_cheque = 0;
+              let no_of_cheques = 0;
+  
+              //update Details
+              let whichQuery = "UD";
+  
+              if (!result.length > 0) {
+                //insert header and details
+                whichQuery = "IHD";
+              } else if (
+                result.length > 0 &&
+                !result[0]["hims_f_cash_handover_detail_id"] > 0
+              ) {
+                //insert details
+                whichQuery = "ID";
               }
-            );
-            if (insert_screen_data.length > 0) {
-              let Obj = {
-                algaeh_m_module_role_privilage_mapping_id:
-                  update_module_data[k]
-                    .algaeh_m_module_role_privilage_mapping_id
-              };
+  
+              collected_cash = new LINQ(inputParam.receiptdetails)
+                .Where(w => w.pay_type == "CA")
+                .Sum(s => parseFloat(s.amount));;
+                console.log("collected_cash:",collected_cash);
+              if (inputParam.pay_type == "P") {
+                switch (whichQuery) {
+                  case "IHD":
+                    _mysql
+                      .executeQueryWithTransaction({
+                        query:
+                          "INSERT  INTO `hims_f_cash_handover_header` ( shift_id, daily_handover_date,\
+                              created_date, created_by, updated_date, updated_by,hospital_id)\
+                            VALUE(?,?,?,?,?,?,?)",
+                        values: [
+                          inputParam.shift_id,
+                          new Date(),
+                          new Date(),
+                          req.userIdentity.algaeh_d_app_user_id,
+                          new Date(),
+                          req.userIdentity.algaeh_d_app_user_id,
+                          req.userIdentity.hospital_id
+                        ],
+                        printQuery: true
+                      })
+                      .then(headerRes => {
+                        if (headerRes.insertId > 0) {
+                          _mysql
+                            .executeQuery({
+                              query:
+                                "INSERT INTO `hims_f_cash_handover_detail` ( cash_handover_header_id, casher_id,\
+                              shift_status,open_date,  refunded_cash,created_date, created_by, updated_date, updated_by,hospital_id)\
+                              VALUE(?,?,?,?,?,?,?,?,?,?)",
+                              values: [
+                                headerRes.insertId,
+                                req.userIdentity.algaeh_d_app_user_id,
+                                "O",
+                                new Date(),
+                                collected_cash,
+                                new Date(),
+                                req.userIdentity.algaeh_d_app_user_id,
+                                new Date(),
+                                req.userIdentity.algaeh_d_app_user_id,
+                                req.userIdentity.hospital_id
+                              ],
+                              printQuery: true
+                            })
+                            .then(handoverDetails => {
+                              if (handoverDetails.insertId > 0) {
+                                _mysql
+                                  .executeQuery({
+                                    query:
+                                      "update hims_f_cash_handover_detail set expected_cash=collected_cash-refunded_cash\
+                                      where hims_f_cash_handover_detail_id=?;\
+                                      update hims_f_receipt_header set cash_handover_detail_id=? where\
+                                         hims_f_receipt_header_id=?;",
+                                    values: [
+                                      handoverDetails.insertId,
+                                      handoverDetails.insertId,
+                                      req.body.receipt_header_id
+                                    ],
+                                    printQuery: true
+                                  })
+                                  .then(updateRecept => {
+                                    if (req.mySQl==undefined||req.adv_refnd=="Y") {
+                                      _mysql.commitTransaction(() => {
+                                        _mysql.releaseConnection();
+                                        if(req.adv_refnd!=="Y"){
 
-              insert_screens = insert_screen_data.map(item => {
-                return item.screen_id;
+                                          req.records = updateRecept;
+                                        }
+                                        next();
+                                      });
+                                    } else {
+                                      if (req.records) {
+                                        req.records["internal_error"] = false;
+                                      } else {
+                                        req.records = {
+                                          internal_error: false
+                                        };
+                                      }
+  
+                                      next();
+                                    }
+                                  })
+                                  .catch(error => {
+                                    _mysql.rollBackTransaction(() => {
+                                      next(error);
+                                    });
+                                  });
+                              } else {
+                                req.records = {
+                                  internal_error: true,
+                                  message: "detais error"
+                                };
+                                _mysql.rollBackTransaction(() => {
+                                  next();
+                                });
+                              }
+                            })
+                            .catch(error => {
+                              _mysql.rollBackTransaction(() => {
+                                next(error);
+                              });
+                            });
+                        } else {
+                          req.records = {
+                            internal_error: true,
+                            message: "Header error"
+                          };
+                          _mysql.rollBackTransaction(() => {
+                            next();
+                          });
+                        }
+                      })
+                      .catch(error => {
+                        _mysql.rollBackTransaction(() => {
+                          next(error);
+                        });
+                      });
+  
+                    break;
+  
+                  case "ID":
+                    _mysql
+                      .executeQueryWithTransaction({
+                        query:
+                          "INSERT INTO `hims_f_cash_handover_detail` ( cash_handover_header_id, casher_id,\
+                          shift_status,open_date,  refunded_cash,created_date, created_by, updated_date, updated_by,hospital_id)\
+                          VALUE(?,?,?,?,?,?,?,?,?,?)",
+                        values: [
+                          result[0]["hims_f_cash_handover_header_id"],
+                          req.userIdentity.algaeh_d_app_user_id,
+                          "O",
+                          new Date(),
+                          collected_cash,
+                          new Date(),
+                          req.userIdentity.algaeh_d_app_user_id,
+                          new Date(),
+                          req.userIdentity.algaeh_d_app_user_id,
+                          req.userIdentity.hospital_id
+                        ],
+                        printQuery: true
+                      })
+                      .then(handoverDetails => {
+                        if (handoverDetails.insertId > 0) {
+                          _mysql
+                            .executeQuery({
+                              query:
+                                "update hims_f_cash_handover_detail set expected_cash=collected_cash-refunded_cash\
+                                where hims_f_cash_handover_detail_id=?;\
+                                update hims_f_receipt_header set cash_handover_detail_id=? where\
+                                hims_f_receipt_header_id=?;",
+                              values: [
+                                handoverDetails.insertId,
+                                handoverDetails.insertId,
+                                req.body.receipt_header_id
+                              ],
+                              printQuery: true
+                            })
+                            .then(updateRecept => {
+                              if (req.mySQl==undefined||req.adv_refnd=="Y") {
+                                _mysql.commitTransaction(() => {
+                                  _mysql.releaseConnection();
+                                  if(req.adv_refnd!=="Y"){
+
+                                    req.records = updateRecept;
+                                  }
+                                  next();
+                                });
+                              } else {
+                                if (req.records) {
+                                  req.records["internal_error"] = false;
+                                } else {
+                                  req.records = {
+                                    internal_error: false
+                                  };
+                                }
+  
+                                next();
+                              }
+                            })
+                            .catch(error => {
+                              _mysql.rollBackTransaction(() => {
+                                next(error);
+                              });
+                            });
+                        } else {
+                          req.records = {
+                            internal_error: true,
+                            message: "detais error"
+                          };
+                          _mysql.rollBackTransaction(() => {
+                            next();
+                          });
+                        }
+                      })
+                      .catch(error => {
+                        _mysql.rollBackTransaction(() => {
+                          next(error);
+                        });
+                      });
+  
+                    break;
+                  case "UD":
+                      collected_cash += parseFloat(result[0].refunded_cash);
+  
+                    _mysql
+                      .executeQueryWithTransaction({
+                        query:
+                          "update hims_f_cash_handover_detail set refunded_cash=?,updated_date=?,updated_by=? where record_status='A' \
+                        and hims_f_cash_handover_detail_id=?;\
+                        update hims_f_cash_handover_detail set expected_cash=collected_cash-refunded_cash\
+                                      where hims_f_cash_handover_detail_id=?;\
+                         update hims_f_receipt_header set cash_handover_detail_id=? where hims_f_receipt_header_id=?;",
+                        values: [
+                          collected_cash,
+                          new Date(),
+                          req.userIdentity.algaeh_d_app_user_id,
+                          result[0]["hims_f_cash_handover_detail_id"],
+                          result[0]["hims_f_cash_handover_detail_id"],
+                          result[0]["hims_f_cash_handover_detail_id"],
+                          req.body.receipt_header_id
+                        ],
+                        printQuery: true
+                      })
+                      .then(updateResult => {
+                        if (req.mySQl==undefined||req.adv_refnd=="Y") {
+                          _mysql.commitTransaction(() => {
+                            _mysql.releaseConnection();
+                            if(req.adv_refnd!=="Y"){
+
+                              req.records = updateRecept;
+                            }
+                            next();
+                          });
+                        } else {
+                          if (req.records) {
+                            req.records["internal_error"] = false;
+                          } else {
+                            req.records = {
+                              internal_error: false
+                            };
+                          }
+  
+                          next();
+                        }
+                      })
+                      .catch(error => {
+                        _mysql.rollBackTransaction(() => {
+                          next(error);
+                        });
+                      });
+                    break;
+                }
+              } else {
+                console.log("one :");
+                expected_card = new LINQ(inputParam.receiptdetails)
+                .Where(w => w.pay_type == "CD")
+                .Sum(s => parseFloat(s.amount));
+  
+                expected_cheque = new LINQ(inputParam.receiptdetails)
+                  .Where(w => w.pay_type == "CH")
+                  .Sum(s => parseFloat(s.amount));
+  
+                no_of_cheques = new LINQ(inputParam.receiptdetails)
+                  .Where(w => w.pay_type == "CH")
+                  .ToArray().length;
+  
+                switch (whichQuery) {
+                  case "IHD":
+                    _mysql
+                      .executeQueryWithTransaction({
+                        query:
+                          "INSERT  INTO `hims_f_cash_handover_header` ( shift_id, daily_handover_date,\
+                                created_date, created_by, updated_date, updated_by,hospital_id)\
+                              VALUE(?,?,?,?,?,?,?)",
+                        values: [
+                          inputParam.shift_id,
+                          new Date(),
+                          new Date(),
+                          req.userIdentity.algaeh_d_app_user_id,
+                          new Date(),
+                          req.userIdentity.algaeh_d_app_user_id,
+                          req.userIdentity.hospital_id
+                        ],
+                        printQuery: true
+                      })
+                      .then(headerRes => {
+                        console.log("two :");
+                        if (headerRes.insertId > 0) {
+                          _mysql
+                            .executeQuery({
+                              query:
+                                "INSERT INTO `hims_f_cash_handover_detail` ( cash_handover_header_id, casher_id,\
+                                shift_status,open_date,   collected_cash,expected_card,  expected_cheque, \
+                                no_of_cheques,created_date, created_by, updated_date, updated_by,hospital_id)\
+                                VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                              values: [
+                                headerRes.insertId,
+                                req.userIdentity.algaeh_d_app_user_id,
+                                "O",
+                                new Date(),
+  
+                                collected_cash,
+                                expected_card,
+                                expected_cheque,
+                                no_of_cheques,
+                                new Date(),
+                                req.userIdentity.algaeh_d_app_user_id,
+                                new Date(),
+                                req.userIdentity.algaeh_d_app_user_id,
+                                req.userIdentity.hospital_id
+                              ],
+                              printQuery: true
+                            })
+                            .then(handoverDetails => {
+                              console.log("three :");
+                              if (handoverDetails.insertId > 0) {
+                                _mysql
+                                  .executeQuery({
+                                    query:
+                                      "update hims_f_cash_handover_detail set expected_cash=collected_cash-refunded_cash\
+                                      where hims_f_cash_handover_detail_id=?;\
+                                      update hims_f_receipt_header set cash_handover_detail_id=? where\
+                                           hims_f_receipt_header_id=?;",
+                                    values: [
+                                      handoverDetails.insertId,
+                                      handoverDetails.insertId,
+                                      req.body.receipt_header_id
+                                    ],
+                                    printQuery: true
+                                  })
+                                  .then(updateRecept => {
+                                    console.log("here :","catt");
+                                    if (req.mySQl==undefined||req.adv_refnd=="Y") {
+                                      console.log("four here :");
+                                      _mysql.commitTransaction(() => {
+                                        _mysql.releaseConnection();
+                                        if(req.adv_refnd!=="Y"){
+
+                                          req.records = updateRecept;
+                                        }
+                                        next();
+                                      });
+                                    } else {
+                                      console.log("here :","dog");
+                                      if (req.records) {
+                                        req.records["internal_error"] = false;
+                                      } else {
+                                        req.records = {
+                                          internal_error: false
+                                        };
+                                      }
+  
+                                      next();
+                                    }
+                                  })
+                                  .catch(error => {
+                                    console.log("error1 :",error);
+                                    _mysql.rollBackTransaction(() => {
+                                      next(error);
+                                    });
+                                  });
+                              } else {
+                                req.records = {
+                                  internal_error: true,
+                                  message: "detais error"
+                                };
+                                _mysql.rollBackTransaction(() => {
+                                  next();
+                                });
+                              }
+                            })
+                            .catch(error => {
+                              _mysql.rollBackTransaction(() => {
+                                next(error);
+                              });
+                            });
+                        } else {
+                          req.records = {
+                            internal_error: true,
+                            message: "Header error"
+                          };
+                          _mysql.rollBackTransaction(() => {
+                            next();
+                          });
+                        }
+                      })
+                      .catch(error => {
+                        _mysql.rollBackTransaction(() => {
+                          next(error);
+                        });
+                      });
+  
+                    break;
+  
+                  case "ID":
+                    _mysql
+                      .executeQueryWithTransaction({
+                        query:
+                          "INSERT INTO `hims_f_cash_handover_detail` ( cash_handover_header_id, casher_id,\
+                        shift_status,open_date,  collected_cash, expected_card,  expected_cheque, \
+                        no_of_cheques,created_date, created_by, updated_date, updated_by,hospital_id)\
+                        VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                        values: [
+                          result[0]["hims_f_cash_handover_header_id"],
+                          req.userIdentity.algaeh_d_app_user_id,
+                          "O",
+                          new Date(),
+                          collected_cash,
+                          expected_card,
+                          expected_cheque,
+                          no_of_cheques,
+                          new Date(),
+                          req.userIdentity.algaeh_d_app_user_id,
+                          new Date(),
+                          req.userIdentity.algaeh_d_app_user_id,
+                          req.userIdentity.hospital_id
+                        ]
+                      })
+                      .then(handoverDetails => {
+                        console.log("apple :");
+                        if (handoverDetails.insertId > 0) {
+                          _mysql
+                            .executeQuery({
+                              query:
+                                "update hims_f_cash_handover_detail set expected_cash=collected_cash-refunded_cash\
+                                where hims_f_cash_handover_detail_id=?;\
+                                update hims_f_receipt_header set cash_handover_detail_id=? where\
+                                  hims_f_receipt_header_id=?;",
+                              values: [
+                                handoverDetails.insertId,
+                                handoverDetails.insertId,
+                                req.body.receipt_header_id
+                              ],
+                              printQuery: true
+                            })
+                            .then(updateRecept => {
+                              console.log("ball :");
+                              if (req.mySQl==undefined||req.adv_refnd=="Y") {
+                                _mysql.commitTransaction(() => {
+                                  _mysql.releaseConnection();
+                                  if(req.adv_refnd!=="Y"){
+
+                                    req.records = updateRecept;
+                                  }
+                                
+                                  next();
+                                });
+                              } else {
+                                if (req.records) {
+                                  req.records["internal_error"] = false;
+                                } else {
+                                  req.records = {
+                                    internal_error: false
+                                  };
+                                }
+  
+                                next();
+                              }
+                            })
+                            .catch(error => {
+                              _mysql.rollBackTransaction(() => {
+                                next(error);
+                              });
+                            });
+                        } else {
+                          req.records = {
+                            internal_error: true,
+                            message: "detais error"
+                          };
+                          _mysql.rollBackTransaction(() => {
+                            next();
+                          });
+                        }
+                      })
+                      .catch(error => {
+                        _mysql.rollBackTransaction(() => {
+                          next(error);
+                        });
+                      });
+  
+                    break;
+                  case "UD":
+                      expected_card += parseFloat(result[0].expected_card);
+                    collected_cash += parseFloat(result[0].collected_cash);
+                    expected_cheque += parseFloat(result[0].expected_cheque);
+                    no_of_cheques += parseFloat(result[0].no_of_cheques);
+                    _mysql
+                      .executeQueryWithTransaction({
+                        query:
+                          "update hims_f_cash_handover_detail set collected_cash=?,expected_card=?,\
+                            expected_cheque=?,no_of_cheques=?,updated_date=?,updated_by=? where record_status='A' \
+                          and hims_f_cash_handover_detail_id=?;\
+                          update hims_f_cash_handover_detail set expected_cash=collected_cash-refunded_cash\
+                                      where hims_f_cash_handover_detail_id=?;\
+                           update hims_f_receipt_header set cash_handover_detail_id=? where hims_f_receipt_header_id=?;",
+                        values: [
+                          collected_cash,
+                          expected_card,
+                          expected_cheque,
+                          no_of_cheques,
+                          new Date(),
+                          req.userIdentity.algaeh_d_app_user_id,
+                          result[0]["hims_f_cash_handover_detail_id"],
+                          result[0]["hims_f_cash_handover_detail_id"],
+                          result[0]["hims_f_cash_handover_detail_id"],
+                          req.body.receipt_header_id
+                        ],
+                        printQuery: true
+                      })
+                      .then(updateResult => {
+                        console.log("last :");
+                        if (req.mySQl==undefined||req.adv_refnd=="Y") {
+
+                          console.log("BOOSSS :");
+                          _mysql.commitTransaction(() => {
+                            _mysql.releaseConnection();
+                            if(req.adv_refnd!=="Y"){
+                              req.records = updateRecept;
+                            }
+                            next();
+                          });
+                        } else {
+                          if (req.records) {
+                            req.records["internal_error"] = false;
+                          } else {
+                            req.records = {
+                              internal_error: false
+                            };
+                          }
+  
+                          next();
+                        }
+                      })
+                      .catch(error => {
+                        _mysql.rollBackTransaction(() => {
+                          next(error);
+                        });
+
+                        console.log("er3 :",error);
+                      });
+                    break;
+                }
+              }
+            })
+            .catch(error => {
+              _mysql.rollBackTransaction(() => {
+                next(error);
               });
-
-              Obj.insert_screens = insert_screens;
-              update_screens.push(Obj);
-            }
-          }
-        }
-      }
-      //To build insert inputs
-      const module_data = _.filter($this.state.modules, f => {
-        return (
-          f.checked === true &&
-          f.algaeh_m_module_role_privilage_mapping_id === undefined
-        );
-      });
-      if (module_data.length > 0) {
-        for (let i = 0; i < module_data.length; i++) {
-          let Obj = {};
-          let screen_ids = [];
-          const screen_data = _.filter(module_data[i].ScreenList, f => {
-            return (
-              f.checked === true &&
-              f.algaeh_m_screen_role_privilage_mapping_id === undefined
-            );
-          });
-          if (screen_data.length > 0) {
-            Obj.module_id = module_data[i].module_id;
-            screen_ids = screen_data.map(item => {
-              return item.screen_id;
             });
-            Obj.screen_ids = screen_ids;
-            inputs.push(Obj);
-          }
-        }
-      }
-
-      inputObj.inputs = inputs;
-      inputObj.delete_modules = delete_modules;
-      inputObj.delete_screens = delete_screens;
-      inputObj.update_screens = update_screens;
-
-      algaehApiCall({
-        uri: "/algaehMasters/assignScreens",
-        method: "POST",
-        data: inputObj,
-        onSuccess: res => {
-          if (res.data.success) {
-            swalMessage({
-              title: "Assigned Successfully.",
-              type: "success"
-            });
-            $this.setState({ app_group_id: null, role_id: null, roles: [] });
-            getRoleBaseActive($this);
-          } else {
-            swalMessage({
-              title: res.data.records.message,
-              type: "error"
-            });
-          }
-        },
-        onFailure: err => {
-          swalMessage({
-            title: err.message,
-            type: "error"
-          });
-        }
-      });
-    },
-    getRoleBaseActiveModules: $this => {
-      getRoleBaseActive($this);
-    },
-    getGroups: $this => {
-      algaehApiCall({
-        uri: "/algaehappuser/selectAppGroup",
-        method: "GET",
-        onSuccess: response => {
-          if (response.data.success) {
-            $this.setState({ groups: response.data.records });
-          }
-        },
-        onFailure: error => {
-          swalMessage({
-            title: error.message,
-            type: "error"
-          });
-        }
-      });
-    },
-    clearState: $this => {
-      $this.setState({ app_group_id: null, role_id: null, roles: [] });
-      getRoleBaseActive($this);
-    },
-
-    changeScreen: ($this, data, e) => {
-      const _status = e.target.checked;
-      let val = parseInt(e.target.value, 10);
-
-      let main_modules = $this.state.modules;
-
-      const _screens = data.ScreenList.map(item => {
-        if (item.screen_id === val) {
-          item.checked = _status ? true : false;
-        }
-        return {
-          ...item
-        };
-      });
-
-      const _check = _.filter(_screens, f => {
-        return f.checked === true;
-      });
-
-      let newModule = _.map(main_modules, f => {
-        let _sList = f.ScreenList;
-        if (f.module_id === data.module_id) {
-          _sList = _screens;
-          f.checked = _check.length > 0 ? true : false;
-        }
-        return {
-          ...f,
-          ScreenList: _sList
-        };
-      });
-
-      $this.setState({ modules: newModule });
-    },
-    changeModules: ($this, data, e) => {
-      const _status = e.target.checked;
-      let val = parseInt(e.target.value, 10);
-
-      let main_modules = $this.state.modules;
-
-      const _screens = data.ScreenList.map(item => {
-        return {
-          ...item,
-          checked: _status ? true : false
-        };
-      });
-      let newModule = _.map(main_modules, f => {
-        let _sList = f.ScreenList;
-        let _checked = { checked: f.checked ? true : false };
-        if (f.module_id === val) {
-          _sList = _screens;
-          _checked = { checked: _status ? true : false };
-        }
-        return {
-          ...f,
-          ..._checked,
-          ScreenList: _sList
-        };
-      });
-      $this.setState({ modules: newModule });
-    }
-  };
-}
-
-// function getGroupData($this) {
-//   algaehApiCall({
-//     uri: "/algaehappuser/selectAppGroup",
-//     method: "GET",
-//     onSuccess: response => {
-//       if (response.data.success) {
-//         $this.setState({ groups: response.data.records });
-//       }
-//     },
-//     onFailure: error => {
-//       swalMessage({
-//         title: error.message,
-//         type: "error"
-//       });
-//     }
-//   });
-// }
-
-function getRoleBaseActive($this) {
-  algaehApiCall({
-    uri: "/algaehMasters/getRoleBaseActiveModules",
-    method: "GET",
-    onSuccess: res => {
-      if (res.data.success) {
-        $this.setState({
-          modules: res.data.records
-        });
-      }
-    },
-    onFailure: err => {
-      swalMessage({
-        title: err.message,
-        type: "error"
-      });
-    }
-  });
-}
-
-function getRoles($this, group_id) {
-  algaehApiCall({
-    uri: "/algaehappuser/selectRoles",
-    method: "GET",
-    data: {
-      algaeh_d_app_group_id: group_id
-    },
-    onSuccess: response => {
-      if (response.data.success) {
-        $this.setState({ roles: response.data.records });
-      }
-    },
-    onFailure: error => {
-      swalMessage({
-        title: error.message,
-        type: "error"
-      });
-    }
-  });
-}
-
-function getRoleActiveModules($this, role_id) {
-  let inputObj = { role_id: role_id, from_assignment: "Y" };
-
-  algaehApiCall({
-    uri: "/algaehMasters/getRoleBaseActiveModules",
-    method: "GET",
-    data: inputObj,
-    onSuccess: res => {
-      if (res.data.success) {
-        let data = res.data.records;
-        let modules = $this.state.modules;
-        data.map(item => {
-          let _findModule = _.find(
-            modules,
-            m => m.module_id === item.module_id
-          );
-          const index = modules.indexOf(_findModule);
-          modules[index] = {
-            ...modules[index],
-            checked: true,
-            algaeh_m_module_role_privilage_mapping_id:
-              item.algaeh_m_module_role_privilage_mapping_id
-          };
-
-          item.ScreenList.map(screen => {
-            let _findScreen = _.find(
-              modules[index]["ScreenList"],
-              s => s.screen_id === screen.screen_id
-            );
-            const indexS = modules[index]["ScreenList"].indexOf(_findScreen);
-            modules[index]["ScreenList"][indexS] = {
-              ...modules[index]["ScreenList"][indexS],
-              checked: true,
-              algaeh_m_screen_role_privilage_mapping_id:
-                screen.algaeh_m_screen_role_privilage_mapping_id
+        } else {
+          if (req.mySQl==undefined||req.adv_refnd=="Y") {
+            req.records = {
+              internal_error: true,
+              message: "No receipt details"
             };
+            _mysql.rollBackTransaction(() => {
+              next();
+            });
+          } else {
+            req.records = {
+              internal_error: true,
+              message: "No receipt details"
+            };
+            _mysql.rollBackTransaction(() => {
+              next();
+            });
+          }
+        }
+      } else {
+        if (req.mySQl==undefined||req.adv_refnd=="Y") {
+          req.records = {
+            internal_error: true,
+            message: "Current user is not a Cahsier"
+          };
+          _mysql.rollBackTransaction(() => {
+            next();
           });
-        });
-
-        $this.setState({
-          modules: modules
-        });
+        } else {
+          req.records = {
+            internal_error: true,
+            message: "Current user is not a Cahsier"
+          };
+          _mysql.rollBackTransaction(() => {
+            next();
+          });
+        }
       }
-    },
-    onFailure: err => {
-      swalMessage({
-        title: err.message,
-        type: "error"
+    } catch (e) {
+      console.log("error:",e)
+      _mysql.rollBackTransaction(() => {
+        next(error);
       });
     }
-  });
-}
+  },

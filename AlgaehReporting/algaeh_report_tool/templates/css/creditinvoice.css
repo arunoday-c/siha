@@ -331,3 +331,23 @@ body {
   font-size: 12px;
   text-align: center;
 }
+.barcodeLine {
+  position: relative;
+  width: 250px;
+  margin-bottom: 30px;
+}
+
+.barcodeLine img {
+  height: 80px;
+  width: 100%;
+  position: relative;
+  border: 1px dashed #ccc;
+  padding: 5px;
+}
+
+.barcodeLine p {
+  text-align: right;
+  position: absolute;
+  top: 83px;
+  right: 0;
+}

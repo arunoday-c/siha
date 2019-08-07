@@ -9,7 +9,8 @@ import {
   patientPackageAdvanceRefund,
   updatePatientPackage,
   getEmployeeAndDepartments,
-  closePackage
+  closePackage,
+  addCashHandover
 } from "../models/billing";
 
 import algaehPath from "algaeh-module-bridge";
@@ -38,12 +39,22 @@ export default () => {
   api.post(
     "/patientAdvanceRefund",
     patientAdvanceRefund,
-
+    addCashHandover,
     (req, res, next) => {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: true,
-        records: req.records
-      });
+      if (
+        req.records.internal_error != undefined &&
+        req.records.internal_error == true
+      ) {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: false,
+          records: req.records
+        });
+      } else {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: true,
+          records: req.records
+        });
+      }
     }
   );
   api.post(

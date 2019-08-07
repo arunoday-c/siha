@@ -128,7 +128,8 @@ class InvItemMaster extends Component {
                           textField: "name",
                           valueField: "value",
                           data: GlobalVariables.ITEM_TYPE
-                        }
+                        },
+                        onChange: texthandle.bind(this, this)
                       }}
                     />
                     <AlagehAutoComplete
@@ -145,7 +146,8 @@ class InvItemMaster extends Component {
                           textField: "category_desc",
                           valueField: "hims_d_inventory_tem_category_id",
                           data: this.props.invitemcategory
-                        }
+                        },
+                        onChange: texthandle.bind(this, this)
                       }}
                     />
                     <AlagehAutoComplete
@@ -162,7 +164,8 @@ class InvItemMaster extends Component {
                           textField: "group_description",
                           valueField: "hims_d_inventory_item_group_id",
                           data: this.props.inventoryitemgroup
-                        }
+                        },
+                        onChange: texthandle.bind(this, this)
                       }}
                     />
                     <div className="col-6">
@@ -582,7 +585,8 @@ class InvItemMaster extends Component {
                           textField: "uom_description",
                           valueField: "uom_id",
                           data: this.state.detail_item_uom
-                        }
+                        },
+                        onChange: texthandle.bind(this, this)
                       }}
                     />
                     <AlagehAutoComplete
@@ -599,7 +603,8 @@ class InvItemMaster extends Component {
                           textField: "uom_description",
                           valueField: "uom_id",
                           data: this.state.detail_item_uom
-                        }
+                        },
+                        onChange: texthandle.bind(this, this)
                       }}
                     />
                     {/*<AlagehAutoComplete
@@ -635,7 +640,8 @@ class InvItemMaster extends Component {
                         },
                         others: {
                           disabled: true
-                        }
+                        },
+                        onChange: texthandle.bind(this, this)
                       }}
                     />
                     <AlagehFormGroup

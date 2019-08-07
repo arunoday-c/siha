@@ -320,7 +320,7 @@ class OrderingPackages extends Component {
                 <AlgaehAutoSearch
                   div={{ className: "col-7 customServiceSearch" }}
                   label={{ forceLabel: "Search Package" }}
-                  title="Search Services"
+                  title="Search Package"
                   id="service_id_search"
                   template={({
                     covered,

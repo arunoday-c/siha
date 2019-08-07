@@ -2374,14 +2374,15 @@ let addFollowUp = (req, res, next) => {
     let inputParam = extend(followup, req.body);
     connection.query(
       "INSERT INTO `hims_f_patient_followup` (`patient_id`, `doctor_id`, `episode_id`, `followup_type`, \
-       `followup_date`, `reason`, `created_by` ,`created_date`,hospital_id) \
-      VALUES ( ?, ?, ?, ?, ?, ?,?, ?, ?)",
+       `followup_date`, `sub_department_id`, `reason`, `created_by` ,`created_date`,hospital_id) \
+      VALUES ( ?, ?, ?, ?, ?, ?,?, ?, ?, ?)",
       [
         inputParam.patient_id,
         inputParam.doctor_id,
         inputParam.episode_id,
         inputParam.followup_type,
         inputParam.followup_date,
+        inputParam.sub_department_id,
         inputParam.reason,
         inputParam.created_by,
         new Date(),
@@ -2720,43 +2721,73 @@ let getPatientHistory = (req, res, next) => {
 };
 
 let getFollowUp = (req, res, next) => {
-  try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-    let inputData = extend({}, req.query);
+  const _mysql = new algaehMysql({ path: keyPath });
 
-    // let followup_date = "date(inputData.date_of_recall)"";
+  try {
+    let inputData = req.query;
     let strQuery =
-      "SELECT p.patient_code,p.full_name, p.registration_date,p.gender,p.date_of_birth,p.contact_number \
-      FROM hims_f_patient_followup, hims_f_patient p where hims_f_patient_followup.patient_id = p.hims_d_patient_id \
-      and hims_f_patient_followup.doctor_id=?";
+      "SELECT p.patient_code,p.full_name, p.registration_date,p.gender,p.date_of_birth,p.contact_number, \
+      E.full_name as employee_name, SD.sub_department_name FROM hims_f_patient_followup PF, \
+      hims_f_patient p, hims_d_sub_department SD , hims_d_employee E where PF.patient_id = p.hims_d_patient_id \
+      and SD.hims_d_sub_department_id=PF.sub_department_id and E.hims_d_employee_id=PF.doctor_id ";
 
     if (
       inputData.date_of_recall != undefined ||
       inputData.date_of_recall != null
     ) {
-      let followup_date =
-        "date(followup_date)= date('" + inputData.date_of_recall + "')";
-
-      strQuery = strQuery + " and " + followup_date;
+      strQuery +=
+        " and date(followup_date)= date('" + inputData.date_of_recall + "')";
     }
 
-    debugLog("strQuery: ", strQuery);
-    db.getConnection((error, connection) => {
-      connection.query(strQuery, [inputData.doctor_id], (error, result) => {
-        releaseDBConnection(db, connection);
-        if (error) {
-          next(error);
-        }
+    if (inputData.doctor_id != null) {
+      strQuery += " and PF.doctor_id='" + inputData.doctor_id + "'";
+    }
+
+    if (inputData.sub_department_id != null) {
+      strQuery +=
+        " and PF.sub_department_id='" + inputData.sub_department_id + "'";
+    }
+    _mysql
+      .executeQuery({
+        query: strQuery,
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
         req.records = result;
         next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
       });
-    });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
+  // try {
+  //   if (req.db == null) {
+  //     next(httpStatus.dataBaseNotInitilizedError());
+  //   }
+  //   let db = req.db;
+  //   let inputData = extend({}, req.query);
+  //
+  //   // let followup_date = "date(inputData.date_of_recall)"";
+  //
+  //   debugLog("strQuery: ", strQuery);
+  //   db.getConnection((error, connection) => {
+  //     connection.query(strQuery, [inputData.doctor_id], (error, result) => {
+  //       releaseDBConnection(db, connection);
+  //       if (error) {
+  //         next(error);
+  //       }
+  //       req.records = result;
+  //       next();
+  //     });
+  //   });
+  // } catch (e) {
+  //   next(e);
+  // }
 };
 
 //created by irfan: to get

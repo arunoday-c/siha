@@ -154,7 +154,8 @@ class ItemMaster extends Component {
                           textField: "generic_name",
                           valueField: "hims_d_item_generic_id",
                           data: this.props.itemgeneric
-                        }
+                        },
+                        onChange: texthandle.bind(this, this)
                       }}
                     />
                     <AlagehAutoComplete
@@ -173,7 +174,8 @@ class ItemMaster extends Component {
                           textField: "category_desc",
                           valueField: "hims_d_item_category_id",
                           data: this.props.itemcategory
-                        }
+                        },
+                        onChange: texthandle.bind(this, this)
                       }}
                     />
                     <AlagehFormGroup
@@ -205,7 +207,8 @@ class ItemMaster extends Component {
                           textField: "group_description",
                           valueField: "hims_d_item_group_id",
                           data: this.props.itemgroup
-                        }
+                        },
+                        onChange: texthandle.bind(this, this)
                       }}
                     />
 
@@ -222,7 +225,8 @@ class ItemMaster extends Component {
                           textField: "form_description",
                           valueField: "hims_d_item_form_id",
                           data: this.props.itemform
-                        }
+                        },
+                        onChange: texthandle.bind(this, this)
                       }}
                     />
                     <AlagehAutoComplete
@@ -238,7 +242,8 @@ class ItemMaster extends Component {
                           textField: "storage_description",
                           valueField: "hims_d_item_storage_id",
                           data: this.props.itemstorage
-                        }
+                        },
+                        onChange: texthandle.bind(this, this)
                       }}
                     />
                     <div className="col-6">
@@ -658,7 +663,8 @@ class ItemMaster extends Component {
                           textField: "uom_description",
                           valueField: "uom_id",
                           data: this.state.detail_item_uom
-                        }
+                        },
+                        onChange: texthandle.bind(this, this)
                       }}
                       //forceUpdate={true}
                     />
@@ -676,7 +682,8 @@ class ItemMaster extends Component {
                           textField: "uom_description",
                           valueField: "uom_id",
                           data: this.state.detail_item_uom
-                        }
+                        },
+                        onChange: texthandle.bind(this, this)
                       }}
                     />
                     <AlagehAutoComplete
@@ -694,6 +701,7 @@ class ItemMaster extends Component {
                           valueField: "hims_d_pharmacy_uom_id",
                           data: this.props.itemuom
                         },
+                        onChange: texthandle.bind(this, this),
                         others: {
                           disabled: true
                         }

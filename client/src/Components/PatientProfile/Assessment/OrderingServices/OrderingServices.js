@@ -268,7 +268,7 @@ class OrderingServices extends Component {
                 <AlgaehAutoSearch
                   div={{ className: "col-7 customServiceSearch" }}
                   label={{ forceLabel: "Search Investigation" }}
-                  title="Search Services"
+                  title="Search Investigation"
                   id="service_id_search"
                   template={({
                     covered,
@@ -336,15 +336,16 @@ class OrderingServices extends Component {
                   }}
                 />
 
-                <div className="col">
-                  <button
-                    className="btn btn-primary"
-                    style={{ marginTop: 19 }}
+                <div className="col" style={{ paddingTop: 19 }}>
+                  <ButtonType
+                    classname="btn-primary"
                     onClick={ProcessService.bind(this, this)}
-                    disabled={this.state.addNewService}
-                  >
-                    Add to List
-                  </button>
+                    label={{
+                      forceLabel: "Add to list",
+                      returnText: true
+                    }}
+                    others={{ disabled: this.state.addNewService }}
+                  />
                 </div>
               </div>
 

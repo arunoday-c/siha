@@ -56,7 +56,10 @@ class DeptUserDetails extends Component {
   }
 
   componentDidMount() {
+    debugger;
     let InputOutput = this.props.EmpMasterIOputs.state.personalDetails;
+    InputOutput.designation_id = null;
+    InputOutput.reporting_to = null;
     this.setState({ ...this.state, ...InputOutput }, () => {
       if (this.state.hims_d_employee_id !== null) {
         if (

@@ -1,0 +1,7 @@
+{{{importStyle 'css/creditinvoice.css'}}}
+
+{{#each header}}
+<div class="barcodeLine">
+  <img src={{barcode "code128" barcode}}  />
+<p>Sales Price: <b>{{sales_price}}</b></p></div>
+{{/each }}
