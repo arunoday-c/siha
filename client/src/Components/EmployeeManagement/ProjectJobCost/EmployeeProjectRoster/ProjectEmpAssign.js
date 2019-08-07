@@ -303,24 +303,19 @@ class ProjectEmpAssign extends Component {
                     return (
                       <li key={index}>
                         <input
-                          id={data.project_code}
+                          id={data.project_id}
                           name="hims_d_project_id"
                           value={data}
                           onChange={this.projectHandler.bind(this, data)}
                           type="radio"
                         />
                         <label
-                          htmlFor={data.project_code}
+                          htmlFor={data.project_id}
                           style={{
                             width: "80%"
                           }}
                         >
-                          <span>
-                            {data.project_desc +
-                              " (" +
-                              data.project_code +
-                              ") "}
-                          </span>
+                          <span>{data.project_desc}</span>
                         </label>
                       </li>
                     );

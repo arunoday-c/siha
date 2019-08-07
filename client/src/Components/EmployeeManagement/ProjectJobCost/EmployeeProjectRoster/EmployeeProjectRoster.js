@@ -85,7 +85,7 @@ class EmployeeProjectRoster extends Component {
 
   getProjects() {
     algaehApiCall({
-      uri: "/hrsettings/getProjects",
+      uri: "/projectjobcosting/getDivisionProject",
       module: "hrManagement",
       method: "GET",
       onSuccess: res => {

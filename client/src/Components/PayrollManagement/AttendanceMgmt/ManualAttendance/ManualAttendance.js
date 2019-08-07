@@ -24,6 +24,8 @@ import {
 import { swalMessage } from "../../../../utils/algaehApiCall";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 
+const handlers = ManualAttendanceEvents();
+
 class ManualAttendance extends Component {
   constructor(props) {
     super(props);
@@ -56,13 +58,13 @@ class ManualAttendance extends Component {
       attendance_date: new Date(),
       date_range: false
     };
-    ManualAttendanceEvents().getSubDepartment(this);
-    ManualAttendanceEvents().getProjects(this);
+    handlers.getSubDepartment(this);
+    handlers.getProjects(this);
     this.getOptions();
   }
 
   getOptions() {
-    ManualAttendanceEvents()
+    handlers
       .getOptions(this)
       .then(res => {
         if (res.data.success) {
@@ -101,7 +103,7 @@ class ManualAttendance extends Component {
   }
 
   eventHandaler(e) {
-    ManualAttendanceEvents().texthandle(this, e);
+    handlers.texthandle(this, e);
   }
 
   LoadData() {
@@ -109,33 +111,33 @@ class ManualAttendance extends Component {
       alertTypeIcon: "warning",
       querySelector: "data-validate='loadEmployee'",
       onSuccess: () => {
-        ManualAttendanceEvents().LoadEmployee(this);
+        handlers.LoadEmployee(this);
       }
     });
   }
 
   datehandle(ctrl, e) {
-    ManualAttendanceEvents().datehandle(this, ctrl, e);
+    handlers.datehandle(this, ctrl, e);
   }
 
   timetexthandle(e) {
-    ManualAttendanceEvents().timehandle(this, e);
+    handlers.timehandle(this, e);
   }
 
   gridtimehandle(row, e) {
-    ManualAttendanceEvents().gdtimehandle(this, row, e);
+    handlers.gdtimehandle(this, row, e);
   }
 
   AddToAll() {
-    ManualAttendanceEvents().AddtoList(this);
+    handlers.AddtoList(this);
   }
 
   ProcessAttendance() {
-    ManualAttendanceEvents().ProcessAttendanceEvent(this);
+    handlers.ProcessAttendanceEvent(this);
   }
 
   employeeSearch() {
-    ManualAttendanceEvents().employeeSearch(this);
+    handlers.employeeSearch(this);
   }
 
   selectData(e) {
@@ -494,9 +496,7 @@ class ManualAttendance extends Component {
                                 textBox={{
                                   className: "txt-fld",
                                   name: "in_time",
-                                  value: ManualAttendanceEvents().validateDateTime(
-                                    row.in_time
-                                  ),
+                                  value: handlers.validateDateTime(row.in_time),
                                   events: {
                                     onChange: this.gridtimehandle.bind(
                                       this,
@@ -522,7 +522,7 @@ class ManualAttendance extends Component {
                                 textBox={{
                                   className: "txt-fld",
                                   name: "out_time",
-                                  value: ManualAttendanceEvents().validateDateTime(
+                                  value: handlers.validateDateTime(
                                     row.out_time
                                   ),
                                   events: {
@@ -554,7 +554,7 @@ class ManualAttendance extends Component {
                         fileName: "Daily Time Sheet",
                         extraColumns: [],
                         formulazone: (worksheet, callBack) => {
-                          ManualAttendanceEvents().formulazone(
+                          handlers.formulazone(
                             this.state.employee_details.length,
                             worksheet,
                             callBack
