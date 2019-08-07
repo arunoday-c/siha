@@ -241,7 +241,7 @@ class DoctorsWorkbench extends Component {
       });
       return;
     }
-
+    debugger;
     setGlobal({
       vitals_mandatory: data.vitals_mandatory,
       "EHR-STD": "PatientProfile",
@@ -251,7 +251,8 @@ class DoctorsWorkbench extends Component {
       encounter_id: data.encounter_id,
       provider_id: data.provider_id,
       chart_type: data.chart_type,
-      gender: data.gender
+      gender: data.gender,
+      sub_department_id: data.sub_department_id
     });
     document.getElementById("ehr-router").click();
   }

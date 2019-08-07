@@ -6,6 +6,8 @@ import {
 } from "../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../utils/GlobalFunctions";
+import moment from "moment";
+import Options from "../../Options.json";
 
 class PatientRecall extends Component {
   constructor(props) {
@@ -14,39 +16,68 @@ class PatientRecall extends Component {
       departments: [],
       doctors: [],
       patients: [],
-      sub_department_id: null
+      sub_department_id: null,
+      provider_id: null,
+      date_of_recall: new Date()
     };
     this.getDoctorsAndDepts();
   }
 
   loadPatients() {
-    AlgaehValidation({
-      alertTypeIcon: "warning",
-      onSuccess: () => {
-        algaehApiCall({
-          uri: "/doctorsWorkBench/getFollowUp",
-          method: "GET",
-          data: {
-            department_id: this.state.sub_department_id,
-            doctor_id: this.state.provider_id,
-            date_of_recall: this.state.date_of_recall
-          },
-          onSuccess: response => {
-            if (response.data.success) {
-              this.setState({
-                patients: response.data.records
-              });
-            }
-          },
-          onFailure: error => {
-            swalMessage({
-              title: error.message,
-              type: "error"
-            });
-          }
+    debugger;
+    if (
+      this.state.sub_department_id === null &&
+      this.state.provider_id === null &&
+      this.state.date_of_recall === null
+    ) {
+      swalMessage({
+        title: "Department/Doctor/Date is mandatory to load data.",
+        type: "warning"
+      });
+      return;
+    }
+
+    let inputObj = { date_of_recall: this.state.date_of_recall };
+
+    if (this.state.provider_id !== null) {
+      inputObj.doctor_id = this.state.provider_id;
+    }
+
+    if (this.state.sub_department_id !== null) {
+      inputObj.sub_department_id = this.state.sub_department_id;
+    }
+    algaehApiCall({
+      uri: "/doctorsWorkBench/getFollowUp",
+      method: "GET",
+      data: inputObj,
+      onSuccess: response => {
+        if (response.data.success) {
+          this.setState({
+            patients: response.data.records
+          });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
         });
       }
     });
+  }
+
+  dateValidate(value, event) {
+    let inRange = moment(value).isBefore(moment().format("YYYY-MM-DD"));
+    if (inRange) {
+      swalMessage({
+        title: "Date cannot be past Date.",
+        type: "warning"
+      });
+      event.target.focus();
+      this.setState({
+        [event.target.name]: null
+      });
+    }
   }
 
   dropDownHandle(value) {
@@ -65,6 +96,13 @@ class PatientRecall extends Component {
 
         return;
     }
+  }
+
+  dateFormater(value) {
+    if (value !== null) {
+      return String(moment(value).format(Options.dateFormat));
+    }
+    // "DD-MM-YYYY"
   }
 
   getDoctorsAndDepts() {
@@ -93,10 +131,9 @@ class PatientRecall extends Component {
       <div className="patient_recall">
         <div className="row inner-top-search">
           <AlagehAutoComplete
-            div={{ className: "col mandatory" }}
+            div={{ className: "col" }}
             label={{
-              forceLabel: "Department",
-              isImp: true
+              forceLabel: "Department"
             }}
             selector={{
               name: "sub_department_id",
@@ -107,15 +144,19 @@ class PatientRecall extends Component {
                 valueField: "sub_department_id",
                 data: this.state.departments
               },
-              onChange: this.dropDownHandle.bind(this)
+              onChange: this.dropDownHandle.bind(this),
+              onClear: () => {
+                this.setState({
+                  sub_department_id: null
+                });
+              }
             }}
           />
 
           <AlagehAutoComplete
-            div={{ className: "col mandatory" }}
+            div={{ className: "col" }}
             label={{
-              forceLabel: "Doctor",
-              isImp: true
+              forceLabel: "Doctor"
             }}
             selector={{
               name: "provider_id",
@@ -126,7 +167,12 @@ class PatientRecall extends Component {
                 valueField: "employee_id",
                 data: this.state.doctors
               },
-              onChange: this.dropDownHandle.bind(this)
+              onChange: this.dropDownHandle.bind(this),
+              onClear: () => {
+                this.setState({
+                  provider_id: null
+                });
+              }
             }}
           />
 
@@ -143,7 +189,8 @@ class PatientRecall extends Component {
                 this.setState({
                   date_of_recall: selectedDate
                 });
-              }
+              },
+              onBlur: this.dateValidate.bind(this)
             }}
             value={this.state.date_of_recall}
           />
@@ -191,7 +238,7 @@ class PatientRecall extends Component {
                         );
                       },
                       others: {
-                        maxWidth: 120,
+                        maxWidth: 150,
                         resizable: false,
                         style: { textAlign: "center" }
                       },
@@ -202,6 +249,22 @@ class PatientRecall extends Component {
                     {
                       fieldName: "full_name",
                       label: "Patient Name",
+                      others: {
+                        resizable: false,
+                        style: { textAlign: "center" }
+                      }
+                    },
+                    {
+                      fieldName: "sub_department_name",
+                      label: "Department",
+                      others: {
+                        resizable: false,
+                        style: { textAlign: "center" }
+                      }
+                    },
+                    {
+                      fieldName: "employee_name",
+                      label: "Doctor",
                       others: {
                         resizable: false,
                         style: { textAlign: "center" }
@@ -219,6 +282,11 @@ class PatientRecall extends Component {
                     {
                       fieldName: "date_of_birth",
                       label: "Date of Birth",
+                      displayTemplate: row => {
+                        return (
+                          <span>{this.dateFormater(row.date_of_birth)}</span>
+                        );
+                      },
                       others: {
                         maxWidth: 120,
                         resizable: false,
@@ -229,7 +297,7 @@ class PatientRecall extends Component {
                       fieldName: "contact_number",
                       label: "Phone Number",
                       others: {
-                        maxWidth: 150,
+                        maxWidth: 180,
                         resizable: false,
                         style: { textAlign: "center" }
                       }

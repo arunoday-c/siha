@@ -31,6 +31,7 @@ const addFollowUp = $this => {
       patient_id: Window.global["current_patient"],
       doctor_id: Window.global["provider_id"],
       episode_id: Window.global["episode_id"],
+      sub_department_id: Window.global["sub_department_id"],
       reason: $this.state.followup_comments,
       followup_type: $this.state.followup_type,
       followup_days: $this.state.followup_days,
@@ -44,7 +45,7 @@ const addFollowUp = $this => {
         if (response.data.success) {
           swalMessage({
             title: "Added Succesfully...",
-            type: "warning"
+            type: "success"
           });
         }
 
