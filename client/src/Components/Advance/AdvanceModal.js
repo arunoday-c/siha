@@ -258,6 +258,11 @@ class AddAdvanceModal extends PureComponent {
                     type: "success"
                   });
                 }
+              } else {
+                swalMessage({
+                  title: response.data.records.message,
+                  type: "error"
+                });
               }
             },
             onFailure: error => {

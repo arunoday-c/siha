@@ -1058,7 +1058,6 @@ module.exports = {
 								input[i].hospital_id,
 								actual_hours,
 								input[i].project_id,
-
 								input[i].in_time,
 								input[i].out_date,
 								input[i].hours,
