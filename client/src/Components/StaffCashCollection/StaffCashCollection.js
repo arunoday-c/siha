@@ -826,163 +826,190 @@ class StaffCashCollection extends Component {
                     className="col-lg-8"
                     style={{ borderLeft: "1px solid #e5e5e5" }}
                   >
-                    <table className="table table-responsive  table-sm table-bordered">
-                      <tbody>
-                        <tr>
-                          <td />
-                          <td>Cash</td>
-                          <td>Credit/Debit Card</td>
-                          <td>Cheque</td>
-                        </tr>
-                        <tr>
-                          <td>Expected</td>
-                          <td>{this.state.expected_cash}</td>
-                          <td>{this.state.expected_card}</td>
-                          <td>{this.state.expected_cheque}</td>
-                        </tr>
-                        <tr>
-                          <td>Collected</td>
-                          <td>
-                            <span className="row">
-                              <AlagehFormGroup
-                                div={{ className: "col" }}
-                                label={{
-                                  fieldName: "&nbsp;",
-                                  isImp: false
-                                }}
-                                textBox={{
-                                  className: "txt-fld",
-                                  name: "actual_cash",
-                                  value: this.state.actual_cash,
-                                  disabled: this.state.shift_status === "A",
-                                  events: {
-                                    onChange: this.handleCollection.bind(this)
-                                  },
-                                  others: {
-                                    type: "number",
-                                    min: 0
-                                  }
-                                }}
-                              />
-                            </span>
-                          </td>
-                          <td>
-                            <span className="row">
-                              <AlagehFormGroup
-                                div={{ className: "col" }}
-                                label={{
-                                  fieldName: "&nbsp;",
-                                  isImp: false
-                                }}
-                                textBox={{
-                                  className: "txt-fld",
-                                  name: "actual_card",
-                                  value: this.state.actual_card,
-                                  disabled: this.state.shift_status === "A",
-                                  events: {
-                                    onChange: this.handleCollection.bind(this)
-                                  },
-                                  others: {
-                                    type: "number",
-                                    min: 0
-                                  }
-                                }}
-                              />
-                            </span>
-                          </td>
-                          <td>
-                            <span className="row">
-                              <AlagehFormGroup
-                                div={{ className: "col" }}
-                                label={{
-                                  fieldName: "asdasdf",
-                                  isImp: false
-                                }}
-                                textBox={{
-                                  className: "txt-fld",
-                                  name: "actual_cheque",
-                                  value: this.state.actual_cheque,
-                                  disabled: this.state.shift_status === "A",
-                                  events: {
-                                    onChange: this.handleCollection.bind(this)
-                                  },
-                                  others: {
-                                    type: "number",
-                                    min: 0
-                                  }
-                                }}
-                              />
-                            </span>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>Difference</td>
-                          <td>{Math.abs(_cash)}</td>
-                          <td>{Math.abs(_card)}</td>
-                          <td>{Math.abs(_cheque)}</td>
-                        </tr>
-                        <tr>
-                          <td> Status</td>
-                          <td>
-                            {this.state.cash_status === "T" ? (
-                              <span className="badge badge-success">
-                                Tallied
-                              </span>
-                            ) : this.state.cash_status === "E" ? (
-                              <span className="badge badge-warning">
-                                Excess
-                              </span>
-                            ) : this.state.cash_status === "S" ? (
-                              <span className="badge badge-danger">
-                                Shortage
-                              </span>
-                            ) : (
-                              "------"
-                            )}
-                          </td>
-                          <td>
-                            {this.state.card_status === "T" ? (
-                              <span className="badge badge-success">
-                                Tallied
-                              </span>
-                            ) : this.state.card_status === "E" ? (
-                              <span className="badge badge-warning">
-                                Excess
-                              </span>
-                            ) : this.state.card_status === "S" ? (
-                              <span className="badge badge-danger">
-                                Shortage
-                              </span>
-                            ) : (
-                              "------"
-                            )}
-                          </td>
-                          <td>
-                            {this.state.cheque_status === "T" ? (
-                              <span className="badge badge-success">
-                                Tallied
-                              </span>
-                            ) : this.state.cheque_status === "E" ? (
-                              <span className="badge badge-warning">
-                                Excess
-                              </span>
-                            ) : this.state.cheque_status === "S" ? (
-                              <span className="badge badge-danger">
-                                Shortage
-                              </span>
-                            ) : (
-                              "------"
-                            )}
-                          </td>
-                        </tr>
-                        {/* <tr>
+                    <div className="row">
+                      {" "}
+                      <div className="col">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Amount Received"
+                          }}
+                        />
+                        <h6>0.00</h6>
+                      </div>
+                      <div className="col">
+                        <AlgaehLabel
+                          label={{
+                            fieldName: "Amount Refunded"
+                          }}
+                        />
+                        <h6>0.00</h6>
+                      </div>
+                      <div className="col-12">
+                        <table className="table table-responsive  table-sm table-bordered">
+                          <tbody>
+                            <tr>
+                              <td />
+                              <td>Cash</td>
+                              <td>Credit/Debit Card</td>
+                              <td>Cheque</td>
+                            </tr>
+                            <tr>
+                              <td>Expected</td>
+                              <td>{this.state.expected_cash}</td>
+                              <td>{this.state.expected_card}</td>
+                              <td>{this.state.expected_cheque}</td>
+                            </tr>
+                            <tr>
+                              <td>Collected</td>
+                              <td>
+                                <span className="row">
+                                  <AlagehFormGroup
+                                    div={{ className: "col" }}
+                                    label={{
+                                      fieldName: "&nbsp;",
+                                      isImp: false
+                                    }}
+                                    textBox={{
+                                      className: "txt-fld",
+                                      name: "actual_cash",
+                                      value: this.state.actual_cash,
+                                      disabled: this.state.shift_status === "A",
+                                      events: {
+                                        onChange: this.handleCollection.bind(
+                                          this
+                                        )
+                                      },
+                                      others: {
+                                        type: "number",
+                                        min: 0
+                                      }
+                                    }}
+                                  />
+                                </span>
+                              </td>
+                              <td>
+                                <span className="row">
+                                  <AlagehFormGroup
+                                    div={{ className: "col" }}
+                                    label={{
+                                      fieldName: "&nbsp;",
+                                      isImp: false
+                                    }}
+                                    textBox={{
+                                      className: "txt-fld",
+                                      name: "actual_card",
+                                      value: this.state.actual_card,
+                                      disabled: this.state.shift_status === "A",
+                                      events: {
+                                        onChange: this.handleCollection.bind(
+                                          this
+                                        )
+                                      },
+                                      others: {
+                                        type: "number",
+                                        min: 0
+                                      }
+                                    }}
+                                  />
+                                </span>
+                              </td>
+                              <td>
+                                <span className="row">
+                                  <AlagehFormGroup
+                                    div={{ className: "col" }}
+                                    label={{
+                                      fieldName: "asdasdf",
+                                      isImp: false
+                                    }}
+                                    textBox={{
+                                      className: "txt-fld",
+                                      name: "actual_cheque",
+                                      value: this.state.actual_cheque,
+                                      disabled: this.state.shift_status === "A",
+                                      events: {
+                                        onChange: this.handleCollection.bind(
+                                          this
+                                        )
+                                      },
+                                      others: {
+                                        type: "number",
+                                        min: 0
+                                      }
+                                    }}
+                                  />
+                                </span>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>Difference</td>
+                              <td>{Math.abs(_cash)}</td>
+                              <td>{Math.abs(_card)}</td>
+                              <td>{Math.abs(_cheque)}</td>
+                            </tr>
+                            <tr>
+                              <td> Status</td>
+                              <td>
+                                {this.state.cash_status === "T" ? (
+                                  <span className="badge badge-success">
+                                    Tallied
+                                  </span>
+                                ) : this.state.cash_status === "E" ? (
+                                  <span className="badge badge-warning">
+                                    Excess
+                                  </span>
+                                ) : this.state.cash_status === "S" ? (
+                                  <span className="badge badge-danger">
+                                    Shortage
+                                  </span>
+                                ) : (
+                                  "------"
+                                )}
+                              </td>
+                              <td>
+                                {this.state.card_status === "T" ? (
+                                  <span className="badge badge-success">
+                                    Tallied
+                                  </span>
+                                ) : this.state.card_status === "E" ? (
+                                  <span className="badge badge-warning">
+                                    Excess
+                                  </span>
+                                ) : this.state.card_status === "S" ? (
+                                  <span className="badge badge-danger">
+                                    Shortage
+                                  </span>
+                                ) : (
+                                  "------"
+                                )}
+                              </td>
+                              <td>
+                                {this.state.cheque_status === "T" ? (
+                                  <span className="badge badge-success">
+                                    Tallied
+                                  </span>
+                                ) : this.state.cheque_status === "E" ? (
+                                  <span className="badge badge-warning">
+                                    Excess
+                                  </span>
+                                ) : this.state.cheque_status === "S" ? (
+                                  <span className="badge badge-danger">
+                                    Shortage
+                                  </span>
+                                ) : (
+                                  "------"
+                                )}
+                              </td>
+                            </tr>
+                            {/* <tr>
                       <td />
                       <td />
                       <td style={{ textAlign: "right" }}>Company</td>
                       <td>0.00</td>
                     </tr> */}
-                      </tbody>
-                    </table>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
                     <div className="col-lg-12">
                       <div className="row">
                         <button
