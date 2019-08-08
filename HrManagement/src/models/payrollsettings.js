@@ -282,7 +282,7 @@ module.exports = {
           "select hims_d_holiday_id,hospital_id,holiday_date,\
           holiday_description,weekoff,holiday,holiday_type\
           from  hims_d_holiday  where record_status='A' and date(holiday_date) \
-          between date(?) and date(?) and hospital_id=? ",
+          between date(?) and date(?) and hospital_id=? and weekoff='Y';",
         values: [start_of_year, end_of_year, input.hospital_id],
         printQuery: true
       })
