@@ -98,7 +98,8 @@ export default {
       present_country_id: null,
       present_state_id: null,
       present_city_id: null,
-      department_name: null
+      department_name: null,
+      employeeImage: undefined
     };
     return output;
   }
