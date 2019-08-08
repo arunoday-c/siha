@@ -168,6 +168,8 @@ class StaffCashCollection extends Component {
       card_status: data.card_status,
       cheque_status: data.cheque_status,
       shift_status: data.shift_status,
+      collected_cash: data.collected_cash,
+      refunded_cash: data.refunded_cash,
       shift_open_date: moment(data.open_date).isValid()
         ? moment(data.open_date).format("DD-MM-YYYY")
         : "DD-MM-YYYY",
@@ -834,15 +836,15 @@ class StaffCashCollection extends Component {
                             forceLabel: "Amount Received"
                           }}
                         />
-                        <h6>0.00</h6>
+                        <h6>{this.state.collected_cash}</h6>
                       </div>
                       <div className="col">
                         <AlgaehLabel
                           label={{
-                            fieldName: "Amount Refunded"
+                            forceLabel: "Amount Refunded"
                           }}
                         />
-                        <h6>0.00</h6>
+                        <h6>{this.state.refunded_cash}</h6>
                       </div>
                       <div className="col-12">
                         <table className="table table-responsive  table-sm table-bordered">

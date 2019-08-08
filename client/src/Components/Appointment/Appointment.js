@@ -255,7 +255,8 @@ class Appointment extends PureComponent {
       email: "",
       appointment_remarks: "",
       timeSlots: [],
-      edit_appt_date: ""
+      edit_appt_date: "",
+      fromSearch: false
     });
   }
 
