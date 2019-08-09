@@ -28,7 +28,7 @@ export default class HolidayMaster extends Component {
       friday: false,
       saturday: true,
       sunday: true,
-      year: moment().year(),
+      year: moment().format("YYYY"),
       hospital_id: JSON.parse(
         AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
       ).hims_d_hospital_id
@@ -84,7 +84,7 @@ export default class HolidayMaster extends Component {
 
   clearWeekoffState() {
     this.setState({
-      year: moment().year(),
+      year: moment().format("YYYY"),
       monday: false,
       tuesday: false,
       wednesday: false,
@@ -161,8 +161,11 @@ export default class HolidayMaster extends Component {
       },
       onSuccess: res => {
         if (res.data.success) {
+          const { records } = res.data;
+          const holidays = records.filter(day => day.weekoff === "N");
+          console.log(holidays);
           this.setState({
-            holidays: res.data.records
+            holidays
           });
         }
       },
