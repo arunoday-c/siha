@@ -245,7 +245,7 @@ module.exports = {
   addWeekOffs: (req, res, next) => {
     const _mysql = new algaehMysql();
     let input = req.body;
-
+    console.log("input:", input);
     //  const year = moment("'" + input.year + "'").format("YYYY");
 
     const start_of_year = moment(input.year, "YYYY")
@@ -297,7 +297,7 @@ module.exports = {
           _mysql.releaseConnection();
 
           req.records = {
-            message: "week off is already defind for the year: " + year
+            message: "week off is already defind for the year: " + input.year
           };
           req.flag = 1;
           next();
