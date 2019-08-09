@@ -72,15 +72,12 @@ export default class HolidayMaster extends Component {
   }
 
   dropDownHandle(value) {
-    switch (value.name) {
-      case "hospital_id":
-        this.getHolidayMaster(value.value);
-        break;
-    }
-
-    this.setState({
-      [value.name]: value.value
-    });
+    this.setState(
+      {
+        [value.name]: value.value
+      },
+      () => this.getHolidayMaster(value.value)
+    );
   }
 
   clearWeekoffState() {
