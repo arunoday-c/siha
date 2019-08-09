@@ -132,11 +132,11 @@ module.exports = {
     const _mysql = new algaehMysql();
     let input = req.query;
 
-    const start_of_year = moment()
+    const start_of_year = moment(input.year, "YYYY")
       .startOf("year")
       .format("YYYY-MM-DD");
 
-    const end_of_year = moment()
+    const end_of_year = moment(input.year, "YYYY")
       .endOf("year")
       .format("YYYY-MM-DD");
 
