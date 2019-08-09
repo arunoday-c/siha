@@ -133,11 +133,11 @@ class StaffCashCollection extends Component {
     let status_suffix = "_status";
 
     //getting the payment mode
-    const [waste, mode] = name.split("_");
+    const [_, mode] = name.split("_");
 
     if (value && value > 0) {
       let diff = this.state[exp_prefix + mode] - value;
-      let status = diff < 0 ? "E" : diff > 0 ? "S" : diff === 0 ? "T" : null;
+      let status = this.checkStatus(diff);
       this.setState({
         [name]: value,
         [diff_prefix + mode]: diff,
@@ -152,7 +152,57 @@ class StaffCashCollection extends Component {
     }
   }
 
+  checkStatus(diff) {
+    if (diff) {
+      return diff < 0 ? "E" : diff > 0 ? "S" : diff === 0 ? "T" : null;
+    }
+  }
+
   selectCashier(data, e) {
+<<<<<<< HEAD
+    const {
+      actual_card,
+      actual_cash,
+      actual_cheque,
+      expected_card,
+      expected_cash,
+      expected_cheque
+    } = data;
+    this.setState(
+      {
+        hims_f_cash_handover_detail_id: data.hims_f_cash_handover_detail_id,
+        actual_cash,
+        actual_card,
+        actual_cheque,
+        expected_cash,
+        expected_card,
+        expected_cheque,
+        difference_cash: expected_cash - actual_cash,
+        difference_card: expected_card - actual_card,
+        difference_cheque: expected_cheque - actual_cheque,
+        shift_status: data.shift_status,
+        shift_open_date: moment(data.open_date).isValid()
+          ? moment(data.open_date).format("DD-MM-YYYY")
+          : "DD-MM-YYYY",
+        shift_open_time: moment(data.open_date).isValid()
+          ? moment(data.open_date).format("hh:mm A")
+          : "--:-- --",
+        shift_close_date: moment(data.close_date).isValid()
+          ? moment(data.close_date).format("DD-MM-YYYY")
+          : "DD-MM-YYYY",
+        shift_close_time: moment(data.close_date).isValid()
+          ? moment(data.close_date).format("hh:mm A")
+          : "--:-- --",
+        remarks: data.remarks
+      },
+      () =>
+        this.setState({
+          cash_status: this.checkStatus(this.state.difference_cash),
+          card_status: this.checkStatus(this.state.difference_card),
+          cheque_status: this.checkStatus(this.state.difference_cheque)
+        })
+    );
+=======
     this.setState({
       hims_f_cash_handover_detail_id: data.hims_f_cash_handover_detail_id,
       actual_cash: data.actual_cash,
@@ -184,7 +234,19 @@ class StaffCashCollection extends Component {
         : "--:-- --",
       remarks: data.remarks
     });
+>>>>>>> 322a223a8666c6d9daf202697c2ba20db98cd745
   }
+
+  disableBtn = btn => {
+    const { shift_status, hims_f_cash_handover_detail_id } = this.state;
+    let status;
+    if (btn === "C") {
+      status = shift_status === "C" || shift_status === "A";
+    } else if (btn === "A") {
+      status = shift_status === "A";
+    }
+    return status || hims_f_cash_handover_detail_id === "";
+  };
 
   getCashHandoverDetails(e) {
     this.resetSaveState();
@@ -875,7 +937,9 @@ class StaffCashCollection extends Component {
                                       className: "txt-fld",
                                       name: "actual_cash",
                                       value: this.state.actual_cash,
-                                      disabled: this.state.shift_status === "A",
+                                      disabled:
+                                        this.state.shift_status === "A" ||
+                                        !this.state.expected_cash,
                                       events: {
                                         onChange: this.handleCollection.bind(
                                           this
@@ -901,7 +965,9 @@ class StaffCashCollection extends Component {
                                       className: "txt-fld",
                                       name: "actual_card",
                                       value: this.state.actual_card,
-                                      disabled: this.state.shift_status === "A",
+                                      disabled:
+                                        this.state.shift_status === "A" ||
+                                        !this.state.expected_card,
                                       events: {
                                         onChange: this.handleCollection.bind(
                                           this
@@ -927,7 +993,9 @@ class StaffCashCollection extends Component {
                                       className: "txt-fld",
                                       name: "actual_cheque",
                                       value: this.state.actual_cheque,
-                                      disabled: this.state.shift_status === "A",
+                                      disabled:
+                                        this.state.shift_status === "A" ||
+                                        !this.state.expected_cheque,
                                       events: {
                                         onChange: this.handleCollection.bind(
                                           this
@@ -1015,11 +1083,7 @@ class StaffCashCollection extends Component {
                     <div className="col-lg-12">
                       <div className="row">
                         <button
-                          disabled={
-                            this.state.shift_status === "C" ||
-                            this.state.shift_status === "A" ||
-                            this.state.hims_f_cash_handover_detail_id === ""
-                          }
+                          disabled={this.disableBtn("C")}
                           onClick={this.authAndCloseShift.bind(this, "C")}
                           className="btn btn-primary"
                           style={{ marginLeft: 10, float: "right" }}
@@ -1027,10 +1091,7 @@ class StaffCashCollection extends Component {
                           Close Shift
                         </button>
                         <button
-                          disabled={
-                            this.state.shift_status === "A" ||
-                            this.state.hims_f_cash_handover_detail_id === ""
-                          }
+                          disabled={this.disableBtn("A")}
                           onClick={this.authAndCloseShift.bind(this, "A")}
                           className="btn btn-primary"
                           style={{ marginLeft: 10, float: "right" }}
