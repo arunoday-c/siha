@@ -53,37 +53,37 @@ let searchData = (req, res, next) => {
       switch (filterBy) {
         case "STW":
           whereCondition =
-            " and upper(" +
+            " and " +
             req.query.fieldName +
-            ") like  upper('" +
+            " like  '" +
             req.query.fieldContains +
-            "%')";
+            "%' ";
           break;
 
         case "ENW":
           whereCondition =
-            " and upper(" +
+            " and " +
             req.query.fieldName +
-            ") like  upper('%" +
+            " like  '%" +
             req.query.fieldContains +
-            "')";
+            "' ";
           break;
         case "EQU":
           whereCondition =
-            " and upper(" +
+            " and " +
             req.query.fieldName +
-            ") =  upper('" +
+            " =  '" +
             req.query.fieldContains +
-            "')";
+            "' ";
           break;
 
         default:
           whereCondition =
-            " and upper(" +
+            " and " +
             req.query.fieldName +
-            ") like  upper('%" +
+            " like  '%" +
             req.query.fieldContains +
-            "%')";
+            "%' ";
           break;
       }
     }
@@ -91,14 +91,18 @@ let searchData = (req, res, next) => {
     const _groupby =
       queryConfig.groupBy != null ? " " + queryConfig.groupBy + " " : "";
 
+    const _orderby =
+      queryConfig.orderBy != null
+        ? "  order by " + queryConfig.orderBy + " "
+        : "";
+
     whereCondition +=
       req.query.inputs == "null" || null ? "" : " and " + req.query.inputs;
     let query =
       queryConfig.searchQuery +
       whereCondition +
       _groupby +
-      " order by " +
-      queryConfig.orderBy +
+      _orderby +
       " limit " +
       limit +
       " OFFSET " +
