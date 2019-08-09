@@ -80,16 +80,19 @@ export default class HolidayMaster extends Component {
     );
   }
 
-  clearWeekoffState() {
-    this.setState({
-      monday: false,
-      tuesday: false,
-      wednesday: false,
-      thursday: false,
-      friday: false,
-      saturday: false,
-      sunday: false
-    });
+  clearWeekoffState(cb) {
+    this.setState(
+      {
+        monday: false,
+        tuesday: false,
+        wednesday: false,
+        thursday: false,
+        friday: false,
+        saturday: false,
+        sunday: false
+      },
+      cb
+    );
   }
 
   clearHolidayState() {
@@ -169,12 +172,14 @@ export default class HolidayMaster extends Component {
             },
             () => {
               if (reqdays.length) {
-                reqdays.forEach(day =>
-                  this.setState({
-                    [day]: true,
-                    disableButton: true
-                  })
-                );
+                this.clearWeekoffState(() => {
+                  reqdays.forEach(day =>
+                    this.setState({
+                      [day]: true,
+                      disableButton: true
+                    })
+                  );
+                });
               } else {
                 this.setState(
                   {
