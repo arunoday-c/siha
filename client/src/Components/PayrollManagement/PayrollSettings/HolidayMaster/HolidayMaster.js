@@ -26,8 +26,9 @@ export default class HolidayMaster extends Component {
       wednesday: false,
       thursday: false,
       friday: false,
-      saturday: true,
-      sunday: true,
+      saturday: false,
+      sunday: false,
+      disableButton: false,
       year: moment().format("YYYY"),
       hospital_id: JSON.parse(
         AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
@@ -84,14 +85,13 @@ export default class HolidayMaster extends Component {
 
   clearWeekoffState() {
     this.setState({
-      year: moment().format("YYYY"),
       monday: false,
       tuesday: false,
       wednesday: false,
       thursday: false,
       friday: false,
-      saturday: true,
-      sunday: true
+      saturday: false,
+      sunday: false
     });
   }
 
@@ -157,16 +157,37 @@ export default class HolidayMaster extends Component {
       module: "hrManagement",
       method: "GET",
       data: {
-        hospital_id: id
+        hospital_id: id,
+        year: this.state.year
       },
       onSuccess: res => {
         if (res.data.success) {
-          const { records } = res.data;
-          const holidays = records.filter(day => day.weekoff === "N");
-          console.log(holidays);
-          this.setState({
-            holidays
-          });
+          const { weekoffs, days } = res.data.records;
+          const holidays = weekoffs.filter(day => day.weekoff === "N");
+          const reqdays = days.map(item => item.day.toLowerCase());
+          this.setState(
+            {
+              holidays,
+              hospital_id: weekoffs.length !== 0 ? weekoffs[0].hospital_id : id
+            },
+            () => {
+              if (reqdays.length) {
+                reqdays.forEach(day =>
+                  this.setState({
+                    [day]: true,
+                    disableButton: true
+                  })
+                );
+              } else {
+                this.setState(
+                  {
+                    disableButton: false
+                  },
+                  () => this.clearWeekoffState()
+                );
+              }
+            }
+          );
         }
       },
       onFailure: err => {}
@@ -189,6 +210,16 @@ export default class HolidayMaster extends Component {
     this.setState({
       [e.target.name]: e.target.value
     });
+  }
+
+  changeYear(e) {
+    const { name, value } = e.target;
+    this.setState(
+      {
+        [name]: value < moment().year() ? moment().format("YYYY") : value
+      },
+      () => this.getHolidayMaster(this.state.hospital_id)
+    );
   }
 
   changeGridEditors(row, e) {
@@ -305,7 +336,7 @@ export default class HolidayMaster extends Component {
                               name: "year",
                               value: this.state.year,
                               events: {
-                                onChange: this.changeTexts.bind(this)
+                                onChange: this.changeYear.bind(this)
                               },
                               others: {
                                 type: "number",
@@ -329,7 +360,12 @@ export default class HolidayMaster extends Component {
                                 valueField: "hims_d_hospital_id",
                                 data: this.state.hospitals
                               },
-                              onChange: this.dropDownHandle.bind(this)
+                              onChange: this.dropDownHandle.bind(this),
+                              onClear: () =>
+                                this.setState({
+                                  hospital_id: null,
+                                  disableButton: true
+                                })
                             }}
                           />
                         </div>
@@ -346,6 +382,7 @@ export default class HolidayMaster extends Component {
                               <label className="checkbox inline">
                                 <input
                                   type="checkbox"
+                                  disabled={this.state.disableButton}
                                   name="sunday"
                                   checked={this.state.sunday}
                                   onChange={this.changeChecks.bind(this)}
@@ -355,6 +392,7 @@ export default class HolidayMaster extends Component {
                               <label className="checkbox inline">
                                 <input
                                   type="checkbox"
+                                  disabled={this.state.disableButton}
                                   name="monday"
                                   checked={this.state.monday}
                                   onChange={this.changeChecks.bind(this)}
@@ -364,6 +402,7 @@ export default class HolidayMaster extends Component {
                               <label className="checkbox inline">
                                 <input
                                   type="checkbox"
+                                  disabled={this.state.disableButton}
                                   name="tuesday"
                                   checked={this.state.tuesday}
                                   onChange={this.changeChecks.bind(this)}
@@ -374,6 +413,7 @@ export default class HolidayMaster extends Component {
                               <label className="checkbox inline">
                                 <input
                                   type="checkbox"
+                                  disabled={this.state.disableButton}
                                   name="wednesday"
                                   checked={this.state.wednesday}
                                   onChange={this.changeChecks.bind(this)}
@@ -383,6 +423,7 @@ export default class HolidayMaster extends Component {
                               <label className="checkbox inline">
                                 <input
                                   type="checkbox"
+                                  disabled={this.state.disableButton}
                                   name="thursday"
                                   checked={this.state.thursday}
                                   onChange={this.changeChecks.bind(this)}
@@ -392,6 +433,7 @@ export default class HolidayMaster extends Component {
                               <label className="checkbox inline">
                                 <input
                                   type="checkbox"
+                                  disabled={this.state.disableButton}
                                   name="friday"
                                   checked={this.state.friday}
                                   onChange={this.changeChecks.bind(this)}
@@ -401,6 +443,7 @@ export default class HolidayMaster extends Component {
                               <label className="checkbox inline">
                                 <input
                                   type="checkbox"
+                                  disabled={this.state.disableButton}
                                   name="saturday"
                                   checked={this.state.saturday}
                                   onChange={this.changeChecks.bind(this)}
@@ -413,6 +456,7 @@ export default class HolidayMaster extends Component {
                             <button
                               onClick={this.addWeekoffs.bind(this)}
                               className="btn btn-primary"
+                              disabled={this.state.disableButton}
                               style={{
                                 float: "right",
                                 marginTop: 10,
