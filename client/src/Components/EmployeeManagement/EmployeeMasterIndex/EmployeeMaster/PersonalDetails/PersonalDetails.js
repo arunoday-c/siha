@@ -124,6 +124,15 @@ class PersonalDetails extends Component {
     // this.setState(, () => {});
   }
 
+  imageDetails(type) {
+    debugger;
+    this.setState({ [type]: this[type] });
+
+    this.props.EmpMasterIOputs.updateEmployeeTabs({
+      [type]: this[type]
+    });
+  }
+
   render() {
     // let FrontDeskActive =
 
@@ -165,7 +174,11 @@ class PersonalDetails extends Component {
 
                         others: {
                           tabIndex: "1",
-                          placeholder: this.state.employee_code_placeHolder
+                          placeholder: this.state.employee_code_placeHolder,
+                          disabled:
+                            this.state.hims_d_employee_id === null
+                              ? false
+                              : true
                         }
                       }}
                     />
@@ -701,21 +714,30 @@ class PersonalDetails extends Component {
                     <div className="col">
                       <div>
                         <AlgaehFile
-                          name="attach_photo"
-                          accept="image/*"
-                          textAltMessage="Empoyee Image"
-                          validateBeforeCall={() => {
-                            return this.props.EmpMasterIOputs.props
-                              .editEmployee;
+                          ref={employeeImage => {
+                            this.employeeImage = employeeImage;
                           }}
+                          name="employeeImage"
+                          accept="image/*"
+                          showActions={
+                            this.state.employee_status === "I"
+                              ? false
+                              : this.state.employee_code === null ||
+                                this.state.employee_code === ""
+                              ? false
+                              : true
+                          }
+                          textAltMessage="Employee Image"
                           serviceParameters={{
                             uniqueID: this.state.employee_code,
-                            destinationName: this.state.employee_code,
-                            fileType: "Employees"
+                            fileType: "Employees",
+                            processDelay: this.imageDetails.bind(
+                              this,
+                              "employeeImage"
+                            )
                           }}
-                          showActions={
-                            this.state.employee_status === "I" ? false : true
-                          }
+                          renderPrevState={this.state.employeeImage}
+                          forceRefresh={this.state.forceRefresh}
                         />
                       </div>
                     </div>

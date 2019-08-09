@@ -152,13 +152,23 @@ module.exports = {
         query: `select hims_d_holiday_id,hospital_id,holiday_date,holiday_description,weekoff,holiday,\
           holiday_type,religion_id,R.religion_name,R.arabic_religion_name from  hims_d_holiday  H left join\
           hims_d_religion R on H.religion_id=R.hims_d_religion_id where H.record_status='A' and date(holiday_date) \
-          between date(?) and date(?) and hospital_id=? ${_stringData} order by holiday_date `,
-        values: [start_of_year, end_of_year, input.hospital_id],
+          between date(?) and date(?) and hospital_id=? ${_stringData} order by holiday_date ;\
+          select days from (select dayname(holiday_date) as days FROM hims_test_db.hims_d_holiday  where \
+          weekoff='Y' and hospital_id=? and date(holiday_date) \
+          between date(?) and date(?) limit 7) as A group by days;  `,
+        values: [
+          start_of_year,
+          end_of_year,
+          input.hospital_id,
+          input.hospital_id,
+          start_of_year,
+          end_of_year
+        ],
         printQuery: true
       })
       .then(result => {
         _mysql.releaseConnection();
-        req.records = result;
+        req.records = { weekoffs: result[0], days: result[1] };
         next();
       })
       .catch(e => {
@@ -171,11 +181,7 @@ module.exports = {
     const _mysql = new algaehMysql();
     let input = { ...req.body };
 
-    if (
-      input.religion_id == "null" ||
-      input.religion_id == "" ||
-      input.religion_id == null
-    ) {
+    if (!input.religion_id > 0) {
       delete input.religion_id;
     }
 
@@ -238,15 +244,15 @@ module.exports = {
 
   addWeekOffs: (req, res, next) => {
     const _mysql = new algaehMysql();
-    let input = { ...req.body };
+    let input = req.body;
 
-    const year = moment("'" + input.year + "'").format("YYYY");
+    //  const year = moment("'" + input.year + "'").format("YYYY");
 
-    const start_of_year = moment(year)
+    const start_of_year = moment(input.year, "YYYY")
       .startOf("year")
       .format("YYYY-MM-DD");
 
-    const end_of_year = moment(year)
+    const end_of_year = moment(input.year, "YYYY")
       .endOf("year")
       .format("YYYY-MM-DD");
 

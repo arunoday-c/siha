@@ -2,7 +2,8 @@ import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 // import EmpMasterIOputs from "../../../../Models/EmployeeMaster";
 import {
   AlgaehValidation,
-  AlgaehOpenContainer
+  AlgaehOpenContainer,
+  imageToByteArray
 } from "../../../../utils/GlobalFunctions";
 import Enumerable from "linq";
 import moment from "moment";
@@ -254,6 +255,16 @@ const InsertUpdateEmployee = $this => {
           AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
         );
         let inputObj = $this.state.personalDetails;
+        // debugger;
+        // if ($this.state.filePreview !== null) {
+        //   inputObj = {
+        //     ...$this.state.personalDetails,
+        //     employee_Image: imageToByteArray($this.state.filePreview)
+        //   };
+        // } else {
+        //   inputObj = $this.state;
+        // }
+
         inputObj.inactive_date =
           inputObj.inactive_date !== null
             ? moment(inputObj.inactive_date).format("YYYY-MM-DD")
@@ -264,12 +275,15 @@ const InsertUpdateEmployee = $this => {
         delete inputObj.precities;
         delete inputObj.present_cities;
 
+        const _employeeImage = inputObj.employeeImage;
+        delete inputObj.employeeImage;
+
         const _payload = {
           hospital_id: hospital.hims_d_hospital_id,
           ...inputObj
         };
-        console.log("_payload", _payload);
 
+        let _arrayImages = [];
         if (inputObj.hims_d_employee_id === null) {
           algaehApiCall({
             uri: "/employee/addEmployeeMaster",
@@ -277,6 +291,21 @@ const InsertUpdateEmployee = $this => {
             data: _payload,
             onSuccess: response => {
               if (response.data.success === true) {
+                if (_employeeImage !== undefined) {
+                  _arrayImages.push(
+                    new Promise((resolve, reject) => {
+                      _employeeImage.SavingImageOnServer(
+                        undefined,
+                        undefined,
+                        undefined,
+                        $this.state.personalDetails.employee_code,
+                        () => {
+                          resolve();
+                        }
+                      );
+                    })
+                  );
+                }
                 $this.setState({
                   hims_d_employee_id: response.data.records.insertId,
                   personalDetails: {
@@ -329,6 +358,22 @@ const InsertUpdateEmployee = $this => {
             method: "PUT",
             onSuccess: response => {
               if (response.data.success === true) {
+                debugger;
+                if (_employeeImage !== undefined) {
+                  _arrayImages.push(
+                    new Promise((resolve, reject) => {
+                      _employeeImage.SavingImageOnServer(
+                        undefined,
+                        undefined,
+                        undefined,
+                        $this.state.personalDetails.employee_code,
+                        () => {
+                          resolve();
+                        }
+                      );
+                    })
+                  );
+                }
                 $this.setState({
                   personalDetails: {
                     ...$this.state.personalDetails,
