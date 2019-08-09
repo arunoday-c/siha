@@ -159,50 +159,6 @@ class StaffCashCollection extends Component {
   }
 
   selectCashier(data, e) {
-<<<<<<< HEAD
-    const {
-      actual_card,
-      actual_cash,
-      actual_cheque,
-      expected_card,
-      expected_cash,
-      expected_cheque
-    } = data;
-    this.setState(
-      {
-        hims_f_cash_handover_detail_id: data.hims_f_cash_handover_detail_id,
-        actual_cash,
-        actual_card,
-        actual_cheque,
-        expected_cash,
-        expected_card,
-        expected_cheque,
-        difference_cash: expected_cash - actual_cash,
-        difference_card: expected_card - actual_card,
-        difference_cheque: expected_cheque - actual_cheque,
-        shift_status: data.shift_status,
-        shift_open_date: moment(data.open_date).isValid()
-          ? moment(data.open_date).format("DD-MM-YYYY")
-          : "DD-MM-YYYY",
-        shift_open_time: moment(data.open_date).isValid()
-          ? moment(data.open_date).format("hh:mm A")
-          : "--:-- --",
-        shift_close_date: moment(data.close_date).isValid()
-          ? moment(data.close_date).format("DD-MM-YYYY")
-          : "DD-MM-YYYY",
-        shift_close_time: moment(data.close_date).isValid()
-          ? moment(data.close_date).format("hh:mm A")
-          : "--:-- --",
-        remarks: data.remarks
-      },
-      () =>
-        this.setState({
-          cash_status: this.checkStatus(this.state.difference_cash),
-          card_status: this.checkStatus(this.state.difference_card),
-          cheque_status: this.checkStatus(this.state.difference_cheque)
-        })
-    );
-=======
     this.setState({
       hims_f_cash_handover_detail_id: data.hims_f_cash_handover_detail_id,
       actual_cash: data.actual_cash,
@@ -234,7 +190,6 @@ class StaffCashCollection extends Component {
         : "--:-- --",
       remarks: data.remarks
     });
->>>>>>> 322a223a8666c6d9daf202697c2ba20db98cd745
   }
 
   disableBtn = btn => {
