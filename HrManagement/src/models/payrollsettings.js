@@ -153,7 +153,7 @@ module.exports = {
           holiday_type,religion_id,R.religion_name,R.arabic_religion_name from  hims_d_holiday  H left join\
           hims_d_religion R on H.religion_id=R.hims_d_religion_id where H.record_status='A' and date(holiday_date) \
           between date(?) and date(?) and hospital_id=? ${_stringData} order by holiday_date ;\
-          select day from (select dayname(holiday_date) as day FROM hims_test_db.hims_d_holiday  where \
+          select day from (select dayname(holiday_date) as day FROM hims_d_holiday  where \
           weekoff='Y' and hospital_id=? and date(holiday_date) \
           between date(?) and date(?) limit 7) as A group by day;  `,
         values: [
@@ -303,7 +303,7 @@ module.exports = {
           next();
           return;
         } else if (newDateList.length > 0) {
-          const insurtColumns = ["holiday_date", "created_by", "updated_by"];
+          const insurtColumns = ["holiday_date"];
 
           _mysql
             .executeQuery({
@@ -317,7 +317,9 @@ module.exports = {
                 holiday: "N",
                 holiday_type: "RE",
                 created_date: new Date(),
-                updated_date: new Date()
+                updated_date: new Date(),
+                created_by: req.userIdentity.algaeh_d_app_user_id,
+                updated_by: req.userIdentity.algaeh_d_app_user_id
               },
               bulkInsertOrUpdate: true,
               printQuery: true
