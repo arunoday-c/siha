@@ -159,6 +159,7 @@ class StaffCashCollection extends Component {
   }
 
   selectCashier(data, e) {
+<<<<<<< HEAD
     const {
       actual_card,
       actual_cash,
@@ -201,6 +202,39 @@ class StaffCashCollection extends Component {
           cheque_status: this.checkStatus(this.state.difference_cheque)
         })
     );
+=======
+    this.setState({
+      hims_f_cash_handover_detail_id: data.hims_f_cash_handover_detail_id,
+      actual_cash: data.actual_cash,
+      actual_card: data.actual_card,
+      actual_cheque: data.actual_cheque,
+      expected_cash: data.expected_cash,
+      expected_card: data.expected_card,
+      expected_cheque: data.expected_cheque,
+      difference_cash: data.difference_cash,
+      difference_card: data.difference_card,
+      difference_cheque: data.difference_cheque,
+      cash_status: data.cash_status,
+      card_status: data.card_status,
+      cheque_status: data.cheque_status,
+      shift_status: data.shift_status,
+      collected_cash: data.collected_cash,
+      refunded_cash: data.refunded_cash,
+      shift_open_date: moment(data.open_date).isValid()
+        ? moment(data.open_date).format("DD-MM-YYYY")
+        : "DD-MM-YYYY",
+      shift_open_time: moment(data.open_date).isValid()
+        ? moment(data.open_date).format("hh:mm A")
+        : "--:-- --",
+      shift_close_date: moment(data.close_date).isValid()
+        ? moment(data.close_date).format("DD-MM-YYYY")
+        : "DD-MM-YYYY",
+      shift_close_time: moment(data.close_date).isValid()
+        ? moment(data.close_date).format("hh:mm A")
+        : "--:-- --",
+      remarks: data.remarks
+    });
+>>>>>>> 322a223a8666c6d9daf202697c2ba20db98cd745
   }
 
   disableBtn = btn => {
@@ -864,15 +898,15 @@ class StaffCashCollection extends Component {
                             forceLabel: "Amount Received"
                           }}
                         />
-                        <h6>0.00</h6>
+                        <h6>{this.state.collected_cash}</h6>
                       </div>
                       <div className="col">
                         <AlgaehLabel
                           label={{
-                            fieldName: "Amount Refunded"
+                            forceLabel: "Amount Refunded"
                           }}
                         />
-                        <h6>0.00</h6>
+                        <h6>{this.state.refunded_cash}</h6>
                       </div>
                       <div className="col-12">
                         <table className="table table-responsive  table-sm table-bordered">

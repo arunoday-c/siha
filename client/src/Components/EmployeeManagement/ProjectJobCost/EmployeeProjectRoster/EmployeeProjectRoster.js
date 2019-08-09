@@ -926,7 +926,7 @@ class EmployeeProjectRoster extends Component {
                   <div className="row">
                     {this.state.employees.length === 0 ? (
                       <div className="noTimeSheetData">
-                        <h1>Employee Project Roaster</h1>
+                        <h1>Employee Project Roster</h1>
                         <i className="fas fa-user-clock" />
                       </div>
                     ) : (

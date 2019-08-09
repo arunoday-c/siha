@@ -382,6 +382,7 @@ module.exports = {
             where H.hospital_id=? and date(daily_handover_date)=date(?);
             select   H.hims_f_cash_handover_header_id,H.shift_id,H.daily_handover_date,\
             D.hims_f_cash_handover_detail_id,D.cash_handover_header_id,D.casher_id,D.shift_status,\
+            D.collected_cash,D.refunded_cash,\
             D.open_date,D.close_date,D.close_by,D.expected_cash,D.actual_cash,D.difference_cash,\
             D.cash_status,D.expected_card,D.actual_card,D.difference_card,D.card_status,\
             D.expected_cheque,D.actual_cheque,D.difference_cheque,D.cheque_status,D.remarks,D.no_of_cheques,\
@@ -397,6 +398,7 @@ module.exports = {
             where H.hospital_id=? and D.shift_status='O'  group by H.hims_f_cash_handover_header_id;\
             select H.hims_f_cash_handover_header_id,H.shift_id,H.daily_handover_date,\
             D.hims_f_cash_handover_detail_id,D.cash_handover_header_id,D.casher_id,D.shift_status,\
+            D.collected_cash,D.refunded_cash,
             D.open_date,D.close_date,D.close_by,D.expected_cash,D.actual_cash,D.difference_cash,\
             D.cash_status,D.expected_card,D.actual_card,D.difference_card,D.card_status,\
             D.expected_cheque,D.actual_cheque,D.difference_cheque,D.cheque_status,D.remarks,D.no_of_cheques,\
@@ -465,7 +467,9 @@ module.exports = {
                     no_of_cheques: S.no_of_cheques,
                     employee_name: S.employee_name,
                     employee_code: S.employee_code,
-                    employee_arabic_name: S.employee_arabic_name
+                    employee_arabic_name: S.employee_arabic_name,
+                    collected_cash: S.collected_cash,
+                    refunded_cash: S.refunded_cash
                   };
                 })
                 .ToArray()
@@ -511,7 +515,10 @@ module.exports = {
                     no_of_cheques: S.no_of_cheques,
                     employee_name: S.employee_name,
                     employee_code: S.employee_code,
-                    employee_arabic_name: S.employee_arabic_name
+                    employee_arabic_name: S.employee_arabic_name,
+
+                    collected_cash: S.collected_cash,
+                    refunded_cash: S.refunded_cash
                   };
                 })
                 .ToArray()
