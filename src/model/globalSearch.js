@@ -206,12 +206,7 @@ const newSearch = (req, res, next) => {
       _.map(sortedParameters, items => {
         return _.keysIn(items).map(key => {
           // _values.push("%" + items[key] + "%");
-          return (
-            String("UPPER(`" + key + "`)") +
-            " LIKE UPPER('%" +
-            items[key] +
-            "%')"
-          );
+          return String(" `" + key + "` ") + " LIKE  '%" + items[key] + "%' ";
         });
       }).join(" OR ") +
       ")";
@@ -224,11 +219,11 @@ const newSearch = (req, res, next) => {
         return _.keysIn(items).map(key => {
           if (key != null) {
             _values.push("%" + items[key] + "%");
-            return String("UPPER(`" + key + "`)");
+            return String(" `" + key + "` ");
           }
         });
-      }).join(" LIKE UPPER(?) OR ") +
-      " LIKE UPPER(?))";
+      }).join(" LIKE  ?  OR ") +
+      " LIKE  ? )";
   }
   if (inputParam.directCondition != null) {
     _hasQuery += inputParam.directCondition;
