@@ -155,7 +155,7 @@ module.exports = {
           between date(?) and date(?) and hospital_id=? ${_stringData} order by holiday_date ;\
           select day from (select dayname(holiday_date) as day FROM hims_test_db.hims_d_holiday  where \
           weekoff='Y' and hospital_id=? and date(holiday_date) \
-          between date(?) and date(?) limit 7) as A group by days;  `,
+          between date(?) and date(?) limit 7) as A group by day;  `,
         values: [
           start_of_year,
           end_of_year,
