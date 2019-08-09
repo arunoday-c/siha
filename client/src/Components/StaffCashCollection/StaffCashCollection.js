@@ -180,6 +180,8 @@ class StaffCashCollection extends Component {
         difference_card: expected_card - actual_card,
         difference_cheque: expected_cheque - actual_cheque,
         shift_status: data.shift_status,
+        collected_cash: data.collected_cash,
+        refunded_cash: data.refunded_cash,
         shift_open_date: moment(data.open_date).isValid()
           ? moment(data.open_date).format("DD-MM-YYYY")
           : "DD-MM-YYYY",
