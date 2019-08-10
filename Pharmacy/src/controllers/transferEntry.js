@@ -5,7 +5,8 @@ import {
   gettransferEntry,
   addtransferEntry,
   updatetransferEntry,
-  getrequisitionEntryTransfer
+  getrequisitionEntryTransfer,
+  getAckTransferList
 } from "../models/transferEntry";
 import { updateIntoItemLocation } from "../models/commonFunction";
 import { updaterequisitionEntryOnceTranfer } from "../models/requisitionEntry";
@@ -30,7 +31,6 @@ export default () => {
     addtransferEntry,
     updaterequisitionEntryOnceTranfer,
     updateIntoItemLocation,
-    updateIntoItemLocation,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
@@ -42,7 +42,6 @@ export default () => {
   api.put(
     "/updatetransferEntry",
     updatetransferEntry,
-    updaterequisitionEntryOnceTranfer,
     updateIntoItemLocation,
     updateIntoItemLocation,
     (req, res, next) => {
@@ -63,6 +62,12 @@ export default () => {
       });
     }
   );
+  api.get("/getAckTransferList", getAckTransferList, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
 
   return api;
 };

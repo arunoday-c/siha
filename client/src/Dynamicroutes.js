@@ -21,6 +21,7 @@ import DoctorsWorkbench from "./Components/Workbench/Workbench";
 import NurseWorkbench from "./Components/Workbench/Workbench";
 import CommonDashboard from "./Components/Dashboard/hr-dashboard";
 import PatientPackages from "./Components/PatientPackages/PatientPackages";
+import AcknowledgeList from "./Components/Pharmacy/AcknowledgeList/AcknowledgeSwitch";
 
 const PageToPlot = {
   Dashboard: CommonDashboard,
@@ -202,6 +203,7 @@ const PageToPlot = {
       import("./Components/Pharmacy/RequisitionList/RequisitionSwitch")
     )
   ),
+  AcknowledgeList: AcknowledgeList,
   ConsumptionEntry: React.lazy(() =>
     retry(() =>
       import("./Components/Pharmacy/ConsumptionEntry/ConsumptionEntry")
