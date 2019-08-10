@@ -9,7 +9,8 @@ const _port = process.env.PORT;
 const exp = express();
 exp.use(cors());
 const app = http.createServer(exp);
-var io = require("socket.io")(app);
+import appsock from "./appointmentSocket";
+export const io = require("socket.io")(app);
 
 process.on("warning", warn => {
   utilities
@@ -18,18 +19,27 @@ process.on("warning", warn => {
     .log("warn", warn, "warn");
 });
 process.on("uncaughtException", error => {
-  utliites
+  utilities
     .AlgaehUtilities()
     .logger()
     .log("uncatched Exception", error, "error");
 });
 process.on("unhandledRejection", (reason, promise) => {
-  utliites
+  utilities
     .AlgaehUtilities()
     .logger()
     .log("Unhandled rejection", { reason: reason, promise: promise }, "error");
 });
+
 io.on("connection", socket => {
+  socket.on("user_logged", function(user) {
+    console.log(`${user} connected`);
+  });
+
+  socket.on("page_opened", page => {
+    console.log(`${page} is opened`);
+  });
+
   socket.on("patientadded", data => {
     console.log("data", data);
     io.sockets.emit("patientadded", data);
@@ -39,7 +49,7 @@ io.on("connection", socket => {
     console.log("Client disconnected");
   });
 });
+appsock(io);
 app.listen(_port);
 console.log(`IO Sockets are running on PORT - *${_port}`);
 export default app;
-module.exports = app;

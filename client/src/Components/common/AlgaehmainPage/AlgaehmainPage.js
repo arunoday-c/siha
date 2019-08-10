@@ -14,6 +14,7 @@ import {
 } from "../../../utils/GlobalFunctions";
 import Enumarable from "linq";
 import swal from "sweetalert2";
+import socket from "../../../sockets";
 
 class PersistentDrawer extends React.Component {
   constructor(props) {
@@ -409,21 +410,26 @@ class PersistentDrawer extends React.Component {
     setCookie("module_id", module_id, 30);
     // AlgaehLoader({ show: true });
 
-    this.setState({
-      sideopen: false,
-      searchModules: "",
-      title: e.currentTarget.innerText,
-      renderComponent: screenName,
-      arlabl: submenu.other_language,
-      enlabl: submenu.screen_name,
-      onlyToggeleMenu: "",
-      lang_className: lang_className,
-      activeNode: {
-        class: "active",
-        menuselected: _menuselected,
-        subMenuItem: _submenuselected
+    this.setState(
+      {
+        sideopen: false,
+        searchModules: "",
+        title: e.currentTarget.innerText,
+        renderComponent: screenName,
+        arlabl: submenu.other_language,
+        enlabl: submenu.screen_name,
+        onlyToggeleMenu: "",
+        lang_className: lang_className,
+        activeNode: {
+          class: "active",
+          menuselected: _menuselected,
+          subMenuItem: _submenuselected
+        }
+      },
+      () => {
+        socket().emit("page_opened", this.state.renderComponent);
       }
-    });
+    );
   }
 
   logoutLink(e) {
