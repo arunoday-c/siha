@@ -155,6 +155,10 @@
     { "name": "Actual Amount", "value": "AC" },
     { "name": "Appropriate Amount", "value": "AP" }
   ],
+  "ACK_STATUS": [
+    { "name": "Pending", "value": "N" },
+    { "name": "Completed", "value": "Y" }
+  ],
   "PAIN_SCALE": [
     { "name": "No Hurt", "arabic_name": "لا ألم", "value": "NH", "score": 0 },
     {

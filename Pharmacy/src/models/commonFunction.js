@@ -25,6 +25,7 @@ let updateIntoItemLocation = (req, res, next) => {
   try {
     let inputParam = req.body;
     let xmlQuery = "";
+    const decimal_places = req.userIdentity.decimal_places;
     const utilities = new algaehUtilities();
     utilities
       .logger()
@@ -44,7 +45,8 @@ let updateIntoItemLocation = (req, res, next) => {
         xmlQuery += createXmlString({
           item_id: s.item_id,
           pharmacy_location_id: s.location_id,
-          batchno: s.batchno,
+          batchno:
+            typeof s.batchno === "string" ? s.batchno : String(s.batchno),
           expirydt: s.expiry_date || "~",
           barcode: s.barcode,
           qtyhand: s.quantity,
@@ -76,16 +78,21 @@ let updateIntoItemLocation = (req, res, next) => {
           transaction_qty: s.quantity,
           transaction_uom: s.uom_id,
           transaction_cost: s.unit_cost,
-          transaction_total: s.extended_cost,
+          transaction_total: utilities.decimalPoints(
+            s.extended_cost,
+            decimal_places
+          ),
           discount_percentage: s.discount_percentage || 0,
           discount_amount: s.discount_amount || 0,
-          net_total: s.net_total || 0,
+          net_total: utilities.decimalPoints(s.net_total || 0, decimal_places),
           landing_cost: s.landing_cost || 0,
+          git_qty: s.git_qty || 0,
           average_cost: unit_cost,
           created_by: req.userIdentity.algaeh_d_app_user_id,
           updated_by: req.userIdentity.algaeh_d_app_user_id,
           operation: s.operation,
-          hospital_id: req.userIdentity.hospital_id
+          hospital_id: req.userIdentity.hospital_id,
+          flag: req.flag || 0
         });
         xmlQuery += "</hims_m_item_location>";
       })
@@ -121,6 +128,7 @@ let updateIntoItemLocation = (req, res, next) => {
                   req.body.pharmacy_stock_detail[i].uom_transferred_id;
 
                 req.body.pharmacy_stock_detail[i].operation = "+";
+                req.body.pharmacy_stock_detail[i].git_qty = 0;
               }
               req.flag = 0;
               next();
@@ -144,6 +152,7 @@ let updateIntoItemLocation = (req, res, next) => {
                 req.body.pharmacy_stock_detail[i].uom_transferred_id;
 
               req.body.pharmacy_stock_detail[i].operation = "+";
+              req.body.pharmacy_stock_detail[i].git_qty = 0;
             }
             req.flag = 0;
             next();

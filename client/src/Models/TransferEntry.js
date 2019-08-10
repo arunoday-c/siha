@@ -65,7 +65,9 @@ export default {
       item_description: "",
       uom_description: null,
       fromReq: false,
-      stock_enable:false
+      stock_enable: false,
+      ackTran: true,
+      ack_tran: false
     };
     return output;
   }

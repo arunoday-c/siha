@@ -91,6 +91,7 @@ const AddItems = ($this, context) => {
   let stock_detail = $this.state.stock_detail;
   let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
   let _pharmacy_stock_detail = [];
+
   let BatchExists = _.filter(
     pharmacy_stock_detail,
     f => f.batchno === $this.state.batchno
@@ -121,7 +122,9 @@ const AddItems = ($this, context) => {
     unit_cost: $this.state.unit_cost,
     quantity_transfer: $this.state.quantity,
     uom_transferred_id: $this.state.uom_id,
-    sales_price: $this.state.sales_price
+    sales_price: $this.state.sales_price,
+    git_qty: $this.state.quantity,
+    ack_quantity: 0
   };
   if (Item_Exists !== undefined) {
     let item_index = stock_detail.indexOf(Item_Exists);
@@ -150,7 +153,6 @@ const AddItems = ($this, context) => {
     ItemInput.pharmacy_stock_detail = _pharmacy_stock_detail;
     stock_detail.push(ItemInput);
   }
-  
 
   $this.setState({
     stock_detail: stock_detail,
@@ -222,7 +224,6 @@ const deleteTransEntryDetail = ($this, context, row, rowId) => {
     cancelButtonText: "No"
   }).then(willDelete => {
     if (willDelete.value) {
-      
       let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
       let stock_detail = $this.state.stock_detail;
 
@@ -300,6 +301,7 @@ const onchangegridcol = ($this, context, row, e) => {
     let item_details = $this.state.item_details;
 
     row[name] = value;
+    row["git_qty"] = value;
     // row["quantity_outstanding"] =
     //   row.quantity_authorized - row.transfer_to_date - value;
     let quantity_transferred = _.sumBy(item_details.batches, s => {
@@ -322,6 +324,7 @@ const onchangegridcol = ($this, context, row, e) => {
         type: "warning"
       });
       row[name] = 0;
+      row["git_qty"] = 0;
       quantity_transferred = _.sumBy(item_details.batches, s =>
         parseFloat(s.quantity_transfer)
       );
@@ -593,6 +596,40 @@ const ShowItemBatch = ($this, e) => {
   });
 };
 
+const onchangegridcolauthqty = ($this, context, row, e) => {
+  debugger;
+  let name = e.target.name;
+  let value = e.target.value === "" ? null : e.target.value;
+
+  if (parseFloat(value) > parseFloat(row.quantity_transfer)) {
+    swalMessage({
+      title: "Cannot be greater than Quantity Transfered.",
+      type: "warning"
+    });
+  } else if (parseFloat(value) < 0) {
+    swalMessage({
+      title: "Cannot be less than Zero.",
+      type: "warning"
+    });
+  } else {
+    let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+    let _index = pharmacy_stock_detail.indexOf(row);
+
+    row[name] = value;
+    pharmacy_stock_detail[_index] = row;
+
+    $this.setState({
+      pharmacy_stock_detail: pharmacy_stock_detail
+    });
+
+    if (context !== undefined) {
+      context.updateState({
+        pharmacy_stock_detail: pharmacy_stock_detail
+      });
+    }
+  }
+};
+
 const CloseItemBatch = ($this, context, e) => {
   let batchno =
     e !== undefined
@@ -671,5 +708,6 @@ export {
   EditGrid,
   AddSelectedBatches,
   ShowItemBatch,
-  CloseItemBatch
+  CloseItemBatch,
+  onchangegridcolauthqty
 };

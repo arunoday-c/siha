@@ -26,7 +26,8 @@ import {
   ShowItemBatch,
   CloseItemBatch,
   AddItems,
-  UomchangeTexts
+  UomchangeTexts,
+  onchangegridcolauthqty
 } from "./TransferEntryItemsEvents";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import _ from "lodash";
@@ -617,6 +618,52 @@ class TransferEntryItems extends Component {
                               others: {
                                 minWidth: 130
                               }
+                            },
+
+                            {
+                              fieldName: "ack_quantity",
+                              label: (
+                                <AlgaehLabel
+                                  label={{
+                                    forceLabel: "Acknowledge Qty"
+                                  }}
+                                />
+                              ),
+                              displayTemplate: row => {
+                                debugger;
+                                return this.state.ack_tran === false ? (
+                                  row.ack_quantity !== "" ? (
+                                    parseFloat(row.ack_quantity)
+                                  ) : (
+                                    ""
+                                  )
+                                ) : (
+                                  <AlagehFormGroup
+                                    div={{}}
+                                    textBox={{
+                                      number: {
+                                        allowNegative: false,
+                                        thousandSeparator: ","
+                                      },
+                                      dontAllowKeys: ["-", "e", "."],
+                                      value:
+                                        row.ack_quantity !== ""
+                                          ? parseFloat(row.ack_quantity)
+                                          : "",
+                                      className: "txt-fld",
+                                      name: "ack_quantity",
+                                      events: {
+                                        onChange: onchangegridcolauthqty.bind(
+                                          this,
+                                          this,
+                                          context,
+                                          row
+                                        )
+                                      }
+                                    }}
+                                  />
+                                );
+                              }
                             }
                           ]}
                           keyId="batch_details"
@@ -663,12 +710,12 @@ class TransferEntryItems extends Component {
                                 UOM: <span>{item.uom_description}</span>
                               </span>
                               <span>
-                                Req. Qty:{" "}
+                                Req. Qty:
                                 <span>{item.quantity_authorized}</span>
                               </span>
 
                               <span>
-                                Trans. Qty:{" "}
+                                Trans. Qty:
                                 <span>{item.quantity_transferred}</span>
                               </span>
                               <span>
@@ -976,6 +1023,51 @@ class TransferEntryItems extends Component {
                                 disabled: true,
                                 others: {
                                   minWidth: 140
+                                }
+                              },
+                              {
+                                fieldName: "ack_quantity",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Acknowledge Qty"
+                                    }}
+                                  />
+                                ),
+                                displayTemplate: row => {
+                                  debugger;
+                                  return this.state.ack_tran === false ? (
+                                    row.ack_quantity !== "" ? (
+                                      parseFloat(row.ack_quantity)
+                                    ) : (
+                                      ""
+                                    )
+                                  ) : (
+                                    <AlagehFormGroup
+                                      div={{}}
+                                      textBox={{
+                                        number: {
+                                          allowNegative: false,
+                                          thousandSeparator: ","
+                                        },
+                                        dontAllowKeys: ["-", "e", "."],
+                                        value:
+                                          row.ack_quantity !== ""
+                                            ? parseFloat(row.ack_quantity)
+                                            : "",
+                                        className: "txt-fld",
+                                        name: "ack_quantity",
+                                        events: {
+                                          onChange: onchangegridcolauthqty.bind(
+                                            this,
+                                            this,
+                                            context,
+                                            row
+                                          )
+                                        }
+                                      }}
+                                    />
+                                  );
                                 }
                               }
                             ]}
