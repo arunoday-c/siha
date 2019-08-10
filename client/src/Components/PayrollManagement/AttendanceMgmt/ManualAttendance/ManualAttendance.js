@@ -145,13 +145,21 @@ class ManualAttendance extends Component {
       this.setState({
         select_wise: "M",
         month_wise: true,
-        date_range: false
+        date_range: false,
+        employee_name: null,
+        employee_id: null,
+        project_id: null,
+        employee_details: []
       });
     } else if (e.target.name === "date_range") {
       this.setState({
         select_wise: "D",
         date_range: true,
-        month_wise: false
+        month_wise: false,
+        employee_name: null,
+        employee_id: null,
+        project_id: null,
+        employee_details: []
       });
     }
   }
@@ -453,6 +461,17 @@ class ManualAttendance extends Component {
                       datavalidate="ManualAttendanceGrid"
                       columns={[
                         {
+                          fieldName: "employee_code",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Employee Code" }}
+                            />
+                          ),
+                          others: {
+                            maxWidth: 150
+                          }
+                        },
+                        {
                           fieldName: "full_name",
                           label: (
                             <AlgaehLabel
@@ -461,12 +480,24 @@ class ManualAttendance extends Component {
                           )
                         },
                         {
-                          fieldName: "employee_code",
+                          fieldName: "designation",
                           label: (
                             <AlgaehLabel
-                              label={{ forceLabel: "Employee Code" }}
+                              label={{ forceLabel: "Designation" }}
                             />
-                          )
+                          ),
+                          others: {
+                            maxWidth: 200
+                          }
+                        },
+                        {
+                          fieldName: "project_desc",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Project" }} />
+                          ),
+                          others: {
+                            maxWidth: 200
+                          }
                         },
                         {
                           fieldName: "attendance_date",
@@ -483,6 +514,9 @@ class ManualAttendance extends Component {
                                 )}
                               </span>
                             );
+                          },
+                          others: {
+                            maxWidth: 100
                           }
                         },
                         {
@@ -509,6 +543,9 @@ class ManualAttendance extends Component {
                                 }}
                               />
                             );
+                          },
+                          others: {
+                            maxWidth: 100
                           }
                         },
                         {
@@ -537,18 +574,25 @@ class ManualAttendance extends Component {
                                 }}
                               />
                             );
+                          },
+                          others: {
+                            maxWidth: 100
                           }
                         },
                         {
                           fieldName: "worked_hours",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Total Hour" }} />
-                          )
+                          ),
+                          others: {
+                            maxWidth: 100
+                          }
                         }
                       ]}
                       keyId="hims_f_daily_time_sheet_id"
                       dataSource={{ data: this.state.employee_details }}
                       isEditable={false}
+                      filter={true}
                       paging={{ page: 0, rowsPerPage: 31 }}
                       tool={{
                         fileName: "Daily Time Sheet",
