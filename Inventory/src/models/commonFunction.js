@@ -25,6 +25,8 @@ let updateIntoInvItemLocation = (req, res, next) => {
   try {
     let inputParam = req.body;
     let xmlQuery = "";
+    const decimal_places = req.userIdentity.decimal_places;
+
     const utilities = new algaehUtilities();
     utilities
       .logger()
@@ -70,16 +72,21 @@ let updateIntoInvItemLocation = (req, res, next) => {
           transaction_qty: s.quantity,
           transaction_uom: s.uom_id,
           transaction_cost: s.unit_cost,
-          transaction_total: s.extended_cost,
+          transaction_total: utilities.decimalPoints(
+            s.extended_cost,
+            decimal_places
+          ),
           discount_percentage: s.discount_percentage || 0,
           discount_amount: s.discount_amount || 0,
-          net_total: s.net_total || 0,
+          net_total: utilities.decimalPoints(s.net_total || 0, decimal_places),
           landing_cost: s.landing_cost || 0,
+          git_qty: s.git_qty || 0,
           average_cost: unit_cost,
           created_by: req.userIdentity.algaeh_d_app_user_id,
           updated_by: req.userIdentity.algaeh_d_app_user_id,
           operation: s.operation,
-          hospital_id: req.userIdentity.hospital_id
+          hospital_id: req.userIdentity.hospital_id,
+          flag: req.flag || 0
         });
         xmlQuery += "</hims_m_inventory_item_location>";
       })
@@ -114,6 +121,7 @@ let updateIntoInvItemLocation = (req, res, next) => {
                   req.body.inventory_stock_detail[i].uom_transferred_id;
 
                 req.body.inventory_stock_detail[i].operation = "+";
+                req.body.inventory_stock_detail[i].git_qty = 0;
               }
               req.flag = 0;
               next();
@@ -137,6 +145,7 @@ let updateIntoInvItemLocation = (req, res, next) => {
                 req.body.inventory_stock_detail[i].uom_transferred_id;
 
               req.body.inventory_stock_detail[i].operation = "+";
+              req.body.inventory_stock_detail[i].git_qty = 0;
             }
             req.flag = 0;
             next();

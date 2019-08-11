@@ -116,7 +116,9 @@ const AddItems = ($this, context) => {
     unit_cost: $this.state.unit_cost,
     quantity_transfer: $this.state.quantity,
     uom_transferred_id: $this.state.uom_id,
-    sales_price: $this.state.sales_price
+    sales_price: $this.state.sales_price,
+    git_qty: $this.state.quantity,
+    ack_quantity: 0
   };
   if (Item_Exists !== undefined) {
     let item_index = stock_detail.indexOf(Item_Exists);
@@ -216,7 +218,6 @@ const deleteTransEntryDetail = ($this, context, row, rowId) => {
     cancelButtonText: "No"
   }).then(willDelete => {
     if (willDelete.value) {
-      
       let inventory_stock_detail = $this.state.inventory_stock_detail;
       let stock_detail = $this.state.stock_detail;
 
@@ -300,7 +301,7 @@ const onchangegridcol = ($this, context, row, e) => {
     let item_details = $this.state.item_details;
 
     row[name] = value;
-
+    row["git_qty"] = value;
     let quantity_transferred = _.sumBy(item_details.batches, s => {
       return s.quantity_transfer !== null ? parseFloat(s.quantity_transfer) : 0;
     });
@@ -321,6 +322,7 @@ const onchangegridcol = ($this, context, row, e) => {
         type: "warning"
       });
       row[name] = 0;
+      row["git_qty"] = 0;
       quantity_transferred = _.sumBy(item_details.batches, s =>
         parseFloat(s.quantity_transfer)
       );
@@ -716,6 +718,40 @@ const CloseItemBatch = ($this, context, e) => {
   }
 };
 
+const onchangegridcolauthqty = ($this, context, row, e) => {
+  debugger;
+  let name = e.target.name;
+  let value = e.target.value === "" ? null : e.target.value;
+
+  if (parseFloat(value) > parseFloat(row.quantity_transfer)) {
+    swalMessage({
+      title: "Cannot be greater than Quantity Transfered.",
+      type: "warning"
+    });
+  } else if (parseFloat(value) < 0) {
+    swalMessage({
+      title: "Cannot be less than Zero.",
+      type: "warning"
+    });
+  } else {
+    let inventory_stock_detail = $this.state.inventory_stock_detail;
+    let _index = inventory_stock_detail.indexOf(row);
+
+    row[name] = value;
+    inventory_stock_detail[_index] = row;
+
+    $this.setState({
+      inventory_stock_detail: inventory_stock_detail
+    });
+
+    if (context !== undefined) {
+      context.updateState({
+        inventory_stock_detail: inventory_stock_detail
+      });
+    }
+  }
+};
+
 export {
   UomchangeTexts,
   itemchangeText,
@@ -731,5 +767,6 @@ export {
   CancelGrid,
   AddSelectedBatches,
   ShowItemBatch,
-  CloseItemBatch
+  CloseItemBatch,
+  onchangegridcolauthqty
 };

@@ -23,6 +23,8 @@ import CommonDashboard from "./Components/Dashboard/hr-dashboard";
 import PatientPackages from "./Components/PatientPackages/PatientPackages";
 import AcknowledgeList from "./Components/Pharmacy/AcknowledgeList/AcknowledgeSwitch";
 
+import InvAcknowledgeList from "./Components/Inventory/InvAcknowledgeList/InvAcknowledgeSwitch";
+
 const PageToPlot = {
   Dashboard: CommonDashboard,
   // 7: React.lazy(() =>
@@ -277,6 +279,7 @@ const PageToPlot = {
   InvPointOfSale: React.lazy(() =>
     retry(() => import("./Components/Inventory/InvPointOfSale/InvPointOfSale"))
   ),
+  InvAcknowledgeList: InvAcknowledgeList,
   VendorSetup: React.lazy(() =>
     retry(() => import("./Components/VendorSetup/VendorSetup"))
   ),

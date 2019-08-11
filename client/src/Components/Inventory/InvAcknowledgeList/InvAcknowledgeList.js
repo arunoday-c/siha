@@ -7,7 +7,7 @@ import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 import { setGlobal } from "../../../utils/GlobalFunctions";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 
-import "./AcknowledgeList.css";
+import "./InvAcknowledgeList.css";
 import "./../../../styles/site.css";
 
 import {
@@ -17,7 +17,7 @@ import {
   getTransList,
   datehandle,
   changeEventHandaler
-} from "./AcknowledgeListEvent";
+} from "./InvAcknowledgeListEvent";
 
 import {
   AlgaehDataGrid,
@@ -28,7 +28,7 @@ import {
 import moment from "moment";
 import { AlgaehActions } from "../../../actions/algaehActions";
 
-class AcknowledgeList extends Component {
+class InvAcknowledgeList extends Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -72,12 +72,12 @@ class AcknowledgeList extends Component {
     }
 
     this.props.getLocation({
-      uri: "/pharmacy/getPharmacyLocation",
-      module: "pharmacy",
+      uri: "/inventory/getInventoryLocation",
+      module: "inventory",
       method: "GET",
       redux: {
-        type: "LOCATIOS_GET_DATA",
-        mappingName: "locations"
+        type: "INV_LOCATIOS_GET_DATA",
+        mappingName: "inventorylocations"
       }
     });
   }
@@ -156,8 +156,8 @@ class AcknowledgeList extends Component {
                     value: this.state.to_location_id,
                     dataSource: {
                       textField: "location_description",
-                      valueField: "hims_d_pharmacy_location_id",
-                      data: this.props.locations
+                      valueField: "hims_d_inventory_location_id",
+                      data: this.props.inventorylocations
                     },
                     onChange: changeEventHandaler.bind(this, this),
                     onClear: () => {
@@ -201,9 +201,9 @@ class AcknowledgeList extends Component {
           <div className="row">
             <div className="col-lg-12">
               <div className="portlet portlet-bordered margin-bottom-15">
-                <div className="portlet-body" id="AcknowledgeListCntr">
+                <div className="portlet-body" id="InvAcknowledgeListCntr">
                   <AlgaehDataGrid
-                    id="AcknowledgeList_grid"
+                    id="InvAcknowledgeList_grid"
                     columns={[
                       {
                         fieldName: "action",
@@ -215,7 +215,7 @@ class AcknowledgeList extends Component {
                                 className="fas fa-check"
                                 onClick={() => {
                                   this.ourOwnMiniNavigator({
-                                    RQ_Screen: "TransferEntry",
+                                    RQ_Screen: "InvTransferEntry",
                                     transfer_number: row.transfer_number,
                                     from_location_id: row.from_location_id,
                                     to_location_id: row.to_location_id
@@ -280,17 +280,17 @@ class AcknowledgeList extends Component {
                             label={{ forceLabel: "Transferred Location" }}
                           />
                         ),
-                        //created by Adnan
+
                         displayTemplate: row => {
                           let x;
                           if (
-                            this.props.locations !== undefined &&
-                            this.props.locations.length !== 0
+                            this.props.inventorylocations !== undefined &&
+                            this.props.inventorylocations.length !== 0
                           ) {
-                            x = Enumerable.from(this.props.locations)
+                            x = Enumerable.from(this.props.inventorylocations)
                               .where(
                                 w =>
-                                  w.hims_d_pharmacy_location_id ===
+                                  w.hims_d_inventory_location_id ===
                                   row.from_location_id
                               )
                               .firstOrDefault();
@@ -307,7 +307,6 @@ class AcknowledgeList extends Component {
                           resizable: false,
                           style: { textAlign: "center" }
                         }
-                        //created by Adnan
                       },
                       {
                         fieldName: "to_location_id",
@@ -316,17 +315,17 @@ class AcknowledgeList extends Component {
                             label={{ forceLabel: "Receiving Location" }}
                           />
                         ),
-                        //created by Adnan
+
                         displayTemplate: row => {
                           let x;
                           if (
-                            this.props.locations !== undefined &&
-                            this.props.locations.length !== 0
+                            this.props.inventorylocations !== undefined &&
+                            this.props.inventorylocations.length !== 0
                           ) {
-                            x = Enumerable.from(this.props.locations)
+                            x = Enumerable.from(this.props.inventorylocations)
                               .where(
                                 w =>
-                                  w.hims_d_pharmacy_location_id ===
+                                  w.hims_d_inventory_location_id ===
                                   row.to_location_id
                               )
                               .firstOrDefault();
@@ -336,7 +335,6 @@ class AcknowledgeList extends Component {
                               {x !== undefined ? x.location_description : ""}
                             </span>
                           );
-                          //created by Adnan
                         },
                         others: {
                           maxWidth: 200,
@@ -364,7 +362,7 @@ class AcknowledgeList extends Component {
 
 function mapStateToProps(state) {
   return {
-    locations: state.locations
+    inventorylocations: state.inventorylocations
   };
 }
 
@@ -381,5 +379,5 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(AcknowledgeList)
+  )(InvAcknowledgeList)
 );

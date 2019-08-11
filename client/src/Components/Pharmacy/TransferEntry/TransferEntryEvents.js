@@ -197,7 +197,7 @@ const AcknowledgeTransferEntry = $this => {
           ackTran: true
         });
         swalMessage({
-          title: "Posted successfully . .",
+          title: "Acknowledge successfully . .",
           type: "success"
         });
         AlgaehLoader({ show: false });
