@@ -32,39 +32,49 @@ export default () => {
     });
   });
 
-  api.get(
-    "/title",
-    (req, res, next) => {
-      getCacheData({ key: "title" }, result => {
-        if (result != null) {
-          res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-            success: true,
-            records: result
-          });
-        } else {
-          next();
-        }
-      });
-    },
-    titleMaster,
-    (req, res, next) => {
-      let result = req.records;
+  // api.get(
+  //   "/title",
+  //   (req, res, next) => {
+  //     getCacheData({ key: "title" }, result => {
+  //       if (result != null) {
+  //         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+  //           success: true,
+  //           records: result
+  //         });
+  //       } else {
+  //         next();
+  //       }
+  //     });
+  //   },
+  //   titleMaster,
+  //   (req, res, next) => {
+  //     let result = req.records;
+  //
+  //     setCacheData(
+  //       {
+  //         key: "title",
+  //         value: result
+  //       },
+  //       resultData => {
+  //         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+  //           success: true,
+  //           records: resultData
+  //         });
+  //         next();
+  //       }
+  //     );
+  //   }
+  // );
 
-      setCacheData(
-        {
-          key: "title",
-          value: result
-        },
-        resultData => {
-          res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-            success: true,
-            records: resultData
-          });
-          next();
-        }
-      );
-    }
-  );
+  api.get("/title", titleMaster, (req, res, next) => {
+    let result = req.records;
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: result
+    });
+
+    next();
+  });
 
   api.get("/country", countryMaster, (req, res, next) => {
     let result = req.records;
