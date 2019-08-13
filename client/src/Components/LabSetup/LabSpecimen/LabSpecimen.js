@@ -66,212 +66,233 @@ class LabSpecimen extends Component {
   render() {
     return (
       <div className="lab_section">
-        <div className="container-fluid">
-          <div className="row">
-            <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
-              label={{
-                fieldName: "type_desc",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "description",
-                value: this.state.description,
-                events: {
-                  onChange: changeTexts.bind(this, this)
-                }
-              }}
-            />
-
-            <AlagehAutoComplete
-              div={{ className: "col-lg-2" }}
-              label={{
-                fieldName: "storage_type",
-                isImp: true
-              }}
-              selector={{
-                name: "storage_type",
-                className: "select-fld",
-                value: this.state.storage_type,
-                dataSource: {
-                  textField: "name",
-                  valueField: "value",
-                  data: GlobalVariables.FORMAT_STORAGE_TYPE
-                },
+        <div className="row inner-top-search margin-bottom-15">
+          <AlagehFormGroup
+            div={{ className: "col-3 form-group mandatory" }}
+            label={{
+              forceLabel: "Specimen Name",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "description",
+              value: this.state.description,
+              events: {
                 onChange: changeTexts.bind(this, this)
-              }}
-            />
-            <div className="col-lg-2 align-middle" style={{ paddingTop: 21 }}>
-              <button
-                onClick={insertLabSpecimen.bind(this, this)}
-                className="btn btn-primary"
-              >
-                Add to List
-              </button>
-            </div>
+              }
+            }}
+          />
+
+          <AlagehAutoComplete
+            div={{ className: "col-3 form-group mandatory" }}
+            label={{
+              forceLabel: "Select Storage Type",
+              isImp: true
+            }}
+            selector={{
+              name: "storage_type",
+              className: "select-fld",
+              value: this.state.storage_type,
+              dataSource: {
+                textField: "name",
+                valueField: "value",
+                data: GlobalVariables.FORMAT_STORAGE_TYPE
+              },
+              onChange: changeTexts.bind(this, this)
+            }}
+          />
+          <div className="col-lg-2 align-middle" style={{ paddingTop: 19 }}>
+            <button
+              onClick={insertLabSpecimen.bind(this, this)}
+              className="btn btn-primary"
+            >
+              Add to List
+            </button>
           </div>
+        </div>
 
-          <div className="row form-details" data-validate="labSpecimenDiv">
-            <div className="col">
-              <AlgaehDataGrid
-                datavalidate="data-validate='labSpecimenDiv'"
-                id="visa_grd"
-                columns={[
-                  {
-                    fieldName: "SpeDescription",
-                    label: <AlgaehLabel label={{ fieldName: "type_desc" }} />,
-                    editorTemplate: row => {
-                      return (
-                        <AlagehFormGroup
-                          div={{}}
-                          textBox={{
-                            value: row.SpeDescription,
-                            className: "txt-fld",
-                            name: "description",
-                            events: {
-                              onChange: onchangegridcol.bind(this, this, row)
-                            },
-                            others: {
-                              errormessage: "Description - cannot be blank",
-                              required: true
-                            }
-                          }}
-                        />
-                      );
-                    }
-                  },
-                  {
-                    fieldName: "storage_type",
-                    label: (
-                      <AlgaehLabel label={{ fieldName: "storage_type" }} />
-                    ),
-                    displayTemplate: row => {
-                      return row.storage_type === "N"
-                        ? "Normal"
-                        : row.storage_type === "F"
-                        ? "Frozen"
-                        : "Refrigerate";
+        <div className="portlet portlet-bordered margin-bottom-15">
+          <div className="portlet-body">
+            {" "}
+            <div className="row" data-validate="labSpecimenDiv">
+              <div className="col" id="labSpecimenGrid_Cntr">
+                <AlgaehDataGrid
+                  datavalidate="data-validate='labSpecimenDiv'"
+                  id="labSpecimenGrid"
+                  columns={[
+                    {
+                      fieldName: "SpeDescription",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Specimen Name" }} />
+                      ),
+                      editorTemplate: row => {
+                        return (
+                          <AlagehFormGroup
+                            div={{}}
+                            textBox={{
+                              value: row.SpeDescription,
+                              className: "txt-fld",
+                              name: "description",
+                              events: {
+                                onChange: onchangegridcol.bind(this, this, row)
+                              },
+                              others: {
+                                errormessage: "Description - cannot be blank",
+                                required: true
+                              }
+                            }}
+                          />
+                        );
+                      }
                     },
-                    editorTemplate: row => {
-                      return (
-                        <AlagehAutoComplete
-                          selector={{
-                            name: "storage_type",
-                            className: "select-fld",
-                            value: row.storage_type,
-                            dataSource: {
-                              textField: "name",
-                              valueField: "value",
-                              data: GlobalVariables.FORMAT_STORAGE_TYPE
-                            },
-                            onChange: onchangegridcol.bind(this, this, row),
-                            others: {
-                              errormessage: "Storage Type - cannot be blank",
-                              required: true
-                            }
-                          }}
-                        />
-                      );
-                    }
-                  },
-                  {
-                    fieldName: "created_by",
-                    label: <AlgaehLabel label={{ fieldName: "created_by" }} />,
-                    displayTemplate: row => {
-                      let display =
-                        this.props.userdrtails === undefined
-                          ? []
-                          : this.props.userdrtails.filter(
-                              f => f.algaeh_d_app_user_id === row.created_by
-                            );
+                    {
+                      fieldName: "storage_type",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "storage_type" }} />
+                      ),
+                      displayTemplate: row => {
+                        return row.storage_type === "N"
+                          ? "Normal"
+                          : row.storage_type === "F"
+                          ? "Frozen"
+                          : "Refrigerate";
+                      },
+                      editorTemplate: row => {
+                        return (
+                          <AlagehAutoComplete
+                            selector={{
+                              name: "storage_type",
+                              className: "select-fld",
+                              value: row.storage_type,
+                              dataSource: {
+                                textField: "name",
+                                valueField: "value",
+                                data: GlobalVariables.FORMAT_STORAGE_TYPE
+                              },
+                              onChange: onchangegridcol.bind(this, this, row),
+                              others: {
+                                errormessage: "Storage Type - cannot be blank",
+                                required: true
+                              }
+                            }}
+                          />
+                        );
+                      },
+                      others: { maxWidth: 200 }
+                    },
+                    {
+                      fieldName: "created_by",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "created_by" }} />
+                      ),
+                      displayTemplate: row => {
+                        let display =
+                          this.props.userdrtails === undefined
+                            ? []
+                            : this.props.userdrtails.filter(
+                                f => f.algaeh_d_app_user_id === row.created_by
+                              );
 
-                      return (
-                        <span>
-                          {display !== null && display.length !== 0
-                            ? display[0].username
-                            : ""}
-                        </span>
-                      );
-                    },
-                    editorTemplate: row => {
-                      let display =
-                        this.props.userdrtails === undefined
-                          ? []
-                          : this.props.userdrtails.filter(
-                              f => f.algaeh_d_app_user_id === row.created_by
-                            );
+                        return (
+                          <span>
+                            {display !== null && display.length !== 0
+                              ? display[0].username
+                              : ""}
+                          </span>
+                        );
+                      },
+                      editorTemplate: row => {
+                        let display =
+                          this.props.userdrtails === undefined
+                            ? []
+                            : this.props.userdrtails.filter(
+                                f => f.algaeh_d_app_user_id === row.created_by
+                              );
 
-                      return (
-                        <span>
-                          {display !== null && display.length !== 0
-                            ? display[0].username
-                            : ""}
-                        </span>
-                      );
-                    }
-                  },
-                  {
-                    fieldName: "created_date",
-                    label: (
-                      <AlgaehLabel label={{ fieldName: "created_date" }} />
-                    ),
-                    displayTemplate: row => {
-                      return <span>{this.dateFormater(row.created_date)}</span>;
+                        return (
+                          <span>
+                            {display !== null && display.length !== 0
+                              ? display[0].username
+                              : ""}
+                          </span>
+                        );
+                      },
+                      others: { maxWidth: 150 }
                     },
-                    editorTemplate: row => {
-                      return <span>{this.dateFormater(row.created_date)}</span>;
-                    }
-                    //disabled: true
-                  },
-                  {
-                    fieldName: "specimen_status",
-                    label: <AlgaehLabel label={{ fieldName: "inv_status" }} />,
-                    displayTemplate: row => {
-                      return row.specimen_status === "A"
-                        ? "Active"
-                        : "Inactive";
+                    {
+                      fieldName: "created_date",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "created_date" }} />
+                      ),
+                      displayTemplate: row => {
+                        return (
+                          <span>{this.dateFormater(row.created_date)}</span>
+                        );
+                      },
+                      editorTemplate: row => {
+                        return (
+                          <span>{this.dateFormater(row.created_date)}</span>
+                        );
+                      },
+                      others: { maxWidth: 100 }
+                      //disabled: true
                     },
-                    editorTemplate: row => {
-                      return (
-                        <AlagehAutoComplete
-                          div={{}}
-                          selector={{
-                            name: "specimen_status",
-                            className: "select-fld",
-                            value: row.specimen_status,
-                            dataSource: {
-                              textField: "name",
-                              valueField: "value",
-                              data: GlobalVariables.FORMAT_STATUS
-                            },
-                            onChange: onchangegridcol.bind(this, this, row),
-                            others: {
-                              errormessage: "Specimen Status - cannot be blank",
-                              required: true
-                            }
-                          }}
-                        />
-                      );
+                    {
+                      fieldName: "specimen_status",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "inv_status" }} />
+                      ),
+                      displayTemplate: row => {
+                        return row.specimen_status === "A"
+                          ? "Active"
+                          : "Inactive";
+                      },
+                      editorTemplate: row => {
+                        return (
+                          <AlagehAutoComplete
+                            div={{}}
+                            selector={{
+                              name: "specimen_status",
+                              className: "select-fld",
+                              value: row.specimen_status,
+                              dataSource: {
+                                textField: "name",
+                                valueField: "value",
+                                data: GlobalVariables.FORMAT_STATUS
+                              },
+                              onChange: onchangegridcol.bind(this, this, row),
+                              others: {
+                                errormessage:
+                                  "Specimen Status - cannot be blank",
+                                required: true
+                              }
+                            }}
+                          />
+                        );
+                      },
+                      others: { maxWidth: 100 }
                     }
-                  }
-                ]}
-                keyId="hims_d_lab_section_id"
-                dataSource={{
-                  data:
-                    this.props.labspecimen === undefined
-                      ? []
-                      : this.props.labspecimen
-                }}
-                isEditable={true}
-                filter={true}
-                paging={{ page: 0, rowsPerPage: 10 }}
-                events={{
-                  onDelete: deleteLabSpecimen.bind(this, this),
-                  onEdit: row => {},
-                  onDone: updateLabSpecimen.bind(this, this)
-                }}
-              />
+                  ]}
+                  keyId="hims_d_lab_section_id"
+                  dataSource={{
+                    data:
+                      this.props.labspecimen === undefined
+                        ? []
+                        : this.props.labspecimen
+                  }}
+                  isEditable={true}
+                  actions={{
+                    allowDelete: false
+                  }}
+                  filter={true}
+                  paging={{ page: 0, rowsPerPage: 10 }}
+                  events={{
+                    //onDelete: deleteLabSpecimen.bind(this, this),
+                    onEdit: row => {},
+                    onDone: updateLabSpecimen.bind(this, this)
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>

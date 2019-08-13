@@ -64,163 +64,181 @@ class TestCategory extends Component {
   render() {
     return (
       <div className="lab_section">
-        <div className="container-fluid">
-          <div className="row">
-            <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
-              label={{
-                fieldName: "category_name",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "category_name",
-                value: this.state.category_name,
-                events: {
-                  onChange: changeTexts.bind(this, this)
-                }
-              }}
-            />
-            <div className="col-lg-2 align-middle" style={{ paddingTop: 21 }}>
-              <button
-                onClick={insertTestCategory.bind(this, this)}
-                className="btn btn-primary"
-              >
-                Add to List
-              </button>
-            </div>
+        <div className="row inner-top-search margin-bottom-15">
+          <AlagehFormGroup
+            div={{ className: "col-4 form-group mandatory" }}
+            label={{
+              forceLabel: "Test Category Name",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "category_name",
+              value: this.state.category_name,
+              events: {
+                onChange: changeTexts.bind(this, this)
+              }
+            }}
+          />
+          <div className="col-lg-2 align-middle" style={{ paddingTop: 19 }}>
+            <button
+              onClick={insertTestCategory.bind(this, this)}
+              className="btn btn-primary"
+            >
+              Add to List
+            </button>
           </div>
+        </div>
 
-          <div className="row form-details" data-validate="testCatDiv">
-            <div className="col">
-              <AlgaehDataGrid
-                datavalidate="data-validate='testCatDiv'"
-                id="test-cat-grid"
-                columns={[
-                  {
-                    fieldName: "category_name",
-                    label: (
-                      <AlgaehLabel label={{ fieldName: "category_name" }} />
-                    ),
-                    editorTemplate: row => {
-                      return (
-                        <AlagehFormGroup
-                          div={{}}
-                          textBox={{
-                            value: row.category_name,
-                            className: "txt-fld",
-                            name: "category_name",
-                            events: {
-                              onChange: onchangegridcol.bind(this, this, row)
-                            },
-                            others: {
-                              errormessage: "Category Name - cannot be blank",
-                              required: true
-                            }
-                          }}
+        <div className="portlet portlet-bordered margin-bottom-15">
+          <div className="portlet-body">
+            <div className="row" data-validate="testCatDiv">
+              <div className="col" id="testCategoryGrid_Cntr">
+                <AlgaehDataGrid
+                  datavalidate="data-validate='testCatDiv'"
+                  id="testCategoryGrid"
+                  columns={[
+                    {
+                      fieldName: "category_name",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Test Category Name" }}
                         />
-                      );
-                    }
-                  },
-
-                  {
-                    fieldName: "created_by",
-                    label: <AlgaehLabel label={{ fieldName: "created_by" }} />,
-                    displayTemplate: row => {
-                      let display =
-                        this.props.userdrtails === undefined
-                          ? []
-                          : this.props.userdrtails.filter(
-                              f => f.algaeh_d_app_user_id === row.created_by
-                            );
-
-                      return (
-                        <span>
-                          {display !== null && display.length !== 0
-                            ? display[0].username
-                            : ""}
-                        </span>
-                      );
+                      ),
+                      editorTemplate: row => {
+                        return (
+                          <AlagehFormGroup
+                            div={{}}
+                            textBox={{
+                              value: row.category_name,
+                              className: "txt-fld",
+                              name: "category_name",
+                              events: {
+                                onChange: onchangegridcol.bind(this, this, row)
+                              },
+                              others: {
+                                errormessage: "Category Name - cannot be blank",
+                                required: true
+                              }
+                            }}
+                          />
+                        );
+                      }
                     },
-                    editorTemplate: row => {
-                      let display =
-                        this.props.userdrtails === undefined
-                          ? []
-                          : this.props.userdrtails.filter(
-                              f => f.algaeh_d_app_user_id === row.created_by
-                            );
 
-                      return (
-                        <span>
-                          {display !== null && display.length !== 0
-                            ? display[0].username
-                            : ""}
-                        </span>
-                      );
-                    }
-                    //disabled: true
-                  },
-                  {
-                    fieldName: "created_date",
-                    label: (
-                      <AlgaehLabel label={{ fieldName: "created_date" }} />
-                    ),
-                    displayTemplate: row => {
-                      return <span>{this.dateFormater(row.created_date)}</span>;
+                    {
+                      fieldName: "created_by",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "created_by" }} />
+                      ),
+                      displayTemplate: row => {
+                        let display =
+                          this.props.userdrtails === undefined
+                            ? []
+                            : this.props.userdrtails.filter(
+                                f => f.algaeh_d_app_user_id === row.created_by
+                              );
+
+                        return (
+                          <span>
+                            {display !== null && display.length !== 0
+                              ? display[0].username
+                              : ""}
+                          </span>
+                        );
+                      },
+                      editorTemplate: row => {
+                        let display =
+                          this.props.userdrtails === undefined
+                            ? []
+                            : this.props.userdrtails.filter(
+                                f => f.algaeh_d_app_user_id === row.created_by
+                              );
+
+                        return (
+                          <span>
+                            {display !== null && display.length !== 0
+                              ? display[0].username
+                              : ""}
+                          </span>
+                        );
+                      },
+                      others: { maxWidth: 150 }
+                      //disabled: true
                     },
-                    editorTemplate: row => {
-                      return <span>{this.dateFormater(row.created_date)}</span>;
-                    }
-                    //disabled: true
-                  },
-                  {
-                    fieldName: "category_status",
-                    label: <AlgaehLabel label={{ fieldName: "inv_status" }} />,
-                    displayTemplate: row => {
-                      return row.category_status === "A"
-                        ? "Active"
-                        : "Inactive";
+                    {
+                      fieldName: "created_date",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "created_date" }} />
+                      ),
+                      displayTemplate: row => {
+                        return (
+                          <span>{this.dateFormater(row.created_date)}</span>
+                        );
+                      },
+                      editorTemplate: row => {
+                        return (
+                          <span>{this.dateFormater(row.created_date)}</span>
+                        );
+                      },
+                      others: { maxWidth: 100 }
+                      //disabled: true
                     },
-                    editorTemplate: row => {
-                      return (
-                        <AlagehAutoComplete
-                          div={{}}
-                          selector={{
-                            name: "category_status",
-                            className: "select-fld",
-                            value: row.category_status,
-                            dataSource: {
-                              textField: "name",
-                              valueField: "value",
-                              data: GlobalVariables.FORMAT_STATUS
-                            },
-                            onChange: onchangegridcol.bind(this, this, row),
-                            others: {
-                              errormessage: "Status - cannot be blank",
-                              required: true
-                            }
-                          }}
-                        />
-                      );
+                    {
+                      fieldName: "category_status",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "inv_status" }} />
+                      ),
+                      displayTemplate: row => {
+                        return row.category_status === "A"
+                          ? "Active"
+                          : "Inactive";
+                      },
+                      editorTemplate: row => {
+                        return (
+                          <AlagehAutoComplete
+                            div={{}}
+                            selector={{
+                              name: "category_status",
+                              className: "select-fld",
+                              value: row.category_status,
+                              dataSource: {
+                                textField: "name",
+                                valueField: "value",
+                                data: GlobalVariables.FORMAT_STATUS
+                              },
+                              onChange: onchangegridcol.bind(this, this, row),
+                              others: {
+                                errormessage: "Status - cannot be blank",
+                                required: true
+                              }
+                            }}
+                          />
+                        );
+                      },
+                      others: { maxWidth: 100 }
                     }
-                  }
-                ]}
-                keyId="hims_d_lab_container_id"
-                dataSource={{
-                  data:
-                    this.props.testcategory === undefined
-                      ? []
-                      : this.props.testcategory
-                }}
-                isEditable={true}
-                filter={true}
-                paging={{ page: 0, rowsPerPage: 10 }}
-                events={{
-                  onDelete: deleteTestCategory.bind(this, this),
-                  onEdit: row => {},
-                  onDone: updateTestCategory.bind(this, this)
-                }}
-              />
+                  ]}
+                  keyId="hims_d_lab_container_id"
+                  dataSource={{
+                    data:
+                      this.props.testcategory === undefined
+                        ? []
+                        : this.props.testcategory
+                  }}
+                  isEditable={true}
+                  filter={true}
+                  actions={{
+                    allowDelete: false
+                  }}
+                  paging={{ page: 0, rowsPerPage: 10 }}
+                  events={{
+                    //onDelete: deleteTestCategory.bind(this, this),
+                    onEdit: row => {},
+                    onDone: updateTestCategory.bind(this, this)
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>
