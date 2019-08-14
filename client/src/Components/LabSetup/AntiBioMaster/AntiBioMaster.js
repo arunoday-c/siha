@@ -15,9 +15,9 @@ import { getCookie } from "../../../utils/algaehApiCall";
 import {
   changeTexts,
   onchangegridcol,
-  insertTestCategory,
-  deleteTestCategory,
-  updateTestCategory
+  insertAntibiotic,
+  deleteAntibiotic,
+  updateAntibiotic
 } from "./AntiBioMasterEvents";
 import Options from "../../../Options.json";
 import moment from "moment";
@@ -40,16 +40,16 @@ class TestCategory extends Component {
       selectedLang: prevLang
     });
     if (
-      this.props.testcategory === undefined ||
-      this.props.testcategory.length === 0
+      this.props.antibiotic === undefined ||
+      this.props.antibiotic.length === 0
     ) {
-      this.props.getTestCategory({
-        uri: "/labmasters/selectTestCategory",
+      this.props.getAntibiotic({
+        uri: "/labmasters/selectAntibiotic",
         module: "laboratory",
         method: "GET",
         redux: {
-          type: "TESTCATEGORY_GET_DATA",
-          mappingName: "testcategory"
+          type: "ANTIBIOTIC_GET_DATA",
+          mappingName: "antibiotic"
         }
       });
     }
@@ -68,13 +68,29 @@ class TestCategory extends Component {
           <AlagehFormGroup
             div={{ className: "col-3 form-group mandatory" }}
             label={{
+              forceLabel: "Antibiotic Code",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "antibiotic_code",
+              value: this.state.antibiotic_code,
+              events: {
+                onChange: changeTexts.bind(this, this)
+              }
+            }}
+          />
+
+          <AlagehFormGroup
+            div={{ className: "col-3 form-group mandatory" }}
+            label={{
               forceLabel: "Antibiotic Name",
               isImp: true
             }}
             textBox={{
               className: "txt-fld",
-              name: "category_name",
-              value: this.state.category_name,
+              name: "antibiotic_name",
+              value: this.state.antibiotic_name,
               events: {
                 onChange: changeTexts.bind(this, this)
               }
@@ -82,7 +98,7 @@ class TestCategory extends Component {
           />
           <div className="col-lg-2 align-middle" style={{ paddingTop: 19 }}>
             <button
-              onClick={insertTestCategory.bind(this, this)}
+              onClick={insertAntibiotic.bind(this, this)}
               className="btn btn-primary"
             >
               Add to List
@@ -99,7 +115,32 @@ class TestCategory extends Component {
                 id="AntibioticGrid"
                 columns={[
                   {
-                    fieldName: "category_name",
+                    fieldName: "antibiotic_code",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Antibiotic Code" }} />
+                    ),
+                    editorTemplate: row => {
+                      return (
+                        <AlagehFormGroup
+                          div={{}}
+                          textBox={{
+                            value: row.antibiotic_code,
+                            className: "txt-fld",
+                            name: "antibiotic_code",
+                            events: {
+                              onChange: onchangegridcol.bind(this, this, row)
+                            },
+                            others: {
+                              errormessage: "Antibiotic Code - cannot be blank",
+                              required: true
+                            }
+                          }}
+                        />
+                      );
+                    }
+                  },
+                  {
+                    fieldName: "antibiotic_name",
                     label: (
                       <AlgaehLabel label={{ forceLabel: "Antibiotic Name" }} />
                     ),
@@ -108,14 +149,14 @@ class TestCategory extends Component {
                         <AlagehFormGroup
                           div={{}}
                           textBox={{
-                            value: row.category_name,
+                            value: row.antibiotic_name,
                             className: "txt-fld",
-                            name: "category_name",
+                            name: "antibiotic_name",
                             events: {
                               onChange: onchangegridcol.bind(this, this, row)
                             },
                             others: {
-                              errormessage: "Category Name - cannot be blank",
+                              errormessage: "Antibiotic Name - cannot be blank",
                               required: true
                             }
                           }}
@@ -123,7 +164,6 @@ class TestCategory extends Component {
                       );
                     }
                   },
-
                   {
                     fieldName: "created_by",
                     label: <AlgaehLabel label={{ fieldName: "created_by" }} />,
@@ -182,10 +222,10 @@ class TestCategory extends Component {
                     //disabled: true
                   },
                   {
-                    fieldName: "category_status",
+                    fieldName: "antibiotic_status",
                     label: <AlgaehLabel label={{ fieldName: "inv_status" }} />,
                     displayTemplate: row => {
-                      return row.category_status === "A"
+                      return row.antibiotic_status === "A"
                         ? "Active"
                         : "Inactive";
                     },
@@ -194,9 +234,9 @@ class TestCategory extends Component {
                         <AlagehAutoComplete
                           div={{}}
                           selector={{
-                            name: "category_status",
+                            name: "antibiotic_status",
                             className: "select-fld",
-                            value: row.category_status,
+                            value: row.antibiotic_status,
                             dataSource: {
                               textField: "name",
                               valueField: "value",
@@ -219,9 +259,9 @@ class TestCategory extends Component {
                 keyId="hims_d_lab_container_id"
                 dataSource={{
                   data:
-                    this.props.testcategory === undefined
+                    this.props.antibiotic === undefined
                       ? []
-                      : this.props.testcategory
+                      : this.props.antibiotic
                 }}
                 isEditable={true}
                 actions={{
@@ -230,9 +270,9 @@ class TestCategory extends Component {
                 filter={true}
                 paging={{ page: 0, rowsPerPage: 10 }}
                 events={{
-                  //onDelete: deleteTestCategory.bind(this, this),
+                  //onDelete: deleteAntibiotic.bind(this, this),
                   onEdit: row => {},
-                  onDone: updateTestCategory.bind(this, this)
+                  onDone: updateAntibiotic.bind(this, this)
                 }}
               />
             </div>
@@ -245,7 +285,7 @@ class TestCategory extends Component {
 
 function mapStateToProps(state) {
   return {
-    testcategory: state.testcategory,
+    antibiotic: state.antibiotic,
     userdrtails: state.userdrtails
   };
 }
@@ -253,7 +293,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getTestCategory: AlgaehActions
+      getAntibiotic: AlgaehActions
     },
     dispatch
   );

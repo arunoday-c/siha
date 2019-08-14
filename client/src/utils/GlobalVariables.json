@@ -1641,5 +1641,16 @@
     { "name": "AFTER", "value": "A" },
     { "name": "IN", "value": "I" },
     { "name": "BEFORE", "value": "B" }
+  ],
+  "TEST_SECTION": [
+    { "name": "Microbiology", "value": "M" },
+    { "name": "Cytology", "value": "C" },
+    { "name": "Histopathology", "value": "HI" },
+    { "name": "Hematology", "value": "HE" },
+    { "name": "Others", "value": "O" }
+  ],
+  "MICRO_GROUP_TYPE": [
+    { "name": "Fascideous", "value": "F" },
+    { "name": "Non-Fascideous", "value": "NF" }
   ]
 }

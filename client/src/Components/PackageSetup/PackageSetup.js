@@ -45,9 +45,7 @@ class PackageSetup extends Component {
         PackagesPop: {}
       },
       () => {
-        if (e === true) {
-          PackageSetupEvent().getPackage(this);
-        }
+        PackageSetupEvent().getPackage(this);
       }
     );
   }
