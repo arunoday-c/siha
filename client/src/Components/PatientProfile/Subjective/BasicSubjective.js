@@ -527,7 +527,7 @@ class BasicSubjective extends Component {
           <div className="algaeh-col-3">
             <div className="row">
               <div className="col-12">
-                <div className="portlet portlet-bordered margin-bottom-15">
+                <div className="portlet portlet-bordered margin-bottom-15 mandatoryBox">
                   <div className="portlet-title">
                     <div className="caption">
                       <h3 className="caption-subject">
@@ -664,7 +664,7 @@ class BasicSubjective extends Component {
                 </div>
               </div>
               <div className="col-12">
-                <div className="portlet portlet-bordered margin-bottom-15">
+                <div className="portlet portlet-bordered margin-bottom-15 mandatoryBox">
                   <div className="portlet-title">
                     <div className="caption">
                       <h3 className="caption-subject">Significant Signs</h3>

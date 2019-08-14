@@ -116,3 +116,7 @@
 .toggleBorder {
   border-bottom: 1px solid #cccccc;
   margin-top: 10px; }
+
+.mandatoryBox {
+  border: 1px solid #ff524a !important;
+  background: #fffbfb !important; }
