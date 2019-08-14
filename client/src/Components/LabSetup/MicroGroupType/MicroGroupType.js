@@ -26,51 +26,17 @@ class DeptMaster extends Component {
   constructor(props) {
     super(props);
 
-    let Activated_Modueles = JSON.parse(
-      AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
-    );
-    const Inventory_Active = _.filter(Activated_Modueles, f => {
-      return f.module_code === "INVTRY";
-    });
-
-    const HIMS_Active = _.filter(Activated_Modueles, f => {
-      return f.module_code === "FTDSK";
-    });
     this.state = {
-      allDepartments: [],
-      subDepartments: [],
-      department_type: "NON-CLINICAL",
-      effective_start_date: new Date(),
-      showSubDeptModal: false,
-      chart_type: null,
-      Inventory_Active: Inventory_Active.length > 0 ? true : false,
-      HIMS_Active: HIMS_Active.length > 0 ? true : false
+      microGroups: [],
+      microAntbiotic: [],
+      showGroupAntibiotic: false,
+      group_code: null,
+      group_name: null,
+      arabic_group_name: null,
+      group_type: null
     };
 
-    this.getLocation();
-    this.getAllDepartments();
-  }
-
-  getLocation() {
-    if (this.state.Inventory_Active) {
-      if (
-        this.props.inventorylocations === undefined ||
-        this.props.inventorylocations.length === 0
-      ) {
-        this.props.getLocation({
-          uri: "/inventory/getInventoryLocation",
-          module: "inventory",
-          data: {
-            location_status: "A"
-          },
-          method: "GET",
-          redux: {
-            type: "LOCATIONS_GET_DATA",
-            mappingName: "inventorylocations"
-          }
-        });
-      }
-    }
+    this.getmicroGroups();
   }
 
   dropDownHandle(value) {
@@ -85,244 +51,37 @@ class DeptMaster extends Component {
 
   resetSaveState() {
     this.setState({
-      department_code: "",
-      department_name: "",
-      department_name_arabic: "",
-      department_type: "NON-CLINICAL",
-      effective_start_date: new Date(),
-      sub_department_code: "",
-      sub_department_name: "",
-      arabic_sub_department_name: "",
-      chart_type: null
+      group_code: null,
+      group_name: null,
+      arabic_group_name: null,
+
+      group_type: null
     });
   }
 
-  deleteDepartment(data) {
-    swal({
-      title: "Delete Department " + data.department_name + "?",
-      type: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes",
-      confirmButtonColor: "#44b8bd",
-      cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
-      if (willDelete.value) {
-        algaehApiCall({
-          uri: "/department/deleteDepartment",
-          module: "masterSettings",
-          data: {
-            hims_d_department_id: data.hims_d_department_id
-          },
-          method: "DELETE",
-          onSuccess: response => {
-            if (response.data.success) {
-              swalMessage({
-                title: "Record deleted successfully . .",
-                type: "success"
-              });
-
-              this.getAllDepartments();
-            } else if (!response.data.success) {
-              swalMessage({
-                title: response.data.message,
-                type: "error"
-              });
-            }
-          },
-          onFailure: error => {
-            swalMessage({
-              title: error.message,
-              type: "error"
-            });
-          }
-        });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
-        });
-      }
-    });
-  }
-  deleteSubDepartment(data) {
-    swal({
-      title: "Delete Department " + data.sub_department_name + "?",
-      type: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes",
-      confirmButtonColor: "#44b8bd",
-      cancelButtonColor: "#d33",
-      cancelButtonText: "No"
-    }).then(willDelete => {
-      if (willDelete.value) {
-        algaehApiCall({
-          uri: "/department/deleteSubDepartment",
-          module: "masterSettings",
-          data: {
-            hims_d_sub_department_id: data.hims_d_sub_department_id
-          },
-          method: "DELETE",
-          onSuccess: response => {
-            if (response.data.success) {
-              swalMessage({
-                title: "Record deleted successfully . .",
-                type: "success"
-              });
-
-              this.getAllSubDepartments(this.state.hims_d_department_id);
-            } else if (!response.data.success) {
-              swalMessage({
-                title: response.data.message,
-                type: "error"
-              });
-            }
-          },
-          onFailure: error => {
-            swalMessage({
-              title: error.message,
-              type: "error"
-            });
-          }
-        });
-      } else {
-        swalMessage({
-          title: "Delete request cancelled",
-          type: "error"
-        });
-      }
-    });
-  }
-
-  updateDepartment(data) {
-    data.department_status === "I"
-      ? algaehApiCall({
-          uri: "/department/makeDepartmentInActive",
-          module: "masterSettings",
-          data: {
-            hims_d_department_id: data.hims_d_department_id
-          },
-          method: "PUT",
-          onSuccess: response => {
-            if (response.data.records.success) {
-              swalMessage({
-                title: "Record updated successfully",
-                type: "success"
-              });
-              this.getAllDepartments();
-            } else if (!response.data.records.success) {
-              swalMessage({
-                title: response.data.records.message,
-                type: "error"
-              });
-            }
-          },
-          onFailure: error => {
-            swalMessage({
-              title: error.message,
-              type: "error"
-            });
-          }
-        })
-      : algaehApiCall({
-          uri: "/department/updateDepartment",
-          data: {
-            department_name: data.department_name,
-            department_desc: data.department_name,
-            department_type: data.department_type,
-            arabic_department_name: data.arabic_department_name,
-            effective_start_date: data.effective_start_date,
-            hims_d_department_id: data.hims_d_department_id
-          },
-          method: "PUT",
-          module: "masterSettings",
-          onSuccess: response => {
-            if (response.data.success) {
-              swalMessage({
-                title: "Record updated successfully",
-                type: "success"
-              });
-              this.getAllDepartments();
-            }
-          },
-          onFailure: error => {
-            swalMessage({
-              title: error.message,
-              type: "error"
-            });
-          }
-        });
-  }
-
-  updateSubDepartment(data) {
-    data.sub_department_status === "I"
-      ? algaehApiCall({
-          uri: "/department/makeSubDepartmentInActive",
-          module: "masterSettings",
-          data: {
-            hims_d_sub_department_id: data.hims_d_sub_department_id
-          },
-          method: "PUT",
-          onSuccess: response => {
-            if (response.data.records.success) {
-              swalMessage({
-                title: "Record updated successfully",
-                type: "success"
-              });
-              this.getAllSubDepartments(data.department_id);
-            } else if (!response.data.records.success) {
-              swalMessage({
-                title: response.data.records.message,
-                type: "error"
-              });
-            }
-          },
-          onFailure: error => {
-            swalMessage({
-              title: error.message,
-              type: "error"
-            });
-          }
-        })
-      : algaehApiCall({
-          uri: "/department/updateSubDepartment",
-          data: {
-            sub_department_name: data.sub_department_name,
-            sub_department_desc: data.sub_department_name,
-            arabic_sub_department_name: data.arabic_sub_department_name,
-            effective_start_date: data.effective_start_date,
-            chart_type: data.chart_type,
-            hims_d_sub_department_id: data.hims_d_sub_department_id,
-            vitals_mandatory: data.vitals_mandatory
-          },
-          module: "masterSettings",
-          method: "PUT",
-          onSuccess: response => {
-            if (response.data.success) {
-              swalMessage({
-                title: "Record updated successfully",
-                type: "success"
-              });
-              this.getAllSubDepartments(data.department_id);
-            }
-          },
-          onFailure: error => {
-            swalMessage({
-              title: error.message,
-              type: "error"
-            });
-          }
-        });
-  }
-
-  getAllDepartments() {
+  updateMicroGroup(data) {
+    let send_data = {
+      hims_d_micro_group_id: data.hims_d_micro_group_id,
+      group_code: data.group_code,
+      group_name: data.group_name,
+      group_status: data.group_status,
+      group_type: data.group_type,
+      arabic_group_name: data.arabic_group_name,
+      group_status: data.group_status
+    };
     algaehApiCall({
-      uri: "/department/get",
-      method: "GET",
-      module: "masterSettings",
+      uri: "/labmasters/updateMicroGroup",
+      method: "PUT",
+      data: send_data,
+      module: "laboratory",
+
       onSuccess: response => {
         if (response.data.success) {
-          this.setState({ allDepartments: response.data.records });
+          swalMessage({
+            title: "Record updated successfully",
+            type: "success"
+          });
+          this.getmicroGroups();
         }
       },
       onFailure: error => {
@@ -334,15 +93,76 @@ class DeptMaster extends Component {
     });
   }
 
-  getAllSubDepartments(id) {
+  updateGroupAntiMap(data) {
+    debugger;
+    let send_data = {
+      hims_m_group_antibiotic_id: data.hims_m_group_antibiotic_id,
+      micro_group_id: data.micro_group_id,
+      antibiotic_id: data.antibiotic_id,
+      map_status: data.map_status
+    };
     algaehApiCall({
-      uri: "/department/get/subdepartment",
-      data: { department_id: id },
-      method: "GET",
-      module: "masterSettings",
+      uri: "/labmasters/updateGroupAntiMap",
+      method: "PUT",
+      data: send_data,
+      module: "laboratory",
+
       onSuccess: response => {
         if (response.data.success) {
-          this.setState({ subDepartments: response.data.records });
+          swalMessage({
+            title: "Record updated successfully",
+            type: "success"
+          });
+          this.getAllGroupAntibiotic(data.micro_group_id);
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
+  getmicroGroups() {
+    algaehApiCall({
+      uri: "/labmasters/selectMicroGroup",
+      module: "laboratory",
+      method: "GET",
+      onSuccess: response => {
+        if (response.data.success) {
+          this.setState({ microGroups: response.data.records });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+
+    this.props.getAntibiotic({
+      uri: "/labmasters/selectAntibiotic",
+      module: "laboratory",
+      method: "GET",
+      redux: {
+        type: "ANTIBIOTIC_GET_DATA",
+        mappingName: "antibiotic"
+      }
+    });
+  }
+
+  getAllGroupAntibiotic(id) {
+    algaehApiCall({
+      uri: "/labmasters/selectGroupAntiMap",
+      module: "laboratory",
+      data: { micro_group_id: id },
+      method: "GET",
+      onSuccess: response => {
+        if (response.data.success) {
+          this.setState({ microAntbiotic: response.data.records });
         }
       },
       onFailure: error => {
@@ -361,19 +181,18 @@ class DeptMaster extends Component {
     row.update();
   }
 
-  addSubDept(data, e) {
-    this.getAllSubDepartments(data.hims_d_department_id);
+  addGroupAntibiotic(data, e) {
+    debugger;
+    this.getAllGroupAntibiotic(data.hims_d_micro_group_id);
     this.setState({
-      showSubDeptModal: true,
-      depNametoAdd: data.department_name,
-      hims_d_department_id: data.hims_d_department_id
+      showGroupAntibiotic: true,
+      depNametoAdd: data.group_name,
+      hims_d_micro_group_id: data.hims_d_micro_group_id
     });
   }
 
-  addSubDepartment(e) {
-    const hospital = JSON.parse(
-      AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-    );
+  addGroupAntiMap(e) {
+    debugger;
 
     e.preventDefault();
     AlgaehValidation({
@@ -381,46 +200,23 @@ class DeptMaster extends Component {
       alertTypeIcon: "warning",
       onSuccess: () => {
         let sen_data = {
-          department_id: this.state.hims_d_department_id,
-          sub_department_code: this.state.sub_department_code,
-          sub_department_name: this.state.sub_department_name,
-          arabic_sub_department_name: this.state.arabic_sub_department_name,
-          effective_start_date: this.state.effective_start_date,
-
-          location_description: this.state.sub_department_name,
-          hospital_id: hospital.hims_d_hospital_id,
-          chart_type: this.state.chart_type,
-          location_type: "SS",
-          Inventory_Active: this.state.Inventory_Active
+          micro_group_id: this.state.hims_d_micro_group_id,
+          antibiotic_id: this.state.antibiotic_id
         };
 
         algaehApiCall({
-          uri: "/department/add/subdepartment",
-          module: "masterSettings",
+          uri: "/labmasters/insertGroupAntiMap",
           method: "POST",
           data: sen_data,
+          module: "laboratory",
           onSuccess: response => {
             if (response.data.success) {
-              if (this.state.Inventory_Active) {
-                this.props.getLocation({
-                  uri: "/inventory/getInventoryLocation",
-                  module: "inventory",
-                  data: {
-                    location_status: "A"
-                  },
-                  method: "GET",
-                  redux: {
-                    type: "LOCATIONS_GET_DATA",
-                    mappingName: "inventorylocations"
-                  }
-                });
-              }
               swalMessage({
                 title: "Added Successfully",
                 type: "success"
               });
               this.resetSaveState();
-              this.getAllSubDepartments(this.state.hims_d_department_id);
+              this.getAllGroupAntibiotic(this.state.hims_d_micro_group_id);
             }
           },
           onFailure: error => {
@@ -434,26 +230,25 @@ class DeptMaster extends Component {
     });
   }
 
-  addDepartment(e) {
+  addMicroGroup(e) {
     e.preventDefault();
 
     AlgaehValidation({
       alertTypeIcon: "warning",
       onSuccess: () => {
         let send_data = {
-          department_code: this.state.department_code,
-          department_name: this.state.department_name,
-          arabic_department_name: this.state.department_name_arabic,
-          department_desc: this.state.department_name,
-          department_type: this.state.department_type,
-          effective_start_date: this.state.effective_start_date
+          group_code: this.state.group_code,
+          group_name: this.state.group_name,
+          group_status: this.state.group_status,
+          group_type: this.state.group_type,
+          arabic_group_name: this.state.arabic_group_name
         };
 
         algaehApiCall({
-          uri: "/department/addDepartment",
+          uri: "/labmasters/insertMicroGroup",
           method: "POST",
           data: send_data,
-          module: "masterSettings",
+          module: "laboratory",
           onSuccess: response => {
             if (response.data.success) {
               swalMessage({
@@ -461,7 +256,7 @@ class DeptMaster extends Component {
                 type: "success"
               });
               this.resetSaveState();
-              this.getAllDepartments();
+              this.getmicroGroups();
             }
           },
           onFailure: error => {
@@ -476,7 +271,7 @@ class DeptMaster extends Component {
   }
 
   onClose() {
-    this.setState({ showSubDeptModal: false });
+    this.setState({ microAntbiotic: [], showGroupAntibiotic: false });
   }
 
   render() {
@@ -486,60 +281,40 @@ class DeptMaster extends Component {
           events={{
             onClose: this.onClose.bind(this)
           }}
-          title="Add Sub Department"
-          openPopup={this.state.showSubDeptModal}
+          title="Map Antibioties"
+          openPopup={this.state.showGroupAntibiotic}
         >
           <div className="popupInner">
             <div className="col-12">
               <div className="row margin-top-15" data-validate="subdepDiv">
                 <AlagehAutoComplete
-                  div={{ className: "col-3" }}
-                  label={{ forceLabel: "Search Antibiotic" }}
+                  div={{ className: "col-3 form-group mandatory" }}
+                  label={{ forceLabel: "Select Antibiotic", isImp: true }}
                   selector={{
-                    name: "chart_type",
+                    name: "antibiotic_id",
                     className: "select-fld",
-                    value: this.state.chart_type,
+                    value: this.state.antibiotic_id,
                     dataSource: {
-                      textField: "name",
-                      valueField: "value",
-                      data: GlobalVariables.CHART_TYPE
+                      textField: "antibiotic_name",
+                      valueField: "hims_d_antibiotic_id",
+                      data: this.props.antibiotic
                     },
 
                     onChange: this.textHandle.bind(this),
                     onClear: () => {
                       this.setState({
-                        chart_type: null
-                      });
-                    }
-                  }}
-                />{" "}
-                <AlagehAutoComplete
-                  div={{ className: "col-2" }}
-                  label={{ forceLabel: "Select Report Type" }}
-                  selector={{
-                    name: "chart_type",
-                    className: "select-fld",
-                    value: this.state.chart_type,
-                    dataSource: {
-                      textField: "name",
-                      valueField: "value",
-                      data: GlobalVariables.CHART_TYPE
-                    },
-
-                    onChange: this.textHandle.bind(this),
-                    onClear: () => {
-                      this.setState({
-                        chart_type: null
+                        antibiotic_id: null
                       });
                     }
                   }}
                 />
+
                 <div className="col align-middle">
                   <br />
 
                   <button
                     className="btn btn-primary"
-                    onClick={this.addSubDepartment.bind(this)}
+                    onClick={this.addGroupAntiMap.bind(this)}
                   >
                     Add to List
                   </button>
@@ -556,20 +331,28 @@ class DeptMaster extends Component {
                     id="sub_dep_grid"
                     columns={[
                       {
-                        fieldName: "chart_type",
+                        fieldName: "antibiotic_id",
                         label: (
                           <AlgaehLabel
                             label={{ forceLabel: "Antibiotics Name" }}
                           />
                         ),
                         displayTemplate: row => {
-                          return row.chart_type === "N"
-                            ? "None"
-                            : row.chart_type === "D"
-                            ? "Dentel"
-                            : row.chart_type === "O"
-                            ? "Optometry"
-                            : null;
+                          let display =
+                            this.props.antibiotic === undefined
+                              ? []
+                              : this.props.antibiotic.filter(
+                                  f =>
+                                    f.hims_d_antibiotic_id === row.antibiotic_id
+                                );
+
+                          return (
+                            <span>
+                              {display !== null && display.length !== 0
+                                ? display[0].antibiotic_name
+                                : ""}
+                            </span>
+                          );
                         },
 
                         editorTemplate: row => {
@@ -577,13 +360,13 @@ class DeptMaster extends Component {
                             <AlagehAutoComplete
                               div={{}}
                               selector={{
-                                name: "chart_type",
+                                name: "antibiotic_id",
                                 className: "select-fld",
-                                value: row.chart_type,
+                                value: row.antibiotic_id,
                                 dataSource: {
-                                  textField: "name",
-                                  valueField: "value",
-                                  data: GlobalVariables.CHART_TYPE
+                                  textField: "antibiotic_name",
+                                  valueField: "hims_d_antibiotic_id",
+                                  data: this.props.antibiotic
                                 },
 
                                 onChange: this.changeGridEditors.bind(this, row)
@@ -592,60 +375,21 @@ class DeptMaster extends Component {
                           );
                         }
                       },
-                      {
-                        fieldName: "chart_type",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Report Type" }} />
-                        ),
-                        displayTemplate: row => {
-                          return row.chart_type === "N"
-                            ? "None"
-                            : row.chart_type === "D"
-                            ? "Dentel"
-                            : row.chart_type === "O"
-                            ? "Optometry"
-                            : null;
-                        },
 
-                        editorTemplate: row => {
-                          return (
-                            <AlagehAutoComplete
-                              div={{}}
-                              selector={{
-                                name: "chart_type",
-                                className: "select-fld",
-                                value: row.chart_type,
-                                dataSource: {
-                                  textField: "name",
-                                  valueField: "value",
-                                  data: GlobalVariables.CHART_TYPE
-                                },
-
-                                onChange: this.changeGridEditors.bind(this, row)
-                              }}
-                            />
-                          );
-                        },
-                        others: {
-                          maxWidth: 150
-                        }
-                      },
                       {
-                        fieldName: "sub_department_status",
+                        fieldName: "map_status",
                         label: <label className="style_Label">Status</label>,
                         displayTemplate: row => {
-                          return row.sub_department_status === "A"
-                            ? "Active"
-                            : "Inactive";
+                          return row.map_status === "A" ? "Active" : "Inactive";
                         },
                         editorTemplate: row => {
                           return (
                             <AlagehAutoComplete
                               div={{}}
                               selector={{
-                                name: "sub_department_status",
+                                name: "map_status",
                                 className: "select-fld",
-                                value: row.sub_department_status,
+                                value: row.map_status,
                                 dataSource: {
                                   textField: "name",
                                   valueField: "value",
@@ -667,7 +411,7 @@ class DeptMaster extends Component {
                     ]}
                     keyId="hims_d_sub_department_id"
                     dataSource={{
-                      data: this.state.subDepartments
+                      data: this.state.microAntbiotic
                     }}
                     isEditable={true}
                     actions={{
@@ -677,7 +421,7 @@ class DeptMaster extends Component {
                     events={{
                       //onDelete: this.deleteSubDepartment.bind(this),
                       onEdit: row => {},
-                      onDone: this.updateSubDepartment.bind(this)
+                      onDone: this.updateGroupAntiMap.bind(this)
                     }}
                   />
                 </div>
@@ -693,7 +437,10 @@ class DeptMaster extends Component {
                     type="button"
                     className="btn btn-default"
                     onClick={() => {
-                      this.setState({ showSubDeptModal: false });
+                      this.setState({
+                        microAntbiotic: [],
+                        showGroupAntibiotic: false
+                      });
                     }}
                   >
                     <label className="style_Label ">Cancel</label>
@@ -703,22 +450,22 @@ class DeptMaster extends Component {
             </div>
           </div>
         </AlgaehModalPopUp>
-
+        {/*Group Details*/}
         <div className="row inner-top-search">
           <AlagehAutoComplete
             div={{ className: "col-2 form-group mandatory" }}
             label={{
-              forceLabel: "Group Type",
+              forceLabel: "Organism Type",
               isImp: true
             }}
             selector={{
-              name: "department_type",
+              name: "group_type",
               className: "select-fld",
-              value: this.state.department_type,
+              value: this.state.group_type,
               dataSource: {
                 textField: "name",
                 valueField: "value",
-                data: GlobalVariables.DEPT_TYPE
+                data: GlobalVariables.MICRO_GROUP_TYPE
               },
               onChange: this.dropDownHandle.bind(this)
             }}
@@ -732,13 +479,11 @@ class DeptMaster extends Component {
             }}
             textBox={{
               className: "txt-fld",
-              name: "department_code",
-              value: this.state.department_code,
+              name: "group_code",
+              value: this.state.group_code,
               events: {
                 onChange: this.textHandle.bind(this)
-              },
-              error: this.state.department_code_error,
-              helperText: this.state.department_code_error_text
+              }
             }}
           />
 
@@ -750,13 +495,11 @@ class DeptMaster extends Component {
             }}
             textBox={{
               className: "txt-fld",
-              name: "department_name",
-              value: this.state.department_name,
+              name: "group_name",
+              value: this.state.group_name,
               events: {
                 onChange: this.textHandle.bind(this)
-              },
-              error: this.state.department_name_error,
-              helperText: this.state.department_name_error_text
+              }
             }}
           />
 
@@ -768,13 +511,11 @@ class DeptMaster extends Component {
             }}
             textBox={{
               className: "txt-fld",
-              name: "department_name_arabic",
-              value: this.state.department_name_arabic,
+              name: "arabic_group_name",
+              value: this.state.arabic_group_name,
               events: {
                 onChange: this.textHandle.bind(this)
-              },
-              error: this.state.department_name_arabic_error,
-              helperText: this.state.department_name_arabic_error_text
+              }
             }}
           />
 
@@ -782,13 +523,12 @@ class DeptMaster extends Component {
             <button
               className="btn btn-primary"
               style={{ marginTop: 19 }}
-              onClick={this.addDepartment.bind(this)}
+              onClick={this.addMicroGroup.bind(this)}
             >
               Add to List
             </button>
           </div>
         </div>
-
         <div className="portlet portlet-bordered margin-bottom-15">
           <div className="portlet-body">
             <div className="row">
@@ -812,7 +552,7 @@ class DeptMaster extends Component {
                         return (
                           <i
                             className="fas fa-plus"
-                            onClick={this.addSubDept.bind(this, row)}
+                            onClick={this.addGroupAntibiotic.bind(this, row)}
                           />
                         );
                       },
@@ -820,7 +560,7 @@ class DeptMaster extends Component {
                         return (
                           <i
                             className="fas fa-plus"
-                            onClick={this.addSubDept.bind(this, row)}
+                            onClick={this.addGroupAntibiotic.bind(this, row)}
                           />
                         );
                       },
@@ -833,27 +573,45 @@ class DeptMaster extends Component {
                     },
 
                     {
-                      fieldName: "department_type",
+                      fieldName: "group_type",
                       label: (
-                        <AlgaehLabel label={{ forceLabel: "Group Type" }} />
+                        <AlgaehLabel label={{ forceLabel: "Organism Type" }} />
                       ),
-                      disabled: true,
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {row.group_type === "F"
+                              ? "Fascideous"
+                              : "Non-Fascideous"}
+                          </span>
+                        );
+                      },
+                      editorTemplate: row => {
+                        return (
+                          <span>
+                            {row.group_type === "F"
+                              ? "Fascideous"
+                              : "Non-Fascideous"}
+                          </span>
+                        );
+                      },
                       others: {
                         maxWidth: 150
                       }
                     },
                     {
-                      fieldName: "department_code",
+                      fieldName: "group_code",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Group Code" }} />
                       ),
+
                       disabled: true,
                       others: {
                         maxWidth: 150
                       }
                     },
                     {
-                      fieldName: "department_name",
+                      fieldName: "group_name",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Group Name" }} />
                       ),
@@ -863,8 +621,8 @@ class DeptMaster extends Component {
                             div={{ className: "col" }}
                             textBox={{
                               className: "txt-fld",
-                              name: "department_name",
-                              value: row.department_name,
+                              name: "group_name",
+                              value: row.group_name,
                               events: {
                                 onChange: this.changeGridEditors.bind(this, row)
                               },
@@ -878,7 +636,7 @@ class DeptMaster extends Component {
                       }
                     },
                     {
-                      fieldName: "arabic_department_name",
+                      fieldName: "arabic_group_name",
                       label: (
                         <AlgaehLabel
                           label={{ forceLabel: "Group Arabic Name" }}
@@ -890,8 +648,8 @@ class DeptMaster extends Component {
                             div={{ className: "col " }}
                             textBox={{
                               className: "txt-fld",
-                              name: "arabic_department_name",
-                              value: row.arabic_department_name,
+                              name: "arabic_group_name",
+                              value: row.arabic_group_name,
                               events: {
                                 onChange: this.changeGridEditors.bind(this, row)
                               },
@@ -905,14 +663,12 @@ class DeptMaster extends Component {
                       }
                     },
                     {
-                      fieldName: "department_status",
+                      fieldName: "group_status",
                       label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
                       displayTemplate: row => {
                         return (
                           <span>
-                            {row.department_status === "A"
-                              ? "Active"
-                              : "Inactive"}
+                            {row.group_status === "A" ? "Active" : "Inactive"}
                           </span>
                         );
                       },
@@ -921,9 +677,9 @@ class DeptMaster extends Component {
                           <AlagehAutoComplete
                             div={{}}
                             selector={{
-                              name: "department_status",
+                              name: "group_status",
                               className: "select-fld",
-                              value: row.department_status,
+                              value: row.group_status,
                               dataSource: {
                                 textField: "name",
                                 valueField: "value",
@@ -944,9 +700,9 @@ class DeptMaster extends Component {
                     }
                   ]}
                   filter={true}
-                  keyId="department_code"
+                  keyId="group_code"
                   dataSource={{
-                    data: this.state.allDepartments
+                    data: this.state.microGroups
                   }}
                   isEditable={true}
                   actions={{
@@ -954,9 +710,8 @@ class DeptMaster extends Component {
                   }}
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
-                    //onDelete: this.deleteDepartment.bind(this),
                     onEdit: row => {},
-                    onDone: this.updateDepartment.bind(this)
+                    onDone: this.updateMicroGroup.bind(this)
                   }}
                 />
               </div>
@@ -970,18 +725,14 @@ class DeptMaster extends Component {
 
 function mapStateToProps(state) {
   return {
-    departments: state.departments,
-    subdepartments: state.subdepartments,
-    inventorylocations: state.inventorylocations
+    antibiotic: state.antibiotic
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getAllDepartments: AlgaehActions,
-      getAllSubDepartments: AlgaehActions,
-      getLocation: AlgaehActions
+      getAntibiotic: AlgaehActions
     },
     dispatch
   );

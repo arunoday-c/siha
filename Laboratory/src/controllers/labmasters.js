@@ -20,7 +20,17 @@ import {
   selectTestCategory,
   insertTestCategory,
   updateTestCategory,
-  deleteTestCategory
+  deleteTestCategory,
+  selectAntibiotic,
+  insertAntibiotic,
+  updateAntibiotic,
+  deleteAntibiotic,
+  selectMicroGroup,
+  insertMicroGroup,
+  updateMicroGroup,
+  selectGroupAntiMap,
+  insertGroupAntiMap,
+  updateGroupAntiMap
 } from "../models/labmasters";
 
 export default () => {
@@ -165,6 +175,79 @@ export default () => {
   });
 
   api.delete("/deleteTestCategory", deleteTestCategory, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+  //Antibiotic Master
+  api.get("/selectAntibiotic", selectAntibiotic, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+  api.post("/insertAntibiotic", insertAntibiotic, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+  api.put("/updateAntibiotic", updateAntibiotic, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+  api.delete("/deleteAntibiotic", deleteAntibiotic, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+  //Antibiotic Master
+  api.get("/selectMicroGroup", selectMicroGroup, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+  api.post("/insertMicroGroup", insertMicroGroup, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+  api.put("/updateMicroGroup", updateMicroGroup, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+  //Group Antibiotic Map
+  api.get("/selectGroupAntiMap", selectGroupAntiMap, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+  api.post("/insertGroupAntiMap", insertGroupAntiMap, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+  api.put("/updateGroupAntiMap", updateGroupAntiMap, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
       records: req.records

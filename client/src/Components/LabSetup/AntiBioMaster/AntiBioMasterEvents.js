@@ -20,11 +20,9 @@ const onchangegridcol = ($this, row, e) => {
   //resetState($this);
 };
 
-const updateTestCategory = ($this, data) => {
-  //data.updated_by = getCookie("UserID");
-
+const updateAntibiotic = ($this, data) => {
   algaehApiCall({
-    uri: "/labmasters/updateTestCategory",
+    uri: "/labmasters/updateAntibiotic",
     module: "laboratory",
     data: data,
     method: "PUT",
@@ -34,13 +32,13 @@ const updateTestCategory = ($this, data) => {
           title: "Record updated successfully . .",
           type: "success"
         });
-        $this.props.getTestCategory({
-          uri: "/labmasters/selectTestCategory",
+        $this.props.getAntibiotic({
+          uri: "/labmasters/selectAntibiotic",
           module: "laboratory",
           method: "GET",
           redux: {
-            type: "TESTCATEGORY_GET_DATA",
-            mappingName: "testcategory"
+            type: "ANTIBIOTIC_GET_DATA",
+            mappingName: "antibiotic"
           }
         });
       }
@@ -64,7 +62,7 @@ const showconfirmDialog = ($this, id) => {
         hims_d_test_category_id: id
       };
       algaehApiCall({
-        uri: "/labmasters/deleteTestCategory",
+        uri: "/labmasters/deleteAntibiotic",
         module: "laboratory",
         data: data,
         method: "DELETE",
@@ -74,13 +72,13 @@ const showconfirmDialog = ($this, id) => {
               title: "Record deleted successfully . .",
               type: "success"
             });
-            $this.props.getTestCategory({
-              uri: "/labmasters/selectTestCategory",
+            $this.props.getAntibiotic({
+              uri: "/labmasters/selectAntibiotic",
               module: "laboratory",
               method: "GET",
               redux: {
-                type: "TESTCATEGORY_GET_DATA",
-                mappingName: "testcategory"
+                type: "ANTIBIOTIC_GET_DATA",
+                mappingName: "antibiotic"
               }
             });
           }
@@ -96,34 +94,34 @@ const showconfirmDialog = ($this, id) => {
   });
 };
 
-const deleteTestCategory = ($this, row) => {
+const deleteAntibiotic = ($this, row) => {
   showconfirmDialog($this, row.hims_d_test_category_id);
 };
 
-const insertTestCategory = ($this, e) => {
+const insertAntibiotic = ($this, e) => {
   e.preventDefault();
 
   AlgaehValidation({
     alertTypeIcon: "warning",
     onSuccess: () => {
       algaehApiCall({
-        uri: "/labmasters/insertTestCategory",
+        uri: "/labmasters/insertAntibiotic",
         module: "laboratory",
         data: $this.state,
         onSuccess: response => {
           if (response.data.success === true) {
             resetState($this);
-            $this.props.getTestCategory({
-              uri: "/labmasters/selectTestCategory",
+            $this.props.getAntibiotic({
+              uri: "/labmasters/selectAntibiotic",
               module: "laboratory",
               method: "GET",
               redux: {
-                type: "TESTCATEGORY_GET_DATA",
-                mappingName: "testcategory"
+                type: "ANTIBIOTIC_GET_DATA",
+                mappingName: "antibiotic"
               }
             });
             swalMessage({
-              title: "Test Category added successfully",
+              title: "Antibiotic added successfully",
               type: "success"
             });
           } else {
@@ -144,7 +142,7 @@ const insertTestCategory = ($this, e) => {
 export {
   changeTexts,
   onchangegridcol,
-  insertTestCategory,
-  updateTestCategory,
-  deleteTestCategory
+  insertAntibiotic,
+  updateAntibiotic,
+  deleteAntibiotic
 };

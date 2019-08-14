@@ -28,7 +28,8 @@ class TestCategory extends Component {
 
     this.state = {
       hims_d_test_category_id: "",
-      category_name: ""
+      category_name: "",
+      test_section: "O"
     };
     this.baseState = this.state;
   }
@@ -80,6 +81,27 @@ class TestCategory extends Component {
               }
             }}
           />
+          <AlagehAutoComplete
+            div={{ className: "col-3 form-group mandatory" }}
+            label={{ forceLabel: "Test Section", isImp: true }}
+            selector={{
+              name: "test_section",
+              className: "select-fld",
+              value: this.state.test_section,
+              dataSource: {
+                textField: "name",
+                valueField: "value",
+                data: GlobalVariables.TEST_SECTION
+              },
+
+              onChange: changeTexts.bind(this, this),
+              onClear: () => {
+                this.setState({
+                  test_section: null
+                });
+              }
+            }}
+          />
           <div className="col-lg-2 align-middle" style={{ paddingTop: 19 }}>
             <button
               onClick={insertTestCategory.bind(this, this)}
@@ -124,6 +146,54 @@ class TestCategory extends Component {
                           />
                         );
                       }
+                    },
+
+                    {
+                      fieldName: "test_section",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Test Section" }} />
+                      ),
+                      displayTemplate: row => {
+                        let display = GlobalVariables.TEST_SECTION.filter(
+                          f => f.value === row.test_section
+                        );
+
+                        return (
+                          <span>
+                            {display !== undefined && display.length !== 0
+                              ? display[0].name
+                              : ""}
+                          </span>
+                        );
+                      },
+                      editorTemplate: row => {
+                        return (
+                          <AlagehAutoComplete
+                            div={{}}
+                            selector={{
+                              name: "test_section",
+                              className: "select-fld",
+                              value: row.test_section,
+                              dataSource: {
+                                textField: "name",
+                                valueField: "value",
+                                data: GlobalVariables.TEST_SECTION
+                              },
+                              onChange: onchangegridcol.bind(this, this, row),
+                              others: {
+                                errormessage: "Test Section - cannot be blank",
+                                required: true
+                              },
+                              onClear: () => {
+                                this.setState({
+                                  test_section: null
+                                });
+                              }
+                            }}
+                          />
+                        );
+                      },
+                      others: { maxWidth: 200 }
                     },
 
                     {
@@ -211,6 +281,11 @@ class TestCategory extends Component {
                               others: {
                                 errormessage: "Status - cannot be blank",
                                 required: true
+                              },
+                              onClear: () => {
+                                this.setState({
+                                  test_section: null
+                                });
                               }
                             }}
                           />

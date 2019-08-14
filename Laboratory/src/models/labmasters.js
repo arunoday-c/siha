@@ -598,11 +598,12 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "INSERT INTO `hims_d_test_category` (`category_name`,\
+            "INSERT INTO `hims_d_test_category` (`category_name`, `test_section`,\
             `created_by` ,`created_date`) \
-            VALUES ( ?, ?, ?)",
+            VALUES ( ?, ?, ?, ?)",
           values: [
             inputParam.category_name,
+            inputParam.test_section,
             req.userIdentity.algaeh_d_app_user_id,
             new Date()
           ],
@@ -630,10 +631,11 @@ module.exports = {
         .executeQuery({
           query:
             "UPDATE `hims_d_test_category` \
-            SET `category_name`=?, `updated_by`=?, `updated_date`=?,`category_status`=? \
+            SET `category_name`=?, `test_section`=?, `updated_by`=?, `updated_date`=?,`category_status`=? \
             WHERE `record_status`='A' and `hims_d_test_category_id`=?",
           values: [
             inputParam.category_name,
+            inputParam.test_section,
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
             inputParam.category_status,
@@ -669,6 +671,358 @@ module.exports = {
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
             req.body.hims_d_test_category_id
+          ],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+
+  //Antibiotic Master
+  selectAntibiotic: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let _strAppend = "";
+      let intValue = [];
+
+      if (req.query.hims_d_antibiotic_id != null) {
+        _strAppend += "and hims_d_antibiotic_id=?";
+        intValue.push(req.query.hims_d_antibiotic_id);
+      }
+
+      if (req.query.antibiotic_status != null) {
+        _strAppend += "and antibiotic_status=?";
+        intValue.push(req.query.antibiotic_status);
+      }
+      _mysql
+        .executeQuery({
+          query:
+            "SELECT * FROM `hims_d_antibiotic` WHERE `record_status`='A' " +
+            _strAppend +
+            "order by hims_d_antibiotic_id desc",
+          values: intValue,
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  insertAntibiotic: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let inputParam = { ...req.body };
+      _mysql
+        .executeQuery({
+          query:
+            "INSERT INTO `hims_d_antibiotic` (`antibiotic_code`,`antibiotic_name`,\
+            `created_by` ,`created_date`) \
+            VALUES ( ?, ?, ?, ?)",
+          values: [
+            inputParam.antibiotic_code,
+            inputParam.antibiotic_name,
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date()
+          ],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  updateAntibiotic: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let inputParam = { ...req.body };
+      _mysql
+        .executeQuery({
+          query:
+            "UPDATE `hims_d_antibiotic` \
+            SET `antibiotic_code`=?, `antibiotic_name`=?, `updated_by`=?, `updated_date`=?,`antibiotic_status`=? \
+            WHERE `record_status`='A' and `hims_d_antibiotic_id`=?",
+          values: [
+            inputParam.antibiotic_code,
+            inputParam.antibiotic_name,
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            inputParam.antibiotic_status,
+            inputParam.hims_d_antibiotic_id
+          ],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+
+  deleteAntibiotic: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let inputParam = { ...req.body };
+      _mysql
+        .executeQuery({
+          query:
+            "UPDATE hims_d_antibiotic SET  record_status='I', \
+          updated_by=?,updated_date=? WHERE hims_d_antibiotic_id=?",
+          values: [
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.body.hims_d_antibiotic_id
+          ],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+
+  //Micro Group Master
+  selectMicroGroup: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let _strAppend = "";
+      let intValue = [];
+
+      if (req.query.hims_d_micro_group_id != null) {
+        _strAppend += "and hims_d_micro_group_id=?";
+        intValue.push(req.query.hims_d_micro_group_id);
+      }
+
+      if (req.query.group_status != null) {
+        _strAppend += "and group_status=?";
+        intValue.push(req.query.group_status);
+      }
+      _mysql
+        .executeQuery({
+          query:
+            "SELECT * FROM `hims_d_micro_group` WHERE `record_status`='A' " +
+            _strAppend +
+            "order by hims_d_micro_group_id desc",
+          values: intValue,
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  insertMicroGroup: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let inputParam = { ...req.body };
+      _mysql
+        .executeQuery({
+          query:
+            "INSERT INTO `hims_d_micro_group` (`group_code`,`group_name`, `arabic_group_name`, `group_type`,\
+            `created_by` ,`created_date`) VALUES ( ?, ?, ?, ?, ?, ?)",
+          values: [
+            inputParam.group_code,
+            inputParam.group_name,
+            inputParam.arabic_group_name,
+            inputParam.group_type,
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date()
+          ],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  updateMicroGroup: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let inputParam = { ...req.body };
+      _mysql
+        .executeQuery({
+          query:
+            "UPDATE `hims_d_micro_group` SET `group_code`=?, `group_name`=?, `arabic_group_name` = ?, \
+            `group_type`=?, `updated_by`=?, `updated_date`=?, `group_status`=? \
+            WHERE `record_status`='A' and `hims_d_micro_group_id`=?",
+          values: [
+            inputParam.group_code,
+            inputParam.group_name,
+            inputParam.arabic_group_name,
+            inputParam.group_type,
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            inputParam.group_status,
+            inputParam.hims_d_micro_group_id
+          ],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+
+  //Group Antibiotic Mapping
+  selectGroupAntiMap: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let _strAppend = "";
+      let intValue = [];
+
+      if (req.query.hims_m_group_antibiotic_id != null) {
+        _strAppend += "and hims_m_group_antibiotic_id=?";
+        intValue.push(req.query.hims_m_group_antibiotic_id);
+      }
+
+      if (req.query.micro_group_id != null) {
+        _strAppend += "and micro_group_id=?";
+        intValue.push(req.query.micro_group_id);
+      }
+
+      _mysql
+        .executeQuery({
+          query:
+            "SELECT * FROM `hims_m_group_antibiotic` WHERE `record_status`='A' " +
+            _strAppend +
+            "order by hims_m_group_antibiotic_id desc",
+          values: intValue,
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  insertGroupAntiMap: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let inputParam = { ...req.body };
+      _mysql
+        .executeQuery({
+          query:
+            "INSERT INTO `hims_m_group_antibiotic` (`micro_group_id`,`antibiotic_id`,\
+            `created_by` ,`created_date`) VALUES (?, ?, ?, ?)",
+          values: [
+            inputParam.micro_group_id,
+            inputParam.antibiotic_id,
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date()
+          ],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  updateGroupAntiMap: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let inputParam = { ...req.body };
+      _mysql
+        .executeQuery({
+          query:
+            "UPDATE `hims_m_group_antibiotic` SET `micro_group_id`=?, `antibiotic_id`=?, `map_status` = ?, \
+            `updated_by`=?, `updated_date`=?\
+            WHERE `record_status`='A' and `hims_m_group_antibiotic_id`=?",
+          values: [
+            inputParam.micro_group_id,
+            inputParam.antibiotic_id,
+            inputParam.map_status,
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            inputParam.hims_m_group_antibiotic_id
           ],
           printQuery: true
         })
