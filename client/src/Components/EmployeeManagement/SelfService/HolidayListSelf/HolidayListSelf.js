@@ -29,7 +29,7 @@ export default class HolidayListSelf extends Component {
       onSuccess: res => {
         if (res.data.success) {
           this.setState({
-            holidays: res.data.records
+            holidays: res.data.records.weekoffs
           });
         }
       },
