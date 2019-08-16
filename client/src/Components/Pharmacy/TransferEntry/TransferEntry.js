@@ -18,7 +18,8 @@ import {
   LocationchangeTexts,
   checkBoxEvent,
   getRequisitionDetails,
-  generateMaterialTransPhar
+  generateMaterialTransPhar,
+  AcknowledgeTransferEntry
 } from "./TransferEntryEvents";
 import "./TransferEntry.css";
 import "../../../styles/site.css";
@@ -32,9 +33,12 @@ import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
 class TransferEntry extends Component {
   constructor(props) {
     super(props);
-
+    const hospital = JSON.parse(
+      AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+    );
     this.state = {
-      from_location_id: null
+      from_location_id: null,
+      decimal_places: hospital.decimal_places
     };
   }
 
@@ -44,6 +48,7 @@ class TransferEntry extends Component {
   }
 
   componentDidMount() {
+    debugger;
     const hospital = JSON.parse(
       AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
     );
@@ -93,6 +98,18 @@ class TransferEntry extends Component {
         this.props.hims_f_pharamcy_material_header_id,
         this.props.from_location
       );
+    }
+    debugger;
+    if (
+      this.props.transfer_number !== undefined &&
+      this.props.transfer_number.length !== 0
+    ) {
+      let locObj = {
+        from_location_id: this.props.from_location_id,
+        to_location_id: this.props.to_location_id
+      };
+
+      getCtrlCode(this, this.props.transfer_number, locObj);
     }
   }
 
@@ -430,7 +447,18 @@ class TransferEntry extends Component {
                       label={{ forceLabel: "Save", returnText: true }}
                     />
                   </button>
-
+                  {this.state.ack_tran === true ? (
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={AcknowledgeTransferEntry.bind(this, this)}
+                      disabled={this.state.ackTran}
+                    >
+                      <AlgaehLabel
+                        label={{ forceLabel: "Acknowledge", returnText: true }}
+                      />
+                    </button>
+                  ) : null}
                   {this.state.fromReq === false ? (
                     <button
                       type="button"

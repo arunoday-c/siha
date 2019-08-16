@@ -60,6 +60,58 @@ module.exports = {
       next(e);
     }
   },
+
+  getAckTransferList: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let inputParam = req.query;
+
+      let strQuery =
+        "SELECT * from  hims_f_pharmacy_transfer_header\
+            where completed='Y' ";
+
+      if (req.query.from_date != null) {
+        strQuery +=
+          " and date(transfer_date) between date('" +
+          req.query.from_date +
+          "') AND date('" +
+          req.query.to_date +
+          "')";
+      } else {
+        strQuery += " and date(transfer_date) <= date(now())";
+      }
+
+      if (inputParam.from_location_id != null) {
+        strQuery += " and from_location_id = " + inputParam.from_location_id;
+      }
+      if (inputParam.to_location_id != null) {
+        strQuery += " and to_location_id = " + inputParam.to_location_id;
+      }
+
+      if (inputParam.ack_done != null) {
+        strQuery += ` and ack_done= '${inputParam.ack_done}'`;
+      }
+
+      _mysql
+        .executeQuery({
+          query: strQuery,
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+
   //created by :irfan
   gettransferEntry: (req, res, next) => {
     const _mysql = new algaehMysql();
@@ -68,7 +120,7 @@ module.exports = {
       if (input.from_location_id > 0 && input.to_location_id > 0) {
         let strQty = "";
         if (req.query.transfer_number != null) {
-          strQty = ` and transfer_number= '${req.query.transfer_number}'`;
+          strQty += ` and transfer_number= '${req.query.transfer_number}'`;
         }
 
         _mysql
@@ -432,7 +484,8 @@ module.exports = {
                       "uom_recieved_id",
                       "unit_cost",
                       "sales_uom",
-                      "sales_price"
+                      "sales_price",
+                      "ack_quantity"
                     ];
 
                     _mysql
@@ -455,7 +508,7 @@ module.exports = {
                               _mysql.isTransactionConnection,
                             pool: _mysql.pool
                           };
-                          req.flag = 1;
+                          // req.flag = 1;
 
                           // _mysql.commitTransaction(() => {
                           //   _mysql.releaseConnection();
@@ -505,11 +558,12 @@ module.exports = {
       _mysql
         .executeQueryWithTransaction({
           query:
-            "UPDATE `hims_f_pharmacy_transfer_header` SET `completed`=?, `completed_date`=? \
-          WHERE `hims_f_pharmacy_transfer_header_id`=?",
+            "UPDATE `hims_f_pharmacy_transfer_header` SET `ack_done`=?, `ack_date`=?, `ack_by`=? \
+            WHERE `hims_f_pharmacy_transfer_header_id`=?;",
           values: [
-            inputParam.completed,
+            inputParam.ack_done,
             new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
             inputParam.hims_f_pharmacy_transfer_header_id
           ],
           printQuery: true
@@ -520,11 +574,44 @@ module.exports = {
             isTransactionConnection: _mysql.isTransactionConnection,
             pool: _mysql.pool
           };
-          req.flag = 1;
+          const utilities = new algaehUtilities();
+          utilities
+            .logger()
+            .log("updatetransferEntry: ", inputParam.pharmacy_stock_detail);
+
+          let qry = "";
+          for (let i = 0; i < inputParam.pharmacy_stock_detail.length; i++) {
+            qry += _mysql.mysqlQueryFormat(
+              "UPDATE hims_f_pharmacy_transfer_batches set ack_quantity=?\
+  		        WHERE hims_f_pharmacy_transfer_batches_id=?;",
+              [
+                inputParam.pharmacy_stock_detail[i].ack_quantity,
+                inputParam.pharmacy_stock_detail[i]
+                  .hims_f_pharmacy_transfer_batches_id
+              ]
+            );
+          }
+
+          utilities.logger().log("qry: ", qry);
+          _mysql
+            .executeQuery({
+              query: qry,
+              printQuery: true
+            })
+            .then(batch_detail => {
+              req.flag = 1;
+              req.records = headerResult;
+              next();
+            })
+            .catch(error => {
+              _mysql.releaseConnection();
+              next(error);
+            });
+
           //   _mysql.commitTransaction(() => {
           //     _mysql.releaseConnection();
-          req.records = headerResult;
-          next();
+          // req.records = headerResult;
+          // next();
           //   });
         })
         .catch(e => {

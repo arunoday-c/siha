@@ -1,8 +1,2 @@
-.hims_lab_setup .common-section {
-  border: 1px solid #d3d3d3;
-  margin-top: 0px;
-  border-radius: 5px;
-  background: #fff; }
-
-.hims_lab_setup .ReactTable {
-  max-height: 80vh !important; }
+.hims_lab_setup .tabMaster {
+  margin: 0; }

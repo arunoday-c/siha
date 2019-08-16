@@ -89,7 +89,8 @@ class BatchWiseStock extends Component {
                               : ""}
                           </span>
                         );
-                      }
+                      },
+                      others: { filterable: false }
                     },
 
                     {
@@ -132,7 +133,8 @@ class BatchWiseStock extends Component {
                               : ""}
                           </span>
                         );
-                      }
+                      },
+                      others: { filterable: false }
                     },
                     {
                       fieldName: "stocking_uom_id",
@@ -156,7 +158,8 @@ class BatchWiseStock extends Component {
                               : ""}
                           </span>
                         );
-                      }
+                      },
+                      others: { filterable: false }
                     },
                     {
                       fieldName: "sales_uom",
@@ -195,12 +198,14 @@ class BatchWiseStock extends Component {
                               : ""}
                           </span>
                         );
-                      }
+                      },
+                      others: { filterable: false }
                     },
                     {
                       fieldName: "barcode",
                       label: <AlgaehLabel label={{ forceLabel: "Barcode" }} />,
-                      disabled: true
+                      disabled: true,
+                      others: { filterable: false }
                     },
                     {
                       fieldName: "batchno",
@@ -232,7 +237,8 @@ class BatchWiseStock extends Component {
                             value={row.expirydt}
                           />
                         );
-                      }
+                      },
+                      others: { filterable: false }
                     },
                     {
                       fieldName: "qtyhand",
@@ -240,7 +246,19 @@ class BatchWiseStock extends Component {
                       displayTemplate: row => {
                         return parseFloat(row.qtyhand);
                       },
-                      disabled: true
+                      disabled: true,
+                      others: { filterable: false }
+                    },
+                    {
+                      fieldName: "git_qty",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "GIT Quantity" }} />
+                      ),
+                      displayTemplate: row => {
+                        return parseFloat(row.git_qty);
+                      },
+                      disabled: true,
+                      others: { filterable: false }
                     },
                     {
                       fieldName: "avgcost",
@@ -256,7 +274,8 @@ class BatchWiseStock extends Component {
                           </span>
                         );
                       },
-                      disabled: true
+                      disabled: true,
+                      others: { filterable: false }
                     },
                     {
                       fieldName: "sale_price",
@@ -287,7 +306,8 @@ class BatchWiseStock extends Component {
                             }}
                           />
                         );
-                      }
+                      },
+                      others: { filterable: false }
                     }
                   ]}
                   keyId="item_id"
@@ -299,6 +319,7 @@ class BatchWiseStock extends Component {
                   }}
                   noDataText="No Stock available for selected Item in the selected Location"
                   isEditable={false}
+                  filter={true}
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
                     //   onDelete: deleteServices.bind(this, this),

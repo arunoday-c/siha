@@ -1138,7 +1138,7 @@ class NurseWorkbench extends Component {
               </div>
             </div>
           </div>
-          <div className="col-lg-8">
+          <div className="col-8 opPatientDetails">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
@@ -2200,73 +2200,75 @@ class NurseWorkbench extends Component {
                 <hr />
                 <h6>Nurse Order Service</h6>
 
-                <div className="col-12">
-                  <div className="tab-container toggle-section">
-                    <ul className="nav">
-                      <li
-                        algaehtabs={"Orders"}
-                        className={"nav-item tab-button active"}
-                        onClick={this.openTab.bind(this)}
-                      >
-                        {
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "Order Investigation"
-                            }}
-                          />
-                        }
-                      </li>
+                <div className="row">
+                  <div className="col-12">
+                    <div className="tab-container toggle-section">
+                      <ul className="nav">
+                        <li
+                          algaehtabs={"Orders"}
+                          className={"nav-item tab-button active"}
+                          onClick={this.openTab.bind(this)}
+                        >
+                          {
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Order Investigation"
+                              }}
+                            />
+                          }
+                        </li>
 
-                      <li
-                        algaehtabs={"OrderConsumable"}
-                        className={"nav-item tab-button"}
-                        onClick={this.openTab.bind(this)}
-                      >
-                        {
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "Order Consumable"
-                            }}
-                          />
-                        }
-                      </li>
+                        <li
+                          algaehtabs={"OrderConsumable"}
+                          className={"nav-item tab-button"}
+                          onClick={this.openTab.bind(this)}
+                        >
+                          {
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Order Consumable"
+                              }}
+                            />
+                          }
+                        </li>
 
-                      <li
-                        algaehtabs={"OrderPackage"}
-                        className={"nav-item tab-button"}
-                        onClick={this.openTab.bind(this)}
-                      >
-                        {
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "Order Package"
-                            }}
-                          />
-                        }
-                      </li>
-                    </ul>
-                  </div>
+                        <li
+                          algaehtabs={"OrderPackage"}
+                          className={"nav-item tab-button"}
+                          onClick={this.openTab.bind(this)}
+                        >
+                          {
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Order Package"
+                              }}
+                            />
+                          }
+                        </li>
+                      </ul>
+                    </div>
 
-                  <div className="grid-section">
-                    {this.state.pageDisplay === "Orders" &&
-                    this.state.patient_id !== null ? (
-                      <OrderedList
-                        vat_applicable={this.props.vat_applicable}
-                        openData="Investigation"
-                      />
-                    ) : this.state.pageDisplay === "OrderConsumable" &&
+                    <div className="grid-section">
+                      {this.state.pageDisplay === "Orders" &&
                       this.state.patient_id !== null ? (
-                      <OrderedList
-                        vat_applicable={this.props.vat_applicable}
-                        openData="Consumable"
-                      />
-                    ) : this.state.pageDisplay === "OrderPackage" &&
-                      this.state.patient_id !== null ? (
-                      <OrderedList
-                        vat_applicable={this.props.vat_applicable}
-                        openData="Package"
-                      />
-                    ) : null}
+                        <OrderedList
+                          vat_applicable={this.props.vat_applicable}
+                          openData="Investigation"
+                        />
+                      ) : this.state.pageDisplay === "OrderConsumable" &&
+                        this.state.patient_id !== null ? (
+                        <OrderedList
+                          vat_applicable={this.props.vat_applicable}
+                          openData="Consumable"
+                        />
+                      ) : this.state.pageDisplay === "OrderPackage" &&
+                        this.state.patient_id !== null ? (
+                        <OrderedList
+                          vat_applicable={this.props.vat_applicable}
+                          openData="Package"
+                        />
+                      ) : null}
+                    </div>
                   </div>
                 </div>
                 {/* Notes Start */}

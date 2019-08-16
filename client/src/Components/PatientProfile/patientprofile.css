@@ -284,3 +284,7 @@
       border: 1px solid #008e7f;
       padding: 3px;
       text-align: center; }
+
+.mandatoryBox {
+  border: 1px solid #ffd6d6;
+  background: #fffbfb; }

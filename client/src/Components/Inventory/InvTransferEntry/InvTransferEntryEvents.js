@@ -62,6 +62,12 @@ const getCtrlCode = ($this, docNumber, row) => {
             data.postEnable = false;
           }
 
+          if (data.ack_done === "Y") {
+            data.ackTran = true;
+          } else {
+            data.ackTran = false;
+          }
+
           data.cannotEdit = true;
 
           data.dataExitst = true;
@@ -69,6 +75,14 @@ const getCtrlCode = ($this, docNumber, row) => {
           data.quantity_transferred = 0;
           data.item_details = null;
           data.batch_detail_view = false;
+
+          if (
+            $this.props.transfer_number !== undefined &&
+            $this.props.transfer_number.length !== 0
+          ) {
+            data.ack_tran = true;
+            data.fromReq = true;
+          }
 
           $this.setState(data);
           AlgaehLoader({ show: false });
@@ -150,13 +164,15 @@ const SaveTransferEntry = $this => {
     $this.state.inventory_stock_detail[i].grn_number =
       $this.state.inventory_stock_detail[i].grnno;
 
-    $this.state.inventory_stock_detail[i].net_total =
+    $this.state.inventory_stock_detail[i].net_total = (
       parseFloat($this.state.inventory_stock_detail[i].unit_cost) *
-      parseFloat($this.state.inventory_stock_detail[i].quantity_transfer);
+      parseFloat($this.state.inventory_stock_detail[i].quantity_transfer)
+    ).toFixed($this.state.decimal_places);
 
-    $this.state.inventory_stock_detail[i].extended_cost =
+    $this.state.inventory_stock_detail[i].extended_cost = (
       parseFloat($this.state.inventory_stock_detail[i].unit_cost) *
-      parseFloat($this.state.inventory_stock_detail[i].quantity_transfer);
+      parseFloat($this.state.inventory_stock_detail[i].quantity_transfer)
+    ).toFixed($this.state.decimal_places);
   }
 
   delete $this.state.item_details;
@@ -452,6 +468,83 @@ const checkBoxEvent = ($this, e) => {
   $this.setState(IOputs);
 };
 
+const AcknowledgeTransferEntry = $this => {
+  debugger;
+  AlgaehLoader({ show: true });
+  const Quantity_zero = _.filter(
+    $this.state.inventory_stock_detail,
+    f => f.ack_quantity === 0 || f.ack_quantity === ""
+  );
+
+  if (Quantity_zero.length > 0) {
+    swalMessage({
+      type: "warning",
+      title: "Please Enter the Acknowledge Qty for each item in the list."
+    });
+    return;
+  }
+
+  $this.state.ack_done = "Y";
+  $this.state.transaction_type = "ACK";
+  $this.state.transaction_id = $this.state.hims_f_inventory_transfer_header_id;
+  $this.state.transaction_date = $this.state.transfer_date;
+  for (let i = 0; i < $this.state.inventory_stock_detail.length; i++) {
+    $this.state.inventory_stock_detail[i].location_id =
+      $this.state.from_location_id;
+    $this.state.inventory_stock_detail[i].location_type =
+      $this.state.from_location_type;
+    $this.state.inventory_stock_detail[i].operation = "-";
+
+    $this.state.inventory_stock_detail[i].uom_id =
+      $this.state.inventory_stock_detail[i].uom_transferred_id;
+
+    $this.state.inventory_stock_detail[i].quantity =
+      $this.state.inventory_stock_detail[i].ack_quantity;
+
+    $this.state.inventory_stock_detail[i].grn_number =
+      $this.state.inventory_stock_detail[i].grnno;
+
+    $this.state.inventory_stock_detail[i].net_total = (
+      parseFloat($this.state.inventory_stock_detail[i].unit_cost) *
+      parseFloat($this.state.inventory_stock_detail[i].ack_quantity)
+    ).toFixed($this.state.decimal_places);
+
+    $this.state.inventory_stock_detail[i].extended_cost = (
+      parseFloat($this.state.inventory_stock_detail[i].unit_cost) *
+      parseFloat($this.state.inventory_stock_detail[i].ack_quantity)
+    ).toFixed($this.state.decimal_places);
+
+    $this.state.inventory_stock_detail[i].git_qty =
+      $this.state.inventory_stock_detail[i].ack_quantity;
+  }
+
+  algaehApiCall({
+    uri: "/inventorytransferEntry/updatetransferEntry",
+    module: "inventory",
+    data: $this.state,
+    method: "PUT",
+    onSuccess: response => {
+      if (response.data.success === true) {
+        $this.setState({
+          ackTran: true
+        });
+        swalMessage({
+          title: "Acknowledge successfully . .",
+          type: "success"
+        });
+        AlgaehLoader({ show: false });
+      }
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
+};
+
 export {
   changeTexts,
   getCtrlCode,
@@ -462,5 +555,6 @@ export {
   LocationchangeTexts,
   checkBoxEvent,
   getRequisitionDetails,
-  generateMaterialTransInv
+  generateMaterialTransInv,
+  AcknowledgeTransferEntry
 };
