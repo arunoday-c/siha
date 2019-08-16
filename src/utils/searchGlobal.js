@@ -6,14 +6,9 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "patients",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS  hims_d_patient_id, patient_code, registration_date, title_id,\
-         first_name, middle_name, last_name, full_name, arabic_name, gender, religion_id, \
-         date_of_birth, age, marital_status, address1, address2, contact_number, secondary_contact_number, \
-         email, emergency_contact_name, emergency_contact_number, relationship_with_patient, visa_type_id, city_id, \
-         state_id, country_id, nationality_id, postal_code, primary_identity_id, primary_id_no, secondary_identity_id, \
-         secondary_id_no, photo_file, primary_id_file, secondary_id_file, advance_amount,employee_id from hims_f_patient \
-         where 1=1 ",
-        orderBy: "hims_d_patient_id desc"
+          "select SQL_CALC_FOUND_ROWS  hims_d_patient_id, patient_code,\
+          full_name, arabic_name,  contact_number, employee_id, age, date_of_birth, gender, email, title_id  from hims_f_patient \
+         where record_status='A' "
       },
       {
         searchName: "bills",
@@ -38,8 +33,9 @@ let algaehSearchConfig = (searchName, req) => {
           netoff.hims_d_insurance_network_office_id, netoff.policy_number from \
           (((hims_d_insurance_network_office netoff INNER JOIN  hims_d_insurance_network net \
           ON netoff.network_id=net.hims_d_insurance_network_id)INNER JOIN hims_d_insurance_sub sIns ON \
-          net.insurance_sub_id=sIns.hims_d_insurance_sub_id)INNER JOIN hims_d_insurance_provider Ins ON \
-          sIns.insurance_provider_id=Ins.hims_d_insurance_provider_id) where netoff.record_status='A' ",
+          net.insurance_sub_id=sIns.hims_d_insurance_sub_id )INNER JOIN hims_d_insurance_provider Ins ON \
+          sIns.insurance_provider_id=Ins.hims_d_insurance_provider_id ) where netoff.record_status='A' \
+          and sIns.record_status='A' and Ins.record_status='A'",
         orderBy: "netoff.hims_d_insurance_network_office_id desc",
         groupBy: " GROUP By netoff.hims_d_insurance_network_office_id"
       },

@@ -80,252 +80,276 @@ class LabAnalyte extends Component {
   render() {
     return (
       <div className="lab_section">
-        <div className="container-fluid">
-          <form>
-            <div className="row">
-              <AlagehFormGroup
-                div={{ className: "col-lg-3" }}
-                label={{
-                  fieldName: "type_desc",
-                  isImp: true
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "description",
-                  value: this.state.description,
-                  events: {
-                    onChange: changeTexts.bind(this, this)
-                  }
-                }}
-              />
+        <div className="row inner-top-search margin-bottom-15">
+          <AlagehFormGroup
+            div={{ className: "col-3 form-group mandatory" }}
+            label={{
+              forceLabel: "Analyte Description",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "description",
+              value: this.state.description,
+              events: {
+                onChange: changeTexts.bind(this, this)
+              }
+            }}
+          />
 
-              <AlagehAutoComplete
-                div={{ className: "col-lg-2" }}
-                label={{
-                  fieldName: "analyte_type",
-                  isImp: true
-                }}
-                selector={{
-                  name: "analyte_type",
-                  className: "select-fld",
-                  value: this.state.analyte_type,
-                  dataSource: {
-                    textField: "name",
-                    valueField: "value",
-                    data: GlobalVariables.FORMAT_ANALYTE_TYPE
-                  },
-                  onChange: changeTexts.bind(this, this)
-                }}
-              />
-              <AlagehFormGroup
-                div={{ className: "col-lg-3" }}
-                label={{
-                  fieldName: "result_unit",
-                  isImp: true
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "result_unit",
-                  value: this.state.result_unit,
-                  events: {
-                    onChange: changeTexts.bind(this, this)
-                  }
-                }}
-              />
-              <div className="col-lg-2 align-middle" style={{ paddingTop: 21 }}>
-                <button
-                  onClick={insertLabAnalytes.bind(this, this)}
-                  className="btn btn-primary"
-                >
-                  Add to List
-                </button>
+          <AlagehAutoComplete
+            div={{ className: "col-2 form-group mandatory" }}
+            label={{
+              fieldName: "analyte_type",
+              isImp: true
+            }}
+            selector={{
+              name: "analyte_type",
+              className: "select-fld",
+              value: this.state.analyte_type,
+              dataSource: {
+                textField: "name",
+                valueField: "value",
+                data: GlobalVariables.FORMAT_ANALYTE_TYPE
+              },
+              onChange: changeTexts.bind(this, this)
+            }}
+          />
+          <AlagehFormGroup
+            div={{ className: "col-2 mandatory form-group" }}
+            label={{
+              fieldName: "result_unit",
+              isImp: true
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "result_unit",
+              value: this.state.result_unit,
+              events: {
+                onChange: changeTexts.bind(this, this)
+              }
+            }}
+          />
+          <div className="col-lg-2 align-middle" style={{ paddingTop: 19 }}>
+            <button
+              onClick={insertLabAnalytes.bind(this, this)}
+              className="btn btn-primary"
+            >
+              Add to List
+            </button>
+          </div>
+        </div>
+
+        <div className="portlet portlet-bordered margin-bottom-15">
+          <div className="portlet-body">
+            <div className="row" data-validate="analyteDiv">
+              <div className="col" id="labAnalyteGrid_Cntr">
+                <AlgaehDataGrid
+                  datavalidate="data-validate='analyteDiv'"
+                  id="labAnalyteGrid"
+                  columns={[
+                    {
+                      fieldName: "description",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Analyte Description" }}
+                        />
+                      ),
+                      editorTemplate: row => {
+                        return (
+                          <AlagehFormGroup
+                            textBox={{
+                              value: row.description,
+                              className: "txt-fld",
+                              name: "description",
+                              events: {
+                                onChange: onchangegridcol.bind(this, this, row)
+                              },
+                              others: {
+                                errormessage: "Description - cannot be blank",
+                                required: true
+                              }
+                            }}
+                          />
+                        );
+                      }
+                    },
+                    {
+                      fieldName: "analyte_type",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "analyte_type" }} />
+                      ),
+                      displayTemplate: row => {
+                        return row.analyte_type === "QU"
+                          ? "Quality"
+                          : row.analyte_type === "QN"
+                          ? "Quantity"
+                          : "Text";
+                      },
+                      editorTemplate: row => {
+                        return (
+                          <AlagehAutoComplete
+                            div={{}}
+                            selector={{
+                              name: "analyte_type",
+                              className: "select-fld",
+                              value: row.analyte_type,
+                              dataSource: {
+                                textField: "name",
+                                valueField: "value",
+                                data: GlobalVariables.FORMAT_ANALYTE_TYPE
+                              },
+                              onChange: onchangegridcol.bind(this, this, row),
+                              others: {
+                                errormessage: "Analyte Type - cannot be blank",
+                                required: true
+                              }
+                            }}
+                          />
+                        );
+                      },
+                      others: { maxWidth: 150 }
+                    },
+                    {
+                      fieldName: "result_unit",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "result_unit" }} />
+                      ),
+                      editorTemplate: row => {
+                        return (
+                          <AlagehFormGroup
+                            div={{}}
+                            textBox={{
+                              value: row.result_unit,
+                              className: "txt-fld",
+                              name: "result_unit",
+                              events: {
+                                onChange: onchangegridcol.bind(this, this, row)
+                              },
+                              others: {
+                                errormessage: "Result Unit - cannot be blank",
+                                required: true
+                              }
+                            }}
+                          />
+                        );
+                      },
+                      others: { maxWidth: 100 }
+                    },
+                    {
+                      fieldName: "created_by",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "created_by" }} />
+                      ),
+                      displayTemplate: row => {
+                        let display =
+                          this.props.userdrtails === undefined
+                            ? []
+                            : this.props.userdrtails.filter(
+                                f => f.algaeh_d_app_user_id === row.created_by
+                              );
+
+                        return (
+                          <span>
+                            {display !== null && display.length !== 0
+                              ? display[0].username
+                              : ""}
+                          </span>
+                        );
+                      },
+
+                      editorTemplate: row => {
+                        let display =
+                          this.props.userdrtails === undefined
+                            ? []
+                            : this.props.userdrtails.filter(
+                                f => f.algaeh_d_app_user_id === row.created_by
+                              );
+
+                        return (
+                          <span>
+                            {display !== null && display.length !== 0
+                              ? display[0].username
+                              : ""}
+                          </span>
+                        );
+                      },
+                      others: { maxWidth: 150 }
+                      // disabled: true
+                    },
+                    {
+                      fieldName: "created_date",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "created_date" }} />
+                      ),
+                      displayTemplate: row => {
+                        return (
+                          <span>{this.dateFormater(row.created_date)}</span>
+                        );
+                      },
+                      editorTemplate: row => {
+                        return (
+                          <span>{this.dateFormater(row.created_date)}</span>
+                        );
+                      },
+                      others: { maxWidth: 100 }
+                    },
+                    {
+                      fieldName: "analyte_status",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "inv_status" }} />
+                      ),
+                      displayTemplate: row => {
+                        return row.analyte_status === "A"
+                          ? "Active"
+                          : "Inactive";
+                      },
+                      editorTemplate: row => {
+                        return (
+                          <AlagehAutoComplete
+                            div={{}}
+                            selector={{
+                              name: "analyte_status",
+                              className: "select-fld",
+                              value: row.analyte_status,
+                              dataSource: {
+                                textField: "name",
+                                valueField: "value",
+                                data: GlobalVariables.FORMAT_STATUS
+                              },
+                              onChange: onchangegridcol.bind(this, this, row),
+                              others: {
+                                errormessage: "Status - cannot be blank",
+                                required: true
+                              }
+                            }}
+                          />
+                        );
+                      },
+                      others: { maxWidth: 100 }
+                    }
+                  ]}
+                  keyId="hims_d_lab_section_id"
+                  dataSource={{
+                    data:
+                      this.props.labanalytes === undefined
+                        ? []
+                        : this.props.labanalytes
+                  }}
+                  isEditable={true}
+                  actions={{
+                    allowDelete: false
+                  }}
+                  filter={true}
+                  paging={{ page: 0, rowsPerPage: 10 }}
+                  events={{
+                    //onDelete: deleteLabAnalytes.bind(this, this),
+                    onEdit: row => {},
+
+                    onDone: updateLabAnalytes.bind(this, this)
+                  }}
+                />
               </div>
-            </div>
-          </form>
-
-          <div className="row form-details" data-validate="analyteDiv">
-            <div className="col">
-              <AlgaehDataGrid
-                datavalidate="data-validate='analyteDiv'"
-                id="analyte-grid"
-                columns={[
-                  {
-                    fieldName: "description",
-                    label: <AlgaehLabel label={{ fieldName: "type_desc" }} />,
-                    editorTemplate: row => {
-                      return (
-                        <AlagehFormGroup
-                          textBox={{
-                            value: row.description,
-                            className: "txt-fld",
-                            name: "description",
-                            events: {
-                              onChange: onchangegridcol.bind(this, this, row)
-                            },
-                            others: {
-                              errormessage: "Description - cannot be blank",
-                              required: true
-                            }
-                          }}
-                        />
-                      );
-                    }
-                  },
-                  {
-                    fieldName: "analyte_type",
-                    label: (
-                      <AlgaehLabel label={{ fieldName: "analyte_type" }} />
-                    ),
-                    displayTemplate: row => {
-                      return row.analyte_type === "QU"
-                        ? "Quality"
-                        : row.analyte_type === "QN"
-                        ? "Quantity"
-                        : "Text";
-                    },
-                    editorTemplate: row => {
-                      return (
-                        <AlagehAutoComplete
-                          div={{}}
-                          selector={{
-                            name: "analyte_type",
-                            className: "select-fld",
-                            value: row.analyte_type,
-                            dataSource: {
-                              textField: "name",
-                              valueField: "value",
-                              data: GlobalVariables.FORMAT_ANALYTE_TYPE
-                            },
-                            onChange: onchangegridcol.bind(this, this, row),
-                            others: {
-                              errormessage: "Analyte Type - cannot be blank",
-                              required: true
-                            }
-                          }}
-                        />
-                      );
-                    }
-                  },
-                  {
-                    fieldName: "result_unit",
-                    label: <AlgaehLabel label={{ fieldName: "result_unit" }} />,
-                    editorTemplate: row => {
-                      return (
-                        <AlagehFormGroup
-                          div={{}}
-                          textBox={{
-                            value: row.result_unit,
-                            className: "txt-fld",
-                            name: "result_unit",
-                            events: {
-                              onChange: onchangegridcol.bind(this, this, row)
-                            },
-                            others: {
-                              errormessage: "Result Unit - cannot be blank",
-                              required: true
-                            }
-                          }}
-                        />
-                      );
-                    }
-                  },
-                  {
-                    fieldName: "created_by",
-                    label: <AlgaehLabel label={{ fieldName: "created_by" }} />,
-                    displayTemplate: row => {
-                      let display =
-                        this.props.userdrtails === undefined
-                          ? []
-                          : this.props.userdrtails.filter(
-                              f => f.algaeh_d_app_user_id === row.created_by
-                            );
-
-                      return (
-                        <span>
-                          {display !== null && display.length !== 0
-                            ? display[0].username
-                            : ""}
-                        </span>
-                      );
-                    },
-
-                    editorTemplate: row => {
-                      let display =
-                        this.props.userdrtails === undefined
-                          ? []
-                          : this.props.userdrtails.filter(
-                              f => f.algaeh_d_app_user_id === row.created_by
-                            );
-
-                      return (
-                        <span>
-                          {display !== null && display.length !== 0
-                            ? display[0].username
-                            : ""}
-                        </span>
-                      );
-                    }
-                    // disabled: true
-                  },
-                  {
-                    fieldName: "created_date",
-                    label: (
-                      <AlgaehLabel label={{ fieldName: "created_date" }} />
-                    ),
-                    displayTemplate: row => {
-                      return <span>{this.dateFormater(row.created_date)}</span>;
-                    },
-                    editorTemplate: row => {
-                      return <span>{this.dateFormater(row.created_date)}</span>;
-                    }
-                  },
-                  {
-                    fieldName: "analyte_status",
-                    label: <AlgaehLabel label={{ fieldName: "inv_status" }} />,
-                    displayTemplate: row => {
-                      return row.analyte_status === "A" ? "Active" : "Inactive";
-                    },
-                    editorTemplate: row => {
-                      return (
-                        <AlagehAutoComplete
-                          div={{}}
-                          selector={{
-                            name: "analyte_status",
-                            className: "select-fld",
-                            value: row.analyte_status,
-                            dataSource: {
-                              textField: "name",
-                              valueField: "value",
-                              data: GlobalVariables.FORMAT_STATUS
-                            },
-                            onChange: onchangegridcol.bind(this, this, row),
-                            others: {
-                              errormessage: "Status - cannot be blank",
-                              required: true
-                            }
-                          }}
-                        />
-                      );
-                    }
-                  }
-                ]}
-                keyId="hims_d_lab_section_id"
-                dataSource={{
-                  data:
-                    this.props.labanalytes === undefined
-                      ? []
-                      : this.props.labanalytes
-                }}
-                isEditable={true}
-                filter={true}
-                paging={{ page: 0, rowsPerPage: 10 }}
-                events={{
-                  onDelete: deleteLabAnalytes.bind(this, this),
-                  onEdit: row => {},
-
-                  onDone: updateLabAnalytes.bind(this, this)
-                }}
-              />
             </div>
           </div>
         </div>

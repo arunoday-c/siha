@@ -419,10 +419,10 @@ where E.sub_department_id=${
           query:
             "select hims_d_project_id, project_code,abbreviation,project_desc,project_desc_arabic,\
             start_date, end_date, pjoject_status, inactive_date from hims_d_project\
-            where record_status='A' and hospital_id=? " +
+            where record_status='A'  " +
             _strQuery +
             "order by hims_d_project_id desc",
-          values: [req.userIdentity.hospital_id],
+
           printQuery: true
         })
         .then(result => {
@@ -446,12 +446,12 @@ where E.sub_department_id=${
       _mysql
         .executeQuery({
           query:
-            "INSERT  INTO hims_d_project(project_code,hospital_id,abbreviation,project_desc,project_desc_arabic,start_date,end_date,\
+            "INSERT  INTO hims_d_project(project_code,abbreviation,project_desc,project_desc_arabic,start_date,end_date,\
             created_date,created_by,updated_date,updated_by) \
-            values(?,?,?,?,?,?,?,?,?,?,?)",
+            values(?,?,?,?,?,?,?,?,?,?)",
           values: [
             input.project_code,
-            req.userIdentity.hospital_id,
+
             input.abbreviation,
             input.project_desc,
             input.project_desc_arabic,

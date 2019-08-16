@@ -9,7 +9,7 @@
       margin: 0;
       padding: 0;
       list-style: none;
-      height: 65.5vh;
+      height: 54.5vh;
       overflow: auto;
       .noPatientDiv {
         margin-top: 15%;
@@ -100,5 +100,10 @@
         background: blanchedalmond;
       }
     }
+  }
+  .opPatientDetails {
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: 73vh;
   }
 }

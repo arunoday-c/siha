@@ -53,37 +53,37 @@ let searchData = (req, res, next) => {
       switch (filterBy) {
         case "STW":
           whereCondition =
-            " and upper(" +
+            " and " +
             req.query.fieldName +
-            ") like  upper('" +
+            " like  '" +
             req.query.fieldContains +
-            "%')";
+            "%' ";
           break;
 
         case "ENW":
           whereCondition =
-            " and upper(" +
+            " and " +
             req.query.fieldName +
-            ") like  upper('%" +
+            " like  '%" +
             req.query.fieldContains +
-            "')";
+            "' ";
           break;
         case "EQU":
           whereCondition =
-            " and upper(" +
+            " and " +
             req.query.fieldName +
-            ") =  upper('" +
+            " =  '" +
             req.query.fieldContains +
-            "')";
+            "' ";
           break;
 
         default:
           whereCondition =
-            " and upper(" +
+            " and " +
             req.query.fieldName +
-            ") like  upper('%" +
+            " like  '%" +
             req.query.fieldContains +
-            "%')";
+            "%' ";
           break;
       }
     }
@@ -91,14 +91,18 @@ let searchData = (req, res, next) => {
     const _groupby =
       queryConfig.groupBy != null ? " " + queryConfig.groupBy + " " : "";
 
+    const _orderby =
+      queryConfig.orderBy != null
+        ? "  order by " + queryConfig.orderBy + " "
+        : "";
+
     whereCondition +=
       req.query.inputs == "null" || null ? "" : " and " + req.query.inputs;
     let query =
       queryConfig.searchQuery +
       whereCondition +
       _groupby +
-      " order by " +
-      queryConfig.orderBy +
+      _orderby +
       " limit " +
       limit +
       " OFFSET " +
@@ -202,12 +206,7 @@ const newSearch = (req, res, next) => {
       _.map(sortedParameters, items => {
         return _.keysIn(items).map(key => {
           // _values.push("%" + items[key] + "%");
-          return (
-            String("UPPER(`" + key + "`)") +
-            " LIKE UPPER('%" +
-            items[key] +
-            "%')"
-          );
+          return String(" `" + key + "` ") + " LIKE  '%" + items[key] + "%' ";
         });
       }).join(" OR ") +
       ")";
@@ -220,11 +219,11 @@ const newSearch = (req, res, next) => {
         return _.keysIn(items).map(key => {
           if (key != null) {
             _values.push("%" + items[key] + "%");
-            return String("UPPER(`" + key + "`)");
+            return String(" `" + key + "` ");
           }
         });
-      }).join(" LIKE UPPER(?) OR ") +
-      " LIKE UPPER(?))";
+      }).join(" LIKE  ?  OR ") +
+      " LIKE  ? )";
   }
   if (inputParam.directCondition != null) {
     _hasQuery += inputParam.directCondition;

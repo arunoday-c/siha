@@ -1,353 +1,357 @@
 @import "../../styles/algaehCssVariables.scss";
 
 .patientProfile {
-	.patientInfo-Top {
-		background: white;
-		height: 70px;
-		padding: 5px 0 0;
-		width: 100%;
-		position: fixed;
-		z-index: 999;
+  .patientInfo-Top {
+    background: white;
+    height: 70px;
+    padding: 5px 0 0;
+    width: 100%;
+    position: fixed;
+    z-index: 999;
 
-		div {
-			float: left;
-			color: #858585;
-		}
+    div {
+      float: left;
+      color: #858585;
+    }
 
-		.backBtn {
-			border-right: 1px solid #e1e1e1;
-			padding-right: 10px;
-			padding-left: 10px;
-			button {
-				height: 60px;
-				border: 1px solid #e1e1e1;
-			}
-			i {
-				display: block;
-				margin-bottom: 5px;
-			}
-		}
+    .backBtn {
+      border-right: 1px solid #e1e1e1;
+      padding-right: 10px;
+      padding-left: 10px;
+      button {
+        height: 60px;
+        border: 1px solid #e1e1e1;
+      }
+      i {
+        display: block;
+        margin-bottom: 5px;
+      }
+    }
 
-		.patientImg {
-			margin: 1px 10px;
-			border-radius: 4px;
-			border: 1px solid #e1e1e1;
-			.image-drop-area {
-				border: 1px solid #93a4ad;
-				min-height: 55px;
-				position: relative;
-				background-color: #eaeaea;
+    .patientImg {
+      margin: 1px 10px;
+      border-radius: 4px;
+      border: 1px solid #e1e1e1;
+      .image-drop-area {
+        border: 1px solid #93a4ad;
+        min-height: 55px;
+        position: relative;
+        background-color: #eaeaea;
 
-				img {
-					height: 55px;
-					width: 55px;
-					border-radius: 4px;
-					overflow: hidden;
-					-webkit-transition: width 0.3s; /* For Safari 3.1 to 6.0 */
-					transition: width 0.3s;
-					border-radius: 0;
-					&:hover {
-						width: 175px;
-						height: auto;
-						box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.2);
-						position: absolute;
-						z-index: 9;
-					}
-				}
-			}
-		}
-		.patientName {
-			max-width: 17vw;
-			margin-top: 2px;
-			border-left: 1px solid #e1e1e1;
-			border-right: 1px solid #e1e1e1;
-			padding-left: 10px;
-			padding-right: 10px;
-			min-height: 57px;
-			h6 {
-				margin-bottom: 2px;
-				color: #000;
-				line-height: 1.2rem;
-			}
-			p {
-				margin: 0;
-				padding: 0;
-				font-size: 0.9em;
-				font-weight: 700;
-			}
-		}
-		.patientDemographic {
-			line-height: 1.4rem;
-			border-right: 1px solid #e1e1e1;
-			padding-left: 10px;
-			padding-right: 10px;
-			span {
-				font-size: 0.9em;
-				font-weight: 700;
-				display: block;
-				i {
-					text-align: center;
-					width: 20px;
-				}
-				b {
-					color: $primary-color;
-				}
-			}
-		}
-		.patientHospitalDetail {
-			line-height: 1.4rem;
-			border-right: 1px solid #e1e1e1;
-			padding-left: 10px;
-			padding-right: 10px;
-			min-height: 57px;
-			max-width: 175px;
-			span {
-				font-size: 0.9em;
-				font-weight: 700;
-				display: block;
-				i {
-					text-align: center;
-					width: 20px;
-				}
-				b {
-					color: $primary-color;
-				}
-			}
-		}
-		.patientVital {
-			max-width: 28vw;
-			line-height: 1.4rem;
-			padding-left: 10px;
-			padding-right: 10px;
-			min-height: 57px;
-			span {
-				font-size: 0.9em;
-				font-weight: 700;
-				display: inline-block;
-				margin-right: 3px;
-				padding-right: 3px;
-				border-right: 1px solid #e1e1e1;
-				i {
-					text-align: center;
-					width: 20px;
-				}
-				b {
-					color: $primary-color;
-				}
-			}
-		}
-		.moreAction {
-			float: right;
-			border-right: 1px solid #e1e1e1;
-			padding-right: 10px;
-			button {
-				height: 60px;
-				border: 1px solid #e1e1e1;
+        img {
+          height: 55px;
+          width: 55px;
+          border-radius: 4px;
+          overflow: hidden;
+          -webkit-transition: width 0.3s; /* For Safari 3.1 to 6.0 */
+          transition: width 0.3s;
+          border-radius: 0;
+          &:hover {
+            width: 175px;
+            height: auto;
+            box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.2);
+            position: absolute;
+            z-index: 9;
+          }
+        }
+      }
+    }
+    .patientName {
+      max-width: 17vw;
+      margin-top: 2px;
+      border-left: 1px solid #e1e1e1;
+      border-right: 1px solid #e1e1e1;
+      padding-left: 10px;
+      padding-right: 10px;
+      min-height: 57px;
+      h6 {
+        margin-bottom: 2px;
+        color: #000;
+        line-height: 1.2rem;
+      }
+      p {
+        margin: 0;
+        padding: 0;
+        font-size: 0.9em;
+        font-weight: 700;
+      }
+    }
+    .patientDemographic {
+      line-height: 1.4rem;
+      border-right: 1px solid #e1e1e1;
+      padding-left: 10px;
+      padding-right: 10px;
+      span {
+        font-size: 0.9em;
+        font-weight: 700;
+        display: block;
+        i {
+          text-align: center;
+          width: 20px;
+        }
+        b {
+          color: $primary-color;
+        }
+      }
+    }
+    .patientHospitalDetail {
+      line-height: 1.4rem;
+      border-right: 1px solid #e1e1e1;
+      padding-left: 10px;
+      padding-right: 10px;
+      min-height: 57px;
+      max-width: 175px;
+      span {
+        font-size: 0.9em;
+        font-weight: 700;
+        display: block;
+        i {
+          text-align: center;
+          width: 20px;
+        }
+        b {
+          color: $primary-color;
+        }
+      }
+    }
+    .patientVital {
+      max-width: 28vw;
+      line-height: 1.4rem;
+      padding-left: 10px;
+      padding-right: 10px;
+      min-height: 57px;
+      span {
+        font-size: 0.9em;
+        font-weight: 700;
+        display: inline-block;
+        margin-right: 3px;
+        padding-right: 3px;
+        border-right: 1px solid #e1e1e1;
+        i {
+          text-align: center;
+          width: 20px;
+        }
+        b {
+          color: $primary-color;
+        }
+      }
+    }
+    .moreAction {
+      float: right;
+      border-right: 1px solid #e1e1e1;
+      padding-right: 10px;
+      button {
+        height: 60px;
+        border: 1px solid #e1e1e1;
 
-				margin-left: 0;
-			}
-			i {
-				display: block;
-				margin-bottom: 5px;
-			}
-		}
-	}
-	.patientTopNav {
-		background: white;
-		height: 35px;
-		padding: 0;
-		width: 100%;
-		color: #797979;
-		text-transform: uppercase;
-		position: fixed;
-		top: 123px;
-		z-index: 99;
-		ul {
-			position: relative;
-			li {
-				&:after {
-					display: block;
-					content: "";
-					border-bottom: solid 3px $primary-color;
-					transform: scaleX(0);
-					transition: transform 150ms ease-in-out;
-				}
-				&:hover:after {
-					transform: scaleX(1);
-				}
-				span {
-					text-transform: uppercase;
-					padding: 9px 15px 8px;
-					color: #858585;
-					cursor: pointer;
-					font-size: 0.8em;
-				}
-				span.active {
-					border-bottom: solid 3px $primary-color;
-					color: $color-white;
-					background: $primary-color;
-					&:hover {
-						cursor: default;
-						color: $color-white;
-					}
-					&:hover:after {
-						display: none !important;
-						border: none !important;
-						cursor: pointer;
-					}
-				}
-			}
-		}
-		.patient-quick-info {
-			color: $primary-color;
-			margin: 0;
-			padding: 0;
-			list-style: none;
-			position: absolute;
-			right: 20px;
-			li {
-				background: $color-white;
-				color: $primary-color;
-				padding: 6px 10px 4px;
-				cursor: pointer;
-				margin: 0 10px;
-				list-style: none;
-				display: inline-block;
-				font-size: 1.1rem;
-				section {
-					width: 40vw;
-					height: auto;
-					position: absolute;
-					right: 0;
-					top: 30px;
-					background: $primary-color;
-					z-index: 9;
-					padding: 10px;
-					border-radius: 5px;
-					color: $color-white;
-					display: none;
-					span.top-nav-sec-hdg {
-						text-align: center;
-						border-bottom: none;
-						height: 25px;
-						padding: 0;
-						font-weight: bold;
-						display: block;
-						color: #fff;
-					}
-					// b {
-					//   display: block;
-					//   border-bottom: 1px solid darken($primary-color, 10%);
-					//   margin-bottom: 10px;
-					//   padding-bottom: 5px;
-					// }
-					.listofA-D-D {
-						display: inline-block;
-						margin-right: 8px;
-						border: 1px solid darken($primary-color, 10%);
-						padding: 3px 10px;
-						margin: 0;
-						color: $color-white;
-						margin-right: 5px;
-						margin-bottom: 3px;
-						border-radius: 5px;
-						background: $primary-color;
-						white-space: normal;
-					}
-				}
-			}
-			li:hover {
-				background: darken($primary-color, 10%);
-				color: $color-white;
-				padding: 4px 10px;
-				section {
-					display: block;
-				}
-			}
-		}
-	}
-	.patientContentArea {
-		margin: 100px 10px 0;
-		z-index: 1;
-		width: 100%;
-	}
+        margin-left: 0;
+      }
+      i {
+        display: block;
+        margin-bottom: 5px;
+      }
+    }
+  }
+  .patientTopNav {
+    background: white;
+    height: 35px;
+    padding: 0;
+    width: 100%;
+    color: #797979;
+    text-transform: uppercase;
+    position: fixed;
+    top: 123px;
+    z-index: 99;
+    ul {
+      position: relative;
+      li {
+        &:after {
+          display: block;
+          content: "";
+          border-bottom: solid 3px $primary-color;
+          transform: scaleX(0);
+          transition: transform 150ms ease-in-out;
+        }
+        &:hover:after {
+          transform: scaleX(1);
+        }
+        span {
+          text-transform: uppercase;
+          padding: 9px 15px 8px;
+          color: #858585;
+          cursor: pointer;
+          font-size: 0.8em;
+        }
+        span.active {
+          border-bottom: solid 3px $primary-color;
+          color: $color-white;
+          background: $primary-color;
+          &:hover {
+            cursor: default;
+            color: $color-white;
+          }
+          &:hover:after {
+            display: none !important;
+            border: none !important;
+            cursor: pointer;
+          }
+        }
+      }
+    }
+    .patient-quick-info {
+      color: $primary-color;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      position: absolute;
+      right: 20px;
+      li {
+        background: $color-white;
+        color: $primary-color;
+        padding: 6px 10px 4px;
+        cursor: pointer;
+        margin: 0 10px;
+        list-style: none;
+        display: inline-block;
+        font-size: 1.1rem;
+        section {
+          width: 40vw;
+          height: auto;
+          position: absolute;
+          right: 0;
+          top: 30px;
+          background: $primary-color;
+          z-index: 9;
+          padding: 10px;
+          border-radius: 5px;
+          color: $color-white;
+          display: none;
+          span.top-nav-sec-hdg {
+            text-align: center;
+            border-bottom: none;
+            height: 25px;
+            padding: 0;
+            font-weight: bold;
+            display: block;
+            color: #fff;
+          }
+          // b {
+          //   display: block;
+          //   border-bottom: 1px solid darken($primary-color, 10%);
+          //   margin-bottom: 10px;
+          //   padding-bottom: 5px;
+          // }
+          .listofA-D-D {
+            display: inline-block;
+            margin-right: 8px;
+            border: 1px solid darken($primary-color, 10%);
+            padding: 3px 10px;
+            margin: 0;
+            color: $color-white;
+            margin-right: 5px;
+            margin-bottom: 3px;
+            border-radius: 5px;
+            background: $primary-color;
+            white-space: normal;
+          }
+        }
+      }
+      li:hover {
+        background: darken($primary-color, 10%);
+        color: $color-white;
+        padding: 4px 10px;
+        section {
+          display: block;
+        }
+      }
+    }
+  }
+  .patientContentArea {
+    margin: 100px 10px 0;
+    z-index: 1;
+    width: 100%;
+  }
 }
 
 .moreActionUl {
-	margin: 0;
-	padding: 0;
-	list-style: none;
-	border: 1px solid lighten($color-black, 90%);
-	position: absolute;
-	right: 11px;
-	border-radius: 5px 0px 5px 5px;
-	background: $color-white;
-	display: none;
-	min-width: 100px;
-	overflow: hidden;
-	li {
-		margin: 0;
-		padding: 0;
-		list-style: none;
-		span {
-			padding: 7px 10px;
-			text-align: left;
-			display: block;
-			cursor: pointer;
-		}
-		span:hover {
-			color: $color-white;
-			background: $primary-color;
-		}
-	}
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid lighten($color-black, 90%);
+  position: absolute;
+  right: 11px;
+  border-radius: 5px 0px 5px 5px;
+  background: $color-white;
+  display: none;
+  min-width: 100px;
+  overflow: hidden;
+  li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    span {
+      padding: 7px 10px;
+      text-align: left;
+      display: block;
+      cursor: pointer;
+    }
+    span:hover {
+      color: $color-white;
+      background: $primary-color;
+    }
+  }
 }
 .moreAction:hover .moreActionUl {
-	display: block;
+  display: block;
 }
 .miniActionIcon {
-	border: 1px solid $color-white;
-	border-radius: 100px;
-	height: 24px !important;
-	width: 24px !important;
-	padding: 0 !important;
-	color: $color-white !important;
-	text-align: center !important;
-	line-height: 21px;
-	margin-left: 10px;
-	&:hover {
-		cursor: pointer;
-		background: $color-white !important;
-		color: $primary-color !important;
-	}
+  border: 1px solid $color-white;
+  border-radius: 100px;
+  height: 24px !important;
+  width: 24px !important;
+  padding: 0 !important;
+  color: $color-white !important;
+  text-align: center !important;
+  line-height: 21px;
+  margin-left: 10px;
+  &:hover {
+    cursor: pointer;
+    background: $color-white !important;
+    color: $primary-color !important;
+  }
 }
 .AllergyActive {
-	color: red;
-	animation: blinker 2s linear infinite;
+  color: red;
+  animation: blinker 2s linear infinite;
 }
 @keyframes blinker {
-	50% {
-		opacity: 0;
-	}
+  50% {
+    opacity: 0;
+  }
 }
 
 .listofADDWrapper {
-	overflow: auto;
-	max-height: 40vh;
-	.listofADDTable {
-		width: 100%;
-		max-width: 100%;
-		background-color: transparent;
-		font-size: 0.8rem;
-		th {
-			border: 1px solid darken($primary-color, 5%);
-			padding: 3px;
-			text-align: center;
-			background: darken($primary-color, 3%);
-		}
-		td {
-			border: 1px solid darken($primary-color, 5%);
-			padding: 3px;
-			text-align: center;
-		}
-	}
+  overflow: auto;
+  max-height: 40vh;
+  .listofADDTable {
+    width: 100%;
+    max-width: 100%;
+    background-color: transparent;
+    font-size: 0.8rem;
+    th {
+      border: 1px solid darken($primary-color, 5%);
+      padding: 3px;
+      text-align: center;
+      background: darken($primary-color, 3%);
+    }
+    td {
+      border: 1px solid darken($primary-color, 5%);
+      padding: 3px;
+      text-align: center;
+    }
+  }
+}
+.mandatoryBox {
+  border: 1px solid #ffd6d6;
+  background: #fffbfb;
 }

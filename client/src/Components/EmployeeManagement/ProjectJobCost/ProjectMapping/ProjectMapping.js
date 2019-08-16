@@ -165,13 +165,17 @@ class ProjectMapping extends Component {
                                 <i className="fas fa-trash-alt" />
                               </span>
                             );
+                          },
+                          others: {
+                            maxWidth: 50,
+                            filterable: false
                           }
                         },
                         {
                           fieldName: "division_id",
                           label: (
                             <AlgaehLabel
-                              label={{ forceLabel: "Division Name" }}
+                              label={{ forceLabel: "Branch Name" }}
                             />
                           ),
                           displayTemplate: row => {
@@ -190,6 +194,9 @@ class ProjectMapping extends Component {
                                   : ""}
                               </span>
                             );
+                          },
+                          others: {
+                            maxWidth: 250
                           }
                         },
                         {
@@ -229,6 +236,9 @@ class ProjectMapping extends Component {
                                 )}
                               </span>
                             );
+                          },
+                          others: {
+                            maxWidth: 150
                           }
                         },
                         {
@@ -244,6 +254,9 @@ class ProjectMapping extends Component {
                                 )}
                               </span>
                             );
+                          },
+                          others: {
+                            maxWidth: 150
                           }
                         },
                         {
@@ -255,10 +268,14 @@ class ProjectMapping extends Component {
                             return row.d_p_status === "A"
                               ? "Active"
                               : "Inactive";
+                          },
+                          others: {
+                            maxWidth: 100
                           }
                         }
                       ]}
                       keyId="hims_m_division_project_id"
+                      filter={true}
                       dataSource={{ data: this.state.division_project }}
                       paging={{ page: 0, rowsPerPage: 10 }}
                     />

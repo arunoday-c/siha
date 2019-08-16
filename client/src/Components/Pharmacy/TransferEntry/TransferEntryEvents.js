@@ -15,7 +15,7 @@ const changeTexts = ($this, ctrl, e) => {
 
 const getCtrlCode = ($this, docNumber, row) => {
   AlgaehLoader({ show: true });
-
+  debugger;
   let IOputs = TransferIOputs.inputParam();
   $this.setState(IOputs, () => {
     algaehApiCall({
@@ -56,6 +56,11 @@ const getCtrlCode = ($this, docNumber, row) => {
           } else {
             data.postEnable = false;
           }
+          if (data.ack_done === "Y") {
+            data.ackTran = true;
+          } else {
+            data.ackTran = false;
+          }
 
           data.cannotEdit = true;
 
@@ -64,6 +69,14 @@ const getCtrlCode = ($this, docNumber, row) => {
           data.quantity_transferred = 0;
           data.item_details = null;
           data.batch_detail_view = false;
+
+          if (
+            $this.props.transfer_number !== undefined &&
+            $this.props.transfer_number.length !== 0
+          ) {
+            data.ack_tran = true;
+            data.fromReq = true;
+          }
 
           $this.setState(data);
           AlgaehLoader({ show: false });
@@ -123,6 +136,83 @@ const generateMaterialTransPhar = data => {
   });
 };
 
+const AcknowledgeTransferEntry = $this => {
+  debugger;
+  AlgaehLoader({ show: true });
+  const Quantity_zero = _.filter(
+    $this.state.pharmacy_stock_detail,
+    f => f.ack_quantity === 0 || f.ack_quantity === ""
+  );
+
+  if (Quantity_zero.length > 0) {
+    swalMessage({
+      type: "warning",
+      title: "Please Enter the Acknowledge Qty for each item in the list."
+    });
+    return;
+  }
+
+  $this.state.ack_done = "Y";
+  $this.state.transaction_type = "ACK";
+  $this.state.transaction_id = $this.state.hims_f_pharmacy_transfer_header_id;
+  $this.state.transaction_date = $this.state.transfer_date;
+  for (let i = 0; i < $this.state.pharmacy_stock_detail.length; i++) {
+    $this.state.pharmacy_stock_detail[i].location_id =
+      $this.state.from_location_id;
+    $this.state.pharmacy_stock_detail[i].location_type =
+      $this.state.from_location_type;
+    $this.state.pharmacy_stock_detail[i].operation = "-";
+
+    $this.state.pharmacy_stock_detail[i].uom_id =
+      $this.state.pharmacy_stock_detail[i].uom_transferred_id;
+
+    $this.state.pharmacy_stock_detail[i].quantity =
+      $this.state.pharmacy_stock_detail[i].ack_quantity;
+
+    $this.state.pharmacy_stock_detail[i].grn_number =
+      $this.state.pharmacy_stock_detail[i].grnno;
+
+    $this.state.pharmacy_stock_detail[i].net_total = (
+      parseFloat($this.state.pharmacy_stock_detail[i].unit_cost) *
+      parseFloat($this.state.pharmacy_stock_detail[i].ack_quantity)
+    ).toFixed($this.state.decimal_places);
+
+    $this.state.pharmacy_stock_detail[i].extended_cost = (
+      parseFloat($this.state.pharmacy_stock_detail[i].unit_cost) *
+      parseFloat($this.state.pharmacy_stock_detail[i].ack_quantity)
+    ).toFixed($this.state.decimal_places);
+
+    $this.state.pharmacy_stock_detail[i].git_qty =
+      $this.state.pharmacy_stock_detail[i].ack_quantity;
+  }
+
+  algaehApiCall({
+    uri: "/transferEntry/updatetransferEntry",
+    module: "pharmacy",
+    data: $this.state,
+    method: "PUT",
+    onSuccess: response => {
+      if (response.data.success === true) {
+        $this.setState({
+          ackTran: true
+        });
+        swalMessage({
+          title: "Acknowledge successfully . .",
+          type: "success"
+        });
+        AlgaehLoader({ show: false });
+      }
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
+};
+
 const SaveTransferEntry = $this => {
   AlgaehLoader({ show: true });
   $this.state.completed = "Y";
@@ -145,13 +235,15 @@ const SaveTransferEntry = $this => {
     $this.state.pharmacy_stock_detail[i].grn_number =
       $this.state.pharmacy_stock_detail[i].grnno;
 
-    $this.state.pharmacy_stock_detail[i].net_total =
+    $this.state.pharmacy_stock_detail[i].net_total = (
       parseFloat($this.state.pharmacy_stock_detail[i].unit_cost) *
-      parseFloat($this.state.pharmacy_stock_detail[i].quantity_transfer);
+      parseFloat($this.state.pharmacy_stock_detail[i].quantity_transfer)
+    ).toFixed($this.state.decimal_places);
 
-    $this.state.pharmacy_stock_detail[i].extended_cost =
+    $this.state.pharmacy_stock_detail[i].extended_cost = (
       parseFloat($this.state.pharmacy_stock_detail[i].unit_cost) *
-      parseFloat($this.state.pharmacy_stock_detail[i].quantity_transfer);
+      parseFloat($this.state.pharmacy_stock_detail[i].quantity_transfer)
+    ).toFixed($this.state.decimal_places);
   }
 
   delete $this.state.item_details;
@@ -185,6 +277,7 @@ const SaveTransferEntry = $this => {
           saveEnable: true,
           dataExists: true,
           postEnable: false,
+          ackTran: false,
           cannotEdit: true
         });
         swalMessage({
@@ -348,6 +441,7 @@ const getRequisitionDetails = (
             data.stock_detail[i].item_uom;
 
           data.stock_detail[i].removed = "N";
+          data.stock_detail[i].ack_quantity = 0;
         }
         data.quantity_transferred = 0;
         data.item_details = null;
@@ -458,5 +552,6 @@ export {
   LocationchangeTexts,
   checkBoxEvent,
   getRequisitionDetails,
-  generateMaterialTransPhar
+  generateMaterialTransPhar,
+  AcknowledgeTransferEntry
 };

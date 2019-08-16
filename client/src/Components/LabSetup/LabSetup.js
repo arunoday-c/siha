@@ -11,6 +11,8 @@ import LabSpecimen from "./LabSpecimen/LabSpecimen";
 // import Equipment from "./Equipment/Equipment";
 import Analyte from "./Analyte/Analyte";
 import TestCategory from "./TestCategory/TestCategory";
+import AntiBioMaster from "./AntiBioMaster/AntiBioMaster";
+import MicroGroupType from "./MicroGroupType/MicroGroupType";
 
 // import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
@@ -144,6 +146,32 @@ class LabSetup extends Component {
                   />
                 }
               </li>
+              <li
+                algaehtabs={"AntiBioMaster"}
+                className={"nav-item tab-button "}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Antibiotic Master"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                algaehtabs={"MicroGroupType"}
+                className={"nav-item tab-button "}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Micro - Type and Group"
+                    }}
+                  />
+                }
+              </li>
             </ul>
           </div>
         </div>
@@ -161,6 +189,10 @@ class LabSetup extends Component {
             <Analyte />
           ) : this.state.pageDisplay === "TestCategory" ? (
             <TestCategory />
+          ) : this.state.pageDisplay === "AntiBioMaster" ? (
+            <AntiBioMaster />
+          ) : this.state.pageDisplay === "MicroGroupType" ? (
+            <MicroGroupType />
           ) : null}
 
           {/* : this.state.pageDisplay === "Equipment" ? (

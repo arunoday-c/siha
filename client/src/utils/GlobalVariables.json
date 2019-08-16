@@ -155,6 +155,10 @@
     { "name": "Actual Amount", "value": "AC" },
     { "name": "Appropriate Amount", "value": "AP" }
   ],
+  "ACK_STATUS": [
+    { "name": "Pending", "value": "N" },
+    { "name": "Completed", "value": "Y" }
+  ],
   "PAIN_SCALE": [
     { "name": "No Hurt", "arabic_name": "لا ألم", "value": "NH", "score": 0 },
     {
@@ -1637,5 +1641,16 @@
     { "name": "AFTER", "value": "A" },
     { "name": "IN", "value": "I" },
     { "name": "BEFORE", "value": "B" }
+  ],
+  "TEST_SECTION": [
+    { "name": "Microbiology", "value": "M" },
+    { "name": "Cytology", "value": "C" },
+    { "name": "Histopathology", "value": "HI" },
+    { "name": "Hematology", "value": "HE" },
+    { "name": "Others", "value": "O" }
+  ],
+  "MICRO_GROUP_TYPE": [
+    { "name": "Fascideous", "value": "F" },
+    { "name": "Non-Fascideous", "value": "NF" }
   ]
 }

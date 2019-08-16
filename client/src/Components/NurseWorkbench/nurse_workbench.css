@@ -6,7 +6,7 @@
   margin: 0;
   padding: 0;
   list-style: none;
-  height: 65.5vh;
+  height: 54.5vh;
   overflow: auto; }
   .nurse_workbench .opPatientList .opList .noPatientDiv {
     margin-top: 15%;
@@ -71,3 +71,8 @@
     cursor: pointer; }
   .nurse_workbench .opPatientList .opList .active {
     background: blanchedalmond; }
+
+.nurse_workbench .opPatientDetails {
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 73vh; }

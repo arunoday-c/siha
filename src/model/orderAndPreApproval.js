@@ -236,7 +236,6 @@ let getMedicationAprovalList = (req, res, next) => {
 
 //created by irfan:UPDATE PREAPPROVAL
 let updatePreApproval = (req, res, next) => {
-  debugFunction("updatePreApproval");
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -290,7 +289,7 @@ let updatePreApproval = (req, res, next) => {
           ]
         );
       }
-      debugLog("qry: ", qry);
+
       connection.query(qry, (error, result) => {
         releaseDBConnection(db, connection);
         if (error) {
@@ -307,7 +306,6 @@ let updatePreApproval = (req, res, next) => {
 
 //created by irfan:UPDATE PREAPPROVAL
 let updateMedicinePreApproval = (req, res, next) => {
-  debugFunction("updatePreApproval");
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -354,7 +352,7 @@ let updateMedicinePreApproval = (req, res, next) => {
           ]
         );
       }
-      debugLog("qry: ", qry);
+
       connection.query(qry, (error, result) => {
         releaseDBConnection(db, connection);
         if (error) {
@@ -604,8 +602,6 @@ let insertOrderedServicesBackUp = (req, res, next) => {
     "d_treatment_id"
   ];
 
-  debugFunction("add order");
-  debugLog("request body:", req.body);
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -622,8 +618,6 @@ let insertOrderedServicesBackUp = (req, res, next) => {
         });
       }
 
-      debugLog("bodyy:", req.body.billdetails);
-      debugLog("insurtColumns: ", insurtColumns);
       connection.query(
         "INSERT INTO hims_f_ordered_services(" +
           insurtColumns.join(",") +
@@ -661,14 +655,12 @@ let insertOrderedServicesBackUp = (req, res, next) => {
               return s.services_id;
             })
             .ToArray();
-          debugLog("services:", services);
+
           if (services.length > 0) {
             servicesForPreAproval.push(patient_id);
             servicesForPreAproval.push(doctor_id);
             servicesForPreAproval.push(visit_id);
             servicesForPreAproval.push(services);
-
-            debugLog(" servicesForPreAproval", servicesForPreAproval);
 
             connection.query(
               "SELECT hims_f_ordered_services_id,services_id,created_date, service_type_id, test_type from hims_f_ordered_services\
@@ -679,8 +671,6 @@ let insertOrderedServicesBackUp = (req, res, next) => {
                   releaseDBConnection(db, connection);
                   next(error);
                 }
-                debugLog("Query ", connection);
-                debugLog("Results are recorded...", ResultOfFetchOrderIds);
 
                 let detailsPush = new LINQ(req.body.billdetails)
                   .Where(g => g.pre_approval == "Y")
@@ -750,7 +740,6 @@ let insertOrderedServicesBackUp = (req, res, next) => {
                     ],
                     (error, resultPreAprvl) => {
                       if (error) {
-                        debugLog("Error 1 Here result ", error);
                         connection.rollback(() => {
                           releaseDBConnection(db, connection);
                           next(error);
@@ -761,15 +750,12 @@ let insertOrderedServicesBackUp = (req, res, next) => {
                     }
                   );
                 } else {
-                  debugLog("Commit result ");
                   req.records = { resultOrder, ResultOfFetchOrderIds };
                   next();
                 }
               }
             );
           } else {
-            debugFunction("Else: ");
-
             req.records = { resultOrder, ResultOfFetchOrderIds };
             next();
           }
@@ -1187,9 +1173,6 @@ let updateOrderedServices = (req, res, next) => {
 
 //ordered services update as billed
 let updateOrderedServicesBilled = (req, res, next) => {
-  debugFunction("updateOrderedServicesBilled");
-
-  debugLog("Bill Data: ", req.body.billdetails);
   let OrderServices = new LINQ(req.body.billdetails)
     .Where(w => w.hims_f_ordered_services_id != null)
     .Select(s => {
@@ -1223,14 +1206,14 @@ let updateOrderedServicesBilled = (req, res, next) => {
         ]
       );
     }
-    debugLog("Query", qry);
+
     if (qry != "") {
       connection.query(qry, (error, result) => {
         releaseDBConnection(db, connection);
         if (error) {
           next(error);
         }
-        debugLog("Query Result ", result);
+
         req.records = result;
         next();
       });
