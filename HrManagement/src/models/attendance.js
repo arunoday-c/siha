@@ -4449,7 +4449,7 @@ module.exports = {
 						inner join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id\
 						and PR.hospital_id=? and PR.attendance_date between date(?) and date(?)  ${employee} ${project}; 
 						select hims_f_leave_application_id,employee_id,leave_application_code,from_leave_session,L.leave_type,from_date,to_leave_session,\
-						to_date from hims_f_leave_application LA inner join hims_d_leave L on LA.leave_id=L.hims_d_leave_id \
+						to_date,holiday_included,weekoff_included from hims_f_leave_application LA inner join hims_d_leave L on LA.leave_id=L.hims_d_leave_id \
 						where status='APR' and ((  date('${from_date}')>=date(from_date) and date('${from_date}')<=date(to_date)) or\
 						( date('${to_date}')>=date(from_date) and   date('${to_date}')<=date(to_date)) \
 						or (date(from_date)>= date('${from_date}') and date(from_date)<=date('${to_date}') ) or \
@@ -4500,6 +4500,8 @@ module.exports = {
                               moment(date_range[i]).format("YYYY-MM-DD") &&
                             w.to_date >=
                               moment(date_range[i]).format("YYYY-MM-DD")
+
+                              && (w.holiday_included=="Y"||w.weekoff_included=="Y")
                         )
                         .Select(s => {
                           return {
