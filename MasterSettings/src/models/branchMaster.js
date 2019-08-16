@@ -456,5 +456,90 @@ module.exports = {
       _mysql.releaseConnection();
       next(e);
     }
+  },
+
+  dummy_roster3333: (req, res, next) => {
+    try {
+      const _mysql = new algaehMysql();
+      const input = req.body;
+      console.log("count EMP :", input.length);
+
+      const newDateList = getDaysArray(
+        new Date("2019-06-01"),
+        new Date("2019-09-31")
+      );
+
+      for (let i = 0; i < input.length; i++) {
+        const insurtColumns = ["attendance_date"];
+
+        _mysql
+          .executeQuery({
+            query: "INSERT INTO aa_roster(??) VALUES ? ",
+            values: newDateList,
+            includeValues: insurtColumns,
+            extraValues: {
+              employee_id: input[i].employee_id,
+              project_id: input[i].project_id
+            },
+            bulkInsertOrUpdate: true,
+            printQuery: false
+          })
+          .then(result => {
+            if (i == input.length - 1) {
+              _mysql.releaseConnection();
+              req.records = result;
+              next();
+            }
+          })
+          .catch(error => {
+            _mysql.releaseConnection();
+            next(error);
+          });
+      }
+    } catch (e) {
+      console.log("here:", e);
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  dummy_roster: (req, res, next) => {
+    try {
+      const _mysql = new algaehMysql();
+      const input = req.body;
+      console.log("count EMP :", input.length);
+
+      const insurtColumns = ["Empcode", "amount", "earning_id"];
+
+      _mysql
+        .executeQuery({
+          query: "INSERT INTO aa_earning(??) VALUES ? ",
+          values: input,
+          includeValues: insurtColumns,
+          bulkInsertOrUpdate: true,
+          printQuery: false
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      console.log("here:", e);
+      _mysql.releaseConnection();
+      next(e);
+    }
   }
 };
+function getDaysArray(start, end) {
+  for (var arr = [], dt = start; dt <= end; dt.setDate(dt.getDate() + 1)) {
+    const dat = new Date(dt);
+
+    arr.push({ attendance_date: dat });
+  }
+
+  return arr;
+}
