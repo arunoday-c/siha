@@ -94,7 +94,7 @@ jspm_packages/
 
 # log directories
 logs/
-
+LOGS/
 # server dist directory
 dist/
 
