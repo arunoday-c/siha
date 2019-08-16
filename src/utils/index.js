@@ -601,13 +601,13 @@ let getMaxAuth = options => {
           case "3":
             MaxLeave = "AL3";
             break;
-          case "4":
-            MaxLeave = "AL4";
-            break;
-          case "5":
-            MaxLeave = "AL5";
-            break;
-          default:
+          // case "4":
+          //   MaxLeave = "AL4";
+          //   break;
+          // case "5":
+          //   MaxLeave = "AL5";
+          //   break;
+          // default:
         }
 
         //LOAN
@@ -619,16 +619,16 @@ let getMaxAuth = options => {
           case "2":
             MaxLoan = "AL2";
             break;
-          case "3":
-            MaxLoan = "AL3";
-            break;
-          case "4":
-            MaxLoan = "AL4";
-            break;
-          case "5":
-            MaxLoan = "AL5";
-            break;
-          default:
+          // case "3":
+          //   MaxLoan = "AL3";
+          //   break;
+          // case "4":
+          //   MaxLoan = "AL4";
+          //   break;
+          // case "5":
+          //   MaxLoan = "AL5";
+          //   break;
+          // default:
         }
         //LEAVE ENCASH
         switch (result[0]["leave_encash_level"]) {
@@ -642,13 +642,13 @@ let getMaxAuth = options => {
           case "3":
             MaxLeaveEncash = "AL3";
             break;
-          case "4":
-            MaxLeaveEncash = "AL4";
-            break;
-          case "5":
-            MaxLeaveEncash = "AL5";
-            break;
-          default:
+          // case "4":
+          //   MaxLeaveEncash = "AL4";
+          //   break;
+          // case "5":
+          //   MaxLeaveEncash = "AL5";
+          //   break;
+          // default:
         }
         //REVIEW AUTH
         switch (result[0]["review_auth_level"]) {
@@ -662,13 +662,13 @@ let getMaxAuth = options => {
           case "3":
             MaxreviewAuth = "AL3";
             break;
-          case "4":
-            MaxreviewAuth = "AL4";
-            break;
-          case "5":
-            MaxreviewAuth = "AL5";
-            break;
-          default:
+          // case "4":
+          //   MaxreviewAuth = "AL4";
+          //   break;
+          // case "5":
+          //   MaxreviewAuth = "AL5";
+          //   break;
+          // default:
         }
         debugLog("redd:", { MaxLeave, MaxLoan, MaxLeaveEncash, MaxreviewAuth });
         options.onSuccess({ MaxLeave, MaxLoan, MaxLeaveEncash, MaxreviewAuth });
