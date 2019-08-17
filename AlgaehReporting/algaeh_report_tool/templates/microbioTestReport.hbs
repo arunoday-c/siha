@@ -4,24 +4,24 @@
         <table class="tableForLabel" cell-padding="0">
             <tr>
                 <td><label>رقم الملف الطبي / Patient Reg. Number</label></td>
-                <td> <span>{{header.patient_code}}</span></td>
+                <td> <span>{{patient_code}}</span></td>
                 <td><label>اسم المريض / Patient Name</label></td>
-                <td><span>{{header.patient_name}}</span></td>
+                <td><span>{{patient_name}}</span></td>
             </tr>
 
             <tr>
                 <td><label> اسم الطبيب المرجعي / Doctor Ordered by</label></td>
-                <td> <span>{{header.doctor_name}}</span></td>
+                <td> <span>{{doctor_name}}</span></td>
 
                 <td><label> اسم الطبيب المرجعي / Ordered Date</label></td>
-                <td> <span>{{header.doctor_name}}</span></td>
+                <td> <span>{{ordered_date}}</span></td>
             </tr>
             <tr>
                 <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
             </tr>
             <tr>
                 <td><label>اسم اختبار / Test Name</label></td>
-                <td colspan="3"> <span>{{header.service_name}}</span></td>
+                <td colspan="3"> <span>{{service_name}}</span></td>
             </tr>
         </table>
     </section>
@@ -29,11 +29,11 @@
         <table class="tableForLabel" cell-padding="0">
             <tr>
                 <td><label>Growth Type</label></td>
-                <td> <span>{{header.bacteria_type}}</span></td>
+                <td> <span>{{bacteria_type}}</span></td>
                 <td><label>Organism Type</label></td>
-                <td><span>{{header.organism_type}}</span></td>
+                <td><span>{{organism_type}}</span></td>
                 <td><label>Bacteria Name</label></td>
-                <td><span>{{header.bacteria_name}}</span></td>
+                <td><span>{{bacteria_name}}</span></td>
             </tr>
         </table>
     </section>
@@ -50,13 +50,13 @@
                 </tr>
             </thead>
             <tbody>
-
-                {{#each details}}
                 <tr>
                     <td colspan="6" class="tableSubHdg"><small>Specimen Name:</small>
-                        {{firstElement groupDetail 0 "investigation_name"}}</td>
+                        {{specimen}}</td>
                 </tr>
-                {{#each groupDetail}}
+                {{#each details}}
+
+
                 <tr>
                     <td>{{inc @index}}</td>
                     <td>{{antibiotic_name}}</td>
@@ -64,6 +64,8 @@
                     <td>{{intermediate}}</td>
                     <td>{{resistant}}</td>
                 </tr>
+
+
                 {{/each}}
                 <tr>
                     <td colspan="6">
@@ -74,10 +76,9 @@
                     <td>Validated By:</td>
                     <td colspan="5">{{validated_by}}</td>
                 </tr>
-                {{/each}}
             </tbody>
         </table>
     </section>
 
-    <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer>
+    <footer>{{{loadPage 'doctor_signature_footer.hbs' details}}}</footer>
 </div>
