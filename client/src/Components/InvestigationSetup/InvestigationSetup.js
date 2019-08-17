@@ -37,16 +37,16 @@ class InvestigationSetup extends Component {
 
   componentDidMount() {
     if (
-      this.props.testcategory === undefined ||
-      this.props.testcategory.length === 0
+      this.props.invtestcategory === undefined ||
+      this.props.invtestcategory.length === 0
     ) {
       this.props.getTestCategory({
         uri: "/labmasters/selectTestCategory",
         module: "laboratory",
         method: "GET",
         redux: {
-          type: "TESTCATEGORY_GET_DATA",
-          mappingName: "testcategory"
+          type: "INVTESTCATEGORY_GET_DATA",
+          mappingName: "invtestcategory"
         }
       });
     }
@@ -78,6 +78,7 @@ class InvestigationSetup extends Component {
         }
       });
     }
+
     if (
       this.props.investigationdetails === undefined ||
       this.props.investigationdetails.length === 0
@@ -136,7 +137,6 @@ class InvestigationSetup extends Component {
   }
 
   render() {
-    
     let _Investigations = Enumerable.from(this.props.investigationdetails)
       .groupBy("$.hims_d_investigation_test_id", null, (k, g) => {
         let firstRecordSet = Enumerable.from(g).firstOrDefault();
@@ -162,7 +162,8 @@ class InvestigationSetup extends Component {
           specimen_id: firstRecordSet.specimen_id,
           services_id: firstRecordSet.services_id,
           hims_m_lab_specimen_id: firstRecordSet.hims_m_lab_specimen_id,
-
+          analytes_required: firstRecordSet.test_section === "M" ? false : true,
+          container_id: firstRecordSet.container_id,
           analytes: g.getSource(),
           RadTemplate: g.getSource()
         };
@@ -253,9 +254,9 @@ class InvestigationSetup extends Component {
 
                       displayTemplate: row => {
                         let display =
-                          this.props.testcategory === undefined
+                          this.props.invtestcategory === undefined
                             ? []
-                            : this.props.testcategory.filter(
+                            : this.props.invtestcategory.filter(
                                 f =>
                                   f.hims_d_test_category_id === row.category_id
                               );
@@ -266,32 +267,6 @@ class InvestigationSetup extends Component {
                               ? this.state.selectedLang === "en"
                                 ? display[0].category_name
                                 : display[0].category_name
-                              : ""}
-                          </span>
-                        );
-                      }
-                    },
-                    {
-                      fieldName: "lab_section_id",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "lab_section_id" }} />
-                      ),
-
-                      displayTemplate: row => {
-                        let display =
-                          this.props.labsection === undefined
-                            ? []
-                            : this.props.labsection.filter(
-                                f =>
-                                  f.hims_d_lab_section_id === row.lab_section_id
-                              );
-
-                        return (
-                          <span>
-                            {display !== null && display.length !== 0
-                              ? this.state.selectedLang === "en"
-                                ? display[0].SecDescription
-                                : display[0].SecDescription
                               : ""}
                           </span>
                         );
@@ -314,9 +289,7 @@ class InvestigationSetup extends Component {
                         return (
                           <span>
                             {display !== null && display.length !== 0
-                              ? this.state.selectedLang === "en"
-                                ? display[0].SecDescription
-                                : display[0].SecDescription
+                              ? display[0].SpeDescription
                               : ""}
                           </span>
                         );
@@ -343,7 +316,7 @@ class InvestigationSetup extends Component {
 function mapStateToProps(state) {
   return {
     investigationdetails: state.investigationdetails,
-    testcategory: state.testcategory,
+    invtestcategory: state.invtestcategory,
     labspecimen: state.labspecimen,
     labsection: state.labsection
   };

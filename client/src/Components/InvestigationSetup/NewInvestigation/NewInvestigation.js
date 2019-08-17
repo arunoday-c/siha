@@ -11,13 +11,15 @@ import {
   AlagehAutoComplete,
   AlgaehModalPopUp
 } from "../../Wrapper/algaehWrapper";
-import { texthandle, InsertLabTest } from "./NewInvestigationEvent";
+import {
+  texthandle,
+  InsertLabTest,
+  CptCodesSearch
+} from "./NewInvestigationEvent";
 import variableJson from "../../../utils/GlobalVariables.json";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import LabInvestigation from "../LabInvestigation/LabInvestigation";
 import RadInvestigation from "../RadInvestigation/RadInvestigation";
-// import { successfulMessage } from "../../../utils/GlobalFunctions";
-// import { getCookie } from "../../../utils/algaehApiCall";
 import InvestigationIOputs from "../../../Models/InvestigationSetup";
 import MyContext from "../../../utils/MyContext.js";
 
@@ -50,27 +52,40 @@ class NewInvestigation extends PureComponent {
         }
       });
     }
-    if (this.props.cptcodes === undefined || this.props.cptcodes.length === 0) {
-      this.props.getCptcodes({
-        uri: "/icdcptcodes/selectIcdcptCodes",
-        method: "GET",
-        redux: {
-          type: "CPTCODES_GET_DATA",
-          mappingName: "cptcodes"
-        }
-      });
-    }
   }
 
   componentWillReceiveProps(newProps) {
+    debugger;
     if (newProps.InvestigationPop.hims_d_investigation_test_id !== undefined) {
       let IOputs = newProps.InvestigationPop;
       IOputs.InvestigationtypeEnable = true;
-      this.setState({ ...this.state, ...IOputs });
+      this.setState({ ...this.state, ...IOputs }, () => {
+        this.props.getTestCategory({
+          uri: "/labmasters/selectTestCategory",
+          module: "laboratory",
+          method: "GET",
+          data: { investigation_type: this.state.investigation_type },
+          redux: {
+            type: "TESTCATEGORY_GET_DATA",
+            mappingName: "testcategory"
+          }
+        });
+      });
     } else {
       let IOputs = InvestigationIOputs.inputParam();
       IOputs.InvestigationtypeEnable = false;
-      this.setState({ ...this.state, ...IOputs });
+      this.setState({ ...this.state, ...IOputs }, () => {
+        this.props.getTestCategory({
+          uri: "/labmasters/selectTestCategory",
+          module: "laboratory",
+          method: "GET",
+          data: { investigation_type: this.state.investigation_type },
+          redux: {
+            type: "TESTCATEGORY_GET_DATA",
+            mappingName: "testcategory"
+          }
+        });
+      });
     }
   }
   onClose = e => {
@@ -165,24 +180,54 @@ class NewInvestigation extends PureComponent {
                       }
                     }}
                   />
-                  <AlagehAutoComplete
-                    div={{ className: "col-lg-2" }}
+                  <AlagehFormGroup
+                    div={{ className: "col-2 form-group" }}
                     label={{
                       fieldName: "cpt_id"
                     }}
-                    selector={{
+                    textBox={{
+                      className: "txt-fld",
                       name: "cpt_id",
-                      className: "select-fld",
-                      value: this.state.cpt_id,
-                      dataSource: {
-                        textField: "icd_code",
-                        valueField: "hims_d_icd_id",
-                        data: []
+                      value: this.state.cpt_code_data,
+                      events: {
+                        onChange: texthandle.bind(this, this)
                       },
-                      onChange: texthandle.bind(this, this)
+                      others: {
+                        disabled: true
+                      }
                     }}
                   />
+
+                  <div className="col-1 form-group">
+                    <i
+                      className="fas fa-search"
+                      onClick={CptCodesSearch.bind(this, this)}
+                      style={{ marginTop: 25, fontSize: "1.4rem" }}
+                    />
+                  </div>
+
                   <AlagehAutoComplete
+                    div={{ className: "col-3 mandatory" }}
+                    label={{
+                      fieldName: "category_id",
+                      isImp: true
+                    }}
+                    selector={{
+                      name: "category_id",
+                      className: "select-fld",
+                      value: this.state.category_id,
+                      dataSource: {
+                        textField: "category_name",
+                        valueField: "hims_d_test_category_id",
+                        data: this.props.testcategory
+                      },
+                      onChange: texthandle.bind(this, this),
+                      others: {
+                        tabIndex: "4"
+                      }
+                    }}
+                  />
+                  {/*<AlagehAutoComplete
                     div={{ className: "col-lg-2" }}
                     label={{
                       fieldName: "restrict_order"
@@ -221,7 +266,7 @@ class NewInvestigation extends PureComponent {
                       },
                       onChange: texthandle.bind(this, this)
                     }}
-                  />
+                  />*/}
                 </div>
                 {/* <LabInvestigation /> */}
                 <MyContext.Provider
@@ -281,7 +326,7 @@ class NewInvestigation extends PureComponent {
 function mapStateToProps(state) {
   return {
     ingservices: state.ingservices,
-    cptcodes: state.cptcodes
+    testcategory: state.testcategory
   };
 }
 
@@ -289,7 +334,7 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getServices: AlgaehActions,
-      getCptcodes: AlgaehActions
+      getTestCategory: AlgaehActions
     },
     dispatch
   );

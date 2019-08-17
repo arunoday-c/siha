@@ -5,7 +5,9 @@ import {
   updateLabOrderServices,
   getTestAnalytes,
   updateLabSampleStatus,
-  updateLabResultEntry
+  updateLabResultEntry,
+  updateMicroResultEntry,
+  getMicroResult
 } from "../models/laboratory";
 
 export default () => {
@@ -35,6 +37,13 @@ export default () => {
     });
   });
 
+  api.get("/getMicroResult", getMicroResult, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
   api.put("/updateLabSampleStatus", updateLabSampleStatus, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
@@ -48,6 +57,17 @@ export default () => {
       records: req.records
     });
   });
+
+  api.put(
+    "/updateMicroResultEntry",
+    updateMicroResultEntry,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
 
   return api;
 };

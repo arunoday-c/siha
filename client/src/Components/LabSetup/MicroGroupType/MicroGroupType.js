@@ -33,7 +33,8 @@ class DeptMaster extends Component {
       group_code: null,
       group_name: null,
       arabic_group_name: null,
-      group_type: null
+      group_type: null,
+      antibiotic_id: null
     };
 
     this.getmicroGroups();
@@ -54,7 +55,7 @@ class DeptMaster extends Component {
       group_code: null,
       group_name: null,
       arabic_group_name: null,
-
+      antibiotic_id: null,
       group_type: null
     });
   }
@@ -147,6 +148,7 @@ class DeptMaster extends Component {
       uri: "/labmasters/selectAntibiotic",
       module: "laboratory",
       method: "GET",
+      data: { antibiotic_status: "A" },
       redux: {
         type: "ANTIBIOTIC_GET_DATA",
         mappingName: "antibiotic"

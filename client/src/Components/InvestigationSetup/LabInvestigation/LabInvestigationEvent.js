@@ -6,15 +6,36 @@ const texthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
   let name = e.name || e.target.name;
   let value = e.value === "" ? null : e.value || e.target.value;
+  debugger;
+  switch (name) {
+    case "lab_section_id":
+      let analytes_required = e.selected.test_section === "M" ? false : true;
+      $this.setState({
+        [name]: value,
+        analytes_required: analytes_required
+      });
 
-  $this.setState({
-    [name]: value
-  });
+      if (context !== undefined) {
+        context.updateState({
+          [name]: value,
+          analytes_required: analytes_required
+        });
+      }
 
-  if (context !== undefined) {
-    context.updateState({
-      [name]: value
-    });
+      break;
+
+    default:
+      $this.setState({
+        [name]: value
+      });
+
+      if (context !== undefined) {
+        context.updateState({
+          [name]: value
+        });
+      }
+
+      break;
   }
 };
 

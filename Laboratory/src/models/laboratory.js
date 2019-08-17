@@ -48,15 +48,18 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            " select hims_f_lab_order_id,LO.patient_id, entered_by, confirmed_by, validated_by,visit_id,V.visit_code, provider_id, concat(T.title,' ',E.full_name)  as doctor_name, billed, service_id,S.service_code,S.service_name,LO.status,\
-            cancelled, provider_id, ordered_date, test_type, lab_id_number, run_type, P.patient_code,P.full_name,P.date_of_birth, P.gender,\
-            LS.sample_id,LS.collected,LS.collected_by, LS.remarks,LS.collected_date,LS.hims_d_lab_sample_id,LS.status as sample_status, LO.comments\
-            from hims_f_lab_order LO inner join hims_d_services S on LO.service_id=S.hims_d_services_id and S.record_status='A'\
+            " select hims_f_lab_order_id, LO.patient_id, entered_by, confirmed_by, validated_by, visit_id, \
+            group_id, organism_type, bacteria_name, bacteria_type, V.visit_code, provider_id, concat(T.title,' ',E.full_name)  as doctor_name, billed, service_id,  S.service_code, S.service_name, LO.status, cancelled, provider_id, ordered_date, test_type,\
+            lab_id_number, run_type, P.patient_code,P.full_name,P.date_of_birth, P.gender, LS.sample_id,  LS.collected, LS.collected_by, LS.remarks, LS.collected_date, LS.hims_d_lab_sample_id, \
+            LS.status as sample_status, LO.comments, LAS.test_section from hims_f_lab_order LO \
+            inner join hims_d_services S on LO.service_id=S.hims_d_services_id and S.record_status='A'\
             inner join hims_f_patient_visit V on LO.visit_id=V.hims_f_patient_visit_id and  V.record_status='A'\
             inner join hims_d_employee E on LO.provider_id=E.hims_d_employee_id and  E.record_status='A'\
             inner join hims_f_patient P on LO.patient_id=P.hims_d_patient_id and  P.record_status='A'\
             left outer join hims_f_lab_sample LS on  LO.hims_f_lab_order_id = LS.order_id  and LS.record_status='A' \
-            left join hims_d_title as T on T.his_d_title_id = E.title_id WHERE " +
+            left join hims_d_title as T on T.his_d_title_id = E.title_id \
+            left join hims_d_investigation_test as IT on IT.services_id = LO.service_id \
+            left join hims_d_lab_section as LAS on LAS.hims_d_lab_section_id = IT.lab_section_id WHERE " +
             _stringData +
             " order by hims_f_lab_order_id desc",
           values: inputValues,
@@ -160,14 +163,14 @@ module.exports = {
                 _mysql
                   .executeQuery({
                     query:
-                      "select services_id,specimen_id FROM  hims_m_lab_specimen,hims_d_investigation_test where \
-                    hims_d_investigation_test_id=hims_m_lab_specimen.test_id and hims_m_lab_specimen.record_status='A' and test_id in (?); \
-                    select hims_f_lab_order_id,service_id from hims_f_lab_order where record_status='A' and visit_id =? and service_id in (?); \
-                    select hims_d_investigation_test.services_id,analyte_type,result_unit,analyte_id,critical_low,critical_high, \
-                    normal_low,normal_high \
-                    from hims_d_investigation_test,hims_m_lab_analyte where \
-                   hims_d_investigation_test_id=hims_m_lab_analyte.test_id and hims_m_lab_analyte.record_status='A' \
-                   and hims_m_lab_analyte.test_id in  (?);",
+                      "select services_id,specimen_id FROM  hims_m_lab_specimen,hims_d_investigation_test \
+                      where hims_d_investigation_test_id=hims_m_lab_specimen.test_id and \
+                      hims_m_lab_specimen.record_status='A' and test_id in (?); \
+                      select hims_f_lab_order_id,service_id from hims_f_lab_order where record_status='A' \
+                      and visit_id =? and service_id in (?); \
+                      select hims_d_investigation_test.services_id, analyte_type, result_unit, analyte_id, \
+                      critical_low, critical_high, normal_low,normal_high from hims_d_investigation_test,  hims_m_lab_analyte where hims_d_investigation_test_id=hims_m_lab_analyte.test_id and \
+                      hims_m_lab_analyte.record_status='A' and hims_m_lab_analyte.test_id in  (?);",
                     values: [
                       test_id,
                       req.body.visit_id,
@@ -241,7 +244,9 @@ module.exports = {
                           "normal_low",
                           "normal_high"
                         ];
-
+                        utilities
+                          .logger()
+                          .log("specimentRecords: ", specimentRecords[2]);
                         const labAnalytes = new LINQ(specimentRecords[2])
                           .Select(s => {
                             return {
@@ -258,36 +263,50 @@ module.exports = {
                             };
                           })
                           .ToArray();
-
-                        _mysql
-                          .executeQuery({
-                            query:
-                              "INSERT INTO hims_f_ord_analytes(??) VALUES ?",
-                            values: labAnalytes,
-                            includeValues: analyts,
-                            extraValues: {
-                              created_by: req.userIdentity.algaeh_d_app_user_id,
-                              updated_by: req.userIdentity.algaeh_d_app_user_id
-                            },
-                            bulkInsertOrUpdate: true,
-                            printQuery: true
-                          })
-                          .then(ord_analytes => {
-                            if (req.connection == null) {
-                              // _mysql.commitTransaction(() => {
-                              //   _mysql.releaseConnection();
-                              req.records = ord_analytes;
-                              next();
-                              // });
-                            } else {
-                              next();
-                            }
-                          })
-                          .catch(e => {
-                            _mysql.rollBackTransaction(() => {
-                              next(e);
+                        utilities.logger().log("labAnalytes: ", labAnalytes);
+                        if (labAnalytes.length > 0) {
+                          _mysql
+                            .executeQuery({
+                              query:
+                                "INSERT INTO hims_f_ord_analytes(??) VALUES ?",
+                              values: labAnalytes,
+                              includeValues: analyts,
+                              extraValues: {
+                                created_by:
+                                  req.userIdentity.algaeh_d_app_user_id,
+                                updated_by:
+                                  req.userIdentity.algaeh_d_app_user_id
+                              },
+                              bulkInsertOrUpdate: true,
+                              printQuery: true
+                            })
+                            .then(ord_analytes => {
+                              if (req.connection == null) {
+                                // _mysql.commitTransaction(() => {
+                                //   _mysql.releaseConnection();
+                                req.records = ord_analytes;
+                                next();
+                                // });
+                              } else {
+                                next();
+                              }
+                            })
+                            .catch(e => {
+                              _mysql.rollBackTransaction(() => {
+                                next(e);
+                              });
                             });
-                          });
+                        } else {
+                          if (req.connection == null) {
+                            // _mysql.commitTransaction(() => {
+                            //   _mysql.releaseConnection();
+                            req.records = insert_lab_sample;
+                            next();
+                            // });
+                          } else {
+                            next();
+                          }
+                        }
                       })
                       .catch(e => {
                         _mysql.rollBackTransaction(() => {
@@ -508,7 +527,32 @@ module.exports = {
       next(e);
     }
   },
+  getMicroResult: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "SELECT MR.*,A.antibiotic_name from hims_f_micro_result MR, hims_d_antibiotic A where  \
+           A.hims_d_antibiotic_id = MR.antibiotic_id AND order_id=?",
+          values: [req.query.order_id],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
 
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
   updateLabSampleStatus: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
@@ -717,6 +761,136 @@ module.exports = {
                   req.userIdentity.algaeh_d_app_user_id,
                   inputParam[0].comments,
                   inputParam[0].order_id
+                ],
+                printQuery: true
+              })
+              .then(update_lab_order => {
+                utilities.logger().log("update_lab_order: ", update_lab_order);
+                _mysql.commitTransaction(() => {
+                  _mysql.releaseConnection();
+                  req.records = {
+                    results,
+                    entered_by: entered_by,
+                    confirmed_by: confirmed_by,
+                    validated_by: validated_by
+                  };
+                  next();
+                });
+              })
+              .catch(e => {
+                _mysql.rollBackTransaction(() => {
+                  next(e);
+                });
+              });
+          } else {
+            _mysql.commitTransaction(() => {
+              _mysql.releaseConnection();
+              req.records = {
+                results,
+                entered_by: entered_by,
+                confirmed_by: confirmed_by,
+                validated_by: validated_by
+              };
+              next();
+            });
+          }
+        })
+        .catch(e => {
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
+        });
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
+  },
+
+  updateMicroResultEntry: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const utilities = new algaehUtilities();
+    utilities.logger().log("updateMicroResultEntry: ");
+    try {
+      let inputParam = req.body;
+
+      let qry = "";
+      let entered_by = null;
+      let confirmed_by = null;
+      let validated_by = null;
+      let strQuery = "";
+      utilities.logger().log("inputParam.status: ", inputParam.status);
+      if (inputParam.status == "E") {
+        let insertedValues = [
+          "antibiotic_id",
+          "susceptible",
+          "intermediate",
+          "resistant"
+        ];
+        qry = {
+          query: "INSERT INTO hims_f_micro_result(??) VALUES ?",
+          values: inputParam.microAntbiotic,
+          includeValues: insertedValues,
+          extraValues: {
+            order_id: inputParam.hims_f_lab_order_id
+          },
+          bulkInsertOrUpdate: true,
+          printQuery: true
+        };
+        entered_by = req.userIdentity.algaeh_d_app_user_id;
+        strQuery +=
+          " ,status = 'CL', entered_by='" +
+          req.userIdentity.algaeh_d_app_user_id +
+          "', entered_date = '" +
+          moment().format("YYYY-MM-DD HH:mm") +
+          "' ";
+      } else if (inputParam.status == "CF") {
+        qry = {
+          query: "select 1"
+        };
+        confirmed_by = req.userIdentity.algaeh_d_app_user_id;
+        strQuery +=
+          " ,status = 'CF', confirmed_by='" +
+          req.userIdentity.algaeh_d_app_user_id +
+          "', confirmed_date = '" +
+          moment().format("YYYY-MM-DD HH:mm") +
+          "'  ";
+      } else if (inputParam.status == "V") {
+        qry = {
+          query: "select 1"
+        };
+        validated_by = req.userIdentity.algaeh_d_app_user_id;
+        strQuery +=
+          " ,status = 'V', validated_by='" +
+          req.userIdentity.algaeh_d_app_user_id +
+          "', validated_date = '" +
+          moment().format("YYYY-MM-DD HH:mm") +
+          "'  ";
+      }
+
+      utilities.logger().log("qry: ", qry);
+
+      _mysql
+        .executeQueryWithTransaction(qry)
+        .then(results => {
+          utilities.logger().log("results: ", results);
+          if (results != null) {
+            _mysql
+              .executeQuery({
+                query:
+                  "update hims_f_lab_order set `group_id`=?, `organism_type`=?, `bacteria_name`=?,`bacteria_type`=?, \
+                  updated_date= ?, updated_by=?, comments=?" +
+                  strQuery +
+                  "where hims_f_lab_order_id=? ",
+                values: [
+                  inputParam.group_id,
+                  inputParam.organism_type,
+                  inputParam.bacteria_name,
+                  inputParam.bacteria_type,
+                  moment().format("YYYY-MM-DD HH:mm"),
+                  req.userIdentity.algaeh_d_app_user_id,
+                  inputParam.comments,
+                  inputParam.hims_f_lab_order_id
                 ],
                 printQuery: true
               })

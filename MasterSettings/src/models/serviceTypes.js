@@ -56,7 +56,7 @@ module.exports = {
                 service_insurance.length == 0 &&
                 service_insurance_network.length == 0
               ) {
-                if (req.connection == null) {
+                if (inputParam.direct_call == true) {
                   _mysql.commitTransaction(() => {
                     _mysql.releaseConnection();
                     req.body.service_id = service_id;
@@ -89,7 +89,7 @@ module.exports = {
                       next: next
                     })
                       .then(insert_service_network => {
-                        if (req.connection == null) {
+                        if (inputParam.direct_call == true) {
                           _mysql.commitTransaction(() => {
                             _mysql.releaseConnection();
                             req.body.service_id = service_id;

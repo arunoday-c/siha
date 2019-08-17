@@ -12,7 +12,8 @@ import {
   getSampleCollectionDetails,
   ResultEntryModel,
   closeResultEntry,
-  Refresh
+  Refresh,
+  closeMicroResultEntry
 } from "./ResultEntryListHandaler";
 
 import {
@@ -25,6 +26,7 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 import moment from "moment";
 import Options from "../../../Options.json";
 import ResultEntry from "../ResultEntry/ResultEntry";
+import MicrobiologyResultEntry from "../MicrobiologyResultEntry/MicrobiologyResultEntry";
 import _ from "lodash";
 
 class ResultEntryList extends Component {
@@ -41,7 +43,8 @@ class ResultEntryList extends Component {
       selected_patient: null,
       isOpen: false,
       proiorty: null,
-      status: null
+      status: null,
+      isMicroOpen: false
     };
   }
 
@@ -76,10 +79,6 @@ class ResultEntryList extends Component {
 
     let _Cancelled = [];
     if (this.state.sample_collection !== undefined) {
-      // _Ordered = _.filter(this.state.sample_collection, f => {
-      //   return f.status === "O";
-      // });
-
       _Collected = _.filter(this.state.sample_collection, f => {
         return f.status === "CL";
       });
@@ -99,31 +98,6 @@ class ResultEntryList extends Component {
     return (
       <React.Fragment>
         <div className="hptl-phase1-result-entry-form">
-          {/* <BreadCrumb
-            title={
-              <AlgaehLabel label={{ fieldName: "form_name", align: "ltr" }} />
-            }
-            breadStyle={this.props.breadStyle}
-            pageNavPath={[
-              {
-                pageName: (
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "form_home",
-                      align: "ltr"
-                    }}
-                  />
-                )
-              },
-              {
-                pageName: (
-                  <AlgaehLabel
-                    label={{ fieldName: "form_name", align: "ltr" }}
-                  />
-                )
-              }
-            ]}
-          /> */}
           <div
             className="row inner-top-search"
             style={{ paddingBottom: "10px" }}
@@ -164,110 +138,10 @@ class ResultEntryList extends Component {
                 Clear
               </button>
             </div>
-            {/* <div className="col-lg-6">
-              <div className="row">
-                <AlagehFormGroup
-                  div={{ className: "col" }}
-                  label={{
-                    fieldName: "patient_code"
-                  }}
-                  textBox={{
-                    value: this.state.patient_code,
-                    className: "txt-fld",
-                    name: "patient_code",
-
-                    events: {
-                      onChange: texthandle.bind(this, this)
-                    },
-                    others: {
-                      disabled: true
-                    }
-                  }}
-                />
-                <div className="col-lg-1 form-group">
-                  <span
-                    className="fas fa-search fa-2x"
-                    onClick={PatientSearch.bind(this, this)}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="col-lg-6">
-              <div className="row">
-                <AlagehAutoComplete
-                  div={{ className: "col" }}
-                  label={{
-                    fieldName: "proiorty",
-                    isImp: false
-                  }}
-                  selector={{
-                    name: "proiorty",
-                    className: "select-fld",
-                    value: this.state.proiorty,
-                    dataSource: {
-                      textField: "name",
-                      valueField: "value",
-                      data: FORMAT_PRIORITY
-                    },
-                    onChange: texthandle.bind(this, this),
-                    onClear: () => {
-                      this.setState(
-                        {
-                          proiorty: null
-                        },
-                        () => {
-                          getSampleCollectionDetails(this, this);
-                        }
-                      );
-                    }
-                  }}
-                />
-                <AlagehAutoComplete
-                  div={{ className: "col" }}
-                  label={{
-                    fieldName: "status",
-                    isImp: false
-                  }}
-                  selector={{
-                    name: "status",
-                    className: "select-fld",
-                    value: this.state.status,
-                    dataSource: {
-                      textField: "name",
-                      valueField: "value",
-                      data: FORMAT_TEST_STATUS
-                    },
-                    onChange: texthandle.bind(this, this),
-                    onClear: () => {
-                      this.setState(
-                        {
-                          status: null
-                        },
-                        () => {
-                          getSampleCollectionDetails(this, this);
-                        }
-                      );
-                    }
-                  }}
-                />
-
-               
-              </div>
-            </div> */}
           </div>
           <div className="row  margin-bottom-15 topResultCard">
             <div className="col-12">
-              {" "}
               <div className="card-group">
-                {/* <div className="card">
-                  <div className="card-body">
-                    <h5 className="card-title">{_Ordered.length}</h5>
-                    <p className="card-text">
-                      <span className="badge badge-light">Ordered</span>
-                    </p>
-                  </div>
-                </div> */}
-
                 <div className="card">
                   <div className="card-body">
                     <h5 className="card-title">{_Collected.length}</h5>{" "}
@@ -310,21 +184,6 @@ class ResultEntryList extends Component {
                   <div className="caption">
                     <h3 className="caption-subject">Result Entry List</h3>
                   </div>
-
-                  {/* <div className="actions">
-                    <ul className="ul-legend">
-                      {FORMAT_TEST_STATUS.map((data, index) => (
-                        <li key={index}>
-                          <span
-                            style={{
-                              backgroundColor: data.color
-                            }}
-                          />
-                          {data.name}
-                        </li>
-                      ))}
-                    </ul>
-                  </div> */}
                 </div>
 
                 <div className="portlet-body" id="resultListEntryCntr">
@@ -534,6 +393,12 @@ class ResultEntryList extends Component {
           <ResultEntry
             open={this.state.isOpen}
             onClose={closeResultEntry.bind(this, this)}
+            selectedPatient={this.state.selectedPatient}
+          />
+
+          <MicrobiologyResultEntry
+            open={this.state.isMicroOpen}
+            onClose={closeMicroResultEntry.bind(this, this)}
             selectedPatient={this.state.selectedPatient}
           />
         </div>
