@@ -36,15 +36,6 @@ io.on("connection", socket => {
     console.log(`${user} connected`);
   });
 
-  socket.on("page_opened", page => {
-    console.log(`${page} is opened`);
-  });
-
-  socket.on("patientadded", data => {
-    console.log("data", data);
-    io.sockets.emit("patientadded", data);
-  });
-
   socket.on("disconnect", () => {
     console.log("Client disconnected");
   });

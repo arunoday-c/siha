@@ -1,5 +1,5 @@
 const apsock = io => {
-  const appIo = io.of("/appointment");
+  const appIo = io.of("/ftdsk");
 
   appIo.on("connection", socket => {
     console.log("Appointment Socket opened");

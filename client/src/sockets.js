@@ -1,12 +1,20 @@
+import React, { createContext } from "react";
 import io from "socket.io-client";
 
-const socket = nsp => {
+function createUri(nsp) {
   const uri = "http://localhost:3019";
-  if (nsp) {
-    return io(`${uri}${nsp}`);
-  } else {
-    return io(uri);
-  }
-};
+  return `${uri}${nsp}`;
+}
 
-export default socket;
+export const SocketContext = createContext(null);
+
+export const SocketProvider = props => {
+  const CLIENTS = {
+    ftdsk: io(createUri("/ftdsk"))
+  };
+  return (
+    <SocketContext.Provider value={CLIENTS}>
+      {props.children}
+    </SocketContext.Provider>
+  );
+};
