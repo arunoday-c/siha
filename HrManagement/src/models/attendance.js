@@ -3893,8 +3893,29 @@ module.exports = {
 
         let outputArray = [];
         for (let i = 0; i < result.length; i++) {
+
+let lay_off="";
+
+
+if(parseFloat (result[i]["weekoff_days"])>0){
+lay_off="W";
+
+}
+else if(parseFloat (result[i]["holidays"])>0)
+{
+  lay_off="H";
+}
+else if(parseFloat (result[i]["paid_leave"])>0)
+{
+  lay_off="P";
+}
+else if(parseFloat (result[i]["unpaid_leave"])>0)
+{
+  lay_off="U";
+}
           outputArray.push({
             ...result[i],
+            lay_off:lay_off,
             complete_shortage_hr:
               result[i]["shortage_hours"] +
               "." +
