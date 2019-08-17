@@ -174,7 +174,8 @@ class MicrobiologyResultEntry extends Component {
               className="popRightDiv"
               style={{ padding: 0, maxHeight: "79vh" }}
             >
-              <div className="col-lg-12">
+              {" "}
+              <div className="col-12">
                 <div className="row">
                   <div className="patientInfo-lab-Top box-shadow-normal">
                     <div className="patientName">
@@ -213,14 +214,9 @@ class MicrobiologyResultEntry extends Component {
                       </span>
                     </div>
                   </div>
-                </div>
-              </div>
-
-              <div className="col-lg-12">
-                <div className="row">
-                  <div className="col-lg-12">
+                  <div className="col-12 growthDetailsCntr">
                     <div className="row">
-                      <div className="col-lg-3">
+                      <div className="col">
                         <AlgaehLabel
                           label={{
                             forceLabel: "Test Name"
@@ -234,7 +230,7 @@ class MicrobiologyResultEntry extends Component {
                         </h6>
                       </div>
                       <AlagehAutoComplete
-                        div={{ className: "col-lg-3" }}
+                        div={{ className: "col" }}
                         label={{
                           forceLabel: "Entered By"
                         }}
@@ -255,7 +251,7 @@ class MicrobiologyResultEntry extends Component {
                       />
 
                       <AlagehAutoComplete
-                        div={{ className: "col-lg-3" }}
+                        div={{ className: "col" }}
                         label={{
                           forceLabel: "Confirmed By"
                         }}
@@ -275,7 +271,7 @@ class MicrobiologyResultEntry extends Component {
                         }}
                       />
                       <AlagehAutoComplete
-                        div={{ className: "col-lg-3" }}
+                        div={{ className: "col" }}
                         label={{
                           forceLabel: "Validtaed By"
                         }}
@@ -294,50 +290,54 @@ class MicrobiologyResultEntry extends Component {
                           }
                         }}
                       />
-                    </div>
-                  </div>
-                  <div className="col-6">
-                    <div className="customRadio" style={{ borderBottom: 0 }}>
-                      <label className="radio inline">
-                        <input
-                          type="radio"
-                          value="NoGrowth"
-                          checked={this.state.radioNoGrowth}
-                          onChange={radioChange.bind(this, this)}
-                          disabled={this.state.data_exists}
-                        />
-                        <span>
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "No Growth"
-                            }}
-                          />
-                        </span>
-                      </label>
+                      <div className="col">
+                        <label>Growth Type</label>
+                        <div
+                          className="customRadio"
+                          style={{ borderBottom: 0 }}
+                        >
+                          <label className="radio inline">
+                            <input
+                              type="radio"
+                              value="NoGrowth"
+                              checked={this.state.radioNoGrowth}
+                              onChange={radioChange.bind(this, this)}
+                              disabled={this.state.data_exists}
+                            />
+                            <span>
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "No Growth"
+                                }}
+                              />
+                            </span>
+                          </label>
 
-                      <label className="radio inline">
-                        <input
-                          type="radio"
-                          value="Growth"
-                          checked={this.state.radioGrowth}
-                          onChange={radioChange.bind(this, this)}
-                          disabled={this.state.data_exists}
-                        />
-                        <span>
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "growth"
-                            }}
-                          />
-                        </span>
-                      </label>
+                          <label className="radio inline">
+                            <input
+                              type="radio"
+                              value="Growth"
+                              checked={this.state.radioGrowth}
+                              onChange={radioChange.bind(this, this)}
+                              disabled={this.state.data_exists}
+                            />
+                            <span>
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "growth"
+                                }}
+                              />
+                            </span>
+                          </label>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  {this.state.radioGrowth === true ? (
-                    <div className="row">
-                      <div className="col-lg-12" id="labResultGrid_Cntr">
+                  <div className="col-8">
+                    {this.state.radioGrowth === true ? (
+                      <div className="row">
                         <AlagehAutoComplete
-                          div={{ className: "col-lg-3" }}
+                          div={{ className: "col" }}
                           label={{
                             forceLabel: "Select Group",
                             isImp: this.state.radioGrowth
@@ -357,7 +357,7 @@ class MicrobiologyResultEntry extends Component {
                             }
                           }}
                         />
-                        <div className="col-lg-3">
+                        <div className="col">
                           <AlgaehLabel
                             label={{
                               forceLabel: "Organism Type"
@@ -372,7 +372,7 @@ class MicrobiologyResultEntry extends Component {
                           </h6>
                         </div>
                         <AlagehFormGroup
-                          div={{ className: "col-lg-3" }}
+                          div={{ className: "col" }}
                           label={{
                             forceLabel: "Bacteria Name",
                             isImp: this.state.radioGrowth
@@ -390,144 +390,150 @@ class MicrobiologyResultEntry extends Component {
                             }
                           }}
                         />
+                        <div className="col-lg-12" id="microLabResultGrid_Cntr">
+                          <AlgaehDataGrid
+                            id="antibiotic_result"
+                            columns={[
+                              {
+                                fieldName: "antibiotic_name",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{ forceLabel: "Antibiotic" }}
+                                  />
+                                ),
+
+                                others: {
+                                  minWidth: 250,
+                                  resizable: false,
+                                  style: { textAlign: "left" }
+                                }
+                              },
+
+                              {
+                                fieldName: "susceptible",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "S"
+                                    }}
+                                  />
+                                ),
+                                displayTemplate: row => {
+                                  return (
+                                    <label className="checkbox inline">
+                                      <input
+                                        type="checkbox"
+                                        name="susceptible"
+                                        checked={
+                                          row.susceptible === "Y" ? true : false
+                                        }
+                                        disabled={
+                                          this.state.status === "V"
+                                            ? true
+                                            : false
+                                        }
+                                        onChange={onchangegridcol.bind(
+                                          this,
+                                          this,
+                                          row
+                                        )}
+                                      />
+                                    </label>
+                                  );
+                                },
+                                others: {
+                                  maxWidth: 200,
+                                  resizable: false,
+                                  filterable: false,
+                                  style: { textAlign: "center" }
+                                }
+                              },
+
+                              {
+                                fieldName: "intermediate",
+                                label: (
+                                  <AlgaehLabel label={{ forceLabel: "I" }} />
+                                ),
+                                displayTemplate: row => {
+                                  return (
+                                    <label className="checkbox inline">
+                                      <input
+                                        type="checkbox"
+                                        name="intermediate"
+                                        checked={
+                                          row.intermediate === "Y"
+                                            ? true
+                                            : false
+                                        }
+                                        disabled={
+                                          this.state.status === "V"
+                                            ? true
+                                            : false
+                                        }
+                                        onChange={onchangegridcol.bind(
+                                          this,
+                                          this,
+                                          row
+                                        )}
+                                      />
+                                    </label>
+                                  );
+                                },
+                                others: {
+                                  maxWidth: 200,
+                                  resizable: false,
+                                  filterable: false,
+                                  style: { textAlign: "center" }
+                                }
+                              },
+                              {
+                                fieldName: "resistant",
+                                label: (
+                                  <AlgaehLabel label={{ forceLabel: "R" }} />
+                                ),
+                                displayTemplate: row => {
+                                  return (
+                                    <label className="checkbox inline">
+                                      <input
+                                        type="checkbox"
+                                        name="resistant"
+                                        checked={
+                                          row.resistant === "Y" ? true : false
+                                        }
+                                        disabled={
+                                          this.state.status === "V"
+                                            ? true
+                                            : false
+                                        }
+                                        onChange={onchangegridcol.bind(
+                                          this,
+                                          this,
+                                          row
+                                        )}
+                                      />
+                                    </label>
+                                  );
+                                },
+                                others: {
+                                  maxWidth: 200,
+                                  resizable: false,
+                                  filterable: false,
+                                  style: { textAlign: "center" }
+                                }
+                              }
+                            ]}
+                            keyId="microAntbiotic"
+                            filter={true}
+                            dataSource={{
+                              data: this.state.microAntbiotic
+                            }}
+                            paging={{ page: 0, rowsPerPage: 30 }}
+                          />
+                        </div>
                       </div>
-
-                      <div className="col-lg-12" id="labResultGrid_Cntr">
-                        <AlgaehDataGrid
-                          id="antibiotic_result"
-                          columns={[
-                            {
-                              fieldName: "antibiotic_name",
-                              label: (
-                                <AlgaehLabel
-                                  label={{ forceLabel: "Antibiotic" }}
-                                />
-                              ),
-
-                              others: {
-                                minWidth: 250,
-                                resizable: false,
-                                style: { textAlign: "left" }
-                              }
-                            },
-
-                            {
-                              fieldName: "susceptible",
-                              label: (
-                                <AlgaehLabel
-                                  label={{
-                                    forceLabel: "S"
-                                  }}
-                                />
-                              ),
-                              displayTemplate: row => {
-                                return (
-                                  <label className="checkbox inline">
-                                    <input
-                                      type="checkbox"
-                                      name="susceptible"
-                                      checked={
-                                        row.susceptible === "Y" ? true : false
-                                      }
-                                      disabled={
-                                        this.state.status === "V" ? true : false
-                                      }
-                                      onChange={onchangegridcol.bind(
-                                        this,
-                                        this,
-                                        row
-                                      )}
-                                    />
-                                  </label>
-                                );
-                              },
-                              others: {
-                                maxWidth: 200,
-                                resizable: false,
-                                filterable: false,
-                                style: { textAlign: "center" }
-                              }
-                            },
-
-                            {
-                              fieldName: "intermediate",
-                              label: (
-                                <AlgaehLabel label={{ forceLabel: "I" }} />
-                              ),
-                              displayTemplate: row => {
-                                return (
-                                  <label className="checkbox inline">
-                                    <input
-                                      type="checkbox"
-                                      name="intermediate"
-                                      checked={
-                                        row.intermediate === "Y" ? true : false
-                                      }
-                                      disabled={
-                                        this.state.status === "V" ? true : false
-                                      }
-                                      onChange={onchangegridcol.bind(
-                                        this,
-                                        this,
-                                        row
-                                      )}
-                                    />
-                                  </label>
-                                );
-                              },
-                              others: {
-                                maxWidth: 200,
-                                resizable: false,
-                                filterable: false,
-                                style: { textAlign: "center" }
-                              }
-                            },
-                            {
-                              fieldName: "resistant",
-                              label: (
-                                <AlgaehLabel label={{ forceLabel: "R" }} />
-                              ),
-                              displayTemplate: row => {
-                                return (
-                                  <label className="checkbox inline">
-                                    <input
-                                      type="checkbox"
-                                      name="resistant"
-                                      checked={
-                                        row.resistant === "Y" ? true : false
-                                      }
-                                      disabled={
-                                        this.state.status === "V" ? true : false
-                                      }
-                                      onChange={onchangegridcol.bind(
-                                        this,
-                                        this,
-                                        row
-                                      )}
-                                    />
-                                  </label>
-                                );
-                              },
-                              others: {
-                                maxWidth: 200,
-                                resizable: false,
-                                filterable: false,
-                                style: { textAlign: "center" }
-                              }
-                            }
-                          ]}
-                          keyId="microAntbiotic"
-                          filter={true}
-                          dataSource={{
-                            data: this.state.microAntbiotic
-                          }}
-                          paging={{ page: 0, rowsPerPage: 30 }}
-                        />
-                      </div>
-                    </div>
-                  ) : null}
-
-                  <div className="col-12">
+                    ) : null}
+                  </div>
+                  <div className="col">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Remarks"
@@ -535,6 +541,7 @@ class MicrobiologyResultEntry extends Component {
                     />
 
                     <textarea
+                      style={{ minHeight: "40vh" }}
                       value={this.state.comments}
                       name="comments"
                       onChange={this.textAreaEvent.bind(this)}

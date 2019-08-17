@@ -88,7 +88,12 @@
 .next_plain td {
   border-right: 1px solid #e6e6e6; }
 
-#labResultGrid_Cntr {
+#microLabResultGrid_Cntr {
   margin-bottom: 10px; }
-  #labResultGrid_Cntr .ReactTable {
-    max-height: 45vh !important; }
+  #microLabResultGrid_Cntr .ReactTable {
+    max-height: 35vh !important; }
+
+.growthDetailsCntr {
+  margin-bottom: 20px;
+  border-bottom: 1px solid #e1e1e1;
+  padding-bottom: 15px; }
