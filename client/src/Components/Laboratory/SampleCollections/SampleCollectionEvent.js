@@ -84,4 +84,15 @@ const dateFormater = value => {
   }
 };
 
-export { CollectSample, printBarcode, dateFormater };
+const onchangegridcol = ($this, row, e) => {
+  let test_details = $this.state.test_details;
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  let _index = test_details.indexOf(row);
+  row[name] = value;
+
+  test_details[_index] = row;
+  $this.setState({ test_details: test_details });
+};
+
+export { CollectSample, printBarcode, dateFormater, onchangegridcol };

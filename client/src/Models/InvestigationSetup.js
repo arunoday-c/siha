@@ -40,7 +40,8 @@ export default {
       film_category: "NA",
       screening_test: "N",
       film_used: "N",
-      clear: false
+      clear: false,
+      analytes_required: true
     };
     return output;
   }

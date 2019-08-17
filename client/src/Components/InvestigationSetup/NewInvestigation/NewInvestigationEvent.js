@@ -1,4 +1,6 @@
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import AlgaehSearch from "../../Wrapper/globalSearch";
+import spotlightSearch from "../../../Search/spotlightSearch.json";
 
 const texthandle = ($this, ctrl, e) => {
   e = e || ctrl;
@@ -8,6 +10,18 @@ const texthandle = ($this, ctrl, e) => {
   $this.setState({
     [name]: value
   });
+  if (name === "category_id") {
+    this.props.getTestCategory({
+      uri: "/labmasters/selectTestCategory",
+      module: "laboratory",
+      method: "GET",
+      data: { investigation_type: value },
+      redux: {
+        type: "TESTCATEGORY_GET_DATA",
+        mappingName: "testcategory"
+      }
+    });
+  }
 };
 
 const Validations = $this => {
@@ -55,7 +69,10 @@ const Validations = $this => {
       });
       document.querySelector("[name='container_id']").focus();
       return isError;
-    } else if ($this.state.analytes.length === 0) {
+    } else if (
+      $this.state.analytes.length === 0 &&
+      $this.state.analytes_required === true
+    ) {
       isError = true;
       swalMessage({
         type: "error",
@@ -63,9 +80,7 @@ const Validations = $this => {
       });
 
       return isError;
-    }
-  } else if ($this.state.investigation_type === "R") {
-    if ($this.state.category_id === null) {
+    } else if ($this.state.category_id === null) {
       isError = true;
       swalMessage({
         type: "error",
@@ -117,4 +132,23 @@ const InsertLabTest = ($this, e) => {
     }
   }
 };
-export { texthandle, InsertLabTest };
+
+const CptCodesSearch = $this => {
+  AlgaehSearch({
+    searchGrid: {
+      columns: spotlightSearch.Services.CptCodes
+    },
+    searchName: "CptCodes",
+    uri: "/gloabelSearch/get",
+    onContainsChange: (text, serchBy, callBack) => {
+      callBack(text);
+    },
+    onRowSelect: row => {
+      $this.setState({
+        cpt_id: row.hims_d_cpt_code_id,
+        cpt_code_data: row.cpt_code
+      });
+    }
+  });
+};
+export { texthandle, InsertLabTest, CptCodesSearch };

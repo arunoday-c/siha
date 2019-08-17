@@ -19,7 +19,8 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "SELECT `hims_d_lab_section_id`, `description` as SecDescription, `section_status`, `created_date`, \
+            "SELECT `hims_d_lab_section_id`, `description` as SecDescription, `section_status`, \
+            `test_section`, `created_date`, \
             `created_by`, `updated_date`, `updated_by`, `record_status`  FROM `hims_d_lab_section` \
             WHERE `record_status`='A' " +
             _strAppend +
@@ -48,11 +49,12 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "INSERT INTO `hims_d_lab_section` (`description`, \
+            "INSERT INTO `hims_d_lab_section` (`description`, `test_section`,\
           `created_by` ,`created_date`) \
-          VALUES ( ?, ?, ?)",
+          VALUES ( ?, ?, ?, ?)",
           values: [
             inputParam.description,
+            inputParam.test_section,
             req.userIdentity.algaeh_d_app_user_id,
             new Date()
           ],
@@ -79,11 +81,12 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "UPDATE `hims_d_lab_section` \
-          SET `description`=?, `updated_by`=?, `updated_date`=?,section_status=? \
+            "UPDATE `hims_d_lab_section` SET `description`=?, `test_section`=?,\
+            `updated_by`=?, `updated_date`=?,section_status=? \
           WHERE `record_status`='A' and `hims_d_lab_section_id`=?",
           values: [
             inputParam.description,
+            inputParam.test_section,
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
             inputParam.section_status,
@@ -568,6 +571,10 @@ module.exports = {
         _strAppend += "and category_status=?";
         intValue.push(req.query.category_status);
       }
+      if (req.query.investigation_type != null) {
+        _strAppend += "and investigation_type=?";
+        intValue.push(req.query.investigation_type);
+      }
       _mysql
         .executeQuery({
           query:
@@ -598,7 +605,7 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "INSERT INTO `hims_d_test_category` (`category_name`, `test_section`,\
+            "INSERT INTO `hims_d_test_category` (`category_name`, `test_section`, \
             `created_by` ,`created_date`) \
             VALUES ( ?, ?, ?, ?)",
           values: [
@@ -631,7 +638,7 @@ module.exports = {
         .executeQuery({
           query:
             "UPDATE `hims_d_test_category` \
-            SET `category_name`=?, `test_section`=?, `updated_by`=?, `updated_date`=?,`category_status`=? \
+            SET `category_name`=?,  `test_section`=?, `updated_by`=?, `updated_date`=?,`category_status`=? \
             WHERE `record_status`='A' and `hims_d_test_category_id`=?",
           values: [
             inputParam.category_name,
@@ -955,7 +962,9 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "SELECT * FROM `hims_m_group_antibiotic` WHERE `record_status`='A' " +
+            "SELECT GA.*, A.antibiotic_name FROM `hims_m_group_antibiotic` GA \
+              inner join hims_d_antibiotic A on A.hims_d_antibiotic_id = GA.antibiotic_id  \
+              WHERE GA.`record_status`='A' " +
             _strAppend +
             "order by hims_m_group_antibiotic_id desc",
           values: intValue,

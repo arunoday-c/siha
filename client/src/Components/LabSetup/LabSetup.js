@@ -120,7 +120,7 @@ class LabSetup extends Component {
               </li>
               {/* <li
               algaehtabs={"Equipment"}
-              
+
               className={"nav-item tab-button "}
               onClick={this.openTab.bind(this)}
             >
@@ -167,7 +167,7 @@ class LabSetup extends Component {
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Micro - Type and Group"
+                      forceLabel: "Organism - Type and Group"
                     }}
                   />
                 }

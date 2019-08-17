@@ -27,8 +27,9 @@ class TestCategory extends Component {
     super(props);
 
     this.state = {
-      hims_d_test_category_id: "",
-      category_name: ""
+      hims_d_antibiotic_id: null,
+      antibiotic_code: null,
+      antibiotic_name: null
     };
     this.baseState = this.state;
   }

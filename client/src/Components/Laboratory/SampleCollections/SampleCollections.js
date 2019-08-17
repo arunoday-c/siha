@@ -6,11 +6,16 @@ import moment from "moment";
 import MyContext from "../../../utils/MyContext.js";
 import "./SampleCollections.css";
 import "../../../styles/site.css";
-import { CollectSample, printBarcode } from "./SampleCollectionEvent";
+import {
+  CollectSample,
+  printBarcode,
+  onchangegridcol
+} from "./SampleCollectionEvent";
 import {
   AlgaehLabel,
   AlgaehDataGrid,
-  AlgaehModalPopUp
+  AlgaehModalPopUp,
+  AlagehAutoComplete
 } from "../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../actions/algaehActions";
 
@@ -276,13 +281,32 @@ class SampleCollectionPatient extends PureComponent {
                                             f.hims_d_lab_specimen_id ===
                                             row.sample_id
                                         );
-
-                                  return (
+                                  return row.collected === "Y" ||
+                                    row.billed === "N" ? (
                                     <span>
                                       {display !== null && display.length !== 0
                                         ? display[0].SpeDescription
                                         : ""}
                                     </span>
+                                  ) : (
+                                    <AlagehAutoComplete
+                                      div={{}}
+                                      selector={{
+                                        name: "sample_id",
+                                        className: "select-fld",
+                                        value: row.sample_id,
+                                        dataSource: {
+                                          textField: "SpeDescription",
+                                          valueField: "hims_d_lab_specimen_id",
+                                          data: this.props.labspecimen
+                                        },
+                                        onChange: onchangegridcol.bind(
+                                          this,
+                                          this,
+                                          row
+                                        )
+                                      }}
+                                    />
                                   );
                                 },
                                 others: {

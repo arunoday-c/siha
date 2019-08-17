@@ -36,15 +36,13 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "select hims_d_investigation_test_id, description, services_id,R.hims_d_rad_template_detail_id,R.template_name,\
-        R.template_html,investigation_type,lab_section_id, send_out_test, available_in_house, restrict_order, restrict_by,\
-        external_facility_required,facility_description, priority, cpt_id, category_id, film_category, screening_test,\
-        film_used, A.analyte_id, A.hims_m_lab_analyte_id,A.critical_low,A.gender,A.from_age,A.to_age,A.critical_high, A.normal_low,A.normal_high, \
-        S.specimen_id,S.hims_m_lab_specimen_id \
-        from hims_d_investigation_test T left  join  hims_d_rad_template_detail R on\
-        T.hims_d_investigation_test_id = R.test_id left join hims_m_lab_specimen S on \
-        S.test_id = T.hims_d_investigation_test_id  left join hims_m_lab_analyte A on \
-        A.test_id=T.hims_d_investigation_test_id where 1=1" +
+            "select hims_d_investigation_test_id, T.description, services_id, R.hims_d_rad_template_detail_id, \
+             R.template_name, R.template_html, T.investigation_type, lab_section_id, send_out_test, available_in_house, restrict_order, restrict_by, external_facility_required, facility_description,  priority, cpt_id, category_id, film_category, screening_test, film_used, A.analyte_id,  A.hims_m_lab_analyte_id, A.critical_low, A.gender, A.from_age, A.to_age, A.critical_high,  TC.test_section, A.normal_low, A.normal_high, S.specimen_id, S.hims_m_lab_specimen_id, S.container_id from hims_d_investigation_test T \
+             left  join  hims_d_rad_template_detail R on T.hims_d_investigation_test_id = R.test_id \
+             left join hims_m_lab_specimen S on S.test_id = T.hims_d_investigation_test_id  \
+             left join hims_m_lab_analyte A on A.test_id=T.hims_d_investigation_test_id \
+             left join hims_d_test_category TC on TC.hims_d_test_category_id = T.category_id \
+             where 1=1" +
             _stringData,
           values: inputValues,
           printQuery: true
@@ -128,46 +126,56 @@ module.exports = {
               })
               .then(spResult => {
                 if (spResult.insertId != null) {
-                  utilities.logger().log("spResult: ", spResult);
-                  const IncludeValues = [
-                    "analyte_id",
-                    "analyte_type",
-                    "result_unit",
-                    "gender",
-                    "from_age",
-                    "to_age",
-                    "critical_low",
-                    "critical_high",
-                    "normal_low",
-                    "normal_high"
-                  ];
+                  if (req.body.analytes.length > 0) {
+                    utilities.logger().log("spResult: ", spResult);
+                    const IncludeValues = [
+                      "analyte_id",
+                      "analyte_type",
+                      "result_unit",
+                      "gender",
+                      "from_age",
+                      "to_age",
+                      "critical_low",
+                      "critical_high",
+                      "normal_low",
+                      "normal_high"
+                    ];
 
-                  _mysql
-                    .executeQuery({
-                      query: "INSERT INTO hims_m_lab_analyte(??) VALUES ?",
-                      values: req.body.analytes,
-                      includeValues: IncludeValues,
-                      extraValues: {
-                        test_id: req.body.test_id,
-                        created_by: req.userIdentity.algaeh_d_app_user_id,
-                        updated_by: req.userIdentity.algaeh_d_app_user_id
-                      },
-                      bulkInsertOrUpdate: true,
-                      printQuery: true
-                    })
-                    .then(analyteResult => {
-                      utilities.logger().log("analyteResult: ", analyteResult);
-                      _mysql.commitTransaction(() => {
-                        _mysql.releaseConnection();
-                        req.records = analyteResult;
-                        next();
+                    _mysql
+                      .executeQuery({
+                        query: "INSERT INTO hims_m_lab_analyte(??) VALUES ?",
+                        values: req.body.analytes,
+                        includeValues: IncludeValues,
+                        extraValues: {
+                          test_id: req.body.test_id,
+                          created_by: req.userIdentity.algaeh_d_app_user_id,
+                          updated_by: req.userIdentity.algaeh_d_app_user_id
+                        },
+                        bulkInsertOrUpdate: true,
+                        printQuery: true
+                      })
+                      .then(analyteResult => {
+                        utilities
+                          .logger()
+                          .log("analyteResult: ", analyteResult);
+                        _mysql.commitTransaction(() => {
+                          _mysql.releaseConnection();
+                          req.records = analyteResult;
+                          next();
+                        });
+                      })
+                      .catch(e => {
+                        _mysql.rollBackTransaction(() => {
+                          next(e);
+                        });
                       });
-                    })
-                    .catch(e => {
-                      _mysql.rollBackTransaction(() => {
-                        next(e);
-                      });
+                  } else {
+                    _mysql.commitTransaction(() => {
+                      _mysql.releaseConnection();
+                      req.records = spResult;
+                      next();
                     });
+                  }
                 }
               })
               .catch(e => {

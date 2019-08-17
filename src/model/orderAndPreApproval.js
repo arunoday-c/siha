@@ -474,11 +474,11 @@ let insertOrderedServices = (req, res, next) => {
                   return {
                     ...s,
                     ...{
-                      hims_f_ordered_inventory_id: new LINQ(
+                      hims_f_ordered_services_id: new LINQ(
                         ResultOfFetchOrderIds
                       )
                         .Where(w => w.services_id == s.services_id)
-                        .FirstOrDefault().hims_f_ordered_inventory_id
+                        .FirstOrDefault().hims_f_ordered_services_id
                     }
                   };
                 })
@@ -508,7 +508,7 @@ let insertOrderedServices = (req, res, next) => {
                         service_id: "services_id",
                         gross_amt: "ser_gross_amt",
                         net_amount: "ser_net_amount",
-                        hims_f_ordered_inventory: "hims_f_ordered_inventory_id"
+                        ordered_services_id: "hims_f_ordered_services_id"
                       }
                     ],
                     extraValues: {
