@@ -15,7 +15,7 @@ import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 import Enumerable from "linq";
 import isEmpty from "lodash/isEmpty";
 import algaehLoader from "../Wrapper/fullPageLoader";
-import FrontDesk from "../../Search/FrontDesk.json";
+import spotlightSearch from "../../Search/spotlightSearch";
 import AlgaehSearch from "../Wrapper/globalSearch";
 import swal from "sweetalert2";
 import AppointmentComponent from "./AppointmentComponent";
@@ -188,7 +188,7 @@ class Appointment extends PureComponent {
   patientSearch() {
     AlgaehSearch({
       searchGrid: {
-        columns: FrontDesk
+        columns: spotlightSearch.frontDesk.patients
       },
       searchName: "patients",
       uri: "/gloabelSearch/get",
