@@ -4470,7 +4470,7 @@ else if(parseFloat (result[i]["unpaid_leave"])>0)
 						inner join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id\
 						and PR.hospital_id=? and PR.attendance_date between date(?) and date(?)  ${employee} ${project}; 
 						select hims_f_leave_application_id,employee_id,leave_application_code,from_leave_session,L.leave_type,from_date,to_leave_session,\
-						to_date from hims_f_leave_application LA inner join hims_d_leave L on LA.leave_id=L.hims_d_leave_id \
+						to_date,holiday_included,weekoff_included from hims_f_leave_application LA inner join hims_d_leave L on LA.leave_id=L.hims_d_leave_id \
 						where status='APR' and ((  date('${from_date}')>=date(from_date) and date('${from_date}')<=date(to_date)) or\
 						( date('${to_date}')>=date(from_date) and   date('${to_date}')<=date(to_date)) \
 						or (date(from_date)>= date('${from_date}') and date(from_date)<=date('${to_date}') ) or \
@@ -4521,9 +4521,13 @@ else if(parseFloat (result[i]["unpaid_leave"])>0)
                               moment(date_range[i]).format("YYYY-MM-DD") &&
                             w.to_date >=
                               moment(date_range[i]).format("YYYY-MM-DD")
+
+                              
                         )
                         .Select(s => {
                           return {
+                            holiday_included: s.holiday_included,
+                            weekoff_included: s.weekoff_included,
                             hospital_id: input.branch_id,
                             month: month,
                             year: year,
@@ -4557,9 +4561,15 @@ else if(parseFloat (result[i]["unpaid_leave"])>0)
                         })
                         .FirstOrDefault(null);
 
-                      if (leave != undefined) {
+
+
+                        if((holiday_or_weekOff == null && leave != null)||(
+                          leave != null&&holiday_or_weekOff != null && holiday_or_weekOff.holiday=="Y"&&leave.holiday_included=="Y"
+                        )||  ( leave != null&&holiday_or_weekOff != null && holiday_or_weekOff.weekoff=="Y"&&leave.weekoff_included=="Y") ) 
+                      {                     
+
                         outputArray.push(leave);
-                      } else if (holiday_or_weekOff != undefined) {
+                      } else if (holiday_or_weekOff != null) {
                         if (holiday_or_weekOff.weekoff == "Y") {
                           let projrct_on_Weekoff = null;
 
@@ -4572,7 +4582,7 @@ else if(parseFloat (result[i]["unpaid_leave"])>0)
                             .Select(s => s.project_id)
                             .FirstOrDefault(null);
 
-                          if (projrct_on_Weekoff != undefined) {
+                          if (projrct_on_Weekoff != null) {
                             outputArray.push({
                               hospital_id: input.branch_id,
                               month: month,
