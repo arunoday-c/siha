@@ -70,7 +70,7 @@ class MonthlyModify extends Component {
         }}
       >
         <div className="popupInner">
-          <div className="col-lg-12">
+          <div className="col-12 margin-top-15">
             <div className="row">
               <div className="col-2 form-group">
                 <AlgaehLabel
@@ -104,6 +104,8 @@ class MonthlyModify extends Component {
                 />
                 <h6>{moment(this.state.month, "M").format("MMMM")}</h6>
               </div>{" "}
+            </div>{" "}
+            <div className="row">
               <div className="col-2 form-group">
                 <AlgaehLabel
                   label={{

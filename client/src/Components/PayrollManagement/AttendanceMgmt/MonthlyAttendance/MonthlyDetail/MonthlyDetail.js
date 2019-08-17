@@ -36,6 +36,14 @@ function MonthlyDetail(props) {
               />
               <h6>{props.employee_name}</h6>
             </div>
+            <div className="col">
+              <ul className="legendBoxCntr">
+                <li className="legendBox weekOffStyle">Week Off</li>
+                <li className="legendBox holidayStyle">Public Holiday</li>
+                <li className="legendBox paidLeaveStyle">Paid Leave</li>
+                <li className="legendBox unpaidLeaveStyle">Un-Paid Leave</li>
+              </ul>
+            </div>
           </div>
 
           <div className="row">
@@ -61,14 +69,14 @@ function MonthlyDetail(props) {
                   //     return moment(row.month, "M").format("MMMM");
                   //   }
                   // },
-                  {
-                    fieldName: "weekoff_days",
-                    label: <AlgaehLabel label={{ forceLabel: "weekoffs" }} />
-                  },
-                  {
-                    fieldName: "holidays",
-                    label: <AlgaehLabel label={{ forceLabel: "holidays" }} />
-                  },
+                  // {
+                  //   fieldName: "weekoff_days",
+                  //   label: <AlgaehLabel label={{ forceLabel: "weekoffs" }} />
+                  // },
+                  // {
+                  //   fieldName: "holidays",
+                  //   label: <AlgaehLabel label={{ forceLabel: "holidays" }} />
+                  // },
                   // {
                   //   fieldName: "total_work_days",
                   //   label: (
@@ -204,6 +212,18 @@ function MonthlyDetail(props) {
                     }
                   }
                 ]}
+                rowClassName={row => {
+                  switch (row.lay_off) {
+                    case "W":
+                      return "weekOffStyle";
+                    case "H":
+                      return "holidayStyle";
+                    case "P":
+                      return "paidLeaveStyle";
+                    case "U":
+                      return "unpaidLeaveStyle";
+                  }
+                }}
                 dataSource={{
                   data: props.data
                 }}

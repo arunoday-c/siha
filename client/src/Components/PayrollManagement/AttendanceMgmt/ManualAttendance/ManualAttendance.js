@@ -595,7 +595,18 @@ class ManualAttendance extends Component {
                       filter={true}
                       paging={{ page: 0, rowsPerPage: 31 }}
                       tool={{
-                        fileName: "Daily Time Sheet",
+                        fileName:
+                          this.state.select_wise === "M" &&
+                          this.state.employee_details.length > 0
+                            ? this.state.employee_details[0]["employee_code"] +
+                              "-" +
+                              moment(
+                                this.state.employee_details[0]["month"],
+                                "M"
+                              ).format("MMM") +
+                              "-" +
+                              this.state.employee_details[0]["year"]
+                            : "Daily Time Sheet",
                         extraColumns: [],
                         formulazone: (worksheet, callBack) => {
                           handlers.formulazone(

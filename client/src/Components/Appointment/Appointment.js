@@ -1533,7 +1533,7 @@ class Appointment extends PureComponent {
 
     let sel_steps = sel_stat !== undefined ? sel_stat.steps : 0;
 
-    const status =
+    let status =
       sel_stat_id !== null
         ? Enumerable.from(
             this.state.appointmentStatus !== undefined
@@ -1556,6 +1556,16 @@ class Appointment extends PureComponent {
       : this.isInactiveTimeSlot(data.time)
       ? "inActiveSlotOpacity"
       : "activeSlotOpacity";
+
+    let isTodayActive = moment(this.state.activeDateHeader).isSame(
+      moment(),
+      "day"
+    );
+    if (!isTodayActive) {
+      status = status.filter(
+        stat => stat.hims_d_appointment_status_id !== this.state.checkInId
+      );
+    }
 
     let bg_color =
       patient != null

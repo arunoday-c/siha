@@ -217,7 +217,7 @@ class ResultEntry extends Component {
                         <h6>
                           {this.state.service_name
                             ? this.state.service_name
-                            : "Lab Name"}
+                            : "------"}
                         </h6>
                       </div>
                       <AlagehAutoComplete

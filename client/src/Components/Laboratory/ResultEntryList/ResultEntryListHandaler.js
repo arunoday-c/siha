@@ -117,25 +117,50 @@ const getSampleCollectionDetails = $this => {
 };
 
 const ResultEntryModel = ($this, row) => {
-  if (row.status === "O") {
-    swalMessage({
-      title: "Please collect the sample.",
-      type: "warning"
-    });
+  debugger;
+  if (row.test_section === "M") {
+    row.microopen = true;
+    $this.setState(
+      {
+        isMicroOpen: !$this.state.isMicroOpen,
+        selectedPatient: row
+      },
+      () => {
+        debugger;
+      }
+    );
   } else {
-    if (row.sample_status === "N") {
+    if (row.status === "O") {
       swalMessage({
-        title: "Please accept the sample.",
+        title: "Please collect the sample.",
         type: "warning"
       });
     } else {
-      row.open = true;
-      $this.setState({
-        isOpen: !$this.state.isOpen,
-        selectedPatient: row
-      });
+      if (row.sample_status === "N") {
+        swalMessage({
+          title: "Please accept the sample.",
+          type: "warning"
+        });
+      } else {
+        row.open = true;
+        $this.setState({
+          isOpen: !$this.state.isOpen,
+          selectedPatient: row
+        });
+      }
     }
   }
+};
+
+const closeMicroResultEntry = ($this, e) => {
+  $this.setState(
+    {
+      isMicroOpen: !$this.state.isMicroOpen
+    },
+    () => {
+      getSampleCollectionDetails($this);
+    }
+  );
 };
 
 const closeResultEntry = ($this, e) => {
@@ -175,5 +200,6 @@ export {
   getSampleCollectionDetails,
   ResultEntryModel,
   closeResultEntry,
-  Refresh
+  Refresh,
+  closeMicroResultEntry
 };
