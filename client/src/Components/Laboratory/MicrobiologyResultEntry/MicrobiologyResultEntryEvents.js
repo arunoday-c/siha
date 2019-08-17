@@ -90,7 +90,7 @@ const UpdateLabOrder = ($this, status) => {
           type: "success",
           title: "Done successfully . ."
         });
-
+        getMicroResult($this);
         $this.setState({
           status: status,
           entered_by:

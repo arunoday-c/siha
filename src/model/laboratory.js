@@ -288,34 +288,47 @@ let insertLadOrderedServices = (req, res, next) => {
                         })
                         .ToArray();
 
-                      _mysql
-                        .executeQuery({
-                          query: "INSERT INTO hims_f_ord_analytes(??) VALUES ?",
-                          values: labAnalytes,
-                          includeValues: analyts,
-                          extraValues: {
-                            created_by: req.userIdentity.algaeh_d_app_user_id,
-                            updated_by: req.userIdentity.algaeh_d_app_user_id
-                          },
-                          bulkInsertOrUpdate: true,
-                          printQuery: true
-                        })
-                        .then(ord_analytes => {
-                          if (req.connection == null) {
-                            // _mysql.commitTransaction(() => {
-                            //   _mysql.releaseConnection();
-                            req.records = ord_analytes;
-                            next();
-                            // });
-                          } else {
-                            next();
-                          }
-                        })
-                        .catch(e => {
-                          _mysql.rollBackTransaction(() => {
-                            next(e);
+                      if (labAnalytes.length > 0) {
+                        _mysql
+                          .executeQuery({
+                            query:
+                              "INSERT INTO hims_f_ord_analytes(??) VALUES ?",
+                            values: labAnalytes,
+                            includeValues: analyts,
+                            extraValues: {
+                              created_by: req.userIdentity.algaeh_d_app_user_id,
+                              updated_by: req.userIdentity.algaeh_d_app_user_id
+                            },
+                            bulkInsertOrUpdate: true,
+                            printQuery: true
+                          })
+                          .then(ord_analytes => {
+                            if (req.connection == null) {
+                              // _mysql.commitTransaction(() => {
+                              //   _mysql.releaseConnection();
+                              req.records = ord_analytes;
+                              next();
+                              // });
+                            } else {
+                              next();
+                            }
+                          })
+                          .catch(e => {
+                            _mysql.rollBackTransaction(() => {
+                              next(e);
+                            });
                           });
-                        });
+                      } else {
+                        if (req.connection == null) {
+                          // _mysql.commitTransaction(() => {
+                          //   _mysql.releaseConnection();
+                          req.records = insert_lab_sample;
+                          next();
+                          // });
+                        } else {
+                          next();
+                        }
+                      }
                     })
                     .catch(e => {
                       _mysql.rollBackTransaction(() => {
