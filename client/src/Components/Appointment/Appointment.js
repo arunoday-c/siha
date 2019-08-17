@@ -14,6 +14,7 @@ import {
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 import Enumerable from "linq";
 import isEmpty from "lodash/isEmpty";
+import Notification from "../Wrapper/algaehNotification";
 import algaehLoader from "../Wrapper/fullPageLoader";
 import FrontDesk from "../../Search/FrontDesk.json";
 import AlgaehSearch from "../Wrapper/globalSearch";
@@ -23,9 +24,10 @@ import {
   generateTimeslotsForDoctor,
   generateReport
 } from "./AppointmentHelper";
-import socket from "../../sockets";
+import { SocketContext } from "../../sockets";
 
 class Appointment extends PureComponent {
+  static contextType = SocketContext;
   constructor(props) {
     super(props);
     let dateToday = moment().format("YYYY") + moment().format("MM") + "01";
@@ -50,7 +52,6 @@ class Appointment extends PureComponent {
       width: 0,
       byPassValidation: true
     };
-    this.appSock = socket("/appointment");
   }
 
   componentDidMount() {
@@ -66,24 +67,22 @@ class Appointment extends PureComponent {
         mappingName: "visittypes"
       }
     });
-    this.appSock.on("refresh_appointment", () => {
-      const { provider_id, sub_department_id } = this.state;
-      if (sub_department_id || provider_id) {
-        this.setState(
-          {
-            byPassValidation: true
-          },
-          this.getAppointmentSchedule
-        );
-      } else {
-        swalMessage({
-          title: "Notification",
-          text: "New Patients are added, Press load to get new data",
-          type: "info",
-          timer: 50000
-        });
-      }
-    });
+    // this.appSock.on("refresh_appointment", patient => {
+    //   const { provider_id, sub_department_id } = this.state;
+    //   if (sub_department_id || provider_id) {
+    //     this.setState(
+    //       {
+    //         byPassValidation: true
+    //       },
+    //       this.getAppointmentSchedule
+    //     );
+    //   } else {
+    //     Notification({
+    //       type: "info",
+    //       text: `Patient ${patient.patient_name} added to ${patient.appointment_from_time} slot on ${patient.appointment_date}`
+    //     });
+    //   }
+    // });
   }
 
   restoreOldState() {
@@ -335,7 +334,7 @@ class Appointment extends PureComponent {
               data: send_data,
               onSuccess: response => {
                 if (response.data.success) {
-                  this.appSock.emit("appointment_created", send_data);
+                  this.context.ftdsk.emit("appointment_created", send_data);
                   if (
                     send_data.appointment_status_id === this.state.checkInId
                   ) {

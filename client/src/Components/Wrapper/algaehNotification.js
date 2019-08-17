@@ -1,14 +1,16 @@
+import swal from "sweetalert2";
+
 export default function Notification(options) {
   const settings = {
-    position: "top-left",
+    position: "top-right",
+    toast: true,
     showConfirmButton: false,
     animation: false,
-    customClass: 'animated slideInRight'
+    customClass: "animated slideInRight",
     timer: 5000,
-    // toast: true,
     ...options
   };
   const toast = swal.mixin(settings);
 
-  toast({ type: settings.type, title: "Notification" });
+  toast({ type: settings.type });
 }

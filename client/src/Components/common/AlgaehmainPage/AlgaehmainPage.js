@@ -8,13 +8,14 @@ import {
   getCookie
 } from "../../../utils/algaehApiCall";
 import DirectRoutes from "../../../Dynamicroutes";
+import { Notifications } from "../Notifications";
 import {
   AlgaehCloseContainer,
   AlgaehOpenContainer
 } from "../../../utils/GlobalFunctions";
 import Enumarable from "linq";
 import swal from "sweetalert2";
-import socket from "../../../sockets";
+import SocketContext from "../../../sockets";
 
 class PersistentDrawer extends React.Component {
   constructor(props) {
@@ -79,6 +80,7 @@ class PersistentDrawer extends React.Component {
         subMenuItem: "GN0001"
       },
       isSelectedByForce: false,
+      openPanel: false,
       menuList: [],
       scrollPosition: 0,
       lang_className: " english_component",
@@ -98,7 +100,6 @@ class PersistentDrawer extends React.Component {
       window.location.hash = "";
     }
 
-    const that = this;
     algaehApiCall({
       uri: "/algaehMasters/getRoleBaseActiveModules",
       method: "GET",
@@ -161,9 +162,12 @@ class PersistentDrawer extends React.Component {
             });
           }
 
-          that.setState({
-            menuList: dataResponse.data.records
-          });
+          this.setState(
+            {
+              menuList: dataResponse.data.records
+            },
+            () => console.log(this.state.menuList)
+          );
         }
       },
       onFailure: error => {
@@ -410,31 +414,32 @@ class PersistentDrawer extends React.Component {
     setCookie("module_id", module_id, 30);
     // AlgaehLoader({ show: true });
 
-    this.setState(
-      {
-        sideopen: false,
-        searchModules: "",
-        title: e.currentTarget.innerText,
-        renderComponent: screenName,
-        arlabl: submenu.other_language,
-        enlabl: submenu.screen_name,
-        onlyToggeleMenu: "",
-        lang_className: lang_className,
-        activeNode: {
-          class: "active",
-          menuselected: _menuselected,
-          subMenuItem: _submenuselected
-        }
-      },
-      () => {
-        socket().emit("page_opened", this.state.renderComponent);
+    this.setState({
+      sideopen: false,
+      searchModules: "",
+      title: e.currentTarget.innerText,
+      renderComponent: screenName,
+      arlabl: submenu.other_language,
+      enlabl: submenu.screen_name,
+      onlyToggeleMenu: "",
+      lang_className: lang_className,
+      activeNode: {
+        class: "active",
+        menuselected: _menuselected,
+        subMenuItem: _submenuselected
       }
-    );
+    });
   }
 
   logoutLink(e) {
     window.location.href = window.location.origin + "/#";
   }
+
+  handlePanel = () => {
+    this.setState({
+      openPanel: !this.state.openPanel
+    });
+  };
 
   SearchModuleHandler(e) {
     this.setState({ searchModules: e.target.value });
@@ -580,6 +585,16 @@ class PersistentDrawer extends React.Component {
               </span>
             </div>
           </div>
+          <div
+            style={{
+              marginRight: 0
+            }}
+            className="dropdown navTopbar-dropdown"
+            onClick={this.handlePanel}
+          >
+            <i className="fas fa-bell fa-lg" />
+          </div>
+
           <div className="dropdown navTopbar-dropdown">
             <i className="fas fa-angle-down fa-lg" />
             <div
@@ -754,6 +769,10 @@ class PersistentDrawer extends React.Component {
           className={"mainPageArea container-fluid" + this.state.lang_className}
           id="hisapp"
         >
+          <Notifications
+            open={this.state.openPanel}
+            modules={this.state.menuList}
+          />
           <DirectRoutes
             componet={this.state.renderComponent}
             selectedLang={this.state.selectedLang}
