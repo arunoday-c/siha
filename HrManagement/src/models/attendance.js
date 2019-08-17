@@ -4501,10 +4501,12 @@ module.exports = {
                             w.to_date >=
                               moment(date_range[i]).format("YYYY-MM-DD")
 
-                              && (w.holiday_included=="Y"||w.weekoff_included=="Y")
+                              
                         )
                         .Select(s => {
                           return {
+                            holiday_included: s.holiday_included,
+                            weekoff_included: s.weekoff_included,
                             hospital_id: input.branch_id,
                             month: month,
                             year: year,
@@ -4538,9 +4540,15 @@ module.exports = {
                         })
                         .FirstOrDefault(null);
 
-                      if (leave != undefined) {
+
+
+                        if((holiday_or_weekOff == null && leave != null)||(
+                          leave != null&&holiday_or_weekOff != null && holiday_or_weekOff.holiday=="Y"&&leave.holiday_included=="Y"
+                        )||  ( leave != null&&holiday_or_weekOff != null && holiday_or_weekOff.weekoff=="Y"&&leave.weekoff_included=="Y") ) 
+                      {                     
+
                         outputArray.push(leave);
-                      } else if (holiday_or_weekOff != undefined) {
+                      } else if (holiday_or_weekOff != null) {
                         if (holiday_or_weekOff.weekoff == "Y") {
                           let projrct_on_Weekoff = null;
 
@@ -4553,7 +4561,7 @@ module.exports = {
                             .Select(s => s.project_id)
                             .FirstOrDefault(null);
 
-                          if (projrct_on_Weekoff != undefined) {
+                          if (projrct_on_Weekoff != null) {
                             outputArray.push({
                               hospital_id: input.branch_id,
                               month: month,
