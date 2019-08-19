@@ -186,6 +186,7 @@ class RegistrationPatient extends Component {
   }
 
   CloseUpdatePatientDetail(e) {
+    AlgaehLoader({ show: true });
     this.setState(
       {
         UpdatepatientDetail: !this.state.UpdatepatientDetail
@@ -757,28 +758,18 @@ class RegistrationPatient extends Component {
               </div>
             </div>
           }
+          editData={{
+            events: {
+              onClick: UpdatePatientDetail.bind(this, this)
+            }
+          }}
           printArea={{
             menuitems: [
-              // {
-              //   label: "Print Bar Code",
-              //   events: {
-              //     onClick: this.printBarCodeHandler.bind(this)
-              //   }
-              // },
-
               {
                 label: "ID Card",
                 events: {
                   onClick: () => {
                     generateIdCard(this, this);
-                  }
-                }
-              },
-              {
-                label: "Patient Update",
-                events: {
-                  onClick: () => {
-                    UpdatePatientDetail(this, this);
                   }
                 }
               }

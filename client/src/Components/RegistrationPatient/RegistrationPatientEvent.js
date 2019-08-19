@@ -519,7 +519,6 @@ const ShowPackageUtilize = $this => {
   });
 };
 const UpdatePatientDetail = $this => {
-  debugger;
   if ($this.state.patient_code === null || $this.state.patient_code === "") {
     swalMessage({
       title: "Please Select the patient.",

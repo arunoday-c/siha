@@ -60,28 +60,10 @@ class UpdatePatientDetails extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    debugger;
     if (newProps.patient_code !== undefined && newProps.patient_code !== "") {
       this.getCtrlCode(newProps.patient_code);
     }
   }
-
-  // componentWillReceiveProps(newProps) {
-  //   debugger;
-  //   let prevLang = getCookie("Language");
-  //   if (prevLang !== this.state.selectedLang) {
-  //     setGlobal({ selectedLang: prevLang });
-  //     let IOputs = PatRegIOputs.inputParam();
-  //
-  //     IOputs.visittypeselect = true;
-  //     IOputs.age = 0;
-  //     IOputs.AGEMM = 0;
-  //     IOputs.AGEDD = 0;
-  //     IOputs.selectedLang = getCookie("Language");
-  //
-  //     this.setState(IOputs);
-  //   }
-  // }
 
   SavePatientDetails(e) {
     SetBulkState({
@@ -288,12 +270,11 @@ class UpdatePatientDetails extends Component {
                   <button
                     type="button"
                     className="btn btn-default"
-                    onClick={ClearData.bind(this, this)}
-                    disabled={this.state.clearEnable}
+                    onClick={e => {
+                      this.onClose(e);
+                    }}
                   >
-                    <AlgaehLabel
-                      label={{ fieldName: "btn_clear", returnText: true }}
-                    />
+                    Cancel
                   </button>
                 </div>
               </div>
