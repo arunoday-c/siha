@@ -50,7 +50,7 @@ export default class Notifications extends Component {
   render() {
     const { notiList } = this.state;
     return (
-      <Portal open={this.props.open}>
+      <Portal open={this.props.open} onClose={this.props.handlePanel}>
         <Segment.Group
           style={{
             right: "2.5em",
@@ -67,7 +67,9 @@ export default class Notifications extends Component {
             {notiList.length !== 0 ? (
               notiList.map(noti => <Segment>{noti}</Segment>)
             ) : (
-              <Segment>No notifications to show</Segment>
+              <Segment style={{ textAlign: "center" }}>
+                No notifications
+              </Segment>
             )}
             {/*<Segment>No notifications to show</Segment>*/}
           </Segment.Group>

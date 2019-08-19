@@ -15,7 +15,7 @@ import {
 } from "../../../utils/GlobalFunctions";
 import Enumarable from "linq";
 import swal from "sweetalert2";
-import SocketContext from "../../../sockets";
+import { SocketProvider } from "../../../sockets";
 
 class PersistentDrawer extends React.Component {
   constructor(props) {
@@ -585,15 +585,16 @@ class PersistentDrawer extends React.Component {
               </span>
             </div>
           </div>
-          <div
+          <a
             style={{
               marginRight: 0
             }}
             className="dropdown navTopbar-dropdown"
+            disabled={this.state.openPanel}
             onClick={this.handlePanel}
           >
             <i className="fas fa-bell fa-lg" />
-          </div>
+          </a>
 
           <div className="dropdown navTopbar-dropdown">
             <i className="fas fa-angle-down fa-lg" />
@@ -765,19 +766,24 @@ class PersistentDrawer extends React.Component {
             </div>
           </div>
         ) : null}
-        <main
-          className={"mainPageArea container-fluid" + this.state.lang_className}
-          id="hisapp"
-        >
-          <Notifications
-            open={this.state.openPanel}
-            modules={this.state.menuList}
-          />
-          <DirectRoutes
-            componet={this.state.renderComponent}
-            selectedLang={this.state.selectedLang}
-          />
-        </main>
+        <SocketProvider modules={this.state.menuList}>
+          <main
+            className={
+              "mainPageArea container-fluid" + this.state.lang_className
+            }
+            id="hisapp"
+          >
+            <Notifications
+              open={this.state.openPanel}
+              handlePanel={this.handlePanel}
+              modules={this.state.menuList}
+            />
+            <DirectRoutes
+              componet={this.state.renderComponent}
+              selectedLang={this.state.selectedLang}
+            />
+          </main>
+        </SocketProvider>
       </div>
     );
   }

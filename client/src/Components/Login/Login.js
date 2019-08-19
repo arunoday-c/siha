@@ -11,10 +11,8 @@ import {
 import { AlagehFormGroup } from "../Wrapper/algaehWrapper";
 import { getTokenDetals } from "../../actions/Login/Loginactions.js";
 import { AlgaehCloseContainer } from "../../utils/GlobalFunctions";
-import { SocketContext } from "../../sockets";
 
 export default class Login extends Component {
-  static contextType = SocketContext;
   constructor(props) {
     super(props);
     this.state = {
@@ -84,7 +82,6 @@ export default class Login extends Component {
             "appRole",
             response.data.records.app_d_app_roles_id
           );
-          this.context.ftdsk.emit("user_logged", this.state.username);
           window.history.pushState(null, null, window.location.href);
           window.onpopstate = function(event) {
             window.history.go(1);

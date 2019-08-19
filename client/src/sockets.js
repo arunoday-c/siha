@@ -1,4 +1,4 @@
-import React, { createContext } from "react";
+import React, { createContext, useEffect } from "react";
 import io from "socket.io-client";
 
 function createUri(nsp) {
@@ -10,8 +10,9 @@ export const SocketContext = createContext(null);
 
 export const SocketProvider = props => {
   const CLIENTS = {
-    ftdsk: io(createUri("/ftdsk"))
+    ftdsk: io.connect(createUri("/ftdsk"))
   };
+  console.log(props);
   return (
     <SocketContext.Provider value={CLIENTS}>
       {props.children}

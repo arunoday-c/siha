@@ -2,7 +2,6 @@ import React from "react";
 import ReactDOM from "react-dom";
 //import { render } from "react-dom";
 import { Provider } from "react-redux";
-import { SocketProvider } from "./sockets";
 import { AlagehReducers } from "./reducers/algaehReducers";
 import logger from "redux-logger";
 import routes from "./routes.js";
@@ -20,9 +19,7 @@ const middleware =
 const store = createStore(AlagehReducers, middleware);
 
 ReactDOM.render(
-  <Provider store={store}>
-    <SocketProvider>{routes}</SocketProvider>
-  </Provider>,
+  <Provider store={store}>{routes}</Provider>,
   document.getElementById("root")
 );
 
