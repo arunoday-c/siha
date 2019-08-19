@@ -1,6 +1,6 @@
 .breadcrumb-fixed {
-  height: "75px";
-  background-color: "#ffffff";
+  height: 75px;
+  background-color: #fff;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
   border-bottom: 1px solid #ced4da; }
 
@@ -24,7 +24,7 @@
     padding: 0;
     margin: 0; }
     .breadCrumb-Data ul li {
-      color: #9a9a9a;
+      color: gray;
       font-size: 0.8em; }
       .breadCrumb-Data ul li a label {
         text-transform: capitalize;
@@ -38,12 +38,12 @@
         padding: 4px;
         cursor: pointer; }
     .breadCrumb-Data .actions-area li {
-      color: #00c1b3;
+      color: #00a796;
       display: contents; }
       .breadCrumb-Data .actions-area li .action-input-area div {
         margin-top: -3%; }
     .breadCrumb-Data .actions-area li:last-child {
-      color: #000000; }
+      color: #000; }
       .breadCrumb-Data .actions-area li:last-child i {
         padding-top: 5px; }
     .breadCrumb-Data .actions-area li:nth-last-child(2) span {
@@ -57,27 +57,38 @@
       padding-left: 5px;
       cursor: pointer; }
   .breadCrumb-Data .spotlightSearchBox {
-    border: 1px solid #ced4d9;
+    border: 1px solidlighten(#000, 80%);
     border-radius: 5px;
     margin-left: 0; }
   .breadCrumb-Data .spotlightSearchIconBox {
-    border-left: 1px solid #ced4d8; }
+    border-left: 1px solid #cccccc; }
 
 .internal-label {
   color: #979292;
   text-transform: uppercase; }
 
+.print-area ul {
+  margin: 0;
+  padding: 0;
+  list-style: none; }
+  .print-area ul li {
+    margin: 0;
+    padding: 0;
+    height: 75px;
+    list-style: none;
+    text-align: center;
+    border-left: 1px solid #cccccc;
+    color: #666666;
+    line-height: 80px;
+    cursor: pointer; }
+    .print-area ul li i {
+      font-size: 2rem;
+      padding: 10px; }
+    .print-area ul li:hover {
+      color: #00a796; }
+
 .print-area div {
-  float: right;
-  height: 75px;
-  border-left: 1px solid #adaaaa; }
-
-.print-area .printImg {
-  height: 36px;
-  cursor: pointer; }
-
-.print-area .printMenuDisplay {
-  padding: 19px 9px; }
+  float: right; }
 
 .print-area .dropdown-menu {
   left: inherit;
@@ -85,7 +96,8 @@
   display: none;
   border-radius: 0 0 5px 5px;
   top: 72px;
-  height: auto; }
+  height: auto;
+  line-height: initial; }
   .print-area .dropdown-menu .dropdown-item {
     padding: 0.5rem 0.8rem;
     color: #686868;

@@ -698,7 +698,7 @@ class RegistrationPatient extends Component {
         ? []
         : this.props.PatientPackageList;
     return (
-      <div id="attach" style={{ marginBottom: "50px" }}>
+      <div id="attach">
         <BreadCrumb
           title={
             <AlgaehLabel
