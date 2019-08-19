@@ -719,6 +719,154 @@ module.exports = {
         next(e);
       });
     }
+  },
+  //created by:irfan
+  getServicesNEw: (req, res, next) => {
+    let input = req.query;
+    const _mysql = new algaehMysql();
+
+    try {
+      let _strAppend = "";
+      let inputValues = [];
+
+      if (input.hospital_id > 0) {
+        _strAppend += " and SD.hospital_id=?";
+        inputValues.push(input.hospital_id);
+      } else {
+        _strAppend += " and SD.hospital_id=?";
+        inputValues.push(req.userIdentity.hospital_id);
+      }
+      if (input.hims_d_services_id > 0) {
+        _strAppend += " and hims_d_services_id=?";
+        inputValues.push(input.hims_d_services_id);
+      }
+
+      if (input.service_type_id > 0) {
+        _strAppend += " and service_type_id=?";
+        inputValues.push(input.service_type_id);
+      }
+
+      if (input.sub_department_id > 0) {
+        _strAppend += " and sub_department_id=?";
+        inputValues.push(input.sub_department_id);
+      }
+      if (input.procedure_type == "DN" || input.procedure_type == "GN") {
+        _strAppend += " and procedure_type=?";
+        inputValues.push(input.procedure_type);
+      }
+
+      _mysql
+        .executeQuery({
+          query:
+            "select hims_d_services_id,S.service_code,S.cpt_code,S.service_name,S.arabic_service_name,\
+            S.service_desc,S.sub_department_id,S.service_type_id,S.procedure_type,hims_d_service_detail_id,\
+            SD.standard_fee,SD.followup_free_fee,SD.followup_paid_fee,SD.discount,SD.vat_applicable,SD.vat_percent\
+            from   hims_d_services S inner join  hims_d_service_detail SD on S.hims_d_services_id=SD.service_id\
+            where  SD.service_status='A'  " +
+            _strAppend +
+            " order by hims_d_services_id desc;",
+          values: inputValues,
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  //created by:Irfan
+  addServicesNEW: (req, res, next) => {
+    let inputParam = req.body;
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQueryWithTransaction({
+          query:
+            "INSERT INTO `hims_d_services` (service_code,cpt_code,service_name,\
+             sub_department_id,service_type_id,procedure_type,\
+             created_by,created_date,updated_by,updated_date) \
+             VALUES (?,?,?,?,?,?,?,?,?,?)",
+          values: [
+            inputParam.service_code,
+            inputParam.cpt_code,
+            inputParam.service_name,
+            inputParam.sub_department_id,
+            inputParam.service_type_id,
+            inputParam.procedure_type,
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date()
+          ],
+          printQuery: true
+        })
+        .then(result => {
+          if (result.insertId > 0) {
+            if (inputParam.branches.length > 0) {
+              const insurtColumns = ["hospital_id"];
+
+              _mysql
+                .executeQuery({
+                  query: "INSERT INTO hims_d_service_detail(??) VALUES ? ",
+                  values: inputParam.branches,
+                  includeValues: insurtColumns,
+                  extraValues: {
+                    service_id: result.insertId,
+                    created_date: new Date(),
+                    created_by: req.userIdentity.algaeh_d_app_user_id,
+                    updated_date: new Date(),
+                    updated_by: req.userIdentity.algaeh_d_app_user_id
+                  },
+                  bulkInsertOrUpdate: true,
+                  printQuery: false
+                })
+                .then(detailResult => {
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.records = detailResult;
+                    next();
+                  });
+                })
+                .catch(error => {
+                  _mysql.rollBackTransaction(() => {
+                    next(error);
+                  });
+                });
+            } else {
+              _mysql.commitTransaction(() => {
+                _mysql.releaseConnection();
+                req.records = result;
+                next();
+              });
+            }
+          } else {
+            req.records = {
+              invalid_data: true,
+              message: "Please provide valid input"
+            };
+            _mysql.rollBackTransaction(() => {
+              next();
+            });
+          }
+        })
+        .catch(error => {
+          _mysql.rollBackTransaction(() => {
+            next(error);
+          });
+        });
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
   }
 };
 

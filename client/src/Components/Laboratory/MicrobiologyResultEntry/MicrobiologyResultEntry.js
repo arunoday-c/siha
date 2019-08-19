@@ -589,7 +589,7 @@ class MicrobiologyResultEntry extends Component {
                 type="button"
                 className="btn btn-primary"
                 onClick={resultEntryUpdate.bind(this, this)}
-                disabled={this.state.status === "V" ? true : false}
+                disabled={this.state.status !== "CL" ? true : false}
               >
                 Save
               </button>

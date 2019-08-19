@@ -5,7 +5,7 @@ import { bindActionCreators } from "redux";
 
 import "./LabSetup.css";
 import "../../index.css";
-import LabSection from "./LabSection/LabSection";
+// import LabSection from "./LabSection/LabSection";
 import LabContainer from "./LabContainer/LabContainer";
 import LabSpecimen from "./LabSpecimen/LabSpecimen";
 // import Equipment from "./Equipment/Equipment";
@@ -22,7 +22,7 @@ class LabSetup extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { pageDisplay: "LabSection", sidBarOpen: true };
+    this.state = { pageDisplay: "LabContainer", sidBarOpen: true };
   }
 
   openTab(e) {
@@ -65,7 +65,7 @@ class LabSetup extends Component {
         <div className="row">
           <div className="tabMaster toggle-section">
             <ul className="nav">
-              <li
+              {/*<li
                 algaehtabs={"LabSection"}
                 className={"nav-item tab-button active"}
                 onClick={this.openTab.bind(this)}
@@ -77,10 +77,10 @@ class LabSetup extends Component {
                     }}
                   />
                 }
-              </li>
+              </li>*/}
               <li
                 algaehtabs={"LabContainer"}
-                className={"nav-item tab-button "}
+                className={"nav-item tab-button active"}
                 onClick={this.openTab.bind(this)}
               >
                 {
@@ -179,9 +179,7 @@ class LabSetup extends Component {
         <div className="common-section">
           {/*  {<this.state.pageDisplay />} */}
 
-          {this.state.pageDisplay === "LabSection" ? (
-            <LabSection />
-          ) : this.state.pageDisplay === "LabContainer" ? (
+          {this.state.pageDisplay === "LabContainer" ? (
             <LabContainer />
           ) : this.state.pageDisplay === "LabSpecimen" ? (
             <LabSpecimen />

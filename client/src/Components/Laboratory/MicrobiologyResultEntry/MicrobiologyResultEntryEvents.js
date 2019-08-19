@@ -46,7 +46,7 @@ export function generateLabResultReport(data) {
     others: { responseType: "blob" },
     data: {
       report: {
-        reportName: "hematologyTestReport",
+        reportName: "microbioTestReport",
         reportParams: [
           { name: "hims_d_patient_id", value: data.patient_id },
           {
@@ -90,7 +90,7 @@ const UpdateLabOrder = ($this, status) => {
           type: "success",
           title: "Done successfully . ."
         });
-
+        getMicroResult($this);
         $this.setState({
           status: status,
           entered_by:

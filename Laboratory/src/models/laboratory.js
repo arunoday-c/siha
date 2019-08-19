@@ -819,24 +819,46 @@ module.exports = {
       let confirmed_by = null;
       let validated_by = null;
       let strQuery = "";
+      let updateQuery = "";
+
       utilities.logger().log("inputParam.status: ", inputParam.status);
       if (inputParam.status == "E") {
-        let insertedValues = [
-          "antibiotic_id",
-          "susceptible",
-          "intermediate",
-          "resistant"
-        ];
-        qry = {
-          query: "INSERT INTO hims_f_micro_result(??) VALUES ?",
-          values: inputParam.microAntbiotic,
-          includeValues: insertedValues,
-          extraValues: {
-            order_id: inputParam.hims_f_lab_order_id
-          },
-          bulkInsertOrUpdate: true,
-          printQuery: true
-        };
+        utilities.logger().log("data_exists: ", inputParam.data_exists);
+        if (inputParam.data_exists == true) {
+          for (let i = 0; i < inputParam.microAntbiotic.length; i++) {
+            updateQuery += mysql.format(
+              "UPDATE `hims_f_micro_result` SET susceptible=?,\
+            `intermediate`=?,`resistant`=? where hims_f_micro_result_id=?;",
+              [
+                inputParam.microAntbiotic[i].susceptible,
+                inputParam.microAntbiotic[i].intermediate,
+                inputParam.microAntbiotic[i].resistant,
+                inputParam.microAntbiotic[i].hims_f_micro_result_id
+              ]
+            );
+          }
+          qry = {
+            query: updateQuery,
+            printQuery: true
+          };
+        } else {
+          let insertedValues = [
+            "antibiotic_id",
+            "susceptible",
+            "intermediate",
+            "resistant"
+          ];
+          qry = {
+            query: "INSERT INTO hims_f_micro_result(??) VALUES ?",
+            values: inputParam.microAntbiotic,
+            includeValues: insertedValues,
+            extraValues: {
+              order_id: inputParam.hims_f_lab_order_id
+            },
+            bulkInsertOrUpdate: true,
+            printQuery: true
+          };
+        }
         entered_by = req.userIdentity.algaeh_d_app_user_id;
         strQuery +=
           " ,status = 'CL', entered_by='" +
@@ -845,8 +867,21 @@ module.exports = {
           moment().format("YYYY-MM-DD HH:mm") +
           "' ";
       } else if (inputParam.status == "CF") {
+        for (let i = 0; i < inputParam.microAntbiotic.length; i++) {
+          updateQuery += mysql.format(
+            "UPDATE `hims_f_micro_result` SET susceptible=?,\
+          `intermediate`=?,`resistant`=? where hims_f_micro_result_id=?;",
+            [
+              inputParam.microAntbiotic[i].susceptible,
+              inputParam.microAntbiotic[i].intermediate,
+              inputParam.microAntbiotic[i].resistant,
+              inputParam.microAntbiotic[i].hims_f_micro_result_id
+            ]
+          );
+        }
         qry = {
-          query: "select 1"
+          query: updateQuery,
+          printQuery: true
         };
         confirmed_by = req.userIdentity.algaeh_d_app_user_id;
         strQuery +=
@@ -856,8 +891,21 @@ module.exports = {
           moment().format("YYYY-MM-DD HH:mm") +
           "'  ";
       } else if (inputParam.status == "V") {
+        for (let i = 0; i < inputParam.microAntbiotic.length; i++) {
+          updateQuery += mysql.format(
+            "UPDATE `hims_f_micro_result` SET susceptible=?,\
+          `intermediate`=?,`resistant`=? where hims_f_micro_result_id=?;",
+            [
+              inputParam.microAntbiotic[i].susceptible,
+              inputParam.microAntbiotic[i].intermediate,
+              inputParam.microAntbiotic[i].resistant,
+              inputParam.microAntbiotic[i].hims_f_micro_result_id
+            ]
+          );
+        }
         qry = {
-          query: "select 1"
+          query: updateQuery,
+          printQuery: true
         };
         validated_by = req.userIdentity.algaeh_d_app_user_id;
         strQuery +=
