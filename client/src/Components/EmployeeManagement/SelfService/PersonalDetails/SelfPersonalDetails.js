@@ -1116,7 +1116,7 @@ class SelfPersonalDetails extends Component {
                   <div className="col-6">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Permenet Address"
+                        forceLabel: "Permanent Address"
                       }}
                     />
                     <h6>{empDetails.permanent_address}</h6>
