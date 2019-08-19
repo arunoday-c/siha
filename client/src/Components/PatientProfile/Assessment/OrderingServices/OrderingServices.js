@@ -68,6 +68,7 @@ class OrderingServices extends Component {
       test_type: "R",
       addNew: true,
       loading_saveOrderService: false,
+      loading_ProcessService: false,
       patient_payable: null,
       company_payble: null,
       sec_company_paybale: null,
@@ -339,6 +340,7 @@ class OrderingServices extends Component {
                 <div className="col" style={{ paddingTop: 19 }}>
                   <ButtonType
                     classname="btn-primary"
+                    loading={this.state.loading_ProcessService}
                     onClick={ProcessService.bind(this, this)}
                     label={{
                       forceLabel: "Add to list",
