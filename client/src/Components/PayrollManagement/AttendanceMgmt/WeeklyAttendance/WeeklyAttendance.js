@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
-import Employee from "../../../../Search/Employee.json";
+import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import "./WeeklyAttendance.css";
 import {
   AlagehAutoComplete,
@@ -463,7 +463,7 @@ export default class WeeklyAttendance extends Component {
   employeeSearch() {
     AlgaehSearch({
       searchGrid: {
-        columns: Employee
+        columns: spotlightSearch.Employee_details.employee
       },
       inputs:
         this.state.sub_department_id !== null &&

@@ -542,7 +542,7 @@ class EmployeeProjectRoster extends Component {
     }
     AlgaehSearch({
       searchGrid: {
-        columns: spotlightSearch.frontDesk.patients
+        columns: spotlightSearch.Employee_details.employee
       },
       searchName: "employee",
       uri: "/gloabelSearch/get",

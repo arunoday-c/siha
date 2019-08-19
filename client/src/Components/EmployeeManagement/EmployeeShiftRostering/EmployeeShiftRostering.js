@@ -8,7 +8,7 @@ import {
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import { getYears, AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
 import { MONTHS } from "../../../utils/GlobalVariables.json";
-import Employee from "../../../Search/Employee.json";
+import spotlightSearch from "../../../Search/spotlightSearch.json";
 import moment from "moment";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import Enumerable from "linq";
@@ -170,7 +170,7 @@ export default class EmployeeShiftRostering extends Component {
     } else {
       AlgaehSearch({
         searchGrid: {
-          columns: Employee
+          columns: spotlightSearch.Employee_details.employee
         },
         searchName: "employee",
         uri: "/gloabelSearch/get",

@@ -3893,29 +3893,20 @@ module.exports = {
 
         let outputArray = [];
         for (let i = 0; i < result.length; i++) {
+          let lay_off = "";
 
-let lay_off="";
-
-
-if(parseFloat (result[i]["weekoff_days"])>0){
-lay_off="W";
-
-}
-else if(parseFloat (result[i]["holidays"])>0)
-{
-  lay_off="H";
-}
-else if(parseFloat (result[i]["paid_leave"])>0)
-{
-  lay_off="P";
-}
-else if(parseFloat (result[i]["unpaid_leave"])>0)
-{
-  lay_off="U";
-}
+          if (parseFloat(result[i]["weekoff_days"]) > 0) {
+            lay_off = "W";
+          } else if (parseFloat(result[i]["holidays"]) > 0) {
+            lay_off = "H";
+          } else if (parseFloat(result[i]["paid_leave"]) > 0) {
+            lay_off = "P";
+          } else if (parseFloat(result[i]["unpaid_leave"]) > 0) {
+            lay_off = "U";
+          }
           outputArray.push({
             ...result[i],
-            lay_off:lay_off,
+            lay_off: lay_off,
             complete_shortage_hr:
               result[i]["shortage_hours"] +
               "." +
@@ -4484,7 +4475,7 @@ else if(parseFloat (result[i]["unpaid_leave"])>0)
                     input.branch_id,
                     input.branch_id
                   ],
-                  printQuery: true
+                  printQuery: false
                 })
                 .then(result => {
                   _mysql.releaseConnection();
@@ -4521,8 +4512,6 @@ else if(parseFloat (result[i]["unpaid_leave"])>0)
                               moment(date_range[i]).format("YYYY-MM-DD") &&
                             w.to_date >=
                               moment(date_range[i]).format("YYYY-MM-DD")
-
-                              
                         )
                         .Select(s => {
                           return {
@@ -4561,13 +4550,17 @@ else if(parseFloat (result[i]["unpaid_leave"])>0)
                         })
                         .FirstOrDefault(null);
 
-
-
-                        if((holiday_or_weekOff == null && leave != null)||(
-                          leave != null&&holiday_or_weekOff != null && holiday_or_weekOff.holiday=="Y"&&leave.holiday_included=="Y"
-                        )||  ( leave != null&&holiday_or_weekOff != null && holiday_or_weekOff.weekoff=="Y"&&leave.weekoff_included=="Y") ) 
-                      {                     
-
+                      if (
+                        (holiday_or_weekOff == null && leave != null) ||
+                        (leave != null &&
+                          holiday_or_weekOff != null &&
+                          holiday_or_weekOff.holiday == "Y" &&
+                          leave.holiday_included == "Y") ||
+                        (leave != null &&
+                          holiday_or_weekOff != null &&
+                          holiday_or_weekOff.weekoff == "Y" &&
+                          leave.weekoff_included == "Y")
+                      ) {
                         outputArray.push(leave);
                       } else if (holiday_or_weekOff != null) {
                         if (holiday_or_weekOff.weekoff == "Y") {
@@ -5275,7 +5268,7 @@ else if(parseFloat (result[i]["unpaid_leave"])>0)
                     to_date,
                     input.hims_d_employee_id
                   ],
-                  printQuery: true
+                  printQuery: false
                 })
                 .then(result => {
                   _mysql.releaseConnection();

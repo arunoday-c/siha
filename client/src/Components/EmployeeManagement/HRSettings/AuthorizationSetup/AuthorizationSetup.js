@@ -8,7 +8,7 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 import { AUTH_TYPE } from "../../../../utils/GlobalVariables.json";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
-import Employee from "../../../../Search/Employee.json";
+import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 
 export default class AuthorizationSetup extends Component {
@@ -223,7 +223,7 @@ export default class AuthorizationSetup extends Component {
       const _element_level = e.currentTarget.getAttribute("name");
       AlgaehSearch({
         searchGrid: {
-          columns: Employee
+          columns: spotlightSearch.Employee_details.employee
         },
         searchName: isEmployee ? "employee" : "users",
         uri: "/gloabelSearch/get",

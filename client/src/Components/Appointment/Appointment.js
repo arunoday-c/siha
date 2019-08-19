@@ -328,6 +328,11 @@ class Appointment extends PureComponent {
                     this.setState({ showApt: false });
                     this.getAppointmentSchedule();
                   }
+                } else {
+                  swalMessage({
+                    title: response.data.records.message,
+                    type: "warning"
+                  });
                 }
               },
               onFailure: error => {

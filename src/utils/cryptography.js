@@ -22,7 +22,8 @@ let encryption = data => {
       edit_monthly_attendance: data["edit_monthly_attendance"],
       hospital_id: data["hospital_id"],
       default_currency: data["default_currency"],
-      default_nationality: data["default_nationality"]
+      default_nationality: data["default_nationality"],
+      unique_id_for_appointmt: data["unique_id_for_appointmt"]
     }
   });
   debugLog("stringData", stringData);

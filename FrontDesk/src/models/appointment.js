@@ -2011,6 +2011,16 @@ module.exports = {
     const _mysql = new algaehMysql();
 
     let input = req.body;
+    let strQry = "";
+    if (
+      req.userIdentity.unique_id_for_appointmt == "PID" &&
+      input.patient_id > 0
+    ) {
+      strQry = `and  patient_id=${input.patient_id} `;
+    } else if (req.userIdentity.unique_id_for_appointmt == "MOB") {
+      strQry = `and contact_number=${input.contact_number} `;
+    }
+
     _mysql
       .executeQuery({
         query:
@@ -2020,7 +2030,7 @@ module.exports = {
         ((?>=appointment_from_time and ?<appointment_to_time)\
         or(?>appointment_from_time and ?<=appointment_to_time));\
         SELECT hims_f_patient_appointment_id,patient_id,sub_department_id,patient_name FROM hims_f_patient_appointment\
-        where record_status='A' and hospital_id=? and cancelled='N' and is_stand_by='N' and contact_number=?\
+        where record_status='A' and hospital_id=? and cancelled='N' and is_stand_by='N' \
         and sub_department_id=? and provider_id=? and appointment_date=?",
         values: [
           req.userIdentity.hospital_id,
@@ -2032,7 +2042,7 @@ module.exports = {
           input.appointment_to_time,
           input.appointment_to_time,
           req.userIdentity.hospital_id,
-          input.contact_number,
+
           input.sub_department_id,
           input.provider_id,
           input.appointment_date
@@ -2045,11 +2055,16 @@ module.exports = {
 
         if (slotResult[0].length > 0 && input.is_stand_by != "Y") {
           _mysql.releaseConnection();
-          req.records = { slotExist: true };
+          req.records = { invalid_input: true, message: "slot already taken" };
           next();
         } else if (slotResult[1].length >= 2 && input.is_stand_by != "Y") {
           _mysql.releaseConnection();
-          req.records = { bookedtwice: true };
+          let msg = "Booked twice  for this patient";
+
+          if (req.userIdentity.unique_id_for_appointmt == "MOB")
+            msg = "Booked twice  for this Mobile number";
+
+          req.records = { invalid_input: true, message: msg };
           next();
         } else {
           _mysql

@@ -12,5 +12,6 @@
   "loan_authorize_privilege": null,
   "edit_monthly_attendance": null,
   "decimal_places": null,
-  "hospital_id": null
+  "hospital_id": null,
+  "unique_id_for_appointmt": null
 }

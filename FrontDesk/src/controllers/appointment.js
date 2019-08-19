@@ -219,7 +219,7 @@ export default () => {
     addPatientAppointment,
     (req, res, next) => {
       let result = req.records;
-      if (result.slotExist == true) {
+      if (result.invalid_input == true) {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: false,
           records: result
