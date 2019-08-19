@@ -67,7 +67,7 @@ class OrderingServices extends Component {
       secondary_network_office_id: null,
       test_type: "R",
       addNew: true,
-
+      loading_saveOrderService: false,
       patient_payable: null,
       company_payble: null,
       sec_company_paybale: null,
@@ -733,6 +733,7 @@ class OrderingServices extends Component {
                     <span className="float-right">
                       <ButtonType
                         classname="btn-primary"
+                        loading={this.state.loading_saveOrderService}
                         onClick={SaveOrdersServices.bind(this, this)}
                         label={{
                           forceLabel: "Save Service",

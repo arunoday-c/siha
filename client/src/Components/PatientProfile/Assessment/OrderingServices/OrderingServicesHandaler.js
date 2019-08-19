@@ -466,71 +466,87 @@ const deleteServices = ($this, row, rowId) => {
 };
 //Save Order
 const SaveOrdersServices = ($this, e) => {
-  let inputObj = {
-    visit_id: $this.state.visit_id,
-    patient_id: $this.state.patient_id,
-    incharge_or_provider: Window.global["provider_id"],
-    doctor_id: Window.global["provider_id"],
-    ordered_by: Window.global["provider_id"],
-    billed: "N",
-    billdetails: $this.state.orderservicesdata
-  };
-  algaehApiCall({
-    uri: "/orderAndPreApproval/insertOrderedServices",
-    data: inputObj,
-    method: "POST",
-    onSuccess: response => {
-      if (response.data.success) {
-        $this.setState({
-          s_service_type: null,
-          s_service: null,
-          selectedLang: "en",
-          patient_id: Window.global["current_patient"],
-          visit_id: Window.global["visit_id"],
-          doctor_id: null,
-          vat_applicable: $this.props.vat_applicable,
-
-          orderservicesdata: [],
-          approval_amt: 0,
-          preapp_limit_amount: 0,
-          preserviceInput: [],
-          dummy_company_payble: 0,
-          approval_limit_yesno: "N",
-          insurance_service_name: null,
-          saved: true,
-
-          insured: "N",
-          primary_insurance_provider_id: null,
-          primary_network_office_id: null,
-          primary_network_id: null,
-          sec_insured: "N",
-          secondary_insurance_provider_id: null,
-          secondary_network_id: null,
-          secondary_network_office_id: null,
-          test_type: "R",
-          addNew: false,
-          patient_payable: null,
-          company_payble: null,
-          sec_company_paybale: null,
-          sub_total_amount: null,
-          discount_amount: null,
-          net_total: null
-        });
-        $this.props.onClose && $this.props.onClose(e);
-
-        swalMessage({
-          title: "Ordered Successfully...",
-          type: "success"
-        });
-      }
+  $this.setState(
+    {
+      loading_saveOrderService: true
     },
-    onFailure: error => {
-      swalMessage({
-        title: error.response.data.message,
-        type: "error"
+    () => {
+      let inputObj = {
+        visit_id: $this.state.visit_id,
+        patient_id: $this.state.patient_id,
+        incharge_or_provider: Window.global["provider_id"],
+        doctor_id: Window.global["provider_id"],
+        ordered_by: Window.global["provider_id"],
+        billed: "N",
+        billdetails: $this.state.orderservicesdata
+      };
+      algaehApiCall({
+        uri: "/orderAndPreApproval/insertOrderedServices",
+        data: inputObj,
+        method: "POST",
+        onSuccess: response => {
+          if (response.data.success) {
+            $this.setState({
+              s_service_type: null,
+              s_service: null,
+              selectedLang: "en",
+              patient_id: Window.global["current_patient"],
+              visit_id: Window.global["visit_id"],
+              doctor_id: null,
+              vat_applicable: $this.props.vat_applicable,
+              loading_saveOrderService: false,
+              orderservicesdata: [],
+              approval_amt: 0,
+              preapp_limit_amount: 0,
+              preserviceInput: [],
+              dummy_company_payble: 0,
+              approval_limit_yesno: "N",
+              insurance_service_name: null,
+              saved: true,
+
+              insured: "N",
+              primary_insurance_provider_id: null,
+              primary_network_office_id: null,
+              primary_network_id: null,
+              sec_insured: "N",
+              secondary_insurance_provider_id: null,
+              secondary_network_id: null,
+              secondary_network_office_id: null,
+              test_type: "R",
+              addNew: false,
+              patient_payable: null,
+              company_payble: null,
+              sec_company_paybale: null,
+              sub_total_amount: null,
+              discount_amount: null,
+              net_total: null
+            });
+            $this.props.onClose && $this.props.onClose(e);
+
+            swalMessage({
+              title: "Ordered Successfully...",
+              type: "success"
+            });
+          }
+        },
+        onFailure: error => {
+          swalMessage({
+            title: error.response.data.message,
+            type: "error"
+          });
+        },
+        onCatch: error => {
+          $this.setState({
+            loading_saveOrderService: false
+          });
+          swalMessage({
+            title: error,
+            type: "error"
+          });
+        }
       });
     }
-  });
+  );
 };
 
 const calculateAmount = ($this, row, e) => {
