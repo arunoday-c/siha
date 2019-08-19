@@ -45,10 +45,12 @@ import {
   generateReceipt,
   getCtrlCode,
   ShowPackageUtilize,
-  ClosePackageUtilize
+  ClosePackageUtilize,
+  UpdatePatientDetail
 } from "./RegistrationPatientEvent";
 import { SetBulkState } from "../../utils/GlobalFunctions";
 import PackageUtilize from "../PatientProfile/PackageUtilize/PackageUtilize";
+import UpdatePatientPopup from "../UpdatePatientDetails/UpdatePatientPopup";
 
 const emptyObject = extend(
   PatRegIOputs.inputParam(),
@@ -63,7 +65,8 @@ class RegistrationPatient extends Component {
       RefundOpen: false,
       visittypeselect: true,
       clearEnable: false,
-      isPackUtOpen: false
+      isPackUtOpen: false,
+      UpdatepatientDetail: false
     };
   }
 
@@ -175,6 +178,17 @@ class RegistrationPatient extends Component {
     this.setState(
       {
         AdvanceOpen: !this.state.AdvanceOpen
+      },
+      () => {
+        getCtrlCode(this, this.state.patient_code);
+      }
+    );
+  }
+
+  CloseUpdatePatientDetail(e) {
+    this.setState(
+      {
+        UpdatepatientDetail: !this.state.UpdatepatientDetail
       },
       () => {
         getCtrlCode(this, this.state.patient_code);
@@ -674,6 +688,7 @@ class RegistrationPatient extends Component {
       }
     });
   }
+
   //Render Page Start Here
 
   render() {
@@ -756,6 +771,14 @@ class RegistrationPatient extends Component {
                 events: {
                   onClick: () => {
                     generateIdCard(this, this);
+                  }
+                }
+              },
+              {
+                label: "Patient Update",
+                events: {
+                  onClick: () => {
+                    UpdatePatientDetail(this, this);
                   }
                 }
               }
@@ -913,6 +936,12 @@ class RegistrationPatient extends Component {
                       pay_type: "R",
                       advance_amount: this.state.advance_amount
                     }}
+                  />
+
+                  <UpdatePatientPopup
+                    show={this.state.UpdatepatientDetail}
+                    onClose={this.CloseUpdatePatientDetail.bind(this)}
+                    patient_code={this.state.patient_code}
                   />
                 </div>
               </div>
