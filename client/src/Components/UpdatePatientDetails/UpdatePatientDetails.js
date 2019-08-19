@@ -230,7 +230,7 @@ class UpdatePatientDetails extends Component {
 
   render() {
     return (
-      <div id="attach" style={{ marginBottom: "50px" }}>
+      <div id="attach">
         {/* <Barcode value='PAT-A-000017'/> */}
         <BreadCrumb
           title={

@@ -224,7 +224,7 @@ class UpdatePatientDetails extends Component {
 
   render() {
     return (
-      <div id="attach" style={{ marginBottom: "50px" }}>
+      <div>
         <AlgaehModalPopUp
           events={{
             onClose: this.onClose.bind(this)
