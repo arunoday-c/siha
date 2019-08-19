@@ -35,7 +35,8 @@ export default class MonthlyAttendance extends Component {
       ).hims_d_hospital_id,
       hims_d_employee_id: null,
       yearAndMonth: moment().startOf("month")._d,
-      formatingString: this.monthFormatorString(moment().startOf("month")),
+
+      formatingString: "",
       attendance_type: JSON.parse(_options).attendance_type,
       currMt: {}
     };
@@ -72,7 +73,12 @@ export default class MonthlyAttendance extends Component {
       onSuccess: res => {
         if (res.data.success) {
           this.setState({
-            data: res.data.records,
+            data: res.data.records.attendance,
+
+            formatingString: this.monthFormatorString(
+              res.data.records.from_date,
+              res.data.records.to_date
+            ),
             displayLoader: false
           });
         }
@@ -90,13 +96,9 @@ export default class MonthlyAttendance extends Component {
     });
   }
 
-  monthFormatorString(yearAndMonth) {
-    const _start = moment(yearAndMonth)
-      .startOf("month")
-      .format("MMM DD YYYY");
-    const _end = moment(yearAndMonth)
-      .endOf("month")
-      .format("MMM DD YYYY");
+  monthFormatorString(from_date, to_date) {
+    const _start = moment(from_date).format("MMM DD YYYY");
+    const _end = moment(to_date).format("MMM DD YYYY");
     return _start + " - " + _end;
   }
 

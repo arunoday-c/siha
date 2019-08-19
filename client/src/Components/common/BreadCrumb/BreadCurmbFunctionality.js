@@ -1,7 +1,7 @@
 /*jslint evil: true */
 import AlgaehSearch from "../../Wrapper/globalSearch";
 
-const SearchDetails = ($this, context, e) => {
+const SearchDetails = ($this, e) => {
   let columnNames = [];
 
   const jsonFileName = $this.props.soptlightSearch.jsonFile.fileName + ".json";
@@ -34,4 +34,10 @@ const SearchDetails = ($this, context, e) => {
   });
 };
 
-export { SearchDetails };
+const EditDetails = ($this, e) => {
+  if ($this.props.editData.events !== undefined) {
+    $this.props.editData.events.onClick();
+  }
+};
+
+export { SearchDetails, EditDetails };

@@ -41,7 +41,8 @@ class PackageUtilize extends Component {
       batch_wise_item: [],
       visitPackageser: false,
       hims_f_package_header_id: null,
-      package_utilize: false
+      package_utilize: false,
+      loading_UtilizeService: false
     };
     this.baseState = this.state;
   }
@@ -705,6 +706,7 @@ class PackageUtilize extends Component {
                     <span className="float-right">
                       <ButtonType
                         classname="btn-primary"
+                        loading={this.state.loading_UtilizeService}
                         onClick={this.UtilizeService.bind(this)}
                         disabled={this.state.closed === "Y" ? true : false}
                         label={{

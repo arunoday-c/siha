@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import "./breadcrumb.css";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
-import { SearchDetails } from "./BreadCurmbFunctionality";
+import { SearchDetails, EditDetails } from "./BreadCurmbFunctionality";
 class BreadCrumb extends PureComponent {
   constructor(props) {
     super(props);
@@ -57,6 +57,17 @@ class BreadCrumb extends PureComponent {
             </div>
           </div>
         </div>
+      );
+    }
+  }
+  showEditData() {
+    if (this.props.editData !== undefined) {
+      return (
+        <i
+          className="fas fa-pen"
+          style={{ paddingTop: 17, paddingLeft: 3, cursor: "pointer" }}
+          onClick={EditDetails.bind(this, this)}
+        />
       );
     }
   }
@@ -145,7 +156,9 @@ class BreadCrumb extends PureComponent {
             </div>
 
             {this.showSpotlightSearch()}
+
             <div className="col margin-top-15">{this.showUserArea()}</div>
+            {this.showEditData()}
             {this.showPrintArea()}
           </div>
         </div>

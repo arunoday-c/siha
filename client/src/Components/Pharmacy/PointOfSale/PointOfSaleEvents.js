@@ -272,6 +272,7 @@ const ClearData = ($this, e) => {
             ).querySelector("input[name='item_id']");
             element.focus();
           });
+          getCashiersAndShiftMAP($this);
         },
         onFailure: error => {
           swalMessage({
