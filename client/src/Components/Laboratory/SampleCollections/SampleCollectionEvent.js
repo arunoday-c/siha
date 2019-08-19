@@ -59,24 +59,61 @@ const CollectSample = ($this, context, row) => {
 };
 
 const printBarcode = ($this, row, e) => {
-  AlgaehReport({
-    report: {
-      fileName: "sampleBarcode",
-      barcode: {
-        parameter: "bar_code",
-        options: {
-          format: "",
-          lineColor: "#0aa",
-          width: 4,
-          height: 40
-        }
+  debugger;
+  algaehApiCall({
+    uri: "/report",
+    method: "GET",
+    module: "reports",
+    headers: {
+      Accept: "blob"
+    },
+    others: { responseType: "blob" },
+    data: {
+      report: {
+        reportName: "specimenBarcode",
+        reportParams: [
+          {
+            name: "hims_f_lab_order_id",
+            value: row.hims_f_lab_order_id
+          }
+        ],
+        outputFileType: "PDF"
       }
     },
-    data: {
-      bar_code: $this.state.patient_code + row.service_code
+    onSuccess: res => {
+      const url = URL.createObjectURL(res.data);
+      let myWindow = window.open(
+        "{{ product.metafields.google.custom_label_0 }}",
+        "_blank"
+      );
+
+      myWindow.document.write(
+        "<iframe src= '" + url + "' width='100%' height='100%' />"
+      );
+      myWindow.document.title = "Specimen Barcode";
     }
   });
 };
+
+// const printBarcode = ($this, row, e) => {
+//   AlgaehReport({
+//     report: {
+//       fileName: "sampleBarcode",
+//       barcode: {
+//         parameter: "bar_code",
+//         options: {
+//           format: "",
+//           lineColor: "#0aa",
+//           width: 4,
+//           height: 40
+//         }
+//       }
+//     },
+//     data: {
+//       bar_code: $this.state.patient_code + row.service_code
+//     }
+//   });
+// };
 
 const dateFormater = value => {
   if (value !== null) {

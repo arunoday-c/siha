@@ -181,6 +181,16 @@ export default function SubjectiveHandler() {
           }
         }
       });
+
+      algaehApiCall({
+        uri: "/doctorsWorkBench/updatePatientEncounter",
+        method: "PUT",
+        data: {
+          other_signs: $this.state.other_signs,
+          significant_signs: $this.state.significant_signs,
+          encounter_id: Window.global.encounter_id
+        }
+      });
     },
 
     updatePatientChiefComplaints: $this => {
@@ -214,6 +224,16 @@ export default function SubjectiveHandler() {
             title: error.message,
             type: "error"
           });
+        }
+      });
+
+      algaehApiCall({
+        uri: "/doctorsWorkBench/updatePatientEncounter",
+        method: "PUT",
+        data: {
+          other_signs: $this.state.other_signs,
+          significant_signs: $this.state.significant_signs,
+          encounter_id: Window.global.encounter_id
         }
       });
     },
