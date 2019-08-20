@@ -324,7 +324,7 @@ function LeaveEntitlement(props) {
           </div>
         </div>
         <div className="col  form-group">
-          <label>Is Propotionate</label>
+          <label>Is Proportionate</label>
           <div className="customCheckbox">
             <label className="checkbox inline">
               <input

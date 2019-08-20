@@ -124,6 +124,10 @@ class ManualAttendance extends Component {
     handlers.timehandle(this, e);
   }
 
+  gridEventHandaler(row, e) {
+    handlers.gridEventHandaler(this, row, e);
+  }
+
   gridtimehandle(row, e) {
     handlers.gdtimehandle(this, row, e);
   }
@@ -451,7 +455,7 @@ class ManualAttendance extends Component {
             </div>
           </div> */}
 
-          <div className="col-12">
+          {/* <div className="col-12">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-body">
                 <div className="row">
@@ -584,6 +588,147 @@ class ManualAttendance extends Component {
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Total Hour" }} />
                           ),
+                          others: {
+                            maxWidth: 100
+                          }
+                        }
+                      ]}
+                      keyId="hims_f_daily_time_sheet_id"
+                      dataSource={{ data: this.state.employee_details }}
+                      isEditable={false}
+                      filter={true}
+                      paging={{ page: 0, rowsPerPage: 31 }}
+                      tool={{
+                        fileName:
+                          this.state.select_wise === "M" &&
+                          this.state.employee_details.length > 0
+                            ? this.state.employee_details[0]["employee_code"] +
+                              "-" +
+                              moment(
+                                this.state.employee_details[0]["month"],
+                                "M"
+                              ).format("MMM") +
+                              "-" +
+                              this.state.employee_details[0]["year"]
+                            : "Daily Time Sheet",
+                        extraColumns: [],
+                        formulazone: (worksheet, callBack) => {
+                          handlers.formulazone(
+                            this.state.employee_details.length,
+                            worksheet,
+                            callBack
+                          );
+                        },
+                        updateRecords: data => {
+                          this.setState({
+                            employee_details: data,
+                            process_attend: false
+                          });
+                        }
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div> */}
+
+          <div className="col-12">
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-body">
+                <div className="row">
+                  <div className="col-12" id="ManualAttendanceGrid_Cntr">
+                    <AlgaehDataGrid
+                      id="ManualAttendanceGrid"
+                      datavalidate="ManualAttendanceGrid"
+                      columns={[
+                        {
+                          fieldName: "employee_code",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Employee Code" }}
+                            />
+                          ),
+                          others: {
+                            maxWidth: 150
+                          }
+                        },
+                        {
+                          fieldName: "full_name",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Employee Name" }}
+                            />
+                          )
+                        },
+                        {
+                          fieldName: "designation",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Designation" }}
+                            />
+                          ),
+                          others: {
+                            maxWidth: 200
+                          }
+                        },
+                        {
+                          fieldName: "project_desc",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Project" }} />
+                          ),
+                          others: {
+                            maxWidth: 200
+                          }
+                        },
+                        {
+                          fieldName: "attendance_date",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Selected Date" }}
+                            />
+                          ),
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {moment(row.attendance_date).format(
+                                  Options.dateFormat
+                                )}
+                              </span>
+                            );
+                          },
+                          others: {
+                            maxWidth: 100
+                          }
+                        },
+
+                        {
+                          fieldName: "worked_hours",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Total Hour" }} />
+                          ),
+                          displayTemplate: row => {
+                            return (
+                              <AlagehFormGroup
+                                textBox={{
+                                  number: {
+                                    allowNegative: false,
+                                    thousandSeparator: ","
+                                  },
+                                  className: "txt-fld",
+                                  name: "worked_hours",
+                                  value: row.worked_hours,
+                                  dontAllowKeys: ["-", "e"],
+                                  events: {
+                                    onChange: this.gridEventHandaler.bind(
+                                      this,
+                                      row
+                                    )
+                                  }
+                                }}
+                              />
+                            );
+                          },
                           others: {
                             maxWidth: 100
                           }
