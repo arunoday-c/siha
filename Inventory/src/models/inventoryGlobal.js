@@ -18,7 +18,7 @@ module.exports = {
               from hims_m_inventory_item_location IL, hims_d_inventory_uom IU, hims_d_inventory_item_master IM \
               where IL.sales_uom = IU.hims_d_inventory_uom_id and IL.item_id = IM.hims_d_inventory_item_master_id\
               and IL.record_status='A'  and item_id=? and inventory_location_id=? and qtyhand>0 \
-              and (expirydt > CURDATE() || exp_date_not_required='Y') order by expirydt",
+              and (date(expirydt) > date(CURDATE()) || exp_date_not_required='Y') order by date(expirydt)",
           values: [req.query.item_id, req.query.item_id, req.query.location_id],
           printQuery: true
         })
@@ -109,7 +109,7 @@ module.exports = {
             "SELECT hims_m_inventory_item_location_id, item_id, inventory_location_id, item_location_status, batchno, expirydt, barcode, qtyhand, qtypo, cost_uom,\
           avgcost, last_purchase_cost, item_type, grn_id, grnno, sale_price, mrp_price, sales_uom \
           from hims_m_inventory_item_location where record_status='A'  and item_id=? and inventory_location_id=? \
-          and qtyhand>0  order by expirydt",
+          and qtyhand>0  order by date(expirydt)",
           values: [req.query.item_id, req.query.location_id],
           printQuery: true
         })
@@ -211,7 +211,7 @@ module.exports = {
             hims_d_inventory_item_master IM where item_id = IM.hims_d_inventory_item_master_id and\
             IL.record_status='A' and qtyhand>0" +
             strAppend +
-            "order by expirydt",
+            "order by date(expirydt)",
           values: intValues,
           printQuery: true
         })
@@ -317,7 +317,7 @@ module.exports = {
             hims_d_inventory_item_master IM left  join hims_m_inventory_item_location IL on\
             IM.hims_d_inventory_item_master_id=IL.item_id where qtyhand>0" +
             strAppend +
-            "group by item_id order by expirydt",
+            "group by item_id order by date(expirydt)",
           values: intValues,
           printQuery: true
         })

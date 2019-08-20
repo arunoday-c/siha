@@ -397,6 +397,7 @@ const EditGrid = ($this, context, cancelRow) => {
 };
 
 const AddSelectedBatches = ($this, context) => {
+  debugger;
   if (
     parseFloat($this.state.item_details.quantity_transferred) >
     parseFloat($this.state.item_details.quantity_authorized)
@@ -412,7 +413,9 @@ const AddSelectedBatches = ($this, context) => {
       let _stock_detail = $this.state.stock_detail;
       let details = extend({}, $this.state.item_details);
       let batches = _.filter($this.state.item_details.batches, f => {
-        return parseFloat(f.quantity_transfer) !== 0;
+        return (
+          parseFloat(f.quantity_transfer) !== 0 && f.quantity_transfer !== null
+        );
       });
 
       const _index = _stock_detail.indexOf($this.state.item_details);

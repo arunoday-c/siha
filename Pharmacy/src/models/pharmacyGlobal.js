@@ -21,7 +21,7 @@ module.exports = {
              from hims_m_item_location IL,hims_d_pharmacy_uom PU, hims_d_item_master IM where\
              IL.sales_uom = PU.hims_d_pharmacy_uom_id and IL.item_id = IM.hims_d_item_master_id and \
              IL.record_status='A'  and item_id=? and pharmacy_location_id=? and qtyhand>0 \
-             and (expirydt > CURDATE()|| exp_date_not_required='Y') order by expirydt",
+             and (date(expirydt) > date(CURDATE())|| exp_date_not_required='Y') order by date(expirydt)",
           values: [req.query.item_id, req.query.item_id, req.query.location_id],
           printQuery: true
         })
@@ -249,7 +249,7 @@ module.exports = {
             hims_d_item_master IM where item_id = IM.hims_d_item_master_id and IL.record_status='A' \
             and IL.qtyhand>0" +
             strAppend +
-            "order by expirydt",
+            "order by date(expirydt)",
           values: intValues,
           printQuery: true
         })
@@ -355,7 +355,7 @@ module.exports = {
             hims_d_item_master IM left  join hims_m_item_location IL on IM.hims_d_item_master_id=IL.item_id \
             where qtyhand>0" +
             strAppend +
-            "group by item_id order by expirydt",
+            "group by item_id order by date(expirydt)",
           values: intValues,
           printQuery: true
         })
