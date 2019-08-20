@@ -203,12 +203,11 @@ export default function ManualAttendanceEvents() {
           let end = row.out_time.split(":");
           var startDate = new Date(0, 0, 0, start[0], start[1], 0);
           var endDate = new Date(0, 0, 0, end[0], end[1], 0);
-          var diff = endDate.getTime() - startDate.getTime();
+          var diff = (endDate.getTime() - startDate.getTime()) / 1000;
 
-          diff_hour = Math.floor(diff / 1000 / 60 / 60);
-
-          diff -= diff_hour * 1000 * 60 * 60;
-          diff_munite = Math.floor(diff / 1000 / 60);
+          diff = Number(diff);
+          diff_hour = Math.floor(diff / 3600);
+          diff_munite = Math.floor((diff % 3600) / 60);
 
           worked_hours = parseFloat(diff_hour) + "." + parseFloat(diff_munite);
         }
@@ -219,16 +218,17 @@ export default function ManualAttendanceEvents() {
             type: "warning"
           });
         } else {
+          debugger;
           let start = row.in_time.split(":");
           let end = value.split(":");
           var out_startDate = new Date(0, 0, 0, start[0], start[1], 0);
           var out_endDate = new Date(0, 0, 0, end[0], end[1], 0);
-          var out_diff = out_endDate.getTime() - out_startDate.getTime();
+          var out_diff =
+            (out_endDate.getTime() - out_startDate.getTime()) / 1000;
 
-          diff_hour = Math.floor(out_diff / 1000 / 60 / 60);
-
-          diff -= diff_hour * 1000 * 60 * 60;
-          diff_munite = Math.floor(out_diff / 1000 / 60);
+          out_diff = Number(out_diff);
+          diff_hour = Math.floor(out_diff / 3600);
+          diff_munite = Math.floor((out_diff % 3600) / 60);
 
           worked_hours = parseFloat(diff_hour) + "." + parseFloat(diff_munite);
         }
@@ -351,6 +351,18 @@ export default function ManualAttendanceEvents() {
             employee_id: row.hims_d_employee_id
           });
         }
+      });
+    },
+    gridEventHandaler: ($this, row, e) => {
+      let name = e.name || e.target.name;
+      let value = e.value || e.target.value;
+      let employee_details = $this.state.employee_details;
+
+      let _index = employee_details.indexOf(row);
+      row[name] = value;
+      employee_details[_index] = row;
+      $this.setState({
+        employee_details: employee_details
       });
     }
   };

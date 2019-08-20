@@ -74,7 +74,7 @@ class EmployeeProjectRoster extends Component {
       employees: [],
       sub_department_id: null,
       department_id: null,
-      allDepartments: [],
+
       hospital_id: JSON.parse(
         AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
       ).hims_d_hospital_id,
@@ -738,7 +738,7 @@ class EmployeeProjectRoster extends Component {
           <AlagehAutoComplete
             div={{ className: "col" }}
             label={{
-              forceLabel: "Select a Year.",
+              forceLabel: "Year",
               isImp: true
             }}
             selector={{
@@ -761,7 +761,7 @@ class EmployeeProjectRoster extends Component {
           <AlagehAutoComplete
             div={{ className: "col" }}
             label={{
-              forceLabel: "Select a Month.",
+              forceLabel: "Month",
               isImp: true
             }}
             selector={{
@@ -783,9 +783,9 @@ class EmployeeProjectRoster extends Component {
             }}
           />
           <AlagehAutoComplete
-            div={{ className: "col form-group" }}
+            div={{ className: "col-2 form-group" }}
             label={{
-              forceLabel: "Filter by Branch",
+              forceLabel: "Branch",
               isImp: true
             }}
             selector={{
@@ -803,8 +803,8 @@ class EmployeeProjectRoster extends Component {
           />
 
           <AlagehAutoComplete
-            div={{ className: "col form-group" }}
-            label={{ forceLabel: "Select Dept.", isImp: true }}
+            div={{ className: "col-2 form-group" }}
+            label={{ forceLabel: "Department", isImp: true }}
             selector={{
               name: "department_id",
               value: this.state.department_id,
@@ -828,8 +828,8 @@ class EmployeeProjectRoster extends Component {
           />
 
           <AlagehAutoComplete
-            div={{ className: "col form-group" }}
-            label={{ forceLabel: "Select Sub Dept." }}
+            div={{ className: "col-2 form-group" }}
+            label={{ forceLabel: "Sub Deptartment" }}
             selector={{
               name: "sub_department_id",
               value: this.state.sub_department_id,
@@ -851,8 +851,8 @@ class EmployeeProjectRoster extends Component {
           />
 
           <AlagehAutoComplete
-            div={{ className: "col form-group" }}
-            label={{ forceLabel: "Select Designation" }}
+            div={{ className: "col-2 form-group" }}
+            label={{ forceLabel: "Designation" }}
             selector={{
               name: "designation_id",
               value: this.state.designation_id,
@@ -871,7 +871,7 @@ class EmployeeProjectRoster extends Component {
             }}
           />
 
-          <div className="col-3" style={{ marginTop: 10 }}>
+          <div className="col-2" style={{ marginTop: 10 }}>
             <div
               className="row"
               style={{
@@ -881,7 +881,7 @@ class EmployeeProjectRoster extends Component {
               }}
             >
               <div className="col">
-                <AlgaehLabel label={{ forceLabel: "Select a Employee." }} />
+                <AlgaehLabel label={{ forceLabel: "Search Employee." }} />
                 <h6> {this.state.emp_name ? this.state.emp_name : "------"}</h6>
               </div>
               <div
@@ -900,8 +900,7 @@ class EmployeeProjectRoster extends Component {
               </div>
             </div>
           </div>
-
-          <div className="col form-group">
+          <div className="col-3 form-group">
             <button
               onClick={this.getEmployeesForProjectRoster.bind(this)}
               style={{ marginTop: 21 }}
@@ -922,7 +921,6 @@ class EmployeeProjectRoster extends Component {
             </button>
           </div>
         </div>
-
         <div className="row">
           <div className="col-12">
             <div className="portlet portlet-bordered margin-bottom-15">

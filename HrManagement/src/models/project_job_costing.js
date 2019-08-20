@@ -405,7 +405,7 @@ module.exports = {
 
     if (
       input.hospital_id > 0 &&
-      input.sub_department_id > 0 &&
+      (input.department_id > 0 || input.sub_department_id > 0) &&
       input.fromDate != null &&
       input.toDate != null
     ) {
@@ -658,7 +658,7 @@ module.exports = {
     } else {
       req.records = {
         invalid_input: true,
-        message: "Select Branch & Sub Department"
+        message: "Select Branch &  Department"
       };
       next();
       return;
