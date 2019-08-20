@@ -49,7 +49,7 @@ export default class AlgaehFileUploader extends Component {
     //   });
     //   return;
     // }
-
+    debugger;
     if (nextProps.renderPrevState !== undefined) {
       this.setState({ ...nextProps.renderPrevState.state });
       return;
@@ -116,6 +116,7 @@ export default class AlgaehFileUploader extends Component {
       this.props.onref(undefined);
   }
   getDisplayImage(propsP) {
+    debugger;
     const { uniqueID, fileType } = propsP.serviceParameters;
     let _call = true;
     if (typeof propsP.validateBeforeCall === "function") {

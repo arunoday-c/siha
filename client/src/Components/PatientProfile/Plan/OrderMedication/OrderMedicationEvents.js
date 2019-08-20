@@ -4,6 +4,12 @@ import { removeGlobal } from "../../../../utils/GlobalFunctions";
 import Enumerable from "linq";
 import Options from "../../../../Options.json";
 import _ from "lodash";
+import {
+  PRESCRIPTION_FREQ_PERIOD,
+  PRESCRIPTION_FREQ_TIME,
+  PRESCRIPTION_FREQ_DURATION
+} from "../../../../utils/GlobalVariables.json";
+
 //Text Handaler Change
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -51,6 +57,51 @@ const numberhandle = ($this, ctrl, e) => {
 //Save Order
 const SaveMedication = ($this, e) => {
   if ($this.state.medicationitems.length > 0) {
+    debugger;
+    let dosage_enterted = Enumerable.from($this.state.medicationitems).any(
+      w => parseFloat(w.dosage) === 0 || w.dosage === null || w.dosage === ""
+    );
+
+    let no_of_days_ent = Enumerable.from($this.state.medicationitems).any(
+      w =>
+        parseFloat(w.no_of_days) === 0 ||
+        w.no_of_days === null ||
+        w.no_of_days === ""
+    );
+
+    let instructions_enterted = Enumerable.from(
+      $this.state.medicationitems
+    ).any(
+      w =>
+        parseFloat(w.instructions) === 0 ||
+        w.instructions === null ||
+        w.instructions === ""
+    );
+
+    if (dosage_enterted === true) {
+      swalMessage({
+        title: "Please enter Dosage.",
+        type: "warning"
+      });
+      return;
+    }
+
+    if (no_of_days_ent === true) {
+      swalMessage({
+        title: "Please enter Duration.",
+        type: "warning"
+      });
+      return;
+    }
+
+    if (instructions_enterted === true) {
+      swalMessage({
+        title: "Please enter Instructions.",
+        type: "warning"
+      });
+      return;
+    }
+
     let inputObj = {
       patient_id: $this.state.patient_id,
       encounter_id: $this.state.encounter_id,
@@ -548,13 +599,48 @@ const getItemStock = $this => {
 };
 
 const onchangegridcol = ($this, row, e) => {
+  debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
+  let medicationitems = $this.state.medicationitems;
+  let _index = medicationitems.indexOf(row);
   if (name !== "instructions") {
     value = value && value > 0 ? value : "";
+
+    const frequency = _.find(
+      PRESCRIPTION_FREQ_PERIOD,
+      f => f.value === row.frequency
+    );
+    const frequencyType = _.find(
+      PRESCRIPTION_FREQ_TIME,
+      f => f.value === row.frequency_type
+    );
+    const consume = _.find(
+      PRESCRIPTION_FREQ_DURATION,
+      f => f.value === row.frequency_time
+    );
+    if (frequency !== undefined && frequencyType !== undefined) {
+      if (name === "dosage") {
+        row["instructions"] = `Use ${value} Unit(s),${frequency.name} Time(s) ${
+          frequencyType.name
+        } '${consume !== undefined ? consume.name : ""}' for ${
+          row.no_of_days
+        } day(s)`;
+      } else if (name === "no_of_days") {
+        row["instructions"] = `Use ${row.dosage} Unit(s),${
+          frequency.name
+        } Time(s) ${frequencyType.name} '${
+          consume !== undefined ? consume.name : ""
+        }' for ${value} day(s)`;
+      }
+    }
   }
   row[name] = value;
-  row.update();
+  medicationitems[_index] = row;
+
+  $this.setState({
+    medicationitems: medicationitems
+  });
 };
 
 const EditGrid = ($this, cancelRow) => {
