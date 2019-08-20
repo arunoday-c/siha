@@ -4,7 +4,7 @@
   "description": "Algaeh Sockets IO services",
   "main": "index.js",
   "scripts": {
-    "ioServer": "cross-env PORT=3019 NODE_ENV=development nodemon -w src --exec \"babel-node src/io_server.js\"",
+    "ioServer": "cross-env PORT=3019 NODE_ENV=development nodemon -w src --exec \"babel-node --inspect src/io_server.js\"",
     "build": "babel src -s -D -d dist",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "cross-env PORT=3019 NODE_ENV=production pm2 start -i 2 io_server.js",
@@ -22,7 +22,8 @@
     "cross-env": "^5.2.0",
     "express": "^4.16.4",
     "moment": "^2.24.0",
-    "socket.io": "^2.2.0"
+    "socket.io": "^2.2.0",
+    "socketio-auth": "^0.1.1"
   },
   "eslintConfig": {
     "parserOptions": {

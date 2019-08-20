@@ -15,7 +15,8 @@ import {
 } from "../../../utils/GlobalFunctions";
 import Enumarable from "linq";
 import swal from "sweetalert2";
-import { SocketProvider } from "../../../sockets";
+import sockets from "../../../sockets";
+import socket from "../../../sockets";
 
 class PersistentDrawer extends React.Component {
   constructor(props) {
@@ -166,7 +167,15 @@ class PersistentDrawer extends React.Component {
             {
               menuList: dataResponse.data.records
             },
-            () => console.log(this.state.menuList)
+            () =>
+              sockets.emit(
+                "user_logged",
+                getCookie("userName"),
+                this.state.menuList.map(module =>
+                  module.module_code.toLowerCase()
+                ),
+                getCookie("keyResources")
+              )
           );
         }
       },
@@ -432,6 +441,7 @@ class PersistentDrawer extends React.Component {
   }
 
   logoutLink(e) {
+    socket.emit("user_logout");
     window.location.href = window.location.origin + "/#";
   }
 
@@ -766,24 +776,19 @@ class PersistentDrawer extends React.Component {
             </div>
           </div>
         ) : null}
-        <SocketProvider modules={this.state.menuList}>
-          <main
-            className={
-              "mainPageArea container-fluid" + this.state.lang_className
-            }
-            id="hisapp"
-          >
-            <Notifications
-              open={this.state.openPanel}
-              handlePanel={this.handlePanel}
-              modules={this.state.menuList}
-            />
-            <DirectRoutes
-              componet={this.state.renderComponent}
-              selectedLang={this.state.selectedLang}
-            />
-          </main>
-        </SocketProvider>
+        <main
+          className={"mainPageArea container-fluid" + this.state.lang_className}
+          id="hisapp"
+        >
+          <Notifications
+            open={this.state.openPanel}
+            handlePanel={this.handlePanel}
+          />
+          <DirectRoutes
+            componet={this.state.renderComponent}
+            selectedLang={this.state.selectedLang}
+          />
+        </main>
       </div>
     );
   }

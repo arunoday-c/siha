@@ -2,10 +2,10 @@ import React, { Component } from "react";
 import { Header, Segment, Portal, Button } from "semantic-ui-react";
 import isEqual from "lodash/isEqual";
 import alNotification from "../../Wrapper/algaehNotification.js";
-import { SocketContext } from "../../../sockets";
+import sockets from "../../../sockets";
+import moment from "moment";
 
 export default class Notifications extends Component {
-  static contextType = SocketContext;
   constructor(props) {
     super(props);
 
@@ -13,12 +13,37 @@ export default class Notifications extends Component {
       moduleList: [],
       notiList: []
     };
+    this.socket = sockets;
+  }
+
+  formatTime(time) {
+    return moment(time, "HH:mm:ss").format("hh:mm A");
+  }
+
+  formatDate(date) {
+    const req_date = moment(date, "YYYY-MM-DD");
+    if (req_date.isSame(moment(), "day")) {
+      return "for today";
+    } else {
+      return `on ${req_date.format("D MMM")}`;
+    }
   }
 
   componentDidMount() {
-    this.context.ftdsk.on("refresh_appointment", patient => {
+    // use fat arrow functions as callbacks to inherit "this"
+    this.socket.on("refresh_appointment", patient => {
       this.addToNotiList(
-        `Patient ${patient.patient_name} added to ${patient.appointment_from_time} slot on ${patient.appointment_date}`
+        `Patient ${patient.patient_name} added to ${this.formatTime(
+          patient.appointment_from_time
+        )} slot ${this.formatDate(patient.appointment_date)}`
+      );
+    });
+    this.socket.on("patient_added", patient => {
+      const time = this.formatTime(patient.appointment_from_time);
+      const date = this.formatDate(patient.appointment_date);
+      this.addToNotiList(
+        `${patient.patient_name} booked an appointment on ${time}
+        ${date}`
       );
     });
   }

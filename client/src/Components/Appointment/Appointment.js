@@ -24,10 +24,9 @@ import {
   generateTimeslotsForDoctor,
   generateReport
 } from "./AppointmentHelper";
-import { SocketContext } from "../../sockets";
+import sockets from "../../sockets";
 
 class Appointment extends PureComponent {
-  static contextType = SocketContext;
   constructor(props) {
     super(props);
     let dateToday = moment().format("YYYY") + moment().format("MM") + "01";
@@ -52,6 +51,7 @@ class Appointment extends PureComponent {
       width: 0,
       byPassValidation: true
     };
+    this.appSock = sockets;
   }
 
   componentDidMount() {
@@ -67,22 +67,21 @@ class Appointment extends PureComponent {
         mappingName: "visittypes"
       }
     });
-    // this.appSock.on("refresh_appointment", patient => {
-    //   const { provider_id, sub_department_id } = this.state;
-    //   if (sub_department_id || provider_id) {
-    //     this.setState(
-    //       {
-    //         byPassValidation: true
-    //       },
-    //       this.getAppointmentSchedule
-    //     );
-    //   } else {
-    //     Notification({
-    //       type: "info",
-    //       text: `Patient ${patient.patient_name} added to ${patient.appointment_from_time} slot on ${patient.appointment_date}`
-    //     });
-    //   }
-    // });
+    this.appSock.on("refresh_appointment", patient => {
+      console.log(patient);
+      const { provider_id, sub_department_id } = this.state;
+      if (
+        sub_department_id === patient.sub_department_id ||
+        provider_id === patient.provider_id
+      ) {
+        this.setState(
+          {
+            byPassValidation: true
+          },
+          this.getAppointmentSchedule
+        );
+      }
+    });
   }
 
   restoreOldState() {
@@ -334,7 +333,7 @@ class Appointment extends PureComponent {
               data: send_data,
               onSuccess: response => {
                 if (response.data.success) {
-                  this.context.ftdsk.emit("appointment_created", send_data);
+                  this.appSock.emit("appointment_created", send_data);
                   if (
                     send_data.appointment_status_id === this.state.checkInId
                   ) {

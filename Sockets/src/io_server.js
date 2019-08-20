@@ -10,37 +10,55 @@ const exp = express();
 exp.use(cors());
 const app = http.createServer(exp);
 import appsock from "./appointmentSocket";
+import socketAuth from "socketio-auth";
 export const io = require("socket.io")(app);
+import { authenticate } from "./socketAuth";
+
+socketAuth(io, {
+  authenticate
+});
+
+const utils = utilities.AlgaehUtilities();
+const logger = utils.logger();
 
 process.on("warning", warn => {
-  utilities
-    .AlgaehUtilities()
-    .logger()
-    .log("warn", warn, "warn");
+  logger.log("warn", warn, "warn");
 });
 process.on("uncaughtException", error => {
-  utilities
-    .AlgaehUtilities()
-    .logger()
-    .log("uncatched Exception", error, "error");
+  logger.log("uncatched Exception", error, "error");
 });
 process.on("unhandledRejection", (reason, promise) => {
-  utilities
-    .AlgaehUtilities()
-    .logger()
-    .log("Unhandled rejection", { reason: reason, promise: promise }, "error");
+  logger.log(
+    "Unhandled rejection",
+    { reason: reason, promise: promise },
+    "error"
+  );
 });
 
 io.on("connection", socket => {
-  socket.on("user_logged", function(user) {
+  socket.on("user_logged", function(user, moduleList, userIdentity) {
     console.log(`${user} connected`);
+    userIdentity = utils.decryption(userIdentity);
+    console.log(userIdentity);
+    if (moduleList.length !== 0) {
+      if (moduleList.includes("mwb")) {
+        socket.join(userIdentity.employee_id);
+      }
+      socket.join(moduleList);
+    }
   });
+
+  socket.on("user_logout", function() {
+    console.log(socket.rooms);
+    socket.disconnect();
+  });
+
+  appsock(socket);
 
   socket.on("disconnect", () => {
     console.log("Client disconnected");
   });
 });
-appsock(io);
 app.listen(_port);
 console.log(`IO Sockets are running on PORT - *${_port}`);
 export default app;

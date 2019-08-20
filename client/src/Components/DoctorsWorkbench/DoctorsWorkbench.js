@@ -10,6 +10,7 @@ import { setGlobal, getLabelFromLanguage } from "../../utils/GlobalFunctions";
 import Enumerable from "linq";
 import moment from "moment";
 import algaehLoader from "../Wrapper/fullPageLoader";
+import sockets from "../../sockets";
 
 class DoctorsWorkbench extends Component {
   constructor(props) {
@@ -24,7 +25,7 @@ class DoctorsWorkbench extends Component {
       toDate: moment()._d,
       activeDateHeader: moment()._d
     };
-
+    this.socket = sockets;
     this.moveToEncounterList = this.moveToEncounterList.bind(this);
     this.loadListofData = this.loadListofData.bind(this);
   }
@@ -125,6 +126,17 @@ class DoctorsWorkbench extends Component {
 
   componentDidMount() {
     this.loadListofData();
+    this.socket.on("patient_added", patient => {
+      const { appointment_date } = patient;
+      const dateCheck = moment(appointment_date).isSame(
+        moment(this.state.activeDateHeader),
+        "days"
+      );
+      console.log(dateCheck, "date check mwb");
+      if (dateCheck) {
+        this.loadListofData();
+      }
+    });
   }
 
   liGenerate() {
