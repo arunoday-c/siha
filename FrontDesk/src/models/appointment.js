@@ -2018,7 +2018,7 @@ module.exports = {
     ) {
       strQry = `and  patient_id=${input.patient_id} `;
     } else if (req.userIdentity.unique_id_for_appointmt == "MOB") {
-      strQry = `and contact_number=${input.contact_number} `;
+      strQry = `and contact_number='${input.contact_number}' `;
     }
 
     _mysql
@@ -2031,7 +2031,8 @@ module.exports = {
         or(?>appointment_from_time and ?<=appointment_to_time));\
         SELECT hims_f_patient_appointment_id,patient_id,sub_department_id,patient_name FROM hims_f_patient_appointment\
         where record_status='A' and hospital_id=? and cancelled='N' and is_stand_by='N' \
-        and sub_department_id=? and provider_id=? and appointment_date=?",
+        and sub_department_id=? and provider_id=? and appointment_date=? " +
+          strQry,
         values: [
           req.userIdentity.hospital_id,
           input.appointment_date,
@@ -2046,7 +2047,8 @@ module.exports = {
           input.sub_department_id,
           input.provider_id,
           input.appointment_date
-        ]
+        ],
+        printQuery: false
       })
       .then(slotResult => {
         // _mysql.releaseConnection();
