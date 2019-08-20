@@ -7,7 +7,8 @@ import {
   AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
-import Employee from "../../../../Search/Employee.json";
+import spotlightSearch from "../../../../Search/spotlightSearch.json";
+
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import { getYears } from "../../../../utils/GlobalFunctions";
 import YearlyLeaveDetail from "./YearlyLeaveDetail/YearlyLeaveDetail";
@@ -142,7 +143,7 @@ export default class LeaveYearlyProcess extends Component {
   employeeSearch() {
     AlgaehSearch({
       searchGrid: {
-        columns: Employee
+        columns: spotlightSearch.Employee_details.employee
       },
       searchName: "employee",
       uri: "/gloabelSearch/get",

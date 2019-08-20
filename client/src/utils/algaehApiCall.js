@@ -337,8 +337,17 @@ export function swalMessage(options) {
     ...options
   };
   const toast = swal.mixin(settings);
+  let title = settings.title;
+  debugger;
+  if (typeof title === "object") {
+    if (settings.title.response.data.message !== undefined) {
+      title = `${settings.title.response.status} \n ${settings.title.response.data.message}`;
+    } else {
+      title = settings.title.message;
+    }
+  }
 
-  toast({ type: settings.type, title: settings.title });
+  toast({ type: settings.type, title: title });
 }
 
 export function cancelRequest(requestId) {

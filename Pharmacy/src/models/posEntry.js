@@ -746,7 +746,7 @@ module.exports = {
               inner join hims_d_item_master as item on itmloc.item_id = item.hims_d_item_master_id \
               left join hims_m_item_uom as ITMUOM  on ITMUOM.item_master_id=item.hims_d_item_master_id \
               and ITMUOM.uom_id = itmloc.sales_uom \
-              where item_id in (?) and pharmacy_location_id in (?) and qtyhand > 0 and expirydt > CURDATE() order by expirydt",
+              where item_id in (?) and pharmacy_location_id in (?) and qtyhand > 0 and date(expirydt) > CURDATE() order by date(expirydt)",
           values: [item_ids, location_ids],
           printQuery: true
         })

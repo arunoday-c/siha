@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import "./breadcrumb.css";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
-import { SearchDetails } from "./BreadCurmbFunctionality";
+import { SearchDetails, EditDetails } from "./BreadCurmbFunctionality";
 class BreadCrumb extends PureComponent {
   constructor(props) {
     super(props);
@@ -60,6 +60,16 @@ class BreadCrumb extends PureComponent {
       );
     }
   }
+  showEditData() {
+    if (this.props.editData !== undefined) {
+      return (
+        <li onClick={EditDetails.bind(this, this)}>
+          {" "}
+          <i className="fas fa-user-edit bredcrumpIconBig" />
+        </li>
+      );
+    }
+  }
   showUserArea() {
     if (this.props.userArea !== undefined) {
       return this.props.userArea;
@@ -71,11 +81,8 @@ class BreadCrumb extends PureComponent {
   showPrintArea() {
     if (this.props.printArea !== undefined) {
       return (
-        <div className="col-lg-2 print-area">
-          <div>
-            <ul>
-              <li className="printMenuDisplay">
-                <img
+        <li className="printMenuDisplay">
+          {/* <img
                   alt="Algaeh"
                   className="printImg"
                   src={require("../../../assets/images/print.webp")}
@@ -84,33 +91,28 @@ class BreadCrumb extends PureComponent {
                   // this.props.printArea.menuitems.length === 1
                   //   ? this.props.printArea.menuitems[0].events
                   //   : { onClick: this.openPrintMenu.bind(this) })}
-                />
+                /> */}
 
-                {this.props.printArea.menuitems !== undefined ? (
-                  <div
-                    className="dropdown-menu animated fadeIn faster"
-                    aria-labelledby="dropdownMenuButton"
-                  >
-                    {/* <ul className="printActionMenu"> */}
-                    {this.props.printArea.menuitems.map((menu, index) => {
-                      return (
-                        <a
-                          className="dropdown-item"
-                          key={index}
-                          {...menu.events}
-                        >
-                          <span>{menu.label}</span>
-                        </a>
-                      );
-                    })}
-                  </div>
-                ) : (
-                  <React.Fragment />
-                )}
-              </li>
-            </ul>
-          </div>
-        </div>
+          <i className="fas fa-print bredcrumpIconBig" />
+
+          {this.props.printArea.menuitems !== undefined ? (
+            <div
+              className="dropdown-menu animated fadeIn faster"
+              aria-labelledby="dropdownMenuButton"
+            >
+              {/* <ul className="printActionMenu"> */}
+              {this.props.printArea.menuitems.map((menu, index) => {
+                return (
+                  <a className="dropdown-item" key={index} {...menu.events}>
+                    <span>{menu.label}</span>
+                  </a>
+                );
+              })}
+            </div>
+          ) : (
+            <React.Fragment />
+          )}
+        </li>
       );
     }
   }
@@ -145,8 +147,17 @@ class BreadCrumb extends PureComponent {
             </div>
 
             {this.showSpotlightSearch()}
+
             <div className="col margin-top-15">{this.showUserArea()}</div>
-            {this.showPrintArea()}
+
+            <div className="col print-area">
+              <div>
+                <ul>
+                  {this.showEditData()}
+                  {this.showPrintArea()}
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
       </React.Fragment>

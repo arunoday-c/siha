@@ -485,7 +485,7 @@ let insertOrderedServices = (req, res, next) => {
                 .ToArray();
               if (detailsPush.length > 0) {
                 const insurtCols = [
-                  "ordered_services_id",
+                  "hims_f_ordered_services_id",
                   "service_id",
                   "insurance_provider_id",
                   "insurance_network_office_id",
@@ -494,8 +494,9 @@ let insertOrderedServices = (req, res, next) => {
                   "insurance_service_name",
                   "doctor_id",
                   "patient_id",
-                  "gross_amt",
-                  "net_amount"
+                  "ser_gross_amt",
+                  "ser_net_amount",
+                  "services_id"
                 ];
 
                 _mysql
@@ -503,14 +504,12 @@ let insertOrderedServices = (req, res, next) => {
                     query: "INSERT INTO hims_f_service_approval(??) VALUES ?",
                     values: detailsPush,
                     includeValues: insurtCols,
-                    replcaeKeys: [
-                      {
-                        service_id: "services_id",
-                        gross_amt: "ser_gross_amt",
-                        net_amount: "ser_net_amount",
-                        ordered_services_id: "hims_f_ordered_services_id"
-                      }
-                    ],
+                    replcaeKeys: {
+                      services_id: "service_id",
+                      ser_gross_amt: "gross_amt",
+                      ser_net_amount: "net_amount",
+                      hims_f_ordered_services_id: "ordered_services_id"
+                    },
                     extraValues: {
                       created_by: req.userIdentity.algaeh_d_app_user_id,
                       created_date: new Date(),
@@ -520,7 +519,7 @@ let insertOrderedServices = (req, res, next) => {
                     bulkInsertOrUpdate: true,
                     printQuery: true
                   })
-                  .then(result => {
+                  .then(resultPreAprvl => {
                     req.records = { resultPreAprvl, ResultOfFetchOrderIds };
                     next();
                   })
@@ -1096,14 +1095,9 @@ let updateOrderedServices = (req, res, next) => {
       }
     }).then(result => {
       let inputParam = result.billdetails[0];
-      console.log("call back result", inputParam);
 
       let input = extend({}, req.body[0]);
-      console.log("id:", input.hims_f_ordered_services_id);
-      console.log(
-        "hims_f_service_approval_id:",
-        input.hims_f_service_approval_id
-      );
+
       _mysql
         .executeQuery({
           query:
@@ -1231,9 +1225,9 @@ let updatePrescriptionDetail = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   try {
     let input = extend({}, req.body[0]);
-    console.log("apprv_status: ", input.apprv_status);
+
     let insurance_yesno = input.apprv_status === "RJ" ? "N" : "N";
-    console.log("insurance_yesno: ", insurance_yesno);
+
     _mysql
       .executeQuery({
         query:
@@ -1632,9 +1626,7 @@ let getPatientPackage = (req, res, next) => {
       str += ` and H.patient_id=${req.query.patient_id} `;
     }
     if (req.query.hims_f_package_header_id > 0) {
-      str += ` and H.hims_f_package_header_id=${
-        req.query.hims_f_package_header_id
-      } `;
+      str += ` and H.hims_f_package_header_id=${req.query.hims_f_package_header_id} `;
     }
 
     if (req.query.visit_id > 0) {
@@ -1740,7 +1732,7 @@ let deleteOrderService = (req, res, next) => {
         })
         .then(result => {
           let first_result = result[0][0];
-          console.log("first_result", first_result);
+
           if (req.body.service_type == "LAB") {
             strQry += _mysql.mysqlQueryFormat(
               "DELETE FROM hims_f_ord_analytes where order_id=?; DELETE FROM hims_f_lab_sample where order_id=?;\

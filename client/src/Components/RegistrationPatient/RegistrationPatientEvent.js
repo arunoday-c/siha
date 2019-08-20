@@ -518,6 +518,19 @@ const ShowPackageUtilize = $this => {
     package_detail: $this.props.PatientPackageList
   });
 };
+const UpdatePatientDetail = $this => {
+  if ($this.state.patient_code === null || $this.state.patient_code === "") {
+    swalMessage({
+      title: "Please Select the patient.",
+      type: "warning"
+    });
+  } else {
+    $this.setState({
+      UpdatepatientDetail: !$this.state.UpdatepatientDetail
+    });
+  }
+};
+
 const ClosePackageUtilize = ($this, e) => {
   if (e === undefined || e.services_id === undefined) {
     $this.setState(
@@ -610,5 +623,6 @@ export {
   generateReceipt,
   getCtrlCode,
   ShowPackageUtilize,
-  ClosePackageUtilize
+  ClosePackageUtilize,
+  UpdatePatientDetail
 };

@@ -598,7 +598,7 @@ module.exports = {
                   FROM hims_m_inventory_item_location L inner join hims_f_inventory_material_detail \
                   D on D.item_id= L.item_id where date(expirydt) > curdate() and \
                   D.inventory_header_id=? and L.inventory_location_id=? GROUP BY L.item_id\
-                  ) T ON LOC.item_id = T.item_id AND LOC.expirydt = T.MinDate  and \
+                ) T ON LOC.item_id = T.item_id AND date(LOC.expirydt) = date(T.MinDate)  and \
                   D.inventory_header_id=? and LOC.inventory_location_id=?",
                 values: [
                   headerResult[0].hims_f_inventory_material_header_id,
@@ -658,8 +658,8 @@ module.exports = {
                   inner join hims_m_inventory_item_location LOC  on D.item_id=LOC.item_id \
                   inner join `hims_d_inventory_item_master` IM  on IM.hims_d_inventory_item_master_id=D.item_id \
                   inner join `hims_d_inventory_uom` PU  on PU.hims_d_inventory_uom_id=D.item_uom \
-                  where D.inventory_header_id=? and  (LOC.expirydt > CURDATE() || exp_date_not_required='Y') \
-                  and D.quantity_outstanding<>0 order by  LOC.expirydt ",
+                  where D.inventory_header_id=? and  (date(LOC.expirydt) > date(CURDATE()) || exp_date_not_required='Y') \
+                  and D.quantity_outstanding<>0 order by  date(LOC.expirydt) ",
                 values: [inputParam.hims_f_inventory_material_header_id],
                 printQuery: false
               })

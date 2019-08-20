@@ -1,7 +1,7 @@
 @import "../../../styles/algaehCssVariables.scss";
 .breadcrumb-fixed {
-  height: "75px";
-  background-color: "#ffffff";
+  height: 75px;
+  background-color: $color-white;
   // border-bottom: 2px solid #ced4da;
 
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
@@ -33,7 +33,7 @@
     margin: 0;
     // font-family: "Trebuchet MS", " Helvetica, sans-serif";
     li {
-      color: #9a9a9a;
+      color: lighten($color-black, 50%);
       font-size: $fontSize;
       a {
         label {
@@ -57,7 +57,7 @@
       }
     }
     li {
-      color: #00c1b3;
+      color: $primary-color;
       display: contents;
       .action-input-area {
         div {
@@ -66,7 +66,7 @@
       }
     }
     li:last-child {
-      color: #000000;
+      color: $color-black;
       i {
         padding-top: 5px;
       }
@@ -89,18 +89,18 @@
   }
 
   .spotlightSearchBox {
-    border: 1px solid #ced4d9;
+    border: 1px solidlighten($color-black, 80%);
     border-radius: 5px;
     margin-left: 0;
   }
 
   .spotlightSearchIconBox {
-    border-left: 1px solid rgb(206, 212, 216);
+    border-left: 1px solid lighten($color-black, 80%);
   }
 }
 // .text {
 //   background-color: #ffffff;
-//   color: #000000;
+//   color: $color-black000;
 //   display: inline-block;
 //   height: 75px;
 //   padding-left: 16px;
@@ -111,17 +111,31 @@
   text-transform: uppercase;
 }
 .print-area {
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    li {
+      margin: 0;
+      padding: 0;
+      height: 75px;
+      list-style: none;
+      text-align: center;
+      border-left: 1px solid lighten($color-black, 80%);
+      color: lighten($color-black, 40%);
+      line-height: 80px;
+      cursor: pointer;
+      i {
+        font-size: 2rem;
+        padding: 10px;
+      }
+      &:hover {
+        color: $primary-color;
+      }
+    }
+  }
   div {
     float: right;
-    height: 75px;
-    border-left: 1px solid #adaaaa;
-  }
-  .printImg {
-    height: 36px;
-    cursor: pointer;
-  }
-  .printMenuDisplay {
-    padding: 19px 9px;
   }
 
   .dropdown-menu {
@@ -131,6 +145,7 @@
     border-radius: 0 0 5px 5px;
     top: 72px;
     height: auto;
+    line-height: initial;
     .dropdown-item {
       padding: 0.5rem 0.8rem;
       color: #686868;

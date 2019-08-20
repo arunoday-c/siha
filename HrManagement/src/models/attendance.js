@@ -2105,14 +2105,19 @@ module.exports = {
     const _mysql = new algaehMysql();
 
     try {
+
+
+    
       const month_number =
         req.query.yearAndMonth === undefined
           ? req.query.month
-          : moment(req.query.yearAndMonth).format("M");
+          : moment(req.query.yearAndMonth,"YYYY-M-DD").format("M");
+
+          
       const year =
         req.query.yearAndMonth === undefined
           ? req.query.year
-          : moment(new Date(req.query.yearAndMonth)).format("YYYY");
+          : moment(req.query.yearAndMonth,"YYYY-M-DD").format("YYYY");
 
       let selectWhere = req.query;
       let selectData = "";
@@ -2131,6 +2136,38 @@ module.exports = {
           " and E.employee_group_id=" + selectWhere.employee_group_id;
       }
 
+      let from_date = null;
+      let to_date = null;
+
+      _mysql
+      .executeQuery({
+        query:
+          "select attendance_starts,at_st_date,at_end_date  from hims_d_hrms_options;"
+      })
+      .then(options => {
+        if (options.length > 0) {
+          if (
+            options[0]["attendance_starts"] == "PM" &&
+            options[0]["at_st_date"] > 0 &&
+            options[0]["at_end_date"] > 0
+          ) {
+            const f_date = year + "-" + month_number + "-" + options[0]["at_st_date"];
+            const t_date = year + "-" + month_number + "-" + options[0]["at_end_date"];
+
+            from_date = moment(f_date, "YYYY-M-DD")
+              .subtract(1, "months")
+              .format("YYYY-MM-DD");
+            to_date = moment(t_date, "YYYY-M-DD").format("YYYY-MM-DD");
+          } else {
+            from_date = moment(req.query.yearAndMonth, "YYYY-M-DD")
+              .startOf("month")
+              .format("YYYY-MM-DD");
+            to_date = moment(req.query.yearAndMonth, "YYYY-M-DD")
+              .endOf("month")
+              .format("YYYY-MM-DD");
+          }
+
+
       _mysql
         .executeQuery({
           query: `select hims_f_attendance_monthly_id,employee_id,E.employee_code,E.full_name as employee_name,\
@@ -2141,17 +2178,40 @@ module.exports = {
 						inner join hims_d_employee E on AM.employee_id=E.hims_d_employee_id \
 						where AM.record_status='A' and AM.year= ? and AM.month=? ${selectData} `,
           values: [year, month_number],
-          printQuery: false
+          printQuery: true
         })
         .then(result => {
           _mysql.releaseConnection();
-          req.records = result;
+          req.records = {attendance:result,
+          
+          
+            from_date:from_date,
+            to_date: to_date 
+          };
           next();
         })
         .catch(e => {
           _mysql.releaseConnection();
           next(e);
         });
+
+      }
+        else {
+          _mysql.releaseConnection();
+          req.records = {
+            message: "Please define HRMS options",
+            invalid_input: true
+          };
+          next();
+        }
+
+
+
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
     } catch (e) {
       next(e);
     }
@@ -3893,29 +3953,20 @@ module.exports = {
 
         let outputArray = [];
         for (let i = 0; i < result.length; i++) {
+          let lay_off = "";
 
-let lay_off="";
-
-
-if(parseFloat (result[i]["weekoff_days"])>0){
-lay_off="W";
-
-}
-else if(parseFloat (result[i]["holidays"])>0)
-{
-  lay_off="H";
-}
-else if(parseFloat (result[i]["paid_leave"])>0)
-{
-  lay_off="P";
-}
-else if(parseFloat (result[i]["unpaid_leave"])>0)
-{
-  lay_off="U";
-}
+          if (parseFloat(result[i]["weekoff_days"]) > 0) {
+            lay_off = "W";
+          } else if (parseFloat(result[i]["holidays"]) > 0) {
+            lay_off = "H";
+          } else if (parseFloat(result[i]["paid_leave"]) > 0) {
+            lay_off = "P";
+          } else if (parseFloat(result[i]["unpaid_leave"]) > 0) {
+            lay_off = "U";
+          }
           outputArray.push({
             ...result[i],
-            lay_off:lay_off,
+            lay_off: lay_off,
             complete_shortage_hr:
               result[i]["shortage_hours"] +
               "." +
@@ -4484,7 +4535,7 @@ else if(parseFloat (result[i]["unpaid_leave"])>0)
                     input.branch_id,
                     input.branch_id
                   ],
-                  printQuery: true
+                  printQuery: false
                 })
                 .then(result => {
                   _mysql.releaseConnection();
@@ -4521,8 +4572,6 @@ else if(parseFloat (result[i]["unpaid_leave"])>0)
                               moment(date_range[i]).format("YYYY-MM-DD") &&
                             w.to_date >=
                               moment(date_range[i]).format("YYYY-MM-DD")
-
-                              
                         )
                         .Select(s => {
                           return {
@@ -4561,13 +4610,17 @@ else if(parseFloat (result[i]["unpaid_leave"])>0)
                         })
                         .FirstOrDefault(null);
 
-
-
-                        if((holiday_or_weekOff == null && leave != null)||(
-                          leave != null&&holiday_or_weekOff != null && holiday_or_weekOff.holiday=="Y"&&leave.holiday_included=="Y"
-                        )||  ( leave != null&&holiday_or_weekOff != null && holiday_or_weekOff.weekoff=="Y"&&leave.weekoff_included=="Y") ) 
-                      {                     
-
+                      if (
+                        (holiday_or_weekOff == null && leave != null) ||
+                        (leave != null &&
+                          holiday_or_weekOff != null &&
+                          holiday_or_weekOff.holiday == "Y" &&
+                          leave.holiday_included == "Y") ||
+                        (leave != null &&
+                          holiday_or_weekOff != null &&
+                          holiday_or_weekOff.weekoff == "Y" &&
+                          leave.weekoff_included == "Y")
+                      ) {
                         outputArray.push(leave);
                       } else if (holiday_or_weekOff != null) {
                         if (holiday_or_weekOff.weekoff == "Y") {
@@ -5275,7 +5328,7 @@ else if(parseFloat (result[i]["unpaid_leave"])>0)
                     to_date,
                     input.hims_d_employee_id
                   ],
-                  printQuery: true
+                  printQuery: false
                 })
                 .then(result => {
                   _mysql.releaseConnection();

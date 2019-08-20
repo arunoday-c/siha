@@ -167,149 +167,163 @@ export default function PackageSetupEvent() {
         cancelButtonText: "No"
       }).then(willDelete => {
         if (willDelete.value) {
-          for (let i = 0; i < InputObj.package_details.length; i++) {
-            InputObj.package_details[i].utilized_qty =
-              parseFloat(InputObj.package_details[i].utilized_qty) +
-              parseFloat(InputObj.package_details[i].quantity);
-            InputObj.package_details[i].available_qty =
-              parseFloat(InputObj.package_details[i].available_qty) -
-              parseFloat(InputObj.package_details[i].quantity);
-
-            InputObj.package_details[i].created_date = new Date();
-            utilize_amount =
-              utilize_amount +
-              (parseFloat(InputObj.package_details[i].appropriate_amount) /
-                parseFloat(InputObj.package_details[i].qty)) *
+          $this.setState({ loading_UtilizeService: true }, () => {
+            for (let i = 0; i < InputObj.package_details.length; i++) {
+              InputObj.package_details[i].utilized_qty =
+                parseFloat(InputObj.package_details[i].utilized_qty) +
+                parseFloat(InputObj.package_details[i].quantity);
+              InputObj.package_details[i].available_qty =
+                parseFloat(InputObj.package_details[i].available_qty) -
                 parseFloat(InputObj.package_details[i].quantity);
 
-            actual_utilize_amount =
-              actual_utilize_amount +
-              (parseFloat(InputObj.package_details[i].tot_service_amount) /
-                parseFloat(InputObj.package_details[i].qty)) *
-                parseFloat(InputObj.package_details[i].quantity);
+              InputObj.package_details[i].created_date = new Date();
+              utilize_amount =
+                utilize_amount +
+                (parseFloat(InputObj.package_details[i].appropriate_amount) /
+                  parseFloat(InputObj.package_details[i].qty)) *
+                  parseFloat(InputObj.package_details[i].quantity);
 
-            InputObj.package_details[i].patient_id = $this.props.patient_id;
-            InputObj.package_details[i].visit_id = $this.props.visit_id;
-            InputObj.package_details[i].doctor_id = $this.props.doctor_id;
-            InputObj.package_details[i].trans_package_detail_id =
-              InputObj.package_details[i].hims_f_package_detail_id;
-          }
+              actual_utilize_amount =
+                actual_utilize_amount +
+                (parseFloat(InputObj.package_details[i].tot_service_amount) /
+                  parseFloat(InputObj.package_details[i].qty)) *
+                  parseFloat(InputObj.package_details[i].quantity);
 
-          if ($this.state.package_visit_type === "M") {
-            InputObj.utilize_amount = (
-              parseFloat(InputObj.utilize_amount) + utilize_amount
-            ).toFixed(2);
-
-            InputObj.actual_utilize_amount = (
-              parseFloat(InputObj.actual_utilize_amount) + actual_utilize_amount
-            ).toFixed(2);
-
-            InputObj.balance_amount =
-              parseFloat(InputObj.advance_amount) -
-              parseFloat(InputObj.utilize_amount);
-            if (parseFloat(InputObj.balance_amount) <= 0) {
-              swalMessage({
-                title:
-                  "Advance not sufficient to utilize these services.Please collect the advance",
-                type: "warning"
-              });
-              if ($this.props.from_billing === true) {
-                return;
-              }
+              InputObj.package_details[i].patient_id = $this.props.patient_id;
+              InputObj.package_details[i].visit_id = $this.props.visit_id;
+              InputObj.package_details[i].doctor_id = $this.props.doctor_id;
+              InputObj.package_details[i].trans_package_detail_id =
+                InputObj.package_details[i].hims_f_package_detail_id;
             }
-          }
 
-          if ($this.state.consultation === true) {
-            const cons_service = _.find(
-              InputObj.package_details,
-              f => f.service_type_id === 1
-            );
-            let inputObj = {};
-            if (cons_service === null || cons_service === undefined) {
-              inputObj.employee_id = InputObj.doctor_id;
-            } else {
-              inputObj.services_id = cons_service.service_id;
-            }
-            algaehApiCall({
-              uri: "/billing/getEmployeeAndDepartments",
-              module: "billing",
-              method: "get",
-              data: inputObj,
-              onSuccess: response => {
-                if (response.data.success) {
-                  InputObj.doctor_id = response.data.records[0].employee_id;
-                  InputObj.sub_department_id =
-                    response.data.records[0].sub_department_id;
-                  InputObj.services_id = response.data.records[0].services_id;
+            if ($this.state.package_visit_type === "M") {
+              InputObj.utilize_amount = (
+                parseFloat(InputObj.utilize_amount) + utilize_amount
+              ).toFixed(2);
 
-                  $this.setState($this.baseState, () => {
-                    $this.props.onClose && $this.props.onClose(InputObj);
+              InputObj.actual_utilize_amount = (
+                parseFloat(InputObj.actual_utilize_amount) +
+                actual_utilize_amount
+              ).toFixed(2);
+
+              InputObj.balance_amount =
+                parseFloat(InputObj.advance_amount) -
+                parseFloat(InputObj.utilize_amount);
+              if (parseFloat(InputObj.balance_amount) <= 0) {
+                $this.setState({ loading_UtilizeService: false }, () => {
+                  swalMessage({
+                    title:
+                      "Advance not sufficient to utilize these services.Please collect the advance",
+                    type: "warning"
                   });
-                }
-              },
-              onFailure: error => {
-                swalMessage({
-                  title: error.message,
-                  type: "error"
+                  if ($this.props.from_billing === true) {
+                    return;
+                  }
                 });
               }
-            });
-          } else {
-            algaehApiCall({
-              uri: "/billing/updatePatientPackage",
-              module: "billing",
-              method: "PUT",
-              data: $this.state,
-              onSuccess: response => {
-                if (response.data.success) {
-                  if (InputObj.consumtion_items.length > 0) {
-                    InputObj.transaction_type = "CS";
-                    InputObj.location_id = $this.props.inventory_location_id;
-                    InputObj.inventory_stock_detail =
-                      $this.state.consumtion_items;
-                    InputObj.transaction_date = new Date();
-                    InputObj.provider_id = Window.global["provider_id"];
-                    algaehApiCall({
-                      uri: "/inventoryconsumption/addInventoryConsumption",
-                      module: "inventory",
-                      data: InputObj,
-                      onSuccess: response => {
-                        if (response.data.success === true) {
-                          $this.setState($this.baseState, () => {
-                            $this.props.onClose && $this.props.onClose(e);
-                          });
-                          swalMessage({
-                            title: "Successful...",
-                            type: "success"
-                          });
-                        }
-                      },
-                      onFailure: err => {
-                        swalMessage({
-                          title: err.message,
-                          type: "error"
-                        });
-                      }
-                    });
-                  } else {
+            }
+
+            if ($this.state.consultation === true) {
+              const cons_service = _.find(
+                InputObj.package_details,
+                f => f.service_type_id === 1
+              );
+              let inputObj = {};
+              if (cons_service === null || cons_service === undefined) {
+                inputObj.employee_id = InputObj.doctor_id;
+              } else {
+                inputObj.services_id = cons_service.service_id;
+              }
+              algaehApiCall({
+                uri: "/billing/getEmployeeAndDepartments",
+                module: "billing",
+                method: "get",
+                data: inputObj,
+                onSuccess: response => {
+                  if (response.data.success) {
+                    InputObj.doctor_id = response.data.records[0].employee_id;
+                    InputObj.sub_department_id =
+                      response.data.records[0].sub_department_id;
+                    InputObj.services_id = response.data.records[0].services_id;
+
                     $this.setState($this.baseState, () => {
-                      $this.props.onClose && $this.props.onClose(e);
-                    });
-                    swalMessage({
-                      title: "Successful...",
-                      type: "success"
+                      $this.props.onClose && $this.props.onClose(InputObj);
                     });
                   }
+                },
+                onFailure: error => {
+                  $this.setState({ loading_UtilizeService: false }, () => {
+                    swalMessage({
+                      title: error.message,
+                      type: "error"
+                    });
+                  });
                 }
-              },
-              onFailure: error => {
-                swalMessage({
-                  title: error.message,
-                  type: "error"
-                });
-              }
-            });
-          }
+              });
+            } else {
+              algaehApiCall({
+                uri: "/billing/updatePatientPackage",
+                module: "billing",
+                method: "PUT",
+                data: $this.state,
+                onSuccess: response => {
+                  if (response.data.success) {
+                    if (InputObj.consumtion_items.length > 0) {
+                      InputObj.transaction_type = "CS";
+                      InputObj.location_id = $this.props.inventory_location_id;
+                      InputObj.inventory_stock_detail =
+                        $this.state.consumtion_items;
+                      InputObj.transaction_date = new Date();
+                      InputObj.provider_id = Window.global["provider_id"];
+                      algaehApiCall({
+                        uri: "/inventoryconsumption/addInventoryConsumption",
+                        module: "inventory",
+                        data: InputObj,
+                        onSuccess: response => {
+                          if (response.data.success === true) {
+                            $this.setState($this.baseState, () => {
+                              $this.props.onClose && $this.props.onClose(e);
+                            });
+                            swalMessage({
+                              title: "Successful...",
+                              type: "success"
+                            });
+                          }
+                        },
+                        onFailure: err => {
+                          $this.setState(
+                            { loading_UtilizeService: false },
+                            () => {
+                              swalMessage({
+                                title: err.message,
+                                type: "error"
+                              });
+                            }
+                          );
+                        }
+                      });
+                    } else {
+                      $this.setState($this.baseState, () => {
+                        $this.props.onClose && $this.props.onClose(e);
+                      });
+                      swalMessage({
+                        title: "Successful...",
+                        type: "success"
+                      });
+                    }
+                  }
+                },
+                onFailure: error => {
+                  $this.setState({ loading_UtilizeService: false }, () => {
+                    swalMessage({
+                      title: error.message,
+                      type: "error"
+                    });
+                  });
+                }
+              });
+            }
+          });
         }
       });
     },
