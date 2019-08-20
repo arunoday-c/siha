@@ -634,7 +634,7 @@ class PatientProfile extends Component {
     const module_plan = _.find(this.active_modules, f => {
       return f.module_id === parseInt(this.selected_module);
     });
-    debugger;
+
     const _pat_profile =
       this.props.patient_profile !== undefined &&
       this.props.patient_profile.length > 0

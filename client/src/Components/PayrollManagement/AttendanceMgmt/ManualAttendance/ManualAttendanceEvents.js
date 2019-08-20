@@ -218,7 +218,6 @@ export default function ManualAttendanceEvents() {
             type: "warning"
           });
         } else {
-          debugger;
           let start = row.in_time.split(":");
           let end = value.split(":");
           var out_startDate = new Date(0, 0, 0, start[0], start[1], 0);

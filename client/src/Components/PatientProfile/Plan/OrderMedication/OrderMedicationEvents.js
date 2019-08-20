@@ -57,7 +57,6 @@ const numberhandle = ($this, ctrl, e) => {
 //Save Order
 const SaveMedication = ($this, e) => {
   if ($this.state.medicationitems.length > 0) {
-    debugger;
     let dosage_enterted = Enumerable.from($this.state.medicationitems).any(
       w => parseFloat(w.dosage) === 0 || w.dosage === null || w.dosage === ""
     );
@@ -599,7 +598,6 @@ const getItemStock = $this => {
 };
 
 const onchangegridcol = ($this, row, e) => {
-  debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   let medicationitems = $this.state.medicationitems;
