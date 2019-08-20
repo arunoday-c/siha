@@ -117,7 +117,6 @@ const getSampleCollectionDetails = $this => {
 };
 
 const ResultEntryModel = ($this, row) => {
-  debugger;
   if (row.test_section === "M") {
     row.microopen = true;
     $this.setState(
@@ -125,9 +124,7 @@ const ResultEntryModel = ($this, row) => {
         isMicroOpen: !$this.state.isMicroOpen,
         selectedPatient: row
       },
-      () => {
-        debugger;
-      }
+      () => {}
     );
   } else {
     if (row.status === "O") {

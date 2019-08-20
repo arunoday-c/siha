@@ -48,7 +48,6 @@ class TransferEntry extends Component {
   }
 
   componentDidMount() {
-    debugger;
     const hospital = JSON.parse(
       AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
     );
@@ -99,7 +98,7 @@ class TransferEntry extends Component {
         this.props.from_location
       );
     }
-    debugger;
+
     if (
       this.props.transfer_number !== undefined &&
       this.props.transfer_number.length !== 0

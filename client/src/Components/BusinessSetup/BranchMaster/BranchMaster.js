@@ -58,7 +58,6 @@ export default class BranchMaster extends Component {
   }
 
   getBranchMaster() {
-    debugger;
     algaehApiCall({
       uri: "/branchMaster/getBranchMaster",
       method: "GET",
@@ -505,7 +504,6 @@ export default class BranchMaster extends Component {
   }
 
   render() {
-    debugger;
     return (
       <div className="BranchMaster">
         <div className="row">

@@ -611,7 +611,6 @@ class TransferEntryItems extends Component {
                                 />
                               ),
                               displayTemplate: row => {
-                                debugger;
                                 return this.state.ack_tran === false ? (
                                   row.ack_quantity !== "" ? (
                                     parseFloat(row.ack_quantity)
@@ -1016,7 +1015,6 @@ class TransferEntryItems extends Component {
                                   />
                                 ),
                                 displayTemplate: row => {
-                                  debugger;
                                   return this.state.ack_tran === false ? (
                                     row.ack_quantity !== "" ? (
                                       parseFloat(row.ack_quantity)

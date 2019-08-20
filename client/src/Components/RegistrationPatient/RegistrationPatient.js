@@ -88,6 +88,7 @@ class RegistrationPatient extends Component {
       this.props.patient_code !== undefined &&
       this.props.patient_code.length !== 0
     ) {
+      AlgaehLoader({ show: true });
       getCtrlCode(this, this.props.patient_code);
       getCashiersAndShiftMAP(this, "NA");
     } else {
@@ -169,6 +170,7 @@ class RegistrationPatient extends Component {
         RefundOpen: !this.state.RefundOpen
       },
       () => {
+        AlgaehLoader({ show: true });
         getCtrlCode(this, this.state.patient_code);
       }
     );
@@ -180,18 +182,20 @@ class RegistrationPatient extends Component {
         AdvanceOpen: !this.state.AdvanceOpen
       },
       () => {
+        AlgaehLoader({ show: true });
         getCtrlCode(this, this.state.patient_code);
       }
     );
   }
 
   CloseUpdatePatientDetail(e) {
-    AlgaehLoader({ show: true });
+    // AlgaehLoader({ show: true });
     this.setState(
       {
         UpdatepatientDetail: !this.state.UpdatepatientDetail
       },
       () => {
+        AlgaehLoader({ show: true });
         getCtrlCode(this, this.state.patient_code);
       }
     );

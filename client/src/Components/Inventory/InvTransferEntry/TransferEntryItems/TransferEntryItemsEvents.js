@@ -721,7 +721,6 @@ const CloseItemBatch = ($this, context, e) => {
 };
 
 const onchangegridcolauthqty = ($this, context, row, e) => {
-  debugger;
   let name = e.target.name;
   let value = e.target.value === "" ? null : e.target.value;
 

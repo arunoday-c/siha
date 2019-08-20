@@ -24,7 +24,6 @@ class PatientRecall extends Component {
   }
 
   loadPatients() {
-    debugger;
     if (
       this.state.sub_department_id === null &&
       this.state.provider_id === null &&

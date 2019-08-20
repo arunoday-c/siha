@@ -255,7 +255,7 @@ const InsertUpdateEmployee = $this => {
           AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
         );
         let inputObj = $this.state.personalDetails;
-        // debugger;
+
         // if ($this.state.filePreview !== null) {
         //   inputObj = {
         //     ...$this.state.personalDetails,
@@ -358,7 +358,6 @@ const InsertUpdateEmployee = $this => {
             method: "PUT",
             onSuccess: response => {
               if (response.data.success === true) {
-                debugger;
                 if (_employeeImage !== undefined) {
                   _arrayImages.push(
                     new Promise((resolve, reject) => {

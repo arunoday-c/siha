@@ -35,7 +35,6 @@ class InvAcknowledgeList extends Component {
   }
 
   componentDidMount() {
-    debugger;
     let month = moment().format("MM");
     let year = moment().format("YYYY");
     //to load the same list when user come back from whatever screen they went.
@@ -83,7 +82,6 @@ class InvAcknowledgeList extends Component {
   }
 
   ourOwnMiniNavigator = obj => {
-    debugger;
     const { requisition_list, ...rest } = this.state;
     let sendObj = Object.assign(rest, obj);
     this.props.new_routeComponents(sendObj);
