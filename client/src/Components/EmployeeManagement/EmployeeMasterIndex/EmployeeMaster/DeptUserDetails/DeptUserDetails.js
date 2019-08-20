@@ -56,7 +56,6 @@ class DeptUserDetails extends Component {
   }
 
   componentDidMount() {
-    debugger;
     let InputOutput = this.props.EmpMasterIOputs.state.personalDetails;
     InputOutput.designation_id = null;
     InputOutput.reporting_to = null;

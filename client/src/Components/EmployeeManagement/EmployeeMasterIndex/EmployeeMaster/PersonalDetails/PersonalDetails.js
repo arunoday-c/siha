@@ -125,7 +125,6 @@ class PersonalDetails extends Component {
   }
 
   imageDetails(type) {
-    debugger;
     this.setState({ [type]: this[type] });
 
     this.props.EmpMasterIOputs.updateEmployeeTabs({

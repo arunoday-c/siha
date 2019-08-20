@@ -60,8 +60,10 @@ class UpdatePatientDetails extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    if (newProps.patient_code !== undefined && newProps.patient_code !== "") {
-      this.getCtrlCode(newProps.patient_code);
+    if (newProps.show === true) {
+      if (newProps.patient_code !== undefined && newProps.patient_code !== "") {
+        this.getCtrlCode(newProps.patient_code);
+      }
     }
   }
 

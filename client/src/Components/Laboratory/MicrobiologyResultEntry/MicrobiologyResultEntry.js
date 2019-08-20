@@ -114,12 +114,10 @@ class MicrobiologyResultEntry extends Component {
     });
   }
   componentWillReceiveProps(newProps) {
-    debugger;
     if (
       newProps.selectedPatient !== undefined &&
       newProps.selectedPatient.microopen === true
     ) {
-      debugger;
       newProps.selectedPatient.microopen = false;
       newProps.selectedPatient.radioNoGrowth =
         newProps.selectedPatient.bacteria_type === "NG" ? true : false;

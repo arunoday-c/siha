@@ -469,7 +469,6 @@ const checkBoxEvent = ($this, e) => {
 };
 
 const AcknowledgeTransferEntry = $this => {
-  debugger;
   AlgaehLoader({ show: true });
   const Quantity_zero = _.filter(
     $this.state.inventory_stock_detail,

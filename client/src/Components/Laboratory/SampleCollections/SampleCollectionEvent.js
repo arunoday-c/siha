@@ -59,7 +59,6 @@ const CollectSample = ($this, context, row) => {
 };
 
 const printBarcode = ($this, row, e) => {
-  debugger;
   algaehApiCall({
     uri: "/report",
     method: "GET",

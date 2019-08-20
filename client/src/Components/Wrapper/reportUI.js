@@ -674,7 +674,6 @@ export default class ReportUI extends Component {
   }
 
   render() {
-    debugger;
     const _isBarcodeReport = this.props.isbarcodereport;
     const report_name = this.props.options.report.displayName;
     if (this.state.hasError) {

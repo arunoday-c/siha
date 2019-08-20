@@ -389,7 +389,7 @@ const generateReceipt = $this => {
 };
 
 const getCtrlCode = ($this, patcode, row) => {
-  AlgaehLoader({ show: true });
+  // AlgaehLoader({ show: true });
   let visit_type = _.find($this.props.visittypes, f => f.consultation === "Y");
   let provider_id = $this.props.provider_id || null;
   let sub_department_id = $this.props.sub_department_id || null;
