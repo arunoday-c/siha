@@ -338,7 +338,7 @@ class LabAnalyte extends Component {
                   }}
                   isEditable={true}
                   actions={{
-                    allowDelete: false
+                    allowEdit: false
                   }}
                   filter={true}
                   paging={{ page: 0, rowsPerPage: 10 }}

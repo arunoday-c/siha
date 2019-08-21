@@ -147,7 +147,7 @@ class UpdatePatientDetails extends Component {
                       let IOputs = PatRegIOputs.inputParam();
 
                       this.setState(IOputs, () => {
-                        this.props.onClose && this.props.onClose(e);
+                        this.props.onClose && this.props.onClose(true);
                       });
 
                       swalMessage({
@@ -220,7 +220,7 @@ class UpdatePatientDetails extends Component {
     let IOputs = PatRegIOputs.inputParam();
 
     this.setState(IOputs, () => {
-      this.props.onClose && this.props.onClose(e);
+      this.props.onClose && this.props.onClose(false);
     });
   };
 

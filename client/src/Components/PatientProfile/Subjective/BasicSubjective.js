@@ -224,21 +224,6 @@ class BasicSubjective extends Component {
   componentWillUnmount() {
     const err = Validations(this);
     if (!err) {
-      if (
-        this.state.significant_signs !== null ||
-        this.state.other_signs !== null
-      ) {
-        algaehApiCall({
-          uri: "/doctorsWorkBench/updatePatientEncounter",
-          method: "PUT",
-          data: {
-            other_signs: this.state.other_signs,
-            significant_signs: this.state.significant_signs,
-            encounter_id: Window.global.encounter_id
-          }
-        });
-      }
-
       if (this.state.hims_f_episode_chief_complaint_id === null) {
         SubjectiveHandler().addChiefComplainToPatient(this);
       } else {

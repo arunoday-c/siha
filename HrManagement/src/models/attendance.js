@@ -2101,39 +2101,55 @@ module.exports = {
       next(e);
     }
   },
+
+
+
+
   loadAttendance: (req, res, next) => {
     const _mysql = new algaehMysql();
 
     try {
 
-
+      let input = req.query;
     
       const month_number =
-        req.query.yearAndMonth === undefined
-          ? req.query.month
-          : moment(req.query.yearAndMonth,"YYYY-M-DD").format("M");
+        input.yearAndMonth === undefined
+          ? input.month
+          : moment(input.yearAndMonth,"YYYY-M-DD").format("M");
 
           
       const year =
-        req.query.yearAndMonth === undefined
-          ? req.query.year
-          : moment(req.query.yearAndMonth,"YYYY-M-DD").format("YYYY");
+        input.yearAndMonth === undefined
+          ? input.year
+          : moment(input.yearAndMonth,"YYYY-M-DD").format("YYYY");
 
-      let selectWhere = req.query;
-      let selectData = "";
-      if (selectWhere.hospital_id > 0) {
-        selectData += " and AM.hospital_id=" + selectWhere.hospital_id;
+    
+      let strQry = "";
+      if (input.hospital_id > 0) {
+        strQry += " and AM.hospital_id=" + input.hospital_id;
       }
-      if (selectWhere.sub_department_id > 0) {
-        selectData +=
-          " and AM.sub_department_id=" + selectWhere.sub_department_id;
+
+
+
+      if (input.department_id > 0) {
+        strQry += ` and SD.department_id=${input.department_id} `;
       }
-      if (selectWhere.hims_d_employee_id > 0) {
-        selectData += " and AM.employee_id=" + selectWhere.hims_d_employee_id;
+      
+      // if (input.department_id > 0) {
+      //   strQry +=
+      //    ` and SD.department_id=${input.department_id} `;
+      // }
+
+      if (input.sub_department_id > 0) {
+        strQry +=
+          " and AM.sub_department_id=" + input.sub_department_id;
       }
-      if (selectWhere.employee_group_id > 0) {
-        selectData +=
-          " and E.employee_group_id=" + selectWhere.employee_group_id;
+      if (input.hims_d_employee_id > 0) {
+        strQry += " and AM.employee_id=" + input.hims_d_employee_id;
+      }
+      if (input.employee_group_id > 0) {
+        strQry +=
+          " and E.employee_group_id=" + input.employee_group_id;
       }
 
       let from_date = null;
@@ -2159,10 +2175,10 @@ module.exports = {
               .format("YYYY-MM-DD");
             to_date = moment(t_date, "YYYY-M-DD").format("YYYY-MM-DD");
           } else {
-            from_date = moment(req.query.yearAndMonth, "YYYY-M-DD")
+            from_date = moment(input.yearAndMonth, "YYYY-M-DD")
               .startOf("month")
               .format("YYYY-MM-DD");
-            to_date = moment(req.query.yearAndMonth, "YYYY-M-DD")
+            to_date = moment(input.yearAndMonth, "YYYY-M-DD")
               .endOf("month")
               .format("YYYY-MM-DD");
           }
@@ -2174,9 +2190,11 @@ module.exports = {
 						year,month,AM.hospital_id,AM.sub_department_id,\
 						total_days,present_days,absent_days,total_work_days,total_weekoff_days,total_holidays,\
 						total_leave,paid_leave,unpaid_leave,total_paid_days ,pending_unpaid_leave,total_hours,total_working_hours,\
-						shortage_hours,ot_work_hours,ot_weekoff_hours from hims_f_attendance_monthly AM \
-						inner join hims_d_employee E on AM.employee_id=E.hims_d_employee_id \
-						where AM.record_status='A' and AM.year= ? and AM.month=? ${selectData} `,
+						shortage_hours,ot_work_hours,ot_weekoff_hours,ot_holiday_hours from hims_f_attendance_monthly AM \
+            inner join hims_d_employee E on AM.employee_id=E.hims_d_employee_id \
+            inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\
+            inner join hims_d_department DP on SD.department_id=DP.hims_d_department_id\
+						where AM.record_status='A' and AM.year= ? and AM.month=? ${strQry} ;`,
           values: [year, month_number],
           printQuery: true
         })
@@ -2216,6 +2234,12 @@ module.exports = {
       next(e);
     }
   },
+
+
+
+
+
+
   //created by noor:
   notifyExceptionbkupMarch_01: (req, res, next) => {
     const _mysql = new algaehMysql();
