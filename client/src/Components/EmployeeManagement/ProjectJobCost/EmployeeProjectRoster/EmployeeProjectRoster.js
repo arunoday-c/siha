@@ -39,10 +39,15 @@ class EmployeeProjectRoster extends Component {
       department_id: null,
       allDepartments: []
     };
-    this.getAllDepartments();
+    // this.getAllDepartments();
+    // this.getDesignations();
+  }
+
+  componentDidMount() {
+    this.getBranchDetails();
     this.getHospitals();
     this.getProjects();
-    // this.getDesignations();
+    console.log(React.version);
   }
 
   getDesignations(sub_department_id) {
@@ -276,9 +281,14 @@ class EmployeeProjectRoster extends Component {
         });
         break;
       case "department_id":
-        this.getSubDepartments(value.value);
+        debugger;
+        const department = this.state.allDepartments.filter(
+          dept => dept.hims_d_department_id === value.value
+        );
+        console.log(department);
         this.setState({
-          [value.name]: value.value
+          [value.name]: value.value,
+          sub_depts: department[0].subDepts
         });
         break;
       default:
@@ -575,6 +585,50 @@ class EmployeeProjectRoster extends Component {
     });
   }
 
+  // branchMaster/getBranchWiseDepartments
+  getBranchDetails() {
+    algaehApiCall({
+      uri: "/branchMaster/getBranchWiseDepartments",
+      method: "GET",
+      data: {
+        hospital_id: this.state.hospital_id
+      },
+      module: "masterSettings",
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            allDepartments: res.data.records
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
+  getAllDepartments() {
+    algaehApiCall({
+      uri: "branchMaster/getBranchWiseDepartments",
+      method: "GET",
+      module: "masterSettings",
+      onSuccess: response => {
+        if (response.data.success) {
+          this.setState({ allDepartments: response.data.records });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
   getSubDepartments(department_id) {
     algaehApiCall({
       uri: "/department/get/subdepartment",
@@ -596,26 +650,6 @@ class EmployeeProjectRoster extends Component {
       }
     });
   }
-
-  getAllDepartments() {
-    algaehApiCall({
-      uri: "/department/get",
-      method: "GET",
-      module: "masterSettings",
-      onSuccess: response => {
-        if (response.data.success) {
-          this.setState({ allDepartments: response.data.records });
-        }
-      },
-      onFailure: error => {
-        swalMessage({
-          title: error.message,
-          type: "error"
-        });
-      }
-    });
-  }
-
   monthFormatorString(yearAndMonth) {
     const _start = moment(yearAndMonth)
       .startOf("month")
