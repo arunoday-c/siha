@@ -19,6 +19,7 @@ class DoctorsWorkbench extends Component {
       my_daylist: [],
       selectedLang: "en",
       data: [],
+      appointments: [],
       selectedHDate: moment(dateToday, "YYYYMMDD")._d,
       fromDate: moment()._d,
       toDate: moment()._d,
@@ -39,6 +40,34 @@ class DoctorsWorkbench extends Component {
 
     let age = moment().diff(dob, "years");
     this.setState({ age: age });
+  }
+
+  getAppointments(e) {
+    let send_data = {
+      sub_dept_id: this.state.sub_department_id,
+      schedule_date: moment(this.state.activeDateHeader).format("YYYY-MM-DD"),
+      provider_id: this.state.provider_id
+    };
+    algaehApiCall({
+      uri: "/appointment/getDoctorScheduleDateWise",
+      module: "frontDesk",
+      method: "GET",
+      data: send_data,
+      onSuccess: response => {
+        const { success, records } = response.data;
+        if (success && records.length > 0) {
+          this.setState({
+            appointments: records[0].patientList
+          });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
   }
 
   moveToEncounterList(e) {
@@ -96,17 +125,34 @@ class DoctorsWorkbench extends Component {
       onSuccess: response => {
         if (response.data.success) {
           const _selecDate = new Date(dateRange.activeDateHeader).setDate(1);
-
-          this.setState(
-            {
-              selectedHDate: _selecDate,
-              data: response.data.records,
-              activeDateHeader: dateRange.activeDateHeader
-            },
-            () => {
-              algaehLoader({ show: false });
-            }
-          );
+          if (Array.isArray(response.data.records)) {
+            this.setState(
+              {
+                selectedHDate: _selecDate,
+                data: response.data.records,
+                activeDateHeader: dateRange.activeDateHeader,
+                provider_id: response.data.records[0].provider_id,
+                sub_department_id: response.data.records[0].sub_department_id
+              },
+              () => {
+                this.getAppointments();
+                algaehLoader({ show: false });
+              }
+            );
+          } else {
+            this.setState(
+              {
+                provider_id: response.data.records.provider_id,
+                sub_department_id: response.data.records.sub_department_id,
+                activeDateHeader: dateRange.activeDateHeader,
+                data: []
+              },
+              () => {
+                this.getAppointments();
+                algaehLoader({ show: false });
+              }
+            );
+          }
         }
       },
       onFailure: error => {
@@ -383,57 +429,30 @@ class DoctorsWorkbench extends Component {
               <div className="portlet-body">
                 <div className="opPatientList">
                   <ul className="opList">
-                    {Enumerable.from(this.state.data)
-                      .where(w => w.status === "V")
-                      .toArray().length !== 0 ? (
-                      Enumerable.from(this.state.data)
-                        .where(w => w.status === "V")
-                        .toArray()
-                        .map((data, index) => (
-                          <li
-                            key={index}
-                            data-encounterid={String(
-                              data.hims_f_patient_encounter_id
-                            )}
-                            data-patientid={String(data.patient_id)}
-                            onClick={this.moveToEncounterList}
-                          >
-                            <span className="op-sec-1">
-                              {/* <i className="appointment-icon" /> */}
-                              <i
-                                className={
-                                  data.appointment_patient === "Y"
-                                    ? "appointment-icon"
-                                    : "walking-icon"
-                                }
-                              />
-                              <span className="opTime">
-                                {moment(data.encountered_date).format(
-                                  "HH:mm A"
-                                )}
-                              </span>
+                    {this.state.appointments.length !== 0 ? (
+                      this.state.appointments.map((data, index) => (
+                        <li key={index}>
+                          <span className="op-sec-1">
+                            {/* <i className="appointment-icon" /> */}
+                            <i className={"appointment-icon"} />
+                            <span className="opTime">
+                              {moment(
+                                data.appointment_from_time,
+                                "HH:mm:ss"
+                              ).format("hh:mm A")}
                             </span>
-                            <span className="op-sec-2">
-                              <span className="opPatientName">
-                                {data.full_name}
-                              </span>
-                              <span className="opStatus nursing">
-                                {data.nurse_examine === "Y"
-                                  ? "Nursing Done"
-                                  : "Nursing Pending"}
-                              </span>
+                          </span>
+                          <span className="op-sec-2">
+                            <span className="opPatientName">
+                              {data.patient_name}
                             </span>
-                            <span className="op-sec-3">
-                              <span className="opPatientStatus newVisit">
-                                {data.new_visit_patient === "Y"
-                                  ? "New Visit"
-                                  : data.new_visit_patient === "P"
-                                  ? "Package Utilize Visit"
-                                  : "Follow Up Visit"}
-                              </span>
-                            </span>
-                          </li>
-                        ))
+                            <span className="opStatus nursing" />
+                          </span>
+                          <span className="op-sec-3">
+                            <span className="opPatientStatus newVisit" />
+                          </span>
+                        </li>
+                      ))
                     ) : (
                       <div className="col noPatientDiv">
                         {/* <h4>Relax</h4> */}

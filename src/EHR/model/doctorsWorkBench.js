@@ -17,6 +17,7 @@ import mysql from "mysql";
 import algaehMysql from "algaeh-mysql";
 const keyPath = require("algaeh-keys/keys");
 import _ from "lodash";
+import { resolveTxt } from "dns";
 //created by irfan: to add  physical_examination_header
 let physicalExaminationHeader = (req, res, next) => {
   let physicalExaminationHeaderModel = {
@@ -747,8 +748,17 @@ let getMyDay = (req, res, next) => {
         printQuery: true
       })
       .then(result => {
+        let final_result = null;
+        if (result.length == 0) {
+          final_result = {
+            provider_id: req.userIdentity.employee_id,
+            sub_department_id: req.userIdentity.sub_department_id
+          };
+        } else {
+          final_result = result;
+        }
         _mysql.releaseConnection();
-        req.records = result;
+        req.records = final_result;
         next();
       })
       .catch(error => {
