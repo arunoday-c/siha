@@ -389,12 +389,6 @@ const ProcessService = ($this, e) => {
             data.billdetails[0].preapp_limit_exceed === "Y" &&
             $this.state.approval_limit_yesno === "N"
           ) {
-            preserviceInput.push(serviceInput[0]);
-            for (let k = 0; k < preserviceInput.length; k++) {
-              preserviceInput[k].approval_limit_yesno =
-                data.billdetails[0].preapp_limit_exceed;
-            }
-
             swal({
               title:
                 "With this service Approval Limit exceed. Do you want to proceed, If proceeds all the selected services will be pro aproved and will be as cash.",
@@ -402,6 +396,12 @@ const ProcessService = ($this, e) => {
               buttons: true
             }).then(willProceed => {
               if (willProceed) {
+                preserviceInput.push(serviceInput[0]);
+                for (let k = 0; k < preserviceInput.length; k++) {
+                  preserviceInput[k].approval_limit_yesno =
+                    data.billdetails[0].preapp_limit_exceed;
+                }
+
                 let approval_amt = data.billdetails[0].approval_amt;
                 let approval_limit_yesno =
                   data.billdetails[0].preapp_limit_exceed;
@@ -413,68 +413,85 @@ const ProcessService = ($this, e) => {
                   data: serviceInput,
                   onSuccess: response => {
                     if (response.data.success) {
-                      let data = response.data.records;
+                      let Service_data = response.data.records;
 
-                      for (let i = 0; i < data.billdetails.length; i++) {
-                        data.billdetails[i].visit_id = $this.state.visit_id;
-                        data.billdetails[i].patient_id = $this.state.patient_id;
+                      for (
+                        let i = 0;
+                        i < Service_data.billdetails.length;
+                        i++
+                      ) {
+                        Service_data.billdetails[i].visit_id =
+                          $this.state.visit_id;
+                        Service_data.billdetails[i].patient_id =
+                          $this.state.patient_id;
 
-                        data.billdetails[i].doctor_id =
+                        Service_data.billdetails[i].doctor_id =
                           Window.global["provider_id"];
-                        data.billdetails[i].insurance_provider_id =
+                        Service_data.billdetails[i].insurance_provider_id =
                           $this.state.insurance_provider_id;
-                        data.billdetails[i].insurance_sub_id =
+                        Service_data.billdetails[i].insurance_sub_id =
                           $this.state.sub_insurance_provider_id;
-                        data.billdetails[i].network_id = $this.state.network_id;
-                        data.billdetails[i].policy_number =
+                        Service_data.billdetails[i].network_id =
+                          $this.state.network_id;
+                        Service_data.billdetails[i].policy_number =
                           $this.state.policy_number;
-                        data.billdetails[i].insurance_service_name =
+                        Service_data.billdetails[i].insurance_service_name =
                           $this.state.insurance_service_name;
 
-                        data.billdetails[0].inventory_item_id =
+                        Service_data.billdetails[0].inventory_item_id =
                           $this.state.inventory_item_id;
 
-                        data.billdetails[0].item_id =
+                        Service_data.billdetails[0].item_id =
                           $this.state.inventory_item_id;
-                        data.billdetails[0].item_category_id =
+                        Service_data.billdetails[0].item_category_id =
                           $this.state.item_category_id;
-                        data.billdetails[0].item_group_id =
+                        Service_data.billdetails[0].item_group_id =
                           $this.state.item_group_id;
 
-                        data.billdetails[0].expiry_date = $this.state.expirydt;
-                        data.billdetails[0].expirydt = $this.state.expirydt;
-                        data.billdetails[0].batchno = $this.state.batchno;
-                        data.billdetails[0].uom_id = $this.state.uom_id;
-                        data.billdetails[0].sales_uom = $this.state.uom_id;
-                        data.billdetails[0].operation = "-";
-                        data.billdetails[0].grn_number = $this.state.grnno;
-                        data.billdetails[0].qtyhand = $this.state.qtyhand;
-                        data.billdetails[0].barcode = $this.state.barcode;
-                        data.billdetails[0].extended_cost =
-                          data.billdetails[0].gross_amount;
-                        data.billdetails[0].net_total =
-                          data.billdetails[0].net_amout;
-
-                        data.billdetails[0].inventory_uom_id =
+                        Service_data.billdetails[0].expiry_date =
+                          $this.state.expirydt;
+                        Service_data.billdetails[0].expirydt =
+                          $this.state.expirydt;
+                        Service_data.billdetails[0].batchno =
+                          $this.state.batchno;
+                        Service_data.billdetails[0].uom_id = $this.state.uom_id;
+                        Service_data.billdetails[0].sales_uom =
                           $this.state.uom_id;
-                        data.billdetails[0].location_type =
+                        Service_data.billdetails[0].operation = "-";
+                        Service_data.billdetails[0].grn_number =
+                          $this.state.grnno;
+                        Service_data.billdetails[0].qtyhand =
+                          $this.state.qtyhand;
+                        Service_data.billdetails[0].barcode =
+                          $this.state.barcode;
+                        Service_data.billdetails[0].extended_cost =
+                          Service_data.billdetails[0].gross_amount;
+                        Service_data.billdetails[0].net_total =
+                          Service_data.billdetails[0].net_amout;
+
+                        Service_data.billdetails[0].inventory_uom_id =
+                          $this.state.uom_id;
+                        Service_data.billdetails[0].location_type =
                           $this.state.location_type;
 
-                        data.billdetails[0].location_id =
+                        Service_data.billdetails[0].location_id =
                           $this.state.inventory_location_id;
 
-                        data.billdetails[i].insurance_network_office_id =
+                        Service_data.billdetails[
+                          i
+                        ].insurance_network_office_id =
                           $this.state.hims_d_insurance_network_office_id;
 
-                        data.billdetails[i].requested_quantity =
-                          data.billdetails[i].quantity;
-                        data.billdetails[i].test_type = $this.state.test_type;
-                        data.billdetails[0].item_notchargable =
+                        Service_data.billdetails[i].requested_quantity =
+                          Service_data.billdetails[i].quantity;
+                        Service_data.billdetails[i].test_type =
+                          $this.state.test_type;
+                        Service_data.billdetails[0].item_notchargable =
                           $this.state.item_notchargable;
                       }
 
                       $this.setState({
-                        orderservicesdata: data.billdetails,
+                        orderservicesdata: Service_data.billdetails,
                         approval_amt: approval_amt,
                         preserviceInput: preserviceInput,
                         approval_limit_yesno: approval_limit_yesno,
@@ -485,7 +502,7 @@ const ProcessService = ($this, e) => {
                         uri: "/billing/billingCalculations",
                         module: "billing",
                         method: "POST",
-                        data: { billdetails: data.billdetails },
+                        data: { billdetails: Service_data.billdetails },
                         onSuccess: response => {
                           if (response.data.success) {
                             $this.setState({
@@ -593,6 +610,11 @@ const ProcessService = ($this, e) => {
                 title: "Selected Service is Pre-Approval required.",
                 type: "warning"
               });
+            } else if (
+              data.billdetails[0].insurance_yesno === "Y" &&
+              $this.state.approval_limit_yesno === "Y"
+            ) {
+              data.billdetails[0].pre_approval = "Y";
             } else {
               data.billdetails[0].pre_approval = "N";
             }
@@ -681,8 +703,9 @@ const deleteServices = ($this, row, rowId) => {
 
   const _index = preserviceInput.indexOf(get_selected_row);
   let saved = false;
+  const _order_index = orderservicesdata.indexOf(row);
 
-  orderservicesdata.splice(row.rowIdx, 1);
+  orderservicesdata.splice(_order_index, 1);
   if (orderservicesdata.length === 0) {
     saved = true;
 
@@ -695,12 +718,11 @@ const deleteServices = ($this, row, rowId) => {
       net_total: null
     });
   }
-
+  preserviceInput.splice(_index, 1);
   let app_amt = $this.state.approval_amt - row["company_payble"];
 
   if ($this.state.approval_limit_yesno === "Y") {
     if (app_amt < $this.state.preapp_limit_amount) {
-      preserviceInput.splice(_index, 1);
       for (var k = 0; k < preserviceInput.length; k++) {
         preserviceInput[k].approval_limit_yesno = "N";
       }
