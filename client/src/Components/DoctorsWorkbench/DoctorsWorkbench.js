@@ -296,18 +296,87 @@ class DoctorsWorkbench extends Component {
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">
-                    <AlgaehLabel
-                      label={{ fieldName: "patients_list", returnText: "true" }}
-                    />
+                    List of Checked In Patients
                   </h3>
                 </div>
-                <div className="actions">
+                {/* <div className="actions">
                   <a
                     className="btn btn-primary btn-circle active"
                     onClick={this.loadListofData}
                   >
                     <i className="fas fa-sync-alt" />
                   </a>
+                </div> */}
+              </div>
+
+              <div className="portlet-body">
+                <div className="opPatientList">
+                  <ul className="opList">
+                    {Enumerable.from(this.state.data)
+                      .where(w => w.status === "V")
+                      .toArray().length !== 0 ? (
+                      Enumerable.from(this.state.data)
+                        .where(w => w.status === "V")
+                        .toArray()
+                        .map((data, index) => (
+                          <li
+                            key={index}
+                            data-encounterid={String(
+                              data.hims_f_patient_encounter_id
+                            )}
+                            data-patientid={String(data.patient_id)}
+                            onClick={this.moveToEncounterList}
+                          >
+                            <span className="op-sec-1">
+                              {/* <i className="appointment-icon" /> */}
+                              <i
+                                className={
+                                  data.appointment_patient === "Y"
+                                    ? "appointment-icon"
+                                    : "walking-icon"
+                                }
+                              />
+                              <span className="opTime">
+                                {moment(data.encountered_date).format(
+                                  "HH:mm A"
+                                )}
+                              </span>
+                            </span>
+                            <span className="op-sec-2">
+                              <span className="opPatientName">
+                                {data.full_name}
+                              </span>
+                              <span className="opStatus nursing">
+                                {data.nurse_examine === "Y"
+                                  ? "Nursing Done"
+                                  : "Nursing Pending"}
+                              </span>
+                            </span>
+                            <span className="op-sec-3">
+                              <span className="opPatientStatus newVisit">
+                                {data.new_visit_patient === "Y"
+                                  ? "New Visit"
+                                  : data.new_visit_patient === "P"
+                                  ? "Package Utilize Visit"
+                                  : "Follow Up Visit"}
+                              </span>
+                            </span>
+                          </li>
+                        ))
+                    ) : (
+                      <div className="col noPatientDiv">
+                        {/* <h4>Relax</h4> */}
+                        <p>No Patients Available</p>
+                      </div>
+                    )}
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">List of Appointment</h3>
                 </div>
               </div>
 

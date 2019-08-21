@@ -443,7 +443,7 @@
       margin: 0;
       padding: 0;
       list-style: none;
-      height: 65.5vh;
+      height: 28.5vh;
       overflow: auto;
       .noPatientDiv {
         margin-top: 15%;
@@ -532,7 +532,7 @@
   }
   #encounter_table {
     .ReactTable {
-      max-height: 65.5vh !important;
+      max-height: 67vh !important;
     }
   }
   .bottom-layout {
