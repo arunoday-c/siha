@@ -5398,9 +5398,7 @@ module.exports = {
     try {
       let input = req.query;
 
-      if (
-        input.hospital_id > 0
-      ) {
+    
         _mysql
           .executeQuery({
             query:
@@ -5444,13 +5442,7 @@ module.exports = {
             _mysql.releaseConnection();
             next(e);
           });
-      } else {
-        req.records = {
-          invalid_input: true,
-          message: "Please select branch"
-        };
-        next();
-      }
+    
     } catch (e) {
       next(e);
     }
