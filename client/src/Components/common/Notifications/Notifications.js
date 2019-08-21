@@ -46,6 +46,13 @@ export default class Notifications extends Component {
         ${date}`
       );
     });
+    this.socket.on("service_added", services => {
+      let serStr = "";
+      services.forEach(service => {
+        serStr = serStr + service;
+      });
+      this.addToNotiList(`The following services are ordered: ${serStr}`);
+    });
   }
 
   addToNotiList = text => {

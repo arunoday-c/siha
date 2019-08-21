@@ -253,7 +253,6 @@ class DoctorsWorkbench extends Component {
       });
       return;
     }
-    debugger;
     setGlobal({
       vitals_mandatory: data.vitals_mandatory,
       "EHR-STD": "PatientProfile",

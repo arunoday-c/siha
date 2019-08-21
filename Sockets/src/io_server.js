@@ -9,10 +9,11 @@ const _port = process.env.PORT;
 const exp = express();
 exp.use(cors());
 const app = http.createServer(exp);
-import appsock from "./appointmentSocket";
 import socketAuth from "socketio-auth";
 export const io = require("socket.io")(app);
 import { authenticate } from "./socketAuth";
+import appsock from "./appointmentSocket";
+import labsock from "./labSocket";
 
 socketAuth(io, {
   authenticate
@@ -54,6 +55,7 @@ io.on("connection", socket => {
   });
 
   appsock(socket);
+  labsock(socket);
 
   socket.on("disconnect", () => {
     console.log("Client disconnected");
