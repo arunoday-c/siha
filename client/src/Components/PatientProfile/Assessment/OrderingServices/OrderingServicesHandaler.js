@@ -69,7 +69,6 @@ const ProcessService = ($this, e) => {
       loading_ProcessService: true
     },
     () => {
-      debugger;
       let SelectedService = undefined;
       let PreSelectedService = undefined;
       if ($this.state.s_service_type !== 2) {
@@ -123,7 +122,6 @@ const ProcessService = ($this, e) => {
             data: serviceInput,
             onSuccess: response => {
               if (response.data.success) {
-                debugger;
                 let data = response.data.records;
                 if (
                   data.billdetails[0].preapp_limit_exceed === "Y" &&
@@ -257,7 +255,6 @@ const ProcessService = ($this, e) => {
                     }
                   });
                 } else {
-                  debugger;
                   let existingservices = $this.state.orderservicesdata;
 
                   data.billdetails[0].visit_id = $this.state.visit_id;

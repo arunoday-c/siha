@@ -60,8 +60,10 @@ class UpdatePatientDetails extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    if (newProps.patient_code !== undefined && newProps.patient_code !== "") {
-      this.getCtrlCode(newProps.patient_code);
+    if (newProps.show === true) {
+      if (newProps.patient_code !== undefined && newProps.patient_code !== "") {
+        this.getCtrlCode(newProps.patient_code);
+      }
     }
   }
 
@@ -145,7 +147,7 @@ class UpdatePatientDetails extends Component {
                       let IOputs = PatRegIOputs.inputParam();
 
                       this.setState(IOputs, () => {
-                        this.props.onClose && this.props.onClose(e);
+                        this.props.onClose && this.props.onClose(true);
                       });
 
                       swalMessage({
@@ -218,7 +220,7 @@ class UpdatePatientDetails extends Component {
     let IOputs = PatRegIOputs.inputParam();
 
     this.setState(IOputs, () => {
-      this.props.onClose && this.props.onClose(e);
+      this.props.onClose && this.props.onClose(false);
     });
   };
 

@@ -4,7 +4,6 @@ import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  debugger;
 
   if (name === "group_id") {
     algaehApiCall({
@@ -78,7 +77,7 @@ export function generateLabResultReport(data) {
 
 const UpdateLabOrder = ($this, status) => {
   $this.state.status = status;
-  debugger;
+
   algaehApiCall({
     uri: "/laboratory/updateMicroResultEntry",
     module: "laboratory",
@@ -152,7 +151,7 @@ const onchangegridcol = ($this, row, e) => {
   let value = e.value || e.target.value;
   let microAntbiotic = $this.state.microAntbiotic;
   let _index = microAntbiotic.indexOf(row);
-  debugger;
+
   switch (name) {
     case "susceptible":
       row[name] = "Y";
@@ -200,7 +199,6 @@ const radioChange = ($this, e) => {
 };
 
 const getMicroResult = ($this, e) => {
-  debugger;
   algaehApiCall({
     uri: "/laboratory/getMicroResult",
     module: "laboratory",

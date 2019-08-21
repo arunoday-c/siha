@@ -294,7 +294,7 @@ class OrderMedication extends Component {
                     }}
                     onClear={this.clearItemCodeHandler.bind(this)}
                     onClick={this.itemChangeHandle.bind(this)}
-                  />{" "}
+                  />
                   <AlagehAutoComplete
                     div={{ className: "col-4" }}
                     label={{ forceLabel: "Frequency" }}
@@ -553,7 +553,7 @@ class OrderMedication extends Component {
                       others: {
                         minWidth: 50
                       },
-                      editorTemplate: row => {
+                      displayTemplate: row => {
                         return (
                           <AlagehFormGroup
                             div={{}}
@@ -580,7 +580,7 @@ class OrderMedication extends Component {
                       others: {
                         minWidth: 90
                       },
-                      editorTemplate: row => {
+                      displayTemplate: row => {
                         return (
                           <AlagehFormGroup
                             div={{}}
@@ -633,7 +633,7 @@ class OrderMedication extends Component {
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Instruction" }} />
                       ),
-                      editorTemplate: row => {
+                      displayTemplate: row => {
                         return (
                           <AlagehFormGroup
                             div={{}}
@@ -653,6 +653,9 @@ class OrderMedication extends Component {
                   keyId="item_id"
                   dataSource={{
                     data: this.state.medicationitems
+                  }}
+                  actions={{
+                    allowEdit: false
                   }}
                   isEditable={true}
                   paging={{ page: 0, rowsPerPage: 10 }}

@@ -35,9 +35,11 @@ class EmployeeProjectRoster extends Component {
       month: moment(new Date()).format("M"),
       formatingString: this.monthFormatorString(moment().startOf("month")),
       sub_department_id: null,
-      designation_id: null
+      designation_id: null,
+      department_id: null,
+      allDepartments: []
     };
-    this.getSubDepartments();
+    this.getAllDepartments();
     this.getHospitals();
     this.getProjects();
     // this.getDesignations();
@@ -71,6 +73,8 @@ class EmployeeProjectRoster extends Component {
     this.setState({
       employees: [],
       sub_department_id: null,
+      department_id: null,
+
       hospital_id: JSON.parse(
         AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
       ).hims_d_hospital_id,
@@ -271,7 +275,12 @@ class EmployeeProjectRoster extends Component {
           [value.name]: value.value
         });
         break;
-
+      case "department_id":
+        this.getSubDepartments(value.value);
+        this.setState({
+          [value.name]: value.value
+        });
+        break;
       default:
         this.setState({
           [value.name]: value.value
@@ -566,11 +575,12 @@ class EmployeeProjectRoster extends Component {
     });
   }
 
-  getSubDepartments() {
+  getSubDepartments(department_id) {
     algaehApiCall({
       uri: "/department/get/subdepartment",
       method: "GET",
       module: "masterSettings",
+      data: { department_id: department_id },
       onSuccess: res => {
         if (res.data.success) {
           this.setState({
@@ -581,6 +591,25 @@ class EmployeeProjectRoster extends Component {
       onFailure: err => {
         swalMessage({
           title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
+  getAllDepartments() {
+    algaehApiCall({
+      uri: "/department/get",
+      method: "GET",
+      module: "masterSettings",
+      onSuccess: response => {
+        if (response.data.success) {
+          this.setState({ allDepartments: response.data.records });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
           type: "error"
         });
       }
@@ -634,6 +663,7 @@ class EmployeeProjectRoster extends Component {
         hims_d_employee_id: this.state.hims_d_employee_id,
         hospital_id: this.state.hospital_id,
         sub_department_id: this.state.sub_department_id,
+        department_id: this.state.department_id,
         fromDate: fromDate,
         toDate: toDate,
         designation_id: this.state.designation_id
@@ -708,7 +738,7 @@ class EmployeeProjectRoster extends Component {
           <AlagehAutoComplete
             div={{ className: "col" }}
             label={{
-              forceLabel: "Select a Year.",
+              forceLabel: "Year",
               isImp: true
             }}
             selector={{
@@ -731,7 +761,7 @@ class EmployeeProjectRoster extends Component {
           <AlagehAutoComplete
             div={{ className: "col" }}
             label={{
-              forceLabel: "Select a Month.",
+              forceLabel: "Month",
               isImp: true
             }}
             selector={{
@@ -753,9 +783,9 @@ class EmployeeProjectRoster extends Component {
             }}
           />
           <AlagehAutoComplete
-            div={{ className: "col form-group" }}
+            div={{ className: "col-2 form-group" }}
             label={{
-              forceLabel: "Filter by Branch",
+              forceLabel: "Branch",
               isImp: true
             }}
             selector={{
@@ -773,8 +803,33 @@ class EmployeeProjectRoster extends Component {
           />
 
           <AlagehAutoComplete
-            div={{ className: "col form-group" }}
-            label={{ forceLabel: "Select Sub Dept.", isImp: true }}
+            div={{ className: "col-2 form-group" }}
+            label={{ forceLabel: "Department", isImp: true }}
+            selector={{
+              name: "department_id",
+              value: this.state.department_id,
+              className: "select-fld",
+              dataSource: {
+                textField: "department_name",
+                valueField: "hims_d_department_id",
+                data: this.state.allDepartments
+              },
+              onChange: this.dropDownHandler.bind(this),
+              onClear: () => {
+                this.setState({
+                  department_id: null,
+                  sub_department_id: null,
+                  designation_id: null,
+                  designations: [],
+                  sub_depts: []
+                });
+              }
+            }}
+          />
+
+          <AlagehAutoComplete
+            div={{ className: "col-2 form-group" }}
+            label={{ forceLabel: "Sub Deptartment" }}
             selector={{
               name: "sub_department_id",
               value: this.state.sub_department_id,
@@ -796,8 +851,8 @@ class EmployeeProjectRoster extends Component {
           />
 
           <AlagehAutoComplete
-            div={{ className: "col form-group" }}
-            label={{ forceLabel: "Select Designation" }}
+            div={{ className: "col-2 form-group" }}
+            label={{ forceLabel: "Designation" }}
             selector={{
               name: "designation_id",
               value: this.state.designation_id,
@@ -816,7 +871,7 @@ class EmployeeProjectRoster extends Component {
             }}
           />
 
-          <div className="col-3" style={{ marginTop: 10 }}>
+          <div className="col-2" style={{ marginTop: 10 }}>
             <div
               className="row"
               style={{
@@ -826,7 +881,7 @@ class EmployeeProjectRoster extends Component {
               }}
             >
               <div className="col">
-                <AlgaehLabel label={{ forceLabel: "Select a Employee." }} />
+                <AlgaehLabel label={{ forceLabel: "Search Employee." }} />
                 <h6> {this.state.emp_name ? this.state.emp_name : "------"}</h6>
               </div>
               <div
@@ -845,8 +900,7 @@ class EmployeeProjectRoster extends Component {
               </div>
             </div>
           </div>
-
-          <div className="col form-group">
+          <div className="col-3 form-group">
             <button
               onClick={this.getEmployeesForProjectRoster.bind(this)}
               style={{ marginTop: 21 }}
@@ -867,7 +921,6 @@ class EmployeeProjectRoster extends Component {
             </button>
           </div>
         </div>
-
         <div className="row">
           <div className="col-12">
             <div className="portlet portlet-bordered margin-bottom-15">

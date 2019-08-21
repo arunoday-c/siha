@@ -95,7 +95,6 @@ class DeptMaster extends Component {
   }
 
   updateGroupAntiMap(data) {
-    debugger;
     let send_data = {
       hims_m_group_antibiotic_id: data.hims_m_group_antibiotic_id,
       micro_group_id: data.micro_group_id,
@@ -184,7 +183,6 @@ class DeptMaster extends Component {
   }
 
   addGroupAntibiotic(data, e) {
-    debugger;
     this.getAllGroupAntibiotic(data.hims_d_micro_group_id);
     this.setState({
       showGroupAntibiotic: true,
@@ -194,8 +192,6 @@ class DeptMaster extends Component {
   }
 
   addGroupAntiMap(e) {
-    debugger;
-
     e.preventDefault();
     AlgaehValidation({
       querySelector: "data-validate='subdepDiv'",

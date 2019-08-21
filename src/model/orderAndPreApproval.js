@@ -487,6 +487,7 @@ let insertOrderedServices = (req, res, next) => {
                 const insurtCols = [
                   "hims_f_ordered_services_id",
                   "service_id",
+                  "visit_id",
                   "insurance_provider_id",
                   "insurance_network_office_id",
                   "icd_code",
@@ -1626,7 +1627,9 @@ let getPatientPackage = (req, res, next) => {
       str += ` and H.patient_id=${req.query.patient_id} `;
     }
     if (req.query.hims_f_package_header_id > 0) {
-      str += ` and H.hims_f_package_header_id=${req.query.hims_f_package_header_id} `;
+      str += ` and H.hims_f_package_header_id=${
+        req.query.hims_f_package_header_id
+      } `;
     }
 
     if (req.query.visit_id > 0) {

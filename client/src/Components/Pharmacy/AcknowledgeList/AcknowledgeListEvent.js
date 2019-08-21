@@ -45,7 +45,6 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
 };
 
 const getTransList = $this => {
-  debugger;
   let inpObj = {};
   if ($this.state.from_date !== null) {
     inpObj.from_date = $this.state.from_date;

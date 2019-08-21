@@ -512,6 +512,13 @@ class PatientProfile extends Component {
     } else return "";
   }
   renderBackButton(e) {
+    this.props.getPatientProfile({
+      redux: {
+        type: "PATIENT_PROFILE",
+        mappingName: "patient_profile",
+        data: []
+      }
+    });
     setGlobal({ "EHR-STD": "DoctorsWorkbench" });
     document.getElementById("ehr-router").click();
   }
@@ -627,6 +634,7 @@ class PatientProfile extends Component {
     const module_plan = _.find(this.active_modules, f => {
       return f.module_id === parseInt(this.selected_module);
     });
+
     const _pat_profile =
       this.props.patient_profile !== undefined &&
       this.props.patient_profile.length > 0
@@ -702,6 +710,7 @@ class PatientProfile extends Component {
                 destinationName: _pat_profile.patient_code,
                 fileType: "Patients"
               }}
+              forceRefresh={true}
             />
           </div>
           <div className="patientName">

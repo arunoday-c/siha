@@ -15,7 +15,7 @@ const changeTexts = ($this, ctrl, e) => {
 
 const getCtrlCode = ($this, docNumber, row) => {
   AlgaehLoader({ show: true });
-  debugger;
+
   let IOputs = TransferIOputs.inputParam();
   $this.setState(IOputs, () => {
     algaehApiCall({
@@ -137,7 +137,6 @@ const generateMaterialTransPhar = data => {
 };
 
 const AcknowledgeTransferEntry = $this => {
-  debugger;
   AlgaehLoader({ show: true });
   const Quantity_zero = _.filter(
     $this.state.pharmacy_stock_detail,

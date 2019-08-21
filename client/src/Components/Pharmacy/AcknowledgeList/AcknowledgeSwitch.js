@@ -34,7 +34,6 @@ class AcknowledgeSwitch extends Component {
   }
 
   new_routeComponents(obj) {
-    debugger;
     this.setState(
       {
         ...obj
@@ -60,7 +59,6 @@ class AcknowledgeSwitch extends Component {
   }
 
   componentList() {
-    debugger;
     return {
       AcknowledgeList: (
         <AcknowledgeList
