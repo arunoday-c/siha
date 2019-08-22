@@ -176,7 +176,7 @@ export default function FilterComponent(props) {
       </div>
       <div className="col-12 form-group">
         <button
-          onClick={() => props.loadFunc(inputs)}
+          onClick={handlers.loadFunc}
           style={{ marginLeft: 10, float: "right" }}
           className="btn btn-primary"
         >

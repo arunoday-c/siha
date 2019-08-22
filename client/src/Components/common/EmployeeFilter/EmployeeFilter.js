@@ -173,11 +173,23 @@ export default function EmployeeFilter(props) {
     setInputs({ ...baseInput });
   }
 
+  function loadFunc() {
+    if (inputs.department_id) {
+      props.loadFunc(inputs);
+    } else {
+      swalMessage({
+        title: "Please select a department",
+        type: "warning"
+      });
+    }
+  }
+
   const handlers = (() => ({
     clearInputState,
     dropDownHandler,
     employeeSearch,
-    clearState
+    clearState,
+    loadFunc
   }))();
 
   return (

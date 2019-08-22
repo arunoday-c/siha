@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
-import MonthlyAttendance from "./MonthlyAttendance/MonthlyAttendance";
+// import MonthlyAttendance from "./MonthlyAttendance/MonthlyAttendance";
 import NewMonthlyAttendence from "./MonthlyAttendance/NewMonthlyAttendance";
 import WeeklyAttendance from "./WeeklyAttendance/WeeklyAttendance";
 import AbsenceManagement from "./AbsenceManagement/AbsenceManagement";
@@ -13,7 +13,7 @@ export default class AttendanceMgmt extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pageDisplay: "MonthlyAttendance"
+      pageDisplay: "NewMonthlyAttendance"
     };
     // this.getOptions();
   }
@@ -59,7 +59,7 @@ export default class AttendanceMgmt extends Component {
         <div className="row">
           <div className="tabMaster toggle-section">
             <ul className="nav">
-              <li
+              {/* <li
                 algaehtabs={"MonthlyAttendance"}
                 className={"nav-item tab-button active"}
                 onClick={this.openTab.bind(this)}
@@ -71,16 +71,16 @@ export default class AttendanceMgmt extends Component {
                     }}
                   />
                 }
-              </li>
+              </li> */}
               <li
                 algaehtabs={"NewMonthlyAttendance"}
-                className={"nav-item tab-button"}
+                className={"nav-item tab-button active"}
                 onClick={this.openTab.bind(this)}
               >
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "New Monthly Attendance"
+                      forceLabel: "Monthly Attendance"
                     }}
                   />
                 }
@@ -128,9 +128,10 @@ export default class AttendanceMgmt extends Component {
           </div>
         </div>
         <div className="attendance-setion">
-          {this.state.pageDisplay === "MonthlyAttendance" ? (
-            <MonthlyAttendance />
-          ) : this.state.pageDisplay === "NewMonthlyAttendance" ? (
+          {//   this.state.pageDisplay === "MonthlyAttendance" ? (
+          //   <MonthlyAttendance />
+          // ) :
+          this.state.pageDisplay === "NewMonthlyAttendance" ? (
             <NewMonthlyAttendence />
           ) : this.state.pageDisplay === "WeeklyAttendance" ? (
             <WeeklyAttendance />
