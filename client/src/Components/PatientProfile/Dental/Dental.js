@@ -270,6 +270,13 @@ class Dental extends Component {
   }
 
   addToBill(row) {
+    if (this.state.approval_status !== "Y") {
+      swalMessage({
+        title: "Please Approve the plan",
+        type: "warning"
+      });
+      return;
+    }
     algaehApiCall({
       // uri: "/insurance/getPatientInsurance",
       uri: "/patientRegistration/getPatientInsurance",
@@ -1514,7 +1521,8 @@ class Dental extends Component {
                 if (response.data.success) {
                   this.setState({
                     dentalTreatments: response.data.records,
-                    selected_plan: data.plan_name
+                    selected_plan: data.plan_name,
+                    approval_status: data.approve_status
                   });
                 }
               },
@@ -1531,7 +1539,8 @@ class Dental extends Component {
           onSuccess: response => {
             if (response.data.success) {
               this.setState({
-                dentalTreatments: response.data.records
+                dentalTreatments: response.data.records,
+                approval_status: data.approve_status
               });
             }
           },
@@ -1946,7 +1955,8 @@ class Dental extends Component {
                 hims_d_services_id: null,
                 quantity: 0,
                 standard_fee: 0,
-                total_price: 0
+                total_price: 0,
+                approval_status: "N"
               });
             }
           }}

@@ -4559,7 +4559,7 @@ module.exports = {
                     input.branch_id,
                     input.branch_id
                   ],
-                  printQuery: false
+                  printQuery: true
                 })
                 .then(result => {
                   _mysql.releaseConnection();
@@ -5387,7 +5387,67 @@ module.exports = {
     } catch (e) {
       next(e);
     }
-  }
+  },
+
+
+
+    //created by irfan:
+  getAttendanceDates: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    try {
+      let input = req.query;
+
+    
+        _mysql
+          .executeQuery({
+            query:
+              "select attendance_starts,at_st_date,at_end_date  from hims_d_hrms_options;"
+          })
+          .then(options => {
+            _mysql.releaseConnection();
+            if (options.length > 0) {
+          
+             
+                if (
+                  options[0]["attendance_starts"] == "PM" &&
+                  options[0]["at_st_date"] > 0 &&
+                  options[0]["at_end_date"] > 0
+                ) {
+
+
+                  req.records = options;
+                  next();
+
+               
+                } else {
+                  req.records = {
+                    message: "Please define HRMS options",
+                    invalid_input: true,
+                  };
+                  next();
+                }
+              
+
+         
+            } else {        
+              req.records = {
+                message: "Please define HRMS options",
+                invalid_input: true,
+              };
+              next();
+            }
+          })
+          .catch(e => {
+            _mysql.releaseConnection();
+            next(e);
+          });
+    
+    } catch (e) {
+      next(e);
+    }
+  },
+
 };
 
 //created by irfan: to insert timesheet
