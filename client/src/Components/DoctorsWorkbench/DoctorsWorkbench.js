@@ -336,8 +336,66 @@ class DoctorsWorkbench extends Component {
         </div>
 
         <div className="row card-deck panel-layout">
-          {/* Left Pane Start */}
+          {/* Appointment UI Panel Start*/}
           <div className="col-3">
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">List of Appointment</h3>
+                </div>
+              </div>
+
+              <div className="portlet-body">
+                <div className="appPatientList">
+                  <div className="appoStatusLegend">
+                    <span>
+                      <small>Pending</small>10
+                    </span>
+                    <span>
+                      <small>Confirmed</small>10
+                    </span>
+                    <span>
+                      <small>Cancelled</small>10
+                    </span>
+                  </div>
+                  <ul className="appList">
+                    {this.state.appointments.length !== 0 ? (
+                      this.state.appointments.map((data, index) => (
+                        <li key={index}>
+                          <span className="app-sec-1">
+                            {/* <i className="appointment-icon" /> */}
+                            <i className={"appointment-icon"} />
+                            <span className="appTime">
+                              {moment(
+                                data.appointment_from_time,
+                                "HH:mm:ss"
+                              ).format("hh:mm A")}
+                            </span>
+                          </span>
+                          <span className="app-sec-2">
+                            <span className="appPatientName">
+                              {data.patient_name}
+                            </span>
+                            <span className="appStatus nursing" />{" "}
+                            <span className="appoPatientStatus newVisit" />
+                          </span>
+                        </li>
+                      ))
+                    ) : (
+                      <li className="col noPatientDiv">
+                        {/* <h4>Relax</h4> */}
+                        <i className="fas fa-calendar-alt" />
+                        <p>No Appointment Available</p>
+                      </li>
+                    )}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* Appointment UI Panel End*/}
+          {/* Left Pane Start */}
+          <div className="col-3" style={{ padding: 0 }}>
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
@@ -357,6 +415,18 @@ class DoctorsWorkbench extends Component {
 
               <div className="portlet-body">
                 <div className="opPatientList">
+                  {" "}
+                  <div className="opStatusLegend">
+                    <span>
+                      <small>Follow Up</small>10
+                    </span>
+                    <span>
+                      <small>New Visit</small>10
+                    </span>
+                    <span>
+                      <small>Package Visit</small>10
+                    </span>
+                  </div>
                   <ul className="opList">
                     {Enumerable.from(this.state.data)
                       .where(w => w.status === "V")
@@ -392,72 +462,38 @@ class DoctorsWorkbench extends Component {
                               <span className="opPatientName">
                                 {data.full_name}
                               </span>
-                              <span className="opStatus nursing">
-                                {data.nurse_examine === "Y"
-                                  ? "Nursing Done"
-                                  : "Nursing Pending"}
-                              </span>
-                            </span>
-                            <span className="op-sec-3">
-                              <span className="opPatientStatus newVisit">
-                                {data.new_visit_patient === "Y"
-                                  ? "New Visit"
-                                  : data.new_visit_patient === "P"
-                                  ? "Package Utilize Visit"
-                                  : "Follow Up Visit"}
-                              </span>
+
+                              {data.nurse_examine === "Y" ? (
+                                <span className="opStatus nursing">
+                                  Nursing Done
+                                </span>
+                              ) : (
+                                <span className="opStatus nursing">
+                                  Nursing Pending
+                                </span>
+                              )}
+
+                              {data.new_visit_patient === "Y" ? (
+                                <span className="opPatientStatus newVisit">
+                                  New Visit
+                                </span>
+                              ) : data.new_visit_patient === "P" ? (
+                                <span className="opPatientStatus packageVisit">
+                                  Package Utilize Visit
+                                </span>
+                              ) : (
+                                <span className="opPatientStatus followUp">
+                                  Follow Up Visit
+                                </span>
+                              )}
                             </span>
                           </li>
                         ))
                     ) : (
-                      <div className="col noPatientDiv">
-                        {/* <h4>Relax</h4> */}
+                      <li className="col noPatientDiv">
+                        <i className="fas fa-user-injured" />
                         <p>No Patients Available</p>
-                      </div>
-                    )}
-                  </ul>
-                </div>
-              </div>
-            </div>
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">List of Appointment</h3>
-                </div>
-              </div>
-
-              <div className="portlet-body">
-                <div className="opPatientList">
-                  <ul className="opList">
-                    {this.state.appointments.length !== 0 ? (
-                      this.state.appointments.map((data, index) => (
-                        <li key={index}>
-                          <span className="op-sec-1">
-                            {/* <i className="appointment-icon" /> */}
-                            <i className={"appointment-icon"} />
-                            <span className="opTime">
-                              {moment(
-                                data.appointment_from_time,
-                                "HH:mm:ss"
-                              ).format("hh:mm A")}
-                            </span>
-                          </span>
-                          <span className="op-sec-2">
-                            <span className="opPatientName">
-                              {data.patient_name}
-                            </span>
-                            <span className="opStatus nursing" />
-                          </span>
-                          <span className="op-sec-3">
-                            <span className="opPatientStatus newVisit" />
-                          </span>
-                        </li>
-                      ))
-                    ) : (
-                      <div className="col noPatientDiv">
-                        {/* <h4>Relax</h4> */}
-                        <p>No Patients Available</p>
-                      </div>
+                      </li>
                     )}
                   </ul>
                 </div>
@@ -468,7 +504,7 @@ class DoctorsWorkbench extends Component {
 
           {/* Right Pane Start */}
 
-          <div className="col-6" style={{ padding: 0 }}>
+          <div className="col-6">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
@@ -482,7 +518,7 @@ class DoctorsWorkbench extends Component {
                   </h3>
                 </div>
                 <div className="actions rightLabelCount">
-                  <AlgaehLabel label={{ fieldName: "total_encounters" }} />
+                  <AlgaehLabel label={{ forceLabel: "No. of Encounters" }} />
                   <span className="countNo">
                     {
                       Enumerable.from(this.state.data)
@@ -638,81 +674,6 @@ class DoctorsWorkbench extends Component {
             </div>
           </div>
           {/* Right Pane End */}
-          {/* Appointment UI Panel Start*/}
-          <div className="col-3">
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">List of Appointment</h3>
-                </div>
-              </div>
-
-              <div className="portlet-body">
-                <div className="appoPatientList">
-                  <ul className="appoList">
-                    {Enumerable.from(this.state.data)
-                      .where(w => w.status === "V")
-                      .toArray().length !== 0 ? (
-                      Enumerable.from(this.state.data)
-                        .where(w => w.status === "V")
-                        .toArray()
-                        .map((data, index) => (
-                          <li
-                            key={index}
-                            data-encounterid={String(
-                              data.hims_f_patient_encounter_id
-                            )}
-                            data-patientid={String(data.patient_id)}
-                            onClick={this.moveToEncounterList}
-                          >
-                            <span className="app-sec-1">
-                              {/* <i className="appointment-icon" /> */}
-                              <i
-                                className={
-                                  data.appointment_patient === "Y"
-                                    ? "appointment-icon"
-                                    : "walking-icon"
-                                }
-                              />
-                              <span className="appTime">
-                                {moment(data.encountered_date).format(
-                                  "HH:mm A"
-                                )}
-                              </span>
-                            </span>
-                            <span className="app-sec-2">
-                              <span className="appPatientName">
-                                {data.full_name}
-                              </span>
-                              <span className="appStatus nursing">
-                                {data.nurse_examine === "Y"
-                                  ? "Nursing Done"
-                                  : "Nursing Pending"}
-                              </span>
-                            </span>
-                            <span className="app-sec-3">
-                              <span className="appPatientStatus newVisit">
-                                {data.new_visit_patient === "Y"
-                                  ? "New Visit"
-                                  : data.new_visit_patient === "P"
-                                  ? "Package Utilize Visit"
-                                  : "Follow Up Visit"}
-                              </span>
-                            </span>
-                          </li>
-                        ))
-                    ) : (
-                      <div className="col noPatientDiv">
-                        {/* <h4>Relax</h4> */}
-                        <p>No Appointment Available</p>
-                      </div>
-                    )}
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-          {/* Appointment UI Panel End*/}
         </div>
       </div>
     );
