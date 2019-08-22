@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import MonthlyAttendance from "./MonthlyAttendance/MonthlyAttendance";
+import NewMonthlyAttendence from "./MonthlyAttendance/NewMonthlyAttendance";
 import WeeklyAttendance from "./WeeklyAttendance/WeeklyAttendance";
 import AbsenceManagement from "./AbsenceManagement/AbsenceManagement";
 import ManualAttendance from "./ManualAttendance/ManualAttendance";
@@ -72,6 +73,19 @@ export default class AttendanceMgmt extends Component {
                 }
               </li>
               <li
+                algaehtabs={"NewMonthlyAttendance"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "New Monthly Attendance"
+                    }}
+                  />
+                }
+              </li>
+              <li
                 algaehtabs={"WeeklyAttendance"}
                 className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
@@ -116,6 +130,8 @@ export default class AttendanceMgmt extends Component {
         <div className="attendance-setion">
           {this.state.pageDisplay === "MonthlyAttendance" ? (
             <MonthlyAttendance />
+          ) : this.state.pageDisplay === "NewMonthlyAttendance" ? (
+            <NewMonthlyAttendence />
           ) : this.state.pageDisplay === "WeeklyAttendance" ? (
             <WeeklyAttendance />
           ) : this.state.pageDisplay === "AbsenceManagement" ? (
