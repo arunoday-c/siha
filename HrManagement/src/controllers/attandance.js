@@ -24,7 +24,8 @@ import {
   updateMonthlyAttendance,
   postManualTimeSheetMonthWise,
   loadManualTimeSheet,
-  getAttendanceDates
+  getAttendanceDates,
+  getBulkManualTimeSheet
 } from "../models/attendance";
 export default () => {
   const api = Router();
@@ -381,5 +382,22 @@ export default () => {
     }
   });
 
+  api.get(
+    "/getBulkManualTimeSheet",
+    getBulkManualTimeSheet,
+    (req, res, next) => {
+      if (req.records.invalid_input == true) {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: false,
+          result: req.records
+        });
+      } else {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: true,
+          result: req.records
+        });
+      }
+    }
+  );
   return api;
 };
