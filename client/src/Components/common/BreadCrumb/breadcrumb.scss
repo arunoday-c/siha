@@ -1,17 +1,14 @@
 @import "../../../styles/algaehCssVariables.scss";
 .breadcrumb-fixed {
-  height: 75px;
+  height: 128px;
   background-color: $color-white;
-  // border-bottom: 2px solid #ced4da;
-
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-  border-bottom: 1px solid #ced4da;
+  border-bottom: lighten($color-black, 50%);
 }
 .breadCrumb-Data {
   margin: 0;
   margin-top: 53px;
   background-color: #f8f8f8;
-  height: 75px;
   .hdg_bredcrump {
     background: url("../../../assets/images/breadcrump_border.webp") no-repeat
       top right #fff;

@@ -7,6 +7,7 @@ import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import Enumerable from "linq";
 import swal from "sweetalert2";
 import { EmployeeFilter } from "../../../common/EmployeeFilter";
+import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 
 class NewEmployeeProjectRoster extends Component {
   constructor(props) {
@@ -467,9 +468,10 @@ class NewEmployeeProjectRoster extends Component {
   }
 
   getEmployeesForProjectRoster(inputs) {
+    AlgaehLoader({ show: true });
     this.setState(
       prevState => {
-        return { loading: true, inputs: !inputs ? prevState.inputs : inputs };
+        return { inputs: !inputs ? prevState.inputs : inputs };
       },
       () => {
         inputs = this.state.inputs;
@@ -498,17 +500,15 @@ class NewEmployeeProjectRoster extends Component {
           onSuccess: res => {
             if (res.data.success) {
               this.setState({
-                employees: res.data.records,
-                loading: false
+                employees: res.data.records
               });
+              AlgaehLoader({ show: false });
             } else if (!res.data.success) {
               swalMessage({
                 title: res.data.records.message,
                 type: "warning"
               });
-              this.setState({
-                loading: false
-              });
+              AlgaehLoader({ show: false });
             }
           },
           onFailure: err => {
@@ -516,9 +516,7 @@ class NewEmployeeProjectRoster extends Component {
               title: err.message,
               type: "error"
             });
-            this.setState({
-              loading: false
-            });
+            AlgaehLoader({ show: false });
           }
         });
       }
