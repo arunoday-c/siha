@@ -5448,6 +5448,577 @@ module.exports = {
     }
   },
 
+
+//created by irfan:
+getBulkManualTimeSheetBKP: (req, res, next) => {
+  const _mysql = new algaehMysql();
+  const utilities = new algaehUtilities();
+
+  try {
+    const input = req.query;
+
+    if (
+      input.branch_id > 0 &&
+      input.from_date != undefined &&
+      input.to_date != undefined
+    ) {
+      let strQry = "";
+      let project = "";
+
+      if (input.project_id > 0) {
+        project = " and PR.project_id=" + input.project_id;
+      }
+
+      if (input.employee_id > 0) {
+        strQry = " and employee_id=" + input.employee_id;
+      }
+
+      if (input.department_id > 0) {
+        strQry = " and DP.department_id=" + input.department_id;
+      }
+      if (input.sub_department_id > 0) {
+        strQry = " and E.sub_department_id=" + input.sub_department_id;
+      }
+      if (input.designation_id > 0) {
+        strQry = " and E.employee_designation_id=" + input.designation_id;
+      }
+
+      _mysql
+        .executeQuery({
+          query: `
+          select PR.employee_id,PR.attendance_date,E.employee_code,E.full_name,E.sub_department_id,
+          E.religion_id, E.date_of_joining,PR.project_id,P.project_desc,D.designation 
+          from hims_f_project_roster PR 
+          inner join  hims_d_employee E on PR.employee_id=E.hims_d_employee_id
+          inner join  hims_d_project P on P.hims_d_project_id=PR.project_id
+          inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
+          inner join hims_d_department DP on SD.department_id=DP.hims_d_department_id
+          inner join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id
+          and PR.hospital_id=? ${strQry} ${project} and PR.attendance_date between date(?) and date(?)
+          order by employee_id;     
+          select hims_f_leave_application_id,employee_id,leave_application_code,from_leave_session,
+          L.leave_type,from_date,to_leave_session,to_date,holiday_included,weekoff_included
+          from hims_f_leave_application LA inner join hims_d_leave L on 	LA.leave_id=L.hims_d_leave_id     
+          inner join  hims_d_employee E on LA.employee_id=E.hims_d_employee_id
+          inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
+          inner join hims_d_department DP on SD.department_id=DP.hims_d_department_id
+          inner join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id
+          where    LA.hospital_id=?  ${strQry} and status='APR' and ((  date(?)>=date(from_date) and
+          date(?)<=date(to_date)) or ( date(?)>=date(from_date) and   date(?)<=date(to_date)) 
+          or (date(from_date)>= date(?) and date(from_date)<=date(?) ) or 
+          (date(to_date)>=date(?) and date(to_date)<= date(?) ))  ;
+          select hims_d_holiday_id,holiday_date,holiday_description,weekoff,holiday,
+          holiday_type,religion_id from hims_d_holiday  where hospital_id=? and 
+          date(holiday_date) between date(?) and date(?);`,
+          values: [
+            input.branch_id,
+            input.from_date,
+            input.to_date,
+            input.branch_id,
+            input.from_date,
+            input.from_date,
+            input.to_date,
+            input.to_date,
+            input.from_date,
+            input.to_date,
+            input.from_date,
+            input.to_date,
+            input.branch_id,
+            input.from_date,
+            input.to_date
+          ],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+
+          //const allEmployees=result[0];
+          const allLeaves = result[1];
+          const allHolidays = result[2];
+
+          let allDates = getDaysArray(
+            new Date(input.from_date),
+            new Date(input.to_date)
+          );
+
+          //console.log("alldate:",allDates);
+
+          const allEmployees = _.chain(result[0])
+            .groupBy(g => g.employee_id)
+            .map(emp => {
+              allDates.forEach(dat => {
+                const ProjAssgned = emp.find(e => {
+                  return e.attendance_date == dat;
+                });
+                if (ProjAssgned == undefined)
+                  emp.push({
+                    employee_id: emp[0].employee_id,
+                    attendance_date: dat,
+                    employee_code: emp[0].employee_code,
+                    full_name: emp[0].full_name,
+                    sub_department_id: emp[0].sub_department_id,
+                    religion_id: emp[0].religion_id,
+                    date_of_joining: emp[0].date_of_joining,
+                    project_id: null,
+                    project_desc: null,
+                    designation: emp[0].designation
+                  });
+              });
+              return emp;
+            })
+            .value();
+
+          utilities.logger().log("allEmployees", allEmployees);
+
+          allEmployees.forEach(employee => {
+            const outputArray = [];
+            let empHolidayweekoff = getEmployeeWeekOffsHolidays(
+              input.from_date,
+              input.to_date,
+              employee[0],
+              allHolidays
+            );
+
+            let empLeave = new LINQ(allLeaves)
+              .Where(w => w.employee_id == employee[0].employee_id)
+              .Select(s => s)
+              .ToArray();
+
+            employee.forEach((row, i) => {
+              //console.log("row:",row);
+
+              let leave = null;
+              if (empLeave.length > 0) {
+                //if he is on leave send project id null
+                leave = new LINQ(empLeave)
+                  .Where(
+                    w =>
+                      w.from_date <= row["attendance_date"] &&
+                      w.to_date >= row["attendance_date"]
+                  )
+                  .Select(s => {
+                    return {
+                      holiday_included: s.holiday_included,
+                      weekoff_included: s.weekoff_included,
+                      hospital_id: input.branch_id,
+                      employee_id: row.employee_id,
+                      project_id: null,
+                      full_name: row.full_name,
+                      sub_department_id: row.sub_department_id,
+                      employee_code: row.employee_code,
+                      attendance_date: row["attendance_date"],
+                      status: s.leave_type == "P" ? "PL" : "UL",
+                      project_desc: row.project_desc,
+                      designation: row.designation
+                    };
+                  })
+                  .FirstOrDefault(null);
+              }
+
+              // if(leave!==null)
+              //  console.log("leave:",leave);
+
+              let holiday_or_weekOff = new LINQ(empHolidayweekoff)
+                .Where(w => w.holiday_date == row["attendance_date"])
+                .Select(s => {
+                  return {
+                    holiday: s.holiday,
+                    weekoff: s.weekoff
+                  };
+                })
+                .FirstOrDefault(null);
+
+              //----------------------------
+
+              if (
+                (holiday_or_weekOff == null && leave != null) ||
+                (leave != null &&
+                  holiday_or_weekOff != null &&
+                  holiday_or_weekOff.holiday == "Y" &&
+                  leave.holiday_included == "Y") ||
+                (leave != null &&
+                  holiday_or_weekOff != null &&
+                  holiday_or_weekOff.weekoff == "Y" &&
+                  leave.weekoff_included == "Y")
+              ) {
+                console.log("leave:", leave);
+                outputArray.push(leave);
+              } else if (holiday_or_weekOff != null) {
+                if (holiday_or_weekOff.weekoff == "Y") {
+                  let projrct_on_Weekoff = null;
+
+                  projrct_on_Weekoff = new LINQ(employee)
+                    .Where(w => w.attendance_date == row["attendance_date"])
+                    .Select(s => s.project_id)
+                    .FirstOrDefault(null);
+
+                  if (projrct_on_Weekoff != null) {
+                    outputArray.push({
+                      hospital_id: input.branch_id,
+
+                      employee_id: employee[0].employee_id,
+                      project_id: projrct_on_Weekoff,
+                      full_name: employee[0].full_name,
+                      sub_department_id: employee[0].sub_department_id,
+                      employee_code: employee[0].employee_code,
+                      attendance_date: row["attendance_date"],
+                      status: "WO",
+                      project_desc: employee[0].project_desc,
+                      designation: employee[0].designation
+                    });
+                  } else {
+                    outputArray.push({
+                      hospital_id: input.branch_id,
+
+                      employee_id: employee[0].employee_id,
+                      project_id: null,
+                      full_name: employee[0].full_name,
+                      sub_department_id: employee[0].sub_department_id,
+                      employee_code: employee[0].employee_code,
+                      attendance_date: row["attendance_date"],
+                      status: "WO",
+                      project_desc: employee[0].project_desc,
+                      designation: employee[0].designation
+                    });
+                  }
+                } else if (holiday_or_weekOff.holiday == "Y") {
+                  let projrct_on_holiday = null;
+
+                  projrct_on_holiday = new LINQ(employee)
+                    .Where(w => w.attendance_date == row["attendance_date"])
+                    .Select(s => s.project_id)
+                    .FirstOrDefault(null);
+
+                  if (projrct_on_holiday != undefined) {
+                    outputArray.push({
+                      hospital_id: input.branch_id,
+
+                      employee_id: employee[0].employee_id,
+                      project_id: projrct_on_holiday,
+                      full_name: employee[0].full_name,
+                      sub_department_id: employee[0].sub_department_id,
+                      employee_code: employee[0].employee_code,
+                      attendance_date: row["attendance_date"],
+                      status: "HO",
+                      project_desc: employee[0].project_desc,
+                      designation: employee[0].designation
+                    });
+                  } else {
+                    outputArray.push({
+                      hospital_id: input.branch_id,
+
+                      employee_id: employee[0].employee_id,
+                      project_id: null,
+                      full_name: employee[0].full_name,
+                      sub_department_id: employee[0].sub_department_id,
+                      employee_code: employee[0].employee_code,
+                      attendance_date: row["attendance_date"],
+                      status: "HO",
+                      project_desc: employee[0].project_desc,
+                      designation: employee[0].designation
+                    });
+                  }
+                }
+              } else {
+                let roster_data = new LINQ(employee)
+                  .Where(w => w.attendance_date == row["attendance_date"])
+                  .Select(s => {
+                    return {
+                      hospital_id: input.branch_id,
+
+                      employee_id: s.employee_id,
+                      project_id: s.project_id,
+                      full_name: s.full_name,
+                      employee_code: s.employee_code,
+                      sub_department_id: s.sub_department_id,
+                      attendance_date: s.attendance_date,
+                      status: "PR",
+                      project_desc: s.project_desc,
+                      designation: s.designation
+                    };
+                  })
+                  .FirstOrDefault(null);
+
+                if (roster_data != undefined) {
+                  outputArray.push(roster_data);
+                } else {
+                  outputArray.push({
+                    hospital_id: input.branch_id,
+
+                    employee_id: employee[0].employee_id,
+                    project_id: null,
+                    full_name: employee[0].full_name,
+                    sub_department_id: employee[0].sub_department_id,
+                    employee_code: employee[0].employee_code,
+                    attendance_date: row["attendance_date"],
+                    status: "PR",
+                    project_desc: employee[0].project_desc,
+                    designation: employee[0].designation
+                  });
+                }
+              }
+            });
+          });
+
+          //  utilities.logger().log("allEmployees",allEmployees);
+
+          req.records = allEmployees;
+          next();
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      req.records = {
+        message: "Please provide valid input",
+        invalid_input: true
+      };
+      next();
+    }
+  } catch (e) {
+    next(e);
+  }
+},
+
+
+
+  //created by irfan:
+getBulkManualTimeSheet: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const utilities = new algaehUtilities();
+
+    try {
+    const input = req.query;
+
+    if (
+      input.branch_id > 0 &&
+      input.from_date != undefined &&
+      input.to_date != undefined
+    ) {
+      let strQry = "";
+      let project = "";
+
+      if (input.project_id > 0) {
+        project = " and PR.project_id=" + input.project_id;
+      }
+
+      if (input.employee_id > 0) {
+        strQry = " and employee_id=" + input.employee_id;
+      }
+
+      if (input.department_id > 0) {
+        strQry = " and DP.department_id=" + input.department_id;
+      }
+      if (input.sub_department_id > 0) {
+        strQry = " and E.sub_department_id=" + input.sub_department_id;
+      }
+      if (input.designation_id > 0) {
+        strQry = " and E.employee_designation_id=" + input.designation_id;
+      }
+
+      _mysql
+        .executeQuery({
+          query: `
+            select PR.employee_id,PR.attendance_date,E.employee_code,E.full_name,E.sub_department_id,
+            E.religion_id, E.date_of_joining,PR.project_id,P.project_desc,D.designation 
+            from hims_f_project_roster PR 
+            inner join  hims_d_employee E on PR.employee_id=E.hims_d_employee_id
+            inner join  hims_d_project P on P.hims_d_project_id=PR.project_id
+            inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
+            inner join hims_d_department DP on SD.department_id=DP.hims_d_department_id
+            inner join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id
+            and PR.hospital_id=? ${strQry} ${project} and PR.attendance_date between date(?) and date(?)
+            order by employee_id;     
+            select hims_f_leave_application_id,employee_id,leave_application_code,from_leave_session,
+            L.leave_type,from_date,to_leave_session,to_date,holiday_included,weekoff_included
+            from hims_f_leave_application LA inner join hims_d_leave L on 	LA.leave_id=L.hims_d_leave_id     
+            inner join  hims_d_employee E on LA.employee_id=E.hims_d_employee_id
+            inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
+            inner join hims_d_department DP on SD.department_id=DP.hims_d_department_id
+            inner join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id
+            where    LA.hospital_id=?  ${strQry} and status='APR' and ((  date(?)>=date(from_date) and
+            date(?)<=date(to_date)) or ( date(?)>=date(from_date) and   date(?)<=date(to_date)) 
+            or (date(from_date)>= date(?) and date(from_date)<=date(?) ) or 
+            (date(to_date)>=date(?) and date(to_date)<= date(?) ))  ;
+            select hims_d_holiday_id,holiday_date,holiday_description,weekoff,holiday,
+            holiday_type,religion_id from hims_d_holiday  where hospital_id=? and 
+            date(holiday_date) between date(?) and date(?);`,
+          values: [
+            input.branch_id,
+            input.from_date,
+            input.to_date,
+            input.branch_id,
+            input.from_date,
+            input.from_date,
+            input.to_date,
+            input.to_date,
+            input.from_date,
+            input.to_date,
+            input.from_date,
+            input.to_date,
+            input.branch_id,
+            input.from_date,
+            input.to_date
+          ],
+          printQuery: false
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+
+          const allLeaves = result[1];
+          const allHolidays = result[2];
+
+          const final_roster = [];
+
+          const allDates = getDaysArray(
+            new Date(input.from_date),
+            new Date(input.to_date)
+          );
+
+          const allEmployees = _.chain(result[0])
+            .groupBy(g => g.employee_id)
+            .map(emp => {
+              allDates.forEach(dat => {
+                const ProjAssgned = emp.find(e => {
+                  return e.attendance_date == dat;
+                });
+                if (ProjAssgned == undefined)
+                  emp.push({
+                    employee_id: emp[0].employee_id,
+                    attendance_date: dat,
+                    employee_code: emp[0].employee_code,
+                    full_name: emp[0].full_name,
+                    sub_department_id: emp[0].sub_department_id,
+                    religion_id: emp[0].religion_id,
+                    date_of_joining: emp[0].date_of_joining,
+                    project_id: null,
+                    project_desc: null,
+                    designation: emp[0].designation
+                  });
+              });
+              return emp;
+            })
+            .value();
+
+          allEmployees.forEach(employee => {
+            const outputArray = [];
+            let empHolidayweekoff = getEmployeeWeekOffsHolidays(
+              input.from_date,
+              input.to_date,
+              employee[0],
+              allHolidays
+            );
+
+            const empLeave = new LINQ(allLeaves)
+              .Where(w => w.employee_id == employee[0].employee_id)
+              .Select(s => s)
+              .ToArray();
+
+            employee.forEach((row, i) => {
+              let leave = null;
+              if (empLeave.length > 0) {
+                //if he is on leave send project id null
+                leave = new LINQ(empLeave)
+                  .Where(
+                    w =>
+                      w.from_date <= row["attendance_date"] &&
+                      w.to_date >= row["attendance_date"]
+                  )
+                  .Select(s => {
+                    return {
+                      holiday_included: s.holiday_included,
+                      weekoff_included: s.weekoff_included,
+                      hospital_id: input.branch_id,
+                      employee_id: row.employee_id,
+                      project_id: null,
+                      full_name: row.full_name,
+                      sub_department_id: row.sub_department_id,
+                      employee_code: row.employee_code,
+                      attendance_date: row["attendance_date"],
+                      status: s.leave_type == "P" ? "PL" : "UL",
+                      project_desc: row.project_desc,
+                      designation: row.designation
+                    };
+                  })
+                  .FirstOrDefault(null);
+              }
+
+              const holiday_or_weekOff = new LINQ(empHolidayweekoff)
+                .Where(w => w.holiday_date == row["attendance_date"])
+                .Select(s => {
+                  return {
+                    holiday: s.holiday,
+                    weekoff: s.weekoff
+                  };
+                })
+                .FirstOrDefault(null);
+
+              //----------------------------
+
+              if (
+                (holiday_or_weekOff == null && leave != null) ||
+                (leave != null &&
+                  holiday_or_weekOff != null &&
+                  holiday_or_weekOff.holiday == "Y" &&
+                  leave.holiday_included == "Y") ||
+                (leave != null &&
+                  holiday_or_weekOff != null &&
+                  holiday_or_weekOff.weekoff == "Y" &&
+                  leave.weekoff_included == "Y")
+              ) {
+                outputArray.push({
+                  attendance_date: leave.attendance_date,
+                  status: leave.status
+                });
+              } else if (holiday_or_weekOff != null) {
+                if (holiday_or_weekOff.weekoff == "Y") {
+                  outputArray.push({
+                    attendance_date: row["attendance_date"],
+                    status: "WO"
+                  });
+                } else if (holiday_or_weekOff.holiday == "Y") {
+                  outputArray.push({
+                    attendance_date: row["attendance_date"],
+                    status: "HO"
+                  });
+                }
+              } else {
+                outputArray.push({
+                  attendance_date: row["attendance_date"],
+                  status: row.project_id > 0 ? "PR" : "N"
+                });
+              }
+            });
+
+            final_roster.push({
+              full_name: employee[0].full_name,
+              employee_code: employee[0].employee_code,
+              dates: outputArray
+            });
+          });
+
+          //  utilities.logger().log("allEmployees",allEmployees);
+
+          req.records = final_roster;
+          next();
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      req.records = {
+        message: "Please provide valid input",
+        invalid_input: true
+      };
+      next();
+    }
+  } catch (e) {
+    next(e);
+  }
+}
+
 };
 
 //created by irfan: to insert timesheet
@@ -5836,4 +6407,22 @@ function insertTimeSheet(
         });
       });
   } catch (e) {}
+}
+
+
+
+//created by irfan: to generate dates 
+function getDaysArray(start, end) {
+  const utilities = new algaehUtilities();
+
+  try {
+    for (var arr = [], dt = start; dt <= end; dt.setDate(dt.getDate() + 1)) {
+     // const dat = new Date(dt);
+      arr.push( moment(dt).format("YYYY-MM-DD") );
+    }
+
+    return arr;
+  } catch (e) {
+    utilities.logger().log("error rr: ", e);
+  }
 }
