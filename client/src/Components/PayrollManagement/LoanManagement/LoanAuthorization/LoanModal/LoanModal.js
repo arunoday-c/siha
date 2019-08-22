@@ -332,7 +332,8 @@ class LoanModal extends Component {
                     fieldName: "loan_application_number",
                     label: (
                       <AlgaehLabel label={{ forceLabel: "Application No." }} />
-                    )
+                    ),
+                    others: { filterable: false }
                   },
                   {
                     fieldName: "loan_authorized",
@@ -355,7 +356,8 @@ class LoanModal extends Component {
                           )}
                         </span>
                       );
-                    }
+                    },
+                    others: { filterable: false }
                   },
                   {
                     fieldName: "loan_application_date",
@@ -372,7 +374,8 @@ class LoanModal extends Component {
                           )}
                         </span>
                       );
-                    }
+                    },
+                    others: { filterable: false }
                   },
                   {
                     fieldName: "loan_description",
@@ -385,14 +388,16 @@ class LoanModal extends Component {
                     ),
                     displayTemplate: row => {
                       return <span>{getAmountFormart(row.loan_amount)}</span>;
-                    }
+                    },
+                    others: { filterable: false }
                     //disabled: true
                   },
                   {
                     fieldName: "loan_tenure",
                     label: (
                       <AlgaehLabel label={{ forceLabel: "Total No. of EMI" }} />
-                    )
+                    ),
+                    others: { filterable: false }
                   },
                   {
                     fieldName: "installment_amount",
@@ -405,13 +410,15 @@ class LoanModal extends Component {
                       return (
                         <span>{getAmountFormart(row.installment_amount)}</span>
                       );
-                    }
+                    },
+                    others: { filterable: false }
                   },
                   {
                     fieldName: "loan_description",
                     label: (
                       <AlgaehLabel label={{ forceLabel: "Reason For Loan" }} />
-                    )
+                    ),
+                    others: { filterable: false }
                   },
                   {
                     fieldName: "loan_tenure",
@@ -422,16 +429,21 @@ class LoanModal extends Component {
                     ),
                     displayTemplate: row => {
                       return <span>{row.loan_tenure}</span>;
-                    }
+                    },
+                    others: { filterable: false }
                   },
                   {
                     fieldName: "pending_loan",
-                    label: <AlgaehLabel label={{ forceLabel: "Balance Due" }} />
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Balance Due" }} />
+                    ),
+                    others: { filterable: false }
                   }
                 ]}
                 keyId=""
                 dataSource={{ data: this.state.employee_loans }}
                 isEditable={false}
+                filter={true}
                 paging={{ page: 0, rowsPerPage: 10 }}
               />
             </div>

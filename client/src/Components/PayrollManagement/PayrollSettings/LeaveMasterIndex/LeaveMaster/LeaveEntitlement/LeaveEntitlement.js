@@ -161,13 +161,14 @@ function LeaveEntitlement(props) {
           }}
           textBox={{
             className: "txt-fld",
+            number: { allowNegative: false },
+            dontAllowKeys: ["-", "e"],
             name: "encashment_percentage",
             value: myParent.state.encashment_percentage,
             events: {
               onChange: e => myParent.textHandler(e)
             },
             others: {
-              type: "number",
               disabled:
                 !myParent.state.leave_encash ||
                 myParent.state.leave_encash === "N"
@@ -201,13 +202,14 @@ function LeaveEntitlement(props) {
           }}
           textBox={{
             className: "txt-fld",
+            number: { allowNegative: false },
+            dontAllowKeys: ["-", "e"],
             name: "carry_forward_percentage",
             value: myParent.state.carry_forward_percentage,
             events: {
               onChange: e => myParent.textHandler(e)
             },
             others: {
-              type: "number",
               disabled:
                 !myParent.state.leave_carry_forward ||
                 myParent.state.leave_carry_forward === "N"
@@ -340,7 +342,7 @@ function LeaveEntitlement(props) {
             </label>
           </div>
         </div>
-        {/* 
+        {/*
         <div className="col form-group">
           <label>Allow Round off</label>
           <div className="customCheckbox">

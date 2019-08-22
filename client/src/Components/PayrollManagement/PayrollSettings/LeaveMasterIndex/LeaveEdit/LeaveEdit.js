@@ -181,34 +181,53 @@ class LeaveEdit extends Component {
     });
   }
 
+  isItReallyChecked(suspect) {
+    if (suspect === true || suspect === "Y") {
+      return "Y";
+    } else {
+      return "N";
+    }
+  }
+
   saveMaster() {
     AlgaehValidation({
       alertTypeIcon: "warning",
       querySelector: "data-validate='LvEdtGrd'",
       onSuccess: () => {
+        const {
+          include_holiday,
+          include_weekoff,
+          leave_encash,
+          leave_carry_forward,
+          religion_required,
+          holiday_reimbursement,
+          exit_permit_required,
+          proportionate_leave,
+          document_mandatory
+        } = this.state;
         let send_data = {
           hims_d_leave_id: this.state.hims_d_leave_id,
           leave_code: this.state.leave_code,
           leave_description: this.state.leave_description,
           annual_maternity_leave: this.state.annual_maternity_leave,
-          include_weekoff: this.state.include_weekoff ? "Y" : "N",
-          include_holiday: this.state.include_holiday ? "Y" : "N",
+          include_weekoff: this.isItReallyChecked(include_weekoff),
+          include_holiday: this.isItReallyChecked(include_holiday),
           leave_mode: this.state.leave_mode,
           leave_category: this.state.leave_category,
           calculation_type: this.state.calculation_type,
           leave_status: this.state.leave_status,
           leave_accrual: this.state.leave_accrual,
-          leave_encash: this.state.leave_encash ? "Y" : "N",
+          leave_encash: this.isItReallyChecked(leave_encash),
           leave_type: this.state.leave_type,
           encashment_percentage: this.state.encashment_percentage,
-          leave_carry_forward: this.state.leave_carry_forward ? "Y" : "N",
+          leave_carry_forward: this.isItReallyChecked(leave_carry_forward),
           carry_forward_percentage: this.state.carry_forward_percentage,
-          religion_required: this.state.religion_required ? "Y" : "N",
+          religion_required: this.isItReallyChecked(religion_required),
           religion_id: this.state.religion_id,
-          holiday_reimbursement: this.state.holiday_reimbursement ? "Y" : "N",
-          exit_permit_required: this.state.exit_permit_required ? "Y" : "N",
-          proportionate_leave: this.state.proportionate_leave ? "Y" : "N",
-          document_mandatory: this.state.document_mandatory ? "Y" : "N"
+          holiday_reimbursement: this.isItReallyChecked(holiday_reimbursement),
+          exit_permit_required: this.isItReallyChecked(exit_permit_required),
+          proportionate_leave: this.isItReallyChecked(proportionate_leave),
+          document_mandatory: this.isItReallyChecked(document_mandatory)
         };
 
         algaehApiCall({

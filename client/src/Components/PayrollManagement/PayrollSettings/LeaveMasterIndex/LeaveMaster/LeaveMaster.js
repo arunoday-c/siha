@@ -19,7 +19,9 @@ class LeaveMaster extends Component {
       earning_deductions: [],
       leaveDetails: [],
       leaveEncash: [],
-      leaveRules: []
+      leaveRules: [],
+      encashment_percentage: 0,
+      carry_forward_percentage: 0
     };
   }
 
@@ -401,7 +403,7 @@ class LeaveMaster extends Component {
           () => {
             if (!this.state.leave_encash) {
               this.setState({
-                encashment_percentage: null
+                encashment_percentage: 0
               });
             }
             // !this.state.leave_encash
@@ -421,7 +423,7 @@ class LeaveMaster extends Component {
           () => {
             if (!this.state.leave_carry_forward) {
               this.setState({
-                carry_forward_percentage: null
+                carry_forward_percentage: 0
               });
             }
             // !this.state.leave_carry_forward
@@ -465,9 +467,9 @@ class LeaveMaster extends Component {
           leave_type: null,
           leave_category: null,
           calculation_type: null,
-          encashment_percentage: null,
+          encashment_percentage: 0,
           leave_carry_forward: "",
-          carry_forward_percentage: null,
+          carry_forward_percentage: 0,
           religion_required: "",
           religion_id: null,
           holiday_reimbursement: "",

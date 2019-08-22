@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import "./ProjectJobCost.css";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import EmployeeProjectRoster from "./EmployeeProjectRoster/EmployeeProjectRoster";
+import NewEmployeeProjectRoster from "./EmployeeProjectRoster/NewEmployeeProjectRoster";
 import ProjectMapping from "./ProjectMapping/ProjectMapping";
 import ProjectPayroll from "./ProjectPayroll/ProjectPayroll";
 import ProjectActivityMgmnt from "./ProjectActivityMgmnt/ProjectActivityMgmnt";
@@ -70,7 +71,19 @@ class ProjectJobCost extends Component {
                   />
                 }
               </li>
-
+              <li
+                algaehtabs={"NewEmployeeProjectRoster"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "New Employee Project Roster"
+                    }}
+                  />
+                }
+              </li>
               <li
                 algaehtabs={"ProjectPayroll"}
                 className={"nav-item tab-button"}
@@ -90,6 +103,8 @@ class ProjectJobCost extends Component {
         <div className="ProjectJobCostSec">
           {this.state.pageDisplay === "EmployeeProjectRoster" ? (
             <EmployeeProjectRoster />
+          ) : this.state.pageDisplay === "NewEmployeeProjectRoster" ? (
+            <NewEmployeeProjectRoster />
           ) : this.state.pageDisplay === "ProjectMapping" ? (
             <ProjectMapping />
           ) : this.state.pageDisplay === "ProjectPayroll" ? (
