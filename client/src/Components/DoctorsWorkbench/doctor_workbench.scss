@@ -443,7 +443,7 @@
       margin: 0;
       padding: 0;
       list-style: none;
-      height: 28.5vh;
+      height: 68.6vh;
       overflow: auto;
       .noPatientDiv {
         margin-top: 15%;
@@ -694,6 +694,99 @@
     }
     .style_Label {
       text-transform: initial;
+    }
+  }
+}
+
+.appoPatientList {
+  .appoList {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    height: 68.6vh;
+    overflow: auto;
+    .noPatientDiv {
+      margin-top: 15%;
+      text-align: center;
+
+      color: #929292;
+    }
+    li {
+      margin: 4px 0;
+      padding: 3px 0;
+      list-style: none;
+      border: 1px solid #f2f2f2;
+      background: #fff;
+      border-radius: 5px;
+      .app-sec-1 {
+        width: 10px;
+        width: 20%;
+        vertical-align: text-top;
+        display: inline-block;
+        text-align: center;
+        border-right: 1px dashed #e6e6e6;
+        margin-right: 10px;
+        i {
+          width: 30px;
+          background: yellow;
+          height: 30px;
+          display: block;
+          margin: auto;
+        }
+        .appointment-icon {
+          background: url("../../assets/icons/appointment-icon.svg") no-repeat
+            center;
+          background-size: 80%;
+        }
+        .walking-icon {
+          background: url("../../assets/icons/walking-icon.svg") no-repeat
+            center;
+          background-size: 80%;
+        }
+        .appTime {
+        }
+      }
+      .app-sec-2 {
+        width: 10px;
+        width: 56%;
+        vertical-align: text-top;
+        display: inline-block;
+        .appPatientName {
+          display: block;
+
+          margin-top: 5px;
+        }
+        .appStatus {
+          display: block;
+        }
+        .nursing {
+          color: #34b8bc;
+        }
+        .checkedIn {
+          color: #00bb4b;
+        }
+      }
+      .app-sec-3 {
+        width: 20%;
+        line-height: 53px;
+        vertical-align: text-top;
+        display: inline-block;
+        text-align: center;
+        .appPatientStatus {
+          display: block;
+          line-height: 25px;
+        }
+        .newVisit {
+          color: #ff8800;
+        }
+        .followUp {
+          color: #ff005f;
+        }
+      }
+    }
+    li:hover {
+      background: #ebfeff;
+      cursor: pointer;
     }
   }
 }
