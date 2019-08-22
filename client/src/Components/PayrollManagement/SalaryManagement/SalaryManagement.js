@@ -3,6 +3,8 @@ import "./SalaryManagement.css";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import SalaryPayments from "./SalaryPayments/SalaryPayments";
 import SalaryProcessing from "./SalaryProcessing/SalaryProcessing";
+import NewSalaryProcessing from "./SalaryProcessing/NewSalaryProcessing";
+import NewSalaryPayments from "./SalaryPayments/NewSalaryPayments";
 import MiscEarningsDeductions from "./MiscEarningsDeductions/MiscEarningsDeductions";
 
 export default class SalaryManagement extends Component {
@@ -44,6 +46,19 @@ export default class SalaryManagement extends Component {
                   />
                 }
               </li>
+              <li
+                algaehtabs={"NewSalaryProcessing"}
+                className={"nav-item tab-button "}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "New Salary Processing"
+                    }}
+                  />
+                }
+              </li>
 
               <li
                 algaehtabs={"SalaryPayments"}
@@ -54,6 +69,20 @@ export default class SalaryManagement extends Component {
                   <AlgaehLabel
                     label={{
                       forceLabel: "Salary Payments"
+                    }}
+                  />
+                }
+              </li>
+
+              <li
+                algaehtabs={"NewSalaryPayments"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "New Salary Payments"
                     }}
                   />
                 }
@@ -77,8 +106,12 @@ export default class SalaryManagement extends Component {
         <div className="salary-setion">
           {this.state.pageDisplay === "SalaryProcessing" ? (
             <SalaryProcessing />
+          ) : this.state.pageDisplay === "NewSalaryProcessing" ? (
+            <NewSalaryProcessing />
           ) : this.state.pageDisplay === "SalaryPayments" ? (
             <SalaryPayments />
+          ) : this.state.pageDisplay === "NewSalaryPayments" ? (
+            <NewSalaryPayments />
           ) : this.state.pageDisplay === "MiscEarningsDeductions" ? (
             <MiscEarningsDeductions />
           ) : null}

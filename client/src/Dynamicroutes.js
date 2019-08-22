@@ -481,7 +481,7 @@ const PageToPlot = {
   )
 };
 
-const DirectRoutes = props => {
+const DirectRoutes = React.memo(props => {
   let PlotPage = PageToPlot[props.componet];
   if (props.componet === "Dashboard") {
     const appRole = sessionStorage.getItem("appRole");
@@ -508,6 +508,6 @@ const DirectRoutes = props => {
 
   // AlgaehLoader({ show: false });
   // return ;
-};
+});
 
 export default DirectRoutes;
