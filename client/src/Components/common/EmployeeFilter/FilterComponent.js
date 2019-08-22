@@ -17,7 +17,7 @@ export default function FilterComponent(props) {
   return (
     <div className="row  inner-top-search">
       <AlagehAutoComplete
-        div={{ className: "col" }}
+        div={{ className: "col mandatory" }}
         label={{
           forceLabel: "Year",
           isImp: true
@@ -35,7 +35,7 @@ export default function FilterComponent(props) {
         }}
       />
       <AlagehAutoComplete
-        div={{ className: "col" }}
+        div={{ className: "col mandatory" }}
         label={{
           forceLabel: "Month",
           isImp: true
@@ -54,7 +54,7 @@ export default function FilterComponent(props) {
         }}
       />
       <AlagehAutoComplete
-        div={{ className: "col-2 form-group" }}
+        div={{ className: "col-2 form-group mandatory" }}
         label={{
           forceLabel: "Branch",
           isImp: true
@@ -74,7 +74,7 @@ export default function FilterComponent(props) {
       />
 
       <AlagehAutoComplete
-        div={{ className: "col-2 form-group" }}
+        div={{ className: "col-2 form-group mandatory" }}
         label={{ forceLabel: "Department", isImp: true }}
         selector={{
           name: "department_id",
@@ -145,7 +145,7 @@ export default function FilterComponent(props) {
         }}
       />
 
-      <div className="col-2" style={{ marginTop: 10 }}>
+      <div className="col-2" style={{ margin: "5px 15px 0 0", paddingLeft: 0 }}>
         <div
           className="row"
           style={{
@@ -158,7 +158,10 @@ export default function FilterComponent(props) {
             <AlgaehLabel label={{ forceLabel: "Search Employee." }} />
             <h6> {inputs.emp_name ? inputs.emp_name : "------"}</h6>
           </div>
-          <div className="col-lg-3" style={{ borderLeft: "1px solid #ced4d8" }}>
+          <div
+            className="col-2"
+            style={{ borderLeft: "1px solid #ced4d8", padding: "0 0 0 7px" }}
+          >
             <i
               className="fas fa-search fa-lg"
               style={{
@@ -171,10 +174,10 @@ export default function FilterComponent(props) {
           </div>
         </div>
       </div>
-      <div className="col-3 form-group">
+      <div className="col-12 form-group">
         <button
           onClick={() => props.loadFunc(inputs)}
-          style={{ marginTop: 21 }}
+          style={{ marginLeft: 10, float: "right" }}
           className="btn btn-primary"
         >
           {!inputs.loading ? (
@@ -185,7 +188,7 @@ export default function FilterComponent(props) {
         </button>
         <button
           onClick={handlers.clearState}
-          style={{ marginTop: 21, marginLeft: 5 }}
+          style={{ float: "right" }}
           className="btn btn-default"
         >
           Clear
