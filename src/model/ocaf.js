@@ -38,7 +38,7 @@ let getPatientOCAF = (req, res, next) => {
           _mysql
             .executeQuery({
               query:
-                "select  V.patient_id,V.hims_f_patient_visit_id as visit_id, \
+                "select  V.patient_id,V.hims_f_patient_visit_id as visit_id, V.eligible_reference_number,\
                 E.full_name as provider_name,V.new_visit_patient,null as patient_emergency_case,\
                 V.appointment_patient,SD.sub_department_name,\
                 P.patient_code,P.marital_status as patient_marital_status,date(V.visit_date) as visit_date,\
@@ -161,7 +161,7 @@ let getPatientOCAF = (req, res, next) => {
                   query:
                     "insert into hims_f_ocaf_header(`patient_id`,`visit_id`,`visit_date`,`provider_name`,\
                 `new_visit_patient`,`sub_department_name`,`patient_code`,`patient_full_name`,\
-                `patient_marital_status`,\
+                `eligible_reference_number`, `patient_marital_status`,\
                 `dv_right_sch`,`dv_right_cyl`,`dv_right_axis`,`dv_right_prism`,`dv_right_vision`,\
                 `nv_right_sch`,`nv_right_cyl`,`nv_right_axis`,`nv_right_prism`,`nv_right_vision`,\
                 `dv_left_sch`,`dv_left_cyl`,`dv_left_axis`,`dv_left_prism`,`dv_left_vision`,\
@@ -172,7 +172,7 @@ let getPatientOCAF = (req, res, next) => {
                 `created_date`,`created_by`,`updated_date`,\
                 `updated_by`,`hospital_id`) \
                 values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,\
-                  ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);",
+                  ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);",
                   values: [
                     _fields.patient_id,
                     _fields.visit_id,
@@ -182,6 +182,7 @@ let getPatientOCAF = (req, res, next) => {
                     _fields.sub_department_name,
                     _fields.patient_code,
                     _fields.patient_full_name,
+                    _fields.eligible_reference_number,
                     _fields.patient_marital_status,
 
                     _fields.dv_right_sch,

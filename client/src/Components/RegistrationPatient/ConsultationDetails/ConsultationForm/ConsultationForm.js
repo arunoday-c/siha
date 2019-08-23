@@ -15,7 +15,8 @@ import {
   AlgaehLabel,
   AlagehAutoComplete,
   AlgaehDataGrid,
-  AlgaehDateHandler
+  AlgaehDateHandler,
+  AlagehFormGroup
 } from "../../../Wrapper/algaehWrapper";
 import {
   DeptselectedHandeler,
@@ -138,6 +139,7 @@ class AddConsultationForm extends Component {
       this.props.PatientPackageList === undefined
         ? []
         : this.props.PatientPackageList;
+    debugger;
     return (
       <MyContext.Consumer>
         {context => (
@@ -291,22 +293,6 @@ class AddConsultationForm extends Component {
                       }}
                     />
 
-                    {/*<AlgaehDateHandler
-                      div={{ className: "col-lg-6" }}
-                      label={{ fieldName: "visit_date" }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "visit_date"
-                      }}
-                      disabled={true}
-                      maxDate={new Date()}
-                      minDate={new Date()}
-                      events={{
-                        onChange: null
-                      }}
-                      value={this.state.visit_date}
-                    />*/}
-
                     <div className="col-lg-6">
                       <AlgaehLabel
                         label={{
@@ -323,32 +309,6 @@ class AddConsultationForm extends Component {
                     </div>
                   </div>
                   <div className="row">
-                    {/*<div className="col-lg-4 maternityRadio">
-                      <AlgaehLabel
-                        label={{
-                          fieldName:
-                            this.state.gender === "Female"
-                              ? "maternity_patient"
-                              : null
-                        }}
-                      />
-                      <br />
-                      <div className="customCheckbox">
-                        <label className="checkbox inline">
-                          <input
-                            className={hideMaternity}
-                            type="checkbox"
-                            name="maternity_patient_yes"
-                            value="Y"
-                            disabled={this.state.gender === "Male"}
-                            checked={this.state.checked_maternity_patient}
-                            onChange={radioChange.bind(this, this, context)}
-                          />
-                          <span className={hideMaternity}>Yes</span>
-                        </label>
-                      </div>
-                    </div>*/}
-
                     <div className="col-lg-12">
                       {this.state.department_type === "D" &&
                       this.state.hims_d_patient_id !== null ? (
@@ -356,45 +316,6 @@ class AddConsultationForm extends Component {
                           <div className="col-lg-4" style={{ paddingRight: 0 }}>
                             <label>Existing Plan</label>
                             <br />
-
-                            {/* <div className="customRadio">
-                              <label className="radio inline">
-                                <input
-                                  type="radio"
-                                  name="existing_plan"
-                                  value="Y"
-                                  checked={
-                                    this.state.existing_plan === "Y"
-                                      ? true
-                                      : false
-                                  }
-                                  onChange={radioChange.bind(
-                                    this,
-                                    this,
-                                    context
-                                  )}
-                                />
-                                <span>Yes</span>
-                              </label>
-                              <label className="radio inline">
-                                <input
-                                  type="radio"
-                                  name="existing_plan"
-                                  value="N"
-                                  checked={
-                                    this.state.existing_plan === "N"
-                                      ? true
-                                      : false
-                                  }
-                                  onChange={radioChange.bind(
-                                    this,
-                                    this,
-                                    context
-                                  )}
-                                />
-                                <span>No</span>
-                              </label>
-                            </div> */}
 
                             <div className="customCheckbox">
                               <label className="checkbox inline">
@@ -409,7 +330,11 @@ class AddConsultationForm extends Component {
                                     context
                                   )}
                                 />
-                                <span>Yes</span>
+                                <span>
+                                  {this.state.selectedLang === "en"
+                                    ? "Yes"
+                                    : "نعم"}
+                                </span>
                               </label>
                             </div>
                           </div>
@@ -440,6 +365,56 @@ class AddConsultationForm extends Component {
                                 this.setState({
                                   treatment_plan_id: null
                                 });
+                              }
+                            }}
+                          />
+                        </div>
+                      ) : null}
+                    </div>
+
+                    <div className="col-lg-12">
+                      {this.state.insured === "Y" ? (
+                        <div className="row">
+                          <div className="col-lg-4" style={{ paddingRight: 0 }}>
+                            <label>Eligible</label>
+                            <br />
+
+                            <div className="customCheckbox">
+                              <label className="checkbox inline">
+                                <input
+                                  type="checkbox"
+                                  name="eligible"
+                                  value="Y"
+                                  checked={this.state.checked_eligible}
+                                  onChange={radioChange.bind(
+                                    this,
+                                    this,
+                                    context
+                                  )}
+                                />
+                                <span>
+                                  {this.state.selectedLang === "en"
+                                    ? "Yes"
+                                    : "نعم"}
+                                </span>
+                              </label>
+                            </div>
+                          </div>
+                          <AlagehFormGroup
+                            div={{ className: "col-lg-8 mandatory" }}
+                            label={{
+                              fieldName: "eligible_reference_number",
+                              isImp: this.state.insured === "Y" ? true : false
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "eligible_reference_number",
+                              value: this.state.eligible_reference_number,
+                              events: {
+                                onChange: texthandle.bind(this, this, context)
+                              },
+                              others: {
+                                disabled: !this.state.checked_eligible
                               }
                             }}
                           />

@@ -1233,7 +1233,10 @@ class PatientProfile extends Component {
             ) : this.state.pageDisplay === "summary" ? (
               <Summary />
             ) : this.state.pageDisplay === "dental" ? (
-              <Dental vat_applicable={this.vatApplicable()} />
+              <Dental
+                vat_applicable={this.vatApplicable()}
+                age_in_years={_pat_profile.age_in_years}
+              />
             ) : this.state.pageDisplay === "eye" ? (
               <Eye />
             ) : null
@@ -1246,7 +1249,10 @@ class PatientProfile extends Component {
           ) : this.state.pageDisplay === "eye" ? (
             <Eye />
           ) : this.state.pageDisplay === "dental" ? (
-            <Dental vat_applicable={this.vatApplicable()} />
+            <Dental
+              vat_applicable={this.vatApplicable()}
+              age_in_years={_pat_profile.age_in_years}
+            />
           ) : this.state.pageDisplay === "summary" ? (
             <Summary />
           ) : this.state.pageDisplay === "mrd" ? (

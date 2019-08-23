@@ -605,7 +605,10 @@ const radioChange = ($this, context, e) => {
           primary_card_number: null,
           primary_effective_start_date: null,
           primary_effective_end_date: null,
-          patInsuranceFrontImg: undefined
+          patInsuranceFrontImg: undefined,
+          eligible: "N",
+          eligible_reference_number: null,
+          checked_eligible: false
         });
       }
     }

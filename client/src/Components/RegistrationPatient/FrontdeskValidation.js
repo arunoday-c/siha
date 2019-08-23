@@ -3,7 +3,7 @@ import { AlgaehOpenContainer } from "../../utils/GlobalFunctions";
 
 export function Validations(state) {
   let isError = false;
-
+  debugger;
   var tow_word_name = state.state.full_name.split(" ");
 
   let requied_emp_id = JSON.parse(
@@ -231,6 +231,20 @@ export function Validations(state) {
         "Advance not sufficient for this package , please collect the advance."
     });
 
+    return isError;
+  }
+
+  if (
+    state.state.insured === "Y" &&
+    (state.state.eligible_reference_number === null ||
+      state.state.eligible_reference_number === "")
+  ) {
+    isError = true;
+    swalMessage({
+      type: "warning",
+      title: "Please enter Reference Number."
+    });
+    document.querySelector("[name='eligible_reference_number']").focus();
     return isError;
   }
 }
