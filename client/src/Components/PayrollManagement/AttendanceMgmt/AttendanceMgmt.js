@@ -5,6 +5,7 @@ import NewMonthlyAttendence from "./MonthlyAttendance/NewMonthlyAttendance";
 import WeeklyAttendance from "./WeeklyAttendance/WeeklyAttendance";
 import AbsenceManagement from "./AbsenceManagement/AbsenceManagement";
 import ManualAttendance from "./ManualAttendance/ManualAttendance";
+import BulkTimeSheet from "./BulkTimeSheet";
 import "./AttendanceMgmt.css";
 // import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 // import { AlgaehCloseContainer } from "../../../utils/GlobalFunctions";
@@ -124,6 +125,19 @@ export default class AttendanceMgmt extends Component {
                   />
                 }
               </li>
+              <li
+                algaehtabs={"BulkManualTimeSheet"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Bulk Manual Timesheet"
+                    }}
+                  />
+                }
+              </li>
             </ul>
           </div>
         </div>
@@ -139,6 +153,8 @@ export default class AttendanceMgmt extends Component {
             <AbsenceManagement />
           ) : this.state.pageDisplay === "ManualAttendance" ? (
             <ManualAttendance />
+          ) : this.state.pageDisplay === "BulkManualTimeSheet" ? (
+            <BulkTimeSheet />
           ) : null}
         </div>
       </div>

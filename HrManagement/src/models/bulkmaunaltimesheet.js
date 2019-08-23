@@ -34,6 +34,7 @@ async function generateDates(fromdate, todate, format) {
 }
 
 export function excelManualTimeSheet(req, res, next) {
+  return excelManualTimeSheetRead(req, res, next);
   new Promise((resolve, reject) => {
     const sheetName =
       req.query.sheetName === undefined
@@ -224,9 +225,11 @@ export function excelManualTimeSheetRead(req, res, next) {
   const fileName = path.join(__dirname, "../../../../Output", "test.xlsx");
   var workbook = new Excel.Workbook();
   workbook.xlsx.readFile(fileName).then(function() {
+    let excelArray = [];
     workbook.eachSheet(function(worksheet, sheetId) {
-      //var worksheet = workbook.getWorksheet(sheet);
-      worksheet.eachRow({ includeEmpty: true }, function(row, rowNumber) {
+      let columns = {};
+
+      worksheet.eachRow(function(row, rowNumber) {
         console.log("Row " + rowNumber + " = " + JSON.stringify(row.values));
       });
     });
