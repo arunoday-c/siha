@@ -250,6 +250,7 @@ class OrderConsumables extends Component {
                   title="Search Consumables"
                   id="service_id_search"
                   template={result => {
+                    debugger;
                     return (
                       <section className="resultSecStyles">
                         <div className="row">
@@ -257,16 +258,24 @@ class OrderConsumables extends Component {
                             <h4 className="title">{result.item_description}</h4>
                             <p className="searchMoreDetails">
                               <span>
-                                Barcode: <b>{result.barcode}</b>
+                                Barcode:{" "}
+                                <b>
+                                  {result.barcode === null
+                                    ? "No Barcode"
+                                    : result.barcode}
+                                </b>
                               </span>
                               <span>
-                                Expiry Date: <b>{result.expirydt}</b>
-                              </span>{" "}
-                              <span>
-                                {" "}
-                                Qty in Hand:{" "}
+                                Expiry Date:
                                 <b>
-                                  {" "}
+                                  {result.expirydt === null
+                                    ? "No Expiry"
+                                    : result.expirydt}
+                                </b>
+                              </span>
+                              <span>
+                                Qty in Hand:
+                                <b>
                                   {result.inventory_location_id ===
                                   this.state.inventory_location_id
                                     ? result.qtyhand
@@ -274,11 +283,11 @@ class OrderConsumables extends Component {
                                 </b>
                               </span>
                               <span>
-                                Covered:{" "}
+                                Covered:
                                 <b>{result.covered === "Y" ? "Yes" : "No"}</b>
                               </span>
                               <span>
-                                Pre Approval:{" "}
+                                Pre Approval:
                                 <b>
                                   {result.pre_approval === "Y" ? "Yes" : "No"}
                                 </b>
