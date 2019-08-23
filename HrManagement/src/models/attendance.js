@@ -5893,7 +5893,7 @@ getBulkManualTimeSheet: (req, res, next) => {
                     religion_id: emp[0].religion_id,
                     date_of_joining: emp[0].date_of_joining,
                     project_id: null,
-                    project_desc: null,
+                    project_desc: emp[0].project_desc,
                     designation: emp[0].designation
                   });
               });
@@ -5937,6 +5937,9 @@ getBulkManualTimeSheet: (req, res, next) => {
                       employee_code: row.employee_code,
                       attendance_date: row["attendance_date"],
                       status: s.leave_type == "P" ? "PL" : "UL",
+                      color:s.leave_type == "P" ?"#FEF6EC":"#FCECEC",
+                    [moment(row["attendance_date"],"YYYY-MM-DD").format("YYYYMMDD")]:s.leave_type == "P" ? "PL" : "UL",
+
                       project_desc: row.project_desc,
                       designation: row.designation
                     };
@@ -5969,24 +5972,34 @@ getBulkManualTimeSheet: (req, res, next) => {
               ) {
                 outputArray.push({
                   attendance_date: leave.attendance_date,
-                  status: leave.status
+                  status: leave.status,
+                  [moment(leave.attendance_date,"YYYY-MM-DD").format("YYYYMMDD")]:leave.status,
+                  color:"FCECEC"
+                  
                 });
               } else if (holiday_or_weekOff != null) {
                 if (holiday_or_weekOff.weekoff == "Y") {
                   outputArray.push({
                     attendance_date: row["attendance_date"],
-                    status: "WO"
+                    status: "WO",
+                    [moment(row["attendance_date"],"YYYY-MM-DD").format("YYYYMMDD")]:"WO",
+                    color:"#E7FEFD"
                   });
                 } else if (holiday_or_weekOff.holiday == "Y") {
                   outputArray.push({
                     attendance_date: row["attendance_date"],
-                    status: "HO"
+                    status: "HO",
+                    [moment(row["attendance_date"],"YYYY-MM-DD").format("YYYYMMDD")]:"HO",
+                    color:"#EAEAFD" 
                   });
                 }
               } else {
                 outputArray.push({
                   attendance_date: row["attendance_date"],
-                  status: row.project_id > 0 ? "PR" : "N"
+                  status: row.project_id > 0 ? "PR" : "N",
+                  [moment(row["attendance_date"],"YYYY-MM-DD").format("YYYYMMDD")]:row.project_id > 0 ? "PR" : "N",
+                  color:row.project_id > 0 ? "" : "#F5F5F5",
+                  project_desc:row.project_desc
                 });
               }
             });
@@ -5994,7 +6007,7 @@ getBulkManualTimeSheet: (req, res, next) => {
             final_roster.push({
               full_name: employee[0].full_name,
               employee_code: employee[0].employee_code,
-              dates: outputArray
+              dates: _.sortBy(outputArray,s=>parseInt(moment(s.attendance_date,"YYYY-MM-DD").format("MMDD"))) 
             });
           });
 
