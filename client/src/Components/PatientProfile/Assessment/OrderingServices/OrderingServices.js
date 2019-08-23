@@ -267,7 +267,7 @@ class OrderingServices extends Component {
               ) : null}
               <div className="row">
                 <AlgaehAutoSearch
-                  div={{ className: "col-7 customServiceSearch" }}
+                  div={{ className: "col-8 customServiceSearch" }}
                   label={{ forceLabel: "Search Investigation" }}
                   title="Search Investigation"
                   id="service_id_search"
@@ -294,12 +294,15 @@ class OrderingServices extends Component {
                     return (
                       <div className={`row resultSecStyles ${properStyle}`}>
                         <div className="col-12 padd-10">
-                          <h6 className="title">
+                          <h4 className="title">
                             {_.startCase(_.toLower(service_name))}
-                            <span className="service_type">
-                              ({_.startCase(_.toLower(service_type))})
-                            </span>
-                          </h6>
+                          </h4>{" "}
+                          <p className="searchMoreDetails">
+                            <span>
+                              Service Type:{" "}
+                              <b>{_.startCase(_.toLower(service_type))}</b>
+                            </span>{" "}
+                          </p>
                         </div>
                       </div>
                     );
@@ -319,7 +322,7 @@ class OrderingServices extends Component {
                 />
 
                 <AlagehAutoComplete
-                  div={{ className: "col" }}
+                  div={{ className: "col-2" }}
                   label={{
                     fieldName: "tst_type"
                   }}
@@ -337,7 +340,7 @@ class OrderingServices extends Component {
                   }}
                 />
 
-                <div className="col" style={{ paddingTop: 19 }}>
+                <div className="col-2" style={{ paddingTop: 19 }}>
                   <ButtonType
                     classname="btn-primary"
                     loading={this.state.loading_ProcessService}

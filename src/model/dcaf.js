@@ -43,7 +43,7 @@ let getPatientDCAF = (req, res, next) => {
           _mysql
             .executeQuery({
               query:
-                "select  V.patient_id,V.hims_f_patient_visit_id as visit_id, \
+                "select  V.patient_id,V.hims_f_patient_visit_id as visit_id, V.eligible_reference_number,\
                 E.full_name as provider_name,V.new_visit_patient,null as patient_emergency_case,\
                 V.appointment_patient,SD.sub_department_name,\
                 P.patient_code,P.marital_status as patient_marital_status,date(V.visit_date) as visit_date,\
@@ -215,13 +215,13 @@ let getPatientDCAF = (req, res, next) => {
                 .executeQueryWithTransaction({
                   query:
                     "insert into hims_f_dcaf_header(`patient_id`,`visit_id`,`visit_date`,`provider_name`,\
-                `new_visit_patient`,`sub_department_name`,`patient_code`,\
+                `new_visit_patient`,`sub_department_name`,`patient_code`,`eligible_reference_number`,\
                 `patient_full_name`,`patient_duration_of_illness`,\
                 `patient_chief_comp_main_symptoms`,`patient_significant_signs`,`patient_other_conditions`,\
                 `patient_diagnosys`,`regular_dental_trt`,`dental_cleaning`,\
                 `RTA`,`work_related`,\
                 `patient_gender`,`age_in_years`) \
-                values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);\
+                values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);\
                 ",
                   values: [
                     _fields.patient_id,
@@ -232,6 +232,7 @@ let getPatientDCAF = (req, res, next) => {
 
                     _fields.sub_department_name,
                     _fields.patient_code,
+                    _fields.eligible_reference_number,
 
                     _fields.patient_full_name,
                     _fields.patient_duration_of_illness,

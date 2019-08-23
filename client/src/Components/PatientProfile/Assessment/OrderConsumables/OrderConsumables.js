@@ -250,26 +250,49 @@ class OrderConsumables extends Component {
                   title="Search Consumables"
                   id="service_id_search"
                   template={result => {
+                    debugger;
                     return (
                       <section className="resultSecStyles">
                         <div className="row">
-                          <div className="col-8">
+                          <div className="col">
                             <h4 className="title">{result.item_description}</h4>
-                            <h5>
-                              {result.barcode} /{result.expirydt}
-                            </h5>
-                            <small>
-                              Covered: {result.covered === "Y" ? "Yes" : "No"}
-                              Pre Approval:
-                              {result.pre_approval === "Y" ? "Yes" : "No"}
-                            </small>
-                            <small>
-                              Qty in Hand:
-                              {result.inventory_location_id ===
-                              this.state.inventory_location_id
-                                ? result.qtyhand
-                                : 0}
-                            </small>
+                            <p className="searchMoreDetails">
+                              <span>
+                                Barcode:{" "}
+                                <b>
+                                  {result.barcode === null
+                                    ? "No Barcode"
+                                    : result.barcode}
+                                </b>
+                              </span>
+                              <span>
+                                Expiry Date:
+                                <b>
+                                  {result.expirydt === null
+                                    ? "No Expiry"
+                                    : result.expirydt}
+                                </b>
+                              </span>
+                              <span>
+                                Qty in Hand:
+                                <b>
+                                  {result.inventory_location_id ===
+                                  this.state.inventory_location_id
+                                    ? result.qtyhand
+                                    : 0}
+                                </b>
+                              </span>
+                              <span>
+                                Covered:
+                                <b>{result.covered === "Y" ? "Yes" : "No"}</b>
+                              </span>
+                              <span>
+                                Pre Approval:
+                                <b>
+                                  {result.pre_approval === "Y" ? "Yes" : "No"}
+                                </b>
+                              </span>
+                            </p>
                           </div>
                         </div>
                       </section>
