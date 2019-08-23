@@ -42,7 +42,7 @@ let getPatientUCAF = (req, res, next) => {
           _mysql
             .executeQuery({
               query:
-                "select  V.patient_id,V.hims_f_patient_visit_id as visit_id, \
+                "select  V.patient_id,V.hims_f_patient_visit_id as visit_id, V.eligible_reference_number,\
                 E.full_name as provider_name,V.new_visit_patient,null as patient_emergency_case,\
                 V.appointment_patient,SD.sub_department_name,\
                 P.patient_code,P.marital_status as patient_marital_status,date(V.visit_date) as visit_date,\
@@ -153,7 +153,7 @@ let getPatientUCAF = (req, res, next) => {
               //     : "";
               // errorString +=
               //   outputResult[6].length == 0 ? "Insurance is not added \n" : "";
-            
+
               // if (errorString != "") {
               //   _mysql.releaseConnection();
               //   next(new Error(errorString));
@@ -179,7 +179,6 @@ let getPatientUCAF = (req, res, next) => {
               }
               _fields["patient_chief_comp_main_symptoms"] = "";
               for (var i = 0; i < outputResult[2].length; i++) {
-                
                 const _out = outputResult[2][i];
 
                 // if (_fields["patient_duration_of_illness"] == null) {
@@ -228,7 +227,8 @@ let getPatientUCAF = (req, res, next) => {
                 .executeQueryWithTransaction({
                   query:
                     "insert into hims_f_ucaf_header(`patient_id`,`visit_id`,`visit_date`,`provider_name`,\
-                `new_visit_patient`,`appointment_patient`,`sub_department_name`,`patient_code`,\
+                `eligible_reference_number`,`new_visit_patient`,`appointment_patient`,`sub_department_name`,\
+                `patient_code`,\
                 `patient_marital_status`,`patient_full_name`,`case_type`,`patient_emergency_case`,\
                 `patient_bp_sys`,`patient_bp_dia`,`patient_pulse`,`patient_temp`,`patient_weight`,\
                 `patient_height`,`patient_respiratory_rate`,`patient_duration_of_illness`,\
@@ -236,13 +236,14 @@ let getPatientUCAF = (req, res, next) => {
                 `patient_diagnosys`,`patient_principal_code_1`,`patient_principal_code_2`,\
                 `patient_principal_code_3`,`patient_principal_code_4`,`patient_complaint_type`,\
                 `patient_indicated_LMP`,`patient_gender`,`age_in_years`) \
-                values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);\
+                values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);\
                 ",
                   values: [
                     _fields.patient_id,
                     _fields.visit_id,
                     _fields.visit_date,
                     _fields.provider_name,
+                    _fields.eligible_reference_number,
                     _fields.new_visit_patient,
                     _fields.appointment_patient,
                     _fields.sub_department_name,
