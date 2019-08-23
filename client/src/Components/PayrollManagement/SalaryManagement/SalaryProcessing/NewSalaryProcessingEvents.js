@@ -69,8 +69,8 @@ const SalaryProcess = ($this, inputs, from) => {
                 AlgaehLoader({ show: false });
                 swalMessage({
                   title:
-                    "Invalid. Please process attendence, If already processed check the components",
-                  type: "error"
+                    "Invalid. Please process attendence, If already processed please check the salary components.",
+                  type: "warning"
                 });
               }
             },
