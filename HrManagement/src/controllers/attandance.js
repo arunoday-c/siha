@@ -25,6 +25,7 @@ import {
   postManualTimeSheetMonthWise,
   loadManualTimeSheet
 } from "../models/attendance";
+import { excelManualTimeSheet } from "../models/bulkmaunaltimesheet";
 export default () => {
   const api = Router();
 
@@ -366,6 +367,6 @@ export default () => {
       });
     }
   });
-
+  api.get("/excelManualTimeSheet", excelManualTimeSheet);
   return api;
 };

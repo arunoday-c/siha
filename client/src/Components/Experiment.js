@@ -298,6 +298,34 @@ class Experiment extends Component {
         >
           Credit Invoice Report
         </button>
+        <hr></hr>
+        <button
+          className="btn btn-primary"
+          onClick={() => {
+            algaehApiCall({
+              uri: "/attendance/excelManualTimeSheet",
+              method: "GET",
+              module: "hrManagement",
+              headers: {
+                Accept: "blob"
+              },
+              others: { responseType: "blob" },
+              onSuccess: response => {
+                debugger;
+                let blob = new Blob([response.data], {
+                  type: "application/octet-stream"
+                });
+                var objectUrl = URL.createObjectURL(blob);
+                var link = document.createElement("a");
+                link.setAttribute("href", objectUrl);
+                link.setAttribute("download", "abc.xlsx");
+                link.click();
+              }
+            });
+          }}
+        >
+          Generate Excel File server side
+        </button>
       </div>
     );
   }
