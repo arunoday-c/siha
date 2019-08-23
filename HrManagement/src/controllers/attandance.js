@@ -23,7 +23,9 @@ import {
   getDailyAttendance,
   updateMonthlyAttendance,
   postManualTimeSheetMonthWise,
-  loadManualTimeSheet
+  loadManualTimeSheet,
+  getAttendanceDates,
+  getBulkManualTimeSheet
 } from "../models/attendance";
 import { excelManualTimeSheet } from "../models/bulkmaunaltimesheet";
 export default () => {
@@ -367,6 +369,37 @@ export default () => {
       });
     }
   });
+  api.get("/getAttendanceDates", getAttendanceDates, (req, res, next) => {
+    if (req.records.invalid_input == true) {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: false,
+        result: req.records
+      });
+    } else {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        result: req.records
+      });
+    }
+  });
+
+  api.get(
+    "/getBulkManualTimeSheet",
+    getBulkManualTimeSheet,
+    (req, res, next) => {
+      if (req.records.invalid_input == true) {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: false,
+          result: req.records
+        });
+      } else {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: true,
+          result: req.records
+        });
+      }
+    }
+  );
   api.get("/excelManualTimeSheet", excelManualTimeSheet);
   return api;
 };

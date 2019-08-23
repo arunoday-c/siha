@@ -534,60 +534,68 @@ module.exports = {
                                           _net_salary +
                                           total_loan_payable_amount;
 
-                                        _headerQuery += _mysql.mysqlQueryFormat(
-                                          "INSERT INTO `hims_f_salary` (salary_number,month,year,employee_id,sub_department_id,salary_date,per_day_sal,total_days,\
+                                        if (
+                                          current_earning_amt_array.length > 0
+                                        ) {
+                                          _headerQuery += _mysql.mysqlQueryFormat(
+                                            "INSERT INTO `hims_f_salary` (salary_number,month,year,employee_id,sub_department_id,salary_date,per_day_sal,total_days,\
                                               present_days,absent_days,total_work_days,total_weekoff_days,total_holidays,total_leave,paid_leave,\
                                               unpaid_leave,total_hours, total_working_hours, ot_work_hours, ot_weekoff_hours, ot_holiday_hours, \
                                               shortage_hours,loan_payable_amount,loan_due_amount,advance_due,gross_salary,total_earnings,total_deductions,\
                                               total_contributions,net_salary, total_paid_days) \
                                              VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ;",
-                                          [
-                                            _salary_number,
-                                            parseInt(month_number),
-                                            parseInt(year),
-                                            empResult[i]["employee_id"],
-                                            empResult[i]["sub_department_id"],
-                                            new Date(),
-                                            per_day_sal,
-                                            empResult[i]["total_days"],
-                                            empResult[i]["present_days"],
-                                            empResult[i]["absent_days"],
-                                            empResult[i]["total_work_days"],
-                                            empResult[i]["total_weekoff_days"],
-                                            empResult[i]["total_holidays"],
-                                            empResult[i]["total_leave"],
-                                            empResult[i]["paid_leave"],
-                                            empResult[i]["unpaid_leave"],
-                                            empResult[i]["total_hours"],
-                                            empResult[i]["total_working_hours"],
-                                            empResult[i]["ot_work_hours"],
-                                            empResult[i]["ot_weekoff_hours"],
-                                            empResult[i]["ot_holiday_hours"],
-                                            empResult[i]["shortage_hours"],
-                                            total_loan_payable_amount,
-                                            total_loan_due_amount,
-                                            advance_due_amount,
-                                            final_earning_amount,
-                                            final_earning_amount, //Gross salary = total earnings
-                                            final_deduction_amount,
-                                            final_contribution_amount,
-                                            _net_salary,
-                                            empResult[i]["total_paid_days"]
-                                          ]
-                                        );
+                                            [
+                                              _salary_number,
+                                              parseInt(month_number),
+                                              parseInt(year),
+                                              empResult[i]["employee_id"],
+                                              empResult[i]["sub_department_id"],
+                                              new Date(),
+                                              per_day_sal,
+                                              empResult[i]["total_days"],
+                                              empResult[i]["present_days"],
+                                              empResult[i]["absent_days"],
+                                              empResult[i]["total_work_days"],
+                                              empResult[i][
+                                                "total_weekoff_days"
+                                              ],
+                                              empResult[i]["total_holidays"],
+                                              empResult[i]["total_leave"],
+                                              empResult[i]["paid_leave"],
+                                              empResult[i]["unpaid_leave"],
+                                              empResult[i]["total_hours"],
+                                              empResult[i][
+                                                "total_working_hours"
+                                              ],
+                                              empResult[i]["ot_work_hours"],
+                                              empResult[i]["ot_weekoff_hours"],
+                                              empResult[i]["ot_holiday_hours"],
+                                              empResult[i]["shortage_hours"],
+                                              total_loan_payable_amount,
+                                              total_loan_due_amount,
+                                              advance_due_amount,
+                                              final_earning_amount,
+                                              final_earning_amount, //Gross salary = total earnings
+                                              final_deduction_amount,
+                                              final_contribution_amount,
+                                              _net_salary,
+                                              empResult[i]["total_paid_days"]
+                                            ]
+                                          );
 
-                                        final_earning_amt_array.push(
-                                          current_earning_amt_array
-                                        );
-                                        final_deduction_amt_array.push(
-                                          current_deduction_amt_array
-                                        );
-                                        final_contribution_amt_array.push(
-                                          current_contribution_amt_array
-                                        );
-                                        final_loan_array.push(
-                                          current_loan_array
-                                        );
+                                          final_earning_amt_array.push(
+                                            current_earning_amt_array
+                                          );
+                                          final_deduction_amt_array.push(
+                                            current_deduction_amt_array
+                                          );
+                                          final_contribution_amt_array.push(
+                                            current_contribution_amt_array
+                                          );
+                                          final_loan_array.push(
+                                            current_loan_array
+                                          );
+                                        }
 
                                         if (i == empResult.length - 1) {
                                           resolve();
@@ -633,6 +641,13 @@ module.exports = {
                     utilities
                       .logger()
                       .log("final_loan_array: ", final_loan_array);
+                    if (_headerQuery == "") {
+                      _mysql.releaseConnection();
+                      req.records = empResult;
+                      next();
+                      resolve();
+                      return;
+                    }
                     _mysql
                       .executeQueryWithTransaction({
                         query: _headerQuery,

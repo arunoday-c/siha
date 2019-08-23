@@ -3,7 +3,7 @@ import "./EmployeeServices.css";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import ApplyLeave from "./ApplyLeave/ApplyLeave";
 import LoanRequest from "./LoanRequest/LoanRequest";
-import { algaehApiCall } from "../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 export default class SelfService extends Component {
   constructor(props) {
@@ -13,24 +13,30 @@ export default class SelfService extends Component {
       regularize: {},
       leave: {}
     };
-    // this.getEmployeeDetails();
+    this.getLeaveSalaryOptions();
   }
 
-  // getEmployeeDetails() {
-  //   algaehApiCall({
-  //     uri: "/selfService/getEmployeeBasicDetails",
-  //     method: "GET",
-  //     module: "hrManagement",
-  //     onSuccess: res => {
-  //       if (res.data.success) {
-  //         this.setState({
-  //           employee_details: res.data.records[0]
-  //         });
-  //       }
-  //     },
-  //     onFailure: err => {}
-  //   });
-  // }
+  getLeaveSalaryOptions() {
+    algaehApiCall({
+      uri: "/payrollOptions/getLeaveSalaryOptions",
+      method: "GET",
+      module: "hrManagement",
+      onSuccess: res => {
+        debugger;
+        if (res.data.success) {
+          this.setState({
+            basic_earning_component: res.data.result[0].basic_earning_component
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
 
   openTab(e) {
     var element = document.querySelectorAll("[algaehtabs]");
@@ -43,19 +49,6 @@ export default class SelfService extends Component {
       pageDisplay: specified
     });
   }
-
-  // ChangeRenderTabs(options) {
-  //   if (options.pageDisplay === "AttendanceRegularization") {
-  //     this.attReg.click();
-  //   } else if (options.pageDisplay === "ApplyLeave") {
-  //     this.attlv.click();
-  //   }
-
-  //   this.setState({
-  //     ...this.state,
-  //     ...options
-  //   });
-  // }
 
   render() {
     return (
@@ -122,7 +115,7 @@ export default class SelfService extends Component {
           ) : this.state.pageDisplay === "LoanRequest" ? (
             <LoanRequest
               type="LO"
-              // empData={this.state.employee_details}
+              basic_earning_component={this.state.basic_earning_component}
             />
           ) : this.state.pageDisplay === "AdvanceRequest" ? (
             <LoanRequest type="AD" />

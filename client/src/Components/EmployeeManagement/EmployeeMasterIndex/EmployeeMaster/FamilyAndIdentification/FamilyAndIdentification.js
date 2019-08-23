@@ -34,6 +34,8 @@ class FamilyAndIdentification extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      issue_date: null,
+      valid_upto: null
       // idDetails: [],
       // deleteIdDetails: [],
       // dependentDetails: []

@@ -245,17 +245,19 @@ class LoanMaster extends Component {
             div={{ className: "col" }}
             label={{
               forceLabel: "Loan Limit Value",
-              isImp: true
+              isImp: this.state.loan_limit_type === "L" ? true : false
             }}
             textBox={{
               className: "txt-fld",
+              number: { allowNegative: false },
+              dontAllowKeys: ["-", "e"],
               name: "loan_maximum_amount",
               value: this.state.loan_maximum_amount,
               events: {
                 onChange: this.changeTexts.bind(this)
               },
               others: {
-                type: "number"
+                disabled: this.state.loan_limit_type === "L" ? false : true
               }
             }}
           />
@@ -406,23 +408,26 @@ class LoanMaster extends Component {
                         />
                       ),
                       editorTemplate: row => {
-                        return (
+                        return row.loan_limit_type === "L" ? (
                           <AlagehFormGroup
                             div={{ className: "col" }}
                             textBox={{
                               className: "txt-fld",
+                              number: { allowNegative: false },
+                              dontAllowKeys: ["-", "e"],
                               name: "loan_maximum_amount",
                               value: row.loan_maximum_amount,
                               events: {
                                 onChange: this.changeGridEditors.bind(this, row)
                               },
                               others: {
-                                type: "number",
                                 errormessage: "Value - cannot be blank",
                                 required: true
                               }
                             }}
                           />
+                        ) : (
+                          row.loan_maximum_amount
                         );
                       }
                     },

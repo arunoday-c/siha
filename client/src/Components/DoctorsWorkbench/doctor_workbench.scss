@@ -103,7 +103,6 @@
                 display: inline-block;
               }
               .patStatus {
-                display: inline-block;
                 text-align: right;
                 float: right;
                 span {
@@ -439,17 +438,27 @@
   }
 
   .opPatientList {
+    margin: 0 -5px;
     .opList {
       margin: 0;
       padding: 0;
       list-style: none;
-      height: 28.5vh;
+      height: 64vh;
       overflow: auto;
       .noPatientDiv {
-        margin-top: 15%;
         text-align: center;
-
         color: #929292;
+        padding: 24.5vh 0;
+        background: none;
+        border: none;
+        i {
+          margin-bottom: 20px;
+          font-size: 4rem;
+        }
+        &:hover {
+          background: none;
+          border: none;
+        }
       }
       li {
         margin: 4px 0;
@@ -459,13 +468,10 @@
         background: #fff;
         border-radius: 5px;
         .op-sec-1 {
-          width: 10px;
-          width: 20%;
+          width: 55px;
           vertical-align: text-top;
           display: inline-block;
           text-align: center;
-          border-right: 1px dashed #e6e6e6;
-          margin-right: 10px;
           i {
             width: 30px;
             background: yellow;
@@ -484,20 +490,21 @@
             background-size: 80%;
           }
           .opTime {
+            font-size: 0.7rem;
           }
         }
         .op-sec-2 {
-          width: 10px;
-          width: 56%;
+          width: calc(100% - 60px);
           vertical-align: text-top;
           display: inline-block;
+          border-left: 1px dashed #e6e6e6;
+          padding-left: 10px;
           .opPatientName {
             display: block;
-
-            margin-top: 5px;
           }
           .opStatus {
             display: block;
+            font-size: 0.8rem;
           }
           .nursing {
             color: #34b8bc;
@@ -505,21 +512,17 @@
           .checkedIn {
             color: #00bb4b;
           }
-        }
-        .op-sec-3 {
-          width: 20%;
-          line-height: 53px;
-          vertical-align: text-top;
-          display: inline-block;
-          text-align: center;
           .opPatientStatus {
             display: block;
-            line-height: 25px;
+            font-size: 0.8rem;
           }
           .newVisit {
             color: #ff8800;
           }
           .followUp {
+            color: #ff005f;
+          }
+          .packageVisit {
             color: #ff005f;
           }
         }
@@ -694,6 +697,152 @@
     }
     .style_Label {
       text-transform: initial;
+    }
+  }
+}
+
+.appPatientList {
+  margin: 0 -5px;
+  .appList {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    height: 64vh;
+    overflow: auto;
+    .noPatientDiv {
+      text-align: center;
+      color: #929292;
+      padding: 24.5vh 0;
+      background: none;
+      border: none;
+      i {
+        margin-bottom: 20px;
+        font-size: 4rem;
+      }
+      &:hover {
+        background: none;
+        border: none;
+      }
+    }
+    li {
+      margin: 4px 0;
+      padding: 3px 0;
+      list-style: none;
+      border: 1px solid #f2f2f2;
+      background: #fff;
+      border-radius: 5px;
+      .app-sec-1 {
+        width: 55px;
+        vertical-align: text-top;
+        display: inline-block;
+        text-align: center;
+        i {
+          width: 30px;
+          background: yellow;
+          height: 30px;
+          display: block;
+          margin: auto;
+        }
+        .appointment-icon {
+          background: url("../../assets/icons/appointment-icon.svg") no-repeat
+            center;
+          background-size: 80%;
+        }
+        .walking-icon {
+          background: url("../../assets/icons/walking-icon.svg") no-repeat
+            center;
+          background-size: 80%;
+        }
+        .appTime {
+          font-size: 0.7rem;
+        }
+      }
+      .app-sec-2 {
+        width: calc(100% - 60px);
+        vertical-align: text-top;
+        display: inline-block;
+        border-left: 1px dashed #e6e6e6;
+        padding-left: 10px;
+        .appPatientName {
+          display: block;
+        }
+        .appStatus {
+          display: block;
+          font-size: 0.8rem;
+        }
+        .nursing {
+          color: #34b8bc;
+        }
+        .checkedIn {
+          color: #00bb4b;
+        }
+        .appPatientStatus {
+          display: block;
+          font-size: 0.8rem;
+        }
+        .newVisit {
+          color: #ff8800;
+        }
+        .followUp {
+          color: #ff005f;
+        }
+        .packageVisit {
+          color: #ff005f;
+        }
+      }
+    }
+  }
+}
+.opStatusLegend {
+  span {
+    padding: 2px 5px;
+    display: inline-block;
+    font-size: 0.8rem;
+    font-weight: bold;
+    width: 33.33%;
+    border-radius: 0;
+    background: #fff;
+    border: 1px solid #888888;
+
+    small {
+      display: block;
+      font-weight: normal;
+    }
+    &:first-child {
+      border-radius: 3px 0 0 3px;
+    }
+    &:last-child {
+      border-radius: 0 3px 3px 0;
+    }
+  }
+}
+.appoStatusLegend {
+  span {
+    padding: 2px 5px;
+    display: inline-block;
+    font-size: 0.8rem;
+    font-weight: bold;
+    width: 33.33%;
+    border-radius: 0;
+    color: #007468;
+    background: #e7fffd;
+    border: 1px solid #007468;
+
+    small {
+      display: block;
+      font-weight: normal;
+    }
+    &:first-child {
+      border-radius: 3px 0 0 3px;
+      color: #ab7900;
+      background: #fdffe2;
+      border: 1px solid #ffc959;
+    }
+    &:last-child {
+      border-radius: 0 3px 3px 0;
+      color: red;
+      background: #ffebeb;
+      border: 1px solid #f00;
     }
   }
 }

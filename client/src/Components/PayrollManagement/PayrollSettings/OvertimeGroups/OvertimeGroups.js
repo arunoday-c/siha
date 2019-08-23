@@ -547,7 +547,9 @@ class OvertimeGroups extends Component {
                       {
                         fieldName: "overtime_group_code",
                         label: <AlgaehLabel label={{ forceLabel: "Code" }} />,
-                        disable: true
+                        editorTemplate: row => {
+                          return <span>{row.overtime_group_code}</span>;
+                        }
                       },
                       {
                         fieldName: "overtime_group_description",

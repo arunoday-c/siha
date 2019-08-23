@@ -1386,9 +1386,9 @@ module.exports = {
               _mysql.releaseConnection();
               req.records = {
                 invalid_input: true,
-                message: `you cant apply leave, ${
+                message: `you cant apply leave on , ${
                   isHoliday[0].holiday_date
-                } is : ${isHoliday[0].holiday_description}`
+                } is :( ${isHoliday[0].holiday_description} )`
               };
               next();
               return;
@@ -2136,7 +2136,7 @@ module.exports = {
         .executeQuery({
           query:
             "select hims_f_employee_monthly_leave_id, employee_id, year, leave_id, L.leave_code,\
-      L.leave_description,total_eligible, availed_till_date, close_balance,\
+      L.leave_description,L.leave_type,total_eligible, availed_till_date, close_balance,\
       E.employee_code ,E.full_name as employee_name,\
       LD.hims_d_leave_detail_id,LD.employee_type, LD.eligible_days\
       from hims_f_employee_monthly_leave  ML inner join hims_d_leave L on ML.leave_id=L.hims_d_leave_id       \
