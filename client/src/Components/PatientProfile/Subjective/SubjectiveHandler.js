@@ -1,4 +1,8 @@
-import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import {
+  algaehApiCall,
+  swalMessage,
+  getCookie
+} from "../../../utils/algaehApiCall";
 import Enumerable from "linq";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
@@ -154,6 +158,11 @@ export default function SubjectiveHandler() {
     },
 
     addChiefComplainToPatient: $this => {
+      debugger;
+      let _screenName = getCookie("ScreenName").replace("/", "");
+      if (_screenName === "Login") {
+        return;
+      }
       let patChiefComp = [];
       patChiefComp.push({
         comment: $this.state.chief_complaint,
@@ -199,6 +208,11 @@ export default function SubjectiveHandler() {
     },
 
     updatePatientChiefComplaints: $this => {
+      debugger;
+      let _screenName = getCookie("ScreenName").replace("/", "");
+      if (_screenName === "Login") {
+        return;
+      }
       let patChiefComp = [];
       patChiefComp.push({
         hims_f_episode_chief_complaint_id:

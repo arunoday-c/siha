@@ -238,19 +238,33 @@ const ProcessService = ($this, e) => {
                                 }
                               },
                               onFailure: error => {
-                                swalMessage({
-                                  title: error.message,
-                                  type: "error"
-                                });
+                                $this.setState(
+                                  {
+                                    loading_ProcessService: false
+                                  },
+                                  () => {
+                                    swalMessage({
+                                      title: error.message,
+                                      type: "error"
+                                    });
+                                  }
+                                );
                               }
                             });
                           }
                         },
                         onFailure: error => {
-                          swalMessage({
-                            title: error.message,
-                            type: "error"
-                          });
+                          $this.setState(
+                            {
+                              loading_ProcessService: false
+                            },
+                            () => {
+                              swalMessage({
+                                title: error.message,
+                                type: "error"
+                              });
+                            }
+                          );
                         }
                       });
                     }
