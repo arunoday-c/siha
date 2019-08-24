@@ -1,0 +1,28 @@
+.globalSearchCntr .row {
+  border: 1px solid #dededf;
+  border-radius: 4px;
+  margin-left: 0;
+  margin-right: 0px;
+  height: 30px;
+  overflow: hidden; }
+  .globalSearchCntr .row .col-10 {
+    padding: 0 7px; }
+    .globalSearchCntr .row .col-10 h6 {
+      width: 100%;
+      overflow: hidden;
+      -o-text-overflow: ellipsis;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      margin: 0;
+      padding: 0;
+      line-height: 26px; }
+  .globalSearchCntr .row .searchIconBox {
+    border-left: 1px solid #ced4d8;
+    padding: 0 0 0 3%;
+    line-height: 29px;
+    font-size: 0.8rem;
+    cursor: pointer; }
+    .globalSearchCntr .row .searchIconBox:hover {
+      color: #fff;
+      background-color: #00a796;
+      border-color: #007468; }

@@ -306,9 +306,7 @@ module.exports = {
       req.query.to_date != "null"
     ) {
       dateRange = ` AND date(attendance_date)
-        between date('${req.query.from_date}') and date('${
-        req.query.to_date
-      }') `;
+        between date('${req.query.from_date}') and date('${req.query.to_date}') `;
     }
 
     if (
@@ -1237,9 +1235,7 @@ module.exports = {
         let stringData = "";
         if (input.sub_department_id > 0) {
           stringData += " and sub_department_id=" + input.sub_department_id;
-          shiftRange += ` and sub_department_id=${
-            req.query.sub_department_id
-          } `;
+          shiftRange += ` and sub_department_id=${req.query.sub_department_id} `;
         }
         if (input.hims_d_employee_id > 0) {
           stringData += " and hims_d_employee_id=" + input.hims_d_employee_id;
@@ -1364,30 +1360,26 @@ module.exports = {
                 inner join hims_d_employee E on TS.employee_id=E.hims_d_employee_id\
                 left join hims_f_project_roster PR on TS.employee_id=PR.employee_id and TS.hospital_id=PR.hospital_id  and TS.attendance_date=PR.attendance_date
               left join hims_d_project P on PR.project_id=P.hims_d_project_id
-                where  TS.hospital_id=${
-                  input.hospital_id
-                } and  TS.attendance_date between ('${from_date}') and ('${to_date}') and TS.employee_id in (${employee_ids})`;
+                where  TS.hospital_id=${input.hospital_id} and  TS.attendance_date between ('${from_date}') and ('${to_date}') and TS.employee_id in (${employee_ids})`;
 
                   //---------------------------------------------------
                   // connect to your database
                   sql.close();
-                  sql.connect(
-                    config,
-                    function(err) {
-                      if (err) {
-                        next(err);
-                      }
-                      // create Request object
-                      var request = new sql.Request();
+                  sql.connect(config, function(err) {
+                    if (err) {
+                      next(err);
+                    }
+                    // create Request object
+                    var request = new sql.Request();
 
-                      // query to the biometric database and get the records
+                    // query to the biometric database and get the records
 
-                      // select  TOP (100) UserID as biometric_id ,PDate as attendance_date,Punch1 as in_time,Punch2 as out_time,\
-                      // Punch2 as out_date   from Mx_DATDTrn  where UserID in (${biometric_id}) and PDate>='${from_date}'  and\
-                      // PDate<='${to_date}'
+                    // select  TOP (100) UserID as biometric_id ,PDate as attendance_date,Punch1 as in_time,Punch2 as out_time,\
+                    // Punch2 as out_date   from Mx_DATDTrn  where UserID in (${biometric_id}) and PDate>='${from_date}'  and\
+                    // PDate<='${to_date}'
 
-                      request.query(
-                        `;WITH CTE AS(
+                    request.query(
+                      `;WITH CTE AS(
                       SELECT
                           UserID,
                           DateTime,
@@ -1417,82 +1409,205 @@ module.exports = {
                     FROM CTE
                     GROUP BY UserID, AccessDate
                     ORDER BY  AccessDate `,
-                        function(err, attResult) {
-                          sql.close();
-                          if (err) {
-                            _mysql.releaseConnection();
-                            next(err);
-                            return;
-                          }
+                      function(err, attResult) {
+                        sql.close();
+                        if (err) {
+                          _mysql.releaseConnection();
+                          next(err);
+                          return;
+                        }
 
-                          // utilities
-                          //   .logger()
-                          //   .log("attResult", attResult["recordset"]);
-                          attendcResult = attResult["recordset"];
+                        // utilities
+                        //   .logger()
+                        //   .log("attResult", attResult["recordset"]);
+                        attendcResult = attResult["recordset"];
 
-                          if (
-                            attendcResult.length > 0 &&
-                            from_date == to_date
-                          ) {
-                            for (let i = 0; i < AllEmployees.length; i++) {
-                              let shiftData = new LINQ(AllShifts)
+                        if (attendcResult.length > 0 && from_date == to_date) {
+                          for (let i = 0; i < AllEmployees.length; i++) {
+                            let shiftData = new LINQ(AllShifts)
+                              .Where(
+                                w =>
+                                  w.employee_id ==
+                                    AllEmployees[i]["hims_d_employee_id"] &&
+                                  w.shift_date == from_date
+                              )
+                              .Select(s => {
+                                return {
+                                  shift_end_day: s.shift_end_day,
+                                  shift_date: s.shift_date,
+                                  shift_end_date: s.shift_end_date,
+                                  shift_time: s.shift_time,
+                                  shift_end_time: s.shift_end_time
+                                };
+                              })
+                              .FirstOrDefault({
+                                shift_end_day: null,
+                                shift_date: from_date,
+                                shift_end_date: from_date,
+                                shift_time: 0.0,
+                                shift_end_time: 0
+                              });
+
+                            let actual_hours = 0;
+                            let actual_mins = 0;
+
+                            if (shiftData["shift_time"] > 0) {
+                              actual_hours = shiftData.shift_time
+                                .toString()
+                                .split(".")[0];
+
+                              if (
+                                shiftData.shift_time.toString().split(".")[1] !=
+                                undefined
+                              ) {
+                                actual_mins = shiftData.shift_time
+                                  .toString()
+                                  .split(".")[1];
+                              }
+                            } else {
+                              actual_hours = standard_hours;
+                              actual_mins = standard_mins;
+                            }
+
+                            //---------------------------------begin logic
+
+                            if (shiftData.shift_end_day == "ND") {
+                              //--ST--punchin
+                              let punchIn = new LINQ(attendcResult)
                                 .Where(
                                   w =>
-                                    w.employee_id ==
-                                      AllEmployees[i]["hims_d_employee_id"] &&
-                                    w.shift_date == from_date
+                                    w.UserID ==
+                                      AllEmployees[i]["biometric_id"] &&
+                                    moment(w.Date, "MM-DD-YYYY").format(
+                                      "YYYY-MM-DD"
+                                    ) == shiftData.shift_date
                                 )
                                 .Select(s => {
                                   return {
-                                    shift_end_day: s.shift_end_day,
-                                    shift_date: s.shift_date,
-                                    shift_end_date: s.shift_end_date,
-                                    shift_time: s.shift_time,
-                                    shift_end_time: s.shift_end_time
+                                    biometric_id: s.UserID,
+                                    attendance_date: moment(
+                                      s.Date,
+                                      "MM-DD-YYYY"
+                                    ).format("YYYY-MM-DD"),
+                                    in_time: s.InTime
                                   };
                                 })
                                 .FirstOrDefault({
-                                  shift_end_day: null,
-                                  shift_date: from_date,
-                                  shift_end_date: from_date,
-                                  shift_time: 0.0,
-                                  shift_end_time: 0
+                                  biometric_id: null,
+                                  attendance_date: shiftData.shift_date,
+                                  in_time: null
                                 });
 
-                              let actual_hours = 0;
-                              let actual_mins = 0;
+                              //--EN--punchin
 
-                              if (shiftData["shift_time"] > 0) {
-                                actual_hours = shiftData.shift_time
-                                  .toString()
-                                  .split(".")[0];
+                              //--ST--punchout
+                              let punchOut = new LINQ(attendcResult)
+                                .Where(
+                                  w =>
+                                    w.UserID ==
+                                      AllEmployees[i]["biometric_id"] &&
+                                    moment(w.Date, "MM-DD-YYYY").format(
+                                      "YYYY-MM-DD"
+                                    ) == shiftData.shift_end_date
+                                )
+                                .Select(s => {
+                                  return {
+                                    biometric_id: s.UserID,
+                                    out_date: moment(
+                                      s.Date,
+                                      "MM-DD-YYYY"
+                                    ).format("YYYY-MM-DD"),
+                                    out_time: s.OutTime
+                                  };
+                                })
+                                .FirstOrDefault({
+                                  biometric_id: null,
+                                  out_date: shiftData.shift_end_date,
+                                  out_time: null
+                                });
 
-                                if (
-                                  shiftData.shift_time
-                                    .toString()
-                                    .split(".")[1] != undefined
-                                ) {
-                                  actual_mins = shiftData.shift_time
-                                    .toString()
-                                    .split(".")[1];
-                                }
+                              //--EN--punchout
+                              if (
+                                punchIn.in_time != null &&
+                                punchOut.out_time != null
+                              ) {
+                                let inDateTime = moment(
+                                  punchIn.attendance_date +
+                                    " " +
+                                    punchIn.in_time,
+                                  "YYYY-MM-DD HH:mm"
+                                );
+                                let outDateTime = moment(
+                                  punchOut.out_date + " " + punchOut.out_time,
+                                  "YYYY-MM-DD HH:mm"
+                                );
+                                totalTime =
+                                  outDateTime.diff(inDateTime, "hours") +
+                                  "." +
+                                  (outDateTime.diff(inDateTime, "minute") % 60);
+
+                                biometricData.push({
+                                  biometric_id: punchIn.biometric_id,
+                                  attendance_date: punchIn.attendance_date,
+                                  out_date: punchOut.out_date,
+                                  in_time: punchIn.in_time,
+                                  out_time: punchOut.out_time,
+                                  worked_hours: totalTime,
+                                  employee_id:
+                                    AllEmployees[i]["hims_d_employee_id"],
+                                  sub_department_id:
+                                    AllEmployees[i]["sub_department_id"],
+                                  religion_id: AllEmployees[i]["religion_id"],
+                                  date_of_joining:
+                                    AllEmployees[i]["date_of_joining"],
+                                  exit_date: AllEmployees[i]["exit_date"],
+                                  actual_hours: actual_hours,
+                                  actual_minutes: actual_mins ? actual_mins : 0,
+                                  expected_out_date: shiftData.shift_end_date,
+                                  expected_out_time: shiftData.shift_end_time,
+                                  hospital_id: AllEmployees[i]["hospital_id"],
+                                  hours: outDateTime.diff(inDateTime, "hours"),
+                                  minutes:
+                                    outDateTime.diff(inDateTime, "minute") % 60,
+                                  year: moment(date_range[i]).format("YYYY"),
+                                  month: moment(date_range[i]).format("M")
+                                });
                               } else {
-                                actual_hours = standard_hours;
-                                actual_mins = standard_mins;
+                                //exception
+
+                                biometricData.push({
+                                  biometric_id: punchIn.biometric_id,
+                                  attendance_date: punchIn.attendance_date,
+                                  out_date: punchOut.out_date,
+                                  in_time: punchIn.in_time,
+                                  out_time: punchOut.out_time,
+                                  worked_hours: 0,
+                                  employee_id:
+                                    AllEmployees[i]["hims_d_employee_id"],
+                                  sub_department_id:
+                                    AllEmployees[i]["sub_department_id"],
+                                  religion_id: AllEmployees[i]["religion_id"],
+                                  date_of_joining:
+                                    AllEmployees[i]["date_of_joining"],
+                                  exit_date: AllEmployees[i]["exit_date"],
+                                  actual_hours: actual_hours,
+                                  actual_minutes: actual_mins ? actual_mins : 0,
+                                  expected_out_date: shiftData.shift_end_date,
+                                  expected_out_time: shiftData.shift_end_time,
+                                  hospital_id: AllEmployees[i]["hospital_id"],
+                                  hours: 0,
+                                  minutes: 0,
+                                  year: moment(date_range[i]).format("YYYY"),
+                                  month: moment(date_range[i]).format("M")
+                                });
                               }
-
-                              //---------------------------------begin logic
-
-                              if (shiftData.shift_end_day == "ND") {
-                                //--ST--punchin
-                                let punchIn = new LINQ(attendcResult)
+                            } else {
+                              biometricData.push(
+                                new LINQ(attendcResult)
                                   .Where(
                                     w =>
                                       w.UserID ==
-                                        AllEmployees[i]["biometric_id"] &&
-                                      moment(w.Date, "MM-DD-YYYY").format(
-                                        "YYYY-MM-DD"
-                                      ) == shiftData.shift_date
+                                      AllEmployees[i]["biometric_id"]
                                   )
                                   .Select(s => {
                                     return {
@@ -1501,182 +1616,13 @@ module.exports = {
                                         s.Date,
                                         "MM-DD-YYYY"
                                       ).format("YYYY-MM-DD"),
-                                      in_time: s.InTime
-                                    };
-                                  })
-                                  .FirstOrDefault({
-                                    biometric_id: null,
-                                    attendance_date: shiftData.shift_date,
-                                    in_time: null
-                                  });
-
-                                //--EN--punchin
-
-                                //--ST--punchout
-                                let punchOut = new LINQ(attendcResult)
-                                  .Where(
-                                    w =>
-                                      w.UserID ==
-                                        AllEmployees[i]["biometric_id"] &&
-                                      moment(w.Date, "MM-DD-YYYY").format(
-                                        "YYYY-MM-DD"
-                                      ) == shiftData.shift_end_date
-                                  )
-                                  .Select(s => {
-                                    return {
-                                      biometric_id: s.UserID,
                                       out_date: moment(
                                         s.Date,
                                         "MM-DD-YYYY"
                                       ).format("YYYY-MM-DD"),
-                                      out_time: s.OutTime
-                                    };
-                                  })
-                                  .FirstOrDefault({
-                                    biometric_id: null,
-                                    out_date: shiftData.shift_end_date,
-                                    out_time: null
-                                  });
-
-                                //--EN--punchout
-                                if (
-                                  punchIn.in_time != null &&
-                                  punchOut.out_time != null
-                                ) {
-                                  let inDateTime = moment(
-                                    punchIn.attendance_date +
-                                      " " +
-                                      punchIn.in_time,
-                                    "YYYY-MM-DD HH:mm"
-                                  );
-                                  let outDateTime = moment(
-                                    punchOut.out_date + " " + punchOut.out_time,
-                                    "YYYY-MM-DD HH:mm"
-                                  );
-                                  totalTime =
-                                    outDateTime.diff(inDateTime, "hours") +
-                                    "." +
-                                    (outDateTime.diff(inDateTime, "minute") %
-                                      60);
-
-                                  biometricData.push({
-                                    biometric_id: punchIn.biometric_id,
-                                    attendance_date: punchIn.attendance_date,
-                                    out_date: punchOut.out_date,
-                                    in_time: punchIn.in_time,
-                                    out_time: punchOut.out_time,
-                                    worked_hours: totalTime,
-                                    employee_id:
-                                      AllEmployees[i]["hims_d_employee_id"],
-                                    sub_department_id:
-                                      AllEmployees[i]["sub_department_id"],
-                                    religion_id: AllEmployees[i]["religion_id"],
-                                    date_of_joining:
-                                      AllEmployees[i]["date_of_joining"],
-                                    exit_date: AllEmployees[i]["exit_date"],
-                                    actual_hours: actual_hours,
-                                    actual_minutes: actual_mins
-                                      ? actual_mins
-                                      : 0,
-                                    expected_out_date: shiftData.shift_end_date,
-                                    expected_out_time: shiftData.shift_end_time,
-                                    hospital_id: AllEmployees[i]["hospital_id"],
-                                    hours: outDateTime.diff(
-                                      inDateTime,
-                                      "hours"
-                                    ),
-                                    minutes:
-                                      outDateTime.diff(inDateTime, "minute") %
-                                      60,
-                                    year: moment(date_range[i]).format("YYYY"),
-                                    month: moment(date_range[i]).format("M")
-                                  });
-                                } else {
-                                  //exception
-
-                                  biometricData.push({
-                                    biometric_id: punchIn.biometric_id,
-                                    attendance_date: punchIn.attendance_date,
-                                    out_date: punchOut.out_date,
-                                    in_time: punchIn.in_time,
-                                    out_time: punchOut.out_time,
-                                    worked_hours: 0,
-                                    employee_id:
-                                      AllEmployees[i]["hims_d_employee_id"],
-                                    sub_department_id:
-                                      AllEmployees[i]["sub_department_id"],
-                                    religion_id: AllEmployees[i]["religion_id"],
-                                    date_of_joining:
-                                      AllEmployees[i]["date_of_joining"],
-                                    exit_date: AllEmployees[i]["exit_date"],
-                                    actual_hours: actual_hours,
-                                    actual_minutes: actual_mins
-                                      ? actual_mins
-                                      : 0,
-                                    expected_out_date: shiftData.shift_end_date,
-                                    expected_out_time: shiftData.shift_end_time,
-                                    hospital_id: AllEmployees[i]["hospital_id"],
-                                    hours: 0,
-                                    minutes: 0,
-                                    year: moment(date_range[i]).format("YYYY"),
-                                    month: moment(date_range[i]).format("M")
-                                  });
-                                }
-                              } else {
-                                biometricData.push(
-                                  new LINQ(attendcResult)
-                                    .Where(
-                                      w =>
-                                        w.UserID ==
-                                        AllEmployees[i]["biometric_id"]
-                                    )
-                                    .Select(s => {
-                                      return {
-                                        biometric_id: s.UserID,
-                                        attendance_date: moment(
-                                          s.Date,
-                                          "MM-DD-YYYY"
-                                        ).format("YYYY-MM-DD"),
-                                        out_date: moment(
-                                          s.Date,
-                                          "MM-DD-YYYY"
-                                        ).format("YYYY-MM-DD"),
-                                        in_time: s.InTime,
-                                        out_time: s.OutTime,
-                                        worked_hours: s.Duration,
-                                        employee_id:
-                                          AllEmployees[i]["hims_d_employee_id"],
-                                        sub_department_id:
-                                          AllEmployees[i]["sub_department_id"],
-                                        religion_id:
-                                          AllEmployees[i]["religion_id"],
-                                        date_of_joining:
-                                          AllEmployees[i]["date_of_joining"],
-                                        exit_date: AllEmployees[i]["exit_date"],
-                                        actual_hours: actual_hours,
-                                        actual_minutes: actual_mins
-                                          ? actual_mins
-                                          : 0,
-                                        expected_out_date:
-                                          shiftData.shift_end_date,
-                                        expected_out_time:
-                                          shiftData.shift_end_time,
-                                        hospital_id:
-                                          AllEmployees[i]["hospital_id"],
-                                        hours: s.Duration.split(".")[0],
-                                        minutes: s.Duration.split(".")[1],
-                                        year: moment(from_date).format("YYYY"),
-                                        month: moment(from_date).format("M")
-                                      };
-                                    })
-                                    .FirstOrDefault({
-                                      biometric_id:
-                                        AllEmployees[i]["biometric_id"],
-                                      attendance_date: from_date,
-                                      out_date: from_date,
-                                      in_time: null,
-                                      out_time: null,
-                                      worked_hours: 0,
+                                      in_time: s.InTime,
+                                      out_time: s.OutTime,
+                                      worked_hours: s.Duration,
                                       employee_id:
                                         AllEmployees[i]["hims_d_employee_id"],
                                       sub_department_id:
@@ -1696,146 +1642,139 @@ module.exports = {
                                         shiftData.shift_end_time,
                                       hospital_id:
                                         AllEmployees[i]["hospital_id"],
-                                      hours: 0,
-                                      minutes: 0,
-                                      year: moment(from_date).format("YYYY"),
-                                      month: moment(from_date).format("M")
-                                    })
-                                );
-                              }
-                            }
-
-                            ///----end logic
-
-                            insertTimeSheet(
-                              returnQry,
-                              biometricData,
-                              AllLeaves,
-                              allHolidays,
-                              from_date,
-                              to_date,
-                              _mysql,
-                              req,
-                              res,
-                              next,
-                              singleEmployee
-                            );
-                          } else if (
-                            input.hims_d_employee_id > 0 &&
-                            attendcResult.length > 0 &&
-                            from_date < to_date
-                          ) {
-                            singleEmployee = "Y";
-
-                            let fr_date = from_date;
-                            if (
-                              AllEmployees[0]["date_of_joining"] > from_date
-                            ) {
-                              fr_date = AllEmployees[0]["date_of_joining"];
-                            }
-
-                            let date_range = getDays(
-                              new Date(fr_date),
-                              new Date(to_date)
-                            );
-
-                            for (let i = 0; i < date_range.length; i++) {
-                              let shiftData = new LINQ(AllShifts)
-                                .Where(
-                                  w =>
-                                    w.employee_id ==
-                                      AllEmployees[0]["hims_d_employee_id"] &&
-                                    w.shift_date == date_range[i]
-                                )
-                                .Select(s => {
-                                  return {
-                                    shift_end_day: s.shift_end_day,
-                                    shift_date: s.shift_date,
-                                    shift_end_date: s.shift_end_date,
-                                    shift_time: s.shift_time,
-                                    shift_end_time: s.shift_end_time
-                                  };
-                                })
-                                .FirstOrDefault({
-                                  shift_end_day: null,
-                                  shift_date: date_range[i],
-                                  shift_end_date: null,
-                                  shift_time: 0,
-                                  shift_end_time: 0
-                                });
-
-                              let actual_hours = 0;
-                              let actual_mins = 0;
-
-                              if (shiftData["shift_time"] > 0) {
-                                actual_hours = shiftData.shift_time
-                                  .toString()
-                                  .split(".")[0];
-
-                                if (
-                                  shiftData.shift_time
-                                    .toString()
-                                    .split(".")[1] !== undefined
-                                ) {
-                                  actual_mins = shiftData.shift_time
-                                    .toString()
-                                    .split(".")[1];
-                                }
-                              } else {
-                                actual_hours = standard_hours;
-                                actual_mins = standard_mins;
-                              }
-
-                              biometricData.push(
-                                new LINQ(attendcResult)
-                                  .Where(
-                                    w =>
-                                      moment(w.Date, "MM-DD-YYYY").format(
-                                        "YYYY-MM-DD"
-                                      ) == date_range[i]
-                                  )
-                                  .Select(s => {
-                                    return {
-                                      biometric_id: s.UserID,
-                                      attendance_date: date_range[i],
-                                      out_date: date_range[i],
-                                      in_time: s.InTime,
-                                      out_time: s.OutTime,
-                                      worked_hours: s.Duration,
-                                      employee_id:
-                                        AllEmployees[0]["hims_d_employee_id"],
-                                      sub_department_id:
-                                        AllEmployees[0]["sub_department_id"],
-                                      religion_id:
-                                        AllEmployees[0]["religion_id"],
-                                      date_of_joining:
-                                        AllEmployees[0]["date_of_joining"],
-                                      exit_date: AllEmployees[0]["exit_date"],
-                                      actual_hours: actual_hours,
-                                      actual_minutes: actual_mins
-                                        ? actual_mins
-                                        : 0,
-                                      expected_out_date:
-                                        shiftData.shift_end_date,
-                                      expected_out_time:
-                                        shiftData.shift_end_time,
-                                      hospital_id:
-                                        AllEmployees[0]["hospital_id"],
                                       hours: s.Duration.split(".")[0],
                                       minutes: s.Duration.split(".")[1],
-                                      year: moment(date_range[i]).format(
-                                        "YYYY"
-                                      ),
-                                      month: moment(date_range[i]).format("M")
+                                      year: moment(from_date).format("YYYY"),
+                                      month: moment(from_date).format("M")
                                     };
                                   })
                                   .FirstOrDefault({
-                                    biometric_id: null,
-                                    attendance_date: date_range[i],
-                                    out_date: null,
+                                    biometric_id:
+                                      AllEmployees[i]["biometric_id"],
+                                    attendance_date: from_date,
+                                    out_date: from_date,
                                     in_time: null,
                                     out_time: null,
                                     worked_hours: 0,
+                                    employee_id:
+                                      AllEmployees[i]["hims_d_employee_id"],
+                                    sub_department_id:
+                                      AllEmployees[i]["sub_department_id"],
+                                    religion_id: AllEmployees[i]["religion_id"],
+                                    date_of_joining:
+                                      AllEmployees[i]["date_of_joining"],
+                                    exit_date: AllEmployees[i]["exit_date"],
+                                    actual_hours: actual_hours,
+                                    actual_minutes: actual_mins
+                                      ? actual_mins
+                                      : 0,
+                                    expected_out_date: shiftData.shift_end_date,
+                                    expected_out_time: shiftData.shift_end_time,
+                                    hospital_id: AllEmployees[i]["hospital_id"],
+                                    hours: 0,
+                                    minutes: 0,
+                                    year: moment(from_date).format("YYYY"),
+                                    month: moment(from_date).format("M")
+                                  })
+                              );
+                            }
+                          }
+
+                          ///----end logic
+
+                          insertTimeSheet(
+                            returnQry,
+                            biometricData,
+                            AllLeaves,
+                            allHolidays,
+                            from_date,
+                            to_date,
+                            _mysql,
+                            req,
+                            res,
+                            next,
+                            singleEmployee
+                          );
+                        } else if (
+                          input.hims_d_employee_id > 0 &&
+                          attendcResult.length > 0 &&
+                          from_date < to_date
+                        ) {
+                          singleEmployee = "Y";
+
+                          let fr_date = from_date;
+                          if (AllEmployees[0]["date_of_joining"] > from_date) {
+                            fr_date = AllEmployees[0]["date_of_joining"];
+                          }
+
+                          let date_range = getDays(
+                            new Date(fr_date),
+                            new Date(to_date)
+                          );
+
+                          for (let i = 0; i < date_range.length; i++) {
+                            let shiftData = new LINQ(AllShifts)
+                              .Where(
+                                w =>
+                                  w.employee_id ==
+                                    AllEmployees[0]["hims_d_employee_id"] &&
+                                  w.shift_date == date_range[i]
+                              )
+                              .Select(s => {
+                                return {
+                                  shift_end_day: s.shift_end_day,
+                                  shift_date: s.shift_date,
+                                  shift_end_date: s.shift_end_date,
+                                  shift_time: s.shift_time,
+                                  shift_end_time: s.shift_end_time
+                                };
+                              })
+                              .FirstOrDefault({
+                                shift_end_day: null,
+                                shift_date: date_range[i],
+                                shift_end_date: null,
+                                shift_time: 0,
+                                shift_end_time: 0
+                              });
+
+                            let actual_hours = 0;
+                            let actual_mins = 0;
+
+                            if (shiftData["shift_time"] > 0) {
+                              actual_hours = shiftData.shift_time
+                                .toString()
+                                .split(".")[0];
+
+                              if (
+                                shiftData.shift_time
+                                  .toString()
+                                  .split(".")[1] !== undefined
+                              ) {
+                                actual_mins = shiftData.shift_time
+                                  .toString()
+                                  .split(".")[1];
+                              }
+                            } else {
+                              actual_hours = standard_hours;
+                              actual_mins = standard_mins;
+                            }
+
+                            biometricData.push(
+                              new LINQ(attendcResult)
+                                .Where(
+                                  w =>
+                                    moment(w.Date, "MM-DD-YYYY").format(
+                                      "YYYY-MM-DD"
+                                    ) == date_range[i]
+                                )
+                                .Select(s => {
+                                  return {
+                                    biometric_id: s.UserID,
+                                    attendance_date: date_range[i],
+                                    out_date: date_range[i],
+                                    in_time: s.InTime,
+                                    out_time: s.OutTime,
+                                    worked_hours: s.Duration,
                                     employee_id:
                                       AllEmployees[0]["hims_d_employee_id"],
                                     sub_department_id:
@@ -1851,40 +1790,65 @@ module.exports = {
                                     expected_out_date: shiftData.shift_end_date,
                                     expected_out_time: shiftData.shift_end_time,
                                     hospital_id: AllEmployees[0]["hospital_id"],
-                                    hours: 0,
-                                    minutes: 0,
+                                    hours: s.Duration.split(".")[0],
+                                    minutes: s.Duration.split(".")[1],
                                     year: moment(date_range[i]).format("YYYY"),
                                     month: moment(date_range[i]).format("M")
-                                  })
-                              );
-                            }
-
-                            insertTimeSheet(
-                              returnQry,
-                              biometricData,
-                              AllLeaves,
-                              allHolidays,
-                              from_date,
-                              to_date,
-                              _mysql,
-                              req,
-                              res,
-                              next,
-                              singleEmployee
+                                  };
+                                })
+                                .FirstOrDefault({
+                                  biometric_id: null,
+                                  attendance_date: date_range[i],
+                                  out_date: null,
+                                  in_time: null,
+                                  out_time: null,
+                                  worked_hours: 0,
+                                  employee_id:
+                                    AllEmployees[0]["hims_d_employee_id"],
+                                  sub_department_id:
+                                    AllEmployees[0]["sub_department_id"],
+                                  religion_id: AllEmployees[0]["religion_id"],
+                                  date_of_joining:
+                                    AllEmployees[0]["date_of_joining"],
+                                  exit_date: AllEmployees[0]["exit_date"],
+                                  actual_hours: actual_hours,
+                                  actual_minutes: actual_mins ? actual_mins : 0,
+                                  expected_out_date: shiftData.shift_end_date,
+                                  expected_out_time: shiftData.shift_end_time,
+                                  hospital_id: AllEmployees[0]["hospital_id"],
+                                  hours: 0,
+                                  minutes: 0,
+                                  year: moment(date_range[i]).format("YYYY"),
+                                  month: moment(date_range[i]).format("M")
+                                })
                             );
-                          } else {
-                            req.records = {
-                              invalid_data: true,
-                              message: "Biometric Data Not Available"
-                            };
-                            _mysql.releaseConnection();
-
-                            next();
                           }
+
+                          insertTimeSheet(
+                            returnQry,
+                            biometricData,
+                            AllLeaves,
+                            allHolidays,
+                            from_date,
+                            to_date,
+                            _mysql,
+                            req,
+                            res,
+                            next,
+                            singleEmployee
+                          );
+                        } else {
+                          req.records = {
+                            invalid_data: true,
+                            message: "Biometric Data Not Available"
+                          };
+                          _mysql.releaseConnection();
+
+                          next();
                         }
-                      );
-                    }
-                  );
+                      }
+                    );
+                  });
                   //---------------------------------------------------
                 } else {
                   //no matchimg data
@@ -2156,11 +2120,8 @@ module.exports = {
       if (input.department_id > 0) {
         strQry += ` and SD.department_id=${input.department_id} `;
       }
-
-      // if (input.department_id > 0) {
-      //   strQry +=
-      //    ` and SD.department_id=${input.department_id} `;
-      // }
+      
+    
 
       if (input.sub_department_id > 0) {
         strQry += " and AM.sub_department_id=" + input.sub_department_id;
@@ -2497,9 +2458,7 @@ module.exports = {
             _mysql.releaseConnection();
             req.records = {
               no_exception: true,
-              message: `No exception Found From   ${input.to_date} to ${
-                input.to_date
-              }`
+              message: `No exception Found From   ${input.to_date} to ${input.to_date}`
             };
 
             next();
@@ -3829,9 +3788,7 @@ module.exports = {
 											inner join hims_d_employee E on TS.employee_id=E.hims_d_employee_id\
 											left join hims_f_project_roster PR on TS.employee_id=PR.employee_id and TS.hospital_id=PR.hospital_id\
 											 and TS.attendance_date=PR.attendance_date	left join hims_d_project P on PR.project_id=P.hims_d_project_id
-											where  TS.hospital_id=${input.hospital_id} and   TS.attendance_date between ('${
-              input.from_date
-            }') and\
+											where  TS.hospital_id=${input.hospital_id} and   TS.attendance_date between ('${input.from_date}') and\
 											 ('${input.to_date}') ${sub_department} ${employees}  order by attendance_date`;
 
             _mysql
@@ -5871,109 +5828,127 @@ module.exports = {
               new Date(input.to_date)
             );
 
-            const allEmployees = _.chain(result[0])
-              .groupBy(g => g.employee_id)
-              .map(emp => {
-                allDates.forEach(dat => {
-                  const ProjAssgned = emp.find(e => {
-                    return e.attendance_date == dat;
-                  });
-                  if (ProjAssgned == undefined)
-                    emp.push({
-                      employee_id: emp[0].employee_id,
-                      attendance_date: dat,
-                      employee_code: emp[0].employee_code,
-                      full_name: emp[0].full_name,
-                      sub_department_id: emp[0].sub_department_id,
-                      religion_id: emp[0].religion_id,
-                      date_of_joining: emp[0].date_of_joining,
-                      project_id: null,
-                      project_desc: emp[0].project_desc,
-                      designation: emp[0].designation
-                    });
+          const allEmployees = _.chain(result[0])
+            .groupBy(g => g.employee_id)
+            .map(emp => {
+              allDates.forEach(dat => {
+                const ProjAssgned = emp.find(e => {
+                  return e.attendance_date == dat;
                 });
-                return emp;
-              })
-              .value();
+                if (ProjAssgned == undefined){
 
+                  emp.push({
+                    employee_id: emp[0].employee_id,
+                    attendance_date: dat,
+                    employee_code: emp[0].employee_code,
+                    full_name: emp[0].full_name,
+                    sub_department_id: emp[0].sub_department_id,
+                    religion_id: emp[0].religion_id,
+                    date_of_joining: emp[0].date_of_joining,
+                    project_id: null,
+                    project_desc: null,
+                    designation: emp[0].designation
+                  });
+
+
+                }
+               
+              });
+              return emp;
+            })
+            .value();
+
+
+
+
+
+         
+         
+         
             allEmployees.forEach(employee => {
-              const outputArray = [];
-              let empHolidayweekoff = getEmployeeWeekOffsHolidays(
-                input.from_date,
-                input.to_date,
-                employee[0],
-                allHolidays
-              );
+            const outputArray = [];
+            let empHolidayweekoff = getEmployeeWeekOffsHolidays(
+              input.from_date,
+              input.to_date,
+              employee[0],
+              allHolidays
+            );
 
               const empLeave = new LINQ(allLeaves)
                 .Where(w => w.employee_id == employee[0].employee_id)
                 .Select(s => s)
                 .ToArray();
 
-              employee.forEach((row, i) => {
-                let leave = null;
-                if (empLeave.length > 0) {
-                  //if he is on leave send project id null
-                  leave = new LINQ(empLeave)
-                    .Where(
-                      w =>
-                        w.from_date <= row["attendance_date"] &&
-                        w.to_date >= row["attendance_date"]
-                    )
-                    .Select(s => {
-                      return {
-                        holiday_included: s.holiday_included,
-                        weekoff_included: s.weekoff_included,
-                        hospital_id: input.branch_id,
-                        employee_id: row.employee_id,
-                        project_id: null,
-                        full_name: row.full_name,
-                        sub_department_id: row.sub_department_id,
-                        employee_code: row.employee_code,
-                        attendance_date: row["attendance_date"],
-                        status: s.leave_type == "P" ? "PL" : "UL",
-                        color: s.leave_type == "P" ? "#FEF6EC" : "#FCECEC",
-                        [moment(row["attendance_date"], "YYYY-MM-DD").format(
-                          "YYYYMMDD"
-                        )]: s.leave_type == "P" ? "PL" : "UL",
-
-                        project_desc: row.project_desc,
-                        designation: row.designation
-                      };
-                    })
-                    .FirstOrDefault(null);
-                }
-
-                const holiday_or_weekOff = new LINQ(empHolidayweekoff)
-                  .Where(w => w.holiday_date == row["attendance_date"])
+            employee.forEach((row, i) => {   let leave = null;
+              if (empLeave.length > 0) {
+               
+                leave = new LINQ(empLeave)
+                  .Where(
+                    w =>
+                      w.from_date <= row["attendance_date"] &&
+                      w.to_date >= row["attendance_date"]
+                  )
                   .Select(s => {
                     return {
-                      holiday: s.holiday,
-                      weekoff: s.weekoff
+                      holiday_included: s.holiday_included,
+                      weekoff_included: s.weekoff_included,
+                      hospital_id: input.branch_id,
+                      employee_id: row.employee_id,
+                      project_id:  row.project_id,
+                      project_desc: row.project_desc,
+                      full_name: row.full_name,
+                      sub_department_id: row.sub_department_id,
+                      employee_code: row.employee_code,
+                      attendance_date: row["attendance_date"],
+                      status: s.leave_type == "P" ? "PL" : "UL",
+                                  
+                      designation: row.designation
                     };
                   })
                   .FirstOrDefault(null);
+              }
+
+              const holiday_or_weekOff = new LINQ(empHolidayweekoff)
+                .Where(w => w.holiday_date == row["attendance_date"])
+                .Select(s => {
+                  return {
+                    holiday: s.holiday,
+                    weekoff: s.weekoff
+                  };
+                })
+                .FirstOrDefault(null);
 
                 //----------------------------
 
-                if (
-                  (holiday_or_weekOff == null && leave != null) ||
-                  (leave != null &&
-                    holiday_or_weekOff != null &&
-                    holiday_or_weekOff.holiday == "Y" &&
-                    leave.holiday_included == "Y") ||
-                  (leave != null &&
-                    holiday_or_weekOff != null &&
-                    holiday_or_weekOff.weekoff == "Y" &&
-                    leave.weekoff_included == "Y")
-                ) {
+              if (
+                (holiday_or_weekOff == null && leave != null) ||
+                (leave != null &&
+                  holiday_or_weekOff != null &&
+                  holiday_or_weekOff.holiday == "Y" &&
+                  leave.holiday_included == "Y") ||
+                (leave != null &&
+                  holiday_or_weekOff != null &&
+                  holiday_or_weekOff.weekoff == "Y" &&
+                  leave.weekoff_included == "Y")
+              ) {
+                outputArray.push({
+                  project_id:  row.project_id,
+                  project_desc: row.project_desc,
+                  attendance_date: leave.attendance_date,
+                  status: leave.status,
+                  [moment(leave.attendance_date,"YYYY-MM-DD").format("YYYYMMDD")]:leave.status,
+                  color:"FCECEC"
+                  
+                });
+              } else if (holiday_or_weekOff != null) {
+                if (holiday_or_weekOff.weekoff == "Y") {
                   outputArray.push({
-                    attendance_date: leave.attendance_date,
-                    status: leave.status,
-                    [moment(leave.attendance_date, "YYYY-MM-DD").format(
-                      "YYYYMMDD"
-                    )]: leave.status,
-                    color: "FCECEC"
+                    project_id:  row.project_id,
+                    project_desc: row.project_desc,
+                    attendance_date: row["attendance_date"],
+                    status: "WO",
+                    [moment(row["attendance_date"],"YYYY-MM-DD").format("YYYYMMDD")]:"WO",
+                    color:"#E7FEFD"
                   });
                 } else if (holiday_or_weekOff != null) {
                   if (holiday_or_weekOff.weekoff == "Y") {
@@ -5997,6 +5972,8 @@ module.exports = {
                   }
                 } else {
                   outputArray.push({
+                    project_id:  row.project_id,
+                    project_desc: row.project_desc,
                     attendance_date: row["attendance_date"],
                     status: row.project_id > 0 ? "PR" : "N",
                     [moment(row["attendance_date"], "YYYY-MM-DD").format(
@@ -6006,7 +5983,20 @@ module.exports = {
                     project_desc: row.project_desc
                   });
                 }
-              });
+              } else {
+                outputArray.push({
+                  project_id:  row.project_id,
+                  project_desc: row.project_desc,
+                  attendance_date: row["attendance_date"],
+                  status: row.project_id > 0 ? "PR" : "N",
+                  [moment(row["attendance_date"],"YYYY-MM-DD").format("YYYYMMDD")]:row.project_id > 0 ? "PR" : "N",
+                  color:row.project_id > 0 ? "" : "#F5F5F5",
+                  project_desc:row.project_desc
+                });
+              }
+
+
+            });
 
               final_roster.push({
                 full_name: employee[0].full_name,
@@ -6039,6 +6029,237 @@ module.exports = {
       next(e);
     }
   }
+
+
+  ,
+  //created by irfan:
+  calculation: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const utilities = new algaehUtilities();
+  
+    try {
+      const rawData = req.body;
+  
+      const register = [];
+  
+      _mysql
+        .executeQuery({
+          query: "select standard_working_hours from hims_d_hrms_options;",
+          printQuery: false
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          const STDWH = result[0]["standard_working_hours"];
+          rawData.forEach(employee => {
+            const data = employee.dates.map(date => {
+              return {
+                attendance_date: moment(
+                  Object.keys(date)[0],
+                  "DD-MM-YYYY"
+                ).format("YYYY-MM-DD"),
+                status: Object.values(date)[0]
+              };
+            });
+            register.push({
+              employee_code: employee["employee_code"],
+              dates: data
+            });
+          });
+  
+          register.forEach(employee => {
+            employee.dates.forEach(day => {
+              switch (day["status"]) {
+                case "N":
+                  break;
+                case "AB":
+                  break;
+                case "WO":
+                  break;
+                case "HO":
+                  break;
+                case "PL":
+                  break;
+                case "UL":
+                  break;
+                case "HUL":
+                  break;
+                case "HPL":
+                  break;
+                case "PR":
+                  break;
+  
+                default:
+                  let time = day["status"]
+                    .replace(/\s+?/g, "")
+                    .replace(/:+?/g, ".");
+  
+                  if (time.length < 3) {
+                    const patt = "[0-9]?[0-9]";
+                    const output = time.match(patt);
+  
+                    if (output == null) {
+                      req.records = {
+                        invalid_input: true,
+                        message: ` invalid time for ${
+                          employee["employee_code"]
+                        } on ${moment(day.attendance_date, "YYYY-MM-DD").format(
+                          "DD-MM-YYYY"
+                        )}`
+                      };
+                      next();
+                    } else {
+                      //  console.log("output:", output);
+                      const num = parseFloat(output[0])
+                        .toFixed(2)
+                        .split(".");
+  
+                      console.log("num half:", num);
+  
+                      if (num[0] < 25 && num[1] < 60) {
+                        const hours = num[0];
+                        const minutes = num[1];
+                        console.log("hours:", hours);
+                        console.log("minutes:", minutes);
+                      } else {
+                        req.records = {
+                          invalid_input: true,
+                          message: ` invalid time for ${
+                            employee["employee_code"]
+                          } on
+         ${moment(day.attendance_date, "YYYY-MM-DD").format("DD-MM-YYYY")}`
+                        };
+                        next();
+                      }
+                    }
+                  } else if (time.length < 6) {
+                    //  time=time.replace(/:+?/g,'.');
+                    const patt = "[0-9]?[0-9][.|:][0-9]?[0-9]";
+                    const output = time.match(patt);
+  
+                    if (output == null) {
+                      req.records = {
+                        invalid_input: true,
+                        message: ` invalid time for ${
+                          employee["employee_code"]
+                        } on ${moment(day.attendance_date, "YYYY-MM-DD").format(
+                          "DD-MM-YYYY"
+                        )}`
+                      };
+                      next();
+                    } else {
+                      // console.log("output:", output);
+                      const num = parseFloat(output[0])
+                        .toFixed(2)
+                        .split(".");
+                      console.log("else num:", num);
+  
+                      if (num[0] < 25 && num[1] < 60) {
+                        const hours = num[0];
+                        const minutes = num[1];
+                        console.log("hours:", hours);
+                        console.log("minutes:", minutes);
+                      } else {
+                        req.records = {
+                          invalid_input: true,
+                          message: ` invalid time for ${
+                            employee["employee_code"]
+                          } on
+         ${moment(day.attendance_date, "YYYY-MM-DD").format("DD-MM-YYYY")}`
+                        };
+                        next();
+                      }
+                    }
+                  } else {
+                    req.records = {
+                      invalid_input: true,
+                      message: ` invalid time for ${
+                        employee["employee_code"]
+                      } on ${moment(day.attendance_date, "YYYY-MM-DD").format(
+                        "DD-MM-YYYY"
+                      )}`
+                    };
+                    next();
+                  }
+                  break;
+              }
+            });
+          });
+  
+          utilities.logger().log("register:", register);
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } catch (e) {
+      next(e);
+    }
+  },
+  
+  //created by irfan:
+  calculationBKP: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const utilities = new algaehUtilities();
+  
+    try {
+      //let input=req.body;
+      //x.replace(/\s+?/g,'');
+  
+      let time = " 70:12";
+      time = time.replace(/\s+?/g, "").replace(/:+?/g, ".");
+  
+      // console.log("time:",time);
+  
+      // if(time.split(".")[0]>24)
+      // console.log("hour :","excess") ;
+  
+      //         if( time.split(".")[1]>59)
+      //         console.log("minute :","excess");
+  
+      if (time.length < 3) {
+        const patt = "([01][0-9])|([2][0-4])|[1-9]";
+        const output = time.match(patt);
+  
+        if (output == null) {
+          console.log("2 error invalid input:", "error");
+        } else {
+          console.log("output:", output);
+          const num = parseFloat(output[0]).toFixed(2);
+  
+          console.log("num half:", num);
+          // const hours= num.split(".")[0];
+          // const mins= num.split(".")[1];
+          // console.log("hours:",hours);
+          // console.log("mins:",mins);
+        }
+      } else if (time.length < 6) {
+        //  time=time.replace(/:+?/g,'.');
+        const patt = "(([01][0-9])|([2][0-4])|[1-9])[.|:]([0-5][0-9]|[0-5])";
+        const output = time.match(patt);
+  
+        if (output == null) {
+          console.log("3 error invalid input:", "error");
+        } else {
+          console.log("output:", output);
+          const num = parseFloat(output[0]).toFixed(2);
+          console.log("else num:", num);
+  
+          // const hours= num.split(".")[0];
+          // const mins= num.split(".")[1];
+          // console.log("hours:",hours);
+          // console.log("mins:",mins);
+        }
+      } else {
+        console.log("4 error invalid input:", "error");
+      }
+  
+      next();
+    } catch (e) {
+      next(e);
+    }
+  }
+  
+
 };
 
 //created by irfan: to insert timesheet
@@ -6429,7 +6650,12 @@ function insertTimeSheet(
   } catch (e) {}
 }
 
-//created by irfan: to generate dates
+
+//
+
+
+
+//created by irfan: to generate dates 
 function getDaysArray(start, end) {
   const utilities = new algaehUtilities();
 
@@ -6444,3 +6670,269 @@ function getDaysArray(start, end) {
     utilities.logger().log("error rr: ", e);
   }
 }
+
+//created by :irfan 
+
+function timesheetCalc(mySQl,next){
+
+  try {
+    const input = req.query;
+
+    if (
+      input.branch_id > 0 &&
+      input.from_date != undefined &&
+      input.to_date != undefined
+    ) {
+      let strQry = "";
+      let project = "";
+
+      if (input.project_id > 0) {
+        project = " and PR.project_id=" + input.project_id;
+      }
+
+      if (input.employee_id > 0) {
+        strQry = " and employee_id=" + input.employee_id;
+      }
+
+      if (input.department_id > 0) {
+        strQry = " and DP.department_id=" + input.department_id;
+      }
+      if (input.sub_department_id > 0) {
+        strQry = " and E.sub_department_id=" + input.sub_department_id;
+      }
+      if (input.designation_id > 0) {
+        strQry = " and E.employee_designation_id=" + input.designation_id;
+      }
+
+      _mysql
+        .executeQuery({
+          query: `
+            select PR.employee_id,PR.attendance_date,E.employee_code,E.full_name,E.sub_department_id,
+            E.religion_id, E.date_of_joining,PR.project_id,P.project_desc,D.designation 
+            from hims_f_project_roster PR 
+            inner join  hims_d_employee E on PR.employee_id=E.hims_d_employee_id
+            inner join  hims_d_project P on P.hims_d_project_id=PR.project_id
+            inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
+            inner join hims_d_department DP on SD.department_id=DP.hims_d_department_id
+            inner join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id
+            and PR.hospital_id=? ${strQry} ${project} and PR.attendance_date between date(?) and date(?)
+            order by employee_id;     
+            select hims_f_leave_application_id,employee_id,leave_application_code,from_leave_session,
+            L.leave_type,from_date,to_leave_session,to_date,holiday_included,weekoff_included
+            from hims_f_leave_application LA inner join hims_d_leave L on 	LA.leave_id=L.hims_d_leave_id     
+            inner join  hims_d_employee E on LA.employee_id=E.hims_d_employee_id
+            inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
+            inner join hims_d_department DP on SD.department_id=DP.hims_d_department_id
+            inner join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id
+            where    LA.hospital_id=?  ${strQry} and status='APR' and ((  date(?)>=date(from_date) and
+            date(?)<=date(to_date)) or ( date(?)>=date(from_date) and   date(?)<=date(to_date)) 
+            or (date(from_date)>= date(?) and date(from_date)<=date(?) ) or 
+            (date(to_date)>=date(?) and date(to_date)<= date(?) ))  ;
+            select hims_d_holiday_id,holiday_date,holiday_description,weekoff,holiday,
+            holiday_type,religion_id from hims_d_holiday  where hospital_id=? and 
+            date(holiday_date) between date(?) and date(?);`,
+          values: [
+            input.branch_id,
+            input.from_date,
+            input.to_date,
+            input.branch_id,
+            input.from_date,
+            input.from_date,
+            input.to_date,
+            input.to_date,
+            input.from_date,
+            input.to_date,
+            input.from_date,
+            input.to_date,
+            input.branch_id,
+            input.from_date,
+            input.to_date
+          ],
+          printQuery: false
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+
+          const allLeaves = result[1];
+          const allHolidays = result[2];
+
+          const final_roster = [];
+
+          const allDates = getDaysArray(
+            new Date(input.from_date),
+            new Date(input.to_date)
+          );
+
+          const allEmployees = _.chain(result[0])
+            .groupBy(g => g.employee_id)
+            .map(emp => {
+              allDates.forEach(dat => {
+                const ProjAssgned = emp.find(e => {
+                  return e.attendance_date == dat;
+                });
+                if (ProjAssgned == undefined){
+
+                  emp.push({
+                    employee_id: emp[0].employee_id,
+                    attendance_date: dat,
+                    employee_code: emp[0].employee_code,
+                    full_name: emp[0].full_name,
+                    sub_department_id: emp[0].sub_department_id,
+                    religion_id: emp[0].religion_id,
+                    date_of_joining: emp[0].date_of_joining,
+                    project_id: null,
+                    project_desc: null,
+                    designation: emp[0].designation
+                  });
+
+
+                }
+               
+              });
+              return emp;
+            })
+            .value();
+
+
+
+
+
+         
+         
+         
+            allEmployees.forEach(employee => {
+            const outputArray = [];
+            let empHolidayweekoff = getEmployeeWeekOffsHolidays(
+              input.from_date,
+              input.to_date,
+              employee[0],
+              allHolidays
+            );
+
+            const empLeave = new LINQ(allLeaves)
+              .Where(w => w.employee_id == employee[0].employee_id)
+              .Select(s => s)
+              .ToArray();
+
+            employee.forEach((row, i) => {
+              let leave = null;
+              if (empLeave.length > 0) {
+               
+                leave = new LINQ(empLeave)
+                  .Where(
+                    w =>
+                      w.from_date <= row["attendance_date"] &&
+                      w.to_date >= row["attendance_date"]
+                  )
+                  .Select(s => {
+                    return {
+                      holiday_included: s.holiday_included,
+                      weekoff_included: s.weekoff_included,
+                      hospital_id: input.branch_id,
+                      employee_id: row.employee_id,
+                      project_id:  row.project_id,
+                      project_desc: row.project_desc,
+                      full_name: row.full_name,
+                      sub_department_id: row.sub_department_id,
+                      employee_code: row.employee_code,
+                      attendance_date: row["attendance_date"],
+                      status: s.leave_type == "P" ? "PL" : "UL",
+                                  
+                      designation: row.designation
+                    };
+                  })
+                  .FirstOrDefault(null);
+              }
+
+              const holiday_or_weekOff = new LINQ(empHolidayweekoff)
+                .Where(w => w.holiday_date == row["attendance_date"])
+                .Select(s => {
+                  return {
+                    holiday: s.holiday,
+                    weekoff: s.weekoff
+                  };
+                })
+                .FirstOrDefault(null);
+
+              //----------------------------
+
+              if (
+                (holiday_or_weekOff == null && leave != null) ||
+                (leave != null &&
+                  holiday_or_weekOff != null &&
+                  holiday_or_weekOff.holiday == "Y" &&
+                  leave.holiday_included == "Y") ||
+                (leave != null &&
+                  holiday_or_weekOff != null &&
+                  holiday_or_weekOff.weekoff == "Y" &&
+                  leave.weekoff_included == "Y")
+              ) {
+                outputArray.push({
+                  project_id:  row.project_id,
+                  project_desc: row.project_desc,
+                  attendance_date: leave.attendance_date,
+                  status: leave.status
+                 
+                  
+                });
+              } else if (holiday_or_weekOff != null) {
+                if (holiday_or_weekOff.weekoff == "Y") {
+                  outputArray.push({
+                    project_id:  row.project_id,
+                    project_desc: row.project_desc,
+                    attendance_date: row["attendance_date"],
+                    status: "WO"
+                  
+                  });
+                } else if (holiday_or_weekOff.holiday == "Y") {
+                  outputArray.push({
+                    project_id:  row.project_id,
+                    project_desc: row.project_desc,
+                    attendance_date: row["attendance_date"],
+                    status: "HO"
+                
+                  });
+                }
+              } else {
+                outputArray.push({
+                  project_id:  row.project_id,
+                  project_desc: row.project_desc,
+                  attendance_date: row["attendance_date"],
+                  status: row.project_id > 0 ? "PR" : "N",              
+                  project_desc:row.project_desc
+                });
+              }
+            });
+
+            final_roster.push({
+              full_name: employee[0].full_name,
+              employee_code: employee[0].employee_code,
+              sub_department_id: employee[0].sub_department_id,
+              dates: _.sortBy(outputArray,s=>parseInt(moment(s.attendance_date,"YYYY-MM-DD").format("MMDD"))) 
+            });
+          });
+
+          //  utilities.logger().log("allEmployees",allEmployees);
+
+          req.records = final_roster;
+          next();
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      req.records = {
+        message: "Please provide valid input",
+        invalid_input: true
+      };
+      next();
+    }
+
+
+
+} catch (e) {
+  next(e);
+}
+}
+

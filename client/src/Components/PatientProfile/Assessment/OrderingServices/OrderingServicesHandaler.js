@@ -582,7 +582,7 @@ const SaveOrdersServices = ($this, e) => {
             $this.props.onClose && $this.props.onClose(e);
 
             swalMessage({
-              title: "Ordered Successfully...",
+              title: "Ordered Successfully.",
               type: "success"
             });
           }

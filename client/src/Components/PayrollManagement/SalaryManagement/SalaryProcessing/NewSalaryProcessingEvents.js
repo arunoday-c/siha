@@ -44,13 +44,13 @@ const SalaryProcess = ($this, inputs, from) => {
               if (response.data.result.length > 0) {
                 let data = response.data.result[0];
                 let finalizeBtn = true;
-                let strMessage = "Salary Already Processed...";
+                let strMessage = "Salary Already Processed.";
                 let not_process = Enumerable.from(data.salaryprocess_header)
                   .where(w => w.salary_processed === "N")
                   .toArray();
                 if (not_process.length > 0) {
                   finalizeBtn = false;
-                  strMessage = "Salary Loaded Successfully...";
+                  strMessage = "Salary Loaded Successfully.";
                 }
                 $this.setState({
                   salaryprocess_header: data.salaryprocess_header,
@@ -73,8 +73,7 @@ const SalaryProcess = ($this, inputs, from) => {
                 });
                 AlgaehLoader({ show: false });
                 swalMessage({
-                  title:
-                    "Invalid. Please process attendence, If already processed please check the salary components.",
+                  title: "Attendance not processed for selected criteria.",
                   type: "warning"
                 });
               }
@@ -180,7 +179,7 @@ const FinalizeSalary = $this => {
         });
         AlgaehLoader({ show: false });
         swalMessage({
-          title: "Finalized Successfully...",
+          title: "Finalized Successfully.",
           type: "success"
         });
       } else {

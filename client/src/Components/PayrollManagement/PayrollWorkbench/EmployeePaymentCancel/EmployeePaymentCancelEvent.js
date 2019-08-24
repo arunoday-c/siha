@@ -39,7 +39,7 @@ const CancelPayment = ($this, row) => {
         onSuccess: response => {
           getEmployeePayments($this);
           swalMessage({
-            title: "Cancelled Successfully...",
+            title: "Cancelled Successfully.",
             type: "success"
           });
         },
