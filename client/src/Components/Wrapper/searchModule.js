@@ -21,6 +21,7 @@ class SearchModule extends Component {
       start: false
     };
     this.handleKeyUp = this.handleKeyUp.bind(this);
+    this.searchRef = React.createRef();
   }
 
   handleOpen = () => {
@@ -66,14 +67,17 @@ class SearchModule extends Component {
             title: _name
           }
         });
-        that.setState({
-          open: that.props.model.open,
-          searchName: that.props.searchName,
-          searchBy: _searchBy,
-          isSpeakEnable: false,
-          stop: false,
-          contains: ""
-        });
+        that.setState(
+          {
+            open: that.props.model.open,
+            searchName: that.props.searchName,
+            searchBy: _searchBy,
+            isSpeakEnable: false,
+            stop: false,
+            contains: ""
+          },
+          () => this.searchRef.current.focus()
+        );
       }
     );
   }
@@ -343,11 +347,13 @@ class SearchModule extends Component {
                   <div className="col">
                     <input
                       type="text"
+                      ref={this.searchRef}
                       id="spotlightInput"
                       tabIndex="1"
                       placeholder={this.state.title}
                       value={this.state.contains}
                       onChange={this.handleSpotLightContains.bind(this)}
+                      autoFocus
                     />
                   </div>
                   <div

@@ -379,7 +379,7 @@ class LeaveSalaryProcess extends Component {
                   {this.state.leave_period === null
                     ? 0
                     : this.state.leave_period}
-                </span>
+                </span>{" "}
                 Days
               </h6>
             </div>

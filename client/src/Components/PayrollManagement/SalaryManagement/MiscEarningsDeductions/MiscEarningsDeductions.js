@@ -430,7 +430,7 @@ export default class MiscEarningsDeductions extends Component {
             <AlagehAutoComplete
               div={{ className: "col-2" }}
               label={{
-                forceLabel: "Filter by Dept.",
+                forceLabel: "Select Sub Dept.",
                 isImp: false
               }}
               selector={{

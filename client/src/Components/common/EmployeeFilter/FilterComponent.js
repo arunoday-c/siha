@@ -16,7 +16,7 @@ export default function FilterComponent(props) {
     handlers
   } = useContext(FilterContext);
   return (
-    <div className="row  inner-top-search">
+    <div className="row inner-top-search FilterCompnentDiv">
       <AlagehAutoComplete
         div={{ className: "col mandatory" }}
         label={{
@@ -148,17 +148,9 @@ export default function FilterComponent(props) {
 
       <div className="col-2 globalSearchCntr">
         <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
-        <div className="row">
-          <div className="col-10">
-            <h6>{inputs.emp_name ? inputs.emp_name : "------"}</h6>
-          </div>
-          <div className="col-2 searchIconBox">
-            <i
-              className="fas fa-search fa-lg"
-              onClick={handlers.employeeSearch}
-            />
-          </div>
-        </div>
+        <h6 onClick={handlers.employeeSearch}>
+          {inputs.emp_name ? inputs.emp_name : "------"}
+        </h6>
       </div>
       <div className="col-12 form-group">
         <button
