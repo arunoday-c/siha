@@ -1,4 +1,5 @@
 import React, { useContext } from "react";
+import "./FilterComponent.css";
 import { FilterContext } from ".";
 import { MONTHS } from "../../../utils/GlobalVariables.json";
 import { AlagehAutoComplete, AlgaehLabel } from "../../Wrapper/algaehWrapper";
@@ -145,30 +146,15 @@ export default function FilterComponent(props) {
         }}
       />
 
-      <div className="col-2" style={{ margin: "5px 15px 0 0", paddingLeft: 0 }}>
-        <div
-          className="row"
-          style={{
-            border: " 1px solid #ced4d9",
-            borderRadius: 5,
-            marginLeft: 0
-          }}
-        >
-          <div className="col">
-            <AlgaehLabel label={{ forceLabel: "Search Employee." }} />
-            <h6> {inputs.emp_name ? inputs.emp_name : "------"}</h6>
+      <div className="col-2 globalSearchCntr">
+        <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+        <div className="row">
+          <div className="col-10">
+            <h6>{inputs.emp_name ? inputs.emp_name : "------"}</h6>
           </div>
-          <div
-            className="col-2"
-            style={{ borderLeft: "1px solid #ced4d8", padding: "0 0 0 7px" }}
-          >
+          <div className="col-2 searchIconBox">
             <i
               className="fas fa-search fa-lg"
-              style={{
-                paddingTop: 17,
-                paddingLeft: 3,
-                cursor: "pointer"
-              }}
               onClick={handlers.employeeSearch}
             />
           </div>
