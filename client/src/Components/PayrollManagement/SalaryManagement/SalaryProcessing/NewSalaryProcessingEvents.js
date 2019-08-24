@@ -16,7 +16,6 @@ const SalaryProcess = ($this, inputs, from) => {
           return { inputs: !inputs ? prevState.inputs : inputs };
         },
         () => {
-          debugger;
           let inputs = $this.state.inputs;
           let inputObj = {
             year: inputs.year,

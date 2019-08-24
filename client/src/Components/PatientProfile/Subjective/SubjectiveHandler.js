@@ -158,7 +158,6 @@ export default function SubjectiveHandler() {
     },
 
     addChiefComplainToPatient: $this => {
-      debugger;
       let _screenName = getCookie("ScreenName").replace("/", "");
       if (_screenName === "Login") {
         return;
@@ -208,7 +207,6 @@ export default function SubjectiveHandler() {
     },
 
     updatePatientChiefComplaints: $this => {
-      debugger;
       let _screenName = getCookie("ScreenName").replace("/", "");
       if (_screenName === "Login") {
         return;

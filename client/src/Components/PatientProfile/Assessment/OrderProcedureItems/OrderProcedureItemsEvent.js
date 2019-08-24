@@ -135,7 +135,6 @@ export default function OrderProcedureItemsEvent() {
     },
 
     itemSearch: $this => {
-      debugger;
       if ($this.state.existing_new === "E") {
         let inputs =
           "IL.inventory_location_id = " + $this.state.inventory_location_id;

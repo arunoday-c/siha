@@ -101,7 +101,6 @@ class OrderProcedureItems extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    debugger;
     let Location_name =
       this.props.inventorylocations !== undefined &&
       this.props.inventorylocations.length > 0
