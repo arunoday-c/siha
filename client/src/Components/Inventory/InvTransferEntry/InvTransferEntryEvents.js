@@ -4,7 +4,6 @@ import AlgaehLoader from "../../Wrapper/fullPageLoader";
 // import Enumerable from "linq";
 import TransferIOputs from "../../../Models/InventoryTransferEntry";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-import extend from "extend";
 import _ from "lodash";
 
 const changeTexts = ($this, ctrl, e) => {

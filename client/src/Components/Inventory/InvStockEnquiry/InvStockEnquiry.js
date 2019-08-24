@@ -5,24 +5,21 @@ import { bindActionCreators } from "redux";
 import {
   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehAutoComplete,
-  AlagehFormGroup,
-  AlgaehDateHandler
+  AlagehAutoComplete
 } from "../../Wrapper/algaehWrapper";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import {
   changeTexts,
-  dateFormater,
+  // dateFormater,
   updateStockDetils,
-  datehandle,
-  texthandle,
+  // datehandle,
+  // texthandle,
   getBatchWiseData,
   closeBatchWise
 } from "./InvStockEnquiryEvents";
 import "./InvStockEnquiry.css";
 import "../../../styles/site.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
-import Enumerable from "linq";
 import BatchWiseStock from "./BatchWiseStock";
 import { getAmountFormart } from "../../../utils/GlobalFunctions";
 

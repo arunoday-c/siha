@@ -6,7 +6,7 @@ import {
   cancelRequest,
   swalMessage
 } from "../../utils/algaehApiCall";
-import { setGlobal, getLabelFromLanguage } from "../../utils/GlobalFunctions";
+import { setGlobal } from "../../utils/GlobalFunctions";
 import Enumerable from "linq";
 import moment from "moment";
 import algaehLoader from "../Wrapper/fullPageLoader";
