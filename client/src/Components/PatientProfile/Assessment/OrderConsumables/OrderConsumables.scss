@@ -1,0 +1,21 @@
+.resultSecStyles {
+  margin: -6px;
+}
+
+.searchMoreDetails {
+  margin: 0;
+  padding: 0;
+  font-size: 0.8rem;
+  span {
+    margin-right: 10px;
+    display: inline-block;
+    color: #6d6d6d;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    b {
+      display: block;
+      color: rgba(56, 56, 56, 0.85);
+      font-style: italic;
+    }
+  }
+}

@@ -163,5 +163,6 @@
   "card_class": "Card Class",
   "employee_id": "Employee ID",
   "created_date": "Ordered Date",
-  "pre_approval": "Pre Approval"
+  "pre_approval": "Pre Approval",
+  "eligible_reference_number": "Reference Number"
 }

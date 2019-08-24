@@ -29,6 +29,10 @@ const LoadSalaryPayment = ($this, inputs) => {
             inputObj.sub_department_id = inputs.sub_department_id;
           }
 
+          if (inputs.department_id !== null) {
+            inputObj.department_id = inputs.department_id;
+          }
+          debugger;
           algaehApiCall({
             uri: "/salary/getSalaryProcessToPay",
             module: "hrManagement",
@@ -41,6 +45,9 @@ const LoadSalaryPayment = ($this, inputs) => {
                   // paysalaryBtn: false
                 });
               } else {
+                $this.setState({
+                  salary_payment: []
+                });
                 swalMessage({
                   title: `Salary Not Finalized for ${moment(
                     "1-" + inputs.month + "-" + inputs.year,

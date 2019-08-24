@@ -78,7 +78,7 @@ export default class UcafEditor extends Component {
                             To be completed & ID verified by the
                             reception/nurse:
                           </h5>
-                        </div>{" "}
+                        </div>
                         <div className="col-6">
                           <label>Provider Name</label>
                           <h6>{this.state.provider_name}</h6>
@@ -92,7 +92,7 @@ export default class UcafEditor extends Component {
                           <h6>
                             {this.state.primary_tpa_insurance_company_name}
                           </h6>
-                        </div>{" "}
+                        </div>
                         <div className="col-4">
                           <label>Patient File Number</label>
                           <h6>{this.state.patient_code}</h6>
@@ -105,6 +105,11 @@ export default class UcafEditor extends Component {
                           <label>Date of Visit</label>
                           <h6>{this.state.visit_date}</h6>
                         </div>
+                        <div className="col-4">
+                          <label>Reference Number</label>
+                          <h6>{this.state.eligible_reference_number}</h6>
+                        </div>
+
                         <div
                           className="col-6 customRadio"
                           style={{ paddingTop: 24, borderBottom: "none" }}
@@ -279,7 +284,7 @@ export default class UcafEditor extends Component {
                                     type: "text"
                                   }
                                 }}
-                              />{" "}
+                              />
                               <AlagehFormGroup
                                 div={{ className: "col-4 form-group" }}
                                 label={{
@@ -295,7 +300,7 @@ export default class UcafEditor extends Component {
                                     type: "text"
                                   }
                                 }}
-                              />{" "}
+                              />
                               <AlagehFormGroup
                                 div={{ className: "col-4 form-group" }}
                                 label={{
@@ -332,7 +337,7 @@ export default class UcafEditor extends Component {
                                     type: "text"
                                   }
                                 }}
-                              />{" "}
+                              />
                               <AlagehFormGroup
                                 div={{ className: "col-6 form-group" }}
                                 label={{
@@ -710,7 +715,7 @@ export default class UcafEditor extends Component {
                               type: "text"
                             }
                           }}
-                        />{" "}
+                        />
                         <AlagehFormGroup
                           div={{ className: "col-3 form-group" }}
                           label={{
@@ -728,7 +733,7 @@ export default class UcafEditor extends Component {
                               type: "text"
                             }
                           }}
-                        />{" "}
+                        />
                         <AlagehFormGroup
                           div={{ className: "col-3 form-group" }}
                           label={{
@@ -921,7 +926,7 @@ export default class UcafEditor extends Component {
                         <div className="col-12 margin-top-15">
                           <h5 style={{ margin: 0 }}>
                             Suggestive line(s) of management: Kindly, enumerate
-                            the recommended investigation, and/or procedures{" "}
+                            the recommended investigation, and/or procedures
                             <b>For outpatient approvals only:</b>
                           </h5>
                         </div>
