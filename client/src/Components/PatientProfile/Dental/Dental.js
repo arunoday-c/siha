@@ -260,7 +260,7 @@ class Dental extends Component {
           });
 
           swalMessage({
-            title: "Ordered Successfully...",
+            title: "Ordered Successfully.",
             type: "success"
           });
         }

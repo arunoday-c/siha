@@ -57,7 +57,7 @@ class InsuranceCardClass extends Component {
 
               this.resetState();
               swalMessage({
-                title: "Record added successfully...",
+                title: "Record added Successfully.",
                 type: "success"
               });
             }
