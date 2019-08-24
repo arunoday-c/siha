@@ -4,7 +4,7 @@ import InvRequisitionList from "./InvRequisitionList";
 import InvRequisitionEntry from "../InvRequisitionEntry/InvRequisitionEntry";
 import InvTransferEntry from "../InvTransferEntry/InvTransferEntry";
 import { getCookie } from "../../../utils/algaehApiCall";
-import { removeGlobal, setGlobal } from "../../../utils/GlobalFunctions";
+import { removeGlobal } from "../../../utils/GlobalFunctions";
 
 class RequisitionSwitch extends Component {
   constructor(props) {

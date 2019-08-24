@@ -24,7 +24,8 @@ export default function EmployeeFilter(props) {
     designation_id: null,
     hims_d_employee_id: null,
     emp_name: null,
-    hims_d_employee_id: null
+    hims_d_employee_id: null,
+    inputChanged: false
   };
   const [inputs, setInputs] = useState({ ...baseInput });
 
@@ -36,6 +37,9 @@ export default function EmployeeFilter(props) {
   // To get the departments after branch changes
   useEffect(() => {
     if (inputs.hospital_id) {
+      if (inputs.inputChanged) {
+        clearOtherStates(["hospital_id"]);
+      }
       getBranchDetails();
     }
   }, [inputs.hospital_id]);
@@ -43,10 +47,20 @@ export default function EmployeeFilter(props) {
   // To set the sub depts after department selected
   useEffect(() => {
     if (inputs.department_id && allDepartments.length !== 0) {
+      if (inputs.inputChanged) {
+        clearOtherStates(["hospital_id", "department_id"]);
+      }
       const [reqDept] = allDepartments.filter(
         dept => dept.hims_d_department_id === inputs.department_id
       );
-      setSubDepts(reqDept.subDepts);
+      if (reqDept) {
+        setSubDepts(reqDept.subDepts);
+      } else {
+        swalMessage({
+          title: "Please contact the admin, Error Code: 007",
+          type: "error"
+        });
+      }
     } else {
       setSubDepts([]);
     }
@@ -54,6 +68,9 @@ export default function EmployeeFilter(props) {
 
   useEffect(() => {
     if (inputs.sub_department_id) {
+      if (inputs.inputChanged) {
+        clearOtherStates(["hospital_id", "department_id", "sub_department_id"]);
+      }
       getDesignations(inputs.sub_department_id);
     }
   }, [inputs.sub_department_id]);
@@ -119,7 +136,8 @@ export default function EmployeeFilter(props) {
     const { name, value } = e;
     setInputs(state => ({
       ...state,
-      [name]: value
+      [name]: value,
+      inputChanged: true
     }));
   }
 
@@ -128,6 +146,26 @@ export default function EmployeeFilter(props) {
       ...state,
       ...fields
     }));
+  }
+
+  function clearOtherStates(fields) {
+    setInputs(state => {
+      const arr = [
+        "department_id",
+        "sub_department_id",
+        "designation_id",
+        "hims_d_employee_id",
+        "emp_name",
+        "hims_d_employee_id"
+      ];
+      const matches = arr.filter(element => !fields.includes(element));
+      debugger;
+      let result = { ...state };
+      matches.forEach(fld => {
+        result[fld] = null;
+      });
+      return result;
+    });
   }
 
   function employeeSearch(e) {
@@ -162,7 +200,8 @@ export default function EmployeeFilter(props) {
           emp_name: row.full_name,
           department_id: row.hims_d_department_id,
           sub_department_id: row.sub_department_id,
-          designation_id: row.employee_designation_id
+          designation_id: row.employee_designation_id,
+          inputChanged: false
         }));
         // setEmployees(employees);
       }

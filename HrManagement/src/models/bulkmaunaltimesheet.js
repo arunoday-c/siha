@@ -224,14 +224,42 @@ export function excelManualTimeSheet(req, res, next) {
 export function excelManualTimeSheetRead(req, res, next) {
   const fileName = path.join(__dirname, "../../../../Output", "test.xlsx");
   var workbook = new Excel.Workbook();
-  workbook.xlsx.readFile(fileName).then(function() {
-    let excelArray = [];
-    workbook.eachSheet(function(worksheet, sheetId) {
-      let columns = {};
+  let excelArray = [];
+  workbook.xlsx
+    .readFile(fileName)
+    .then(function() {
+      workbook.eachSheet(function(worksheet, sheetId) {
+        let columns = [];
 
-      worksheet.eachRow(function(row, rowNumber) {
-        console.log("Row " + rowNumber + " = " + JSON.stringify(row.values));
+        worksheet.eachRow(function(row, rowNumber) {
+          if (rowNumber === 1) {
+            columns = row.values;
+          } else {
+            let internal = {};
+            let internalArray = [];
+            for (let i = 0; i < columns.length; i++) {
+              if (columns[i] !== undefined) {
+                const columnName = columns[i]
+                  .replace("Emp. Code", "employee_code")
+                  .replace("Employee Name", "full_name");
+                if (
+                  columnName === "employee_code" ||
+                  columnName === "full_name"
+                ) {
+                  internal[columnName] = row.values[i];
+                } else {
+                  internalArray.push({ [columnName]: row.values[i] });
+                  if (i === columns.length - 1) {
+                    excelArray.push({ ...internal, dates: internalArray });
+                  }
+                }
+              }
+            }
+          }
+        });
       });
+    })
+    .then(() => {
+      console.log("JSON ", JSON.stringify(excelArray));
     });
-  });
 }

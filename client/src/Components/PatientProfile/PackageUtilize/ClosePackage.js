@@ -142,7 +142,7 @@ class ClosePackage extends PureComponent {
             });
 
             swalMessage({
-              title: "Refunded Successfully...",
+              title: "Refunded Successfully.",
               type: "success"
             });
           }
@@ -178,7 +178,7 @@ class ClosePackage extends PureComponent {
         if (response.data.success) {
           this.props.onClose && this.props.onClose(true);
           swalMessage({
-            title: "Package Closed Successfully...",
+            title: "Package Closed Successfully.",
             type: "success"
           });
         }

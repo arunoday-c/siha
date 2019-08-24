@@ -339,7 +339,7 @@ const InsertUpdateEmployee = $this => {
 
                 swalMessage({
                   type: "success",
-                  title: "Saved Successfully..."
+                  title: "Saved Successfully."
                 });
               }
             },
@@ -404,7 +404,7 @@ const InsertUpdateEmployee = $this => {
                 });
                 swalMessage({
                   type: "success",
-                  title: "Updated Successfully..."
+                  title: "Updated Successfully."
                 });
               }
             },

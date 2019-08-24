@@ -140,7 +140,7 @@ export default function EyeModalEvent() {
           onSuccess: response => {
             if (response.data.success) {
               swalMessage({
-                title: "Recorded Successfully...",
+                title: "Recorded Successfully.",
                 type: "success"
               });
             }
@@ -161,7 +161,7 @@ export default function EyeModalEvent() {
           onSuccess: response => {
             if (response.data.success) {
               swalMessage({
-                title: "Recorded Successfully...",
+                title: "Recorded Successfully.",
                 type: "success"
               });
             }

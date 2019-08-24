@@ -1,22 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, memo } from "react";
 import "./bulkTimeSheet.html.css";
-import { EmployeeFilter } from "../../../common/EmployeeFilter";
+import Filter from "./Filter/filter.html";
 import {
   AlagehAutoComplete,
   AlgaehLabel,
   AlgaehDateHandler
 } from "../../../Wrapper/algaehWrapper";
 
-export default function BulkTimeSheet(props) {
+function BulkTimeSheet(props) {
   return (
     <div id="bulkManualTimeSheet">
-      <EmployeeFilter
-        loadFunc={result => {
-          debugger;
-
-          console.log("result", result);
-        }}
-      />
+      <Filter downloadExcel={() => {}} />
 
       <div className="portlet portlet-bordered margin-top-15">
         <div className="portlet-title">
@@ -218,3 +212,4 @@ export default function BulkTimeSheet(props) {
     </div>
   );
 }
+export default memo(BulkTimeSheet);

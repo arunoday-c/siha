@@ -124,7 +124,7 @@ const SaveMedication = ($this, e) => {
       onSuccess: response => {
         if (response.data.success) {
           swalMessage({
-            title: "Ordered Successfully...",
+            title: "Ordered Successfully.",
             type: "success"
           });
           if (Window.global["orderMedicationState"] !== null)

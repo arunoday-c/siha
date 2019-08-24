@@ -333,7 +333,7 @@ class SalaryProcessing extends Component {
                     <div className="portlet-title">
                       <div className="caption">
                         <h3 className="caption-subject">
-                          Salaried Employee Salary List for -
+                          Salary Payment List for month of:
                           <span>{salary_dates}</span>
                         </h3>
                       </div>

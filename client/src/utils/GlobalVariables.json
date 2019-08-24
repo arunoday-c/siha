@@ -969,7 +969,8 @@
     { "name": "Opening Stock", "value": "INT" },
     { "name": "Consumption", "value": "CS" },
     { "name": "Receipt Entry", "value": "REC" },
-    { "name": "Delivery Note", "value": "DNA" }
+    { "name": "Delivery Note", "value": "DNA" },
+    { "name": "Transfer Acknowledge", "value": "ACK" }
   ],
   "MODULE_PLAN": [
     { "name": "Silver", "value": "S" },
