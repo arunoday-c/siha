@@ -38,7 +38,10 @@ module.exports = {
             _stringData += " and A.sub_department_id=? ";
             inputValues.push(input.sub_department_id);
           }
-
+          if (input.department_id != null) {
+            _stringData += " and SD.department_id=?";
+            inputValues.push(input.department_id);
+          }
           strQuery =
             "select A.hims_f_attendance_monthly_id, A.employee_id, A.year, A.month, A.hospital_id, \
             A.sub_department_id, A.total_days,A.present_days, A.absent_days, A.total_work_days, \
@@ -46,11 +49,14 @@ module.exports = {
             A.total_paid_days, A.total_hours, A.total_working_hours, A.ot_work_hours, \
             A.ot_weekoff_hours,A.ot_holiday_hours, A.shortage_hours,\
             E.employee_code,E.gross_salary, S.hims_f_salary_id,S.salary_processed \
-            from hims_f_attendance_monthly as A inner join  hims_d_employee as E \
-            on  E.hims_d_employee_id = A.employee_id and A.hospital_id = E.hospital_id \
+            from hims_f_attendance_monthly as A \
+            inner join  hims_d_employee as E on  E.hims_d_employee_id = A.employee_id and \
+            A.hospital_id = E.hospital_id \
             left join hims_f_salary as S on  S.`year`=A.`year` and S.`month` = A.`month`\
-            and S.employee_id = A.employee_id left join hims_f_employee_annual_leave AL on E.hims_d_employee_id=AL.employee_id \
-            and  AL.year=? and AL.month=? and AL.cancelled='N'  where \
+            and S.employee_id = A.employee_id \
+            left join hims_f_employee_annual_leave AL on E.hims_d_employee_id=AL.employee_id \
+            and  AL.year=? and AL.month=? and AL.cancelled='N' \
+            inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id  where \
             A.`year`=? and A.`month`=? and A.hospital_id=?" +
             _stringData +
             " and hims_f_employee_annual_leave_id is null and (S.salary_processed is null or  S.salary_processed='N');";
@@ -1868,14 +1874,17 @@ module.exports = {
           ? " and emp.sub_department_id=? "
           : "";
 
+      _stringData +=
+        inputParam.department_id != null ? " and SD.department_id=? " : "";
+
       _mysql
         .executeQuery({
           query:
-            "select hims_f_salary_id, employee_id,salary_number, total_days,absent_days,total_work_days,total_weekoff_days,total_holidays,\
-          total_leave,paid_leave,unpaid_leave,present_days, pending_unpaid_leave, total_paid_days, hims_f_salary.gross_salary, \
-          hims_f_salary.net_salary,advance_due,hims_f_salary.total_earnings,hims_f_salary.total_deductions,loan_payable_amount, \
-          loan_due_amount,salary_processed,salary_paid,emp.employee_code, emp.full_name from hims_f_salary, hims_d_employee emp where \
-          hims_f_salary.employee_id = emp.hims_d_employee_id and `year` = ? and `month` = ? and emp.hospital_id=? " +
+            "select hims_f_salary_id, employee_id,salary_number, total_days, absent_days, total_work_days,  total_weekoff_days, total_holidays, total_leave, paid_leave, unpaid_leave, present_days,  pending_unpaid_leave, total_paid_days, hims_f_salary.gross_salary, hims_f_salary.net_salary, \
+            advance_due, hims_f_salary.total_earnings,hims_f_salary.total_deductions,loan_payable_amount, \
+            loan_due_amount, salary_processed, salary_paid, emp.employee_code, emp.full_name \
+            from hims_f_salary, hims_d_employee emp, hims_d_sub_department SD where hims_f_salary.employee_id = emp.hims_d_employee_id and emp.sub_department_id=SD.hims_d_sub_department_id \
+            and `year` = ? and `month` = ? and emp.hospital_id=? " +
             _stringData,
           values: _.valuesIn(inputParam),
           printQuery: true
@@ -1939,15 +1948,18 @@ module.exports = {
           ? " and emp.sub_department_id=? "
           : "";
 
+      _stringData +=
+        inputParam.department_id != null ? " and SD.department_id=? " : "";
       /* Select statemwnt  */
 
       _mysql
         .executeQuery({
           query:
-            "select hims_f_salary_id, salary_number, employee_id,present_days, salary_processed, hims_f_salary.gross_salary, \
-          hims_f_salary.net_salary,advance_due,loan_payable_amount, loan_due_amount, emp.employee_code, emp.full_name,salary_paid \
-          from hims_f_salary, hims_d_employee emp where \
-          hims_f_salary.employee_id = emp.hims_d_employee_id and salary_processed = 'Y' and `year` = ? and `month` = ? " +
+            "select hims_f_salary_id, salary_number, employee_id,present_days, salary_processed, hims_f_salary.gross_salary, hims_f_salary.net_salary, advance_due, loan_payable_amount, \
+            loan_due_amount, emp.employee_code, emp.full_name,salary_paid from hims_f_salary, \
+            hims_d_employee emp, hims_d_sub_department SD where hims_f_salary.employee_id = emp.hims_d_employee_id \
+            and emp.sub_department_id=SD.hims_d_sub_department_id and salary_processed = 'Y' and \
+            `year` = ? and `month` = ? " +
             _stringData,
           values: _.valuesIn(inputParam),
           printQuery: true
