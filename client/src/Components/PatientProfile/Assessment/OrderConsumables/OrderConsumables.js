@@ -258,7 +258,7 @@ class OrderConsumables extends Component {
                             <h4 className="title">{result.item_description}</h4>
                             <p className="searchMoreDetails">
                               <span>
-                                Barcode:{" "}
+                                Barcode:
                                 <b>
                                   {result.barcode === null
                                     ? "No Barcode"
@@ -303,7 +303,8 @@ class OrderConsumables extends Component {
                   displayField="item_description"
                   value={this.state.item_description}
                   extraParameters={{
-                    insurance_id: this.state.insurance_provider_id
+                    insurance_id: this.state.insurance_provider_id,
+                    inventory_location_id: this.state.inventory_location_id
                   }}
                   searchName="insitemmaster"
                   onClick={selectItemHandeler.bind(this, this)}

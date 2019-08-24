@@ -42,7 +42,8 @@ class OrderProcedureItems extends Component {
       procedure_id: null,
       location_id: null,
       patient_id: null,
-      episode_id: null
+      episode_id: null,
+      quantity: 0
     };
   }
   getDepartments() {
@@ -64,7 +65,35 @@ class OrderProcedureItems extends Component {
   }
 
   onClose = e => {
-    this.props.onClose && this.props.onClose(e);
+    this.setState(
+      {
+        inventory_location_id: null,
+        existing_new: "E",
+
+        item_id: null,
+        item_category_id: null,
+        item_group_id: null,
+        uom_id: null,
+        batchno: null,
+        expirydt: null,
+        barcode: null,
+        grn_no: null,
+        qtyhand: null,
+        unit_cost: null,
+
+        Procedure_items: [],
+        location_name: null,
+        location_type: null,
+        procedure_id: null,
+        location_id: null,
+        patient_id: null,
+        episode_id: null,
+        quantity: 0
+      },
+      () => {
+        this.props.onClose && this.props.onClose(e);
+      }
+    );
   };
 
   componentDidMount() {
@@ -72,6 +101,7 @@ class OrderProcedureItems extends Component {
   }
 
   componentWillReceiveProps(newProps) {
+    debugger;
     let Location_name =
       this.props.inventorylocations !== undefined &&
       this.props.inventorylocations.length > 0
@@ -87,7 +117,8 @@ class OrderProcedureItems extends Component {
       this.setState({
         inventory_location_id: newProps.inputsparameters.inventory_location_id,
         location_name: Location_name[0].location_description,
-        location_type: Location_name[0].location_type
+        location_type: Location_name[0].location_type,
+        procedure_id: newProps.inputsparameters.procedure_id
       });
     }
   }
@@ -109,6 +140,9 @@ class OrderProcedureItems extends Component {
   }
   SaveProcedureItems() {
     OrderProcedureItemsEvent().SaveProcedureItems(this);
+  }
+  RemoveItems(row) {
+    OrderProcedureItemsEvent().RemoveItems(this, row);
   }
   render() {
     return (
@@ -246,13 +280,15 @@ class OrderProcedureItems extends Component {
                             isImp: false
                           }}
                           textBox={{
+                            number: {
+                              allowNegative: false,
+                              thousandSeparator: ","
+                            },
                             className: "txt-fld",
                             name: "quantity",
+                            dontAllowKeys: ["-", "e", "."],
                             value: this.state.quantity,
-                            events: { onChange: this.quantityEvent.bind(this) },
-                            option: {
-                              type: "number"
-                            }
+                            events: { onChange: this.quantityEvent.bind(this) }
                           }}
                         />
                         <div className="col-2">
@@ -271,6 +307,23 @@ class OrderProcedureItems extends Component {
                         id="ExisitingNewItemsGrid"
                         datavalidate="ExisitingNewItemsGrid"
                         columns={[
+                          {
+                            fieldName: "actions",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Action" }} />
+                            ),
+                            displayTemplate: row => {
+                              return (
+                                <span>
+                                  <i
+                                    onClick={this.RemoveItems.bind(this, row)}
+                                    className="fas fa-trash-alt"
+                                  />
+                                </span>
+                              );
+                            },
+                            others: { maxWidth: 80, align: "center" }
+                          },
                           {
                             fieldName: "item_id",
                             label: (
@@ -303,6 +356,9 @@ class OrderProcedureItems extends Component {
                             label: (
                               <AlgaehLabel label={{ forceLabel: "Qty" }} />
                             ),
+                            displayTemplate: row => {
+                              return <span>{parseFloat(row.quantity)}</span>;
+                            },
                             others: { maxWidth: 80, align: "center" }
                           },
                           {
@@ -310,7 +366,7 @@ class OrderProcedureItems extends Component {
                             label: (
                               <AlgaehLabel label={{ forceLabel: "Batch" }} />
                             ),
-                            others: { maxWidth: 80, align: "center" }
+                            others: { maxWidth: 250, align: "center" }
                           },
                           {
                             fieldName: "expirydt",
@@ -328,6 +384,9 @@ class OrderProcedureItems extends Component {
                                 label={{ forceLabel: "Qty in Hand" }}
                               />
                             ),
+                            displayTemplate: row => {
+                              return <span>{parseFloat(row.qtyhand)}</span>;
+                            },
                             others: { maxWidth: 150, align: "center" }
                           }
                         ]}
