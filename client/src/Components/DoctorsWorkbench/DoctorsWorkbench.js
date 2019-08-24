@@ -42,6 +42,35 @@ class DoctorsWorkbench extends Component {
     this.setState({ age: age });
   }
 
+  getAppointmentStatus() {
+    algaehApiCall({
+      uri: "/appointment/getAppointmentStatus",
+      module: "frontDesk",
+      method: "GET",
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            status: res.data.records
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: "Failed to get appointment status"
+        });
+        this.setState({ status: [] });
+      }
+    });
+  }
+
+  statusCheck = id => {
+    const { status } = this.state;
+    const [reqStatus] = status.filter(
+      stat => stat.hims_d_appointment_status_id === id
+    );
+    return reqStatus.statusDesc;
+  };
+
   getAppointments(e) {
     let send_data = {
       sub_dept_id: this.state.sub_department_id,
@@ -171,6 +200,7 @@ class DoctorsWorkbench extends Component {
 
   componentDidMount() {
     this.loadListofData();
+    this.getAppointmentStatus();
   }
 
   liGenerate() {
@@ -347,7 +377,7 @@ class DoctorsWorkbench extends Component {
 
               <div className="portlet-body">
                 <div className="appPatientList">
-                  <div className="appoStatusLegend">
+                  {/* <div className="appoStatusLegend">
                     <span>
                       <small>Pending</small>10
                     </span>
@@ -357,7 +387,7 @@ class DoctorsWorkbench extends Component {
                     <span>
                       <small>Cancelled</small>10
                     </span>
-                  </div>
+                  </div> */}
                   <ul className="appList">
                     {this.state.appointments.length !== 0 ? (
                       this.state.appointments.map((data, index) => (
@@ -377,7 +407,9 @@ class DoctorsWorkbench extends Component {
                               {data.patient_name}
                             </span>
                             <span className="appStatus nursing" />{" "}
-                            <span className="appoPatientStatus newVisit" />
+                            <span className="appoPatientStatus newVisit">
+                              {this.statusCheck(data.appointment_status_id)}
+                            </span>
                           </span>
                         </li>
                       ))
@@ -416,7 +448,7 @@ class DoctorsWorkbench extends Component {
               <div className="portlet-body">
                 <div className="opPatientList">
                   {" "}
-                  <div className="opStatusLegend">
+                  {/* <div className="opStatusLegend">
                     <span>
                       <small>Follow Up</small>10
                     </span>
@@ -426,7 +458,7 @@ class DoctorsWorkbench extends Component {
                     <span>
                       <small>Package Visit</small>10
                     </span>
-                  </div>
+                  </div> */}
                   <ul className="opList">
                     {Enumerable.from(this.state.data)
                       .where(w => w.status === "V")
