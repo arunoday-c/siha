@@ -16,6 +16,7 @@ const SalaryProcess = ($this, inputs, from) => {
           return { inputs: !inputs ? prevState.inputs : inputs };
         },
         () => {
+          debugger;
           let inputs = $this.state.inputs;
           let inputObj = {
             year: inputs.year,
@@ -28,6 +29,10 @@ const SalaryProcess = ($this, inputs, from) => {
 
           if (inputs.sub_department_id !== null) {
             inputObj.sub_department_id = inputs.sub_department_id;
+          }
+
+          if (inputs.department_id !== null) {
+            inputObj.department_id = inputs.department_id;
           }
 
           algaehApiCall({

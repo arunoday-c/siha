@@ -12,7 +12,7 @@ import {
   ClearData,
   PaySalary,
   selectToPay
-} from "./SalaryPaymentsEvents.js";
+} from "./NewSalaryPaymentsEvents.js";
 import moment from "moment";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 import { EmployeeFilter } from "../../../common/EmployeeFilter";
