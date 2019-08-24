@@ -18,7 +18,7 @@ exports.default = {
     user: "algaeh_root",
     password: "alg_hea2018",
     // password: "medteam2013",
-    // database: "hims_test_db",
+    //database: "hims_test_db",
     //database: "twareat_live_db",
     //database: "awdesh_db",
     //database: "hrms_shaksy_db",
