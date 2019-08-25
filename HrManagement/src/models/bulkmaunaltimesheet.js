@@ -1,7 +1,6 @@
 import Excel from "exceljs/modern.browser";
 import path from "path";
 import moment from "moment";
-
 async function generateDates(fromdate, todate, format) {
   format = format || "DD-MM-YYYY";
   let columns = [
@@ -34,15 +33,22 @@ async function generateDates(fromdate, todate, format) {
 }
 
 export function excelManualTimeSheet(req, res, next) {
-  return excelManualTimeSheetRead(req, res, next);
+  //return excelManualTimeSheetRead(req, res, next);
   new Promise((resolve, reject) => {
-    const sheetName =
-      req.query.sheetName === undefined
-        ? "Manual Timesheet"
-        : req.query.sheetName;
+    const query = req.query;
+    const start = moment(query.from_date);
+    const end = moment(query.to_date);
+    console.log("Request ", query);
+    const sheetName = `${start.format("DD-MM-YYYY")}-${end.format(
+      "DD-MM-YYYY"
+    )}`;
+
     try {
       (async () => {
-        const columns = await generateDates("2019-07-26", "2019-08-25");
+        const columns = await generateDates(
+          start.format("YYYY-MM-DD"),
+          end.format("YYYY-MM-DD")
+        );
 
         //Create instance of excel
         var workbook = new Excel.Workbook();
@@ -95,12 +101,11 @@ export function excelManualTimeSheet(req, res, next) {
           }
         ];
 
-        //// TODO: need to remove hardcoded data
-        const data = require("../../testDB/data.json");
+        const data = req.records; //require("../../testDB/data.json");
 
         // Add a couple of Rows by key-value, after the last current row, using the column keys
-        for (let i = 0; i < data.result.length; i++) {
-          const rest = data.result[i];
+        for (let i = 0; i < data.length; i++) {
+          const rest = data[i];
           let employee = {
             full_name: rest.full_name,
             employee_code: rest.employee_code
@@ -187,21 +192,12 @@ export function excelManualTimeSheet(req, res, next) {
             });
           }
         });
-        worksheet.addRow([3, "Sam", new Date()]);
+        worksheet.addRow([JSON.stringify(query)]);
         worksheet.lastRow.hidden = true;
         await worksheet.protect("", {
           selectLockedCells: true,
           selectUnlockedCells: true
         });
-        // const fileName = path.join(
-        //   __dirname,
-        //   "../../../../Output",
-        //   "test.xlsx"
-        // );
-        // console.log("File Path", fileName);
-        // workbook.xlsx.writeFile(fileName).then(function() {
-        //   console.log("Done");
-        // });
 
         res.setHeader(
           "Content-Type",
@@ -221,45 +217,96 @@ export function excelManualTimeSheet(req, res, next) {
     }
   });
 }
-export function excelManualTimeSheetRead(req, res, next) {
-  const fileName = path.join(__dirname, "../../../../Output", "test.xlsx");
-  var workbook = new Excel.Workbook();
-  let excelArray = [];
-  workbook.xlsx
-    .readFile(fileName)
-    .then(function() {
-      workbook.eachSheet(function(worksheet, sheetId) {
-        let columns = [];
 
-        worksheet.eachRow(function(row, rowNumber) {
-          if (rowNumber === 1) {
-            columns = row.values;
-          } else {
-            let internal = {};
-            let internalArray = [];
-            for (let i = 0; i < columns.length; i++) {
-              if (columns[i] !== undefined) {
-                const columnName = columns[i]
-                  .replace("Emp. Code", "employee_code")
-                  .replace("Employee Name", "full_name");
-                if (
-                  columnName === "employee_code" ||
-                  columnName === "full_name"
-                ) {
-                  internal[columnName] = row.values[i];
-                } else {
-                  internalArray.push({ [columnName]: row.values[i] });
-                  if (i === columns.length - 1) {
-                    excelArray.push({ ...internal, dates: internalArray });
+export function excelManualTimeSheetRead(req, res, next) {
+  let buffer = "";
+  req.on("data", chunk => {
+    buffer += chunk.toString();
+  });
+  req.on("end", () => {
+    const buff = new Buffer.from(buffer, "base64");
+    var workbook = new Excel.Workbook();
+    let filter;
+    let excelArray = [];
+    workbook.xlsx
+      .load(buff)
+      .then(() => {
+        workbook.eachSheet(function(worksheet, sheetId) {
+          let columns = [];
+          const lastRow = worksheet.lastRow;
+          filter = JSON.parse(lastRow.values[1]);
+          worksheet.eachRow(function(row, rowNumber) {
+            if (rowNumber === 1) {
+              columns = row.values;
+            } else {
+              let internal = {};
+              let internalArray = [];
+
+              for (let i = 0; i < columns.length; i++) {
+                if (columns[i] !== undefined) {
+                  const columnName = columns[i]
+                    .replace("Emp. Code", "employee_code")
+                    .replace("Employee Name", "full_name");
+                  if (
+                    columnName === "employee_code" ||
+                    columnName === "full_name"
+                  ) {
+                    internal[columnName] = row.values[i];
+                  } else {
+                    internalArray.push({ [columnName]: row.values[i] });
+                    if (i === columns.length - 1) {
+                      excelArray.push({ ...internal, dates: internalArray });
+                    }
                   }
                 }
               }
             }
-          }
+          });
         });
+      })
+      .then(() => {
+        excelArray.pop();
+        req.records = { filter, excelArray };
+        next();
       });
-    })
-    .then(() => {
-      console.log("JSON ", JSON.stringify(excelArray));
-    });
+  });
+
+  // const fileName = path.join(__dirname, "../../../../Output", "test.xlsx");
+  // workbook.xlsx
+  //   .file(fileName)
+  //   .then(function() {
+  //     workbook.eachSheet(function(worksheet, sheetId) {
+  //       let columns = [];
+  //
+  //       worksheet.eachRow(function(row, rowNumber) {
+  //         if (rowNumber === 1) {
+  //           columns = row.values;
+  //         } else {
+  //           let internal = {};
+  //           let internalArray = [];
+  //           for (let i = 0; i < columns.length; i++) {
+  //             if (columns[i] !== undefined) {
+  //               const columnName = columns[i]
+  //                 .replace("Emp. Code", "employee_code")
+  //                 .replace("Employee Name", "full_name");
+  //               if (
+  //                 columnName === "employee_code" ||
+  //                 columnName === "full_name"
+  //               ) {
+  //                 internal[columnName] = row.values[i];
+  //               } else {
+  //                 internalArray.push({ [columnName]: row.values[i] });
+  //                 if (i === columns.length - 1) {
+  //                   excelArray.push({ ...internal, dates: internalArray });
+  //                 }
+  //               }
+  //             }
+  //           }
+  //         }
+  //       });
+  //     });
+  //   })
+  //   .then(() => {
+  //     console.log("JSON ", JSON.stringify(excelArray));
+  //   });
 }

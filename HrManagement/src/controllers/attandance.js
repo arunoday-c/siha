@@ -28,7 +28,10 @@ import {
   getBulkManualTimeSheet,
   calculation
 } from "../models/attendance";
-import { excelManualTimeSheet } from "../models/bulkmaunaltimesheet";
+import {
+  excelManualTimeSheet,
+  excelManualTimeSheetRead
+} from "../models/bulkmaunaltimesheet";
 export default () => {
   const api = Router();
 
@@ -387,19 +390,20 @@ export default () => {
   api.get(
     "/getBulkManualTimeSheet",
     getBulkManualTimeSheet,
-    (req, res, next) => {
-      if (req.records.invalid_input == true) {
-        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-          success: false,
-          result: req.records
-        });
-      } else {
-        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-          success: true,
-          result: req.records
-        });
-      }
-    }
+    excelManualTimeSheet
+    // (req, res, next) => {
+    //   if (req.records.invalid_input == true) {
+    //     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+    //       success: false,
+    //       result: req.records
+    //     });
+    //   } else {
+    //     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+    //       success: true,
+    //       result: req.records
+    //     });
+    //   }
+    // }
   );
 
   api.post("/calculation", calculation, (req, res, next) => {
@@ -415,6 +419,6 @@ export default () => {
       });
     }
   });
-  api.get("/excelManualTimeSheet", excelManualTimeSheet);
+  api.post("/excelManualTimeSheetRead", excelManualTimeSheetRead);
   return api;
 };
