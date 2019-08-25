@@ -15,6 +15,16 @@ export default function OrderProcedureItemsEvent() {
       });
     },
 
+    RemoveItems: ($this, row) => {
+      let Procedure_items = $this.state.Procedure_items;
+      let _index = Procedure_items.indexOf(row);
+
+      Procedure_items.splice(_index, 1);
+      $this.setState({
+        Procedure_items: Procedure_items
+      });
+    },
+
     quantityEvent: ($this, e) => {
       let name = e.name || e.target.name;
       let value = e.value || e.target.value;
@@ -57,6 +67,20 @@ export default function OrderProcedureItemsEvent() {
       Procedure_items.push(inputObj);
 
       $this.setState({
+        item_id: null,
+        item_category_id: null,
+        item_group_id: null,
+        uom_id: null,
+        batchno: null,
+        expirydt: null,
+        barcode: null,
+        grn_no: null,
+        grnno: null,
+        qtyhand: null,
+        unit_cost: null,
+        item_description: null,
+        extended_cost: null,
+        quantity: 0,
         Procedure_items: Procedure_items
       });
     },
@@ -112,6 +136,9 @@ export default function OrderProcedureItemsEvent() {
 
     itemSearch: $this => {
       if ($this.state.existing_new === "E") {
+        let inputs =
+          "IL.inventory_location_id = " + $this.state.inventory_location_id;
+        inputs += " and procedure_header_id = " + $this.state.procedure_id;
         AlgaehSearch({
           searchGrid: {
             columns: spotlightSearch.Items.InvItems
@@ -119,14 +146,26 @@ export default function OrderProcedureItemsEvent() {
           searchName: "procedureExistingItem",
           // reportQuery: "procedureExistingItem",
           uri: "/gloabelSearch/get",
-          inputs: "encounter_id = " + Window.global.encounter_id,
+          inputs: inputs,
           onContainsChange: (text, serchBy, callBack) => {
             callBack(text);
           },
           onRowSelect: row => {
             $this.setState({
-              employee_name: row.full_name,
-              employee_id: row.hims_d_employee_id
+              item_id: row.hims_d_inventory_item_master_id,
+              item_category_id: row.category_id,
+              item_group_id: row.group_id,
+              uom_id: row.sales_uom_id,
+              batchno: row.batchno,
+              expirydt: row.expirydt,
+              barcode: row.barcode,
+              grn_no: row.grnno,
+              grnno: row.grnno,
+              qtyhand: row.qtyhand,
+              unit_cost: row.avgcost,
+              item_description: row.item_description,
+              extended_cost: row.avgcost,
+              quantity: parseFloat(row.qty)
             });
           }
         });

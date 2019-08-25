@@ -267,6 +267,7 @@ export function excelManualTimeSheetRead(req, res, next) {
       .then(() => {
         excelArray.pop();
         req.records = { filter, excelArray };
+        console.log(req.records);
         next();
       });
   });

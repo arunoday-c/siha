@@ -3,7 +3,7 @@ import "./InvAcknowledgeList.css";
 import InvAcknowledgeList from "./InvAcknowledgeList";
 import InvTransferEntry from "../InvTransferEntry/InvTransferEntry";
 import { getCookie } from "../../../utils/algaehApiCall";
-import { removeGlobal, setGlobal } from "../../../utils/GlobalFunctions";
+import { removeGlobal } from "../../../utils/GlobalFunctions";
 
 class AcknowledgeSwitch extends Component {
   constructor(props) {

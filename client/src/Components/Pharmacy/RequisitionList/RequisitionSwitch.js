@@ -4,7 +4,7 @@ import RequisitionList from "./RequisitionList";
 import RequisitionEntry from "../RequisitionEntry/RequisitionEntry";
 import TransferEntry from "../TransferEntry/TransferEntry";
 import { getCookie } from "../../../utils/algaehApiCall";
-import { removeGlobal, setGlobal } from "../../../utils/GlobalFunctions";
+import { removeGlobal } from "../../../utils/GlobalFunctions";
 
 class RequisitionSwitch extends Component {
   constructor(props) {

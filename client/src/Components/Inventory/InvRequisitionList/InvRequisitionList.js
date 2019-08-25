@@ -4,15 +4,14 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import Enumerable from "linq";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
-import { setGlobal } from "../../../utils/GlobalFunctions";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import "./InvRequisitionList.css";
 import "./../../../styles/site.css";
 
 import {
-  LocationchangeTexts,
+  // LocationchangeTexts,
   dateFormater,
-  radioChange,
+  // radioChange,
   getRequisitionList,
   datehandle,
   changeEventHandaler

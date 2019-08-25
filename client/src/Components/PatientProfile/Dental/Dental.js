@@ -93,10 +93,6 @@ class Dental extends Component {
     });
   }
 
-  componentWillReceiveProps() {
-    debugger;
-  }
-
   textHandle(e) {
     switch (e.target.name) {
       case "quantity":
@@ -260,7 +256,7 @@ class Dental extends Component {
           });
 
           swalMessage({
-            title: "Ordered Successfully...",
+            title: "Ordered Successfully.",
             type: "success"
           });
         }
@@ -1555,7 +1551,6 @@ class Dental extends Component {
   }
 
   openAddModal(data) {
-    debugger;
     if (this.props.age_in_years > 31) {
       this.setState(
         {
@@ -1663,7 +1658,6 @@ class Dental extends Component {
     );
   }
   render() {
-    debugger;
     let billDetails = this.state.billDetails;
     return (
       <div id="dentalTreatment">

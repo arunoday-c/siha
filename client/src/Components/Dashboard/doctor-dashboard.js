@@ -404,9 +404,15 @@ class Dashboard extends Component {
       onSuccess: response => {
         console.log("getMyday");
         if (response.data.success) {
-          this.setState({
-            today_list: response.data.records
-          });
+          if (Array.isArray(response.data.records)) {
+            this.setState({
+              today_list: response.data.records
+            });
+          } else {
+            this.setState({
+              today_list: []
+            });
+          }
         }
       },
       onFailure: error => {

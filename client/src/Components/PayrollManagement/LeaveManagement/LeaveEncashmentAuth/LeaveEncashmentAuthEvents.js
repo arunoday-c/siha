@@ -140,9 +140,9 @@ const AuthorizeLEaveEncash = ($this, data, row) => {
 
   let Succmsg = "";
   if (data === "APR") {
-    Succmsg = "Authorized Successfully...";
+    Succmsg = "Authorized Successfully.";
   } else {
-    Succmsg = "Rejected Successfully...";
+    Succmsg = "Rejected Successfully.";
   }
 
   algaehApiCall({

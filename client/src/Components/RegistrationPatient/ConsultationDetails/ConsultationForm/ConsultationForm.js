@@ -139,7 +139,7 @@ class AddConsultationForm extends Component {
       this.props.PatientPackageList === undefined
         ? []
         : this.props.PatientPackageList;
-    debugger;
+
     return (
       <MyContext.Consumer>
         {context => (
