@@ -347,7 +347,7 @@ export default class MiscEarningsDeductions extends Component {
         <div className="misc_earn_dedc">
           <div className="row  inner-top-search">
             <AlagehAutoComplete
-              div={{ className: "col" }}
+              div={{ className: "col mandatory" }}
               label={{
                 forceLabel: "Select a Month.",
                 isImp: true
@@ -374,7 +374,7 @@ export default class MiscEarningsDeductions extends Component {
               }}
             />
             <AlagehAutoComplete
-              div={{ className: "col" }}
+              div={{ className: "col mandatory" }}
               label={{
                 forceLabel: "Select a Year.",
                 isImp: true
@@ -499,7 +499,7 @@ export default class MiscEarningsDeductions extends Component {
             </div>
 
             <AlagehAutoComplete
-              div={{ className: "col" }}
+              div={{ className: "col mandatory" }}
               label={{
                 forceLabel: "Earning/ Deduction Code",
                 isImp: true

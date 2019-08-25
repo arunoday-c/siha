@@ -219,7 +219,7 @@ class ManualAttendance extends Component {
       <div id="ManualAttendanceScreen">
         <div className="row inner-top-search" data-validate="loadEmployee">
           <AlagehAutoComplete
-            div={{ className: "col-3" }}
+            div={{ className: "col-3 mandatory" }}
             label={{
               forceLabel: "Select a Branch.",
               isImp: true
@@ -268,7 +268,7 @@ class ManualAttendance extends Component {
             <div className="col">
               <div className="row">
                 <AlagehAutoComplete
-                  div={{ className: "col-3" }}
+                  div={{ className: "col-3 mandatory" }}
                   label={{
                     forceLabel: "Select Month.",
                     isImp: this.state.select_wise === "M" ? true : false
