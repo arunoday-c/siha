@@ -266,8 +266,10 @@ export function excelManualTimeSheetRead(req, res, next) {
       })
       .then(() => {
         excelArray.pop();
-        req.records = { filter, excelArray };
-        console.log(req.records);
+        filter.month = parseInt(filter.month);
+        filter.year = parseInt(filter.year);
+        req.body = { ...filter, data: excelArray };
+        console.log(req.body);
         next();
       });
   });
