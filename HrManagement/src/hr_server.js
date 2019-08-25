@@ -6,8 +6,10 @@ import keys from "algaeh-keys";
 import utliites from "algaeh-utilities";
 import routes from "./routes";
 import compression from "compression";
+
 const app = exxpress();
 app.server = http.createServer(app);
+
 app.use(cors());
 const _port = process.env.PORT;
 app.use(
@@ -15,10 +17,12 @@ app.use(
     limit: keys.bodyLimit
   })
 );
+
 app.use(compression());
 if (process.env.NODE_ENV == "production") {
   app.set("view cache", true);
 }
+
 app.use((req, res, next) => {
   const reqH = req.headers;
   const _token = reqH["x-api-key"];

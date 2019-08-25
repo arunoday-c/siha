@@ -3,7 +3,7 @@ import "./AcknowledgeList.css";
 import AcknowledgeList from "./AcknowledgeList";
 import TransferEntry from "../TransferEntry/TransferEntry";
 import { getCookie } from "../../../utils/algaehApiCall";
-import { removeGlobal, setGlobal } from "../../../utils/GlobalFunctions";
+import { removeGlobal } from "../../../utils/GlobalFunctions";
 
 class AcknowledgeSwitch extends Component {
   constructor(props) {

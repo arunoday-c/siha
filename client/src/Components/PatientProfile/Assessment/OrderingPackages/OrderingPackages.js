@@ -112,18 +112,6 @@ class OrderingPackages extends Component {
       });
     }
 
-    if (this.props.services === undefined || this.props.services.length === 0) {
-      this.props.getServices({
-        uri: "/serviceType/getService",
-        module: "masterSettings",
-        method: "GET",
-        redux: {
-          type: "SERVICES_GET_DATA",
-          mappingName: "services"
-        }
-      });
-    }
-
     if (
       this.props.serviceslist === undefined ||
       this.props.serviceslist.length === 0
@@ -176,6 +164,26 @@ class OrderingPackages extends Component {
             data: { insurance_id: data[0].insurance_provider_id },
             redux: {
               type: "SERVICES_INS_GET_DATA",
+              mappingName: "services"
+            }
+          });
+        } else {
+          this.setState({
+            insured: "N",
+            primary_insurance_provider_id: null,
+            primary_network_office_id: null,
+            primary_network_id: null,
+            sec_insured: null,
+            secondary_insurance_provider_id: null,
+            secondary_network_id: null,
+            secondary_network_office_id: null
+          });
+          this.props.getServices({
+            uri: "/serviceType/getService",
+            module: "masterSettings",
+            method: "GET",
+            redux: {
+              type: "SERVICES_GET_DATA",
               mappingName: "services"
             }
           });

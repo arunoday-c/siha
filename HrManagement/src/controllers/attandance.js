@@ -26,9 +26,12 @@ import {
   loadManualTimeSheet,
   getAttendanceDates,
   getBulkManualTimeSheet,
-  calculation
+  uploadBulkManualTimeSheet
 } from "../models/attendance";
-import { excelManualTimeSheet } from "../models/bulkmaunaltimesheet";
+import {
+  excelManualTimeSheet,
+  excelManualTimeSheetRead
+} from "../models/bulkmaunaltimesheet";
 export default () => {
   const api = Router();
 
@@ -387,6 +390,43 @@ export default () => {
   api.get(
     "/getBulkManualTimeSheet",
     getBulkManualTimeSheet,
+    excelManualTimeSheet
+    // (req, res, next) => {
+    //   if (req.records.invalid_input == true) {
+    //     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+    //       success: false,
+    //       result: req.records
+    //     });
+    //   } else {
+    //     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+    //       success: true,
+    //       result: req.records
+    //     });
+    //   }
+    // }
+  );
+
+  // api.post(
+  //   "/uploadBulkManualTimeSheet",
+  //   uploadBulkManualTimeSheet,
+  //   (req, res, next) => {
+  //     if (req.records.invalid_input == true) {
+  //       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+  //         success: false,
+  //         result: req.records
+  //       });
+  //     } else {
+  //       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+  //         success: true,
+  //         result: req.records
+  //       });
+  //     }
+  //   }
+  // );
+  api.post(
+    "/excelManualTimeSheetRead",
+    excelManualTimeSheetRead,
+    uploadBulkManualTimeSheet,
     (req, res, next) => {
       if (req.records.invalid_input == true) {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
@@ -401,20 +441,5 @@ export default () => {
       }
     }
   );
-
-  api.post("/calculation", calculation, (req, res, next) => {
-    if (req.records.invalid_input == true) {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: false,
-        result: req.records
-      });
-    } else {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: true,
-        result: req.records
-      });
-    }
-  });
-  api.get("/excelManualTimeSheet", excelManualTimeSheet);
   return api;
 };

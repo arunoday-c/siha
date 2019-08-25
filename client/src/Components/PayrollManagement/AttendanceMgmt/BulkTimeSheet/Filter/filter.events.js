@@ -17,7 +17,7 @@ export function getAttendanceDates(callBack) {
     module: "hrManagement",
     onSuccess: res => {
       if (res.data.success) {
-        callBack(res.data.records);
+        callBack(res.data.result);
       }
     }
   });
@@ -48,4 +48,21 @@ export function getBranchWiseDepartments(data, callback) {
       }
     }
   });
+}
+export function UploadTimesheet(files) {
+  debugger;
+  const reader = new FileReader();
+  reader.readAsDataURL(files[0]);
+  reader.onload = e => {
+    const data = e.target.result;
+    algaehApiCall({
+      uri: "/attendance/excelManualTimeSheetRead",
+      data: data,
+      method: "post",
+      module: "hrManagement",
+      onSuccess: response => {
+        console.log("Done");
+      }
+    });
+  };
 }

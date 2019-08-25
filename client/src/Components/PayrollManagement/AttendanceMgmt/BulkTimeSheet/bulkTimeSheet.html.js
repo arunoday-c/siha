@@ -6,11 +6,15 @@ import {
   AlgaehLabel,
   AlgaehDateHandler
 } from "../../../Wrapper/algaehWrapper";
-
+import { downloadExcel } from "./bulkTimeSheet.events";
 function BulkTimeSheet(props) {
   return (
     <div id="bulkManualTimeSheet">
-      <Filter downloadExcel={() => {}} />
+      <Filter
+        downloadExcel={data => {
+          downloadExcel(data);
+        }}
+      />
 
       <div className="portlet portlet-bordered margin-top-15">
         <div className="portlet-title">

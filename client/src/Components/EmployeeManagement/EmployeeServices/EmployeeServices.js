@@ -22,7 +22,6 @@ export default class SelfService extends Component {
       method: "GET",
       module: "hrManagement",
       onSuccess: res => {
-        debugger;
         if (res.data.success) {
           this.setState({
             basic_earning_component: res.data.result[0].basic_earning_component

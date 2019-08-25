@@ -244,7 +244,7 @@ class LoanRequest extends Component {
   dropDownHandler(value) {
     let present_month = parseInt(moment().format("M"));
     let present_year = parseInt(moment().year(), 10);
-    debugger;
+
     switch (value.name) {
       case "loan_id":
         if (value.selected.loan_limit_type === "L") {

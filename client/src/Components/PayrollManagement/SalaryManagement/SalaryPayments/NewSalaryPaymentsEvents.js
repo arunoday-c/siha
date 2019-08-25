@@ -32,7 +32,7 @@ const LoadSalaryPayment = ($this, inputs) => {
           if (inputs.department_id !== null) {
             inputObj.department_id = inputs.department_id;
           }
-          debugger;
+
           algaehApiCall({
             uri: "/salary/getSalaryProcessToPay",
             module: "hrManagement",
@@ -103,7 +103,6 @@ const PaySalary = $this => {
     method: "PUT",
     onSuccess: response => {
       if (response.data.success) {
-        debugger;
         $this.setState({
           paysalaryBtn: true
         });

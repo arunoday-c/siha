@@ -1,5 +1,6 @@
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import swal from "sweetalert2";
+import moment from "moment";
 
 const showconfirmDialog = ($this, row) => {
   swal({
@@ -90,6 +91,21 @@ const deleteNetWorkPlan = ($this, row) => {
 };
 
 const UpdateNetworkPlan = ($this, row) => {
+  if (row.effective_start_date === null) {
+    swalMessage({
+      title: "Active From is mandatory",
+      type: "warning"
+    });
+    return;
+  }
+  if (row.effective_end_date === null) {
+    swalMessage({
+      title: "Valid Upto is mandatory",
+      type: "warning"
+    });
+    return;
+  }
+
   let updateobj = {
     hims_d_insurance_network_id: row.hims_d_insurance_network_id,
     network_type: row.network_type,
@@ -175,9 +191,53 @@ const onchangegridnumber = ($this, row, e) => {
   }
 };
 
+const gridDatehandle = ($this, row, ctrl, e) => {
+  let network_plan = $this.state.network_plan;
+  let _index = network_plan.indexOf(row);
+
+  row[e] = moment(ctrl)._d;
+  row.update();
+};
+
+const dateValidate = ($this, row, value, e) => {
+  let inRange = false;
+  let name = e.name || e.target.name;
+  let network_plan = $this.state.network_plan;
+  let _index = network_plan.indexOf(row);
+
+  if (name === "effective_start_date") {
+    inRange = moment(value).isAfter(
+      moment(row.effective_end_date).format("YYYY-MM-DD")
+    );
+    if (inRange) {
+      swalMessage({
+        title: "Active From cannot be grater than Valid Upto.",
+        type: "warning"
+      });
+      e.target.focus();
+
+      row[name] = null;
+    }
+  } else if (name === "effective_end_date") {
+    inRange = moment(value).isBefore(
+      moment(row.effective_start_date).format("YYYY-MM-DD")
+    );
+    if (inRange) {
+      swalMessage({
+        title: "Valid Upto cannot be less than Active From.",
+        type: "warning"
+      });
+      e.target.focus();
+      row[name] = null;
+    }
+  }
+};
+
 export {
   deleteNetWorkPlan,
   UpdateNetworkPlan,
   onchangegridcol,
-  onchangegridnumber
+  onchangegridnumber,
+  gridDatehandle,
+  dateValidate
 };

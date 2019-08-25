@@ -4,9 +4,9 @@ import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import Enumerable from "linq";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
-import AlgaehReport from "../../Wrapper/printReports";
+// import AlgaehReport from "../../Wrapper/printReports";
 
-var intervalId;
+// var intervalId;
 const changeTexts = ($this, ctrl, e) => {
   e = ctrl || e;
   let name = e.name || e.target.name;
@@ -463,7 +463,7 @@ const onChamgeGridQuantity = ($this, row, e) => {
 };
 
 const updateInitialStock = ($this, row) => {
-  let authBtnEnable = true;
+  // let authBtnEnable = true;
   let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
   let _index = pharmacy_stock_detail.indexOf(row);
   pharmacy_stock_detail[_index] = row;

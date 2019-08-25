@@ -3,7 +3,7 @@ import { AlgaehOpenContainer } from "../../utils/GlobalFunctions";
 
 export function Validations(state) {
   let isError = false;
-  debugger;
+
   var tow_word_name = state.state.full_name.split(" ");
 
   let requied_emp_id = JSON.parse(

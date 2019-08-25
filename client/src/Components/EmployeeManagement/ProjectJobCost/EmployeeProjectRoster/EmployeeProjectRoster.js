@@ -281,7 +281,6 @@ class EmployeeProjectRoster extends Component {
         });
         break;
       case "department_id":
-        debugger;
         const department = this.state.allDepartments.filter(
           dept => dept.hims_d_department_id === value.value
         );

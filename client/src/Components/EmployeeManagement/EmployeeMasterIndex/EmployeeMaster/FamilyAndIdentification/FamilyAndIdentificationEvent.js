@@ -18,7 +18,6 @@ const AddEmpId = ($this, e) => {
     alertTypeIcon: "warning",
     querySelector: "data-validate='empIdGrid'",
     onSuccess: () => {
-      debugger;
       if ($this.state.issue_date === null) {
         swalMessage({
           title: "Issue Date Cannot be Blank",
