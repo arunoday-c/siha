@@ -49,7 +49,7 @@ export function getBranchWiseDepartments(data, callback) {
     }
   });
 }
-export function UploadTimesheet(files) {
+export function UploadTimesheet(files, props) {
   debugger;
   const reader = new FileReader();
   reader.readAsDataURL(files[0]);
@@ -62,6 +62,9 @@ export function UploadTimesheet(files) {
       module: "hrManagement",
       onSuccess: response => {
         console.log("Done");
+        if (response.success === true) {
+          //props.uploadExcel(response.)
+        }
       }
     });
   };
