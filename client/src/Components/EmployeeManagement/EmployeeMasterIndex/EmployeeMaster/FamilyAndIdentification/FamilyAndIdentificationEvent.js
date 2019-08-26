@@ -18,6 +18,20 @@ const AddEmpId = ($this, e) => {
     alertTypeIcon: "warning",
     querySelector: "data-validate='empIdGrid'",
     onSuccess: () => {
+      if ($this.state.issue_date === null) {
+        swalMessage({
+          title: "Issue Date Cannot be Blank",
+          type: "warning"
+        });
+        return;
+      }
+      if ($this.state.valid_upto === null) {
+        swalMessage({
+          title: "Expiry Date Cannot be Blank",
+          type: "warning"
+        });
+        return;
+      }
       let idDetails = $this.state.idDetails;
       let insertIdDetails = $this.state.insertIdDetails;
 

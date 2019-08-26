@@ -6,7 +6,7 @@ import {
   cancelRequest,
   swalMessage
 } from "../../utils/algaehApiCall";
-import { setGlobal, getLabelFromLanguage } from "../../utils/GlobalFunctions";
+import { setGlobal } from "../../utils/GlobalFunctions";
 import Enumerable from "linq";
 import moment from "moment";
 import algaehLoader from "../Wrapper/fullPageLoader";
@@ -20,6 +20,7 @@ class DoctorsWorkbench extends Component {
       my_daylist: [],
       selectedLang: "en",
       data: [],
+      appointments: [],
       selectedHDate: moment(dateToday, "YYYYMMDD")._d,
       fromDate: moment()._d,
       toDate: moment()._d,
@@ -40,6 +41,63 @@ class DoctorsWorkbench extends Component {
 
     let age = moment().diff(dob, "years");
     this.setState({ age: age });
+  }
+
+  getAppointmentStatus() {
+    algaehApiCall({
+      uri: "/appointment/getAppointmentStatus",
+      module: "frontDesk",
+      method: "GET",
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            status: res.data.records
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: "Failed to get appointment status"
+        });
+        this.setState({ status: [] });
+      }
+    });
+  }
+
+  statusCheck = id => {
+    const { status } = this.state;
+    const [reqStatus] = status.filter(
+      stat => stat.hims_d_appointment_status_id === id
+    );
+    return reqStatus.statusDesc;
+  };
+
+  getAppointments(e) {
+    let send_data = {
+      sub_dept_id: this.state.sub_department_id,
+      schedule_date: moment(this.state.activeDateHeader).format("YYYY-MM-DD"),
+      provider_id: this.state.provider_id
+    };
+    algaehApiCall({
+      uri: "/appointment/getDoctorScheduleDateWise",
+      module: "frontDesk",
+      method: "GET",
+      data: send_data,
+      onSuccess: response => {
+        const { success, records } = response.data;
+        if (success && records.length > 0) {
+          this.setState({
+            appointments: records[0].patientList
+          });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
   }
 
   moveToEncounterList(e) {
@@ -97,17 +155,34 @@ class DoctorsWorkbench extends Component {
       onSuccess: response => {
         if (response.data.success) {
           const _selecDate = new Date(dateRange.activeDateHeader).setDate(1);
-
-          this.setState(
-            {
-              selectedHDate: _selecDate,
-              data: response.data.records,
-              activeDateHeader: dateRange.activeDateHeader
-            },
-            () => {
-              algaehLoader({ show: false });
-            }
-          );
+          if (Array.isArray(response.data.records)) {
+            this.setState(
+              {
+                selectedHDate: _selecDate,
+                data: response.data.records,
+                activeDateHeader: dateRange.activeDateHeader,
+                provider_id: response.data.records[0].provider_id,
+                sub_department_id: response.data.records[0].sub_department_id
+              },
+              () => {
+                this.getAppointments();
+                algaehLoader({ show: false });
+              }
+            );
+          } else {
+            this.setState(
+              {
+                provider_id: response.data.records.provider_id,
+                sub_department_id: response.data.records.sub_department_id,
+                activeDateHeader: dateRange.activeDateHeader,
+                data: []
+              },
+              () => {
+                this.getAppointments();
+                algaehLoader({ show: false });
+              }
+            );
+          }
         }
       },
       onFailure: error => {
@@ -137,6 +212,7 @@ class DoctorsWorkbench extends Component {
         this.loadListofData();
       }
     });
+    this.getAppointmentStatus();
   }
 
   liGenerate() {
@@ -301,29 +377,99 @@ class DoctorsWorkbench extends Component {
         </div>
 
         <div className="row card-deck panel-layout">
+          {/* Appointment UI Panel Start*/}
+          <div className="col-3">
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">List of Appointment</h3>
+                </div>
+              </div>
+
+              <div className="portlet-body">
+                <div className="appPatientList">
+                  {/* <div className="appoStatusLegend">
+                    <span>
+                      <small>Pending</small>10
+                    </span>
+                    <span>
+                      <small>Confirmed</small>10
+                    </span>
+                    <span>
+                      <small>Cancelled</small>10
+                    </span>
+                  </div> */}
+                  <ul className="appList">
+                    {this.state.appointments.length !== 0 ? (
+                      this.state.appointments.map((data, index) => (
+                        <li key={index}>
+                          <span className="app-sec-1">
+                            {/* <i className="appointment-icon" /> */}
+                            <i className={"appointment-icon"} />
+                            <span className="appTime">
+                              {moment(
+                                data.appointment_from_time,
+                                "HH:mm:ss"
+                              ).format("hh:mm A")}
+                            </span>
+                          </span>
+                          <span className="app-sec-2">
+                            <span className="appPatientName">
+                              {data.patient_name}
+                            </span>
+                            <span className="appStatus nursing" />{" "}
+                            <span className="appoPatientStatus newVisit">
+                              {this.statusCheck(data.appointment_status_id)}
+                            </span>
+                          </span>
+                        </li>
+                      ))
+                    ) : (
+                      <li className="col noPatientDiv">
+                        {/* <h4>Relax</h4> */}
+                        <i className="fas fa-calendar-alt" />
+                        <p>No Appointment Available</p>
+                      </li>
+                    )}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* Appointment UI Panel End*/}
           {/* Left Pane Start */}
-          <div className="col-lg-4">
+          <div className="col-3" style={{ padding: 0 }}>
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">
-                    <AlgaehLabel
-                      label={{ fieldName: "patients_list", returnText: "true" }}
-                    />
+                    List of Checked In Patients
                   </h3>
                 </div>
-                <div className="actions">
+                {/* <div className="actions">
                   <a
                     className="btn btn-primary btn-circle active"
                     onClick={this.loadListofData}
                   >
                     <i className="fas fa-sync-alt" />
                   </a>
-                </div>
+                </div> */}
               </div>
 
               <div className="portlet-body">
                 <div className="opPatientList">
+                  {" "}
+                  {/* <div className="opStatusLegend">
+                    <span>
+                      <small>Follow Up</small>10
+                    </span>
+                    <span>
+                      <small>New Visit</small>10
+                    </span>
+                    <span>
+                      <small>Package Visit</small>10
+                    </span>
+                  </div> */}
                   <ul className="opList">
                     {Enumerable.from(this.state.data)
                       .where(w => w.status === "V")
@@ -359,28 +505,38 @@ class DoctorsWorkbench extends Component {
                               <span className="opPatientName">
                                 {data.full_name}
                               </span>
-                              <span className="opStatus nursing">
-                                {data.nurse_examine === "Y"
-                                  ? "Nursing Done"
-                                  : "Nursing Pending"}
-                              </span>
-                            </span>
-                            <span className="op-sec-3">
-                              <span className="opPatientStatus newVisit">
-                                {data.new_visit_patient === "Y"
-                                  ? "New Visit"
-                                  : data.new_visit_patient === "P"
-                                  ? "Package Utilize Visit"
-                                  : "Follow Up Visit"}
-                              </span>
+
+                              {data.nurse_examine === "Y" ? (
+                                <span className="opStatus nursing">
+                                  Nursing Done
+                                </span>
+                              ) : (
+                                <span className="opStatus nursing">
+                                  Nursing Pending
+                                </span>
+                              )}
+
+                              {data.new_visit_patient === "Y" ? (
+                                <span className="opPatientStatus newVisit">
+                                  New Visit
+                                </span>
+                              ) : data.new_visit_patient === "P" ? (
+                                <span className="opPatientStatus packageVisit">
+                                  Package Utilize Visit
+                                </span>
+                              ) : (
+                                <span className="opPatientStatus followUp">
+                                  Follow Up Visit
+                                </span>
+                              )}
                             </span>
                           </li>
                         ))
                     ) : (
-                      <div className="col noPatientDiv">
-                        {/* <h4>Relax</h4> */}
+                      <li className="col noPatientDiv">
+                        <i className="fas fa-user-injured" />
                         <p>No Patients Available</p>
-                      </div>
+                      </li>
                     )}
                   </ul>
                 </div>
@@ -391,7 +547,7 @@ class DoctorsWorkbench extends Component {
 
           {/* Right Pane Start */}
 
-          <div className="col-lg-8">
+          <div className="col-6">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
@@ -405,7 +561,7 @@ class DoctorsWorkbench extends Component {
                   </h3>
                 </div>
                 <div className="actions rightLabelCount">
-                  <AlgaehLabel label={{ fieldName: "total_encounters" }} />
+                  <AlgaehLabel label={{ forceLabel: "No. of Encounters" }} />
                   <span className="countNo">
                     {
                       Enumerable.from(this.state.data)

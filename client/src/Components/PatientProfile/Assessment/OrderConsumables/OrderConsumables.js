@@ -113,6 +113,17 @@ class OrderConsumables extends Component {
             secondary_network_id: data[0].secondary_network_id,
             secondary_network_office_id: data[0].secondary_network_office_id
           });
+        } else {
+          this.setState({
+            insured: "N",
+            primary_insurance_provider_id: null,
+            primary_network_office_id: null,
+            primary_network_id: null,
+            sec_insured: null,
+            secondary_insurance_provider_id: null,
+            secondary_network_id: null,
+            secondary_network_office_id: null
+          });
         }
       }
     });
@@ -249,27 +260,61 @@ class OrderConsumables extends Component {
                   label={{ forceLabel: "Search Consumables" }}
                   title="Search Consumables"
                   id="service_id_search"
-                  template={result => {
+                  template={({
+                    item_description,
+                    barcode,
+                    expirydt,
+                    qtyhand,
+                    covered,
+                    pre_approval
+                  }) => {
+                    let properStyle;
+                    if (this.state.insured === "Y") {
+                      if (covered === "Y") {
+                        if (pre_approval === "Y") {
+                          properStyle = "orange_Y_Y";
+                        } else {
+                          properStyle = "green_Y_N";
+                        }
+                      } else {
+                        properStyle = "red_N_N";
+                      }
+                    } else {
+                      properStyle = "white_N_N";
+                    }
                     return (
                       <section className="resultSecStyles">
-                        <div className="row">
-                          <div className="col-8">
-                            <h4 className="title">{result.item_description}</h4>
-                            <h5>
-                              {result.barcode} /{result.expirydt}
-                            </h5>
-                            <small>
-                              Covered: {result.covered === "Y" ? "Yes" : "No"}
-                              Pre Approval:
-                              {result.pre_approval === "Y" ? "Yes" : "No"}
-                            </small>
-                            <small>
-                              Qty in Hand:
-                              {result.inventory_location_id ===
-                              this.state.inventory_location_id
-                                ? result.qtyhand
-                                : 0}
-                            </small>
+                        <div className={`row resultSecStyles ${properStyle}`}>
+                          <div className="col">
+                            <h4 className="title">
+                              {_.startCase(_.toLower(item_description))}
+                            </h4>
+                            <p className="searchMoreDetails">
+                              <span>
+                                Barcode:
+                                <b>
+                                  {barcode === null ? "No Barcode" : barcode}
+                                </b>
+                              </span>
+                              <span>
+                                Expiry Date:
+                                <b>
+                                  {expirydt === null ? "No Expiry" : expirydt}
+                                </b>
+                              </span>
+                              <span>
+                                Qty in Hand:
+                                <b>{qtyhand}</b>
+                              </span>
+                              <span>
+                                Covered:
+                                <b>{covered === "Y" ? "Yes" : "No"}</b>
+                              </span>
+                              <span>
+                                Pre Approval:
+                                <b>{pre_approval === "Y" ? "Yes" : "No"}</b>
+                              </span>
+                            </p>
                           </div>
                         </div>
                       </section>
@@ -280,7 +325,8 @@ class OrderConsumables extends Component {
                   displayField="item_description"
                   value={this.state.item_description}
                   extraParameters={{
-                    insurance_id: this.state.insurance_provider_id
+                    insurance_id: this.state.insurance_provider_id,
+                    inventory_location_id: this.state.inventory_location_id
                   }}
                   searchName="insitemmaster"
                   onClick={selectItemHandeler.bind(this, this)}

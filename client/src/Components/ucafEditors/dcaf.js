@@ -242,6 +242,10 @@ export default class DcafEditor extends Component {
                           maxDate={new Date()}
                           events={{}}
                         />
+                        <div className="col-4">
+                          <label>Reference Number</label>
+                          <h6>{this.state.eligible_reference_number}</h6>
+                        </div>
                         <div
                           className="col-2 customRadio"
                           style={{ paddingTop: 25 }}

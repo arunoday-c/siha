@@ -10,13 +10,16 @@ import "./../../../styles/site.css";
 import {
   AlgaehLabel,
   AlgaehDataGrid,
-  AlagehFormGroup
+  AlagehFormGroup,
+  AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
 import {
   deleteNetWorkPlan,
   UpdateNetworkPlan,
   onchangegridcol,
-  onchangegridnumber
+  onchangegridnumber,
+  gridDatehandle,
+  dateValidate
 } from "./NetworkPlanListEvent.js";
 import { AlgaehActions } from "../../../actions/algaehActions";
 
@@ -221,9 +224,22 @@ class NetworkPlanList extends PureComponent {
               },
               editorTemplate: row => {
                 return (
-                  <span>{this.dateFormater(row.effective_start_date)}</span>
+                  <AlgaehDateHandler
+                    div={{}}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "effective_start_date"
+                    }}
+                    maxDate={new Date()}
+                    events={{
+                      onChange: gridDatehandle.bind(this, this, row),
+                      onBlur: dateValidate.bind(this, this, row)
+                    }}
+                    value={row.effective_start_date}
+                  />
                 );
-              }
+              },
+              others: { minWidth: 130 }
             },
             {
               fieldName: "effective_end_date",
@@ -234,8 +250,23 @@ class NetworkPlanList extends PureComponent {
                 return <span>{this.dateFormater(row.effective_end_date)}</span>;
               },
               editorTemplate: row => {
-                return <span>{this.dateFormater(row.effective_end_date)}</span>;
-              }
+                return (
+                  <AlgaehDateHandler
+                    div={{}}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "effective_end_date"
+                    }}
+                    maxDate={new Date()}
+                    events={{
+                      onChange: gridDatehandle.bind(this, this, row),
+                      onBlur: dateValidate.bind(this, this, row)
+                    }}
+                    value={row.effective_end_date}
+                  />
+                );
+              },
+              others: { minWidth: 130 }
             },
             {
               fieldName: "preapp_limit",

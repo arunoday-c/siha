@@ -2,15 +2,8 @@ import React, { Component } from "react";
 import { AlgaehErrorBoundary } from "./Wrapper/algaehWrapper";
 import "react-table/react-table.css";
 import { algaehApiCall, swalMessage } from "../utils/algaehApiCall";
-import FileViewer from "react-file-viewer";
-import {
-  AlgaehDataGrid,
-  AlgaehDateHandler,
-  AlagehAutoComplete,
-  AlagehFormGroup,
-  AlgaehLabel,
-  AlgaehModalPopUp
-} from "./Wrapper/algaehWrapper";
+// import FileViewer from "react-file-viewer";
+import { AlagehFormGroup } from "./Wrapper/algaehWrapper";
 import ButtonType from "./Wrapper/algaehButton";
 class Experiment extends Component {
   constructor(props) {
@@ -297,6 +290,34 @@ class Experiment extends Component {
           }}
         >
           Credit Invoice Report
+        </button>
+        <hr></hr>
+        <button
+          className="btn btn-primary"
+          onClick={() => {
+            algaehApiCall({
+              uri: "/attendance/excelManualTimeSheet",
+              method: "GET",
+              module: "hrManagement",
+              headers: {
+                Accept: "blob"
+              },
+              others: { responseType: "blob" },
+              onSuccess: response => {
+                debugger;
+                let blob = new Blob([response.data], {
+                  type: "application/octet-stream"
+                });
+                var objectUrl = URL.createObjectURL(blob);
+                var link = document.createElement("a");
+                link.setAttribute("href", objectUrl);
+                link.setAttribute("download", "abc.xlsx");
+                link.click();
+              }
+            });
+          }}
+        >
+          Generate Excel File server side
         </button>
       </div>
     );

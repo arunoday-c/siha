@@ -1,0 +1,85 @@
+.bulkTimeSheetPreviewCntr {
+  overflow: auto;
+  max-width: 100vw;
+  padding: 0;
+  border: 1px solid #ced4d9;
+  margin: 0;
+  #bulkTimeSheetPreview {
+    width: 100%;
+    table-layout: auto;
+    background: #fff;
+    border-collapse: collapse;
+    .fixed {
+      table-layout: fixed;
+    }
+
+    td,
+    th {
+      border-collapse: collapse;
+    }
+
+    thead {
+      tr {
+        display: block;
+        position: relative;
+        padding: 0 3px;
+        border: 1px solid #ced4d9;
+        text-align: center;
+        font-size: 0.8rem;
+        font-weight: bold;
+        color: #000 !important;
+        background: #c1fff9 !important;
+        border-bottom: 2px solid #00a796;
+
+        th {
+          min-width: 50px;
+          max-width: 50px;
+          &:first-child {
+            min-width: 155px;
+            max-width: 155px;
+          }
+        }
+      }
+    }
+    tbody {
+      display: block;
+      overflow: auto;
+      width: 100%;
+      min-height: 52vh;
+      max-height: 52vh;
+      tr {
+        &:nth-child(even) {
+          td {
+            background: #e7e7e7;
+          }
+        }
+        td {
+          min-width: 50px;
+          max-width: 50px;
+          border: 1px solid #ced4d9;
+          text-align: center;
+          font-size: 0.8rem;
+          font-weight: bold;
+          small {
+            display: block;
+            border-bottom: 1px dotted #d4d4d4;
+            font-weight: normal;
+          }
+          span {
+            padding-top: 4px;
+          }
+          &:first-child {
+            min-width: 159px;
+            max-width: 159px;
+            text-align: left;
+            padding: 3px;
+
+            small {
+              border-bottom: none;
+            }
+          }
+        }
+      }
+    }
+  }
+}

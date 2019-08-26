@@ -297,13 +297,43 @@ class LoanRequest extends Component {
 
     switch (value.name) {
       case "loan_id":
-        this.setState({
-          [value.name]: value.value,
-          loan_limit: value.selected.loan_maximum_amount,
-          loan_amount: null,
-          loan_tenure: null,
-          installment_amount: null
-        });
+        if (value.selected.loan_limit_type === "L") {
+          this.setState({
+            [value.name]: value.value,
+            loan_limit: value.selected.loan_maximum_amount,
+            loan_amount: null,
+            loan_tenure: null,
+            installment_amount: null
+          });
+        } else if (value.selected.loan_limit_type === "B") {
+          algaehApiCall({
+            uri: "/employee/getEmpEarningComponents",
+            module: "hrManagement",
+            method: "GET",
+            data: {
+              employee_id: this.state.hims_d_employee_id,
+              earnings_id: this.props.basic_earning_component
+            },
+            onSuccess: response => {
+              if (response.data.success) {
+                let data = response.data.records;
+                this.setState({
+                  [value.name]: value.value,
+                  loan_limit: data.length > 0 ? data[0].amount : 0,
+                  loan_amount: null,
+                  loan_tenure: null,
+                  installment_amount: null
+                });
+              }
+            },
+            onFailure: error => {
+              swalMessage({
+                title: error.message,
+                type: "error"
+              });
+            }
+          });
+        }
         break;
 
       case "loan_tenure":

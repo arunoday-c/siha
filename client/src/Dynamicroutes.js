@@ -19,7 +19,7 @@ import InvoiceGeneration from "./Components/InsuranceClaims/InvoiceGeneration/In
 import ItemMomentEnquiry from "./Components/Pharmacy/ItemMomentEnquiry/ItemMomentEnquiry";
 import DoctorsWorkbench from "./Components/Workbench/Workbench";
 import NurseWorkbench from "./Components/Workbench/Workbench";
-import CommonDashboard from "./Components/Dashboard/hr-dashboard";
+import CommonDashboard from "./Components/Dashboard/Dashboard";
 import PatientPackages from "./Components/PatientPackages/PatientPackages";
 import AcknowledgeList from "./Components/Pharmacy/AcknowledgeList/AcknowledgeSwitch";
 
@@ -481,7 +481,7 @@ const PageToPlot = {
   )
 };
 
-const DirectRoutes = props => {
+const DirectRoutes = React.memo(props => {
   let PlotPage = PageToPlot[props.componet];
   if (props.componet === "Dashboard") {
     const appRole = sessionStorage.getItem("appRole");
@@ -508,6 +508,6 @@ const DirectRoutes = props => {
 
   // AlgaehLoader({ show: false });
   // return ;
-};
+});
 
 export default DirectRoutes;

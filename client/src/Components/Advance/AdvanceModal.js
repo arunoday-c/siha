@@ -214,7 +214,7 @@ class AddAdvanceModal extends PureComponent {
                   RefundOpen: false
                 });
                 swalMessage({
-                  title: "Advance Collected Successfully...",
+                  title: "Advance Collected Successfully.",
                   type: "success"
                 });
               }
@@ -249,12 +249,12 @@ class AddAdvanceModal extends PureComponent {
 
                 if (this.props.Advance === true) {
                   swalMessage({
-                    title: "Advance Collected Successfully...",
+                    title: "Advance Collected Successfully.",
                     type: "success"
                   });
                 } else {
                   swalMessage({
-                    title: "Refunded Successfully...",
+                    title: "Refunded Successfully.",
                     type: "success"
                   });
                 }

@@ -79,7 +79,6 @@
         .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection .apptDetailsSec .patVisit {
           display: inline-block; }
         .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection .apptDetailsSec .patStatus {
-          display: inline-block;
           text-align: right;
           float: right; }
           .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection .apptDetailsSec .patStatus span.inProgress {
@@ -338,76 +337,82 @@
   cursor: pointer;
   margin-top: 15px; }
 
-.doctor_workbench .opPatientList .opList {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  height: 65.5vh;
-  overflow: auto; }
-  .doctor_workbench .opPatientList .opList .noPatientDiv {
-    margin-top: 15%;
-    text-align: center;
-    color: #929292; }
-  .doctor_workbench .opPatientList .opList li {
-    margin: 4px 0;
-    padding: 3px 0;
+.doctor_workbench .opPatientList {
+  margin: 0 -5px; }
+  .doctor_workbench .opPatientList .opList {
+    margin: 0;
+    padding: 0;
     list-style: none;
-    border: 1px solid #f2f2f2;
-    background: #fff;
-    border-radius: 5px; }
-    .doctor_workbench .opPatientList .opList li .op-sec-1 {
-      width: 10px;
-      width: 20%;
-      vertical-align: text-top;
-      display: inline-block;
+    height: 64vh;
+    overflow: auto; }
+    .doctor_workbench .opPatientList .opList .noPatientDiv {
       text-align: center;
-      border-right: 1px dashed #e6e6e6;
-      margin-right: 10px; }
-      .doctor_workbench .opPatientList .opList li .op-sec-1 i {
-        width: 30px;
-        background: yellow;
-        height: 30px;
-        display: block;
-        margin: auto; }
-      .doctor_workbench .opPatientList .opList li .op-sec-1 .appointment-icon {
-        background: url("../../assets/icons/appointment-icon.svg") no-repeat center;
-        background-size: 80%; }
-      .doctor_workbench .opPatientList .opList li .op-sec-1 .walking-icon {
-        background: url("../../assets/icons/walking-icon.svg") no-repeat center;
-        background-size: 80%; }
-    .doctor_workbench .opPatientList .opList li .op-sec-2 {
-      width: 10px;
-      width: 56%;
-      vertical-align: text-top;
-      display: inline-block; }
-      .doctor_workbench .opPatientList .opList li .op-sec-2 .opPatientName {
-        display: block;
-        margin-top: 5px; }
-      .doctor_workbench .opPatientList .opList li .op-sec-2 .opStatus {
-        display: block; }
-      .doctor_workbench .opPatientList .opList li .op-sec-2 .nursing {
-        color: #34b8bc; }
-      .doctor_workbench .opPatientList .opList li .op-sec-2 .checkedIn {
-        color: #00bb4b; }
-    .doctor_workbench .opPatientList .opList li .op-sec-3 {
-      width: 20%;
-      line-height: 53px;
-      vertical-align: text-top;
-      display: inline-block;
-      text-align: center; }
-      .doctor_workbench .opPatientList .opList li .op-sec-3 .opPatientStatus {
-        display: block;
-        line-height: 25px; }
-      .doctor_workbench .opPatientList .opList li .op-sec-3 .newVisit {
-        color: #ff8800; }
-      .doctor_workbench .opPatientList .opList li .op-sec-3 .followUp {
-        color: #ff005f; }
-  .doctor_workbench .opPatientList .opList li:hover {
-    background: #ebfeff;
-    cursor: pointer; }
+      color: #929292;
+      padding: 24.5vh 0;
+      background: none;
+      border: none; }
+      .doctor_workbench .opPatientList .opList .noPatientDiv i {
+        margin-bottom: 20px;
+        font-size: 4rem; }
+      .doctor_workbench .opPatientList .opList .noPatientDiv:hover {
+        background: none;
+        border: none; }
+    .doctor_workbench .opPatientList .opList li {
+      margin: 4px 0;
+      padding: 3px 0;
+      list-style: none;
+      border: 1px solid #f2f2f2;
+      background: #fff;
+      border-radius: 5px; }
+      .doctor_workbench .opPatientList .opList li .op-sec-1 {
+        width: 55px;
+        vertical-align: text-top;
+        display: inline-block;
+        text-align: center; }
+        .doctor_workbench .opPatientList .opList li .op-sec-1 i {
+          width: 30px;
+          background: yellow;
+          height: 30px;
+          display: block;
+          margin: auto; }
+        .doctor_workbench .opPatientList .opList li .op-sec-1 .appointment-icon {
+          background: url("../../assets/icons/appointment-icon.svg") no-repeat center;
+          background-size: 80%; }
+        .doctor_workbench .opPatientList .opList li .op-sec-1 .walking-icon {
+          background: url("../../assets/icons/walking-icon.svg") no-repeat center;
+          background-size: 80%; }
+        .doctor_workbench .opPatientList .opList li .op-sec-1 .opTime {
+          font-size: 0.7rem; }
+      .doctor_workbench .opPatientList .opList li .op-sec-2 {
+        width: calc(100% - 60px);
+        vertical-align: text-top;
+        display: inline-block;
+        border-left: 1px dashed #e6e6e6;
+        padding-left: 10px; }
+        .doctor_workbench .opPatientList .opList li .op-sec-2 .opPatientName {
+          display: block; }
+        .doctor_workbench .opPatientList .opList li .op-sec-2 .opStatus {
+          display: block;
+          font-size: 0.8rem; }
+        .doctor_workbench .opPatientList .opList li .op-sec-2 .nursing {
+          color: #34b8bc; }
+        .doctor_workbench .opPatientList .opList li .op-sec-2 .checkedIn {
+          color: #00bb4b; }
+        .doctor_workbench .opPatientList .opList li .op-sec-2 .opPatientStatus {
+          display: block;
+          font-size: 0.8rem; }
+        .doctor_workbench .opPatientList .opList li .op-sec-2 .newVisit {
+          color: #ff8800; }
+        .doctor_workbench .opPatientList .opList li .op-sec-2 .followUp {
+          color: #ff005f; }
+        .doctor_workbench .opPatientList .opList li .op-sec-2 .packageVisit {
+          color: #ff005f; }
+    .doctor_workbench .opPatientList .opList li:hover {
+      background: #ebfeff;
+      cursor: pointer; }
 
 .doctor_workbench #encounter_table .ReactTable {
-  max-height: 65.5vh !important; }
+  max-height: 67vh !important; }
 
 .doctor_workbench .bottom-layout {
   padding: 5px; }
@@ -530,3 +535,115 @@
 
 .doctor_workbench .rightLabelCount .style_Label {
   text-transform: initial; }
+
+.appPatientList {
+  margin: 0 -5px; }
+  .appPatientList .appList {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    height: 64vh;
+    overflow: auto; }
+    .appPatientList .appList .noPatientDiv {
+      text-align: center;
+      color: #929292;
+      padding: 24.5vh 0;
+      background: none;
+      border: none; }
+      .appPatientList .appList .noPatientDiv i {
+        margin-bottom: 20px;
+        font-size: 4rem; }
+      .appPatientList .appList .noPatientDiv:hover {
+        background: none;
+        border: none; }
+    .appPatientList .appList li {
+      margin: 4px 0;
+      padding: 3px 0;
+      list-style: none;
+      border: 1px solid #f2f2f2;
+      background: #fff;
+      border-radius: 5px; }
+      .appPatientList .appList li .app-sec-1 {
+        width: 55px;
+        vertical-align: text-top;
+        display: inline-block;
+        text-align: center; }
+        .appPatientList .appList li .app-sec-1 i {
+          width: 30px;
+          background: yellow;
+          height: 30px;
+          display: block;
+          margin: auto; }
+        .appPatientList .appList li .app-sec-1 .appointment-icon {
+          background: url("../../assets/icons/appointment-icon.svg") no-repeat center;
+          background-size: 80%; }
+        .appPatientList .appList li .app-sec-1 .walking-icon {
+          background: url("../../assets/icons/walking-icon.svg") no-repeat center;
+          background-size: 80%; }
+        .appPatientList .appList li .app-sec-1 .appTime {
+          font-size: 0.7rem; }
+      .appPatientList .appList li .app-sec-2 {
+        width: calc(100% - 60px);
+        vertical-align: text-top;
+        display: inline-block;
+        border-left: 1px dashed #e6e6e6;
+        padding-left: 10px; }
+        .appPatientList .appList li .app-sec-2 .appPatientName {
+          display: block; }
+        .appPatientList .appList li .app-sec-2 .appStatus {
+          display: block;
+          font-size: 0.8rem; }
+        .appPatientList .appList li .app-sec-2 .nursing {
+          color: #34b8bc; }
+        .appPatientList .appList li .app-sec-2 .checkedIn {
+          color: #00bb4b; }
+        .appPatientList .appList li .app-sec-2 .appPatientStatus {
+          display: block;
+          font-size: 0.8rem; }
+        .appPatientList .appList li .app-sec-2 .newVisit {
+          color: #ff8800; }
+        .appPatientList .appList li .app-sec-2 .followUp {
+          color: #ff005f; }
+        .appPatientList .appList li .app-sec-2 .packageVisit {
+          color: #ff005f; }
+
+.opStatusLegend span {
+  padding: 2px 5px;
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: bold;
+  width: 33.33%;
+  border-radius: 0;
+  background: #fff;
+  border: 1px solid #888888; }
+  .opStatusLegend span small {
+    display: block;
+    font-weight: normal; }
+  .opStatusLegend span:first-child {
+    border-radius: 3px 0 0 3px; }
+  .opStatusLegend span:last-child {
+    border-radius: 0 3px 3px 0; }
+
+.appoStatusLegend span {
+  padding: 2px 5px;
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: bold;
+  width: 33.33%;
+  border-radius: 0;
+  color: #007468;
+  background: #e7fffd;
+  border: 1px solid #007468; }
+  .appoStatusLegend span small {
+    display: block;
+    font-weight: normal; }
+  .appoStatusLegend span:first-child {
+    border-radius: 3px 0 0 3px;
+    color: #ab7900;
+    background: #fdffe2;
+    border: 1px solid #ffc959; }
+  .appoStatusLegend span:last-child {
+    border-radius: 0 3px 3px 0;
+    color: red;
+    background: #ffebeb;
+    border: 1px solid #f00; }

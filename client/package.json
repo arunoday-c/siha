@@ -25,12 +25,12 @@
     "moment": "^2.22.1",
     "node-sass-chokidar": "^1.3.4",
     "npm-run-all": "^4.1.3",
-    "react": "^16.3.2",
+    "react": "^16.8.6",
     "react-chartjs-2": "^2.7.2",
     "react-cornerstone-viewport": "^0.1.25",
     "react-csv": "^1.1.1",
     "react-datepicker": "^2.1.0",
-    "react-dom": "^16.3.2",
+    "react-dom": "^16.8.6",
     "react-dropzone": "^4.2.9",
     "react-file-viewer": "^1.1.0",
     "react-image-cropper": "^1.3.0",
@@ -40,7 +40,7 @@
     "react-resize-detector": "^4.1.3",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
-    "react-scripts": "^1.1.4",
+    "react-scripts": "^3.1.1",
     "react-table": "^6.9.0",
     "react-table-hoc-fixed-columns": "^1.0.4",
     "react-transition-group": "^4.2.1",
@@ -56,9 +56,9 @@
   "scripts": {
     "build-css": "node-sass-chokidar src/ -o src/",
     "watch-css": "npm run build-css && node-sass-chokidar src/ -o src/ --watch --recursive",
-    "start-js": "react-app-rewired start",
+    "start-js": "react-scripts start",
     "start": "cross-env PORT=1313 npm-run-all -p watch-css start-js",
-    "build-js": "react-app-rewired --max_old_space_size=4096 build",
+    "build-js": "react-scripts --max_old_space_size=4096 build",
     "build": "cross-env GENERATE_SOURCEMAP=false  npm-run-all build-css build-js",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
@@ -80,10 +80,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "react-app-rewire-optimize": "^1.0.2",
-    "react-app-rewire-vendor-splitting": "^1.3.0",
-    "react-app-rewired": "^2.1.3"
   }
 }

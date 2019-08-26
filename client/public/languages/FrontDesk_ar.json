@@ -181,5 +181,6 @@
   "card_holder_age": "حامل العمر",
   "card_holder_gender": "حامل الجنس",
   "card_class": "فئة البطاقة",
-  "employee_id": "هوية الموظف"
+  "employee_id": "هوية الموظف",
+  "eligible_reference_number": "رقم المرجع"
 }

@@ -13,7 +13,7 @@ import HolidayListSelf from "./HolidayListSelf/HolidayListSelf";
 import TimeSheetSelf from "./TimeSheetSelf/TimeSheetSelf";
 
 // import employeeProfileImg from "../../../assets/images/employee_profile_img.webp";
-import { algaehApiCall } from "../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 export default class SelfService extends Component {
   constructor(props) {
@@ -24,6 +24,28 @@ export default class SelfService extends Component {
       leave: {}
     };
     this.getEmployeeDetails();
+    this.getLeaveSalaryOptions();
+  }
+
+  getLeaveSalaryOptions() {
+    algaehApiCall({
+      uri: "/payrollOptions/getLeaveSalaryOptions",
+      method: "GET",
+      module: "hrManagement",
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            basic_earning_component: res.data.result[0].basic_earning_component
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
   }
 
   getEmployeeDetails() {
@@ -38,7 +60,12 @@ export default class SelfService extends Component {
           });
         }
       },
-      onFailure: err => {}
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
     });
   }
 
@@ -271,7 +298,10 @@ export default class SelfService extends Component {
               empData={this.state.employee_details}
             />
           ) : this.state.pageDisplay === "LoanRequest" ? (
-            <LoanRequest empData={this.state.employee_details} />
+            <LoanRequest
+              empData={this.state.employee_details}
+              basic_earning_component={this.state.basic_earning_component}
+            />
           ) : this.state.pageDisplay === "LeaveEncashment" ? (
             <LeaveEncashment />
           ) : this.state.pageDisplay === "TimeSheetSelf" ? (

@@ -506,14 +506,14 @@ class SalaryPayment extends Component {
                   />
                 </button>
 
-                <button
+                {/* <button
                   type="button"
                   className="btn btn-other"
                   //   onClick={PostDoctorCommission.bind(this, this)}
                   // disabled={this.state.postEnable}
                 >
                   Generate Payslip PDF
-                </button>
+                </button> */}
               </div>
             </div>
           </div>

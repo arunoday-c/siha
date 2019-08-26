@@ -169,7 +169,10 @@ export default {
       balance_amount: 0,
       hims_f_package_header_id: null,
       follow_up: false,
-      existing_treat: false
+      existing_treat: false,
+      eligible: "N",
+      checked_eligible: false,
+      eligible_reference_number: null
     };
     return output;
   }

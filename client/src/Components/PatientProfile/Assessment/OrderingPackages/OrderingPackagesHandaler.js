@@ -489,8 +489,8 @@ const deleteServices = ($this, row, rowId) => {
 
   const _index = preserviceInput.indexOf(get_selected_row);
   let saved = false;
-
-  orderservicesdata.splice(row.rowIdx, 1);
+  const _order_index = orderservicesdata.indexOf(row);
+  orderservicesdata.splice(_order_index, 1);
   if (orderservicesdata.length === 0) {
     saved = true;
 
@@ -624,7 +624,7 @@ const SaveOrdersServices = ($this, e) => {
         $this.props.onClose && $this.props.onClose(e);
 
         swalMessage({
-          title: "Ordered Successfully...",
+          title: "Ordered Successfully.",
           type: "success"
         });
       }

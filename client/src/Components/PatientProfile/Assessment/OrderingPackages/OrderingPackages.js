@@ -112,18 +112,6 @@ class OrderingPackages extends Component {
       });
     }
 
-    if (this.props.services === undefined || this.props.services.length === 0) {
-      this.props.getServices({
-        uri: "/serviceType/getService",
-        module: "masterSettings",
-        method: "GET",
-        redux: {
-          type: "SERVICES_GET_DATA",
-          mappingName: "services"
-        }
-      });
-    }
-
     if (
       this.props.serviceslist === undefined ||
       this.props.serviceslist.length === 0
@@ -176,6 +164,26 @@ class OrderingPackages extends Component {
             data: { insurance_id: data[0].insurance_provider_id },
             redux: {
               type: "SERVICES_INS_GET_DATA",
+              mappingName: "services"
+            }
+          });
+        } else {
+          this.setState({
+            insured: "N",
+            primary_insurance_provider_id: null,
+            primary_network_office_id: null,
+            primary_network_id: null,
+            sec_insured: null,
+            secondary_insurance_provider_id: null,
+            secondary_network_id: null,
+            secondary_network_office_id: null
+          });
+          this.props.getServices({
+            uri: "/serviceType/getService",
+            module: "masterSettings",
+            method: "GET",
+            redux: {
+              type: "SERVICES_GET_DATA",
               mappingName: "services"
             }
           });
@@ -318,7 +326,7 @@ class OrderingPackages extends Component {
               ) : null}
               <div className="row">
                 <AlgaehAutoSearch
-                  div={{ className: "col-7 customServiceSearch" }}
+                  div={{ className: "col customServiceSearch" }}
                   label={{ forceLabel: "Search Package" }}
                   title="Search Package"
                   id="service_id_search"
@@ -348,15 +356,24 @@ class OrderingPackages extends Component {
                     return (
                       <div className={`row resultSecStyles ${properStyle}`}>
                         <div className="col-12 padd-10">
-                          <h6 className="title">
+                          <h4 className="title">
                             {_.startCase(_.toLower(service_name))}
-                            {_.startCase(_.toLower(package_code))}
-                            <span className="service_type">
-                              ({_.startCase(_.toLower(service_type))}) (
-                              {_.startCase(_.toLower(p_type))}) (
-                              {_.startCase(_.toLower(p_visit_type))})
+                          </h4>
+                          <p className="searchMoreDetails">
+                            {/* ({_.startCase(_.toLower(service_type))}) */}
+                            <span>
+                              Package Code:{" "}
+                              <b>{_.startCase(_.toLower(package_code))}</b>
+                            </span>{" "}
+                            <span>
+                              Package Type:{" "}
+                              <b> {_.startCase(_.toLower(p_type))}</b>
+                            </span>{" "}
+                            <span>
+                              Visit Type:{" "}
+                              <b> {_.startCase(_.toLower(p_visit_type))}</b>
                             </span>
-                          </h6>
+                          </p>
                         </div>
                       </div>
                     );
@@ -375,7 +392,7 @@ class OrderingPackages extends Component {
                   }}
                 />
 
-                <div className="col">
+                <div className="col-4">
                   <button
                     className="btn btn-primary"
                     style={{ marginTop: 19 }}

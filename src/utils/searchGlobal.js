@@ -345,7 +345,7 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "employee",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS E.*, SD.sub_department_name, D.department_name, DS.designation from hims_d_employee E, \
+          "select SQL_CALC_FOUND_ROWS E.*, SD.sub_department_name,D.hims_d_department_id, D.department_name, DS.designation from hims_d_employee E, \
               hims_d_sub_department SD,hims_d_department D, hims_d_designation DS  WHERE E.record_status = 'A' \
               and E.sub_department_id = SD.hims_d_sub_department_id and SD.department_id = D.hims_d_department_id and \
               E.employee_designation_id = DS.hims_d_designation_id and E.hospital_id=" +
@@ -553,7 +553,7 @@ let algaehSearchConfig = (searchName, req) => {
           hims_d_inventory_tem_category IC, hims_d_inventory_item_group IG, hims_d_inventory_uom PU, \
           hims_m_inventory_item_location IL where IM.category_id = IC.hims_d_inventory_tem_category_id \
           and IM.group_id = IG.hims_d_inventory_item_group_id and IM.sales_uom_id=PU.hims_d_inventory_uom_id \
-          and IL.item_id = IM.hims_d_inventory_item_master_id",
+          and IL.item_id = IM.hims_d_inventory_item_master_id and IL.qtyhand > 0",
         orderBy: "IM.hims_d_inventory_item_master_id desc"
       },
       {
@@ -612,21 +612,23 @@ let algaehSearchConfig = (searchName, req) => {
           "select SQL_CALC_FOUND_ROWS hims_d_inventory_item_master_id, item_description, \
             service_id as services_id,'N' as covered,'N' as pre_approval,IL.batchno,\
             IL.expirydt,IL.barcode,IL.qtyhand,IL.sales_uom,category_id,group_id,IL.grnno,IL.sale_price,\
-            IL.inventory_location_id \
-            from hims_d_inventory_item_master I, hims_m_inventory_item_location IL \
-            where service_id not in (SELECT services_id FROM hims_d_services_insurance where \
-            insurance_id=? and {mapper}) and \
-            I.hims_d_inventory_item_master_id = IL.item_id and {mapper}\
+            IL.inventory_location_id from hims_d_inventory_item_master I, hims_m_inventory_item_location IL \
+            where service_id not in (SELECT services_id FROM hims_d_services_insurance where insurance_id=? \
+            and {mapper}) and I.hims_d_inventory_item_master_id = IL.item_id and IL.inventory_location_id=? \
+            and IL.qtyhand > 0 and {mapper} \
             union \
-            SELECT IM.hims_d_inventory_item_master_id,service_name as item_description,\
-            services_id,covered,\
-            pre_approval, ITL.batchno, ITL.expirydt,ITL.barcode, ITL.qtyhand,ITL.sales_uom,\
-            category_id,group_id,ITL.grnno, ITL.sale_price,ITL.inventory_location_id FROM \
-            hims_d_services_insurance INS, hims_d_inventory_item_master IM, hims_m_inventory_item_location \
-            ITL where INS.services_id = IM.service_id and IM.hims_d_inventory_item_master_id = ITL.item_id and \
-            insurance_id=? and {mapper} and service_type_id=4",
+            SELECT IM.hims_d_inventory_item_master_id,service_name as item_description, services_id, covered,\
+            pre_approval, ITL.batchno, ITL.expirydt,ITL.barcode, ITL.qtyhand,ITL.sales_uom, category_id, \
+            group_id, ITL.grnno, ITL.sale_price,ITL.inventory_location_id FROM hims_d_services_insurance INS,  hims_d_inventory_item_master IM, hims_m_inventory_item_location ITL where \
+            INS.services_id = IM.service_id and IM.hims_d_inventory_item_master_id = ITL.item_id and \
+            insurance_id=? and ITL.inventory_location_id=?  and ITL.qtyhand > 0 and {mapper} and service_type_id=4",
         orderBy: "services_id desc",
-        inputSequence: ["insurance_id", "insurance_id"]
+        inputSequence: [
+          "insurance_id",
+          "inventory_location_id",
+          "insurance_id",
+          "inventory_location_id"
+        ]
       },
       {
         searchName: "pharmacyUsers",
@@ -674,6 +676,20 @@ let algaehSearchConfig = (searchName, req) => {
         on H.hims_d_hospital_id = E.hospital_id left join hims_d_title as T on T.his_d_title_id = E.title_id \
         where E.isdoctor ='Y' and D.department_type='CLINICAL' and E.employee_status='A' and E.record_status='A' ",
         groupBy: "group by DEM.employee_id"
+      },
+
+      {
+        searchName: "procedureExistingItem",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS IM.hims_d_inventory_item_master_id,IM.item_description,IM.category_id, IM.sales_uom_id, IM.service_id, P.qty, IM.group_id,IC.category_desc,IG.group_description, \
+          PU.uom_description, IL.inventory_location_id, IL.batchno, IL.expirydt, IL.barcode, IL.qtyhand, \
+          IL.avgcost,IL.sales_uom,IL.grnno  from hims_d_procedure_detail P, hims_d_inventory_item_master IM, \
+          hims_d_inventory_tem_category IC, hims_d_inventory_item_group IG, hims_d_inventory_uom PU, \
+          hims_m_inventory_item_location IL where P.item_id = IM.hims_d_inventory_item_master_id and \
+          IM.category_id = IC.hims_d_inventory_tem_category_id \
+          and IM.group_id = IG.hims_d_inventory_item_group_id and IM.sales_uom_id=PU.hims_d_inventory_uom_id \
+          and IL.item_id = IM.hims_d_inventory_item_master_id and IL.qtyhand > 0",
+        orderBy: "IM.hims_d_inventory_item_master_id desc"
       }
     ]
   };

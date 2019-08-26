@@ -722,7 +722,7 @@ export default class WeeklyAttendance extends Component {
           {this.state.attendance_type === "MW" ? (
             <React.Fragment>
               <AlagehAutoComplete
-                div={{ className: "col" }}
+                div={{ className: "col mandatory" }}
                 label={{
                   forceLabel: "Select a Year.",
                   isImp: true
@@ -746,7 +746,7 @@ export default class WeeklyAttendance extends Component {
               />
 
               <AlagehAutoComplete
-                div={{ className: "col" }}
+                div={{ className: "col mandatory" }}
                 label={{
                   forceLabel: "Select a Month.",
                   isImp: true
@@ -846,7 +846,7 @@ export default class WeeklyAttendance extends Component {
           )}
 
           <AlagehAutoComplete
-            div={{ className: "col" }}
+            div={{ className: "col mandatory" }}
             label={{
               forceLabel: "Filter by Branch",
               isImp: true

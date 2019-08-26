@@ -146,8 +146,8 @@ module.exports = {
                 `visit_date`, `department_id`, `sub_department_id`, `doctor_id`, `maternity_patient`,\
                 `is_mlc`, `mlc_accident_reg_no`, `mlc_police_station`, `mlc_wound_certified_date`, `existing_plan`,\
                 `treatment_plan_id`,`created_by`, `created_date`,`visit_code`,`visit_expiery_date`,`episode_id`,\
-                `appointment_id`, `appointment_patient`, `new_visit_patient`,hospital_id)\
-                VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?, ?, ?, ?,?);",
+                `appointment_id`, `appointment_patient`, `new_visit_patient`,hospital_id, eligible, eligible_reference_number)\
+                VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?, ?, ?, ?,?,?,?);",
             values: [
               inputParam.patient_id,
               inputParam.visit_type,
@@ -179,7 +179,9 @@ module.exports = {
               inputParam.appointment_id,
               inputParam.appointment_patient,
               inputParam.new_visit_patient,
-              req.userIdentity.hospital_id
+              req.userIdentity.hospital_id,
+              inputParam.eligible,
+              inputParam.eligible_reference_number
             ],
             printQuery: true
           })

@@ -1,14 +1,13 @@
 .breadcrumb-fixed {
-  height: 75px;
+  height: 128px;
   background-color: #fff;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-  border-bottom: 1px solid #ced4da; }
+  border-bottom: gray; }
 
 .breadCrumb-Data {
   margin: 0;
   margin-top: 53px;
-  background-color: #f8f8f8;
-  height: 75px; }
+  background-color: #f8f8f8; }
   .breadCrumb-Data .hdg_bredcrump {
     background: url("../../../assets/images/breadcrump_border.webp") no-repeat top right #fff; }
   .breadCrumb-Data .header {

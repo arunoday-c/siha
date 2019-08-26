@@ -132,7 +132,6 @@ const selectedHandeler = ($this, context, e) => {
               type: "error"
             });
           } else {
-            
             $this.setState(
               {
                 [e.name]: e.value,
@@ -482,6 +481,22 @@ const radioChange = ($this, context, e) => {
       context.updateState({
         [name]: value,
         checked_existing_plan: checked_existing_plan
+      });
+    }
+  } else if (name === "eligible") {
+    let checked_eligible = false;
+    if ($this.state.checked_eligible === false) {
+      checked_eligible = true;
+      value = "Y";
+    }
+    $this.setState({
+      eligible: value,
+      checked_eligible: checked_eligible
+    });
+    if (context !== null) {
+      context.updateState({
+        eligible: value,
+        checked_eligible: checked_eligible
       });
     }
   }

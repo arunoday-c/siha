@@ -259,6 +259,8 @@ class InvItemMomentEnquiry extends Component {
                           ? "Purchase Order"
                           : row.transaction_type === "DNA"
                           ? "Delivery Note"
+                          : row.transaction_type === "ACK"
+                          ? "Transfer Acknowledge"
                           : "";
                       }
                     },

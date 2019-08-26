@@ -941,11 +941,16 @@ module.exports = {
     return new Promise((resolve, reject) => {
       try {
         const input = req.query;
+        let _strAppend = "";
+        if (input.earnings_id != null) {
+          _strAppend += " and earnings_id='" + input.earnings_id + "'";
+        }
         _mysql
           .executeQuery({
             query:
               "SELECT hims_d_employee_earnings_id,employee_id,earnings_id,short_desc,amount,formula,allocate,\
-        calculation_method from hims_d_employee_earnings where employee_id = ?;",
+              calculation_method from hims_d_employee_earnings where employee_id = ? " +
+              _strAppend,
             values: [input.employee_id],
             printQuery: true
           })

@@ -292,13 +292,15 @@ export default class EndServiceOption extends Component {
     switch (value.name) {
       case "earning_id":
         this.setState({
-          comps: value.selected
+          comps: value.selected,
+          [value.name]: value.value
         });
         break;
 
       case "dedution_id":
         this.setState({
-          Tcomps: value.selected
+          Tcomps: value.selected,
+          [value.name]: value.value
         });
         break;
       default:
