@@ -610,9 +610,7 @@ module.exports = {
                                       clashingDate[0]
                                     } for doctor_id:${
                                       input.schedule_detail[doc].full_name
-                                    } from ${
-                                      timeChecking[0][0].from_work_hr
-                                    } to 
+                                    } from ${timeChecking[0][0].from_work_hr} to
                                       ${timeChecking[0][0].to_work_hr}`,
                                     schedule_exist: true
                                   };
@@ -638,7 +636,7 @@ module.exports = {
                                         input.schedule_detail[doc].full_name
                                       } from ${
                                         timeChecking[1][0].from_work_hr
-                                      } to 
+                                      } to
                                         ${timeChecking[1][0].to_work_hr}`,
                                       schedule_exist: true
                                     };
@@ -2048,7 +2046,7 @@ module.exports = {
           input.provider_id,
           input.appointment_date
         ],
-        printQuery: false
+        printQuery: true
       })
       .then(slotResult => {
         // _mysql.releaseConnection();
@@ -2102,7 +2100,8 @@ module.exports = {
                 new Date(),
                 req.userIdentity.algaeh_d_app_user_id,
                 req.userIdentity.hospital_id
-              ]
+              ],
+              printQuery: true
             })
             .then(result => {
               _mysql.releaseConnection();
@@ -2395,7 +2394,7 @@ module.exports = {
         .executeQuery({
           query: `select A.patient_name,A.appointment_date,A.appointment_from_time,SD.sub_department_name,
           E.full_name as doctor_name from hims_f_patient_appointment A inner join hims_d_sub_department SD on
-           A.sub_department_id=SD.hims_d_sub_department_id 
+           A.sub_department_id=SD.hims_d_sub_department_id
            inner join hims_d_employee E on A.provider_id=E.hims_d_employee_id
            where hims_f_patient_appointment_id=? and A.hospital_id=?`,
           values: [
