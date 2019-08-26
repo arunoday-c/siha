@@ -1,4 +1,4 @@
-import { algaehApiCall } from "../../../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../../../utils/algaehApiCall";
 export function getHospitals(callBack) {
   algaehApiCall({
     uri: "/organization/getOrganization",
@@ -49,6 +49,7 @@ export function getBranchWiseDepartments(data, callback) {
     }
   });
 }
+
 export function UploadTimesheet(files, props) {
   const reader = new FileReader();
   reader.readAsDataURL(files[0]);
@@ -65,9 +66,27 @@ export function UploadTimesheet(files, props) {
         if (response.data.success === true) {
           props.uploadExcel(response.data.result);
         } else {
-          props.uploadErrors(response.data.message);
+          props.uploadErrors(response.data.result.message);
         }
       }
     });
   };
+}
+export function getPreview(data, props) {
+  algaehApiCall({
+    uri: "/attendance/previewBulkTimeSheet",
+    data: data,
+    method: "get",
+    module: "hrManagement",
+    onSuccess: response => {
+      if (response.data.success === true) {
+        props.preview(response.data.result);
+      } else {
+        swalMessage({
+          type: "error",
+          title: response.data.result.message
+        });
+      }
+    }
+  });
 }

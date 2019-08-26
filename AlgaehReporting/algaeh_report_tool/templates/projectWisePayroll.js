@@ -76,14 +76,14 @@ const executePDF = function executePDFMethod(options) {
           minutes = String("0" + parseInt(worked_minutes % 60)).slice(-2);
 
           const results = {
-            project_wise_payroll: outputArray,
+            details: outputArray,
             total_worked_hours: total_worked_hours + "." + minutes,
             noEmployees: result.length,
             total_cost: total_cost
           };
 
-          // utilities.logger().log("result: ", results);
-          resolve({ result: results });
+          //utilities.logger().log("result: ", results);
+          resolve(results);
         })
         .catch(error => {
           options.mysql.releaseConnection();

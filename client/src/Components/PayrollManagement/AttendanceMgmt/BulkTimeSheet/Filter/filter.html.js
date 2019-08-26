@@ -11,7 +11,8 @@ import {
   getAttendanceDates,
   getDivisionProject,
   getBranchWiseDepartments,
-  UploadTimesheet
+  UploadTimesheet,
+  getPreview
 } from "./filter.events";
 import moment from "moment";
 export default function Filter(props) {
@@ -293,7 +294,18 @@ export default function Filter(props) {
         )}
       </button>
       <button
-        onClick={() => {}}
+        onClick={() => {
+          getPreview(
+            {
+              branch_id: hospitalID,
+              from_date: fromDate,
+              to_date: toDate,
+              month: month,
+              year: moment().format("YYYY")
+            },
+            props
+          );
+        }}
         style={{ marginLeft: 10, float: "right" }}
         className="btn btn-primary"
       >

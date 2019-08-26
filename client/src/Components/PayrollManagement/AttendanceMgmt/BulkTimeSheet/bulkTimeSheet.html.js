@@ -36,6 +36,17 @@ function BulkTimeSheet(props) {
           setMessage(message);
           setProcess(true);
         }}
+        preview={data => {
+          const internalData = data.data;
+          delete data.data;
+          const findFilter = data;
+          findFilter.month = parseInt(findFilter.month);
+          setFilter(findFilter);
+          setData(internalData);
+          if (internalData.length > 0) {
+            setProcess(false);
+          }
+        }}
       />
 
       <div className="portlet portlet-bordered margin-top-15">

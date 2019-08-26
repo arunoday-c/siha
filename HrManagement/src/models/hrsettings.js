@@ -1,5 +1,6 @@
 import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
+import algaehUtilities from "algaeh-utilities/utilities";
 
 module.exports = {
   getEmployeeGroups: (req, res, next) => {
@@ -411,7 +412,7 @@ where E.sub_department_id=${
 
       let _strQuery = "";
       if (req.query.pjoject_status != null) {
-        _strQuery = "and pjoject_status = " + req.query.pjoject_status;
+        _strQuery = " and pjoject_status = '" + req.query.pjoject_status + "'";
       }
 
       _mysql
