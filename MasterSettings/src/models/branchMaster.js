@@ -508,7 +508,7 @@ module.exports = {
       const input = req.body;
       console.log("count EMP :", input.length);
 
-      const insurtColumns = ["Empcode", "amount", "earning_id"];
+      const insurtColumns = ["employee_id", "amount", "earnings_id"];
 
       _mysql
         .executeQuery({
