@@ -7251,9 +7251,41 @@ function loadBulkTimeSheet(input,req,res,next) {
                 .then(result => {
                   _mysql.releaseConnection();
 
+                  const allDates = getDaysArray(
+                    new Date(input.from_date),
+                    new Date(input.to_date)
+                  );
+
                   const allEmployees = _.chain(result)
                   .groupBy(g => g.employee_id)
-                  .map(emp => {                   
+                  .map(emp => {                 
+                    
+                    allDates.forEach(dat => {
+                      const attUplded = emp.find(e => {
+                        return e.attendance_date == dat;
+                      });
+                      if (attUplded == undefined) {
+                        emp.push({
+                          hims_f_daily_time_sheet_id:null,
+                          employee_id: emp[0].employee_id,
+                          attendance_date: dat,
+                          employee_code: emp[0].employee_code,
+                          employee_name: emp[0].full_name,
+                          sub_department_id: emp[0].sub_department_id,
+                          year: emp[0].year,
+                          month: emp[0].month,
+                          status: "N",
+                          hours: 0,
+                          minutes: 0,
+                          actual_hours: 0,
+                          actual_minutes: 0,
+                          worked_hours: 0.00,
+                          consider_ot_shrtg: "Y"
+                        });
+                      }
+                    });
+
+
                  const empl=_.sortBy(emp, s =>parseInt(moment(s.attendance_date, "YYYY-MM-DD").format("MMDD")));
                       return empl;
                   })
