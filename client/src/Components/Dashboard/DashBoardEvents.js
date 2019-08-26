@@ -197,6 +197,7 @@ export default function DashBoardEvents() {
         uri: "/hrsettings/getProjects",
         module: "hrManagement",
         method: "GET",
+        data: { pjoject_status: "A" },
         onSuccess: res => {
           if (res.data.success) {
             $this.setState({

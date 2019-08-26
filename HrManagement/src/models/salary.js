@@ -548,8 +548,8 @@ module.exports = {
                                               present_days,absent_days,total_work_days,total_weekoff_days,total_holidays,total_leave,paid_leave,\
                                               unpaid_leave,total_hours, total_working_hours, ot_work_hours, ot_weekoff_hours, ot_holiday_hours, \
                                               shortage_hours,loan_payable_amount,loan_due_amount,advance_due,gross_salary,total_earnings,total_deductions,\
-                                              total_contributions,net_salary, total_paid_days) \
-                                             VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ;",
+                                              total_contributions,net_salary, total_paid_days, hospital_id) \
+                                             VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ;",
                                             [
                                               _salary_number,
                                               parseInt(month_number),
@@ -585,7 +585,8 @@ module.exports = {
                                               final_deduction_amount,
                                               final_contribution_amount,
                                               _net_salary,
-                                              empResult[i]["total_paid_days"]
+                                              empResult[i]["total_paid_days"],
+                                              input.hospital_id
                                             ]
                                           );
 

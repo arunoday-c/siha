@@ -306,7 +306,9 @@ module.exports = {
       req.query.to_date != "null"
     ) {
       dateRange = ` AND date(attendance_date)
-        between date('${req.query.from_date}') and date('${req.query.to_date}') `;
+        between date('${req.query.from_date}') and date('${
+        req.query.to_date
+      }') `;
     }
 
     if (
@@ -1235,7 +1237,9 @@ module.exports = {
         let stringData = "";
         if (input.sub_department_id > 0) {
           stringData += " and sub_department_id=" + input.sub_department_id;
-          shiftRange += ` and sub_department_id=${req.query.sub_department_id} `;
+          shiftRange += ` and sub_department_id=${
+            req.query.sub_department_id
+          } `;
         }
         if (input.hims_d_employee_id > 0) {
           stringData += " and hims_d_employee_id=" + input.hims_d_employee_id;
@@ -1360,7 +1364,9 @@ module.exports = {
                 inner join hims_d_employee E on TS.employee_id=E.hims_d_employee_id\
                 left join hims_f_project_roster PR on TS.employee_id=PR.employee_id and TS.hospital_id=PR.hospital_id  and TS.attendance_date=PR.attendance_date
               left join hims_d_project P on PR.project_id=P.hims_d_project_id
-                where  TS.hospital_id=${input.hospital_id} and  TS.attendance_date between ('${from_date}') and ('${to_date}') and TS.employee_id in (${employee_ids})`;
+                where  TS.hospital_id=${
+                  input.hospital_id
+                } and  TS.attendance_date between ('${from_date}') and ('${to_date}') and TS.employee_id in (${employee_ids})`;
 
                   //---------------------------------------------------
                   // connect to your database
@@ -2456,7 +2462,9 @@ module.exports = {
             _mysql.releaseConnection();
             req.records = {
               no_exception: true,
-              message: `No exception Found From   ${input.to_date} to ${input.to_date}`
+              message: `No exception Found From   ${input.to_date} to ${
+                input.to_date
+              }`
             };
 
             next();
@@ -3786,7 +3794,9 @@ module.exports = {
 											inner join hims_d_employee E on TS.employee_id=E.hims_d_employee_id\
 											left join hims_f_project_roster PR on TS.employee_id=PR.employee_id and TS.hospital_id=PR.hospital_id\
 											 and TS.attendance_date=PR.attendance_date	left join hims_d_project P on PR.project_id=P.hims_d_project_id
-											where  TS.hospital_id=${input.hospital_id} and   TS.attendance_date between ('${input.from_date}') and\
+											where  TS.hospital_id=${input.hospital_id} and   TS.attendance_date between ('${
+              input.from_date
+            }') and\
 											 ('${input.to_date}') ${sub_department} ${employees}  order by attendance_date`;
 
             _mysql
@@ -5429,7 +5439,7 @@ module.exports = {
         }
 
         if (input.department_id > 0) {
-          strQry += " and DP.department_id=" + input.department_id;
+          strQry += " and SD.department_id=" + input.department_id;
         }
         if (input.sub_department_id > 0) {
           strQry += " and E.sub_department_id=" + input.sub_department_id;
@@ -5445,7 +5455,7 @@ module.exports = {
             E.religion_id, E.date_of_joining,PR.project_id,P.project_desc,D.designation
             from hims_f_project_roster PR
 
-            left join hims_f_salary S on PR.employee_id=S.employee_id and S.year=? and S.month=?
+            left join hims_f_salary S on PR.employee_id=S.employee_id and PR.hospital_id=S.hospital_id and S.year=? and S.month=?
             inner join  hims_d_employee E on PR.employee_id=E.hims_d_employee_id
             inner join  hims_d_project P on P.hims_d_project_id=PR.project_id
             inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
@@ -6234,7 +6244,7 @@ module.exports = {
             inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\
             inner join hims_d_department DP on SD.department_id=DP.hims_d_department_id\ where      \
             DA.hospital_id=?  and year=? and month=?   ${strQry} and attendance_date between date(?) and\
-            date(?)  group by project_id;`,
+            date(?)  group by employee_id,project_id;`,
                     values: [
                       input.hospital_id,
                       input.year,
@@ -6831,7 +6841,7 @@ function BulktimesheetCalc(req, res, next) {
         }
 
         if (input.department_id > 0) {
-          strQry += " and DP.department_id=" + input.department_id;
+          strQry += " and SD.department_id=" + input.department_id;
         }
         if (input.sub_department_id > 0) {
           strQry += " and E.sub_department_id=" + input.sub_department_id;
@@ -6847,7 +6857,7 @@ function BulktimesheetCalc(req, res, next) {
             E.religion_id, E.date_of_joining,PR.project_id,P.project_desc,D.designation
             from hims_f_project_roster PR
 
-            left join hims_f_salary S on PR.employee_id=S.employee_id and S.year=? and S.month=?
+            left join hims_f_salary S on PR.employee_id=S.employee_id and PR.hospital_id=S.hospital_id and S.year=? and S.month=?
             inner join  hims_d_employee E on PR.employee_id=E.hims_d_employee_id
             inner join  hims_d_project P on P.hims_d_project_id=PR.project_id
             inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
@@ -7240,48 +7250,45 @@ function loadBulkTimeSheet(input, req, res, next) {
         .then(result => {
           _mysql.releaseConnection();
 
-                  const allDates = getDaysArray(
-                    new Date(input.from_date),
-                    new Date(input.to_date)
-                  );
+          const allDates = getDaysArray(
+            new Date(input.from_date),
+            new Date(input.to_date)
+          );
 
-                  const allEmployees = _.chain(result)
-                  .groupBy(g => g.employee_id)
-                  .map(emp => {                 
-                    
-                    allDates.forEach(dat => {
-                      const attUplded = emp.find(e => {
-                        return e.attendance_date == dat;
-                      });
-                      if (attUplded == undefined) {
-                        
-                        emp.push({
-                          hims_f_daily_time_sheet_id:null,
-                          employee_id: emp[0].employee_id,
-                          attendance_date: dat,
-                          employee_code: emp[0].employee_code,
-                          employee_name: emp[0].full_name,
-                          sub_department_id: emp[0].sub_department_id,
-                          year: emp[0].year,
-                          month: emp[0].month,
-                          status: "N",
-                          hours: 0,
-                          minutes: 0,
-                          actual_hours: 0,
-                          actual_minutes: 0,
-                          worked_hours: 0.00,
-                          consider_ot_shrtg: "Y"
-                        });
-                      }
-                    })
+          const allEmployees = _.chain(result)
+            .groupBy(g => g.employee_id)
+            .map(emp => {
+              allDates.forEach(dat => {
+                const attUplded = emp.find(e => {
+                  return e.attendance_date == dat;
+                });
+                if (attUplded == undefined) {
+                  emp.push({
+                    hims_f_daily_time_sheet_id: null,
+                    employee_id: emp[0].employee_id,
+                    attendance_date: dat,
+                    employee_code: emp[0].employee_code,
+                    employee_name: emp[0].full_name,
+                    sub_department_id: emp[0].sub_department_id,
+                    year: emp[0].year,
+                    month: emp[0].month,
+                    status: "N",
+                    hours: 0,
+                    minutes: 0,
+                    actual_hours: 0,
+                    actual_minutes: 0,
+                    worked_hours: 0.0,
+                    consider_ot_shrtg: "Y"
+                  });
+                }
+              });
 
-
-                 const empl=_.sortBy(emp, s =>parseInt(moment(s.attendance_date, "YYYY-MM-DD").format("MMDD")));
-                      return empl;
-                  })
-                  .value();
-
-         
+              const empl = _.sortBy(emp, s =>
+                parseInt(moment(s.attendance_date, "YYYY-MM-DD").format("MMDD"))
+              );
+              return empl;
+            })
+            .value();
 
           req.records = {
             hospital_id: input.branch_id,
