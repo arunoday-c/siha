@@ -642,313 +642,597 @@ class Dental extends Component {
   }
 
   generateToothUpperRight(teeth) {
+    debugger;
     let plot = [];
-    for (let i = 1; i < 9; i++) {
-      const tooth =
-        i === 8
-          ? 11
-          : i === 7
-          ? 12
-          : i === 6
-          ? 13
-          : i === 5
-          ? 14
-          : i === 4
-          ? 15
-          : i === 3
-          ? 16
-          : i === 2
-          ? 17
-          : i === 1
-          ? 18
-          : null;
-      let _marking = undefined;
-      if (teeth !== undefined) {
-        const selectedTooth = Enumerable.from(teeth)
-          .where(w => w.teeth_number === tooth)
-          .toArray();
-        for (let i = 0; i < selectedTooth.length; i++) {
-          if (_marking === undefined) {
-            _marking = { ...selectedTooth[i] };
-          } else {
-            _marking["distal"] =
-              _marking["distal"] === "N"
-                ? selectedTooth[i]["distal"]
-                : _marking["distal"];
-            _marking["labial"] =
-              _marking["labial"] === "N"
-                ? selectedTooth[i]["labial"]
-                : _marking["labial"];
-            _marking["incisal"] =
-              _marking["incisal"] === "N"
-                ? selectedTooth[i]["incisal"]
-                : _marking["incisal"];
-            _marking["palatal"] =
-              _marking["palatal"] === "N"
-                ? selectedTooth[i]["palatal"]
-                : _marking["palatal"];
-            _marking["mesial"] =
-              _marking["mesial"] === "N"
-                ? selectedTooth[i]["mesial"]
-                : _marking["mesial"];
+    if (this.props.age_in_years < 16) {
+      for (let i = 1; i < 6; i++) {
+        const tooth =
+          i === 5
+            ? 51
+            : i === 4
+            ? 52
+            : i === 3
+            ? 53
+            : i === 2
+            ? 54
+            : i === 1
+            ? 55
+            : null;
+        let _marking = undefined;
+        if (teeth !== undefined) {
+          const selectedTooth = Enumerable.from(teeth)
+            .where(w => w.teeth_number === tooth)
+            .toArray();
+          for (let i = 0; i < selectedTooth.length; i++) {
+            if (_marking === undefined) {
+              _marking = { ...selectedTooth[i] };
+            } else {
+              _marking["distal"] =
+                _marking["distal"] === "N"
+                  ? selectedTooth[i]["distal"]
+                  : _marking["distal"];
+              _marking["labial"] =
+                _marking["labial"] === "N"
+                  ? selectedTooth[i]["labial"]
+                  : _marking["labial"];
+              _marking["incisal"] =
+                _marking["incisal"] === "N"
+                  ? selectedTooth[i]["incisal"]
+                  : _marking["incisal"];
+              _marking["palatal"] =
+                _marking["palatal"] === "N"
+                  ? selectedTooth[i]["palatal"]
+                  : _marking["palatal"];
+              _marking["mesial"] =
+                _marking["mesial"] === "N"
+                  ? selectedTooth[i]["mesial"]
+                  : _marking["mesial"];
+            }
           }
         }
-      }
 
-      // _marking =
-      //  teeth !== undefined
-      //    ? Enumerable.from(teeth)
-      //        .where(w => w.teeth_number === tooth)
-      //        .firstOrDefault()
-      //    : undefined;
-
-      plot.push(
-        <div
-          key={i}
-          className={
-            "col tooth-sec up-side " +
-            (i <= 3
-              ? "molar-up-"
-              : i <= 5
-              ? "premolar-up-"
-              : i === 6
-              ? "canine-up-"
-              : "incisors-up-up-") +
-            i
-          }
-        >
-          <span onClick={this.markAllSurface.bind(this)}>{tooth}</span>
-          <div className="surface-Marking">
-            <div
-              onClick={this.markTeethSurface.bind(this)}
-              className={
-                "top-surface " +
-                (_marking !== undefined
-                  ? _marking.distal === "Y" &&
-                    _marking.service_id === this.state.hims_d_services_id
-                    ? " mark-active"
-                    : ""
-                  : "")
-              }
-            >
-              <span surface="distal">D</span>
-            </div>
-            <div
-              onClick={this.markTeethSurface.bind(this)}
-              className={
-                "right-surface " +
-                (_marking !== undefined
-                  ? _marking.labial === "Y" &&
-                    _marking.service_id === this.state.hims_d_services_id
-                    ? " mark-active"
-                    : ""
-                  : "")
-              }
-            >
-              <span surface="labial">L</span>
-            </div>
-            <div
-              onClick={this.markTeethSurface.bind(this)}
-              className={
-                "bottom-surface " +
-                (_marking !== undefined
-                  ? _marking.incisal === "Y" &&
-                    _marking.service_id === this.state.hims_d_services_id
-                    ? " mark-active"
-                    : ""
-                  : "")
-              }
-            >
-              <span surface="incisal">I</span>
-            </div>
-            <div
-              onClick={this.markTeethSurface.bind(this)}
-              className={
-                "left-surface " +
-                (_marking !== undefined
-                  ? _marking.palatal === "Y" &&
-                    _marking.service_id === this.state.hims_d_services_id
-                    ? " mark-active"
-                    : ""
-                  : "")
-              }
-            >
-              <span surface="palatal">P</span>
-            </div>
-            {i >= 6 ? null : (
+        plot.push(
+          <div
+            key={i}
+            className={
+              "col tooth-sec up-side " +
+              (i <= 3
+                ? "molar-up-"
+                : i <= 5
+                ? "premolar-up-"
+                : i === 6
+                ? "canine-up-"
+                : "incisors-up-up-") +
+              i
+            }
+          >
+            <span onClick={this.markAllSurface.bind(this)}>{tooth}</span>
+            <div className="surface-Marking">
               <div
                 onClick={this.markTeethSurface.bind(this)}
                 className={
-                  "middle-surface " +
+                  "top-surface " +
                   (_marking !== undefined
-                    ? _marking.mesial === "Y" &&
+                    ? _marking.distal === "Y" &&
                       _marking.service_id === this.state.hims_d_services_id
                       ? " mark-active"
                       : ""
                     : "")
                 }
               >
-                <span surface="mesial">M</span>
+                <span surface="distal">D</span>
               </div>
-            )}
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className={
+                  "right-surface " +
+                  (_marking !== undefined
+                    ? _marking.labial === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
+              >
+                <span surface="labial">L</span>
+              </div>
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className={
+                  "bottom-surface " +
+                  (_marking !== undefined
+                    ? _marking.incisal === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
+              >
+                <span surface="incisal">I</span>
+              </div>
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className={
+                  "left-surface " +
+                  (_marking !== undefined
+                    ? _marking.palatal === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
+              >
+                <span surface="palatal">P</span>
+              </div>
+              {i >= 6 ? null : (
+                <div
+                  onClick={this.markTeethSurface.bind(this)}
+                  className={
+                    "middle-surface " +
+                    (_marking !== undefined
+                      ? _marking.mesial === "Y" &&
+                        _marking.service_id === this.state.hims_d_services_id
+                        ? " mark-active"
+                        : ""
+                      : "")
+                  }
+                >
+                  <span surface="mesial">M</span>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-      );
-    }
+        );
+      }
+    } else
+      for (let i = 1; i < 9; i++) {
+        {
+          const tooth =
+            i === 8
+              ? 11
+              : i === 7
+              ? 12
+              : i === 6
+              ? 13
+              : i === 5
+              ? 14
+              : i === 4
+              ? 15
+              : i === 3
+              ? 16
+              : i === 2
+              ? 17
+              : i === 1
+              ? 18
+              : null;
+          let _marking = undefined;
+          if (teeth !== undefined) {
+            const selectedTooth = Enumerable.from(teeth)
+              .where(w => w.teeth_number === tooth)
+              .toArray();
+            for (let i = 0; i < selectedTooth.length; i++) {
+              if (_marking === undefined) {
+                _marking = { ...selectedTooth[i] };
+              } else {
+                _marking["distal"] =
+                  _marking["distal"] === "N"
+                    ? selectedTooth[i]["distal"]
+                    : _marking["distal"];
+                _marking["labial"] =
+                  _marking["labial"] === "N"
+                    ? selectedTooth[i]["labial"]
+                    : _marking["labial"];
+                _marking["incisal"] =
+                  _marking["incisal"] === "N"
+                    ? selectedTooth[i]["incisal"]
+                    : _marking["incisal"];
+                _marking["palatal"] =
+                  _marking["palatal"] === "N"
+                    ? selectedTooth[i]["palatal"]
+                    : _marking["palatal"];
+                _marking["mesial"] =
+                  _marking["mesial"] === "N"
+                    ? selectedTooth[i]["mesial"]
+                    : _marking["mesial"];
+              }
+            }
+          }
+
+          plot.push(
+            <div
+              key={i}
+              className={
+                "col tooth-sec up-side " +
+                (i <= 3
+                  ? "molar-up-"
+                  : i <= 5
+                  ? "premolar-up-"
+                  : i === 6
+                  ? "canine-up-"
+                  : "incisors-up-up-") +
+                i
+              }
+            >
+              <span onClick={this.markAllSurface.bind(this)}>{tooth}</span>
+              <div className="surface-Marking">
+                <div
+                  onClick={this.markTeethSurface.bind(this)}
+                  className={
+                    "top-surface " +
+                    (_marking !== undefined
+                      ? _marking.distal === "Y" &&
+                        _marking.service_id === this.state.hims_d_services_id
+                        ? " mark-active"
+                        : ""
+                      : "")
+                  }
+                >
+                  <span surface="distal">D</span>
+                </div>
+                <div
+                  onClick={this.markTeethSurface.bind(this)}
+                  className={
+                    "right-surface " +
+                    (_marking !== undefined
+                      ? _marking.labial === "Y" &&
+                        _marking.service_id === this.state.hims_d_services_id
+                        ? " mark-active"
+                        : ""
+                      : "")
+                  }
+                >
+                  <span surface="labial">L</span>
+                </div>
+                <div
+                  onClick={this.markTeethSurface.bind(this)}
+                  className={
+                    "bottom-surface " +
+                    (_marking !== undefined
+                      ? _marking.incisal === "Y" &&
+                        _marking.service_id === this.state.hims_d_services_id
+                        ? " mark-active"
+                        : ""
+                      : "")
+                  }
+                >
+                  <span surface="incisal">I</span>
+                </div>
+                <div
+                  onClick={this.markTeethSurface.bind(this)}
+                  className={
+                    "left-surface " +
+                    (_marking !== undefined
+                      ? _marking.palatal === "Y" &&
+                        _marking.service_id === this.state.hims_d_services_id
+                        ? " mark-active"
+                        : ""
+                      : "")
+                  }
+                >
+                  <span surface="palatal">P</span>
+                </div>
+                {i >= 6 ? null : (
+                  <div
+                    onClick={this.markTeethSurface.bind(this)}
+                    className={
+                      "middle-surface " +
+                      (_marking !== undefined
+                        ? _marking.mesial === "Y" &&
+                          _marking.service_id === this.state.hims_d_services_id
+                          ? " mark-active"
+                          : ""
+                        : "")
+                    }
+                  >
+                    <span surface="mesial">M</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        }
+      }
     return plot;
   }
 
   generateToothUpperLeft(teeth) {
     let plot = [];
-    for (let i = 9; i < 17; i++) {
-      const tooth =
-        i === 9
-          ? 21
-          : i === 10
-          ? 22
-          : i === 11
-          ? 23
-          : i === 12
-          ? 24
-          : i === 13
-          ? 25
-          : i === 14
-          ? 26
-          : i === 15
-          ? 27
-          : i === 16
-          ? 28
-          : null;
-      let _marking = undefined;
-      if (teeth !== undefined) {
-        const selectedTooth = Enumerable.from(teeth)
-          .where(w => w.teeth_number === tooth)
-          .toArray();
-        for (let i = 0; i < selectedTooth.length; i++) {
-          if (_marking === undefined) {
-            _marking = { ...selectedTooth[i] };
-          } else {
-            _marking["distal"] =
-              _marking["distal"] === "N"
-                ? selectedTooth[i]["distal"]
-                : _marking["distal"];
-            _marking["labial"] =
-              _marking["labial"] === "N"
-                ? selectedTooth[i]["labial"]
-                : _marking["labial"];
-            _marking["incisal"] =
-              _marking["incisal"] === "N"
-                ? selectedTooth[i]["incisal"]
-                : _marking["incisal"];
-            _marking["palatal"] =
-              _marking["palatal"] === "N"
-                ? selectedTooth[i]["palatal"]
-                : _marking["palatal"];
-            _marking["mesial"] =
-              _marking["mesial"] === "N"
-                ? selectedTooth[i]["mesial"]
-                : _marking["mesial"];
+    if (this.props.age_in_years < 16) {
+      for (let i = 9; i < 14; i++) {
+        const tooth =
+          i === 9
+            ? 61
+            : i === 10
+            ? 62
+            : i === 11
+            ? 63
+            : i === 12
+            ? 64
+            : i === 13
+            ? 65
+            : null;
+        let _marking = undefined;
+        if (teeth !== undefined) {
+          const selectedTooth = Enumerable.from(teeth)
+            .where(w => w.teeth_number === tooth)
+            .toArray();
+          for (let i = 0; i < selectedTooth.length; i++) {
+            if (_marking === undefined) {
+              _marking = { ...selectedTooth[i] };
+            } else {
+              _marking["distal"] =
+                _marking["distal"] === "N"
+                  ? selectedTooth[i]["distal"]
+                  : _marking["distal"];
+              _marking["labial"] =
+                _marking["labial"] === "N"
+                  ? selectedTooth[i]["labial"]
+                  : _marking["labial"];
+              _marking["incisal"] =
+                _marking["incisal"] === "N"
+                  ? selectedTooth[i]["incisal"]
+                  : _marking["incisal"];
+              _marking["palatal"] =
+                _marking["palatal"] === "N"
+                  ? selectedTooth[i]["palatal"]
+                  : _marking["palatal"];
+              _marking["mesial"] =
+                _marking["mesial"] === "N"
+                  ? selectedTooth[i]["mesial"]
+                  : _marking["mesial"];
+            }
           }
         }
-      }
-      // const _marking =
-      //   teeth !== undefined
-      //     ? Enumerable.from(teeth)
-      //         .where(w => w.teeth_number === tooth)
-      //         .firstOrDefault()
-      //     : undefined;
-      plot.push(
-        <div
-          key={i}
-          className={
-            "col tooth-sec up-side " +
-            (i <= 10
-              ? "incisors-up-up-"
-              : i === 11
-              ? "canine-up-"
-              : i <= 13
-              ? "premolar-up-"
-              : "i molar-up-") +
-            i
-          }
-        >
-          <span onClick={this.markAllSurface.bind(this)}>{tooth}</span>
-          <div className="surface-Marking">
-            <div
-              onClick={this.markTeethSurface.bind(this)}
-              className={
-                "top-surface " +
-                (_marking !== undefined
-                  ? _marking.distal === "Y" &&
-                    _marking.service_id === this.state.hims_d_services_id
-                    ? " mark-active"
-                    : ""
-                  : "")
-              }
-            >
-              <span surface="distal">D</span>
-            </div>
-            <div
-              onClick={this.markTeethSurface.bind(this)}
-              className={
-                "right-surface" +
-                (_marking !== undefined
-                  ? _marking.labial === "Y" &&
-                    _marking.service_id === this.state.hims_d_services_id
-                    ? " mark-active"
-                    : ""
-                  : "")
-              }
-            >
-              <span surface="labial">L</span>
-            </div>
-            <div
-              onClick={this.markTeethSurface.bind(this)}
-              className={
-                "bottom-surface" +
-                (_marking !== undefined
-                  ? _marking.incisal === "Y" &&
-                    _marking.service_id === this.state.hims_d_services_id
-                    ? " mark-active"
-                    : ""
-                  : "")
-              }
-            >
-              <span surface="incisal">I</span>
-            </div>
-            <div
-              onClick={this.markTeethSurface.bind(this)}
-              className={
-                "left-surface" +
-                (_marking !== undefined
-                  ? _marking.palatal === "Y" &&
-                    _marking.service_id === this.state.hims_d_services_id
-                    ? " mark-active"
-                    : ""
-                  : "")
-              }
-            >
-              <span surface="palatal">P</span>
-            </div>
-            {i >= 12 ? (
+        // const _marking =
+        //   teeth !== undefined
+        //     ? Enumerable.from(teeth)
+        //         .where(w => w.teeth_number === tooth)
+        //         .firstOrDefault()
+        //     : undefined;
+        plot.push(
+          <div
+            key={i}
+            className={
+              "col tooth-sec up-side " +
+              (i <= 10
+                ? "incisors-up-up-"
+                : i === 11
+                ? "canine-up-"
+                : i <= 13
+                ? "premolar-up-"
+                : "i molar-up-") +
+              i
+            }
+          >
+            <span onClick={this.markAllSurface.bind(this)}>{tooth}</span>
+            <div className="surface-Marking">
               <div
                 onClick={this.markTeethSurface.bind(this)}
                 className={
-                  "middle-surface" +
+                  "top-surface " +
                   (_marking !== undefined
-                    ? _marking.mesial === "Y" &&
+                    ? _marking.distal === "Y" &&
                       _marking.service_id === this.state.hims_d_services_id
                       ? " mark-active"
                       : ""
                     : "")
                 }
               >
-                <span surface="mesial">M</span>
+                <span surface="distal">D</span>
               </div>
-            ) : null}
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className={
+                  "right-surface" +
+                  (_marking !== undefined
+                    ? _marking.labial === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
+              >
+                <span surface="labial">L</span>
+              </div>
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className={
+                  "bottom-surface" +
+                  (_marking !== undefined
+                    ? _marking.incisal === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
+              >
+                <span surface="incisal">I</span>
+              </div>
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className={
+                  "left-surface" +
+                  (_marking !== undefined
+                    ? _marking.palatal === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
+              >
+                <span surface="palatal">P</span>
+              </div>
+              {i >= 12 ? (
+                <div
+                  onClick={this.markTeethSurface.bind(this)}
+                  className={
+                    "middle-surface" +
+                    (_marking !== undefined
+                      ? _marking.mesial === "Y" &&
+                        _marking.service_id === this.state.hims_d_services_id
+                        ? " mark-active"
+                        : ""
+                      : "")
+                  }
+                >
+                  <span surface="mesial">M</span>
+                </div>
+              ) : null}
+            </div>
           </div>
-        </div>
-      );
+        );
+      }
+    } else {
+      for (let i = 9; i < 17; i++) {
+        const tooth =
+          i === 9
+            ? 21
+            : i === 10
+            ? 22
+            : i === 11
+            ? 23
+            : i === 12
+            ? 24
+            : i === 13
+            ? 25
+            : i === 14
+            ? 26
+            : i === 15
+            ? 27
+            : i === 16
+            ? 28
+            : null;
+        let _marking = undefined;
+        if (teeth !== undefined) {
+          const selectedTooth = Enumerable.from(teeth)
+            .where(w => w.teeth_number === tooth)
+            .toArray();
+          for (let i = 0; i < selectedTooth.length; i++) {
+            if (_marking === undefined) {
+              _marking = { ...selectedTooth[i] };
+            } else {
+              _marking["distal"] =
+                _marking["distal"] === "N"
+                  ? selectedTooth[i]["distal"]
+                  : _marking["distal"];
+              _marking["labial"] =
+                _marking["labial"] === "N"
+                  ? selectedTooth[i]["labial"]
+                  : _marking["labial"];
+              _marking["incisal"] =
+                _marking["incisal"] === "N"
+                  ? selectedTooth[i]["incisal"]
+                  : _marking["incisal"];
+              _marking["palatal"] =
+                _marking["palatal"] === "N"
+                  ? selectedTooth[i]["palatal"]
+                  : _marking["palatal"];
+              _marking["mesial"] =
+                _marking["mesial"] === "N"
+                  ? selectedTooth[i]["mesial"]
+                  : _marking["mesial"];
+            }
+          }
+        }
+        // const _marking =
+        //   teeth !== undefined
+        //     ? Enumerable.from(teeth)
+        //         .where(w => w.teeth_number === tooth)
+        //         .firstOrDefault()
+        //     : undefined;
+        plot.push(
+          <div
+            key={i}
+            className={
+              "col tooth-sec up-side " +
+              (i <= 10
+                ? "incisors-up-up-"
+                : i === 11
+                ? "canine-up-"
+                : i <= 13
+                ? "premolar-up-"
+                : "i molar-up-") +
+              i
+            }
+          >
+            <span onClick={this.markAllSurface.bind(this)}>{tooth}</span>
+            <div className="surface-Marking">
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className={
+                  "top-surface " +
+                  (_marking !== undefined
+                    ? _marking.distal === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
+              >
+                <span surface="distal">D</span>
+              </div>
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className={
+                  "right-surface" +
+                  (_marking !== undefined
+                    ? _marking.labial === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
+              >
+                <span surface="labial">L</span>
+              </div>
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className={
+                  "bottom-surface" +
+                  (_marking !== undefined
+                    ? _marking.incisal === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
+              >
+                <span surface="incisal">I</span>
+              </div>
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className={
+                  "left-surface" +
+                  (_marking !== undefined
+                    ? _marking.palatal === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
+              >
+                <span surface="palatal">P</span>
+              </div>
+              {i >= 12 ? (
+                <div
+                  onClick={this.markTeethSurface.bind(this)}
+                  className={
+                    "middle-surface" +
+                    (_marking !== undefined
+                      ? _marking.mesial === "Y" &&
+                        _marking.service_id === this.state.hims_d_services_id
+                        ? " mark-active"
+                        : ""
+                      : "")
+                  }
+                >
+                  <span surface="mesial">M</span>
+                </div>
+              ) : null}
+            </div>
+          </div>
+        );
+      }
     }
     return plot;
   }
@@ -956,158 +1240,306 @@ class Dental extends Component {
   generateToothLowerRight(teeth) {
     let plot = [];
     let counter = 1;
-
-    for (let i = 32; i >= 25; i--) {
-      const tooth =
-        i === 25
-          ? 41
-          : i === 26
-          ? 42
-          : i === 27
-          ? 43
-          : i === 28
-          ? 44
-          : i === 29
-          ? 45
-          : i === 30
-          ? 46
-          : i === 31
-          ? 47
-          : i === 32
-          ? 48
-          : null;
-      let _marking = undefined;
-      if (teeth !== undefined) {
-        const selectedTooth = Enumerable.from(teeth)
-          .where(w => w.teeth_number === tooth)
-          .toArray();
-        for (let i = 0; i < selectedTooth.length; i++) {
-          if (_marking === undefined) {
-            _marking = { ...selectedTooth[i] };
-          } else {
-            _marking["distal"] =
-              _marking["distal"] === "N"
-                ? selectedTooth[i]["distal"]
-                : _marking["distal"];
-            _marking["labial"] =
-              _marking["labial"] === "N"
-                ? selectedTooth[i]["labial"]
-                : _marking["labial"];
-            _marking["incisal"] =
-              _marking["incisal"] === "N"
-                ? selectedTooth[i]["incisal"]
-                : _marking["incisal"];
-            _marking["palatal"] =
-              _marking["palatal"] === "N"
-                ? selectedTooth[i]["palatal"]
-                : _marking["palatal"];
-            _marking["mesial"] =
-              _marking["mesial"] === "N"
-                ? selectedTooth[i]["mesial"]
-                : _marking["mesial"];
+    if (this.props.age_in_years < 16) {
+      for (let i = 32; i >= 28; i--) {
+        const tooth =
+          i === 28
+            ? 81
+            : i === 29
+            ? 82
+            : i === 30
+            ? 83
+            : i === 31
+            ? 84
+            : i === 32
+            ? 85
+            : null;
+        let _marking = undefined;
+        if (teeth !== undefined) {
+          const selectedTooth = Enumerable.from(teeth)
+            .where(w => w.teeth_number === tooth)
+            .toArray();
+          for (let i = 0; i < selectedTooth.length; i++) {
+            if (_marking === undefined) {
+              _marking = { ...selectedTooth[i] };
+            } else {
+              _marking["distal"] =
+                _marking["distal"] === "N"
+                  ? selectedTooth[i]["distal"]
+                  : _marking["distal"];
+              _marking["labial"] =
+                _marking["labial"] === "N"
+                  ? selectedTooth[i]["labial"]
+                  : _marking["labial"];
+              _marking["incisal"] =
+                _marking["incisal"] === "N"
+                  ? selectedTooth[i]["incisal"]
+                  : _marking["incisal"];
+              _marking["palatal"] =
+                _marking["palatal"] === "N"
+                  ? selectedTooth[i]["palatal"]
+                  : _marking["palatal"];
+              _marking["mesial"] =
+                _marking["mesial"] === "N"
+                  ? selectedTooth[i]["mesial"]
+                  : _marking["mesial"];
+            }
           }
         }
-      }
-      // const _marking =
-      //   teeth !== undefined
-      //     ? Enumerable.from(teeth)
-      //         .where(w => w.teeth_number === i)
-      //         .firstOrDefault()
-      //     : undefined;
+        // const _marking =
+        //   teeth !== undefined
+        //     ? Enumerable.from(teeth)
+        //         .where(w => w.teeth_number === i)
+        //         .firstOrDefault()
+        //     : undefined;
 
-      plot.push(
-        <div
-          key={i}
-          className={
-            "col tooth-sec down-side " +
-            (counter <= 3
-              ? "molar-down-"
-              : counter <= 5
-              ? "premolar-down-"
-              : counter === 6
-              ? "canine-down-"
-              : "incisors-down-") +
-            counter
-          }
-        >
-          <span onClick={this.markAllSurface.bind(this)}>{tooth}</span>
-          <div className="surface-Marking">
-            <div
-              onClick={this.markTeethSurface.bind(this)}
-              className={
-                "top-surface " +
-                (_marking !== undefined
-                  ? _marking.distal === "Y" &&
-                    _marking.service_id === this.state.hims_d_services_id
-                    ? " mark-active"
-                    : ""
-                  : "")
-              }
-            >
-              <span surface="distal">D</span>
-            </div>
-            <div
-              onClick={this.markTeethSurface.bind(this)}
-              className={
-                "right-surface" +
-                (_marking !== undefined
-                  ? _marking.labial === "Y" &&
-                    _marking.service_id === this.state.hims_d_services_id
-                    ? " mark-active"
-                    : ""
-                  : "")
-              }
-            >
-              <span surface="labial">L</span>
-            </div>
-            <div
-              onClick={this.markTeethSurface.bind(this)}
-              className={
-                "bottom-surface" +
-                (_marking !== undefined
-                  ? _marking.incisal === "Y" &&
-                    _marking.service_id === this.state.hims_d_services_id
-                    ? " mark-active"
-                    : ""
-                  : "")
-              }
-            >
-              <span surface="incisal">I</span>
-            </div>
-            <div
-              onClick={this.markTeethSurface.bind(this)}
-              className={
-                "left-surface" +
-                (_marking !== undefined
-                  ? _marking.palatal === "Y" &&
-                    _marking.service_id === this.state.hims_d_services_id
-                    ? " mark-active"
-                    : ""
-                  : "")
-              }
-            >
-              <span surface="palatal">P</span>
-            </div>
-            {counter >= 6 ? null : (
+        plot.push(
+          <div
+            key={i}
+            className={
+              "col tooth-sec down-side " +
+              (counter <= 3
+                ? "molar-down-"
+                : counter <= 5
+                ? "premolar-down-"
+                : counter === 6
+                ? "canine-down-"
+                : "incisors-down-") +
+              counter
+            }
+          >
+            <span onClick={this.markAllSurface.bind(this)}>{tooth}</span>
+            <div className="surface-Marking">
               <div
                 onClick={this.markTeethSurface.bind(this)}
                 className={
-                  "middle-surface" +
+                  "top-surface " +
                   (_marking !== undefined
-                    ? _marking.mesial === "Y" &&
+                    ? _marking.distal === "Y" &&
                       _marking.service_id === this.state.hims_d_services_id
                       ? " mark-active"
                       : ""
                     : "")
                 }
               >
-                <span surface="mesial">M</span>
+                <span surface="distal">D</span>
               </div>
-            )}
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className={
+                  "right-surface" +
+                  (_marking !== undefined
+                    ? _marking.labial === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
+              >
+                <span surface="labial">L</span>
+              </div>
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className={
+                  "bottom-surface" +
+                  (_marking !== undefined
+                    ? _marking.incisal === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
+              >
+                <span surface="incisal">I</span>
+              </div>
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className={
+                  "left-surface" +
+                  (_marking !== undefined
+                    ? _marking.palatal === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
+              >
+                <span surface="palatal">P</span>
+              </div>
+              {counter >= 6 ? null : (
+                <div
+                  onClick={this.markTeethSurface.bind(this)}
+                  className={
+                    "middle-surface" +
+                    (_marking !== undefined
+                      ? _marking.mesial === "Y" &&
+                        _marking.service_id === this.state.hims_d_services_id
+                        ? " mark-active"
+                        : ""
+                      : "")
+                  }
+                >
+                  <span surface="mesial">M</span>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-      );
-      counter++;
+        );
+        counter++;
+      }
+    } else {
+      for (let i = 32; i >= 25; i--) {
+        const tooth =
+          i === 25
+            ? 41
+            : i === 26
+            ? 42
+            : i === 27
+            ? 43
+            : i === 28
+            ? 44
+            : i === 29
+            ? 45
+            : i === 30
+            ? 46
+            : i === 31
+            ? 47
+            : i === 32
+            ? 48
+            : null;
+        let _marking = undefined;
+        if (teeth !== undefined) {
+          const selectedTooth = Enumerable.from(teeth)
+            .where(w => w.teeth_number === tooth)
+            .toArray();
+          for (let i = 0; i < selectedTooth.length; i++) {
+            if (_marking === undefined) {
+              _marking = { ...selectedTooth[i] };
+            } else {
+              _marking["distal"] =
+                _marking["distal"] === "N"
+                  ? selectedTooth[i]["distal"]
+                  : _marking["distal"];
+              _marking["labial"] =
+                _marking["labial"] === "N"
+                  ? selectedTooth[i]["labial"]
+                  : _marking["labial"];
+              _marking["incisal"] =
+                _marking["incisal"] === "N"
+                  ? selectedTooth[i]["incisal"]
+                  : _marking["incisal"];
+              _marking["palatal"] =
+                _marking["palatal"] === "N"
+                  ? selectedTooth[i]["palatal"]
+                  : _marking["palatal"];
+              _marking["mesial"] =
+                _marking["mesial"] === "N"
+                  ? selectedTooth[i]["mesial"]
+                  : _marking["mesial"];
+            }
+          }
+        }
+        // const _marking =
+        //   teeth !== undefined
+        //     ? Enumerable.from(teeth)
+        //         .where(w => w.teeth_number === i)
+        //         .firstOrDefault()
+        //     : undefined;
+
+        plot.push(
+          <div
+            key={i}
+            className={
+              "col tooth-sec down-side " +
+              (counter <= 3
+                ? "molar-down-"
+                : counter <= 5
+                ? "premolar-down-"
+                : counter === 6
+                ? "canine-down-"
+                : "incisors-down-") +
+              counter
+            }
+          >
+            <span onClick={this.markAllSurface.bind(this)}>{tooth}</span>
+            <div className="surface-Marking">
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className={
+                  "top-surface " +
+                  (_marking !== undefined
+                    ? _marking.distal === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
+              >
+                <span surface="distal">D</span>
+              </div>
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className={
+                  "right-surface" +
+                  (_marking !== undefined
+                    ? _marking.labial === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
+              >
+                <span surface="labial">L</span>
+              </div>
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className={
+                  "bottom-surface" +
+                  (_marking !== undefined
+                    ? _marking.incisal === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
+              >
+                <span surface="incisal">I</span>
+              </div>
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className={
+                  "left-surface" +
+                  (_marking !== undefined
+                    ? _marking.palatal === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
+              >
+                <span surface="palatal">P</span>
+              </div>
+              {counter >= 6 ? null : (
+                <div
+                  onClick={this.markTeethSurface.bind(this)}
+                  className={
+                    "middle-surface" +
+                    (_marking !== undefined
+                      ? _marking.mesial === "Y" &&
+                        _marking.service_id === this.state.hims_d_services_id
+                        ? " mark-active"
+                        : ""
+                      : "")
+                  }
+                >
+                  <span surface="mesial">M</span>
+                </div>
+              )}
+            </div>
+          </div>
+        );
+        counter++;
+      }
     }
     return plot;
   }
@@ -1115,158 +1547,306 @@ class Dental extends Component {
   generateToothLowerLeft(teeth) {
     let plot = [];
     let counter = 9;
-
-    for (let i = 24; i >= 17; i--) {
-      const tooth =
-        i === 24
-          ? 31
-          : i === 23
-          ? 32
-          : i === 22
-          ? 33
-          : i === 21
-          ? 34
-          : i === 20
-          ? 35
-          : i === 19
-          ? 36
-          : i === 18
-          ? 37
-          : i === 17
-          ? 38
-          : null;
-      let _marking = undefined;
-      if (teeth !== undefined) {
-        const selectedTooth = Enumerable.from(teeth)
-          .where(w => w.teeth_number === tooth)
-          .toArray();
-        for (let i = 0; i < selectedTooth.length; i++) {
-          if (_marking === undefined) {
-            _marking = { ...selectedTooth[i] };
-          } else {
-            _marking["distal"] =
-              _marking["distal"] === "N"
-                ? selectedTooth[i]["distal"]
-                : _marking["distal"];
-            _marking["labial"] =
-              _marking["labial"] === "N"
-                ? selectedTooth[i]["labial"]
-                : _marking["labial"];
-            _marking["incisal"] =
-              _marking["incisal"] === "N"
-                ? selectedTooth[i]["incisal"]
-                : _marking["incisal"];
-            _marking["palatal"] =
-              _marking["palatal"] === "N"
-                ? selectedTooth[i]["palatal"]
-                : _marking["palatal"];
-            _marking["mesial"] =
-              _marking["mesial"] === "N"
-                ? selectedTooth[i]["mesial"]
-                : _marking["mesial"];
+    if (this.props.age_in_years < 16) {
+      for (let i = 24; i >= 20; i--) {
+        const tooth =
+          i === 24
+            ? 71
+            : i === 23
+            ? 72
+            : i === 22
+            ? 73
+            : i === 21
+            ? 74
+            : i === 20
+            ? 75
+            : null;
+        let _marking = undefined;
+        if (teeth !== undefined) {
+          const selectedTooth = Enumerable.from(teeth)
+            .where(w => w.teeth_number === tooth)
+            .toArray();
+          for (let i = 0; i < selectedTooth.length; i++) {
+            if (_marking === undefined) {
+              _marking = { ...selectedTooth[i] };
+            } else {
+              _marking["distal"] =
+                _marking["distal"] === "N"
+                  ? selectedTooth[i]["distal"]
+                  : _marking["distal"];
+              _marking["labial"] =
+                _marking["labial"] === "N"
+                  ? selectedTooth[i]["labial"]
+                  : _marking["labial"];
+              _marking["incisal"] =
+                _marking["incisal"] === "N"
+                  ? selectedTooth[i]["incisal"]
+                  : _marking["incisal"];
+              _marking["palatal"] =
+                _marking["palatal"] === "N"
+                  ? selectedTooth[i]["palatal"]
+                  : _marking["palatal"];
+              _marking["mesial"] =
+                _marking["mesial"] === "N"
+                  ? selectedTooth[i]["mesial"]
+                  : _marking["mesial"];
+            }
           }
         }
-      }
-      // const _marking =
-      //   teeth !== undefined
-      //     ? Enumerable.from(teeth)
-      //         .where(w => w.teeth_number === i)
-      //         .firstOrDefault()
-      //     : undefined;
+        // const _marking =
+        //   teeth !== undefined
+        //     ? Enumerable.from(teeth)
+        //         .where(w => w.teeth_number === i)
+        //         .firstOrDefault()
+        //     : undefined;
 
-      plot.push(
-        <div
-          key={i}
-          className={
-            "col tooth-sec down-side " +
-            (counter <= 10
-              ? "incisors-down-"
-              : counter === 11
-              ? "canine-down-"
-              : counter < 14
-              ? "premolar-down-"
-              : "i molar-down-") +
-            counter
-          }
-        >
-          <span onClick={this.markAllSurface.bind(this)}>{tooth}</span>
-          <div className="surface-Marking">
-            <div
-              onClick={this.markTeethSurface.bind(this)}
-              className={
-                "top-surface" +
-                (_marking !== undefined
-                  ? _marking.distal === "Y" &&
-                    _marking.service_id === this.state.hims_d_services_id
-                    ? " mark-active"
-                    : ""
-                  : "")
-              }
-            >
-              <span surface="distal">D</span>
-            </div>
-            <div
-              onClick={this.markTeethSurface.bind(this)}
-              className={
-                "right-surface " +
-                (_marking !== undefined
-                  ? _marking.labial === "Y" &&
-                    _marking.service_id === this.state.hims_d_services_id
-                    ? " mark-active"
-                    : ""
-                  : "")
-              }
-            >
-              <span surface="labial">L</span>
-            </div>
-            <div
-              onClick={this.markTeethSurface.bind(this)}
-              className={
-                "bottom-surface " +
-                (_marking !== undefined
-                  ? _marking.incisal === "Y" &&
-                    _marking.service_id === this.state.hims_d_services_id
-                    ? " mark-active"
-                    : ""
-                  : "")
-              }
-            >
-              <span surface="incisal">I</span>
-            </div>
-            <div
-              onClick={this.markTeethSurface.bind(this)}
-              className={
-                "left-surface " +
-                (_marking !== undefined
-                  ? _marking.palatal === "Y" &&
-                    _marking.service_id === this.state.hims_d_services_id
-                    ? " mark-active"
-                    : ""
-                  : "")
-              }
-            >
-              <span surface="palatal">P</span>
-            </div>
-            {i <= 21 ? (
+        plot.push(
+          <div
+            key={i}
+            className={
+              "col tooth-sec down-side " +
+              (counter <= 10
+                ? "incisors-down-"
+                : counter === 11
+                ? "canine-down-"
+                : counter < 14
+                ? "premolar-down-"
+                : "i molar-down-") +
+              counter
+            }
+          >
+            <span onClick={this.markAllSurface.bind(this)}>{tooth}</span>
+            <div className="surface-Marking">
               <div
                 onClick={this.markTeethSurface.bind(this)}
                 className={
-                  "middle-surface " +
+                  "top-surface" +
                   (_marking !== undefined
-                    ? _marking.mesial === "Y" &&
+                    ? _marking.distal === "Y" &&
                       _marking.service_id === this.state.hims_d_services_id
                       ? " mark-active"
                       : ""
                     : "")
                 }
               >
-                <span surface="mesial">M</span>
+                <span surface="distal">D</span>
               </div>
-            ) : null}
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className={
+                  "right-surface " +
+                  (_marking !== undefined
+                    ? _marking.labial === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
+              >
+                <span surface="labial">L</span>
+              </div>
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className={
+                  "bottom-surface " +
+                  (_marking !== undefined
+                    ? _marking.incisal === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
+              >
+                <span surface="incisal">I</span>
+              </div>
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className={
+                  "left-surface " +
+                  (_marking !== undefined
+                    ? _marking.palatal === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
+              >
+                <span surface="palatal">P</span>
+              </div>
+              {i <= 21 ? (
+                <div
+                  onClick={this.markTeethSurface.bind(this)}
+                  className={
+                    "middle-surface " +
+                    (_marking !== undefined
+                      ? _marking.mesial === "Y" &&
+                        _marking.service_id === this.state.hims_d_services_id
+                        ? " mark-active"
+                        : ""
+                      : "")
+                  }
+                >
+                  <span surface="mesial">M</span>
+                </div>
+              ) : null}
+            </div>
           </div>
-        </div>
-      );
-      counter++;
+        );
+        counter++;
+      }
+    } else {
+      for (let i = 24; i >= 17; i--) {
+        const tooth =
+          i === 24
+            ? 31
+            : i === 23
+            ? 32
+            : i === 22
+            ? 33
+            : i === 21
+            ? 34
+            : i === 20
+            ? 35
+            : i === 19
+            ? 36
+            : i === 18
+            ? 37
+            : i === 17
+            ? 38
+            : null;
+        let _marking = undefined;
+        if (teeth !== undefined) {
+          const selectedTooth = Enumerable.from(teeth)
+            .where(w => w.teeth_number === tooth)
+            .toArray();
+          for (let i = 0; i < selectedTooth.length; i++) {
+            if (_marking === undefined) {
+              _marking = { ...selectedTooth[i] };
+            } else {
+              _marking["distal"] =
+                _marking["distal"] === "N"
+                  ? selectedTooth[i]["distal"]
+                  : _marking["distal"];
+              _marking["labial"] =
+                _marking["labial"] === "N"
+                  ? selectedTooth[i]["labial"]
+                  : _marking["labial"];
+              _marking["incisal"] =
+                _marking["incisal"] === "N"
+                  ? selectedTooth[i]["incisal"]
+                  : _marking["incisal"];
+              _marking["palatal"] =
+                _marking["palatal"] === "N"
+                  ? selectedTooth[i]["palatal"]
+                  : _marking["palatal"];
+              _marking["mesial"] =
+                _marking["mesial"] === "N"
+                  ? selectedTooth[i]["mesial"]
+                  : _marking["mesial"];
+            }
+          }
+        }
+        // const _marking =
+        //   teeth !== undefined
+        //     ? Enumerable.from(teeth)
+        //         .where(w => w.teeth_number === i)
+        //         .firstOrDefault()
+        //     : undefined;
+
+        plot.push(
+          <div
+            key={i}
+            className={
+              "col tooth-sec down-side " +
+              (counter <= 10
+                ? "incisors-down-"
+                : counter === 11
+                ? "canine-down-"
+                : counter < 14
+                ? "premolar-down-"
+                : "i molar-down-") +
+              counter
+            }
+          >
+            <span onClick={this.markAllSurface.bind(this)}>{tooth}</span>
+            <div className="surface-Marking">
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className={
+                  "top-surface" +
+                  (_marking !== undefined
+                    ? _marking.distal === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
+              >
+                <span surface="distal">D</span>
+              </div>
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className={
+                  "right-surface " +
+                  (_marking !== undefined
+                    ? _marking.labial === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
+              >
+                <span surface="labial">L</span>
+              </div>
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className={
+                  "bottom-surface " +
+                  (_marking !== undefined
+                    ? _marking.incisal === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
+              >
+                <span surface="incisal">I</span>
+              </div>
+              <div
+                onClick={this.markTeethSurface.bind(this)}
+                className={
+                  "left-surface " +
+                  (_marking !== undefined
+                    ? _marking.palatal === "Y" &&
+                      _marking.service_id === this.state.hims_d_services_id
+                      ? " mark-active"
+                      : ""
+                    : "")
+                }
+              >
+                <span surface="palatal">P</span>
+              </div>
+              {i <= 21 ? (
+                <div
+                  onClick={this.markTeethSurface.bind(this)}
+                  className={
+                    "middle-surface " +
+                    (_marking !== undefined
+                      ? _marking.mesial === "Y" &&
+                        _marking.service_id === this.state.hims_d_services_id
+                        ? " mark-active"
+                        : ""
+                      : "")
+                  }
+                >
+                  <span surface="mesial">M</span>
+                </div>
+              ) : null}
+            </div>
+          </div>
+        );
+        counter++;
+      }
     }
     return plot;
   }
@@ -1551,55 +2131,29 @@ class Dental extends Component {
   }
 
   openAddModal(data) {
-    if (this.props.age_in_years < 15) {
-      this.setState(
-        {
-          openDentalModalChild: true,
-          selected_treatement_plan: data.plan_name,
-          hims_f_treatment_plan_id: data.hims_f_treatment_plan_id,
-          treatment_gridUpdate: false
-        },
-        () => {
-          algaehApiCall({
-            uri: "/dental/getDentalTreatment",
-            method: "GET",
-            data: { treatment_plan_id: this.state.hims_f_treatment_plan_id },
-            onSuccess: response => {
-              if (response.data.success) {
-                this.setState({
-                  highlightTeeth: response.data.records
-                });
-              }
-            },
-            onError: error => {}
-          });
-        }
-      );
-    } else {
-      this.setState(
-        {
-          openDentalModal: true,
-          selected_treatement_plan: data.plan_name,
-          hims_f_treatment_plan_id: data.hims_f_treatment_plan_id,
-          treatment_gridUpdate: false
-        },
-        () => {
-          algaehApiCall({
-            uri: "/dental/getDentalTreatment",
-            method: "GET",
-            data: { treatment_plan_id: this.state.hims_f_treatment_plan_id },
-            onSuccess: response => {
-              if (response.data.success) {
-                this.setState({
-                  highlightTeeth: response.data.records
-                });
-              }
-            },
-            onError: error => {}
-          });
-        }
-      );
-    }
+    this.setState(
+      {
+        openDentalModal: true,
+        selected_treatement_plan: data.plan_name,
+        hims_f_treatment_plan_id: data.hims_f_treatment_plan_id,
+        treatment_gridUpdate: false
+      },
+      () => {
+        algaehApiCall({
+          uri: "/dental/getDentalTreatment",
+          method: "GET",
+          data: { treatment_plan_id: this.state.hims_f_treatment_plan_id },
+          onSuccess: response => {
+            if (response.data.success) {
+              this.setState({
+                highlightTeeth: response.data.records
+              });
+            }
+          },
+          onError: error => {}
+        });
+      }
+    );
   }
   onClose = e => {
     this.setState({ openBillingModal: false });
@@ -1658,7 +2212,9 @@ class Dental extends Component {
     );
   }
   render() {
+    debugger;
     let billDetails = this.state.billDetails;
+    let child_dental_chart = this.props.age_in_years < 16 ? "childchart" : "";
     return (
       <div id="dentalTreatment">
         <AlgaehModalPopUp
@@ -1989,7 +2545,7 @@ class Dental extends Component {
             }
           }}
           openPopup={this.state.openDentalModal}
-          title="Dental Plan For Adults"
+          title="Dental Plan"
         >
           <div className="popupInner" data-validate="addDentalPlanDiv">
             <div className="col-12">
@@ -2122,223 +2678,10 @@ class Dental extends Component {
                     />
                   </div>
                   <hr />
-                  <div className="col-lg-12" id="dentalTreatment">
-                    <div className="row top-teeth-sec">
-                      <div className="col-lg-6 teeth-sec">
-                        <h6>Upper Right</h6>
-                        <div className="row">
-                          {this.generateToothUpperRight(
-                            this.state.highlightTeeth
-                          )}
-                        </div>
-                      </div>
-                      <div className="col-lg-6 teeth-sec">
-                        <h6>Upper Left</h6>
-                        <div className="row">
-                          {this.generateToothUpperLeft(
-                            this.state.highlightTeeth
-                          )}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="row bottom-teeth-sec">
-                      <div className="col-lg-6 teeth-sec">
-                        <div className="row">
-                          {this.generateToothLowerRight(
-                            this.state.highlightTeeth
-                          )}
-                        </div>
-                        <h6>Lower Right</h6>
-                      </div>
-                      <div className="col-lg-6 teeth-sec">
-                        <div className="row">
-                          {this.generateToothLowerLeft(
-                            this.state.highlightTeeth
-                          )}
-                        </div>
-                        <h6>Lower Left</h6>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="popupFooter">
-            <div className="col-lg-12 margin-bottom-15">
-              <ButtonType
-                others={{ style: { float: "right" } }}
-                classname="btn-primary"
-                onClick={this.addDentalPlan.bind(this, this)}
-                label={{
-                  forceLabel: "Add to List",
-                  returnText: true
-                }}
-              />
-              {/* <button
-                onClick={this.addDentalPlan.bind(this)}
-                className="btn btn-primary"
-                style={{ float: "right" }}
-              >
-                Add to List
-              </button>*/}
-            </div>
-          </div>
-        </AlgaehModalPopUp>
-        {/* For Childerns */}
-        <AlgaehModalPopUp
-          events={{
-            onClose: () => {
-              teeth = [];
-              my_send_obj = {};
-              this.setState({
-                treatment_gridUpdate: true,
-                openDentalModalChild: false,
-                hims_d_services_id: null,
-                quantity: 0,
-                standard_fee: 0,
-                total_price: 0,
-                approval_status: "N"
-              });
-            }
-          }}
-          openPopup={this.state.openDentalModalChild}
-          title="Dental Plan For Children"
-        >
-          <div className="popupInner" data-validate="addDentalPlanDiv">
-            <div className="col-12">
-              <div className="row">
-                <div className="col-12 popRightDiv">
-                  <div className="row">
-                    <AlagehFormGroup
-                      div={{ className: "col-3" }}
-                      label={{
-                        fieldName: "treatment_plan",
-                        isImp: true
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "treatement_plan",
-                        value: this.state.selected_treatement_plan,
-                        events: {
-                          onChange: this.textHandle.bind(this)
-                        },
-                        others: {
-                          disabled: true,
-                          placeholder: "Enter Treatment Name"
-                        }
-                      }}
-                    />
-
-                    <AlagehAutoComplete
-                      div={{ className: "col-2" }}
-                      label={{
-                        fieldName: "sel_a_proc",
-                        isImp: true
-                      }}
-                      selector={{
-                        name: "hims_d_services_id",
-                        className: "select-fld",
-                        value: this.state.hims_d_services_id,
-                        dataSource: {
-                          textField: "service_name",
-                          valueField: "hims_d_services_id",
-                          data: this.state.procedures
-                        },
-                        onChange: this.dropDownHandler.bind(this),
-                        onClear: () => {
-                          this.setState({
-                            hims_d_services_id: "",
-                            standard_fee: 0
-                          });
-                        }
-                      }}
-                    />
-
-                    <AlagehFormGroup
-                      div={{ className: "col" }}
-                      label={{
-                        fieldName: "unit_cost",
-                        isImp: true
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "standard_fee",
-                        value: this.state.standard_fee,
-                        events: {
-                          onChange: this.textHandle.bind(this)
-                        },
-                        others: {
-                          disabled: true,
-                          min: 0,
-                          type: "number"
-                        }
-                      }}
-                    />
-
-                    <AlagehFormGroup
-                      div={{ className: "col" }}
-                      label={{
-                        fieldName: "quantity",
-                        isImp: true
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "quantity",
-                        value: this.state.quantity,
-                        events: {
-                          onChange: this.textHandle.bind(this)
-                        },
-                        others: {
-                          disabled: true,
-                          min: 0,
-                          type: "number"
-                        }
-                      }}
-                    />
-                    <AlagehFormGroup
-                      div={{ className: "col" }}
-                      label={{
-                        fieldName: "total_price",
-                        isImp: true
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "total_price",
-                        value: this.state.total_price,
-                        events: {
-                          onChange: this.textHandle.bind(this)
-                        },
-                        others: {
-                          disabled: true,
-                          min: 0,
-                          type: "number"
-                        }
-                      }}
-                    />
-
-                    <AlgaehDateHandler
-                      div={{ className: "col" }}
-                      label={{ fieldName: "schld_date", isImp: false }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "scheduled_date"
-                      }}
-                      minDate={new Date()}
-                      events={{
-                        onChange: selectedDate => {
-                          this.setState({
-                            scheduled_date: selectedDate
-                          });
-                        }
-                      }}
-                      value={this.state.scheduled_date}
-                    />
-                  </div>
-                  <hr />
-                  <div className="col-lg-12" id="dentalTreatment">
+                  <div
+                    className={"col-lg-12 " + child_dental_chart}
+                    id="dentalTreatment"
+                  >
                     <div className="row top-teeth-sec">
                       <div className="col-lg-6 teeth-sec">
                         <h6>Upper Right</h6>
@@ -2396,6 +2739,7 @@ class Dental extends Component {
             </div>
           </div>
         </AlgaehModalPopUp>
+
         <div className="portlet portlet-bordered margin-bottom-15">
           <div className="portlet-title" data-validate="addTreatementDiv">
             <div className="row margin-bottom-15">
@@ -2534,9 +2878,6 @@ class Dental extends Component {
                               />
 
                               <i
-                                style={{
-                                  pointerEvents: isDisable ? "none" : null
-                                }}
                                 onClick={this.openAddModal.bind(this, row)}
                                 className="fas fa-plus"
                               />

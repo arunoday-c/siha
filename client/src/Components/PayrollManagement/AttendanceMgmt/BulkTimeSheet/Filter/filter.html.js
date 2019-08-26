@@ -35,6 +35,7 @@ export default function Filter(props) {
   const [fromMax, setFromMax] = useState(new Date());
   const [toMin, setToMin] = useState(new Date());
   const [toMax, setToMax] = useState(new Date());
+  const [loadingPriew, setLoadingPriew] = useState(false);
   useEffect(() => {
     getHospitals(data => {
       setHospitals(data);
@@ -258,7 +259,7 @@ export default function Filter(props) {
         type="file"
         name="manualTimeSheet"
         onChange={e => {
-          UploadTimesheet(e.target.files);
+          if (e.target.files.length > 0) UploadTimesheet(e.target.files, props);
         }}
       />
 
@@ -287,7 +288,18 @@ export default function Filter(props) {
         className="btn btn-primary"
       >
         {!loading ? (
-          <span>Load</span>
+          <span>Download</span>
+        ) : (
+          <i className="fas fa-spinner fa-spin" />
+        )}
+      </button>
+      <button
+        onClick={() => {}}
+        style={{ marginLeft: 10, float: "right" }}
+        className="btn btn-primary"
+      >
+        {!loadingPriew ? (
+          <span>Preview</span>
         ) : (
           <i className="fas fa-spinner fa-spin" />
         )}

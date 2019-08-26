@@ -8,18 +8,27 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 import { downloadExcel } from "./bulkTimeSheet.events";
 function BulkTimeSheet(props) {
+  const [filter, setFilter] = useState({});
+  const [data, setData] = useState([]);
   return (
     <div id="bulkManualTimeSheet">
       <Filter
         downloadExcel={data => {
           downloadExcel(data);
         }}
+        uploadExcel={data => {
+          debugger;
+          const internalData = data.data;
+          const findFilter = Object.delete(data.data);
+          setFilter(findFilter);
+          setData(internalData);
+        }}
       />
 
       <div className="portlet portlet-bordered margin-top-15">
         <div className="portlet-title">
           <div className="caption">
-            <label className="label">Selected Employee</label>
+            <label className="label">Timesheet</label>
           </div>
           <div className="actions" />
         </div>
@@ -28,171 +37,32 @@ function BulkTimeSheet(props) {
             <thead>
               <tr>
                 <th>Emp Name & Code</th>
-                <th>Day 1</th>
-                <th>Day 1</th>
-                <th>Day 1</th>
-                <th>Day 1</th>
-                <th>Day 1</th>
-                <th>Day 1</th>
-                <th>Day 1</th>
-                <th>Day 1</th>
-                <th>Day 1</th>
-                <th>Day 1</th>
-                <th>Day 1</th>
-                <th>Day 1</th>
-                <th>Day 1</th>
-                <th>Day 1</th>
-                <th>Day 1</th>
-                <th>Day 1</th>
-                <th>Day 1</th>
-                <th>Day 1</th>
-                <th>Day 1</th>
-                <th>Day 1</th>
-                <th>Day 1</th>
-                <th>Day 1</th>
-                <th>Day 1</th>
-                <th>Day 1</th>
-                <th>Day 1</th>
-                <th>Day 1</th>
-                <th>Day 1</th>
-                <th>Day 1</th>
-                <th>Day 1</th>
-                <th>Day 1</th>
-                <th>Day 1</th>
+                {data.length > 0
+                  ? data[0].map((item, index) => (
+                      <th key={index}> {item.attendance_date} </th>
+                    ))
+                  : null}
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>
-                  <small>EMP0001</small>
-                  <span>Aboobacker Sidhiqe</span>
-                </td>
-                <td>
-                  <small>HO</small>
-                  <span>9hr</span>
-                </td>
-
-                <td>
-                  <small>HO</small>
-                  <span>9hr</span>
-                </td>
-                <td>
-                  <small>HO</small>
-                  <span>9hr</span>
-                </td>
-                <td>
-                  <small>HO</small>
-                  <span>9hr</span>
-                </td>
-                <td>
-                  <small>HO</small>
-                  <span>9hr</span>
-                </td>
-                <td>
-                  <small>HO</small>
-                  <span>9hr</span>
-                </td>
-                <td>
-                  <small>HO</small>
-                  <span>9hr</span>
-                </td>
-                <td>
-                  <small>HO</small>
-                  <span>9hr</span>
-                </td>
-                <td>
-                  <small>HO</small>
-                  <span>9hr</span>
-                </td>
-                <td>
-                  <small>HO</small>
-                  <span>9hr</span>
-                </td>
-                <td>
-                  <small>HO</small>
-                  <span>9hr</span>
-                </td>
-                <td>
-                  <small>HO</small>
-                  <span>9hr</span>
-                </td>
-                <td>
-                  <small>HO</small>
-                  <span>9hr</span>
-                </td>
-                <td>
-                  <small>HO</small>
-                  <span>9hr</span>
-                </td>
-                <td>
-                  <small>HO</small>
-                  <span>9hr</span>
-                </td>
-                <td>
-                  <small>HO</small>
-                  <span>9hr</span>
-                </td>
-                <td>
-                  <small>HO</small>
-                  <span>9hr</span>
-                </td>
-                <td>
-                  <small>HO</small>
-                  <span>9hr</span>
-                </td>
-                <td>
-                  <small>HO</small>
-                  <span>9hr</span>
-                </td>
-                <td>
-                  <small>HO</small>
-                  <span>9hr</span>
-                </td>
-                <td>
-                  <small>HO</small>
-                  <span>9hr</span>
-                </td>
-                <td>
-                  <small>HO</small>
-                  <span>9hr</span>
-                </td>
-                <td>
-                  <small>HO</small>
-                  <span>9hr</span>
-                </td>
-                <td>
-                  <small>HO</small>
-                  <span>9hr</span>
-                </td>
-                <td>
-                  <small>HO</small>
-                  <span>9hr</span>
-                </td>
-                <td>
-                  <small>HO</small>
-                  <span>9hr</span>
-                </td>
-                <td>
-                  <small>HO</small>
-                  <span>9hr</span>
-                </td>
-                <td>
-                  <small>HO</small>
-                  <span>9hr</span>
-                </td>
-                <td>
-                  <small>HO</small>
-                  <span>9hr</span>
-                </td>
-                <td>
-                  <small>HO</small>
-                  <span>9hr</span>
-                </td>
-                <td>
-                  <small>HO</small>
-                  <span>9hr</span>
-                </td>
-              </tr>
+              {data.map((item, index) => (
+                <tr>
+                  {item.map((itm, indx) => (
+                    <React.Fragment>
+                      {indx === 0 ? (
+                        <td key={indx + "_emp"}>
+                          <small>{itm.employee_code}</small>
+                          <span>{itm.employee_name}</span>
+                        </td>
+                      ) : null}
+                      <td key={indx + "_day"}>
+                        <small>{itm.status}</small>
+                        <span>{itm.worked_hours}</span>
+                      </td>
+                    </React.Fragment>
+                  ))}
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
