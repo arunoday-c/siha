@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "./RCMWorkbench.css";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-import FrontDesk from "../../../Search/FrontDesk.json";
+import spotlightSearch from "../../../Search/spotlightSearch.json";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import {
   AlgaehDataGrid,
@@ -253,7 +253,7 @@ class RCMWorkbench extends Component {
   patientSearch() {
     AlgaehSearch({
       searchGrid: {
-        columns: FrontDesk
+        columns: spotlightSearch.frontDesk.patients
       },
       searchName: "patients",
       uri: "/gloabelSearch/get",

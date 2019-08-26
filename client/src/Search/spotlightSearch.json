@@ -20,6 +20,36 @@
       {
         "fieldName": "employee_id",
         "label": "Employee ID"
+      },
+      {
+        "fieldName": "primary_id_no",
+        "label": "Primary Id No."
+      }
+    ],
+    "patientappoinment": [
+      {
+        "fieldName": "PA.patient_code",
+        "label": "Patient Code"
+      },
+      {
+        "fieldName": "patient_name",
+        "label": "Name"
+      },
+      {
+        "fieldName": "PA.arabic_name",
+        "label": "Arabic Name"
+      },
+      {
+        "fieldName": "PA.contact_number",
+        "label": "Contact Number"
+      },
+      {
+        "fieldName": "employee_id",
+        "label": "Employee ID"
+      },
+      {
+        "fieldName": "primary_id_no",
+        "label": "Primary Id No."
       }
     ]
   },

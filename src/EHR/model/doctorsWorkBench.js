@@ -833,7 +833,7 @@ let updatdePatEncntrStatus = (req, res, next) => {
                         });
                       }
                       releaseDBConnection(db, connection);
-                      req.records = result;
+                      req.records = { encounter_id: currentEncounterNo };
                       next();
                     }
                   );

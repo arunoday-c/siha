@@ -5705,6 +5705,7 @@ module.exports = {
       next(e);
     }
   },
+
   //created by irfan:
   uploadBulkManualTimeSheet: (req, res, next) => {
     const _mysql = new algaehMysql();
@@ -5770,18 +5771,33 @@ module.exports = {
                   switch (day["worked_status"]) {
                     case "AB":
                     case "PR":
-                      insertArray.push({
-                        worked_hours: 0,
-                        hours: 0,
-                        minutes: 0,
-                        actual_hours: STDWH,
-                        actual_minutes: STDWM,
-                        employee_id: day.employee_id,
-                        attendance_date: day.attendance_date,
-                        status: day["worked_status"],
-                        sub_department_id: day.sub_department_id,
-                        project_id: day.project_id
-                      });
+                      if (
+                        day["worked_status"] == day["status"] ||
+                        (day["worked_status"] == "AB" && day["status"] == "PR")
+                      ) {
+                        insertArray.push({
+                          worked_hours: 0,
+                          hours: 0,
+                          minutes: 0,
+                          actual_hours: STDWH,
+                          actual_minutes: STDWM,
+                          employee_id: day.employee_id,
+                          attendance_date: day.attendance_date,
+                          status: day["worked_status"],
+                          sub_department_id: day.sub_department_id,
+                          project_id: day.project_id
+                        });
+                      } else {
+                        req.records = {
+                          invalid_input: true,
+                          message: `${employee["employee_code"]} on  ${
+                            day.attendance_date
+                          } is ${day["status"]} not  PR`
+                        };
+                        next();
+                        return;
+                      }
+
                       break;
                     case "WO":
 
@@ -5804,22 +5820,22 @@ module.exports = {
                           project_id: day.project_id
                         });
                       } else {
-                        let old = "";
+                        let actual = "";
                         let neww = "";
 
                         switch (day["status"]) {
                           case "WO":
-                            old = " week off ";
+                            actual = " week off ";
                             break;
 
                           case "HO":
-                            old = " Holiday ";
+                            actual = " Holiday ";
                             break;
                           case "PL":
-                            old = " Paid Leave ";
+                            actual = " Paid Leave ";
                             break;
                           case "UL":
-                            old = " Paid Leave ";
+                            actual = " Paid Leave ";
                             break;
                         }
                         switch (day["worked_status"]) {
@@ -5842,9 +5858,10 @@ module.exports = {
                           invalid_input: true,
                           message: `${employee["employee_code"]} on  ${
                             day.attendance_date
-                          } is ${old} not ${neww}`
+                          } is ${actual} not ${neww}`
                         };
                         next();
+                        return;
                       }
 
                       break;
@@ -5855,6 +5872,16 @@ module.exports = {
                       break;
 
                     case "N":
+                      if (day["worked_status"] !== day["status"]) {
+                        req.records = {
+                          invalid_input: true,
+                          message: `${employee["employee_code"]} on  ${
+                            day.attendance_date
+                          } is ${day["status"]} not  N`
+                        };
+                        next();
+                        return;
+                      }
                       break;
 
                     default:
@@ -5903,9 +5930,9 @@ module.exports = {
                   .executeQuery({
                     query:
                       " INSERT INTO hims_f_daily_time_sheet(??) VALUES ?  ON DUPLICATE KEY UPDATE \
-              status=values(status),hours=values(hours),minutes=values(minutes),\
-              worked_hours=values(worked_hours),actual_hours=values(actual_hours),\
-              actual_minutes=values(actual_minutes),project_id=values(project_id)",
+            status=values(status),hours=values(hours),minutes=values(minutes),\
+            worked_hours=values(worked_hours),actual_hours=values(actual_hours),\
+            actual_minutes=values(actual_minutes),project_id=values(project_id)",
                     values: insertArray,
                     includeValues: insurtColumns,
                     extraValues: {
@@ -5931,6 +5958,7 @@ module.exports = {
                   message: "No data found to upload"
                 };
                 next();
+                return;
               }
             })
             .catch(e => {
@@ -5945,6 +5973,7 @@ module.exports = {
       next(e);
     }
   },
+
   //created by irfan:
   previewBulkTimeSheet: (req, res, next) => {
     try {
@@ -7034,6 +7063,7 @@ function BulktimesheetCalc(req, res, next) {
                 invalid_input: true
               };
               next();
+              return;
             }
           })
           .catch(e => {
@@ -7046,6 +7076,7 @@ function BulktimesheetCalc(req, res, next) {
           invalid_input: true
         };
         next();
+        return;
       }
     } catch (e) {
       reject(e);

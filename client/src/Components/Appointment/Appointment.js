@@ -47,7 +47,8 @@ class Appointment extends PureComponent {
       outerStyles: {},
       // byPassValidation: false,
       width: 0,
-      byPassValidation: true
+      byPassValidation: true,
+      patient_name: ""
     };
   }
 
@@ -261,6 +262,7 @@ class Appointment extends PureComponent {
   }
 
   addPatientAppointment(e) {
+    debugger;
     e.preventDefault();
 
     AlgaehValidation({
@@ -681,6 +683,9 @@ class Appointment extends PureComponent {
   texthandle(e) {
     this.setState({ [e.target.name]: e.target.value });
   }
+  ApppatientSearch(e) {
+    debugger;
+  }
 
   liGenerate() {
     let momDate = moment(this.state.selectedHDate);
@@ -751,6 +756,7 @@ class Appointment extends PureComponent {
   }
 
   handlePatient(patient, data, e) {
+    debugger;
     if (data.hims_d_appointment_status_id === this.state.checkInId) {
       this.handleCheckIn(patient, data);
     } else {
@@ -759,6 +765,7 @@ class Appointment extends PureComponent {
   }
 
   handleCheckIn(patient) {
+    debugger;
     setGlobal({
       "FD-STD": "RegistrationPatient"
     });
@@ -864,6 +871,7 @@ class Appointment extends PureComponent {
   }
 
   updatePatientAppointment(data) {
+    debugger;
     if (data !== null) {
       this.setState({
         edit_appointment_status_id: data.hims_d_appointment_status_id
@@ -1825,6 +1833,7 @@ class Appointment extends PureComponent {
         monthChangeHandler={e => this.monthChangeHandler(e)}
         generateHorizontalDateBlocks={() => this.generateHorizontalDateBlocks()}
         generateTimeslots={data => this.generateTimeslots(data)}
+        ApppatientSearch={e => this.ApppatientSearch(e)}
       />
     );
   }
