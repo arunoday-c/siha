@@ -15,7 +15,6 @@ import {
   AlgaehLabel,
   AlagehAutoComplete,
   AlgaehDataGrid,
-  AlgaehDateHandler,
   AlagehFormGroup
 } from "../../../Wrapper/algaehWrapper";
 import {
@@ -484,7 +483,8 @@ class AddConsultationForm extends Component {
                           <AlgaehLabel label={{ fieldName: "department_id" }} />
                         ),
                         displayTemplate: row => {
-                          let display =
+                          let display;
+                          display =
                             this.props.viewsubdept === undefined
                               ? []
                               : (display = this.props.viewsubdept.filter(
@@ -511,7 +511,8 @@ class AddConsultationForm extends Component {
                           <AlgaehLabel label={{ fieldName: "doctor_id" }} />
                         ),
                         displayTemplate: row => {
-                          let display =
+                          let display;
+                          display =
                             this.props.frontproviders === undefined
                               ? []
                               : (display = this.props.frontproviders.filter(

@@ -1,4 +1,5 @@
 import { algaehApiCall, swalMessage } from "../../../../../utils/algaehApiCall";
+import AlgaehLoader from "../../../../Wrapper/fullPageLoader";
 export function getHospitals(callBack) {
   algaehApiCall({
     uri: "/organization/getOrganization",
@@ -51,6 +52,7 @@ export function getBranchWiseDepartments(data, callback) {
 }
 
 export function UploadTimesheet(files, props) {
+  AlgaehLoader({ show: true });
   const reader = new FileReader();
   reader.readAsDataURL(files[0]);
   reader.onload = e => {
@@ -61,8 +63,7 @@ export function UploadTimesheet(files, props) {
       method: "post",
       module: "hrManagement",
       onSuccess: response => {
-        console.log("Done");
-
+        AlgaehLoader({ show: false });
         if (response.data.success === true) {
           props.uploadExcel(response.data.result);
         } else {
@@ -73,12 +74,14 @@ export function UploadTimesheet(files, props) {
   };
 }
 export function getPreview(data, props) {
+  AlgaehLoader({ show: true });
   algaehApiCall({
     uri: "/attendance/previewBulkTimeSheet",
     data: data,
     method: "get",
     module: "hrManagement",
     onSuccess: response => {
+      AlgaehLoader({ show: false });
       if (response.data.success === true) {
         props.preview(response.data.result);
       } else {

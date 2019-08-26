@@ -14,7 +14,6 @@ import "./appointment.css";
 import spotlightSearch from "../../Search/spotlightSearch.json";
 
 function AppointmentComponent(props) {
-  debugger;
   return (
     <div>
       <div className="appointment">
@@ -617,6 +616,16 @@ function AppointmentComponent(props) {
                 }}
               />
 
+              <div className="col-lg-1 form-group" style={{ marginTop: 19 }}>
+                <button
+                  id="load-appt-sch"
+                  type="submit"
+                  onClick={props.getAppointmentSchedule}
+                  className="btn btn-primary"
+                >
+                  {getLabelFromLanguage({ fieldName: "loadData" })}
+                </button>
+              </div>
               <AlgaehAutoSearch
                 div={{ className: "col-3" }}
                 label={{ forceLabel: "Patient Search" }}
@@ -630,14 +639,13 @@ function AppointmentComponent(props) {
                           <h4 className="title">{result.patient_name}</h4>
 
                           <div className="row">
-                            {" "}
                             {props.requied_emp_id === "Y" ? (
-                              <div className="col">
+                              <div className="col-6">
                                 <small>Emp Code</small>
                                 {result.employee_id}
                               </div>
                             ) : null}
-                            <div className="col">
+                            <div className="col-6">
                               <small>Pat Code:</small>
                               {result.patient_code}
                             </div>
@@ -657,7 +665,7 @@ function AppointmentComponent(props) {
                             </div>
                             <div className="col-6">
                               <small>Appo Time:</small>
-                              {result.sub_department_name}
+                              {result.appointment_from_time}
                             </div>
                           </div>
                         </div>
@@ -670,24 +678,13 @@ function AppointmentComponent(props) {
                 displayField="patient_name"
                 value={props.state.patient_name}
                 searchName="patientappoinment"
-                onClick={props.ApppatientSearch}
+                onClick={props.AppointmentSearch}
                 extraParameters={{
                   appointment_date: moment(props.state.activeDateHeader).format(
                     "YYYY-MM-DD"
                   )
                 }}
               />
-
-              <div className="col-lg-1 form-group" style={{ marginTop: 19 }}>
-                <button
-                  id="load-appt-sch"
-                  type="submit"
-                  onClick={props.getAppointmentSchedule}
-                  className="btn btn-primary"
-                >
-                  {getLabelFromLanguage({ fieldName: "loadData" })}
-                </button>
-              </div>
             </div>
 
             {/* Filter Bar End */}

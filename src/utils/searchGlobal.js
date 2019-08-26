@@ -13,7 +13,9 @@ let algaehSearchConfig = (searchName, req) => {
         searchName: "patientappoinment",
         searchQuery:
           "select PA.patient_id,PA.patient_code, PA.appointment_from_time, PA.patient_name,\
-              PA.contact_number, P.employee_id, E.full_name as provider_name, SD.sub_department_name\
+              PA.contact_number, P.employee_id, E.full_name as provider_name, SD.sub_department_name, \
+              PA.provider_id, PA.sub_department_id, PA.arabic_name,PA.appointment_status_id, \
+              PA.date_of_birth, PA.age,PA.email, PA.gender, PA.number_of_slot as no_of_slots, PA.title_id \
               from hims_f_patient_appointment PA inner join hims_f_patient P on PA.patient_id = P.hims_d_patient_id \
               inner join hims_d_sub_department SD on PA.sub_department_id = SD.hims_d_sub_department_id \
               inner join hims_d_employee E on PA.provider_id = E.hims_d_employee_id \
