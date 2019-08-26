@@ -1,10 +1,10 @@
-import React, { Component } from "react";
+import React, { Component, Suspense } from "react";
 import "./patientprofile.css";
 import Overview from "./Overview/Overview";
 import Subjective from "./Subjective/Subjective";
 import BasicSubjective from "./Subjective/BasicSubjective";
 import PhysicalExamination from "./PhysicalExamination/PhysicalExamination";
-import ExamDiagramStandolone from "./ExamDiagramStandolone/ExamDiagramStandolone";
+// import ExamDiagramStandolone from "./ExamDiagramStandolone/ExamDiagramStandolone";
 import Assesment from "./Assessment/Assessment";
 
 import { AlgaehModalPopUp } from "../Wrapper/algaehWrapper";
@@ -42,6 +42,9 @@ import Allergies from "./Allergies/Allergies";
 import SickLeave from "./SickLeave/SickLeave";
 import PatientMRD from "../MRD/PatientMRD/PatientMRD";
 
+const ExamDiagramStandolone = React.lazy(() =>
+  import("./ExamDiagramStandolone/ExamDiagramStandolone")
+);
 const UcafEditor = React.lazy(() => import("../ucafEditors/ucaf"));
 const DcafEditor = React.lazy(() => import("../ucafEditors/dcaf"));
 const OcafEditor = React.lazy(() => import("../ucafEditors/ocaf"));
@@ -273,6 +276,66 @@ class PatientProfile extends Component {
         pageDisplay: page
       });
     }
+  }
+
+  showTabContent(module_plan, _pat_profile) {
+    let component;
+    const check = module_plan === undefined || module_plan.module_plan === "G";
+
+    switch (this.state.pageDisplay) {
+      case "overview":
+        component = <Overview />;
+        break;
+      case "subjective":
+        component = check ? (
+          <Subjective />
+        ) : (
+          <BasicSubjective vat_applicable={this.vatApplicable()} />
+        );
+        break;
+      case "phy_exam":
+        component = <PhysicalExamination />;
+        break;
+      case "exam_diagram":
+        component = (
+          <Suspense
+            fallback={
+              <div className="loader-container">
+                <div className="algaeh-progress float shadow">
+                  <div className="progress__item">loading</div>
+                </div>
+              </div>
+            }
+          >
+            <ExamDiagramStandolone />
+          </Suspense>
+        );
+        break;
+      case "assesment":
+        component = <Assesment vat_applicable={this.vatApplicable()} />;
+        break;
+      case "summary":
+        component = <Summary />;
+        break;
+      case "dental":
+        component = (
+          <Dental
+            vat_applicable={this.vatApplicable()}
+            age_in_years={_pat_profile.age_in_years}
+          />
+        );
+        break;
+      case "eye":
+        component = <Eye />;
+        break;
+      case "mrd":
+        component = <PatientMRD fromClinicalDesk={true} />;
+        break;
+      default:
+        component = null;
+        break;
+    }
+    return component;
   }
 
   componentWillUnmount() {
@@ -1219,45 +1282,7 @@ class PatientProfile extends Component {
           )}
         </div>
         <div className="patientContentArea">
-          {module_plan === undefined || module_plan.module_plan === "G" ? (
-            this.state.pageDisplay === "overview" ? (
-              <Overview />
-            ) : this.state.pageDisplay === "subjective" ? (
-              <Subjective />
-            ) : this.state.pageDisplay === "phy_exam" ? (
-              <PhysicalExamination />
-            ) : this.state.pageDisplay === "exam_diagram" ? (
-              <ExamDiagramStandolone />
-            ) : this.state.pageDisplay === "assesment" ? (
-              <Assesment vat_applicable={this.vatApplicable()} />
-            ) : this.state.pageDisplay === "summary" ? (
-              <Summary />
-            ) : this.state.pageDisplay === "dental" ? (
-              <Dental
-                vat_applicable={this.vatApplicable()}
-                age_in_years={_pat_profile.age_in_years}
-              />
-            ) : this.state.pageDisplay === "eye" ? (
-              <Eye />
-            ) : null
-          ) : this.state.pageDisplay === "overview" ? (
-            <Overview />
-          ) : this.state.pageDisplay === "subjective" ? (
-            <BasicSubjective vat_applicable={this.vatApplicable()} />
-          ) : this.state.pageDisplay === "exam_diagram" ? (
-            <ExamDiagramStandolone />
-          ) : this.state.pageDisplay === "eye" ? (
-            <Eye />
-          ) : this.state.pageDisplay === "dental" ? (
-            <Dental
-              vat_applicable={this.vatApplicable()}
-              age_in_years={_pat_profile.age_in_years}
-            />
-          ) : this.state.pageDisplay === "summary" ? (
-            <Summary />
-          ) : this.state.pageDisplay === "mrd" ? (
-            <PatientMRD fromClinicalDesk={true} />
-          ) : null}
+          {this.showTabContent(module_plan, _pat_profile)}
         </div>
         {this.renderUCAFReport()}
         {this.renderDCAFReport()}

@@ -451,7 +451,9 @@ const onchangeAmend = ($this, row, e) => {
           }
           test_analytes[l - 1] = row;
           let obj = { test_analytes };
-          willProceed.value ? (obj.status = "CL") : obj;
+          if (willProceed.value) {
+            obj.status = "CL";
+          }
           $this.setState(obj);
         });
       }

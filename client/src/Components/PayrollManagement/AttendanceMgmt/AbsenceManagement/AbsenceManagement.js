@@ -325,8 +325,8 @@ export default class AbsenceManagement extends Component {
           </div>
 
           <AlgaehDateHandler
-            div={{ className: "col" }}
-            label={{ forceLabel: "Seletc a Date", isImp: true }}
+            div={{ className: "col mandatory" }}
+            label={{ forceLabel: "Select a Date", isImp: true }}
             textBox={{
               className: "txt-fld",
               name: "absent_date"
@@ -343,7 +343,7 @@ export default class AbsenceManagement extends Component {
           />
 
           <AlagehAutoComplete
-            div={{ className: "col form-group" }}
+            div={{ className: "col mandatory form-group" }}
             label={{ forceLabel: "From Session", isImp: true }}
             selector={{
               name: "from_session",
@@ -363,7 +363,7 @@ export default class AbsenceManagement extends Component {
             }}
           />
           <AlagehAutoComplete
-            div={{ className: "col form-group" }}
+            div={{ className: "col mandatory form-group" }}
             label={{ forceLabel: "To Session", isImp: true }}
             selector={{
               name: "to_session",
