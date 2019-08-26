@@ -400,12 +400,10 @@ export default () => {
           result: req.records
         });
       } else {
-        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-          success: true,
-          result: req.records
-        });
+        next();
       }
     },
+
     excelManualTimeSheet
   );
 
