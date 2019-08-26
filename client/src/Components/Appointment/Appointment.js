@@ -23,6 +23,7 @@ import {
   generateTimeslotsForDoctor,
   generateReport
 } from "./AppointmentHelper";
+import { AlgaehOpenContainer } from "../../utils/GlobalFunctions";
 
 class Appointment extends PureComponent {
   constructor(props) {
@@ -1812,6 +1813,10 @@ class Appointment extends PureComponent {
   }
 
   render() {
+    debugger;
+    let requied_emp_id = JSON.parse(
+      AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+    ).requied_emp_id;
     return (
       <AppointmentComponent
         state={this.state}
@@ -1834,6 +1839,7 @@ class Appointment extends PureComponent {
         generateHorizontalDateBlocks={() => this.generateHorizontalDateBlocks()}
         generateTimeslots={data => this.generateTimeslots(data)}
         ApppatientSearch={e => this.ApppatientSearch(e)}
+        requied_emp_id={requied_emp_id}
       />
     );
   }
