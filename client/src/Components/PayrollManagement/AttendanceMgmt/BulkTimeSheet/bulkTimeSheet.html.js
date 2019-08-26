@@ -40,6 +40,7 @@ function BulkTimeSheet(props) {
           const internalData = data.data;
           delete data.data;
           const findFilter = data;
+          findFilter.month = parseInt(findFilter.month);
           setFilter(findFilter);
           setData(internalData);
           if (internalData.length > 0) {

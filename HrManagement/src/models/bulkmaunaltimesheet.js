@@ -38,7 +38,7 @@ export function excelManualTimeSheet(req, res, next) {
     const query = req.query;
     const start = moment(query.from_date);
     const end = moment(query.to_date);
-    console.log("Request ", query);
+
     const sheetName = `${start.format("DD-MM-YYYY")}-${end.format(
       "DD-MM-YYYY"
     )}`;
@@ -194,7 +194,7 @@ export function excelManualTimeSheet(req, res, next) {
         });
         worksheet.addRow([JSON.stringify(query)]);
         worksheet.lastRow.hidden = true;
-        await worksheet.protect("", {
+        await worksheet.protect("algaeh@2019", {
           selectLockedCells: true,
           selectUnlockedCells: true
         });
@@ -203,7 +203,24 @@ export function excelManualTimeSheet(req, res, next) {
         var helpSheet = workbook.addWorksheet("Help", {
           properties: { tabColor: { argb: "48A897" } }
         });
-        helpSheet.addRow(["Abbrevation", "Full Form", "Comments"]);
+        helpSheet.columns = [
+          {
+            header: "Abbrevation",
+            horizontal: "center",
+            width: 10
+          },
+          {
+            header: "Full Form",
+            width: 50,
+            horizontal: "center"
+          },
+          {
+            header: "Comments",
+            width: 70,
+            horizontal: "center"
+          }
+        ];
+
         helpSheet.addRow([
           "WO",
           "Week Off",
@@ -226,10 +243,109 @@ export function excelManualTimeSheet(req, res, next) {
           "Not Editable/ Project Not assigned to Employee",
           ""
         ]);
+
         helpSheet.mergeCells("A8:E8");
         helpSheet.mergeCells("A9:E9");
         helpSheet.addRow(["Time Format", "Example"]);
         helpSheet.addRow(["HH:MM", "If user want to assign 9 hr, Follow 9:00"]);
+        helpSheet.getRow(1).eachCell((cell, index) => {
+          cell.font = { bold: true, color: { argb: "ffffff" } };
+          cell.alignment = {
+            vertical: "middle",
+            horizontal: "center"
+          };
+          cell.fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: "16365C" }
+          };
+        });
+        helpSheet.getRow(10).eachCell((cell, index) => {
+          cell.font = { bold: true, color: { argb: "ffffff" } };
+          cell.alignment = {
+            vertical: "middle",
+            horizontal: "center"
+          };
+          cell.fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: "963634" }
+          };
+        });
+        helpSheet.eachRow((row, index) => {
+          if (index !== 1 && index !== 10 && index !== 8 && index !== 9) {
+            row.eachCell((cell, celIndex) => {
+              cell.border = {
+                top: { style: "thin", color: { argb: "000000" } },
+                left: { style: "thin", color: { argb: "000000" } },
+                bottom: { style: "thin", color: { argb: "000000" } },
+                right: { style: "thin", color: { argb: "000000" } }
+              };
+
+              if (index === 2 && celIndex === 1) {
+                cell.fill = {
+                  type: "pattern",
+                  pattern: "solid",
+                  fgColor: { argb: "E7FEFD" }
+                };
+                cell.alignment = {
+                  vertical: "middle",
+                  horizontal: "center"
+                };
+              }
+              if (index === 3 && celIndex === 1) {
+                cell.fill = {
+                  type: "pattern",
+                  pattern: "solid",
+                  fgColor: { argb: "EAEAFD" }
+                };
+                cell.alignment = {
+                  vertical: "middle",
+                  horizontal: "center"
+                };
+              }
+              if (index === 4 && celIndex === 1) {
+                cell.alignment = {
+                  vertical: "middle",
+                  horizontal: "center"
+                };
+              }
+              if (index === 5 && celIndex === 1) {
+                cell.fill = {
+                  type: "pattern",
+                  pattern: "solid",
+                  fgColor: { argb: "FF0000" }
+                };
+                cell.alignment = {
+                  vertical: "middle",
+                  horizontal: "center"
+                };
+              }
+              if (index === 6 && celIndex === 1) {
+                cell.fill = {
+                  type: "pattern",
+                  pattern: "solid",
+                  fgColor: { argb: "EC7C00" }
+                };
+                cell.alignment = {
+                  vertical: "middle",
+                  horizontal: "center"
+                };
+              }
+              if (index === 7 && celIndex === 1) {
+                cell.fill = {
+                  type: "pattern",
+                  pattern: "solid",
+                  fgColor: { argb: "F5F5F5" }
+                };
+                cell.alignment = {
+                  vertical: "middle",
+                  horizontal: "center"
+                };
+              }
+            });
+          }
+        });
 
         res.setHeader(
           "Content-Type",
