@@ -117,7 +117,6 @@ export default function Filter(props) {
             ]
           },
           onChange: e => {
-            debugger;
             setMonth(e.value);
 
             const year = moment().format("YYYY");

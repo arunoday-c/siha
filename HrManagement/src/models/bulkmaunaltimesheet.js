@@ -227,7 +227,7 @@ export function excelManualTimeSheet(req, res, next) {
           ""
         ]);
         helpSheet.mergeCells("A8:E8");
-        helpSheet.mergeCells("A8:A9");
+        helpSheet.mergeCells("A9:E9");
         helpSheet.addRow(["Time Format", "Example"]);
         helpSheet.addRow(["HH:MM", "If user want to assign 9 hr, Follow 9:00"]);
 
