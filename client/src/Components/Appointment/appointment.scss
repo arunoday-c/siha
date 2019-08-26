@@ -333,3 +333,10 @@
     pointer-events: none;
   }
 }
+.resultSecStyles {
+  small {
+    &:last-child {
+      margin-top: 5px;
+    }
+  }
+}

@@ -14,6 +14,7 @@ import "./appointment.css";
 import spotlightSearch from "../../Search/spotlightSearch.json";
 
 function AppointmentComponent(props) {
+  debugger;
   return (
     <div>
       <div className="appointment">
@@ -623,14 +624,42 @@ function AppointmentComponent(props) {
                 id="patient_id_search"
                 template={result => {
                   return (
-                    <section className="resultSecStyles">
+                    <section className="resultSecStyles patient">
                       <div className="row">
-                        <div className="col-8">
+                        <div className="col-12">
                           <h4 className="title">{result.patient_name}</h4>
-                          <small>{result.patient_code}</small>
-                          <small>{result.contact_number}</small>
-                          <small>{result.provider_name}</small>
-                          <small>{result.sub_department_name}</small>
+
+                          <div className="row">
+                            {" "}
+                            {props.requied_emp_id === "Y" ? (
+                              <div className="col">
+                                <small>Emp Code</small>
+                                {result.employee_id}
+                              </div>
+                            ) : null}
+                            <div className="col">
+                              <small>Pat Code:</small>
+                              {result.patient_code}
+                            </div>
+                            <div className="col-6">
+                              {" "}
+                              <small>Mob:</small>
+                              {result.contact_number}
+                            </div>
+                            <div className="col-6">
+                              {" "}
+                              <small>Doctor:</small> {result.provider_name}
+                            </div>
+                            <div className="col-6">
+                              {" "}
+                              <small>Dept:</small>
+                              {result.sub_department_name}
+                            </div>
+                            <div className="col-6">
+                              <small>Appo Time:</small>
+                              {result.sub_department_name}
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </section>
