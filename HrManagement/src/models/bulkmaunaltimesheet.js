@@ -57,7 +57,7 @@ export function excelManualTimeSheet(req, res, next) {
         workbook.created = new Date();
         workbook.modified = new Date();
         // Set workbook dates to 1904 date system
-        workbook.properties.date1904 = true;
+        // workbook.properties.date1904 = true;
 
         //Work worksheet creation
         var worksheet = workbook.addWorksheet(sheetName, {
@@ -199,6 +199,38 @@ export function excelManualTimeSheet(req, res, next) {
           selectUnlockedCells: true
         });
 
+        //For Help Document
+        var helpSheet = workbook.addWorksheet("Help", {
+          properties: { tabColor: { argb: "48A897" } }
+        });
+        helpSheet.addRow(["Abbrevation", "Full Form", "Comments"]);
+        helpSheet.addRow([
+          "WO",
+          "Week Off",
+          "User can mention hour if employee worked on WO days"
+        ]);
+        helpSheet.addRow([
+          "HO",
+          "Public Holiday",
+          "User can mention hour if employee worked on HO days"
+        ]);
+        helpSheet.addRow([
+          "PR",
+          "Present Days/Project assigned Days",
+          "Mouse Hover on Red Dot mark to view assigned project for that day"
+        ]);
+        helpSheet.addRow(["UL", "Unpaid Leave", ""]);
+        helpSheet.addRow(["PL", "Paid Leave", ""]);
+        helpSheet.addRow([
+          "N",
+          "Not Editable/ Project Not assigned to Employee",
+          ""
+        ]);
+        helpSheet.mergeCells("A8:E8");
+        helpSheet.mergeCells("A8:A9");
+        helpSheet.addRow(["Time Format", "Example"]);
+        helpSheet.addRow(["HH:MM", "If user want to assign 9 hr, Follow 9:00"]);
+
         res.setHeader(
           "Content-Type",
           "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -220,6 +252,9 @@ export function excelManualTimeSheet(req, res, next) {
 
 export function excelManualTimeSheetRead(req, res, next) {
   let buffer = "";
+  const isValidDate = d => {
+    return d instanceof Date && !isNaN(d);
+  };
   req.on("data", chunk => {
     buffer += chunk.toString();
   });
@@ -231,85 +266,53 @@ export function excelManualTimeSheetRead(req, res, next) {
     workbook.xlsx
       .load(buff)
       .then(() => {
-        workbook.eachSheet(function(worksheet, sheetId) {
-          let columns = [];
-          const lastRow = worksheet.lastRow;
-          filter = JSON.parse(lastRow.values[1]);
-          worksheet.eachRow(function(row, rowNumber) {
-            if (rowNumber === 1) {
-              columns = row.values;
-            } else {
-              let internal = {};
-              let internalArray = [];
+        var worksheet = workbook.getWorksheet(1);
+        //  workbook.eachSheet(function(worksheet, sheetId) {
+        let columns = [];
+        const lastRow = worksheet.lastRow;
+        filter = JSON.parse(lastRow.values[1]);
+        worksheet.eachRow(function(row, rowNumber) {
+          if (rowNumber === 1) {
+            columns = row.values;
+          } else {
+            let internal = {};
+            let internalArray = [];
 
-              for (let i = 0; i < columns.length; i++) {
-                if (columns[i] !== undefined) {
-                  const columnName = columns[i]
-                    .replace("Emp. Code", "employee_code")
-                    .replace("Employee Name", "full_name");
-                  if (
-                    columnName === "employee_code" ||
-                    columnName === "full_name"
-                  ) {
-                    internal[columnName] = row.values[i];
-                  } else {
-                    internalArray.push({ [columnName]: row.values[i] });
-                    if (i === columns.length - 1) {
-                      excelArray.push({ ...internal, dates: internalArray });
-                    }
+            for (let i = 0; i < columns.length; i++) {
+              if (columns[i] !== undefined) {
+                const columnName = columns[i]
+                  .replace("Emp. Code", "employee_code")
+                  .replace("Employee Name", "full_name");
+                if (
+                  columnName === "employee_code" ||
+                  columnName === "full_name"
+                ) {
+                  internal[columnName] = row.values[i];
+                } else {
+                  let conversion = row.values[i];
+
+                  if (typeof conversion === "object") {
+                    let d = new Date(conversion);
+                    conversion = d.getUTCHours() + "." + d.getUTCMinutes();
+                  }
+
+                  internalArray.push({ [columnName]: conversion });
+                  if (i === columns.length - 1) {
+                    excelArray.push({ ...internal, dates: internalArray });
                   }
                 }
               }
             }
-          });
+          }
         });
+        //  });
       })
       .then(() => {
         excelArray.pop();
         filter.month = parseInt(filter.month);
         filter.year = parseInt(filter.year);
         req.body = { ...filter, data: excelArray };
-        console.log(req.body);
         next();
       });
   });
-
-  // const fileName = path.join(__dirname, "../../../../Output", "test.xlsx");
-  // workbook.xlsx
-  //   .file(fileName)
-  //   .then(function() {
-  //     workbook.eachSheet(function(worksheet, sheetId) {
-  //       let columns = [];
-  //
-  //       worksheet.eachRow(function(row, rowNumber) {
-  //         if (rowNumber === 1) {
-  //           columns = row.values;
-  //         } else {
-  //           let internal = {};
-  //           let internalArray = [];
-  //           for (let i = 0; i < columns.length; i++) {
-  //             if (columns[i] !== undefined) {
-  //               const columnName = columns[i]
-  //                 .replace("Emp. Code", "employee_code")
-  //                 .replace("Employee Name", "full_name");
-  //               if (
-  //                 columnName === "employee_code" ||
-  //                 columnName === "full_name"
-  //               ) {
-  //                 internal[columnName] = row.values[i];
-  //               } else {
-  //                 internalArray.push({ [columnName]: row.values[i] });
-  //                 if (i === columns.length - 1) {
-  //                   excelArray.push({ ...internal, dates: internalArray });
-  //                 }
-  //               }
-  //             }
-  //           }
-  //         }
-  //       });
-  //     });
-  //   })
-  //   .then(() => {
-  //     console.log("JSON ", JSON.stringify(excelArray));
-  //   });
 }

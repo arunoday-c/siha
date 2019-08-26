@@ -26,7 +26,9 @@ import {
   loadManualTimeSheet,
   getAttendanceDates,
   getBulkManualTimeSheet,
-  uploadBulkManualTimeSheet
+  uploadBulkManualTimeSheet,
+  previewBulkTimeSheet,
+  postBulkTimeSheetMonthWise
 } from "../models/attendance";
 import {
   excelManualTimeSheet,
@@ -390,39 +392,36 @@ export default () => {
   api.get(
     "/getBulkManualTimeSheet",
     getBulkManualTimeSheet,
+
+    (req, res, next) => {
+      if (req.records.invalid_input == true) {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: false,
+          result: req.records
+        });
+      } else {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: true,
+          result: req.records
+        });
+      }
+    },
     excelManualTimeSheet
-    // (req, res, next) => {
-    //   if (req.records.invalid_input == true) {
-    //     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-    //       success: false,
-    //       result: req.records
-    //     });
-    //   } else {
-    //     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-    //       success: true,
-    //       result: req.records
-    //     });
-    //   }
-    // }
   );
 
-  // api.post(
-  //   "/uploadBulkManualTimeSheet",
-  //   uploadBulkManualTimeSheet,
-  //   (req, res, next) => {
-  //     if (req.records.invalid_input == true) {
-  //       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-  //         success: false,
-  //         result: req.records
-  //       });
-  //     } else {
-  //       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-  //         success: true,
-  //         result: req.records
-  //       });
-  //     }
-  //   }
-  // );
+  api.get("/previewBulkTimeSheet", previewBulkTimeSheet, (req, res, next) => {
+    if (req.records.invalid_input == true) {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: false,
+        result: req.records
+      });
+    } else {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        result: req.records
+      });
+    }
+  });
   api.post(
     "/excelManualTimeSheetRead",
     excelManualTimeSheetRead,
@@ -441,5 +440,24 @@ export default () => {
       }
     }
   );
+
+  api.get(
+    "/postBulkTimeSheetMonthWise",
+    postBulkTimeSheetMonthWise,
+    (req, res, next) => {
+      if (req.records.invalid_input == true) {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: false,
+          result: req.records
+        });
+      } else {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: true,
+          result: req.records
+        });
+      }
+    }
+  );
+
   return api;
 };
