@@ -5705,247 +5705,280 @@ module.exports = {
       next(e);
     }
   },
-  //created by irfan:
-  uploadBulkManualTimeSheet: (req, res, next) => {
-    const _mysql = new algaehMysql();
-    const utilities = new algaehUtilities();
 
-    try {
-      const rawData = req.body.data;
 
-      const register = [];
+ //created by irfan:
+ uploadBulkManualTimeSheet: (req, res, next) => {
+  const _mysql = new algaehMysql();
+  const utilities = new algaehUtilities();
 
-      _mysql
-        .executeQuery({
-          query: "select standard_working_hours from hims_d_hrms_options;",
-          printQuery: false
-        })
-        .then(result => {
-          _mysql.releaseConnection();
+  try {
+    const rawData = req.body.data;
 
-          BulktimesheetCalc(req, res, next)
-            .then(atResult => {
-              // utilities.logger().log("atResult:", atResult);
-              const STDWH = result[0]["standard_working_hours"].split(".")[0];
-              const STDWM = result[0]["standard_working_hours"].split(".")[1];
-              rawData.forEach(employee => {
-                const attEmp = atResult.find(emp => {
-                  return emp["employee_code"] == employee["employee_code"];
+    const register = [];
+
+    _mysql
+      .executeQuery({
+        query: "select standard_working_hours from hims_d_hrms_options;",
+        printQuery: false
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+
+        BulktimesheetCalc(req, res, next)
+          .then(atResult => {
+            // utilities.logger().log("atResult:", atResult);
+            const STDWH = result[0]["standard_working_hours"].split(".")[0];
+            const STDWM = result[0]["standard_working_hours"].split(".")[1];
+            rawData.forEach(employee => {
+              const attEmp = atResult.find(emp => {
+                return emp["employee_code"] == employee["employee_code"];
+              });
+
+              if (attEmp != undefined) {
+                const data = employee.dates.map(date => {
+                  const projInfo = attEmp.dates.find(dat => {
+                    return (
+                      dat["attendance_date"] ==
+                      moment(Object.keys(date)[0], "DD-MM-YYYY").format(
+                        "YYYY-MM-DD"
+                      )
+                    );
+                  });
+
+                  return {
+                    ...projInfo,
+
+                    worked_date: moment(
+                      Object.keys(date)[0],
+                      "DD-MM-YYYY"
+                    ).format("YYYY-MM-DD"),
+                    worked_status: Object.values(date)[0]
+                  };
                 });
 
-                if (attEmp != undefined) {
-                  const data = employee.dates.map(date => {
-                    const projInfo = attEmp.dates.find(dat => {
-                      return (
-                        dat["attendance_date"] ==
-                        moment(Object.keys(date)[0], "DD-MM-YYYY").format(
-                          "YYYY-MM-DD"
-                        )
-                      );
+                register.push({
+                  employee_code: employee["employee_code"],
+                  dates: data
+                });
+              }
+            });
+            // utilities.logger().log("register:", register);
+
+            const insertArray = [];
+
+            register.forEach(employee => {
+              employee.dates.forEach(day => {
+                switch (day["worked_status"]) {
+                  case "AB":
+                  case "PR":
+
+                  if( day["worked_status"] == day["status"] ||( day["worked_status"] == "AB" &&day["status"]=="PR" )){
+
+                    insertArray.push({
+                      worked_hours: 0,
+                      hours: 0,
+                      minutes: 0,
+                      actual_hours: STDWH,
+                      actual_minutes: STDWM,
+                      employee_id: day.employee_id,
+                      attendance_date: day.attendance_date,
+                      status: day["worked_status"],
+                      sub_department_id: day.sub_department_id,
+                      project_id: day.project_id
                     });
 
-                    return {
-                      ...projInfo,
-
-                      worked_date: moment(
-                        Object.keys(date)[0],
-                        "DD-MM-YYYY"
-                      ).format("YYYY-MM-DD"),
-                      worked_status: Object.values(date)[0]
+                  }else {
+                   
+                    req.records = {
+                      invalid_input: true,
+                      message: `${employee["employee_code"]} on  ${
+                        day.attendance_date
+                      } is ${day["status"]} not  PR`
                     };
-                  });
+                    next();
+                    return;
+                  }
+                   
+                    break;
+                  case "WO":
 
-                  register.push({
-                    employee_code: employee["employee_code"],
-                    dates: data
-                  });
-                }
-              });
-              // utilities.logger().log("register:", register);
+                  case "HO":
 
-              const insertArray = [];
+                  case "PL":
 
-              register.forEach(employee => {
-                employee.dates.forEach(day => {
-                  switch (day["worked_status"]) {
-                    case "AB":
-                    case "PR":
+                  case "UL":
+                    if (day["worked_status"] == day["status"]) {
                       insertArray.push({
                         worked_hours: 0,
                         hours: 0,
                         minutes: 0,
-                        actual_hours: STDWH,
-                        actual_minutes: STDWM,
+                        actual_hours: 0,
+                        actual_minutes: 0,
                         employee_id: day.employee_id,
                         attendance_date: day.attendance_date,
                         status: day["worked_status"],
                         sub_department_id: day.sub_department_id,
                         project_id: day.project_id
                       });
-                      break;
-                    case "WO":
+                    }else {
+                      let actual = "";
+                      let neww = "";
+                    
+                      switch (day["status"]) {
+                        case "WO":
+                          actual = " week off ";
+                          break;
+                    
+                        case "HO":
+                          actual = " Holiday ";
+                          break;
+                        case "PL":
+                          actual = " Paid Leave ";
+                          break;
+                        case "UL":
+                          actual = " Paid Leave ";
+                          break;
+                      }
+                      switch (day["worked_status"]) {
+                        case "WO":
+                          neww = " week off ";
+                          break;
+                    
+                        case "HO":
+                          neww = " Holiday ";
+                          break;
+                        case "PL":
+                          neww = " Paid Leave ";
+                          break;
+                        case "UL":
+                          neww = " Paid Leave ";
+                          break;
+                      }
+                    
+                      req.records = {
+                        invalid_input: true,
+                        message: `${employee["employee_code"]} on  ${
+                          day.attendance_date
+                        } is ${actual} not ${neww}`
+                      };
+                      next();
+                      return;
+                    }
 
-                    case "HO":
+                    break;
 
-                    case "PL":
+                  case "HUL":
+                    break;
+                  case "HPL":
+                    break;
 
-                    case "UL":
-                      if (day["worked_status"] == day["status"]) {
-                        insertArray.push({
-                          worked_hours: 0,
-                          hours: 0,
-                          minutes: 0,
-                          actual_hours: 0,
-                          actual_minutes: 0,
-                          employee_id: day.employee_id,
-                          attendance_date: day.attendance_date,
-                          status: day["worked_status"],
-                          sub_department_id: day.sub_department_id,
-                          project_id: day.project_id
-                        });
-                      } else {
-                        let old = "";
-                        let neww = "";
+                  case "N":
 
-                        switch (day["status"]) {
-                          case "WO":
-                            old = " week off ";
-                            break;
 
-                          case "HO":
-                            old = " Holiday ";
-                            break;
-                          case "PL":
-                            old = " Paid Leave ";
-                            break;
-                          case "UL":
-                            old = " Paid Leave ";
-                            break;
-                        }
-                        switch (day["worked_status"]) {
-                          case "WO":
-                            neww = " week off ";
-                            break;
-
-                          case "HO":
-                            neww = " Holiday ";
-                            break;
-                          case "PL":
-                            neww = " Paid Leave ";
-                            break;
-                          case "UL":
-                            neww = " Paid Leave ";
-                            break;
-                        }
-
+                      if (day["worked_status"] !== day["status"]) {
                         req.records = {
                           invalid_input: true,
                           message: `${employee["employee_code"]} on  ${
                             day.attendance_date
-                          } is ${old} not ${neww}`
+                          } is ${day["status"]} not  N`
                         };
                         next();
+                        return;
                       }
+                    break;
 
-                      break;
+                  default:
+                    const respond = bulkTimeValidate(
+                      day,
+                      employee["employee_code"],
+                      STDWH,
+                      STDWM
+                    );
 
-                    case "HUL":
-                      break;
-                    case "HPL":
-                      break;
+                    if (respond.error == true) {
+                      req.records = {
+                        invalid_input: true,
+                        message: respond.message
+                      };
+                      next();
+                    } else {
+                      insertArray.push(respond.obj);
+                    }
 
-                    case "N":
-                      break;
-
-                    default:
-                      const respond = bulkTimeValidate(
-                        day,
-                        employee["employee_code"],
-                        STDWH,
-                        STDWM
-                      );
-
-                      if (respond.error == true) {
-                        req.records = {
-                          invalid_input: true,
-                          message: respond.message
-                        };
-                        next();
-                      } else {
-                        insertArray.push(respond.obj);
-                      }
-
-                      break;
-                  }
-                });
+                    break;
+                }
               });
-
-              utilities.logger().log("insertArray:", insertArray);
-
-              if (insertArray.length > 0) {
-                const insurtColumns = [
-                  "sub_department_id",
-                  "employee_id",
-                  "attendance_date",
-                  "status",
-                  "worked_hours",
-                  "actual_hours",
-                  "actual_minutes",
-                  "hours",
-                  "minutes",
-                  "project_id",
-                  "hospital_id",
-                  "year",
-                  "month"
-                ];
-
-                _mysql
-                  .executeQuery({
-                    query:
-                      " INSERT INTO hims_f_daily_time_sheet(??) VALUES ?  ON DUPLICATE KEY UPDATE \
-              status=values(status),hours=values(hours),minutes=values(minutes),\
-              worked_hours=values(worked_hours),actual_hours=values(actual_hours),\
-              actual_minutes=values(actual_minutes),project_id=values(project_id)",
-                    values: insertArray,
-                    includeValues: insurtColumns,
-                    extraValues: {
-                      hospital_id: req.body.branch_id,
-                      year: req.body.year,
-                      month: req.body.month
-                    },
-
-                    bulkInsertOrUpdate: true
-                  })
-                  .then(finalResult => {
-                    _mysql.releaseConnection();
-                  
-                   loadBulkTimeSheet(req.body,req, res, next);
-               
-                  })
-                  .catch(e => {
-                    _mysql.releaseConnection();
-                    next(e);
-                  });
-              } else {
-                req.records = {
-                  invalid_input: true,
-                  message: "No data found to upload"
-                };
-                next();
-              }
-            })
-            .catch(e => {
-              next(e);
             });
-        })
-        .catch(e => {
-          _mysql.releaseConnection();
-          next(e);
-        });
-    } catch (e) {
-      next(e);
-    }
-  },
+
+            utilities.logger().log("insertArray:", insertArray);
+
+            if (insertArray.length > 0) {
+              const insurtColumns = [
+                "sub_department_id",
+                "employee_id",
+                "attendance_date",
+                "status",
+                "worked_hours",
+                "actual_hours",
+                "actual_minutes",
+                "hours",
+                "minutes",
+                "project_id",
+                "hospital_id",
+                "year",
+                "month"
+              ];
+
+              _mysql
+                .executeQuery({
+                  query:
+                    " INSERT INTO hims_f_daily_time_sheet(??) VALUES ?  ON DUPLICATE KEY UPDATE \
+            status=values(status),hours=values(hours),minutes=values(minutes),\
+            worked_hours=values(worked_hours),actual_hours=values(actual_hours),\
+            actual_minutes=values(actual_minutes),project_id=values(project_id)",
+                  values: insertArray,
+                  includeValues: insurtColumns,
+                  extraValues: {
+                    hospital_id: req.body.branch_id,
+                    year: req.body.year,
+                    month: req.body.month
+                  },
+
+                  bulkInsertOrUpdate: true
+                })
+                .then(finalResult => {
+                  _mysql.releaseConnection();
+                
+                 loadBulkTimeSheet(req.body,req, res, next);
+             
+                })
+                .catch(e => {
+                  _mysql.releaseConnection();
+                  next(e);
+                });
+            } else {
+              req.records = {
+                invalid_input: true,
+                message: "No data found to upload"
+              };
+              next();
+              return;
+            }
+          })
+          .catch(e => {
+            next(e);
+          });
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  } catch (e) {
+    next(e);
+  }
+},
+
   //created by irfan:
   previewBulkTimeSheet: (req, res, next) => {  
 
@@ -7033,6 +7066,7 @@ function BulktimesheetCalc(req, res, next) {
                 invalid_input: true
               };
               next();
+              return;
             }
           })
           .catch(e => {
@@ -7045,6 +7079,7 @@ function BulktimesheetCalc(req, res, next) {
           invalid_input: true
         };
         next();
+        return;
       }
     } catch (e) {
       reject(e);
