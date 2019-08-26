@@ -5455,7 +5455,7 @@ module.exports = {
             E.religion_id, E.date_of_joining,PR.project_id,P.project_desc,D.designation
             from hims_f_project_roster PR
 
-            left join hims_f_salary S on PR.employee_id=S.employee_id and S.year=? and S.month=?
+            left join hims_f_salary S on PR.employee_id=S.employee_id and PR.hospital_id=S.hospital_id and S.year=? and S.month=?
             inner join  hims_d_employee E on PR.employee_id=E.hims_d_employee_id
             inner join  hims_d_project P on P.hims_d_project_id=PR.project_id
             inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
@@ -6244,7 +6244,7 @@ module.exports = {
             inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\
             inner join hims_d_department DP on SD.department_id=DP.hims_d_department_id\ where      \
             DA.hospital_id=?  and year=? and month=?   ${strQry} and attendance_date between date(?) and\
-            date(?)  group by project_id;`,
+            date(?)  group by employee_id,project_id;`,
                     values: [
                       input.hospital_id,
                       input.year,
@@ -6857,7 +6857,7 @@ function BulktimesheetCalc(req, res, next) {
             E.religion_id, E.date_of_joining,PR.project_id,P.project_desc,D.designation
             from hims_f_project_roster PR
 
-            left join hims_f_salary S on PR.employee_id=S.employee_id and S.year=? and S.month=?
+            left join hims_f_salary S on PR.employee_id=S.employee_id and PR.hospital_id=S.hospital_id and S.year=? and S.month=?
             inner join  hims_d_employee E on PR.employee_id=E.hims_d_employee_id
             inner join  hims_d_project P on P.hims_d_project_id=PR.project_id
             inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id

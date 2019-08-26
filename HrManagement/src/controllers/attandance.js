@@ -395,10 +395,13 @@ export default () => {
 
     (req, res, next) => {
       if (req.records.invalid_input == true) {
-        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-          success: false,
-          result: req.records
-        });
+        console.log("eee:");
+        res
+          .status(utlities.AlgaehUtilities().httpStatus().internalServer)
+          .json({
+            success: false,
+            result: req.records
+          });
       } else {
         next();
       }
