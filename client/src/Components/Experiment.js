@@ -2,15 +2,8 @@ import React, { Component } from "react";
 import { AlgaehErrorBoundary } from "./Wrapper/algaehWrapper";
 import "react-table/react-table.css";
 import { algaehApiCall, swalMessage } from "../utils/algaehApiCall";
-import FileViewer from "react-file-viewer";
-import {
-  AlgaehDataGrid,
-  AlgaehDateHandler,
-  AlagehAutoComplete,
-  AlagehFormGroup,
-  AlgaehLabel,
-  AlgaehModalPopUp
-} from "./Wrapper/algaehWrapper";
+// import FileViewer from "react-file-viewer";
+import { AlagehFormGroup } from "./Wrapper/algaehWrapper";
 import ButtonType from "./Wrapper/algaehButton";
 class Experiment extends Component {
   constructor(props) {

@@ -1551,7 +1551,7 @@ class Dental extends Component {
   }
 
   openAddModal(data) {
-    if (this.props.age_in_years > 31) {
+    if (this.props.age_in_years < 15) {
       this.setState(
         {
           openDentalModalChild: true,
@@ -1971,7 +1971,7 @@ class Dental extends Component {
             </div>
           </div>
         </AlgaehModalPopUp>
-        //For Adult
+        {/* For Adult */}
         <AlgaehModalPopUp
           events={{
             onClose: () => {
@@ -1989,7 +1989,7 @@ class Dental extends Component {
             }
           }}
           openPopup={this.state.openDentalModal}
-          title="Dental Plan"
+          title="Dental Plan For Adults"
         >
           <div className="popupInner" data-validate="addDentalPlanDiv">
             <div className="col-12">
@@ -2187,7 +2187,7 @@ class Dental extends Component {
             </div>
           </div>
         </AlgaehModalPopUp>
-        //For Childerns
+        {/* For Childerns */}
         <AlgaehModalPopUp
           events={{
             onClose: () => {
@@ -2195,7 +2195,7 @@ class Dental extends Component {
               my_send_obj = {};
               this.setState({
                 treatment_gridUpdate: true,
-                openDentalModal: false,
+                openDentalModalChild: false,
                 hims_d_services_id: null,
                 quantity: 0,
                 standard_fee: 0,
@@ -2205,7 +2205,7 @@ class Dental extends Component {
             }
           }}
           openPopup={this.state.openDentalModalChild}
-          title="Dental Plan"
+          title="Dental Plan For Children"
         >
           <div className="popupInner" data-validate="addDentalPlanDiv">
             <div className="col-12">
