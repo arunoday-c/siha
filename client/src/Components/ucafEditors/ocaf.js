@@ -72,23 +72,23 @@ export default class OcafEditor extends Component {
       let insurance = this.props.dataProps.hims_f_ocaf_insurance_details[0];
 
       // data
-      (data.multi_coated = data.multi_coated === "Y" ? true : false),
-        (data.varilux = data.varilux === "Y" ? true : false),
-        (data.light = data.light === "Y" ? true : false),
-        (data.aspheric = data.aspheric === "Y" ? true : false),
-        (data.bifocal = data.bifocal === "Y" ? true : false),
-        (data.medium = data.medium === "Y" ? true : false),
-        (data.lenticular = data.lenticular === "Y" ? true : false),
-        (data.single_vision = data.single_vision === "Y" ? true : false),
-        (data.dark = data.dark === "Y" ? true : false),
-        (data.safety_thickness = data.safety_thickness === "Y" ? true : false),
-        (data.anti_reflecting_coating =
-          data.anti_reflecting_coating === "Y" ? true : false),
-        (data.photosensitive = data.photosensitive === "Y" ? true : false),
-        (data.high_index = data.high_index === "Y" ? true : false),
-        (data.colored = data.colored === "Y" ? true : false),
-        (data.anti_scratch = data.anti_scratch === "Y" ? true : false),
-        this.setState({ ...this.state, ...data, ...insurance });
+      data.multi_coated = data.multi_coated === "Y" ? true : false;
+      data.varilux = data.varilux === "Y" ? true : false;
+      data.light = data.light === "Y" ? true : false;
+      data.aspheric = data.aspheric === "Y" ? true : false;
+      data.bifocal = data.bifocal === "Y" ? true : false;
+      data.medium = data.medium === "Y" ? true : false;
+      data.lenticular = data.lenticular === "Y" ? true : false;
+      data.single_vision = data.single_vision === "Y" ? true : false;
+      data.dark = data.dark === "Y" ? true : false;
+      data.safety_thickness = data.safety_thickness === "Y" ? true : false;
+      data.anti_reflecting_coating =
+        data.anti_reflecting_coating === "Y" ? true : false;
+      data.photosensitive = data.photosensitive === "Y" ? true : false;
+      data.high_index = data.high_index === "Y" ? true : false;
+      data.colored = data.colored === "Y" ? true : false;
+      data.anti_scratch = data.anti_scratch === "Y" ? true : false;
+      this.setState({ ...this.state, ...data, ...insurance });
     }
   }
 
