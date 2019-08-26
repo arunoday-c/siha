@@ -17,6 +17,7 @@ import {
 } from "./filter.events";
 import moment from "moment";
 export default function Filter(props) {
+  let fileInput = React.createRef();
   const [hospitals, setHospitals] = useState([]);
   const [hospitalID, setHospitalID] = useState("");
   const [fromDate, setFromDate] = useState("");
@@ -256,22 +257,8 @@ export default function Filter(props) {
         }}
       />
 
-      <div className="col-2">
-        <input
-          className="inputfile"
-          type="file"
-          name="manualTimeSheet"
-          onClick={() => console.log("input")}
-          onChange={e => {
-            if (e.target.files.length > 0)
-              UploadTimesheet(e.target.files, props);
-          }}
-        />
-        <label onClick={() => console.log("label")} for="file">
-          Upload Attendance
-        </label>
-      </div>
-      <div className="col-3">
+      <div className="col-4" style={{ paddingTop: 19, textAlign: "right" }}>
+        {" "}
         <button
           onClick={() => {
             if (hospitalID !== "" && fromDate !== "" && toDate !== "") {
@@ -294,7 +281,7 @@ export default function Filter(props) {
             }
           }}
           style={{ marginLeft: 10, float: "right" }}
-          className="btn btn-primary"
+          className="btn btn-default"
         >
           {!loading ? (
             <span>Download</span>
@@ -302,6 +289,21 @@ export default function Filter(props) {
             <i className="fas fa-spinner fa-spin" />
           )}
         </button>
+        <div className="uploadManualDiv">
+          <input
+            className="inputfile"
+            type="file"
+            name="manualTimeSheet"
+            ref={fileInput}
+            onChange={e => {
+              if (e.target.files.length > 0)
+                UploadTimesheet(e.target.files, props);
+            }}
+          />
+          <label onClick={() => fileInput.current.click()} for="file">
+            Upload Attendance
+          </label>
+        </div>
         <button
           onClick={() => {
             getPreview(
@@ -316,7 +318,7 @@ export default function Filter(props) {
             );
           }}
           style={{ marginLeft: 10, float: "right" }}
-          className="btn btn-primary"
+          className="btn btn-default"
         >
           {!loadingPriew ? (
             <span>Preview</span>
