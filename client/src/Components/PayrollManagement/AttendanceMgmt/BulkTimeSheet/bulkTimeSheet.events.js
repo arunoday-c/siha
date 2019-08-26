@@ -1,6 +1,8 @@
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
+import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import moment from "moment";
 export function downloadExcel(data, callBack) {
+  AlgaehLoader({ show: true });
   algaehApiCall({
     uri: "/attendance/getBulkManualTimeSheet",
     method: "GET",
@@ -12,9 +14,6 @@ export function downloadExcel(data, callBack) {
     others: { responseType: "blob" },
     onSuccess: res => {
       callBack();
-      //if (res.data.success) {
-      // console.log(JSON.stringify(res.data.result));
-
       let blob = new Blob([res.data], {
         type: "application/octet-stream"
       });
@@ -26,12 +25,23 @@ export function downloadExcel(data, callBack) {
       link.setAttribute("href", objectUrl);
       link.setAttribute("download", fileName);
       link.click();
-      //}
+      AlgaehLoader({ show: false });
+    },
+    onCatch: error => {
+      var reader = new FileReader();
+      reader.onload = function() {
+        AlgaehLoader({ show: false });
+        const parse = JSON.parse(reader.result);
+        swalMessage({
+          type: "error",
+          title: parse !== undefined ? parse.result.message : parse
+        });
+      };
+      reader.readAsText(error.response.data);
     }
   });
 }
 export function processDetails(data, error, result) {
-  console.log(data);
   algaehApiCall({
     uri: "/attendance/postBulkTimeSheetMonthWise",
     method: "GET",
