@@ -263,7 +263,6 @@ class Appointment extends PureComponent {
   }
 
   addPatientAppointment(e) {
-    debugger;
     e.preventDefault();
 
     AlgaehValidation({
@@ -684,8 +683,19 @@ class Appointment extends PureComponent {
   texthandle(e) {
     this.setState({ [e.target.name]: e.target.value });
   }
-  ApppatientSearch(e) {
-    debugger;
+  AppointmentSearch(result, name) {
+    const timeCheck = moment(result.appointment_from_time).isBefore(
+      moment(),
+      "hour"
+    );
+    if (timeCheck) {
+      swalMessage({
+        title: "Patient Appointment is expired",
+        type: "info"
+      });
+    } else {
+      this.handleCheckIn(result);
+    }
   }
 
   liGenerate() {
@@ -757,7 +767,7 @@ class Appointment extends PureComponent {
   }
 
   handlePatient(patient, data, e) {
-    debugger;
+    console.log(patient, data);
     if (data.hims_d_appointment_status_id === this.state.checkInId) {
       this.handleCheckIn(patient, data);
     } else {
@@ -766,7 +776,18 @@ class Appointment extends PureComponent {
   }
 
   handleCheckIn(patient) {
-    debugger;
+    let isTodayActive = moment(this.state.activeDateHeader).isSame(
+      moment(),
+      "day"
+    );
+    if (!isTodayActive) {
+      swalMessage({
+        title:
+          "Only Patients with appointment for today are allowed to checkin",
+        type: "warning"
+      });
+      return null;
+    }
     setGlobal({
       "FD-STD": "RegistrationPatient"
     });
@@ -872,7 +893,6 @@ class Appointment extends PureComponent {
   }
 
   updatePatientAppointment(data) {
-    debugger;
     if (data !== null) {
       this.setState({
         edit_appointment_status_id: data.hims_d_appointment_status_id
@@ -1391,7 +1411,7 @@ class Appointment extends PureComponent {
 
       let sel_steps = sel_stat !== undefined ? sel_stat.steps : 0;
 
-      const status =
+      let status =
         sel_stat_id !== null
           ? Enumerable.from(
               this.state.appointmentStatus !== undefined
@@ -1401,6 +1421,15 @@ class Appointment extends PureComponent {
               .where(w => w.steps > sel_steps)
               .toArray()
           : [];
+      let isTodayActive = moment(this.state.activeDateHeader).isSame(
+        moment(),
+        "day"
+      );
+      if (!isTodayActive) {
+        status = status.filter(
+          stat => stat.hims_d_appointment_status_id !== this.state.checkInId
+        );
+      }
       if (_firstPatient !== undefined) {
         return (
           <React.Fragment>
@@ -1813,7 +1842,6 @@ class Appointment extends PureComponent {
   }
 
   render() {
-    debugger;
     let requied_emp_id = JSON.parse(
       AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
     ).requied_emp_id;
@@ -1838,7 +1866,9 @@ class Appointment extends PureComponent {
         monthChangeHandler={e => this.monthChangeHandler(e)}
         generateHorizontalDateBlocks={() => this.generateHorizontalDateBlocks()}
         generateTimeslots={data => this.generateTimeslots(data)}
-        ApppatientSearch={e => this.ApppatientSearch(e)}
+        AppointmentSearch={(result, name) =>
+          this.AppointmentSearch(result, name)
+        }
         requied_emp_id={requied_emp_id}
       />
     );

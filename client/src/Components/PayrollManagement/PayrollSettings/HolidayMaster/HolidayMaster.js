@@ -71,7 +71,7 @@ export default class HolidayMaster extends Component {
     });
   }
 
-  dropDownHandle(value) {
+  hospitalHandler(value) {
     this.setState(
       {
         [value.name]: value.value
@@ -362,7 +362,7 @@ export default class HolidayMaster extends Component {
                                 valueField: "hims_d_hospital_id",
                                 data: this.state.hospitals
                               },
-                              onChange: this.dropDownHandle.bind(this),
+                              onChange: this.hospitalHandler.bind(this),
                               onClear: () =>
                                 this.setState({
                                   hospital_id: null,
@@ -533,7 +533,7 @@ export default class HolidayMaster extends Component {
                                 valueField: "hims_d_religion_id",
                                 data: this.state.religions
                               },
-                              onChange: this.dropDownHandle.bind(this),
+                              onChange: this.dropDownHandler.bind(this),
                               others: {
                                 disabled: !this.state.holiday_type
                               }
