@@ -7,9 +7,11 @@ import {
   AlgaehDateHandler,
   AlgaehModalPopUp
 } from "../Wrapper/algaehWrapper";
+import AlgaehAutoSearch from "../Wrapper/autoSearch";
 import { getLabelFromLanguage } from "../../utils/GlobalFunctions";
 import GlobalVariables from "../../utils/GlobalVariables";
 import "./appointment.css";
+import spotlightSearch from "../../Search/spotlightSearch.json";
 
 function AppointmentComponent(props) {
   return (
@@ -611,6 +613,39 @@ function AppointmentComponent(props) {
                   onChange: props.dropDownHandle,
                   onClear: () => props.nullifyState("provider_id"),
                   autoComplete: "off"
+                }}
+              />
+
+              <AlgaehAutoSearch
+                div={{ className: "col-3" }}
+                label={{ forceLabel: "Patient Search" }}
+                title="Search Patient"
+                id="patient_id_search"
+                template={result => {
+                  return (
+                    <section className="resultSecStyles">
+                      <div className="row">
+                        <div className="col-8">
+                          <h4 className="title">{result.patient_name}</h4>
+                          <small>{result.patient_code}</small>
+                          <small>{result.contact_number}</small>
+                          <small>{result.provider_name}</small>
+                          <small>{result.sub_department_name}</small>
+                        </div>
+                      </div>
+                    </section>
+                  );
+                }}
+                name="patient_name"
+                columns={spotlightSearch.frontDesk.patientappoinment}
+                displayField="patient_name"
+                value={props.state.patient_name}
+                searchName="patientappoinment"
+                onClick={props.ApppatientSearch}
+                extraParameters={{
+                  appointment_date: moment(props.state.activeDateHeader).format(
+                    "YYYY-MM-DD"
+                  )
                 }}
               />
 

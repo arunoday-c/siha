@@ -26,7 +26,7 @@ class DoctorsWorkbench extends Component {
       activeDateHeader: moment()._d
     };
 
-    this.moveToEncounterList = this.moveToEncounterList.bind(this);
+    // this.moveToEncounterList = this.moveToEncounterList.bind(this);
     this.loadListofData = this.loadListofData.bind(this);
   }
 
@@ -99,7 +99,8 @@ class DoctorsWorkbench extends Component {
     });
   }
 
-  moveToEncounterList(e) {
+  moveToEncounterList(data, e) {
+    debugger;
     const patient_encounter_id = e.currentTarget.getAttribute(
       "data-encounterid"
     );
@@ -115,17 +116,30 @@ class DoctorsWorkbench extends Component {
         if (response.data.success) {
           this.loadListofData();
 
-          setGlobal(
-            {
-              "EHR-STD": "PatientProfile",
-              current_patient: patient_id,
-              episode_id: patient_encounter_id,
-              case_type: "OP"
-            },
-            () => {
-              document.getElementById("ehr-router").click();
-            }
-          );
+          setGlobal({
+            vitals_mandatory: data.vitals_mandatory,
+            "EHR-STD": "PatientProfile",
+            current_patient: data.patient_id,
+            episode_id: data.episode_id,
+            visit_id: data.visit_id,
+            encounter_id: response.data.records.encounter_id,
+            provider_id: data.provider_id,
+            chart_type: data.chart_type,
+            gender: data.gender,
+            sub_department_id: data.sub_department_id
+          });
+          document.getElementById("ehr-router").click();
+          // setGlobal(
+          //   {
+          //     "EHR-STD": "PatientProfile",
+          //     current_patient: patient_id,
+          //     episode_id: patient_encounter_id,
+          //     case_type: "OP"
+          //   },
+          //   () => {
+          //     document.getElementById("ehr-router").click();
+          //   }
+          // );
         }
       }
     });
@@ -473,7 +487,7 @@ class DoctorsWorkbench extends Component {
                               data.hims_f_patient_encounter_id
                             )}
                             data-patientid={String(data.patient_id)}
-                            onClick={this.moveToEncounterList}
+                            onClick={this.moveToEncounterList.bind(this, data)}
                           >
                             <span className="op-sec-1">
                               {/* <i className="appointment-icon" /> */}

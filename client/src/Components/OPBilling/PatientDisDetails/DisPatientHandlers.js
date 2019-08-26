@@ -1,5 +1,5 @@
 import AlgaehSearch from "../../Wrapper/globalSearch";
-import FrontDesk from "../../../Search/FrontDesk.json";
+import spotlightSearch from "../../../Search/spotlightSearch.json";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import Enumerable from "linq";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
@@ -7,7 +7,7 @@ import AlgaehLoader from "../../Wrapper/fullPageLoader";
 const PatientSearch = ($this, context, e) => {
   AlgaehSearch({
     searchGrid: {
-      columns: FrontDesk
+      columns: spotlightSearch.frontDesk.patients
     },
     searchName: "patients",
     uri: "/gloabelSearch/get",

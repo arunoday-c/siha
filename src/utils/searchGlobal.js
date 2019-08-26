@@ -6,9 +6,20 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "patients",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS  hims_d_patient_id, patient_code,\
-          full_name, arabic_name,  contact_number, employee_id, age, date_of_birth, gender, email, title_id  from hims_f_patient \
+          "select SQL_CALC_FOUND_ROWS  hims_d_patient_id, patient_code,primary_id_no, full_name, arabic_name,  contact_number, employee_id, age, date_of_birth, gender, email, title_id  from hims_f_patient \
          where record_status='A' "
+      },
+      {
+        searchName: "patientappoinment",
+        searchQuery:
+          "select PA.patient_id,PA.patient_code, PA.appointment_from_time, PA.patient_name,\
+              PA.contact_number, P.employee_id, E.full_name as provider_name, SD.sub_department_name\
+              from hims_f_patient_appointment PA inner join hims_f_patient P on PA.patient_id = P.hims_d_patient_id \
+              inner join hims_d_sub_department SD on PA.sub_department_id = SD.hims_d_sub_department_id \
+              inner join hims_d_employee E on PA.provider_id = E.hims_d_employee_id \
+              where date(appointment_date) = date(?)  and visit_created='N' and PA.hospital_id=" +
+          hospitalId,
+        inputSequence: ["appointment_date"]
       },
       {
         searchName: "bills",

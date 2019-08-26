@@ -206,7 +206,7 @@ const newSearch = (req, res, next) => {
       _.map(sortedParameters, items => {
         return _.keysIn(items).map(key => {
           // _values.push("%" + items[key] + "%");
-          return String(" `" + key + "` ") + " LIKE  '%" + items[key] + "%' ";
+          return String(" " + key + " ") + " LIKE  '%" + items[key] + "%' ";
         });
       }).join(" OR ") +
       ")";
@@ -219,7 +219,7 @@ const newSearch = (req, res, next) => {
         return _.keysIn(items).map(key => {
           if (key != null) {
             _values.push("%" + items[key] + "%");
-            return String(" `" + key + "` ");
+            return String(" " + key + " ");
           }
         });
       }).join(" LIKE  ?  OR ") +

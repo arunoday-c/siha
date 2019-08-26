@@ -1,5 +1,4 @@
 import AlgaehSearch from "../../Wrapper/globalSearch";
-import FrontDesk from "../../../Search/FrontDesk.json";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import ReactDOM from "react-dom";
@@ -30,7 +29,7 @@ const Patientchange = ($this, ctrl, e) => {
 const PatientSearch = ($this, e) => {
   AlgaehSearch({
     searchGrid: {
-      columns: FrontDesk
+      columns: spotlightSearch.frontDesk.patients
     },
     searchName: "patients",
     uri: "/gloabelSearch/get",
