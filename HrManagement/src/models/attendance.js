@@ -5918,9 +5918,8 @@ module.exports = {
                   })
                   .then(finalResult => {
                     _mysql.releaseConnection();
-                  
-                   loadBulkTimeSheet(req.body,req, res, next);
-               
+
+                    loadBulkTimeSheet(req.body, req, res, next);
                   })
                   .catch(e => {
                     _mysql.releaseConnection();
@@ -5947,10 +5946,9 @@ module.exports = {
     }
   },
   //created by irfan:
-  previewBulkTimeSheet: (req, res, next) => {  
-
-    try {     
-      loadBulkTimeSheet(req.query,req, res, next);
+  previewBulkTimeSheet: (req, res, next) => {
+    try {
+      loadBulkTimeSheet(req.query, req, res, next);
     } catch (e) {
       next(e);
     }
@@ -5966,8 +5964,9 @@ module.exports = {
       input.hospital_id > 0 &&
       input.from_date != undefined &&
       input.to_date != undefined &&
-      input.year>0&&
-      input.month>0    ) {
+      input.year > 0 &&
+      input.month > 0
+    ) {
       let strQry = "";
       // let project = "";
 
@@ -6076,7 +6075,7 @@ module.exports = {
                 hospital_id: AttenResult[i]["hospital_id"],
                 sub_department_id: AttenResult[i]["sub_department_id"],
                 attendance_date: AttenResult[i]["attendance_date"],
-      
+
                 year: input.year,
                 month: input.month,
                 total_days: 1,
@@ -6107,7 +6106,9 @@ module.exports = {
                   AttenResult[i]["actual_minutes"],
 
                 shortage_hours:
-                  AttenResult[i]["consider_ot_shrtg"] == "Y" ? shortage_time : 0,
+                  AttenResult[i]["consider_ot_shrtg"] == "Y"
+                    ? shortage_time
+                    : 0,
                 shortage_minutes:
                   AttenResult[i]["consider_ot_shrtg"] == "Y" ? shortage_min : 0,
                 ot_work_hours:
@@ -6365,7 +6366,6 @@ module.exports = {
       return;
     }
   }
-
 };
 
 //created by irfan: to insert timesheet
@@ -6863,11 +6863,11 @@ function BulktimesheetCalc(req, res, next) {
               input.from_date,
               input.to_date
             ],
-            printQuery: false
+            printQuery: true
           })
           .then(result => {
             _mysql.releaseConnection();
-
+            console.log("len:", result[0].length);
             if (result[0].length > 0) {
               const allLeaves = result[1];
               const allHolidays = result[2];
@@ -7028,6 +7028,7 @@ function BulktimesheetCalc(req, res, next) {
 
               resolve(final_roster);
             } else {
+              console.log("am here");
               req.records = {
                 message: "Salary Already Processed or No Employes Found",
                 invalid_input: true
@@ -7159,43 +7160,39 @@ function bulkTimeValidate(day, employee_code, STDWH, STDWM) {
     };
   }
 }
-function loadBulkTimeSheet(input,req,res,next) {
-
+function loadBulkTimeSheet(input, req, res, next) {
   const _mysql = new algaehMysql();
 
-    try {
+  try {
+    if (
+      input.branch_id > 0 &&
+      input.from_date != undefined &&
+      input.to_date != undefined
+    ) {
+      let strQry = "";
+      let project = "";
 
-      if (
-        input.branch_id > 0 &&  
-        input.from_date != undefined &&
-        input.to_date != undefined
-      ) {
-        let strQry = "";
-        let project = "";
+      if (input.project_id > 0) {
+        project = " and PR.project_id=" + input.project_id;
+      }
 
-        if (input.project_id > 0) {
-          project = " and PR.project_id=" + input.project_id;
-        }
+      if (input.employee_id > 0) {
+        strQry += " and TS.employee_id =" + input.employee_id;
+      }
 
-        if (input.employee_id > 0) {
-         
-          strQry += " and TS.employee_id =" + input.employee_id;
-        }
+      if (input.department_id > 0) {
+        strQry += " and DP.department_id=" + input.department_id;
+      }
+      if (input.sub_department_id > 0) {
+        strQry += " and E.sub_department_id=" + input.sub_department_id;
+      }
+      if (input.designation_id > 0) {
+        strQry += " and E.employee_designation_id=" + input.designation_id;
+      }
 
-        if (input.department_id > 0) {
-          strQry += " and DP.department_id=" + input.department_id;
-        }
-        if (input.sub_department_id > 0) {
-          strQry += " and E.sub_department_id=" + input.sub_department_id;
-        }
-        if (input.designation_id > 0) {
-          strQry += " and E.employee_designation_id=" + input.designation_id;
-        }
-
-
-              _mysql
-                .executeQuery({
-                  query: `select hims_f_daily_time_sheet_id,TS.sub_department_id, TS.employee_id,TS.biometric_id, TS.attendance_date, \
+      _mysql
+        .executeQuery({
+          query: `select hims_f_daily_time_sheet_id,TS.sub_department_id, TS.employee_id,TS.biometric_id, TS.attendance_date, \
 									in_time, out_date, out_time, year, month, status,\
 									posted, hours, minutes, actual_hours, actual_minutes, worked_hours,consider_ot_shrtg,\
 									expected_out_date, expected_out_time ,TS.hospital_id,hims_d_employee_id,employee_code,full_name as employee_name,\
@@ -7206,57 +7203,50 @@ function loadBulkTimeSheet(input,req,res,next) {
 									left join hims_f_project_roster PR on TS.employee_id=PR.employee_id and TS.hospital_id=PR.hospital_id  and TS.attendance_date=PR.attendance_date\
 									left join hims_d_project P on PR.project_id=P.hims_d_project_id\
 									where  TS.hospital_id=? and  TS.attendance_date between (?) and (?) ${strQry} ${project}; `,
-                  values: [
-                    input.branch_id,
-                    input.from_date,
-                    input.to_date
-                  ],
-                  printQuery: false
-                })
-                .then(result => {
-                  _mysql.releaseConnection();
+          values: [input.branch_id, input.from_date, input.to_date],
+          printQuery: false
+        })
+        .then(result => {
+          _mysql.releaseConnection();
 
-                  const allEmployees = _.chain(result)
-                  .groupBy(g => g.employee_id)
-                  .map(emp => {                   
-                 const empl=_.sortBy(emp, s =>parseInt(moment(s.attendance_date, "YYYY-MM-DD").format("MMDD")));
-                      return empl;
-                  })
-                  .value();
+          const allEmployees = _.chain(result)
+            .groupBy(g => g.employee_id)
+            .map(emp => {
+              const empl = _.sortBy(emp, s =>
+                parseInt(moment(s.attendance_date, "YYYY-MM-DD").format("MMDD"))
+              );
+              return empl;
+            })
+            .value();
 
-                  req.records= {                     
-                    hospital_id: input.branch_id,
-                    from_date: input.from_date,
-                    to_date: input.to_date,
-                    project_id: input.project_id ,
-                    employee_id: input.employee_id,
-                    department_id: input.department_id,
-                    sub_department_id: input.sub_department_id,     
-                    
-                    year:input.year,
-                    month:input.month,
-                    data:allEmployees
-                  
-                  };
+          req.records = {
+            hospital_id: input.branch_id,
+            from_date: input.from_date,
+            to_date: input.to_date,
+            project_id: input.project_id,
+            employee_id: input.employee_id,
+            department_id: input.department_id,
+            sub_department_id: input.sub_department_id,
 
-                  next();
-                })
-                .catch(e => {
-                  _mysql.releaseConnection();
-                  next(e);
-                });
-         
-        
-      } else {
-        req.records = {
-          invalid_input: true,
-          message: "Please send valid input"
-        };
-        next();
-      }
-       
-    } catch (e) {
-      next(e);
+            year: input.year,
+            month: input.month,
+            data: allEmployees
+          };
+
+          next();
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "Please send valid input"
+      };
+      next();
     }
-
+  } catch (e) {
+    next(e);
+  }
 }
