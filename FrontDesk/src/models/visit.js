@@ -562,5 +562,33 @@ module.exports = {
         next(e);
       });
     }
+  },
+  getProviders: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "SELECT E.*, E.hims_d_employee_id as employee_id ,ED.services_id, SD.department_type, SD.department_id \
+            FROM hims_d_employee E \
+            left join hims_m_employee_department_mappings ED on E.hims_d_employee_id = ED.employee_id \
+            left join hims_d_sub_department SD on SD.hims_d_sub_department_id = E.sub_department_id \
+            where isdoctor = 'Y' and employee_status = 'A' and ED.record_status='A' and ED.dep_status='A' \
+            and E.hospital_id=?;",
+          values: [req.userIdentity.hospital_id]
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
   }
 };

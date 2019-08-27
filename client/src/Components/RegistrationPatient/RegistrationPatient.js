@@ -1035,7 +1035,8 @@ function mapStateToProps(state) {
     secondaryinsurance: state.secondaryinsurance,
     hospitaldetails: state.hospitaldetails,
     PatientPackageList: state.PatientPackageList,
-    visittypes: state.visittypes
+    visittypes: state.visittypes,
+    frontproviders: state.frontproviders
   };
 }
 
