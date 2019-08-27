@@ -99,6 +99,10 @@ class LabInvestigation extends Component {
     }
   }
 
+  componentWillReceiveProps(newProps) {
+    this.setState(newProps.InvestigationIOputs);
+  }
+
   componentWillUnmount() {
     this.clearInputState();
   }

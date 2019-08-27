@@ -148,6 +148,7 @@ export default class Login extends Component {
 
     setCookie("HospitalName", selector.selected.hospital_name);
     setCookie("HospitalId", selector.value);
+    setCookie("algaeh_api_auth_id", selector.selected.algaeh_api_auth_id);
   }
   onHospitalClear(name) {
     this.setState({ item_id: null });

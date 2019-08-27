@@ -234,17 +234,17 @@ export function Validations(state) {
     return isError;
   }
 
-  if (
-    state.state.insured === "Y" &&
-    (state.state.eligible_reference_number === null ||
-      state.state.eligible_reference_number === "")
-  ) {
-    isError = true;
-    swalMessage({
-      type: "warning",
-      title: "Please enter Reference Number."
-    });
-    document.querySelector("[name='eligible_reference_number']").focus();
-    return isError;
-  }
+  // if (
+  //   state.state.insured === "Y" &&
+  //   (state.state.eligible_reference_number === null ||
+  //     state.state.eligible_reference_number === "")
+  // ) {
+  //   isError = true;
+  //   swalMessage({
+  //     type: "warning",
+  //     title: "Please enter Reference Number."
+  //   });
+  //   document.querySelector("[name='eligible_reference_number']").focus();
+  //   return isError;
+  // }
 }

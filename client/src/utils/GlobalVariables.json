@@ -1651,7 +1651,13 @@
     { "name": "Others", "value": "O" }
   ],
   "MICRO_GROUP_TYPE": [
-    { "name": "Fascideous", "value": "F" },
-    { "name": "Non-Fascideous", "value": "NF" }
+    { "name": "Fastidious", "value": "F" },
+    { "name": "Non-Fastidious", "value": "NF" }
+  ],
+  "ANTI_GROUP_TYPE": [
+    { "name": "Group A", "value": "A" },
+    { "name": "Group B", "value": "B" },
+    { "name": "Group C", "value": "C" },
+    { "name": "Group U", "value": "U" }
   ]
 }

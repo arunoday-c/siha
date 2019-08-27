@@ -14,7 +14,8 @@ import {
   onchangegridcol,
   insertLabSpecimen,
   updateLabSpecimen,
-  deleteLabSpecimen
+  deleteLabSpecimen,
+  UrineSpecimen
 } from "./LabSpecimenEvents";
 
 import GlobalVariables from "../../../utils/GlobalVariables";
@@ -30,7 +31,9 @@ class LabSpecimen extends Component {
     this.state = {
       hims_d_lab_specimen_id: "",
       description: "",
-      storage_type: null
+      storage_type: null,
+      urine_specimen: "N",
+      urineSpecimen: false
     };
     this.baseState = this.state;
   }
@@ -101,6 +104,19 @@ class LabSpecimen extends Component {
               onChange: changeTexts.bind(this, this)
             }}
           />
+          <div className="col-3" style={{ marginTop: 20 }}>
+            <div className="customCheckbox" style={{ borderBottom: 0 }}>
+              <label className="checkbox" style={{ color: "#212529" }}>
+                <input
+                  type="checkbox"
+                  name="urine_specimen"
+                  checked={this.state.urine_specimen === "Y" ? true : false}
+                  onChange={UrineSpecimen.bind(this, this)}
+                />
+                <span>Urine Specimen</span>
+              </label>
+            </div>
+          </div>
           <div className="col-lg-2 align-middle" style={{ paddingTop: 19 }}>
             <button
               onClick={insertLabSpecimen.bind(this, this)}
@@ -132,7 +148,7 @@ class LabSpecimen extends Component {
                             textBox={{
                               value: row.SpeDescription,
                               className: "txt-fld",
-                              name: "description",
+                              name: "SpeDescription",
                               events: {
                                 onChange: onchangegridcol.bind(this, this, row)
                               },
@@ -179,6 +195,39 @@ class LabSpecimen extends Component {
                         );
                       },
                       others: { maxWidth: 200 }
+                    },
+                    {
+                      fieldName: "urine_specimen",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Urine Specimen" }} />
+                      ),
+                      displayTemplate: row => {
+                        return row.urine_specimen === "N" ? "No" : "Yes";
+                      },
+                      editorTemplate: row => {
+                        return (
+                          <AlagehAutoComplete
+                            div={{}}
+                            selector={{
+                              name: "urine_specimen",
+                              className: "select-fld",
+                              value: row.urine_specimen,
+                              dataSource: {
+                                textField: "name",
+                                valueField: "value",
+                                data: GlobalVariables.FORMAT_YESNO
+                              },
+                              onChange: onchangegridcol.bind(this, this, row),
+                              others: {
+                                errormessage:
+                                  "Urine Specimen - cannot be blank",
+                                required: true
+                              }
+                            }}
+                          />
+                        );
+                      },
+                      others: { maxWidth: 100 }
                     },
                     {
                       fieldName: "created_by",

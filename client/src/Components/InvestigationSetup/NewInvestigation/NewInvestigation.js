@@ -58,33 +58,11 @@ class NewInvestigation extends PureComponent {
     if (newProps.InvestigationPop.hims_d_investigation_test_id !== undefined) {
       let IOputs = newProps.InvestigationPop;
       IOputs.InvestigationtypeEnable = true;
-      this.setState({ ...this.state, ...IOputs }, () => {
-        this.props.getTestCategory({
-          uri: "/labmasters/selectTestCategory",
-          module: "laboratory",
-          method: "GET",
-          data: { investigation_type: this.state.investigation_type },
-          redux: {
-            type: "TESTCATEGORY_GET_DATA",
-            mappingName: "testcategory"
-          }
-        });
-      });
+      this.setState({ ...this.state, ...IOputs });
     } else {
       let IOputs = InvestigationIOputs.inputParam();
       IOputs.InvestigationtypeEnable = false;
-      this.setState({ ...this.state, ...IOputs }, () => {
-        this.props.getTestCategory({
-          uri: "/labmasters/selectTestCategory",
-          module: "laboratory",
-          method: "GET",
-          data: { investigation_type: this.state.investigation_type },
-          redux: {
-            type: "TESTCATEGORY_GET_DATA",
-            mappingName: "testcategory"
-          }
-        });
-      });
+      this.setState({ ...this.state, ...IOputs });
     }
   }
   onClose = e => {
