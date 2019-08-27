@@ -289,21 +289,6 @@ export default function Filter(props) {
             <i className="fas fa-spinner fa-spin" />
           )}
         </button>
-        <div className="uploadManualDiv">
-          <input
-            className="inputfile"
-            type="file"
-            name="manualTimeSheet"
-            ref={fileInput}
-            onChange={e => {
-              if (e.target.files.length > 0)
-                UploadTimesheet(e.target.files, props);
-            }}
-          />
-          <label onClick={() => fileInput.current.click()} for="file">
-            Upload Attendance
-          </label>
-        </div>
         <button
           onClick={() => {
             getPreview(
@@ -326,6 +311,21 @@ export default function Filter(props) {
             <i className="fas fa-spinner fa-spin" />
           )}
         </button>
+        <div className="uploadManualDiv">
+          <input
+            className="inputfile"
+            type="file"
+            name="manualTimeSheet"
+            ref={fileInput}
+            onChange={e => {
+              if (e.target.files.length > 0)
+                UploadTimesheet(e.target.files, props);
+            }}
+          />
+          <label onClick={() => fileInput.current.click()} for="file">
+            Upload Attendance
+          </label>
+        </div>
       </div>
     </div>
   );
