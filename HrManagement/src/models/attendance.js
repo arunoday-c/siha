@@ -5449,7 +5449,7 @@ module.exports = {
             inner join  hims_d_employee E on PR.employee_id=E.hims_d_employee_id
             inner join  hims_d_project P on P.hims_d_project_id=PR.project_id
             inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
-            inner join hims_d_department DP on SD.department_id=DP.hims_d_department_id
+          
             inner join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id
             and PR.hospital_id=? ${strQry} ${project} and ( S.salary_processed is null or  S.salary_processed='N')
              and PR.attendance_date between date(?) and date(?)
@@ -5459,7 +5459,7 @@ module.exports = {
             from hims_f_leave_application LA inner join hims_d_leave L on 	LA.leave_id=L.hims_d_leave_id
             inner join  hims_d_employee E on LA.employee_id=E.hims_d_employee_id
             inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
-            inner join hims_d_department DP on SD.department_id=DP.hims_d_department_id
+            
             inner join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id
             where    LA.hospital_id=?  ${strQry.replace(
               /PR/gi,
@@ -5770,15 +5770,40 @@ module.exports = {
                 employee.dates.forEach(day => {
                   switch (day["worked_status"]) {
                     case "AB":
+
+                        if   (day["worked_status"] == "AB" && day["status"] == "PR")
+                         {
+                          insertArray.push({
+                            worked_hours: 0,
+                            hours: 0,
+                            minutes: 0,
+                            actual_hours: STDWH,
+                            actual_minutes: STDWM,
+                            employee_id: day.employee_id,
+                            attendance_date: day.attendance_date,
+                            status: day["worked_status"],
+                            sub_department_id: day.sub_department_id,
+                            project_id: day.project_id
+                          });
+                        } else {
+                          req.records = {
+                            invalid_input: true,
+                            message: `${employee["employee_code"]} on  ${
+                              day.attendance_date
+                            } is ${day["status"]} not  PR`
+                          };
+                          next();
+                          return;
+                        }
+
                     case "PR":
                       if (
-                        day["worked_status"] == day["status"] ||
-                        (day["worked_status"] == "AB" && day["status"] == "PR")
+                        day["worked_status"] == day["status"] 
                       ) {
                         insertArray.push({
-                          worked_hours: 0,
-                          hours: 0,
-                          minutes: 0,
+                          worked_hours: STDWH+"."+STDWM ,
+                          hours: STDWH,
+                          minutes: STDWM,
                           actual_hours: STDWH,
                           actual_minutes: STDWM,
                           employee_id: day.employee_id,
@@ -6024,8 +6049,7 @@ module.exports = {
         actual_minutes,worked_hours,consider_ot_shrtg,expected_out_date,expected_out_time,TS.hospital_id,TS.project_id\
         from hims_f_daily_time_sheet TS inner join hims_d_employee E on TS.employee_id=E.hims_d_employee_id\
         inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\
-        inner join hims_d_department DP on SD.department_id=DP.hims_d_department_id\
-        where TS.hospital_id=? and year=? and month=?  and attendance_date between date(?) and date(?) ${strQry};`,
+               where TS.hospital_id=? and year=? and month=?  and attendance_date between date(?) and date(?) ${strQry};`,
           values: [
             input.hospital_id,
             input.year,
@@ -6851,7 +6875,7 @@ function BulktimesheetCalc(req, res, next) {
             inner join  hims_d_employee E on PR.employee_id=E.hims_d_employee_id
             inner join  hims_d_project P on P.hims_d_project_id=PR.project_id
             inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
-            inner join hims_d_department DP on SD.department_id=DP.hims_d_department_id
+           
             inner join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id
             and PR.hospital_id=? ${strQry} ${project} and ( S.salary_processed is null or  S.salary_processed='N')
             and PR.attendance_date between date(?) and date(?)
@@ -6861,7 +6885,7 @@ function BulktimesheetCalc(req, res, next) {
             from hims_f_leave_application LA inner join hims_d_leave L on 	LA.leave_id=L.hims_d_leave_id
             inner join  hims_d_employee E on LA.employee_id=E.hims_d_employee_id
             inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
-            inner join hims_d_department DP on SD.department_id=DP.hims_d_department_id
+         
             inner join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id
             where    LA.hospital_id=?  ${strQry.replace(
               /PR/gi,
@@ -7230,7 +7254,7 @@ function loadBulkTimeSheet(input, req, res, next) {
 									P.project_code,P.project_desc from  hims_f_daily_time_sheet TS \
                   inner join hims_d_employee E on TS.employee_id=E.hims_d_employee_id\
                   inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\
-                  inner join hims_d_department DP on SD.department_id=DP.hims_d_department_id\
+              
 									left join hims_f_project_roster PR on TS.employee_id=PR.employee_id and TS.hospital_id=PR.hospital_id  and TS.attendance_date=PR.attendance_date\
 									left join hims_d_project P on PR.project_id=P.hims_d_project_id\
 									where  TS.hospital_id=? and  TS.attendance_date between (?) and (?) ${strQry} ${project}; `,
