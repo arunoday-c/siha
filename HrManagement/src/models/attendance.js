@@ -5788,8 +5788,9 @@ module.exports = {
                         } else {
                           req.records = {
                             invalid_input: true,
-                            message: `${employee["employee_code"]} on  ${
-                              day.attendance_date
+                            message: `${employee["employee_code"]} on  ${                     
+                              moment(  day.attendance_date, "YYYY-MM-DD").format(
+                                 "DD-MM-YYYY")
                             } is ${day["status"]} not  PR`
                           };
                           next();
@@ -5816,7 +5817,8 @@ module.exports = {
                         req.records = {
                           invalid_input: true,
                           message: `${employee["employee_code"]} on  ${
-                            day.attendance_date
+                            moment(  day.attendance_date, "YYYY-MM-DD").format(
+                              "DD-MM-YYYY")
                           } is ${day["status"]} not  PR`
                         };
                         next();
@@ -5882,7 +5884,8 @@ module.exports = {
                         req.records = {
                           invalid_input: true,
                           message: `${employee["employee_code"]} on  ${
-                            day.attendance_date
+                            moment(  day.attendance_date, "YYYY-MM-DD").format(
+                              "DD-MM-YYYY")
                           } is ${actual} not ${neww}`
                         };
                         next();
@@ -5901,7 +5904,8 @@ module.exports = {
                         req.records = {
                           invalid_input: true,
                           message: `${employee["employee_code"]} on  ${
-                            day.attendance_date
+                            moment(  day.attendance_date, "YYYY-MM-DD").format(
+                              "DD-MM-YYYY")
                           } is ${day["status"]} not  N`
                         };
                         next();
@@ -5910,6 +5914,8 @@ module.exports = {
                       break;
 
                     default:
+
+                    if( day["status"]!="N" ){
                       const respond = bulkTimeValidate(
                         day,
                         employee["employee_code"],
@@ -5926,7 +5932,18 @@ module.exports = {
                       } else {
                         insertArray.push(respond.obj);
                       }
+                    }else{
 
+                      req.records = {
+                        invalid_input: true,
+                        message: `No project is Assigned for ${employee["employee_code"]} on  ${
+                          moment(  day.attendance_date, "YYYY-MM-DD").format(
+                            "DD-MM-YYYY")
+                        } `
+                      };
+                      next();
+                      return;
+                    }
                       break;
                   }
                 });
