@@ -35,45 +35,58 @@ export default function EmployeeFilter(props) {
   }, []);
 
   // To get the departments after branch changes
-  useEffect(() => {
-    if (inputs.hospital_id) {
-      if (inputs.inputChanged) {
-        clearOtherStates(["hospital_id"]);
+  useEffect(
+    () => {
+      if (inputs.hospital_id) {
+        if (inputs.inputChanged) {
+          clearOtherStates(["hospital_id"]);
+        }
+        getBranchDetails();
       }
-      getBranchDetails();
-    }
-  }, [inputs.hospital_id]);
+    },
+    [inputs.hospital_id]
+  );
 
   // To set the sub depts after department selected
-  useEffect(() => {
-    if (inputs.department_id && allDepartments.length !== 0) {
-      if (inputs.inputChanged) {
-        clearOtherStates(["hospital_id", "department_id"]);
-      }
-      const [reqDept] = allDepartments.filter(
-        dept => dept.hims_d_department_id === inputs.department_id
-      );
-      if (reqDept) {
-        setSubDepts(reqDept.subDepts);
+  useEffect(
+    () => {
+      if (inputs.department_id && allDepartments.length !== 0) {
+        if (inputs.inputChanged) {
+          clearOtherStates(["hospital_id", "department_id"]);
+        }
+        const [reqDept] = allDepartments.filter(
+          dept => dept.hims_d_department_id === inputs.department_id
+        );
+        if (reqDept) {
+          setSubDepts(reqDept.subDepts);
+        } else {
+          swalMessage({
+            title: "Please contact the admin, Error Code: 007",
+            type: "error"
+          });
+        }
       } else {
-        swalMessage({
-          title: "Please contact the admin, Error Code: 007",
-          type: "error"
-        });
+        setSubDepts([]);
       }
-    } else {
-      setSubDepts([]);
-    }
-  }, [inputs.department_id]);
+    },
+    [inputs.department_id]
+  );
 
-  useEffect(() => {
-    if (inputs.sub_department_id) {
-      if (inputs.inputChanged) {
-        clearOtherStates(["hospital_id", "department_id", "sub_department_id"]);
+  useEffect(
+    () => {
+      if (inputs.sub_department_id) {
+        if (inputs.inputChanged) {
+          clearOtherStates([
+            "hospital_id",
+            "department_id",
+            "sub_department_id"
+          ]);
+        }
+        getDesignations(inputs.sub_department_id);
       }
-      getDesignations(inputs.sub_department_id);
-    }
-  }, [inputs.sub_department_id]);
+    },
+    [inputs.sub_department_id]
+  );
 
   function getHospitals() {
     algaehApiCall({
@@ -159,7 +172,7 @@ export default function EmployeeFilter(props) {
         "hims_d_employee_id"
       ];
       const matches = arr.filter(element => !fields.includes(element));
-      debugger;
+
       let result = { ...state };
       matches.forEach(fld => {
         result[fld] = null;

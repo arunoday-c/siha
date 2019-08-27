@@ -5,7 +5,11 @@ import {
   AlagehAutoComplete
 } from "../../Wrapper/algaehWrapper";
 
-import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import {
+  algaehApiCall,
+  swalMessage,
+  getCookie
+} from "../../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 
 import { FORMAT_YESNO } from "../../../utils/GlobalVariables.json";
@@ -187,7 +191,8 @@ export default class BranchMaster extends Component {
 
   addBranches(e) {
     e.preventDefault();
-    console.log("hos:", this.state.hims_d_hospital_id);
+
+    let algaeh_api_auth_id = getCookie("algaeh_api_auth_id");
     if (this.state.hims_d_hospital_id > 0) {
       AlgaehValidation({
         alertTypeIcon: "warning",
@@ -240,7 +245,8 @@ export default class BranchMaster extends Component {
               default_currency: this.state.default_currency,
               hospital_name: this.state.hospital_name,
               hospital_address: this.state.hospital_address,
-              requied_emp_id: this.state.requied_emp_id
+              requied_emp_id: this.state.requied_emp_id,
+              algaeh_api_auth_id: algaeh_api_auth_id
             },
             onSuccess: response => {
               if (response.data.success) {

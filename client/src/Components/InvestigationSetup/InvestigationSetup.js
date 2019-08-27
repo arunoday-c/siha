@@ -93,7 +93,7 @@ class InvestigationSetup extends Component {
       isOpen: !this.state.isOpen,
       InvestigationPop: {}
     });
-    debugger;
+
     this.props.getTestCategory({
       uri: "/labmasters/selectTestCategory",
       module: "laboratory",

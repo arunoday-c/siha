@@ -152,4 +152,18 @@ const selectToPay = ($this, row, e) => {
   });
 };
 
-export { LoadSalaryPayment, ClearData, PaySalary, selectToPay };
+const selectAll = ($this, e) => {
+  const isChecked = e.target.checked;
+
+  let data = $this.state.salary_payment;
+  const newData = data.map((item, index) => {
+    return { ...item, select_to_pay: isChecked ? "Y" : "N" };
+  });
+  $this.setState({
+    salary_payment: newData,
+    checkAll: isChecked,
+    paysalaryBtn: !isChecked
+  });
+};
+
+export { LoadSalaryPayment, ClearData, PaySalary, selectToPay, selectAll };

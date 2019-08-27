@@ -22,6 +22,7 @@ import {
 } from "../../../utils/algaehApiCall";
 import { setGlobal, AlgaehValidation } from "../../../utils/GlobalFunctions";
 import Options from "../../../Options.json";
+import _ from "lodash";
 
 class VisitType extends Component {
   constructor(props) {
@@ -175,6 +176,17 @@ class VisitType extends Component {
 
   addVisit(e) {
     e.preventDefault();
+
+    const exit_consultation = _.filter(this.props.visittypes, f => {
+      return f.consultation == "Y";
+    });
+    if (exit_consultation.length > 0) {
+      swalMessage({
+        title: "Consultation already exists, Only one Consultation can add",
+        type: "warning"
+      });
+      return;
+    }
 
     AlgaehValidation({
       alertTypeIcon: "warning",
@@ -446,6 +458,40 @@ class VisitType extends Component {
                           />
                         );
                       }
+                    },
+                    {
+                      fieldName: "consultation",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "consultation" }} />
+                      ),
+                      displayTemplate: row => {
+                        return row.consultation === "N" ? "No" : "Yes";
+                      },
+                      editorTemplate: row => {
+                        return row.consultation === "N" ? "No" : "Yes";
+                        // return (
+                        //   <AlagehAutoComplete
+                        //     div={{}}
+                        //     selector={{
+                        //       name: "consultation",
+                        //       className: "select-fld",
+                        //       value: row.consultation,
+                        //       dataSource: {
+                        //         textField: "name",
+                        //         valueField: "value",
+                        //         data: GlobalVariables.FORMAT_YESNO
+                        //       },
+                        //       onChange: this.onchangegridcol.bind(this, row),
+                        //       others: {
+                        //         errormessage:
+                        //           "Urine Specimen - cannot be blank",
+                        //         required: true
+                        //       }
+                        //     }}
+                        //   />
+                        // );
+                      },
+                      others: { maxWidth: 100 }
                     },
                     {
                       fieldName: "created_by",

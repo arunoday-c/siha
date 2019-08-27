@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import "./filter.html.css";
 import {
   AlagehAutoComplete,
   AlgaehLabel,
@@ -16,6 +17,7 @@ import {
 } from "./filter.events";
 import moment from "moment";
 export default function Filter(props) {
+  let fileInput = React.createRef();
   const [hospitals, setHospitals] = useState([]);
   const [hospitalID, setHospitalID] = useState("");
   const [fromDate, setFromDate] = useState("");
@@ -255,66 +257,76 @@ export default function Filter(props) {
         }}
       />
 
-      <input
-        type="file"
-        name="manualTimeSheet"
-        onChange={e => {
-          if (e.target.files.length > 0) UploadTimesheet(e.target.files, props);
-        }}
-      />
-
-      <button
-        onClick={() => {
-          if (hospitalID !== "" && fromDate !== "" && toDate !== "") {
-            props.downloadExcel({
-              branch_id: hospitalID,
-              from_date: fromDate,
-              to_date: toDate,
-              project_id: projectID,
-              department_id: departmenID,
-              sub_department_id: subDepartmentID,
-              employee_id: employeeID,
-              month: month,
-              year: moment().format("YYYY")
-            });
-          } else {
-            swalMessage({
-              title: "Branch,from data and to date are mandatory",
-              type: "error"
-            });
-          }
-        }}
-        style={{ marginLeft: 10, float: "right" }}
-        className="btn btn-primary"
-      >
-        {!loading ? (
-          <span>Download</span>
-        ) : (
-          <i className="fas fa-spinner fa-spin" />
-        )}
-      </button>
-      <button
-        onClick={() => {
-          getPreview(
-            {
-              branch_id: hospitalID,
-              from_date: fromDate,
-              to_date: toDate,
-              month: month,
-              year: moment().format("YYYY")
-            },
-            props
-          );
-        }}
-        style={{ marginLeft: 10, float: "right" }}
-        className="btn btn-primary"
-      >
-        {!loadingPriew ? (
-          <span>Preview</span>
-        ) : (
-          <i className="fas fa-spinner fa-spin" />
-        )}
-      </button>
+      <div className="col-4" style={{ paddingTop: 19, textAlign: "right" }}>
+        {" "}
+        <button
+          onClick={() => {
+            if (hospitalID !== "" && fromDate !== "" && toDate !== "") {
+              props.downloadExcel({
+                branch_id: hospitalID,
+                from_date: fromDate,
+                to_date: toDate,
+                project_id: projectID,
+                department_id: departmenID,
+                sub_department_id: subDepartmentID,
+                employee_id: employeeID,
+                month: month,
+                year: moment().format("YYYY")
+              });
+            } else {
+              swalMessage({
+                title: "Branch,from data and to date are mandatory",
+                type: "error"
+              });
+            }
+          }}
+          style={{ marginLeft: 10, float: "right" }}
+          className="btn btn-default"
+        >
+          {!loading ? (
+            <span>Download</span>
+          ) : (
+            <i className="fas fa-spinner fa-spin" />
+          )}
+        </button>
+        <button
+          onClick={() => {
+            getPreview(
+              {
+                branch_id: hospitalID,
+                from_date: fromDate,
+                to_date: toDate,
+                month: month,
+                year: moment().format("YYYY")
+              },
+              props
+            );
+          }}
+          style={{ marginLeft: 10, float: "right" }}
+          className="btn btn-default"
+        >
+          {!loadingPriew ? (
+            <span>Preview</span>
+          ) : (
+            <i className="fas fa-spinner fa-spin" />
+          )}
+        </button>
+        <div className="uploadManualDiv">
+          <input
+            className="inputfile"
+            type="file"
+            name="manualTimeSheet"
+            ref={fileInput}
+            onChange={e => {
+              if (e.target.files.length > 0)
+                UploadTimesheet(e.target.files, props);
+            }}
+          />
+          <label onClick={() => fileInput.current.click()} for="file">
+            Upload Attendance
+          </label>
+        </div>
+      </div>
     </div>
   );
 }
