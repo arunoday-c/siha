@@ -296,9 +296,9 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "SELECT `hims_d_lab_specimen_id`, `description` as SpeDescription, `specimen_status`, `created_date`, \
-            `created_by`, `updated_date`, `updated_by`, `record_status`  FROM `hims_d_lab_specimen` \
-            WHERE `record_status`='A'" +
+            "SELECT `hims_d_lab_specimen_id`, `description` as SpeDescription, `specimen_status`, `urine_specimen`,\
+            `storage_type`, `created_date`, `created_by`, `updated_date`, `updated_by`, `record_status`  \
+            FROM `hims_d_lab_specimen` WHERE `record_status`='A'" +
             _strAppend +
             "order by hims_d_lab_specimen_id desc",
           values: intValue,
@@ -325,12 +325,13 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "INSERT INTO `hims_d_lab_specimen` (`description`, `storage_type`,\
+            "INSERT INTO `hims_d_lab_specimen` (`description`, `storage_type`,`urine_specimen`,\
           `created_by` ,`created_date`) \
-       VALUES ( ?, ?, ?, ?)",
+       VALUES ( ?, ?, ?, ?, ?)",
           values: [
             inputParam.description,
             inputParam.storage_type,
+            inputParam.urine_specimen,
             req.userIdentity.algaeh_d_app_user_id,
             new Date()
           ],
@@ -358,11 +359,13 @@ module.exports = {
         .executeQuery({
           query:
             "UPDATE `hims_d_lab_specimen` \
-          SET `description`=?, `storage_type` = ?,`updated_by`=?, `updated_date`=?,`specimen_status`=? \
+          SET `description`=?, `storage_type` = ?, `urine_specimen`=?,\
+          `updated_by`=?, `updated_date`=?,`specimen_status`=? \
           WHERE `record_status`='A' and `hims_d_lab_specimen_id`=?",
           values: [
             inputParam.description,
             inputParam.storage_type,
+            inputParam.urine_specimen,
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
             inputParam.specimen_status,
@@ -959,14 +962,19 @@ module.exports = {
         intValue.push(req.query.micro_group_id);
       }
 
+      if (req.query.urine_specimen == "Y") {
+        _strAppend += " order by group_types='U' desc , group_types asc";
+      } else {
+        _strAppend += " order by group_types";
+      }
+
       _mysql
         .executeQuery({
           query:
             "SELECT GA.*, A.antibiotic_name FROM `hims_m_group_antibiotic` GA \
               inner join hims_d_antibiotic A on A.hims_d_antibiotic_id = GA.antibiotic_id  \
               WHERE GA.`record_status`='A' " +
-            _strAppend +
-            "order by hims_m_group_antibiotic_id desc",
+            _strAppend,
           values: intValue,
           printQuery: true
         })
@@ -991,11 +999,12 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "INSERT INTO `hims_m_group_antibiotic` (`micro_group_id`,`antibiotic_id`,\
-            `created_by` ,`created_date`) VALUES (?, ?, ?, ?)",
+            "INSERT INTO `hims_m_group_antibiotic` (`micro_group_id`,`antibiotic_id`,`group_types`, \
+            `created_by` ,`created_date`) VALUES (?, ?, ?, ?, ?)",
           values: [
             inputParam.micro_group_id,
             inputParam.antibiotic_id,
+            inputParam.group_types,
             req.userIdentity.algaeh_d_app_user_id,
             new Date()
           ],
@@ -1022,12 +1031,13 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "UPDATE `hims_m_group_antibiotic` SET `micro_group_id`=?, `antibiotic_id`=?, `map_status` = ?, \
-            `updated_by`=?, `updated_date`=?\
+            "UPDATE `hims_m_group_antibiotic` SET `micro_group_id`=?, `antibiotic_id`=?, `group_types`=?, \
+            `map_status` = ?, `updated_by`=?, `updated_date`=?\
             WHERE `record_status`='A' and `hims_m_group_antibiotic_id`=?",
           values: [
             inputParam.micro_group_id,
             inputParam.antibiotic_id,
+            inputParam.group_types,
             inputParam.map_status,
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),

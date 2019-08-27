@@ -402,8 +402,8 @@ class AddConsultationForm extends Component {
                           <AlagehFormGroup
                             div={{ className: "col-lg-8 mandatory" }}
                             label={{
-                              fieldName: "eligible_reference_number",
-                              isImp: this.state.insured === "Y" ? true : false
+                              fieldName: "eligible_reference_number"
+                              // isImp: this.state.insured === "Y" ? true : false
                             }}
                             textBox={{
                               className: "txt-fld",

@@ -3,15 +3,24 @@ import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 
 const texthandle = ($this, ctrl, e) => {
+  debugger;
   e = e || ctrl;
   let name = e.name || e.target.name;
   let value = e.value === "" ? null : e.value || e.target.value;
 
-  $this.setState({
-    [name]: value
-  });
   if (name === "category_id") {
-    this.props.getTestCategory({
+    let analytes_required = e.selected.test_section === "M" ? false : true;
+    $this.setState({
+      [name]: value,
+      analytes_required: analytes_required
+    });
+  } else {
+    $this.setState({
+      [name]: value
+    });
+  }
+  if (name === "investigation_type") {
+    $this.props.getTestCategory({
       uri: "/labmasters/selectTestCategory",
       module: "laboratory",
       method: "GET",
@@ -53,14 +62,6 @@ const Validations = $this => {
       });
       document.querySelector("[name='specimen_id']").focus();
       return isError;
-    } else if ($this.state.lab_section_id === null) {
-      isError = true;
-      swalMessage({
-        type: "error",
-        title: "Lab Section Cannot be blank."
-      });
-      document.querySelector("[name='lab_section_id']").focus();
-      return isError;
     } else if ($this.state.container_id === null) {
       isError = true;
       swalMessage({
@@ -90,6 +91,16 @@ const Validations = $this => {
       return isError;
     }
   }
+
+  // else if ($this.state.lab_section_id === null) {
+  //   isError = true;
+  //   swalMessage({
+  //     type: "error",
+  //     title: "Lab Section Cannot be blank."
+  //   });
+  //   document.querySelector("[name='lab_section_id']").focus();
+  //   return isError;
+  // }
 };
 const InsertLabTest = ($this, e) => {
   const err = Validations($this);
