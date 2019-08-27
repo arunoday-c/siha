@@ -100,7 +100,6 @@ class DoctorsWorkbench extends Component {
   }
 
   moveToEncounterList(data, e) {
-    debugger;
     const patient_encounter_id = e.currentTarget.getAttribute(
       "data-encounterid"
     );

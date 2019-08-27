@@ -6,7 +6,6 @@ const texthandle = ($this, e) => {
   let value = e.value || e.target.value;
 
   if (name === "group_id") {
-    debugger;
     algaehApiCall({
       uri: "/labmasters/selectGroupAntiMap",
       module: "laboratory",

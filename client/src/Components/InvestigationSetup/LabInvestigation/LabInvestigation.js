@@ -33,7 +33,6 @@ class LabInvestigation extends Component {
   }
 
   componentWillMount() {
-    debugger;
     let InputOutput = this.props.InvestigationIOputs;
     this.setState({ ...this.state, ...InputOutput });
     this.clearInputState();

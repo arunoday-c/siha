@@ -50,7 +50,7 @@ const EditInvestigationTest = ($this, row) => {
     isOpen: !$this.state.isOpen,
     InvestigationPop: row
   });
-  debugger;
+
   $this.props.getTestCategory({
     uri: "/labmasters/selectTestCategory",
     module: "laboratory",
