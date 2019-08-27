@@ -93,6 +93,17 @@ class InvestigationSetup extends Component {
       isOpen: !this.state.isOpen,
       InvestigationPop: {}
     });
+    debugger;
+    this.props.getTestCategory({
+      uri: "/labmasters/selectTestCategory",
+      module: "laboratory",
+      method: "GET",
+      data: { investigation_type: "L" },
+      redux: {
+        type: "TESTCATEGORY_GET_DATA",
+        mappingName: "testcategory"
+      }
+    });
   }
 
   CloseModel(e) {
@@ -318,7 +329,8 @@ function mapStateToProps(state) {
     investigationdetails: state.investigationdetails,
     invtestcategory: state.invtestcategory,
     labspecimen: state.labspecimen,
-    labsection: state.labsection
+    labsection: state.labsection,
+    testcategory: state.testcategory
   };
 }
 

@@ -6,10 +6,14 @@ const texthandle = ($this, e) => {
   let value = e.value || e.target.value;
 
   if (name === "group_id") {
+    debugger;
     algaehApiCall({
       uri: "/labmasters/selectGroupAntiMap",
       module: "laboratory",
-      data: { micro_group_id: value },
+      data: {
+        micro_group_id: value,
+        urine_specimen: $this.state.urine_specimen
+      },
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {

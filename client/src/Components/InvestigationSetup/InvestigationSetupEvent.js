@@ -50,6 +50,17 @@ const EditInvestigationTest = ($this, row) => {
     isOpen: !$this.state.isOpen,
     InvestigationPop: row
   });
+  debugger;
+  $this.props.getTestCategory({
+    uri: "/labmasters/selectTestCategory",
+    module: "laboratory",
+    method: "GET",
+    data: { investigation_type: row.investigation_type },
+    redux: {
+      type: "TESTCATEGORY_GET_DATA",
+      mappingName: "testcategory"
+    }
+  });
 };
 
 export { texthandle, getInvestigations, EditInvestigationTest };
