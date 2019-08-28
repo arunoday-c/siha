@@ -9,7 +9,10 @@ const texthandle = ($this, e) => {
     algaehApiCall({
       uri: "/labmasters/selectGroupAntiMap",
       module: "laboratory",
-      data: { micro_group_id: value },
+      data: {
+        micro_group_id: value,
+        urine_specimen: $this.state.urine_specimen
+      },
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {

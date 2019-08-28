@@ -15,7 +15,8 @@ const CollectSample = ($this, context, row) => {
     hims_d_hospital_id: JSON.parse(
       AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
     ).hims_d_hospital_id,
-    service_id: row.service_id
+    service_id: row.service_id,
+    service_code: row.service_code
   };
 
   algaehApiCall({

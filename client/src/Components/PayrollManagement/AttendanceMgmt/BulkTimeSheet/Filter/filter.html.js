@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import "./filter.html.css";
 import {
   AlagehAutoComplete,
   AlgaehLabel,
@@ -16,6 +17,7 @@ import {
 } from "./filter.events";
 import moment from "moment";
 export default function Filter(props) {
+  let fileInput = React.createRef();
   const [hospitals, setHospitals] = useState([]);
   const [hospitalID, setHospitalID] = useState("");
   const [fromDate, setFromDate] = useState("");

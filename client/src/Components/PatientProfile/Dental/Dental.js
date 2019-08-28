@@ -642,7 +642,6 @@ class Dental extends Component {
   }
 
   generateToothUpperRight(teeth) {
-    debugger;
     let plot = [];
     if (this.props.age_in_years < 16) {
       for (let i = 1; i < 6; i++) {
@@ -2212,7 +2211,6 @@ class Dental extends Component {
     );
   }
   render() {
-    debugger;
     let billDetails = this.state.billDetails;
     let child_dental_chart = this.props.age_in_years < 16 ? "childchart" : "";
     return (

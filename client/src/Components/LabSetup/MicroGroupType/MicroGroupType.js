@@ -34,7 +34,8 @@ class DeptMaster extends Component {
       group_name: null,
       arabic_group_name: null,
       group_type: null,
-      antibiotic_id: null
+      antibiotic_id: null,
+      group_types: null
     };
 
     this.getmicroGroups();
@@ -56,7 +57,8 @@ class DeptMaster extends Component {
       group_name: null,
       arabic_group_name: null,
       antibiotic_id: null,
-      group_type: null
+      group_type: null,
+      group_types: null
     });
   }
 
@@ -99,6 +101,7 @@ class DeptMaster extends Component {
       hims_m_group_antibiotic_id: data.hims_m_group_antibiotic_id,
       micro_group_id: data.micro_group_id,
       antibiotic_id: data.antibiotic_id,
+      group_types: data.group_types,
       map_status: data.map_status
     };
     algaehApiCall({
@@ -199,7 +202,8 @@ class DeptMaster extends Component {
       onSuccess: () => {
         let sen_data = {
           micro_group_id: this.state.hims_d_micro_group_id,
-          antibiotic_id: this.state.antibiotic_id
+          antibiotic_id: this.state.antibiotic_id,
+          group_types: this.state.group_types
         };
 
         algaehApiCall({
@@ -307,6 +311,28 @@ class DeptMaster extends Component {
                   }}
                 />
 
+                <AlagehAutoComplete
+                  div={{ className: "col-3 form-group mandatory" }}
+                  label={{ forceLabel: "Select Group", isImp: true }}
+                  selector={{
+                    name: "group_types",
+                    className: "select-fld",
+                    value: this.state.group_types,
+                    dataSource: {
+                      textField: "name",
+                      valueField: "value",
+                      data: GlobalVariables.ANTI_GROUP_TYPE
+                    },
+
+                    onChange: this.textHandle.bind(this),
+                    onClear: () => {
+                      this.setState({
+                        group_types: null
+                      });
+                    }
+                  }}
+                />
+
                 <div className="col align-middle">
                   <br />
 
@@ -365,6 +391,46 @@ class DeptMaster extends Component {
                                   textField: "antibiotic_name",
                                   valueField: "hims_d_antibiotic_id",
                                   data: this.props.antibiotic
+                                },
+
+                                onChange: this.changeGridEditors.bind(this, row)
+                              }}
+                            />
+                          );
+                        }
+                      },
+
+                      {
+                        fieldName: "group_types",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Group Type" }} />
+                        ),
+                        displayTemplate: row => {
+                          let display = GlobalVariables.ANTI_GROUP_TYPE.filter(
+                            f => f.value === row.group_types
+                          );
+
+                          return (
+                            <span>
+                              {display !== null && display.length !== 0
+                                ? display[0].name
+                                : ""}
+                            </span>
+                          );
+                        },
+
+                        editorTemplate: row => {
+                          return (
+                            <AlagehAutoComplete
+                              div={{}}
+                              selector={{
+                                name: "group_types",
+                                className: "select-fld",
+                                value: row.group_types,
+                                dataSource: {
+                                  textField: "name",
+                                  valueField: "value",
+                                  data: GlobalVariables.ANTI_GROUP_TYPE
                                 },
 
                                 onChange: this.changeGridEditors.bind(this, row)
@@ -579,8 +645,8 @@ class DeptMaster extends Component {
                         return (
                           <span>
                             {row.group_type === "F"
-                              ? "Fascideous"
-                              : "Non-Fascideous"}
+                              ? "Fastidious"
+                              : "Non-Fastidious"}
                           </span>
                         );
                       },
@@ -588,8 +654,8 @@ class DeptMaster extends Component {
                         return (
                           <span>
                             {row.group_type === "F"
-                              ? "Fascideous"
-                              : "Non-Fascideous"}
+                              ? "Fastidious"
+                              : "Non-Fastidious"}
                           </span>
                         );
                       },

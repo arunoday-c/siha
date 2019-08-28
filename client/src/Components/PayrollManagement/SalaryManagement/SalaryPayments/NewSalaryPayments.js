@@ -11,7 +11,8 @@ import {
   LoadSalaryPayment,
   ClearData,
   PaySalary,
-  selectToPay
+  selectToPay,
+  selectAll
 } from "./NewSalaryPaymentsEvents.js";
 import moment from "moment";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
@@ -30,7 +31,8 @@ class NewSalaryPayment extends Component {
       employee_name: null,
       employee_id: null,
       salary_payment: [],
-      paysalaryBtn: true
+      paysalaryBtn: true,
+      checkAll: false
     };
   }
 
@@ -56,7 +58,13 @@ class NewSalaryPayment extends Component {
                       <div className="actions">
                         <div className="customCheckbox">
                           <label className="checkbox inline">
-                            <input type="checkbox" value="" name="" />
+                            <input
+                              type="checkbox"
+                              value=""
+                              name=""
+                              checked={this.state.checkAll}
+                              onChange={selectAll.bind(this, this)}
+                            />
                             <span>Select All</span>
                           </label>
                         </div>

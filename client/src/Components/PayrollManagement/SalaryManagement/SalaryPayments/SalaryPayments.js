@@ -14,7 +14,8 @@ import {
   employeeSearch,
   ClearData,
   PaySalary,
-  selectToPay
+  selectToPay,
+  selectAll
 } from "./SalaryPaymentsEvents.js";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
@@ -272,7 +273,14 @@ class SalaryPayment extends Component {
                       <div className="actions">
                         <div className="customCheckbox">
                           <label className="checkbox inline">
-                            <input type="checkbox" value="" name="" />
+                            <input
+                              type="checkbox"
+                              value=""
+                              name=""
+                              onChange={e => {
+                                debugger;
+                              }}
+                            />
                             <span>Select All</span>
                           </label>
                         </div>

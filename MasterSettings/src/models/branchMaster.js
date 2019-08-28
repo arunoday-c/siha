@@ -12,9 +12,10 @@ module.exports = {
         _mysql
           .executeQuery({
             query:
-              "INSERT INTO hims_d_hospital (hospital_code,default_nationality,default_country,default_currency,hospital_name,\
-                    hospital_address,requied_emp_id,created_date,created_by,updated_date,updated_by)\
-                     values(?,?,?,?,?,?,?,?,?,?,?)",
+              "INSERT INTO hims_d_hospital (hospital_code, default_nationality, default_country, default_currency, \
+                hospital_name, hospital_address, requied_emp_id, algaeh_api_auth_id, created_date, created_by, \
+                updated_date, updated_by) \
+                values(?,?,?,?,?,?,?,?,?,?,?,?)",
             values: [
               input.hospital_code,
               input.default_nationality,
@@ -23,6 +24,7 @@ module.exports = {
               input.hospital_name,
               input.hospital_address,
               input.requied_emp_id,
+              input.algaeh_api_auth_id,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),

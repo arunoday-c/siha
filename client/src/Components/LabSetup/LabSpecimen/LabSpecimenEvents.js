@@ -22,7 +22,7 @@ const onchangegridcol = ($this, row, e) => {
 
 const updateLabSpecimen = ($this, data) => {
   //data.updated_by = getCookie("UserID");
-
+  data.description = data.SpeDescription;
   algaehApiCall({
     uri: "/labmasters/updateSpecimen",
     module: "laboratory",
@@ -144,10 +144,22 @@ const insertLabSpecimen = ($this, e) => {
   });
 };
 
+const UrineSpecimen = $this => {
+  let urine_specimen = "N";
+  if (!$this.state.urineSpecimen === true) {
+    urine_specimen = "Y";
+  }
+  $this.setState({
+    urine_specimen: urine_specimen,
+    urineSpecimen: !$this.state.urineSpecimen
+  });
+};
+
 export {
   changeTexts,
   onchangegridcol,
   insertLabSpecimen,
   updateLabSpecimen,
-  deleteLabSpecimen
+  deleteLabSpecimen,
+  UrineSpecimen
 };

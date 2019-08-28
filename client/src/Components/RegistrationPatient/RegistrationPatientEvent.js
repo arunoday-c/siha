@@ -142,6 +142,7 @@ const ClearData = ($this, from, patcode) => {
       }
 
       IOputs.forceRefresh = true;
+      IOputs.doctors = $this.props.frontproviders;
       $this.setState(IOputs, () => {
         $this.props.setSelectedInsurance({
           redux: {

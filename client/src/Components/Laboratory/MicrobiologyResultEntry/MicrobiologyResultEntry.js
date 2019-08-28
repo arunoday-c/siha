@@ -364,8 +364,8 @@ class MicrobiologyResultEntry extends Component {
                           <h6>
                             {this.state.organism_type
                               ? this.state.organism_type === "F"
-                                ? "Fascideous"
-                                : "Non-Fascideous"
+                                ? "Fastidious"
+                                : "Non-Fastidious"
                               : "------"}
                           </h6>
                         </div>
