@@ -45,7 +45,7 @@ module.exports = {
           strQuery =
             "select A.hims_f_attendance_monthly_id, A.employee_id, A.year, A.month, A.hospital_id, \
             A.sub_department_id, A.total_days,A.present_days, A.absent_days, A.total_work_days, \
-            A.total_weekoff_days, A.total_holidays, A.total_leave, A.paid_leave, A.unpaid_leave, \
+            A.display_present_days,A.total_weekoff_days, A.total_holidays, A.total_leave, A.paid_leave, A.unpaid_leave, \
             A.total_paid_days, A.total_hours, A.total_working_hours, A.ot_work_hours, \
             A.ot_weekoff_hours,A.ot_holiday_hours, A.shortage_hours,\
             E.employee_code,E.gross_salary, S.hims_f_salary_id,S.salary_processed \
@@ -70,7 +70,7 @@ module.exports = {
           strQuery =
             "select A.hims_f_attendance_monthly_id, A.employee_id, A.year, A.month, A.hospital_id, \
             A.sub_department_id, A.total_days,A.present_days, A.absent_days, A.total_work_days, \
-            A.total_weekoff_days, A.total_holidays, A.total_leave, A.paid_leave, A.unpaid_leave, \
+            A.display_present_days,A.total_weekoff_days, A.total_holidays, A.total_leave, A.paid_leave, A.unpaid_leave, \
             A.total_paid_days,A.total_hours, A.total_working_hours,A.ot_work_hours, \
             A.ot_weekoff_hours,A.ot_holiday_hours, A.shortage_hours,\
             E.employee_code,E.gross_salary, S.hims_f_salary_id,S.salary_processed \
@@ -547,9 +547,9 @@ module.exports = {
                                             "INSERT INTO `hims_f_salary` (salary_number,month,year,employee_id,sub_department_id,salary_date,per_day_sal,total_days,\
                                               present_days,absent_days,total_work_days,total_weekoff_days,total_holidays,total_leave,paid_leave,\
                                               unpaid_leave,total_hours, total_working_hours, ot_work_hours, ot_weekoff_hours, ot_holiday_hours, \
-                                              shortage_hours,loan_payable_amount,loan_due_amount,advance_due,gross_salary,total_earnings,total_deductions,\
+                                              shortage_hours,display_present_days,loan_payable_amount,loan_due_amount,advance_due,gross_salary,total_earnings,total_deductions,\
                                               total_contributions,net_salary, total_paid_days, hospital_id) \
-                                             VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ;",
+                                             VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ;",
                                             [
                                               _salary_number,
                                               parseInt(month_number),
@@ -577,6 +577,8 @@ module.exports = {
                                               empResult[i]["ot_weekoff_hours"],
                                               empResult[i]["ot_holiday_hours"],
                                               empResult[i]["shortage_hours"],
+                                              empResult[i]["display_present_days"],
+                                              
                                               total_loan_payable_amount,
                                               total_loan_due_amount,
                                               advance_due_amount,
@@ -1882,7 +1884,7 @@ module.exports = {
         .executeQuery({
           query:
             "select hims_f_salary_id, employee_id,salary_number, total_days, absent_days, total_work_days,  total_weekoff_days, total_holidays, total_leave, paid_leave, unpaid_leave, present_days,  pending_unpaid_leave, total_paid_days, hims_f_salary.gross_salary, hims_f_salary.net_salary, \
-            advance_due, hims_f_salary.total_earnings,hims_f_salary.total_deductions,loan_payable_amount, \
+            advance_due,display_present_days, hims_f_salary.total_earnings,hims_f_salary.total_deductions,loan_payable_amount, \
             loan_due_amount, salary_processed, salary_paid, emp.employee_code, emp.full_name \
             from hims_f_salary, hims_d_employee emp, hims_d_sub_department SD where hims_f_salary.employee_id = emp.hims_d_employee_id and emp.sub_department_id=SD.hims_d_sub_department_id \
             and `year` = ? and `month` = ? and emp.hospital_id=? " +

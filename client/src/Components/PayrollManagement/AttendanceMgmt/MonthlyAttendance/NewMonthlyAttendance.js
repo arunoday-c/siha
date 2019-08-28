@@ -307,7 +307,7 @@ export default class NewMonthlyAttendance extends Component {
                     )
                   },
                   {
-                    fieldName: "present_days",
+                    fieldName: "display_present_days",
                     label: (
                       <AlgaehLabel label={{ forceLabel: "Present Days" }} />
                     )
