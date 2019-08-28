@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "./filter.html.css";
-import {
-  AlagehAutoComplete,
-  AlgaehLabel,
-  AlgaehDateHandler
-} from "../../../../Wrapper/algaehWrapper";
+import { AlagehAutoComplete } from "../../../../Wrapper/algaehWrapper";
 import AlgaehAutoSearch from "../../../../Wrapper/autoSearch";
 import { swalMessage } from "../../../../../utils/algaehApiCall";
+import { AlgaehOpenContainer } from "../../../../../utils/GlobalFunctions";
 import {
   getHospitals,
   getAttendanceDates,
@@ -19,7 +16,10 @@ import moment from "moment";
 export default function Filter(props) {
   let fileInput = React.createRef();
   const [hospitals, setHospitals] = useState([]);
-  const [hospitalID, setHospitalID] = useState("");
+  const [hospitalID, setHospitalID] = useState(
+    JSON.parse(AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail")))
+      .hims_d_hospital_id
+  );
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [projectID, setProjectID] = useState("");
@@ -33,13 +33,29 @@ export default function Filter(props) {
   const [employeeID, setEmployeeId] = useState(0);
   const [startDt, setStartDt] = useState(0);
   const [endDt, setEndDt] = useState(0);
-  const [month, setMonth] = useState("");
+  const [month, setMonth] = useState(moment().format("MM"));
   const [fromMin, setFromMin] = useState(new Date());
   const [fromMax, setFromMax] = useState(new Date());
   const [toMin, setToMin] = useState(new Date());
   const [toMax, setToMax] = useState(new Date());
   const [loadingPriew, setLoadingPriew] = useState(false);
   const [onlyExcel, setOnlyExcel] = useState("");
+  const dateCalcl = enddtDt => {
+    enddtDt = enddtDt || endDt;
+    const year = moment().format("YYYY");
+    const maxDate = `${year}-${month}-${enddtDt}`;
+    const minDate = moment(maxDate, "YYYY-MM-DD")
+      .add(-1, "months")
+      .set("date", startDt)
+      .format("YYYY-MM-DD");
+
+    setToMax(maxDate);
+    setFromMin(minDate);
+    setFromMax(maxDate);
+
+    setFromDate(minDate);
+    setToDate(maxDate);
+  };
   useEffect(() => {
     getHospitals(data => {
       setHospitals(data);
@@ -54,6 +70,7 @@ export default function Filter(props) {
 
           setStartDt(firstRecord.at_st_date);
           setEndDt(firstRecord.at_end_date);
+          dateCalcl(firstRecord.at_end_date);
         }
       });
       getDivisionProject({ division_id: hospitalID }, data => {
@@ -64,6 +81,11 @@ export default function Filter(props) {
       });
     }
   }, [hospitalID]);
+
+  useEffect(() => {
+    dateCalcl();
+  }, [month]);
+
   return (
     <div className="row  inner-top-search">
       <AlagehAutoComplete
@@ -122,19 +144,6 @@ export default function Filter(props) {
           },
           onChange: e => {
             setMonth(e.value);
-
-            const year = moment().format("YYYY");
-            const maxDate = `${year}-${e.value}-${endDt}`;
-            const minDate = moment(maxDate, "YYYY-MM-DD")
-              .add(-1, "months")
-              .set("date", startDt)
-              .format("YYYY-MM-DD");
-
-            setToMax(maxDate);
-            setFromMin(minDate);
-            setFromMax(maxDate);
-            setFromDate(minDate);
-            setToDate(maxDate);
           },
           onClear: () => {
             setMonth("");
@@ -258,7 +267,7 @@ export default function Filter(props) {
         }}
       />
 
-      <input
+      {/* <input
         type="file"
         name="manualTimeSheet"
         value={onlyExcel}
@@ -275,60 +284,77 @@ export default function Filter(props) {
             }
           }
         }}
-      />
+      /> */}
 
-      <button
-        onClick={() => {
-          if (hospitalID !== "" && fromDate !== "" && toDate !== "") {
-            props.downloadExcel({
-              branch_id: hospitalID,
-              from_date: fromDate,
-              to_date: toDate,
-              project_id: projectID,
-              department_id: departmenID,
-              sub_department_id: subDepartmentID,
-              employee_id: employeeID,
-              month: month,
-              year: moment().format("YYYY")
-            });
-          } else {
-            swalMessage({
-              title: "Branch,from data and to date are mandatory",
-              type: "error"
-            });
-          }
-        }}
-        style={{ marginLeft: 10, float: "right" }}
-        className="btn btn-primary"
-      >
-        {!loading ? (
-          <span>Download</span>
-        ) : (
-          <i className="fas fa-spinner fa-spin" />
-        )}
-      </button>
-      <button
-        onClick={() => {
-          getPreview(
-            {
-              branch_id: hospitalID,
-              from_date: fromDate,
-              to_date: toDate,
-              month: month,
-              year: moment().format("YYYY")
-            },
-            props
-          );
-        }}
-        style={{ marginLeft: 10, float: "right" }}
-        className="btn btn-primary"
-      >
-        {!loadingPriew ? (
-          <span>Preview</span>
-        ) : (
-          <i className="fas fa-spinner fa-spin" />
-        )}
-      </button>
+      <div className="col-4" style={{ paddingTop: 19 }}>
+        <div className="uploadManualDiv">
+          <input
+            className="inputfile"
+            type="file"
+            name="manualTimeSheet"
+            ref={fileInput}
+            onChange={e => {
+              if (e.target.files.length > 0)
+                UploadTimesheet(e.target.files, props);
+            }}
+          />
+          <label onClick={() => fileInput.current.click()}>
+            Upload Attendance
+          </label>
+        </div>
+        <button
+          onClick={() => {
+            if (hospitalID !== "" && fromDate !== "" && toDate !== "") {
+              props.downloadExcel({
+                branch_id: hospitalID,
+                from_date: fromDate,
+                to_date: toDate,
+                project_id: projectID,
+                department_id: departmenID,
+                sub_department_id: subDepartmentID,
+                employee_id: employeeID,
+                month: month,
+                year: moment().format("YYYY")
+              });
+            } else {
+              swalMessage({
+                title: "Branch,from data and to date are mandatory",
+                type: "error"
+              });
+            }
+          }}
+          style={{ marginLeft: 10, float: "right" }}
+          className="btn btn-default"
+        >
+          {!loading ? (
+            <span>Download</span>
+          ) : (
+            <i className="fas fa-spinner fa-spin" />
+          )}
+        </button>
+        <button
+          onClick={() => {
+            getPreview(
+              {
+                branch_id: hospitalID,
+                from_date: fromDate,
+                to_date: toDate,
+                month: month,
+                year: moment().format("YYYY")
+              },
+              props
+            );
+          }}
+          style={{ marginLeft: 10, float: "right" }}
+          className="btn btn-default"
+        >
+          {!loadingPriew ? (
+            <span>Preview</span>
+          ) : (
+            <i className="fas fa-spinner fa-spin" />
+          )}
+        </button>
+      </div>
     </div>
   );
 }
