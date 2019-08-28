@@ -382,12 +382,15 @@ export function excelManualTimeSheetRead(req, res, next) {
     workbook.xlsx
       .load(buff)
       .then(() => {
+        console.log("three");
         var worksheet = workbook.getWorksheet(1);
         //  workbook.eachSheet(function(worksheet, sheetId) {
+        console.log("four");
         let columns = [];
         const lastRow = worksheet.lastRow;
         filter = JSON.parse(lastRow.values[1]);
         worksheet.eachRow(function(row, rowNumber) {
+          console.log("rowNumber" + rowNumber);
           if (rowNumber === 1) {
             columns = row.values;
           } else {
@@ -429,6 +432,9 @@ export function excelManualTimeSheetRead(req, res, next) {
         filter.year = parseInt(filter.year);
         req.body = { ...filter, data: excelArray };
         next();
+      })
+      .catch(error => {
+        next(error);
       });
   });
 }

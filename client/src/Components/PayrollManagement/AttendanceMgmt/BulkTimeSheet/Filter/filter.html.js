@@ -37,6 +37,7 @@ export default function Filter(props) {
   const [toMin, setToMin] = useState(new Date());
   const [toMax, setToMax] = useState(new Date());
   const [loadingPriew, setLoadingPriew] = useState(false);
+  const [onlyExcel, setOnlyExcel] = useState("");
   useEffect(() => {
     getHospitals(data => {
       setHospitals(data);
@@ -258,8 +259,19 @@ export default function Filter(props) {
       <input
         type="file"
         name="manualTimeSheet"
+        value={onlyExcel}
         onChange={e => {
-          if (e.target.files.length > 0) UploadTimesheet(e.target.files, props);
+          if (e.target.files.length > 0) {
+            if (e.target.files[0].name.indexOf(".xlsx") > -1) {
+              UploadTimesheet(e.target.files, props);
+            } else {
+              setOnlyExcel("");
+              swalMessage({
+                type: "error",
+                title: "Accept only .xlsx files"
+              });
+            }
+          }
         }}
       />
 
