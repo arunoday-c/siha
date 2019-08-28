@@ -5624,6 +5624,14 @@ module.exports = {
                         holiday_or_weekOff.weekoff == "Y" &&
                         leave.weekoff_included == "Y")
                     ) {
+
+                      let color="";
+
+                      if( leave.status=="PL"||leave.status=="HPL")
+                      color="#ec7c00";
+                      if( leave.status=="UL"||leave.status=="HUL")
+                      color="#ff0000";
+
                       outputArray.push({
                         project_id: row.project_id,
                         project_desc: row.project_desc,
@@ -5632,7 +5640,7 @@ module.exports = {
                         [moment(leave.attendance_date, "YYYY-MM-DD").format(
                           "YYYYMMDD"
                         )]: leave.status,
-                        color: "FCECEC"
+                        color: color
                       });
                     } else if (holiday_or_weekOff != null) {
                       if (holiday_or_weekOff.weekoff == "Y") {
@@ -5764,6 +5772,10 @@ module.exports = {
              const HALF_HR = parseInt(parseInt(total_minutes/2) / parseInt(60));
             const  HALF_MIN = parseInt(total_minutes/2) % parseInt(60);
 
+
+
+            console.log("HALF_HR:",HALF_HR);
+            console.log("HALF_MIN:",HALF_MIN);
               rawData.forEach(employee => {
                 const attEmp = atResult.find(emp => {
                   return emp["employee_code"] == employee["employee_code"];
@@ -5943,7 +5955,9 @@ module.exports = {
 
                     case "HUL":
                 
-                    case "HPL":  if (day["worked_status"] == day["status"]) {
+                    case "HPL": 
+                   
+                    if (day["worked_status"] == day["status"]) {
                       insertArray.push({
                         worked_hours: 0,
                         hours: 0,
@@ -6146,6 +6160,8 @@ module.exports = {
     const utilities = new algaehUtilities();
     let input = req.query;
 
+
+
     let dailyAttendance = [];
     if (
       input.hospital_id > 0 &&
@@ -6162,7 +6178,7 @@ module.exports = {
       // }
 
       if (input.employee_id > 0) {
-        strQry += " and TS.employee_id =" + input.employee_id;
+        strQry += " and employee_id =" + input.employee_id;
       }
 
       if (input.department_id > 0) {
@@ -6255,6 +6271,23 @@ module.exports = {
                   parseInt(Math.abs(worked_minutes)) % parseInt(60);
               }
 
+              let paid_leave=0;
+              let unpaid_leave=0;
+
+
+              switch (AttenResult[i]["status"]=="PL"){
+
+              case "PL":paid_leave=1;
+                break;
+              case "UL":unpaid_leave=1;
+                  break;
+              case "HPL":paid_leave=0.5;
+                  break;
+              case "HUL":
+                  unpaid_leave=0.5;
+                  break;
+
+              }
               dailyAttendance.push({
                 employee_id: AttenResult[i]["employee_id"],
                 project_id: AttenResult[i]["project_id"],
@@ -6270,8 +6303,8 @@ module.exports = {
                 total_work_days: 1,
                 weekoff_days: AttenResult[i]["status"] == "WO" ? 1 : 0,
                 holidays: AttenResult[i]["status"] == "HO" ? 1 : 0,
-                paid_leave: AttenResult[i]["status"] == "PL" ? 1 : 0,
-                unpaid_leave: AttenResult[i]["status"] == "UL" ? 1 : 0,
+                paid_leave: paid_leave,
+                unpaid_leave: unpaid_leave,
                 total_hours:
                   AttenResult[i]["consider_ot_shrtg"] == "Y"
                     ? AttenResult[i]["worked_hours"]
@@ -6381,7 +6414,7 @@ module.exports = {
             from hims_f_daily_attendance DA\
             inner join hims_d_employee E on DA.employee_id=E.hims_d_employee_id\
             inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\
-            inner join hims_d_department DP on SD.department_id=DP.hims_d_department_id\
+          
             where      \
             DA.hospital_id=?  and year=? and month=?  ${strQry}  and attendance_date between date(?) and \
             date(?)  group by employee_id;\
@@ -6389,7 +6422,7 @@ module.exports = {
             from hims_f_daily_attendance DA\
             inner join hims_d_employee E on DA.employee_id=E.hims_d_employee_id\
             inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\
-            inner join hims_d_department DP on SD.department_id=DP.hims_d_department_id\ where      \
+             where      \
             DA.hospital_id=?  and year=? and month=?   ${strQry} and attendance_date between date(?) and\
             date(?)  group by employee_id,project_id;`,
                     values: [
@@ -6996,6 +7029,7 @@ function BulktimesheetCalc(req, res, next) {
         if (input.designation_id > 0) {
           strQry += " and E.employee_designation_id=" + input.designation_id;
         }
+        
 
         _mysql
           .executeQuery({
@@ -7012,7 +7046,7 @@ function BulktimesheetCalc(req, res, next) {
             and PR.attendance_date between date(?) and date(?)
             order by employee_id;
             select hims_f_leave_application_id,employee_id,leave_application_code,from_leave_session,
-            L.leave_type,from_date,to_leave_session,to_date,holiday_included,weekoff_included
+            L.leave_type,from_date,to_leave_session,to_date,holiday_included,weekoff_included,total_applied_days
             from hims_f_leave_application LA inner join hims_d_leave L on 	LA.leave_id=L.hims_d_leave_id
             inner join  hims_d_employee E on LA.employee_id=E.hims_d_employee_id
             inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
@@ -7136,7 +7170,8 @@ function BulktimesheetCalc(req, res, next) {
                             leave_status = leave_status == "P" ? "HPL" : "HUL";
                           }
                         }
-  
+                        // console.log("obj:",s);
+                        // console.log("leave_status",leave_status);
                         if (leave_status == "P") {
                           leave_status = "PL";
                         } else if (leave_status == "U") {
@@ -7270,23 +7305,18 @@ function BulktimesheetCalc(req, res, next) {
   });
 }
 
-function bulkTimeValidate(day, employee_code, STDWH, STDWM,HALF_HR,HALF_MIN) {
+function bulkTimeValidate(day, employee_code, STDWH, STDWM, HALF_HR, HALF_MIN) {
   console.log("day:", day);
-let  actual_hours=0;
-let actual_mins=0;
+  let actual_hours = 0;
+  let actual_mins = 0;
 
-if(day.status=="PR"){
-  actual_hours=STDWH;
-  actual_mins= STDWM;
-
-}else
-if(day.status=="HPL"||day.status=="HUL"){
-  actual_hours=HALF_HR;
-  actual_mins= HALF_MIN;
-
-}
-
-
+  if (day.status == "PR") {
+    actual_hours = STDWH;
+    actual_mins = STDWM;
+  } else if (day.status == "HPL" || day.status == "HUL") {
+    actual_hours = HALF_HR;
+    actual_mins = HALF_MIN;
+  }
 
   let time = String(day["worked_status"])
     .replace(/\s+?/g, "")
@@ -7353,7 +7383,6 @@ if(day.status=="HPL"||day.status=="HUL"){
       const num = parseFloat(output[0])
         .toFixed(2)
         .split(".");
- 
 
       if (num[0] < 25 && num[1] < 60) {
         return {
