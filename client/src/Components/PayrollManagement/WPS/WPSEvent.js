@@ -21,13 +21,15 @@ export default function WPSEvents() {
             onSuccess: res => {
               if (res.data.success) {
                 let data = res.data.records;
-                $this.setState({
-                  employees: data.employees,
-                  total_basic: data.total_basic,
-                  total_deductions: data.total_deductions,
-                  total_net_salary: data.total_net_salary,
-                  button_enable: false
-                });
+                if (data.length > 0) {
+                  $this.setState({
+                    employees: data.employees,
+                    total_basic: data.total_basic,
+                    total_deductions: data.total_deductions,
+                    total_net_salary: data.total_net_salary,
+                    button_enable: false
+                  });
+                }
               }
             },
             onFailure: err => {
