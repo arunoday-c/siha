@@ -253,15 +253,10 @@ const doctorselectedHandeler = ($this, context, e) => {
           let sub_department_id = "";
           let department_type = "";
           let department_id = "";
-          if ($this.state.sub_department_id !== null) {
-            sub_department_id = $this.state.sub_department_id;
-            department_type = $this.state.department_type;
-            department_id = $this.state.department_id;
-          } else {
-            sub_department_id = e.selected.sub_department_id;
-            department_type = e.selected.department_type;
-            department_id = e.selected.department_id;
-          }
+          sub_department_id = e.selected.sub_department_id;
+          department_type = e.selected.department_type;
+          department_id = e.selected.department_id;
+
           let doctor_name = e.selected.full_name;
 
           if ($this.state.hims_d_patient_id != null) {
@@ -460,7 +455,7 @@ const generateBillDetails = ($this, context) => {
       secondary_network_office_id: $this.state.secondary_network_office_id
     }
   ];
-  debugger;
+
   AlgaehLoader({ show: true });
 
   algaehApiCall({
@@ -487,7 +482,7 @@ const generateBillDetails = ($this, context) => {
                 context.updateState({ ...response.data.records });
               }
             }
-            debugger;
+
             AlgaehLoader({ show: false });
           },
           onFailure: error => {

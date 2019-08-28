@@ -1,4 +1,9 @@
 {{{importStyle 'css/creditinvoice.css'}}}
-<div class="barcodeLine">
-  <img src={{barcode "code128" header.barcode}}  />
+<div class="barcodeSpecimen">
+  <img src={{barcode "code128" header.lab_id_number}}  />
+  <p style="width:100%;margin-bottom:3px;font-size:12px;">{{header.full_name}}</p>
+  <p>{{header.patient_code}}</p>
+  <p>{{header.age_in_years}}Y {{header.age_in_months}}M {{header.age_in_days}}D / {{header.gender}}</p>
+  <!-- <p>{{header.registration_date}}</p>
+  <p>{{header.description}}</p> -->
 </div>
