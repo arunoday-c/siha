@@ -6275,7 +6275,7 @@ module.exports = {
               let unpaid_leave=0;
 
 
-              switch (AttenResult[i]["status"]=="PL"){
+              switch (AttenResult[i]["status"]){
 
               case "PL":paid_leave=1;
                 break;
@@ -7347,7 +7347,7 @@ function bulkTimeValidate(day, employee_code, STDWH, STDWM, HALF_HR, HALF_MIN) {
             hours: num[0],
             minutes: num[1],
             actual_hours: actual_hours,
-            actual_minutes: actual_minutes,
+            actual_minutes: actual_mins,
             employee_id: day.employee_id,
             attendance_date: day.attendance_date,
             status: day.status,
@@ -7392,7 +7392,7 @@ function bulkTimeValidate(day, employee_code, STDWH, STDWM, HALF_HR, HALF_MIN) {
             hours: num[0],
             minutes: num[1],
             actual_hours: actual_hours,
-            actual_minutes: actual_minutes,
+            actual_minutes: actual_mins,
             employee_id: day.employee_id,
             attendance_date: day.attendance_date,
             status: day.status,
