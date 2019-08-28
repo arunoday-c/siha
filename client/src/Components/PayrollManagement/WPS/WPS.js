@@ -461,13 +461,13 @@ export default class WPS extends Component {
                 Generate SIF
               </button>
 
-              <button
+              {/*<button
                 type="button"
                 className="btn btn-default"
                 disabled={this.state.button_enable}
               >
                 Export Excel
-              </button>
+              </button>*/}
             </div>
           </div>
         </div>
