@@ -2653,7 +2653,8 @@ module.exports = {
                 where salary_header_id in ( " +
                   salary_header_ids +
                   ");select basic_earning_component from hims_d_hrms_options; \
-                  select hims_d_earning_deduction_id from hims_d_earning_deduction where component_type='OV'"
+                  select hims_d_earning_deduction_id from hims_d_earning_deduction where component_type='OV'",
+                printQuery: true
               })
               .then(results => {
                 _mysql.releaseConnection();
@@ -2665,6 +2666,7 @@ module.exports = {
 
                 let total_basic = 0;
 
+                utilities.logger().log("salary: ", salary.length);
                 for (let i = 0; i < salary.length; i++) {
                   //ST-complete OVER-Time (ot,wot,hot all togather sum)  calculation
                   let ot_hours = 0;
@@ -2793,7 +2795,7 @@ module.exports = {
               });
           } else {
             _mysql.releaseConnection();
-            req.records = salary;
+            req.records = {};
             next();
           }
         })

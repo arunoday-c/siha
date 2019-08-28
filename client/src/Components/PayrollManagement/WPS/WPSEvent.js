@@ -21,7 +21,8 @@ export default function WPSEvents() {
             onSuccess: res => {
               if (res.data.success) {
                 let data = res.data.records;
-                if (data.length > 0) {
+                debugger;
+                if (Object.keys(data).length > 0) {
                   $this.setState({
                     employees: data.employees,
                     total_basic: data.total_basic,
@@ -182,7 +183,7 @@ export default function WPSEvents() {
 
       var link = document.createElement("a");
       link.setAttribute("href", encodedUri);
-      link.setAttribute("download", fileName + ".csv");
+      link.setAttribute("download", fileName + ".sif");
       link.click();
     },
     BankEventHandaler: ($this, e) => {
