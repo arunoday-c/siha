@@ -12,7 +12,8 @@ import {
   ClearData,
   PaySalary,
   selectToPay,
-  selectAll
+  selectAll,
+  generateReport
 } from "./NewSalaryPaymentsEvents.js";
 import moment from "moment";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
@@ -301,8 +302,12 @@ class NewSalaryPayment extends Component {
                 <button
                   type="button"
                   className="btn btn-other"
-                  //   onClick={PostDoctorCommission.bind(this, this)}
-                  // disabled={this.state.postEnable}
+                  onClick={generateReport.bind(
+                    this,
+                    // _firstPatient,
+                    "generatePaySlip",
+                    "Pay Slip"
+                  )}
                 >
                   Generate Payslip PDF
                 </button>

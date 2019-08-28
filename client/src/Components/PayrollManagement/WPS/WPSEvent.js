@@ -21,13 +21,16 @@ export default function WPSEvents() {
             onSuccess: res => {
               if (res.data.success) {
                 let data = res.data.records;
-                $this.setState({
-                  employees: data.employees,
-                  total_basic: data.total_basic,
-                  total_deductions: data.total_deductions,
-                  total_net_salary: data.total_net_salary,
-                  button_enable: false
-                });
+                debugger;
+                if (Object.keys(data).length > 0) {
+                  $this.setState({
+                    employees: data.employees,
+                    total_basic: data.total_basic,
+                    total_deductions: data.total_deductions,
+                    total_net_salary: data.total_net_salary,
+                    button_enable: false
+                  });
+                }
               }
             },
             onFailure: err => {
@@ -180,7 +183,7 @@ export default function WPSEvents() {
 
       var link = document.createElement("a");
       link.setAttribute("href", encodedUri);
-      link.setAttribute("download", fileName + ".csv");
+      link.setAttribute("download", fileName + ".sif");
       link.click();
     },
     BankEventHandaler: ($this, e) => {

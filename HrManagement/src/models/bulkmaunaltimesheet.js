@@ -238,14 +238,16 @@ export function excelManualTimeSheet(req, res, next) {
         ]);
         helpSheet.addRow(["UL", "Unpaid Leave", ""]);
         helpSheet.addRow(["PL", "Paid Leave", ""]);
+        helpSheet.addRow(["HPL", "Half day Paid leave", ""]);
+        helpSheet.addRow(["HUL", "Half day unpaid leave", ""]);
         helpSheet.addRow([
           "N",
           "Not Editable/ Project Not assigned to Employee",
           ""
         ]);
 
-        helpSheet.mergeCells("A8:E8");
-        helpSheet.mergeCells("A9:E9");
+        helpSheet.mergeCells("A10:E10");
+        helpSheet.mergeCells("A11:E11");
         helpSheet.addRow(["Time Format", "Example"]);
         helpSheet.addRow(["HH:MM", "If user want to assign 9 hr, Follow 9:00"]);
         helpSheet.getRow(1).eachCell((cell, index) => {
@@ -260,7 +262,7 @@ export function excelManualTimeSheet(req, res, next) {
             fgColor: { argb: "16365C" }
           };
         });
-        helpSheet.getRow(10).eachCell((cell, index) => {
+        helpSheet.getRow(12).eachCell((cell, index) => {
           cell.font = { bold: true, color: { argb: "ffffff" } };
           cell.alignment = {
             vertical: "middle",
@@ -273,7 +275,7 @@ export function excelManualTimeSheet(req, res, next) {
           };
         });
         helpSheet.eachRow((row, index) => {
-          if (index !== 1 && index !== 10 && index !== 8 && index !== 9) {
+          if (index !== 1 && index !== 12 && index !== 10 && index !== 11) {
             row.eachCell((cell, celIndex) => {
               cell.border = {
                 top: { style: "thin", color: { argb: "000000" } },
@@ -310,7 +312,10 @@ export function excelManualTimeSheet(req, res, next) {
                   horizontal: "center"
                 };
               }
-              if (index === 5 && celIndex === 1) {
+              if (
+                (index === 5 && celIndex === 1) ||
+                (index === 8 && celIndex === 1)
+              ) {
                 cell.fill = {
                   type: "pattern",
                   pattern: "solid",
@@ -321,7 +326,10 @@ export function excelManualTimeSheet(req, res, next) {
                   horizontal: "center"
                 };
               }
-              if (index === 6 && celIndex === 1) {
+              if (
+                (index === 6 && celIndex === 1) ||
+                (index === 7 && celIndex === 1)
+              ) {
                 cell.fill = {
                   type: "pattern",
                   pattern: "solid",
@@ -332,7 +340,8 @@ export function excelManualTimeSheet(req, res, next) {
                   horizontal: "center"
                 };
               }
-              if (index === 7 && celIndex === 1) {
+
+              if (index === 9 && celIndex === 1) {
                 cell.fill = {
                   type: "pattern",
                   pattern: "solid",
@@ -382,12 +391,15 @@ export function excelManualTimeSheetRead(req, res, next) {
     workbook.xlsx
       .load(buff)
       .then(() => {
+        console.log("three");
         var worksheet = workbook.getWorksheet(1);
         //  workbook.eachSheet(function(worksheet, sheetId) {
+        console.log("four");
         let columns = [];
         const lastRow = worksheet.lastRow;
         filter = JSON.parse(lastRow.values[1]);
         worksheet.eachRow(function(row, rowNumber) {
+          console.log("rowNumber" + rowNumber);
           if (rowNumber === 1) {
             columns = row.values;
           } else {
@@ -429,6 +441,9 @@ export function excelManualTimeSheetRead(req, res, next) {
         filter.year = parseInt(filter.year);
         req.body = { ...filter, data: excelArray };
         next();
+      })
+      .catch(error => {
+        next(error);
       });
   });
 }

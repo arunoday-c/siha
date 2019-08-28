@@ -56,10 +56,12 @@ export function UploadTimesheet(files, props) {
   const reader = new FileReader();
   reader.readAsDataURL(files[0]);
   reader.onload = e => {
-    const data = e.target.result;
+    const data = e.target.result.split(",")[1];
     algaehApiCall({
       uri: "/attendance/excelManualTimeSheetRead",
-      data: data,
+      data:
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64," +
+        data,
       method: "post",
       module: "hrManagement",
       onSuccess: response => {

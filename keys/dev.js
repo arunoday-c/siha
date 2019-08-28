@@ -25,7 +25,7 @@ exports.default = {
     // database: "seco",
     // database: "algaeh_hrms_oman_db",
     //database: "medical_db",
-    // database: "shaksy_live_db",
+    //database: "shaksy_live_db",
 
     multipleStatements: true,
     acquireTimeout: 20000,

@@ -192,7 +192,7 @@ export default class AttendanceSettings extends Component {
             </div>
             <div className="portlet-body">
               <div className="row">
-                <AlagehAutoComplete
+                {/* <AlagehAutoComplete
                   div={{ className: "col-2 form-group" }}
                   label={{ forceLabel: "Salary Process Date", isImp: true }}
                   selector={{
@@ -207,7 +207,7 @@ export default class AttendanceSettings extends Component {
                     },
                     onChange: this.dropDownHandler.bind(this)
                   }}
-                />
+                /> */}
 
                 <div className="col-2">
                   <label>Pay salary before processing</label>
