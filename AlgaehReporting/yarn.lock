@@ -3417,10 +3417,10 @@ pstree.remy@^1.1.6:
   resolved "https://registry.yarnpkg.com/pstree.remy/-/pstree.remy-1.1.7.tgz#c76963a28047ed61542dc361aa26ee55a7fa15f3"
   integrity sha512-xsMgrUwRpuGskEzBFkH8NmTimbZ5PcPup0LA8JJkHIm2IMUbQcpo3yeLNWVrufEYjh8YwtSVh0xz6UeWc5Oh5A==
 
-puppeteer@1.14.0:
-  version "1.14.0"
-  resolved "https://registry.yarnpkg.com/puppeteer/-/puppeteer-1.14.0.tgz#828c1926b307200d5fc8289b99df4e13e962d339"
-  integrity sha512-SayS2wUX/8LF8Yo2Rkpc5nkAu4Jg3qu+OLTDSOZtisVQMB2Z5vjlY2TdPi/5CgZKiZroYIiyUN3sRX63El9iaw==
+puppeteer@^1.14.0:
+  version "1.19.0"
+  resolved "https://registry.yarnpkg.com/puppeteer/-/puppeteer-1.19.0.tgz#e3b7b448c2c97933517078d7a2c53687361bebea"
+  integrity sha512-2S6E6ygpoqcECaagDbBopoSOPDv0pAZvTbnBgUY+6hq0/XDFDOLEMNlHF/SKJlzcaZ9ckiKjKDuueWI3FN/WXw==
   dependencies:
     debug "^4.1.0"
     extract-zip "^1.6.6"
@@ -4307,6 +4307,11 @@ write@^0.2.1:
   integrity sha1-X8A4KOJkzqP+kUVUdvejxWbLB1c=
   dependencies:
     mkdirp "^0.5.1"
+
+written-number@^0.9.1:
+  version "0.9.1"
+  resolved "https://registry.yarnpkg.com/written-number/-/written-number-0.9.1.tgz#a400a4d2d6ca2575ad2afc62dc28d2d9f94f5e7e"
+  integrity sha512-tl2EquIdCYnEeGu3p71GRsEJSqnD15CXjVtR6Hl0AFO0PrQ+SATIe3Sf4phaaKwLIuGRzWmA4+sThjJCZqwK1A==
 
 ws@^6.1.0:
   version "6.2.1"
