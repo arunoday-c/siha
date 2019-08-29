@@ -13,7 +13,7 @@ import {
   PaySalary,
   selectToPay,
   selectAll,
-  generateReport
+  generatePaySlip
 } from "./NewSalaryPaymentsEvents.js";
 import moment from "moment";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
@@ -302,12 +302,7 @@ class NewSalaryPayment extends Component {
                 <button
                   type="button"
                   className="btn btn-other"
-                  onClick={generateReport.bind(
-                    this,
-                    // _firstPatient,
-                    "generatePaySlip",
-                    "Pay Slip"
-                  )}
+                  onClick={generatePaySlip.bind(this)}
                 >
                   Generate Payslip PDF
                 </button>

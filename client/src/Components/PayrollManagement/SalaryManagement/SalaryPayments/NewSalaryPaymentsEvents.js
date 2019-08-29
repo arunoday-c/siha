@@ -166,7 +166,7 @@ const selectAll = ($this, e) => {
   });
 };
 
-const generateReport = ($this, rpt_name, rpt_desc) => {
+const generatePaySlip = $this => {
   algaehApiCall({
     uri: "/report",
     method: "GET",
@@ -177,7 +177,7 @@ const generateReport = ($this, rpt_name, rpt_desc) => {
     others: { responseType: "blob" },
     data: {
       report: {
-        reportName: rpt_name,
+        reportName: "salarySlip",
         reportParams: [
           {
             name: "hims_f_patient_appointment_id",
@@ -197,16 +197,16 @@ const generateReport = ($this, rpt_name, rpt_desc) => {
       myWindow.document.write(
         "<iframe src= '" + url + "' width='100%' height='100%' />"
       );
-      myWindow.document.title = rpt_desc;
+      myWindow.document.title = "Salary Slip";
     }
   });
 };
 
 export {
-  generateReport,
   LoadSalaryPayment,
   ClearData,
   PaySalary,
   selectToPay,
-  selectAll
+  selectAll,
+  generatePaySlip
 };

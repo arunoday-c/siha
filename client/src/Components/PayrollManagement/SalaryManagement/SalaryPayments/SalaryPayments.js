@@ -15,7 +15,8 @@ import {
   ClearData,
   PaySalary,
   selectToPay,
-  selectAll
+  selectAll,
+  generatePaySlip
 } from "./SalaryPaymentsEvents.js";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
@@ -514,14 +515,14 @@ class SalaryPayment extends Component {
                   />
                 </button>
 
-                {/* <button
+                <button
                   type="button"
                   className="btn btn-other"
-                  //   onClick={PostDoctorCommission.bind(this, this)}
+                  onClick={generatePaySlip.bind(this)}
                   // disabled={this.state.postEnable}
                 >
                   Generate Payslip PDF
-                </button> */}
+                </button>
               </div>
             </div>
           </div>
