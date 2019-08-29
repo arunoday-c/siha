@@ -577,8 +577,10 @@ module.exports = {
                                               empResult[i]["ot_weekoff_hours"],
                                               empResult[i]["ot_holiday_hours"],
                                               empResult[i]["shortage_hours"],
-                                              empResult[i]["display_present_days"],
-                                              
+                                              empResult[i][
+                                                "display_present_days"
+                                              ],
+
                                               total_loan_payable_amount,
                                               total_loan_due_amount,
                                               advance_due_amount,
@@ -1958,7 +1960,7 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "select hims_f_salary_id, salary_number, employee_id,present_days, salary_processed, hims_f_salary.gross_salary, hims_f_salary.net_salary, advance_due, loan_payable_amount, \
+            "select hims_f_salary_id, salary_number, employee_id,present_days,display_present_days, salary_processed, hims_f_salary.gross_salary, hims_f_salary.net_salary, advance_due, loan_payable_amount, \
             loan_due_amount, emp.employee_code, emp.full_name,salary_paid from hims_f_salary, \
             hims_d_employee emp, hims_d_sub_department SD where hims_f_salary.employee_id = emp.hims_d_employee_id \
             and emp.sub_department_id=SD.hims_d_sub_department_id and salary_processed = 'Y' and \

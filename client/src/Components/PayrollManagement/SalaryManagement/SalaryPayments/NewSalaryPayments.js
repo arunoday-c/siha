@@ -166,7 +166,7 @@ class NewSalaryPayment extends Component {
                                 }
                               },
                               {
-                                fieldName: "present_days",
+                                fieldName: "display_present_days",
 
                                 label: (
                                   <AlgaehLabel

@@ -4508,7 +4508,7 @@ module.exports = {
 						E.religion_id, E.date_of_joining,PR.project_id,P.project_desc,D.designation\
 						from hims_f_project_roster PR  inner join  hims_d_employee E on PR.employee_id=E.hims_d_employee_id\
 						inner join  hims_d_project P on P.hims_d_project_id=PR.project_id\
-						inner join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id\
+						left join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id\
 						and PR.hospital_id=? and PR.attendance_date between date(?) and date(?)  ${employee} ${project};
 						select hims_f_leave_application_id,employee_id,leave_application_code,from_leave_session,L.leave_type,from_date,to_leave_session,\
 						to_date,holiday_included,weekoff_included from hims_f_leave_application LA inner join hims_d_leave L on LA.leave_id=L.hims_d_leave_id \
@@ -5451,7 +5451,7 @@ module.exports = {
                 inner join  hims_d_employee E on PR.employee_id=E.hims_d_employee_id
                 inner join  hims_d_project P on P.hims_d_project_id=PR.project_id
                 inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id          
-                inner join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id
+                left join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id
                 and PR.hospital_id=? ${strQry} ${project} and ( S.salary_processed is null or  S.salary_processed='N')
                 and PR.attendance_date between date(?) and date(?)
                 order by employee_id;
@@ -5460,7 +5460,7 @@ module.exports = {
                 from hims_f_leave_application LA inner join hims_d_leave L on 	LA.leave_id=L.hims_d_leave_id
                 inner join  hims_d_employee E on LA.employee_id=E.hims_d_employee_id
                 inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id            
-                inner join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id
+                left join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id
                 where    LA.hospital_id=?  ${strQry.replace(
                   /PR/gi,
                   "LA"
@@ -7115,7 +7115,7 @@ function BulktimesheetCalc(req, res, next) {
             inner join  hims_d_employee E on PR.employee_id=E.hims_d_employee_id
             inner join  hims_d_project P on P.hims_d_project_id=PR.project_id
             inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
-            inner join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id
+            left join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id
             and PR.hospital_id=? ${strQry} ${project} and ( S.salary_processed is null or  S.salary_processed='N')
             and PR.attendance_date between date(?) and date(?)
             order by employee_id;
@@ -7124,7 +7124,7 @@ function BulktimesheetCalc(req, res, next) {
             from hims_f_leave_application LA inner join hims_d_leave L on 	LA.leave_id=L.hims_d_leave_id
             inner join  hims_d_employee E on LA.employee_id=E.hims_d_employee_id
             inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
-            inner join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id
+            left join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id
             where    LA.hospital_id=?  ${strQry.replace(
               /PR/gi,
               "LA"
