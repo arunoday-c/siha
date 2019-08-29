@@ -26,6 +26,9 @@ const executePDF = function executePDFMethod(options) {
       if (input.sub_department_id > 0) {
         strData += " and E.sub_department_id=" + input.sub_department_id;
       }
+      if (input.employee_group_id > 0) {
+        strData += " and E.employee_group_id=" + input.employee_group_id;
+      }
 
       options.mysql
         .executeQuery({

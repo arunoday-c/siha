@@ -358,10 +358,12 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "employee",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS E.*, SD.sub_department_name,D.hims_d_department_id, D.department_name, DS.designation from hims_d_employee E, \
-              hims_d_sub_department SD,hims_d_department D, hims_d_designation DS  WHERE E.record_status = 'A' \
-              and E.sub_department_id = SD.hims_d_sub_department_id and SD.department_id = D.hims_d_department_id and \
-              E.employee_designation_id = DS.hims_d_designation_id and E.hospital_id=" +
+          "select SQL_CALC_FOUND_ROWS E.*, SD.sub_department_name,D.hims_d_department_id,\
+          D.department_name, DS.designation from  hims_d_employee E \
+          left join   hims_d_sub_department SD on E.sub_department_id = SD.hims_d_sub_department_id\
+          left join hims_d_department D on SD.department_id = D.hims_d_department_id\
+          left join hims_d_designation DS  on  E.employee_designation_id = DS.hims_d_designation_id \
+          WHERE E.record_status = 'A' and E.hospital_id=" +
           hospitalId,
         orderBy: "hims_d_employee_id desc"
       },
