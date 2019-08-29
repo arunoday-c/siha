@@ -793,7 +793,7 @@ const CalculateBasedonFormula = $this => {
       updateearnComp.push(earn_comp[x]);
       if (insertearnComp.length > 0) {
         for (let b = 0; b < insertearnComp.length; b++) {
-          if ((insertearnComp[b].earnings_id = earn_comp[x].earnings_id)) {
+          if (insertearnComp[b].earnings_id === earn_comp[x].earnings_id) {
             insertearnComp[b] = earn_comp[x];
           }
         }
@@ -829,8 +829,8 @@ const CalculateBasedonFormula = $this => {
       if (insertDeductionComp.length > 0) {
         for (let d = 0; d < insertDeductionComp.length; d++) {
           if (
-            (insertDeductionComp[d].deductions_id =
-              deduct_comp[y].deductions_id)
+            insertDeductionComp[d].deductions_id ===
+            deduct_comp[y].deductions_id
           ) {
             insertDeductionComp[d] = deduct_comp[y];
           }
@@ -865,8 +865,8 @@ const CalculateBasedonFormula = $this => {
       if (insertContributeComp.length > 0) {
         for (let f = 0; f < insertContributeComp.length; f++) {
           if (
-            (insertContributeComp[f].contributions_id =
-              contribute_comp[z].contributions_id)
+            insertContributeComp[f].contributions_id ===
+            contribute_comp[z].contributions_id
           ) {
             insertContributeComp[f] = contribute_comp[z];
           }
