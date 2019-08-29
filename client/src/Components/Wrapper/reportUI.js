@@ -200,15 +200,30 @@ export default class ReportUI extends Component {
           let parameters = [];
           element.querySelectorAll("input").forEach(item => {
             if (item.name !== undefined) {
+              let label = item.parentElement.parentElement.querySelector(
+                "label"
+              ).innerText;
+              let labelValue = item.value;
               let type = item.getAttribute("data_role");
               let data =
                 type === "dropdownlist"
                   ? item.getAttribute("referencevalue")
                   : item.value;
-
+              if (type === "dropdownlist") {
+                labelValue = item.parentElement.querySelector(".text")
+                  .innerText;
+              }
+              const filter =
+                labelValue === ""
+                  ? {}
+                  : {
+                      label: label.replace("*", ""),
+                      labelValue: labelValue
+                    };
               parameters.push({
                 name: item.name,
-                value: data
+                value: data,
+                ...filter
               });
             }
           });

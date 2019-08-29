@@ -351,7 +351,11 @@ module.exports = {
                           reqHeader: _header,
                           ...data[1][0],
                           user_name: req.userIdentity["username"],
-                          report_name_for_header: _data.report_name_for_header
+                          report_name_for_header: _data.report_name_for_header,
+                          filter:
+                            _inputParam.reportParams == null
+                              ? []
+                              : _inputParam.reportParams
                         }
                       );
                       _pdfTemplating["headerTemplate"] = _header;
@@ -384,9 +388,7 @@ module.exports = {
                       .showcompay{float:right;padding-right:5px;font-size: 08px;}
                       </style>
                       <div class="pdffooter">
-                      <span class="showreportname">${
-                        _data.report_name_for_header
-                      }</span>
+                      <span class="showreportname">${_data.report_name_for_header}</span>
                       <span>Page </span>
                       <span class="pageNumber"></span> / <span class="totalPages"></span>
                       <span class="showcompay">Powered by Algaeh Techonologies.</span>
@@ -665,9 +667,7 @@ module.exports = {
                       .showcompay{float:right;padding-right:5px;font-size: 08px;}
                       </style>
                       <div class="pdffooter">
-                      <span class="showreportname">${
-                        resourceTemplate.report_name_for_header
-                      }</span>
+                      <span class="showreportname">${resourceTemplate.report_name_for_header}</span>
                       <span>Page </span>
                       <span class="pageNumber"></span> / <span class="totalPages"></span>
                       <span class="showcompay">Powered by Algaeh Technologies.</span>
@@ -1054,9 +1054,7 @@ module.exports = {
                     .showcompay{float:right;padding-right:5px;font-size: 08px;}
                     </style>
                     <div class="pdffooter">
-                    <span class="showreportname">${
-                      _data.report_name_for_header
-                    }</span>
+                    <span class="showreportname">${_data.report_name_for_header}</span>
                     <span>Page </span>
                     <span class="pageNumber"></span> / <span class="totalPages"></span>
                     <span class="showcompay">Powered by Algaeh Techonologies.</span>

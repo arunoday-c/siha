@@ -15,8 +15,12 @@ import {
 import { getYears, AlgaehOpenContainer } from "../../utils/GlobalFunctions";
 import { algaehApiCall } from "../../utils/algaehApiCall";
 import _ from "lodash";
+import moment from "moment";
 
 let allYears = getYears();
+const hospital_id = JSON.parse(
+  AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+).hims_d_hospital_id;
 
 const Hims_Reports = [
   {
@@ -52,7 +56,7 @@ const Hims_Reports = [
             name: "sub_department_id",
             initialLoad: true,
             isImp: true,
-            label: "Select Department",
+            label: "Department",
             link: {
               //uri: "/department/get/subdepartment"
               uri: "/department/get/get_All_Doctors_DepartmentWise",
@@ -162,10 +166,11 @@ const Hims_Reports = [
             name: "hospital_id",
             initialLoad: true,
             isImp: true,
-            label: "Select Branch",
+            label: "Branch",
             link: {
               uri: "/organization/getOrganization"
             },
+            value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
@@ -202,13 +207,14 @@ const Hims_Reports = [
           {
             className: "col-2",
             type: "dropdown",
-            name: "hospital_id",
+
             initialLoad: true,
             isImp: true,
-            label: "Select Branch",
+            label: "Branch",
             link: {
               uri: "/organization/getOrganization"
             },
+            value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
@@ -295,7 +301,7 @@ const Hims_Reports = [
             name: "receipt_type",
             initialLoad: true,
             isImp: true,
-            label: "Select Receipt Type",
+            label: "Receipt Type",
 
             dataSource: {
               textField: "name",
@@ -346,10 +352,11 @@ const Hims_Reports = [
             name: "hospital_id",
             initialLoad: true,
             isImp: true,
-            label: "Select Branch",
+            label: "Branch",
             link: {
               uri: "/organization/getOrganization"
             },
+            value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
@@ -361,7 +368,7 @@ const Hims_Reports = [
             name: "sub_department_id",
             initialLoad: true,
             isImp: false,
-            label: "Select Department",
+            label: "Department",
             link: {
               uri: "/department/get/get_All_Doctors_DepartmentWise",
               module: "masterSettings"
@@ -418,10 +425,11 @@ const Hims_Reports = [
             name: "hospital_id",
             initialLoad: true,
             isImp: true,
-            label: "Select Branch",
+            label: "Branch",
             link: {
               uri: "/organization/getOrganization"
             },
+            value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
@@ -453,7 +461,7 @@ const Hims_Reports = [
             name: "sub_department_id",
             initialLoad: true,
             isImp: false,
-            label: "Select Department",
+            label: "Department",
             link: {
               uri: "/department/get/get_All_Doctors_DepartmentWise",
               module: "masterSettings"
@@ -539,10 +547,11 @@ const HR_Payroll_Reports = [
             name: "hospital_id",
             initialLoad: true,
             isImp: true,
-            label: "Select branch",
+            label: "branch",
             link: {
               uri: "/organization/getOrganization"
             },
+            value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
@@ -579,7 +588,7 @@ const HR_Payroll_Reports = [
             name: "department_id",
             initialLoad: true,
             isImp: false,
-            label: "Select Dept.",
+            label: "Department",
             link: {
               uri: "/department/get",
               module: "masterSettings"
@@ -610,7 +619,7 @@ const HR_Payroll_Reports = [
             type: "dropdown",
             name: "sub_department_id",
             isImp: false,
-            label: "Select Sub Dept.",
+            label: "Sub Department",
             dataSource: {
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",
@@ -623,7 +632,7 @@ const HR_Payroll_Reports = [
             name: "employee_status",
             initialLoad: true,
             isImp: false,
-            label: "Select Employee Status",
+            label: "Employee Status",
             link: {},
             dataSource: {
               textField: "name",
@@ -637,7 +646,7 @@ const HR_Payroll_Reports = [
             name: "employee_type",
             initialLoad: true,
             isImp: false,
-            label: "Select Employee Type",
+            label: "Employee Type",
             link: {},
             dataSource: {
               textField: "name",
@@ -651,7 +660,7 @@ const HR_Payroll_Reports = [
             name: "employee_group_id",
             initialLoad: true,
             isImp: false,
-            label: "Select Employee Group",
+            label: "Employee Group",
             link: {
               uri: "/hrsettings/getEmployeeGroups",
               module: "hrManagement"
@@ -675,10 +684,11 @@ const HR_Payroll_Reports = [
             name: "hospital_id",
             initialLoad: true,
             isImp: true,
-            label: "Select branch",
+            label: "branch",
             link: {
               uri: "/organization/getOrganization"
             },
+            value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
@@ -715,7 +725,7 @@ const HR_Payroll_Reports = [
             name: "department_id",
             initialLoad: true,
             isImp: false,
-            label: "Select Dept.",
+            label: "Department",
             link: {
               uri: "/department/get",
               module: "masterSettings"
@@ -746,7 +756,7 @@ const HR_Payroll_Reports = [
             type: "dropdown",
             name: "sub_department_id",
             isImp: false,
-            label: "Select Sub Dept.",
+            label: "Sub Department",
             dataSource: {
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",
@@ -759,7 +769,7 @@ const HR_Payroll_Reports = [
             name: "age_range",
             initialLoad: true,
             isImp: false,
-            label: "SELECT RANGE",
+            label: "RANGE",
             link: {},
             dataSource: {
               textField: "name",
@@ -795,10 +805,11 @@ const HR_Payroll_Reports = [
             name: "hospital_id",
             initialLoad: true,
             isImp: true,
-            label: "Select branch",
+            label: "branch",
             link: {
               uri: "/organization/getOrganization"
             },
+            value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
@@ -835,7 +846,7 @@ const HR_Payroll_Reports = [
             name: "department_id",
             initialLoad: true,
             isImp: false,
-            label: "Select Dept.",
+            label: "Department",
             link: {
               uri: "/department/get",
               module: "masterSettings"
@@ -866,7 +877,7 @@ const HR_Payroll_Reports = [
             type: "dropdown",
             name: "sub_department_id",
             isImp: false,
-            label: "Select Sub Dept.",
+            label: "Sub Department",
             dataSource: {
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",
@@ -901,10 +912,11 @@ const HR_Payroll_Reports = [
             name: "hospital_id",
             initialLoad: true,
             isImp: true,
-            label: "Select branch",
+            label: "branch",
             link: {
               uri: "/organization/getOrganization"
             },
+            value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
@@ -941,7 +953,7 @@ const HR_Payroll_Reports = [
             name: "department_id",
             initialLoad: true,
             isImp: false,
-            label: "Select Dept.",
+            label: "Department",
             link: {
               uri: "/department/get",
               module: "masterSettings"
@@ -972,7 +984,7 @@ const HR_Payroll_Reports = [
             type: "dropdown",
             name: "sub_department_id",
             isImp: false,
-            label: "Select Sub Dept.",
+            label: "Sub Department",
             dataSource: {
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",
@@ -985,7 +997,7 @@ const HR_Payroll_Reports = [
             name: "nationality_id",
             initialLoad: true,
             isImp: false,
-            label: "Select nationality",
+            label: "nationality",
             link: {
               uri: "/masters/get/nationality"
             },
@@ -1009,10 +1021,11 @@ const HR_Payroll_Reports = [
             name: "hospital_id",
             initialLoad: true,
             isImp: true,
-            label: "Select branch",
+            label: "branch",
             link: {
               uri: "/organization/getOrganization"
             },
+            value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
@@ -1049,7 +1062,7 @@ const HR_Payroll_Reports = [
             name: "department_id",
             initialLoad: true,
             isImp: false,
-            label: "Select Dept.",
+            label: "Department",
             link: {
               uri: "/department/get",
               module: "masterSettings"
@@ -1080,7 +1093,7 @@ const HR_Payroll_Reports = [
             type: "dropdown",
             name: "sub_department_id",
             isImp: false,
-            label: "Select Sub Dept.",
+            label: "Sub Department",
             dataSource: {
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",
@@ -1093,7 +1106,7 @@ const HR_Payroll_Reports = [
             name: "religion_id",
             initialLoad: true,
             isImp: false,
-            label: "Select Religion",
+            label: "Religion",
             link: {
               uri: "/masters/get/relegion"
             },
@@ -1117,10 +1130,11 @@ const HR_Payroll_Reports = [
             name: "hospital_id",
             initialLoad: true,
             isImp: true,
-            label: "Select branch",
+            label: "branch",
             link: {
               uri: "/organization/getOrganization"
             },
+            value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
@@ -1157,7 +1171,7 @@ const HR_Payroll_Reports = [
             name: "department_id",
             initialLoad: true,
             isImp: false,
-            label: "Select Dept.",
+            label: "Department",
             link: {
               uri: "/department/get",
               module: "masterSettings"
@@ -1188,7 +1202,7 @@ const HR_Payroll_Reports = [
             type: "dropdown",
             name: "sub_department_id",
             isImp: false,
-            label: "Select Sub Dept.",
+            label: "Sub Department",
             dataSource: {
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",
@@ -1201,7 +1215,7 @@ const HR_Payroll_Reports = [
             name: "designation_id",
             initialLoad: true,
             isImp: false,
-            label: "Select designation",
+            label: "designation",
             link: {
               uri: "/hrsettings/getDesignations",
               module: "hrManagement"
@@ -1226,10 +1240,11 @@ const HR_Payroll_Reports = [
             name: "hospital_id",
             initialLoad: true,
             isImp: true,
-            label: "Select branch",
+            label: "branch",
             link: {
               uri: "/organization/getOrganization"
             },
+            value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
@@ -1266,7 +1281,7 @@ const HR_Payroll_Reports = [
             name: "department_id",
             initialLoad: true,
             isImp: false,
-            label: "Select Dept.",
+            label: "Department",
             link: {
               uri: "/department/get",
               module: "masterSettings"
@@ -1297,7 +1312,7 @@ const HR_Payroll_Reports = [
             type: "dropdown",
             name: "sub_department_id",
             isImp: false,
-            label: "Select Sub Dept.",
+            label: "Sub Department",
             dataSource: {
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",
@@ -1324,6 +1339,7 @@ const HR_Payroll_Reports = [
             name: "year",
             isImp: false,
             initialLoad: true,
+            value: moment().year(),
             dataSource: {
               textField: "name",
               valueField: "value",
@@ -1337,6 +1353,7 @@ const HR_Payroll_Reports = [
             name: "month",
             isImp: false,
             initialLoad: true,
+            value: moment().format("M"),
             dataSource: {
               textField: "name",
               valueField: "value",
@@ -1364,10 +1381,11 @@ const HR_Payroll_Reports = [
             name: "hospital_id",
             initialLoad: true,
             isImp: true,
-            label: "Select branch",
+            label: "branch",
             link: {
               uri: "/organization/getOrganization"
             },
+            value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
@@ -1404,7 +1422,7 @@ const HR_Payroll_Reports = [
             name: "department_id",
             initialLoad: true,
             isImp: false,
-            label: "Select Dept.",
+            label: "Department",
             link: {
               uri: "/department/get",
               module: "masterSettings"
@@ -1435,7 +1453,7 @@ const HR_Payroll_Reports = [
             type: "dropdown",
             name: "sub_department_id",
             isImp: false,
-            label: "Select Sub Dept.",
+            label: "Sub Department",
             dataSource: {
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",
@@ -1494,13 +1512,47 @@ const HR_Payroll_Reports = [
           {
             className: "col-2",
             type: "dropdown",
+            name: "year",
+            isImp: true,
+            initialLoad: true,
+            value: moment().year(),
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: allYears
+            }
+            // events: {
+            //   onChange: (reportState, currentValue) => {}
+            // }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            sort: "off",
+            name: "month",
+            isImp: true,
+            initialLoad: true,
+            value: moment().format("M"),
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: MONTHS
+            },
+            others: {
+              sort: "off"
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
             isImp: true,
-            label: "Select branch",
+            label: "branch",
             link: {
               uri: "/organization/getOrganization"
             },
+            value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
@@ -1513,7 +1565,7 @@ const HR_Payroll_Reports = [
             name: "department_id",
             initialLoad: true,
             isImp: false,
-            label: "Select Department",
+            label: "Department",
             link: {
               uri: "/department/get",
               module: "masterSettings"
@@ -1552,42 +1604,11 @@ const HR_Payroll_Reports = [
             type: "dropdown",
             name: "sub_department_id",
             isImp: false,
-            label: "Select Sub-Department",
+            label: "Sub-Department",
             dataSource: {
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",
               data: undefined
-            }
-          },
-          {
-            className: "col-2",
-            type: "dropdown",
-            name: "year",
-            isImp: true,
-            initialLoad: true,
-            dataSource: {
-              textField: "name",
-              valueField: "value",
-              data: allYears
-            }
-            // events: {
-            //   onChange: (reportState, currentValue) => {}
-            // }
-          },
-          {
-            className: "col-2",
-            type: "dropdown",
-            sort: "off",
-            name: "month",
-            isImp: true,
-            initialLoad: true,
-            dataSource: {
-              textField: "name",
-              valueField: "value",
-              data: MONTHS
-            },
-            others: {
-              sort: "off"
             }
           }
         ]
@@ -1603,13 +1624,47 @@ const HR_Payroll_Reports = [
           {
             className: "col-2",
             type: "dropdown",
+            name: "year",
+            isImp: true,
+            initialLoad: true,
+            value: moment().year(),
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: allYears
+            }
+            // events: {
+            //   onChange: (reportState, currentValue) => {}
+            // }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            sort: "off",
+            name: "month",
+            isImp: true,
+            initialLoad: true,
+            value: moment().format("M"),
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: MONTHS
+            },
+            others: {
+              sort: "off"
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
             isImp: true,
-            label: "Select branch",
+            label: "branch",
             link: {
               uri: "/organization/getOrganization"
             },
+            value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
@@ -1622,7 +1677,7 @@ const HR_Payroll_Reports = [
             name: "department_id",
             initialLoad: true,
             isImp: false,
-            label: "Select Department",
+            label: "Department",
             link: {
               uri: "/department/get",
               module: "masterSettings"
@@ -1661,42 +1716,11 @@ const HR_Payroll_Reports = [
             type: "dropdown",
             name: "sub_department_id",
             isImp: false,
-            label: "Select Sub-Department",
+            label: "Sub-Department",
             dataSource: {
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",
               data: undefined
-            }
-          },
-          {
-            className: "col-2",
-            type: "dropdown",
-            name: "year",
-            isImp: true,
-            initialLoad: true,
-            dataSource: {
-              textField: "name",
-              valueField: "value",
-              data: allYears
-            }
-            // events: {
-            //   onChange: (reportState, currentValue) => {}
-            // }
-          },
-          {
-            className: "col-2",
-            type: "dropdown",
-            sort: "off",
-            name: "month",
-            isImp: true,
-            initialLoad: true,
-            dataSource: {
-              textField: "name",
-              valueField: "value",
-              data: MONTHS
-            },
-            others: {
-              sort: "off"
             }
           }
         ]
@@ -1711,13 +1735,47 @@ const HR_Payroll_Reports = [
           {
             className: "col-2",
             type: "dropdown",
+            name: "year",
+            isImp: true,
+            initialLoad: true,
+            value: moment().year(),
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: allYears
+            }
+            // events: {
+            //   onChange: (reportState, currentValue) => {}
+            // }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            sort: "off",
+            name: "month",
+            isImp: true,
+            initialLoad: true,
+            value: moment().format("M"),
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: MONTHS
+            },
+            others: {
+              sort: "off"
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
             isImp: true,
-            label: "Select branch",
+            label: "branch",
             link: {
               uri: "/organization/getOrganization"
             },
+            value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
@@ -1730,7 +1788,7 @@ const HR_Payroll_Reports = [
             name: "department_id",
             initialLoad: true,
             isImp: false,
-            label: "Select Department",
+            label: "Department",
             link: {
               uri: "/department/get",
               module: "masterSettings"
@@ -1769,42 +1827,11 @@ const HR_Payroll_Reports = [
             type: "dropdown",
             name: "sub_department_id",
             isImp: false,
-            label: "Select Sub-Department",
+            label: "Sub-Department",
             dataSource: {
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",
               data: undefined
-            }
-          },
-          {
-            className: "col-2",
-            type: "dropdown",
-            name: "year",
-            isImp: true,
-            initialLoad: true,
-            dataSource: {
-              textField: "name",
-              valueField: "value",
-              data: allYears
-            }
-            // events: {
-            //   onChange: (reportState, currentValue) => {}
-            // }
-          },
-          {
-            className: "col-2",
-            type: "dropdown",
-            sort: "off",
-            name: "month",
-            isImp: true,
-            initialLoad: true,
-            dataSource: {
-              textField: "name",
-              valueField: "value",
-              data: MONTHS
-            },
-            others: {
-              sort: "off"
             }
           }
         ]
@@ -1822,7 +1849,7 @@ const HR_Payroll_Reports = [
       //       name: "hospital_id",
       //       initialLoad: true,
       //       isImp: true,
-      //       label: "Select branch",
+      //       label: "branch",
       //       link: {
       //         uri: "/organization/getOrganization"
       //       },
@@ -1838,7 +1865,7 @@ const HR_Payroll_Reports = [
       //       name: "department_id",
       //       initialLoad: true,
       //       isImp: false,
-      //       label: "Select Department",
+      //       label: "Department",
       //       link: {
       //         uri: "/department/get",
       //         module: "masterSettings"
@@ -1877,7 +1904,7 @@ const HR_Payroll_Reports = [
       //       type: "dropdown",
       //       name: "sub_department_id",
       //       isImp: false,
-      //       label: "Select Sub-Department",
+      //       label: "Sub-Department",
       //       dataSource: {
       //         textField: "sub_department_name",
       //         valueField: "hims_d_sub_department_id",
@@ -1919,10 +1946,11 @@ const HR_Payroll_Reports = [
             name: "hospital_id",
             initialLoad: true,
             isImp: true,
-            label: "Select branch",
+            label: "branch",
             link: {
               uri: "/organization/getOrganization"
             },
+            value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
@@ -1935,7 +1963,7 @@ const HR_Payroll_Reports = [
             name: "department_id",
             initialLoad: true,
             isImp: false,
-            label: "Select Department",
+            label: "Department",
             link: {
               uri: "/department/get",
               module: "masterSettings"
@@ -1974,7 +2002,7 @@ const HR_Payroll_Reports = [
             type: "dropdown",
             name: "sub_department_id",
             isImp: false,
-            label: "Select Sub-Department",
+            label: "Sub-Department",
             dataSource: {
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",
@@ -2014,13 +2042,47 @@ const HR_Payroll_Reports = [
           {
             className: "col-2",
             type: "dropdown",
+            name: "year",
+            isImp: true,
+            initialLoad: true,
+            value: moment().year(),
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: allYears
+            }
+            // events: {
+            //   onChange: (reportState, currentValue) => {}
+            // }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            sort: "off",
+            name: "month",
+            isImp: true,
+            initialLoad: true,
+            value: moment().format("M"),
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: MONTHS
+            },
+            others: {
+              sort: "off"
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
             isImp: true,
-            label: "Select branch",
+            label: "branch",
             link: {
               uri: "/organization/getOrganization"
             },
+            value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
@@ -2030,10 +2092,26 @@ const HR_Payroll_Reports = [
           {
             className: "col-2",
             type: "dropdown",
+            name: "employee_group_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Employee Group",
+            link: {
+              uri: "/hrsettings/getEmployeeGroups",
+              module: "hrManagement"
+            },
+            dataSource: {
+              textField: "group_description",
+              valueField: "hims_d_employee_group_id"
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
             name: "department_id",
             initialLoad: true,
             isImp: false,
-            label: "Select Department",
+            label: "Department",
             link: {
               uri: "/department/get",
               module: "masterSettings"
@@ -2072,7 +2150,7 @@ const HR_Payroll_Reports = [
             type: "dropdown",
             name: "sub_department_id",
             isImp: false,
-            label: "Select Sub-Department",
+            label: "Sub-Department",
             dataSource: {
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",
@@ -2082,57 +2160,10 @@ const HR_Payroll_Reports = [
           {
             className: "col-2",
             type: "dropdown",
-            name: "employee_group_id",
-            initialLoad: true,
-            isImp: true,
-            label: "Select Employee Group",
-            link: {
-              uri: "/hrsettings/getEmployeeGroups",
-              module: "hrManagement"
-            },
-            dataSource: {
-              textField: "group_description",
-              valueField: "hims_d_employee_group_id"
-            }
-          },
-          {
-            className: "col-2",
-            type: "dropdown",
-            name: "year",
-            isImp: true,
-            initialLoad: true,
-            dataSource: {
-              textField: "name",
-              valueField: "value",
-              data: allYears
-            }
-            // events: {
-            //   onChange: (reportState, currentValue) => {}
-            // }
-          },
-          {
-            className: "col-2",
-            type: "dropdown",
-            sort: "off",
-            name: "month",
-            isImp: true,
-            initialLoad: true,
-            dataSource: {
-              textField: "name",
-              valueField: "value",
-              data: MONTHS
-            },
-            others: {
-              sort: "off"
-            }
-          },
-          {
-            className: "col-2",
-            type: "dropdown",
             name: "is_local",
             initialLoad: true,
             // isImp: true,
-            label: "Select Type",
+            label: "Type",
             dataSource: {
               textField: "name",
               valueField: "value",
@@ -2152,13 +2183,49 @@ const HR_Payroll_Reports = [
           {
             className: "col-2",
             type: "dropdown",
+            name: "year",
+            sort: "off",
+            isImp: true,
+            initialLoad: true,
+            label: "year",
+            value: moment().year(),
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: allYears
+            }
+            // events: {
+            //   onChange: (reportState, currentValue) => {}
+            // }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            sort: "off",
+            name: "month",
+            isImp: true,
+            initialLoad: true,
+            value: moment().format("M"),
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: MONTHS
+            },
+            others: {
+              sort: "off"
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
             isImp: true,
-            label: "Select branch",
+            label: "branch",
             link: {
               uri: "/organization/getOrganization"
             },
+            value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
@@ -2171,7 +2238,7 @@ const HR_Payroll_Reports = [
             name: "department_id",
             initialLoad: true,
             isImp: false,
-            label: "Select Department",
+            label: "Department",
             link: {
               uri: "/department/get",
               module: "masterSettings"
@@ -2210,7 +2277,7 @@ const HR_Payroll_Reports = [
             type: "dropdown",
             name: "sub_department_id",
             isImp: false,
-            label: "Select Sub-Department",
+            label: "Sub-Department",
             dataSource: {
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",
@@ -2222,7 +2289,7 @@ const HR_Payroll_Reports = [
             type: "dropdown",
             name: "employee_group_id",
             initialLoad: true,
-            label: "Select Group",
+            label: "Group",
             link: {
               uri: "/hrsettings/getEmployeeGroups",
               module: "hrManagement"
@@ -2230,39 +2297,6 @@ const HR_Payroll_Reports = [
             dataSource: {
               textField: "group_description",
               valueField: "hims_d_employee_group_id"
-            }
-          },
-          {
-            className: "col-2",
-            type: "dropdown",
-            name: "year",
-            sort: "off",
-            isImp: true,
-            initialLoad: true,
-            label: "year",
-            dataSource: {
-              textField: "name",
-              valueField: "value",
-              data: allYears
-            }
-            // events: {
-            //   onChange: (reportState, currentValue) => {}
-            // }
-          },
-          {
-            className: "col-2",
-            type: "dropdown",
-            sort: "off",
-            name: "month",
-            isImp: true,
-            initialLoad: true,
-            dataSource: {
-              textField: "name",
-              valueField: "value",
-              data: MONTHS
-            },
-            others: {
-              sort: "off"
             }
           }
         ]
@@ -2285,13 +2319,47 @@ const HR_Payroll_Reports = [
           {
             className: "col-2",
             type: "dropdown",
+            name: "year",
+            isImp: false,
+            initialLoad: true,
+            value: moment().year(),
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: allYears
+            }
+            // events: {
+            //   onChange: (reportState, currentValue) => {}
+            // }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            sort: "off",
+            name: "month",
+            isImp: false,
+            initialLoad: true,
+            value: moment().format("M"),
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: MONTHS
+            },
+            others: {
+              sort: "off"
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
             isImp: true,
-            label: "Select branch",
+            label: "branch",
             link: {
               uri: "/organization/getOrganization"
             },
+            value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
@@ -2304,7 +2372,7 @@ const HR_Payroll_Reports = [
             name: "department_id",
             initialLoad: true,
             isImp: false,
-            label: "Select Department",
+            label: "Department",
             link: {
               uri: "/department/get",
               module: "masterSettings"
@@ -2343,7 +2411,7 @@ const HR_Payroll_Reports = [
             type: "dropdown",
             name: "sub_department_id",
             isImp: false,
-            label: "Select Sub-Department",
+            label: "Sub-Department",
             dataSource: {
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",
@@ -2355,7 +2423,7 @@ const HR_Payroll_Reports = [
             type: "dropdown",
             name: "project_id",
             initialLoad: true,
-            label: "Select Project",
+            label: "Project",
             link: {
               uri: "/hrsettings/getProjects",
               module: "hrManagement"
@@ -2367,35 +2435,6 @@ const HR_Payroll_Reports = [
             // events: {
             //   onChange: (reportState, currentValue) => {}
             // }
-          },
-          {
-            className: "col-2",
-            type: "dropdown",
-            name: "year",
-            initialLoad: true,
-            dataSource: {
-              textField: "name",
-              valueField: "value",
-              data: allYears
-            }
-            // events: {
-            //   onChange: (reportState, currentValue) => {}
-            // }
-          },
-          {
-            className: "col-2",
-            type: "dropdown",
-            sort: "off",
-            name: "month",
-            initialLoad: true,
-            dataSource: {
-              textField: "name",
-              valueField: "value",
-              data: MONTHS
-            },
-            others: {
-              sort: "off"
-            }
           }
         ]
       }
@@ -2420,10 +2459,11 @@ const Inventory_Reports = [
             name: "hospital_id",
             initialLoad: true,
             isImp: true,
-            label: "Select branch",
+            label: "branch",
             link: {
               uri: "/organization/getOrganization"
             },
+            value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
@@ -2456,7 +2496,7 @@ const Inventory_Reports = [
             name: "sub_department_id",
             initialLoad: true,
             isImp: true,
-            label: "Select Department",
+            label: "Department",
             link: {
               //uri: "/department/get/subdepartment"
               uri: "/department/get/get_All_Doctors_DepartmentWise",
@@ -2507,7 +2547,7 @@ const Inventory_Reports = [
             name: "item_id",
             initialLoad: true,
             isImp: false,
-            label: "Select Item",
+            label: "Item",
 
             link: {
               uri: "/pharmacy/getItemMaster",
@@ -2595,7 +2635,7 @@ const Pharmacy_Reports = [
             name: "hospital_id",
             initialLoad: true,
             isImp: true,
-            label: "Select branch",
+            label: "branch",
             link: {
               uri: "/organization/getOrganization"
             },
@@ -2622,6 +2662,7 @@ const Pharmacy_Reports = [
                 });
               }
             },
+            value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
@@ -2635,7 +2676,7 @@ const Pharmacy_Reports = [
 
             initialLoad: true,
             isImp: true,
-            label: "Select Location",
+            label: "Location",
             link: {
               uri: "/pharmacy/getPharmacyLocation",
               module: "pharmacy",
@@ -2667,7 +2708,7 @@ const Pharmacy_Reports = [
             type: "dropdown",
             name: "cashier_id",
 
-            label: "Select User/Employee",
+            label: "User/Employee",
 
             dataSource: {
               textField: "full_name",
@@ -2710,10 +2751,11 @@ const Pharmacy_Reports = [
             name: "hospital_id",
             initialLoad: true,
             isImp: true,
-            label: "Select branch",
+            label: "branch",
             link: {
               uri: "/organization/getOrganization"
             },
+            value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
@@ -2726,7 +2768,7 @@ const Pharmacy_Reports = [
             name: "location_id",
             initialLoad: true,
             isImp: true,
-            label: "Select Location",
+            label: "Location",
             link: {
               uri: "/pharmacy/getPharmacyLocation",
               module: "pharmacy",
@@ -2774,10 +2816,11 @@ const Pharmacy_Reports = [
             name: "hospital_id",
             initialLoad: true,
             isImp: true,
-            label: "Select branch",
+            label: "branch",
             link: {
               uri: "/organization/getOrganization"
             },
+            value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
@@ -2790,7 +2833,7 @@ const Pharmacy_Reports = [
             name: "location_id",
             initialLoad: true,
             isImp: true,
-            label: "Select Location",
+            label: "Location",
             link: {
               uri: "/pharmacy/getPharmacyLocation",
               module: "pharmacy",
@@ -2839,10 +2882,11 @@ const Pharmacy_Reports = [
             name: "hospital_id",
             initialLoad: true,
             isImp: true,
-            label: "Select branch",
+            label: "branch",
             link: {
               uri: "/organization/getOrganization"
             },
+            value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
@@ -2855,7 +2899,7 @@ const Pharmacy_Reports = [
             name: "location_id",
             initialLoad: true,
             isImp: true,
-            label: "Select Location",
+            label: "Location",
             link: {
               uri: "/pharmacy/getPharmacyLocation",
               module: "pharmacy",
@@ -2884,7 +2928,7 @@ const Pharmacy_Reports = [
             name: "hospital_id",
             initialLoad: true,
             isImp: true,
-            label: "Select branch",
+            label: "branch",
             link: {
               uri: "/organization/getOrganization"
             },
@@ -2911,6 +2955,7 @@ const Pharmacy_Reports = [
                 });
               }
             },
+            value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
@@ -2924,7 +2969,7 @@ const Pharmacy_Reports = [
             name: "location_id",
             initialLoad: true,
             isImp: false,
-            label: "Select Location",
+            label: "Location",
             dataSource: {
               textField: "location_description",
               valueField: "hims_d_pharmacy_location_id",
@@ -2938,7 +2983,7 @@ const Pharmacy_Reports = [
             name: "group_id",
             initialLoad: true,
             isImp: false,
-            label: "Select Group",
+            label: "Group",
             dataSource: {
               textField: "group_description",
               valueField: "hims_d_item_group_id",
@@ -2978,7 +3023,7 @@ const Pharmacy_Reports = [
             name: "category_id",
             initialLoad: true,
             isImp: false,
-            label: "Select Category",
+            label: "Category",
             dataSource: {
               textField: "category_desc",
               valueField: "hims_d_item_category_id",
@@ -3015,7 +3060,7 @@ const Pharmacy_Reports = [
             name: "item_id",
             initialLoad: true,
             isImp: false,
-            label: "Select Item",
+            label: "Item",
             dataSource: {
               textField: "item_description",
               valueField: "hims_d_item_master_id",
@@ -3028,7 +3073,7 @@ const Pharmacy_Reports = [
             name: "expiry_status",
             initialLoad: true,
             isImp: true,
-            label: "Select Expiry Status",
+            label: "Expiry Status",
             dataSource: {
               textField: "name",
               valueField: "value",
@@ -3069,7 +3114,7 @@ const Pharmacy_Reports = [
             type: "date",
             name: "to_date",
             isImp: true,
-            label: "Select a Date",
+            label: "a Date",
             others: {
               maxDate: new Date(),
               minDate: null
@@ -3081,7 +3126,7 @@ const Pharmacy_Reports = [
             name: "hospital_id",
             initialLoad: true,
             isImp: true,
-            label: "Select branch",
+            label: "branch",
             link: {
               uri: "/organization/getOrganization"
             },
@@ -3108,6 +3153,7 @@ const Pharmacy_Reports = [
                 });
               }
             },
+            value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
@@ -3121,7 +3167,7 @@ const Pharmacy_Reports = [
             name: "location_id",
             initialLoad: true,
             isImp: false,
-            label: "Select Location",
+            label: "Location",
             dataSource: {
               textField: "location_description",
               valueField: "hims_d_pharmacy_location_id",
@@ -3135,7 +3181,7 @@ const Pharmacy_Reports = [
             name: "category_id",
             initialLoad: true,
             isImp: true,
-            label: "Select a Category",
+            label: "a Category",
 
             link: {
               uri: "/pharmacy/getItemCategory",
@@ -3177,7 +3223,7 @@ const Pharmacy_Reports = [
             name: "item_id",
             initialLoad: true,
             isImp: false,
-            label: "Select Item",
+            label: "Item",
             dataSource: {
               textField: "item_description",
               valueField: "hims_d_item_master_id",
@@ -3198,7 +3244,7 @@ const Pharmacy_Reports = [
             name: "hospital_id",
             initialLoad: true,
             isImp: true,
-            label: "Select branch",
+            label: "branch",
             link: {
               uri: "/organization/getOrganization"
             },
@@ -3225,6 +3271,7 @@ const Pharmacy_Reports = [
                 });
               }
             },
+            value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
@@ -3238,7 +3285,7 @@ const Pharmacy_Reports = [
             name: "location_id",
             initialLoad: true,
             isImp: false,
-            label: "Select Location",
+            label: "Location",
             dataSource: {
               textField: "location_description",
               valueField: "hims_d_pharmacy_location_id",
@@ -3252,7 +3299,7 @@ const Pharmacy_Reports = [
             name: "item_id",
             initialLoad: true,
             isImp: true,
-            label: "Select Item",
+            label: "Item",
 
             link: {
               uri: "/pharmacy/getItemMaster",
@@ -3319,7 +3366,7 @@ const Pharmacy_Reports = [
             name: "hospital_id",
             initialLoad: true,
             isImp: true,
-            label: "Select branch",
+            label: "branch",
             link: {
               uri: "/organization/getOrganization"
             },
@@ -3346,6 +3393,7 @@ const Pharmacy_Reports = [
                 });
               }
             },
+            value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
@@ -3359,7 +3407,7 @@ const Pharmacy_Reports = [
             name: "location_id",
             initialLoad: true,
             isImp: false,
-            label: "Select Location",
+            label: "Location",
             dataSource: {
               textField: "location_description",
               valueField: "hims_d_pharmacy_location_id",
@@ -3400,7 +3448,7 @@ const Pharmacy_Reports = [
             name: "hospital_id",
             initialLoad: true,
             isImp: false,
-            label: "Select branch",
+            label: "branch",
             link: {
               uri: "/organization/getOrganization"
             },
@@ -3427,6 +3475,7 @@ const Pharmacy_Reports = [
                 });
               }
             },
+            value: hospital_id,
             dataSource: {
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
@@ -3440,7 +3489,7 @@ const Pharmacy_Reports = [
             name: "location_id",
             initialLoad: true,
             isImp: false,
-            label: "Select Location",
+            label: "Location",
             dataSource: {
               textField: "location_description",
               valueField: "hims_d_pharmacy_location_id",
@@ -3527,7 +3576,7 @@ const insurance_reports = [
             name: "",
             initialLoad: true,
             isImp: true,
-            label: "Select Company",
+            label: "Company",
             link: {
               uri: "/insurance/getInsuranceProviders"
             },
@@ -3564,7 +3613,7 @@ const insurance_reports = [
             name: "",
             initialLoad: true,
             isImp: false,
-            label: "Select Sub Company",
+            label: "Sub Company",
             dataSource: {
               // textField: "full_name",
               // valueField: "employee_id",
