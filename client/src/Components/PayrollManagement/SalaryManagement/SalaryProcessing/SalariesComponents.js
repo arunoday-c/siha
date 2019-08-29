@@ -101,9 +101,9 @@ export default class SalariesComponents extends PureComponent {
                         }}
                       />
                       <h6>
-                        {this.state.present_days === null
+                        {this.state.display_present_days === null
                           ? 0
-                          : this.state.present_days}
+                          : this.state.display_present_days}
                       </h6>
                     </div>
                     <div className="col-2">
