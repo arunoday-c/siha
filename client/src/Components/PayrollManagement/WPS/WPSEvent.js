@@ -21,7 +21,7 @@ export default function WPSEvents() {
             onSuccess: res => {
               if (res.data.success) {
                 let data = res.data.records;
-                debugger;
+
                 if (Object.keys(data).length > 0) {
                   $this.setState({
                     employees: data.employees,
