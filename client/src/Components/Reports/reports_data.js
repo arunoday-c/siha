@@ -24,6 +24,7 @@ let hospital_id = null;
 const Hims_Reports = [
   {
     name: "Appointment",
+
     submenu: [
       {
         subitem: "Doctor and Status wise report",
@@ -533,6 +534,7 @@ const Hims_Reports = [
 const HR_Payroll_Reports = [
   {
     name: "HR report",
+    excel: "true",
     submenu: [
       {
         subitem: "Employee - Dept/Sub Dept Wise",

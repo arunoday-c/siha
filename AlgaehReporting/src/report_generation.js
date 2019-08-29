@@ -823,115 +823,151 @@ module.exports = {
   },
   getExcelReport: async (req, res) => {
     const input = req.query;
-    let templatePath = path.join(
-      process.cwd(),
-      "algaeh_report_tool/templates/Excel"
-    );
-    const _inputParam = JSON.parse(input.report);
-    const { executeExcel } = require(path.join(
-      templatePath,
-      _inputParam.reportName + ".js"
-    ));
     const _mysql = new algaehMysql();
-    const _input = { hospital_id: req.userIdentity["x-branch"] };
-    for (let i = 0; i < _inputParam.reportParams.length; i++) {
-      const _inp = _inputParam.reportParams[i];
-      _input[_inp.name] = _inp.value;
-    }
-    executeExcel({
-      mysql: _mysql,
-      inputs: _input,
-      loadash: _,
-      moment: moment
-    }).then(result => {
-      let excelOutput = path.join(
-        outputFolder,
-        "out_" + moment().format("YYYYMMDDHHmmss") + ".xlsx"
-      );
-      const fileNameExcel = _inputParam.reportName + ".xlsx";
-
-      fs.readFile(path.join(templatePath, fileNameExcel), function(
-        error,
-        data
-      ) {
-        if (error) {
-          console.error(error);
-        } else {
-          var template = new XlsxTemplate(data);
-          if (result.copySheets != null && result.copySheets.length > 0) {
-            for (let c = 0; c < result.copySheets.length; c++) {
-              const shts = result.copySheets[c];
-              template.copySheet(shts.copySheetName, shts.newSheetName);
+    try {
+      const _inputParam = JSON.parse(input.report);
+      _mysql
+        .executeQuery({
+          query:
+            "SELECT report_name_for_header,report_name,report_query,report_input_series,data_manupulation,\
+      report_header_file_name,report_footer_file_name from algaeh_d_reports where status='A' and report_name in (?);\
+      select H.hospital_name,H.hospital_address,H.arabic_hospital_name, \
+      O.organization_name,O.business_registration_number,O.legal_name,O.tax_number,O.address1,O.address2 ,\
+      O.email,O.phone1 from hims_d_hospital H,hims_d_organization O \
+      where O.hims_d_organization_id =H.organization_id and H.hims_d_hospital_id=?;",
+          values: [_inputParam.reportName, req.userIdentity["hospital_id"]],
+          printQuery: true
+        })
+        .then(data => {
+          _inputParam["hospital_id"] = req.userIdentity["hospital_id"];
+          _inputParam["crypto"] = req.userIdentity;
+          const _data = data[0][0];
+          const _inputOrders = eval(_data.report_input_series);
+          let _value = [];
+          for (var i = 0; i < _inputOrders.length; i++) {
+            const _params = _.find(
+              _inputParam.reportParams,
+              f => f.name == _inputOrders[i]
+            );
+            if (_params != undefined) {
+              _value.push(_params.value);
+            } else if (_inputOrders[i] == "login_branch") {
+              _value.push(req.userIdentity["hospital_id"]);
+            } else {
+              _value.push(null);
             }
           }
-
-          for (let s = 0; s < template.sheets.length; s++) {
-            template.substitute(
-              template.sheets[s]["name"],
-              result.data[template.sheets[s]["name"]]
-            );
+          let queryObject = {
+            query: _data.report_query,
+            values: _value,
+            printQuery: true
+          };
+          if (_data.report_query == null || _data.report_query == "") {
+            queryObject = {
+              query: "select 1",
+              printQuery: true
+            };
           }
+          _mysql
+            .executeQuery(queryObject)
+            .then(result => {
+              let mainPath = path.join(
+                process.cwd(),
+                "algaeh_report_tool/templates"
+              );
+              let templatePath = path.join(mainPath, "Excel");
 
-          var dataGenerated = template.generate();
-          fs.outputFileSync(excelOutput, dataGenerated, { encoding: "binary" });
-          res.writeHead(200, {
-            "content-type":
-              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            "content-disposition": "attachment;filename=" + fileNameExcel
-          });
-          const _fs = fs.createReadStream(excelOutput);
-          _fs.on("end", () => {
-            fs.unlink(excelOutput);
-          });
+              let filePathJs = path.join(
+                templatePath,
+                _inputParam.reportName + ".js"
+              );
+              let excelRun;
+              if (fs.existsSync(filePathJs)) {
+                const { executeExcel } = require(path.join(
+                  templatePath,
+                  _inputParam.reportName + ".js"
+                ));
+                excelRun = executeExcel;
+              } else {
+                filePathJs = path.join(
+                  mainPath,
+                  _inputParam.reportName + ".js"
+                );
+                if (fs.existsSync(filePathJs)) {
+                  const { executePDF } = require(path.join(
+                    mainPath,
+                    _inputParam.reportName + ".js"
+                  ));
+                  excelRun = executePDF;
+                }
+              }
 
-          _fs.pipe(res);
-        }
-      });
-    });
+              const _input = { hospital_id: req.userIdentity["x-branch"] };
+              for (let i = 0; i < _inputParam.reportParams.length; i++) {
+                const _inp = _inputParam.reportParams[i];
+                _input[_inp.name] = _inp.value;
+              }
+              excelRun({
+                mysql: _mysql,
+                inputs: _inputOrders,
+                args: _inputParam,
+                loadash: _,
+                moment: moment,
+                mainData: data[1],
+                result: result
+              }).then(result => {
+                console.log("Result", result);
+                let excelOutput = path.join(
+                  outputFolder,
+                  "out_" + moment().format("YYYYMMDDHHmmss") + ".xlsx"
+                );
+                const fileNameExcel = path.join(
+                  templatePath,
+                  _inputParam.reportName + ".xlsx"
+                );
+                console.log("fileNameExcel", fileNameExcel);
+                fs.readFile(fileNameExcel, function(error, data) {
+                  if (error) {
+                    console.error(error);
+                  } else {
+                    var template = new XlsxTemplate(data);
+                    const dataShow = Array.isArray(result)
+                      ? { data: result }
+                      : result;
+                    for (let s = 0; s < template.sheets.length; s++) {
+                      template.substitute(template.sheets[s]["name"], dataShow);
+                    }
 
-    // let excelOutput = path.join(
-    //   outputFolder,
-    //   "out_" + moment().format("YYYYMMDDHHmmss") + ".xlsx"
-    // );
-    // let values = {
-    //   extractDate: new Date(),
-    //   dates: [
-    //     new Date("2013-06-01"),
-    //     new Date("2013-06-02"),
-    //     new Date("2013-06-03")
-    //   ],
-    //   people: [
-    //     { name: "John Smith", age: 20 },
-    //     { name: "Bob Johnson", age: 22 }
-    //   ]
-    // };
-    // let values2 = {
-    //   extractDate: new Date(),
-    //   dates: [
-    //     new Date("2014-06-01"),
-    //     new Date("2014-06-02"),
-    //     new Date("2014-06-03")
-    //   ],
-    //   people: [
-    //     { name: "John1 Smith", age: 21 },
-    //     { name: "Bob1 Johnson", age: 23 }
-    //   ]
-    // };
-    // const fileNameExcel = _inputParam.reportName + ".xlsx";
-    //
-    // fs.readFile(path.join(templatePath, fileNameExcel), function(error, data) {
-    //   if (error) {
-    //     console.error(error);
-    //   } else {
-    //     var template = new XlsxTemplate(data);
-    //     var sheetNumber = 1;
-    //     template.copySheet("Sheet1", "Sheet2");
-    //     template.substitute(sheetNumber, values);
-    //     template.substitute("Sheet2", values2);
-    //     var data = template.generate();
-    //     fs.outputFileSync(excelOutput, data, { encoding: "binary" });
-    //   }
-    // });
+                    var dataGenerated = template.generate();
+                    fs.outputFileSync(excelOutput, dataGenerated, {
+                      encoding: "binary"
+                    });
+                    res.writeHead(200, {
+                      "content-type":
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                      "content-disposition":
+                        "attachment;filename=" + fileNameExcel
+                    });
+                    const _fs = fs.createReadStream(excelOutput);
+                    _fs.on("end", () => {
+                      fs.unlink(excelOutput);
+                    });
+
+                    _fs.pipe(res);
+                  }
+                });
+              });
+            })
+            .catch(error => {
+              next(error);
+            });
+        })
+        .catch(error => {
+          next(error);
+        });
+    } catch (error) {
+      next(error);
+    }
   },
   getRawReport: async (req, res) => {
     const input = req.query;

@@ -49,8 +49,12 @@
     "fs-extra": "^7.0.1",
     "handlebars": "^4.1.2",
     "moment": "^2.22.1",
+<<<<<<< HEAD
     "puppeteer": "^1.14.0",
     "written-number": "^0.9.1",
+=======
+    "puppeteer": "1.14.0",
+>>>>>>> 87cc2cdced90c707a519b0c1d0c082cc0b1ba616
     "xlsx": "^0.14.2",
     "xlsx-template": "^0.5.0"
   },

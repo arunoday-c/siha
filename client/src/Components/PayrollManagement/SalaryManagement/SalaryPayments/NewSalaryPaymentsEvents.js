@@ -189,10 +189,15 @@ const selectAllPaySlip = ($this, e) => {
     };
   });
 
+  let listOfinclude = Enumerable.from(newData)
+    .where(w => w.generate_pay_slip === "Y")
+    .toArray();
+  let generatePayslip = listOfinclude.length > 0 ? false : true;
+
   $this.setState({
     salary_payment: newData,
     checkAllPayslip: isChecked,
-    generatePayslip: !isChecked
+    generatePayslip: generatePayslip
   });
 };
 
