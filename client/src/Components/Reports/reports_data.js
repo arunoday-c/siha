@@ -2321,7 +2321,7 @@ const HR_Payroll_Reports = [
             className: "col-2",
             type: "dropdown",
             name: "year",
-            isImp: false,
+            isImp: true,
             initialLoad: true,
             value: moment().year(),
             dataSource: {
@@ -2338,7 +2338,7 @@ const HR_Payroll_Reports = [
             type: "dropdown",
             sort: "off",
             name: "month",
-            isImp: false,
+            isImp: true,
             initialLoad: true,
             value: moment().format("M"),
             dataSource: {
@@ -2469,7 +2469,7 @@ const HR_Payroll_Reports = [
             className: "col-2",
             type: "dropdown",
             name: "year",
-            isImp: false,
+            isImp: true,
             initialLoad: true,
             value: moment().year(),
             dataSource: {
@@ -2486,7 +2486,7 @@ const HR_Payroll_Reports = [
             type: "dropdown",
             sort: "off",
             name: "month",
-            isImp: false,
+            isImp: true,
             initialLoad: true,
             value: moment().format("M"),
             dataSource: {
