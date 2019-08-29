@@ -27,15 +27,16 @@ const executePDF = function executePDFMethod(options) {
         project = " and project_id=" + input.project_id;
       }
 
+      // group by ${groupBy}
       options.mysql
         .executeQuery({
           query: `select hims_f_project_wise_payroll_id,employee_id,E.employee_code,E.full_name,d.designation,project_id,\
-          P.project_code,P.project_desc,month,year,sum(worked_hours) as worked_hours,sum(worked_minutes) as worked_minutes,\
-          sum(cost) as project_cost,PWP.hospital_id\
+          P.project_code,P.project_desc,month,year,(worked_hours) as worked_hours,(worked_minutes) as worked_minutes,\
+          (cost) as project_cost,PWP.hospital_id\
           from hims_f_project_wise_payroll PWP inner join hims_d_employee  E on PWP.employee_id=E.hims_d_employee_id\
           inner join hims_d_project  P on PWP.project_id=P.hims_d_project_id left join hims_d_designation d on E.employee_designation_id = d.hims_d_designation_id \
           where PWP.hospital_id=? \
-          and year=? and month=?  ${employee} ${project} group by ${groupBy} ;`,
+          and year=? and month=?  ${employee} ${project};`,
           values: [input.hospital_id, input.year, input.month],
           printQuery: true
         })
