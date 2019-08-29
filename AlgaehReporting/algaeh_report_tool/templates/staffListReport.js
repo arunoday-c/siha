@@ -83,11 +83,9 @@ const executePDF = function executePDFMethod(options) {
             const outputArray = [];
 
             for (let i = 0; i < departmentWise.length; i++) {
-              let dep_no_employee = 0;
               const sub_dept = _.chain(departmentWise[i])
                 .groupBy(g => g.sub_department_id)
                 .map(sub => {
-                  dep_no_employee += sub.length;
                   return {
                     sub_department_name: sub[0].sub_department_name,
                     sub_no_employee: sub.length,
@@ -98,7 +96,7 @@ const executePDF = function executePDFMethod(options) {
 
               outputArray.push({
                 department_name: departmentWise[i][0]["department_name"],
-                dep_no_employee: dep_no_employee,
+                dep_no_employee: departmentWise[i].length,
                 sub_dept: sub_dept
               });
             }

@@ -1,12 +1,12 @@
-const algaehUtilities = require("algaeh-utilities/utilities");
+//const algaehUtilities = require("algaeh-utilities/utilities");
 
 const executePDF = function executePDFMethod(options) {
   return new Promise(function(resolve, reject) {
     try {
       const _ = options.loadash;
 
-      const utilities = new algaehUtilities();
-      // let str = "";
+      //  const utilities = new algaehUtilities();
+
       let input = {};
       let params = options.args.reportParams;
       const decimal_places = options.args.crypto.decimal_places;
@@ -14,77 +14,102 @@ const executePDF = function executePDFMethod(options) {
         input[para["name"]] = para["value"];
       });
 
-      let employee = "";
-      let project = "";
-      let groupBy = " PWP.employee_id ";
-
-      if (input.employee_id > 0) {
-        employee = " and employee_id=" + input.employee_id;
-        groupBy = " PWP.project_id ";
-      }
+      let strData = "";
 
       if (input.project_id > 0) {
-        project = " and project_id=" + input.project_id;
+        strData += " and PWP.project_id=" + input.project_id;
+      }
+      if (input.department_id > 0) {
+        strData += " and SD.department_id=" + input.department_id;
       }
 
-      // group by ${groupBy}
+      if (input.sub_department_id > 0) {
+        strData += " and E.sub_department_id=" + input.sub_department_id;
+      }
+
       options.mysql
         .executeQuery({
-          query: `select hims_f_project_wise_payroll_id,employee_id,E.employee_code,E.full_name,d.designation,project_id,\
-          P.project_code,P.project_desc,month,year,(worked_hours) as worked_hours,(worked_minutes) as worked_minutes,\
-          (cost) as project_cost,PWP.hospital_id\
-          from hims_f_project_wise_payroll PWP inner join hims_d_employee  E on PWP.employee_id=E.hims_d_employee_id\
-          inner join hims_d_project  P on PWP.project_id=P.hims_d_project_id left join hims_d_designation d on E.employee_designation_id = d.hims_d_designation_id \
-          where PWP.hospital_id=? \
-          and year=? and month=?  ${employee} ${project};`,
-          values: [input.hospital_id, input.year, input.month],
-          printQuery: true
+          query: `select hims_f_project_wise_payroll_id,
+          employee_id,E.employee_code,E.full_name,d.designation,project_id,
+          concat( COALESCE(worked_hours,0)  ,',',right( concat( '0', (worked_minutes%60)),2))  as complete_hours,
+          P.project_code,P.project_desc,month,year,(worked_hours) as worked_hours,(worked_minutes) as worked_minutes,
+          (cost) as project_cost,PWP.hospital_id,SD.hims_d_sub_department_id,SD.sub_department_name,DP.hims_d_department_id,
+          DP.department_name ,EG.group_description from hims_f_project_wise_payroll PWP inner join hims_d_employee  E on
+          PWP.employee_id=E.hims_d_employee_id and PWP.year=? and PWP.month=?
+          left join hims_d_project  P on PWP.project_id=P.hims_d_project_id
+          left join hims_d_designation d on E.employee_designation_id = d.hims_d_designation_id 
+          left join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
+          left join hims_d_department DP on SD.department_id=DP.hims_d_department_id
+          left join hims_d_employee_group EG on E.employee_group_id=EG.hims_d_employee_group_id
+          where PWP.hospital_id=?    ${strData} ;`,
+          values: [input.year, input.month, input.hospital_id],
+          printQuery: false
         })
         .then(result => {
-          let total_worked_hours = 0;
-          let minutes = 0;
-          let total_cost = 0;
+          const outputArray = [];
+          if (result.length > 0) {
+            const projectWise = _.chain(result)
+              .groupBy(g => g.project_id)
+              .map(m => m)
+              .value();
+            projectWise.forEach(project => {
+              let total_proj_cost = _.sumBy(project, s =>
+                parseFloat(s.project_cost)
+              ).toFixed(decimal_places);
 
-          let outputArray = [];
-          for (let i = 0; i < result.length; i++) {
-            let complete_hours = parseInt(result[i]["worked_hours"]);
+              let project_hours = _.sumBy(project, s =>
+                parseFloat(s.worked_hours)
+              );
+              project_hours += parseInt(
+                parseInt(_.sumBy(project, s => parseFloat(s.worked_minutes))) /
+                  parseInt(60)
+              );
 
-            let worked_minutes = result[i]["worked_minutes"];
+              let project_mins =
+                parseInt(_.sumBy(project, s => parseFloat(s.worked_minutes))) %
+                parseInt(60);
 
-            complete_hours += parseInt(worked_minutes / 60);
-            let mins = String("0" + parseInt(worked_minutes % 60)).slice(-2);
-            outputArray.push({
-              ...result[i],
-              complete_hours: complete_hours + "." + mins
+              const dept_Array = [];
+              const departmentWise = _.chain(project)
+                .groupBy(g => g.hims_d_department_id)
+                .map(m => m)
+                .value();
+
+              departmentWise.forEach(department => {
+                const sub_dept = _.chain(department)
+                  .groupBy(g => g.hims_d_sub_department_id)
+                  .map(sub => {
+                    return {
+                      sub_department_name: sub[0].sub_department_name,
+                      sub_no_employee: sub.length,
+                      employees: sub
+                    };
+                  })
+                  .value();
+
+                dept_Array.push({
+                  department_name: department[0]["department_name"],
+                  dep_no_employee: department.length,
+                  sub_dept: sub_dept
+                });
+              });
+              outputArray.push({
+                project_cost: total_proj_cost,
+                no_hours: project_hours + "." + project_mins,
+                no_employees: project.length,
+                project_name: project[0]["project_desc"],
+                dept_Array: dept_Array
+              });
+            });
+
+            resolve({
+              result: outputArray
+            });
+          } else {
+            resolve({
+              result: result
             });
           }
-
-          // total_cost = new LINQ(result).Sum(s => parseFloat(s.project_cost));
-          total_cost = _.sumBy(result, s => parseFloat(s.project_cost)).toFixed(
-            decimal_places
-          );
-
-          //ST---time calculation
-          total_worked_hours = _.sumBy(result, s => parseInt(s.worked_hours));
-
-          const worked_minutes = _.sumBy(result, s =>
-            parseInt(s.worked_minutes)
-          );
-
-          //.toFixed(decimal_places)
-
-          total_worked_hours += parseInt(worked_minutes / 60);
-          minutes = String("0" + parseInt(worked_minutes % 60)).slice(-2);
-
-          const results = {
-            details: outputArray,
-            total_worked_hours: total_worked_hours + "." + minutes,
-            noEmployees: result.length,
-            total_cost: total_cost
-          };
-
-          //utilities.logger().log("result: ", results);
-          resolve(results);
         })
         .catch(error => {
           options.mysql.releaseConnection();
