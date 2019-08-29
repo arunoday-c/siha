@@ -176,6 +176,42 @@ const selectAll = ($this, e) => {
   debugger;
 };
 
+const generatePaySlip = $this => {
+  algaehApiCall({
+    uri: "/report",
+    method: "GET",
+    module: "reports",
+    headers: {
+      Accept: "blob"
+    },
+    others: { responseType: "blob" },
+    data: {
+      report: {
+        reportName: "salarySlip",
+        reportParams: [
+          {
+            name: "hims_f_patient_appointment_id",
+            value: $this.hims_f_patient_appointment_id
+          }
+        ],
+        outputFileType: "PDF"
+      }
+    },
+    onSuccess: res => {
+      const url = URL.createObjectURL(res.data);
+      let myWindow = window.open(
+        "{{ product.metafields.google.custom_label_0 }}",
+        "_blank"
+      );
+
+      myWindow.document.write(
+        "<iframe src= '" + url + "' width='100%' height='100%' />"
+      );
+      myWindow.document.title = "Salary Slip";
+    }
+  });
+};
+
 export {
   texthandle,
   LoadSalaryPayment,
@@ -183,5 +219,6 @@ export {
   ClearData,
   PaySalary,
   selectToPay,
-  selectAll
+  selectAll,
+  generatePaySlip
 };

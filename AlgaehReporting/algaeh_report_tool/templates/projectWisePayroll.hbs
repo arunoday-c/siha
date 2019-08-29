@@ -54,6 +54,13 @@
                                 Employees: <b>{{dep_no_employee}}</b></span>
                         </td>
                     </tr>
+                    {{#each result}}
+                    <tr>
+                        <td colspan="11" class="tableSubHdg">Dept. Name: {{department_name}}
+                            <span class="textFloatRight">No
+                                Employees: <b>{{dep_no_employee}}</b></span>
+                        </td>
+                    </tr>
                     {{#each sub_dept}}
                     <tr>
                         <td colspan="11" class="tableSubHdg2">Sub Dept. Name: {{sub_department_name}} <span
