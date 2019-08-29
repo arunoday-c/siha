@@ -32,17 +32,26 @@
                     {{#hasElement result}}
                     {{#each result}}
                     <tr>
+                        <td colspan="11" class="tableSubHdg">Projects: {{project_name}}
+                            <span class="textFloatRight">Total No
+                                Employees: <b>{{no_employees}}</b></span><span class="textFloatRight">Total Cost:
+                                <b>{{project_cost}}</b></span>
+
+                            <span class="textFloatRight">No Hours:
+                                <b>{{no_hours}}</b></span>
+                        </td>
+                    </tr>
+
+
+
+
+
+
+                    {{#each dept_Array}}
+                    <tr>
                         <td colspan="11" class="tableSubHdg">Dept. Name: {{department_name}}
                             <span class="textFloatRight">No
                                 Employees: <b>{{dep_no_employee}}</b></span>
-                        </td>
-                    </tr>
-                    {{#each result}}
-                    <tr>
-                        <td colspan="11" class="tableSubHdg">Projects: {{department_name}}
-                            <span class="textFloatRight">Total No
-                                Employees: <b>{{dep_no_employee}}</b></span><span class="textFloatRight">Total Cost:
-                                <b>{{dep_no_employee}}</b></span>
                         </td>
                     </tr>
                     {{#each sub_dept}}

@@ -81,7 +81,8 @@ const ClearData = $this => {
     employee_name: null,
     employee_id: null,
     salary_payment: [],
-    paysalaryBtn: true
+    paysalaryBtn: true,
+    generatePayslip: true
   });
 };
 
@@ -156,17 +157,67 @@ const selectAll = ($this, e) => {
   const isChecked = e.target.checked;
 
   let data = $this.state.salary_payment;
+
   const newData = data.map((item, index) => {
-    return { ...item, select_to_pay: isChecked ? "Y" : "N" };
+    return {
+      ...item,
+      select_to_pay: item.salary_paid === "Y" ? "N" : isChecked ? "Y" : "N"
+    };
   });
+
+  let listOfinclude = Enumerable.from(newData)
+    .where(w => w.select_to_pay === "Y")
+    .toArray();
+  let paysalaryBtn = listOfinclude.length > 0 ? false : true;
+
   $this.setState({
     salary_payment: newData,
     checkAll: isChecked,
-    paysalaryBtn: !isChecked
+    paysalaryBtn: paysalaryBtn
   });
 };
 
-const generateReport = ($this, rpt_name, rpt_desc) => {
+const selectAllPaySlip = ($this, e) => {
+  const isChecked = e.target.checked;
+
+  let data = $this.state.salary_payment;
+
+  const newData = data.map((item, index) => {
+    return {
+      ...item,
+      generate_pay_slip: isChecked ? "Y" : "N"
+    };
+  });
+
+  let listOfinclude = Enumerable.from(newData)
+    .where(w => w.generate_pay_slip === "Y")
+    .toArray();
+  let generatePayslip = listOfinclude.length > 0 ? false : true;
+
+  $this.setState({
+    salary_payment: newData,
+    checkAllPayslip: isChecked,
+    generatePayslip: generatePayslip
+  });
+};
+
+const generatePaySlip = ($this, inputs) => {
+  let salary_payment = $this.state.salary_payment;
+
+  let input_array = [];
+
+  for (let k = 0; k < salary_payment.length; k++) {
+    if (salary_payment[k].generate_pay_slip === "Y") {
+      input_array.push(salary_payment[k].employee_id);
+    }
+  }
+
+  if (input_array.length <= 0) {
+    swalMessage({
+      title: "Select atleast one employee for pay slip",
+      type: "warning"
+    });
+  }
   algaehApiCall({
     uri: "/report",
     method: "GET",
@@ -177,13 +228,12 @@ const generateReport = ($this, rpt_name, rpt_desc) => {
     others: { responseType: "blob" },
     data: {
       report: {
-        reportName: rpt_name,
-        reportParams: [
-          {
-            name: "hims_f_patient_appointment_id",
-            value: $this.hims_f_patient_appointment_id
-          }
-        ],
+        reportName: "salarySlip",
+        reportParams: {
+          employees: input_array,
+          year: $this.state.inputs.year,
+          month: $this.state.inputs.month
+        },
         outputFileType: "PDF"
       }
     },
@@ -197,16 +247,42 @@ const generateReport = ($this, rpt_name, rpt_desc) => {
       myWindow.document.write(
         "<iframe src= '" + url + "' width='100%' height='100%' />"
       );
-      myWindow.document.title = rpt_desc;
+      myWindow.document.title = "Salary Slip";
     }
   });
 };
 
+const selectToGeneratePaySlip = ($this, row, e) => {
+  let _salarypayment = $this.state.salary_payment;
+  let _index = _salarypayment.indexOf(row);
+  let generatePayslip = true;
+  if (e.target.checked === true) {
+    row["generate_pay_slip"] = "Y";
+  } else if (e.target.checked === false) {
+    row["generate_pay_slip"] = "N";
+  }
+
+  _salarypayment[_index] = row;
+
+  let listOfinclude = Enumerable.from(_salarypayment)
+    .where(w => w.generate_pay_slip === "Y")
+    .toArray();
+  if (listOfinclude.length > 0) {
+    generatePayslip = false;
+  }
+  $this.setState({
+    generatePayslip: generatePayslip,
+    salary_payment: _salarypayment
+  });
+};
+
 export {
-  generateReport,
   LoadSalaryPayment,
   ClearData,
   PaySalary,
   selectToPay,
-  selectAll
+  selectAll,
+  generatePaySlip,
+  selectToGeneratePaySlip,
+  selectAllPaySlip
 };

@@ -2438,6 +2438,86 @@ const HR_Payroll_Reports = [
             // }
           }
         ]
+      },
+      {
+        subitem: "Designation Wise Project Payroll",
+        //template_name: "ProjectPayroll/projectWisePayroll",
+        // reportQuery: "projectWisePayroll",
+        //  reportUri: "/projectjobcosting/getProjectWiseJobCost",
+        // module: "hrManagement",
+        reportName: "designationProjectWisePayroll",
+        requireIframe: true,
+        pageOrentation: "landscape",
+        reportParameters: [
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "year",
+            isImp: false,
+            initialLoad: true,
+            value: moment().year(),
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: allYears
+            }
+            // events: {
+            //   onChange: (reportState, currentValue) => {}
+            // }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            sort: "off",
+            name: "month",
+            isImp: false,
+            initialLoad: true,
+            value: moment().format("M"),
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: MONTHS
+            },
+            others: {
+              sort: "off"
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "designation_id",
+            initialLoad: true,
+            isImp: false,
+            label: "designation",
+            link: {
+              uri: "/hrsettings/getDesignations",
+              module: "hrManagement"
+            },
+            dataSource: {
+              textField: "designation",
+              valueField: "hims_d_designation_id",
+              data: undefined
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "project_id",
+            initialLoad: true,
+            label: "Project",
+            link: {
+              uri: "/hrsettings/getProjects",
+              module: "hrManagement"
+            },
+            dataSource: {
+              textField: "project_desc",
+              valueField: "hims_d_project_id"
+            }
+            // events: {
+            //   onChange: (reportState, currentValue) => {}
+            // }
+          }
+        ]
       }
     ]
   }

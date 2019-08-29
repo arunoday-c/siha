@@ -63,21 +63,20 @@ class NewSalaryProcessing extends Component {
               <div className="row">
                 <div className="col-12">
                   <div className="portlet portlet-bordered margin-bottom-15">
-                    <div className="portlet-title">
+                    {/*<div className="portlet-title">
                       <div className="caption">
                         <h3 className="caption-subject">
                           Salary List for month of: <span>{""}</span>
                         </h3>
                       </div>
-                      <div className="actions">
-                        <div className="customCheckbox">
-                          <label className="checkbox inline">
-                            <input type="checkbox" value="" name="" />
-                            <span>Select All</span>
-                          </label>
-                        </div>
+
+                      <div className="customCheckbox">
+                        <label className="checkbox inline">
+                          <input type="checkbox" value="" name="" />
+                          <span>Select All</span>
+                        </label>
                       </div>
-                    </div>
+                    </div>*/}
 
                     <div className="portlet-body">
                       <div className="row">

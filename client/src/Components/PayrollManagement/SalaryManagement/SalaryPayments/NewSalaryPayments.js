@@ -13,7 +13,9 @@ import {
   PaySalary,
   selectToPay,
   selectAll,
-  generateReport
+  generatePaySlip,
+  selectToGeneratePaySlip,
+  selectAllPaySlip
 } from "./NewSalaryPaymentsEvents.js";
 import moment from "moment";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
@@ -33,7 +35,9 @@ class NewSalaryPayment extends Component {
       employee_id: null,
       salary_payment: [],
       paysalaryBtn: true,
-      checkAll: false
+      checkAll: false,
+      checkAllPayslip: false,
+      generatePayslip: true
     };
   }
 
@@ -50,25 +54,37 @@ class NewSalaryPayment extends Component {
                 <div className="col-12">
                   <div className="portlet portlet-bordered margin-bottom-15">
                     <div className="portlet-title">
-                      <div className="caption">
+                      {/*<div className="caption">
                         <h3 className="caption-subject">
                           Salaried Employee Salary List for -
                           <span>Dec 01 2018 - Dec 31 2018</span>
                         </h3>
-                      </div>
-                      <div className="actions">
-                        <div className="customCheckbox">
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              value=""
-                              name=""
-                              checked={this.state.checkAll}
-                              onChange={selectAll.bind(this, this)}
-                            />
-                            <span>Select All</span>
-                          </label>
-                        </div>
+                      </div>*/}
+
+                      <div className="customCheckbox">
+                        <label
+                          className="checkbox inline"
+                          style={{ marginRight: 20 }}
+                        >
+                          <input
+                            type="checkbox"
+                            value=""
+                            name=""
+                            checked={this.state.checkAll}
+                            onChange={selectAll.bind(this, this)}
+                          />
+                          <span>Select All</span>
+                        </label>
+                        <label className="checkbox inline">
+                          <input
+                            type="checkbox"
+                            value=""
+                            name=""
+                            checked={this.state.checkAllPayslip}
+                            onChange={selectAllPaySlip.bind(this, this)}
+                          />
+                          <span>Select All Pay Slip</span>
+                        </label>
                       </div>
                     </div>
 
@@ -84,7 +100,7 @@ class NewSalaryPayment extends Component {
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Select"
+                                      forceLabel: "Select To Pay"
                                     }}
                                   />
                                 ),
@@ -113,7 +129,43 @@ class NewSalaryPayment extends Component {
                                   );
                                 },
                                 others: {
-                                  maxWidth: 50,
+                                  maxWidth: 100,
+                                  filterable: false
+                                }
+                              },
+                              {
+                                fieldName: "SalaryPayment_checkBox",
+
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Generate Pay Slip"
+                                    }}
+                                  />
+                                ),
+                                //disabled: true
+                                displayTemplate: row => {
+                                  return (
+                                    <span>
+                                      <input
+                                        type="checkbox"
+                                        value="Front Desk"
+                                        onChange={selectToGeneratePaySlip.bind(
+                                          this,
+                                          this,
+                                          row
+                                        )}
+                                        checked={
+                                          row.generate_pay_slip === "Y"
+                                            ? true
+                                            : false
+                                        }
+                                      />
+                                    </span>
+                                  );
+                                },
+                                others: {
+                                  maxWidth: 150,
                                   filterable: false
                                 }
                               },
@@ -302,12 +354,8 @@ class NewSalaryPayment extends Component {
                 <button
                   type="button"
                   className="btn btn-other"
-                  onClick={generateReport.bind(
-                    this,
-                    // _firstPatient,
-                    "generatePaySlip",
-                    "Pay Slip"
-                  )}
+                  onClick={generatePaySlip.bind(this, this)}
+                  disabled={this.state.generatePayslip}
                 >
                   Generate Payslip PDF
                 </button>

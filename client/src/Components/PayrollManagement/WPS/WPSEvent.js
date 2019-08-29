@@ -21,7 +21,7 @@ export default function WPSEvents() {
             onSuccess: res => {
               if (res.data.success) {
                 let data = res.data.records;
-                debugger;
+
                 if (Object.keys(data).length > 0) {
                   $this.setState({
                     employees: data.employees,
@@ -178,7 +178,7 @@ export default function WPSEvents() {
         $this.state.bank_short_name +
         "_" +
         today;
-      let csvContent = "data:text/csv;charset=utf-8," + _csvString;
+      let csvContent = "data:appliation/octet-stream," + _csvString;
       var encodedUri = encodeURI(csvContent);
 
       var link = document.createElement("a");
