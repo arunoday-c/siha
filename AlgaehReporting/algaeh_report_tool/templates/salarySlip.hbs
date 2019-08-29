@@ -1,0 +1,112 @@
+{{{importStyle 'css/creditinvoice.css'}}}
+
+<body>
+    <div class="print-body">
+        <section>
+            <table class="tableForLabel" cell-padding="0">
+                <tr>
+                    <td><label class="textEnLft">Branch:</label><span class="valueText">{{hospital_name}}</span></td>
+                    <td><label class="textEnLft">Department:</label><span class="valueText">{{department_name}}</span>
+                    </td>
+                    <td><label class="textEnLft">Sub Department:</label<span class="valueText">
+                            {{sub_department_name}}</span></td>
+                    <td><label class="textEnLft">Designation:</label><span class="valueText">{{year}}</span></td>
+                </tr>
+                <tr>
+                    <td><label class="textEnLft">Employee Code:</label><span class="valueText">{{hospital_name}}</span>
+                    </td>
+                    <td><label class="textEnLft">Employee Name:</label><span
+                            class="valueText">{{sub_department_name}}</span></td>
+                    <td><label class="textEnLft">Year:</label><span class="valueText">{{year}}</span></td>
+                    <td><label class="textEnLft">Month:</label><span class="valueText">{{month}}</span></td>
+                </tr>
+            </table>
+            {{!-- <td>{{inc @index}}</td>
+            <td>{{employee_code}}</td>
+            <td>{{employee_name}}</td>
+            <td>{{nationality}}</td>
+            <td>{{advance_due}}</td>
+            <td>{{loan_due_amount}}</td>
+            <td>{{total_earnings}}</td>
+            <td>{{total_deductions}}</td> --}}
+
+        </section>
+        <section style="border:1px solid #ccc; height:85%;">
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th style="width: 20%">Earnigns</th>
+                        <th style="width: 30%">Amount</th>
+                        <th style="width: 20%">Deductions</th>
+                        <th style="width: 30%">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr>
+                        <td>Basics</td>
+                        <td class="numberFld">0.00</td>
+
+                        <td>PF</td>
+                        <td class="numberFld">0.00</td>
+                    </tr>
+                    <tr>
+                        <td>Basics</td>
+                        <td class="numberFld">0.00</td>
+
+                        <td>PF</td>
+                        <td class="numberFld">0.00</td>
+                    </tr>
+                    <tr>
+                        <td>Basics</td>
+                        <td class="numberFld">0.00</td>
+
+                        <td>PF</td>
+                        <td class="numberFld">0.00</td>
+                    </tr>
+                    <tr>
+                        <td>Basics</td>
+                        <td class="numberFld">0.00</td>
+
+                        <td>PF</td>
+                        <td class="numberFld">0.00</td>
+                    </tr>
+                    <tr>
+                        <td>Basics</td>
+                        <td class="numberFld">0.00</td>
+
+                    </tr>
+                    <tr>
+                        <td>Basics</td>
+                        <td class="numberFld">0.00</td>
+
+                    </tr>
+                    <tr>
+                        <td>Basics</td>
+                        <td class="numberFld">0.00</td>
+
+                    </tr>
+
+                    <tr class="footerTotalDown">
+                        <td>Total</td>
+                        <td class="numberFld">0.00</td>
+
+                        <td>Total</td>
+                        <td class="numberFld">0.00</td>
+                    </tr>
+                    <tr class="footerTotalUp">
+                        <td>Net Pay</td>
+                        <td class="numberFld" colspan="3">0.00</td>
+
+                    </tr>
+                    <tr>
+                        <td>In Words</td>
+                        <td class="numberFld" colspan="3">Rupees Ninety Three Thousand Three Hundred Fifty Eight Only
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        <p style="text-align: center">This is a computer generated Payslip. Hence signature doesn't require.</p>
+    </div>
+</body>
