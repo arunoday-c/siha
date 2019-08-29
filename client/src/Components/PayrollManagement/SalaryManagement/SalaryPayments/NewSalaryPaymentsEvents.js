@@ -167,6 +167,23 @@ const selectAll = ($this, e) => {
 };
 
 const generatePaySlip = $this => {
+  debugger;
+  let salary_payment = $this.state.salary_payment;
+
+  let input_array = [];
+
+  for (let k = 0; k < salary_payment.length; k++) {
+    if (salary_payment[k].select_to_pay === "Y") {
+      input_array.push(salary_payment[k].employee_id);
+    }
+  }
+
+  if (input_array.length <= 0) {
+    swalMessage({
+      title: "Select atleast one employee for pay slip",
+      type: "warning"
+    });
+  }
   algaehApiCall({
     uri: "/report",
     method: "GET",
@@ -178,12 +195,11 @@ const generatePaySlip = $this => {
     data: {
       report: {
         reportName: "salarySlip",
-        reportParams: [
-          {
-            name: "hims_f_patient_appointment_id",
-            value: $this.hims_f_patient_appointment_id
-          }
-        ],
+        reportParams: {
+          employees: input_array,
+          year: $this.state.year,
+          month: $this.state.month
+        },
         outputFileType: "PDF"
       }
     },

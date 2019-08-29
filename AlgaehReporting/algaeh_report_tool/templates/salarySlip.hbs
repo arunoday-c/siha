@@ -5,20 +5,20 @@
         <section>
             <table class="tableForLabel" cell-padding="0">
                 <tr>
-                    <td><label class="textEnLft">Branch:</label><span class="valueText">{{hospital_name}}</span></td>
-                    <td><label class="textEnLft">Department:</label><span class="valueText">{{department_name}}</span>
+                    <td><label class="textEnLft">Branch: </label><span class="valueText">{{header.hospital_name}}</span></td>
+                    <td><label class="textEnLft">Department: </label><span class="valueText">{{header.department_name}}</span>
                     </td>
-                    <td><label class="textEnLft">Sub Department:</label<span class="valueText">
-                            {{sub_department_name}}</span></td>
-                    <td><label class="textEnLft">Designation:</label><span class="valueText">{{year}}</span></td>
+                    <td><label class="textEnLft">Sub Department: </label<span class="valueText">
+                            {{header.sub_department_name}}</span></td>
+                    <td><label class="textEnLft">Designation:</label><span class="valueText">{{header.designation}}</span></td>
                 </tr>
                 <tr>
-                    <td><label class="textEnLft">Employee Code:</label><span class="valueText">{{hospital_name}}</span>
+                    <td><label class="textEnLft">Employee Code:</label><span class="valueText">{{header.employee_code}}</span>
                     </td>
                     <td><label class="textEnLft">Employee Name:</label><span
-                            class="valueText">{{sub_department_name}}</span></td>
-                    <td><label class="textEnLft">Year:</label><span class="valueText">{{year}}</span></td>
-                    <td><label class="textEnLft">Month:</label><span class="valueText">{{month}}</span></td>
+                            class="valueText">{{header.full_name}}</span></td>
+                    <td><label class="textEnLft">Year:</label><span class="valueText">{{header.year}}</span></td>
+                    <td><label class="textEnLft">Month:</label><span class="valueText">{{header.month}}</span></td>
                 </tr>
             </table>
             {{!-- <td>{{inc @index}}</td>

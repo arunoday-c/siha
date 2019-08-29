@@ -302,7 +302,7 @@ class NewSalaryPayment extends Component {
                 <button
                   type="button"
                   className="btn btn-other"
-                  onClick={generatePaySlip.bind(this)}
+                  onClick={generatePaySlip.bind(this, this)}
                 >
                   Generate Payslip PDF
                 </button>

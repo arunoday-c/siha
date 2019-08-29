@@ -4,24 +4,16 @@ const executePDF = function executePDFMethod(options) {
   // const _ = options.loadash;
   return new Promise(function(resolve, reject) {
     try {
+      debugger;
       let input = {};
-      let params = options.args.reportParams;
+      const header = options.result[0];
+      const detail = options.result[1];
 
-      params.forEach(para => {
-        input[para["name"]] = para["value"];
-      });
-
-      if (options.result.length > 0) {
-        input["sub_department_name"] = options.result[0]["sub_department_name"];
-        input["hospital_name"] = options.result[0]["hospital_name"];
-        MONTHS.forEach(month => {
-          if (month.value == input.month) input["month"] = month.name;
-        });
-      } else {
-        input = {};
-      }
-
-      const result = { ...input, details: options.result };
+      console.log("header: ", header);
+      const result = {
+        header: header[0],
+        detail: detail
+      };
 
       resolve(result);
     } catch (e) {
