@@ -81,7 +81,8 @@ const ClearData = $this => {
     employee_name: null,
     employee_id: null,
     salary_payment: [],
-    paysalaryBtn: true
+    paysalaryBtn: true,
+    generatePayslip: true
   });
 };
 
@@ -156,24 +157,52 @@ const selectAll = ($this, e) => {
   const isChecked = e.target.checked;
 
   let data = $this.state.salary_payment;
+
   const newData = data.map((item, index) => {
-    return { ...item, select_to_pay: isChecked ? "Y" : "N" };
+    return {
+      ...item,
+      select_to_pay: item.salary_paid === "Y" ? "N" : isChecked ? "Y" : "N"
+    };
   });
+
+  let listOfinclude = Enumerable.from(newData)
+    .where(w => w.select_to_pay === "Y")
+    .toArray();
+  let paysalaryBtn = listOfinclude.length > 0 ? false : true;
+
   $this.setState({
     salary_payment: newData,
     checkAll: isChecked,
-    paysalaryBtn: !isChecked
+    paysalaryBtn: paysalaryBtn
   });
 };
 
-const generatePaySlip = $this => {
-  debugger;
+const selectAllPaySlip = ($this, e) => {
+  const isChecked = e.target.checked;
+
+  let data = $this.state.salary_payment;
+
+  const newData = data.map((item, index) => {
+    return {
+      ...item,
+      generate_pay_slip: isChecked ? "Y" : "N"
+    };
+  });
+
+  $this.setState({
+    salary_payment: newData,
+    checkAllPayslip: isChecked,
+    generatePayslip: !isChecked
+  });
+};
+
+const generatePaySlip = ($this, inputs) => {
   let salary_payment = $this.state.salary_payment;
 
   let input_array = [];
 
   for (let k = 0; k < salary_payment.length; k++) {
-    if (salary_payment[k].select_to_pay === "Y") {
+    if (salary_payment[k].generate_pay_slip === "Y") {
       input_array.push(salary_payment[k].employee_id);
     }
   }
@@ -197,8 +226,8 @@ const generatePaySlip = $this => {
         reportName: "salarySlip",
         reportParams: {
           employees: input_array,
-          year: $this.state.year,
-          month: $this.state.month
+          year: $this.state.inputs.year,
+          month: $this.state.inputs.month
         },
         outputFileType: "PDF"
       }
@@ -218,11 +247,37 @@ const generatePaySlip = $this => {
   });
 };
 
+const selectToGeneratePaySlip = ($this, row, e) => {
+  let _salarypayment = $this.state.salary_payment;
+  let _index = _salarypayment.indexOf(row);
+  let generatePayslip = true;
+  if (e.target.checked === true) {
+    row["generate_pay_slip"] = "Y";
+  } else if (e.target.checked === false) {
+    row["generate_pay_slip"] = "N";
+  }
+
+  _salarypayment[_index] = row;
+
+  let listOfinclude = Enumerable.from(_salarypayment)
+    .where(w => w.generate_pay_slip === "Y")
+    .toArray();
+  if (listOfinclude.length > 0) {
+    generatePayslip = false;
+  }
+  $this.setState({
+    generatePayslip: generatePayslip,
+    salary_payment: _salarypayment
+  });
+};
+
 export {
   LoadSalaryPayment,
   ClearData,
   PaySalary,
   selectToPay,
   selectAll,
-  generatePaySlip
+  generatePaySlip,
+  selectToGeneratePaySlip,
+  selectAllPaySlip
 };

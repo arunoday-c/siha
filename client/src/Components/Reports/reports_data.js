@@ -18,7 +18,7 @@ import _ from "lodash";
 import moment from "moment";
 
 let allYears = getYears();
-debugger;
+
 let hospital_id = null;
 
 const Hims_Reports = [
@@ -3718,7 +3718,6 @@ const pushData = (result, current) => {
   return result;
 };
 export default function loadActiveReports() {
-  debugger;
   if (sessionStorage.getItem("CurrencyDetail") !== null) {
     hospital_id = JSON.parse(
       AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
