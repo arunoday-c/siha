@@ -112,6 +112,17 @@ const AddEarnComponent = ($this, e) => {
     alertTypeIcon: "warning",
     querySelector: "data-validate='EarnComponent'",
     onSuccess: () => {
+      if (
+        $this.state.earn_calculation_method === "FO" &&
+        $this.state.earn_formula === null
+      ) {
+        swalMessage({
+          title:
+            "Selected component is Formula based, but in master Formula not defined, Please contact ADMIN.",
+          type: "warning"
+        });
+        return;
+      }
       let earningComponents = $this.state.earningComponents;
       let insertearnComp = $this.state.insertearnComp;
 
@@ -769,6 +780,7 @@ const CalculateBasedonFormula = $this => {
 
   if (earn_comp.length > 0) {
     for (let x = 0; x < earn_comp.length; x++) {
+      debugger;
       let formulaCal = earn_comp[x].formula;
 
       // let strFormula = earn_comp[x].formula;
