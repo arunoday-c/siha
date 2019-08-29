@@ -62,29 +62,35 @@ export default function Filter(props) {
     });
   }, []);
 
-  useEffect(() => {
-    if (hospitalID !== "") {
-      getAttendanceDates(data => {
-        if (data.length > 0) {
-          const firstRecord = data[0];
+  useEffect(
+    () => {
+      if (hospitalID !== "") {
+        getAttendanceDates(data => {
+          if (data.length > 0) {
+            const firstRecord = data[0];
 
-          setStartDt(firstRecord.at_st_date);
-          setEndDt(firstRecord.at_end_date);
-          dateCalcl(firstRecord.at_end_date);
-        }
-      });
-      getDivisionProject({ division_id: hospitalID }, data => {
-        setProjects(data);
-      });
-      getBranchWiseDepartments({ hospital_id: hospitalID }, data => {
-        setDepartment(data);
-      });
-    }
-  }, [hospitalID]);
+            setStartDt(firstRecord.at_st_date);
+            setEndDt(firstRecord.at_end_date);
+            dateCalcl(firstRecord.at_end_date);
+          }
+        });
+        getDivisionProject({ division_id: hospitalID }, data => {
+          setProjects(data);
+        });
+        getBranchWiseDepartments({ hospital_id: hospitalID }, data => {
+          setDepartment(data);
+        });
+      }
+    },
+    [hospitalID]
+  );
 
-  useEffect(() => {
-    dateCalcl();
-  }, [month]);
+  useEffect(
+    () => {
+      dateCalcl();
+    },
+    [month]
+  );
 
   return (
     <div className="row  inner-top-search">
@@ -210,6 +216,9 @@ export default function Filter(props) {
           },
           onChange: e => {
             setProjectID(e.value);
+          },
+          onClear: () => {
+            setProjectID("");
           }
         }}
         showLoading={true}
@@ -229,6 +238,11 @@ export default function Filter(props) {
           onChange: e => {
             setDepartmenID(e.value);
             setSubDepartments(e.selected.subDepts);
+          },
+          onClear: () => {
+            setDepartmenID("");
+            setSubDepartments("");
+            setSubDepartmentID("");
           }
         }}
       />
@@ -246,6 +260,9 @@ export default function Filter(props) {
           },
           onChange: e => {
             setSubDepartmentID(e.value);
+          },
+          onClear: () => {
+            setSubDepartmentID("");
           }
         }}
       />
@@ -264,6 +281,10 @@ export default function Filter(props) {
         onClick={item => {
           setFullName(item.full_name);
           setEmployeeId(item.hims_d_employee_id);
+        }}
+        onClear={() => {
+          setFullName("");
+          setEmployeeId("");
         }}
       />
 
@@ -339,6 +360,10 @@ export default function Filter(props) {
                 branch_id: hospitalID,
                 from_date: fromDate,
                 to_date: toDate,
+                project_id: projectID,
+                department_id: departmenID,
+                sub_department_id: subDepartmentID,
+                employee_id: employeeID,
                 month: month,
                 year: moment().format("YYYY")
               },
