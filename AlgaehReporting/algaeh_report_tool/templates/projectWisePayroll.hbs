@@ -3,7 +3,7 @@
 <body>
     <div class="print-body">
 
-        {{!-- <section>
+        <section>
             <table class="tableForLabel" cell-padding="0">
                 <tr>
                     <td><label class="textEnLft">Branch</label>:<span class="valueText">{{hospital_name}}</span></td>
@@ -11,7 +11,7 @@
                     </td>
                 </tr>
             </table>
-        </section> --}}
+        </section>
 
         </section>
         <section>
@@ -54,13 +54,6 @@
                                 Employees: <b>{{dep_no_employee}}</b></span>
                         </td>
                     </tr>
-                    {{#each result}}
-                    <tr>
-                        <td colspan="11" class="tableSubHdg">Dept. Name: {{department_name}}
-                            <span class="textFloatRight">No
-                                Employees: <b>{{dep_no_employee}}</b></span>
-                        </td>
-                    </tr>
                     {{#each sub_dept}}
                     <tr>
                         <td colspan="11" class="tableSubHdg2">Sub Dept. Name: {{sub_department_name}} <span
@@ -74,7 +67,7 @@
                         <td style="text-align: left;">{{full_name}}</td>
                         <td>{{designation}}</td>
                         <td>{{group_description}}</td>
-                        <td>{{complete_hours}} </td>
+                        <td>{{complete_hours}}</td>
                         <td>{{project_cost}}</td>
                     </tr>
                     {{/each }}{{/each }}{{/each }}{{/each }}
