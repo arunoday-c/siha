@@ -18,12 +18,13 @@ import _ from "lodash";
 import moment from "moment";
 
 let allYears = getYears();
-debugger;
+
 let hospital_id = null;
 
 const Hims_Reports = [
   {
     name: "Appointment",
+
     submenu: [
       {
         subitem: "Doctor and Status wise report",
@@ -533,6 +534,7 @@ const Hims_Reports = [
 const HR_Payroll_Reports = [
   {
     name: "HR report",
+    excel: "true",
     submenu: [
       {
         subitem: "Employee - Dept/Sub Dept Wise",
@@ -3638,7 +3640,6 @@ const pushData = (result, current) => {
   return result;
 };
 export default function loadActiveReports() {
-  debugger;
   if (sessionStorage.getItem("CurrencyDetail") !== null) {
     hospital_id = JSON.parse(
       AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))

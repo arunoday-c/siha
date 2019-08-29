@@ -188,7 +188,10 @@ export default class ReportUI extends Component {
       querySelector: "data-validate='parameters-data'",
       alertTypeIcon: "warning",
       pageState: this,
+      clickedElement: loader.props,
       onSuccess: that => {
+        debugger;
+        const report_type = loader.props.others.reporttype;
         if (
           that.props.options !== undefined &&
           that.props.options.report !== undefined &&
@@ -228,10 +231,11 @@ export default class ReportUI extends Component {
             }
           });
           const reportProperties = that.props.options.report;
-
+          const urlChange =
+            report_type === "excel" ? "/excelReport" : "/report";
           algaehApiCall({
             cancelRequestId: "reportCancel",
-            uri: "/report",
+            uri: urlChange,
             module: "reports",
             method: "GET",
             headers: {
@@ -271,6 +275,7 @@ export default class ReportUI extends Component {
             }
           });
         } else {
+          debugger;
           const _reportQuery =
             this.state.reportQuery !== undefined
               ? this.state.reportQuery
@@ -745,7 +750,24 @@ export default class ReportUI extends Component {
                           forceLabel: "  Generate Report",
                           returnText: true
                         }}
+                        others={{
+                          reporttype: "pdf"
+                        }}
                       />
+                      {this.props.options.report.excel === "true" ? (
+                        <ButtonType
+                          others={{ style: { float: "right" } }}
+                          classname="btn-primary"
+                          onClick={this.generateReport.bind(this, this)}
+                          label={{
+                            forceLabel: "  Excel Generate",
+                            returnText: true
+                          }}
+                          others={{
+                            reporttype: "excel"
+                          }}
+                        />
+                      ) : null}
                       <button
                         value="Cancel Generate"
                         className="btn btn-default"

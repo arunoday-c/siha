@@ -9,7 +9,8 @@ class Reports extends Component {
     this.state = {
       itemList: [],
       module: "",
-      showSelector: false
+      showSelector: false,
+      excel: "false"
     };
   }
 
@@ -28,7 +29,8 @@ class Reports extends Component {
   dropDownHandler(value) {
     this.setState({
       [value.name]: value.value,
-      itemList: value.selected.submenu
+      itemList: value.selected.submenu,
+      excel: value.selected.excel
     });
   }
 
@@ -152,6 +154,7 @@ class Reports extends Component {
                       ) {
                         pageProperies["pageOrentation"] = item.pageOrentation;
                       }
+                      pageProperies["excel"] = this.state.excel;
                       AlgaehReport({
                         report: pageProperies,
                         plotUI: {
