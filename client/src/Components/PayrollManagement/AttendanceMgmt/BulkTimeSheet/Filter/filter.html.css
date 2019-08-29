@@ -7,7 +7,8 @@
   z-index: -1; }
 
 .uploadManualDiv {
-  display: inline-block; }
+  margin-left: 10px;
+  float: right; }
   .uploadManualDiv .inputfile + label {
     font-size: 0.8rem;
     padding: 7px;

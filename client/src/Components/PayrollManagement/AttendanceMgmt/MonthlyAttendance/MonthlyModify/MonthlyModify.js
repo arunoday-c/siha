@@ -128,7 +128,7 @@ class MonthlyModify extends Component {
                     forceLabel: "Present Days"
                   }}
                 />
-                <h6>{this.state.present_days}</h6>
+                <h6>{this.state.display_present_days}</h6>
               </div>{" "}
               <div className="col-2 form-group">
                 <AlgaehLabel

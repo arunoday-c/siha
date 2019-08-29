@@ -238,7 +238,7 @@ const openSalaryComponents = ($this, row) => {
     total_leave: row.total_leave,
     paid_leave: row.paid_leave,
     unpaid_leave: row.unpaid_leave,
-    present_days: row.present_days,
+    display_present_days: row.display_present_days,
     total_paid_days: row.total_paid_days,
     dis_employee_name: row.full_name
   });

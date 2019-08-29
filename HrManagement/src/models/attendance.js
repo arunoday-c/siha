@@ -2168,7 +2168,7 @@ module.exports = {
               .executeQuery({
                 query: `select hims_f_attendance_monthly_id,employee_id,E.employee_code,E.full_name as employee_name,\
 						year,month,AM.hospital_id,AM.sub_department_id,\
-						total_days,present_days,absent_days,total_work_days,total_weekoff_days,total_holidays,\
+						total_days,present_days,display_present_days,absent_days,total_work_days,total_weekoff_days,total_holidays,\
 						total_leave,paid_leave,unpaid_leave,total_paid_days ,pending_unpaid_leave,total_hours,total_working_hours,\
 						shortage_hours,ot_work_hours,ot_weekoff_hours,ot_holiday_hours from hims_f_attendance_monthly AM \
             inner join hims_d_employee E on AM.employee_id=E.hims_d_employee_id \
@@ -6193,7 +6193,8 @@ module.exports = {
 
       _mysql
         .executeQuery({
-          query: `select hims_f_daily_time_sheet_id,employee_id,employee_code,full_name,TS.sub_department_id,TS.biometric_id,\
+          query: `SELECT  salary_calendar,salary_calendar_fixed_days FROM hims_d_hrms_options limit 1;
+          select hims_f_daily_time_sheet_id,employee_id,employee_code,full_name,TS.sub_department_id,TS.biometric_id,\
         attendance_date,in_time,out_date,out_time,year,month,status,posted,hours,minutes,actual_hours,\
         actual_minutes,worked_hours,consider_ot_shrtg,expected_out_date,expected_out_time,TS.hospital_id,TS.project_id\
         from hims_f_daily_time_sheet TS inner join hims_d_employee E on TS.employee_id=E.hims_d_employee_id\
@@ -6206,11 +6207,15 @@ module.exports = {
             input.from_date,
             input.to_date
           ],
-          printQuery: false
+          printQuery: true
         })
-        .then(AttenResult => {
-          //present month
+        .then(result => {
+         
 
+
+        const  options=result[0][0];
+        const  AttenResult=result[1];
+           //present month
           if (AttenResult.length > 0) {
             for (let i = 0; i < AttenResult.length; i++) {
               let shortage_time = 0;
@@ -6288,6 +6293,50 @@ module.exports = {
                   break;
 
               }
+
+
+let display_present_days=0;
+let present_days=0;
+let absent= AttenResult[i]["status"] == "AB" ? 1 : 0;
+
+
+
+if( AttenResult[i]["status"] == "PR"){
+  display_present_days=1;
+  present_days=1;
+
+}else if (
+
+  AttenResult[i]["status"] == "HPL"||
+  AttenResult[i]["status"] == "HUL"
+){
+
+
+if( AttenResult[i]["hours"]>0){
+
+
+  display_present_days=0.5;
+}else{
+  absent=0.5;
+
+}
+ 
+
+
+}
+
+              if(week_off_ot_hour > 0||
+                 week_off_ot_min > 0||
+                 holiday_ot_hour >0 ||
+                 holiday_ot_min > 0){
+
+                  display_present_days=1;
+                  
+                }
+
+            
+
+
               dailyAttendance.push({
                 employee_id: AttenResult[i]["employee_id"],
                 project_id: AttenResult[i]["project_id"],
@@ -6298,8 +6347,9 @@ module.exports = {
                 year: input.year,
                 month: input.month,
                 total_days: 1,
-                present_days: AttenResult[i]["status"] == "PR" ? 1 : 0,
-                absent_days: AttenResult[i]["status"] == "AB" ? 1 : 0,
+                present_days:present_days,
+                display_present_days:display_present_days,
+                absent_days: absent,
                 total_work_days: 1,
                 weekoff_days: AttenResult[i]["status"] == "WO" ? 1 : 0,
                 holidays: AttenResult[i]["status"] == "HO" ? 1 : 0,
@@ -6355,6 +6405,7 @@ module.exports = {
               "attendance_date",
               "total_days",
               "present_days",
+              "display_present_days",
               "absent_days",
               "total_work_days",
               "weekoff_days",
@@ -6382,7 +6433,7 @@ module.exports = {
                   "INSERT IGNORE INTO hims_f_daily_attendance(??) VALUES ? ON DUPLICATE KEY UPDATE employee_id=values(employee_id),\
             hospital_id=values(hospital_id),sub_department_id=values(sub_department_id),\
             year=values(year),month=values(month),attendance_date=values(attendance_date),total_days=values(total_days),\
-            present_days=values(present_days),absent_days=values(absent_days),total_work_days=values(total_work_days),\
+            present_days=values(present_days), display_present_days= values(display_present_days),absent_days=values(absent_days),total_work_days=values(total_work_days),\
             weekoff_days=values(weekoff_days),holidays=values(holidays),paid_leave=values(paid_leave),\
             unpaid_leave=values(unpaid_leave),hours=values(hours),minutes=values(minutes),total_hours=values(total_hours),\
             working_hours=values(working_hours), shortage_hours=values(shortage_hours), shortage_minutes=values(shortage_minutes),\
@@ -6403,7 +6454,7 @@ module.exports = {
                 _mysql
                   .executeQuery({
                     query: `select employee_id,DA.hospital_id,DA.sub_department_id,year,month,sum(total_days)as total_days,sum(present_days)as present_days,\
-            sum(absent_days)as absent_days,sum(total_work_days)as total_work_days,sum(weekoff_days)as total_weekoff_days,\
+                    sum(display_present_days) as display_present_days  ,  sum(absent_days)as absent_days,sum(total_work_days)as total_work_days,sum(weekoff_days)as total_weekoff_days,\
             sum(holidays)as total_holidays,sum(paid_leave)as paid_leave,sum(unpaid_leave)as unpaid_leave,sum(hours)as hours,\
             sum(minutes)as minutes,COALESCE(sum(hours),0)+ COALESCE(concat(floor(sum(minutes)/60)  ,'.',sum(minutes)%60),0) \
             as total_hours,sum(working_hours)as total_working_hours ,\
@@ -6437,7 +6488,7 @@ module.exports = {
                       input.from_date,
                       input.to_date
                     ],
-                    printQuery: false
+                    printQuery: true
                   })
                   .then(results => {
                     let DilayResult = results[0];
@@ -6446,17 +6497,39 @@ module.exports = {
                     let attResult = [];
 
                     for (let i = 0; i < DilayResult.length; i++) {
-                      attResult.push({
-                        ...DilayResult[i],
-                        total_paid_days:
-                          parseFloat(DilayResult[i]["present_days"]) +
-                          parseFloat(DilayResult[i]["paid_leave"]) +
-                          parseFloat(DilayResult[i]["total_weekoff_days"]) +
-                          parseFloat(DilayResult[i]["total_holidays"]),
-                        total_leave:
-                          parseFloat(DilayResult[i]["paid_leave"]) +
-                          parseFloat(DilayResult[i]["unpaid_leave"])
-                      });
+
+                      if(options["salary_calendar"]=="F"){
+
+                        const t_paid_days=options["salary_calendar_fixed_days"]
+                        - parseFloat(DilayResult[i]["absent_days"])
+                        -parseFloat(DilayResult[i]["unpaid_leave"]);
+
+                        
+
+                        attResult.push({
+                          ...DilayResult[i],
+                          total_paid_days: t_paid_days>options["salary_calendar_fixed_days"]?options["salary_calendar_fixed_days"]:t_paid_days
+                          ,
+                          total_leave:
+                            parseFloat(DilayResult[i]["paid_leave"]) +
+                            parseFloat(DilayResult[i]["unpaid_leave"])
+                        });
+                      }else{
+                        attResult.push({
+                          ...DilayResult[i],
+                          total_paid_days:
+                            parseFloat(DilayResult[i]["present_days"]) +
+                            parseFloat(DilayResult[i]["paid_leave"]) +
+                            parseFloat(DilayResult[i]["total_weekoff_days"]) +
+                            parseFloat(DilayResult[i]["total_holidays"]),
+                          total_leave:
+                            parseFloat(DilayResult[i]["paid_leave"]) +
+                            parseFloat(DilayResult[i]["unpaid_leave"])
+                        });
+
+
+                      }
+                  
                     }
 
                     const insurtColumns = [
@@ -6467,6 +6540,7 @@ module.exports = {
                       "sub_department_id",
                       "total_days",
                       "present_days",
+                      "display_present_days",
                       "absent_days",
                       "total_work_days",
                       "total_weekoff_days",
@@ -6490,7 +6564,7 @@ module.exports = {
             employee_id=values(employee_id),year=values(year),\
             month=values(month),hospital_id=values(hospital_id),\
             sub_department_id=values(sub_department_id),total_days=values(total_days),present_days=values(present_days),\
-            absent_days=values(absent_days),total_work_days=values(total_work_days),\
+            display_present_days=values(display_present_days), absent_days=values(absent_days),total_work_days=values(total_work_days),\
             total_weekoff_days=values(total_weekoff_days),total_holidays=values(total_holidays),total_leave=values(total_leave),\
             paid_leave=values(paid_leave),unpaid_leave=values(unpaid_leave),total_paid_days=values(total_paid_days),\
             total_hours=values(total_hours),total_working_hours=values(total_working_hours),shortage_hours=values(shortage_hours)\

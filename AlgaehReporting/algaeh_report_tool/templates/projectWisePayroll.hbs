@@ -4,6 +4,79 @@
     <div class="print-body">
 
         <section>
+            <table class="tableForLabel" cell-padding="0">
+                <tr>
+                    <td><label class="textEnLft">Branch</label>:<span class="valueText">{{hospital_name}}</span></td>
+                    <td><label class="textEnLft">No Employees</label>:<span class="valueText">{{no_employees}}</span>
+                    </td>
+                </tr>
+            </table>
+        </section>
+
+        </section>
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th>Sl No.</th>
+                        <th>Employee Code</th>
+                        <th>Employee Name</th>
+                        <th>Designation</th>
+                        <th>Emp. Group</th>
+                        <th>Total Worked Hr</th>
+                        <th>Project Cost</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#hasElement result}}
+                    {{#each result}}
+                    <tr>
+                        <td colspan="11" class="tableSubHdg">Dept. Name: {{department_name}}
+                            <span class="textFloatRight">No
+                                Employees: <b>{{dep_no_employee}}</b></span>
+                        </td>
+                    </tr>
+                    {{#each result}}
+                    <tr>
+                        <td colspan="11" class="tableSubHdg">Projects: {{department_name}}
+                            <span class="textFloatRight">Total No
+                                Employees: <b>{{dep_no_employee}}</b></span><span class="textFloatRight">Total Cost:
+                                <b>{{dep_no_employee}}</b></span>
+                        </td>
+                    </tr>
+                    {{#each sub_dept}}
+                    <tr>
+                        <td colspan="11" class="tableSubHdg2">Sub Dept. Name: {{sub_department_name}} <span
+                                class="textFloatRight">No
+                                Employees: <b>{{sub_no_employee}}</b></span></td>
+                    </tr>
+                    {{#each employees}}
+                    <tr>
+                        <td>{{inc @index}}</td>
+                        <td>{{employee_code}}</td>
+                        <td style="text-align: left;">{{full_name}}</td>
+                        <td>{{designation}}</td>
+                        <td>{{group_description}}</td>
+                        <td>{{complete_hours}}</td>
+                        <td>{{project_cost}}</td>
+                    </tr>
+                    {{/each }}{{/each }}{{/each }}{{/each }}
+                    {{else}}
+                    <tr>
+                        <td colspan="11" class="noResultTextReport">No Records Found</td>
+                    </tr>{{/hasElement }}
+                </tbody>
+
+            </table>
+        </section>
+        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+
+    </div>
+</body>
+
+
+{{!-- <section>
             <table class="tableForData" cell-padding="0">
                 <thead>
                     <tr>
@@ -12,6 +85,8 @@
                         <th>Project Name</th>
                         <th>Employee Name</th>
                         <th>Employee Designation</th>
+                        <th>Department</th>
+                        <th>Sub Department</th>
                         <th>Total Worked Hr</th>
                         <th>Project Cost</th>
                     </tr>
@@ -24,8 +99,8 @@
                         <td>{{project_desc}}</td>
                         <td>{{full_name}}</td>
                         <td>{{designation}}</td>
-                        <td>{{full_name}}</td>
-                        <td>{{full_name}}</td>
+                        <td>{{department_name}}</td>
+                        <td>{{sub_department_name}}</td>
                         <td>{{complete_hours}}</td>
                         <td>{{project_cost}}</td>
 
@@ -51,7 +126,4 @@
                     <td>الصافي بعد الخصم</td>
                 </tr>
             </table>
-        </section>
-        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
-    </div>
-</body>
+        </section> --}}
