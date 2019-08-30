@@ -2468,6 +2468,24 @@ const HR_Payroll_Reports = [
           {
             className: "col-2",
             type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "branch",
+            link: {
+              uri: "/organization/getOrganization"
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            }
+          },
+
+          {
+            className: "col-2",
+            type: "dropdown",
             name: "year",
             isImp: true,
             initialLoad: true,
@@ -2498,23 +2516,7 @@ const HR_Payroll_Reports = [
               sort: "off"
             }
           },
-          {
-            className: "col-2",
-            type: "dropdown",
-            name: "designation_id",
-            initialLoad: true,
-            isImp: false,
-            label: "designation",
-            link: {
-              uri: "/hrsettings/getDesignations",
-              module: "hrManagement"
-            },
-            dataSource: {
-              textField: "designation",
-              valueField: "hims_d_designation_id",
-              data: undefined
-            }
-          },
+
           {
             className: "col-2",
             type: "dropdown",
