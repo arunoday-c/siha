@@ -433,3 +433,6 @@ body {
 .labelBlock .valueText {
   margin: 0;
 }
+.salaryWord {
+  text-transform: capitalize;
+}
