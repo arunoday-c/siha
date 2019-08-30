@@ -1,5 +1,7 @@
 const algaehUtilities = require("algaeh-utilities/utilities");
+const moment = require("moment");
 var writtenForm = require("written-number");
+
 const executePDF = function executePDFMethod(options) {
   return new Promise(function(resolve, reject) {
     try {
@@ -11,11 +13,11 @@ const executePDF = function executePDFMethod(options) {
       options.mysql
         .executeQuery({
           query: `select hims_f_salary_id ,S.employee_id, S.year,S.month,ED.hims_d_earning_deduction_id as earning_id,
-          ED.earning_deduction_description as earning_description , S.net_salary,
+          ED.earning_deduction_description as earning_description , S.net_salary,S.total_days,S.display_present_days,
           SE.amount as earning_amount,EDD.hims_d_earning_deduction_id as deduction_id,
           EDD.earning_deduction_description as deduction_description,SD.amount as deduction_amount,
           S.total_earnings,S.total_deductions,SDP.sub_department_name, D.department_name,
-          E.employee_code, E.full_name ,DE.designation,H.hospital_name from 
+          E.employee_code, E.full_name ,DE.designation,H.hospital_name from
           hims_f_salary S left join  hims_f_salary_earnings SE on SE.salary_header_id = S.hims_f_salary_id
           left join hims_f_salary_deductions SD on SD.salary_header_id = S.hims_f_salary_id
           left join hims_d_earning_deduction ED on ED.hims_d_earning_deduction_id = SE.earnings_id
@@ -23,8 +25,8 @@ const executePDF = function executePDFMethod(options) {
           left join hims_d_hospital H on H.hims_d_hospital_id = S.hospital_id
           left join hims_d_employee E on E.hims_d_employee_id = S.employee_id
           left join hims_d_designation DE on DE.hims_d_designation_id = E.employee_designation_id
-          left join hims_d_sub_department SDP on  E.sub_department_id=SDP.hims_d_sub_department_id 
-          left join hims_d_department D on D.hims_d_department_id = SDP.department_id 
+          left join hims_d_sub_department SDP on  E.sub_department_id=SDP.hims_d_sub_department_id
+          left join hims_d_department D on D.hims_d_department_id = SDP.department_id
           where S.employee_id in(?) and S.year=? and S.month=? ;`,
           values: [input.employees, input.year, input.month],
           printQuery: true
@@ -67,9 +69,15 @@ const executePDF = function executePDFMethod(options) {
                   });
                 }
               });
+
               outputArray.push({
                 year: employe[0].year,
+<<<<<<< HEAD
                 month: month,
+=======
+                // month: employe[0].month,
+                month: moment(employe[0].month, "MM").format("MMMM"),
+>>>>>>> aa4b898162de9d4305b423558b850130ebc69369
                 net_salary: employe[0].net_salary,
                 salary_in_words: writtenForm(employe[0].net_salary) + " Only",
                 total_earnings: employe[0].total_earnings,
@@ -81,11 +89,13 @@ const executePDF = function executePDFMethod(options) {
                 designation: employe[0].designation,
                 hospital_name: employe[0].hospital_name,
                 emp_earnings: emp_earnings,
-                emp_deductions: emp_deductions
+                emp_deductions: emp_deductions,
+                total_days: employe[0].total_days,
+                display_present_days: employe[0].display_present_days
               });
             });
 
-            // utilities.logger().log("outputArray: ", outputArray);
+            utilities.logger().log("outputArray: ", outputArray);
             resolve({
               result: outputArray
             });
