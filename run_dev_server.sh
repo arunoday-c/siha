@@ -34,6 +34,7 @@ startServer "./Billing" "billing_server"
 startServer "./MRD" "mrd_server" 
 startServer "./Procurement" "procurement_server"
 startServer "./AlgaehReporting" "report_server"
+startServer "./Sockets" "sockets"
 #add additional servers here if you want
 
 echo "HINT: use the command 'tmux ls' to view the running servers,

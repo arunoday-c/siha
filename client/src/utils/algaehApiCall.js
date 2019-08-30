@@ -338,7 +338,6 @@ export function swalMessage(options) {
   };
   const toast = swal.mixin(settings);
   let title = settings.title;
-
   if (typeof title === "object") {
     if (settings.title.response.data.message !== undefined) {
       title = `${settings.title.response.status} \n ${

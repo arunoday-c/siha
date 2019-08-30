@@ -14,6 +14,7 @@ import {
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 import Enumerable from "linq";
 import isEmpty from "lodash/isEmpty";
+import Notification from "../Wrapper/algaehNotification";
 import algaehLoader from "../Wrapper/fullPageLoader";
 import spotlightSearch from "../../Search/spotlightSearch";
 import AlgaehSearch from "../Wrapper/globalSearch";
@@ -24,6 +25,7 @@ import {
   generateReport
 } from "./AppointmentHelper";
 import { AlgaehOpenContainer } from "../../utils/GlobalFunctions";
+import sockets from "../../sockets";
 
 class Appointment extends PureComponent {
   constructor(props) {
@@ -51,6 +53,7 @@ class Appointment extends PureComponent {
       byPassValidation: true,
       patient_name: ""
     };
+    this.appSock = sockets;
   }
 
   componentDidMount() {
@@ -64,6 +67,21 @@ class Appointment extends PureComponent {
       redux: {
         type: "VISITTYPE_GET_DATA",
         mappingName: "visittypes"
+      }
+    });
+    this.appSock.on("refresh_appointment", patient => {
+      console.log(patient);
+      const { provider_id, sub_department_id } = this.state;
+      if (
+        sub_department_id === patient.sub_department_id ||
+        provider_id === patient.provider_id
+      ) {
+        this.setState(
+          {
+            byPassValidation: true
+          },
+          this.getAppointmentSchedule
+        );
       }
     });
   }
@@ -317,6 +335,7 @@ class Appointment extends PureComponent {
               data: send_data,
               onSuccess: response => {
                 if (response.data.success) {
+                  this.appSock.emit("appointment_created", send_data);
                   if (
                     send_data.appointment_status_id === this.state.checkInId
                   ) {

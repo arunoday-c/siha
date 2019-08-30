@@ -8,12 +8,15 @@ import {
   getCookie
 } from "../../../utils/algaehApiCall";
 import DirectRoutes from "../../../Dynamicroutes";
+import { Notifications } from "../Notifications";
 import {
   AlgaehCloseContainer,
   AlgaehOpenContainer
 } from "../../../utils/GlobalFunctions";
 import Enumarable from "linq";
 import swal from "sweetalert2";
+import sockets from "../../../sockets";
+import socket from "../../../sockets";
 
 class PersistentDrawer extends React.Component {
   constructor(props) {
@@ -78,6 +81,7 @@ class PersistentDrawer extends React.Component {
         subMenuItem: "GN0001"
       },
       isSelectedByForce: false,
+      openPanel: false,
       menuList: [],
       scrollPosition: 0,
       lang_className: " english_component",
@@ -97,7 +101,6 @@ class PersistentDrawer extends React.Component {
       window.location.hash = "";
     }
 
-    const that = this;
     algaehApiCall({
       uri: "/algaehMasters/getRoleBaseActiveModules",
       method: "GET",
@@ -160,9 +163,20 @@ class PersistentDrawer extends React.Component {
             });
           }
 
-          that.setState({
-            menuList: dataResponse.data.records
-          });
+          this.setState(
+            {
+              menuList: dataResponse.data.records
+            },
+            () =>
+              sockets.emit(
+                "user_logged",
+                getCookie("userName"),
+                this.state.menuList.map(module =>
+                  module.module_code.toLowerCase()
+                ),
+                getCookie("keyResources")
+              )
+          );
         }
       },
       onFailure: error => {
@@ -427,8 +441,15 @@ class PersistentDrawer extends React.Component {
   }
 
   logoutLink(e) {
+    socket.emit("user_logout");
     window.location.href = window.location.origin + "/#";
   }
+
+  handlePanel = () => {
+    this.setState({
+      openPanel: !this.state.openPanel
+    });
+  };
 
   SearchModuleHandler(e) {
     this.setState({ searchModules: e.target.value });
@@ -574,6 +595,17 @@ class PersistentDrawer extends React.Component {
               </span>
             </div>
           </div>
+          <a
+            style={{
+              marginRight: 0
+            }}
+            className="dropdown navTopbar-dropdown"
+            disabled={this.state.openPanel}
+            onClick={this.handlePanel}
+          >
+            <i className="fas fa-bell fa-lg" />
+          </a>
+
           <div className="dropdown navTopbar-dropdown">
             <i className="fas fa-angle-down fa-lg" />
             <div
@@ -748,6 +780,10 @@ class PersistentDrawer extends React.Component {
           className={"mainPageArea container-fluid" + this.state.lang_className}
           id="hisapp"
         >
+          <Notifications
+            open={this.state.openPanel}
+            handlePanel={this.handlePanel}
+          />
           <DirectRoutes
             componet={this.state.renderComponent}
             selectedLang={this.state.selectedLang}
