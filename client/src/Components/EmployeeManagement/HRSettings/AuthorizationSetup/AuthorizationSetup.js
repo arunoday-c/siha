@@ -1,601 +1,677 @@
 import React, { Component } from "react";
 import "./AuthorizationSetup.css";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 import {
-  AlgaehLabel,
-  AlagehAutoComplete,
+  AlagehFormGroup,
   AlgaehDataGrid,
-  AlagehFormGroup
+  AlagehAutoComplete,
+  AlgaehLabel
 } from "../../../Wrapper/algaehWrapper";
-import { AUTH_TYPE } from "../../../../utils/GlobalVariables.json";
-import AlgaehSearch from "../../../Wrapper/globalSearch";
-import spotlightSearch from "../../../../Search/spotlightSearch.json";
-import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
+import GlobalVariables from "../../../../utils/GlobalVariables";
 
-export default class AuthorizationSetup extends Component {
+import { AlgaehActions } from "../../../../actions/algaehActions";
+import { getCookie } from "../../../../utils/algaehApiCall";
+import Options from "../../../../Options.json";
+import moment from "moment";
+import AuthorizationSetupEvent from "./AuthorizationSetupEvent";
+import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
+import spotlightSearch from "../../../../Search/spotlightSearch.json";
+
+class AuthorizationSetup extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
-      sub_depts: [],
-      no_employees: "ALL",
-      no_auths: 0,
-      options: {},
-      employee_list: []
-    };
-    this.getSubDepartments();
-    this.getOptions();
-  }
-
-  clearState = () => {
-    this.setState({
-      auth_type: null,
-      no_employees: "ALL",
-      no_auths: 0,
-      options: {},
-      employee_list: [],
-      employee_id: null,
+      allDepartments: [],
+      subDepts: [],
+      designations: [],
+      leave_level: null,
+      loan_level: null,
+      employees_list: [],
+      department_id: null,
       sub_department_id: null,
-      level_1: null,
-      level_2: null,
-      level_3: null,
-      level_4: null,
-      level_5: null,
-      level_1_employee: null,
-      level_2_employee: null,
-      level_3_employee: null,
-      level_4_employee: null,
-      level_5_employee: null,
-      selected_auth_type: null,
-      selected_dept: null
-    });
-  };
-
-  getOptions() {
-    algaehApiCall({
-      uri: "/payrollOptions/getHrmsOptions",
-      method: "GET",
-      module: "hrManagement",
-      onSuccess: res => {
-        if (res.data.success) {
-          this.setState({ options: res.data.result[0] });
-        }
-      },
-      onFailure: err => {
-        swalMessage({
-          title: err.message,
-          type: "error"
-        });
-      }
-    });
-  }
-
-  getSubDepartments() {
-    algaehApiCall({
-      uri: "/department/get/subdepartment",
-      method: "GET",
-      module: "masterSettings",
-      onSuccess: res => {
-        if (res.data.success) {
-          this.setState({
-            sub_depts: res.data.records
-          });
-        }
-      },
-      onFailure: err => {
-        swalMessage({
-          title: err.message,
-          type: "error"
-        });
-      }
-    });
-  }
-
-  dropDownHandler(value) {
-    switch (value.name) {
-      case "auth_type":
-        this.setState({
-          [value.name]: value.value,
-          no_auths:
-            value.value === "LE"
-              ? parseInt(this.state.options.leave_level, 10)
-              : value.value === "LO"
-              ? parseInt(this.state.options.loan_level, 10)
-              : null,
-          selected_auth_type: value.selected.name
-        });
-        break;
-
-      case "sub_department_id":
-        algaehApiCall({
-          uri: "/employee/get",
-          module: "hrManagement",
-          method: "GET",
-          data: { sub_department_id: value.value },
-          onSuccess: response => {
-            if (response.data.success) {
-              this.setState({
-                [value.name]: value.value,
-                selected_dept: value.selected.sub_department_name,
-                employee_list: response.data.records
-              });
-            }
-          },
-          onFailure: error => {
-            swalMessage({
-              title: error.message,
-              type: "error"
-            });
-          }
-        });
-
-        break;
-
-      default:
-        this.setState({
-          [value.name]: value.value
-        });
-        break;
-    }
-  }
-
-  getAuthLevleSelectors() {
-    let x = [];
-
-    for (let i = 0; i < this.state.no_auths; i++) {
-      x.push(i + 1);
-    }
-    return x.map((data, i) => (
-      <div className="col" key={data}>
-        <div
-          className="row"
-          style={{
-            border: " 1px solid #ced4d9",
-            borderRadius: 5,
-            marginLeft: 0,
-            marginRight: 0
-          }}
-        >
-          <div className="col">
-            <AlgaehLabel label={{ forceLabel: "Level " + data }} />
-            <h6>
-              {this.state["level_" + data + "_employee"]
-                ? this.state["level_" + data + "_employee"]
-                : "------"}
-            </h6>
-          </div>
-          <div
-            className="col-3"
-            style={{
-              borderLeft: "1px solid #ced4d8",
-              paddingLeft: "6%"
-            }}
-          >
-            <span
-              className="fas fa-search fa-lg"
-              style={{
-                paddingTop: 17,
-                paddingLeft: 3,
-                cursor: "pointer"
-              }}
-              name={"level_" + data}
-              onClick={this.employeeSearch.bind(
-                this,
-                "N",
-                this.setAuthLevelEmployees
-              )}
-            />
-          </div>
-        </div>
-      </div>
-    ));
-  }
-
-  setAuthLevelEmployees = (row, level) => {
-    this.setState({
-      [level]: row.algaeh_d_app_user_id,
-      [level + "_employee"]: row.full_name
-    });
-  };
-
-  selectEmployee = row => {
-    this.setState({
-      employee_id: row.hims_d_employee_id,
-      full_name: row.full_name,
-      employee_code: row.employee_code
-    });
-  };
-
-  employeeSearch(employee, selectCallBack, e) {
-    if (this.state.auth_type === null || this.state.auth_type === undefined) {
-      swalMessage({
-        title: "Please Select an Auth Type",
-        type: "warning"
-      });
-    } else if (
-      this.state.sub_department_id === null ||
-      this.state.sub_department_id === undefined
-    ) {
-      swalMessage({
-        title: "Please Select a department",
-        type: "warning"
-      });
-    } else {
-      const isEmployee = employee === "Y";
-      const _element_level = e.currentTarget.getAttribute("name");
-      AlgaehSearch({
-        searchGrid: {
-          columns: spotlightSearch.Employee_details.employee
-        },
-        searchName: isEmployee ? "employee" : "users",
-        uri: "/gloabelSearch/get",
-        inputs: isEmployee
-          ? " sub_department_id=" + this.state.sub_department_id
-          : null,
-        onContainsChange: (text, serchBy, callBack) => {
-          callBack(text);
-        },
-        onRowSelect: row => selectCallBack(row, _element_level)
-      });
-    }
-  }
-
-  textHandler(e) {
-    this.setState({
-      [e.target.name]: e.target.value
-    });
-  }
-  assignAuthLevels() {
-    let send_data = {
-      no_employees: this.state.no_employees,
-      employee_id: this.state.employee_id,
-      sub_dept_id: this.state.sub_department_id,
-      auth_type: this.state.auth_type,
-      no_auths: this.state.no_auths,
-      level_1: this.state.level_1,
-      level_2: this.state.level_2,
-      level_3: this.state.level_3,
-      level_4: this.state.level_4,
-      level_5: this.state.level_5
+      designation_id: null,
+      processBtn: true,
+      checkAll: false,
+      Employeedetails: [],
+      leave_level_set: "AL1",
+      loan_level_set: "AL1",
+      employee_id: null
     };
+    this.baseState = this.state;
 
-    algaehApiCall({
-      uri: "/payrollSettings/assignAuthLevels",
-      method: "POST",
-      data: send_data,
-      onSuccess: res => {
-        if (res.data.success) {
-          swalMessage({
-            title: "Record(s) added successfully . .",
-            type: "success"
-          });
-        }
-      },
-      onFailure: err => {
-        swalMessage({
-          title: err.message,
-          type: "error"
-        });
-      }
+    // AuthorizationSetupEvent().getAllSubDepartments(this);
+    AuthorizationSetupEvent().getDepartments(this);
+    AuthorizationSetupEvent().getOptions(this);
+    AuthorizationSetupEvent().getEmployeeDetails(this);
+  }
+
+  componentDidMount() {
+    let prevLang = getCookie("Language");
+
+    this.setState({
+      selectedLang: prevLang
     });
   }
+  dropDownHandler(e) {
+    AuthorizationSetupEvent().texthandle(this, e);
+  }
+
+  loadEmployees() {
+    AuthorizationSetupEvent().loadEmployees(this);
+  }
+  clearState() {
+    this.setState({
+      subDepts: [],
+      designations: [],
+      employees_list: [],
+      department_id: null,
+      sub_department_id: null,
+      designation_id: null,
+      processBtn: true,
+      checkAll: false,
+      Employeedetails: []
+    });
+  }
+  selectAll(e) {
+    AuthorizationSetupEvent().selectAll(this, e);
+  }
+  selectToProcess(row, e) {
+    AuthorizationSetupEvent().selectToProcess(this, row, e);
+  }
+  radioChange(e) {
+    AuthorizationSetupEvent().texthandle(this, e);
+  }
+
+  searchSelect(data) {
+    this.setState({
+      sub_department_id: data.sub_department_id,
+      employee_id: data.hims_d_employee_id,
+      full_name: data.full_name,
+      display_name: data.full_name
+    });
+  }
+
+  processLoanAuth() {}
+  processLeaveLevel() {}
 
   render() {
     return (
-      <div className="AuthorizationSetupScreen">
-        <div className="row  inner-top-search">
-          <AlagehAutoComplete
-            div={{ className: "col form-group" }}
-            label={{ forceLabel: "Select Authorization Type", isImp: true }}
-            selector={{
-              name: "auth_type",
-              value: this.state.auth_type,
-              className: "select-fld",
-              dataSource: {
-                textField: "name",
-                valueField: "value",
-                data: AUTH_TYPE
-              },
-              onChange: this.dropDownHandler.bind(this),
-              onClear: () => {
-                this.setState({
-                  auth_type: null
-                });
-              }
-            }}
-          />
-          <AlagehAutoComplete
-            div={{ className: "col form-group" }}
-            label={{ forceLabel: "Select Sub Dept.", isImp: true }}
-            selector={{
-              name: "sub_department_id",
-              value: this.state.sub_department_id,
-              className: "select-fld",
-              dataSource: {
-                textField: "sub_department_name",
-                valueField: "hims_d_sub_department_id",
-                data: this.state.sub_depts
-              },
-              onChange: this.dropDownHandler.bind(this),
-              onClear: () => {
-                this.setState({
-                  hims_d_sub_department_id: null
-                });
-              }
-            }}
-          />
-          <div className="col" style={{ paddingTop: 10 }}>
-            <div className="customRadio">
-              <label className="radio inline" style={{ display: "block" }}>
-                <input
-                  type="radio"
-                  value="ALL"
-                  name="no_employees"
-                  checked={this.state.no_employees === "ALL"}
-                  onChange={this.textHandler.bind(this)}
-                />
-                <span>All Employee</span>
-              </label>
+      <div className="row">
+        <div className="col-12">
+          <div className="row inner-top-search FilterCompnentDiv">
+            <AlagehAutoComplete
+              div={{ className: "col-2 form-group mandatory" }}
+              label={{ forceLabel: "Department", isImp: true }}
+              selector={{
+                name: "department_id",
+                value: this.state.department_id,
+                className: "select-fld",
+                dataSource: {
+                  textField: "department_name",
+                  valueField: "hims_d_department_id",
+                  data: this.state.allDepartments
+                },
+                onChange: this.dropDownHandler.bind(this),
+                onClear: () => {
+                  this.setState({
+                    department_id: null,
+                    sub_department_id: null,
+                    designation_id: null,
+                    subDepts: [],
+                    designations: []
+                  });
+                }
+              }}
+            />
 
-              <label className="radio inline" style={{ margin: 0 }}>
-                <input
-                  type="radio"
-                  onChange={this.textHandler.bind(this)}
-                  value="ONE"
-                  name="no_employees"
-                  checked={this.state.no_employees === "ONE"}
-                />
-                <span>Select an Employee</span>
-              </label>
-            </div>
-          </div>
-          {/* Radio ENd here Here */}
-          {this.state.no_employees === "ONE" ? (
-            <div className="col" style={{ marginTop: 7 }}>
-              <div
-                className="row"
-                style={{
-                  border: " 1px solid #ced4d9",
-                  borderRadius: 5
-                }}
+            <AlagehAutoComplete
+              div={{ className: "col-2 form-group" }}
+              label={{ forceLabel: "Sub Deptartment" }}
+              selector={{
+                name: "sub_department_id",
+                value: this.state.sub_department_id,
+                className: "select-fld",
+                dataSource: {
+                  textField: "sub_department_name",
+                  valueField: "hims_d_sub_department_id",
+                  data: this.state.subDepts
+                },
+                onChange: this.dropDownHandler.bind(this),
+                onClear: () => {
+                  this.setState({
+                    sub_department_id: null,
+                    designation_id: null,
+                    designations: []
+                  });
+                }
+              }}
+            />
+
+            <AlagehAutoComplete
+              div={{ className: "col-2 form-group" }}
+              label={{ forceLabel: "Designation" }}
+              selector={{
+                name: "designation_id",
+                value: this.state.designation_id,
+                className: "select-fld",
+                dataSource: {
+                  textField: "designation",
+                  valueField: "hims_d_designation_id",
+                  data: this.state.designations
+                },
+                onChange: this.dropDownHandler.bind(this),
+                onClear: () => {
+                  this.setState({
+                    designation_id: null
+                  });
+                }
+              }}
+            />
+
+            <div className="col-1 form-group">
+              <button
+                onClick={this.loadEmployees.bind(this)}
+                style={{ marginLeft: 10, float: "right" }}
+                className="btn btn-primary"
               >
-                <div className="col">
-                  <AlgaehLabel label={{ forceLabel: "Select an Employee" }} />
-                  <h6>
-                    {this.state.full_name ? this.state.full_name : "------"}
-                  </h6>
-                </div>
+                {!this.state.loading ? (
+                  <span>Load</span>
+                ) : (
+                  <i className="fas fa-spinner fa-spin" />
+                )}
+              </button>
+            </div>
+            <div className="col-1 form-group">
+              <button
+                onClick={this.clearState.bind(this)}
+                style={{ float: "right" }}
+                className="btn btn-default"
+              >
+                Clear
+              </button>
+            </div>
+          </div>
+
+          <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
+            <div className="portlet-body">
+              <div className="row">
+                <label> Leave </label>
                 <div
-                  className="col-3"
-                  style={{ borderLeft: "1px solid #ced4d8", paddingLeft: "6%" }}
+                  className="col-6 customRadio"
+                  style={{ paddingTop: 24, borderBottom: "none" }}
                 >
-                  <i
-                    className="fas fa-search fa-lg"
-                    style={{
-                      paddingTop: 17,
-                      paddingLeft: 3,
-                      cursor: "pointer"
-                    }}
-                    onClick={this.employeeSearch.bind(
-                      this,
-                      "Y",
-                      this.selectEmployee
-                    )}
-                  />
+                  <label className="radio inline">
+                    <input
+                      type="radio"
+                      name="leave_level_set"
+                      value="AL1"
+                      checked={
+                        this.state.leave_level_set === "AL1" ? true : false
+                      }
+                      onChange={this.radioChange.bind(this)}
+                    />
+                    <span>Level 1</span>
+                  </label>
+                  {this.state.leave_level >= 2 ? (
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        name="leave_level_set"
+                        value="AL2"
+                        checked={
+                          this.state.leave_level_set === "AL2" ? true : false
+                        }
+                        onChange={this.radioChange.bind(this)}
+                      />
+                      <span>Level 2</span>
+                    </label>
+                  ) : null}
+                  {this.state.leave_level >= 3 ? (
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        name="leave_level_set"
+                        value="AL3"
+                        checked={
+                          this.state.leave_level_set === "AL3" ? true : false
+                        }
+                        onChange={this.radioChange.bind(this)}
+                      />
+                      <span>Level 3</span>
+                    </label>
+                  ) : null}
                 </div>
-              </div>
-            </div>
-          ) : null}
-        </div>
-        <div className="row">
-          {/* row starts here*/}
-          <div className="col-4">
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-body">
-                <div className="row empSearchSection">
-                  <AlagehFormGroup
-                    div={{ className: "col-12" }}
-                    label={{
-                      forceLabel: "Search",
-                      isImp: true
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "search_employee",
-                      value: "",
-                      events: {}
-                    }}
-                  />
-                </div>
-                <div className="row employeeListUL">
-                  <ul className="reqTransList">
-                    {this.state.employee_list.map(employee => {
-                      return (
-                        <li key={employee.hims_d_employee_id}>
-                          <div className="itemReq">
-                            <h6>{employee.full_name}</h6>
-                            <span>
-                              <span>{employee.employee_code}</span>
-                            </span>
-                          </div>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="col-8">
-            <div className="row">
-              <div className="col-12">
-                <div className="portlet portlet-bordered margin-bottom-15">
-                  <div className="portlet-body">
-                    <div className="row">
-                      {this.getAuthLevleSelectors()}
 
-                      {/* Select Employee End here Here */}
-
-                      <div className="col-12 margin-top-15">
+                <AlgaehAutoSearch
+                  div={{ className: "col-12 form-group" }}
+                  label={{
+                    forceLabel: "Employee",
+                    isImp: true
+                  }}
+                  ref={this.inputRef}
+                  title="Search Employees"
+                  id="item_id_search"
+                  template={result => {
+                    return (
+                      <section className="resultSecStyles">
                         <div className="row">
-                          <div className="col">
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "Selected Authorization Type"
-                              }}
-                            />
-                            <h6>
-                              {this.state.selected_auth_type
-                                ? this.state.selected_auth_type
-                                : "------"}
-                            </h6>
+                          <div className="col-8">
+                            <h4 className="title">{result.employee_code}</h4>
+                            <small>{result.full_name}</small>
+                            <small>{result.department_name}</small>
+                            <small>{result.sub_department_name}</small>
                           </div>
-                          <div className="col">
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "Selected Department"
-                              }}
-                            />
-                            <h6>
-                              {this.state.selected_dept
-                                ? this.state.selected_dept
-                                : "------"}
-                            </h6>
-                          </div>
-                          <div className="col">
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "Selected Employee"
-                              }}
-                            />
-                            <h6>
-                              {this.state.no_employees === "ALL"
-                                ? "ALL"
-                                : this.state.full_name || null}
-                            </h6>
-                          </div>
-                          <div className="col margin-top-15">
-                            <button
-                              onClick={this.assignAuthLevels.bind(this)}
-                              className="btn btn-primary"
-                              style={{ float: "right", marginLeft: 5 }}
-                            >
-                              Add
-                            </button>
-                            <button
-                              className="btn btn-default"
-                              style={{ float: "right", marginLeft: 5 }}
-                              onClick={this.clearState}
-                            >
-                              Clear
-                            </button>
-                          </div>
+                          <div className="col-4" />
                         </div>
-                      </div>
-                    </div>
-                  </div>
+                      </section>
+                    );
+                  }}
+                  name="employee_id"
+                  columns={spotlightSearch.Employee_details.loginNewEmployee}
+                  displayField="full_name"
+                  value={this.state.full_name}
+                  searchName="leave_auth"
+                  onClick={this.searchSelect.bind(this)}
+                  extraParameters={{
+                    leave_authorize_privilege: this.state.leave_level_set
+                  }}
+                  onClear={() => {
+                    this.setState({
+                      employee_id: null
+                    });
+                  }}
+                />
+
+                <div className="col-1 form-group">
+                  <button
+                    onClick={this.processLeaveLevel.bind(this)}
+                    style={{ marginLeft: 10, float: "right" }}
+                    className="btn btn-primary"
+                    disabled={this.state.processBtn}
+                  >
+                    {!this.state.loading ? (
+                      <span>Leave Auth</span>
+                    ) : (
+                      <i className="fas fa-spinner fa-spin" />
+                    )}
+                  </button>
+                </div>
+
+                <label> Loan </label>
+                <div
+                  className="col-6 customRadio"
+                  style={{ paddingTop: 24, borderBottom: "none" }}
+                >
+                  <label className="radio inline">
+                    <input
+                      type="radio"
+                      name="loan_level_set"
+                      value="AL1"
+                      checked={
+                        this.state.loan_level_set === "AL1" ? true : false
+                      }
+                      onChange={this.radioChange.bind(this)}
+                    />
+                    <span>Level 1</span>
+                  </label>
+                  {this.state.loan_level >= 2 ? (
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        name="loan_level_set"
+                        value="AL2"
+                        checked={
+                          this.state.loan_level_set === "AL2" ? true : false
+                        }
+                        onChange={this.radioChange.bind(this)}
+                      />
+                      <span>Level 2</span>
+                    </label>
+                  ) : null}
+                </div>
+
+                <AlgaehAutoSearch
+                  div={{ className: "col-12 form-group" }}
+                  label={{
+                    forceLabel: "Employee",
+                    isImp: true
+                  }}
+                  ref={this.inputRef}
+                  title="Search Employees"
+                  id="item_id_search"
+                  template={result => {
+                    return (
+                      <section className="resultSecStyles">
+                        <div className="row">
+                          <div className="col-8">
+                            <h4 className="title">{result.employee_code}</h4>
+                            <small>{result.full_name}</small>
+                            <small>{result.department_name}</small>
+                            <small>{result.sub_department_name}</small>
+                          </div>
+                          <div className="col-4" />
+                        </div>
+                      </section>
+                    );
+                  }}
+                  name="employee_id"
+                  columns={spotlightSearch.Employee_details.loginNewEmployee}
+                  displayField="full_name"
+                  value={this.state.full_name}
+                  searchName="loan_auth"
+                  onClick={this.searchSelect.bind(this)}
+                  extraParameters={{
+                    loan_authorize_privilege: this.state.loan_level_set
+                  }}
+                  onClear={() => {
+                    this.setState({
+                      employee_id: null
+                    });
+                  }}
+                />
+                {/*<AlagehAutoComplete
+                  div={{ className: "col-2 form-group" }}
+                  label={{ forceLabel: "Leave L1" }}
+                  selector={{
+                    name: "designation_id",
+                    value: this.state.designation_id,
+                    className: "select-fld",
+                    dataSource: {
+                      textField: "designation",
+                      valueField: "hims_d_designation_id",
+                      data: this.state.designations
+                    },
+                    onChange: this.dropDownHandler.bind(this)
+                  }}
+                />
+                {this.state.leave_level >= 2 ? (
+                  <AlagehAutoComplete
+                    div={{ className: "col-2 form-group" }}
+                    label={{ forceLabel: "Leave L2" }}
+                    selector={{
+                      name: "designation_id",
+                      value: this.state.designation_id,
+                      className: "select-fld",
+                      dataSource: {
+                        textField: "designation",
+                        valueField: "hims_d_designation_id",
+                        data: this.state.designations
+                      },
+                      onChange: this.dropDownHandler.bind(this)
+                    }}
+                  />
+                ) : null}
+                {this.state.leave_level >= 3 ? (
+                  <AlagehAutoComplete
+                    div={{ className: "col-2 form-group" }}
+                    label={{ forceLabel: "Leave L3" }}
+                    selector={{
+                      name: "designation_id",
+                      value: this.state.designation_id,
+                      className: "select-fld",
+                      dataSource: {
+                        textField: "designation",
+                        valueField: "hims_d_designation_id",
+                        data: this.state.designations
+                      },
+                      onChange: this.dropDownHandler.bind(this)
+                    }}
+                  />
+                ) : null}
+
+                <AlagehAutoComplete
+                  div={{ className: "col-2 form-group" }}
+                  label={{ forceLabel: "Loan L1" }}
+                  selector={{
+                    name: "designation_id",
+                    value: this.state.designation_id,
+                    className: "select-fld",
+                    dataSource: {
+                      textField: "designation",
+                      valueField: "hims_d_designation_id",
+                      data: this.state.designations
+                    },
+                    onChange: this.dropDownHandler.bind(this)
+                  }}
+                />
+                {this.state.loan_level >= 2 ? (
+                  <AlagehAutoComplete
+                    div={{ className: "col-2 form-group" }}
+                    label={{ forceLabel: "Loan L2" }}
+                    selector={{
+                      name: "designation_id",
+                      value: this.state.designation_id,
+                      className: "select-fld",
+                      dataSource: {
+                        textField: "designation",
+                        valueField: "hims_d_designation_id",
+                        data: this.state.designations
+                      },
+                      onChange: this.dropDownHandler.bind(this)
+                    }}
+                  />
+                ) : null}
+                {this.state.loan_level >= 3 ? (
+                  <AlagehAutoComplete
+                    div={{ className: "col-2 form-group" }}
+                    label={{ forceLabel: "Loan L3" }}
+                    selector={{
+                      name: "designation_id",
+                      value: this.state.designation_id,
+                      className: "select-fld",
+                      dataSource: {
+                        textField: "designation",
+                        valueField: "hims_d_designation_id",
+                        data: this.state.designations
+                      },
+                      onChange: this.dropDownHandler.bind(this)
+                    }}
+                  />
+                ) : null}*/}
+                <div className="col-1 form-group">
+                  <button
+                    onClick={this.processLoanAuth.bind(this)}
+                    style={{ marginLeft: 10, float: "right" }}
+                    className="btn btn-primary"
+                    disabled={this.state.processBtn}
+                  >
+                    {!this.state.loading ? (
+                      <span>Loan Auth</span>
+                    ) : (
+                      <i className="fas fa-spinner fa-spin" />
+                    )}
+                  </button>
                 </div>
               </div>
             </div>
-            {/* row end here*/}
-            <div className="row">
-              <div className="col-12">
-                <div className="portlet portlet-bordered margin-bottom-15">
-                  <div className="portlet-title">
-                    <div className="caption">
-                      <h3 className="caption-subject">
-                        Employee Authorization List
-                      </h3>
-                    </div>
-                  </div>
-                  <div className="portlet-body">
-                    <div className="row">
-                      <div className="col-12" id="EmployeeAuthGrid_Cntr">
-                        <AlgaehDataGrid
-                          id="EmployeeAuthGrid"
-                          datavalidate="EmployeeAuthGrid"
-                          columns={[
-                            {
-                              fieldName: "EmpCode",
-                              label: (
-                                <AlgaehLabel
-                                  label={{ forceLabel: "Employee Code" }}
-                                />
-                              )
-                            },
-                            {
-                              fieldName: "EmpName",
-                              label: (
-                                <AlgaehLabel
-                                  label={{ forceLabel: "Employee Name" }}
-                                />
-                              )
-                            },
-                            {
-                              fieldName: "DeptName",
-                              label: (
-                                <AlgaehLabel
-                                  label={{ forceLabel: "Dept. Name" }}
-                                />
-                              )
-                            },
-                            {
-                              fieldName: "AuthOne",
-                              label: (
-                                <AlgaehLabel
-                                  label={{ forceLabel: "Auth. 1" }}
-                                />
-                              )
-                            },
-                            {
-                              fieldName: "AuthTwo",
-                              label: (
-                                <AlgaehLabel
-                                  label={{ forceLabel: "Auth. 2" }}
-                                />
-                              )
-                            },
-                            {
-                              fieldName: "AuthThree",
-                              label: (
-                                <AlgaehLabel
-                                  label={{ forceLabel: "Auth. 3" }}
-                                />
-                              )
-                            },
-                            {
-                              fieldName: "AuthFour",
-                              label: (
-                                <AlgaehLabel
-                                  label={{ forceLabel: "Auth. 4" }}
-                                />
-                              )
-                            },
-                            {
-                              fieldName: "AuthFinal",
-                              label: (
-                                <AlgaehLabel
-                                  label={{ forceLabel: "Auth. Final" }}
-                                />
-                              )
-                            }
-                          ]}
-                          keyId=""
-                          dataSource={{ data: [] }}
-                          isEditable={true}
-                          paging={{ page: 0, rowsPerPage: 10 }}
-                          events={{}}
-                          others={{}}
-                        />
-                      </div>
-                    </div>
-                  </div>
+          </div>
+
+          <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
+            <div className="portlet-body">
+              <div className="customCheckbox">
+                <label className="checkbox inline" style={{ marginRight: 20 }}>
+                  <input
+                    type="checkbox"
+                    value=""
+                    name=""
+                    checked={this.state.checkAll}
+                    onChange={this.selectAll.bind(this)}
+                  />
+                  <span>Select All</span>
+                </label>
+              </div>
+              <div className="row">
+                <div className="col-lg-12" id="employeeIndexGrid">
+                  <AlgaehDataGrid
+                    id="employee_auth_grid"
+                    columns={[
+                      {
+                        fieldName: "SalaryPayment_checkBox",
+                        label: (
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Select To Process"
+                            }}
+                          />
+                        ),
+                        //disabled: true
+                        displayTemplate: (row, data) => {
+                          return (
+                            <span>
+                              <input
+                                type="checkbox"
+                                onChange={this.selectToProcess.bind(this, row)}
+                                // onChange={handlers.selectToProcess}
+                                checked={
+                                  row.select_to_process === "Y" ? true : false
+                                }
+                              />
+                            </span>
+                          );
+                        },
+                        others: {
+                          maxWidth: 100,
+                          filterable: false
+                        }
+                      },
+                      {
+                        fieldName: "employee_code",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Employee Code" }}
+                          />
+                        ),
+                        others: {
+                          maxWidth: 100,
+                          resizable: false,
+                          style: { textAlign: "center" }
+                        }
+                      },
+                      {
+                        fieldName: "full_name",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Full Name" }} />
+                        ),
+                        others: {
+                          resizable: false,
+                          style: { textAlign: "center" }
+                        }
+                      },
+                      {
+                        fieldName: "reporting_to_id",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Leave L1" }} />
+                        ),
+                        displayTemplate: row => {
+                          let display =
+                            this.props.employee_data === undefined
+                              ? []
+                              : this.props.employee_data.filter(
+                                  f =>
+                                    f.hims_d_employee_id === row.reporting_to_id
+                                );
+
+                          return (
+                            <span>
+                              {display !== undefined && display.length !== 0
+                                ? display[0].full_name
+                                : ""}
+                            </span>
+                          );
+                        },
+                        others: {
+                          maxWidth: 150,
+                          resizable: false,
+                          style: { textAlign: "center" }
+                        }
+                      },
+
+                      {
+                        fieldName: "leave_level2",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Leave L2" }} />
+                        ),
+
+                        others: {
+                          maxWidth: 150,
+                          resizable: false,
+                          style: { textAlign: "center" }
+                        }
+                      },
+                      {
+                        fieldName: "leave_level3",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Leave L3" }} />
+                        ),
+
+                        others: {
+                          maxWidth: 150,
+                          resizable: false,
+                          style: { textAlign: "center" }
+                        }
+                      },
+
+                      {
+                        fieldName: "loan_level1",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Loan L1" }} />
+                        ),
+                        others: {
+                          maxWidth: 120,
+                          resizable: false,
+                          style: { textAlign: "center" }
+                        }
+                      },
+                      {
+                        fieldName: "loan_level2",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Loan L2" }} />
+                        ),
+                        others: {
+                          maxWidth: 150,
+                          resizable: false,
+                          style: { textAlign: "center", wordBreak: "break-all" }
+                        }
+                      }
+                    ]}
+                    keyId="service_code"
+                    dataSource={{
+                      data: this.state.employees_list
+                    }}
+                    // filter={true}
+                    paging={{ page: 0, rowsPerPage: 50 }}
+                  />
                 </div>
               </div>
             </div>
           </div>
         </div>
-
-        {/* row end here*/}
       </div>
     );
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    employee_data: state.employee_data
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      getProviderDetails: AlgaehActions
+    },
+    dispatch
+  );
+}
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(AuthorizationSetup)
+);

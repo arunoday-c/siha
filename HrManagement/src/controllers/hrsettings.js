@@ -15,7 +15,8 @@ import {
   updateDocumentType,
   getProjects,
   addProject,
-  updateProjects
+  updateProjects,
+  getEmployeeAuthorizationSetup
 } from "../models/hrsettings";
 export default () => {
   const api = Router();
@@ -25,6 +26,17 @@ export default () => {
       records: req.records
     });
   });
+
+  api.get(
+    "/getEmployeeAuthorizationSetup",
+    getEmployeeAuthorizationSetup,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
 
   api.post("/addEmployeeGroups", addEmployeeGroups, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({

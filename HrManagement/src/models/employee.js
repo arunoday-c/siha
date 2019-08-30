@@ -69,6 +69,15 @@ module.exports = {
             " and sub_department_id='" + req.query.sub_department_id + "'";
         }
 
+        if (req.query.department_id != null) {
+          _strAppend +=
+            " and SD.department_id='" + req.query.department_id + "'";
+        }
+
+        if (req.query.designation_id != null) {
+          _strAppend +=
+            " and E.employee_designation_id='" + req.query.designation_id + "'";
+        }
         utilities.logger().log("Query: ", _strAppend);
         _mysql
           .executeQuery({
