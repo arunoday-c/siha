@@ -2520,6 +2520,23 @@ const HR_Payroll_Reports = [
           {
             className: "col-2",
             type: "dropdown",
+            name: "designation_id",
+            initialLoad: true,
+            isImp: false,
+            label: "designation",
+            link: {
+              uri: "/hrsettings/getDesignations",
+              module: "hrManagement"
+            },
+            dataSource: {
+              textField: "designation",
+              valueField: "hims_d_designation_id",
+              data: undefined
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
             name: "project_id",
             initialLoad: true,
             label: "Project",
@@ -2534,6 +2551,22 @@ const HR_Payroll_Reports = [
             // events: {
             //   onChange: (reportState, currentValue) => {}
             // }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "employee_group_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Employee Group",
+            link: {
+              uri: "/hrsettings/getEmployeeGroups",
+              module: "hrManagement"
+            },
+            dataSource: {
+              textField: "group_description",
+              valueField: "hims_d_employee_group_id"
+            }
           }
         ]
       }

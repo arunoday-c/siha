@@ -2,7 +2,7 @@
 
 <body>
     <div class="print-body">
-        <section>
+        {{!-- <section>
             <table class="tableForLabel" cell-padding="0">
                 <tr>
                     <td><label class="textEnLft">Branch</label>:<span class="valueText">{{hospital_name}}</span></td>
@@ -14,7 +14,7 @@
             </table>
 
 
-        </section>
+        </section> --}}
         <section>
             <table class="tableForData" cell-padding="0">
                 <thead>
@@ -23,6 +23,8 @@
                         <th>Employee Code</th>
                         <th>Employee Name</th>
                         <th>Nationality</th>
+                        <th>Working Days</th>
+                        <th>Present Days</th>
                         <th>Advance Due</th>
                         <th>Loan Due Amt</th>
                         <th>Total Earnings</th>
@@ -34,17 +36,33 @@
 
                     {{#hasElement details}}
                     {{#each details}}
+                    <tr style="border-top:2px dashed #000">
+                        <td colspan="11" class="tableSubHdg">Department: {{department_name}}
+                            <span class="textFloatRight">Total No Employees: <b>{{dep_no_employee}}</b></span>
+                        </td>
+                    </tr>
+
+                    {{#each sub_dept}}
+                    <tr style="border-top:2px dashed #000">
+                        <td colspan="11" class="tableSubHdg2">Sub Department: {{sub_department_name}}
+                            <span class="textFloatRight">Total No Employees: <b>{{sub_no_employee}}</b></span>
+                        </td>
+                    </tr>
+
+                    {{#each employees}}
                     <tr>
                         <td>{{inc @index}}</td>
                         <td>{{employee_code}}</td>
                         <td>{{employee_name}}</td>
                         <td>{{nationality}}</td>
+                        <td>{{working_days}}</td>
+                        <td>{{present_days}}</td>
                         <td>{{advance_due}}</td>
                         <td>{{loan_due_amount}}</td>
                         <td>{{total_earnings}}</td>
                         <td>{{total_deductions}}</td>
                     </tr>
-                    {{/each }}
+                    {{/each }}{{/each }}{{/each }}
 
 
                     {{else}}
