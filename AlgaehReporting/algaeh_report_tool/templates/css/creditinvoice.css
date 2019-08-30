@@ -80,6 +80,23 @@ body {
   font-weight: normal;
 }
 
+.print-body .tableForData .tableSubHdg0 {
+  font-weight: bold;
+  background: #ffe3a6;
+  border-bottom: 1px dotted #fff8d2;
+  padding: 5px 3px;
+  text-align: left;
+}
+
+.tableSubHdg0 span.textFloatRight {
+  font-weight: normal;
+  text-align: right;
+  float: right;
+  border-left: 1px solid #ccc;
+  padding-left: 3px;
+  margin-right: 3px;
+}
+
 .print-body .tableForData .tableSubHdg2 {
   background: #fffff5;
   border-bottom: 1px dotted #979797;
@@ -374,4 +391,12 @@ body {
   margin: 0;
   padding: 0;
   font-size: 10px;
+}
+.labelBlock label {
+  display: block;
+  text-transform: uppercase;
+  width: 100%;
+}
+.labelBlock .valueText {
+  margin: 0;
 }
