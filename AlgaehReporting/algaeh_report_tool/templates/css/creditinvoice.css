@@ -80,6 +80,23 @@ body {
   font-weight: normal;
 }
 
+.print-body .tableForData .tableSubHdgFirst {
+  font-weight: bold;
+  background: #ffc7a6;
+  border-bottom: 1px dotted #ffc7a6;
+  padding: 5px 3px;
+  text-align: left;
+}
+
+.tableSubHdgFirst span.textFloatRight {
+  font-weight: normal;
+  text-align: right;
+  float: right;
+  border-left: 1px solid #ccc;
+  padding-left: 3px;
+  margin-right: 3px;
+}
+
 .print-body .tableForData .tableSubHdg0 {
   font-weight: bold;
   background: #ffe3a6;

@@ -30,11 +30,15 @@ const executePDF = function executePDFMethod(options) {
         strData += " and E.employee_group_id=" + input.employee_group_id;
       }
 
+      if (input.designation_id > 0) {
+        strData += " and E.employee_designation_id=" + input.designation_id;
+      }
+
       options.mysql
         .executeQuery({
           query: `select hims_f_project_wise_payroll_id,
           employee_id,E.employee_code,E.full_name,d.hims_d_designation_id,d.designation,project_id,
-          concat( COALESCE(worked_hours,0)  ,',',right( concat( '0', (worked_minutes%60)),2))  as complete_hours,
+          concat( COALESCE(worked_hours,0)  ,'.',right( concat( '0', (worked_minutes%60)),2))  as complete_hours,
           P.project_code,P.project_desc,month,year,(worked_hours) as worked_hours,(worked_minutes) as worked_minutes,
           (cost) as project_cost,PWP.hospital_id,SD.hims_d_sub_department_id,SD.sub_department_name,DP.hims_d_department_id,
           DP.department_name ,EG.group_description from hims_f_project_wise_payroll PWP inner join hims_d_employee  E on
