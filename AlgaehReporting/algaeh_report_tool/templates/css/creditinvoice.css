@@ -392,3 +392,11 @@ body {
   padding: 0;
   font-size: 10px;
 }
+.labelBlock label {
+  display: block;
+  text-transform: uppercase;
+  width: 100%;
+}
+.labelBlock .valueText {
+  margin: 0;
+}
