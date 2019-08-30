@@ -709,18 +709,30 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "leave_auth",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS select E.hims_d_employee_id,E.employee_code,E.full_name,SD.sub_department_name,D.department_name,\
+          "select SQL_CALC_FOUND_ROWS E.hims_d_employee_id,E.employee_code,E.full_name,SD.sub_department_name,D.department_name,\
           R.loan_authorize_privilege,R.leave_authorize_privilege from algaeh_m_role_user_mappings RUM \
           left join algaeh_d_app_user U on RUM.user_id=U.algaeh_d_app_user_id\
           left join algaeh_d_app_roles R on RUM.role_id=R.app_d_app_roles_id\
           left join hims_d_employee E on U.employee_id=E.hims_d_employee_id\
           left join hims_d_sub_department SD on  E.sub_department_id=SD.hims_d_sub_department_id\
           left join hims_d_department D on SD.department_id=D.hims_d_department_id\
-          where E.hospital_id=" +
-          hospitalId +
-          " and E.record_status='A'  and leave_authorize_privilege=?",
+          where E.record_status='A'  and leave_authorize_privilege=?",
         orderBy: " hims_d_employee_id ",
         inputSequence: ["leave_authorize_privilege"]
+      },
+      {
+        searchName: "loan_auth",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS E.hims_d_employee_id,E.employee_code,E.full_name,SD.sub_department_name,D.department_name,\
+          R.loan_authorize_privilege,R.leave_authorize_privilege from algaeh_m_role_user_mappings RUM \
+          left join algaeh_d_app_user U on RUM.user_id=U.algaeh_d_app_user_id\
+          left join algaeh_d_app_roles R on RUM.role_id=R.app_d_app_roles_id\
+          left join hims_d_employee E on U.employee_id=E.hims_d_employee_id\
+          left join hims_d_sub_department SD on  E.sub_department_id=SD.hims_d_sub_department_id\
+          left join hims_d_department D on SD.department_id=D.hims_d_department_id\
+          where E.record_status='A'  and loan_authorize_privilege=?",
+        orderBy: " hims_d_employee_id ",
+        inputSequence: ["loan_authorize_privilege"]
       }
     ]
   };

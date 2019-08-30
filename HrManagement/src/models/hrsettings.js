@@ -512,5 +512,49 @@ where E.sub_department_id=${
     } catch (e) {
       next(e);
     }
+  },
+  getEmployeeAuthorizationSetup: (req, res, next) => {
+    try {
+      const _mysql = new algaehMysql();
+      let _strAppend = "";
+      if (req.query.sub_department_id != null) {
+        _strAppend +=
+          " and E.sub_department_id='" + req.query.sub_department_id + "'";
+      }
+
+      if (req.query.department_id != null) {
+        _strAppend += " and SD.department_id='" + req.query.department_id + "'";
+      }
+
+      if (req.query.designation_id != null) {
+        _strAppend +=
+          " and E.employee_designation_id='" + req.query.designation_id + "'";
+      }
+
+      _mysql
+        .executeQuery({
+          query:
+            "select E.employee_code, E.full_name, DE.designation,D.department_name, SD.sub_department_name, AUS.employee_id, \
+              AUS.leave_level1, AUS.leave_level2, AUS.leave_level3, AUS.loan_level1, AUS.loan_level2, E.reporting_to_id\
+              from hims_d_employee E\
+              left join hims_d_authorization_setup AUS on AUS.employee_id = E.hims_d_employee_id\
+              left join hims_d_sub_department SD on E.sub_department_id = SD.hims_d_sub_department_id \
+              left join hims_d_department D on SD.department_id = D.hims_d_department_id \
+              left join hims_d_designation DE on E.employee_designation_id = DE.hims_d_designation_id\
+              where E.record_status='A' " +
+            _strAppend,
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(e => {
+          next(e);
+        });
+    } catch (e) {
+      next(e);
+    }
   }
 };
