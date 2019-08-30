@@ -122,7 +122,9 @@ const executePDF = function executePDFMethod(options) {
 
               outputArray.push({
                 designation: desig[0]["designation"],
-                projects: projectsArray
+                projects: projectsArray,
+                no_projects: projectWise.length,
+                no_employees: desig.length
               });
             });
 
