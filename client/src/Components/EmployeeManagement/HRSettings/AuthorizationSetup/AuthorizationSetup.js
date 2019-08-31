@@ -103,7 +103,7 @@ class AuthorizationSetup extends Component {
         <div className="col-12">
           <div className="row inner-top-search FilterCompnentDiv">
             <AlagehAutoComplete
-              div={{ className: "col-2 form-group mandatory" }}
+              div={{ className: "col-3 form-group mandatory" }}
               label={{ forceLabel: "Department", isImp: true }}
               selector={{
                 name: "department_id",
@@ -128,7 +128,7 @@ class AuthorizationSetup extends Component {
             />
 
             <AlagehAutoComplete
-              div={{ className: "col-2 form-group" }}
+              div={{ className: "col-3 form-group" }}
               label={{ forceLabel: "Sub Deptartment" }}
               selector={{
                 name: "sub_department_id",
@@ -151,7 +151,7 @@ class AuthorizationSetup extends Component {
             />
 
             <AlagehAutoComplete
-              div={{ className: "col-2 form-group" }}
+              div={{ className: "col-3 form-group" }}
               label={{ forceLabel: "Designation" }}
               selector={{
                 name: "designation_id",
@@ -171,7 +171,7 @@ class AuthorizationSetup extends Component {
               }}
             />
 
-            <div className="col-1 form-group">
+            <div className="colform-group" style={{ paddingTop: 19 }}>
               <button
                 onClick={this.loadEmployees.bind(this)}
                 style={{ marginLeft: 10, float: "right" }}
@@ -182,9 +182,7 @@ class AuthorizationSetup extends Component {
                 ) : (
                   <i className="fas fa-spinner fa-spin" />
                 )}
-              </button>
-            </div>
-            <div className="col-1 form-group">
+              </button>{" "}
               <button
                 onClick={this.clearState.bind(this)}
                 style={{ float: "right" }}
@@ -194,13 +192,19 @@ class AuthorizationSetup extends Component {
               </button>
             </div>
           </div>
+        </div>
 
+        <div className="col-6">
           <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
+            <div className="portlet-title">
+              <div className="caption">
+                <h3 className="caption-subject">Leave Authorization</h3>
+              </div>
+            </div>
             <div className="portlet-body">
               <div className="row">
-                <label> Leave </label>
                 <div
-                  className="col-6 customRadio"
+                  className="col-5 customRadio"
                   style={{ paddingTop: 24, borderBottom: "none" }}
                 >
                   <label className="radio inline">
@@ -246,7 +250,7 @@ class AuthorizationSetup extends Component {
                 </div>
 
                 <AlgaehAutoSearch
-                  div={{ className: "col-12 form-group" }}
+                  div={{ className: "col" }}
                   label={{
                     forceLabel: "Employee",
                     isImp: true
@@ -285,7 +289,7 @@ class AuthorizationSetup extends Component {
                   }}
                 />
 
-                <div className="col-1 form-group">
+                <div className="col-2" style={{ paddingTop: 19 }}>
                   <button
                     onClick={this.processLeaveLevel.bind(this)}
                     style={{ marginLeft: 10, float: "right" }}
@@ -293,16 +297,29 @@ class AuthorizationSetup extends Component {
                     disabled={this.state.processBtn}
                   >
                     {!this.state.loading ? (
-                      <span>Leave Auth</span>
+                      <span>Assign</span>
                     ) : (
                       <i className="fas fa-spinner fa-spin" />
                     )}
                   </button>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-                <label> Loan </label>
+        <div className="col-6">
+          {" "}
+          <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
+            <div className="portlet-title">
+              <div className="caption">
+                <h3 className="caption-subject">Loan Authorization</h3>
+              </div>
+            </div>
+            <div className="portlet-body">
+              <div className="row">
                 <div
-                  className="col-6 customRadio"
+                  className="col-5 customRadio"
                   style={{ paddingTop: 24, borderBottom: "none" }}
                 >
                   <label className="radio inline">
@@ -334,7 +351,7 @@ class AuthorizationSetup extends Component {
                 </div>
 
                 <AlgaehAutoSearch
-                  div={{ className: "col-12 form-group" }}
+                  div={{ className: "col" }}
                   label={{
                     forceLabel: "Employee",
                     isImp: true
@@ -372,106 +389,7 @@ class AuthorizationSetup extends Component {
                     });
                   }}
                 />
-                {/*<AlagehAutoComplete
-                  div={{ className: "col-2 form-group" }}
-                  label={{ forceLabel: "Leave L1" }}
-                  selector={{
-                    name: "designation_id",
-                    value: this.state.designation_id,
-                    className: "select-fld",
-                    dataSource: {
-                      textField: "designation",
-                      valueField: "hims_d_designation_id",
-                      data: this.state.designations
-                    },
-                    onChange: this.dropDownHandler.bind(this)
-                  }}
-                />
-                {this.state.leave_level >= 2 ? (
-                  <AlagehAutoComplete
-                    div={{ className: "col-2 form-group" }}
-                    label={{ forceLabel: "Leave L2" }}
-                    selector={{
-                      name: "designation_id",
-                      value: this.state.designation_id,
-                      className: "select-fld",
-                      dataSource: {
-                        textField: "designation",
-                        valueField: "hims_d_designation_id",
-                        data: this.state.designations
-                      },
-                      onChange: this.dropDownHandler.bind(this)
-                    }}
-                  />
-                ) : null}
-                {this.state.leave_level >= 3 ? (
-                  <AlagehAutoComplete
-                    div={{ className: "col-2 form-group" }}
-                    label={{ forceLabel: "Leave L3" }}
-                    selector={{
-                      name: "designation_id",
-                      value: this.state.designation_id,
-                      className: "select-fld",
-                      dataSource: {
-                        textField: "designation",
-                        valueField: "hims_d_designation_id",
-                        data: this.state.designations
-                      },
-                      onChange: this.dropDownHandler.bind(this)
-                    }}
-                  />
-                ) : null}
-
-                <AlagehAutoComplete
-                  div={{ className: "col-2 form-group" }}
-                  label={{ forceLabel: "Loan L1" }}
-                  selector={{
-                    name: "designation_id",
-                    value: this.state.designation_id,
-                    className: "select-fld",
-                    dataSource: {
-                      textField: "designation",
-                      valueField: "hims_d_designation_id",
-                      data: this.state.designations
-                    },
-                    onChange: this.dropDownHandler.bind(this)
-                  }}
-                />
-                {this.state.loan_level >= 2 ? (
-                  <AlagehAutoComplete
-                    div={{ className: "col-2 form-group" }}
-                    label={{ forceLabel: "Loan L2" }}
-                    selector={{
-                      name: "designation_id",
-                      value: this.state.designation_id,
-                      className: "select-fld",
-                      dataSource: {
-                        textField: "designation",
-                        valueField: "hims_d_designation_id",
-                        data: this.state.designations
-                      },
-                      onChange: this.dropDownHandler.bind(this)
-                    }}
-                  />
-                ) : null}
-                {this.state.loan_level >= 3 ? (
-                  <AlagehAutoComplete
-                    div={{ className: "col-2 form-group" }}
-                    label={{ forceLabel: "Loan L3" }}
-                    selector={{
-                      name: "designation_id",
-                      value: this.state.designation_id,
-                      className: "select-fld",
-                      dataSource: {
-                        textField: "designation",
-                        valueField: "hims_d_designation_id",
-                        data: this.state.designations
-                      },
-                      onChange: this.dropDownHandler.bind(this)
-                    }}
-                  />
-                ) : null}*/}
-                <div className="col-1 form-group">
+                <div className="col-2" style={{ paddingTop: 19 }}>
                   <button
                     onClick={this.processLoanAuth.bind(this)}
                     style={{ marginLeft: 10, float: "right" }}
@@ -479,7 +397,7 @@ class AuthorizationSetup extends Component {
                     disabled={this.state.processBtn}
                   >
                     {!this.state.loading ? (
-                      <span>Loan Auth</span>
+                      <span>Assign</span>
                     ) : (
                       <i className="fas fa-spinner fa-spin" />
                     )}
@@ -488,7 +406,8 @@ class AuthorizationSetup extends Component {
               </div>
             </div>
           </div>
-
+        </div>
+        <div className="col-12">
           <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
             <div className="portlet-body">
               <div className="customCheckbox">
@@ -504,7 +423,7 @@ class AuthorizationSetup extends Component {
                 </label>
               </div>
               <div className="row">
-                <div className="col-lg-12" id="employeeIndexGrid">
+                <div className="col-lg-12" id="employeeAuthGrid_Cntr">
                   <AlgaehDataGrid
                     id="employee_auth_grid"
                     columns={[

@@ -32,3 +32,6 @@
         padding: 0;
         margin: 0;
         font-size: 0.8rem; }
+
+#employeeAuthGrid_Cntr .ReactTable {
+  max-height: 39vh !important; }
