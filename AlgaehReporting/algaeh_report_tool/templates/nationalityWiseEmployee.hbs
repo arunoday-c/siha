@@ -16,8 +16,8 @@
         </section>
         <section>
             <table class="tableForData" cell-padding="0">
-                <thead>
-                    <tr>
+                <thead >
+
                     <tr>
                         <th>Sl No.</th>
                         <th>Employee Code</th>
@@ -32,14 +32,16 @@
                         <th>Emp. Status</th>
 
                     </tr>
-                    </tr>
+
                 </thead>
                 <tbody>
                     {{#hasElement result}}
 
                     {{#each result}}
                     <tr>
-                        <td colspan="11" class="tableSubHdg">Nationality: {{nationality}}
+                        <td colspan="11"
+                        excelfill='{"type":"pattern","pattern":"solid","fgColor":{"argb":"CDF4EF"},"bgColor":{"argb":"747474"}}'
+                         class="tableSubHdg">Nationality: {{nationality}}
                             <span class="textFloatRight">No
                                 Employees: {{no_employee}}</span>
 
