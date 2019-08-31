@@ -298,6 +298,18 @@ class EmployeeMasterIndex extends Component {
                       }
                     },
                     {
+                      fieldName: "nationality",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Nationality" }} />
+                      ),
+
+                      others: {
+                        maxWidth: 150,
+                        resizable: false,
+                        style: { textAlign: "center" }
+                      }
+                    },
+                    {
                       fieldName: "religion_name",
                       label: <AlgaehLabel label={{ forceLabel: "Religion" }} />,
 
