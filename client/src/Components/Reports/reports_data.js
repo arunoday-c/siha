@@ -540,6 +540,7 @@ const HR_Payroll_Reports = [
         subitem: "Employee - Dept/Sub Dept Wise",
         reportName: "staffListReport",
         requireIframe: true,
+        pageSize: "A3",
         pageOrentation: "landscape",
         reportParameters: [
           {
@@ -798,6 +799,7 @@ const HR_Payroll_Reports = [
         subitem: "Employee - Gender Wise",
         reportName: "genderWiseEmployee",
         requireIframe: true,
+        pageSize: "A3",
         pageOrentation: "landscape",
         reportParameters: [
           {
@@ -905,6 +907,7 @@ const HR_Payroll_Reports = [
         subitem: "Employee - Nationality Wise",
         reportName: "nationalityWiseEmployee",
         requireIframe: true,
+        pageSize: "A3",
         pageOrentation: "landscape",
         reportParameters: [
           {
@@ -1014,6 +1017,7 @@ const HR_Payroll_Reports = [
         subitem: "Employee - Religion Wise",
         reportName: "religionWiseEmployee",
         requireIframe: true,
+        pageSize: "A3",
         pageOrentation: "landscape",
         reportParameters: [
           {
@@ -1123,6 +1127,7 @@ const HR_Payroll_Reports = [
         subitem: "Employee - Designation Wise",
         reportName: "designationWiseEmployee",
         requireIframe: true,
+        pageSize: "A3",
         pageOrentation: "landscape",
         reportParameters: [
           {
@@ -1233,6 +1238,7 @@ const HR_Payroll_Reports = [
         subitem: "Employee - New Joinee Month Wise",
         reportName: "newJoiningEmployee",
         requireIframe: true,
+        pageSize: "A3",
         pageOrentation: "landscape",
         reportParameters: [
           {
@@ -1509,6 +1515,8 @@ const HR_Payroll_Reports = [
         subitem: "Salary Statement",
         reportName: "salaryStatementPayroll",
         requireIframe: true,
+        pageSize: "A3",
+        pageOrentation: "landscape",
         reportParameters: [
           {
             className: "col-2",
@@ -1618,7 +1626,7 @@ const HR_Payroll_Reports = [
         subitem: "Leave Accrual",
         reportName: "leaveAccuralPayroll",
         requireIframe: true,
-        pageSize: "A4",
+        pageSize: "A3",
         pageOrentation: "landscape", //"portrait",
         input: "sub_department_id=?",
         reportParameters: [
@@ -1731,7 +1739,8 @@ const HR_Payroll_Reports = [
         reportName: "gratuityProvisionStatementPayroll",
         input: "sub_department_id=?",
         requireIframe: true,
-
+        pageSize: "A3",
+        pageOrentation: "landscape",
         reportParameters: [
           {
             className: "col-2",
@@ -1938,7 +1947,7 @@ const HR_Payroll_Reports = [
         subitem: "Employee Loan report",
         reportName: "EmployeeLoanReport",
         requireIframe: true,
-        pageSize: "A4",
+        pageSize: "A3",
         pageOrentation: "landscape", //"portrait",
         reportParameters: [
           {
@@ -2315,13 +2324,14 @@ const HR_Payroll_Reports = [
         // module: "hrManagement",
         reportName: "projectWisePayroll",
         requireIframe: true,
+        pageSize: "A3",
         pageOrentation: "landscape",
         reportParameters: [
           {
             className: "col-2",
             type: "dropdown",
             name: "year",
-            isImp: false,
+            isImp: true,
             initialLoad: true,
             value: moment().year(),
             dataSource: {
@@ -2338,7 +2348,7 @@ const HR_Payroll_Reports = [
             type: "dropdown",
             sort: "off",
             name: "month",
-            isImp: false,
+            isImp: true,
             initialLoad: true,
             value: moment().format("M"),
             dataSource: {
@@ -2436,6 +2446,22 @@ const HR_Payroll_Reports = [
             // events: {
             //   onChange: (reportState, currentValue) => {}
             // }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "employee_group_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Employee Group",
+            link: {
+              uri: "/hrsettings/getEmployeeGroups",
+              module: "hrManagement"
+            },
+            dataSource: {
+              textField: "group_description",
+              valueField: "hims_d_employee_group_id"
+            }
           }
         ]
       },
@@ -2447,13 +2473,14 @@ const HR_Payroll_Reports = [
         // module: "hrManagement",
         reportName: "designationProjectWisePayroll",
         requireIframe: true,
+        pageSize: "A3",
         pageOrentation: "landscape",
         reportParameters: [
           {
             className: "col-2",
             type: "dropdown",
             name: "year",
-            isImp: false,
+            isImp: true,
             initialLoad: true,
             value: moment().year(),
             dataSource: {
@@ -2470,7 +2497,7 @@ const HR_Payroll_Reports = [
             type: "dropdown",
             sort: "off",
             name: "month",
-            isImp: false,
+            isImp: true,
             initialLoad: true,
             value: moment().format("M"),
             dataSource: {
@@ -2482,6 +2509,24 @@ const HR_Payroll_Reports = [
               sort: "off"
             }
           },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "branch",
+            link: {
+              uri: "/organization/getOrganization"
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            }
+          },
+
           {
             className: "col-2",
             type: "dropdown",
@@ -2516,6 +2561,22 @@ const HR_Payroll_Reports = [
             // events: {
             //   onChange: (reportState, currentValue) => {}
             // }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "employee_group_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Employee Group",
+            link: {
+              uri: "/hrsettings/getEmployeeGroups",
+              module: "hrManagement"
+            },
+            dataSource: {
+              textField: "group_description",
+              valueField: "hims_d_employee_group_id"
+            }
           }
         ]
       }

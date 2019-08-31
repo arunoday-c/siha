@@ -112,6 +112,17 @@ const AddEarnComponent = ($this, e) => {
     alertTypeIcon: "warning",
     querySelector: "data-validate='EarnComponent'",
     onSuccess: () => {
+      if (
+        $this.state.earn_calculation_method === "FO" &&
+        $this.state.earn_formula === null
+      ) {
+        swalMessage({
+          title:
+            "Selected component is Formula based, but in master Formula not defined, Please contact ADMIN.",
+          type: "warning"
+        });
+        return;
+      }
       let earningComponents = $this.state.earningComponents;
       let insertearnComp = $this.state.insertearnComp;
 
@@ -769,6 +780,7 @@ const CalculateBasedonFormula = $this => {
 
   if (earn_comp.length > 0) {
     for (let x = 0; x < earn_comp.length; x++) {
+      debugger;
       let formulaCal = earn_comp[x].formula;
 
       // let strFormula = earn_comp[x].formula;
@@ -793,7 +805,7 @@ const CalculateBasedonFormula = $this => {
       updateearnComp.push(earn_comp[x]);
       if (insertearnComp.length > 0) {
         for (let b = 0; b < insertearnComp.length; b++) {
-          if ((insertearnComp[b].earnings_id = earn_comp[x].earnings_id)) {
+          if (insertearnComp[b].earnings_id === earn_comp[x].earnings_id) {
             insertearnComp[b] = earn_comp[x];
           }
         }
@@ -829,8 +841,8 @@ const CalculateBasedonFormula = $this => {
       if (insertDeductionComp.length > 0) {
         for (let d = 0; d < insertDeductionComp.length; d++) {
           if (
-            (insertDeductionComp[d].deductions_id =
-              deduct_comp[y].deductions_id)
+            insertDeductionComp[d].deductions_id ===
+            deduct_comp[y].deductions_id
           ) {
             insertDeductionComp[d] = deduct_comp[y];
           }
@@ -865,8 +877,8 @@ const CalculateBasedonFormula = $this => {
       if (insertContributeComp.length > 0) {
         for (let f = 0; f < insertContributeComp.length; f++) {
           if (
-            (insertContributeComp[f].contributions_id =
-              contribute_comp[z].contributions_id)
+            insertContributeComp[f].contributions_id ===
+            contribute_comp[z].contributions_id
           ) {
             insertContributeComp[f] = contribute_comp[z];
           }

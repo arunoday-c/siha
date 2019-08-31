@@ -203,6 +203,19 @@ class NewSalaryPayment extends Component {
                                 )
                               },
                               {
+                                fieldName: "employee_code",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Emp. Code"
+                                    }}
+                                  />
+                                ),
+                                others: {
+                                  minWidth: 160
+                                }
+                              },
+                              {
                                 fieldName: "full_name",
 
                                 label: (

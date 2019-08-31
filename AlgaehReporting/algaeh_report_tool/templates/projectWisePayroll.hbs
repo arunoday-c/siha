@@ -3,17 +3,17 @@
 <body>
     <div class="print-body">
 
-        <section>
+        {{!-- <section>
             <table class="tableForLabel" cell-padding="0">
                 <tr>
                     <td><label class="textEnLft">Branch</label>:<span class="valueText">{{hospital_name}}</span></td>
-                    <td><label class="textEnLft">No Employees</label>:<span class="valueText">{{no_employees}}</span>
+                    <td><label class="textEnLft">Total No. Employees</label>:<span
+                            class="valueText">{{no_employees}}</span>
                     </td>
                 </tr>
             </table>
-        </section>
+        </section> --}}
 
-        </section>
         <section>
             <table class="tableForData" cell-padding="0">
                 <thead>
@@ -32,13 +32,10 @@
                     {{#hasElement result}}
                     {{#each result}}
                     <tr>
-                        <td colspan="11" class="tableSubHdg">Projects: {{project_name}}
-                            <span class="textFloatRight">Total No
-                                Employees: <b>{{no_employees}}</b></span><span class="textFloatRight">Total Cost:
-                                <b>{{project_cost}}</b></span>
-
-                            <span class="textFloatRight">No Hours:
-                                <b>{{no_hours}}</b></span>
+                        <td colspan="7" class="tableSubHdg0">Projects: {{project_name}}<span
+                                class="textFloatRight">Total Cost: <b>{{project_cost}}</b></span>
+                            <span class="textFloatRight">No Hours: <b>{{no_hours}}</b></span>
+                            <span class="textFloatRight">Total No Employees: <b>{{no_employees}}</b></span>
                         </td>
                     </tr>
 
@@ -49,14 +46,14 @@
 
                     {{#each dept_Array}}
                     <tr>
-                        <td colspan="11" class="tableSubHdg">Dept. Name: {{department_name}}
+                        <td colspan="7" class="tableSubHdg">Dept. Name: {{department_name}}
                             <span class="textFloatRight">No
                                 Employees: <b>{{dep_no_employee}}</b></span>
                         </td>
                     </tr>
                     {{#each sub_dept}}
                     <tr>
-                        <td colspan="11" class="tableSubHdg2">Sub Dept. Name: {{sub_department_name}} <span
+                        <td colspan="7" class="tableSubHdg2">Sub Dept. Name: {{sub_department_name}} <span
                                 class="textFloatRight">No
                                 Employees: <b>{{sub_no_employee}}</b></span></td>
                     </tr>
@@ -73,7 +70,7 @@
                     {{/each }}{{/each }}{{/each }}{{/each }}
                     {{else}}
                     <tr>
-                        <td colspan="11" class="noResultTextReport">No Records Found</td>
+                        <td colspan="7" class="noResultTextReport">No Records Found</td>
                     </tr>{{/hasElement }}
                 </tbody>
 
@@ -83,56 +80,3 @@
 
     </div>
 </body>
-
-
-{{!-- <section>
-            <table class="tableForData" cell-padding="0">
-                <thead>
-                    <tr>
-                    <tr>
-                        <th>Sl No.</th>
-                        <th>Project Name</th>
-                        <th>Employee Name</th>
-                        <th>Employee Designation</th>
-                        <th>Department</th>
-                        <th>Sub Department</th>
-                        <th>Total Worked Hr</th>
-                        <th>Project Cost</th>
-                    </tr>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#each details}}
-                    <tr>
-                        <td>{{inc @index}}</td>
-                        <td>{{project_desc}}</td>
-                        <td>{{full_name}}</td>
-                        <td>{{designation}}</td>
-                        <td>{{department_name}}</td>
-                        <td>{{sub_department_name}}</td>
-                        <td>{{complete_hours}}</td>
-                        <td>{{project_cost}}</td>
-
-                    </tr>
-                    {{/each }}
-
-                </tbody>
-            </table>
-            <table class="tableTotal">
-                <tr>
-                    <td>No. of Empoyees</td>
-                    <td>{{noEmployees}}</td>
-                    <td>الإجمالي قبل الضريبة المضافة</td>
-                </tr>
-                <tr>
-                    <td>Total Worked Hours</td>
-                    <td>{{total_worked_hours}}</td>
-                    <td>الخصم</td>
-                </tr>
-                <tr class="bold">
-                    <td>Project Total Cost</td>
-                    <td>{{total_cost}}</td>
-                    <td>الصافي بعد الخصم</td>
-                </tr>
-            </table>
-        </section> --}}
