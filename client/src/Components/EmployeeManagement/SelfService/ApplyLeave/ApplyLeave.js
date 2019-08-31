@@ -16,6 +16,7 @@ import {
 } from "../../../../utils/GlobalFunctions";
 import Enumerable from "linq";
 import swal from "sweetalert2";
+import Socket from "../../../../sockets";
 
 class ApplyLeave extends Component {
   constructor(props) {
@@ -39,6 +40,7 @@ class ApplyLeave extends Component {
         AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
       ).hims_d_hospital_id
     };
+    this.leaveSocket = Socket;
     this.getLeaveTypes();
     this.getEmployees();
   }
@@ -422,6 +424,11 @@ class ApplyLeave extends Component {
   }
 
   applyLeave() {
+
+    const { full_name, reporting_to_id } = this.props.empData;
+    const leave_desc = this.state.emp_leaves_data.filter(
+      leave => leave.leave_id === this.state.leave_id
+    );
     AlgaehValidation({
       alertTypeIcon: "warning",
       querySelector: "data-validate='apply-leave-div'",
@@ -452,7 +459,12 @@ class ApplyLeave extends Component {
                 title: "Leave Applied Successfully",
                 type: "success"
               });
-
+              this.leaveSocket.emit("leave_applied", {
+                full_name,
+                reporting_to_id,
+                leave_days: this.state.total_applied_days,
+                leave_type: leave_desc[0].leave_description
+              });
               this.getEmployeeLeaveHistory();
               this.clearState();
             } else if (!res.data.success) {

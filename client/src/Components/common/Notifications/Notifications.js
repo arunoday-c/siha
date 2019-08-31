@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Header, Segment, Portal, Button } from "semantic-ui-react";
-import isEqual from "lodash/isEqual";
+// import isEqual from "lodash/isEqual";
 import alNotification from "../../Wrapper/algaehNotification.js";
 import sockets from "../../../sockets";
 import moment from "moment";
@@ -52,6 +52,14 @@ export default class Notifications extends Component {
         serStr = serStr + service;
       });
       this.addToNotiList(`The following services are ordered: ${serStr}`);
+    });
+
+    this.socket.on("leave_requested", text => {
+      this.addToNotiList(text);
+    });
+
+    this.socket.on("leave_status", text => {
+      this.addToNotiList(text);
     });
   }
 

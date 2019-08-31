@@ -14,7 +14,7 @@ export const io = require("socket.io")(app);
 import { authenticate } from "./socketAuth";
 import appsock from "./appointmentSocket";
 import labsock from "./labSocket";
-
+import selfServiceSocket from "./selfServiceSocket";
 socketAuth(io, {
   authenticate
 });
@@ -41,10 +41,8 @@ io.on("connection", socket => {
     console.log(`${user} connected`);
     userIdentity = utils.decryption(userIdentity);
     console.log(userIdentity);
+    socket.join(userIdentity.employee_id);
     if (moduleList.length !== 0) {
-      if (moduleList.includes("mwb")) {
-        socket.join(userIdentity.employee_id);
-      }
       socket.join(moduleList);
     }
   });
@@ -56,6 +54,7 @@ io.on("connection", socket => {
 
   appsock(socket);
   labsock(socket);
+  selfServiceSocket(socket);
 
   socket.on("disconnect", () => {
     console.log("Client disconnected");
