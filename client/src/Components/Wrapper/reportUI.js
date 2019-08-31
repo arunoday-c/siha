@@ -747,7 +747,19 @@ export default class ReportUI extends Component {
                         classname="btn-primary"
                         onClick={this.generateReport.bind(this, this)}
                         label={{
-                          forceLabel: "  Generate Report",
+                          forceLabel: "  Preview Report",
+                          returnText: true
+                        }}
+                        others={{
+                          reporttype: "pdf"
+                        }}
+                      />
+                      <ButtonType
+                        others={{ style: { float: "right" } }}
+                        classname="btn-default"
+                        onClick={this.generateReport.bind(this, this)}
+                        label={{
+                          forceLabel: "  Download as PDF",
                           returnText: true
                         }}
                         others={{
@@ -757,10 +769,10 @@ export default class ReportUI extends Component {
                       {this.props.options.report.excel === "true" ? (
                         <ButtonType
                           others={{ style: { float: "right" } }}
-                          classname="btn-primary"
+                          classname="btn-default"
                           onClick={this.generateReport.bind(this, this)}
                           label={{
-                            forceLabel: "  Excel Generate",
+                            forceLabel: "  Download as Excel",
                             returnText: true
                           }}
                           others={{
