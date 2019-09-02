@@ -2132,6 +2132,18 @@ module.exports = {
     if (req.query.year > 0 && req.query.employee_id > 0) {
       const _mysql = new algaehMysql();
 
+
+//       query:
+//       "select hims_f_employee_monthly_leave_id, employee_id, year, leave_id, L.leave_code,\
+// L.leave_description,L.leave_type,total_eligible, availed_till_date, close_balance,\
+// E.employee_code ,E.full_name as employee_name,\
+// LD.hims_d_leave_detail_id,LD.employee_type, LD.eligible_days\
+// from hims_f_employee_monthly_leave  ML inner join hims_d_leave L on ML.leave_id=L.hims_d_leave_id       \
+// inner join hims_d_leave_detail LD on L.hims_d_leave_id=LD.leave_header_id\
+// inner join hims_d_employee E on ML.employee_id=E.hims_d_employee_id and E.record_status='A'\
+// and L.record_status='A' where ML.year=? and ML.employee_id=?  and  LD.employee_type=E.employee_type and  (LD.gender=E.sex or LD.gender='BOTH' )\
+//   order by hims_f_employee_monthly_leave_id desc;",
+
       _mysql
         .executeQuery({
           query:
@@ -2142,7 +2154,7 @@ module.exports = {
       from hims_f_employee_monthly_leave  ML inner join hims_d_leave L on ML.leave_id=L.hims_d_leave_id       \
       inner join hims_d_leave_detail LD on L.hims_d_leave_id=LD.leave_header_id\
       inner join hims_d_employee E on ML.employee_id=E.hims_d_employee_id and E.record_status='A'\
-      and L.record_status='A' where ML.year=? and ML.employee_id=?  and  LD.employee_type=E.employee_type and  (LD.gender=E.sex or LD.gender='BOTH' )\
+      and L.record_status='A' where ML.year=? and ML.employee_id=? \
         order by hims_f_employee_monthly_leave_id desc;",
           values: [req.query.year, req.query.employee_id],
           printQuery: false
