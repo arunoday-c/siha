@@ -31,7 +31,7 @@
             </table>
 
         </section>
-        <section style="border:1px solid #ccc; height:85%;">
+        <section style="border:1px solid #ccc;border-bottom:2px dashed #ccc; height:calc(100% - 154px);">
             <table class="tableForData" cell-padding="0" style="width:49.8%;margin-right:0.2%;float:left;">
                 <thead>
                     <tr>
@@ -39,7 +39,7 @@
                         <th style="width: 40%">Amount</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody style="min-height: 200px;">
                     {{#each emp_earnings}}
                     <tr>
                         <td>{{earning_description}}</td>
@@ -59,7 +59,7 @@
                         <th style="width: 40%">Amount</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody style="min-height: 200px;">
 
                     {{#each emp_deductions}}
                     <tr>
@@ -81,7 +81,7 @@
                 </tr>
                 <tr>
                     <td>In Words</td>
-                    <td class="numberFld" colspan="3">{{salary_in_words}}
+                    <td class="numberFld salaryWord" colspan="3">{{salary_in_words}}
                     </td>
                 </tr>
             </table>

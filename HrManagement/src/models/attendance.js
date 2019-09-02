@@ -5401,7 +5401,11 @@ module.exports = {
       next(e);
     }
   },
-  
+
+ 
+
+
+   
 
 //created by irfan:
 getBulkManualTimeSheet: (req, res, next) => {
@@ -5528,7 +5532,7 @@ getBulkManualTimeSheet: (req, res, next) => {
                     input.from_date,
                     input.to_date
                   ],
-                  printQuery: false
+                  printQuery: true
                 })
                 .then(result => {
                   _mysql.releaseConnection();
@@ -5809,6 +5813,19 @@ getBulkManualTimeSheet: (req, res, next) => {
     next(e);
   }
 },
+
+
+
+
+
+
+
+
+
+
+
+
+
   //created by irfan:
   uploadBulkManualTimeSheet: (req, res, next) => {
     const _mysql = new algaehMysql();

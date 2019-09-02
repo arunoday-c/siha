@@ -69,16 +69,25 @@ module.exports = {
             " and sub_department_id='" + req.query.sub_department_id + "'";
         }
 
+        if (req.query.department_id != null) {
+          _strAppend +=
+            " and SD.department_id='" + req.query.department_id + "'";
+        }
+
+        if (req.query.designation_id != null) {
+          _strAppend +=
+            " and E.employee_designation_id='" + req.query.designation_id + "'";
+        }
         utilities.logger().log("Query: ", _strAppend);
         _mysql
           .executeQuery({
             query:
-              "SELECT E.*, hims_d_employee_id as employee_id, SD.sub_department_name, D.department_name,\
+              "SELECT E.*, hims_d_employee_id as employee_id, SD.sub_department_name, D.department_name,N.nationality,\
                 R.religion_name, DE.designation  FROM hims_d_employee E \
                 inner join hims_d_sub_department SD on E.sub_department_id = SD.hims_d_sub_department_id \
                 inner join hims_d_department D on SD.department_id = D.hims_d_department_id \
                 inner join hims_d_religion R on E.religion_id = R.hims_d_religion_id \
-                left join hims_d_designation DE on E.employee_designation_id = DE.hims_d_designation_id WHERE \
+                left join hims_d_designation DE on E.employee_designation_id = DE.hims_d_designation_id left join hims_d_nationality N on N.hims_d_nationality_id = E.nationality WHERE \
                 E.record_status = 'A'  and E.hospital_id =?" +
               _strAppend,
             values: [req.userIdentity.hospital_id],

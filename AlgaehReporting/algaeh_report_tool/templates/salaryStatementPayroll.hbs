@@ -25,6 +25,7 @@
                         <th>Nationality</th>
                         <th>Working Days</th>
                         <th>Present Days</th>
+                        <th>Net Salary</th>
                         <th>Advance Due</th>
                         <th>Loan Due Amt</th>
                         <th>Total Earnings</th>
@@ -55,8 +56,9 @@
                         <td>{{employee_code}}</td>
                         <td>{{employee_name}}</td>
                         <td>{{nationality}}</td>
-                        <td>{{working_days}}</td>
-                        <td>{{present_days}}</td>
+                        <td>{{total_days}}</td>
+                        <td>{{display_present_days}}</td>
+                        <td>{{net_salary}}</td>
                         <td>{{advance_due}}</td>
                         <td>{{loan_due_amount}}</td>
                         <td>{{total_earnings}}</td>
@@ -67,7 +69,7 @@
 
                     {{else}}
                     <tr>
-                        <td colspan="8" class="noResultTextReport">No Records Found</td>
+                        <td colspan="11" class="noResultTextReport">No Records Found</td>
                     </tr>{{/hasElement }}
 
 

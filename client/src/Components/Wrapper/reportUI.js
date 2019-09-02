@@ -253,29 +253,37 @@ export default class ReportUI extends Component {
               loader.setState({
                 loading: false
               });
-
-              let myWindow = window.open(
-                "",
-                "",
-                "width=800,height=500,left=200,top=200,"
-              );
-
-              myWindow.document.title = reportProperties.displayName;
-              myWindow.document.body.style.overflow = "hidden";
-              var divElem = document.createElement("div");
-              divElem.id = "algaeh_frame";
-              divElem.style.width = "100%";
-              divElem.style.height = "100%";
-              var elem = document.createElement("iframe");
-              elem.src = url;
-              elem.style.width = "100%";
-              elem.style.height = "100%";
-              divElem.appendChild(elem);
-              myWindow.document.body.appendChild(divElem);
+              if (report_type === "preview") {
+                let myWindow = window.open(
+                  "",
+                  "",
+                  "width=800,height=500,left=200,top=200,"
+                );
+                myWindow.document.title = reportProperties.displayName;
+                myWindow.document.body.style.overflow = "hidden";
+                var divElem = document.createElement("div");
+                divElem.id = "algaeh_frame";
+                divElem.style.width = "100%";
+                divElem.style.height = "100%";
+                var elem = document.createElement("iframe");
+                elem.src = url;
+                elem.setAttribute("webkitallowfullscreen", true);
+                elem.setAttribute("allowfullscreen", true);
+                elem.style.width = "100%";
+                elem.style.height = "100%";
+                divElem.appendChild(elem);
+                myWindow.document.body.appendChild(divElem);
+              } else {
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = `${that.props.options.report.displayName}.${
+                  report_type === "excel" ? "xlsx" : "pdf"
+                }`;
+                a.click();
+              }
             }
           });
         } else {
-          debugger;
           const _reportQuery =
             this.state.reportQuery !== undefined
               ? this.state.reportQuery
@@ -747,7 +755,19 @@ export default class ReportUI extends Component {
                         classname="btn-primary"
                         onClick={this.generateReport.bind(this, this)}
                         label={{
-                          forceLabel: "  Generate Report",
+                          forceLabel: "  Preview Report",
+                          returnText: true
+                        }}
+                        others={{
+                          reporttype: "preview"
+                        }}
+                      />
+                      <ButtonType
+                        others={{ style: { float: "right" } }}
+                        classname="btn-default"
+                        onClick={this.generateReport.bind(this, this)}
+                        label={{
+                          forceLabel: "  Download as PDF",
                           returnText: true
                         }}
                         others={{
@@ -757,10 +777,10 @@ export default class ReportUI extends Component {
                       {this.props.options.report.excel === "true" ? (
                         <ButtonType
                           others={{ style: { float: "right" } }}
-                          classname="btn-primary"
+                          classname="btn-default"
                           onClick={this.generateReport.bind(this, this)}
                           label={{
-                            forceLabel: "  Excel Generate",
+                            forceLabel: "  Download as Excel",
                             returnText: true
                           }}
                           others={{

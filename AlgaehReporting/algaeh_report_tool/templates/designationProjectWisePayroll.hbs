@@ -32,16 +32,17 @@
                 <tbody>
                     {{#hasElement result}}
                     {{#each result}}
-                    <tr style="border-top:2px dashed #000">
-                        <td colspan="11" class="tableSubHdg">Designation: {{designation}}
-                            <span class="textFloatRight">Total No Employees: <b>{{no_employees}}</b></span>
+                    <tr>
+                        <td colspan="8" class="tableSubHdg0">Designation: {{designation}}
+                            <span class="textFloatRight">Total No Employees: <b>{{no_employees}}</b></span><span
+                                class="textFloatRight">No Projects: <b>{{no_projects}}</b></span>
                         </td>
                     </tr>
                     {{#each projects}}
                     <tr>
-                        <td colspan="11" class="tableSubHdg2">Projects: {{project_name}}
-                            <span class="textFloatRight">No Hours: <b>{{no_hours}}</b></span><span
-                                class="textFloatRight">Total Cost: <b>{{project_cost}}</b></span><span
+                        <td colspan="8" class="tableSubHdg">Projects: {{project_name}}
+                            <span class="textFloatRight">Total Cost: <b>{{project_cost}}</b></span><span
+                                class="textFloatRight">No Hours: <b>{{no_hours}}</b></span><span
                                 class="textFloatRight">Total No Employees: <b>{{no_employees}}</b></span>
                         </td>
                     </tr>
@@ -73,7 +74,7 @@
                     {{/each }}{{/each }}{{/each }}{{/each }}{{/each }}
                     {{else}}
                     <tr>
-                        <td colspan="11" class="noResultTextReport">No Records Found</td>
+                        <td colspan="8" class="noResultTextReport">No Records Found</td>
                     </tr>{{/hasElement }}
                 </tbody>
 

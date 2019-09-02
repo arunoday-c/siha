@@ -8,7 +8,8 @@ import merge from "easy-pdf-merge";
 import hbs from "handlebars";
 import "babel-polyfill";
 import chrome from "algaeh-keys";
-
+import { parse } from "node-html-parser";
+import Excel from "exceljs/modern.browser";
 const chromePath =
   chrome.default.chromePuppeteer != null ? chrome.default.chromePuppeteer : {};
 
@@ -875,33 +876,37 @@ module.exports = {
                 process.cwd(),
                 "algaeh_report_tool/templates"
               );
-              let templatePath = path.join(mainPath, "Excel");
+              // let templatePath = path.join(mainPath, "Excel");
 
               let filePathJs = path.join(
-                templatePath,
+                mainPath,
                 _inputParam.reportName + ".js"
               );
               let excelRun;
-              if (fs.existsSync(filePathJs)) {
-                const { executeExcel } = require(path.join(
-                  templatePath,
-                  _inputParam.reportName + ".js"
-                ));
-                excelRun = executeExcel;
-              } else {
-                filePathJs = path.join(
-                  mainPath,
-                  _inputParam.reportName + ".js"
-                );
-                if (fs.existsSync(filePathJs)) {
-                  const { executePDF } = require(path.join(
-                    mainPath,
-                    _inputParam.reportName + ".js"
-                  ));
-                  excelRun = executePDF;
-                }
-              }
-
+              // if (fs.existsSync(filePathJs)) {
+              //   const { executeExcel } = require(path.join(
+              //     templatePath,
+              //     _inputParam.reportName + ".js"
+              //   ));
+              //   excelRun = executeExcel;
+              // } else {
+              //   filePathJs = path.join(
+              //     mainPath,
+              //     _inputParam.reportName + ".js"
+              //   );
+              //   if (fs.existsSync(filePathJs)) {
+              //     const { executePDF } = require(path.join(
+              //       mainPath,
+              //       _inputParam.reportName + ".js"
+              //     ));
+              //     excelRun = executePDF;
+              //   }
+              // }
+              const { executePDF } = require(path.join(
+                mainPath,
+                _inputParam.reportName + ".js"
+              ));
+              excelRun = executePDF;
               const _input = { hospital_id: req.userIdentity["x-branch"] };
               for (let i = 0; i < _inputParam.reportParams.length; i++) {
                 const _inp = _inputParam.reportParams[i];
@@ -915,47 +920,188 @@ module.exports = {
                 moment: moment,
                 mainData: data[1],
                 result: result
-              }).then(result => {
-                console.log("Result", result);
-                let excelOutput = path.join(
-                  outputFolder,
-                  "out_" + moment().format("YYYYMMDDHHmmss") + ".xlsx"
-                );
-                const fileNameExcel = path.join(
-                  templatePath,
-                  _inputParam.reportName + ".xlsx"
-                );
-                console.log("fileNameExcel", fileNameExcel);
-                fs.readFile(fileNameExcel, function(error, data) {
-                  if (error) {
-                    console.error(error);
-                  } else {
-                    var template = new XlsxTemplate(data);
-                    const dataShow = Array.isArray(result)
-                      ? { data: result }
-                      : result;
-                    for (let s = 0; s < template.sheets.length; s++) {
-                      template.substitute(template.sheets[s]["name"], dataShow);
+              }).then(resultData => {
+                (async () => {
+                  let rawData = await compile(
+                    _inputParam.reportName,
+                    resultData
+                  );
+                  console.log(resultData);
+                  var workbook = new Excel.Workbook();
+                  workbook.creator = "Algaeh technologies private limited";
+                  workbook.lastModifiedBy = _inputParam.reportName;
+                  workbook.created = new Date();
+                  workbook.modified = new Date();
+
+                  var worksheet = workbook.addWorksheet("Report", {
+                    properties: { tabColor: { argb: "FFC0000" } }
+                  });
+                  const logoPath = path.join(
+                    mainPath,
+                    "images",
+                    "clientLogo.png"
+                  );
+                  let companyLogo = workbook.addImage({
+                    filename: logoPath,
+                    extension: "png"
+                  });
+
+                  const document = parse(rawData);
+
+                  function columnToLetter(column) {
+                    var temp,
+                      letter = "";
+                    while (column > 0) {
+                      temp = (column - 1) % 26;
+                      letter = String.fromCharCode(temp + 65) + letter;
+                      column = (column - temp - 1) / 26;
                     }
-
-                    var dataGenerated = template.generate();
-                    fs.outputFileSync(excelOutput, dataGenerated, {
-                      encoding: "binary"
-                    });
-                    res.writeHead(200, {
-                      "content-type":
-                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                      "content-disposition":
-                        "attachment;filename=" + fileNameExcel
-                    });
-                    const _fs = fs.createReadStream(excelOutput);
-                    _fs.on("end", () => {
-                      fs.unlink(excelOutput);
-                    });
-
-                    _fs.pipe(res);
+                    return letter;
                   }
-                });
+
+                  for (let i = 1; i <= 6; i++) {
+                    worksheet.addRow([]);
+                  }
+
+                  document.querySelectorAll("table").forEach(table => {
+                    table.querySelectorAll("thead").forEach(thead => {
+                      let row = [];
+
+                      thead.querySelectorAll("th").forEach(th => {
+                        row.push(th.rawText);
+                      });
+                      worksheet.addRow(row);
+                      var lastRow = worksheet.rowCount;
+                      let headerRow = worksheet.getRow(lastRow);
+                      headerRow.fill = {
+                        type: "pattern",
+                        pattern: "solid",
+                        fgColor: {
+                          argb: "48A897"
+                        }
+                      };
+                      headerRow.font = {
+                        name: "calibri",
+                        family: 4,
+                        size: 12,
+                        bold: true,
+                        color: { argb: "FFFFFF" }
+                      };
+                      headerRow.alignment = {
+                        vertical: "middle",
+                        horizontal: "center"
+                      };
+                      headerRow.eachCell((cell, cellIndex) => {
+                        worksheet.getColumn(cellIndex).width =
+                          cell.value.length < 8 ? 10 : 30;
+                      });
+                    });
+
+                    table.querySelectorAll("tr").forEach((tr, rowIndex) => {
+                      var rowID = worksheet.rowCount + 1;
+                      const itemRow = worksheet.getRow(rowID);
+
+                      tr.querySelectorAll("td").forEach((td, cellIndex) => {
+                        const celllIdx = cellIndex + 1;
+                        const attrs = td.rawAttributes;
+                        const cell = itemRow.getCell(celllIdx);
+
+                        cell.value = td.rawText.replace(/  +/g, " ");
+
+                        if (Object.keys(attrs).length > 0) {
+                          if (attrs.excelfonts !== undefined) {
+                            cell.font = JSON.parse(attrs.excelfonts);
+                          }
+                          if (attrs.excelfill !== undefined) {
+                            console.log(attrs.excelfill);
+                            cell.fill = JSON.parse(attrs.excelfill);
+                          }
+                          if (attrs.colspan !== undefined) {
+                            const fromLetter = columnToLetter(celllIdx);
+                            const endLetter = columnToLetter(attrs.colspan);
+                            const merge = `${fromLetter}${rowID}:${endLetter}${rowID}`;
+                            worksheet.mergeCells(merge);
+                            itemRow.alignment = {
+                              vertical: "middle",
+                              horizontal: "center"
+                            };
+                            if (attrs.excelfonts === undefined) {
+                              cell.font = {
+                                bold: true
+                              };
+                            }
+                          }
+                        }
+                      });
+                    });
+                  });
+                  const allColumns = worksheet.columns.length;
+                  // for (let m = 1; m <= allColumns; m++) {
+                  //   const merdgeCells = `${columnToLetter(m)}1:${columnToLetter(
+                  //     m
+                  //   )}6`;
+                  //   worksheet.mergeCells(merdgeCells);
+                  //
+                  // }
+                  const merge = `A1:${columnToLetter(allColumns)}6`;
+                  worksheet.mergeCells(merge);
+                  worksheet.addImage(companyLogo, "F1:I6");
+
+                  res.setHeader(
+                    "Content-Type",
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                  );
+                  res.setHeader(
+                    "Content-Disposition",
+                    "attachment; filename=" + "Report.xlsx"
+                  );
+                  workbook.xlsx.write(res).then(function(data) {
+                    res.end();
+                    console.log("File write done........");
+                  });
+                })();
+
+                // let excelOutput = path.join(
+                //   outputFolder,
+                //   "out_" + moment().format("YYYYMMDDHHmmss") + ".xlsx"
+                // );
+                // const fileNameExcel = path.join(
+                //   templatePath,
+                //   _inputParam.reportName + ".xlsx"
+                // );
+                //
+                // fs.readFile(fileNameExcel, function(error, data) {
+                //   if (error) {
+                //     console.error(error);
+                //   } else {
+                //     var template = new XlsxTemplate(data);
+                //     const dataShow = Array.isArray(resultData)
+                //       ? { data: resultData }
+                //       : resultData;
+                //     console.log(JSON.stringify(template.Element));
+                //
+                //     for (let s = 0; s < template.sheets.length; s++) {
+                //       template.substitute(template.sheets[s]["id"], dataShow);
+                //     }
+                //
+                //     var dataGenerated = template.generate();
+                //     fs.outputFileSync(excelOutput, dataGenerated, {
+                //       encoding: "binary"
+                //     });
+                //     res.writeHead(200, {
+                //       "content-type":
+                //         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                //       "content-disposition":
+                //         "attachment;filename=" + fileNameExcel
+                //     });
+                //     const _fs = fs.createReadStream(excelOutput);
+                //     _fs.on("end", () => {
+                //       fs.unlink(excelOutput);
+                //     });
+                //
+                //     _fs.pipe(res);
+                //   }
+                // });
               });
             })
             .catch(error => {

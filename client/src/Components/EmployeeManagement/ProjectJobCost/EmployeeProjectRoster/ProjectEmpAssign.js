@@ -18,12 +18,6 @@ class ProjectEmpAssign extends Component {
       projectList: [],
       projects: [],
       projEmp: [],
-      from_date: moment()
-        .startOf("month")
-        .format("YYYY/MM/DD"),
-      to_date: moment()
-        .endOf("month")
-        .format("YYYY/MM/DD"),
       allChecked: false
     };
   }
