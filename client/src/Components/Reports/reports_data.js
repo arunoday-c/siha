@@ -1376,6 +1376,7 @@ const HR_Payroll_Reports = [
   },
   {
     name: "Payroll Reports",
+    excel: "true",
     submenu: [
       {
         subitem: "Leave Reports",

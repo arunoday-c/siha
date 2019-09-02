@@ -45,7 +45,10 @@
                         <td>{{earning_description}}</td>
                         <td class="numberFld">{{earning_amount}}</td>
                     </tr>
-                    {{/each}}
+                    {{/each}}<tr>
+                        <td></td>
+                        <td class="numberFld"></td>
+                    </tr>
                     <tr class="footerTotalDown">
                         <td>Total</td>
                         <td class="numberFld">{{total_earnings}}</td>
@@ -67,6 +70,10 @@
                         <td class="numberFld">{{deduction_amount}}</td>
                     </tr>
                     {{/each}}
+                    <tr>
+                        <td></td>
+                        <td class="numberFld"></td>
+                    </tr>
                     <tr class="footerTotalDown">
                         <td>Total</td>
                         <td class="numberFld">{{total_deductions}}</td>
