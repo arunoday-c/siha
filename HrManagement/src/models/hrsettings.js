@@ -578,7 +578,8 @@ where E.sub_department_id=${req.query.sub_department_id} group by hims_d_designa
               "INSERT INTO hims_d_authorization_setup(??) VALUES ? ON DUPLICATE KEY UPDATE \
                         leave_level1=values(leave_level1),leave_level2=values(leave_level2),\
                         leave_level3=values(leave_level3),loan_level1=values(loan_level1),\
-                        loan_level2=values(loan_level2) ",
+                        loan_level2=values(loan_level2),  updated_date=values(updated_date),\
+                        updated_by=values(updated_by)",
             values: input,
             includeValues: insurtColumns,
             extraValues: {
