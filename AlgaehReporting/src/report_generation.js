@@ -476,6 +476,7 @@ module.exports = {
                         });
                       } else {
                         fs.exists(_reportOutput[0], exists => {
+                          _mysql.releaseConnection();
                           if (exists) {
                             res.writeHead(200, {
                               "content-type": "application/pdf",
@@ -1082,10 +1083,10 @@ module.exports = {
                         f++
                       ) {
                         const item = _inputParam.reportParams[f];
-                        filter += `${item.label}:${item.labelValue} ||`;
+                        filter += `${item.label}:${item.labelValue} || `;
                       }
                     }
-                    console.log("Filter", filter);
+
                     worksheet.getRow(6).getCell(1).value = filter;
                     worksheet.mergeCells(`A6:${columnToLetter(allColumns)}6`);
                     worksheet.getRow(6).font = { bold: true };
@@ -1093,6 +1094,8 @@ module.exports = {
                       vertical: "middle",
                       horizontal: "center"
                     };
+
+                    _mysql.releaseConnection();
                     res.setHeader(
                       "Content-Type",
                       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
