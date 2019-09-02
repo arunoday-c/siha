@@ -40,32 +40,34 @@
                     <tr style="border-top:2px dashed #000">
                         <td colspan="6" excelcellmerge="A:F" class="tableSubHdg">Department: {{department_name}}
                         </td>
-                        <td colspan="5" excelcellmerge="G:K" class="tableSubHdg"><span class="textFloatRight">Total No Employees:
+                        <td colspan="5" excelcellmerge="G:K" class="tableSubHdg"><span class="textFloatRight">Total No
+                                Employees:
                                 <b>{{dep_no_employee}}</b></span></td>
                     </tr>
 
                     {{#each sub_dept}}
                     <tr style="border-top:2px dashed #000">
-                        <td colspan="6" class="tableSubHdg2">Sub Department: {{sub_department_name}}
+                        <td colspan="6" excelcellmerge="A:F" class="tableSubHdg2">Sub Department:
+                            {{sub_department_name}}
                         </td>
-                        <td colspan="5" class="tableSubHdg2"><span class="textFloatRight">Total No Employees:
+                        <td colspan="5" excelcellmerge="G:K" class="tableSubHdg2"><span class="textFloatRight">Total No
+                                Employees:
                                 <b>{{sub_no_employee}}</b></span></td>
                     </tr>
 
                     {{#each employees}}
                     <tr>
-                        <td>{{inc @index}}</td>
-                        <td>{{employee_code}}</td>
-                        <td>{{employee_name}}</td>
-                        <td>{{nationality}}</td>
-                        <td>{{total_days}}</td>
-                        <td>{{display_present_days}}</td>
-                        <td>{{advance_due}}</td>
-                        <td>{{loan_due_amount}}</td>
-                        <td>{{total_earnings}}</td>
-                        <td>{{total_deductions}}</td>
-                        <td excelfonts='{"name":"Arial","size":12,"bold":true}'
-                            excelfill='{"type":"pattern","pattern":"solid","fgColor":{"argb":"FF0000"},"bgColor":{"argb":"cccccc"}}'>
+                        <td excelalignment='{"vertical":"middle","horizontal":"center"}'>{{inc @index}}</td>
+                        <td excelalignment='{"vertical":"middle","horizontal":"center"}'>{{employee_code}}</td>
+                        <td excelalignment='{"vertical":"middle","horizontal":"left"}'>{{employee_name}}</td>
+                        <td excelalignment='{"vertical":"middle","horizontal":"center"}'>{{nationality}}</td>
+                        <td excelalignment='{"vertical":"middle","horizontal":"center"}'>{{total_days}}</td>
+                        <td excelalignment='{"vertical":"middle","horizontal":"center"}'>{{display_present_days}}</td>
+                        <td excelalignment='{"vertical":"middle","horizontal":"right"}'>{{advance_due}}</td>
+                        <td excelalignment='{"vertical":"middle","horizontal":"right"}'>{{loan_due_amount}}</td>
+                        <td excelalignment='{"vertical":"middle","horizontal":"right"}'>{{total_earnings}}</td>
+                        <td excelalignment='{"vertical":"middle","horizontal":"right"}'>{{total_deductions}}</td>
+                        <td excelfonts='{"bold":true}' excelalignment='{"vertical":"middle","horizontal":"right"}'>
                             {{net_salary}}</td>
                     </tr>
                     {{/each }}{{/each }}{{/each }}
@@ -77,7 +79,7 @@
                     </tr>{{/hasElement }}
 
 
-
+                    {{!-- excelfill='{"type":"pattern","pattern":"solid","fgColor":{"argb":"FF0000"},"bgColor":{"argb":"cccccc"}}' --}}
 
                 </tbody>
             </table>
