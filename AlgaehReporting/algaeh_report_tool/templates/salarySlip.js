@@ -78,7 +78,16 @@ const executePDF = function executePDFMethod(options) {
                   employe[0].net_salary,
                   options.args.crypto
                 ),
-                salary_in_words: writtenForm(employe[0].net_salary) + " Only",
+                //writtenForm(employe[0].net_salary) + " Only",
+                salary_in_words:
+                  options.args.crypto.currency_symbol +
+                  " " +
+                  writtenForm(employe[0].net_salary) +
+                  " Only",
+                //   utilities.getCurrencyFormart(
+                //   writtenForm(employe[0].net_salary) + " Only",
+                //   options.args.crypto
+                // ),
                 total_earnings: utilities.getCurrencyFormart(
                   employe[0].total_earnings,
                   options.args.crypto
