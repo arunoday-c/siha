@@ -6,8 +6,10 @@ const executePDF = function executePDFMethod(options) {
   return new Promise(function(resolve, reject) {
     try {
       const _ = options.loadash;
+      const moment = options.moment;
       const utilities = new algaehUtilities();
       let input = options.args.reportParams;
+      const month = moment(input.month, "M").format("MMMM");
       options.mysql
         .executeQuery({
           query: `select hims_f_salary_id ,S.employee_id, S.year,S.month,ED.hims_d_earning_deduction_id as earning_id,

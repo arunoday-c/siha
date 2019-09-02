@@ -21,7 +21,8 @@
                         <th>Sl No.</th>
                         <th>Employee Code</th>
                         <th>Employee Name</th>
-                        <th>Designation</th>
+                        <th>Department</th>
+                        <th>Sub Departemnt</th>
                         <th>Emp. Group</th>
                         <th>Total Worked Hr</th>
                         <th>Project Cost</th>
@@ -32,45 +33,48 @@
                     {{#hasElement result}}
                     {{#each result}}
                     <tr>
-                        <td colspan="11" class="tableSubHdg0">Projects: {{project_name}}
-                            <span class="textFloatRight">No Hours: <b>{{no_hours}}</b></span><span
-                                class="textFloatRight">Total Cost: <b>{{project_cost}}</b></span><span
+                        <td colspan="8" class="tableSubHdg0">Designation: {{designation}}
+                            <span class="textFloatRight">Total No Employees: <b>{{no_employees}}</b></span><span
+                                class="textFloatRight">No Projects: <b>{{no_projects}}</b></span>
+                        </td>
+                    </tr>
+                    {{#each projects}}
+                    <tr>
+                        <td colspan="8" class="tableSubHdg">Projects: {{project_name}}
+                            <span class="textFloatRight">Total Cost: <b>{{project_cost}}</b></span><span
+                                class="textFloatRight">No Hours: <b>{{no_hours}}</b></span><span
                                 class="textFloatRight">Total No Employees: <b>{{no_employees}}</b></span>
                         </td>
                     </tr>
 
-
-
-
-
-
                     {{#each dept_Array}}
-                    <tr>
+                    {{!-- <tr>
                         <td colspan="11" class="tableSubHdg">Dept. Name: {{department_name}}
                             <span class="textFloatRight">No
                                 Employees: <b>{{dep_no_employee}}</b></span>
                         </td>
-                    </tr>
+                    </tr> --}}
                     {{#each sub_dept}}
-                    <tr>
+                    {{!-- <tr>
                         <td colspan="11" class="tableSubHdg2">Sub Dept. Name: {{sub_department_name}} <span
                                 class="textFloatRight">No
                                 Employees: <b>{{sub_no_employee}}</b></span></td>
-                    </tr>
+                    </tr> --}}
                     {{#each employees}}
                     <tr>
                         <td>{{inc @index}}</td>
                         <td>{{employee_code}}</td>
                         <td style="text-align: left;">{{full_name}}</td>
-                        <td>{{designation}}</td>
+                        <td>{{department_name}}</td>
+                        <td>{{sub_department_name}}</td>
                         <td>{{group_description}}</td>
                         <td>{{complete_hours}}</td>
                         <td>{{project_cost}}</td>
                     </tr>
-                    {{/each }}{{/each }}{{/each }}{{/each }}
+                    {{/each }}{{/each }}{{/each }}{{/each }}{{/each }}
                     {{else}}
                     <tr>
-                        <td colspan="11" class="noResultTextReport">No Records Found</td>
+                        <td colspan="8" class="noResultTextReport">No Records Found</td>
                     </tr>{{/hasElement }}
                 </tbody>
 

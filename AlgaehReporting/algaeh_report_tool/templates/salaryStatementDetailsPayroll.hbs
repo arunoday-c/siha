@@ -3,7 +3,7 @@
 <body>
     <div class="print-body">
         {{#hasElement employees}}
-        <section>
+        {{!-- <section>
             <table class="tableForLabel" cell-padding="0">
                 <tr>
                     <td><label class="textEnLft">Branch</label>:<span class="valueText">{{hospital_name}}</span></td>
@@ -15,7 +15,7 @@
             </table>
 
 
-        </section>
+        </section> --}}
         <section>
             <table class="tableForData" cell-padding="0">
                 <thead>
@@ -26,6 +26,9 @@
                         <th>Desgnation</th>
                         <th>Nationality</th>
                         <th>Dep.</th>
+                        <th>Working Days</th>
+                        <th>Present Days</th>
+                        <th>Net Salary</th>
                         {{#hasElement earning_component}}
                         {{#each earning_component}}
                         <th>{{earning_deduction_description}}</th>
@@ -60,6 +63,9 @@
                         <td>{{designation}}</td>
                         <td>{{nationality}}</td>
                         <td>{{sub_department_name}}</td>
+                        <td>{{total_days}}</td>
+                        <td>{{display_present_days}}</td>
+                        <td>{{net_salary}}</td>
                         {{#hasElement ../earning_component}}
                         {{#hasElement employee_earning}}
                         {{#each ../earning_component}}

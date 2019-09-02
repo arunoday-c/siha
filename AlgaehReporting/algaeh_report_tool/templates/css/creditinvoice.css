@@ -76,8 +76,37 @@ body {
   padding: 5px 3px;
   text-align: left;
 }
+
+.tableSubHdg span.textFloatRight {
+  font-weight: normal;
+  text-align: right;
+  float: right;
+  border-left: 1px solid #ccc;
+  padding-left: 3px;
+  margin-right: 3px;
+  font-size: 10px;
+}
+
 .print-body .tableForData .tableSubHdg small {
   font-weight: normal;
+}
+
+.print-body .tableForData .tableSubHdgFirst {
+  font-weight: bold;
+  background: #ffc7a6;
+  border-bottom: 1px dotted #ffc7a6;
+  padding: 5px 3px;
+  text-align: left;
+}
+
+.tableSubHdgFirst span.textFloatRight {
+  font-weight: normal;
+  text-align: right;
+  float: right;
+  border-left: 1px solid #ccc;
+  padding-left: 3px;
+  margin-right: 3px;
+  font-size: 10px;
 }
 
 .print-body .tableForData .tableSubHdg0 {
@@ -95,6 +124,7 @@ body {
   border-left: 1px solid #ccc;
   padding-left: 3px;
   margin-right: 3px;
+  font-size: 10px;
 }
 
 .print-body .tableForData .tableSubHdg2 {
@@ -102,6 +132,16 @@ body {
   border-bottom: 1px dotted #979797;
   padding: 5px 3px;
   text-align: left;
+}
+
+.tableSubHdg2 span.textFloatRight {
+  font-weight: normal;
+  text-align: right;
+  float: right;
+  border-left: 1px solid #ccc;
+  padding-left: 3px;
+  margin-right: 3px;
+  font-size: 10px;
 }
 
 .print-body span.textFloatRight {
@@ -313,13 +353,6 @@ body {
   text-align: left;
 }
 
-.print-body .tableHeaderForData .tableSubHdg {
-  font-weight: 400;
-  background: #f2f2f2;
-  border-bottom: 1px dotted #979797;
-  padding: 5px 3px;
-  text-align: left;
-}
 .print-body .tableHeaderForData .tableSubHdg small {
   font-weight: normal;
 }
@@ -399,4 +432,7 @@ body {
 }
 .labelBlock .valueText {
   margin: 0;
+}
+.salaryWord {
+  text-transform: capitalize;
 }

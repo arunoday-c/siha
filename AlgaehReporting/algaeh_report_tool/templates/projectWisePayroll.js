@@ -1,11 +1,11 @@
-//const algaehUtilities = require("algaeh-utilities/utilities");
+const algaehUtilities = require("algaeh-utilities/utilities");
 
 const executePDF = function executePDFMethod(options) {
   return new Promise(function(resolve, reject) {
     try {
       const _ = options.loadash;
 
-      //  const utilities = new algaehUtilities();
+      const utilities = new algaehUtilities();
 
       let input = {};
       let params = options.args.reportParams;
@@ -34,7 +34,7 @@ const executePDF = function executePDFMethod(options) {
         .executeQuery({
           query: `select hims_f_project_wise_payroll_id,
           employee_id,E.employee_code,E.full_name,d.designation,project_id,
-          concat( COALESCE(worked_hours,0)  ,',',right( concat( '0', (worked_minutes%60)),2))  as complete_hours,
+          concat( COALESCE(worked_hours,0)  ,'.',right( concat( '0', (worked_minutes%60)),2))  as complete_hours,
           P.project_code,P.project_desc,month,year,(worked_hours) as worked_hours,(worked_minutes) as worked_minutes,
           (cost) as project_cost,PWP.hospital_id,SD.hims_d_sub_department_id,SD.sub_department_name,DP.hims_d_department_id,
           DP.department_name ,EG.group_description from hims_f_project_wise_payroll PWP inner join hims_d_employee  E on
@@ -105,6 +105,7 @@ const executePDF = function executePDFMethod(options) {
               });
             });
 
+            utilities.logger().log("outputArray: ", outputArray);
             resolve({
               result: outputArray
             });

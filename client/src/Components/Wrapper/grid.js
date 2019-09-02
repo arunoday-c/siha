@@ -416,6 +416,7 @@ class DataGrid extends Component {
     this.setState({
       isEditable: this.props.isEditable
     });
+    debugger;
     if (this.state.columns.length === 0) {
       if (this.props.columns !== undefined && this.props.columns.length !== 0) {
         let _columns = Enumerable.from(this.props.columns)
@@ -423,7 +424,7 @@ class DataGrid extends Component {
             const _displayTemp =
               s.displayTemplate === undefined
                 ? { accessor: s.fieldName }
-                : { accessor: row => s.displayTemplate(row) };
+                : { accessor: row => s.displayTemplate(row, this.state.data) };
             const _assignClass =
               s.className !== undefined ? row => s.className(row) : "";
             const _disabled =
@@ -606,7 +607,7 @@ class DataGrid extends Component {
             const _displayTemp =
               s.displayTemplate === undefined
                 ? { accessor: s.fieldName }
-                : { accessor: row => s.displayTemplate(row) };
+                : { accessor: row => s.displayTemplate(row, this.state.data) };
             const _assignClass =
               s.className !== undefined ? row => s.className(row) : "";
 
