@@ -21,11 +21,11 @@ exports.default = {
     //  database: "hims_test_db",
     //database: "twareat_live_db",
     //database: "awdesh_db",
-    database: "hrms_shaksy_db",
+    //  database: "hrms_shaksy_db",
     // database: "seco",
     // database: "algaeh_hrms_oman_db",
     //database: "medical_db",
-    //database: "shaksy_live_db",
+    database: "shaksy_live_db",
 
     multipleStatements: true,
     acquireTimeout: 20000,

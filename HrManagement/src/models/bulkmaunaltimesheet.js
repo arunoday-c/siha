@@ -386,14 +386,21 @@ export function excelManualTimeSheetRead(req, res, next) {
   req.on("end", () => {
     const buff = new Buffer.from(buffer, "base64");
     var workbook = new Excel.Workbook();
+
     let filter;
     let excelArray = [];
     let properFile = true;
     workbook.xlsx
       .load(buff)
       .then(() => {
-        console.log("workbook.creator", workbook.creator);
-        if (workbook.creator !== "Algaeh technologies private limited") {
+        var worksheet = workbook.getWorksheet(1);
+
+        let columns = [];
+        const lastRow = worksheet.lastRow;
+
+        try {
+          filter = JSON.parse(lastRow.values[1]);
+        } catch (e) {
           properFile = false;
           next(
             new Error(
@@ -403,14 +410,7 @@ export function excelManualTimeSheetRead(req, res, next) {
           return;
         }
 
-        var worksheet = workbook.getWorksheet(1);
-        //  workbook.eachSheet(function(worksheet, sheetId) {
-
-        let columns = [];
-        const lastRow = worksheet.lastRow;
-        filter = JSON.parse(lastRow.values[1]);
         worksheet.eachRow(function(row, rowNumber) {
-          console.log("rowNumber" + rowNumber);
           if (rowNumber === 1) {
             columns = row.values;
           } else {

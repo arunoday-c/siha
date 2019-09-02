@@ -4,7 +4,11 @@ import {
   successfulMessage,
   AlgaehValidation
 } from "../../utils/GlobalFunctions";
-import { algaehApiCall, cancelRequest } from "../../utils/algaehApiCall";
+import {
+  algaehApiCall,
+  cancelRequest,
+  swalMessage
+} from "../../utils/algaehApiCall";
 import { accessReport } from "../Wrapper/printReports";
 import Enumerable from "linq";
 import ReactDOM from "react-dom";
@@ -190,7 +194,6 @@ export default class ReportUI extends Component {
       pageState: this,
       clickedElement: loader.props,
       onSuccess: that => {
-        debugger;
         const report_type = loader.props.others.reporttype;
         if (
           that.props.options !== undefined &&
@@ -281,6 +284,21 @@ export default class ReportUI extends Component {
                 }`;
                 a.click();
               }
+            },
+            onCatch: error => {
+              loader.setState({
+                loading: false
+              });
+              var reader = new FileReader();
+              reader.onload = function() {
+                //AlgaehLoader({ show: false });
+                const parse = JSON.parse(reader.result);
+                swalMessage({
+                  type: "error",
+                  title: parse !== undefined ? parse.message : parse
+                });
+              };
+              reader.readAsText(error.response.data);
             }
           });
         } else {
