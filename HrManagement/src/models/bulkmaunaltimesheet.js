@@ -392,6 +392,7 @@ export function excelManualTimeSheetRead(req, res, next) {
     workbook.xlsx
       .load(buff)
       .then(() => {
+        console.log("workbook.creator", workbook.creator);
         if (workbook.creator !== "Algaeh technologies private limited") {
           properFile = false;
           next(

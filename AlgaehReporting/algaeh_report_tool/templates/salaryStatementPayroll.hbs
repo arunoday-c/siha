@@ -38,9 +38,9 @@
                     {{#hasElement details}}
                     {{#each details}}
                     <tr style="border-top:2px dashed #000">
-                        <td colspan="6" class="tableSubHdg">Department: {{department_name}}
+                        <td colspan="6" excelcellmerge="A:F" class="tableSubHdg">Department: {{department_name}}
                         </td>
-                        <td colspan="5" class="tableSubHdg"><span class="textFloatRight">Total No Employees:
+                        <td colspan="5" excelcellmerge="G:K" class="tableSubHdg"><span class="textFloatRight">Total No Employees:
                                 <b>{{dep_no_employee}}</b></span></td>
                     </tr>
 

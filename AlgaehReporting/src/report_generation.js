@@ -1016,10 +1016,25 @@ module.exports = {
                             cell.fill = JSON.parse(attrs.excelfill);
                           }
                           if (attrs.colspan !== undefined) {
-                            const fromLetter = columnToLetter(celllIdx);
-                            const endLetter = columnToLetter(attrs.colspan);
-                            const merge = `${fromLetter}${rowID}:${endLetter}${rowID}`;
-                            worksheet.mergeCells(merge);
+                            if (attrs.excelcellmerge !== undefined) {
+                              const _mergeCells = attrs.excelcellmerge.split(
+                                ":"
+                              );
+                              const merge = `${_mergeCells[0]}${rowID}:${
+                                _mergeCells[1]
+                              }${rowID}`;
+                              console.log("merge", merge);
+                              worksheet.mergeCells(merge);
+                            }
+                            // const fromLetter = columnToLetter(celllIdx);
+                            // const endCellIndex =
+                            //   celllIdx + parseInt(attrs.colspan);
+                            //
+                            // const endLetter = columnToLetter(endCellIndex);
+                            //
+                            // const merge = `${fromLetter}${rowID}:${endLetter}${rowID}`;
+                            // console.log("merge", merge);
+                            // worksheet.mergeCells(merge);
                             // itemRow.alignment = {
                             //   vertical: "middle",
                             //   horizontal: "center"
