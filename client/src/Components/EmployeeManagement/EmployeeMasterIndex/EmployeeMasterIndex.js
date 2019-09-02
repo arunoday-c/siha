@@ -298,7 +298,7 @@ class EmployeeMasterIndex extends Component {
                       }
                     },
                     {
-                      fieldName: "nationality",
+                      fieldName: "nationality_name",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Nationality" }} />
                       ),
