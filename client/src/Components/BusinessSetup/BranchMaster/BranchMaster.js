@@ -518,7 +518,7 @@ export default class BranchMaster extends Component {
               <div className="portlet-body">
                 <div className="row">
                   <AlagehFormGroup
-                    div={{ className: "col-6 form-group" }}
+                    div={{ className: "col-6 form-group mandatory" }}
                     label={{
                       forceLabel: "Branch Code",
                       isImp: true
@@ -534,7 +534,7 @@ export default class BranchMaster extends Component {
                     }}
                   />
                   <AlagehFormGroup
-                    div={{ className: "col-12 form-group" }}
+                    div={{ className: "col-12 form-group mandatory" }}
                     label={{
                       forceLabel: "Branch Name",
                       isImp: true
@@ -550,7 +550,7 @@ export default class BranchMaster extends Component {
                     }}
                   />
                   <AlagehAutoComplete
-                    div={{ className: "col-6 form-group" }}
+                    div={{ className: "col-6 form-group mandatory" }}
                     label={{ forceLabel: "Default Country", isImp: true }}
                     selector={{
                       name: "default_country",
@@ -565,7 +565,7 @@ export default class BranchMaster extends Component {
                     }}
                   />
                   <AlagehAutoComplete
-                    div={{ className: "col-6 form-group" }}
+                    div={{ className: "col-6 form-group mandatory" }}
                     label={{ forceLabel: "Default Nationality", isImp: true }}
                     selector={{
                       name: "default_nationality",
@@ -580,7 +580,7 @@ export default class BranchMaster extends Component {
                     }}
                   />
                   <AlagehAutoComplete
-                    div={{ className: "col-6 form-group" }}
+                    div={{ className: "col-6 form-group mandatory" }}
                     label={{ forceLabel: "Default Currency", isImp: true }}
                     selector={{
                       name: "default_currency",
@@ -597,7 +597,7 @@ export default class BranchMaster extends Component {
                   />
 
                   <AlagehAutoComplete
-                    div={{ className: "col-6 form-group" }}
+                    div={{ className: "col-6 form-group mandatory" }}
                     label={{ forceLabel: "Emp. ID Required", isImp: true }}
                     selector={{
                       name: "requied_emp_id",
@@ -670,16 +670,6 @@ export default class BranchMaster extends Component {
                   <div className="col-12" id="branchCompanyList">
                     {this.state.allBranches.map((data, index) => (
                       <div className="row branchEachList" key={index}>
-                        <div className="branchAction">
-                          <i
-                            className="fas fa-pen"
-                            onClick={this.onEditBranch.bind(this, data)}
-                          />
-                          <i
-                            className="fas fa-network-wired"
-                            onClick={this.loadDetails.bind(this, data)}
-                          />
-                        </div>
                         <div className="col-12">
                           <label>Branch Name</label>
                           <h5>{data.hospital_name}</h5>
@@ -707,6 +697,14 @@ export default class BranchMaster extends Component {
                         <div className="col-6">
                           <label>Address</label>
                           <h6>{data.hospital_address}</h6>
+                        </div>
+                        <div className="col-12 branchAction">
+                          <span onClick={this.onEditBranch.bind(this, data)}>
+                            Edit Details
+                          </span>
+                          <span onClick={this.loadDetails.bind(this, data)}>
+                            Map Dept & Sub Dept.
+                          </span>
                         </div>
                       </div>
                     ))}
