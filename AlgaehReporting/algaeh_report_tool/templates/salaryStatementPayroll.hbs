@@ -25,11 +25,11 @@
                         <th>Nationality</th>
                         <th>Working Days</th>
                         <th>Present Days</th>
-                        <th>Net Salary</th>
                         <th>Advance Due</th>
                         <th>Loan Due Amt</th>
                         <th>Total Earnings</th>
                         <th>Total Deductions</th>
+                        <th>Net Salary</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -38,16 +38,18 @@
                     {{#hasElement details}}
                     {{#each details}}
                     <tr style="border-top:2px dashed #000">
-                        <td colspan="11" class="tableSubHdg">Department: {{department_name}}
-                            <span class="textFloatRight">Total No Employees: <b>{{dep_no_employee}}</b></span>
+                        <td colspan="6" class="tableSubHdg">Department: {{department_name}}
                         </td>
+                        <td colspan="5" class="tableSubHdg"><span class="textFloatRight">Total No Employees:
+                                <b>{{dep_no_employee}}</b></span></td>
                     </tr>
 
                     {{#each sub_dept}}
                     <tr style="border-top:2px dashed #000">
-                        <td colspan="11" class="tableSubHdg2">Sub Department: {{sub_department_name}}
-                            <span class="textFloatRight">Total No Employees: <b>{{sub_no_employee}}</b></span>
+                        <td colspan="6" class="tableSubHdg2">Sub Department: {{sub_department_name}}
                         </td>
+                        <td colspan="5" class="tableSubHdg2"><span class="textFloatRight">Total No Employees:
+                                <b>{{sub_no_employee}}</b></span></td>
                     </tr>
 
                     {{#each employees}}
@@ -58,11 +60,13 @@
                         <td>{{nationality}}</td>
                         <td>{{total_days}}</td>
                         <td>{{display_present_days}}</td>
-                        <td>{{net_salary}}</td>
                         <td>{{advance_due}}</td>
                         <td>{{loan_due_amount}}</td>
                         <td>{{total_earnings}}</td>
                         <td>{{total_deductions}}</td>
+                        <td excelfonts='{"name":"Arial","size":12,"bold":true}'
+                            excelfill='{"type":"pattern","pattern":"solid","fgColor":{"argb":"FF0000"},"bgColor":{"argb":"cccccc"}}'>
+                            {{net_salary}}</td>
                     </tr>
                     {{/each }}{{/each }}{{/each }}
 

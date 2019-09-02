@@ -117,10 +117,10 @@ class MonthlyModify extends Component {
               <div className="col-2 form-group">
                 <AlgaehLabel
                   label={{
-                    forceLabel: "Total Days"
+                    forceLabel: "Total Work Days"
                   }}
                 />
-                <h6>{this.state.total_days}</h6>
+                <h6>{this.state.total_work_days}</h6>
               </div>{" "}
               <div className="col-2 form-group">
                 <AlgaehLabel
