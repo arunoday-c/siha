@@ -41,12 +41,16 @@ const LoadSalaryPayment = ($this, inputs) => {
             onSuccess: response => {
               if (response.data.result.length > 0) {
                 $this.setState({
-                  salary_payment: response.data.result
+                  salary_payment: response.data.result,
+                  checkAll: false,
+                  checkAllPayslip: false
                   // paysalaryBtn: false
                 });
               } else {
                 $this.setState({
-                  salary_payment: []
+                  salary_payment: [],
+                  checkAll: false,
+                  checkAllPayslip: false
                 });
                 swalMessage({
                   title: `Salary Not Finalized for ${moment(
@@ -82,7 +86,9 @@ const ClearData = $this => {
     employee_id: null,
     salary_payment: [],
     paysalaryBtn: true,
-    generatePayslip: true
+    generatePayslip: true,
+    checkAll: false,
+    checkAllPayslip: false
   });
 };
 
