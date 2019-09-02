@@ -13,5 +13,9 @@
   "edit_monthly_attendance": null,
   "decimal_places": null,
   "hospital_id": null,
-  "unique_id_for_appointmt": null
+  "unique_id_for_appointmt": null,
+  "symbol_position": null,
+  "currency_symbol": null,
+  "thousand_separator": null,
+  "decimal_separator": null
 }

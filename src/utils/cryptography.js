@@ -23,7 +23,11 @@ let encryption = data => {
       hospital_id: data["hospital_id"],
       default_currency: data["default_currency"],
       default_nationality: data["default_nationality"],
-      unique_id_for_appointmt: data["unique_id_for_appointmt"]
+      unique_id_for_appointmt: data["unique_id_for_appointmt"],
+      symbol_position: data["symbol_position"],
+      currency_symbol: data["currency_symbol"],
+      thousand_separator: data["thousand_separator"],
+      decimal_separator: data["decimal_separator"]
     }
   });
   debugLog("stringData", stringData);
