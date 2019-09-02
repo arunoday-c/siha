@@ -926,7 +926,7 @@ module.exports = {
                     _inputParam.reportName,
                     resultData
                   );
-                  console.log(resultData);
+
                   var workbook = new Excel.Workbook();
                   workbook.creator = "Algaeh technologies private limited";
                   workbook.lastModifiedBy = _inputParam.reportName;
@@ -1013,7 +1013,6 @@ module.exports = {
                             cell.font = JSON.parse(attrs.excelfonts);
                           }
                           if (attrs.excelfill !== undefined) {
-                            console.log(attrs.excelfill);
                             cell.fill = JSON.parse(attrs.excelfill);
                           }
                           if (attrs.colspan !== undefined) {
@@ -1021,17 +1020,23 @@ module.exports = {
                             const endLetter = columnToLetter(attrs.colspan);
                             const merge = `${fromLetter}${rowID}:${endLetter}${rowID}`;
                             worksheet.mergeCells(merge);
-                            itemRow.alignment = {
-                              vertical: "middle",
-                              horizontal: "center"
-                            };
-                            if (attrs.excelfonts === undefined) {
-                              cell.font = {
-                                bold: true
-                              };
-                            }
+                            // itemRow.alignment = {
+                            //   vertical: "middle",
+                            //   horizontal: "center"
+                            // };
+                            // if (attrs.excelfonts === undefined) {
+                            //   cell.font = {
+                            //     bold: true
+                            //   };
+                          }
+                          if (attrs.excelalignment !== undefined) {
+                            cell.alignment = JSON.parse(attrs.excelalignment);
+                          }
+                          if (attrs.excelborder !== undefined) {
+                            cell.border = JSON.parse(attrs.excelborder);
                           }
                         }
+                        //}
                       });
                     });
                   });
