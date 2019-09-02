@@ -2,6 +2,7 @@ import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import Enumerable from "linq";
+import _ from "lodash";
 
 export default function AuthorizationSetupEvent() {
   return {
@@ -129,20 +130,20 @@ export default function AuthorizationSetupEvent() {
         };
       });
 
-      let listOfinclude = Enumerable.from(newData)
-        .where(w => w.select_to_process === "Y")
-        .toArray();
-      let processBtn = listOfinclude.length > 0 ? false : true;
+      const listOfinclude = _.filter(newData, f => {
+        return f.select_to_process === "Y";
+      });
+      let saveEnable = listOfinclude.length > 0 ? false : true;
 
       $this.setState({
         employees_list: newData,
         checkAll: isChecked,
-        processBtn: processBtn
+        saveEnable: saveEnable
       });
     },
     selectToProcess: ($this, row, e) => {
       let employees_list = $this.state.employees_list;
-      let processBtn = true;
+
       if (e.target.checked === true) {
         row["select_to_process"] = "Y";
       } else if (e.target.checked === false) {
@@ -151,14 +152,13 @@ export default function AuthorizationSetupEvent() {
 
       employees_list[row.rowIdx] = row;
 
-      let listOfinclude = Enumerable.from(employees_list)
-        .where(w => w.select_to_process === "Y")
-        .toArray();
-      if (listOfinclude.length > 0) {
-        processBtn = false;
-      }
+      const listOfinclude = _.filter(employees_list, f => {
+        return f.select_to_process === "Y";
+      });
+
+      let saveEnable = listOfinclude.length > 0 ? false : true;
       $this.setState({
-        processBtn: processBtn,
+        saveEnable: saveEnable,
         employees_list: employees_list
       });
     },
@@ -170,6 +170,91 @@ export default function AuthorizationSetupEvent() {
         redux: {
           type: "EMPLOYEE_GET_DATA",
           mappingName: "employee_data"
+        }
+      });
+    },
+    processLoanAuth: $this => {
+      let employees_list = $this.state.employees_list;
+      const employees_process = _.filter($this.state.employees_list, f => {
+        return f.select_to_process === "Y";
+      });
+
+      if (employees_process.length <= 0) {
+        swalMessage({
+          title: "Please select atleast one employee to assign.",
+          type: "warning"
+        });
+        return;
+      }
+
+      if ($this.state.loan_level_set === "AL1") {
+        for (var i = 0; i < employees_list.length; i++) {
+          if (employees_list[i].select_to_process === "Y") {
+            employees_list[i].leave_level1 = $this.state.l_employee_id;
+          }
+        }
+      } else if ($this.state.loan_level_set === "AL2") {
+        for (var i = 0; i < employees_list.length; i++) {
+          if (employees_list[i].select_to_process === "Y") {
+            employees_list[i].leave_level2 = $this.state.l_employee_id;
+          }
+        }
+      }
+      $this.setState({ employees_list: employees_list });
+    },
+    processLeaveLevel: $this => {
+      debugger;
+      let employees_list = $this.state.employees_list;
+      const employees_process = _.filter($this.state.employees_list, f => {
+        return f.select_to_process === "Y";
+      });
+
+      if (employees_process.length <= 0) {
+        swalMessage({
+          title: "Please select atleast one employee to assign.",
+          type: "warning"
+        });
+        return;
+      }
+
+      if ($this.state.leave_level_set === "AL1") {
+        for (var i = 0; i < employees_list.length; i++) {
+          if (employees_list[i].select_to_process === "Y") {
+            employees_list[i].leave_level1 = $this.state.l_employee_id;
+          }
+        }
+      } else if ($this.state.leave_level_set === "AL2") {
+        for (var i = 0; i < employees_list.length; i++) {
+          if (employees_list[i].select_to_process === "Y") {
+            employees_list[i].leave_level2 = $this.state.l_employee_id;
+          }
+        }
+      } else if ($this.state.leave_level_set === "AL3") {
+        for (var i = 0; i < employees_list.length; i++) {
+          if (employees_list[i].select_to_process === "Y") {
+            employees_list[i].leave_level3 = $this.state.l_employee_id;
+          }
+        }
+      }
+      $this.setState({ employees_list: employees_list });
+    },
+    SaveAuthorizationSetup: $this => {
+      debugger;
+      algaehApiCall({
+        uri: "/department/get/subdepartment",
+        data: $this.state.employees_list,
+        method: "GET",
+        module: "masterSettings",
+        onSuccess: res => {
+          if (res.data.success) {
+            $this.setState({ subDepts: res.data.records });
+          }
+        },
+        onFailure: error => {
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
         }
       });
     }

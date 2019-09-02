@@ -345,7 +345,7 @@ export default class AttendanceSettings extends Component {
                     dataSource: {
                       textField: "name",
                       valueField: "value",
-                      data: AUTH_LEVEL5
+                      data: AUTH_LEVEL3
                     },
                     onChange: this.dropDownHandler.bind(this),
                     onClear: () => {
@@ -368,7 +368,7 @@ export default class AttendanceSettings extends Component {
                     dataSource: {
                       textField: "name",
                       valueField: "value",
-                      data: AUTH_LEVEL3
+                      data: AUTH_LEVEL2
                     },
                     onChange: this.dropDownHandler.bind(this),
                     onClear: () => {
@@ -540,7 +540,7 @@ export default class AttendanceSettings extends Component {
                     }
                   }}
                 />
-                {/* 
+                {/*
                 <div className="col-2">
                   <label>Allow Round Off</label>
                   <div className="customRadio">
