@@ -35,7 +35,7 @@ const compile = async function(templateName, data) {
     return comp;
   } catch (error) {
     console.log("compile -data -", data);
-    return {};
+    return undefined;
   }
 
   // return "رقم الفاتورة";
@@ -476,6 +476,7 @@ module.exports = {
                         });
                       } else {
                         fs.exists(_reportOutput[0], exists => {
+                          _mysql.releaseConnection();
                           if (exists) {
                             res.writeHead(200, {
                               "content-type": "application/pdf",
@@ -822,7 +823,7 @@ module.exports = {
       }
     });
   },
-  getExcelReport: async (req, res) => {
+  getExcelReport: async (req, res, next) => {
     const input = req.query;
     const _mysql = new algaehMysql();
     try {
@@ -922,148 +923,197 @@ module.exports = {
                 result: result
               }).then(resultData => {
                 (async () => {
-                  let rawData = await compile(
-                    _inputParam.reportName,
-                    resultData
-                  );
-
-                  var workbook = new Excel.Workbook();
-                  workbook.creator = "Algaeh technologies private limited";
-                  workbook.lastModifiedBy = _inputParam.reportName;
-                  workbook.created = new Date();
-                  workbook.modified = new Date();
-
-                  var worksheet = workbook.addWorksheet("Report", {
-                    properties: { tabColor: { argb: "FFC0000" } }
-                  });
-                  const logoPath = path.join(
-                    mainPath,
-                    "images",
-                    "clientLogo.png"
-                  );
-                  let companyLogo = workbook.addImage({
-                    filename: logoPath,
-                    extension: "png"
-                  });
-
-                  const document = parse(rawData);
-
-                  function columnToLetter(column) {
-                    var temp,
-                      letter = "";
-                    while (column > 0) {
-                      temp = (column - 1) % 26;
-                      letter = String.fromCharCode(temp + 65) + letter;
-                      column = (column - temp - 1) / 26;
+                  try {
+                    let rawData = await compile(
+                      _inputParam.reportName,
+                      resultData
+                    );
+                    if (rawData === undefined) {
+                      res.status(500).json({
+                        success: false,
+                        message: "There is no data for the above filter."
+                      });
+                      return;
                     }
-                    return letter;
-                  }
+                    var workbook = new Excel.Workbook();
+                    workbook.creator = "Algaeh technologies private limited";
+                    workbook.lastModifiedBy = _inputParam.reportName;
+                    workbook.created = new Date();
+                    workbook.modified = new Date();
 
-                  for (let i = 1; i <= 6; i++) {
-                    worksheet.addRow([]);
-                  }
-
-                  document.querySelectorAll("table").forEach(table => {
-                    table.querySelectorAll("thead").forEach(thead => {
-                      let row = [];
-
-                      thead.querySelectorAll("th").forEach(th => {
-                        row.push(th.rawText);
-                      });
-                      worksheet.addRow(row);
-                      var lastRow = worksheet.rowCount;
-                      let headerRow = worksheet.getRow(lastRow);
-                      headerRow.fill = {
-                        type: "pattern",
-                        pattern: "solid",
-                        fgColor: {
-                          argb: "48A897"
-                        }
-                      };
-                      headerRow.font = {
-                        name: "calibri",
-                        family: 4,
-                        size: 12,
-                        bold: true,
-                        color: { argb: "FFFFFF" }
-                      };
-                      headerRow.alignment = {
-                        vertical: "middle",
-                        horizontal: "center"
-                      };
-                      headerRow.eachCell((cell, cellIndex) => {
-                        worksheet.getColumn(cellIndex).width =
-                          cell.value.length < 8 ? 10 : 30;
-                      });
+                    var worksheet = workbook.addWorksheet("Report", {
+                      properties: { tabColor: { argb: "FFC0000" } }
+                    });
+                    const logoPath = path.join(
+                      mainPath,
+                      "images",
+                      "clientLogo.png"
+                    );
+                    let companyLogo = workbook.addImage({
+                      filename: logoPath,
+                      extension: "png"
                     });
 
-                    table.querySelectorAll("tr").forEach((tr, rowIndex) => {
-                      var rowID = worksheet.rowCount + 1;
-                      const itemRow = worksheet.getRow(rowID);
+                    const document = parse(rawData);
 
-                      tr.querySelectorAll("td").forEach((td, cellIndex) => {
-                        const celllIdx = cellIndex + 1;
-                        const attrs = td.rawAttributes;
-                        const cell = itemRow.getCell(celllIdx);
+                    function columnToLetter(column) {
+                      var temp,
+                        letter = "";
+                      while (column > 0) {
+                        temp = (column - 1) % 26;
+                        letter = String.fromCharCode(temp + 65) + letter;
+                        column = (column - temp - 1) / 26;
+                      }
+                      return letter;
+                    }
 
-                        cell.value = td.rawText.replace(/  +/g, " ");
+                    for (let i = 1; i <= 6; i++) {
+                      worksheet.addRow([]);
+                    }
 
-                        if (Object.keys(attrs).length > 0) {
-                          if (attrs.excelfonts !== undefined) {
-                            cell.font = JSON.parse(attrs.excelfonts);
+                    document.querySelectorAll("table").forEach(table => {
+                      table.querySelectorAll("thead").forEach(thead => {
+                        let row = [];
+
+                        thead.querySelectorAll("th").forEach(th => {
+                          row.push(th.rawText);
+                        });
+                        worksheet.addRow(row);
+                        var lastRow = worksheet.rowCount;
+                        let headerRow = worksheet.getRow(lastRow);
+                        headerRow.fill = {
+                          type: "pattern",
+                          pattern: "solid",
+                          fgColor: {
+                            argb: "48A897"
                           }
-                          if (attrs.excelfill !== undefined) {
-                            cell.fill = JSON.parse(attrs.excelfill);
+                        };
+                        headerRow.font = {
+                          name: "calibri",
+                          family: 4,
+                          size: 12,
+                          bold: true,
+                          color: { argb: "FFFFFF" }
+                        };
+                        headerRow.alignment = {
+                          vertical: "middle",
+                          horizontal: "center"
+                        };
+                        headerRow.eachCell((cell, cellIndex) => {
+                          worksheet.getColumn(cellIndex).width =
+                            cell.value.length < 8 ? 10 : 30;
+                        });
+                      });
+
+                      table.querySelectorAll("tr").forEach((tr, rowIndex) => {
+                        var rowID = worksheet.rowCount + 1;
+                        const itemRow = worksheet.getRow(rowID);
+
+                        tr.querySelectorAll("td").forEach((td, cellIndex) => {
+                          const celllIdx = cellIndex + 1;
+                          const attrs = td.rawAttributes;
+                          const cell = itemRow.getCell(celllIdx);
+
+                          cell.value = td.rawText.replace(/  +/g, " ");
+
+                          if (Object.keys(attrs).length > 0) {
+                            if (attrs.excelfonts !== undefined) {
+                              cell.font = JSON.parse(attrs.excelfonts);
+                            }
+                            if (attrs.excelfill !== undefined) {
+                              cell.fill = JSON.parse(attrs.excelfill);
+                            }
+                            if (attrs.colspan !== undefined) {
+                              if (attrs.excelcellmerge !== undefined) {
+                                const _mergeCells = attrs.excelcellmerge.split(
+                                  ":"
+                                );
+                                const merge = `${_mergeCells[0]}${rowID}:${
+                                  _mergeCells[1]
+                                }${rowID}`;
+
+                                worksheet.mergeCells(merge);
+                              }
+                              // const fromLetter = columnToLetter(celllIdx);
+                              // const endCellIndex =
+                              //   celllIdx + parseInt(attrs.colspan);
+                              //
+                              // const endLetter = columnToLetter(endCellIndex);
+                              //
+                              // const merge = `${fromLetter}${rowID}:${endLetter}${rowID}`;
+                              // console.log("merge", merge);
+                              // worksheet.mergeCells(merge);
+                              // itemRow.alignment = {
+                              //   vertical: "middle",
+                              //   horizontal: "center"
+                              // };
+                              // if (attrs.excelfonts === undefined) {
+                              //   cell.font = {
+                              //     bold: true
+                              //   };
+                            }
+                            if (attrs.excelalignment !== undefined) {
+                              cell.alignment = JSON.parse(attrs.excelalignment);
+                            }
+                            if (attrs.excelborder !== undefined) {
+                              cell.border = JSON.parse(attrs.excelborder);
+                            }
                           }
-                          if (attrs.colspan !== undefined) {
-                            const fromLetter = columnToLetter(celllIdx);
-                            const endLetter = columnToLetter(attrs.colspan);
-                            const merge = `${fromLetter}${rowID}:${endLetter}${rowID}`;
-                            worksheet.mergeCells(merge);
-                            // itemRow.alignment = {
-                            //   vertical: "middle",
-                            //   horizontal: "center"
-                            // };
-                            // if (attrs.excelfonts === undefined) {
-                            //   cell.font = {
-                            //     bold: true
-                            //   };
-                          }
-                          if (attrs.excelalignment !== undefined) {
-                            cell.alignment = JSON.parse(attrs.excelalignment);
-                          }
-                          if (attrs.excelborder !== undefined) {
-                            cell.border = JSON.parse(attrs.excelborder);
-                          }
-                        }
-                        //}
+                          //}
+                        });
                       });
                     });
-                  });
-                  const allColumns = worksheet.columns.length;
-                  // for (let m = 1; m <= allColumns; m++) {
-                  //   const merdgeCells = `${columnToLetter(m)}1:${columnToLetter(
-                  //     m
-                  //   )}6`;
-                  //   worksheet.mergeCells(merdgeCells);
-                  //
-                  // }
-                  const merge = `A1:${columnToLetter(allColumns)}6`;
-                  worksheet.mergeCells(merge);
-                  worksheet.addImage(companyLogo, "F1:I6");
+                    const allColumns = worksheet.columns.length;
+                    // for (let m = 1; m <= allColumns; m++) {
+                    //   const merdgeCells = `${columnToLetter(m)}1:${columnToLetter(
+                    //     m
+                    //   )}6`;
+                    //   worksheet.mergeCells(merdgeCells);
+                    //
+                    // }
+                    const merge = `A1:${columnToLetter(allColumns)}5`;
+                    worksheet.mergeCells(merge);
+                    worksheet.addImage(companyLogo, "F1:I5");
+                    let filter = "";
 
-                  res.setHeader(
-                    "Content-Type",
-                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                  );
-                  res.setHeader(
-                    "Content-Disposition",
-                    "attachment; filename=" + "Report.xlsx"
-                  );
-                  workbook.xlsx.write(res).then(function(data) {
-                    res.end();
-                    console.log("File write done........");
-                  });
+                    if (_inputParam.reportParams !== undefined) {
+                      for (
+                        let f = 0;
+                        f < _inputParam.reportParams.length;
+                        f++
+                      ) {
+                        const item = _inputParam.reportParams[f];
+                        filter += `${item.label}:${item.labelValue} || `;
+                      }
+                    }
+
+                    worksheet.getRow(6).getCell(1).value = filter;
+                    worksheet.mergeCells(`A6:${columnToLetter(allColumns)}6`);
+                    worksheet.getRow(6).font = { bold: true };
+                    worksheet.getRow(6).alignment = {
+                      vertical: "middle",
+                      horizontal: "center"
+                    };
+
+                    _mysql.releaseConnection();
+                    res.setHeader(
+                      "Content-Type",
+                      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    );
+                    res.setHeader(
+                      "Content-Disposition",
+                      "attachment; filename=" + "Report.xlsx"
+                    );
+                    workbook.xlsx.write(res).then(function(data) {
+                      res.end();
+                      console.log("File write done........");
+                    });
+                  } catch (e) {
+                    res.status(500).json({
+                      success: false,
+                      message: e.toString()
+                    });
+                  }
                 })();
 
                 // let excelOutput = path.join(

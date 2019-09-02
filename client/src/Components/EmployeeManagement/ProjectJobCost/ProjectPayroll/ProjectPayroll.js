@@ -302,6 +302,22 @@ class ProjectPayroll extends Component {
                           )
                         },
                         {
+                          fieldName: "department_name",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Department Name" }}
+                            />
+                          )
+                        },
+                        {
+                          fieldName: "sub_department_name",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Sub Depart. Name" }}
+                            />
+                          )
+                        },
+                        {
                           fieldName: "designation",
                           label: (
                             <AlgaehLabel

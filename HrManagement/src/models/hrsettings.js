@@ -108,7 +108,9 @@ module.exports = {
       if (req.query.sub_department_id) {
         strQuery = `select hims_d_designation_id,designation_code, designation,D.created_date from hims_d_employee E \
 inner join hims_d_designation D on E.employee_designation_id=D.hims_d_designation_id \
-where E.sub_department_id=${req.query.sub_department_id} group by hims_d_designation_id`;
+where E.sub_department_id=${
+          req.query.sub_department_id
+        } group by hims_d_designation_id`;
       }
       _mysql
         .executeQuery({
@@ -532,8 +534,10 @@ where E.sub_department_id=${req.query.sub_department_id} group by hims_d_designa
       _mysql
         .executeQuery({
           query:
-            "select E.employee_code, E.full_name, DE.designation,D.department_name, SD.sub_department_name, AUS.employee_id, \
-              AUS.leave_level1, AUS.leave_level2, AUS.leave_level3, AUS.loan_level1, AUS.loan_level2, E.reporting_to_id\
+            "select E.employee_code, E.full_name, DE.designation,D.department_name, SD.sub_department_name, \
+              E.hims_d_employee_id as employee_id, AUS.leave_level2, AUS.leave_level3, AUS.loan_level1, AUS.loan_level2, \
+              AUS.hims_d_authorization_setup_id,\
+              CASE WHEN AUS.leave_level1 > 0 THEN AUS.leave_level1 else E.reporting_to_id END as leave_level1\
               from hims_d_employee E\
               left join hims_d_authorization_setup AUS on AUS.employee_id = E.hims_d_employee_id\
               left join hims_d_sub_department SD on E.sub_department_id = SD.hims_d_sub_department_id \
