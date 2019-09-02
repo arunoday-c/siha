@@ -5402,55 +5402,52 @@ module.exports = {
     }
   },
 
- 
+  //created by irfan:
+  getBulkManualTimeSheet: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const utilities = new algaehUtilities();
 
+    try {
+      const input = req.query;
 
-    //created by irfan:
-    getBulkManualTimeSheet: (req, res, next) => {
-      const _mysql = new algaehMysql();
-      const utilities = new algaehUtilities();
+      if (
+        input.branch_id > 0 &&
+        input.year > 0 &&
+        input.month > 0 &&
+        input.from_date != undefined &&
+        input.to_date != undefined
+      ) {
+        let strQry = "";
+        let project = "";
 
-      try {
-        const input = req.query;
+        if (input.project_id > 0) {
+          project = " and PR.project_id=" + input.project_id;
+        }
 
-        if (
-          input.branch_id > 0 &&
-          input.year > 0 &&
-          input.month > 0 &&
-          input.from_date != undefined &&
-          input.to_date != undefined
-        ) {
-          let strQry = "";
-          let project = "";
+        if (input.employee_id > 0) {
+          strQry += " and PR.employee_id=" + input.employee_id;
+        }
 
-          if (input.project_id > 0) {
-            project = " and PR.project_id=" + input.project_id;
-          }
+        if (input.department_id > 0) {
+          strQry += " and SD.department_id=" + input.department_id;
+        }
+        if (input.sub_department_id > 0) {
+          strQry += " and E.sub_department_id=" + input.sub_department_id;
+        }
+        if (input.designation_id > 0) {
+          strQry += " and E.employee_designation_id=" + input.designation_id;
+        }
 
-          if (input.employee_id > 0) {
-            strQry += " and PR.employee_id=" + input.employee_id;
-          }
-
-          if (input.department_id > 0) {
-            strQry += " and SD.department_id=" + input.department_id;
-          }
-          if (input.sub_department_id > 0) {
-            strQry += " and E.sub_department_id=" + input.sub_department_id;
-          }
-          if (input.designation_id > 0) {
-            strQry += " and E.employee_designation_id=" + input.designation_id;
-          }
-
-          _mysql
-            .executeQuery({
-              query: `
+        _mysql
+          .executeQuery({
+            query: `
                 select PR.employee_id,PR.attendance_date,E.employee_code,E.full_name,E.sub_department_id,
                 E.religion_id, E.date_of_joining,PR.project_id,P.project_desc,D.designation
                 from hims_f_project_roster PR
                 left join hims_f_salary S on PR.employee_id=S.employee_id and PR.hospital_id=S.hospital_id and S.year=? and S.month=?
                 inner join  hims_d_employee E on PR.employee_id=E.hims_d_employee_id
                 inner join  hims_d_project P on P.hims_d_project_id=PR.project_id
-                inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id          
+                inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
                 left join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id
                 and PR.hospital_id=? ${strQry} ${project} and ( S.salary_processed is null or  S.salary_processed='N')
                 and PR.attendance_date between date(?) and date(?)
@@ -5459,7 +5456,7 @@ module.exports = {
                 L.leave_type,from_date,to_leave_session,to_date,holiday_included,weekoff_included,total_applied_days
                 from hims_f_leave_application LA inner join hims_d_leave L on 	LA.leave_id=L.hims_d_leave_id
                 inner join  hims_d_employee E on LA.employee_id=E.hims_d_employee_id
-                inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id            
+                inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
                 left join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id
                 where    LA.hospital_id=?  ${strQry.replace(
                   /PR/gi,
@@ -5471,182 +5468,191 @@ module.exports = {
                 select hims_d_holiday_id,holiday_date,holiday_description,weekoff,holiday,
                 holiday_type,religion_id from hims_d_holiday  where hospital_id=? and
                 date(holiday_date) between date(?) and date(?);`,
-              values: [
-                input.year,
-                input.month,
-                input.branch_id,
-                input.from_date,
-                input.to_date,
-                input.branch_id,
-                input.from_date,
-                input.from_date,
-                input.to_date,
-                input.to_date,
-                input.from_date,
-                input.to_date,
-                input.from_date,
-                input.to_date,
-                input.branch_id,
-                input.from_date,
-                input.to_date
-              ],
-              printQuery: false
-            })
-            .then(result => {
-              _mysql.releaseConnection();
-              if (result[0].length > 0) {
-                const allLeaves = result[1];
-                const allHolidays = result[2];
+            values: [
+              input.year,
+              input.month,
+              input.branch_id,
+              input.from_date,
+              input.to_date,
+              input.branch_id,
+              input.from_date,
+              input.from_date,
+              input.to_date,
+              input.to_date,
+              input.from_date,
+              input.to_date,
+              input.from_date,
+              input.to_date,
+              input.branch_id,
+              input.from_date,
+              input.to_date
+            ],
+            printQuery: true
+          })
+          .then(result => {
+            _mysql.releaseConnection();
+            if (result[0].length > 0) {
+              const allLeaves = result[1];
+              const allHolidays = result[2];
 
-                const final_roster = [];
+              const final_roster = [];
 
-                const allDates = getDaysArray(
-                  new Date(input.from_date),
-                  new Date(input.to_date)
+              const allDates = getDaysArray(
+                new Date(input.from_date),
+                new Date(input.to_date)
+              );
+
+              const allEmployees = _.chain(result[0])
+                .groupBy(g => g.employee_id)
+                .map(emp => {
+                  allDates.forEach(dat => {
+                    const ProjAssgned = emp.find(e => {
+                      return e.attendance_date == dat;
+                    });
+                    if (ProjAssgned == undefined) {
+                      emp.push({
+                        employee_id: emp[0].employee_id,
+                        attendance_date: dat,
+                        employee_code: emp[0].employee_code,
+                        full_name: emp[0].full_name,
+                        sub_department_id: emp[0].sub_department_id,
+                        religion_id: emp[0].religion_id,
+                        date_of_joining: emp[0].date_of_joining,
+                        project_id: null,
+                        project_desc: null,
+                        designation: emp[0].designation
+                      });
+                    }
+                  });
+                  return emp;
+                })
+                .value();
+
+              allEmployees.forEach(employee => {
+                const outputArray = [];
+                let empHolidayweekoff = getEmployeeWeekOffsHolidays(
+                  input.from_date,
+                  input.to_date,
+                  employee[0],
+                  allHolidays
                 );
 
-                const allEmployees = _.chain(result[0])
-                  .groupBy(g => g.employee_id)
-                  .map(emp => {
-                    allDates.forEach(dat => {
-                      const ProjAssgned = emp.find(e => {
-                        return e.attendance_date == dat;
-                      });
-                      if (ProjAssgned == undefined) {
-                        emp.push({
-                          employee_id: emp[0].employee_id,
-                          attendance_date: dat,
-                          employee_code: emp[0].employee_code,
-                          full_name: emp[0].full_name,
-                          sub_department_id: emp[0].sub_department_id,
-                          religion_id: emp[0].religion_id,
-                          date_of_joining: emp[0].date_of_joining,
-                          project_id: null,
-                          project_desc: null,
-                          designation: emp[0].designation
-                        });
-                      }
-                    });
-                    return emp;
-                  })
-                  .value();
+                const empLeave = new LINQ(allLeaves)
+                  .Where(w => w.employee_id == employee[0].employee_id)
+                  .Select(s => s)
+                  .ToArray();
 
-                allEmployees.forEach(employee => {
-                  const outputArray = [];
-                  let empHolidayweekoff = getEmployeeWeekOffsHolidays(
-                    input.from_date,
-                    input.to_date,
-                    employee[0],
-                    allHolidays
-                  );
+                employee.forEach((row, i) => {
+                  let leave = null;
+                  if (empLeave.length > 0) {
+                    leave = new LINQ(empLeave)
+                      .Where(
+                        w =>
+                          w.from_date <= row["attendance_date"] &&
+                          w.to_date >= row["attendance_date"]
+                      )
+                      .Select(s => {
+                        let leave_status = s.leave_type;
 
-                  const empLeave = new LINQ(allLeaves)
-                    .Where(w => w.employee_id == employee[0].employee_id)
-                    .Select(s => s)
-                    .ToArray();
-
-                  employee.forEach((row, i) => {
-                    let leave = null;
-                    if (empLeave.length > 0) {
-                      leave = new LINQ(empLeave)
-                        .Where(
-                          w =>
-                            w.from_date <= row["attendance_date"] &&
-                            w.to_date >= row["attendance_date"]
-                        )
-                        .Select(s => {
-                          let leave_status = s.leave_type;
-
+                        if (
+                          s.from_date == s.to_date &&
+                          s.to_date == row["attendance_date"] &&
+                          parseFloat(s.total_applied_days) == parseFloat(0.5)
+                        ) {
+                          leave_status = leave_status == "P" ? "HPL" : "HUL";
+                        } else if (s.from_date != s.to_date) {
                           if (
-                            s.from_date == s.to_date &&
-                            s.to_date == row["attendance_date"] &&
-                            parseFloat(s.total_applied_days) == parseFloat(0.5)
+                            s.from_date == row["attendance_date"] &&
+                            s.from_leave_session == "SH"
                           ) {
                             leave_status = leave_status == "P" ? "HPL" : "HUL";
-                          } else if (s.from_date != s.to_date) {
-                            if (
-                              s.from_date == row["attendance_date"] &&
-                              s.from_leave_session == "SH"
-                            ) {
-                              leave_status = leave_status == "P" ? "HPL" : "HUL";
-                            } else if (
-                              s.to_date == row["attendance_date"] &&
-                              s.to_leave_session == "FH"
-                            ) {
-                              leave_status = leave_status == "P" ? "HPL" : "HUL";
-                            }
+                          } else if (
+                            s.to_date == row["attendance_date"] &&
+                            s.to_leave_session == "FH"
+                          ) {
+                            leave_status = leave_status == "P" ? "HPL" : "HUL";
                           }
+                        }
 
-                          if (leave_status == "P") {
-                            leave_status = "PL";
-                          } else if (leave_status == "U") {
-                            leave_status = "UL";
-                          }
+                        if (leave_status == "P") {
+                          leave_status = "PL";
+                        } else if (leave_status == "U") {
+                          leave_status = "UL";
+                        }
 
-                          return {
-                            holiday_included: s.holiday_included,
-                            weekoff_included: s.weekoff_included,
-                            hospital_id: input.branch_id,
-                            employee_id: row.employee_id,
-                            project_id: row.project_id,
-                            project_desc: row.project_desc,
-                            full_name: row.full_name,
-                            sub_department_id: row.sub_department_id,
-                            employee_code: row.employee_code,
-                            attendance_date: row["attendance_date"],
-                            status: leave_status,
-                            designation: row.designation
-                          };
-                        })
-                        .FirstOrDefault(null);
-                    }
-
-                    const holiday_or_weekOff = new LINQ(empHolidayweekoff)
-                      .Where(w => w.holiday_date == row["attendance_date"])
-                      .Select(s => {
                         return {
-                          holiday: s.holiday,
-                          weekoff: s.weekoff
+                          holiday_included: s.holiday_included,
+                          weekoff_included: s.weekoff_included,
+                          hospital_id: input.branch_id,
+                          employee_id: row.employee_id,
+                          project_id: row.project_id,
+                          project_desc: row.project_desc,
+                          full_name: row.full_name,
+                          sub_department_id: row.sub_department_id,
+                          employee_code: row.employee_code,
+                          attendance_date: row["attendance_date"],
+                          status: leave_status,
+                          designation: row.designation
                         };
                       })
                       .FirstOrDefault(null);
+                  }
 
-                    //----------------------------
+                  const holiday_or_weekOff = new LINQ(empHolidayweekoff)
+                    .Where(w => w.holiday_date == row["attendance_date"])
+                    .Select(s => {
+                      return {
+                        holiday: s.holiday,
+                        weekoff: s.weekoff
+                      };
+                    })
+                    .FirstOrDefault(null);
 
-                    if (
-                      (holiday_or_weekOff == null && leave != null) ||
-                      (leave != null &&
-                        holiday_or_weekOff != null &&
-                        holiday_or_weekOff.holiday == "Y" &&
-                        leave.holiday_included == "Y") ||
-                      (leave != null &&
-                        holiday_or_weekOff != null &&
-                        holiday_or_weekOff.weekoff == "Y" &&
-                        leave.weekoff_included == "Y")
-                    ) {
+                  //----------------------------
 
-                      let color="";
+                  if (
+                    (holiday_or_weekOff == null && leave != null) ||
+                    (leave != null &&
+                      holiday_or_weekOff != null &&
+                      holiday_or_weekOff.holiday == "Y" &&
+                      leave.holiday_included == "Y") ||
+                    (leave != null &&
+                      holiday_or_weekOff != null &&
+                      holiday_or_weekOff.weekoff == "Y" &&
+                      leave.weekoff_included == "Y")
+                  ) {
+                    let color = "";
 
-                      if( leave.status=="PL"||leave.status=="HPL")
-                      color="#ec7c00";
-                      if( leave.status=="UL"||leave.status=="HUL")
-                      color="#ff0000";
+                    if (leave.status == "PL" || leave.status == "HPL")
+                      color = "#ec7c00";
+                    if (leave.status == "UL" || leave.status == "HUL")
+                      color = "#ff0000";
 
+                    outputArray.push({
+                      project_id: row.project_id,
+                      project_desc: row.project_desc,
+                      attendance_date: leave.attendance_date,
+                      status: leave.status,
+                      [moment(leave.attendance_date, "YYYY-MM-DD").format(
+                        "YYYYMMDD"
+                      )]: leave.status,
+                      color: color
+                    });
+                  } else if (holiday_or_weekOff != null) {
+                    if (holiday_or_weekOff.weekoff == "Y") {
                       outputArray.push({
                         project_id: row.project_id,
                         project_desc: row.project_desc,
-                        attendance_date: leave.attendance_date,
-                        status: leave.status,
-                        [moment(leave.attendance_date, "YYYY-MM-DD").format(
+                        attendance_date: row["attendance_date"],
+                        status: "WO",
+                        [moment(row["attendance_date"], "YYYY-MM-DD").format(
                           "YYYYMMDD"
-                        )]: leave.status,
-                        color: color
+                        )]: "WO",
+                        color: "#E7FEFD"
                       });
                     } else if (holiday_or_weekOff != null) {
                       if (holiday_or_weekOff.weekoff == "Y") {
                         outputArray.push({
-                          project_id: row.project_id,
-                          project_desc: row.project_desc,
                           attendance_date: row["attendance_date"],
                           status: "WO",
                           [moment(row["attendance_date"], "YYYY-MM-DD").format(
@@ -5654,37 +5660,14 @@ module.exports = {
                           )]: "WO",
                           color: "#E7FEFD"
                         });
-                      } else if (holiday_or_weekOff != null) {
-                        if (holiday_or_weekOff.weekoff == "Y") {
-                          outputArray.push({
-                            attendance_date: row["attendance_date"],
-                            status: "WO",
-                            [moment(row["attendance_date"], "YYYY-MM-DD").format(
-                              "YYYYMMDD"
-                            )]: "WO",
-                            color: "#E7FEFD"
-                          });
-                        } else if (holiday_or_weekOff.holiday == "Y") {
-                          outputArray.push({
-                            attendance_date: row["attendance_date"],
-                            status: "HO",
-                            [moment(row["attendance_date"], "YYYY-MM-DD").format(
-                              "YYYYMMDD"
-                            )]: "HO",
-                            color: "#EAEAFD"
-                          });
-                        }
-                      } else {
+                      } else if (holiday_or_weekOff.holiday == "Y") {
                         outputArray.push({
-                          project_id: row.project_id,
-                          project_desc: row.project_desc,
                           attendance_date: row["attendance_date"],
-                          status: row.project_id > 0 ? "PR" : "N",
+                          status: "HO",
                           [moment(row["attendance_date"], "YYYY-MM-DD").format(
                             "YYYYMMDD"
-                          )]: row.project_id > 0 ? "PR" : "N",
-                          color: row.project_id > 0 ? "" : "#F5F5F5",
-                          project_desc: row.project_desc
+                          )]: "HO",
+                          color: "#EAEAFD"
                         });
                       }
                     } else {
@@ -5700,46 +5683,57 @@ module.exports = {
                         project_desc: row.project_desc
                       });
                     }
-                  });
-
-                  final_roster.push({
-                    full_name: employee[0].full_name,
-                    employee_code: employee[0].employee_code,
-                    dates: _.sortBy(outputArray, s =>
-                      parseInt(
-                        moment(s.attendance_date, "YYYY-MM-DD").format("MMDD")
-                      )
-                    )
-                  });
+                  } else {
+                    outputArray.push({
+                      project_id: row.project_id,
+                      project_desc: row.project_desc,
+                      attendance_date: row["attendance_date"],
+                      status: row.project_id > 0 ? "PR" : "N",
+                      [moment(row["attendance_date"], "YYYY-MM-DD").format(
+                        "YYYYMMDD"
+                      )]: row.project_id > 0 ? "PR" : "N",
+                      color: row.project_id > 0 ? "" : "#F5F5F5",
+                      project_desc: row.project_desc
+                    });
+                  }
                 });
 
-                req.records = final_roster;
-                next();
-              } else {
-                req.records = {
-                  message: "Salary Already Processed or No Employes Found",
-                  invalid_input: true
-                };
-                next();
-              }
-            })
-            .catch(e => {
-              _mysql.releaseConnection();
-              next(e);
-            });
-        } else {
-          req.records = {
-            message: "Please provide valid input",
-            invalid_input: true
-          };
-          next();
-        }
-      } catch (e) {
-        next(e);
+                final_roster.push({
+                  full_name: employee[0].full_name,
+                  employee_code: employee[0].employee_code,
+                  dates: _.sortBy(outputArray, s =>
+                    parseInt(
+                      moment(s.attendance_date, "YYYY-MM-DD").format("MMDD")
+                    )
+                  )
+                });
+              });
+
+              req.records = final_roster;
+              next();
+            } else {
+              req.records = {
+                message: "Salary Already Processed or No Employes Found",
+                invalid_input: true
+              };
+              next();
+            }
+          })
+          .catch(e => {
+            _mysql.releaseConnection();
+            next(e);
+          });
+      } else {
+        req.records = {
+          message: "Please provide valid input",
+          invalid_input: true
+        };
+        next();
       }
-    },
-
-
+    } catch (e) {
+      next(e);
+    }
+  },
 
   //created by irfan:
   uploadBulkManualTimeSheet: (req, res, next) => {
@@ -5765,17 +5759,15 @@ module.exports = {
               const STDWH = result[0]["standard_working_hours"].split(".")[0];
               const STDWM = result[0]["standard_working_hours"].split(".")[1];
 
-              const total_minutes =
-              parseInt(STDWH * 60) +
-              parseInt(STDWM);
+              const total_minutes = parseInt(STDWH * 60) + parseInt(STDWM);
               //half day work hour
-             const HALF_HR = parseInt(parseInt(total_minutes/2) / parseInt(60));
-            const  HALF_MIN = parseInt(total_minutes/2) % parseInt(60);
+              const HALF_HR = parseInt(
+                parseInt(total_minutes / 2) / parseInt(60)
+              );
+              const HALF_MIN = parseInt(total_minutes / 2) % parseInt(60);
 
-
-
-            console.log("HALF_HR:",HALF_HR);
-            console.log("HALF_MIN:",HALF_MIN);
+              console.log("HALF_HR:", HALF_HR);
+              console.log("HALF_MIN:", HALF_MIN);
               rawData.forEach(employee => {
                 const attEmp = atResult.find(emp => {
                   return emp["employee_code"] == employee["employee_code"];
@@ -5817,39 +5809,38 @@ module.exports = {
                 employee.dates.forEach(day => {
                   switch (day["worked_status"]) {
                     case "AB":
-
-                        if   (day["worked_status"] == "AB" && day["status"] == "PR")
-                         {
-                          insertArray.push({
-                            worked_hours: 0,
-                            hours: 0,
-                            minutes: 0,
-                            actual_hours: STDWH,
-                            actual_minutes: STDWM,
-                            employee_id: day.employee_id,
-                            attendance_date: day.attendance_date,
-                            status: day["worked_status"],
-                            sub_department_id: day.sub_department_id,
-                            project_id: day.project_id
-                          });
-                        } else {
-                          req.records = {
-                            invalid_input: true,
-                            message: `${employee["employee_code"]} on  ${                     
-                              moment(  day.attendance_date, "YYYY-MM-DD").format(
-                                 "DD-MM-YYYY")
-                            } is ${day["status"]} not  PR`
-                          };
-                          next();
-                          return;
-                        }
-
-                    case "PR":
                       if (
-                        day["worked_status"] == day["status"] 
+                        day["worked_status"] == "AB" &&
+                        day["status"] == "PR"
                       ) {
                         insertArray.push({
-                          worked_hours: STDWH+"."+STDWM ,
+                          worked_hours: 0,
+                          hours: 0,
+                          minutes: 0,
+                          actual_hours: STDWH,
+                          actual_minutes: STDWM,
+                          employee_id: day.employee_id,
+                          attendance_date: day.attendance_date,
+                          status: day["worked_status"],
+                          sub_department_id: day.sub_department_id,
+                          project_id: day.project_id
+                        });
+                      } else {
+                        req.records = {
+                          invalid_input: true,
+                          message: `${employee["employee_code"]} on  ${moment(
+                            day.attendance_date,
+                            "YYYY-MM-DD"
+                          ).format("DD-MM-YYYY")} is ${day["status"]} not  PR`
+                        };
+                        next();
+                        return;
+                      }
+
+                    case "PR":
+                      if (day["worked_status"] == day["status"]) {
+                        insertArray.push({
+                          worked_hours: STDWH + "." + STDWM,
                           hours: STDWH,
                           minutes: STDWM,
                           actual_hours: STDWH,
@@ -5863,10 +5854,10 @@ module.exports = {
                       } else {
                         req.records = {
                           invalid_input: true,
-                          message: `${employee["employee_code"]} on  ${
-                            moment(  day.attendance_date, "YYYY-MM-DD").format(
-                              "DD-MM-YYYY")
-                          } is ${day["status"]} not  PR`
+                          message: `${employee["employee_code"]} on  ${moment(
+                            day.attendance_date,
+                            "YYYY-MM-DD"
+                          ).format("DD-MM-YYYY")} is ${day["status"]} not  PR`
                         };
                         next();
                         return;
@@ -5901,7 +5892,7 @@ module.exports = {
                           case "WO":
                             actual = " week off ";
                             break;
-  
+
                           case "HO":
                             actual = " Holiday ";
                             break;
@@ -5922,30 +5913,30 @@ module.exports = {
                           case "WO":
                             neww = " week off ";
                             break;
-  
+
                           case "HO":
                             neww = " Holiday ";
                             break;
-                            case "PL":
-                                actual = " Paid Leave ";
-                                break;
-                              case "UL":
-                                actual = " UnPaid Leave ";
-                                break;
-                              case "HPL":
-                                actual = "Half Day Paid Leave ";
-                                break;
-                              case "HUL":
-                                actual = " Half UnPaid Leave ";
-                                break;
+                          case "PL":
+                            actual = " Paid Leave ";
+                            break;
+                          case "UL":
+                            actual = " UnPaid Leave ";
+                            break;
+                          case "HPL":
+                            actual = "Half Day Paid Leave ";
+                            break;
+                          case "HUL":
+                            actual = " Half UnPaid Leave ";
+                            break;
                         }
 
                         req.records = {
                           invalid_input: true,
-                          message: `${employee["employee_code"]} on  ${
-                            moment(  day.attendance_date, "YYYY-MM-DD").format(
-                              "DD-MM-YYYY")
-                          } is ${actual} not ${neww}`
+                          message: `${employee["employee_code"]} on  ${moment(
+                            day.attendance_date,
+                            "YYYY-MM-DD"
+                          ).format("DD-MM-YYYY")} is ${actual} not ${neww}`
                         };
                         next();
                         return;
@@ -5954,89 +5945,88 @@ module.exports = {
                       break;
 
                     case "HUL":
-                
-                    case "HPL": 
-                   
-                    if (day["worked_status"] == day["status"]) {
-                      insertArray.push({
-                        worked_hours: 0,
-                        hours: 0,
-                        minutes: 0,
-                        actual_hours: HALF_HR,
-                        actual_minutes: HALF_MIN,
-                        employee_id: day.employee_id,
-                        attendance_date: day.attendance_date,
-                        status: day["worked_status"],
-                        sub_department_id: day.sub_department_id,
-                        project_id: day.project_id
-                      });
-                    } else {
-                      let actual = "";
-                      let neww = "";
 
-                      switch (day["status"]) {
-                        case "WO":
-                          actual = " week off ";
-                          break;
+                    case "HPL":
+                      if (day["worked_status"] == day["status"]) {
+                        insertArray.push({
+                          worked_hours: 0,
+                          hours: 0,
+                          minutes: 0,
+                          actual_hours: HALF_HR,
+                          actual_minutes: HALF_MIN,
+                          employee_id: day.employee_id,
+                          attendance_date: day.attendance_date,
+                          status: day["worked_status"],
+                          sub_department_id: day.sub_department_id,
+                          project_id: day.project_id
+                        });
+                      } else {
+                        let actual = "";
+                        let neww = "";
 
-                        case "HO":
-                          actual = " Holiday ";
-                          break;
-                        case "PL":
-                          actual = " Paid Leave ";
-                          break;
-                        case "UL":
-                          actual = " UnPaid Leave ";
-                          break;
-                        case "HPL":
-                          actual = "Half Day Paid Leave ";
-                          break;
-                        case "HUL":
-                          actual = " Half UnPaid Leave ";
-                          break;
-                      }
-                      switch (day["worked_status"]) {
-                        case "WO":
-                          neww = " week off ";
-                          break;
+                        switch (day["status"]) {
+                          case "WO":
+                            actual = " week off ";
+                            break;
 
-                        case "HO":
-                          neww = " Holiday ";
-                          break;
+                          case "HO":
+                            actual = " Holiday ";
+                            break;
                           case "PL":
-                              actual = " Paid Leave ";
-                              break;
-                            case "UL":
-                              actual = " UnPaid Leave ";
-                              break;
-                            case "HPL":
-                              actual = "Half Day Paid Leave ";
-                              break;
-                            case "HUL":
-                              actual = " Half UnPaid Leave ";
-                              break;
-                      }
+                            actual = " Paid Leave ";
+                            break;
+                          case "UL":
+                            actual = " UnPaid Leave ";
+                            break;
+                          case "HPL":
+                            actual = "Half Day Paid Leave ";
+                            break;
+                          case "HUL":
+                            actual = " Half UnPaid Leave ";
+                            break;
+                        }
+                        switch (day["worked_status"]) {
+                          case "WO":
+                            neww = " week off ";
+                            break;
 
-                      req.records = {
-                        invalid_input: true,
-                        message: `${employee["employee_code"]} on  ${
-                          moment(  day.attendance_date, "YYYY-MM-DD").format(
-                            "DD-MM-YYYY")
-                        } is ${actual} not ${neww}`
-                      };
-                      next();
-                      return;
-                    }
+                          case "HO":
+                            neww = " Holiday ";
+                            break;
+                          case "PL":
+                            actual = " Paid Leave ";
+                            break;
+                          case "UL":
+                            actual = " UnPaid Leave ";
+                            break;
+                          case "HPL":
+                            actual = "Half Day Paid Leave ";
+                            break;
+                          case "HUL":
+                            actual = " Half UnPaid Leave ";
+                            break;
+                        }
+
+                        req.records = {
+                          invalid_input: true,
+                          message: `${employee["employee_code"]} on  ${moment(
+                            day.attendance_date,
+                            "YYYY-MM-DD"
+                          ).format("DD-MM-YYYY")} is ${actual} not ${neww}`
+                        };
+                        next();
+                        return;
+                      }
                       break;
 
                     case "N":
                       if (day["worked_status"] !== day["status"]) {
                         req.records = {
                           invalid_input: true,
-                          message: `${employee["employee_code"]} on  ${
-                            moment(  day.attendance_date, "YYYY-MM-DD").format(
-                              "DD-MM-YYYY")
-                          } is ${day["status"]} not  N`
+                          message: `${employee["employee_code"]} on  ${moment(
+                            day.attendance_date,
+                            "YYYY-MM-DD"
+                          ).format("DD-MM-YYYY")} is ${day["status"]} not  N`
                         };
                         next();
                         return;
@@ -6044,36 +6034,38 @@ module.exports = {
                       break;
 
                     default:
+                      if (day["status"] != "N") {
+                        const respond = bulkTimeValidate(
+                          day,
+                          employee["employee_code"],
+                          STDWH,
+                          STDWM,
+                          HALF_HR,
+                          HALF_MIN
+                        );
 
-                    if( day["status"]!="N" ){
-                      const respond = bulkTimeValidate(
-                        day,
-                        employee["employee_code"],
-                        STDWH,
-                        STDWM,HALF_HR,HALF_MIN
-                      );
-
-                      if (respond.error == true) {
+                        if (respond.error == true) {
+                          req.records = {
+                            invalid_input: true,
+                            message: respond.message
+                          };
+                          next();
+                        } else {
+                          insertArray.push(respond.obj);
+                        }
+                      } else {
                         req.records = {
                           invalid_input: true,
-                          message: respond.message
+                          message: `No project is Assigned for ${
+                            employee["employee_code"]
+                          } on  ${moment(
+                            day.attendance_date,
+                            "YYYY-MM-DD"
+                          ).format("DD-MM-YYYY")} `
                         };
                         next();
-                      } else {
-                        insertArray.push(respond.obj);
+                        return;
                       }
-                    }else{
-
-                      req.records = {
-                        invalid_input: true,
-                        message: `No project is Assigned for ${employee["employee_code"]} on  ${
-                          moment(  day.attendance_date, "YYYY-MM-DD").format(
-                            "DD-MM-YYYY")
-                        } `
-                      };
-                      next();
-                      return;
-                    }
                       break;
                   }
                 });
@@ -6160,8 +6152,6 @@ module.exports = {
     const utilities = new algaehUtilities();
     let input = req.query;
 
-
-
     let dailyAttendance = [];
     if (
       input.hospital_id > 0 &&
@@ -6210,12 +6200,9 @@ module.exports = {
           printQuery: true
         })
         .then(result => {
-         
-
-
-        const  options=result[0][0];
-        const  AttenResult=result[1];
-           //present month
+          const options = result[0][0];
+          const AttenResult = result[1];
+          //present month
           if (AttenResult.length > 0) {
             for (let i = 0; i < AttenResult.length; i++) {
               let shortage_time = 0;
@@ -6276,66 +6263,50 @@ module.exports = {
                   parseInt(Math.abs(worked_minutes)) % parseInt(60);
               }
 
-              let paid_leave=0;
-              let unpaid_leave=0;
+              let paid_leave = 0;
+              let unpaid_leave = 0;
 
-
-              switch (AttenResult[i]["status"]){
-
-              case "PL":paid_leave=1;
-                break;
-              case "UL":unpaid_leave=1;
+              switch (AttenResult[i]["status"]) {
+                case "PL":
+                  paid_leave = 1;
                   break;
-              case "HPL":paid_leave=0.5;
+                case "UL":
+                  unpaid_leave = 1;
                   break;
-              case "HUL":
-                  unpaid_leave=0.5;
+                case "HPL":
+                  paid_leave = 0.5;
                   break;
-
+                case "HUL":
+                  unpaid_leave = 0.5;
+                  break;
               }
 
+              let display_present_days = 0;
+              let present_days = 0;
+              let absent = AttenResult[i]["status"] == "AB" ? 1 : 0;
 
-let display_present_days=0;
-let present_days=0;
-let absent= AttenResult[i]["status"] == "AB" ? 1 : 0;
-
-
-
-if( AttenResult[i]["status"] == "PR"){
-  display_present_days=1;
-  present_days=1;
-
-}else if (
-
-  AttenResult[i]["status"] == "HPL"||
-  AttenResult[i]["status"] == "HUL"
-){
-
-
-if( AttenResult[i]["hours"]>0){
-
-
-  display_present_days=0.5;
-}else{
-  absent=0.5;
-
-}
- 
-
-
-}
-
-              if(week_off_ot_hour > 0||
-                 week_off_ot_min > 0||
-                 holiday_ot_hour >0 ||
-                 holiday_ot_min > 0){
-
-                  display_present_days=1;
-                  
+              if (AttenResult[i]["status"] == "PR") {
+                display_present_days = 1;
+                present_days = 1;
+              } else if (
+                AttenResult[i]["status"] == "HPL" ||
+                AttenResult[i]["status"] == "HUL"
+              ) {
+                if (AttenResult[i]["hours"] > 0) {
+                  display_present_days = 0.5;
+                } else {
+                  absent = 0.5;
                 }
+              }
 
-            
-
+              if (
+                week_off_ot_hour > 0 ||
+                week_off_ot_min > 0 ||
+                holiday_ot_hour > 0 ||
+                holiday_ot_min > 0
+              ) {
+                display_present_days = 1;
+              }
 
               dailyAttendance.push({
                 employee_id: AttenResult[i]["employee_id"],
@@ -6347,8 +6318,8 @@ if( AttenResult[i]["hours"]>0){
                 year: input.year,
                 month: input.month,
                 total_days: 1,
-                present_days:present_days,
-                display_present_days:display_present_days,
+                present_days: present_days,
+                display_present_days: display_present_days,
                 absent_days: absent,
                 total_work_days: 1,
                 weekoff_days: AttenResult[i]["status"] == "WO" ? 1 : 0,
@@ -6465,7 +6436,7 @@ if( AttenResult[i]["hours"]>0){
             from hims_f_daily_attendance DA\
             inner join hims_d_employee E on DA.employee_id=E.hims_d_employee_id\
             inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\
-          
+
             where      \
             DA.hospital_id=?  and year=? and month=?  ${strQry}  and attendance_date between date(?) and \
             date(?)  group by employee_id;\
@@ -6497,24 +6468,23 @@ if( AttenResult[i]["hours"]>0){
                     let attResult = [];
 
                     for (let i = 0; i < DilayResult.length; i++) {
-
-                      if(options["salary_calendar"]=="F"){
-
-                        const t_paid_days=options["salary_calendar_fixed_days"]
-                        - parseFloat(DilayResult[i]["absent_days"])
-                        -parseFloat(DilayResult[i]["unpaid_leave"]);
-
-                        
+                      if (options["salary_calendar"] == "F") {
+                        const t_paid_days =
+                          options["salary_calendar_fixed_days"] -
+                          parseFloat(DilayResult[i]["absent_days"]) -
+                          parseFloat(DilayResult[i]["unpaid_leave"]);
 
                         attResult.push({
                           ...DilayResult[i],
-                          total_paid_days: t_paid_days>options["salary_calendar_fixed_days"]?options["salary_calendar_fixed_days"]:t_paid_days
-                          ,
+                          total_paid_days:
+                            t_paid_days > options["salary_calendar_fixed_days"]
+                              ? options["salary_calendar_fixed_days"]
+                              : t_paid_days,
                           total_leave:
                             parseFloat(DilayResult[i]["paid_leave"]) +
                             parseFloat(DilayResult[i]["unpaid_leave"])
                         });
-                      }else{
+                      } else {
                         attResult.push({
                           ...DilayResult[i],
                           total_paid_days:
@@ -6526,10 +6496,7 @@ if( AttenResult[i]["hours"]>0){
                             parseFloat(DilayResult[i]["paid_leave"]) +
                             parseFloat(DilayResult[i]["unpaid_leave"])
                         });
-
-
                       }
-                  
                     }
 
                     const insurtColumns = [
@@ -7103,7 +7070,6 @@ function BulktimesheetCalc(req, res, next) {
         if (input.designation_id > 0) {
           strQry += " and E.employee_designation_id=" + input.designation_id;
         }
-        
 
         _mysql
           .executeQuery({
@@ -7220,9 +7186,6 @@ function BulktimesheetCalc(req, res, next) {
                           w.to_date >= row["attendance_date"]
                       )
                       .Select(s => {
-
-
-
                         let leave_status = s.leave_type;
 
                         if (
@@ -7530,7 +7493,7 @@ function loadBulkTimeSheet(input, req, res, next) {
 									expected_out_date, expected_out_time ,TS.hospital_id,hims_d_employee_id,employee_code,full_name as employee_name,\
 									P.project_code,P.project_desc from  hims_f_daily_time_sheet TS \
                   inner join hims_d_employee E on TS.employee_id=E.hims_d_employee_id\
-                  inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\              
+                  inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\
 									left join hims_f_project_roster PR on TS.employee_id=PR.employee_id and TS.hospital_id=PR.hospital_id  and TS.attendance_date=PR.attendance_date\
 									left join hims_d_project P on PR.project_id=P.hims_d_project_id\
 									where  TS.hospital_id=? and  TS.attendance_date between (?) and (?) ${strQry} ${project}; `,
