@@ -884,25 +884,7 @@ module.exports = {
                 _inputParam.reportName + ".js"
               );
               let excelRun;
-              // if (fs.existsSync(filePathJs)) {
-              //   const { executeExcel } = require(path.join(
-              //     templatePath,
-              //     _inputParam.reportName + ".js"
-              //   ));
-              //   excelRun = executeExcel;
-              // } else {
-              //   filePathJs = path.join(
-              //     mainPath,
-              //     _inputParam.reportName + ".js"
-              //   );
-              //   if (fs.existsSync(filePathJs)) {
-              //     const { executePDF } = require(path.join(
-              //       mainPath,
-              //       _inputParam.reportName + ".js"
-              //     ));
-              //     excelRun = executePDF;
-              //   }
-              // }
+
               const { executePDF } = require(path.join(
                 mainPath,
                 _inputParam.reportName + ".js"
@@ -929,6 +911,7 @@ module.exports = {
                       resultData
                     );
                     if (rawData === undefined) {
+                      _mysql.releaseConnection();
                       res.status(500).json({
                         success: false,
                         message: "There is no data for the above filter."
@@ -974,10 +957,29 @@ module.exports = {
                     document.querySelectorAll("table").forEach(table => {
                       table.querySelectorAll("thead").forEach(thead => {
                         let row = [];
+                        let column = [];
+                        thead.querySelectorAll("th").forEach((th, headIdx) => {
+                          const thAttrs = th.rawAttributes;
+                          let _width = {};
+                          if (Object.keys(thAttrs).length > 0) {
+                            if (thAttrs.excelwidth !== undefined) {
+                              _width = { width: parseInt(thAttrs.excelwidth) };
+                            }
+                          }
+                          column.push({
+                            header: "",
+                            key: headIdx,
+                            ..._width
+                          });
+                          // row.push({
+                          //   header: th.rawText,
+                          //   key: headIdx,
+                          //   ..._width
+                          // });
 
-                        thead.querySelectorAll("th").forEach(th => {
                           row.push(th.rawText);
                         });
+                        worksheet.columns = column;
                         worksheet.addRow(row);
                         var lastRow = worksheet.rowCount;
                         let headerRow = worksheet.getRow(lastRow);
@@ -999,10 +1001,10 @@ module.exports = {
                           vertical: "middle",
                           horizontal: "center"
                         };
-                        headerRow.eachCell((cell, cellIndex) => {
-                          worksheet.getColumn(cellIndex).width =
-                            cell.value.length < 8 ? 10 : 30;
-                        });
+                        // headerRow.eachCell((cell, cellIndex) => {
+                        //   worksheet.getColumn(cellIndex).width =
+                        //     cell.value.length < 8 ? 10 : 30;
+                        // });
                       });
 
                       table.querySelectorAll("tr").forEach((tr, rowIndex) => {
@@ -1034,23 +1036,6 @@ module.exports = {
 
                                 worksheet.mergeCells(merge);
                               }
-                              // const fromLetter = columnToLetter(celllIdx);
-                              // const endCellIndex =
-                              //   celllIdx + parseInt(attrs.colspan);
-                              //
-                              // const endLetter = columnToLetter(endCellIndex);
-                              //
-                              // const merge = `${fromLetter}${rowID}:${endLetter}${rowID}`;
-                              // console.log("merge", merge);
-                              // worksheet.mergeCells(merge);
-                              // itemRow.alignment = {
-                              //   vertical: "middle",
-                              //   horizontal: "center"
-                              // };
-                              // if (attrs.excelfonts === undefined) {
-                              //   cell.font = {
-                              //     bold: true
-                              //   };
                             }
                             if (attrs.excelalignment !== undefined) {
                               cell.alignment = JSON.parse(attrs.excelalignment);
@@ -1064,13 +1049,7 @@ module.exports = {
                       });
                     });
                     const allColumns = worksheet.columns.length;
-                    // for (let m = 1; m <= allColumns; m++) {
-                    //   const merdgeCells = `${columnToLetter(m)}1:${columnToLetter(
-                    //     m
-                    //   )}6`;
-                    //   worksheet.mergeCells(merdgeCells);
-                    //
-                    // }
+
                     const merge = `A1:${columnToLetter(allColumns)}5`;
                     worksheet.mergeCells(merge);
                     worksheet.addImage(companyLogo, "F1:I5");
@@ -1109,54 +1088,13 @@ module.exports = {
                       console.log("File write done........");
                     });
                   } catch (e) {
+                    _mysql.releaseConnection();
                     res.status(500).json({
                       success: false,
                       message: e.toString()
                     });
                   }
                 })();
-
-                // let excelOutput = path.join(
-                //   outputFolder,
-                //   "out_" + moment().format("YYYYMMDDHHmmss") + ".xlsx"
-                // );
-                // const fileNameExcel = path.join(
-                //   templatePath,
-                //   _inputParam.reportName + ".xlsx"
-                // );
-                //
-                // fs.readFile(fileNameExcel, function(error, data) {
-                //   if (error) {
-                //     console.error(error);
-                //   } else {
-                //     var template = new XlsxTemplate(data);
-                //     const dataShow = Array.isArray(resultData)
-                //       ? { data: resultData }
-                //       : resultData;
-                //     console.log(JSON.stringify(template.Element));
-                //
-                //     for (let s = 0; s < template.sheets.length; s++) {
-                //       template.substitute(template.sheets[s]["id"], dataShow);
-                //     }
-                //
-                //     var dataGenerated = template.generate();
-                //     fs.outputFileSync(excelOutput, dataGenerated, {
-                //       encoding: "binary"
-                //     });
-                //     res.writeHead(200, {
-                //       "content-type":
-                //         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                //       "content-disposition":
-                //         "attachment;filename=" + fileNameExcel
-                //     });
-                //     const _fs = fs.createReadStream(excelOutput);
-                //     _fs.on("end", () => {
-                //       fs.unlink(excelOutput);
-                //     });
-                //
-                //     _fs.pipe(res);
-                //   }
-                // });
               });
             })
             .catch(error => {

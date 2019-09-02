@@ -100,8 +100,6 @@ const executePDF = function executePDFMethod(options) {
               });
             });
 
-            utilities.logger().log("outputArray: ", outputArray);
-            options.mysql.releaseConnection();
             resolve({
               result: outputArray
             });
