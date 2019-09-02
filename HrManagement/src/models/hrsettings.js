@@ -108,9 +108,7 @@ module.exports = {
       if (req.query.sub_department_id) {
         strQuery = `select hims_d_designation_id,designation_code, designation,D.created_date from hims_d_employee E \
 inner join hims_d_designation D on E.employee_designation_id=D.hims_d_designation_id \
-where E.sub_department_id=${
-          req.query.sub_department_id
-        } group by hims_d_designation_id`;
+where E.sub_department_id=${req.query.sub_department_id} group by hims_d_designation_id`;
       }
       _mysql
         .executeQuery({
@@ -553,6 +551,60 @@ where E.sub_department_id=${
         .catch(e => {
           next(e);
         });
+    } catch (e) {
+      next(e);
+    }
+  },
+  //created by :Irfan
+  addEmployeeAuthorizationSetup: (req, res, next) => {
+    try {
+      const _mysql = new algaehMysql();
+
+      const input = req.body;
+
+      if (input.length > 0) {
+        const insurtColumns = [
+          "employee_id",
+          "leave_level1",
+          "leave_level2",
+          "leave_level3",
+          "loan_level1",
+          "loan_level2"
+        ];
+
+        _mysql
+          .executeQuery({
+            query:
+              "INSERT INTO hims_d_authorization_setup(??) VALUES ? ON DUPLICATE KEY UPDATE \
+                        leave_level1=values(leave_level1),leave_level2=values(leave_level2),\
+                        leave_level3=values(leave_level3),loan_level1=values(loan_level1),\
+                        loan_level2=values(loan_level2) ",
+            values: input,
+            includeValues: insurtColumns,
+            extraValues: {
+              created_date: new Date(),
+              created_by: req.userIdentity.algaeh_d_app_user_id,
+              updated_date: new Date(),
+              updated_by: req.userIdentity.algaeh_d_app_user_id
+            },
+            bulkInsertOrUpdate: true
+          })
+          .then(result => {
+            _mysql.releaseConnection();
+            req.records = result;
+            next();
+          })
+          .catch(e => {
+            _mysql.releaseConnection();
+            next(e);
+          });
+      } else {
+        req.records = {
+          invalid_input: true,
+          message: "Please provide valid input"
+        };
+        next();
+      }
     } catch (e) {
       next(e);
     }
