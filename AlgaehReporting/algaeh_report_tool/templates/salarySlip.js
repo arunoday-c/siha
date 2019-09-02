@@ -72,12 +72,8 @@ const executePDF = function executePDFMethod(options) {
 
               outputArray.push({
                 year: employe[0].year,
-<<<<<<< HEAD
-                month: month,
-=======
                 // month: employe[0].month,
                 month: moment(employe[0].month, "MM").format("MMMM"),
->>>>>>> aa4b898162de9d4305b423558b850130ebc69369
                 net_salary: employe[0].net_salary,
                 salary_in_words: writtenForm(employe[0].net_salary) + " Only",
                 total_earnings: employe[0].total_earnings,
