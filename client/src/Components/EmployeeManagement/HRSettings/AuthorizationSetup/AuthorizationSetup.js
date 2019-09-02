@@ -105,14 +105,14 @@ class AuthorizationSetup extends Component {
 
   searchSelect(frm_type, data) {
     debugger;
-    if ((frm_type = "Leave")) {
+    if (frm_type === "Leave") {
       this.setState({
         l_sub_department_id: data.sub_department_id,
         l_employee_id: data.hims_d_employee_id,
         l_full_name: data.full_name,
         processLeaveBtn: false
       });
-    } else if ((frm_type = "Loan")) {
+    } else if (frm_type === "Loan") {
       this.setState({
         lo_sub_department_id: data.sub_department_id,
         lo_employee_id: data.hims_d_employee_id,
@@ -313,7 +313,9 @@ class AuthorizationSetup extends Component {
                   }}
                   onClear={() => {
                     this.setState({
-                      employee_id: null,
+                      l_sub_department_id: null,
+                      l_employee_id: null,
+                      l_full_name: "",
                       processLeaveBtn: true
                     });
                   }}
@@ -414,7 +416,9 @@ class AuthorizationSetup extends Component {
                   }}
                   onClear={() => {
                     this.setState({
-                      employee_id: null,
+                      lo_sub_department_id: null,
+                      lo_employee_id: null,
+                      lo_full_name: "",
                       processLoanBtn: true
                     });
                   }}

@@ -190,13 +190,13 @@ export default function AuthorizationSetupEvent() {
       if ($this.state.loan_level_set === "AL1") {
         for (var i = 0; i < employees_list.length; i++) {
           if (employees_list[i].select_to_process === "Y") {
-            employees_list[i].leave_level1 = $this.state.l_employee_id;
+            employees_list[i].loan_level1 = $this.state.lo_employee_id;
           }
         }
       } else if ($this.state.loan_level_set === "AL2") {
         for (var i = 0; i < employees_list.length; i++) {
           if (employees_list[i].select_to_process === "Y") {
-            employees_list[i].leave_level2 = $this.state.l_employee_id;
+            employees_list[i].loan_level2 = $this.state.lo_employee_id;
           }
         }
       }
@@ -241,13 +241,36 @@ export default function AuthorizationSetupEvent() {
     SaveAuthorizationSetup: $this => {
       debugger;
       algaehApiCall({
-        uri: "/department/get/subdepartment",
+        uri: "/hrsettings/addEmployeeAuthorizationSetup",
         data: $this.state.employees_list,
-        method: "GET",
-        module: "masterSettings",
+        method: "POST",
+        module: "hrManagement",
         onSuccess: res => {
           if (res.data.success) {
-            $this.setState({ subDepts: res.data.records });
+            $this.setState({
+              subDepts: [],
+              designations: [],
+              employees_list: [],
+              department_id: null,
+              sub_department_id: null,
+              designation_id: null,
+              processLeaveBtn: true,
+              processLoanBtn: true,
+              checkAll: false,
+              Employeedetails: [],
+              lo_sub_department_id: null,
+              lo_employee_id: null,
+              lo_full_name: "",
+              l_sub_department_id: null,
+              l_employee_id: null,
+              l_full_name: "",
+              leave_level_set: "AL1",
+              loan_level_set: "AL1"
+            });
+            swalMessage({
+              title: "Record Added Successfully",
+              type: "success"
+            });
           }
         },
         onFailure: error => {

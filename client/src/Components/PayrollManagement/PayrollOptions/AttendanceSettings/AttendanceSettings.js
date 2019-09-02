@@ -28,7 +28,8 @@ export default class AttendanceSettings extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      earnings: []
+      earnings: [],
+      authorization_plan: "R"
     };
     this.getOptions();
     this.getEarnings();
@@ -332,8 +333,34 @@ export default class AttendanceSettings extends Component {
               </div>
 
               <div className="row">
+                <div className="col-2">
+                  <label>Authorization Plan</label>
+                  <div className="customRadio">
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        value="R"
+                        name="authorization_plan"
+                        checked={this.state.authorization_plan === "R"}
+                        onChange={this.textHandler.bind(this)}
+                      />
+                      <span>Role Wise</span>
+                    </label>
+
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        value="A"
+                        name="authorization_plan"
+                        checked={this.state.authorization_plan === "A"}
+                        onChange={this.textHandler.bind(this)}
+                      />
+                      <span>Authorization Setup</span>
+                    </label>
+                  </div>
+                </div>
                 <AlagehAutoComplete
-                  div={{ className: "col-3 form-group" }}
+                  div={{ className: "col-2 form-group" }}
                   label={{
                     forceLabel: "Leave Authorization level",
                     isImp: false
@@ -356,7 +383,7 @@ export default class AttendanceSettings extends Component {
                   }}
                 />
                 <AlagehAutoComplete
-                  div={{ className: "col-3 form-group" }}
+                  div={{ className: "col-2 form-group" }}
                   label={{
                     forceLabel: "Loan Authorization level",
                     isImp: false
@@ -379,7 +406,7 @@ export default class AttendanceSettings extends Component {
                   }}
                 />
                 <AlagehAutoComplete
-                  div={{ className: "col-3 form-group" }}
+                  div={{ className: "col-2 form-group" }}
                   label={{
                     forceLabel: "Review Authorization level",
                     isImp: false
@@ -402,7 +429,7 @@ export default class AttendanceSettings extends Component {
                   }}
                 />
                 <AlagehAutoComplete
-                  div={{ className: "col-3 form-group" }}
+                  div={{ className: "col-2 form-group" }}
                   label={{ forceLabel: "Leave encashment level", isImp: false }}
                   selector={{
                     name: "leave_encash_level",
