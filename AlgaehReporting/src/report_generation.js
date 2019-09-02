@@ -953,12 +953,20 @@ module.exports = {
                     for (let i = 1; i <= 6; i++) {
                       worksheet.addRow([]);
                     }
-
-                    document.querySelectorAll("table").forEach(table => {
+                    // TODO: Need to remove this method
+                    const rawbosy = document.toString();
+                    let select = "table";
+                    if (rawbosy.indexOf("table") > -1) {
+                      select = "table";
+                    } else {
+                      select = "body";
+                    }
+                    document.querySelectorAll(select).forEach(table => {
                       table.querySelectorAll("thead").forEach(thead => {
                         let row = [];
                         let column = [];
                         thead.querySelectorAll("th").forEach((th, headIdx) => {
+                          console.log("th.rawText", th.rawText);
                           const thAttrs = th.rawAttributes;
                           let _width = {
                             width: th.rawText.length < 8 ? 12 : 30
@@ -973,11 +981,6 @@ module.exports = {
                             key: headIdx,
                             ..._width
                           });
-                          // row.push({
-                          //   header: th.rawText,
-                          //   key: headIdx,
-                          //   ..._width
-                          // });
 
                           row.push(th.rawText);
                         });
@@ -1003,10 +1006,6 @@ module.exports = {
                           vertical: "middle",
                           horizontal: "center"
                         };
-                        // headerRow.eachCell((cell, cellIndex) => {
-                        //   worksheet.getColumn(cellIndex).width =
-                        //     cell.value.length < 8 ? 10 : 30;
-                        // });
                       });
 
                       table.querySelectorAll("tr").forEach((tr, rowIndex) => {
@@ -1061,7 +1060,6 @@ module.exports = {
                               .replace(/  +/g, " ")
                               .replace(/&amp;/gi, "&");
                           }
-                          //}
                         });
                       });
                     });
@@ -1106,6 +1104,7 @@ module.exports = {
                     });
                   } catch (e) {
                     _mysql.releaseConnection();
+                    console.error(e);
                     res.status(500).json({
                       success: false,
                       message: e.toString()
