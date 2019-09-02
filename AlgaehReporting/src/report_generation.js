@@ -960,7 +960,9 @@ module.exports = {
                         let column = [];
                         thead.querySelectorAll("th").forEach((th, headIdx) => {
                           const thAttrs = th.rawAttributes;
-                          let _width = {};
+                          let _width = {
+                            width: th.rawText.length < 8 ? 12 : 30
+                          };
                           if (Object.keys(thAttrs).length > 0) {
                             if (thAttrs.excelwidth !== undefined) {
                               _width = { width: parseInt(thAttrs.excelwidth) };
@@ -1016,8 +1018,6 @@ module.exports = {
                           const attrs = td.rawAttributes;
                           const cell = itemRow.getCell(celllIdx);
 
-                          cell.value = td.rawText.replace(/  +/g, " ");
-
                           if (Object.keys(attrs).length > 0) {
                             if (attrs.excelfonts !== undefined) {
                               cell.font = JSON.parse(attrs.excelfonts);
@@ -1034,15 +1034,32 @@ module.exports = {
                                   _mergeCells[1]
                                 }${rowID}`;
 
+                                const den = `${_mergeCells[0]}${rowID}`;
+
+                                worksheet.getCell(den).value = td.rawText
+                                  .replace(/\n/g, " ")
+                                  .replace(/  +/g, " ")
+                                  .replace(/&amp;/gi, "&");
                                 worksheet.mergeCells(merge);
                               }
+                            } else {
+                              cell.value = td.rawText
+                                .replace(/\n/g, " ")
+                                .replace(/  +/g, " ")
+                                .replace(/&amp;/gi, "&");
                             }
+
                             if (attrs.excelalignment !== undefined) {
                               cell.alignment = JSON.parse(attrs.excelalignment);
                             }
                             if (attrs.excelborder !== undefined) {
                               cell.border = JSON.parse(attrs.excelborder);
                             }
+                          } else {
+                            cell.value = td.rawText
+                              .replace(/\n/g, " ")
+                              .replace(/  +/g, " ")
+                              .replace(/&amp;/gi, "&");
                           }
                           //}
                         });
