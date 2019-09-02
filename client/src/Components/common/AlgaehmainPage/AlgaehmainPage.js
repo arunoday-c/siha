@@ -16,7 +16,6 @@ import {
 import Enumarable from "linq";
 import swal from "sweetalert2";
 import sockets from "../../../sockets";
-import socket from "../../../sockets";
 
 class PersistentDrawer extends React.Component {
   constructor(props) {
@@ -167,15 +166,18 @@ class PersistentDrawer extends React.Component {
             {
               menuList: dataResponse.data.records
             },
-            () =>
-              sockets.emit(
-                "user_logged",
-                getCookie("userName"),
-                this.state.menuList.map(module =>
-                  module.module_code.toLowerCase()
-                ),
-                getCookie("keyResources")
-              )
+            () => {
+              if (sockets.connected) {
+                sockets.emit(
+                  "user_logged",
+                  getCookie("userName"),
+                  this.state.menuList.map(module =>
+                    module.module_code.toLowerCase()
+                  ),
+                  getCookie("keyResources")
+                );
+              }
+            }
           );
         }
       },
@@ -441,7 +443,9 @@ class PersistentDrawer extends React.Component {
   }
 
   logoutLink(e) {
-    socket.emit("user_logout");
+    if (sockets.connected) {
+      sockets.emit("user_logout");
+    }
     window.location.href = window.location.origin + "/#";
   }
 

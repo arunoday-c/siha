@@ -114,23 +114,27 @@ export default class LeaveAuthorization extends Component {
               title: "Leave Authorized Successfully",
               type: "success"
             });
-            this.leaveAuthSock.emit(
-              "leave_authorized",
-              data.employee_id,
-              data.from_date,
-              this.state.auth_level
-            );
+            if (this.leaveAuthSock.connected) {
+              this.leaveAuthSock.emit(
+                "/leave/authorized",
+                data.employee_id,
+                data.from_date,
+                this.state.auth_level
+              );
+            }
           } else {
             swalMessage({
               title: "Leave Rejected Successfully",
               type: "success"
             });
-            this.leaveAuthSock.emit(
-              "leave_rejected",
-              data.employee_id,
-              data.from_date,
-              this.state.auth_level
-            );
+            if (this.leaveAuthSock.connected) {
+              this.leaveAuthSock.emit(
+                "/leave/rejected",
+                data.employee_id,
+                data.from_date,
+                this.state.auth_level
+              );
+            }
           }
         }
       },

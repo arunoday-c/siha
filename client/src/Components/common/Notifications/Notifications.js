@@ -31,36 +31,46 @@ export default class Notifications extends Component {
 
   componentDidMount() {
     // use fat arrow functions as callbacks to inherit "this"
-    this.socket.on("refresh_appointment", patient => {
-      this.addToNotiList(
-        `Patient ${patient.patient_name} added to ${this.formatTime(
-          patient.appointment_from_time
-        )} slot ${this.formatDate(patient.appointment_date)}`
-      );
-    });
-    this.socket.on("patient_added", patient => {
-      const time = this.formatTime(patient.appointment_from_time);
-      const date = this.formatDate(patient.appointment_date);
-      this.addToNotiList(
-        `${patient.patient_name} booked an appointment on ${time}
-        ${date}`
-      );
-    });
-    this.socket.on("service_added", services => {
-      let serStr = "";
-      services.forEach(service => {
-        serStr = serStr + service;
+    if (this.socket.connected) {
+      this.socket.on("refresh_appointment", patient => {
+        this.addToNotiList(
+          `Patient ${patient.patient_name} added to ${this.formatTime(
+            patient.appointment_from_time
+          )} slot ${this.formatDate(patient.appointment_date)}`
+        );
       });
-      this.addToNotiList(`The following services are ordered: ${serStr}`);
-    });
+      this.socket.on("patient_added", patient => {
+        const time = this.formatTime(patient.appointment_from_time);
+        const date = this.formatDate(patient.appointment_date);
+        this.addToNotiList(
+          `${patient.patient_name} booked an appointment on ${time}
+          ${date}`
+        );
+      });
+      this.socket.on("service_added", services => {
+        let serStr = "";
+        services.forEach(service => {
+          serStr = serStr + service;
+        });
+        this.addToNotiList(`The following services are ordered: ${serStr}`);
+      });
 
-    this.socket.on("leave_requested", text => {
-      this.addToNotiList(text);
-    });
+      this.socket.on("/leave/requested", text => {
+        this.addToNotiList(text);
+      });
 
-    this.socket.on("leave_status", text => {
-      this.addToNotiList(text);
-    });
+      this.socket.on("/leave/status", text => {
+        this.addToNotiList(text);
+      });
+
+      this.socket.on("/loan/requested", text => {
+        this.addToNotiList(text);
+      });
+
+      this.socket.on("/loan/status", text => {
+        this.addToNotiList(text);
+      });
+    }
   }
 
   addToNotiList = text => {

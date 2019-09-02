@@ -14,6 +14,7 @@ import {
 import { getYears } from "../../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
+import Socket from "../../../../sockets";
 
 class LoanRequest extends Component {
   constructor(props) {
@@ -30,6 +31,7 @@ class LoanRequest extends Component {
       deducting_month: parseInt(moment(new Date()).format("M"), 10) + 1,
       request_type: "LO"
     };
+    this.loanSocket = Socket;
     this.getLoanMaster();
   }
 
@@ -64,6 +66,7 @@ class LoanRequest extends Component {
       }
     });
   }
+
   getEmployeeLoans() {
     algaehApiCall({
       uri: "/loan/getLoanApplication",
@@ -100,6 +103,7 @@ class LoanRequest extends Component {
       start_month: null
     });
   }
+
   clearAdvanceState() {
     this.setState({
       deducting_year: moment().year(),
@@ -110,6 +114,7 @@ class LoanRequest extends Component {
   }
 
   applyAdvance() {
+    const { full_name, reporting_to_id } = this.props.empData;
     const { deducting_month, deducting_year } = this.state;
     const current_month = parseInt(moment().format("M"), 10);
     const current_year = parseInt(moment().format("M"), 10);
@@ -163,6 +168,11 @@ class LoanRequest extends Component {
   }
 
   applyLoan() {
+    const { full_name, reporting_to_id } = this.props.empData;
+    const { loan_master, loan_id } = this.state;
+    const [{ loan_description }] = loan_master.filter(
+      loan => loan.hims_d_loan_id === loan_id
+    );
     AlgaehValidation({
       alertTypeIcon: "warning",
       querySelector: "data-validate='loanApplyDiv'",
@@ -198,6 +208,13 @@ class LoanRequest extends Component {
                   title: "Record Added Successfully",
                   type: "success"
                 });
+                if (this.loanSocket.connected) {
+                  this.loanSocket.emit("/loan/applied", {
+                    full_name,
+                    reporting_to_id,
+                    loan_description
+                  });
+                }
                 this.clearState();
                 this.getEmployeeLoans();
               }

@@ -579,7 +579,11 @@ const SaveOrdersServices = ($this, e) => {
                 discount_amount: null,
                 net_total: null
               },
-              () => $this.serviceSocket.emit("service_ordered", inputObj)
+              () => {
+                if ($this.serviceSocket.connected) {
+                  $this.serviceSocket.emit("service_ordered", inputObj);
+                }
+              }
             );
             $this.props.onClose && $this.props.onClose(e);
 

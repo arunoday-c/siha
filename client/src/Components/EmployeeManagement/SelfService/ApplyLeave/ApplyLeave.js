@@ -424,7 +424,6 @@ class ApplyLeave extends Component {
   }
 
   applyLeave() {
-
     const { full_name, reporting_to_id } = this.props.empData;
     const leave_desc = this.state.emp_leaves_data.filter(
       leave => leave.leave_id === this.state.leave_id
@@ -459,12 +458,14 @@ class ApplyLeave extends Component {
                 title: "Leave Applied Successfully",
                 type: "success"
               });
-              this.leaveSocket.emit("leave_applied", {
-                full_name,
-                reporting_to_id,
-                leave_days: this.state.total_applied_days,
-                leave_type: leave_desc[0].leave_description
-              });
+              if (this.leaveSocket.connected) {
+                this.leaveSocket.emit("/leave/applied", {
+                  full_name,
+                  reporting_to_id,
+                  leave_days: this.state.total_applied_days,
+                  leave_type: leave_desc[0].leave_description
+                });
+              }
               this.getEmployeeLeaveHistory();
               this.clearState();
             } else if (!res.data.success) {

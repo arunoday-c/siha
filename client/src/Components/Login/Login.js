@@ -84,11 +84,11 @@ export default class Login extends Component {
             "appRole",
             response.data.records.app_d_app_roles_id
           );
-          window.history.pushState(null, null, window.location.href);
-          window.onpopstate = function(event) {
-            window.history.go(1);
-          };
-          window.location.hash = "/Home";
+          // window.history.pushState(null, null, window.location.href);
+          // window.onpopstate = function(event) {
+          //   window.history.go(1);
+          // };
+          window.location.replace("/#/Home");
           // setSecure(response.data.records.secureModels);
 
           // this.getHospitalDetails();
