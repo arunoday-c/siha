@@ -452,6 +452,19 @@ class NewEmployeeProjectRoster extends Component {
     return _start + " - " + _end;
   }
 
+  getInputDates = () => {
+    const { inputs } = this.state;
+    let yearMonth = inputs.year + "-" + inputs.month + "-01";
+
+    const fromDate = moment(yearMonth)
+      .startOf("month")
+      .format("YYYY-MM-DD");
+    const toDate = moment(yearMonth)
+      .endOf("month")
+      .format("YYYY-MM-DD");
+    return { fromDate, toDate };
+  };
+
   getStartandMonthEnd() {
     let yearMonth =
       this.state.inputs.year + "-" + this.state.inputs.month + "-01";
@@ -475,14 +488,7 @@ class NewEmployeeProjectRoster extends Component {
       },
       () => {
         inputs = this.state.inputs;
-        let yearMonth = inputs.year + "-" + inputs.month + "-01";
-
-        var fromDate = moment(yearMonth)
-          .startOf("month")
-          .format("YYYY-MM-DD");
-        var toDate = moment(yearMonth)
-          .endOf("month")
-          .format("YYYY-MM-DD");
+        const { fromDate, toDate } = this.getInputDates();
 
         algaehApiCall({
           uri: "/projectjobcosting/getEmployeesForProjectRoster",
@@ -524,6 +530,7 @@ class NewEmployeeProjectRoster extends Component {
   }
 
   render() {
+    const { fromDate, toDate } = this.getInputDates();
     return (
       <div className="EmployeeProjectRoster">
         {this.state.openProjectAssign ? (
@@ -547,6 +554,8 @@ class NewEmployeeProjectRoster extends Component {
         {this.state.openAnother ? (
           <ProjectEmpAssign
             data={{
+              from_date: fromDate,
+              to_date: toDate,
               projects: this.state.projects,
               employees: this.state.employees,
               hospital_id: this.state.inputs.hospital_id
