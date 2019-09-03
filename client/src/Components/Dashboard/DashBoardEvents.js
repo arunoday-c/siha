@@ -66,6 +66,7 @@ export default function DashBoardEvents() {
         method: "GET",
 
         onSuccess: response => {
+          debugger;
           if (response.data.success) {
             let no_of_employees = response.data.records.length;
 
@@ -82,7 +83,7 @@ export default function DashBoardEvents() {
             });
             // date_of_joining
             let total_company_salary = _.sumBy(response.data.records, s =>
-              parseFloat(s.cost_to_company)
+              s.cost_to_company !== null ? parseFloat(s.cost_to_company) : 0
             );
 
             let avg_salary =

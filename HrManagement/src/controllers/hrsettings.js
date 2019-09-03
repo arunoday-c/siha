@@ -16,7 +16,8 @@ import {
   getProjects,
   addProject,
   updateProjects,
-  getEmployeeAuthorizationSetup
+  getEmployeeAuthorizationSetup,
+  addEmployeeAuthorizationSetup
 } from "../models/hrsettings";
 export default () => {
   const api = Router();
@@ -135,6 +136,24 @@ export default () => {
       result: req.records
     });
   });
+
+  api.post(
+    "/addEmployeeAuthorizationSetup",
+    addEmployeeAuthorizationSetup,
+    (req, res, next) => {
+      if (req.records.invalid_input == true) {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: false,
+          result: req.records
+        });
+      } else {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: true,
+          result: req.records
+        });
+      }
+    }
+  );
 
   return api;
 };

@@ -218,7 +218,7 @@ class Dashboard extends Component {
             <div className="row">
               <div className="col-6">
                 <div className="card animated fadeInUp faster">
-                  <h6>Employee Count by Department</h6>
+                  <h6>No. of Employee by Department</h6>
                   <div className="dashboardChartsCntr">
                     <Bar data={this.state.Dept_Employee} />
                   </div>
@@ -226,7 +226,7 @@ class Dashboard extends Component {
               </div>{" "}
               <div className="col-6">
                 <div className="card animated fadeInUp faster">
-                  <h6>Employee Count by Designation</h6>
+                  <h6>No. of Employee by Designation</h6>
                   <div className="dashboardChartsCntr">
                     <Bar data={this.state.Desig_Employee} />
                   </div>

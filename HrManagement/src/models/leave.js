@@ -2132,6 +2132,18 @@ module.exports = {
     if (req.query.year > 0 && req.query.employee_id > 0) {
       const _mysql = new algaehMysql();
 
+
+//       query:
+//       "select hims_f_employee_monthly_leave_id, employee_id, year, leave_id, L.leave_code,\
+// L.leave_description,L.leave_type,total_eligible, availed_till_date, close_balance,\
+// E.employee_code ,E.full_name as employee_name,\
+// LD.hims_d_leave_detail_id,LD.employee_type, LD.eligible_days\
+// from hims_f_employee_monthly_leave  ML inner join hims_d_leave L on ML.leave_id=L.hims_d_leave_id       \
+// inner join hims_d_leave_detail LD on L.hims_d_leave_id=LD.leave_header_id\
+// inner join hims_d_employee E on ML.employee_id=E.hims_d_employee_id and E.record_status='A'\
+// and L.record_status='A' where ML.year=? and ML.employee_id=?  and  LD.employee_type=E.employee_type and  (LD.gender=E.sex or LD.gender='BOTH' )\
+//   order by hims_f_employee_monthly_leave_id desc;",
+
       _mysql
         .executeQuery({
           query:
@@ -2142,7 +2154,7 @@ module.exports = {
       from hims_f_employee_monthly_leave  ML inner join hims_d_leave L on ML.leave_id=L.hims_d_leave_id       \
       inner join hims_d_leave_detail LD on L.hims_d_leave_id=LD.leave_header_id\
       inner join hims_d_employee E on ML.employee_id=E.hims_d_employee_id and E.record_status='A'\
-      and L.record_status='A' where ML.year=? and ML.employee_id=?  and  LD.employee_type=E.employee_type and  (LD.gender=E.sex or LD.gender='BOTH' )\
+      and L.record_status='A' where ML.year=? and ML.employee_id=? \
         order by hims_f_employee_monthly_leave_id desc;",
           values: [req.query.year, req.query.employee_id],
           printQuery: false
@@ -2890,20 +2902,61 @@ module.exports = {
       }') `;
     }
 
+    const _mysql = new algaehMysql();
+
+    _mysql
+    .executeQuery({
+      query:
+        "select authorization_plan from hims_d_hrms_options;"
+    })
+    .then(options => {
+
+      if (
+        options.length > 0 
+      ) {
+
+
+       
+
+
     let auth_level = "";
-    if (req.query.auth_level == "AL1") {
-      auth_level = "  authorized1='N' ";
-    } else if (req.query.auth_level == "AL2") {
-      auth_level = "  authorized1='Y' and authorized2='N' ";
-    } else if (req.query.auth_level == "AL3") {
-      auth_level = "  authorized1='Y' and authorized2='Y' and authorized3='N' ";
-    } else if (req.query.auth_level == "AL4") {
-      auth_level =
-        "  authorized1='Y' and authorized2='Y' and authorized3='Y' and authorized4='N' ";
-    } else if (req.query.auth_level == "AL5") {
-      auth_level =
-        "  authorized1='Y' and authorized2='Y' and authorized3='Y' and authorized4='Y'  and authorized5='N' ";
-    }
+
+    if( options[0]["authorization_plan"]=="A" ){
+
+
+
+      if (req.query.auth_level == "AL1") {
+        auth_level = "  authorized1='N'  and AUS.leave_level1="+req.userIdentity.employee_id;
+      } else if (req.query.auth_level == "AL2") {
+        auth_level = "  authorized1='Y' and authorized2='N'  and AUS.leave_level2="+req.userIdentity.employee_id;
+      } else if (req.query.auth_level == "AL3") {
+        auth_level = "  authorized1='Y' and authorized2='Y' and authorized3='N' and AUS.leave_level3="+req.userIdentity.employee_id;
+      } else if (req.query.auth_level == "AL4") {
+        auth_level =
+          "  authorized1='Y' and authorized2='Y' and authorized3='Y' and authorized4='N' ";
+      } else if (req.query.auth_level == "AL5") {
+        auth_level =
+          "  authorized1='Y' and authorized2='Y' and authorized3='Y' and authorized4='Y'  and authorized5='N' ";
+      }
+
+
+
+    }else{
+        if (req.query.auth_level == "AL1") {
+          auth_level = "  authorized1='N' AND E.reporting_to_id="+req.userIdentity.employee_id;
+        } else if (req.query.auth_level == "AL2") {
+          auth_level = "  authorized1='Y' and authorized2='N' ";
+        } else if (req.query.auth_level == "AL3") {
+          auth_level = "  authorized1='Y' and authorized2='Y' and authorized3='N' ";
+        } else if (req.query.auth_level == "AL4") {
+          auth_level =
+            "  authorized1='Y' and authorized2='Y' and authorized3='Y' and authorized4='N' ";
+        } else if (req.query.auth_level == "AL5") {
+          auth_level =
+            "  authorized1='Y' and authorized2='Y' and authorized3='Y' and authorized4='Y'  and authorized5='N' ";
+        }
+
+  }
 
     let leave_status = "";
 
@@ -2921,7 +2974,7 @@ module.exports = {
     }
 
     if (req.userIdentity.leave_authorize_privilege != "N") {
-      const _mysql = new algaehMysql();
+
       _mysql
         .executeQuery({
           query:
@@ -2933,9 +2986,11 @@ module.exports = {
         E.full_name as employee_name,E.religion_id,SD.sub_department_code,SD.sub_department_name, DE.designation \
         from hims_f_leave_application LA inner join hims_d_leave L on LA.leave_id=L.hims_d_leave_id\
         and L.record_status='A' inner join hims_d_employee E on LA.employee_id=E.hims_d_employee_id \
-        and E.record_status='A' inner join hims_d_sub_department SD \
-        on LA.sub_department_id=SD.hims_d_sub_department_id inner join hims_d_designation DE on\
-        E.employee_designation_id = DE.hims_d_designation_id  where LA.hospital_id=? and " +
+        and E.record_status='A' left join hims_d_sub_department SD \
+        on LA.sub_department_id=SD.hims_d_sub_department_id left join hims_d_designation DE on\
+        E.employee_designation_id = DE.hims_d_designation_id  \
+        left join hims_d_authorization_setup AUS on  AUS.employee_id=E.hims_d_employee_id \
+        where LA.hospital_id=? and " +
             leave_status +
             "" +
             auth_level +
@@ -2943,10 +2998,10 @@ module.exports = {
             range +
             "" +
             employee +
-            "order by hims_f_leave_application_id desc",
+            " order by hims_f_leave_application_id desc",
           values: [req.userIdentity.hospital_id],
 
-          printQuery: false
+          printQuery: true
         })
         .then(result => {
           _mysql.releaseConnection();
@@ -2957,15 +3012,34 @@ module.exports = {
           _mysql.releaseConnection();
           next(e);
         });
+
+
+
+        
     } else {
       req.records = {
         invalid_input: true,
         message: "you dont have admin privilege "
       };
-
       next();
       return;
     }
+
+
+  } else {
+    _mysql.releaseConnection();
+    req.records = {
+      message: "Please define HRMS options",
+      invalid_input: true
+    };
+    next();
+  }
+
+  })
+  .catch(e => {
+    _mysql.releaseConnection();
+    next(e);
+  });
   },
 
   //created by irfan: update leave header

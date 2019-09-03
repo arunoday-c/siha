@@ -386,20 +386,31 @@ export function excelManualTimeSheetRead(req, res, next) {
   req.on("end", () => {
     const buff = new Buffer.from(buffer, "base64");
     var workbook = new Excel.Workbook();
+
     let filter;
     let excelArray = [];
+    let properFile = true;
     workbook.xlsx
       .load(buff)
       .then(() => {
-        console.log("three");
         var worksheet = workbook.getWorksheet(1);
-        //  workbook.eachSheet(function(worksheet, sheetId) {
-        console.log("four");
+
         let columns = [];
         const lastRow = worksheet.lastRow;
-        filter = JSON.parse(lastRow.values[1]);
+
+        try {
+          filter = JSON.parse(lastRow.values[1]);
+        } catch (e) {
+          properFile = false;
+          next(
+            new Error(
+              "Uploaded template is incorrect. Please upload downloaded template only"
+            )
+          );
+          return;
+        }
+
         worksheet.eachRow(function(row, rowNumber) {
-          console.log("rowNumber" + rowNumber);
           if (rowNumber === 1) {
             columns = row.values;
           } else {
@@ -436,11 +447,13 @@ export function excelManualTimeSheetRead(req, res, next) {
         //  });
       })
       .then(() => {
-        excelArray.pop();
-        filter.month = parseInt(filter.month);
-        filter.year = parseInt(filter.year);
-        req.body = { ...filter, data: excelArray };
-        next();
+        if (properFile) {
+          excelArray.pop();
+          filter.month = parseInt(filter.month);
+          filter.year = parseInt(filter.year);
+          req.body = { ...filter, data: excelArray };
+          next();
+        }
       })
       .catch(error => {
         next(error);

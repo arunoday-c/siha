@@ -510,11 +510,17 @@ module.exports = {
       const input = req.body;
       console.log("count EMP :", input.length);
 
-      const insurtColumns = ["employee_id", "amount", "earnings_id"];
+      const insurtColumns = [
+        "employee_id",
+        "leave_id",
+        "total_eligible",
+        "availed_till_date",
+        "closing_balance"
+      ];
 
       _mysql
         .executeQuery({
-          query: "INSERT INTO aa_earning(??) VALUES ? ",
+          query: "INSERT INTO aa_leave_balance(??) VALUES ? ",
           values: input,
           includeValues: insurtColumns,
           bulkInsertOrUpdate: true,

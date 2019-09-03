@@ -133,7 +133,7 @@ class PayRollDetails extends Component {
               <h5>
                 <span>Salary Earnings Breakup</span>
               </h5>
-              <div className="row">
+              {/* <div className="row">
                 <div
                   className="col-2 customCheckbox"
                   style={{ border: "none" }}
@@ -149,7 +149,7 @@ class PayRollDetails extends Component {
                     </span>
                   </label>
                 </div>
-              </div>
+              </div> */}
               <div
                 className="row padding-bottom-5"
                 data-validate="EarnComponent"
@@ -287,38 +287,38 @@ class PayRollDetails extends Component {
                             />
                           );
                         }
-                      },
-                      {
-                        fieldName: "allocate",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Allocate" }} />
-                        ),
-                        displayTemplate: row => {
-                          return row.allocate === "Y" ? "Yes" : "No";
-                        },
-                        editorTemplate: row => {
-                          return (
-                            <AlagehAutoComplete
-                              div={{}}
-                              selector={{
-                                name: "allocate",
-                                className: "select-fld",
-                                value: row.allocate,
-                                dataSource: {
-                                  textField: "name",
-                                  valueField: "value",
-                                  data: GlobalVariables.FORMAT_YESNO
-                                },
-                                onChange: onchangegridcol.bind(this, this, row),
-                                others: {
-                                  errormessage: "Status - cannot be blank",
-                                  required: true
-                                }
-                              }}
-                            />
-                          );
-                        }
                       }
+                      // ,{
+                      //   fieldName: "allocate",
+                      //   label: (
+                      //     <AlgaehLabel label={{ forceLabel: "Allocate" }} />
+                      //   ),
+                      //   displayTemplate: row => {
+                      //     return row.allocate === "Y" ? "Yes" : "No";
+                      //   },
+                      //   editorTemplate: row => {
+                      //     return (
+                      //       <AlagehAutoComplete
+                      //         div={{}}
+                      //         selector={{
+                      //           name: "allocate",
+                      //           className: "select-fld",
+                      //           value: row.allocate,
+                      //           dataSource: {
+                      //             textField: "name",
+                      //             valueField: "value",
+                      //             data: GlobalVariables.FORMAT_YESNO
+                      //           },
+                      //           onChange: onchangegridcol.bind(this, this, row),
+                      //           others: {
+                      //             errormessage: "Status - cannot be blank",
+                      //             required: true
+                      //           }
+                      //         }}
+                      //       />
+                      //     );
+                      //   }
+                      // }
                     ]}
                     keyId="hims_d_employee_earnings_id"
                     dataSource={{ data: this.state.earningComponents }}
@@ -330,6 +330,57 @@ class PayRollDetails extends Component {
                       onDone: updateEarningComponent.bind(this, this)
                     }}
                   />
+                </div>
+              </div>
+              <hr />
+              <div className="row padding-bottom-5">
+                <div className="col-3">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Gross Salary"
+                    }}
+                  />
+                  <h6>{getAmountFormart(this.state.gross_salary)}</h6>
+                </div>
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Total Earning"
+                    }}
+                  />
+                  <h6>{getAmountFormart(this.state.total_earnings)}</h6>
+                </div>
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Total Deduction"
+                    }}
+                  />
+                  <h6>{getAmountFormart(this.state.total_deductions)}</h6>
+                </div>
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Total Emp. Contribution"
+                    }}
+                  />
+                  <h6>{getAmountFormart(this.state.total_contributions)}</h6>
+                </div>
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Net Salary"
+                    }}
+                  />
+                  <h6>{getAmountFormart(this.state.net_salary)}</h6>
+                </div>
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Cost to Company"
+                    }}
+                  />
+                  <h6>{getAmountFormart(this.state.cost_to_company)}</h6>
                 </div>
               </div>
             </div>
@@ -647,63 +698,6 @@ class PayRollDetails extends Component {
                   />
                 </div>
               </div>
-            </div>
-            <div className="col-lg-12 secondary-details">
-              <hr />
-              <div className="row padding-bottom-5">
-                <div className="col-2">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Gross Salary"
-                    }}
-                  />
-                  <h6>{getAmountFormart(this.state.gross_salary)}</h6>
-                </div>
-                <div className="col-2">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Total Earning"
-                    }}
-                  />
-                  <h6>{getAmountFormart(this.state.total_earnings)}</h6>
-                </div>
-                <div className="col-2">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Total Deduction"
-                    }}
-                  />
-                  <h6>{getAmountFormart(this.state.total_deductions)}</h6>
-                </div>
-                <div className="col-2">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Total Emp. Contribution"
-                    }}
-                  />
-                  <h6>{getAmountFormart(this.state.total_contributions)}</h6>
-                </div>
-                <div className="col-2">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Net Salary"
-                    }}
-                  />
-                  <h6>{getAmountFormart(this.state.net_salary)}</h6>
-                </div>
-                <div className="col-2">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Cost to Company"
-                    }}
-                  />
-                  <h6>{getAmountFormart(this.state.cost_to_company)}</h6>
-                </div>
-              </div>
-              {/* <div className="row padding-bottom-5">
-                <div className="col-10" />
-                
-              </div> */}
             </div>
           </div>
         </div>

@@ -35,7 +35,7 @@ const compile = async function(templateName, data) {
     return comp;
   } catch (error) {
     console.log("compile -data -", data);
-    return {};
+    return undefined;
   }
 
   // return "رقم الفاتورة";
@@ -476,6 +476,7 @@ module.exports = {
                         });
                       } else {
                         fs.exists(_reportOutput[0], exists => {
+                          _mysql.releaseConnection();
                           if (exists) {
                             res.writeHead(200, {
                               "content-type": "application/pdf",
@@ -822,7 +823,7 @@ module.exports = {
       }
     });
   },
-  getExcelReport: async (req, res) => {
+  getExcelReport: async (req, res, next) => {
     const input = req.query;
     const _mysql = new algaehMysql();
     try {
@@ -883,25 +884,7 @@ module.exports = {
                 _inputParam.reportName + ".js"
               );
               let excelRun;
-              // if (fs.existsSync(filePathJs)) {
-              //   const { executeExcel } = require(path.join(
-              //     templatePath,
-              //     _inputParam.reportName + ".js"
-              //   ));
-              //   excelRun = executeExcel;
-              // } else {
-              //   filePathJs = path.join(
-              //     mainPath,
-              //     _inputParam.reportName + ".js"
-              //   );
-              //   if (fs.existsSync(filePathJs)) {
-              //     const { executePDF } = require(path.join(
-              //       mainPath,
-              //       _inputParam.reportName + ".js"
-              //     ));
-              //     excelRun = executePDF;
-              //   }
-              // }
+
               const { executePDF } = require(path.join(
                 mainPath,
                 _inputParam.reportName + ".js"
@@ -922,186 +905,212 @@ module.exports = {
                 result: result
               }).then(resultData => {
                 (async () => {
-                  let rawData = await compile(
-                    _inputParam.reportName,
-                    resultData
-                  );
-                  console.log(resultData);
-                  var workbook = new Excel.Workbook();
-                  workbook.creator = "Algaeh technologies private limited";
-                  workbook.lastModifiedBy = _inputParam.reportName;
-                  workbook.created = new Date();
-                  workbook.modified = new Date();
-
-                  var worksheet = workbook.addWorksheet("Report", {
-                    properties: { tabColor: { argb: "FFC0000" } }
-                  });
-                  const logoPath = path.join(
-                    mainPath,
-                    "images",
-                    "clientLogo.png"
-                  );
-                  let companyLogo = workbook.addImage({
-                    filename: logoPath,
-                    extension: "png"
-                  });
-
-                  const document = parse(rawData);
-
-                  function columnToLetter(column) {
-                    var temp,
-                      letter = "";
-                    while (column > 0) {
-                      temp = (column - 1) % 26;
-                      letter = String.fromCharCode(temp + 65) + letter;
-                      column = (column - temp - 1) / 26;
+                  try {
+                    let rawData = await compile(
+                      _inputParam.reportName,
+                      resultData
+                    );
+                    if (rawData === undefined) {
+                      _mysql.releaseConnection();
+                      res.status(500).json({
+                        success: false,
+                        message: "There is no data for the above filter."
+                      });
+                      return;
                     }
-                    return letter;
-                  }
+                    var workbook = new Excel.Workbook();
+                    workbook.creator = "Algaeh technologies private limited";
+                    workbook.lastModifiedBy = _inputParam.reportName;
+                    workbook.created = new Date();
+                    workbook.modified = new Date();
 
-                  for (let i = 1; i <= 6; i++) {
-                    worksheet.addRow([]);
-                  }
-
-                  document.querySelectorAll("table").forEach(table => {
-                    table.querySelectorAll("thead").forEach(thead => {
-                      let row = [];
-
-                      thead.querySelectorAll("th").forEach(th => {
-                        row.push(th.rawText);
-                      });
-                      worksheet.addRow(row);
-                      var lastRow = worksheet.rowCount;
-                      let headerRow = worksheet.getRow(lastRow);
-                      headerRow.fill = {
-                        type: "pattern",
-                        pattern: "solid",
-                        fgColor: {
-                          argb: "48A897"
-                        }
-                      };
-                      headerRow.font = {
-                        name: "calibri",
-                        family: 4,
-                        size: 12,
-                        bold: true,
-                        color: { argb: "FFFFFF" }
-                      };
-                      headerRow.alignment = {
-                        vertical: "middle",
-                        horizontal: "center"
-                      };
-                      headerRow.eachCell((cell, cellIndex) => {
-                        worksheet.getColumn(cellIndex).width =
-                          cell.value.length < 8 ? 10 : 30;
-                      });
+                    var worksheet = workbook.addWorksheet("Report", {
+                      properties: { tabColor: { argb: "FFC0000" } }
+                    });
+                    const logoPath = path.join(
+                      mainPath,
+                      "images",
+                      "clientLogo.png"
+                    );
+                    let companyLogo = workbook.addImage({
+                      filename: logoPath,
+                      extension: "png"
                     });
 
-                    table.querySelectorAll("tr").forEach((tr, rowIndex) => {
-                      var rowID = worksheet.rowCount + 1;
-                      const itemRow = worksheet.getRow(rowID);
+                    const document = parse(rawData);
 
-                      tr.querySelectorAll("td").forEach((td, cellIndex) => {
-                        const celllIdx = cellIndex + 1;
-                        const attrs = td.rawAttributes;
-                        const cell = itemRow.getCell(celllIdx);
+                    function columnToLetter(column) {
+                      var temp,
+                        letter = "";
+                      while (column > 0) {
+                        temp = (column - 1) % 26;
+                        letter = String.fromCharCode(temp + 65) + letter;
+                        column = (column - temp - 1) / 26;
+                      }
+                      return letter;
+                    }
 
-                        cell.value = td.rawText.replace(/  +/g, " ");
-
-                        if (Object.keys(attrs).length > 0) {
-                          if (attrs.excelfonts !== undefined) {
-                            cell.font = JSON.parse(attrs.excelfonts);
-                          }
-                          if (attrs.excelfill !== undefined) {
-                            console.log(attrs.excelfill);
-                            cell.fill = JSON.parse(attrs.excelfill);
-                          }
-                          if (attrs.colspan !== undefined) {
-                            const fromLetter = columnToLetter(celllIdx);
-                            const endLetter = columnToLetter(attrs.colspan);
-                            const merge = `${fromLetter}${rowID}:${endLetter}${rowID}`;
-                            worksheet.mergeCells(merge);
-                            itemRow.alignment = {
-                              vertical: "middle",
-                              horizontal: "center"
-                            };
-                            if (attrs.excelfonts === undefined) {
-                              cell.font = {
-                                bold: true
-                              };
+                    for (let i = 1; i <= 6; i++) {
+                      worksheet.addRow([]);
+                    }
+                    // TODO: Need to remove this method
+                    const rawbosy = document.toString();
+                    let select = "table";
+                    if (rawbosy.indexOf("table") > -1) {
+                      select = "table";
+                    } else {
+                      select = "body";
+                    }
+                    document.querySelectorAll(select).forEach(table => {
+                      table.querySelectorAll("thead").forEach(thead => {
+                        let row = [];
+                        let column = [];
+                        thead.querySelectorAll("th").forEach((th, headIdx) => {
+                          console.log("th.rawText", th.rawText);
+                          const thAttrs = th.rawAttributes;
+                          let _width = {
+                            width: th.rawText.length < 8 ? 12 : 30
+                          };
+                          if (Object.keys(thAttrs).length > 0) {
+                            if (thAttrs.excelwidth !== undefined) {
+                              _width = { width: parseInt(thAttrs.excelwidth) };
                             }
                           }
-                        }
+                          column.push({
+                            header: "",
+                            key: headIdx,
+                            ..._width
+                          });
+
+                          row.push(th.rawText);
+                        });
+                        worksheet.columns = column;
+                        worksheet.addRow(row);
+                        var lastRow = worksheet.rowCount;
+                        let headerRow = worksheet.getRow(lastRow);
+                        headerRow.fill = {
+                          type: "pattern",
+                          pattern: "solid",
+                          fgColor: {
+                            argb: "48A897"
+                          }
+                        };
+                        headerRow.font = {
+                          name: "calibri",
+                          family: 4,
+                          size: 12,
+                          bold: true,
+                          color: { argb: "FFFFFF" }
+                        };
+                        headerRow.alignment = {
+                          vertical: "middle",
+                          horizontal: "center"
+                        };
+                      });
+
+                      table.querySelectorAll("tr").forEach((tr, rowIndex) => {
+                        var rowID = worksheet.rowCount + 1;
+                        const itemRow = worksheet.getRow(rowID);
+
+                        tr.querySelectorAll("td").forEach((td, cellIndex) => {
+                          const celllIdx = cellIndex + 1;
+                          const attrs = td.rawAttributes;
+                          const cell = itemRow.getCell(celllIdx);
+
+                          if (Object.keys(attrs).length > 0) {
+                            if (attrs.excelfonts !== undefined) {
+                              cell.font = JSON.parse(attrs.excelfonts);
+                            }
+                            if (attrs.excelfill !== undefined) {
+                              cell.fill = JSON.parse(attrs.excelfill);
+                            }
+                            if (attrs.colspan !== undefined) {
+                              if (attrs.excelcellmerge !== undefined) {
+                                const _mergeCells = attrs.excelcellmerge.split(
+                                  ":"
+                                );
+                                const merge = `${_mergeCells[0]}${rowID}:${
+                                  _mergeCells[1]
+                                }${rowID}`;
+
+                                const den = `${_mergeCells[0]}${rowID}`;
+
+                                worksheet.getCell(den).value = td.rawText
+                                  .replace(/\n/g, " ")
+                                  .replace(/  +/g, " ")
+                                  .replace(/&amp;/gi, "&");
+                                worksheet.mergeCells(merge);
+                              }
+                            } else {
+                              cell.value = td.rawText
+                                .replace(/\n/g, " ")
+                                .replace(/  +/g, " ")
+                                .replace(/&amp;/gi, "&");
+                            }
+
+                            if (attrs.excelalignment !== undefined) {
+                              cell.alignment = JSON.parse(attrs.excelalignment);
+                            }
+                            if (attrs.excelborder !== undefined) {
+                              cell.border = JSON.parse(attrs.excelborder);
+                            }
+                          } else {
+                            cell.value = td.rawText
+                              .replace(/\n/g, " ")
+                              .replace(/  +/g, " ")
+                              .replace(/&amp;/gi, "&");
+                          }
+                        });
                       });
                     });
-                  });
-                  const allColumns = worksheet.columns.length;
-                  // for (let m = 1; m <= allColumns; m++) {
-                  //   const merdgeCells = `${columnToLetter(m)}1:${columnToLetter(
-                  //     m
-                  //   )}6`;
-                  //   worksheet.mergeCells(merdgeCells);
-                  //
-                  // }
-                  const merge = `A1:${columnToLetter(allColumns)}6`;
-                  worksheet.mergeCells(merge);
-                  worksheet.addImage(companyLogo, "F1:I6");
+                    const allColumns = worksheet.columns.length;
 
-                  res.setHeader(
-                    "Content-Type",
-                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                  );
-                  res.setHeader(
-                    "Content-Disposition",
-                    "attachment; filename=" + "Report.xlsx"
-                  );
-                  workbook.xlsx.write(res).then(function(data) {
-                    res.end();
-                    console.log("File write done........");
-                  });
+                    const merge = `A1:${columnToLetter(allColumns)}5`;
+                    worksheet.mergeCells(merge);
+                    worksheet.addImage(companyLogo, "F1:I5");
+                    let filter = "";
+
+                    if (_inputParam.reportParams !== undefined) {
+                      for (
+                        let f = 0;
+                        f < _inputParam.reportParams.length;
+                        f++
+                      ) {
+                        const item = _inputParam.reportParams[f];
+                        filter += `${item.label}:${item.labelValue} || `;
+                      }
+                    }
+
+                    worksheet.getRow(6).getCell(1).value = filter;
+                    worksheet.mergeCells(`A6:${columnToLetter(allColumns)}6`);
+                    worksheet.getRow(6).font = { bold: true };
+                    worksheet.getRow(6).alignment = {
+                      vertical: "middle",
+                      horizontal: "center"
+                    };
+
+                    _mysql.releaseConnection();
+                    res.setHeader(
+                      "Content-Type",
+                      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    );
+                    res.setHeader(
+                      "Content-Disposition",
+                      "attachment; filename=" + "Report.xlsx"
+                    );
+                    workbook.xlsx.write(res).then(function(data) {
+                      res.end();
+                      console.log("File write done........");
+                    });
+                  } catch (e) {
+                    _mysql.releaseConnection();
+                    console.error(e);
+                    res.status(500).json({
+                      success: false,
+                      message: e.toString()
+                    });
+                  }
                 })();
-
-                // let excelOutput = path.join(
-                //   outputFolder,
-                //   "out_" + moment().format("YYYYMMDDHHmmss") + ".xlsx"
-                // );
-                // const fileNameExcel = path.join(
-                //   templatePath,
-                //   _inputParam.reportName + ".xlsx"
-                // );
-                //
-                // fs.readFile(fileNameExcel, function(error, data) {
-                //   if (error) {
-                //     console.error(error);
-                //   } else {
-                //     var template = new XlsxTemplate(data);
-                //     const dataShow = Array.isArray(resultData)
-                //       ? { data: resultData }
-                //       : resultData;
-                //     console.log(JSON.stringify(template.Element));
-                //
-                //     for (let s = 0; s < template.sheets.length; s++) {
-                //       template.substitute(template.sheets[s]["id"], dataShow);
-                //     }
-                //
-                //     var dataGenerated = template.generate();
-                //     fs.outputFileSync(excelOutput, dataGenerated, {
-                //       encoding: "binary"
-                //     });
-                //     res.writeHead(200, {
-                //       "content-type":
-                //         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                //       "content-disposition":
-                //         "attachment;filename=" + fileNameExcel
-                //     });
-                //     const _fs = fs.createReadStream(excelOutput);
-                //     _fs.on("end", () => {
-                //       fs.unlink(excelOutput);
-                //     });
-                //
-                //     _fs.pipe(res);
-                //   }
-                // });
               });
             })
             .catch(error => {

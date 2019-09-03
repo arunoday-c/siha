@@ -75,9 +75,17 @@ const executePDF = function executePDFMethod(options) {
                 // month: employe[0].month,
                 month: moment(employe[0].month, "MM").format("MMMM"),
                 net_salary: employe[0].net_salary,
+
+                //writtenForm(employe[0].net_salary) + " Only",
                 salary_in_words: writtenForm(employe[0].net_salary) + " Only",
+                //   utilities.getCurrencyFormart(
+                //   writtenForm(employe[0].net_salary) + " Only",
+                //   options.args.crypto
+                // ),
                 total_earnings: employe[0].total_earnings,
+
                 total_deductions: employe[0].total_deductions,
+
                 sub_department_name: employe[0].sub_department_name,
                 department_name: employe[0].department_name,
                 employee_code: employe[0].employee_code,
@@ -91,7 +99,6 @@ const executePDF = function executePDFMethod(options) {
               });
             });
 
-            utilities.logger().log("outputArray: ", outputArray);
             resolve({
               result: outputArray
             });

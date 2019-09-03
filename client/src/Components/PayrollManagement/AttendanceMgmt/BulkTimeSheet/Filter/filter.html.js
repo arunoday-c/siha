@@ -40,19 +40,22 @@ export default function Filter(props) {
   const [toMax, setToMax] = useState(new Date());
   const [loadingPriew, setLoadingPriew] = useState(false);
   const [onlyExcel, setOnlyExcel] = useState("");
-  const dateCalcl = enddtDt => {
+  const dateCalcl = (starttDt, enddtDt) => {
+    starttDt = starttDt || startDt;
     enddtDt = enddtDt || endDt;
+    if (enddtDt === 0) {
+      return;
+    }
     const year = moment().format("YYYY");
     const maxDate = `${year}-${month}-${enddtDt}`;
-    const minDate = moment(maxDate, "YYYY-MM-DD")
+    let prevMonths = moment(maxDate, "YYYY-MM-DD")
       .add(-1, "months")
-      .set("date", startDt)
-      .format("YYYY-MM-DD");
-
+      .format("MM");
+    const minDate = `${year}-${prevMonths}-${starttDt}`;
     setToMax(maxDate);
     setFromMin(minDate);
     setFromMax(maxDate);
-
+    setToMin(minDate);
     setFromDate(minDate);
     setToDate(maxDate);
   };
@@ -62,35 +65,28 @@ export default function Filter(props) {
     });
   }, []);
 
-  useEffect(
-    () => {
-      if (hospitalID !== "") {
-        getAttendanceDates(data => {
-          if (data.length > 0) {
-            const firstRecord = data[0];
+  useEffect(() => {
+    if (hospitalID !== "") {
+      getAttendanceDates(data => {
+        if (data.length > 0) {
+          const firstRecord = data[0];
+          setStartDt(firstRecord.at_st_date);
+          setEndDt(firstRecord.at_end_date);
+          dateCalcl(firstRecord.at_st_date, firstRecord.at_end_date);
+        }
+      });
+      getDivisionProject({ division_id: hospitalID }, data => {
+        setProjects(data);
+      });
+      getBranchWiseDepartments({ hospital_id: hospitalID }, data => {
+        setDepartment(data);
+      });
+    }
+  }, [hospitalID]);
 
-            setStartDt(firstRecord.at_st_date);
-            setEndDt(firstRecord.at_end_date);
-            dateCalcl(firstRecord.at_end_date);
-          }
-        });
-        getDivisionProject({ division_id: hospitalID }, data => {
-          setProjects(data);
-        });
-        getBranchWiseDepartments({ hospital_id: hospitalID }, data => {
-          setDepartment(data);
-        });
-      }
-    },
-    [hospitalID]
-  );
-
-  useEffect(
-    () => {
-      dateCalcl();
-    },
-    [month]
-  );
+  useEffect(() => {
+    dateCalcl();
+  }, [month]);
 
   return (
     <div className="row  inner-top-search">

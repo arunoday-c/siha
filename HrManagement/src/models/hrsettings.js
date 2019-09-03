@@ -534,8 +534,10 @@ where E.sub_department_id=${
       _mysql
         .executeQuery({
           query:
-            "select E.employee_code, E.full_name, DE.designation,D.department_name, SD.sub_department_name, AUS.employee_id, \
-              AUS.leave_level1, AUS.leave_level2, AUS.leave_level3, AUS.loan_level1, AUS.loan_level2, E.reporting_to_id\
+            "select E.employee_code, E.full_name, DE.designation,D.department_name, SD.sub_department_name, \
+              E.hims_d_employee_id as employee_id, AUS.leave_level2, AUS.leave_level3, AUS.loan_level1, AUS.loan_level2, \
+              AUS.hims_d_authorization_setup_id,\
+              CASE WHEN AUS.leave_level1 > 0 THEN AUS.leave_level1 else E.reporting_to_id END as leave_level1\
               from hims_d_employee E\
               left join hims_d_authorization_setup AUS on AUS.employee_id = E.hims_d_employee_id\
               left join hims_d_sub_department SD on E.sub_department_id = SD.hims_d_sub_department_id \
@@ -553,6 +555,61 @@ where E.sub_department_id=${
         .catch(e => {
           next(e);
         });
+    } catch (e) {
+      next(e);
+    }
+  },
+  //created by :Irfan
+  addEmployeeAuthorizationSetup: (req, res, next) => {
+    try {
+      const _mysql = new algaehMysql();
+
+      const input = req.body;
+
+      if (input.length > 0) {
+        const insurtColumns = [
+          "employee_id",
+          "leave_level1",
+          "leave_level2",
+          "leave_level3",
+          "loan_level1",
+          "loan_level2"
+        ];
+
+        _mysql
+          .executeQuery({
+            query:
+              "INSERT INTO hims_d_authorization_setup(??) VALUES ? ON DUPLICATE KEY UPDATE \
+                        leave_level1=values(leave_level1),leave_level2=values(leave_level2),\
+                        leave_level3=values(leave_level3),loan_level1=values(loan_level1),\
+                        loan_level2=values(loan_level2),  updated_date=values(updated_date),\
+                        updated_by=values(updated_by)",
+            values: input,
+            includeValues: insurtColumns,
+            extraValues: {
+              created_date: new Date(),
+              created_by: req.userIdentity.algaeh_d_app_user_id,
+              updated_date: new Date(),
+              updated_by: req.userIdentity.algaeh_d_app_user_id
+            },
+            bulkInsertOrUpdate: true
+          })
+          .then(result => {
+            _mysql.releaseConnection();
+            req.records = result;
+            next();
+          })
+          .catch(e => {
+            _mysql.releaseConnection();
+            next(e);
+          });
+      } else {
+        req.records = {
+          invalid_input: true,
+          message: "Please provide valid input"
+        };
+        next();
+      }
     } catch (e) {
       next(e);
     }

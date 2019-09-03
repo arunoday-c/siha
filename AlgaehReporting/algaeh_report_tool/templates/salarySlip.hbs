@@ -39,13 +39,14 @@
                         <th style="width: 40%">Amount</th>
                     </tr>
                 </thead>
-                <tbody style="min-height: 200px;">
+                <tbody>
                     {{#each emp_earnings}}
                     <tr>
-                        <td>{{earning_description}}</td>
-                        <td class="numberFld">{{earning_amount}}</td>
+                        <td valign="top">{{earning_description}}</td>
+                        <td valign="top" class="numberFld">{{earning_amount}}</td>
                     </tr>
                     {{/each}}
+
                     <tr class="footerTotalDown">
                         <td>Total</td>
                         <td class="numberFld">{{total_earnings}}</td>
@@ -59,7 +60,7 @@
                         <th style="width: 40%">Amount</th>
                     </tr>
                 </thead>
-                <tbody style="min-height: 200px;">
+                <tbody>
 
                     {{#each emp_deductions}}
                     <tr>
@@ -67,6 +68,8 @@
                         <td class="numberFld">{{deduction_amount}}</td>
                     </tr>
                     {{/each}}
+
+
                     <tr class="footerTotalDown">
                         <td>Total</td>
                         <td class="numberFld">{{total_deductions}}</td>
