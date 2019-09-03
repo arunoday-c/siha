@@ -70,21 +70,35 @@ const executePDF = function executePDFMethod(options) {
                 }
               });
 
+              console.log("crypto:", options.args.crypto);
               outputArray.push({
                 year: employe[0].year,
                 // month: employe[0].month,
                 month: moment(employe[0].month, "MM").format("MMMM"),
-                net_salary: employe[0].net_salary,
+                net_salary: utilities.getCurrencyFormart(
+                  employe[0].net_salary,
+                  options.args.crypto
+                ),
 
                 //writtenForm(employe[0].net_salary) + " Only",
-                salary_in_words: writtenForm(employe[0].net_salary) + " Only",
+                salary_in_words:
+                  options.args.crypto.currency_symbol +
+                  " " +
+                  writtenForm(employe[0].net_salary) +
+                  " Only",
                 //   utilities.getCurrencyFormart(
                 //   writtenForm(employe[0].net_salary) + " Only",
                 //   options.args.crypto
                 // ),
-                total_earnings: employe[0].total_earnings,
+                total_earnings: utilities.getCurrencyFormart(
+                  employe[0].total_earnings,
+                  options.args.crypto
+                ),
 
-                total_deductions: employe[0].total_deductions,
+                total_deductions: utilities.getCurrencyFormart(
+                  employe[0].total_deductions,
+                  options.args.crypto
+                ),
 
                 sub_department_name: employe[0].sub_department_name,
                 department_name: employe[0].department_name,

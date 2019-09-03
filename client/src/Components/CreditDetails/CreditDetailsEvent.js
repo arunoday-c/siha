@@ -1,5 +1,6 @@
 import { swalMessage } from "../../utils/algaehApiCall";
 import Enumerable from "linq";
+import _ from "lodash";
 
 const writeOffhandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
@@ -30,23 +31,28 @@ const writeOffhandle = ($this, context, ctrl, e) => {
       [name]: value,
       recievable_amount: recievable_amount,
       unbalanced_amount: recievable_amount,
-      cash_amount: 0
+      cash_amount: recievable_amount,
+      unbalanced_amount: 0
     });
   }
 };
 
 const updateCridetSettlement = ($this, context) => {
+  debugger;
   const check_header = $this.props.fromPos
     ? "hims_f_pos_credit_header_id"
     : "hims_f_credit_header_id";
-  let saveEnable = false;
+  let saveEnable = true;
 
   let receipt_amount = Enumerable.from($this.state.criedtdetails)
     .where("!!$.receipt_amount") // don't be afraid, meet $ aka lambda selector from Linq, lookup the docs.
     .sum(w => parseFloat(w.receipt_amount));
 
-  if ($this.state[check_header] !== null) {
-    saveEnable = true;
+  let selected_data = _.filter($this.state.criedtdetails, f => {
+    return f.include === "Y";
+  });
+  if (selected_data.length > 0) {
+    saveEnable = false;
   }
 
   if (context !== null) {
@@ -56,7 +62,8 @@ const updateCridetSettlement = ($this, context) => {
       write_off_amount: 0,
       recievable_amount: receipt_amount,
       unbalanced_amount: receipt_amount,
-      cash_amount: 0
+      cash_amount: receipt_amount,
+      unbalanced_amount: 0
     });
   }
 };
