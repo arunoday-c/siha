@@ -4509,7 +4509,7 @@ module.exports = {
 						from hims_f_project_roster PR  inner join  hims_d_employee E on PR.employee_id=E.hims_d_employee_id\
 						inner join  hims_d_project P on P.hims_d_project_id=PR.project_id\
 						left join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id\
-						and PR.hospital_id=? and PR.attendance_date between date(?) and date(?)  ${employee} ${project};
+						where PR.hospital_id=? and PR.attendance_date between date(?) and date(?)  ${employee} ${project};
 						select hims_f_leave_application_id,employee_id,leave_application_code,from_leave_session,L.leave_type,from_date,to_leave_session,\
 						to_date,holiday_included,weekoff_included from hims_f_leave_application LA inner join hims_d_leave L on LA.leave_id=L.hims_d_leave_id \
 						where status='APR' and ((  date('${from_date}')>=date(from_date) and date('${from_date}')<=date(to_date)) or\
