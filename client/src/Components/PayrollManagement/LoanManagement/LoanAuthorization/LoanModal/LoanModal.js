@@ -14,11 +14,13 @@ import {
   AlgaehValidation,
   getAmountFormart
 } from "../../../../../utils/GlobalFunctions";
+import Socket from "../../../../../sockets";
 
 class LoanModal extends Component {
   constructor(props) {
     super(props);
     this.state = {};
+    this.loadAuthSock = Socket;
   }
 
   componentWillReceiveProps(nextProps) {
@@ -102,6 +104,7 @@ class LoanModal extends Component {
   }
 
   authorizeLoan(type) {
+    const isSockConnected = this.loadAuthSock.connected;
     AlgaehValidation({
       alertTypeIcon: "warning",
       querySelector: "data-validate='loanModalDiv'",
@@ -135,11 +138,25 @@ class LoanModal extends Component {
                     title: "Loan Authorized Successfully",
                     type: "success"
                   });
+                  if (isSockConnected) {
+                    this.loadAuthSock.emit(
+                      "/loan/authorized",
+                      this.state.employee_id,
+                      this.props.auth_level
+                    );
+                  }
                 } else if (type === "R") {
                   swalMessage({
                     title: "Loan Rejected",
                     type: "success"
                   });
+                  if (isSockConnected) {
+                    this.loadAuthSock.emit(
+                      "/loan/rejected",
+                      this.state.employee_id,
+                      this.state.auth_level
+                    );
+                  }
                 }
                 // type === "A"
                 //   ? swalMessage({

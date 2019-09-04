@@ -10,6 +10,7 @@ import { setGlobal } from "../../utils/GlobalFunctions";
 import Enumerable from "linq";
 import moment from "moment";
 import algaehLoader from "../Wrapper/fullPageLoader";
+import sockets from "../../sockets";
 
 class DoctorsWorkbench extends Component {
   constructor(props) {
@@ -27,6 +28,7 @@ class DoctorsWorkbench extends Component {
     };
 
     // this.moveToEncounterList = this.moveToEncounterList.bind(this);
+    this.socket = sockets;
     this.loadListofData = this.loadListofData.bind(this);
   }
 
@@ -213,6 +215,17 @@ class DoctorsWorkbench extends Component {
 
   componentDidMount() {
     this.loadListofData();
+    this.socket.on("patient_added", patient => {
+      const { appointment_date } = patient;
+      const dateCheck = moment(appointment_date).isSame(
+        moment(this.state.activeDateHeader),
+        "days"
+      );
+      console.log(dateCheck, "date check mwb");
+      if (dateCheck) {
+        this.loadListofData();
+      }
+    });
     this.getAppointmentStatus();
   }
 
@@ -330,7 +343,6 @@ class DoctorsWorkbench extends Component {
       });
       return;
     }
-
     setGlobal({
       vitals_mandatory: data.vitals_mandatory,
       "EHR-STD": "PatientProfile",

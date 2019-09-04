@@ -87,7 +87,9 @@ const ClearData = ($this, e) => {
   IOputs.cheque_date = null;
   IOputs.cheque_amount = 0;
   IOputs.advance = 0;
-  $this.setState(IOputs);
+  $this.setState(IOputs, () => {
+    getCashiersAndShiftMAP($this);
+  });
 };
 
 const GenerateReciept = ($this, callBack) => {
@@ -150,7 +152,6 @@ const GenerateReciept = ($this, callBack) => {
 };
 
 const SaveSalesReturn = $this => {
-  
   const return_qty_zero = _.filter(
     $this.state.pharmacy_stock_detail,
     f => f.return_quantity === 0 || f.return_quantity === null

@@ -90,6 +90,7 @@ class OPCreditSettlement extends Component {
   }
 
   render() {
+    debugger;
     return (
       <div className="" style={{ marginBottom: "50px" }}>
         <BreadCrumb
@@ -251,8 +252,8 @@ class OPCreditSettlement extends Component {
                 onClick={SaveOPCreidt.bind(this, this)}
                 disabled={
                   this.state.saveEnable ||
-                  this.state.receipt_amount == 0 ||
-                  this.state.unbalanced_amount != 0
+                  this.state.receipt_amount === 0 ||
+                  this.state.unbalanced_amount !== 0
                 }
               >
                 <AlgaehLabel

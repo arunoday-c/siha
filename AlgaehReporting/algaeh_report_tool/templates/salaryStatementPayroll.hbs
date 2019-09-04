@@ -19,17 +19,17 @@
             <table class="tableForData" cell-padding="0">
                 <thead>
                     <tr>
-                        <th excelwidth="10">Sl No.</th>
-                        <th excelwidth="30">Employee Code</th>
-                        <th>Employee Name</th>
-                        <th>Nationality</th>
-                        <th>Working Days</th>
-                        <th>Present Days</th>
-                        <th>Advance Due</th>
-                        <th>Loan Due Amt</th>
-                        <th>Total Earnings</th>
-                        <th>Total Deductions</th>
-                        <th>Net Salary</th>
+                        <th excelwidth="6">Sl No.</th>
+                        <th excelwidth="18">Employee Code</th>
+                        <th excelwidth="50">Employee Name</th>
+                        <th excelwidth="18">Nationality</th>
+                        <th excelwidth="18">Working Days</th>
+                        <th excelwidth="18">Present Days</th>
+                        <th excelwidth="18">Advance Due</th>
+                        <th excelwidth="18">Loan Due Amt</th>
+                        <th excelwidth="18">Total Earnings</th>
+                        <th excelwidth="18">Total Deductions</th>
+                        <th excelwidth="18">Net Salary</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -38,19 +38,27 @@
                     {{#hasElement details}}
                     {{#each details}}
                     <tr style="border-top:2px dashed #000">
-                        <td colspan="6" excelcellmerge="A:F" class="tableSubHdg">Department: {{department_name}}
+                        <td colspan="6" excelcellmerge="A:F" excelfonts='{"bold":true}'
+                            excelfill='{"type":"pattern","pattern":"solid","fgColor":{"argb":"e8feff"},"bgColor":{"argb":"000000"}}'
+                            class="tableSubHdg">Department: {{department_name}}
                         </td>
-                        <td colspan="5" excelcellmerge="G:K" class="tableSubHdg"><span class="textFloatRight">Total No
+                        <td colspan="5" excelcellmerge="G:K"
+                            excelfill='{"type":"pattern","pattern":"solid","fgColor":{"argb":"e8feff"},"bgColor":{"argb":"000000"}}'
+                            class="tableSubHdg"><span class="textFloatRight">Total No
                                 Employees:
                                 <b>{{dep_no_employee}}</b></span></td>
                     </tr>
 
                     {{#each sub_dept}}
                     <tr style="border-top:2px dashed #000">
-                        <td colspan="6" excelcellmerge="A:F" class="tableSubHdg2">Sub Department:
+                        <td colspan="6" excelcellmerge="A:F" excelfonts='{"bold":true}'
+                            excelfill='{"type":"pattern","pattern":"solid","fgColor":{"argb":"fffff5"},"bgColor":{"argb":"000000"}}'
+                            class="tableSubHdg2">Sub Department:
                             {{sub_department_name}}
                         </td>
-                        <td colspan="5" excelcellmerge="G:K" class="tableSubHdg2"><span class="textFloatRight">Total No
+                        <td colspan="5" excelcellmerge="G:K"
+                            excelfill='{"type":"pattern","pattern":"solid","fgColor":{"argb":"fffff5"},"bgColor":{"argb":"000000"}}'
+                            class="tableSubHdg2"><span class="textFloatRight">Total No
                                 Employees:
                                 <b>{{sub_no_employee}}</b></span></td>
                     </tr>

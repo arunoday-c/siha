@@ -87,14 +87,16 @@ const ClearData = ($this, e) => {
       let IOputs = extend(SettlementIOputs.inputParam());
 
       IOputs.counter_id = counter_id;
-      $this.setState({ ...$this.state, ...IOputs });
+      $this.setState({ ...$this.state, ...IOputs }, () => {
+        getCashiersAndShiftMAP($this);
+      });
     }
   });
 };
 
 const Validations = $this => {
   let isError = false;
-
+  debugger;
   if ($this.state.card_amount > 0) {
     if ($this.state.card_number === null || $this.state.card_number === "") {
       isError = true;
@@ -158,16 +160,19 @@ const Validations = $this => {
     });
 
     return isError;
+  } else if (
+    $this.state.write_off_amount > 0 &&
+    ($this.state.remarks === null || $this.state.remarks === "")
+  ) {
+    isError = true;
+    swalMessage({
+      type: "warning",
+      title: "Due to write off, Please Enter remarks."
+    });
+    document.querySelector("[name='remarks']").focus();
+
+    return isError;
   }
-  // else if ($this.state.counter_id === null) {
-  //   isError = true;
-  //   swalMessage({
-  //     type: "warning",
-  //     title: "Counter is Mandatory."
-  //   });
-  //
-  //   return isError;
-  // }
 };
 
 const getCashiersAndShiftMAP = $this => {

@@ -14,6 +14,7 @@ import Enumerable from "linq";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { AlgaehOpenContainer } from "../../../../utils/GlobalFunctions";
 import LeaveAuthDetail from "./LeaveAuthDetail/LeaveAuthDetail";
+import Socket from "../../../../sockets";
 
 export default class LeaveAuthorization extends Component {
   constructor(props) {
@@ -28,6 +29,7 @@ export default class LeaveAuthorization extends Component {
       leave_status: "PEN",
       currLeavAppln: {}
     };
+    this.leaveAuthSock = Socket;
     this.getLeaveLevels();
     this.getHospitals();
   }
@@ -107,15 +109,33 @@ export default class LeaveAuthorization extends Component {
       onSuccess: res => {
         if (res.data.success) {
           this.loadLeaveApplications();
-          type === "A"
-            ? swalMessage({
-                title: "Leave Authorized Successfully",
-                type: "success"
-              })
-            : swalMessage({
-                title: "Leave Rejected Successfully",
-                type: "success"
-              });
+          if (type === "A") {
+            swalMessage({
+              title: "Leave Authorized Successfully",
+              type: "success"
+            });
+            if (this.leaveAuthSock.connected) {
+              this.leaveAuthSock.emit(
+                "/leave/authorized",
+                data.employee_id,
+                data.from_date,
+                this.state.auth_level
+              );
+            }
+          } else {
+            swalMessage({
+              title: "Leave Rejected Successfully",
+              type: "success"
+            });
+            if (this.leaveAuthSock.connected) {
+              this.leaveAuthSock.emit(
+                "/leave/rejected",
+                data.employee_id,
+                data.from_date,
+                this.state.auth_level
+              );
+            }
+          }
         }
       },
       onFailure: err => {

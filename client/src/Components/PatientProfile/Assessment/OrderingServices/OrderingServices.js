@@ -34,10 +34,12 @@ import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 import ButtonType from "../../../Wrapper/algaehButton";
 import _ from "lodash";
+import sockets from "../../../../sockets";
+
 class OrderingServices extends Component {
   constructor(props) {
     super(props);
-
+    this.serviceSocket = sockets;
     this.state = {
       s_service_type: null,
       s_service: null,

@@ -11,6 +11,7 @@ import {
 import { AlagehFormGroup } from "../Wrapper/algaehWrapper";
 import { getTokenDetals } from "../../actions/Login/Loginactions.js";
 import { AlgaehCloseContainer } from "../../utils/GlobalFunctions";
+import sockets from "../../sockets";
 
 export default class Login extends Component {
   constructor(props) {
@@ -67,6 +68,7 @@ export default class Login extends Component {
       data: this.state,
       timeout: 10000,
       onSuccess: response => {
+        console.log(response);
         if (response.data.success === true) {
           setCookie("userName", response.data.records.user_display_name);
           setCookie("keyResources", response.data.records.keyResources, 30);
@@ -82,11 +84,11 @@ export default class Login extends Component {
             "appRole",
             response.data.records.app_d_app_roles_id
           );
-          window.history.pushState(null, null, window.location.href);
-          window.onpopstate = function(event) {
-            window.history.go(1);
-          };
-          window.location.hash = "/Home";
+          // window.history.pushState(null, null, window.location.href);
+          // window.onpopstate = function(event) {
+          //   window.history.go(1);
+          // };
+          window.location.replace("/#/Home");
           // setSecure(response.data.records.secureModels);
 
           // this.getHospitalDetails();
