@@ -9,31 +9,52 @@ const _port = process.env.PORT;
 const exp = express();
 exp.use(cors());
 const app = http.createServer(exp);
-var io = require("socket.io")(app);
+import socketAuth from "socketio-auth";
+export const io = require("socket.io")(app);
+import { authenticate } from "./socketAuth";
+import appsock from "./appointmentSocket";
+import labsock from "./labSocket";
+import selfServiceSocket from "./selfServiceSocket";
+socketAuth(io, {
+  authenticate
+});
+
+const utils = utilities.AlgaehUtilities();
+const logger = utils.logger();
 
 process.on("warning", warn => {
-  utilities
-    .AlgaehUtilities()
-    .logger()
-    .log("warn", warn, "warn");
+  logger.log("warn", warn, "warn");
 });
 process.on("uncaughtException", error => {
-  utliites
-    .AlgaehUtilities()
-    .logger()
-    .log("uncatched Exception", error, "error");
+  logger.log("uncatched Exception", error, "error");
 });
 process.on("unhandledRejection", (reason, promise) => {
-  utliites
-    .AlgaehUtilities()
-    .logger()
-    .log("Unhandled rejection", { reason: reason, promise: promise }, "error");
+  logger.log(
+    "Unhandled rejection",
+    { reason: reason, promise: promise },
+    "error"
+  );
 });
+
 io.on("connection", socket => {
-  socket.on("patientadded", data => {
-    console.log("data", data);
-    io.sockets.emit("patientadded", data);
+  socket.on("user_logged", function(user, moduleList, userIdentity) {
+    console.log(`${user} connected`);
+    userIdentity = utils.decryption(userIdentity);
+    console.log(userIdentity);
+    socket.join(userIdentity.employee_id);
+    if (moduleList.length !== 0) {
+      socket.join(moduleList);
+    }
   });
+
+  socket.on("user_logout", function() {
+    console.log(socket.rooms);
+    socket.disconnect();
+  });
+
+  appsock(socket);
+  labsock(socket);
+  selfServiceSocket(socket);
 
   socket.on("disconnect", () => {
     console.log("Client disconnected");
@@ -42,4 +63,3 @@ io.on("connection", socket => {
 app.listen(_port);
 console.log(`IO Sockets are running on PORT - *${_port}`);
 export default app;
-module.exports = app;

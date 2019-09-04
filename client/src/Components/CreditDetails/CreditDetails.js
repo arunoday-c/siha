@@ -40,11 +40,16 @@ class CreditDetails extends Component {
     this.setState(nextProps.SettlementIOputs);
   }
 
-  changeText(e) {
+  changeText(context, e) {
     const { name, value } = e.target;
     this.setState({
       [name]: value
     });
+    if (context !== null) {
+      context.updateState({
+        [name]: value
+      });
+    }
   }
 
   checkRemarks(e) {
@@ -209,7 +214,7 @@ class CreditDetails extends Component {
                       name: "remarks",
                       value: this.state.remarks,
                       events: {
-                        onChange: this.changeText.bind(this)
+                        onChange: this.changeText.bind(this, context)
                       },
                       others: {
                         disabled:
@@ -245,8 +250,8 @@ class CreditDetails extends Component {
                       },
                       others: {
                         disabled:
-                          this.state.Billexists || !this.state.receipt_amount,
-                        onBlur: this.checkRemarks.bind(this)
+                          this.state.Billexists || !this.state.receipt_amount
+                        // onBlur: this.checkRemarks.bind(this)
                       }
                     }}
                   />

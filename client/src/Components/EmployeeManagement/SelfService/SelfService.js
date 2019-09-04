@@ -8,7 +8,6 @@ import AttendanceRegularization from "./AttendanceRegularization/AttendanceRegul
 import ApplyLeave from "./ApplyLeave/ApplyLeave";
 import LoanRequest from "./LoanRequest/LoanRequest";
 import LeaveEncashment from "./LeaveEncashmemnt/LeaveEncashment";
-
 import HolidayListSelf from "./HolidayListSelf/HolidayListSelf";
 import TimeSheetSelf from "./TimeSheetSelf/TimeSheetSelf";
 

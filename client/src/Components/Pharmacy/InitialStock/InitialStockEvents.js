@@ -89,6 +89,7 @@ const itemchangeText = ($this, e, ctrl) => {
     sales_uom: e.sales_uom_id,
     required_batchno: e.exp_date_not_required,
     item_code: e.item_code,
+    item_description: e.item_description,
     // unit_cost: e.selected.purchase_cost,
     sales_price: e.sales_price,
     batchno: "B" + e.batch_no,

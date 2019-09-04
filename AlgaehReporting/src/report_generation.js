@@ -8,7 +8,8 @@ import merge from "easy-pdf-merge";
 import hbs from "handlebars";
 import "babel-polyfill";
 import chrome from "algaeh-keys";
-import { parse } from "node-html-parser";
+
+import cheerio from "cheerio";
 import Excel from "exceljs/modern.browser";
 const chromePath =
   chrome.default.chromePuppeteer != null ? chrome.default.chromePuppeteer : {};
@@ -937,8 +938,7 @@ module.exports = {
                       extension: "png"
                     });
 
-                    const document = parse(rawData);
-
+                    var $ = cheerio.load(rawData);
                     function columnToLetter(column) {
                       var temp,
                         letter = "";
@@ -949,38 +949,34 @@ module.exports = {
                       }
                       return letter;
                     }
-
                     for (let i = 1; i <= 6; i++) {
                       worksheet.addRow([]);
                     }
+                    var tables = $("table").length;
+                    if (tables > 0) {
+                      $("table").each(function(tableIdx, table) {
+                        var rows = [];
+                        var columns = [];
+                        $(this)
+                          .find("th")
+                          .map(function(theadIdx, thead) {
+                            let text = $(this).text();
+                            let widthAttr = $(this).attr("excelwidth");
 
-                    document.querySelectorAll("table").forEach(table => {
-                      table.querySelectorAll("thead").forEach(thead => {
-                        let row = [];
-                        let column = [];
-                        thead.querySelectorAll("th").forEach((th, headIdx) => {
-                          const thAttrs = th.rawAttributes;
-                          let _width = {};
-                          if (Object.keys(thAttrs).length > 0) {
-                            if (thAttrs.excelwidth !== undefined) {
-                              _width = { width: parseInt(thAttrs.excelwidth) };
-                            }
-                          }
-                          column.push({
-                            header: "",
-                            key: headIdx,
-                            ..._width
+                            rows.push(text);
+                            columns.push({
+                              header: "",
+                              key: theadIdx + 1,
+                              width:
+                                widthAttr === undefined
+                                  ? text.length < 8
+                                    ? 12
+                                    : 30
+                                  : parseInt(widthAttr)
+                            });
                           });
-                          // row.push({
-                          //   header: th.rawText,
-                          //   key: headIdx,
-                          //   ..._width
-                          // });
-
-                          row.push(th.rawText);
-                        });
-                        worksheet.columns = column;
-                        worksheet.addRow(row);
+                        worksheet.columns = columns;
+                        worksheet.addRow(rows);
                         var lastRow = worksheet.rowCount;
                         let headerRow = worksheet.getRow(lastRow);
                         headerRow.fill = {
@@ -1001,78 +997,93 @@ module.exports = {
                           vertical: "middle",
                           horizontal: "center"
                         };
-                        // headerRow.eachCell((cell, cellIndex) => {
-                        //   worksheet.getColumn(cellIndex).width =
-                        //     cell.value.length < 8 ? 10 : 30;
-                        // });
+                        $(this)
+                          .find("tbody")
+                          .find("tr")
+                          .map(function(trIdx, tr) {
+                            var rowID = worksheet.rowCount + 1;
+                            const itemRow = worksheet.getRow(rowID);
+                            $(this)
+                              .find("td")
+                              .map(function(cellIndex, td) {
+                                const celllIdx = cellIndex + 1;
+                                const cell = itemRow.getCell(celllIdx);
+                                if ($(this).attr("excelfonts") !== undefined) {
+                                  cell.font = JSON.parse(
+                                    $(this).attr("excelfonts")
+                                  );
+                                }
+                                if ($(this).attr("excelfill") !== undefined) {
+                                  cell.fill = JSON.parse(
+                                    $(this).attr("excelfill")
+                                  );
+                                }
+                                if ($(this).attr("colspan") !== undefined) {
+                                  if (
+                                    $(this).attr("excelcellmerge") !== undefined
+                                  ) {
+                                    const _mergeCells = $(this)
+                                      .attr("excelcellmerge")
+                                      .split(":");
+                                    const merge = `${_mergeCells[0]}${rowID}:${
+                                      _mergeCells[1]
+                                    }${rowID}`;
+
+                                    const den = `${_mergeCells[0]}${rowID}`;
+                                    worksheet.getCell(den).value = $(this)
+                                      .text()
+                                      .replace(/\n/g, " ")
+                                      .replace(/  +/g, " ")
+                                      .replace(/&amp;/gi, "&");
+                                    worksheet.mergeCells(merge);
+                                  }
+                                } else {
+                                  cell.value = $(this)
+                                    .text()
+                                    .replace(/\n/g, " ")
+                                    .replace(/  +/g, " ")
+                                    .replace(/&amp;/gi, "&");
+                                }
+
+                                if (
+                                  $(this).attr("excelalignment") !== undefined
+                                ) {
+                                  cell.alignment = JSON.parse(
+                                    $(this).attr("excelalignment")
+                                  );
+                                }
+                                if ($(this).attr("excelborder") !== undefined) {
+                                  cell.border = JSON.parse(
+                                    $(this).attr("excelborder")
+                                  );
+                                }
+                              });
+                          });
                       });
+                      const allColumns = worksheet.columns.length;
+                      const merge = `A1:${columnToLetter(allColumns)}5`;
+                      worksheet.mergeCells(merge);
+                      worksheet.addImage(companyLogo, "F1:I5");
+                      let filter = "";
 
-                      table.querySelectorAll("tr").forEach((tr, rowIndex) => {
-                        var rowID = worksheet.rowCount + 1;
-                        const itemRow = worksheet.getRow(rowID);
-
-                        tr.querySelectorAll("td").forEach((td, cellIndex) => {
-                          const celllIdx = cellIndex + 1;
-                          const attrs = td.rawAttributes;
-                          const cell = itemRow.getCell(celllIdx);
-
-                          cell.value = td.rawText.replace(/  +/g, " ");
-
-                          if (Object.keys(attrs).length > 0) {
-                            if (attrs.excelfonts !== undefined) {
-                              cell.font = JSON.parse(attrs.excelfonts);
-                            }
-                            if (attrs.excelfill !== undefined) {
-                              cell.fill = JSON.parse(attrs.excelfill);
-                            }
-                            if (attrs.colspan !== undefined) {
-                              if (attrs.excelcellmerge !== undefined) {
-                                const _mergeCells = attrs.excelcellmerge.split(
-                                  ":"
-                                );
-                                const merge = `${_mergeCells[0]}${rowID}:${
-                                  _mergeCells[1]
-                                }${rowID}`;
-
-                                worksheet.mergeCells(merge);
-                              }
-                            }
-                            if (attrs.excelalignment !== undefined) {
-                              cell.alignment = JSON.parse(attrs.excelalignment);
-                            }
-                            if (attrs.excelborder !== undefined) {
-                              cell.border = JSON.parse(attrs.excelborder);
-                            }
-                          }
-                          //}
-                        });
-                      });
-                    });
-                    const allColumns = worksheet.columns.length;
-
-                    const merge = `A1:${columnToLetter(allColumns)}5`;
-                    worksheet.mergeCells(merge);
-                    worksheet.addImage(companyLogo, "F1:I5");
-                    let filter = "";
-
-                    if (_inputParam.reportParams !== undefined) {
-                      for (
-                        let f = 0;
-                        f < _inputParam.reportParams.length;
-                        f++
-                      ) {
-                        const item = _inputParam.reportParams[f];
-                        filter += `${item.label}:${item.labelValue} || `;
+                      if (_inputParam.reportParams !== undefined) {
+                        for (
+                          let f = 0;
+                          f < _inputParam.reportParams.length;
+                          f++
+                        ) {
+                          const item = _inputParam.reportParams[f];
+                          filter += `${item.label}:${item.labelValue} || `;
+                        }
                       }
+                      worksheet.getRow(6).getCell(1).value = filter;
+                      worksheet.mergeCells(`A6:${columnToLetter(allColumns)}6`);
+                      worksheet.getRow(6).font = { bold: true };
+                      worksheet.getRow(6).alignment = {
+                        vertical: "middle",
+                        horizontal: "center"
+                      };
                     }
-
-                    worksheet.getRow(6).getCell(1).value = filter;
-                    worksheet.mergeCells(`A6:${columnToLetter(allColumns)}6`);
-                    worksheet.getRow(6).font = { bold: true };
-                    worksheet.getRow(6).alignment = {
-                      vertical: "middle",
-                      horizontal: "center"
-                    };
 
                     _mysql.releaseConnection();
                     res.setHeader(
@@ -1089,6 +1100,7 @@ module.exports = {
                     });
                   } catch (e) {
                     _mysql.releaseConnection();
+                    console.error(e);
                     res.status(500).json({
                       success: false,
                       message: e.toString()

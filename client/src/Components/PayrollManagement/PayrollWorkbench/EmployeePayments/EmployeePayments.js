@@ -111,7 +111,7 @@ class EmployeePayment extends Component {
               div={{ className: "col" }}
               label={{
                 forceLabel: "Payment Type",
-                isImp: true
+                isImp: false
               }}
               selector={{
                 name: "sel_payment_type",

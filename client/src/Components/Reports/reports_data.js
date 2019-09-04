@@ -678,6 +678,7 @@ const HR_Payroll_Reports = [
         subitem: "Employee - Age Wise",
         reportName: "ageWiseEmployee",
         requireIframe: true,
+        pageSize: "A3",
         pageOrentation: "landscape",
         reportParameters: [
           {
@@ -770,7 +771,7 @@ const HR_Payroll_Reports = [
             type: "dropdown",
             name: "age_range",
             initialLoad: true,
-            isImp: false,
+            isImp: true,
             label: "RANGE",
             link: {},
             dataSource: {
@@ -784,7 +785,7 @@ const HR_Payroll_Reports = [
             type: "text",
             name: "age",
             initialLoad: false,
-            isImp: false,
+            isImp: true,
             label: "ENTER AGE",
             link: {},
             dataSource: {
@@ -2316,6 +2317,7 @@ const HR_Payroll_Reports = [
   },
   {
     name: "Project Payroll",
+    excel: "true",
     submenu: [
       {
         subitem: "Project wise Payroll",
