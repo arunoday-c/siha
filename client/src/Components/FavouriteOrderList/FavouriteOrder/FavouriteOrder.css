@@ -1,2 +1,5 @@
-#procedureGrid_Cntr .ReactTable {
-  max-height: 80vh !important; }
+.addServerFav .algaeh-modal {
+  width: 60vw; }
+
+#favourite_detail_grid .ReactTable {
+  max-height: 50vh !important; }

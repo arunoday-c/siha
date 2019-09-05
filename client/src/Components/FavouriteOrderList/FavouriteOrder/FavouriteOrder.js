@@ -120,14 +120,15 @@ class FavouriteOrder extends PureComponent {
       <React.Fragment>
         <div className="hptl-phase1-add-investigation-form">
           <AlgaehModalPopUp
+            class="addServerFav"
             events={{
               onClose: this.onClose.bind(this)
             }}
             title={this.props.HeaderCaption}
             openPopup={this.props.show}
           >
-            <div className="col-lg-12 popupInner">
-              <div className="col-12 popRightDiv" style={{ maxHeight: "76vh" }}>
+            <div className="popupInner">
+              <div className="popRightDiv" style={{ maxHeight: "76vh" }}>
                 <div className="row mandatory">
                   <AlagehFormGroup
                     div={{ className: "col form-group" }}
@@ -240,7 +241,7 @@ class FavouriteOrder extends PureComponent {
                 </div>
                 <div className="portlet-body">
                   <div className="row">
-                    <div className="col-lg-12" id="procedureGrid_Cntr">
+                    <div className="col-lg-12" id="">
                       <AlgaehDataGrid
                         id="favourite_detail_grid"
                         columns={[
@@ -290,6 +291,9 @@ class FavouriteOrder extends PureComponent {
                                     : ""}
                                 </span>
                               );
+                            },
+                            others: {
+                              maxWidth: 180
                             }
                           },
 

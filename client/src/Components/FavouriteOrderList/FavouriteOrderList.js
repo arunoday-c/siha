@@ -81,7 +81,7 @@ class FavouriteOrderList extends Component {
                 <i className="fas fa-plus" />
               </a>
               <FavouriteOrder
-                HeaderCaption="Favourite Order"
+                HeaderCaption="Add Order to Favourite"
                 show={this.state.isOpen}
                 onClose={this.CloseModel.bind(this)}
                 favouriteData={this.state.favouriteData}
@@ -90,7 +90,7 @@ class FavouriteOrderList extends Component {
           </div>
           <div className="portlet-body">
             <div className="row">
-              <div className="col-lg-12" id="proceduresGridCntr">
+              <div className="col-lg-12">
                 <AlgaehDataGrid
                   id="favouritesGrid"
                   columns={[

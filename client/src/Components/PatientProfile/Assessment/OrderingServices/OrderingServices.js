@@ -690,7 +690,7 @@ class OrderingServices extends Component {
                         label: (
                           <AlgaehLabel
                             label={{
-                              forceLabel: "Select To Pay"
+                              forceLabel: "Select"
                             }}
                           />
                         ),
@@ -710,7 +710,7 @@ class OrderingServices extends Component {
                           );
                         },
                         others: {
-                          maxWidth: 100,
+                          maxWidth: 50,
                           filterable: false
                         }
                       },
@@ -740,6 +740,10 @@ class OrderingServices extends Component {
                                 : ""}
                             </span>
                           );
+                        },
+                        others: {
+                          maxWidth: 120,
+                          filterable: false
                         }
                       },
                       {
@@ -773,6 +777,7 @@ class OrderingServices extends Component {
                     dataSource={{
                       data: this.state.all_favouriteservices
                     }}
+                    filter={true}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     byForceEvents={true}
                     events={{
@@ -784,7 +789,7 @@ class OrderingServices extends Component {
                   />
                   <button
                     className="btn btn-default"
-                    style={{ float: "right" }}
+                    style={{ float: "right", marginTop: 10 }}
                     onClick={ProcessFromFavourite.bind(this, this, "Services")}
                     disabled={this.state.add_to_list}
                   >
@@ -793,62 +798,56 @@ class OrderingServices extends Component {
                 </div>
               </div>
 
-              <div className="row GridTotalDetails">
-                <div className="col-lg-5" style={{ textAlign: "right" }}>
-                  <div className="row">
-                    <div className="col">
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "sub_ttl"
-                        }}
-                      />
-                      <h5>{getAmountFormart(this.state.sub_total_amount)}</h5>
-                    </div>
-                    <div className="col" style={{ textAlign: "right" }}>
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "dsct_amt"
-                        }}
-                      />
-                      <h5>{getAmountFormart(this.state.discount_amount)}</h5>
-                    </div>
-
-                    <div className="col" style={{ textAlign: "right" }}>
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "net_ttl"
-                        }}
-                      />
-                      <h5>{getAmountFormart(this.state.net_total)}</h5>
-                    </div>
-                  </div>
+              <hr />
+              <div
+                className="row GridTotalDetails margin-bottom-15"
+                style={{ textAlign: "right" }}
+              >
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "sub_ttl"
+                    }}
+                  />
+                  <h5>{getAmountFormart(this.state.sub_total_amount)}</h5>
+                </div>
+                <div className="col" style={{ textAlign: "right" }}>
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "dsct_amt"
+                    }}
+                  />
+                  <h5>{getAmountFormart(this.state.discount_amount)}</h5>
                 </div>
 
-                <div className="col-lg-7">
-                  <div className="row">
-                    <div className="col" style={{ textAlign: "right" }}>
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "pat_payable"
-                        }}
-                      />
-                      <h5>{getAmountFormart(this.state.patient_payable)}</h5>
-                    </div>
-                    <div className="col" style={{ textAlign: "right" }}>
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "co_payable"
-                        }}
-                      />
-                      <h5>{getAmountFormart(this.state.company_payble)}</h5>
-                    </div>
-                  </div>
+                <div className="col" style={{ textAlign: "right" }}>
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "net_ttl"
+                    }}
+                  />
+                  <h5>{getAmountFormart(this.state.net_total)}</h5>
+                </div>
+                <div className="col" style={{ textAlign: "right" }}>
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "pat_payable"
+                    }}
+                  />
+                  <h5>{getAmountFormart(this.state.patient_payable)}</h5>
+                </div>
+                <div className="col" style={{ textAlign: "right" }}>
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "co_payable"
+                    }}
+                  />
+                  <h5>{getAmountFormart(this.state.company_payble)}</h5>
                 </div>
               </div>
-              <hr />
             </div>
             <FavouriteOrder
-              HeaderCaption="Favourite Order"
+              HeaderCaption="Add Service to Favourite"
               show={this.state.isOpen}
               onClose={openFavouriteOrder.bind(this, this)}
               from="ClinicalDesk"
@@ -856,7 +855,7 @@ class OrderingServices extends Component {
             />
 
             <ViewFavouriteOrder
-              HeaderCaption="Favourite Order"
+              HeaderCaption="View Favourite Services"
               show={this.state.isFavOpen}
               onClose={closeViewFavouriteOrder.bind(this, this)}
               all_favourites={this.state.all_favourites}
@@ -887,13 +886,13 @@ class OrderingServices extends Component {
                         className="btn btn-default"
                         onClick={openViewFavouriteOrder.bind(this, this)}
                       >
-                        View Favourite
+                        View Favourite Order
                       </button>
                       <button
                         className="btn btn-default"
                         onClick={openFavouriteOrder.bind(this, this)}
                       >
-                        Add Service to Favourite
+                        Add Order to Favourite
                       </button>
                     </span>
                   </div>
