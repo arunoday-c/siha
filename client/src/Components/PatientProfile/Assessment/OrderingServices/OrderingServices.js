@@ -277,7 +277,7 @@ class OrderingServices extends Component {
               ) : null}
               <div className="row">
                 <AlgaehAutoSearch
-                  div={{ className: "col-8 customServiceSearch" }}
+                  div={{ className: "col customServiceSearch" }}
                   label={{ forceLabel: "Search Investigation" }}
                   title="Search Investigation"
                   id="service_id_search"
@@ -350,7 +350,7 @@ class OrderingServices extends Component {
                   }}
                 />
 
-                <div className="col-2" style={{ paddingTop: 19 }}>
+                <div className="col" style={{ paddingTop: 19 }}>
                   <ButtonType
                     classname="btn-primary"
                     loading={this.state.loading_ProcessService}
@@ -361,11 +361,19 @@ class OrderingServices extends Component {
                     }}
                     others={{ disabled: this.state.addNewService }}
                   />
+
+                  <button
+                    className="btn btn-default"
+                    style={{ marginLeft: 10 }}
+                  >
+                    {" "}
+                    Add to List & Favourite
+                  </button>
                 </div>
               </div>
 
               <div className="row">
-                <div className="col-md-10 col-lg-12" id="doctorOrder">
+                <div className="col-8" id="doctorOrder">
                   <AlgaehDataGrid
                     id="Services_Ordering"
                     columns={[
@@ -675,6 +683,89 @@ class OrderingServices extends Component {
                     }}
                   />
                 </div>
+
+                <div className="col-4" id="favouriteOrder">
+                  <AlgaehDataGrid
+                    id="Services_Ordering"
+                    columns={[
+                      {
+                        fieldName: "actions",
+                        label: <AlgaehLabel label={{ forceLabel: "Action" }} />,
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              <i
+                                onClick={deleteServices.bind(this, this, row)}
+                                className="fas fa-trash-alt"
+                              />
+                            </span>
+                          );
+                        },
+                        others: {
+                          maxWidth: 80
+                        }
+                      },
+
+                      {
+                        fieldName: "services_id",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Favourite Service" }}
+                          />
+                        ),
+                        displayTemplate: row => {
+                          let display =
+                            this.props.serviceslist === undefined
+                              ? []
+                              : this.props.serviceslist.filter(
+                                  f => f.hims_d_services_id === row.services_id
+                                );
+
+                          return (
+                            <span>
+                              {display !== null && display.length !== 0
+                                ? this.state.selectedLang === "en"
+                                  ? display[0].service_name
+                                  : display[0].arabic_service_name
+                                : ""}
+                            </span>
+                          );
+                        },
+                        editorTemplate: row => {
+                          let display =
+                            this.props.serviceslist === undefined
+                              ? []
+                              : this.props.serviceslist.filter(
+                                  f => f.hims_d_services_id === row.services_id
+                                );
+
+                          return (
+                            <span>
+                              {display !== null && display.length !== 0
+                                ? this.state.selectedLang === "en"
+                                  ? display[0].service_name
+                                  : display[0].arabic_service_name
+                                : ""}
+                            </span>
+                          );
+                        }
+                      }
+                    ]}
+                    keyId="service_type_id"
+                    dataSource={{
+                      data: this.state.orderservicesdata
+                    }}
+                    // isEditable={true}
+                    paging={{ page: 0, rowsPerPage: 10 }}
+                    byForceEvents={true}
+                    events={{
+                      onDelete: deleteServices.bind(this, this),
+                      onEdit: EditGrid.bind(this, this),
+                      onCancel: EditGrid.bind(this, this),
+                      onDone: updateBillDetail.bind(this, this)
+                    }}
+                  />
+                </div>
               </div>
 
               <div className="row GridTotalDetails">
@@ -761,6 +852,12 @@ class OrderingServices extends Component {
                         onClick={this.onClose.bind(this)}
                       >
                         Cancel
+                      </button>
+                      <button className="btn btn-default">
+                        View Favourite
+                      </button>
+                      <button className="btn btn-default">
+                        Add Service to Favourite
                       </button>
                     </span>
                   </div>
