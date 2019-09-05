@@ -89,9 +89,7 @@ const PageToPlot = {
   ),
   AccessionAcknowledgement: React.lazy(() =>
     retry(() =>
-      import(
-        "./Components/Laboratory/AccessionAcknowledgement/AccessionAcknowledgement"
-      )
+      import("./Components/Laboratory/AccessionAcknowledgement/AccessionAcknowledgement")
     )
   ),
   PreApproval: React.lazy(() =>
@@ -155,9 +153,7 @@ const PageToPlot = {
   ItemSetup: ItemSetup,
   EmployeeMasterIndex: React.lazy(() =>
     retry(() =>
-      import(
-        "./Components/EmployeeManagement/EmployeeMasterIndex/EmployeeMasterIndex"
-      )
+      import("./Components/EmployeeManagement/EmployeeMasterIndex/EmployeeMasterIndex")
     )
   ),
   PhysicianScheduleSetup: React.lazy(() =>
@@ -221,9 +217,7 @@ const PageToPlot = {
   ReportsList: ReportsList,
   WorkListGeneration: React.lazy(() =>
     retry(() =>
-      import(
-        "./Components/InsuranceClaims/WorkListGeneration/WorkListGeneration"
-      )
+      import("./Components/InsuranceClaims/WorkListGeneration/WorkListGeneration")
     )
   ),
   // RCMWorkbench: React.lazy(() =>
@@ -323,9 +317,7 @@ const PageToPlot = {
   ),
   DepreciationReversal: React.lazy(() =>
     retry(() =>
-      import(
-        "./Components/AssetManagement/DepreciationReversal/DepreciationReversal"
-      )
+      import("./Components/AssetManagement/DepreciationReversal/DepreciationReversal")
     )
   ),
   Disposal: React.lazy(() =>
@@ -368,16 +360,12 @@ const PageToPlot = {
   ),
   EmpServ: React.lazy(() =>
     retry(() =>
-      import(
-        "./Components/EmployeeManagement/EmployeeServices/EmployeeServices"
-      )
+      import("./Components/EmployeeManagement/EmployeeServices/EmployeeServices")
     )
   ),
   AttendanceRegularization: React.lazy(() =>
     retry(() =>
-      import(
-        "./Components/EmployeeManagement/AttendanceRegularization/AttendanceRegularization"
-      )
+      import("./Components/EmployeeManagement/AttendanceRegularization/AttendanceRegularization")
     )
   ),
   PayrollSettings: React.lazy(() =>
@@ -425,16 +413,12 @@ const PageToPlot = {
   ),
   PerformanceManagement: React.lazy(() =>
     retry(() =>
-      import(
-        "./Components/PayrollManagement/PerformanceManagement/PerformanceManagement"
-      )
+      import("./Components/PayrollManagement/PerformanceManagement/PerformanceManagement")
     )
   ),
   EmployeeDocuments: React.lazy(() =>
     retry(() =>
-      import(
-        "./Components/EmployeeManagement/EmployeeDocuments/EmployeeDocuments"
-      )
+      import("./Components/EmployeeManagement/EmployeeDocuments/EmployeeDocuments")
     )
   ),
   PayrollOptions: React.lazy(() =>
@@ -447,9 +431,7 @@ const PageToPlot = {
   ),
   EmpShiftRost: React.lazy(() =>
     retry(() =>
-      import(
-        "./Components/EmployeeManagement/EmployeeShiftRostering/EmployeeShiftRostering"
-      )
+      import("./Components/EmployeeManagement/EmployeeShiftRostering/EmployeeShiftRostering")
     )
   ),
   Wps: React.lazy(() =>
@@ -469,6 +451,10 @@ const PageToPlot = {
   ),
   PackageSetup: React.lazy(() =>
     retry(() => import("./Components/PackageSetup/PackageSetup"))
+  ),
+
+  FavouriteOrderList: React.lazy(() =>
+    retry(() => import("./Components/FavouriteOrderList/FavouriteOrderList"))
   ),
   PackageBilling: React.lazy(() =>
     retry(() => import("./Components/PackageBilling/PackageBilling"))

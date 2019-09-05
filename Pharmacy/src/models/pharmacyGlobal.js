@@ -372,5 +372,36 @@ module.exports = {
       _mysql.releaseConnection();
       next(e);
     }
+  },
+
+  getConsumptionSelectedMonth: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "SELECT sum(transaction_qty) as transaction_qty FROM hims_f_pharmacy_trans_history \
+            where date(transaction_date) between date(?) and date(?) and item_code_id=? and from_location_id=?;",
+          values: [
+            req.query.from_date,
+            req.query.to_date,
+            req.query.item_code_id,
+            req.query.from_location_id
+          ],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
   }
 };

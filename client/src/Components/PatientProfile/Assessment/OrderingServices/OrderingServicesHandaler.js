@@ -62,8 +62,10 @@ const serviceHandeler = ($this, e) => {
 };
 
 //Process and gets selectd service data with all calculation
-const ProcessService = ($this, e) => {
+const ProcessService = ($this, favouriteOrder, e) => {
   // orderedList
+  let s_service = $this.state.s_service,
+    s_service_type = $this.state.s_service_type;
   $this.setState(
     {
       loading_ProcessService: true
@@ -372,6 +374,45 @@ const ProcessService = ($this, e) => {
                       );
                     }
                   });
+                }
+                debugger;
+                if (favouriteOrder === "F") {
+                  let fav_exists = _.find(
+                    $this.state.all_favouriteservices,
+                    f =>
+                      f.service_type_id === s_service_type &&
+                      f.services_id === s_service
+                  );
+                  if (fav_exists === undefined) {
+                    algaehApiCall({
+                      uri: "/favouriteOrders/addFavouriteServices",
+                      module: "masterSettings",
+                      method: "POST",
+                      data: {
+                        services_id: s_service,
+                        service_type_id: s_service_type,
+                        doctor_id: Window.global["provider_id"]
+                      },
+                      onSuccess: response => {
+                        if (response.data.success) {
+                          getFavouriteServices($this);
+                        }
+                      },
+                      onFailure: error => {
+                        $this.setState(
+                          {
+                            loading_ProcessService: false
+                          },
+                          () => {
+                            swalMessage({
+                              title: error.message,
+                              type: "error"
+                            });
+                          }
+                        );
+                      }
+                    });
+                  }
                 }
               }
             },
@@ -776,6 +817,464 @@ const makeZeroIngrid = ($this, row, e) => {
     });
   }
 };
+
+const openFavouriteOrder = $this => {
+  $this.setState({
+    isOpen: !$this.state.isOpen
+  });
+};
+
+const openViewFavouriteOrder = $this => {
+  algaehApiCall({
+    uri: "/favouriteOrders/getFavouriteOrder",
+    module: "masterSettings",
+    method: "GET",
+    data: { doctor_id: Window.global["provider_id"] },
+    onSuccess: response => {
+      if (response.data.success) {
+        let ItemList = Enumerable.from(response.data.records)
+          .groupBy("$.hims_d_favourite_orders_header_id", null, (k, g) => {
+            let firstRecordSet = Enumerable.from(g).firstOrDefault();
+
+            return {
+              hims_d_favourite_orders_header_id:
+                firstRecordSet.hims_d_favourite_orders_header_id,
+              favourite_description: firstRecordSet.favourite_description,
+              favourite_details: g.getSource()
+            };
+          })
+          .toArray();
+
+        $this.setState({
+          all_favourites: ItemList,
+          isFavOpen: !$this.state.isFavOpen
+        });
+      }
+    }
+  });
+};
+
+const closeViewFavouriteOrder = ($this, e) => {
+  debugger;
+  if (e.length > 0) {
+    $this.setState(
+      {
+        all_favourites: e,
+        isFavOpen: !$this.state.isFavOpen
+      },
+      () => {
+        ProcessFromFavourite($this, "Orders");
+      }
+    );
+  } else {
+    $this.setState({
+      isFavOpen: !$this.state.isFavOpen
+    });
+  }
+};
+const getFavouriteServices = $this => {
+  algaehApiCall({
+    uri: "/favouriteOrders/getFavouriteServices",
+    module: "masterSettings",
+    method: "GET",
+    date: { doctor_id: Window.global["provider_id"] },
+    onSuccess: response => {
+      if (response.data.success) {
+        $this.setState({
+          all_favouriteservices: response.data.records
+        });
+      }
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
+};
+
+const selectToProcess = ($this, row, e) => {
+  let all_favouriteservices = $this.state.all_favouriteservices;
+  let add_to_list = true;
+  if (e.target.checked === true) {
+    row["select_to_process"] = "Y";
+  } else if (e.target.checked === false) {
+    row["select_to_process"] = "N";
+  }
+
+  all_favouriteservices[row.rowIdx] = row;
+
+  let listOfinclude = Enumerable.from(all_favouriteservices)
+    .where(w => w.select_to_process === "Y")
+    .toArray();
+  if (listOfinclude.length > 0) {
+    add_to_list = false;
+  }
+  $this.setState({
+    add_to_list: add_to_list,
+    all_favouriteservices: all_favouriteservices
+  });
+};
+
+//Process and gets selectd service data with all calculation
+const ProcessFromFavourite = ($this, from) => {
+  // orderedList
+
+  let serviceInput = [];
+  let Selected_Services = null;
+  if (from === "Services") {
+    Selected_Services = Enumerable.from($this.state.all_favouriteservices)
+      .where(w => w.select_to_process === "Y")
+      .toArray();
+  } else {
+    Selected_Services = $this.state.all_favourites;
+  }
+
+  if (Selected_Services.length <= 0) {
+    swalMessage({
+      title: "Need to select atleast one sevice",
+      type: "warning"
+    });
+    return;
+  }
+
+  for (let d = 0; d < Selected_Services.length; d++) {
+    debugger;
+    let SelectedService = undefined;
+    let PreSelectedService = undefined;
+    if (Selected_Services[d].service_type_id !== 2) {
+      SelectedService = _.find(
+        $this.props.orderedList,
+        f =>
+          f.service_type_id === Selected_Services[d].service_type_id &&
+          f.services_id === Selected_Services[d].services_id
+      );
+
+      PreSelectedService = _.find(
+        $this.state.orderservicesdata,
+        f =>
+          f.service_type_id === Selected_Services[d].service_type_id &&
+          f.services_id === Selected_Services[d].services_id
+      );
+    }
+
+    if (SelectedService !== undefined || PreSelectedService !== undefined) {
+      $this.setState(
+        {
+          loading_ProcessService: false
+        },
+        () => {
+          swalMessage({
+            title: "Selected Service already ordered.",
+            type: "warning"
+          });
+        }
+      );
+      return;
+    }
+    serviceInput.push({
+      insured: $this.state.insured,
+      vat_applicable: $this.props.vat_applicable,
+      service_type_id: Selected_Services[d].service_type_id,
+      hims_d_services_id: Selected_Services[d].services_id,
+      primary_insurance_provider_id: $this.state.insurance_provider_id,
+      primary_network_office_id: $this.state.hims_d_insurance_network_office_id,
+      primary_network_id: $this.state.network_id,
+      sec_insured: $this.state.sec_insured,
+      secondary_insurance_provider_id:
+        $this.state.secondary_insurance_provider_id,
+      secondary_network_id: $this.state.secondary_network_id,
+      secondary_network_office_id: $this.state.secondary_network_office_id,
+      approval_amt: $this.state.approval_amt,
+      approval_limit_yesno: $this.state.approval_limit_yesno,
+      preapp_limit_amount: $this.state.preapp_limit_amount
+    });
+  }
+  $this.setState(
+    {
+      loading_ProcessService: true
+    },
+    () => {
+      getFavouriteServices($this);
+      let preserviceInput = $this.state.preserviceInput || [];
+
+      algaehApiCall({
+        uri: "/billing/getBillDetails",
+        module: "billing",
+        method: "POST",
+        data: serviceInput,
+        onSuccess: response => {
+          if (response.data.success) {
+            let data = response.data.records;
+            if (
+              data.billdetails[0].preapp_limit_exceed === "Y" &&
+              $this.state.approval_limit_yesno === "N"
+            ) {
+              swal({
+                title: "Pre-Approval limit reached.",
+                text:
+                  "Service amount have exceeded insurance limit. If proceed all services will be senting for Pre Approval.",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes!",
+                confirmButtonColor: "#",
+                cancelButtonColor: "#d33",
+                cancelButtonText: "No"
+              }).then(willProceed => {
+                if (willProceed.value) {
+                  preserviceInput.push(serviceInput[0]);
+                  for (let k = 0; k < preserviceInput.length; k++) {
+                    preserviceInput[k].approval_limit_yesno =
+                      data.billdetails[0].preapp_limit_exceed;
+                  }
+                  let approval_amt = data.billdetails[0].approval_amt;
+                  let approval_limit_yesno =
+                    data.billdetails[0].preapp_limit_exceed;
+
+                  algaehApiCall({
+                    uri: "/billing/getBillDetails",
+                    module: "billing",
+                    method: "POST",
+                    data: preserviceInput,
+                    onSuccess: response => {
+                      if (response.data.success) {
+                        let Service_data = response.data.records;
+
+                        for (
+                          let i = 0;
+                          i < Service_data.billdetails.length;
+                          i++
+                        ) {
+                          Service_data.billdetails[i].visit_id =
+                            $this.state.visit_id;
+                          Service_data.billdetails[i].patient_id =
+                            $this.state.patient_id;
+
+                          Service_data.billdetails[i].doctor_id =
+                            Window.global["provider_id"];
+                          Service_data.billdetails[i].insurance_provider_id =
+                            $this.state.insurance_provider_id;
+                          Service_data.billdetails[i].insurance_sub_id =
+                            $this.state.sub_insurance_provider_id;
+                          Service_data.billdetails[i].network_id =
+                            $this.state.network_id;
+                          Service_data.billdetails[i].policy_number =
+                            $this.state.policy_number;
+                          Service_data.billdetails[i].insurance_service_name =
+                            $this.state.insurance_service_name;
+                          Service_data.billdetails[i].sec_company =
+                            $this.state.sec_insured;
+                          // Service_data.billdetails[i].icd_code === Service_data.billdetails[0].icd_code;
+                          // Approval Table
+
+                          Service_data.billdetails[
+                            i
+                          ].insurance_network_office_id =
+                            $this.state.hims_d_insurance_network_office_id;
+
+                          Service_data.billdetails[i].requested_quantity =
+                            Service_data.billdetails[i].quantity;
+                          Service_data.billdetails[i].test_type =
+                            $this.state.test_type;
+                        }
+
+                        $this.setState({
+                          orderservicesdata: Service_data.billdetails,
+                          approval_amt: approval_amt,
+                          preserviceInput: preserviceInput,
+                          approval_limit_yesno: approval_limit_yesno,
+                          saved: false,
+                          // s_service_type: null,
+                          s_service: null,
+                          test_type: "R",
+                          service_name: ""
+                        });
+
+                        algaehApiCall({
+                          uri: "/billing/billingCalculations",
+                          module: "billing",
+                          method: "POST",
+                          data: { billdetails: Service_data.billdetails },
+                          onSuccess: response => {
+                            if (response.data.success) {
+                              $this.setState({
+                                sub_total_amount:
+                                  response.data.records.sub_total_amount,
+                                discount_amount:
+                                  response.data.records.discount_amount,
+                                net_total: response.data.records.net_total,
+                                patient_payable:
+                                  response.data.records.patient_payable,
+                                company_payble:
+                                  response.data.records.company_payble,
+                                copay_amount:
+                                  response.data.records.copay_amount,
+                                sec_copay_amount:
+                                  response.data.records.sec_copay_amount,
+                                loading_ProcessService: false,
+                                add_to_list: true
+                              });
+                            }
+                          },
+                          onFailure: error => {
+                            $this.setState(
+                              {
+                                loading_ProcessService: false
+                              },
+                              () => {
+                                swalMessage({
+                                  title: error.message,
+                                  type: "error"
+                                });
+                              }
+                            );
+                          }
+                        });
+                      }
+                    },
+                    onFailure: error => {
+                      $this.setState(
+                        {
+                          loading_ProcessService: false
+                        },
+                        () => {
+                          swalMessage({
+                            title: error.message,
+                            type: "error"
+                          });
+                        }
+                      );
+                    }
+                  });
+                }
+              });
+            } else {
+              let existingservices = $this.state.orderservicesdata;
+              let approval_amt = 0;
+              let preapp_limit_amount = 0;
+              for (let c = 0; c < Selected_Services.length; c++) {
+                data.billdetails[c].visit_id = $this.state.visit_id;
+                data.billdetails[c].patient_id = $this.state.patient_id;
+
+                data.billdetails[c].insurance_provider_id =
+                  $this.state.insurance_provider_id;
+                data.billdetails[c].insurance_sub_id =
+                  $this.state.sub_insurance_provider_id;
+                data.billdetails[c].network_id = $this.state.network_id;
+                data.billdetails[c].policy_number = $this.state.policy_number;
+                data.billdetails[c].insurance_service_name =
+                  $this.state.insurance_service_name;
+                data.billdetails[c].icd_code = "1";
+                // data.billdetails[0].icd_code === ""
+                //   ? null
+                //   : data.billdetails[0].icd_code;
+                //Approval Table TODO
+                //TODO
+
+                data.billdetails[c].insurance_network_office_id =
+                  $this.state.hims_d_insurance_network_office_id;
+
+                data.billdetails[c].requested_quantity =
+                  data.billdetails[c].quantity;
+                data.billdetails[c].doctor_id = Window.global["provider_id"];
+                data.billdetails[c].sec_company = $this.state.sec_insured;
+                data.billdetails[c].test_type = $this.state.test_type;
+                //If pre-approval required for selected service
+
+                if (
+                  data.billdetails[c].pre_approval === "Y" &&
+                  $this.state.approval_limit_yesno === "N"
+                ) {
+                  swalMessage({
+                    title: "Selected Service is Pre-Approval required.",
+                    type: "warning"
+                  });
+                } else if (
+                  data.billdetails[c].insurance_yesno === "Y" &&
+                  $this.state.approval_limit_yesno === "Y"
+                ) {
+                  data.billdetails[c].pre_approval = "Y";
+                } else {
+                  data.billdetails[c].pre_approval = "N";
+                }
+                if (data.billdetails.length !== 0) {
+                  existingservices.splice(0, 0, data.billdetails[c]);
+                }
+                approval_amt =
+                  approval_amt + parseFloat(data.billdetails[c].approval_amt);
+                preapp_limit_amount =
+                  preapp_limit_amount +
+                  parseFloat(data.billdetails[c].preapp_limit_amount);
+                preserviceInput.push(serviceInput[c]);
+              }
+
+              $this.setState({
+                orderservicesdata: existingservices,
+                approval_amt: approval_amt,
+                preserviceInput: preserviceInput,
+                preapp_limit_amount: preapp_limit_amount,
+                saved: false,
+                // s_service_type: null,
+                s_service: null,
+                test_type: "R",
+                service_name: ""
+              });
+
+              algaehApiCall({
+                uri: "/billing/billingCalculations",
+                module: "billing",
+                method: "POST",
+                data: { billdetails: existingservices },
+                onSuccess: response => {
+                  if (response.data.success) {
+                    $this.setState({
+                      sub_total_amount: response.data.records.sub_total_amount,
+                      discount_amount: response.data.records.discount_amount,
+                      net_total: response.data.records.net_total,
+                      patient_payable: response.data.records.patient_payable,
+                      company_payble: response.data.records.company_payble,
+                      copay_amount: response.data.records.copay_amount,
+                      sec_copay_amount: response.data.records.sec_copay_amount,
+                      loading_ProcessService: false,
+                      add_to_list: true
+                    });
+                  }
+                },
+                onFailure: error => {
+                  $this.setState(
+                    {
+                      loading_ProcessService: false
+                    },
+                    () => {
+                      swalMessage({
+                        title: error.message,
+                        type: "error"
+                      });
+                    }
+                  );
+                }
+              });
+            }
+          }
+        },
+        onFailure: error => {
+          $this.setState(
+            {
+              loading_ProcessService: false
+            },
+            () => {
+              swalMessage({
+                title: error.message,
+                type: "error"
+              });
+            }
+          );
+        }
+      });
+    }
+  );
+};
 export {
   serviceTypeHandeler,
   serviceHandeler,
@@ -787,5 +1286,11 @@ export {
   updateBillDetail,
   onchangegridcol,
   EditGrid,
-  makeZeroIngrid
+  makeZeroIngrid,
+  openFavouriteOrder,
+  getFavouriteServices,
+  selectToProcess,
+  ProcessFromFavourite,
+  openViewFavouriteOrder,
+  closeViewFavouriteOrder
 };

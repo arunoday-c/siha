@@ -6,7 +6,8 @@ import {
   getItemMoment,
   getItemLocationStock,
   getUserLocationPermission,
-  getItemandLocationStock
+  getItemandLocationStock,
+  getConsumptionSelectedMonth
 } from "../models/pharmacyGlobal";
 
 export default () => {
@@ -60,6 +61,15 @@ export default () => {
       });
     }
   );
-
+  api.get(
+    "/getConsumptionSelectedMonth",
+    getConsumptionSelectedMonth,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
   return api;
 };

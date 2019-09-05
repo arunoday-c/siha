@@ -368,7 +368,10 @@ class InvRequisitionEntry extends Component {
                 }
               }}
             >
-              <RequisitionItems RequisitionIOputs={this.state} />
+              <RequisitionItems
+                RequisitionIOputs={this.state}
+                requisition_auth={this.props.requisition_auth}
+              />
             </MyContext.Provider>
 
             <div className="hptl-phase1-footer">

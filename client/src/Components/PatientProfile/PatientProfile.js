@@ -284,8 +284,16 @@ class PatientProfile extends Component {
     cancelRequest("getPatientVitals");
     cancelRequest("getPatientDiet");
     cancelRequest("getPatientDiagnosis");
+    this.props.getPatientAllergies({
+      redux: {
+        type: "PATIENT_ALLERGIES",
+        mappingName: "patient_allergies",
+        data: []
+      }
+    });
   }
   componentWillReceiveProps(props) {
+    debugger;
     if (props.patient_allergies !== undefined) {
       if (this.state.patientAllergies.length === 0)
         this.showAllergyAlert(props.patient_allergies);
@@ -309,6 +317,11 @@ class PatientProfile extends Component {
             };
           })
           .toArray()
+      });
+    } else {
+      this.setState({
+        alergyExist: "",
+        patientAllergies: []
       });
     }
   }
@@ -675,6 +688,7 @@ class PatientProfile extends Component {
     //           };
     //         })
     //         .toArray();
+
     const _patient_allergies = this.state.patientAllergies;
 
     const _diagnosis =
