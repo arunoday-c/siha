@@ -104,7 +104,6 @@ class AuthorizationSetup extends Component {
   }
 
   searchSelect(frm_type, data) {
-    debugger;
     if (frm_type === "Leave") {
       this.setState({
         l_sub_department_id: data.sub_department_id,

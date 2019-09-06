@@ -608,12 +608,13 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "INSERT INTO `hims_d_test_category` (`category_name`, `test_section`, \
+            "INSERT INTO `hims_d_test_category` (`category_name`, `test_section`, `investigation_type`,\
             `created_by` ,`created_date`) \
-            VALUES ( ?, ?, ?, ?)",
+            VALUES ( ?, ?, ?, ?, ?)",
           values: [
             inputParam.category_name,
             inputParam.test_section,
+            inputParam.investigation_type,
             req.userIdentity.algaeh_d_app_user_id,
             new Date()
           ],
@@ -641,11 +642,13 @@ module.exports = {
         .executeQuery({
           query:
             "UPDATE `hims_d_test_category` \
-            SET `category_name`=?,  `test_section`=?, `updated_by`=?, `updated_date`=?,`category_status`=? \
+            SET `category_name`=?,  `test_section`=?, `investigation_type`=?,\
+            `updated_by`=?, `updated_date`=?,`category_status`=? \
             WHERE `record_status`='A' and `hims_d_test_category_id`=?",
           values: [
             inputParam.category_name,
             inputParam.test_section,
+            inputParam.investigation_type,
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
             inputParam.category_status,

@@ -2230,7 +2230,7 @@ module.exports = {
               const allPolicy = strQuery == "" ? [] : result[1];
               const allCompany_price = strQuery == "" ? [] : result[2];
               const allPolicy_price = strQuery == "" ? [] : result[3];
-
+              let apr_amount_bulk = 0;
               for (let i = 0; i < input.length; i++) {
                 let servicesDetails = input[i];
 
@@ -2313,6 +2313,10 @@ module.exports = {
                     ? "N"
                     : servicesDetails.sec_insured;
 
+                let bulkProcess =
+                  servicesDetails.bulkProcess == undefined
+                    ? "N"
+                    : servicesDetails.bulkProcess;
                 let approval_amt =
                   servicesDetails.approval_amt == undefined
                     ? 0
@@ -2630,12 +2634,31 @@ module.exports = {
                   company_payble = company_payble + company_tax;
 
                   preapp_limit_amount = parseFloat(policydtls.preapp_limit);
+
                   if (policydtls.preapp_limit !== 0) {
-                    approval_amt =
-                      parseFloat(approval_amt) + parseFloat(company_payble);
+                    if (bulkProcess == "Y") {
+                      apr_amount_bulk =
+                        parseFloat(apr_amount_bulk) +
+                        parseFloat(company_payble);
+
+                      approval_amt = apr_amount_bulk;
+                    } else {
+                      approval_amt =
+                        parseFloat(approval_amt) + parseFloat(company_payble);
+                    }
+
+                    utilities.logger().log("approval_amt: ", approval_amt);
+                    utilities.logger().log("company_payble: ", company_payble);
+                    utilities
+                      .logger()
+                      .log("preapp_limit_amount: ", preapp_limit_amount);
                     if (approval_amt > preapp_limit_amount) {
+                      utilities.logger().log("enter: ");
                       preapp_limit_exceed = "Y";
                     }
+                    utilities
+                      .logger()
+                      .log("preapp_limit_exceed: ", preapp_limit_exceed);
                   }
 
                   //If primary and secondary exists

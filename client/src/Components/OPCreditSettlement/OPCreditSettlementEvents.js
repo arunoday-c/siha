@@ -96,7 +96,7 @@ const ClearData = ($this, e) => {
 
 const Validations = $this => {
   let isError = false;
-  debugger;
+
   if ($this.state.card_amount > 0) {
     if ($this.state.card_number === null || $this.state.card_number === "") {
       isError = true;

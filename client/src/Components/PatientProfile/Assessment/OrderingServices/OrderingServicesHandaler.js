@@ -284,7 +284,7 @@ const ProcessService = ($this, favouriteOrder, e) => {
                   data.billdetails[0].policy_number = $this.state.policy_number;
                   data.billdetails[0].insurance_service_name =
                     $this.state.insurance_service_name;
-                  data.billdetails[0].icd_code = "1";
+                  // data.billdetails[0].icd_code = "1";
                   // data.billdetails[0].icd_code === ""
                   //   ? null
                   //   : data.billdetails[0].icd_code;
@@ -320,6 +320,7 @@ const ProcessService = ($this, favouriteOrder, e) => {
                   if (data.billdetails.length !== 0) {
                     existingservices.splice(0, 0, data.billdetails[0]);
                   }
+
                   let approval_amt = data.billdetails[0].approval_amt;
                   let preapp_limit_amount =
                     data.billdetails[0].preapp_limit_amount;
@@ -375,7 +376,7 @@ const ProcessService = ($this, favouriteOrder, e) => {
                     }
                   });
                 }
-                debugger;
+
                 if (favouriteOrder === "F") {
                   let fav_exists = _.find(
                     $this.state.all_favouriteservices,
@@ -855,7 +856,6 @@ const openViewFavouriteOrder = $this => {
 };
 
 const closeViewFavouriteOrder = ($this, e) => {
-  debugger;
   if (e.length > 0) {
     $this.setState(
       {
@@ -922,6 +922,7 @@ const ProcessFromFavourite = ($this, from) => {
   // orderedList
 
   let serviceInput = [];
+  let preserviceInput = $this.state.preserviceInput || [];
   let Selected_Services = null;
   if (from === "Services") {
     Selected_Services = Enumerable.from($this.state.all_favouriteservices)
@@ -940,7 +941,6 @@ const ProcessFromFavourite = ($this, from) => {
   }
 
   for (let d = 0; d < Selected_Services.length; d++) {
-    debugger;
     let SelectedService = undefined;
     let PreSelectedService = undefined;
     if (Selected_Services[d].service_type_id !== 2) {
@@ -988,16 +988,34 @@ const ProcessFromFavourite = ($this, from) => {
       secondary_network_office_id: $this.state.secondary_network_office_id,
       approval_amt: $this.state.approval_amt,
       approval_limit_yesno: $this.state.approval_limit_yesno,
+      preapp_limit_amount: $this.state.preapp_limit_amount,
+      bulkProcess: "Y"
+    });
+
+    preserviceInput.push({
+      insured: $this.state.insured,
+      vat_applicable: $this.props.vat_applicable,
+      service_type_id: Selected_Services[d].service_type_id,
+      hims_d_services_id: Selected_Services[d].services_id,
+      primary_insurance_provider_id: $this.state.insurance_provider_id,
+      primary_network_office_id: $this.state.hims_d_insurance_network_office_id,
+      primary_network_id: $this.state.network_id,
+      sec_insured: $this.state.sec_insured,
+      secondary_insurance_provider_id:
+        $this.state.secondary_insurance_provider_id,
+      secondary_network_id: $this.state.secondary_network_id,
+      secondary_network_office_id: $this.state.secondary_network_office_id,
+      approval_amt: $this.state.approval_amt,
+      approval_limit_yesno: $this.state.approval_limit_yesno,
       preapp_limit_amount: $this.state.preapp_limit_amount
     });
   }
   $this.setState(
     {
-      loading_ProcessService: true
+      loading_bulk_Service: true
     },
     () => {
       getFavouriteServices($this);
-      let preserviceInput = $this.state.preserviceInput || [];
 
       algaehApiCall({
         uri: "/billing/getBillDetails",
@@ -1007,8 +1025,12 @@ const ProcessFromFavourite = ($this, from) => {
         onSuccess: response => {
           if (response.data.success) {
             let data = response.data.records;
+            let preapp_limit_exceed = _.find(
+              data.billdetails,
+              f => f.preapp_limit_exceed === "Y"
+            );
             if (
-              data.billdetails[0].preapp_limit_exceed === "Y" &&
+              preapp_limit_exceed !== undefined &&
               $this.state.approval_limit_yesno === "N"
             ) {
               swal({
@@ -1023,14 +1045,13 @@ const ProcessFromFavourite = ($this, from) => {
                 cancelButtonText: "No"
               }).then(willProceed => {
                 if (willProceed.value) {
-                  preserviceInput.push(serviceInput[0]);
+                  // preserviceInput.push(serviceInput[0]);
+
                   for (let k = 0; k < preserviceInput.length; k++) {
-                    preserviceInput[k].approval_limit_yesno =
-                      data.billdetails[0].preapp_limit_exceed;
+                    preserviceInput[k].approval_limit_yesno = "Y";
                   }
                   let approval_amt = data.billdetails[0].approval_amt;
-                  let approval_limit_yesno =
-                    data.billdetails[0].preapp_limit_exceed;
+                  let approval_limit_yesno = "Y";
 
                   algaehApiCall({
                     uri: "/billing/getBillDetails",
@@ -1085,6 +1106,9 @@ const ProcessFromFavourite = ($this, from) => {
                           preserviceInput: preserviceInput,
                           approval_limit_yesno: approval_limit_yesno,
                           saved: false,
+                          preapp_limit_amount: parseFloat(
+                            data.billdetails[0].preapp_limit_amount
+                          ),
                           // s_service_type: null,
                           s_service: null,
                           test_type: "R",
@@ -1112,7 +1136,7 @@ const ProcessFromFavourite = ($this, from) => {
                                   response.data.records.copay_amount,
                                 sec_copay_amount:
                                   response.data.records.sec_copay_amount,
-                                loading_ProcessService: false,
+                                loading_bulk_Service: false,
                                 add_to_list: true
                               });
                             }
@@ -1120,7 +1144,7 @@ const ProcessFromFavourite = ($this, from) => {
                           onFailure: error => {
                             $this.setState(
                               {
-                                loading_ProcessService: false
+                                loading_bulk_Service: false
                               },
                               () => {
                                 swalMessage({
@@ -1136,7 +1160,7 @@ const ProcessFromFavourite = ($this, from) => {
                     onFailure: error => {
                       $this.setState(
                         {
-                          loading_ProcessService: false
+                          loading_bulk_Service: false
                         },
                         () => {
                           swalMessage({
@@ -1153,7 +1177,7 @@ const ProcessFromFavourite = ($this, from) => {
               let existingservices = $this.state.orderservicesdata;
               let approval_amt = 0;
               let preapp_limit_amount = 0;
-              for (let c = 0; c < Selected_Services.length; c++) {
+              for (let c = 0; c < data.billdetails.length; c++) {
                 data.billdetails[c].visit_id = $this.state.visit_id;
                 data.billdetails[c].patient_id = $this.state.patient_id;
 
@@ -1165,7 +1189,7 @@ const ProcessFromFavourite = ($this, from) => {
                 data.billdetails[c].policy_number = $this.state.policy_number;
                 data.billdetails[c].insurance_service_name =
                   $this.state.insurance_service_name;
-                data.billdetails[c].icd_code = "1";
+                // data.billdetails[c].icd_code = "1";
                 // data.billdetails[0].icd_code === ""
                 //   ? null
                 //   : data.billdetails[0].icd_code;
@@ -1203,10 +1227,10 @@ const ProcessFromFavourite = ($this, from) => {
                 }
                 approval_amt =
                   approval_amt + parseFloat(data.billdetails[c].approval_amt);
-                preapp_limit_amount =
-                  preapp_limit_amount +
-                  parseFloat(data.billdetails[c].preapp_limit_amount);
-                preserviceInput.push(serviceInput[c]);
+                preapp_limit_amount = parseFloat(
+                  data.billdetails[c].preapp_limit_amount
+                );
+                // preserviceInput.push(serviceInput[c]);
               }
 
               $this.setState({
@@ -1236,7 +1260,7 @@ const ProcessFromFavourite = ($this, from) => {
                       company_payble: response.data.records.company_payble,
                       copay_amount: response.data.records.copay_amount,
                       sec_copay_amount: response.data.records.sec_copay_amount,
-                      loading_ProcessService: false,
+                      loading_bulk_Service: false,
                       add_to_list: true
                     });
                   }
@@ -1244,7 +1268,7 @@ const ProcessFromFavourite = ($this, from) => {
                 onFailure: error => {
                   $this.setState(
                     {
-                      loading_ProcessService: false
+                      loading_bulk_Service: false
                     },
                     () => {
                       swalMessage({
@@ -1261,7 +1285,7 @@ const ProcessFromFavourite = ($this, from) => {
         onFailure: error => {
           $this.setState(
             {
-              loading_ProcessService: false
+              loading_bulk_Service: false
             },
             () => {
               swalMessage({
