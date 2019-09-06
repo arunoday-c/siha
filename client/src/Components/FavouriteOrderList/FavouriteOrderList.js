@@ -13,7 +13,6 @@ import FavouriteOrder from "./FavouriteOrder/FavouriteOrder";
 
 class FavouriteOrderList extends Component {
   constructor(props) {
-    debugger;
     super(props);
     this.state = {
       isOpen: false,
@@ -24,7 +23,6 @@ class FavouriteOrderList extends Component {
   }
 
   componentDidMount() {
-    debugger;
     this.props.getProviderDetails({
       uri: "/visit/getProviders",
       module: "frontDesk",

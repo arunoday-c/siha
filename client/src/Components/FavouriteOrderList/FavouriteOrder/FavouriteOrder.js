@@ -60,7 +60,6 @@ class FavouriteOrder extends PureComponent {
   }
 
   componentWillReceiveProps(newProps) {
-    debugger;
     if (
       newProps.favouriteData !== undefined &&
       newProps.favouriteData.hims_d_favourite_orders_header_id !== undefined

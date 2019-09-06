@@ -293,7 +293,6 @@ class PatientProfile extends Component {
     });
   }
   componentWillReceiveProps(props) {
-    debugger;
     if (props.patient_allergies !== undefined) {
       if (this.state.patientAllergies.length === 0)
         this.showAllergyAlert(props.patient_allergies);

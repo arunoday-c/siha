@@ -67,7 +67,6 @@ export default function AuthorizationSetupEvent() {
         module: "hrManagement",
         onSuccess: res => {
           if (res.data.success) {
-            debugger;
             if (res.data.result.length > 0) {
               $this.setState({
                 leave_level: parseInt(res.data.result[0].leave_level),
@@ -100,7 +99,6 @@ export default function AuthorizationSetupEvent() {
         data: inputObj,
         onSuccess: res => {
           if (res.data.success) {
-            debugger;
             if (res.data.records.length > 0) {
               $this.setState({
                 employees_list: res.data.records,
@@ -203,7 +201,6 @@ export default function AuthorizationSetupEvent() {
       $this.setState({ employees_list: employees_list });
     },
     processLeaveLevel: $this => {
-      debugger;
       let employees_list = $this.state.employees_list;
       const employees_process = _.filter($this.state.employees_list, f => {
         return f.select_to_process === "Y";
@@ -239,7 +236,6 @@ export default function AuthorizationSetupEvent() {
       $this.setState({ employees_list: employees_list });
     },
     SaveAuthorizationSetup: $this => {
-      debugger;
       algaehApiCall({
         uri: "/hrsettings/addEmployeeAuthorizationSetup",
         data: $this.state.employees_list,

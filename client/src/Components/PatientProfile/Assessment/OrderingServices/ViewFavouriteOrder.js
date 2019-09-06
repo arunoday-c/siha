@@ -57,7 +57,6 @@ class ViewFavouriteOrder extends PureComponent {
   }
 
   AddFavouriteOrder() {
-    debugger;
     let listOfinclude = Enumerable.from(this.state.all_favourites)
       .where(w => w.select_to_process === "Y")
       .toArray();

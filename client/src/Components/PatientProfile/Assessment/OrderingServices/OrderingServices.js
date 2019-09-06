@@ -81,6 +81,7 @@ class OrderingServices extends Component {
       addNew: true,
       loading_saveOrderService: false,
       loading_ProcessService: false,
+      loading_bulk_Service: false,
       patient_payable: null,
       company_payble: null,
       sec_company_paybale: null,
@@ -787,14 +788,28 @@ class OrderingServices extends Component {
                       onDone: updateBillDetail.bind(this, this)
                     }}
                   />
-                  <button
+
+                  <ButtonType
+                    className="btn btn-default"
+                    loading={this.state.loading_bulk_Service}
+                    onClick={ProcessFromFavourite.bind(this, this, "Services")}
+                    label={{
+                      forceLabel: "Add to list",
+                      returnText: true
+                    }}
+                    others={{
+                      disabled: this.state.add_to_list,
+                      style: { float: "right", marginTop: 10 }
+                    }}
+                  />
+                  {/*<button
                     className="btn btn-default"
                     style={{ float: "right", marginTop: 10 }}
                     onClick={ProcessFromFavourite.bind(this, this, "Services")}
                     disabled={this.state.add_to_list}
                   >
                     Add to List
-                  </button>
+                  </button>*/}
                 </div>
               </div>
 

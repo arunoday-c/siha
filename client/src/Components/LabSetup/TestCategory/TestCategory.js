@@ -29,7 +29,8 @@ class TestCategory extends Component {
     this.state = {
       hims_d_test_category_id: "",
       category_name: "",
-      test_section: "O"
+      test_section: "O",
+      investigation_type: null
     };
     this.baseState = this.state;
   }
@@ -102,6 +103,29 @@ class TestCategory extends Component {
               }
             }}
           />
+
+          <AlagehAutoComplete
+            div={{ className: "col-3 form-group mandatory" }}
+            label={{ forceLabel: "Investigation Type", isImp: true }}
+            selector={{
+              name: "investigation_type",
+              className: "select-fld",
+              value: this.state.investigation_type,
+              dataSource: {
+                textField: "name",
+                valueField: "value",
+                data: GlobalVariables.FORMAT_LAB_RAD
+              },
+
+              onChange: changeTexts.bind(this, this),
+              onClear: () => {
+                this.setState({
+                  investigation_type: null
+                });
+              }
+            }}
+          />
+
           <div className="col-lg-2 align-middle" style={{ paddingTop: 19 }}>
             <button
               onClick={insertTestCategory.bind(this, this)}
@@ -147,7 +171,56 @@ class TestCategory extends Component {
                         );
                       }
                     },
+                    {
+                      fieldName: "investigation_type",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Investigation Type" }}
+                        />
+                      ),
+                      displayTemplate: row => {
+                        let display = GlobalVariables.FORMAT_LAB_RAD.filter(
+                          f => f.value === row.investigation_type
+                        );
 
+                        return (
+                          <span>
+                            {display !== undefined && display.length !== 0
+                              ? display[0].name
+                              : ""}
+                          </span>
+                        );
+                      },
+                      editorTemplate: row => {
+                        return (
+                          <AlagehAutoComplete
+                            div={{}}
+                            selector={{
+                              name: "investigation_type",
+                              className: "select-fld",
+                              value: row.investigation_type,
+                              dataSource: {
+                                textField: "name",
+                                valueField: "value",
+                                data: GlobalVariables.FORMAT_LAB_RAD
+                              },
+                              onChange: onchangegridcol.bind(this, this, row),
+                              others: {
+                                errormessage:
+                                  "Investigation Type - cannot be blank",
+                                required: true
+                              },
+                              onClear: () => {
+                                this.setState({
+                                  test_section: null
+                                });
+                              }
+                            }}
+                          />
+                        );
+                      },
+                      others: { maxWidth: 100 }
+                    },
                     {
                       fieldName: "test_section",
                       label: (
