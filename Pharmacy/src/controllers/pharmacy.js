@@ -32,7 +32,10 @@ import {
   updateItemMasterAndUom,
   updateLocationPermission,
   getItemMasterWithSalesPrice,
-  getPharmacyUsers
+  getPharmacyUsers,
+  getPharmacyOptions,
+  addPharmacyOptions,
+  updatePharmacyOptions
 } from "../models/pharmacy";
 
 const { addServices, updateServicesOthrs } = algaehPath(
@@ -268,6 +271,27 @@ export default () => {
     }
   );
   api.get("/getPharmacyUsers", getPharmacyUsers, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+  api.get("/getPharmacyOptions", getPharmacyOptions, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+  api.post("/addPharmacyOptions", addPharmacyOptions, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+  api.put("/updatePharmacyOptions", updatePharmacyOptions, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
       records: req.records

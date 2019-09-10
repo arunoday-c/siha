@@ -1659,5 +1659,10 @@
     { "name": "Group B", "value": "B" },
     { "name": "Group C", "value": "C" },
     { "name": "Group U", "value": "U" }
+  ],
+  "NOTIFICATION_TYPE": [
+    { "name": "Day", "value": "D" },
+    { "name": "Month", "value": "M" },
+    { "name": "Year", "value": "Y" }
   ]
 }

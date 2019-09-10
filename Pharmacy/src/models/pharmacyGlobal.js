@@ -403,5 +403,153 @@ module.exports = {
       _mysql.releaseConnection();
       next(e);
     }
+  },
+
+  insertExpiryNotification: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQueryWithTransaction({
+          query:
+            "SELECT notification_before, notification_type from hims_d_pharmacy_options;",
+          printQuery: true
+        })
+        .then(result => {
+          const utilities = new algaehUtilities();
+          utilities.logger().log("result: ", result[0].notification_type);
+          let expiry_date_filter = null;
+          let today_date = new Date();
+
+          if (result[0].notification_type == "D") {
+            expiry_date_filter = new Date(
+              today_date.setDate(
+                today_date.getDate() + parseInt(result[0].notification_before)
+              )
+            );
+          } else if (result[0].notification_type == "M") {
+            expiry_date_filter = new Date(
+              today_date.setMonth(
+                today_date.getMonth() + parseInt(result[0].notification_before)
+              )
+            );
+          } else if (result[0].notification_type == "Y") {
+            expiry_date_filter = new Date(
+              today_date.setFullYear(
+                today_date.getFullYear() +
+                  parseInt(result[0].notification_before)
+              )
+            );
+          }
+
+          utilities.logger().log("expiry_date_filter: ", expiry_date_filter);
+
+          _mysql
+            .executeQuery({
+              query:
+                "SELECT hims_m_item_location_id, item_id, pharmacy_location_id, batchno, expirydt, barcode, \
+                notification_insert,hospital_id from hims_m_item_location \
+                where qtyhand > 0 and notification_insert='N' and date(expirydt) <= date(?)",
+              values: [expiry_date_filter],
+              printQuery: true
+            })
+            .then(item_expiry_result => {
+              utilities
+                .logger()
+                .log("item_expiry_result: ", item_expiry_result);
+              if (item_expiry_result.length > 0) {
+                let str_query = "";
+
+                for (let i = 0; i < item_expiry_result.length; i++) {
+                  str_query += mysql.format(
+                    "UPDATE `hims_m_item_location` SET notification_insert = 'Y' WHERE hims_m_item_location_id=?;",
+                    [item_expiry_result[i].hims_m_item_location_id]
+                  );
+
+                  str_query += mysql.format(
+                    "INSERT INTO hims_d_pharmacy_notification_expiry (`loaction_id`, `item_id`, `expiry_date`, `batchno`,\
+                     `barcode`, `hospital_id`, `created_by`, `created_date`, `updated_date`, `updated_by`) \
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
+                    [
+                      item_expiry_result[i].pharmacy_location_id,
+                      item_expiry_result[i].item_id,
+                      item_expiry_result[i].expirydt,
+                      item_expiry_result[i].batchno,
+                      item_expiry_result[i].barcode,
+                      item_expiry_result[i].hospital_id,
+                      req.userIdentity.algaeh_d_app_user_id,
+                      new Date(),
+                      new Date(),
+                      req.userIdentity.algaeh_d_app_user_id
+                    ]
+                  );
+                }
+
+                _mysql
+                  .executeQuery({
+                    query: str_query,
+                    printQuery: true
+                  })
+                  .then(notification_result => {
+                    _mysql.commitTransaction(() => {
+                      _mysql.releaseConnection();
+                      req.records = notification_result;
+                      next();
+                    });
+                  })
+                  .catch(e => {
+                    _mysql.rollBackTransaction(() => {
+                      next(e);
+                    });
+                  });
+              } else {
+                _mysql.commitTransaction(() => {
+                  _mysql.releaseConnection();
+                  req.records = item_expiry_result;
+                  next();
+                });
+              }
+            })
+            .catch(e => {
+              _mysql.rollBackTransaction(() => {
+                next(e);
+              });
+            });
+        })
+        .catch(e => {
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
+        });
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
+  },
+  getExpiringItemList: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "SELECT NE.*, PL.location_description, IM.item_description \
+            FROM hims_d_pharmacy_notification_expiry NE, hims_d_pharmacy_location PL, hims_d_item_master IM where \
+            NE.loaction_id = PL.hims_d_pharmacy_location_id and  NE.item_id=IM.hims_d_item_master_id and NE.loaction_id=?;",
+          values: [req.query.location_id],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
   }
 };
