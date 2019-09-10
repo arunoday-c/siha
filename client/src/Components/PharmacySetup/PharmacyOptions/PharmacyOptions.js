@@ -85,28 +85,6 @@ export default class PharmacyOptions extends Component {
     }
   }
 
-  Process() {
-    algaehApiCall({
-      uri: "/pharmacyGlobal/insertExpiryNotification",
-      module: "pharmacy",
-      data: this.state,
-      method: "POST",
-      onSuccess: res => {
-        if (res.data.success) {
-          swalMessage({
-            title: "Saved Successfully",
-            type: "success"
-          });
-        }
-      },
-      onFailure: err => {
-        swalMessage({
-          title: err.message,
-          type: "error"
-        });
-      }
-    });
-  }
   changeTexts(e) {
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
@@ -171,15 +149,6 @@ export default class PharmacyOptions extends Component {
                     label={{ forceLabel: "Save", returnText: true }}
                   />
                 </button>
-                {/*<button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={this.Process.bind(this)}
-                >
-                  <AlgaehLabel
-                    label={{ forceLabel: "Process", returnText: true }}
-                  />
-                </button>*/}
               </div>
             </div>
           </div>

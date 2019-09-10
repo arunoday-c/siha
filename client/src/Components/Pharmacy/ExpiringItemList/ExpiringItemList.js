@@ -76,6 +76,29 @@ class ExpiringItemList extends Component {
     }
   }
 
+  Process() {
+    algaehApiCall({
+      uri: "/pharmacyGlobal/insertExpiryNotification",
+      module: "pharmacy",
+      data: this.state,
+      method: "POST",
+      onSuccess: res => {
+        if (res.data.success) {
+          swalMessage({
+            title: "Saved Successfully",
+            type: "success"
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
   render() {
     return (
       <React.Fragment>
@@ -136,6 +159,16 @@ class ExpiringItemList extends Component {
                     autoComplete: "off"
                   }}
                 />
+
+                {/*<button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={this.Process.bind(this)}
+                >
+                  <AlgaehLabel
+                    label={{ forceLabel: "Process", returnText: true }}
+                  />
+                </button>*/}
               </div>
             </div>
           </div>
@@ -156,7 +189,7 @@ class ExpiringItemList extends Component {
                       <AlgaehLabel label={{ forceLabel: "Expiry Date" }} />
                     ),
                     displayTemplate: row => {
-                      return <span>{this.dateFormater(row.expirydt)}</span>;
+                      return <span>{this.dateFormater(row.expiry_date)}</span>;
                     }
                   },
                   {
