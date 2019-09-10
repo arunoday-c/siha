@@ -22,7 +22,7 @@ import NurseWorkbench from "./Components/Workbench/Workbench";
 import CommonDashboard from "./Components/Dashboard/Dashboard";
 import PatientPackages from "./Components/PatientPackages/PatientPackages";
 import AcknowledgeList from "./Components/Pharmacy/AcknowledgeList/AcknowledgeSwitch";
-
+import ExpiringItemList from "./Components/Pharmacy/ExpiringItemList/ExpiringItemList";
 import InvAcknowledgeList from "./Components/Inventory/InvAcknowledgeList/InvAcknowledgeSwitch";
 
 const PageToPlot = {
@@ -122,6 +122,7 @@ const PageToPlot = {
   InitialStock: InitialStock,
   PrescriptionList: PrescriptionList,
   PatientPackages: PatientPackages,
+  ExpiringItemList: ExpiringItemList,
   // PrescriptionList: React.lazy(() =>
   //   retry(() =>
   //     import("./Components/Pharmacy/PrescriptionList/PrescriptionList")
