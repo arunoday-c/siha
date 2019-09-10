@@ -5,7 +5,8 @@ import {
   getItemMoment,
   getItemLocationStock,
   getUserLocationPermission,
-  getItemandLocationStock
+  getItemandLocationStock,
+  getConsumptionSelectedMonth
 } from "../models/inventoryGlobal";
 
 export default () => {
@@ -42,6 +43,17 @@ export default () => {
   api.get(
     "/getItemandLocationStock",
     getItemandLocationStock,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+
+  api.get(
+    "/getConsumptionSelectedMonth",
+    getConsumptionSelectedMonth,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,

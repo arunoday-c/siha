@@ -1,5 +1,5 @@
 import moment from "moment";
-import { swalMessage } from "../../../../utils/algaehApiCall.js";
+import { swalMessage, algaehApiCall } from "../../../../utils/algaehApiCall.js";
 import _ from "lodash";
 
 const UomchangeTexts = ($this, ctrl, e) => {
@@ -122,6 +122,11 @@ const itemchangeText = ($this, context, e) => {
             location_id: $this.state.from_location_id,
             item_id: value,
             set: "From"
+          });
+
+          getConsumptionSelectedMonth($this, context, {
+            location_id: $this.state.from_location_id,
+            item_id: value
           });
           $this.setState({
             [name]: value,
@@ -361,6 +366,46 @@ const getItemLocationStock = ($this, context, value) => {
           from_qtyhand: null
         });
       }
+    }
+  });
+};
+
+const getConsumptionSelectedMonth = ($this, context, value) => {
+  let date = new Date($this.state.requistion_date);
+  var from_date = new Date(date.getFullYear(), date.getMonth(), 1);
+  var to_date = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+
+  algaehApiCall({
+    uri: "/pharmacyGlobal/getConsumptionSelectedMonth",
+    module: "pharmacy",
+    method: "GET",
+    data: {
+      from_date: from_date,
+      to_date: to_date,
+      item_code_id: value.item_id,
+      from_location_id: value.location_id
+    },
+    onSuccess: response => {
+      if (response.data.success === true) {
+        $this.setState({
+          transaction_qty:
+            response.data.records[0].transaction_qty !== null
+              ? parseFloat(response.data.records[0].transaction_qty)
+              : response.data.records[0].transaction_qty
+        });
+        context.updateState({
+          transaction_qty:
+            response.data.records[0].transaction_qty !== null
+              ? parseFloat(response.data.records[0].transaction_qty)
+              : response.data.records[0].transaction_qty
+        });
+      }
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
     }
   });
 };

@@ -9,6 +9,7 @@ import {
   AlagehAutoComplete,
   AlgaehDataGrid
 } from "../../Wrapper/algaehWrapper";
+import ButtonType from "../../Wrapper/algaehButton";
 import ItemSetup from "../../../Models/ItemSetup";
 import { InsertUpdateItems } from "./ItemMasterEvents";
 
@@ -46,7 +47,8 @@ class ItemMaster extends Component {
       uom_id: null,
       stocking_uom: null,
       conversion_factor: 0,
-      convertEnable: false
+      convertEnable: false,
+      loading_itemInsert: false
     };
     this.initCall();
   }
@@ -178,21 +180,7 @@ class ItemMaster extends Component {
                         onChange: texthandle.bind(this, this)
                       }}
                     />
-                    <AlagehFormGroup
-                      div={{ className: "col-4 mandatory form-group" }}
-                      label={{
-                        forceLabel: "SFDA",
-                        isImp: true
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "sfda_code",
-                        value: this.state.sfda_code,
-                        events: {
-                          onChange: texthandle.bind(this, this)
-                        }
-                      }}
-                    />
+
                     <AlagehAutoComplete
                       div={{ className: "col-4 mandatory form-group" }}
                       label={{
@@ -211,7 +199,20 @@ class ItemMaster extends Component {
                         onChange: texthandle.bind(this, this)
                       }}
                     />
-
+                    <AlagehFormGroup
+                      div={{ className: "col-4 form-group" }}
+                      label={{
+                        forceLabel: "SFDA"
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "sfda_code",
+                        value: this.state.sfda_code,
+                        events: {
+                          onChange: texthandle.bind(this, this)
+                        }
+                      }}
+                    />
                     <AlagehAutoComplete
                       div={{ className: "col-4 form-group" }}
                       label={{
@@ -768,7 +769,7 @@ class ItemMaster extends Component {
                 <div className="col-lg-4"> &nbsp;</div>
 
                 <div className="col-lg-8">
-                  <button
+                  {/*<button
                     onClick={InsertUpdateItems.bind(this, this)}
                     type="button"
                     className="btn btn-primary"
@@ -778,7 +779,20 @@ class ItemMaster extends Component {
                     ) : (
                       <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
                     )}
-                  </button>
+                  </button>*/}
+
+                  <ButtonType
+                    classname="btn btn-primary"
+                    loading={this.state.loading_itemInsert}
+                    onClick={InsertUpdateItems.bind(this, this)}
+                    label={{
+                      forceLabel:
+                        this.state.hims_d_item_master_id === null
+                          ? "Save"
+                          : "Update"
+                    }}
+                  />
+
                   <button
                     onClick={e => {
                       this.onClose(e);

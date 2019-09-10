@@ -66,7 +66,6 @@ export default function DashBoardEvents() {
         method: "GET",
 
         onSuccess: response => {
-          debugger;
           if (response.data.success) {
             let no_of_employees = response.data.records.length;
 

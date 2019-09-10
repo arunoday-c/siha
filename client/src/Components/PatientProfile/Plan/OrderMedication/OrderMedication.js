@@ -682,7 +682,7 @@ class OrderMedication extends Component {
               Save Medication
             </button>
 
-            <ButtonType
+            {/*<ButtonType
               label={{
                 forceLabel: "Print Prescription",
                 returnText: true
@@ -707,7 +707,7 @@ class OrderMedication extends Component {
                 ],
                 outputFileType: "PDF"
               }}
-            />
+            />*/}
             <button
               type="button"
               className="btn btn-default"

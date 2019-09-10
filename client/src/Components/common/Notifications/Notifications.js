@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import "./Notifications.css";
 import { Header, Segment, Portal, Button } from "semantic-ui-react";
 // import isEqual from "lodash/isEqual";
 import alNotification from "../../Wrapper/algaehNotification.js";
@@ -115,7 +116,9 @@ export default class Notifications extends Component {
           <Segment>Notifications</Segment>
           <Segment.Group>
             {notiList.length !== 0 ? (
-              notiList.map(noti => <Segment>{noti}</Segment>)
+              notiList.map(noti => (
+                <Segment className="notificationList">{noti}</Segment>
+              ))
             ) : (
               <Segment style={{ textAlign: "center" }}>
                 No notifications

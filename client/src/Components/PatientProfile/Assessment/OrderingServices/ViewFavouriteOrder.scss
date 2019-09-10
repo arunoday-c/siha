@@ -1,0 +1,11 @@
+.viewfavServiceOrderPopup {
+  .algaeh-modal {
+    width: 70vw;
+  }
+}
+#favouritesGrid,
+#favourite_detail_grid {
+  .ReactTable {
+    max-height: 69vh !important;
+  }
+}
