@@ -27,44 +27,49 @@
     </section>
     <section>
 
-        <table class="tableForData" cell-padding="0">
+        <table class="tableForDataNoBorder" cell-padding="0">
             <thead>
                 <tr>
-                    <th>Sl No.</th>
-                    <th>Analyte</th>
+                    {{!-- <th>Sl No.</th> --}}
+                    <th class="txtFld">Analyte</th>
                     <th>Result</th>
-                    <th>Unit</th>                    
                     <th>Normal Range</th>
-                    <th>Critical Range</th>
+                    <th>Unit</th>
+                    {{!-- <th>Critical Range</th> --}}
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="analyteResult">
 
                 {{#each details}}
                 <tr>
-                    <td colspan="6" class="tableSubHdg"><small>Specimen Name:</small>
+                    <td colspan="4" class="tableSubHdg">
                         {{firstElement groupDetail 0 "investigation_name"}}</td>
                 </tr>
                 {{#each groupDetail}}
                 <tr>
-                    <td>{{inc @index}}</td>
-                    <td>{{analyte_name}}</td>
-                    <td>{{result}} ({{critical_type}})</td>
+                    {{!-- <td>{{inc @index}}</td> --}}
+                    <td class="txtFld" style="width: 55%">{{analyte_name}}</td>
+                    <td data-value="{{critical_type}}">{{result}} <sup>{{critical_type}}</sup></td>
+                    <td>{{normal_low }} - {{normal_high}}</td>
                     <td>{{result_unit}}</td>
-                    <td>{{normal_low }}-{{normal_high}}</td>
-                    <td>{{critical_low}}-{{critical_high}}</td>
+                    {{!-- <td class="numberFld">{{critical_low}} - {{critical_high}}</td> --}}
                 </tr>
                 {{/each}}
-                {{/each}}<tr>
-                    <td>Comments:</td>
-                    <td colspan="5">{{header.comments}}</td>
+                {{/each}}
+            </tbody>
+        </table>
+        <table class="tableForData">
+            <tbody>
+                <tr>
+                    <td class="txtFld">Comments: {{header.comments}}</td>
+
                 </tr>
                 <tr>
-                    <td>Validated By:</td>
-                    <td colspan="5">{{header.validated_by}}</td>
+                    <td class="txtFld">Validated By: <b>{{header.validated_by}}</b></td>
+
                 </tr>
             </tbody>
         </table>
     </section>
-    <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer>
+    {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
 </div>

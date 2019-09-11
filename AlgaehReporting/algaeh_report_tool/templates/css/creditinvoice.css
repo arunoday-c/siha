@@ -77,7 +77,7 @@ body {
   text-align: left;
 }
 
-.tableSubHdg span.textFloatRight {
+.print-body .tableForData .tableSubHdg span.textFloatRight {
   font-weight: normal;
   text-align: right;
   float: right;
@@ -435,4 +435,40 @@ body {
 }
 .salaryWord {
   text-transform: capitalize;
+}
+
+.print-body .tableForDataNoBorder {
+  width: 100%;
+  border-collapse: collapse;
+  font-weight: normal;
+  font-size: 11px;
+}
+
+.print-body .tableForDataNoBorder thead th {
+  padding: 5px;
+  text-align: center;
+  border-bottom: 2px solid #ccc;
+}
+.print-body .tableForDataNoBorder tbody td {
+  padding: 5px;
+  text-align: center;
+  border-bottom: 1px dotted rgb(221, 221, 221);
+}
+
+.print-body .tableForDataNoBorder .tableSubHdg {
+  font-weight: bold;
+  background-color: #e8feff !important;
+  border-bottom: 1px dotted #979797;
+  padding: 5px 3px;
+  text-align: left;
+}
+
+.analyteResult [data-value="L"],
+.analyteResult [data-value="H"] {
+  color: rgb(255, 153, 0);
+}
+
+.analyteResult [data-value="CL"],
+.analyteResult [data-value="CH"] {
+  color: red;
 }
