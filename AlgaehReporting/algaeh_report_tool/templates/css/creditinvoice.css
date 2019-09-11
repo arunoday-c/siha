@@ -463,6 +463,9 @@ body {
   text-align: left;
 }
 
+.analyteResult [data-value="N"] sup {
+  display: none;
+}
 .analyteResult [data-value="L"],
 .analyteResult [data-value="H"] {
   color: rgb(255, 153, 0);
