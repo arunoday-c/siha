@@ -18,15 +18,14 @@ export default class CompareTest extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      test_analytes: [],
-      compare_list_ana: []
+      test_analytes: []
     };
   }
 
   onClose = e => {
     this.setState(
       {
-        compare_list_ana: []
+        test_analytes: []
       },
       () => {
         this.props.onClose && this.props.onClose(e);
@@ -78,12 +77,12 @@ export default class CompareTest extends PureComponent {
           }}
           title={this.props.HeaderCaption}
           openPopup={this.props.show}
-          class={this.state.lang_sets}
+          class={this.state.lang_sets + " compareResultPopup"}
         >
           {/* <div className="algaeh-modal"> */}
           {/* <div className="popupHeader">{this.props.HeaderCaption} </div> */}
           <div className="col-lg-12 popupInner">
-            <div className="row">
+            <div className="row" style={{ paddingTop: 10 }}>
               <div className="col-2">
                 <AlgaehLabel
                   label={{
@@ -192,11 +191,9 @@ export default class CompareTest extends PureComponent {
                       ),
                       displayTemplate: row => {
                         return (
-                          <span>
+                          <span data-value={row.cur_critical_type}>
                             {row.cur_result}
-                            <sup className="result">
-                              {row.cur_critical_type}
-                            </sup>
+                            <sup>{row.cur_critical_type}</sup>
                           </span>
                         );
                       },
@@ -217,11 +214,9 @@ export default class CompareTest extends PureComponent {
                       ),
                       displayTemplate: row => {
                         return (
-                          <span>
+                          <span data-value={row.pre_critical_type}>
                             {row.pre_result}
-                            <sup className="result">
-                              {row.pre_critical_type}
-                            </sup>
+                            <sup>{row.pre_critical_type}</sup>
                           </span>
                         );
                       },
@@ -245,6 +240,17 @@ export default class CompareTest extends PureComponent {
                     {
                       fieldName: "valur_flucuate",
                       label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {row.valur_flucuate === "D" ? (
+                              <i className="fas fa-hand-point-up"></i>
+                            ) : row.valur_flucuate === "U" ? (
+                              <i className="fas fa-hand-point-down"></i>
+                            ) : null}
+                          </span>
+                        );
+                      },
                       others: {
                         maxWidth: 70,
                         resizable: false,

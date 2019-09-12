@@ -84,7 +84,7 @@ class LabResult extends Component {
                           <span>
                             <i
                               onClick={ShowCompareTest.bind(this, this, row)}
-                              className="fas fa-trash-alt"
+                              className="fas fa-random"
                             />
                           </span>
                         );
