@@ -7,7 +7,8 @@ import {
   updateLabSampleStatus,
   updateLabResultEntry,
   updateMicroResultEntry,
-  getMicroResult
+  getMicroResult,
+  getComparedLabResult
 } from "../models/laboratory";
 
 export default () => {
@@ -68,6 +69,19 @@ export default () => {
       });
     }
   );
+  api.get("/getComparedLabResult", getComparedLabResult, (req, res, next) => {
+    if (req.records.invalid_input == true) {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: false,
+        records: req.records
+      });
+    } else {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  });
 
   return api;
 };
