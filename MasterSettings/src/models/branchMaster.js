@@ -520,15 +520,21 @@ module.exports = {
 
       _mysql
         .executeQuery({
-          query: "INSERT INTO aa_leave_balance(??) VALUES ? ",
-          values: input,
-          includeValues: insurtColumns,
-          bulkInsertOrUpdate: true,
-          printQuery: false
+          query:
+            "WITH  CTE  AS\
+            (\
+              select count(*)as aa,report_id,report_name,created_by from algaeh_d_reports\
+            )\
+            SELECT CONVERT(aa ,UNSIGNED) as dd FROM CTE;",
+          // values: input,
+          // includeValues: insurtColumns,
+          // bulkInsertOrUpdate: true,
+          printQuery: true
         })
         .then(result => {
           _mysql.releaseConnection();
-          req.records = result;
+          console.log("result:", result[0]);
+          req.records = parseInt(result[0]["dd"]);
           next();
         })
         .catch(error => {

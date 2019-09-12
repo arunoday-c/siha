@@ -207,7 +207,8 @@ class LabResult extends Component {
                   service_name: this.state.service_name,
                   patient_code: this.state.patient_code,
                   full_name: this.state.full_name,
-                  list_of_tests: this.state.list_of_tests
+                  list_of_tests: this.state.list_of_tests,
+                  order_id: this.state.order_id
                 }}
               />
             </div>

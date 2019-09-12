@@ -1053,6 +1053,76 @@ module.exports = {
     }
   },
 
+  //created by: Irfan to compare lab results
+  getComparedLabResult: (req, res, next) => {
+    try {
+      if (req.query.pre_order_id > 0 && req.query.cur_order_id) {
+        const _mysql = new algaehMysql();
+        _mysql
+          .executeQuery({
+            query:
+              "  select OA.analyte_id,A.description as analyte ,OA.result,A.result_unit,OA.critical_type from \
+            hims_f_ord_analytes  OA   inner join hims_d_lab_analytes A on OA.analyte_id=A.hims_d_lab_analytes_id\
+            where OA.order_id=?;\
+            select OA.analyte_id,OA.result,OA.critical_type from hims_f_ord_analytes  OA    inner join hims_d_lab_analytes A on \
+            OA.analyte_id=A.hims_d_lab_analytes_id  where OA.order_id=?; ",
+            values: [req.query.cur_order_id, req.query.pre_order_id],
+            printQuery: true
+          })
+          .then(result => {
+            _mysql.releaseConnection();
+
+            if (result[0].length > 0) {
+              const outputArray = [];
+
+              result[0].forEach(item => {
+                const data = result[1].find(val => {
+                  return val["analyte_id"] == item["analyte_id"];
+                });
+
+                if (data) {
+                  let valur_flucuate = "N";
+                  if (parseFloat(item["result"]) > parseFloat(data["result"])) {
+                    valur_flucuate = "U";
+                  } else if (
+                    parseFloat(item["result"]) < parseFloat(data["result"])
+                  ) {
+                    valur_flucuate = "D";
+                  }
+                  outputArray.push({
+                    analyte: item["analyte"],
+                    result_unit: item["result_unit"],
+                    cur_result: item["result"],
+                    pre_result: data["result"],
+                    cur_critical_type: item["critical_type"],
+                    pre_critical_type: data["critical_type"],
+                    valur_flucuate: valur_flucuate
+                  });
+                }
+              });
+              req.records = outputArray;
+              next();
+            } else {
+              req.records = result[0];
+              next();
+            }
+          })
+          .catch(e => {
+            _mysql.releaseConnection();
+            next(e);
+          });
+      } else {
+        req.records = {
+          invalid_input: true,
+          message: "Please provide Valid cur_order_id and pre_order_id"
+        };
+        next();
+      }
+    } catch (e) {
+      next(e);
+    }
+  },
+
   getPatientTestList: (req, res, next) => {
     const _mysql = new algaehMysql();
 

@@ -85,8 +85,9 @@ const ShowCompareTest = ($this, row) => {
       if (response.data.success) {
         $this.setState({
           ...$this.state,
+          order_id: row.hims_f_lab_order_id,
           openCompare: !$this.state.openCompare,
-          test_analytes: response.data.records[0],
+          // test_analytes: response.data.records[0],
           list_of_tests: response.data.records[1],
           service_code: row.service_code,
           service_name: row.service_name,

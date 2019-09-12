@@ -37,18 +37,18 @@ export default class CompareTest extends PureComponent {
   selectTest(e) {
     debugger;
     algaehApiCall({
-      uri: "/laboratory/getTestAnalytes",
+      uri: "/laboratory/getComparedLabResult",
       module: "laboratory",
       method: "GET",
       data: {
-        order_id: e.selected.hims_f_lab_order_id,
-        service_id: e.selected.service_id
+        pre_order_id: e.selected.hims_f_lab_order_id,
+        cur_order_id: this.props.inputsparameters.order_id
       },
       onSuccess: response => {
         debugger;
         if (response.data.success) {
           this.setState({
-            compare_list_ana: response.data.records
+            test_analytes: response.data.records
           });
         }
       },
@@ -62,12 +62,12 @@ export default class CompareTest extends PureComponent {
   }
 
   componentWillReceiveProps(newProps) {
-    if (
-      newProps.test_analytes === undefined ||
-      newProps.test_analytes.length === 0
-    ) {
-      this.setState({ test_analytes: newProps.inputsparameters.test_analytes });
-    }
+    // if (
+    //   newProps.test_analytes === undefined ||
+    //   newProps.test_analytes.length === 0
+    // ) {
+    //   this.setState({ test_analytes: newProps.inputsparameters.test_analytes });
+    // }
   }
   render() {
     return (
@@ -167,12 +167,12 @@ export default class CompareTest extends PureComponent {
             </div>
 
             <div className="row grid-details">
-              <div className="col-6" id="LabResultGridCntr">
+              <div className="col-12" id="LabResultGridCntr">
                 <AlgaehDataGrid
                   id="Lab_Result_Compare_grid"
                   columns={[
                     {
-                      fieldName: "description",
+                      fieldName: "analyte",
                       label: <AlgaehLabel label={{ forceLabel: "Analyte" }} />,
 
                       others: {
@@ -182,15 +182,49 @@ export default class CompareTest extends PureComponent {
                       }
                     },
                     {
-                      fieldName: "result",
+                      fieldName: "cur_result",
                       label: (
                         <AlgaehLabel
                           label={{
-                            forceLabel: "Result"
+                            forceLabel: "Current Result"
                           }}
                         />
                       ),
-
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {row.cur_result}
+                            <sup className="result">
+                              {row.cur_critical_type}
+                            </sup>
+                          </span>
+                        );
+                      },
+                      others: {
+                        resizable: false,
+                        filterable: false,
+                        style: { textAlign: "center" }
+                      }
+                    },
+                    {
+                      fieldName: "pre_result",
+                      label: (
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Previous Result"
+                          }}
+                        />
+                      ),
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            {row.pre_result}
+                            <sup className="result">
+                              {row.pre_critical_type}
+                            </sup>
+                          </span>
+                        );
+                      },
                       others: {
                         resizable: false,
                         filterable: false,
@@ -208,31 +242,14 @@ export default class CompareTest extends PureComponent {
                         style: { textAlign: "center" }
                       }
                     },
-
                     {
-                      fieldName: "critical_type",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Critical Type" }} />
-                      ),
-                      displayTemplate: row => {
-                        return !row.critical_type ? null : row.critical_type ===
-                          "N" ? (
-                          <span className="badge badge-success">Normal</span>
-                        ) : row.critical_type === "CL" ? (
-                          <span className="badge badge-danger">
-                            Critical Low
-                          </span>
-                        ) : row.critical_type === "CH" ? (
-                          <span className="badge badge-danger">
-                            Critical High
-                          </span>
-                        ) : row.critical_type === "L" ? (
-                          <span className="badge badge-warning">Low</span>
-                        ) : (
-                          row.critical_type === "H" && (
-                            <span className="badge badge-warning">High</span>
-                          )
-                        );
+                      fieldName: "valur_flucuate",
+                      label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
+                      others: {
+                        maxWidth: 70,
+                        resizable: false,
+                        filterable: false,
+                        style: { textAlign: "center" }
                       }
                     }
                   ]}
@@ -240,90 +257,6 @@ export default class CompareTest extends PureComponent {
                   filter={true}
                   dataSource={{
                     data: this.state.test_analytes
-                  }}
-                  paging={{ page: 0, rowsPerPage: 30 }}
-                />
-
-                {/* keyId="patient_code"
-
-                  dataSource={{
-                  data: this.props.inputsparameters.test_analytes
-                }}
-                paging={{ page: 0, rowsPerPage: 20 }} */}
-              </div>
-              <div className="col-6" id="LabResultGridCntr">
-                <AlgaehDataGrid
-                  id="Lab_Result_Compare_grid"
-                  columns={[
-                    {
-                      fieldName: "description",
-                      label: <AlgaehLabel label={{ forceLabel: "Analyte" }} />,
-
-                      others: {
-                        minWidth: 250,
-                        resizable: false,
-                        style: { textAlign: "left" }
-                      }
-                    },
-                    {
-                      fieldName: "result",
-                      label: (
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Result"
-                          }}
-                        />
-                      ),
-
-                      others: {
-                        resizable: false,
-                        filterable: false,
-                        style: { textAlign: "center" }
-                      }
-                    },
-
-                    {
-                      fieldName: "result_unit",
-                      label: <AlgaehLabel label={{ forceLabel: "Units" }} />,
-                      others: {
-                        maxWidth: 70,
-                        resizable: false,
-                        filterable: false,
-                        style: { textAlign: "center" }
-                      }
-                    },
-
-                    {
-                      fieldName: "critical_type",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Critical Type" }} />
-                      ),
-                      displayTemplate: row => {
-                        return !row.critical_type ? null : row.critical_type ===
-                          "N" ? (
-                          <span className="badge badge-success">Normal</span>
-                        ) : row.critical_type === "CL" ? (
-                          <span className="badge badge-danger">
-                            Critical Low
-                          </span>
-                        ) : row.critical_type === "CH" ? (
-                          <span className="badge badge-danger">
-                            Critical High
-                          </span>
-                        ) : row.critical_type === "L" ? (
-                          <span className="badge badge-warning">Low</span>
-                        ) : (
-                          row.critical_type === "H" && (
-                            <span className="badge badge-warning">High</span>
-                          )
-                        );
-                      }
-                    }
-                  ]}
-                  keyId="patient_code"
-                  filter={true}
-                  dataSource={{
-                    data: this.state.compare_list_ana
                   }}
                   paging={{ page: 0, rowsPerPage: 30 }}
                 />
