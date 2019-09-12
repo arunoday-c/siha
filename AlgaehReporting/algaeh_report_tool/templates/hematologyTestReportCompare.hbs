@@ -31,28 +31,31 @@
             <thead>
                 <tr>
                     {{!-- <th>Sl No.</th> --}}
-                    <th class="txtFld">Analyte</th>
-                    <th>Result</th>
+                    <th>Analyte</th>
+                    <th>Current Result</th>
+                    <th>Previous Result</th>
+                    <th>Status</th>
                     <th>Normal Range</th>
                     <th>Unit</th>
-                    {{!-- <th>Critical Range</th> --}}
                 </tr>
             </thead>
-            <tbody class="analyteResult">
+            <tbody>
 
                 {{#each details}}
                 <tr>
-                    <td colspan="4" class="tableSubHdg">
+                    <td colspan="5" class="tableSubHdg">
+                        {{!-- <small>Specimen Name:</small> --}}
                         {{firstElement groupDetail 0 "investigation_name"}}</td>
                 </tr>
                 {{#each groupDetail}}
                 <tr>
                     {{!-- <td>{{inc @index}}</td> --}}
-                    <td class="txtFld" style="width: 55%">{{analyte_name}}</td>
+                    <td>{{analyte_name}}</td>
                     <td data-value="{{critical_type}}">{{result}} <sup>{{critical_type}}</sup></td>
+                    <td data-value="{{critical_type}}">{{result_previous}} <sup>{{critical_type}}</sup></td>
+                    <td>{{result_Status}}</td>
                     <td>{{normal_low }} - {{normal_high}}</td>
                     <td>{{result_unit}}</td>
-                    {{!-- <td class="numberFld">{{critical_low}} - {{critical_high}}</td> --}}
                 </tr>
                 {{/each}}
                 {{/each}}

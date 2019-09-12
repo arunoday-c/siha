@@ -226,7 +226,8 @@ class RequisitionItems extends Component {
                         <div className="col">
                           <AlgaehLabel
                             label={{
-                              forceLabel: "Consumption Done In " + month_name
+                              forceLabel: "Current Month Consumption"
+                              //forceLabel: "Consumption Done In " + month_name
                             }}
                           />
                           <h6>
