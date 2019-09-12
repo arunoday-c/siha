@@ -1,7 +1,4 @@
 import React, { PureComponent } from "react";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 
 import "./LabResult.css";
 import "./../../../../styles/site.css";
@@ -9,37 +6,60 @@ import "./../../../../styles/site.css";
 import {
   AlgaehLabel,
   AlgaehDataGrid,
-  AlgaehModalPopUp
+  AlgaehModalPopUp,
+  AlagehAutoComplete
 } from "../../../Wrapper/algaehWrapper";
 
 import { AlgaehActions } from "../../../../actions/algaehActions";
+import moment from "moment";
+import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 
-class TestAnalytes extends PureComponent {
+export default class CompareTest extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      test_analytes: []
+      test_analytes: [],
+      compare_list_ana: []
     };
-
-    if (
-      this.props.labanalytes === undefined ||
-      this.props.labanalytes.length === 0
-    ) {
-      this.props.getLabAnalytes({
-        uri: "/labmasters/selectAnalytes",
-        module: "laboratory",
-        method: "GET",
-        redux: {
-          type: "ANALYTES_GET_DATA",
-          mappingName: "labanalytes"
-        }
-      });
-    }
   }
 
   onClose = e => {
-    this.props.onClose && this.props.onClose(e);
+    this.setState(
+      {
+        compare_list_ana: []
+      },
+      () => {
+        this.props.onClose && this.props.onClose(e);
+      }
+    );
   };
+
+  selectTest(e) {
+    debugger;
+    algaehApiCall({
+      uri: "/laboratory/getTestAnalytes",
+      module: "laboratory",
+      method: "GET",
+      data: {
+        order_id: e.selected.hims_f_lab_order_id,
+        service_id: e.selected.service_id
+      },
+      onSuccess: response => {
+        debugger;
+        if (response.data.success) {
+          this.setState({
+            compare_list_ana: response.data.records
+          });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+  }
 
   componentWillReceiveProps(newProps) {
     if (
@@ -112,39 +132,45 @@ class TestAnalytes extends PureComponent {
                     : "Service Name"}
                 </h6>
               </div>
+
+              <AlagehAutoComplete
+                div={{ className: "col" }}
+                label={{
+                  forceLabel: "Select To Compare",
+                  isImp: true
+                }}
+                selector={{
+                  name: "visit_id",
+                  className: "select-fld",
+                  autoComplete: "off",
+                  value: this.state.visit_id,
+                  dataSource: {
+                    textField: "visit_code",
+                    valueField: "hims_f_lab_order_id",
+                    data: this.props.inputsparameters.list_of_tests
+                  },
+                  onChange: this.selectTest.bind(this),
+                  template: item => (
+                    <div className="multiInfoList">
+                      <h5>
+                        {item.visit_date
+                          ? moment(item.visit_date).format(
+                              "DD/MM/YYYY, hh:mm A"
+                            )
+                          : "DD/MM/YYYY"}
+                      </h5>
+                      <h6>{item.visit_code}</h6>
+                    </div>
+                  )
+                }}
+              />
             </div>
 
             <div className="row grid-details">
-              <div className="col-12" id="LabResultGridCntr">
+              <div className="col-6" id="LabResultGridCntr">
                 <AlgaehDataGrid
-                  id="Lab_Result_grid"
+                  id="Lab_Result_Compare_grid"
                   columns={[
-                    {
-                      fieldName: "status",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Analyte Status" }} />
-                      ),
-                      displayTemplate: row => {
-                        return row.status === "E" ? (
-                          <span className="badge badge-secondary">
-                            Result Entered
-                          </span>
-                        ) : row.status === "C" ? (
-                          <span className="badge badge-primary">Confirmed</span>
-                        ) : row.status === "V" ? (
-                          <span className="badge badge-success">Validated</span>
-                        ) : (
-                          <span className="badge badge-light">
-                            Result Not Entered
-                          </span>
-                        );
-                      },
-                      others: {
-                        maxWidth: 150,
-                        resizable: false,
-                        style: { textAlign: "center" }
-                      }
-                    },
                     {
                       fieldName: "description",
                       label: <AlgaehLabel label={{ forceLabel: "Analyte" }} />,
@@ -208,38 +234,47 @@ class TestAnalytes extends PureComponent {
                           )
                         );
                       }
-                    },
+                    }
+                  ]}
+                  keyId="patient_code"
+                  filter={true}
+                  dataSource={{
+                    data: this.state.test_analytes
+                  }}
+                  paging={{ page: 0, rowsPerPage: 30 }}
+                />
+
+                {/* keyId="patient_code"
+
+                  dataSource={{
+                  data: this.props.inputsparameters.test_analytes
+                }}
+                paging={{ page: 0, rowsPerPage: 20 }} */}
+              </div>
+              <div className="col-6" id="LabResultGridCntr">
+                <AlgaehDataGrid
+                  id="Lab_Result_Compare_grid"
+                  columns={[
                     {
-                      fieldName: "normal_low",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Normal Low" }} />
-                      ),
+                      fieldName: "description",
+                      label: <AlgaehLabel label={{ forceLabel: "Analyte" }} />,
+
                       others: {
+                        minWidth: 250,
                         resizable: false,
-                        filterable: false,
-                        style: { textAlign: "center" }
+                        style: { textAlign: "left" }
                       }
                     },
                     {
-                      fieldName: "normal_high",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Normal High" }} />
-                      ),
-                      others: {
-                        resizable: false,
-                        filterable: false,
-                        style: { textAlign: "center" }
-                      }
-                    },
-                    {
-                      fieldName: "critical_low",
+                      fieldName: "result",
                       label: (
                         <AlgaehLabel
                           label={{
-                            forceLabel: "Critical Low"
+                            forceLabel: "Result"
                           }}
                         />
                       ),
+
                       others: {
                         resizable: false,
                         filterable: false,
@@ -248,39 +283,47 @@ class TestAnalytes extends PureComponent {
                     },
 
                     {
-                      fieldName: "critical_high",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Critical High" }} />
-                      ),
+                      fieldName: "result_unit",
+                      label: <AlgaehLabel label={{ forceLabel: "Units" }} />,
                       others: {
+                        maxWidth: 70,
                         resizable: false,
                         filterable: false,
                         style: { textAlign: "center" }
                       }
                     },
+
                     {
-                      fieldName: "remarks",
+                      fieldName: "critical_type",
                       label: (
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Remarks"
-                          }}
-                        />
+                        <AlgaehLabel label={{ forceLabel: "Critical Type" }} />
                       ),
                       displayTemplate: row => {
-                        return row.remarks;
-                      },
-                      others: {
-                        minWidth: 250,
-                        resizable: false,
-                        filterable: false
+                        return !row.critical_type ? null : row.critical_type ===
+                          "N" ? (
+                          <span className="badge badge-success">Normal</span>
+                        ) : row.critical_type === "CL" ? (
+                          <span className="badge badge-danger">
+                            Critical Low
+                          </span>
+                        ) : row.critical_type === "CH" ? (
+                          <span className="badge badge-danger">
+                            Critical High
+                          </span>
+                        ) : row.critical_type === "L" ? (
+                          <span className="badge badge-warning">Low</span>
+                        ) : (
+                          row.critical_type === "H" && (
+                            <span className="badge badge-warning">High</span>
+                          )
+                        );
                       }
                     }
                   ]}
                   keyId="patient_code"
                   filter={true}
                   dataSource={{
-                    data: this.props.inputsparameters.test_analytes
+                    data: this.state.compare_list_ana
                   }}
                   paging={{ page: 0, rowsPerPage: 30 }}
                 />
@@ -317,27 +360,3 @@ class TestAnalytes extends PureComponent {
     );
   }
 }
-
-function mapStateToProps(state) {
-  return {
-    // testanalytes: state.testanalytes,
-    labanalytes: state.labanalytes
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators(
-    {
-      //   getTestAnalytes: AlgaehActions,
-      getLabAnalytes: AlgaehActions
-    },
-    dispatch
-  );
-}
-
-export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(TestAnalytes)
-);
