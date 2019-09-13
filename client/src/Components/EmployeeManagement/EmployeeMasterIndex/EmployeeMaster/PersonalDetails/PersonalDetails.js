@@ -220,7 +220,7 @@ class PersonalDetails extends Component {
                       }}
                     />
                     <AlgaehDateHandler
-                      div={{ className: "col-lg-3 mandatory" }}
+                      div={{ className: "col-2 mandatory" }}
                       label={{ fieldName: "date_of_birth", isImp: true }}
                       textBox={{
                         className: "txt-fld",
@@ -269,7 +269,30 @@ class PersonalDetails extends Component {
                   <div className="row paddin-bottom-5">
                     {" "}
                     <AlagehAutoComplete
-                      div={{ className: "col-3 mandatory form-group" }}
+                      div={{ className: "col-2 form-group mandatory" }}
+                      label={{
+                        forceLabel: "Nationality",
+                        isImp: true
+                      }}
+                      selector={{
+                        name: "nationality",
+                        className: "select-fld",
+                        value: this.state.nationality,
+                        dataSource: {
+                          textField: "nationality",
+                          valueField: "hims_d_nationality_id",
+                          data: this.props.nationalities
+                        },
+                        onChange: texthandle.bind(this, this),
+                        onClear: () => {
+                          this.setState({
+                            nationality: null
+                          });
+                        }
+                      }}
+                    />
+                    <AlagehAutoComplete
+                      div={{ className: "col-2 mandatory form-group" }}
                       label={{
                         forceLabel: "Religion",
                         isImp: true
@@ -425,29 +448,6 @@ class PersonalDetails extends Component {
                         onClear: () => {
                           this.setState({
                             marital_status: null
-                          });
-                        }
-                      }}
-                    />
-                    <AlagehAutoComplete
-                      div={{ className: "col-2 form-group" }}
-                      label={{
-                        forceLabel: "Nationality",
-                        isImp: false
-                      }}
-                      selector={{
-                        name: "nationality",
-                        className: "select-fld",
-                        value: this.state.nationality,
-                        dataSource: {
-                          textField: "nationality",
-                          valueField: "hims_d_nationality_id",
-                          data: this.props.nationalities
-                        },
-                        onChange: texthandle.bind(this, this),
-                        onClear: () => {
-                          this.setState({
-                            nationality: null
                           });
                         }
                       }}
