@@ -374,10 +374,16 @@ export function AlgaehValidation(options) {
             _evalConditions = true;
           } else _evalConditions = false;
         } else {
-          const _reVal = _element.getAttribute("referencevalue");
-          if (_reVal === null || _reVal === "") {
-            _evalConditions = true;
-          } else _evalConditions = false;
+          if (_role === "datepicker") {
+            if (_element.value === "") {
+              _evalConditions = true;
+            } else _evalConditions = false;
+          } else {
+            const _reVal = _element.getAttribute("referencevalue");
+            if (_reVal === null || _reVal === "") {
+              _evalConditions = true;
+            } else _evalConditions = false;
+          }
         }
       } else {
         _evalConditions = _checkVal;
@@ -388,6 +394,7 @@ export function AlgaehValidation(options) {
       } catch (e) {
         expression = false;
       }
+
       if (expression) {
         let _title = _element.getAttribute("errormessage");
         if (_Validateerror[i].tagName === "DIV") {
@@ -397,8 +404,9 @@ export function AlgaehValidation(options) {
 
         if (_title === null) {
           let _lable = null;
-
+          debugger;
           if (_role === "datepicker") {
+            debugger;
             _lable = _element.offsetParent.offsetParent.innerText;
           } else if (_role === "dropdownlist") {
             _lable = _element.offsetParent.previousSibling.innerText;
@@ -406,6 +414,8 @@ export function AlgaehValidation(options) {
             _lable = _element.offsetParent.innerText;
             if (_Validateerror[i].tagName === "DIV") {
               _lable = _Validateerror[i].offsetParent.innerText;
+            } else if (_Validateerror[i].tagName === "INPUT") {
+              _lable = _element.offsetParent.previousSibling.innerText;
             }
           }
 

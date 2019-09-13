@@ -92,6 +92,7 @@ class RegistrationPatient extends Component {
       getCtrlCode(this, this.props.patient_code);
       getCashiersAndShiftMAP(this, "NA");
     } else {
+      AlgaehLoader({ show: true });
       getCashiersAndShiftMAP(this, "A");
     }
 

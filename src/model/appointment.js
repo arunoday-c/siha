@@ -235,7 +235,6 @@ let getAppointmentStatus = (req, res, next) => {
   }
 };
 
-
 //created by irfan: to get Appointment Room
 let getAppointmentRoom = (req, res, next) => {
   let selectWhere = {
@@ -966,9 +965,7 @@ let addDoctorsSchedule = (req, res, next) => {
                                       clashingDate[0]
                                     } for doctor_id:${
                                       input.schedule_detail[doc].provider_id
-                                    } from ${
-                                      timeChecking[0][0].from_work_hr
-                                    } to 
+                                    } from ${timeChecking[0][0].from_work_hr} to
                                  ${timeChecking[0][0].to_work_hr}`,
                                     schedule_exist: true
                                   };
@@ -990,7 +987,7 @@ let addDoctorsSchedule = (req, res, next) => {
                                         input.schedule_detail[doc].provider_id
                                       } from ${
                                         timeChecking[1][0].from_work_hr
-                                      } to 
+                                      } to
                                    ${timeChecking[1][0].to_work_hr}`,
                                       schedule_exist: true
                                     };
@@ -2798,6 +2795,7 @@ let getPatientAppointment = (req, res, next) => {
 };
 
 //created by irfan: to get
+//Not in use
 let getEmployeeServiceID = (req, res, next) => {
   let selectWhere = {
     employee_id: "ALL",

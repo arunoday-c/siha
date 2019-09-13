@@ -174,6 +174,7 @@ const ClearData = ($this, from, patcode) => {
             data: []
           }
         });
+        AlgaehLoader({ show: true });
         getCashiersAndShiftMAP($this, "NA");
         if (from === "pat_code") {
           getCtrlCode($this, patcode);
@@ -210,7 +211,7 @@ const getHospitalDetails = $this => {
 };
 
 const getCashiersAndShiftMAP = ($this, type) => {
-  AlgaehLoader({ show: true });
+  // AlgaehLoader({ show: true });
   let year = moment().format("YYYY");
   let month = moment().format("M");
   let visit_type = _.find($this.props.visittypes, f => f.consultation === "Y");
