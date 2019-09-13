@@ -95,7 +95,8 @@
 .ReactTable .fa-file-medical-alt,
 .ReactTable .fa-clipboard-check,
 .ReactTable .fa-exchange-alt,
-.ReactTable .fa-print {
+.ReactTable .fa-print,
+.ReactTable .fa-random {
   cursor: pointer;
   border: 1px solid #00dac4;
   height: 28px;
@@ -130,7 +131,8 @@
 .ReactTable .fa-file-medical-alt:hover,
 .ReactTable .fa-clipboard-check:hover,
 .ReactTable .fa-exchange-alt:hover,
-.ReactTable .fa-print:hover {
+.ReactTable .fa-print:hover,
+.ReactTable .fa-random:hover {
   background: #00a796;
   color: #fff; }
 

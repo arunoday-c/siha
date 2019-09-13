@@ -1061,10 +1061,10 @@ module.exports = {
         _mysql
           .executeQuery({
             query:
-              "  select OA.analyte_id,A.description as analyte ,OA.result,A.result_unit from \
+              "  select OA.analyte_id,A.description as analyte ,OA.result,A.result_unit,OA.critical_type from \
             hims_f_ord_analytes  OA   inner join hims_d_lab_analytes A on OA.analyte_id=A.hims_d_lab_analytes_id\
             where OA.order_id=?;\
-            select OA.analyte_id,OA.result from hims_f_ord_analytes  OA    inner join hims_d_lab_analytes A on \
+            select OA.analyte_id,OA.result,OA.critical_type from hims_f_ord_analytes  OA    inner join hims_d_lab_analytes A on \
             OA.analyte_id=A.hims_d_lab_analytes_id  where OA.order_id=?; ",
             values: [req.query.cur_order_id, req.query.pre_order_id],
             printQuery: true
@@ -1081,11 +1081,22 @@ module.exports = {
                 });
 
                 if (data) {
+                  let valur_flucuate = "N";
+                  if (parseFloat(item["result"]) > parseFloat(data["result"])) {
+                    valur_flucuate = "U";
+                  } else if (
+                    parseFloat(item["result"]) < parseFloat(data["result"])
+                  ) {
+                    valur_flucuate = "D";
+                  }
                   outputArray.push({
                     analyte: item["analyte"],
-
+                    result_unit: item["result_unit"],
                     cur_result: item["result"],
-                    pre_result: data["result"]
+                    pre_result: data["result"],
+                    cur_critical_type: item["critical_type"],
+                    pre_critical_type: data["critical_type"],
+                    valur_flucuate: valur_flucuate
                   });
                 }
               });
@@ -1108,6 +1119,44 @@ module.exports = {
         next();
       }
     } catch (e) {
+      next(e);
+    }
+  },
+
+  getPatientTestList: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "SELECT *,la.description from hims_f_ord_analytes, hims_d_lab_analytes la where hims_f_ord_analytes.record_status='A' \
+              and la.hims_d_lab_analytes_id = hims_f_ord_analytes.analyte_id AND order_id=?;\
+            SELECT V.visit_code, V.visit_date, LA.hims_f_lab_order_id,LA.service_id FROM hims_f_lab_order LA, hims_f_patient_visit V \
+            where LA.visit_id = V.hims_f_patient_visit_id and LA.patient_id=? and LA.provider_id=? and LA.status='V' \
+            AND LA.service_id=? AND LA.visit_id!=?;",
+          values: [
+            req.query.order_id,
+            req.query.patient_id,
+            req.query.provider_id,
+            req.query.service_id,
+            req.query.visit_id
+          ],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
       next(e);
     }
   }

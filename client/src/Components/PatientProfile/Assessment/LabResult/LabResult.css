@@ -1,3 +1,6 @@
+.compareResultPopup .algaeh-modal {
+  width: 70vw; }
+
 .hptl-phase1-lab-result-form {
   background: #fff;
   border-radius: 5px; }
@@ -21,3 +24,19 @@
 #LabResultGridCntr .ReactTable {
   max-height: 65vh !important;
   margin-bottom: 15px; }
+
+#Lab_Result_Compare_grid [data-value="N"] sup {
+  display: none; }
+
+#Lab_Result_Compare_grid [data-value="L"],
+#Lab_Result_Compare_grid [data-value="H"] {
+  color: #ff9900; }
+
+#Lab_Result_Compare_grid [data-value="CL"],
+#Lab_Result_Compare_grid [data-value="CH"] {
+  color: red; }
+
+#Lab_Result_Compare_grid .fa-hand-point-down,
+#Lab_Result_Compare_grid .fa-hand-point-up {
+  font-size: 1.2rem;
+  color: #616161; }
