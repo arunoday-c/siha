@@ -267,9 +267,10 @@ class EmployeeMasterIndex extends Component {
                     {
                       fieldName: "full_name",
                       label: (
-                        <AlgaehLabel label={{ forceLabel: "Full Name" }} />
+                        <AlgaehLabel label={{ forceLabel: "Employee Name" }} />
                       ),
                       others: {
+                        // minWidth: 200,
                         resizable: false,
                         style: { textAlign: "center" }
                       }
@@ -356,9 +357,13 @@ class EmployeeMasterIndex extends Component {
                     // },
                     {
                       fieldName: "secondary_contact_no",
-                      label: <AlgaehLabel label={{ forceLabel: "Work No." }} />,
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Work Contact No." }}
+                        />
+                      ),
                       others: {
-                        maxWidth: 120,
+                        minWidth: 120,
                         resizable: false,
                         style: { textAlign: "center" }
                       }
@@ -366,10 +371,10 @@ class EmployeeMasterIndex extends Component {
                     {
                       fieldName: "work_email",
                       label: (
-                        <AlgaehLabel label={{ forceLabel: "Work Email" }} />
+                        <AlgaehLabel label={{ forceLabel: "Work Email ID" }} />
                       ),
                       others: {
-                        maxWidth: 150,
+                        minWidth: 100,
                         resizable: false,
                         style: { textAlign: "center", wordBreak: "break-all" }
                       }

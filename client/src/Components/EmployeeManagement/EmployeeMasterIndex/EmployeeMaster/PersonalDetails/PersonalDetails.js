@@ -295,10 +295,10 @@ class PersonalDetails extends Component {
                       }}
                     />
                     <AlagehFormGroup
-                      div={{ className: "col-3 mandatory" }}
+                      div={{ className: "col-3" }}
                       label={{
                         forceLabel: "Personal Contact No.",
-                        isImp: true
+                        isImp: false
                       }}
                       textBox={{
                         value: this.state.primary_contact_no,
@@ -316,10 +316,10 @@ class PersonalDetails extends Component {
                       }}
                     />
                     <AlagehFormGroup
-                      div={{ className: "col-3 mandatory" }}
+                      div={{ className: "col-3" }}
                       label={{
                         forceLabel: "Work Contact No.",
-                        isImp: true
+                        isImp: false
                       }}
                       textBox={{
                         value: this.state.secondary_contact_no,

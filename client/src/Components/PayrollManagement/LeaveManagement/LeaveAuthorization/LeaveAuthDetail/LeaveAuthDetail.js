@@ -221,78 +221,97 @@ class LeaveAuthDetail extends Component {
                   </div>
                   <div className="portlet-body">
                     <div className="row">
-                      <div className="col-3">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Leave Type"
-                          }}
-                        />
-                        <h6>{this.state.data.leave_description}</h6>
-                      </div>{" "}
-                      <div className="col-3">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Total Period"
-                          }}
-                        />
-                        {/* <h6>5</h6> */}
-                        <h6>{this.state.data.total_applied_days}</h6>
+                      <div className="col-5">
+                        <div className="row">
+                          <div className="col-12">
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Leave Code"
+                              }}
+                            />
+                            <h6>{this.state.data.leave_application_code}</h6>
+                          </div>{" "}
+                          <div className="col-12">
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Leave Type"
+                              }}
+                            />
+                            <h6>{this.state.data.leave_description}</h6>
+                          </div>{" "}
+                          <div className="col-12">
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Leave From Date"
+                              }}
+                            />
+                            <h6>
+                              {moment(this.state.data.from_date).format(
+                                "DD-MM-YYYY"
+                              )}
+                              <small>
+                                {" "}
+                                (
+                                {this.state.data.from_leave_session === "FD"
+                                  ? "Full Day"
+                                  : this.state.data.from_leave_session === "FH"
+                                  ? "First Half"
+                                  : this.state.data.from_leave_session === "SH"
+                                  ? "Second Half"
+                                  : "------"}
+                                )
+                              </small>
+                            </h6>
+                          </div>
+                          <div className="col-12">
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Leave To Date"
+                              }}
+                            />
+                            {/* <h6>DD/MM/YYYY</h6> */}
+                            <h6>
+                              {moment(this.state.data.to_date).format(
+                                "DD-MM-YYYY"
+                              )}
+                              <small>
+                                {" "}
+                                (
+                                {this.state.data.to_leave_session === "FD"
+                                  ? "Full Day"
+                                  : this.state.data.to_leave_session === "FH"
+                                  ? "First Half"
+                                  : this.state.data.to_leave_session === "SH"
+                                  ? "Second Half"
+                                  : "------"}
+                                )
+                              </small>
+                            </h6>
+                          </div>
+                          <div className="col-12">
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Total Period"
+                              }}
+                            />
+                            {/* <h6>5</h6> */}
+                            <h6>{this.state.data.total_applied_days}</h6>
+                          </div>
+                        </div>
                       </div>
-                      <div className="col-3">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Leave From Date"
-                          }}
-                        />
-                        <h6>
-                          {moment(this.state.data.from_date).format(
-                            "DD-MM-YYYY"
-                          )}
-                          <br />
-                          <small>
-                            ({" "}
-                            {this.state.data.from_leave_session === "FD"
-                              ? "Full Day"
-                              : this.state.data.from_leave_session === "FH"
-                              ? "First Half"
-                              : this.state.data.from_leave_session === "SH"
-                              ? "Second Half"
-                              : "------"}
-                            )
-                          </small>
-                        </h6>
-                      </div>
-                      <div className="col-3">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Leave To Date"
-                          }}
-                        />
-                        {/* <h6>DD/MM/YYYY</h6> */}
-                        <h6>
-                          {moment(this.state.data.to_date).format("DD-MM-YYYY")}
-                          <br />
-                          <small>
-                            (
-                            {this.state.data.to_leave_session === "FD"
-                              ? "Full Day"
-                              : this.state.data.to_leave_session === "FH"
-                              ? "First Half"
-                              : this.state.data.to_leave_session === "SH"
-                              ? "Second Half"
-                              : "------"}
-                            )
-                          </small>
-                        </h6>
-                      </div>
-                      <div className="col-12">
-                        <label>Remarks</label>
-                        <textarea
-                          name="remarks"
-                          value={this.state.remarks}
-                          onChange={this.textHandler.bind(this)}
-                          className="textArea"
-                        />
+                      <div className="col-7">
+                        <div className="row">
+                          {" "}
+                          <div className="col-12">
+                            <label>Remarks</label>
+                            <textarea
+                              name="remarks"
+                              value={this.state.remarks}
+                              onChange={this.textHandler.bind(this)}
+                              className="textArea"
+                            />
+                          </div>
+                        </div>
                       </div>
                       <div className="col-12 btnFooter">
                         {this.props.type === undefined ? (
@@ -361,6 +380,10 @@ class LeaveAuthDetail extends Component {
                                       <span className="badge badge-danger">
                                         Rejected
                                       </span>
+                                    ) : row.status === "CAN" ? (
+                                      <span className="badge badge-danger">
+                                        Cancelled
+                                      </span>
                                     ) : row.status === "PRO" ? (
                                       <span className="badge badge-success">
                                         Processed
@@ -382,6 +405,8 @@ class LeaveAuthDetail extends Component {
                                       ? "Rejected"
                                       : row.status === "PRO"
                                       ? "Processed"
+                                      : row.status === "CAN"
+                                      ? "Cancelled"
                                       : "------"}
                                   </span>
                                 );

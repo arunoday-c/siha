@@ -525,7 +525,9 @@ export default class LeaveAuthorization extends Component {
                           />
                         ),
                         displayTemplate: row => {
-                          return row.status !== "REJ" ? (
+                          const statCheck =
+                            row.status !== "REJ" && row.status !== "CAN";
+                          return statCheck ? (
                             <span
                               onClick={() => {
                                 this.setState({
@@ -543,7 +545,9 @@ export default class LeaveAuthorization extends Component {
                           );
                         },
                         className: row => {
-                          return row.status !== "REJ" ? "greenCell" : null;
+                          return row.status !== "REJ" && row.status !== "CAN"
+                            ? "greenCell"
+                            : null;
                         }
                       },
                       {

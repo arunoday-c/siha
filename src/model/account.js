@@ -43,16 +43,13 @@ let apiAuth = (req, res, next) => {
       next(
         httpStatus.generateError(
           httpStatus.badRequest,
-          "User name can not blank"
+          "User name cannot blank"
         )
       );
     }
     if (inputData.password == null || inputData.password == "") {
       next(
-        httpStatus.generateError(
-          httpStatus.badRequest,
-          "Password can not blank"
-        )
+        httpStatus.generateError(httpStatus.badRequest, "Password cannot blank")
       );
     }
     req.body = inputData;
