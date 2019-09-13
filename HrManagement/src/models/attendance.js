@@ -7254,7 +7254,7 @@ function BulktimesheetCalc(req, res, next) {
                   inner join  hims_d_project P on P.hims_d_project_id=PR.project_id
                   inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
                   left join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id
-                  and PR.hospital_id=? ${strQry} ${project} and ( S.salary_processed is null or  S.salary_processed='N')
+                  where PR.hospital_id=? ${strQry} ${project} and ( S.salary_processed is null or  S.salary_processed='N')
                   and PR.attendance_date between date(?) and date(?)
                   order by employee_id;
                   select hims_f_leave_application_id,employee_id,leave_application_code,from_leave_session,
