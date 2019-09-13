@@ -2127,8 +2127,8 @@ module.exports = {
       if (input.hims_d_employee_id > 0) {
         strQry += " and AM.employee_id=" + input.hims_d_employee_id;
       }
-      if (input.employee_group_id > 0) {
-        strQry += " and E.employee_group_id=" + input.employee_group_id;
+      if (input.designation_id > 0) {
+        strQry += " and E.employee_designation_id=" + input.designation_id;
       }
 
       let from_date = null;
