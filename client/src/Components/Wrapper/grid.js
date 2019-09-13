@@ -416,7 +416,7 @@ class DataGrid extends Component {
     this.setState({
       isEditable: this.props.isEditable
     });
-    debugger;
+
     if (this.state.columns.length === 0) {
       if (this.props.columns !== undefined && this.props.columns.length !== 0) {
         let _columns = Enumerable.from(this.props.columns)

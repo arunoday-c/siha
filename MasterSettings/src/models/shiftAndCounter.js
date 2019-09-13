@@ -248,9 +248,9 @@ module.exports = {
             inner join algaeh_d_app_user U on UM.user_id=U.algaeh_d_app_user_id\
             inner join hims_d_employee  E on U.employee_id=E.hims_d_employee_id\
             where UM.record_status='A' and U.record_status='A' and E.record_status='A' \
-            and UM.hospital_id=1 and  E.employee_status='A' and U.user_status='A' and U.user_type='C'\
+            and UM.hospital_id=? and  E.employee_status='A' and U.user_status='A' and U.user_type='C'\
             order by cashier_id desc;",
-          //   values: inputValues,
+          values: [req.userIdentity.hospital_id],
           printQuery: true
         })
         .then(result => {
@@ -356,9 +356,7 @@ or (date(from_date)>= date(?) and date(from_date)<=date(?) ) or(date(to_date)>=d
     try {
       let str = "";
       if (req.query.for == "T") {
-        str = ` and curdate() between from_date and to_date and CS.cashier_id=${
-          req.userIdentity.algaeh_d_app_user_id
-        } `;
+        str = ` and curdate() between from_date and to_date and CS.cashier_id=${req.userIdentity.algaeh_d_app_user_id} `;
       }
 
       _mysql

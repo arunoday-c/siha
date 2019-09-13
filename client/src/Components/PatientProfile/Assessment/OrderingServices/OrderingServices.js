@@ -24,7 +24,13 @@ import {
   updateBillDetail,
   onchangegridcol,
   EditGrid,
-  makeZeroIngrid
+  makeZeroIngrid,
+  openFavouriteOrder,
+  getFavouriteServices,
+  selectToProcess,
+  ProcessFromFavourite,
+  openViewFavouriteOrder,
+  closeViewFavouriteOrder
 } from "./OrderingServicesHandaler";
 import "./OrderingServices.css";
 import "../../../../styles/site.css";
@@ -35,6 +41,8 @@ import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 import ButtonType from "../../../Wrapper/algaehButton";
 import _ from "lodash";
 import sockets from "../../../../sockets";
+import FavouriteOrder from "../../../FavouriteOrderList/FavouriteOrder/FavouriteOrder";
+import ViewFavouriteOrder from "./ViewFavouriteOrder";
 
 class OrderingServices extends Component {
   constructor(props) {
@@ -44,6 +52,8 @@ class OrderingServices extends Component {
       s_service_type: null,
       s_service: null,
       selectedLang: "en",
+      isFavOpen: false,
+      isOpen: false,
 
       patient_id: Window.global["current_patient"],
       visit_id: Window.global["visit_id"],
@@ -71,13 +81,17 @@ class OrderingServices extends Component {
       addNew: true,
       loading_saveOrderService: false,
       loading_ProcessService: false,
+      loading_bulk_Service: false,
       patient_payable: null,
       company_payble: null,
       sec_company_paybale: null,
       sub_total_amount: null,
       discount_amount: null,
       net_total: null,
-      addNewService: false
+      addNewService: false,
+      all_favouriteservices: [],
+      add_to_list: true,
+      all_favourites: []
     };
   }
 
@@ -118,6 +132,7 @@ class OrderingServices extends Component {
       });
     }
     this.getPatientInsurance();
+    getFavouriteServices(this);
   }
 
   getPatientInsurance() {
@@ -197,6 +212,7 @@ class OrderingServices extends Component {
   }
 
   onClose = e => {
+    getFavouriteServices(this);
     this.setState(
       {
         s_service_type: null,
@@ -233,7 +249,8 @@ class OrderingServices extends Component {
         sec_company_paybale: null,
         sub_total_amount: null,
         discount_amount: null,
-        net_total: null
+        net_total: null,
+        add_to_list: true
       },
       () => {
         this.props.onClose && this.props.onClose(e);
@@ -277,7 +294,7 @@ class OrderingServices extends Component {
               ) : null}
               <div className="row">
                 <AlgaehAutoSearch
-                  div={{ className: "col-8 customServiceSearch" }}
+                  div={{ className: "col customServiceSearch" }}
                   label={{ forceLabel: "Search Investigation" }}
                   title="Search Investigation"
                   id="service_id_search"
@@ -350,22 +367,30 @@ class OrderingServices extends Component {
                   }}
                 />
 
-                <div className="col-2" style={{ paddingTop: 19 }}>
+                <div className="col" style={{ paddingTop: 19 }}>
                   <ButtonType
                     classname="btn-primary"
                     loading={this.state.loading_ProcessService}
-                    onClick={ProcessService.bind(this, this)}
+                    onClick={ProcessService.bind(this, this, "")}
                     label={{
                       forceLabel: "Add to list",
                       returnText: true
                     }}
                     others={{ disabled: this.state.addNewService }}
                   />
+
+                  <button
+                    className="btn btn-default"
+                    style={{ marginLeft: 10 }}
+                    onClick={ProcessService.bind(this, this, "F")}
+                  >
+                    Add to List & Favourite
+                  </button>
                 </div>
               </div>
 
               <div className="row">
-                <div className="col-md-10 col-lg-12" id="doctorOrder">
+                <div className="col-8" id="doctorOrder">
                   <AlgaehDataGrid
                     id="Services_Ordering"
                     columns={[
@@ -487,27 +512,7 @@ class OrderingServices extends Component {
                           minWidth: 80
                         }
                       },
-                      {
-                        fieldName: "quantity",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "quantity" }} />
-                        ),
-                        disabled: true,
-                        others: {
-                          minWidth: 80
-                        }
-                      },
 
-                      {
-                        fieldName: "gross_amount",
-                        label: (
-                          <AlgaehLabel label={{ fieldName: "gross_amount" }} />
-                        ),
-                        disabled: true,
-                        others: {
-                          minWidth: 110
-                        }
-                      },
                       {
                         fieldName: "discount_percentage",
                         label: (
@@ -675,72 +680,202 @@ class OrderingServices extends Component {
                     }}
                   />
                 </div>
+
+                <div className="col-4" id="favouriteOrder">
+                  <AlgaehDataGrid
+                    id="FAV_Services_Ordering"
+                    columns={[
+                      {
+                        fieldName: "SalaryPayment_checkBox",
+
+                        label: (
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Select"
+                            }}
+                          />
+                        ),
+
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              <input
+                                type="checkbox"
+                                value="Front Desk"
+                                onChange={selectToProcess.bind(this, this, row)}
+                                checked={
+                                  row.select_to_process === "Y" ? true : false
+                                }
+                              />
+                            </span>
+                          );
+                        },
+                        others: {
+                          maxWidth: 50,
+                          filterable: false
+                        }
+                      },
+                      {
+                        fieldName: "service_type_id",
+                        label: (
+                          <AlgaehLabel
+                            label={{ fieldName: "service_type_id" }}
+                          />
+                        ),
+                        displayTemplate: row => {
+                          let display =
+                            this.props.servicetype === undefined
+                              ? []
+                              : this.props.servicetype.filter(
+                                  f =>
+                                    f.hims_d_service_type_id ===
+                                    row.service_type_id
+                                );
+
+                          return (
+                            <span>
+                              {display !== undefined && display.length !== 0
+                                ? this.state.selectedLang === "en"
+                                  ? display[0].service_type
+                                  : display[0].arabic_service_type
+                                : ""}
+                            </span>
+                          );
+                        },
+                        others: {
+                          maxWidth: 120,
+                          filterable: false
+                        }
+                      },
+                      {
+                        fieldName: "services_id",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Favourite Service" }}
+                          />
+                        ),
+                        displayTemplate: row => {
+                          let display =
+                            this.props.serviceslist === undefined
+                              ? []
+                              : this.props.serviceslist.filter(
+                                  f => f.hims_d_services_id === row.services_id
+                                );
+
+                          return (
+                            <span>
+                              {display !== null && display.length !== 0
+                                ? this.state.selectedLang === "en"
+                                  ? display[0].service_name
+                                  : display[0].arabic_service_name
+                                : ""}
+                            </span>
+                          );
+                        }
+                      }
+                    ]}
+                    keyId="service_type_id"
+                    dataSource={{
+                      data: this.state.all_favouriteservices
+                    }}
+                    filter={true}
+                    paging={{ page: 0, rowsPerPage: 10 }}
+                    byForceEvents={true}
+                    events={{
+                      onDelete: deleteServices.bind(this, this),
+                      onEdit: EditGrid.bind(this, this),
+                      onCancel: EditGrid.bind(this, this),
+                      onDone: updateBillDetail.bind(this, this)
+                    }}
+                  />
+
+                  <ButtonType
+                    className="btn btn-default"
+                    loading={this.state.loading_bulk_Service}
+                    onClick={ProcessFromFavourite.bind(this, this, "Services")}
+                    label={{
+                      forceLabel: "Add to list",
+                      returnText: true
+                    }}
+                    others={{
+                      disabled: this.state.add_to_list,
+                      style: { float: "right", marginTop: 10 }
+                    }}
+                  />
+                  {/*<button
+                    className="btn btn-default"
+                    style={{ float: "right", marginTop: 10 }}
+                    onClick={ProcessFromFavourite.bind(this, this, "Services")}
+                    disabled={this.state.add_to_list}
+                  >
+                    Add to List
+                  </button>*/}
+                </div>
               </div>
 
-              <div className="row GridTotalDetails">
-                <div className="col-lg-5" style={{ textAlign: "right" }}>
-                  <div className="row">
-                    <div className="col">
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "sub_ttl"
-                        }}
-                      />
-                      <h5>{getAmountFormart(this.state.sub_total_amount)}</h5>
-                    </div>
-                    <div className="col" style={{ textAlign: "right" }}>
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "dsct_amt"
-                        }}
-                      />
-                      <h5>{getAmountFormart(this.state.discount_amount)}</h5>
-                    </div>
-
-                    <div className="col" style={{ textAlign: "right" }}>
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "net_ttl"
-                        }}
-                      />
-                      <h5>{getAmountFormart(this.state.net_total)}</h5>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="col-lg-7">
-                  <div className="row">
-                    <div className="col" style={{ textAlign: "right" }}>
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "pat_payable"
-                        }}
-                      />
-                      <h5>{getAmountFormart(this.state.patient_payable)}</h5>
-                    </div>
-                    <div className="col" style={{ textAlign: "right" }}>
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "co_payable"
-                        }}
-                      />
-                      <h5>{getAmountFormart(this.state.company_payble)}</h5>
-                    </div>
-                    {/* <div className="col">
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "sec_co_payable"
-                        }}
-                      />
-                      <h5>
-                        {getAmountFormart(this.state.sec_company_paybale)}
-                      </h5>
-                    </div> */}
-                  </div>
-                </div>
-              </div>
               <hr />
+              <div
+                className="row GridTotalDetails margin-bottom-15"
+                style={{ textAlign: "right" }}
+              >
+                <div className="col">
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "sub_ttl"
+                    }}
+                  />
+                  <h5>{getAmountFormart(this.state.sub_total_amount)}</h5>
+                </div>
+                <div className="col" style={{ textAlign: "right" }}>
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "dsct_amt"
+                    }}
+                  />
+                  <h5>{getAmountFormart(this.state.discount_amount)}</h5>
+                </div>
+
+                <div className="col" style={{ textAlign: "right" }}>
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "net_ttl"
+                    }}
+                  />
+                  <h5>{getAmountFormart(this.state.net_total)}</h5>
+                </div>
+                <div className="col" style={{ textAlign: "right" }}>
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "pat_payable"
+                    }}
+                  />
+                  <h5>{getAmountFormart(this.state.patient_payable)}</h5>
+                </div>
+                <div className="col" style={{ textAlign: "right" }}>
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "co_payable"
+                    }}
+                  />
+                  <h5>{getAmountFormart(this.state.company_payble)}</h5>
+                </div>
+              </div>
             </div>
+            <FavouriteOrder
+              HeaderCaption="Add Service to Favourite"
+              show={this.state.isOpen}
+              onClose={openFavouriteOrder.bind(this, this)}
+              from="ClinicalDesk"
+              doctor_id={Window.global["provider_id"]}
+            />
+
+            <ViewFavouriteOrder
+              HeaderCaption="View Favourite Services"
+              show={this.state.isFavOpen}
+              onClose={closeViewFavouriteOrder.bind(this, this)}
+              all_favourites={this.state.all_favourites}
+            />
+
             <div className="popupFooter">
               <div className="col-lg-12">
                 <div className="row">
@@ -761,6 +896,18 @@ class OrderingServices extends Component {
                         onClick={this.onClose.bind(this)}
                       >
                         Cancel
+                      </button>
+                      <button
+                        className="btn btn-default"
+                        onClick={openViewFavouriteOrder.bind(this, this)}
+                      >
+                        View Favourite Order
+                      </button>
+                      <button
+                        className="btn btn-default"
+                        onClick={openFavouriteOrder.bind(this, this)}
+                      >
+                        Add Order to Favourite
                       </button>
                     </span>
                   </div>
@@ -804,3 +951,27 @@ export default withRouter(
     mapDispatchToProps
   )(OrderingServices)
 );
+{
+  /*
+  {
+    fieldName: "quantity",
+    label: (
+      <AlgaehLabel label={{ fieldName: "quantity" }} />
+    ),
+    disabled: true,
+    others: {
+      minWidth: 80
+    }
+  },
+
+  {
+    fieldName: "gross_amount",
+    label: (
+      <AlgaehLabel label={{ fieldName: "gross_amount" }} />
+    ),
+    disabled: true,
+    others: {
+      minWidth: 110
+    }
+  },*/
+}

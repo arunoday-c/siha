@@ -22,16 +22,16 @@
     margin-bottom: -15px;
     margin-top: -10px;
   }
-  #doctorOrder {
-    .ReactTable {
-      height: 33vh !important;
-      margin-bottom: 15px;
-    }
-  }
 }
 #Services_Ordering {
   .ReactTable {
     height: 54vh !important;
+  }
+}
+
+#FAV_Services_Ordering {
+  .ReactTable {
+    height: 48vh !important;
   }
 }
 .GridTotalDetails {

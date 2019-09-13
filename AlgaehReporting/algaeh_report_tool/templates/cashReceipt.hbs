@@ -43,7 +43,12 @@
                     </tr>
                     {{#each detailList}}
                     <tr>
-                        <td>{{capitalization service_name}}</td>
+                        <td>{{ capitalization service_name}}                          
+                          {{#if service_type_id 1 }}
+                          {{#if new_visit_patient "N"}}
+                            <span>Follow Up</span>
+                            {{/if}}
+                            {{/if}} </td>
                         <td class="numberFld">{{gross_amount}}</td>
                           <td class="numberFld">{{discount_amount}}</td>
                           <td class="numberFld">{{patient_share}}</td>

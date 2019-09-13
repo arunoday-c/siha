@@ -38,7 +38,6 @@ const writeOffhandle = ($this, context, ctrl, e) => {
 };
 
 const updateCridetSettlement = ($this, context) => {
-  debugger;
   const check_header = $this.props.fromPos
     ? "hims_f_pos_credit_header_id"
     : "hims_f_credit_header_id";

@@ -1,254 +1,256 @@
 @import "../../styles/algaehCssVariables.scss";
 .gridToolSec {
-	margin-bottom: 10px;
-	text-align: right;
-	button {
-		margin-left: 10px !important;
-	}
-	div {
-		display: inline;
-	}
+  margin-bottom: 10px;
+  text-align: right;
+  button {
+    margin-left: 10px !important;
+  }
+  div {
+    display: inline;
+  }
 }
 .multiInfoList {
-	margin-left: -15px;
-	margin-right: -15px;
-	padding: 0 15px;
-	h5 {
-		font-size: 1rem;
-		margin: 0;
-	}
-	h6 {
-		font-size: 0.8rem;
-		margin: 0;
-	}
-	p {
-		font-size: 0.8rem;
-		margin: 0;
-	}
+  margin-left: -15px;
+  margin-right: -15px;
+  padding: 0 15px;
+  h5 {
+    font-size: 1rem;
+    margin: 0;
+  }
+  h6 {
+    font-size: 0.8rem;
+    margin: 0;
+  }
+  p {
+    font-size: 0.8rem;
+    margin: 0;
+  }
 }
 .ReactTable {
-	.rt-thead {
-		.rt-th {
-			color: #000 !important;
-			background: lighten($primary-color, 55%) !important;
-			.style_Label {
-				font-weight: 500 !important;
-				white-space: pre-line !important;
-				padding: 3px 0 !important;
-			}
-		}
-	}
-	.-filters {
-		.rt-th {
-			background: #ccc !important;
-		}
-	}
-	.rt-thead.-filters input,
-	.rt-thead.-filters select {
-		padding: 0.3em !important;
-		border: 1px solid #8c8c8c !important;
-	}
-	.rt-tbody {
-		text-align: center;
-		.rt-td {
-			font-size: 0.9em;
-			overflow: inherit !important;
-			white-space: inherit !important;
-		}
+  .rt-thead {
+    .rt-th {
+      color: #000 !important;
+      background: lighten($primary-color, 55%) !important;
+      .style_Label {
+        font-weight: 500 !important;
+        white-space: pre-line !important;
+        padding: 3px 0 !important;
+      }
+    }
+  }
+  .-filters {
+    .rt-th {
+      background: #ccc !important;
+    }
+  }
+  .rt-thead.-filters input,
+  .rt-thead.-filters select {
+    padding: 0.3em !important;
+    border: 1px solid #8c8c8c !important;
+  }
+  .rt-tbody {
+    text-align: center;
+    .rt-td {
+      font-size: 0.9em;
+      overflow: inherit !important;
+      white-space: inherit !important;
+    }
 
-		.rowHighliter {
-			.rt-td {
-				background: lighten($primary-color, 40%) !important;
-				&:hover {
-					background: lighten($primary-color, 40%) !important;
-				}
-			}
-		}
+    .rowHighliter {
+      .rt-td {
+        background: lighten($primary-color, 40%) !important;
+        &:hover {
+          background: lighten($primary-color, 40%) !important;
+        }
+      }
+    }
 
-		.textCapitalize {
-			text-transform: capitalize;
-			input {
-				text-transform: capitalize;
-			}
-		}
-	}
-	.-btn {
-		background: $primary-color !important;
-		color: #fff !important;
-		font-size: 0.8em;
-	}
-	.-btn:disabled {
-		background: rgba(0, 0, 0, 0.1) !important;
-	}
-	.-pagination {
-		.-center {
-			input,
-			select {
-				border: 1px solid #8c8c8c !important;
-				width: 7vh !important;
-				-webkit-appearance: none;
-			}
-			input {
-				padding: 2px !important;
-			}
-		}
+    .textCapitalize {
+      text-transform: capitalize;
+      input {
+        text-transform: capitalize;
+      }
+    }
+  }
+  .-btn {
+    background: $primary-color !important;
+    color: #fff !important;
+    font-size: 0.8em;
+  }
+  .-btn:disabled {
+    background: rgba(0, 0, 0, 0.1) !important;
+  }
+  .-pagination {
+    .-center {
+      input,
+      select {
+        border: 1px solid #8c8c8c !important;
+        width: 7vh !important;
+        -webkit-appearance: none;
+      }
+      input {
+        padding: 2px !important;
+      }
+    }
 
-		@media screen and (min-width: 481px) and (max-width: 1024px) and (orientation: landscape) {
-			.-center {
-				flex: 3 1 !important;
-			}
-		}
-	}
-	i.fa-pen,
-	i.fa-trash-alt,
-	i.fa-save,
-	i.fa-times,
-	.fa-barcode,
-	.fa-check,
-	.fa-flask,
-	.fa-file-signature,
-	.fa-walking,
-	.fa-file-export,
-	.fa-sync-alt,
-	.fa-file-alt,
-	.fa-file-image,
-	.fa-file-prescription,
-	.fa-prescription,
-	.fa-arrow-right,
-	.fa-eye,
-	.fa-plus,
-	.fa-thumbs-up,
-	.fa-thumbs-down,
-	.fa-file-medical-alt,
-	.fa-clipboard-check,
-	.fa-exchange-alt,
-	.fa-print {
-		cursor: pointer;
-		border: 1px solid lighten($primary-color, 10%);
-		height: 28px;
-		border-radius: 100%;
-		width: 28px;
-		display: inline-block;
-		text-align: center;
-		line-height: 25px;
-		background: #fff;
-		margin: 0 5px;
-		color: #313538;
-	}
+    @media screen and (min-width: 481px) and (max-width: 1024px) and (orientation: landscape) {
+      .-center {
+        flex: 3 1 !important;
+      }
+    }
+  }
+  i.fa-pen,
+  i.fa-trash-alt,
+  i.fa-save,
+  i.fa-times,
+  .fa-barcode,
+  .fa-check,
+  .fa-flask,
+  .fa-file-signature,
+  .fa-walking,
+  .fa-file-export,
+  .fa-sync-alt,
+  .fa-file-alt,
+  .fa-file-image,
+  .fa-file-prescription,
+  .fa-prescription,
+  .fa-arrow-right,
+  .fa-eye,
+  .fa-plus,
+  .fa-thumbs-up,
+  .fa-thumbs-down,
+  .fa-file-medical-alt,
+  .fa-clipboard-check,
+  .fa-exchange-alt,
+  .fa-print,
+  .fa-random {
+    cursor: pointer;
+    border: 1px solid lighten($primary-color, 10%);
+    height: 28px;
+    border-radius: 100%;
+    width: 28px;
+    display: inline-block;
+    text-align: center;
+    line-height: 25px;
+    background: #fff;
+    margin: 0 5px;
+    color: #313538;
+  }
 
-	i.fa-pen:hover,
-	i.fa-trash-alt:hover,
-	i.fa-save:hover,
-	i.fa-times:hover,
-	.fa-barcode:hover,
-	.fa-check:hover,
-	.fa-flask:hover,
-	.fa-file-signature:hover,
-	.fa-walking:hover,
-	.fa-file-image:hover,
-	.fa-file-export:hover,
-	.fa-sync-alt:hover,
-	.fa-file-alt:hover,
-	.fa-eye:hover,
-	.fa-file-prescription:hover,
-	.fa-prescription:hover,
-	.fa-arrow-right:hover,
-	.fa-plus:hover,
-	.fa-thumbs-up:hover,
-	.fa-file-medical-alt:hover,
-	.fa-clipboard-check:hover,
-	.fa-exchange-alt:hover,
-	.fa-print:hover {
-		background: $primary-color;
-		color: #fff;
-	}
+  i.fa-pen:hover,
+  i.fa-trash-alt:hover,
+  i.fa-save:hover,
+  i.fa-times:hover,
+  .fa-barcode:hover,
+  .fa-check:hover,
+  .fa-flask:hover,
+  .fa-file-signature:hover,
+  .fa-walking:hover,
+  .fa-file-image:hover,
+  .fa-file-export:hover,
+  .fa-sync-alt:hover,
+  .fa-file-alt:hover,
+  .fa-eye:hover,
+  .fa-file-prescription:hover,
+  .fa-prescription:hover,
+  .fa-arrow-right:hover,
+  .fa-plus:hover,
+  .fa-thumbs-up:hover,
+  .fa-file-medical-alt:hover,
+  .fa-clipboard-check:hover,
+  .fa-exchange-alt:hover,
+  .fa-print:hover,
+  .fa-random:hover {
+    background: $primary-color;
+    color: #fff;
+  }
 
-	.fa-thumbs-down:hover {
-		background: lightcoral;
-		border: red;
-		color: #fff;
-	}
+  .fa-thumbs-down:hover {
+    background: lightcoral;
+    border: red;
+    color: #fff;
+  }
 }
 
 @media screen and (min-width: 481px) and (max-width: 1024px) and (orientation: landscape) {
-	.ReactTable {
-		max-width: 95vw !important;
-	}
+  .ReactTable {
+    max-width: 95vw !important;
+  }
 }
 .ui.search {
-	.resultSecStyles {
-		.title {
-			color: $color-black;
-		}
-		.price {
-			color: $primary-color;
-			font-size: 1.2rem;
-		}
-		small {
-			display: block;
-			&:last-child {
-				text-transform: uppercase;
-				color: lighten($color-black, 50%);
-			}
-		}
-	}
-	.input {
-		width: 100%;
-	}
-	.prompt {
-		border-radius: 0.28571429rem;
-	}
-	.results {
-		max-height: 40vh;
-		margin-top: 0;
-		width: 100%;
-		overflow-y: auto;
-		overflow-x: hidden;
-	}
+  .resultSecStyles {
+    .title {
+      color: $color-black;
+    }
+    .price {
+      color: $primary-color;
+      font-size: 1.2rem;
+    }
+    small {
+      display: block;
+      &:last-child {
+        text-transform: uppercase;
+        color: lighten($color-black, 50%);
+      }
+    }
+  }
+  .input {
+    width: 100%;
+  }
+  .prompt {
+    border-radius: 0.28571429rem;
+  }
+  .results {
+    max-height: 40vh;
+    margin-top: 0;
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
 }
 
 .reportActionBtns {
-	margin: 10px 15px;
-	height: 32px;
-	button {
-		float: right;
-		margin-left: 10px;
-	}
+  margin: 10px 15px;
+  height: 32px;
+  button {
+    float: right;
+    margin-left: 10px;
+  }
 }
 .reportPDFIframe {
-	width: 100%;
-	height: 62vh !important;
+  width: 100%;
+  height: 62vh !important;
 }
 
 .AutoCompleteRight {
-	.menu {
-		right: 0 !important;
-		left: auto !important;
-	}
+  .menu {
+    right: 0 !important;
+    left: auto !important;
+  }
 }
 .autoSearchClear {
-	position: absolute;
-	top: 25px;
-	right: 45px;
-	color: lighten($color-black, 50%);
-	border-right: 1px solid #dededf;
-	padding-left: 5px;
-	padding-right: 5px;
-	background: #fff;
-	&:hover {
-		cursor: pointer;
-		color: lighten($color-black, 20%);
-	}
+  position: absolute;
+  top: 25px;
+  right: 45px;
+  color: lighten($color-black, 50%);
+  border-right: 1px solid #dededf;
+  padding-left: 5px;
+  padding-right: 5px;
+  background: #fff;
+  &:hover {
+    cursor: pointer;
+    color: lighten($color-black, 20%);
+  }
 }
 .paddingLeft-0 {
-	padding-left: 0;
+  padding-left: 0;
 }
 .paddingBottom-0 {
-	padding-bottom: 0;
+  padding-bottom: 0;
 }
 .paddingTop-0 {
-	padding-top: 0;
+  padding-top: 0;
 }
 .paddingRight-0 {
-	padding-right: 0;
+  padding-right: 0;
 }

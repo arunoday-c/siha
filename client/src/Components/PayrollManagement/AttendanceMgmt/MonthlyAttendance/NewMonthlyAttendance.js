@@ -60,7 +60,9 @@ export default class NewMonthlyAttendance extends Component {
               inputs.sub_department_id !== null
                 ? inputs.sub_department_id
                 : undefined,
-            department_id: inputs.department_id
+            department_id: inputs.department_id,
+            hims_d_employee_id: inputs.hims_d_employee_id,
+            designation_id: inputs.designation_id
           },
           module: "hrManagement",
           onSuccess: res => {

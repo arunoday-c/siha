@@ -1,0 +1,23 @@
+.hims_favourite_order_list .toggle-section {
+  margin: 10px;
+  margin-bottom: 0px; }
+
+.hims_favourite_order_list .procedure-footer {
+  height: "60px";
+  background-color: #000; }
+
+.hims_favourite_order_list .procedure-section {
+  border: 1px solid #d3d3d3;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border-top-right-radius: 5px; }
+
+.hims_favourite_order_list th,
+.hims_favourite_order_list td {
+  border-right: 1px solid #e6e6e6; }
+
+#invest_grid_cntr .ReactTable {
+  height: 43vh !important; }
+
+#proceduresGridCntr .ReactTable {
+  max-height: 75vh !important; }

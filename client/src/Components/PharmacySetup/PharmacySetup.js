@@ -13,7 +13,7 @@ import Location from "./Location/Location";
 import ItemForm from "./ItemForm/ItemForm";
 import ItemStorage from "./ItemStorage/ItemStorage";
 import LocationPermission from "./LocationPermission/LocationPermission";
-
+import PharmacyOptions from "./PharmacyOptions/PharmacyOptions";
 // import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../actions/algaehActions";
@@ -22,7 +22,7 @@ class PharmacySetup extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { pageDisplay: "ItemCategory", sidBarOpen: true };
+    this.state = { pageDisplay: "PharmacyOptions", sidBarOpen: true };
   }
 
   openTab(e) {
@@ -67,8 +67,21 @@ class PharmacySetup extends Component {
           <div className="tabMaster toggle-section">
             <ul className="nav">
               <li
-                algaehtabs={"ItemCategory"}
+                algaehtabs={"PharmacyOptions"}
                 className={"nav-item tab-button active"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "pharmacy_options"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                algaehtabs={"ItemCategory"}
+                className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
               >
                 {
@@ -182,7 +195,9 @@ class PharmacySetup extends Component {
         <div className="common-section">
           {/*  {<this.state.pageDisplay />} */}
 
-          {this.state.pageDisplay === "ItemCategory" ? (
+          {this.state.pageDisplay === "PharmacyOptions" ? (
+            <PharmacyOptions />
+          ) : this.state.pageDisplay === "ItemCategory" ? (
             <ItemCategory />
           ) : this.state.pageDisplay === "ItemGroup" ? (
             <ItemGroup />

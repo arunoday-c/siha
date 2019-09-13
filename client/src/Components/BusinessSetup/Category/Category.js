@@ -306,7 +306,7 @@ class Category extends Component {
                 <div
                   className="form-details"
                   data-validate="specialityDiv"
-                  id="shiftGridCntr"
+                  id="categoryGridCntr"
                 >
                   <AlgaehDataGrid
                     id="shift-grid"

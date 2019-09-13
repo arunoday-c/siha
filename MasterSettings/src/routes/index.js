@@ -15,6 +15,7 @@ import companyAccount from "../controllers/companyAccount";
 import InsuranceCardClass from "../controllers/InsuranceCardClass";
 import sfda from "../controllers/sfda";
 import branchMaster from "../controllers/branchMaster";
+import favouriteOrders from "../controllers/favouriteOrders";
 
 const router = express();
 router.use("/department", department());
@@ -33,5 +34,6 @@ router.use("/companyAccount", companyAccount());
 router.use("/InsuranceCardClass", InsuranceCardClass());
 router.use("/sfda", sfda());
 router.use("/branchMaster", branchMaster());
+router.use("/favouriteOrders", favouriteOrders());
 
 export default router;

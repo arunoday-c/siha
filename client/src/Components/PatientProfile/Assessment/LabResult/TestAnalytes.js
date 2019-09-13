@@ -146,24 +146,9 @@ class TestAnalytes extends PureComponent {
                       }
                     },
                     {
-                      fieldName: "analyte_id",
+                      fieldName: "description",
                       label: <AlgaehLabel label={{ forceLabel: "Analyte" }} />,
-                      displayTemplate: row => {
-                        let display =
-                          this.props.labanalytes === undefined
-                            ? []
-                            : this.props.labanalytes.filter(
-                                f => f.hims_d_lab_analytes_id === row.analyte_id
-                              );
 
-                        return (
-                          <span>
-                            {display !== null && display.length !== 0
-                              ? display[0].description
-                              : ""}
-                          </span>
-                        );
-                      },
                       others: {
                         minWidth: 250,
                         resizable: false,
@@ -179,9 +164,7 @@ class TestAnalytes extends PureComponent {
                           }}
                         />
                       ),
-                      displayTemplate: row => {
-                        return row.result;
-                      },
+
                       others: {
                         resizable: false,
                         filterable: false,
@@ -303,7 +286,7 @@ class TestAnalytes extends PureComponent {
                 />
 
                 {/* keyId="patient_code"
-                  
+
                   dataSource={{
                   data: this.props.inputsparameters.test_analytes
                 }}

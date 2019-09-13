@@ -23,6 +23,7 @@ import {
   EditGrid
 } from "./RequisitionItemsEvents";
 import { AlgaehActions } from "../../../../actions/algaehActions";
+import moment from "moment";
 
 class RequisitionItems extends Component {
   constructor(props) {
@@ -87,6 +88,7 @@ class RequisitionItems extends Component {
   }
 
   render() {
+    let month_name = moment(this.state.requistion_date).format("MMMM");
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -222,6 +224,21 @@ class RequisitionItems extends Component {
                             : "-----------"}
                         </h6>
                       </div>
+                      {this.props.requisition_auth === true ? null : (
+                        <div className="col">
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Current Month Consumption"
+                              //forceLabel: "Consumption Done In " + month_name
+                            }}
+                          />
+                          <h6>
+                            {this.state.transaction_qty
+                              ? this.state.transaction_qty
+                              : "0"}
+                          </h6>
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div className="row">

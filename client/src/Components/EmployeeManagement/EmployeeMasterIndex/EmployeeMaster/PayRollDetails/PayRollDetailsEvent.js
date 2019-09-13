@@ -780,7 +780,6 @@ const CalculateBasedonFormula = $this => {
 
   if (earn_comp.length > 0) {
     for (let x = 0; x < earn_comp.length; x++) {
-      debugger;
       let formulaCal = earn_comp[x].formula;
 
       // let strFormula = earn_comp[x].formula;

@@ -65,7 +65,8 @@ export default {
       addItemButton: true,
       dummyField: false,
       authorizeEnable: true,
-      cannotDelete: false
+      cannotDelete: false,
+      transaction_qty: null
     };
     return output;
   }

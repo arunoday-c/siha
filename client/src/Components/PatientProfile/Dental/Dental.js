@@ -43,7 +43,8 @@ class Dental extends Component {
       selected_plan: "------",
       hims_d_services_id: "",
       discount_percentage: 0,
-      dental_form_loading: false
+      dental_form_loading: false,
+      teeth_type: "P"
     };
     this.getProcedures();
     this.getTreatementPlans();
@@ -83,6 +84,12 @@ class Dental extends Component {
           type: "error"
         });
       }
+    });
+  }
+
+  radioChange(e) {
+    this.setState({
+      [e.target.name]: e.target.value
     });
   }
 
@@ -643,7 +650,7 @@ class Dental extends Component {
 
   generateToothUpperRight(teeth) {
     let plot = [];
-    if (this.props.age_in_years < 16) {
+    if (this.state.teeth_type === "D") {
       for (let i = 1; i < 6; i++) {
         const tooth =
           i === 5
@@ -936,7 +943,7 @@ class Dental extends Component {
 
   generateToothUpperLeft(teeth) {
     let plot = [];
-    if (this.props.age_in_years < 16) {
+    if (this.state.teeth_type === "D") {
       for (let i = 9; i < 14; i++) {
         const tooth =
           i === 9
@@ -1239,7 +1246,7 @@ class Dental extends Component {
   generateToothLowerRight(teeth) {
     let plot = [];
     let counter = 1;
-    if (this.props.age_in_years < 16) {
+    if (this.state.teeth_type === "D") {
       for (let i = 32; i >= 28; i--) {
         const tooth =
           i === 28
@@ -1546,7 +1553,7 @@ class Dental extends Component {
   generateToothLowerLeft(teeth) {
     let plot = [];
     let counter = 9;
-    if (this.props.age_in_years < 16) {
+    if (this.state.teeth_type === "D") {
       for (let i = 24; i >= 20; i--) {
         const tooth =
           i === 24
@@ -2212,7 +2219,7 @@ class Dental extends Component {
   }
   render() {
     let billDetails = this.state.billDetails;
-    let child_dental_chart = this.props.age_in_years < 16 ? "childchart" : "";
+    let child_dental_chart = this.state.teeth_type === "D" ? "childchart" : "";
     return (
       <div id="dentalTreatment">
         <AlgaehModalPopUp
@@ -2674,6 +2681,31 @@ class Dental extends Component {
                       }}
                       value={this.state.scheduled_date}
                     />
+                  </div>
+                  <div
+                    className="col-6 customRadio"
+                    style={{ paddingTop: 24, borderBottom: "none" }}
+                  >
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        name="teeth_type"
+                        value="P"
+                        checked={this.state.teeth_type === "P" ? true : false}
+                        onChange={this.radioChange.bind(this)}
+                      />
+                      <span>Permanent</span>
+                    </label>
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        name="teeth_type"
+                        value="D"
+                        checked={this.state.teeth_type === "D" ? true : false}
+                        onChange={this.radioChange.bind(this)}
+                      />
+                      <span>Deciduous</span>
+                    </label>
                   </div>
                   <hr />
                   <div

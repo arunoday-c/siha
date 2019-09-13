@@ -90,7 +90,6 @@ class OPCreditSettlement extends Component {
   }
 
   render() {
-    debugger;
     return (
       <div className="" style={{ marginBottom: "50px" }}>
         <BreadCrumb

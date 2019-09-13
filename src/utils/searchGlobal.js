@@ -390,8 +390,8 @@ let algaehSearchConfig = (searchName, req) => {
         searchName: "new_employees",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS  hims_d_employee_id,employee_code,full_name,date_of_joining \
-          from hims_d_employee E left join hims_m_user_employee UM on E.hims_d_employee_id=UM.employee_id\
-          where E.record_status='A' and UM.employee_id is null and E.hospital_id=" +
+          from hims_d_employee E left join  algaeh_d_app_user U  on E.hims_d_employee_id=U.employee_id\
+          where E.record_status='A' and U.employee_id is null and E.hospital_id=" +
           hospitalId,
         orderBy: "hims_d_employee_id desc"
       },
@@ -456,9 +456,10 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "users",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS algaeh_d_app_user_id,E.full_name as full_name ,employee_code,arabic_name,E.sub_department_id,primary_contact_no,sex\
-          from algaeh_d_app_user U inner join  hims_m_user_employee UM on U.algaeh_d_app_user_id=UM.user_id\
-          inner join hims_d_employee E on UM.employee_id=E.hims_d_employee_id where E.record_status='A' and UM.hospital_id=" +
+          "select SQL_CALC_FOUND_ROWS algaeh_d_app_user_id,E.full_name as full_name ,employee_code,arabic_name,E.sub_department_id,\
+          primary_contact_no,sex from algaeh_d_app_user U inner join hims_d_employee E on U.employee_id=E.hims_d_employee_id\
+          inner join  hims_m_user_employee UM on U.algaeh_d_app_user_id=UM.user_id\
+           where E.record_status='A' and UM.hospital_id=" +
           hospitalId,
         orderBy: "algaeh_d_app_user_id desc"
       },

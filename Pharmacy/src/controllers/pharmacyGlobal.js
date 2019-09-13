@@ -6,7 +6,10 @@ import {
   getItemMoment,
   getItemLocationStock,
   getUserLocationPermission,
-  getItemandLocationStock
+  getItemandLocationStock,
+  getConsumptionSelectedMonth,
+  insertExpiryNotification,
+  getExpiringItemList
 } from "../models/pharmacyGlobal";
 
 export default () => {
@@ -60,6 +63,34 @@ export default () => {
       });
     }
   );
+  api.get(
+    "/getConsumptionSelectedMonth",
+    getConsumptionSelectedMonth,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+
+  api.post(
+    "/insertExpiryNotification",
+    insertExpiryNotification,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+
+  api.get("/getExpiringItemList", getExpiringItemList, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
 
   return api;
 };

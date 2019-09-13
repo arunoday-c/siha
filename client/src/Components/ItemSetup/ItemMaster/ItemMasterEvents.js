@@ -107,61 +107,100 @@ const InsertUpdateItems = $this => {
   SetBulkState({
     state: $this,
     callback: () => {
-      const err = Validations($this);
+      $this.setState(
+        {
+          loading_itemInsert: true
+        },
+        () => {
+          const err = Validations($this);
 
-      if (!err) {
-        AlgaehLoader({ show: true });
-        if ($this.state.hims_d_item_master_id === null) {
-          $this.state.service_code = $this.state.item_code;
-          $this.state.service_type_id = "12";
-          $this.state.service_name = $this.state.item_description;
-          $this.state.service_status = "A";
-          $this.state.standard_fee = parseFloat($this.state.standard_fee);
-          $this.state.hospital_id = JSON.parse(
-            AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-          ).hims_d_hospital_id;
-          algaehApiCall({
-            uri: "/pharmacy/addItemMaster",
-            module: "pharmacy",
-            data: $this.state,
-            onSuccess: response => {
-              if (response.data.success === true) {
-                let IOputs = ItemSetup.inputParam();
-                $this.setState({ ...$this.state, ...IOputs }, () => {
-                  $this.props.onClose && $this.props.onClose(true);
-                });
+          if (!err) {
+            // AlgaehLoader({ show: true });
 
-                swalMessage({
-                  type: "success",
-                  title: "Saved successfully . ."
-                });
-              }
-              AlgaehLoader({ show: false });
+            if ($this.state.hims_d_item_master_id === null) {
+              $this.state.service_code = $this.state.item_code;
+              $this.state.service_type_id = "12";
+              $this.state.service_name = $this.state.item_description;
+              $this.state.service_status = "A";
+              $this.state.standard_fee = parseFloat($this.state.standard_fee);
+              $this.state.hospital_id = JSON.parse(
+                AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+              ).hims_d_hospital_id;
+              algaehApiCall({
+                uri: "/pharmacy/addItemMaster",
+                module: "pharmacy",
+                data: $this.state,
+                onSuccess: response => {
+                  if (response.data.success === true) {
+                    let IOputs = ItemSetup.inputParam();
+                    IOputs.loading_itemInsert = false;
+                    $this.setState({ ...$this.state, ...IOputs }, () => {
+                      $this.props.onClose && $this.props.onClose(true);
+                    });
+
+                    swalMessage({
+                      type: "success",
+                      title: "Saved successfully . ."
+                    });
+                  }
+                  // AlgaehLoader({ show: false });
+                },
+                onFailure: error => {
+                  $this.setState(
+                    {
+                      loading_itemInsert: false
+                    },
+                    () => {
+                      swalMessage({
+                        title: error.message,
+                        type: "error"
+                      });
+                    }
+                  );
+                }
+              });
+            } else {
+              $this.state.record_status = "A";
+              algaehApiCall({
+                uri: "/pharmacy/updateItemMasterAndUom",
+                module: "pharmacy",
+                data: $this.state,
+                method: "PUT",
+                onSuccess: response => {
+                  if (response.data.success === true) {
+                    let IOputs = ItemSetup.inputParam();
+                    IOputs.loading_itemInsert = false;
+                    $this.setState({ ...$this.state, ...IOputs }, () => {
+                      $this.props.onClose && $this.props.onClose(true);
+                    });
+                    swalMessage({
+                      type: "success",
+                      title: "Updated successfully . ."
+                    });
+                  }
+                },
+                onFailure: error => {
+                  $this.setState(
+                    {
+                      loading_itemInsert: false
+                    },
+                    () => {
+                      swalMessage({
+                        title: error.message,
+                        type: "error"
+                      });
+                    }
+                  );
+                }
+              });
             }
-          });
-        } else {
-          $this.state.record_status = "A";
-          algaehApiCall({
-            uri: "/pharmacy/updateItemMasterAndUom",
-            module: "pharmacy",
-            data: $this.state,
-            method: "PUT",
-            onSuccess: response => {
-              if (response.data.success === true) {
-                let IOputs = ItemSetup.inputParam();
-                $this.setState({ ...$this.state, ...IOputs }, () => {
-                  $this.props.onClose && $this.props.onClose(true);
-                });
-                swalMessage({
-                  type: "success",
-                  title: "Updated successfully . ."
-                });
-              }
-              AlgaehLoader({ show: false });
-            }
-          });
+          } else {
+            $this.setState({
+              loading_itemInsert: false
+            });
+          }
         }
-      }
+      );
     }
   });
 };

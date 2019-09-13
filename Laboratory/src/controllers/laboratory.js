@@ -7,12 +7,20 @@ import {
   updateLabSampleStatus,
   updateLabResultEntry,
   updateMicroResultEntry,
-  getMicroResult
+  getMicroResult,
+  getPatientTestList,
+  getComparedLabResult
 } from "../models/laboratory";
 
 export default () => {
   const api = Router();
   api.get("/getLabOrderedServices", getLabOrderedServices, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+  api.get("/getPatientTestList", getPatientTestList, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
       records: req.records
@@ -68,6 +76,19 @@ export default () => {
       });
     }
   );
+  api.get("/getComparedLabResult", getComparedLabResult, (req, res, next) => {
+    if (req.records.invalid_input == true) {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: false,
+        records: req.records
+      });
+    } else {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  });
 
   return api;
 };
