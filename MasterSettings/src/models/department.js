@@ -287,7 +287,7 @@ module.exports = {
         next(error);
       });
   },
-  selectdoctors: (req, res, next) => {
+  selectdoctors_Backup: (req, res, next) => {
     let input = req.query;
     const _mysql = new algaehMysql();
 
@@ -340,17 +340,36 @@ module.exports = {
         next(error);
       });
   },
-  selectDoctorsAndClinic: (req, res, next) => {
+
+  selectdoctors: (req, res, next) => {
     let input = req.query;
     const _mysql = new algaehMysql();
 
-    // let connectionString = "";
-    // if (input.department_type == "CLINICAL") {
-    //   connectionString = " and hims_d_department.department_type='CLINICAL' ";
-    // } else if (input.department_type == "NON-CLINICAL") {
-    //   connectionString =
-    //     " and hims_d_department.department_type='NON-CLINICAL' ";
-    // }
+    _mysql
+      .executeQuery({
+        query:
+          "select E.hims_d_employee_id as employee_id, E.sub_department_id, E.full_name, E.arabic_name, E.services_id,\
+            SD.department_id, SD.sub_department_name, SD.arabic_sub_department_name, SD.department_type \
+            from hims_d_employee E inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id \
+            and  E.isdoctor='Y' inner join hims_d_department D on SD.department_id=D.hims_d_department_id \
+            and  D.department_type='CLINICAL' where E.employee_status='A'  and SD.sub_department_status='A'\
+            and SD.record_status='A' and E.record_status ='A' and services_id is not null;"
+      })
+      .then(results => {
+        _mysql.releaseConnection();
+        let departments = new LINQ(results).GroupBy(g => g.sub_department_id);
+        let doctors = new LINQ(results).GroupBy(g => g.employee_id);
+        req.records = { departments: departments, doctors: doctors };
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  },
+  selectDoctorsAndClinic_backUp: (req, res, next) => {
+    let input = req.query;
+    const _mysql = new algaehMysql();
 
     _mysql
       .executeQuery({
@@ -395,6 +414,38 @@ module.exports = {
         next(error);
       });
   },
+
+  selectDoctorsAndClinic: (req, res, next) => {
+    let input = req.query;
+    const _mysql = new algaehMysql();
+
+    _mysql
+      .executeQuery({
+        query:
+          "select E.hims_d_employee_id as provider_id, E.sub_department_id as sub_dept_id, E.full_name, E.arabic_name, \
+            E.services_id,SD.department_id, SD.sub_department_name, SD.arabic_sub_department_name, \
+            hims_d_appointment_clinic_id as clinic_id,AP.description as clinic_description from hims_d_employee E \
+            inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id  and  E.isdoctor='Y' \
+            inner join hims_d_department D on SD.department_id=D.hims_d_department_id  and  D.department_type='CLINICAL'\
+            left join hims_d_appointment_clinic AP on E.hims_d_employee_id=AP.provider_id \
+            where E.employee_status='A'  and SD.sub_department_status='A' \
+            and SD.record_status='A' and E.record_status ='A' and services_id is not null;"
+      })
+      .then(results => {
+        _mysql.releaseConnection();
+        let departments = new LINQ(results).GroupBy(g => g.sub_dept_id);
+        let doctors = new LINQ(results).GroupBy(g => g.provider_id);
+
+        req.records = { departments: departments, doctors: doctors };
+
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  },
+
   deleteSubDepartment: (req, res, next) => {
     let input = req.body;
     const _mysql = new algaehMysql();

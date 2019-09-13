@@ -170,16 +170,18 @@ export default class DateHandler extends PureComponent {
       this.props.textBox.name !== undefined
         ? { name: this.props.textBox.name }
         : {};
+    debugger;
     const _required =
       this.props.label !== undefined
         ? this.props.label.isImp !== undefined
-          ? { required: this.props.label.isImp }
+          ? { algaeh_required: this.props.label.isImp.toString() }
           : {}
         : {};
+    console.log("_required: ", _required);
     const _isHijri = this.props.textBox.hijri !== undefined ? true : false;
     const _type = this.props.type !== undefined ? this.props.type : "date";
     return (
-      <div className="algaeh-datePicker">
+      <div className="algaeh-datePicker" {..._required}>
         {!_isHijri ? (
           <input
             data_role="datepicker"
@@ -192,7 +194,6 @@ export default class DateHandler extends PureComponent {
             onChange={this.onDayChange}
             onBlur={this.onBlur}
             {...this.props.textBox.others}
-            {..._required}
           />
         ) : null}
       </div>

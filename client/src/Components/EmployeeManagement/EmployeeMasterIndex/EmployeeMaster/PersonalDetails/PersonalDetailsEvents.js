@@ -1,4 +1,4 @@
-// import Enumerable from "linq";
+import moment from "moment";
 
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -85,114 +85,15 @@ const countryStatehandle = ($this, e) => {
       [name]: value
     });
   }
-
-  // let otherValues = {};
-  // if (e.name === "present_country_id") {
-  //   otherValues["present_state_id"] = 0;
-  //   otherValues["present_city_id"] = 0;
-  //   $this.props.getStates({
-  //     redux: {
-  //       data: e.selected.states,
-  //       type: "STATE_GET_DATA",
-  //       mappingName: "present_countrystates"
-  //     }
-  //   });
-  // } else if (e.name === "present_state_id") {
-  //   otherValues["present_city_id"] = null;
-  //   $this.props.getCities({
-  //     redux: {
-  //       data: e.selected.cities,
-  //       type: "CITY_GET_DATA",
-  //       mappingName: "present_cities"
-  //     }
-  //   });
-  // } else if (e.name === "permanent_country_id") {
-  //   otherValues["permanent_state_id"] = 0;
-  //   otherValues["permanent_city_id"] = 0;
-  //   $this.props.getStates({
-  //     redux: {
-  //       data: e.selected.states,
-  //       type: "STATE_GET_DATA",
-  //       mappingName: "countrystates"
-  //     }
-  //   });
-  // } else if (e.name === "permanent_state_id") {
-  //   otherValues["permanent_city_id"] = null;
-  //   $this.props.getCities({
-  //     redux: {
-  //       data: e.selected.cities,
-  //       type: "CITY_GET_DATA",
-  //       mappingName: "cities"
-  //     }
-  //   });
-  // }
-  // $this.setState({
-  //   [name]: value,
-  //   ...otherValues
-  // });
-  // $this.props.EmpMasterIOputs.updateEmployeeTabs({
-  //   [name]: value
-  // });
 };
 
-//Todo title and gender related chnage need to do
-// const titlehandle = ($this, context, e) => {
-//   let setGender;
-//   if (e.value === 1) {
-//     setGender = "Male";
-//   } else if (e.value === 2) {
-//     setGender = "Female";
-//   }
-//   $this.setState({
-//     gender: setGender,
-//     [e.name]: e.value
-//   });
-
-//   if (context !== undefined) {
-//     context.updateState({ gender: setGender, [e.name]: e.value });
-//   }
-// };
-
-// const numberSet = ($this, context, cntrl, e) => {
-//   $this.setState({
-//     [e.target.name]: e.target.value
-//   });
-//   if (context !== undefined) {
-//     context.updateState({ [e.target.name]: e.target.value });
-//   }
-// };
-
-// const onDrop = ($this, file, context, fileType) => {
-//   saveImageOnServer({
-//     fileControl: fileType,
-//     thisState: {
-//       stateName: $this,
-//       stateProgressName: "percent",
-//       filePreview: file
-//     },
-//     fileName: $this.state.employee_code,
-//     pageName: "EmployeeMasterIndex",
-//     destinationName: $this.state.employee_code,
-//     saveDirectly: true,
-//     fileType: "Employees",
-//     onSuccess: ImageObj => {
-//       $this.setState({
-//         [ImageObj.fileName]: ImageObj.preview
-//       });
-
-//       if (context !== undefined) {
-//         context.updateState({ [ImageObj.fileName]: ImageObj.preview });
-//       }
-//     }
-//   });
-// };
-
 const datehandle = ($this, ctrl, e) => {
+  let selected_date = moment(ctrl, "YYYY-MM-DD", true).isValid();
   $this.setState({
-    [e]: ctrl
+    [e]: selected_date === true ? ctrl : null
   });
   $this.props.EmpMasterIOputs.updateEmployeeTabs({
-    [e]: ctrl
+    [e]: selected_date === true ? ctrl : null
   });
 };
 

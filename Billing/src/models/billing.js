@@ -2886,7 +2886,7 @@ module.exports = {
         _mysql
           .executeQuery({
             query:
-              "SELECT employee_id, sub_department_id, services_id from hims_m_employee_department_mappings \
+              "SELECT hims_d_employee_id as employee_id, sub_department_id, services_id from hims_d_employee \
             Where record_status='A' " +
               strQuery,
             printQuery: true
