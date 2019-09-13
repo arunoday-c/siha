@@ -19,7 +19,10 @@ import EmpMasterIOputs from "../../../../Models/EmployeeMaster";
 import { getCookie } from "../../../../utils/algaehApiCall";
 import { InsertUpdateEmployee } from "./EmployeeMasterEvents";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
-import { AlgaehOpenContainer } from "../../../../utils/GlobalFunctions";
+import {
+  AlgaehValidation,
+  AlgaehOpenContainer
+} from "../../../../utils/GlobalFunctions";
 
 class EmployeeMaster extends Component {
   constructor(props) {
@@ -46,19 +49,25 @@ class EmployeeMaster extends Component {
   }
 
   openTab(e) {
-    let specified = e.currentTarget.getAttribute("algaehtabs");
+    AlgaehValidation({
+      alertTypeIcon: "warning",
+      querySelector: "data-validate='empPersonal'",
+      onSuccess: () => {
+        let specified = e.currentTarget.getAttribute("algaehtabs");
 
-    if (specified === "CommissionSetup") {
-      AlgaehLoader({ show: true });
-    }
-    var element = document.querySelectorAll("[algaehtabs]");
-    for (var i = 0; i < element.length; i++) {
-      element[i].classList.remove("active");
-    }
-    e.currentTarget.classList.add("active");
+        if (specified === "CommissionSetup") {
+          AlgaehLoader({ show: true });
+        }
+        var element = document.querySelectorAll("[algaehtabs]");
+        for (var i = 0; i < element.length; i++) {
+          element[i].classList.remove("active");
+        }
+        e.currentTarget.classList.add("active");
 
-    this.setState({
-      pageDisplay: specified
+        this.setState({
+          pageDisplay: specified
+        });
+      }
     });
   }
 
@@ -304,7 +313,7 @@ class EmployeeMaster extends Component {
                         />
                       }
                     </li>
-                    <li
+                    {/*  <li
                       algaehtabs={"DeptUserDetails"}
                       className={"nav-item tab-button"}
                       onClick={this.openTab.bind(this)}
@@ -316,7 +325,7 @@ class EmployeeMaster extends Component {
                           }}
                         />
                       }
-                    </li>
+                    </li>*/}
 
                     {this.state.HRMS_Active === true ? (
                       <li
@@ -410,7 +419,7 @@ class EmployeeMaster extends Component {
                       }
                     </li>
 
-                    <li
+                    {/*<li
                       algaehtabs={"DeptUserDetails"}
                       className={"nav-item tab-button disableLi"}
                       onClick={this.openTab.bind(this)}
@@ -422,7 +431,7 @@ class EmployeeMaster extends Component {
                           }}
                         />
                       }
-                    </li>
+                    </li>*/}
                     {this.state.HRMS_Active === true ? (
                       <li
                         algaehtabs={"PayRollDetails"}
@@ -494,14 +503,16 @@ class EmployeeMaster extends Component {
                       this.setState({ ...obj });
                     }
                   }}
-                > */}
+                >
+                : this.state.pageDisplay === "DeptUserDetails" ? (
+                  <DeptUserDetails EmpMasterIOputs={this} />
+                )
+                */}
               <div className="employee-section">
                 {this.state.pageDisplay === "PersonalDetails" ? (
                   <PersonalDetails EmpMasterIOputs={this} />
                 ) : this.state.pageDisplay === "OfficalDetails" ? (
                   <OfficalDetails EmpMasterIOputs={this} />
-                ) : this.state.pageDisplay === "DeptUserDetails" ? (
-                  <DeptUserDetails EmpMasterIOputs={this} />
                 ) : this.state.pageDisplay === "PayRollDetails" ? (
                   <PayRollDetails EmpMasterIOputs={this} />
                 ) : this.state.pageDisplay === "CommissionSetup" ? (

@@ -2258,13 +2258,12 @@ module.exports = {
       selectQry += ` and sub_department_id=${input.sub_department_id}`;
     }
     if (input.employee_id > 0) {
-      selectQry += ` and employee_id=${input.employee_id}`;
+      selectQry += ` and hims_d_employee_id = ${input.employee_id}`;
     }
 
     _mysql
       .executeQuery({
-        query: `select  hims_d_employee_department_id, employee_id, services_id,\
-        sub_department_id, category_speciality_id, user_id from hims_m_employee_department_mappings\
+        query: `select hims_d_employee_id as employee_id, services_id, sub_department_id from hims_d_employee \
          where record_status='A' and hospital_id=?  ${selectQry}`,
         values: [req.userIdentity.hospital_id]
       })

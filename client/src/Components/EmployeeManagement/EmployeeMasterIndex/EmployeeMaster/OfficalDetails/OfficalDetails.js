@@ -22,9 +22,18 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { getCookie } from "../../../../../utils/algaehApiCall";
+import { AlgaehOpenContainer } from "../../../../../utils/GlobalFunctions";
+import _ from "lodash";
+
 class OfficalDetails extends Component {
   constructor(props) {
     super(props);
+    let Activated_Modueles = JSON.parse(
+      AlgaehOpenContainer(sessionStorage.getItem("ModuleDetails"))
+    );
+    const HIMS_Active = _.filter(Activated_Modueles, f => {
+      return f.module_code === "FTDSK";
+    });
     this.state = {
       enable_active_status: "",
       date_of_releaving_label: "Date of leaving",
@@ -32,7 +41,8 @@ class OfficalDetails extends Component {
       reliving_date: undefined,
       // employee_status: null,
       inactive_date: undefined,
-      selectedLang: getCookie("Language")
+      selectedLang: getCookie("Language"),
+      HIMS_Active: HIMS_Active.length > 0 ? true : false
     };
   }
 
@@ -65,9 +75,101 @@ class OfficalDetails extends Component {
         }
       });
     }
+
+    if (
+      this.props.all_employees === undefined ||
+      this.props.all_employees.length === 0
+    ) {
+      this.props.getEmployees({
+        uri: "/employee/get",
+        module: "hrManagement",
+        method: "GET",
+
+        redux: {
+          type: "EMPLY_GET_DATA",
+          mappingName: "all_employees"
+        }
+      });
+    }
+
+    if (
+      this.props.designations === undefined ||
+      this.props.designations.length === 0
+    ) {
+      this.props.getDesignations({
+        uri: "/hrsettings/getDesignations",
+        module: "hrManagement",
+        method: "GET",
+        redux: {
+          type: "DSGTN_GET_DATA",
+          mappingName: "designations"
+        }
+      });
+    }
+
+    if (
+      this.props.emp_groups === undefined ||
+      this.props.emp_groups.length === 0
+    ) {
+      this.props.getEmpGroups({
+        uri: "/hrsettings/getEmployeeGroups",
+        module: "hrManagement",
+        method: "GET",
+        data: { record_status: "A" },
+        redux: {
+          type: "EMP_GROUP_GET",
+          mappingName: "emp_groups"
+        }
+      });
+    }
+
+    if (this.props.overTime === undefined || this.props.overTime.length === 0) {
+      this.props.getOvertimeGroups({
+        uri: "/hrsettings/getOvertimeGroups",
+        module: "hrManagement",
+        method: "GET",
+        redux: {
+          type: "OVER_TIME_GET_DATA",
+          mappingName: "overTime"
+        }
+      });
+    }
+
+    if (
+      this.props.organizations === undefined ||
+      this.props.organizations.length === 0
+    ) {
+      this.props.getOrganizations({
+        uri: "/organization/getOrganization",
+        method: "GET",
+        redux: {
+          type: "ORGS_GET_DATA",
+          mappingName: "organizations"
+        }
+      });
+    }
+
+    if (this.state.HIMS_Active === true) {
+      if (
+        this.props.depservices === undefined ||
+        this.props.depservices.length === 0
+      ) {
+        this.props.getDepServices({
+          uri: "/serviceType/getService",
+          module: "masterSettings",
+          method: "GET",
+          data: { service_type_id: 1 },
+          redux: {
+            type: "SERVICES_GET_DATA",
+            mappingName: "depservices"
+          }
+        });
+      }
+    }
   }
 
   render() {
+    const _isDoctor = this.props.EmpMasterIOputs.state.personalDetails.isdoctor;
     return (
       <React.Fragment>
         <div
@@ -124,6 +226,9 @@ class OfficalDetails extends Component {
                       this.setState({
                         appointment_type: null
                       });
+                      this.props.EmpMasterIOputs.updateEmployeeTabs({
+                        appointment_type: null
+                      });
                     }
                   }}
                 />
@@ -150,44 +255,8 @@ class OfficalDetails extends Component {
                       this.setState({
                         employee_type: null
                       });
-                    }
-                  }}
-                />
-
-                <div className="col">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Department"
-                    }}
-                  />
-                  <h6>
-                    {this.state.department_name === null ||
-                    this.state.department_name === undefined
-                      ? "------"
-                      : this.state.department_name}
-                  </h6>
-                </div>
-                <AlagehAutoComplete
-                  div={{ className: "col-3 mandatory" }}
-                  label={{
-                    forceLabel: "Sub Department",
-                    isImp: true
-                  }}
-                  selector={{
-                    name: "sub_department_id",
-                    className: "select-fld",
-                    value: this.state.sub_department_id,
-
-                    dataSource: {
-                      textField: "sub_department_name",
-                      valueField: "hims_d_sub_department_id",
-                      data: this.props.subdepartment
-                    },
-
-                    onChange: texthandle.bind(this, this),
-                    onClear: () => {
-                      this.setState({
-                        sub_department_id: null
+                      this.props.EmpMasterIOputs.updateEmployeeTabs({
+                        employee_type: null
                       });
                     }
                   }}
@@ -299,6 +368,9 @@ class OfficalDetails extends Component {
                       this.setState({
                         employee_status: null
                       });
+                      this.props.EmpMasterIOputs.updateEmployeeTabs({
+                        employee_status: null
+                      });
                     }
                   }}
                 />
@@ -320,7 +392,259 @@ class OfficalDetails extends Component {
                 <span>Accomodation Details</span>
               </h5>
               <div className="row paddin-bottom-5">
-                <div className="col customCheckbox" style={{ border: "none" }}>
+                <div className="row margin-top-15">
+                  <div className="col">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Department"
+                      }}
+                    />
+                    <h6>
+                      {this.state.department_name === null ||
+                      this.state.department_name === undefined
+                        ? "------"
+                        : this.state.department_name}
+                    </h6>
+                  </div>
+                  <AlagehAutoComplete
+                    div={{ className: "col-3 mandatory" }}
+                    label={{
+                      forceLabel: "Sub Department",
+                      isImp: true
+                    }}
+                    selector={{
+                      name: "sub_department_id",
+                      className: "select-fld",
+                      value: this.state.sub_department_id,
+
+                      dataSource: {
+                        textField: "sub_department_name",
+                        valueField: "hims_d_sub_department_id",
+                        data: this.props.subdepartment
+                      },
+
+                      onChange: texthandle.bind(this, this),
+                      onClear: () => {
+                        this.setState({
+                          sub_department_id: null
+                        });
+                        this.props.EmpMasterIOputs.updateEmployeeTabs({
+                          sub_department_id: null
+                        });
+                      }
+                    }}
+                  />
+
+                  {/*<div className="col">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Employee Designation"
+                      }}
+                    />
+                    <h6>
+                      {this.state.employee_designation_id === null
+                        ? "Not Defined"
+                        : employee_designation.designation}
+                    </h6>
+                  </div>*/}
+                  <AlagehAutoComplete
+                    div={{ className: "col" }}
+                    label={{
+                      forceLabel: "Emp. Designation",
+                      isImp: true
+                    }}
+                    selector={{
+                      name: "employee_designation_id",
+                      className: "select-fld",
+                      value: this.state.employee_designation_id,
+                      dataSource: {
+                        textField: "designation",
+                        valueField: "hims_d_designation_id",
+                        data: this.props.designations
+                      },
+                      onChange: texthandle.bind(this, this),
+                      others: {
+                        tabIndex: "2"
+                      },
+                      onClear: () => {
+                        this.setState({
+                          employee_designation_id: null
+                        });
+                        this.props.EmpMasterIOputs.updateEmployeeTabs({
+                          employee_designation_id: null
+                        });
+                      }
+                    }}
+                  />
+
+                  <AlagehAutoComplete
+                    div={{ className: "col " }}
+                    label={{
+                      forceLabel: "Reporting to",
+                      isImp: true
+                    }}
+                    selector={{
+                      name: "reporting_to_id",
+                      className: "select-fld",
+                      value: this.state.reporting_to_id,
+                      dataSource: {
+                        textField: "full_name",
+                        valueField: "hims_d_employee_id",
+                        data: this.props.all_employees
+                      },
+                      onChange: texthandle.bind(this, this),
+                      others: {
+                        tabIndex: "2"
+                      },
+                      onClear: () => {
+                        this.setState({
+                          reporting_to_id: null
+                        });
+                        this.props.EmpMasterIOputs.updateEmployeeTabs({
+                          reporting_to_id: null
+                        });
+                      }
+                    }}
+                  />
+
+                  {_isDoctor === "Y" ? (
+                    <AlagehAutoComplete
+                      div={{ className: "col" }}
+                      label={{
+                        fieldName: "services_id"
+                      }}
+                      selector={{
+                        name: "services_id",
+                        className: "select-fld",
+                        value: this.state.services_id,
+                        dataSource: {
+                          textField: "service_name",
+                          valueField: "hims_d_services_id",
+                          data: this.props.depservices
+                        },
+                        // others: {
+                        //   disabled:
+                        //     this.state.hims_d_employee_id === null
+                        //       ? false
+                        //       : true
+                        // },
+                        onChange: texthandle.bind(this, this),
+                        onClear: () => {
+                          this.setState({
+                            services_id: null
+                          });
+                          this.props.EmpMasterIOputs.updateEmployeeTabs({
+                            services_id: null
+                          });
+                        }
+                      }}
+                    />
+                  ) : null}
+
+                  {/*<div className="col">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Reporting to"
+                      }}
+                    />
+                    <h6>
+                      {this.state.reporting_to_id === null
+                        ? "Not Defined"
+                        : reporting_to.full_name}
+                    </h6>
+                  </div>*/}
+                </div>
+                <h5>
+                  <span>Define Group & Division/Branch</span>
+                </h5>
+                <div className="row">
+                  <AlagehAutoComplete
+                    div={{ className: "col" }}
+                    label={{
+                      forceLabel: "Employee Group",
+                      isImp: true
+                    }}
+                    selector={{
+                      name: "employee_group_id",
+                      className: "select-fld",
+                      value: this.state.employee_group_id,
+                      dataSource: {
+                        textField: "group_description",
+                        valueField: "hims_d_employee_group_id",
+                        data: this.props.emp_groups
+                      },
+                      onChange: texthandle.bind(this, this),
+                      others: {
+                        tabIndex: "2"
+                      },
+                      onClear: () => {
+                        this.setState({
+                          employee_group_id: null
+                        });
+                        this.props.EmpMasterIOputs.updateEmployeeTabs({
+                          employee_group_id: null
+                        });
+                      }
+                    }}
+                  />
+
+                  <AlagehAutoComplete
+                    div={{ className: "col " }}
+                    label={{
+                      forceLabel: "Overtime Group",
+                      isImp: true
+                    }}
+                    selector={{
+                      name: "overtime_group_id",
+                      className: "select-fld",
+                      value: this.state.overtime_group_id,
+                      dataSource: {
+                        textField: "overtime_group_description",
+                        valueField: "hims_d_overtime_group_id",
+                        data: this.props.overTime
+                      },
+                      onChange: texthandle.bind(this, this),
+                      onClear: () => {
+                        this.setState({
+                          overtime_group_id: null
+                        });
+                        this.props.EmpMasterIOputs.updateEmployeeTabs({
+                          overtime_group_id: null
+                        });
+                      }
+                    }}
+                  />
+                  <AlagehAutoComplete
+                    div={{ className: "col " }}
+                    label={{
+                      forceLabel: "Assign Division/Branch",
+                      isImp: true
+                    }}
+                    selector={{
+                      name: "hospital_id",
+                      className: "select-fld",
+                      value: this.state.hospital_id,
+                      dataSource: {
+                        textField: "hospital_name",
+                        valueField: "hims_d_hospital_id",
+                        data: this.props.organizations
+                      },
+                      onChange: texthandle.bind(this, this),
+                      others: {
+                        tabIndex: "2"
+                      },
+                      onClear: () => {
+                        this.setState({
+                          hospital_id: null
+                        });
+                        this.props.EmpMasterIOputs.updateEmployeeTabs({
+                          hospital_id: null
+                        });
+                      }
+                    }}
+                  />
+                </div>
+                {/*<div className="col customCheckbox" style={{ border: "none" }}>
                   <label className="checkbox inline">
                     <input
                       type="checkbox"
@@ -336,7 +660,7 @@ class OfficalDetails extends Component {
                       />
                     </span>
                   </label>
-                </div>
+                </div>*/}
               </div>
             </div>
             <div
@@ -365,6 +689,9 @@ class OfficalDetails extends Component {
                     onChange: bankEventhandle.bind(this, this),
                     onClear: () => {
                       this.setState({
+                        employee_bank_id: null
+                      });
+                      this.props.EmpMasterIOputs.updateEmployeeTabs({
                         employee_bank_id: null
                       });
                     }
@@ -432,6 +759,9 @@ class OfficalDetails extends Component {
                       this.setState({
                         company_bank_id: null
                       });
+                      this.props.EmpMasterIOputs.updateEmployeeTabs({
+                        company_bank_id: null
+                      });
                     }
                   }}
                 />
@@ -456,6 +786,9 @@ class OfficalDetails extends Component {
                       this.setState({
                         mode_of_payment: null
                       });
+                      this.props.EmpMasterIOputs.updateEmployeeTabs({
+                        mode_of_payment: null
+                      });
                     }
                   }}
                 />
@@ -472,7 +805,13 @@ function mapStateToProps(state) {
   return {
     banks: state.banks,
     subdepartment: state.subdepartment,
-    companyaccount: state.companyaccount
+    companyaccount: state.companyaccount,
+    all_employees: state.all_employees,
+    designations: state.designations,
+    emp_groups: state.emp_groups,
+    overTime: state.overTime,
+    organizations: state.organizations,
+    depservices: state.depservices
   };
 }
 
@@ -480,7 +819,13 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getBanks: AlgaehActions,
-      getCompanyAccount: AlgaehActions
+      getCompanyAccount: AlgaehActions,
+      getEmployees: AlgaehActions,
+      getDesignations: AlgaehActions,
+      getEmpGroups: AlgaehActions,
+      getOvertimeGroups: AlgaehActions,
+      getOrganizations: AlgaehActions,
+      getDepServices: AlgaehActions
     },
     dispatch
   );

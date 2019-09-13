@@ -90,7 +90,9 @@ class EmployeeMasterIndex extends Component {
         afterClose: true
       },
       () => {
-        getEmployeeDetails(this, this);
+        if (e === true) {
+          getEmployeeDetails(this, this);
+        }
       }
     );
   }
@@ -175,6 +177,7 @@ class EmployeeMasterIndex extends Component {
                 editEmployee={this.state.editEmployee}
                 employeeDetailsPop={this.state.employeeDetailsPop}
                 employee_status={this.state.employee_status}
+                Employeedetails={this.state.Employeedetails}
               />
             </div>
           </div>
