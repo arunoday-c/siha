@@ -52,7 +52,8 @@ export default ({ config, db }) => {
               keyResources: keyData,
               secureModels: req.secureModels,
               hospitalDetails: hospitalDetails,
-              app_d_app_roles_id: rowDetails.app_d_app_roles_id
+              app_d_app_roles_id: rowDetails.app_d_app_roles_id,
+              page_to_redirect: rowDetails.page_to_redirect
             }
           });
           next();
