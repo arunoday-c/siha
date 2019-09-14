@@ -24,27 +24,28 @@ import PatientPackages from "./Components/PatientPackages/PatientPackages";
 import AcknowledgeList from "./Components/Pharmacy/AcknowledgeList/AcknowledgeSwitch";
 import ExpiringItemList from "./Components/Pharmacy/ExpiringItemList/ExpiringItemList";
 import InvAcknowledgeList from "./Components/Inventory/InvAcknowledgeList/InvAcknowledgeSwitch";
-
+import DynamicDashboard from "./Components/Dashboard/dynamicDashboard";
 const PageToPlot = {
-  Dashboard: CommonDashboard,
-  7: React.lazy(() =>
-    retry(() => import("./Components/Dashboard/frontdesk-dashboard"))
-  ),
-  8: React.lazy(() =>
-    retry(() => import("./Components/Dashboard/doctor-dashboard"))
-  ),
-  11: React.lazy(() =>
-    retry(() => import("./Components/Dashboard/lab-dashboard"))
-  ),
-  12: React.lazy(() =>
-    retry(() => import("./Components/Dashboard/hr-dashboard"))
-  ),
-  13: React.lazy(() =>
-    retry(() => import("./Components/Dashboard/pharmacy-dashboard"))
-  ),
-  14: React.lazy(() =>
-    retry(() => import("./Components/Dashboard/inventory-dashboard"))
-  ),
+  // Dashboard: CommonDashboard,
+  Dashboard: DynamicDashboard,
+  // 7: React.lazy(() =>
+  //   retry(() => import("./Components/Dashboard/frontdesk-dashboard"))
+  // ),
+  // 8: React.lazy(() =>
+  //   retry(() => import("./Components/Dashboard/doctor-dashboard"))
+  // ),
+  // 11: React.lazy(() =>
+  //   retry(() => import("./Components/Dashboard/lab-dashboard"))
+  // ),
+  // 12: React.lazy(() =>
+  //   retry(() => import("./Components/Dashboard/hr-dashboard"))
+  // ),
+  // 13: React.lazy(() =>
+  //   retry(() => import("./Components/Dashboard/pharmacy-dashboard"))
+  // ),
+  // 14: React.lazy(() =>
+  //   retry(() => import("./Components/Dashboard/inventory-dashboard"))
+  // ),
   FrontDesk: React.lazy(() =>
     retry(() => import("./Components/RegistrationPatient/RegistrationPatient"))
   ),

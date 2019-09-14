@@ -259,6 +259,9 @@ class PersonalDetails extends Component {
                           this.setState({
                             sex: null
                           });
+                          this.props.EmpMasterIOputs.updateEmployeeTabs({
+                            sex: null
+                          });
                         }
                       }}
                     />
@@ -288,6 +291,9 @@ class PersonalDetails extends Component {
                           this.setState({
                             nationality: null
                           });
+                          this.props.EmpMasterIOputs.updateEmployeeTabs({
+                            nationality: null
+                          });
                         }
                       }}
                     />
@@ -312,6 +318,9 @@ class PersonalDetails extends Component {
                         },
                         onClear: () => {
                           this.setState({
+                            religion_id: null
+                          });
+                          this.props.EmpMasterIOputs.updateEmployeeTabs({
                             religion_id: null
                           });
                         }
@@ -424,6 +433,9 @@ class PersonalDetails extends Component {
                           this.setState({
                             blood_group: null
                           });
+                          this.props.EmpMasterIOputs.updateEmployeeTabs({
+                            blood_group: null
+                          });
                         }
                       }}
                     />
@@ -447,6 +459,9 @@ class PersonalDetails extends Component {
                         onChange: texthandle.bind(this, this),
                         onClear: () => {
                           this.setState({
+                            marital_status: null
+                          });
+                          this.props.EmpMasterIOputs.updateEmployeeTabs({
                             marital_status: null
                           });
                         }
@@ -499,6 +514,9 @@ class PersonalDetails extends Component {
                               this.setState({
                                 present_country_id: null
                               });
+                              this.props.EmpMasterIOputs.updateEmployeeTabs({
+                                present_country_id: null
+                              });
                             }
                           }}
                         />
@@ -527,6 +545,9 @@ class PersonalDetails extends Component {
                               this.setState({
                                 present_state_id: null
                               });
+                              this.props.EmpMasterIOputs.updateEmployeeTabs({
+                                present_state_id: null
+                              });
                             }
                           }}
                         />
@@ -552,6 +573,9 @@ class PersonalDetails extends Component {
                             },
                             onClear: () => {
                               this.setState({
+                                present_city_id: null
+                              });
+                              this.props.EmpMasterIOputs.updateEmployeeTabs({
                                 present_city_id: null
                               });
                             }
@@ -631,6 +655,9 @@ class PersonalDetails extends Component {
                               this.setState({
                                 permanent_country_id: null
                               });
+                              this.props.EmpMasterIOputs.updateEmployeeTabs({
+                                permanent_country_id: null
+                              });
                             }
                           }}
                         />
@@ -664,6 +691,9 @@ class PersonalDetails extends Component {
                               this.setState({
                                 permanent_state_id: null
                               });
+                              this.props.EmpMasterIOputs.updateEmployeeTabs({
+                                permanent_state_id: null
+                              });
                             }
                           }}
                         />
@@ -695,6 +725,9 @@ class PersonalDetails extends Component {
                             },
                             onClear: () => {
                               this.setState({
+                                permanent_city_id: null
+                              });
+                              this.props.EmpMasterIOputs.updateEmployeeTabs({
                                 permanent_city_id: null
                               });
                             }

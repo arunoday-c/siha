@@ -472,7 +472,7 @@ module.exports = {
           component_category=?,calculation_method=?,miscellaneous_component=?,component_frequency=?,calculation_type=?,\
           component_type=?,shortage_deduction_applicable=?,overtime_applicable=?,limit_applicable=?,\
           limit_amount=?,process_limit_required=?,process_limit_days=?,general_ledger=?,\
-          allow_round_off=?,round_off_type=?,round_off_amount=?,specific_nationality=?, nationality_id=?, \
+          allow_round_off=?,round_off_type=?,formula=?,round_off_amount=?,specific_nationality=?, nationality_id=?, \
           print_report=?,print_order_by=?,annual_salary_comp=?,record_status=?,\
             updated_date=?, updated_by=?  WHERE  hims_d_earning_deduction_id = ?",
         values: [
@@ -494,6 +494,7 @@ module.exports = {
           input.general_ledger,
           input.allow_round_off,
           input.round_off_type,
+          input.formula,
           input.round_off_amount,
           input.specific_nationality,
           input.nationality_id,

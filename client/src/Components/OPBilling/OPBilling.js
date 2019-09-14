@@ -122,7 +122,7 @@ class OPBilling extends Component {
   componentWillReceiveProps(nextProps) {
     let prevLang = getCookie("Language");
     let output = {};
-
+    debugger;
     if (prevLang !== this.state.selectedLang) {
       let _screenName = getCookie("ScreenName").replace("/", "");
       let counter_id = 0;
