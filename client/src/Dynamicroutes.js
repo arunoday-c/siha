@@ -24,9 +24,10 @@ import PatientPackages from "./Components/PatientPackages/PatientPackages";
 import AcknowledgeList from "./Components/Pharmacy/AcknowledgeList/AcknowledgeSwitch";
 import ExpiringItemList from "./Components/Pharmacy/ExpiringItemList/ExpiringItemList";
 import InvAcknowledgeList from "./Components/Inventory/InvAcknowledgeList/InvAcknowledgeSwitch";
-
+import DynamicDashboard from "./Components/Dashboard/dynamicDashboard";
 const PageToPlot = {
-  Dashboard: CommonDashboard,
+  // Dashboard: CommonDashboard,
+  Dashboard: DynamicDashboard,
   7: React.lazy(() =>
     retry(() => import("./Components/Dashboard/frontdesk-dashboard"))
   ),
