@@ -51,7 +51,6 @@ exports.default = {
   useSSL: false,
   chromePuppeteer: {
     headless: true,
-
     // for windows
     // executablePath:
     //   "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"

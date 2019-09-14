@@ -14,7 +14,7 @@ const texthandle = ($this, e) => {
     ) {
       swalMessage({
         type: "error",
-        title: $this.state.date_of_releaving_label + " can not blank"
+        title: $this.state.date_of_releaving_label + " cannot blank"
       });
       return;
     }

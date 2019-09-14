@@ -185,7 +185,8 @@ module.exports = {
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id
-            ]
+            ],
+            printQuery: true
           })
           .then(result => {
             _mysql.releaseConnection();

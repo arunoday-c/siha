@@ -197,6 +197,8 @@ class ProjectEmpAssign extends Component {
         ? this.state.projects
         : this.state.projectList;
 
+    const { from_date, to_date } = this.props.data;
+
     return (
       <AlgaehModalPopUp
         class="projectAssignModal"
@@ -230,7 +232,8 @@ class ProjectEmpAssign extends Component {
                     });
                   }
                 }}
-                maxDate={new Date()}
+                minDate={from_date}
+                maxDate={to_date}
                 value={this.state.from_date}
               />
               <AlgaehDateHandler
@@ -253,7 +256,8 @@ class ProjectEmpAssign extends Component {
                     });
                   }
                 }}
-                minDate={this.state.from_date}
+                minDate={from_date}
+                maxDate={to_date}
                 value={this.state.to_date}
               />
             </div>

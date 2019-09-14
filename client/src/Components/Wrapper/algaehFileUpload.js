@@ -347,7 +347,7 @@ export default class AlgaehFileUploader extends Component {
     ) {
       const _messageUniqueBlank =
         this.props.uniqueBlankMessage === undefined
-          ? "With out unique image can not process"
+          ? "With out unique image cannot process"
           : this.props.uniqueBlankMessage;
       swalMessage({
         title: _messageUniqueBlank,
