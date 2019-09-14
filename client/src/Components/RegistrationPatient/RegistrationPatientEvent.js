@@ -354,22 +354,6 @@ const generateReceipt = $this => {
           {
             name: "hims_f_billing_header_id",
             value: $this.state.hims_f_billing_header_id
-          },
-          {
-            name: "patient_id",
-            value: $this.state.hims_d_patient_id
-          },
-          {
-            name: "hims_d_patient_id",
-            value: $this.state.hims_d_patient_id
-          },
-          {
-            name: "visit_id",
-            value: $this.state.patient_visit_id
-          },
-          {
-            name: "visit_date",
-            value: null
           }
         ],
         outputFileType: "PDF"
