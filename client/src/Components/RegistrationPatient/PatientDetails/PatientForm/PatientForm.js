@@ -362,7 +362,7 @@ class AddPatientForm extends Component {
                           className: "col-lg-3 mandatory",
                           tabIndex: "6"
                         }}
-                        label={{ fieldName: "hijiri_date", isImp: true }}
+                        label={{ fieldName: "hijiri_date", isImp: false }}
                         textBox={{ className: "txt-fld" }}
                         maxDate={new Date()}
                         //maxDate={this.state.CurrentDate}
