@@ -291,7 +291,7 @@ class Experiment extends Component {
         >
           Credit Invoice Report
         </button>
-        <hr></hr>
+        <hr />
         <button
           className="btn btn-primary"
           onClick={() => {
@@ -304,7 +304,6 @@ class Experiment extends Component {
               },
               others: { responseType: "blob" },
               onSuccess: response => {
-                debugger;
                 let blob = new Blob([response.data], {
                   type: "application/octet-stream"
                 });

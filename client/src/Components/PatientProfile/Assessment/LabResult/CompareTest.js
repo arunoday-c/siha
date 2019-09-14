@@ -34,7 +34,6 @@ export default class CompareTest extends PureComponent {
   };
 
   selectTest(e) {
-    debugger;
     algaehApiCall({
       uri: "/laboratory/getComparedLabResult",
       module: "laboratory",
@@ -44,7 +43,6 @@ export default class CompareTest extends PureComponent {
         cur_order_id: this.props.inputsparameters.order_id
       },
       onSuccess: response => {
-        debugger;
         if (response.data.success) {
           this.setState({
             test_analytes: response.data.records
@@ -244,9 +242,9 @@ export default class CompareTest extends PureComponent {
                         return (
                           <span>
                             {row.valur_flucuate === "D" ? (
-                              <i className="fas fa-hand-point-up"></i>
+                              <i className="fas fa-hand-point-up" />
                             ) : row.valur_flucuate === "U" ? (
-                              <i className="fas fa-hand-point-down"></i>
+                              <i className="fas fa-hand-point-down" />
                             ) : null}
                           </span>
                         );

@@ -74,6 +74,11 @@ export default class Login extends Component {
           setCookie("keyResources", response.data.records.keyResources, 30);
 
           sessionStorage.setItem(
+            "keyData",
+            AlgaehCloseContainer(JSON.stringify(response.data.records.keyData))
+          );
+
+          sessionStorage.setItem(
             "CurrencyDetail",
             AlgaehCloseContainer(
               JSON.stringify(response.data.records.hospitalDetails)

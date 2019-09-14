@@ -50,6 +50,7 @@ export default ({ config, db }) => {
               username: rowDetails["username"],
               user_display_name: rowDetails["user_display_name"],
               keyResources: keyData,
+              keyData: encrypDetsil,
               secureModels: req.secureModels,
               hospitalDetails: hospitalDetails,
               app_d_app_roles_id: rowDetails.app_d_app_roles_id
