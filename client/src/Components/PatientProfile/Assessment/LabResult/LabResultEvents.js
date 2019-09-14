@@ -81,7 +81,6 @@ const ShowCompareTest = ($this, row) => {
       provider_id: Window.global["provider_id"]
     },
     onSuccess: response => {
-      debugger;
       if (response.data.success) {
         $this.setState({
           ...$this.state,

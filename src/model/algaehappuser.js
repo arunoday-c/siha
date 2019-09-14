@@ -146,6 +146,7 @@ let getLoginUserMaster = (req, res, next) => {
   }
 };
 //created by irfan: to  select un-used user logins
+// Not in use
 let selectLoginUser = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   try {
@@ -161,7 +162,9 @@ let selectLoginUser = (req, res, next) => {
         req.query.algaeh_d_app_user_id != undefined &&
         req.query.algaeh_d_app_user_id != null
       ) {
-        algaeh_d_app_user_id = ` and algaeh_d_app_user_id=${req.query.algaeh_d_app_user_id} `;
+        algaeh_d_app_user_id = ` and algaeh_d_app_user_id=${
+          req.query.algaeh_d_app_user_id
+        } `;
       }
 
       _mysql
@@ -210,7 +213,9 @@ let selectAppGroup = (req, res, next) => {
 
       let algaeh_d_app_group_id = "";
       if (req.query.algaeh_d_app_group_id > 0) {
-        algaeh_d_app_group_id = ` and algaeh_d_app_user_id=${req.query.algaeh_d_app_group_id} `;
+        algaeh_d_app_group_id = ` and algaeh_d_app_user_id=${
+          req.query.algaeh_d_app_group_id
+        } `;
       }
 
       _mysql

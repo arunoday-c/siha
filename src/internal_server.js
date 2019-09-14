@@ -109,7 +109,7 @@ app.use((req, res, next) => {
       } else {
         res.status(httpStatus.unAuthorized).json({
           success: false,
-          message: "unauthorized credentials can not procees.."
+          message: "unauthorized credentials cannot procees.."
         });
       }
     }

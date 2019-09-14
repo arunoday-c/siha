@@ -18,7 +18,7 @@ export default class SelfService extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pageDisplay: "ActivityFeed",
+      pageDisplay: "AttendanceRegularization",
       regularize: {},
       leave: {}
     };
@@ -179,7 +179,7 @@ export default class SelfService extends Component {
         <div className="row EmployeeTopNav box-shadow-normal">
           <div className="tabMaster toggle-section">
             <ul className="nav">
-              <li
+              {/* <li
                 algaehtabs={"ActivityFeed"}
                 className={"nav-item tab-button active"}
                 onClick={this.openTab.bind(this)}
@@ -205,7 +205,7 @@ export default class SelfService extends Component {
                     }}
                   />
                 }
-              </li>
+              </li> */}
               <li
                 algaehtabs={"AttendanceRegularization"}
                 className={"nav-item tab-button"}

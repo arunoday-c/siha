@@ -49,7 +49,7 @@ let selectStatement = (
     if (typeof errorCallback == "function") {
       errorCallback({
         success: false,
-        message: "Options can not null"
+        message: "Options cannot null"
       });
     }
   }
