@@ -596,7 +596,7 @@ class OfficalDetails extends Component {
                     />
 
                     <AlagehFormGroup
-                      div={{ className: "col-3" }}
+                      div={{ className: "col-2" }}
                       label={{
                         forceLabel: "Notice Period",
                         isImp: false

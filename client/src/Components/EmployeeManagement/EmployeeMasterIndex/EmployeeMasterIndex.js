@@ -347,7 +347,7 @@ class EmployeeMasterIndex extends Component {
                         resizable: false,
                         style: { textAlign: "center" }
                       }
-                    },
+                    }
                     // {
                     //   fieldName: "license_number",
                     //   label: (
@@ -358,30 +358,30 @@ class EmployeeMasterIndex extends Component {
                     //     style: { textAlign: "center" }
                     //   }
                     // },
-                    {
-                      fieldName: "secondary_contact_no",
-                      label: (
-                        <AlgaehLabel
-                          label={{ forceLabel: "Work Contact No." }}
-                        />
-                      ),
-                      others: {
-                        minWidth: 120,
-                        resizable: false,
-                        style: { textAlign: "center" }
-                      }
-                    },
-                    {
-                      fieldName: "work_email",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Work Email ID" }} />
-                      ),
-                      others: {
-                        minWidth: 100,
-                        resizable: false,
-                        style: { textAlign: "center", wordBreak: "break-all" }
-                      }
-                    }
+                    // {
+                    //   fieldName: "secondary_contact_no",
+                    //   label: (
+                    //     <AlgaehLabel
+                    //       label={{ forceLabel: "Work Contact No." }}
+                    //     />
+                    //   ),
+                    //   others: {
+                    //     minWidth: 120,
+                    //     resizable: false,
+                    //     style: { textAlign: "center" }
+                    //   }
+                    // },
+                    // {
+                    //   fieldName: "work_email",
+                    //   label: (
+                    //     <AlgaehLabel label={{ forceLabel: "Work Email ID" }} />
+                    //   ),
+                    //   others: {
+                    //     minWidth: 100,
+                    //     resizable: false,
+                    //     style: { textAlign: "center", wordBreak: "break-all" }
+                    //   }
+                    // }
                   ]}
                   keyId="service_code"
                   dataSource={{

@@ -19,6 +19,8 @@ import AuthorizationSetupEvent from "./AuthorizationSetupEvent";
 import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 
+const handlers = AuthorizationSetupEvent();
+
 class AuthorizationSetup extends Component {
   constructor(props) {
     super(props);
@@ -51,10 +53,10 @@ class AuthorizationSetup extends Component {
     };
     this.baseState = this.state;
 
-    // AuthorizationSetupEvent().getAllSubDepartments(this);
-    AuthorizationSetupEvent().getDepartments(this);
-    AuthorizationSetupEvent().getOptions(this);
-    AuthorizationSetupEvent().getEmployeeDetails(this);
+    // handlers.getAllSubDepartments(this);
+    handlers.getDepartments(this);
+    handlers.getOptions(this);
+    handlers.getEmployeeDetails(this);
   }
 
   componentDidMount() {
@@ -65,11 +67,11 @@ class AuthorizationSetup extends Component {
     });
   }
   dropDownHandler(e) {
-    AuthorizationSetupEvent().texthandle(this, e);
+    handlers.texthandle(this, e);
   }
 
   loadEmployees() {
-    AuthorizationSetupEvent().loadEmployees(this);
+    handlers.loadEmployees(this);
   }
   clearState() {
     this.setState({
@@ -94,13 +96,32 @@ class AuthorizationSetup extends Component {
     });
   }
   selectAll(e) {
-    AuthorizationSetupEvent().selectAll(this, e);
+    handlers.selectAll(this, e);
   }
   selectToProcess(row, e) {
-    AuthorizationSetupEvent().selectToProcess(this, row, e);
+    handlers.selectToProcess(this, row, e);
   }
   radioChange(e) {
-    AuthorizationSetupEvent().texthandle(this, e);
+    const { name, value } = e.target;
+    const type = name.split("_")[0];
+    console.log(type);
+    if (type === "leave") {
+      this.setState({
+        l_sub_department_id: null,
+        l_employee_id: null,
+        l_full_name: "",
+        processLeaveBtn: true
+      });
+    }
+    if (type === "loan") {
+      this.setState({
+        lo_sub_department_id: null,
+        lo_employee_id: null,
+        lo_full_name: "",
+        processLoanBtn: true
+      });
+    }
+    handlers.texthandle(this, { target: { name, value } });
   }
 
   searchSelect(frm_type, data) {
@@ -122,14 +143,14 @@ class AuthorizationSetup extends Component {
   }
 
   processLoanAuth() {
-    AuthorizationSetupEvent().processLoanAuth(this);
+    handlers.processLoanAuth(this);
   }
   processLeaveLevel() {
-    AuthorizationSetupEvent().processLeaveLevel(this);
+    handlers.processLeaveLevel(this);
   }
 
   SaveAuthorizationSetup() {
-    AuthorizationSetupEvent().SaveAuthorizationSetup(this);
+    handlers.SaveAuthorizationSetup(this);
   }
 
   render() {
