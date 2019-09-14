@@ -480,7 +480,8 @@ export default class WeeklyAttendance extends Component {
           {
             employee_name: row.full_name,
             hims_d_employee_id: row.hims_d_employee_id,
-            biometric_id: row.biometric_id
+            biometric_id: row.biometric_id,
+            sub_department_id: row.sub_department_id
           },
           () => {}
         );

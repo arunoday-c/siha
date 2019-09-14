@@ -75,18 +75,7 @@ function BulkTimeSheet(props) {
                 {data.map((item, index) => (
                   <tr key={index}>
                     {item.map((itm, indx) => (
-                      <React.Fragment key={indx + "_frag"}>
-                        {indx === 0 ? (
-                          <td key={indx + "_emp"}>
-                            <small>{itm.employee_code}</small>
-                            <span>{itm.employee_name}</span>
-                          </td>
-                        ) : null}
-                        <td key={indx + "_day"}>
-                          <small>{itm.status}</small>
-                          <span>{itm.worked_hours}</span>
-                        </td>
-                      </React.Fragment>
+                      <TableCells itm={itm} indx={indx} key={indx + "_frag"} />
                     ))}
                   </tr>
                 ))}
@@ -140,3 +129,25 @@ function BulkTimeSheet(props) {
   );
 }
 export default memo(BulkTimeSheet);
+
+function TableCells(props) {
+  const { itm, indx } = props;
+  const [enable, setEnable] = useState(false);
+  return (
+    <React.Fragment>
+      {indx === 0 ? (
+        <td key={indx + "_emp"}>
+          <small>{itm.employee_code}</small>
+          <span>{itm.employee_name}</span>
+        </td>
+      ) : null}
+      <td key={indx + "_day"} onDoubleClick={() => setEnable(state => !state)}>
+        <small>{itm.status}</small>
+
+        <span contentEditable={itm.status === "N" ? "false" : "true" && enable}>
+          {itm.worked_hours}
+        </span>
+      </td>
+    </React.Fragment>
+  );
+}
