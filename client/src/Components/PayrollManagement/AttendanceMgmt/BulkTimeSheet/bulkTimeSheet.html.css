@@ -50,8 +50,13 @@
           display: block;
           border-bottom: 1px dotted #d4d4d4;
           font-weight: normal; }
-        .bulkTimeSheetPreviewCntr #bulkTimeSheetPreview tbody tr td span {
-          padding-top: 4px; }
+        .bulkTimeSheetPreviewCntr #bulkTimeSheetPreview tbody tr td span[contentEditable="true"] {
+          background: #fff;
+          border: 1px SOLID #d4d4d4;
+          padding: 0 5px 5px;
+          -moz-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.2);
+          -webkit-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.2);
+          box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.2); }
         .bulkTimeSheetPreviewCntr #bulkTimeSheetPreview tbody tr td:first-child {
           min-width: 159px;
           max-width: 159px;

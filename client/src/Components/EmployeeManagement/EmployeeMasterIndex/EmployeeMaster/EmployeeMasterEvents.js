@@ -11,7 +11,7 @@ import _ from "lodash";
 
 const Validations = $this => {
   let isError = false;
-  debugger;
+
   if ($this.state.personalDetails.date_of_joining === null) {
     isError = true;
     swalMessage({
@@ -272,7 +272,6 @@ const InsertUpdateEmployee = $this => {
 
         let _arrayImages = [];
         if (inputObj.hims_d_employee_id === null) {
-          debugger;
           let employee_code_exists = _.find(
             $this.props.Employeedetails,
             f => f.employee_code === inputObj.employee_code

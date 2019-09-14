@@ -1,8 +1,16 @@
 import Enumerable from "linq";
 // import extend from "extend";
-import { algaehApiCall, swalMessage } from "../../../../../utils/algaehApiCall";
-import { AlgaehValidation } from "../../../../../utils/GlobalFunctions";
+import {
+  getCookie,
+  algaehApiCall,
+  swalMessage
+} from "../../../../../utils/algaehApiCall";
+import {
+  AlgaehValidation,
+  AlgaehOpenContainer
+} from "../../../../../utils/GlobalFunctions";
 import swal from "sweetalert2";
+import _ from "lodash";
 
 const earntexthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -137,6 +145,27 @@ const AddEarnComponent = ($this, e) => {
         return;
       }
 
+      let component_exist = 0;
+      let formulaCal = $this.state.earn_formula;
+      if ($this.state.earn_calculation_method === "FO") {
+        earningComponents.map(menu => {
+          if (formulaCal.indexOf(menu.short_desc) > -1) {
+            component_exist = 1;
+          }
+        });
+        if (formulaCal.indexOf("Gross Salary") > -1) {
+          component_exist = 1;
+        }
+        if (component_exist === 0) {
+          swalMessage({
+            title:
+              "Selected Component is Fomula based component missing some component related to formula .",
+            type: "warning"
+          });
+          return;
+        }
+      }
+
       earningComponents.push({
         employee_id: $this.state.hims_d_employee_id,
         earnings_id: $this.state.earning_id,
@@ -183,6 +212,58 @@ const AddDeductionComponent = ($this, e) => {
     alertTypeIcon: "warning",
     querySelector: "data-validate='DeductionComponent'",
     onSuccess: () => {
+      if (
+        $this.state.deduct_calculation_method === "FO" &&
+        $this.state.deduct_formula === null
+      ) {
+        swalMessage({
+          title:
+            "Selected component is Formula based, but in master Formula not defined, Please contact ADMIN.",
+          type: "warning"
+        });
+        return;
+      }
+
+      const basic_earning_component = JSON.parse(
+        AlgaehOpenContainer(sessionStorage.getItem("hrOptions"))
+      ).basic_earning_component;
+
+      let basic_exists = _.find(
+        $this.state.earningComponents,
+        f => f.earnings_id == basic_earning_component
+      );
+
+      if (basic_exists === undefined) {
+        swalMessage({
+          title: "Please select Basic Salary in earnings.",
+          type: "warning"
+        });
+        return;
+      }
+
+      let component_exist = 0;
+      let formulaCal = $this.state.deduct_formula;
+      if ($this.state.deduct_calculation_method === "FO") {
+        $this.state.earningComponents.map(menu => {
+          if (formulaCal.indexOf(menu.short_desc) > -1) {
+            component_exist = 1;
+          }
+        });
+
+        if (formulaCal.indexOf("Gross Salary") > -1) {
+          component_exist = 1;
+        }
+
+        if (component_exist === 0) {
+          swalMessage({
+            title:
+              "Selected Component is Fomula based component missing some component related to formula .",
+            type: "warning"
+          });
+          return;
+        }
+      }
+
       let deductioncomponents = $this.state.deductioncomponents;
       let insertDeductionComp = $this.state.insertDeductionComp;
 
@@ -243,6 +324,56 @@ const AddContributionComponent = ($this, e) => {
     alertTypeIcon: "warning",
     querySelector: "data-validate='ContributeComponent'",
     onSuccess: () => {
+      if (
+        $this.state.contribut_calculation_method === "FO" &&
+        $this.state.contribut_formula === null
+      ) {
+        swalMessage({
+          title:
+            "Selected component is Formula based, but in master Formula not defined, Please contact ADMIN.",
+          type: "warning"
+        });
+        return;
+      }
+
+      const basic_earning_component = JSON.parse(
+        AlgaehOpenContainer(sessionStorage.getItem("hrOptions"))
+      ).basic_earning_component;
+
+      let basic_exists = _.find(
+        $this.state.earningComponents,
+        f => f.earnings_id == basic_earning_component
+      );
+
+      if (basic_exists === undefined) {
+        swalMessage({
+          title: "Please select Basic Salary in earnings.",
+          type: "warning"
+        });
+        return;
+      }
+
+      let component_exist = 0;
+      let formulaCal = $this.state.contribut_formula;
+      if ($this.state.contribut_calculation_method === "FO") {
+        $this.state.earningComponents.map(menu => {
+          if (formulaCal.indexOf(menu.short_desc) > -1) {
+            component_exist = 1;
+          }
+        });
+        if (formulaCal.indexOf("Gross Salary") > -1) {
+          component_exist = 1;
+        }
+        if (component_exist === 0) {
+          swalMessage({
+            title:
+              "Selected Component is Fomula based component missing some component related to formula .",
+            type: "warning"
+          });
+          return;
+        }
+      }
+
       let contributioncomponents = $this.state.contributioncomponents;
       let insertContributeComp = $this.state.insertContributeComp;
 
@@ -306,7 +437,7 @@ const onchangegridcol = ($this, row, e) => {
   row.update();
 };
 
-const calculationTotals = $this => {
+const calculationTotals = ($this, From) => {
   let gross_salary = Enumerable.from($this.state.earningComponents).sum(w =>
     parseFloat(w.amount)
   );
@@ -321,15 +452,20 @@ const calculationTotals = $this => {
     $this.state.contributioncomponents
   ).sum(w => parseFloat(w.amount));
 
-  $this.setState({
-    gross_salary: gross_salary,
-    yearly_gross_salary: gross_salary * 12,
-    total_earnings: total_earnings,
-    total_deductions: total_deductions,
-    total_contributions: total_contributions,
-    net_salary: total_earnings - total_deductions,
-    cost_to_company: total_earnings + total_contributions
-  });
+  $this.setState(
+    {
+      gross_salary: gross_salary,
+      yearly_gross_salary: gross_salary * 12,
+      total_earnings: total_earnings,
+      total_deductions: total_deductions,
+      total_contributions: total_contributions,
+      net_salary: total_earnings - total_deductions,
+      cost_to_company: total_earnings + total_contributions
+    },
+    () => {
+      CalculateBasedonFormula($this, "after");
+    }
+  );
 
   $this.props.EmpMasterIOputs.updateEmployeeTabs({
     gross_salary: gross_salary,
@@ -376,7 +512,7 @@ const deleteEarningComponent = ($this, row) => {
           insertearnComp: insertearnComp
         },
         () => {
-          calculationTotals($this);
+          calculationTotals($this, "");
         }
       );
       $this.props.EmpMasterIOputs.updateEmployeeTabs({
@@ -432,7 +568,7 @@ const updateEarningComponent = ($this, row) => {
       insertearnComp: insertearnComp
     },
     () => {
-      calculationTotals($this);
+      calculationTotals($this, "");
     }
   );
   $this.props.EmpMasterIOputs.updateEmployeeTabs({
@@ -476,7 +612,7 @@ const deleteDeductionComponent = ($this, row) => {
           insertDeductionComp: insertDeductionComp
         },
         () => {
-          calculationTotals($this);
+          calculationTotals($this, "");
         }
       );
       $this.props.EmpMasterIOputs.updateEmployeeTabs({
@@ -531,7 +667,7 @@ const updateDeductionComponent = ($this, row) => {
       insertDeductionComp: insertDeductionComp
     },
     () => {
-      calculationTotals($this);
+      calculationTotals($this, "");
     }
   );
   $this.props.EmpMasterIOputs.updateEmployeeTabs({
@@ -575,7 +711,7 @@ const deleteContibuteComponent = ($this, row) => {
           insertContributeComp: insertContributeComp
         },
         () => {
-          calculationTotals($this);
+          calculationTotals($this, "");
         }
       );
       $this.props.EmpMasterIOputs.updateEmployeeTabs({
@@ -630,7 +766,7 @@ const updateContibuteComponent = ($this, row) => {
       insertContributeComp: insertContributeComp
     },
     () => {
-      calculationTotals($this);
+      calculationTotals($this, "");
     }
   );
   $this.props.EmpMasterIOputs.updateEmployeeTabs({
@@ -753,7 +889,7 @@ const getEmpContibuteComponents = $this => {
   });
 };
 
-const CalculateBasedonFormula = $this => {
+const CalculateBasedonFormula = ($this, from) => {
   let earningComponents = $this.state.earningComponents;
   let deductioncomponents = $this.state.deductioncomponents;
   let contributioncomponents = $this.state.contributioncomponents;
@@ -899,7 +1035,9 @@ const CalculateBasedonFormula = $this => {
       updateContributeComp: updateContributeComp
     },
     () => {
-      calculationTotals($this);
+      if (from !== "after") {
+        calculationTotals($this, "afterCal");
+      }
     }
   );
 };

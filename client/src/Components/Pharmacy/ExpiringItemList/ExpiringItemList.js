@@ -41,7 +41,6 @@ class ExpiringItemList extends Component {
   }
 
   getExpiringItemList() {
-    debugger;
     algaehApiCall({
       uri: "/pharmacyGlobal/getExpiringItemList",
       method: "GET",

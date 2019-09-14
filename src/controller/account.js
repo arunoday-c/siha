@@ -42,6 +42,12 @@ export default ({ config, db }) => {
           let hospitalDetails = { ...result[1][0] };
 
           let keyData = encryption(encrypDetsil);
+          let specfic_date = {
+            user_id: rowDetails.algaeh_d_app_user_id,
+            roles_id: rowDetails.app_d_app_roles_id,
+            hospital_id: rowDetails.hospital_id,
+            group_id: rowDetails.algaeh_d_app_group_id
+          };
           // let keymoduleDetails = encryption(hospitalDetails);
 
           res.status(httpStatus.ok).json({
@@ -50,6 +56,7 @@ export default ({ config, db }) => {
               username: rowDetails["username"],
               user_display_name: rowDetails["user_display_name"],
               keyResources: keyData,
+              keyData: specfic_date,
               secureModels: req.secureModels,
               hospitalDetails: hospitalDetails,
               app_d_app_roles_id: rowDetails.app_d_app_roles_id,

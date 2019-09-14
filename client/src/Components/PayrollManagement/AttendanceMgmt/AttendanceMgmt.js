@@ -112,7 +112,7 @@ export default class AttendanceMgmt extends Component {
                   />
                 }
               </li>
-              <li
+              {/* <li
                 algaehtabs={"ManualAttendance"}
                 className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
@@ -124,7 +124,7 @@ export default class AttendanceMgmt extends Component {
                     }}
                   />
                 }
-              </li>
+              </li> */}
               <li
                 algaehtabs={"BulkManualTimeSheet"}
                 className={"nav-item tab-button"}
@@ -133,7 +133,7 @@ export default class AttendanceMgmt extends Component {
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Bulk Manual Timesheet"
+                      forceLabel: "Manual Timesheet (Single/Bulk)"
                     }}
                   />
                 }
@@ -151,9 +151,9 @@ export default class AttendanceMgmt extends Component {
             <WeeklyAttendance />
           ) : this.state.pageDisplay === "AbsenceManagement" ? (
             <AbsenceManagement />
-          ) : this.state.pageDisplay === "ManualAttendance" ? (
-            <ManualAttendance />
-          ) : this.state.pageDisplay === "BulkManualTimeSheet" ? (
+          ) : // ) : this.state.pageDisplay === "ManualAttendance" ? (
+          //   <ManualAttendance />
+          this.state.pageDisplay === "BulkManualTimeSheet" ? (
             <BulkTimeSheet />
           ) : null}
         </div>
