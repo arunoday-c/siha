@@ -965,8 +965,10 @@ module.exports = {
         _mysql
           .executeQuery({
             query:
-              "SELECT hims_d_employee_earnings_id,employee_id,earnings_id,short_desc,amount,formula,allocate,\
-              calculation_method from hims_d_employee_earnings where employee_id = ? " +
+              "SELECT hims_d_employee_earnings_id,employee_id,earnings_id, ED.short_desc,amount,ED.formula,allocate,\
+                ED.calculation_method from hims_d_employee_earnings EE \
+                inner join hims_d_earning_deduction ED  on  ED.hims_d_earning_deduction_id = EE.earnings_id \
+                where employee_id = ? " +
               _strAppend,
             values: [input.employee_id],
             printQuery: true
@@ -999,8 +1001,10 @@ module.exports = {
         _mysql
           .executeQuery({
             query:
-              "SELECT hims_d_employee_deductions_id,employee_id,deductions_id,short_desc,amount,formula,allocate,\
-          calculation_method from hims_d_employee_deductions where employee_id = ?;",
+              "SELECT hims_d_employee_deductions_id,employee_id,deductions_id,ED.short_desc,amount,ED.formula,allocate,\
+                ED.calculation_method from hims_d_employee_deductions EMD \
+                inner join hims_d_earning_deduction ED  on  ED.hims_d_earning_deduction_id = EMD.deductions_id \
+                where employee_id = ?;",
             values: [input.employee_id],
             printQuery: true
           })
@@ -1032,8 +1036,10 @@ module.exports = {
         _mysql
           .executeQuery({
             query:
-              "SELECT hims_d_employee_contributions_id,employee_id,contributions_id,short_desc,amount,formula,allocate,\
-          calculation_method from hims_d_employee_contributions where employee_id = ?;",
+              "SELECT hims_d_employee_contributions_id,employee_id,contributions_id,ED.short_desc,amount,ED.formula,allocate,\
+                ED.calculation_method from hims_d_employee_contributions EC \
+                inner join hims_d_earning_deduction ED  on  ED.hims_d_earning_deduction_id = EC.contributions_id \
+                where employee_id = ?;",
             values: [input.employee_id],
             printQuery: true
           })

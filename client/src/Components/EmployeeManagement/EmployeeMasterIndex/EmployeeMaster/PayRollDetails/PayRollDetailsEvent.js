@@ -145,6 +145,27 @@ const AddEarnComponent = ($this, e) => {
         return;
       }
 
+      let component_exist = 0;
+      let formulaCal = $this.state.earn_formula;
+      if ($this.state.earn_calculation_method === "FO") {
+        earningComponents.map(menu => {
+          if (formulaCal.indexOf(menu.short_desc) > -1) {
+            component_exist = 1;
+          }
+        });
+        if (formulaCal.indexOf("Gross Salary") > -1) {
+          component_exist = 1;
+        }
+        if (component_exist === 0) {
+          swalMessage({
+            title:
+              "Selected Component is Fomula based component missing some component related to formula .",
+            type: "warning"
+          });
+          return;
+        }
+      }
+
       earningComponents.push({
         employee_id: $this.state.hims_d_employee_id,
         earnings_id: $this.state.earning_id,
@@ -191,6 +212,18 @@ const AddDeductionComponent = ($this, e) => {
     alertTypeIcon: "warning",
     querySelector: "data-validate='DeductionComponent'",
     onSuccess: () => {
+      if (
+        $this.state.deduct_calculation_method === "FO" &&
+        $this.state.deduct_formula === null
+      ) {
+        swalMessage({
+          title:
+            "Selected component is Formula based, but in master Formula not defined, Please contact ADMIN.",
+          type: "warning"
+        });
+        return;
+      }
+
       const basic_earning_component = JSON.parse(
         AlgaehOpenContainer(sessionStorage.getItem("hrOptions"))
       ).basic_earning_component;
@@ -207,6 +240,30 @@ const AddDeductionComponent = ($this, e) => {
         });
         return;
       }
+
+      let component_exist = 0;
+      let formulaCal = $this.state.deduct_formula;
+      if ($this.state.deduct_calculation_method === "FO") {
+        $this.state.earningComponents.map(menu => {
+          if (formulaCal.indexOf(menu.short_desc) > -1) {
+            component_exist = 1;
+          }
+        });
+
+        if (formulaCal.indexOf("Gross Salary") > -1) {
+          component_exist = 1;
+        }
+
+        if (component_exist === 0) {
+          swalMessage({
+            title:
+              "Selected Component is Fomula based component missing some component related to formula .",
+            type: "warning"
+          });
+          return;
+        }
+      }
+
       let deductioncomponents = $this.state.deductioncomponents;
       let insertDeductionComp = $this.state.insertDeductionComp;
 
@@ -267,6 +324,18 @@ const AddContributionComponent = ($this, e) => {
     alertTypeIcon: "warning",
     querySelector: "data-validate='ContributeComponent'",
     onSuccess: () => {
+      if (
+        $this.state.contribut_calculation_method === "FO" &&
+        $this.state.contribut_formula === null
+      ) {
+        swalMessage({
+          title:
+            "Selected component is Formula based, but in master Formula not defined, Please contact ADMIN.",
+          type: "warning"
+        });
+        return;
+      }
+
       const basic_earning_component = JSON.parse(
         AlgaehOpenContainer(sessionStorage.getItem("hrOptions"))
       ).basic_earning_component;
@@ -282,6 +351,27 @@ const AddContributionComponent = ($this, e) => {
           type: "warning"
         });
         return;
+      }
+
+      let component_exist = 0;
+      let formulaCal = $this.state.contribut_formula;
+      if ($this.state.contribut_calculation_method === "FO") {
+        $this.state.earningComponents.map(menu => {
+          if (formulaCal.indexOf(menu.short_desc) > -1) {
+            component_exist = 1;
+          }
+        });
+        if (formulaCal.indexOf("Gross Salary") > -1) {
+          component_exist = 1;
+        }
+        if (component_exist === 0) {
+          swalMessage({
+            title:
+              "Selected Component is Fomula based component missing some component related to formula .",
+            type: "warning"
+          });
+          return;
+        }
       }
 
       let contributioncomponents = $this.state.contributioncomponents;
