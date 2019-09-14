@@ -600,7 +600,10 @@ module.exports = {
                 .then(deductionResult => {
                   if (deductionResult.invalid_input == true) {
                     _mysql.releaseConnection();
-                    req.records = deductionResult;
+                    req.records = {
+                      invalid_input: true,
+                      message: " this Employee doesnt have Request-Days of leaves "
+                    };
                     next();
                   } else {
                     getLeaveAuthFields(input.auth_level).then(authFields => {

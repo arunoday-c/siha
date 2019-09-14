@@ -136,6 +136,11 @@ export default class LeaveAuthorization extends Component {
               );
             }
           }
+        } else {
+          swalMessage({
+            title: res.data.records.message,
+            type: "error"
+          });
         }
       },
       onFailure: err => {
