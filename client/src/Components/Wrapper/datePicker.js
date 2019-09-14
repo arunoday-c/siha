@@ -170,7 +170,7 @@ export default class DateHandler extends PureComponent {
       this.props.textBox.name !== undefined
         ? { name: this.props.textBox.name }
         : {};
-    debugger;
+
     const _required =
       this.props.label !== undefined
         ? this.props.label.isImp !== undefined

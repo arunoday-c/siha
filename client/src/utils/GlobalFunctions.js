@@ -404,9 +404,8 @@ export function AlgaehValidation(options) {
 
         if (_title === null) {
           let _lable = null;
-          debugger;
+
           if (_role === "datepicker") {
-            debugger;
             _lable = _element.offsetParent.offsetParent.innerText;
           } else if (_role === "dropdownlist") {
             _lable = _element.offsetParent.previousSibling.innerText;
