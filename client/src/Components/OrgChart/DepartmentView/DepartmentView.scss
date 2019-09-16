@@ -23,12 +23,12 @@
       padding: 10px;
       border-radius: 10px;
       margin-bottom: 10px;
-      border: 2px solid #d6d6d6;
+      // border: 2px solid #d6d6d6;
       background: #fff;
       .childCount {
         position: absolute;
-        top: -2px;
-        right: -2px;
+        top: 0;
+        right: 0;
         background: #fff;
         width: auto;
         height: 30px;
@@ -40,6 +40,7 @@
         padding: 0 5px;
         font-size: 0.8rem;
         border: 2px solid #d6d6d6;
+        border-width: 0 0 2px 2px;
         font-weight: bold;
       }
       .imgSection {
@@ -100,7 +101,7 @@
       }
     }
     .clickedLi {
-      border: 2px solid #027468;
+      // border: 2px solid #027468;
       background: #00a796 !important;
       color: #fff;
       &::after {
@@ -112,6 +113,9 @@
         top: 49%;
         right: -14px;
         z-index: -1;
+      }
+      .childCount {
+        border-color: #027468 !important;
       }
     }
   }
