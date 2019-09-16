@@ -1,4 +1,5 @@
 import React from "react";
+import axios from "axios";
 import hasIn from "lodash/hasIn";
 import { retry } from "./utils/GlobalFunctions";
 import PrescriptionList from "./Components/Pharmacy/PrescriptionList/PrescriptionList";
@@ -24,6 +25,13 @@ import PatientPackages from "./Components/PatientPackages/PatientPackages";
 import AcknowledgeList from "./Components/Pharmacy/AcknowledgeList/AcknowledgeSwitch";
 import ExpiringItemList from "./Components/Pharmacy/ExpiringItemList/ExpiringItemList";
 import InvAcknowledgeList from "./Components/Inventory/InvAcknowledgeList/InvAcknowledgeSwitch";
+import asyncRender from "./asyncRender";
+import asyncComponent from "./asyncComponent";
+
+const Finance = asyncComponent({
+  prefix: "http://localhost:3007",
+  loadManifest: () => axios.get("http://localhost:3007/manifest.micro.json")
+});
 
 const PageToPlot = {
   Dashboard: CommonDashboard,
@@ -133,7 +141,7 @@ const PageToPlot = {
   // Appointment: React.lazy(() =>
   //   retry(() => import("./Components/FrontDesk/FrontDesk"))
   // ),
-  Appointment: Appointment,
+  Appointment: Finance,
   PharmacySetup: React.lazy(() =>
     retry(() => import("./Components/PharmacySetup/PharmacySetup"))
   ),
