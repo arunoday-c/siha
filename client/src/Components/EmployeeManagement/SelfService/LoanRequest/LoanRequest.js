@@ -811,7 +811,7 @@ class LoanRequest extends Component {
                         }
                       },
                       {
-                        fieldName: "loan_description",
+                        fieldName: "application_reason",
                         label: (
                           <AlgaehLabel
                             label={{ forceLabel: "Reason For Loan" }}
