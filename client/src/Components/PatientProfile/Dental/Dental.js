@@ -249,7 +249,11 @@ class Dental extends Component {
                     discount_percentage: 0
                   },
                   () => {
-                    this.loadDentalTreatment();
+                    let inputObj = {
+                      hims_f_treatment_plan_id: this.state
+                        .hims_f_treatment_plan_id
+                    };
+                    this.loadDentalTreatment(inputObj);
                   }
                 );
               }
@@ -278,6 +282,7 @@ class Dental extends Component {
   }
 
   addToBill(row) {
+    debugger;
     if (this.state.approval_status !== "Y") {
       swalMessage({
         title: "Please Approve the plan",
@@ -357,7 +362,8 @@ class Dental extends Component {
     this.setState({
       openBillingModal: true,
       treatment_gridUpdate: false,
-      d_id: row.hims_f_dental_treatment_id
+      d_id: row.hims_f_dental_treatment_id,
+      hims_f_treatment_plan_id: row.treatment_plan_id
     });
   }
 
@@ -518,8 +524,11 @@ class Dental extends Component {
                 title: "Added Successfully",
                 type: "success"
               });
-
-              this.loadDentalTreatment();
+              debugger;
+              let inputObj = {
+                hims_f_treatment_plan_id: this.state.hims_f_treatment_plan_id
+              };
+              this.loadDentalTreatment(inputObj);
               teeth = [];
               my_send_obj = {};
               this.setState({
@@ -620,6 +629,9 @@ class Dental extends Component {
           },
           onSuccess: response => {
             if (response.data.success) {
+              debugger;
+              this.setState({ approval_status: type }, () => {});
+
               this.getTreatementPlans();
               swalMessage({
                 title:
@@ -1868,6 +1880,7 @@ class Dental extends Component {
       cancelButtonText: "No"
     }).then(willDelete => {
       if (willDelete.value) {
+        debugger;
         algaehApiCall({
           uri: "/dental/deleteDentalPlan",
           data: {
@@ -1876,11 +1889,16 @@ class Dental extends Component {
           method: "DELETE",
           onSuccess: res => {
             if (res.data.success) {
+              debugger;
+
+              let inputObj = {
+                hims_f_treatment_plan_id: data.treatment_plan_id
+              };
+              this.loadDentalTreatment(inputObj);
               swalMessage({
                 title: "Record Deleted",
                 type: "success"
               });
-              this.loadDentalTreatment();
             }
           },
           onError: err => {
@@ -1914,7 +1932,8 @@ class Dental extends Component {
             title: "Record Updated",
             type: "success"
           });
-          this.loadDentalTreatment();
+          let Obj = { hims_f_treatment_plan_id: data.treatment_plan_id };
+          this.loadDentalTreatment(Obj);
           this.getTreatementPlans();
         }
       },
@@ -2093,6 +2112,7 @@ class Dental extends Component {
   }
 
   loadDentalTreatment(data) {
+    debugger;
     data !== undefined
       ? this.setState(
           {
@@ -2107,6 +2127,7 @@ class Dental extends Component {
               },
               onSuccess: response => {
                 if (response.data.success) {
+                  debugger;
                   this.setState({
                     dentalTreatments: response.data.records,
                     selected_plan: data.plan_name,
