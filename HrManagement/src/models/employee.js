@@ -129,9 +129,9 @@ module.exports = {
             permanent_city_id,permanent_state_id,permanent_country_id,isdoctor,license_number, \
             date_of_joining,appointment_type,employee_type,reliving_date,notice_period,date_of_resignation,\
             company_bank_id,employee_bank_name,employee_bank_ifsc_code,employee_account_number,mode_of_payment,\
-            accomodation_provided,hospital_id,sub_department_id,overtime_group_id,employee_bank_id,\
-            created_date,created_by,updated_date,updated_by) \
-            values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            accomodation_provided,hospital_id,sub_department_id,overtime_group_id,employee_bank_id,services_id,\
+            employee_group_id, reporting_to_id, employee_designation_id, created_date,created_by,updated_date,updated_by) \
+            values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             values: [
               input.employee_code,
               input.full_name,
@@ -176,11 +176,17 @@ module.exports = {
               input.sub_department_id,
               input.overtime_group_id,
               input.employee_bank_id,
+              input.services_id,
+              input.employee_group_id,
+              input.reporting_to_id,
+              input.employee_designation_id,
+
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id
-            ]
+            ],
+            printQuery: true
           })
           .then(result => {
             _mysql.releaseConnection();
@@ -249,7 +255,7 @@ module.exports = {
           total_contributions=?,\
           net_salary=?,cost_to_company=?,leave_salary_process=?,late_coming_rule=?,airfare_process=?,exit_date=?,\
           exclude_machine_data=?,gratuity_applicable=?,suspend_salary=?,pf_applicable=?,overtime_group_id=?,employee_group_id=?, \
-          reporting_to_id=?,sub_department_id=?,employee_designation_id=?,employee_bank_id=?,\
+          reporting_to_id=?,sub_department_id=?,employee_designation_id=?,employee_bank_id=?,services_id=?,\
           employee_status=?,inactive_date=?,updated_date=?,updated_by=?\
           WHERE record_status='A' and  hims_d_employee_id=?",
             values: [
@@ -316,6 +322,7 @@ module.exports = {
               input.sub_department_id,
               input.employee_designation_id,
               input.employee_bank_id,
+              input.services_id,
               input.employee_status,
               input.inactive_date,
               new Date(),
@@ -501,6 +508,7 @@ module.exports = {
     });
   },
 
+  //Not in use Removed Department Tab in employee Master
   getEmployeeDepartments: (req, res, next) => {
     const _mysql = new algaehMysql();
     return new Promise((resolve, reject) => {
@@ -957,8 +965,10 @@ module.exports = {
         _mysql
           .executeQuery({
             query:
-              "SELECT hims_d_employee_earnings_id,employee_id,earnings_id,short_desc,amount,formula,allocate,\
-              calculation_method from hims_d_employee_earnings where employee_id = ? " +
+              "SELECT hims_d_employee_earnings_id,employee_id,earnings_id, ED.short_desc,amount,ED.formula,allocate,\
+                ED.calculation_method from hims_d_employee_earnings EE \
+                inner join hims_d_earning_deduction ED  on  ED.hims_d_earning_deduction_id = EE.earnings_id \
+                where employee_id = ? " +
               _strAppend,
             values: [input.employee_id],
             printQuery: true
@@ -991,8 +1001,10 @@ module.exports = {
         _mysql
           .executeQuery({
             query:
-              "SELECT hims_d_employee_deductions_id,employee_id,deductions_id,short_desc,amount,formula,allocate,\
-          calculation_method from hims_d_employee_deductions where employee_id = ?;",
+              "SELECT hims_d_employee_deductions_id,employee_id,deductions_id,ED.short_desc,amount,ED.formula,allocate,\
+                ED.calculation_method from hims_d_employee_deductions EMD \
+                inner join hims_d_earning_deduction ED  on  ED.hims_d_earning_deduction_id = EMD.deductions_id \
+                where employee_id = ?;",
             values: [input.employee_id],
             printQuery: true
           })
@@ -1024,8 +1036,10 @@ module.exports = {
         _mysql
           .executeQuery({
             query:
-              "SELECT hims_d_employee_contributions_id,employee_id,contributions_id,short_desc,amount,formula,allocate,\
-          calculation_method from hims_d_employee_contributions where employee_id = ?;",
+              "SELECT hims_d_employee_contributions_id,employee_id,contributions_id,ED.short_desc,amount,ED.formula,allocate,\
+                ED.calculation_method from hims_d_employee_contributions EC \
+                inner join hims_d_earning_deduction ED  on  ED.hims_d_earning_deduction_id = EC.contributions_id \
+                where employee_id = ?;",
             values: [input.employee_id],
             printQuery: true
           })

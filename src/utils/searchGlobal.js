@@ -678,20 +678,17 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "DepartmentAndDoctors",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS E.hims_d_employee_id, concat(T.title,'. ',E.full_name) as doctor_name,SD.sub_department_name,\
-        E.sex,H.hospital_name,SD.hims_d_sub_department_id,\
-        case H.hosital_status when 'A' then 'Active' else 'Inactive' end as hosital_status,concat(T.title,'. ',E.full_name,' => ',SD.sub_department_name) as doctor_department \
-        from hims_d_sub_department as SD inner join hims_d_department as D \
-        on SD.department_id= D.hims_d_department_id \
-        inner join hims_m_employee_department_mappings as DEM \
-        on DEM.sub_department_id = SD.hims_d_sub_department_id \
-        inner join hims_d_employee as E on \
-        E.hims_d_employee_id = DEM.employee_id and DEM.sub_department_id = E.sub_department_id \
-        and DEM.sub_department_id = SD.hims_d_sub_department_id \
-        inner join hims_d_hospital as H \
-        on H.hims_d_hospital_id = E.hospital_id left join hims_d_title as T on T.his_d_title_id = E.title_id \
-        where E.isdoctor ='Y' and D.department_type='CLINICAL' and E.employee_status='A' and E.record_status='A' ",
-        groupBy: "group by DEM.employee_id"
+          "select  SQL_CALC_FOUND_ROWS E.hims_d_employee_id, concat(T.title,'. ',E.full_name) as doctor_name,SD.sub_department_name,\
+            E.sex,SD.hims_d_sub_department_id,case H.hosital_status when 'A' then 'Active' else 'Inactive' end as hosital_status,\
+            H.hospital_name,concat(T.title,'. ',E.full_name,' => ',SD.sub_department_name) as doctor_department \
+            from hims_d_employee E inner join hims_d_hospital as H \
+            on H.hims_d_hospital_id = E.hospital_id inner join hims_d_sub_department SD \
+            on E.sub_department_id=SD.hims_d_sub_department_id  and  E.isdoctor='Y' \
+            inner join hims_d_department D on SD.department_id=D.hims_d_department_id  and  D.department_type='CLINICAL'\
+            left join hims_d_title as T on T.his_d_title_id = E.title_id \
+            where E.employee_status='A'  and SD.sub_department_status='A'\
+            and SD.record_status='A' and E.record_status ='A' ",
+        groupBy: "group by E.hims_d_employee_id"
       },
 
       {

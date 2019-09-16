@@ -531,6 +531,7 @@ class NewEmployeeProjectRoster extends Component {
 
   render() {
     const { fromDate, toDate } = this.getInputDates();
+    const { employees } = this.state;
     return (
       <div className="EmployeeProjectRoster">
         {this.state.openProjectAssign ? (
@@ -617,14 +618,16 @@ class NewEmployeeProjectRoster extends Component {
                     employeeDetailsPop={this.state.employeeDetailsPop}
                     employee_status={this.state.employee_status}
                   /> */}
-                </div>{" "}
-                <button
-                  className="btn btn-primary"
-                  style={{ marginLeft: 25 }}
-                  onClick={this.showAnother}
-                >
-                  Assign to all
-                </button>
+                </div>
+                {employees.length !== 0 && (
+                  <button
+                    className="btn btn-primary"
+                    style={{ marginLeft: 25 }}
+                    onClick={this.showAnother}
+                  >
+                    Assign to all
+                  </button>
+                )}
               </div>
               <div className="portlet-body">
                 <div className="col-12" id="projectRosterTable">

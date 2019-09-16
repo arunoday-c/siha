@@ -220,7 +220,7 @@ class PersonalDetails extends Component {
                       }}
                     />
                     <AlgaehDateHandler
-                      div={{ className: "col-lg-3 mandatory" }}
+                      div={{ className: "col-2 mandatory" }}
                       label={{ fieldName: "date_of_birth", isImp: true }}
                       textBox={{
                         className: "txt-fld",
@@ -259,6 +259,9 @@ class PersonalDetails extends Component {
                           this.setState({
                             sex: null
                           });
+                          this.props.EmpMasterIOputs.updateEmployeeTabs({
+                            sex: null
+                          });
                         }
                       }}
                     />
@@ -269,7 +272,33 @@ class PersonalDetails extends Component {
                   <div className="row paddin-bottom-5">
                     {" "}
                     <AlagehAutoComplete
-                      div={{ className: "col-3 mandatory form-group" }}
+                      div={{ className: "col-2 form-group mandatory" }}
+                      label={{
+                        forceLabel: "Nationality",
+                        isImp: true
+                      }}
+                      selector={{
+                        name: "nationality",
+                        className: "select-fld",
+                        value: this.state.nationality,
+                        dataSource: {
+                          textField: "nationality",
+                          valueField: "hims_d_nationality_id",
+                          data: this.props.nationalities
+                        },
+                        onChange: texthandle.bind(this, this),
+                        onClear: () => {
+                          this.setState({
+                            nationality: null
+                          });
+                          this.props.EmpMasterIOputs.updateEmployeeTabs({
+                            nationality: null
+                          });
+                        }
+                      }}
+                    />
+                    <AlagehAutoComplete
+                      div={{ className: "col-2 mandatory form-group" }}
                       label={{
                         forceLabel: "Religion",
                         isImp: true
@@ -291,14 +320,17 @@ class PersonalDetails extends Component {
                           this.setState({
                             religion_id: null
                           });
+                          this.props.EmpMasterIOputs.updateEmployeeTabs({
+                            religion_id: null
+                          });
                         }
                       }}
                     />
                     <AlagehFormGroup
-                      div={{ className: "col-3 mandatory" }}
+                      div={{ className: "col-3" }}
                       label={{
                         forceLabel: "Personal Contact No.",
-                        isImp: true
+                        isImp: false
                       }}
                       textBox={{
                         value: this.state.primary_contact_no,
@@ -316,10 +348,10 @@ class PersonalDetails extends Component {
                       }}
                     />
                     <AlagehFormGroup
-                      div={{ className: "col-3 mandatory" }}
+                      div={{ className: "col-3" }}
                       label={{
                         forceLabel: "Work Contact No.",
-                        isImp: true
+                        isImp: false
                       }}
                       textBox={{
                         value: this.state.secondary_contact_no,
@@ -401,6 +433,9 @@ class PersonalDetails extends Component {
                           this.setState({
                             blood_group: null
                           });
+                          this.props.EmpMasterIOputs.updateEmployeeTabs({
+                            blood_group: null
+                          });
                         }
                       }}
                     />
@@ -426,28 +461,8 @@ class PersonalDetails extends Component {
                           this.setState({
                             marital_status: null
                           });
-                        }
-                      }}
-                    />
-                    <AlagehAutoComplete
-                      div={{ className: "col-2 form-group" }}
-                      label={{
-                        forceLabel: "Nationality",
-                        isImp: false
-                      }}
-                      selector={{
-                        name: "nationality",
-                        className: "select-fld",
-                        value: this.state.nationality,
-                        dataSource: {
-                          textField: "nationality",
-                          valueField: "hims_d_nationality_id",
-                          data: this.props.nationalities
-                        },
-                        onChange: texthandle.bind(this, this),
-                        onClear: () => {
-                          this.setState({
-                            nationality: null
+                          this.props.EmpMasterIOputs.updateEmployeeTabs({
+                            marital_status: null
                           });
                         }
                       }}
@@ -499,6 +514,9 @@ class PersonalDetails extends Component {
                               this.setState({
                                 present_country_id: null
                               });
+                              this.props.EmpMasterIOputs.updateEmployeeTabs({
+                                present_country_id: null
+                              });
                             }
                           }}
                         />
@@ -527,6 +545,9 @@ class PersonalDetails extends Component {
                               this.setState({
                                 present_state_id: null
                               });
+                              this.props.EmpMasterIOputs.updateEmployeeTabs({
+                                present_state_id: null
+                              });
                             }
                           }}
                         />
@@ -552,6 +573,9 @@ class PersonalDetails extends Component {
                             },
                             onClear: () => {
                               this.setState({
+                                present_city_id: null
+                              });
+                              this.props.EmpMasterIOputs.updateEmployeeTabs({
                                 present_city_id: null
                               });
                             }
@@ -631,6 +655,9 @@ class PersonalDetails extends Component {
                               this.setState({
                                 permanent_country_id: null
                               });
+                              this.props.EmpMasterIOputs.updateEmployeeTabs({
+                                permanent_country_id: null
+                              });
                             }
                           }}
                         />
@@ -664,6 +691,9 @@ class PersonalDetails extends Component {
                               this.setState({
                                 permanent_state_id: null
                               });
+                              this.props.EmpMasterIOputs.updateEmployeeTabs({
+                                permanent_state_id: null
+                              });
                             }
                           }}
                         />
@@ -695,6 +725,9 @@ class PersonalDetails extends Component {
                             },
                             onClear: () => {
                               this.setState({
+                                permanent_city_id: null
+                              });
+                              this.props.EmpMasterIOputs.updateEmployeeTabs({
                                 permanent_city_id: null
                               });
                             }

@@ -253,6 +253,7 @@ let updateCounterMaster = (req, res, next) => {
 };
 
 //created by irfan: to
+//Not in use
 let getCashiers = (req, res, next) => {
   try {
     if (req.db == null) {

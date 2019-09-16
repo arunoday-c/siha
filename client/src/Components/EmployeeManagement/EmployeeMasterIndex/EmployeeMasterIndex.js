@@ -90,7 +90,9 @@ class EmployeeMasterIndex extends Component {
         afterClose: true
       },
       () => {
-        getEmployeeDetails(this, this);
+        if (e === true) {
+          getEmployeeDetails(this, this);
+        }
       }
     );
   }
@@ -175,6 +177,7 @@ class EmployeeMasterIndex extends Component {
                 editEmployee={this.state.editEmployee}
                 employeeDetailsPop={this.state.employeeDetailsPop}
                 employee_status={this.state.employee_status}
+                Employeedetails={this.state.Employeedetails}
               />
             </div>
           </div>
@@ -267,9 +270,10 @@ class EmployeeMasterIndex extends Component {
                     {
                       fieldName: "full_name",
                       label: (
-                        <AlgaehLabel label={{ forceLabel: "Full Name" }} />
+                        <AlgaehLabel label={{ forceLabel: "Employee Name" }} />
                       ),
                       others: {
+                        // minWidth: 200,
                         resizable: false,
                         style: { textAlign: "center" }
                       }
@@ -343,7 +347,7 @@ class EmployeeMasterIndex extends Component {
                         resizable: false,
                         style: { textAlign: "center" }
                       }
-                    },
+                    }
                     // {
                     //   fieldName: "license_number",
                     //   label: (
@@ -354,26 +358,30 @@ class EmployeeMasterIndex extends Component {
                     //     style: { textAlign: "center" }
                     //   }
                     // },
-                    {
-                      fieldName: "secondary_contact_no",
-                      label: <AlgaehLabel label={{ forceLabel: "Work No." }} />,
-                      others: {
-                        maxWidth: 120,
-                        resizable: false,
-                        style: { textAlign: "center" }
-                      }
-                    },
-                    {
-                      fieldName: "work_email",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Work Email" }} />
-                      ),
-                      others: {
-                        maxWidth: 150,
-                        resizable: false,
-                        style: { textAlign: "center", wordBreak: "break-all" }
-                      }
-                    }
+                    // {
+                    //   fieldName: "secondary_contact_no",
+                    //   label: (
+                    //     <AlgaehLabel
+                    //       label={{ forceLabel: "Work Contact No." }}
+                    //     />
+                    //   ),
+                    //   others: {
+                    //     minWidth: 120,
+                    //     resizable: false,
+                    //     style: { textAlign: "center" }
+                    //   }
+                    // },
+                    // {
+                    //   fieldName: "work_email",
+                    //   label: (
+                    //     <AlgaehLabel label={{ forceLabel: "Work Email ID" }} />
+                    //   ),
+                    //   others: {
+                    //     minWidth: 100,
+                    //     resizable: false,
+                    //     style: { textAlign: "center", wordBreak: "break-all" }
+                    //   }
+                    // }
                   ]}
                   keyId="service_code"
                   dataSource={{

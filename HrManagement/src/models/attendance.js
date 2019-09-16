@@ -1960,7 +1960,8 @@ module.exports = {
               sum(absent_days)as absent_days,sum(total_work_days)as total_work_days,sum(weekoff_days)as total_weekoff_days,\
               sum(holidays)as total_holidays,sum(paid_leave)as paid_leave,sum(unpaid_leave)as unpaid_leave,sum(hours)as hours,\
               sum(minutes)as minutes,COALESCE(sum(hours),0)+ COALESCE(concat(floor(sum(minutes)/60)  ,'.',sum(minutes)%60),0) \
-              as total_hours,sum(working_hours)as total_working_hours ,\
+              as total_hours,concat(COALESCE(sum(SUBSTRING_INDEX(working_hours, '.', 1)),0)+floor(sum(SUBSTRING_INDEX(working_hours, '.', -1))/60) ,\
+'.',COALESCE(sum(SUBSTRING_INDEX(working_hours, '.', -1))%60,00))  as total_working_hours ,\
               COALESCE(sum(shortage_hours),0)+ COALESCE(concat(floor(sum(shortage_minutes)/60)  ,'.',sum(shortage_minutes)%60),0) as shortage_hourss ,\
               COALESCE(sum(ot_work_hours),0)+ COALESCE(concat(floor(sum(ot_minutes)/60)  ,'.',sum(ot_minutes)%60),0) as ot_hourss\
               from hims_f_daily_attendance where     \
@@ -2127,8 +2128,8 @@ module.exports = {
       if (input.hims_d_employee_id > 0) {
         strQry += " and AM.employee_id=" + input.hims_d_employee_id;
       }
-      if (input.employee_group_id > 0) {
-        strQry += " and E.employee_group_id=" + input.employee_group_id;
+      if (input.designation_id > 0) {
+        strQry += " and E.employee_designation_id=" + input.designation_id;
       }
 
       let from_date = null;
@@ -2645,7 +2646,8 @@ module.exports = {
                       sum(absent_days)as absent_days,sum(total_work_days)as total_work_days,sum(weekoff_days)as total_weekoff_days,\
                       sum(holidays)as total_holidays,sum(paid_leave)as paid_leave,sum(unpaid_leave)as unpaid_leave,sum(hours)as hours,\
                       sum(minutes)as minutes,COALESCE(sum(hours),0)+ COALESCE(concat(floor(sum(minutes)/60)  ,'.',sum(minutes)%60),0) \
-                      as total_hours,sum(working_hours)as total_working_hours ,\
+                      as total_hours,concat(COALESCE(sum(SUBSTRING_INDEX(working_hours, '.', 1)),0)+floor(sum(SUBSTRING_INDEX(working_hours, '.', -1))/60) ,\
+'.',COALESCE(sum(SUBSTRING_INDEX(working_hours, '.', -1))%60,00))  as total_working_hours ,\
                       COALESCE(sum(shortage_hours),0)+ COALESCE(concat(floor(sum(shortage_minutes)/60)  ,'.',sum(shortage_minutes)%60),0) as shortage_hourss ,\
                       COALESCE(sum(ot_work_hours),0)+ COALESCE(concat(floor(sum(ot_minutes)/60)  ,'.',sum(ot_minutes)%60),0) as ot_hourss\
                       from hims_f_daily_attendance where      \
@@ -3421,7 +3423,8 @@ module.exports = {
                                 sum(absent_days)as absent_days,sum(total_work_days)as total_work_days,sum(weekoff_days)as total_weekoff_days,\
                                 sum(holidays)as total_holidays,sum(paid_leave)as paid_leave,sum(unpaid_leave)as unpaid_leave,sum(hours)as hours,\
                                 sum(minutes)as minutes,COALESCE(sum(hours),0)+ COALESCE(concat(floor(sum(minutes)/60)  ,'.',sum(minutes)%60),0) \
-                                as total_hours,sum(working_hours)as total_working_hours ,\
+                                as total_hours,concat(COALESCE(sum(SUBSTRING_INDEX(working_hours, '.', 1)),0)+floor(sum(SUBSTRING_INDEX(working_hours, '.', -1))/60) ,\
+'.',COALESCE(sum(SUBSTRING_INDEX(working_hours, '.', -1))%60,00))  as total_working_hours ,\
                                 COALESCE(sum(shortage_hours),0)+ COALESCE(concat(floor(sum(shortage_minutes)/60)  ,'.',sum(shortage_minutes)%60),0) as shortage_hourss ,\
                                 COALESCE(sum(ot_work_hours),0)+ COALESCE(concat(floor(sum(ot_minutes)/60)  ,'.',sum(ot_minutes)%60),0) as ot_hourss\
                                 from hims_f_daily_attendance where      \
@@ -5054,7 +5057,8 @@ module.exports = {
 									sum(absent_days)as absent_days,sum(total_work_days)as total_work_days,sum(weekoff_days)as total_weekoff_days,\
 									sum(holidays)as total_holidays,sum(paid_leave)as paid_leave,sum(unpaid_leave)as unpaid_leave,sum(hours)as hours,\
 									sum(minutes)as minutes,COALESCE(sum(hours),0)+ COALESCE(concat(floor(sum(minutes)/60)  ,'.',sum(minutes)%60),0) \
-									as total_hours,sum(working_hours)as total_working_hours ,\
+									as total_hours,concat(COALESCE(sum(SUBSTRING_INDEX(working_hours, '.', 1)),0)+floor(sum(SUBSTRING_INDEX(working_hours, '.', -1))/60) ,\
+'.',COALESCE(sum(SUBSTRING_INDEX(working_hours, '.', -1))%60,00))  as total_working_hours ,\
 									COALESCE(sum(shortage_hours),0)+ COALESCE(concat(floor(sum(shortage_minutes)/60)  ,'.',sum(shortage_minutes)%60),0) as shortage_hours ,\
 									COALESCE(sum(ot_work_hours),0)+ COALESCE(concat(floor(sum(ot_minutes)/60)  ,'.',sum(ot_minutes)%60),0) as ot_work_hours ,   \
 									COALESCE(sum(ot_weekoff_hours),0)+ COALESCE(concat(floor(sum(ot_weekoff_minutes)/60)  ,'.',sum(ot_weekoff_minutes)%60),0) as ot_weekoff_hours,\
@@ -6432,7 +6436,6 @@ getBulkManualTimeSheet: (req, res, next) => {
               hospital_id: AttenResult[i]["hospital_id"],
               sub_department_id: AttenResult[i]["sub_department_id"],
               attendance_date: AttenResult[i]["attendance_date"],
-
               year: input.year,
               month: input.month,
               total_days: 1,
@@ -6535,10 +6538,31 @@ getBulkManualTimeSheet: (req, res, next) => {
               printQuery: false
             })
             .then(insertResult => {
-              // _mysql.releaseConnection();
+            
 
-              // req.records = finalAttenResult;
-              // next();
+          //     query: `select employee_id,DA.hospital_id,DA.sub_department_id,year,month,sum(total_days)as total_days,sum(present_days)as present_days,\
+          //         sum(display_present_days) as display_present_days  ,  sum(absent_days)as absent_days,sum(total_work_days)as total_work_days,sum(weekoff_days)as total_weekoff_days,\
+          // sum(holidays)as total_holidays,sum(paid_leave)as paid_leave,sum(unpaid_leave)as unpaid_leave,sum(hours)as hours,\
+          // sum(minutes)as minutes,COALESCE(sum(hours),0)+ COALESCE(concat(floor(sum(minutes)/60)  ,'.',sum(minutes)%60),0) \
+          // as total_hours,sum(working_hours)as total_working_hours ,\
+          // COALESCE(sum(shortage_hours),0)+ COALESCE(concat(floor(sum(shortage_minutes)/60)  ,'.',sum(shortage_minutes)%60),0) as shortage_hours ,\
+          // COALESCE(sum(ot_work_hours),0)+ COALESCE(concat(floor(sum(ot_minutes)/60)  ,'.',sum(ot_minutes)%60),0) as ot_work_hours ,   \
+          // COALESCE(sum(ot_weekoff_hours),0)+ COALESCE(concat(floor(sum(ot_weekoff_minutes)/60)  ,'.',sum(ot_weekoff_minutes)%60),0) as ot_weekoff_hours,\
+          // COALESCE(sum(ot_holiday_hours),0)+ COALESCE(concat(floor(sum(ot_holiday_minutes)/60)  ,'.',sum(ot_holiday_minutes)%60),0) as ot_holiday_hours\
+          // from hims_f_daily_attendance DA\
+          // inner join hims_d_employee E on DA.employee_id=E.hims_d_employee_id\
+          // inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\
+        
+          // where      \
+          // DA.hospital_id=?  and year=? and month=?  ${strQry}  and attendance_date between date(?) and \
+          // date(?)  group by employee_id;\
+          // select employee_id,project_id,DA.hospital_id,year,month,sum(hours)as worked_hours, sum(minutes) as worked_minutes\
+          // from hims_f_daily_attendance DA\
+          // inner join hims_d_employee E on DA.employee_id=E.hims_d_employee_id\
+          // inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\
+          //  where      \
+          // DA.hospital_id=?  and year=? and month=?   ${strQry} and attendance_date between date(?) and\
+          // date(?)  group by employee_id,project_id;`,
 
               _mysql
                 .executeQuery({
@@ -6546,7 +6570,8 @@ getBulkManualTimeSheet: (req, res, next) => {
                   sum(display_present_days) as display_present_days  ,  sum(absent_days)as absent_days,sum(total_work_days)as total_work_days,sum(weekoff_days)as total_weekoff_days,\
           sum(holidays)as total_holidays,sum(paid_leave)as paid_leave,sum(unpaid_leave)as unpaid_leave,sum(hours)as hours,\
           sum(minutes)as minutes,COALESCE(sum(hours),0)+ COALESCE(concat(floor(sum(minutes)/60)  ,'.',sum(minutes)%60),0) \
-          as total_hours,sum(working_hours)as total_working_hours ,\
+          as total_hours,concat(COALESCE(sum(SUBSTRING_INDEX(working_hours, '.', 1)),0)+floor(sum(SUBSTRING_INDEX(working_hours, '.', -1))/60) ,\
+'.',COALESCE(sum(SUBSTRING_INDEX(working_hours, '.', -1))%60,00))  as total_working_hours ,\
           COALESCE(sum(shortage_hours),0)+ COALESCE(concat(floor(sum(shortage_minutes)/60)  ,'.',sum(shortage_minutes)%60),0) as shortage_hours ,\
           COALESCE(sum(ot_work_hours),0)+ COALESCE(concat(floor(sum(ot_minutes)/60)  ,'.',sum(ot_minutes)%60),0) as ot_work_hours ,   \
           COALESCE(sum(ot_weekoff_hours),0)+ COALESCE(concat(floor(sum(ot_weekoff_minutes)/60)  ,'.',sum(ot_weekoff_minutes)%60),0) as ot_weekoff_hours,\
@@ -7254,7 +7279,7 @@ function BulktimesheetCalc(req, res, next) {
                   inner join  hims_d_project P on P.hims_d_project_id=PR.project_id
                   inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
                   left join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id
-                  and PR.hospital_id=? ${strQry} ${project} and ( S.salary_processed is null or  S.salary_processed='N')
+                  where PR.hospital_id=? ${strQry} ${project} and ( S.salary_processed is null or  S.salary_processed='N')
                   and PR.attendance_date between date(?) and date(?)
                   order by employee_id;
                   select hims_f_leave_application_id,employee_id,leave_application_code,from_leave_session,

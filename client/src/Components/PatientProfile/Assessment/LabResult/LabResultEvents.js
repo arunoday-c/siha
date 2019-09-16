@@ -1,3 +1,5 @@
+import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
+
 const getLabResult = $this => {
   let inputobj = {
     patient_id: Window.global["current_patient"],
@@ -58,4 +60,55 @@ const CloseTestAnalyte = $this => {
     openAna: !$this.state.openAna
   });
 };
-export { getLabResult, getAnalytes, ShowTestAnalyte, CloseTestAnalyte };
+
+const CloseCompareTest = $this => {
+  $this.setState({
+    ...$this.state,
+    openCompare: !$this.state.openCompare
+  });
+};
+
+const ShowCompareTest = ($this, row) => {
+  algaehApiCall({
+    uri: "/laboratory/getPatientTestList",
+    module: "laboratory",
+    method: "GET",
+    data: {
+      service_id: row.service_id,
+      order_id: row.hims_f_lab_order_id,
+      visit_id: Window.global["visit_id"],
+      patient_id: Window.global["current_patient"],
+      provider_id: Window.global["provider_id"]
+    },
+    onSuccess: response => {
+      if (response.data.success) {
+        $this.setState({
+          ...$this.state,
+          order_id: row.hims_f_lab_order_id,
+          openCompare: !$this.state.openCompare,
+          // test_analytes: response.data.records[0],
+          list_of_tests: response.data.records[1],
+          service_code: row.service_code,
+          service_name: row.service_name,
+          patient_code: row.patient_code,
+          full_name: row.full_name
+        });
+      }
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
+};
+
+export {
+  getLabResult,
+  getAnalytes,
+  ShowTestAnalyte,
+  CloseTestAnalyte,
+  ShowCompareTest,
+  CloseCompareTest
+};

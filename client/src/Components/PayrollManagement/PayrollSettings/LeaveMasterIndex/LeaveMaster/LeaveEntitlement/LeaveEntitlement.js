@@ -12,337 +12,391 @@ function LeaveEntitlement(props) {
   return (
     <div className="popRightDiv leave_entitlement" data-validate="levDv">
       <div className="row">
-        <AlagehFormGroup
-          div={{ className: "col-4  form-group" }}
-          label={{
-            forceLabel: "Leave Code",
-            isImp: true
-          }}
-          textBox={{
-            className: "txt-fld",
-            name: "leave_code",
-            value: myParent.state.leave_code,
-            events: {
-              onChange: e => myParent.textHandler(e)
-            },
-            others: {
-              disabled: myParent.state.type !== undefined
-            }
-          }}
-        />
-        <AlagehFormGroup
-          div={{ className: "col-4  form-group" }}
-          label={{
-            forceLabel: "Description",
-            isImp: true
-          }}
-          textBox={{
-            className: "txt-fld",
-            name: "leave_description",
-            value: myParent.state.leave_description,
-            events: {
-              onChange: e => myParent.textHandler(e)
-            }
-          }}
-        />
+        <div className="col-12">
+          <div className="row">
+            <AlagehFormGroup
+              div={{ className: "col-2 form-group" }}
+              label={{
+                forceLabel: "Leave Code",
+                isImp: true
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "leave_code",
+                value: myParent.state.leave_code,
+                events: {
+                  onChange: e => myParent.textHandler(e)
+                },
+                others: {
+                  disabled: myParent.state.type !== undefined
+                }
+              }}
+            />
+            <AlagehFormGroup
+              div={{ className: "col-4  form-group" }}
+              label={{
+                forceLabel: "Description",
+                isImp: true
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "leave_description",
+                value: myParent.state.leave_description,
+                events: {
+                  onChange: e => myParent.textHandler(e)
+                }
+              }}
+            />
 
-        <AlagehAutoComplete
-          div={{ className: "col-4 form-group" }}
-          label={{ forceLabel: "Leave Type", isImp: true }}
-          selector={{
-            name: "leave_type",
-            value: myParent.state.leave_type,
-            className: "select-fld",
-            dataSource: {
-              textField: "name",
-              valueField: "value",
-              data: GlobalVariables.LEAVE_TYPE
-            },
-            onChange: value => myParent.dropDownHandler(value)
-          }}
-        />
+            <AlagehAutoComplete
+              div={{ className: "col-2 form-group" }}
+              label={{ forceLabel: "Leave Type", isImp: true }}
+              selector={{
+                name: "leave_type",
+                value: myParent.state.leave_type,
+                className: "select-fld",
+                dataSource: {
+                  textField: "name",
+                  valueField: "value",
+                  data: GlobalVariables.LEAVE_TYPE
+                },
+                onChange: value => myParent.dropDownHandler(value)
+              }}
+            />
 
-        <AlagehAutoComplete
-          div={{ className: "col form-group" }}
-          label={{
-            forceLabel: "Calculation Type",
-            isImp: true
-          }}
-          selector={{
-            name: "calculation_type",
-            value: myParent.state.calculation_type,
-            className: "select-fld",
-            dataSource: {
-              textField: "name",
-              valueField: "value",
-              data: GlobalVariables.LEAVE_CALC_TYPE
-            },
-            onChange: value => myParent.dropDownHandler(value),
-            onClear: () => {
-              myParent.setState({
-                calculation_type: null
-              });
-            }
-          }}
-        />
-        <AlagehAutoComplete
-          div={{ className: "col form-group" }}
-          label={{ forceLabel: "Leave Mode", isImp: true }}
-          selector={{
-            name: "leave_mode",
-            value: myParent.state.leave_mode,
-            className: "select-fld",
-            dataSource: {
-              textField: "name",
-              valueField: "value",
-              data: GlobalVariables.LEAVE_MODE
-            },
-            onChange: value => myParent.dropDownHandler(value)
-          }}
-        />
-        <AlagehAutoComplete
-          div={{ className: "col form-group" }}
-          label={{ forceLabel: "Leave Frequency", isImp: true }}
-          selector={{
-            name: "leave_accrual",
-            value: myParent.state.leave_accrual,
-            className: "select-fld",
-            dataSource: {
-              textField: "name",
-              valueField: "value",
-              data: GlobalVariables.LEAVE_FREQUENCY
-            },
-            onChange: value => myParent.dropDownHandler(value)
-          }}
-        />
+            <AlagehAutoComplete
+              div={{ className: "col-2 form-group" }}
+              label={{
+                forceLabel: "Calculation Type",
+                isImp: true
+              }}
+              selector={{
+                name: "calculation_type",
+                value: myParent.state.calculation_type,
+                className: "select-fld",
+                dataSource: {
+                  textField: "name",
+                  valueField: "value",
+                  data: GlobalVariables.LEAVE_CALC_TYPE
+                },
+                onChange: value => myParent.dropDownHandler(value),
+                onClear: () => {
+                  myParent.setState({
+                    calculation_type: null
+                  });
+                }
+              }}
+            />
+            <AlagehAutoComplete
+              div={{ className: "col-2 form-group" }}
+              label={{ forceLabel: "Leave Mode", isImp: true }}
+              selector={{
+                name: "leave_mode",
+                value: myParent.state.leave_mode,
+                className: "select-fld",
+                dataSource: {
+                  textField: "name",
+                  valueField: "value",
+                  data: GlobalVariables.LEAVE_MODE
+                },
+                onChange: value => myParent.dropDownHandler(value)
+              }}
+            />
+            <AlagehAutoComplete
+              div={{ className: "col-2 form-group" }}
+              label={{ forceLabel: "Leave Frequency", isImp: true }}
+              selector={{
+                name: "leave_accrual",
+                value: myParent.state.leave_accrual,
+                className: "select-fld",
+                dataSource: {
+                  textField: "name",
+                  valueField: "value",
+                  data: GlobalVariables.LEAVE_FREQUENCY
+                },
+                onChange: value => myParent.dropDownHandler(value)
+              }}
+            />
 
-        <AlagehAutoComplete
-          div={{ className: "col form-group" }}
-          label={{ forceLabel: "Leave Category", isImp: true }}
-          selector={{
-            name: "leave_category",
-            value: myParent.state.leave_category,
-            className: "select-fld",
-            dataSource: {
-              textField: "name",
-              valueField: "value",
-              data: GlobalVariables.LEAVE_CTGRY
-            },
-            onChange: value => myParent.dropDownHandler(value)
-          }}
-        />
-      </div>
-      <div className="row">
-        <div className="col  form-group">
-          <label>Is Encashment</label>
-          <div className="customCheckbox">
-            <label className="checkbox inline">
-              <input
-                type="checkbox"
-                name="leave_encash"
-                checked={
+            <AlagehAutoComplete
+              div={{ className: "col-2 form-group" }}
+              label={{ forceLabel: "Leave Category", isImp: true }}
+              selector={{
+                name: "leave_category",
+                value: myParent.state.leave_category,
+                className: "select-fld",
+                dataSource: {
+                  textField: "name",
+                  valueField: "value",
+                  data: GlobalVariables.LEAVE_CTGRY
+                },
+                onChange: value => myParent.dropDownHandler(value)
+              }}
+            />
+          </div>
+          <hr></hr>
+        </div>
+        <div className="col-5">
+          <div className="row">
+            <div className="col-5  form-group">
+              <label>Is Encashment</label>
+              <div className="customCheckbox">
+                <label className="checkbox inline">
+                  <input
+                    type="checkbox"
+                    name="leave_encash"
+                    checked={
+                      myParent.state.leave_encash === "Y" ||
+                      myParent.state.leave_encash === true
+                    }
+                    onChange={e => myParent.changeChecks(e)}
+                  />
+                  <span>Yes</span>
+                </label>
+              </div>
+            </div>
+
+            <AlagehFormGroup
+              div={{ className: "col-6  form-group" }}
+              label={{
+                forceLabel: "Encashment Percentage",
+                isImp:
                   myParent.state.leave_encash === "Y" ||
                   myParent.state.leave_encash === true
+              }}
+              textBox={{
+                className: "txt-fld",
+                number: { allowNegative: false },
+                dontAllowKeys: ["-", "e"],
+                name: "encashment_percentage",
+                value: myParent.state.encashment_percentage,
+                events: {
+                  onChange: e => myParent.textHandler(e)
+                },
+                others: {
+                  disabled:
+                    !myParent.state.leave_encash ||
+                    myParent.state.leave_encash === "N"
                 }
-                onChange={e => myParent.changeChecks(e)}
-              />
-              <span>Yes</span>
-            </label>
-          </div>
-        </div>
-
-        <AlagehFormGroup
-          div={{ className: "col  form-group" }}
-          label={{
-            forceLabel: "Encashment Percentage",
-            isImp:
-              myParent.state.leave_encash === "Y" ||
-              myParent.state.leave_encash === true
-          }}
-          textBox={{
-            className: "txt-fld",
-            number: { allowNegative: false },
-            dontAllowKeys: ["-", "e"],
-            name: "encashment_percentage",
-            value: myParent.state.encashment_percentage,
-            events: {
-              onChange: e => myParent.textHandler(e)
-            },
-            others: {
-              disabled:
-                !myParent.state.leave_encash ||
-                myParent.state.leave_encash === "N"
-            }
-          }}
-        />
-        <div className="col  form-group">
-          <label>Is Carry Forward</label>
-          <div className="customCheckbox">
-            <label className="checkbox inline">
-              <input
-                type="checkbox"
-                name="leave_carry_forward"
-                checked={
+              }}
+            />
+            <div className="col-5  form-group">
+              <label>Is Carry Forward</label>
+              <div className="customCheckbox">
+                <label className="checkbox inline">
+                  <input
+                    type="checkbox"
+                    name="leave_carry_forward"
+                    checked={
+                      myParent.state.leave_carry_forward === "Y" ||
+                      myParent.state.leave_carry_forward === true
+                    }
+                    onChange={e => myParent.changeChecks(e)}
+                  />
+                  <span>Yes</span>
+                </label>
+              </div>
+            </div>
+            <AlagehFormGroup
+              div={{ className: "col-6  form-group" }}
+              label={{
+                forceLabel: "Carry Forward Percentage",
+                isImp:
                   myParent.state.leave_carry_forward === "Y" ||
                   myParent.state.leave_carry_forward === true
+              }}
+              textBox={{
+                className: "txt-fld",
+                number: { allowNegative: false },
+                dontAllowKeys: ["-", "e"],
+                name: "carry_forward_percentage",
+                value: myParent.state.carry_forward_percentage,
+                events: {
+                  onChange: e => myParent.textHandler(e)
+                },
+                others: {
+                  disabled:
+                    !myParent.state.leave_carry_forward ||
+                    myParent.state.leave_carry_forward === "N"
                 }
-                onChange={e => myParent.changeChecks(e)}
-              />
-              <span>Yes</span>
-            </label>
+              }}
+            />
+            <div className="col-5  form-group">
+              <label>Religion Mandatory</label>
+              <div className="customCheckbox">
+                <label className="checkbox inline">
+                  <input
+                    type="checkbox"
+                    name="religion_required"
+                    checked={
+                      myParent.state.religion_required === "Y" ||
+                      myParent.state.religion_required === true
+                    }
+                    onChange={e => myParent.changeChecks(e)}
+                  />
+                  <span>Yes</span>
+                </label>
+              </div>
+            </div>
+            <AlagehAutoComplete
+              div={{ className: "col-6 form-group" }}
+              label={{
+                forceLabel: "Select Religion",
+                isImp:
+                  myParent.state.religion_required === "Y" ||
+                  myParent.state.religion_required === true
+              }}
+              selector={{
+                name: "religion_id",
+                value: myParent.state.religion_id,
+                className: "select-fld",
+                dataSource: {
+                  textField: "religion_name",
+                  valueField: "hims_d_religion_id",
+                  data: myParent.state.religions
+                },
+                onChange: value => myParent.dropDownHandler(value),
+                onClear: () => {
+                  myParent.setState({
+                    religion_id: null
+                  });
+                },
+                others: {
+                  disabled:
+                    !myParent.state.religion_required ||
+                    myParent.state.religion_required === "N"
+                }
+              }}
+            />
           </div>
         </div>
-        <AlagehFormGroup
-          div={{ className: "col  form-group" }}
-          label={{
-            forceLabel: "Carry Forward Percentage",
-            isImp:
-              myParent.state.leave_carry_forward === "Y" ||
-              myParent.state.leave_carry_forward === true
-          }}
-          textBox={{
-            className: "txt-fld",
-            number: { allowNegative: false },
-            dontAllowKeys: ["-", "e"],
-            name: "carry_forward_percentage",
-            value: myParent.state.carry_forward_percentage,
-            events: {
-              onChange: e => myParent.textHandler(e)
-            },
-            others: {
-              disabled:
-                !myParent.state.leave_carry_forward ||
-                myParent.state.leave_carry_forward === "N"
-            }
-          }}
-        />
-      </div>
-      <div className="row">
-        <div className="col  form-group">
-          <label>Include Holiday</label>
-          <div className="customCheckbox">
-            <label className="checkbox inline">
-              <input
-                type="checkbox"
-                name="include_holiday"
-                checked={
-                  myParent.state.include_holiday === "Y" ||
-                  myParent.state.include_holiday === true
-                }
-                onChange={e => myParent.changeChecks(e)}
-              />
-              <span>Yes</span>
-            </label>
-          </div>
-        </div>
-        <div className="col  form-group">
-          <label>Include Weekoff</label>
-          <div className="customCheckbox">
-            <label className="checkbox inline">
-              <input
-                type="checkbox"
-                name="include_weekoff"
-                checked={
-                  myParent.state.include_weekoff === "Y" ||
-                  myParent.state.include_weekoff === true
-                }
-                onChange={e => myParent.changeChecks(e)}
-              />
-              <span>Yes</span>
-            </label>
-          </div>
-        </div>
+        <div className="col-7">
+          <div className="row">
+            <div className="col-4  form-group">
+              <label>Include Holiday</label>
+              <div className="customCheckbox">
+                <label className="checkbox inline">
+                  <input
+                    type="checkbox"
+                    name="include_holiday"
+                    checked={
+                      myParent.state.include_holiday === "Y" ||
+                      myParent.state.include_holiday === true
+                    }
+                    onChange={e => myParent.changeChecks(e)}
+                  />
+                  <span>Yes</span>
+                </label>
+              </div>
+            </div>
+            <div className="col-4  form-group">
+              <label>Include Weekoff</label>
+              <div className="customCheckbox">
+                <label className="checkbox inline">
+                  <input
+                    type="checkbox"
+                    name="include_weekoff"
+                    checked={
+                      myParent.state.include_weekoff === "Y" ||
+                      myParent.state.include_weekoff === true
+                    }
+                    onChange={e => myParent.changeChecks(e)}
+                  />
+                  <span>Yes</span>
+                </label>
+              </div>
+            </div>
 
-        <div className="col  form-group">
-          <label>Is Document Mandatory</label>
-          <div className="customCheckbox">
-            <label className="checkbox inline">
-              <input
-                type="checkbox"
-                name="document_mandatory"
-                checked={
-                  myParent.state.document_mandatory === "Y" ||
-                  myParent.state.document_mandatory === true
-                }
-                onChange={e => myParent.changeChecks(e)}
-              />
-              <span>Yes</span>
-            </label>
-          </div>
-        </div>
+            <div className="col-4  form-group">
+              <label>Is Document Mandatory</label>
+              <div className="customCheckbox">
+                <label className="checkbox inline">
+                  <input
+                    type="checkbox"
+                    name="document_mandatory"
+                    checked={
+                      myParent.state.document_mandatory === "Y" ||
+                      myParent.state.document_mandatory === true
+                    }
+                    onChange={e => myParent.changeChecks(e)}
+                  />
+                  <span>Yes</span>
+                </label>
+              </div>
+            </div>
 
-        <div className="col  form-group">
-          <label>Exit Permit Required</label>
-          <div className="customCheckbox">
-            <label className="checkbox inline">
-              <input
-                type="checkbox"
-                name="exit_permit_required"
-                checked={
-                  myParent.state.exit_permit_required === "Y" ||
-                  myParent.state.exit_permit_required === true
-                }
-                onChange={e => myParent.changeChecks(e)}
-              />
-              <span>Yes</span>
-            </label>
-          </div>
-        </div>
+            <div className="col-4  form-group">
+              <label>Exit Permit Required</label>
+              <div className="customCheckbox">
+                <label className="checkbox inline">
+                  <input
+                    type="checkbox"
+                    name="exit_permit_required"
+                    checked={
+                      myParent.state.exit_permit_required === "Y" ||
+                      myParent.state.exit_permit_required === true
+                    }
+                    onChange={e => myParent.changeChecks(e)}
+                  />
+                  <span>Yes</span>
+                </label>
+              </div>
+            </div>
 
-        <div className="col  form-group">
-          <label>Is Holiday Reimbursement</label>
-          <div className="customCheckbox">
-            <label className="checkbox inline">
-              <input
-                type="checkbox"
-                name="holiday_reimbursement"
-                checked={
-                  myParent.state.holiday_reimbursement === "Y" ||
-                  myParent.state.holiday_reimbursement === true
-                }
-                onChange={e => myParent.changeChecks(e)}
-              />
-              <span>Yes</span>
-            </label>
+            <div className="col-4  form-group">
+              <label>Is Holiday Reimbursement</label>
+              <div className="customCheckbox">
+                <label className="checkbox inline">
+                  <input
+                    type="checkbox"
+                    name="holiday_reimbursement"
+                    checked={
+                      myParent.state.holiday_reimbursement === "Y" ||
+                      myParent.state.holiday_reimbursement === true
+                    }
+                    onChange={e => myParent.changeChecks(e)}
+                  />
+                  <span>Yes</span>
+                </label>
+              </div>
+            </div>
+
+            <div className="col-4  form-group">
+              <label>Is Yearly Leave Booking</label>
+              <div className="customCheckbox">
+                <label className="checkbox inline">
+                  <input
+                    type="checkbox"
+                    name="yearly_booking"
+                    checked={
+                      myParent.state.yearly_booking === "Y" ||
+                      myParent.state.yearly_booking === true
+                    }
+                    onChange={e => myParent.changeChecks(e)}
+                  />
+                  <span>Yes</span>
+                </label>
+              </div>
+            </div>
+            <div className="col-4  form-group">
+              <label>Is Proportionate</label>
+              <div className="customCheckbox">
+                <label className="checkbox inline">
+                  <input
+                    type="checkbox"
+                    name="proportionate_leave"
+                    checked={
+                      myParent.state.proportionate_leave === "Y" ||
+                      myParent.state.proportionate_leave === true
+                    }
+                    onChange={e => myParent.changeChecks(e)}
+                  />
+                  <span>Yes</span>
+                </label>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-      <div className="row">
-        <div className="col  form-group">
-          <label>Is Yearly Leave Booking</label>
-          <div className="customCheckbox">
-            <label className="checkbox inline">
-              <input
-                type="checkbox"
-                name="yearly_booking"
-                checked={
-                  myParent.state.yearly_booking === "Y" ||
-                  myParent.state.yearly_booking === true
-                }
-                onChange={e => myParent.changeChecks(e)}
-              />
-              <span>Yes</span>
-            </label>
-          </div>
-        </div>
-        <div className="col  form-group">
-          <label>Is Proportionate</label>
-          <div className="customCheckbox">
-            <label className="checkbox inline">
-              <input
-                type="checkbox"
-                name="proportionate_leave"
-                checked={
-                  myParent.state.proportionate_leave === "Y" ||
-                  myParent.state.proportionate_leave === true
-                }
-                onChange={e => myParent.changeChecks(e)}
-              />
-              <span>Yes</span>
-            </label>
-          </div>
-        </div>
-        {/*
+          {/*
         <div className="col form-group">
           <label>Allow Round off</label>
           <div className="customCheckbox">
@@ -413,53 +467,7 @@ function LeaveEntitlement(props) {
           </div>
         </div>
  */}
-        <div className="col  form-group">
-          <label>Religion Mandatory</label>
-          <div className="customCheckbox">
-            <label className="checkbox inline">
-              <input
-                type="checkbox"
-                name="religion_required"
-                checked={
-                  myParent.state.religion_required === "Y" ||
-                  myParent.state.religion_required === true
-                }
-                onChange={e => myParent.changeChecks(e)}
-              />
-              <span>Yes</span>
-            </label>
-          </div>
         </div>
-        <AlagehAutoComplete
-          div={{ className: "col form-group" }}
-          label={{
-            forceLabel: "Select Religion",
-            isImp:
-              myParent.state.religion_required === "Y" ||
-              myParent.state.religion_required === true
-          }}
-          selector={{
-            name: "religion_id",
-            value: myParent.state.religion_id,
-            className: "select-fld",
-            dataSource: {
-              textField: "religion_name",
-              valueField: "hims_d_religion_id",
-              data: myParent.state.religions
-            },
-            onChange: value => myParent.dropDownHandler(value),
-            onClear: () => {
-              myParent.setState({
-                religion_id: null
-              });
-            },
-            others: {
-              disabled:
-                !myParent.state.religion_required ||
-                myParent.state.religion_required === "N"
-            }
-          }}
-        />
       </div>
     </div>
   );

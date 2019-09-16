@@ -14,7 +14,8 @@
       border: 1px solid #dededf;
       height: 30px;
       border-radius: 4px;
-      font-size: 1rem; }
+      font-size: 1rem;
+      background: #fff; }
       .PhysioTherapyScreen .globalSearchCntr h6 .fa-search {
         float: right;
         margin-top: 7px;

@@ -690,10 +690,10 @@ export default class BranchMaster extends Component {
                           <label>Default Currency</label>
                           <h6>{data.currency_description}</h6>
                         </div>
-                        <div className="col-3">
+                        {/* <div className="col-3">
                           <label>Head Office</label>
                           <h6>No</h6>
-                        </div>
+                        </div> */}
                         <div className="col-6">
                           <label>Address</label>
                           <h6>{data.hospital_address}</h6>

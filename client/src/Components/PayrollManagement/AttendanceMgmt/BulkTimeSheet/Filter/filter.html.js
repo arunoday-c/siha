@@ -303,7 +303,7 @@ export default function Filter(props) {
         }}
       /> */}
 
-      <div className="col-4" style={{ paddingTop: 19 }}>
+      <div className="col-5" style={{ paddingTop: 19 }}>
         <div className="uploadManualDiv">
           <input
             className="inputfile"

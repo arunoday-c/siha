@@ -99,7 +99,8 @@ export default {
       present_state_id: null,
       present_city_id: null,
       department_name: null,
-      employeeImage: undefined
+      employeeImage: undefined,
+      reporting_to_id: null
     };
     return output;
   }

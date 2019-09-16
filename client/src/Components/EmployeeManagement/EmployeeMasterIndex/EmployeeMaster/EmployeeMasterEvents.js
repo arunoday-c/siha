@@ -7,6 +7,7 @@ import {
 } from "../../../../utils/GlobalFunctions";
 import Enumerable from "linq";
 import moment from "moment";
+import _ from "lodash";
 
 const Validations = $this => {
   let isError = false;
@@ -109,50 +110,66 @@ const Validations = $this => {
     isError = true;
     swalMessage({
       type: "warning",
-      title: "Department. Cannot be blank."
+      title: "Sub Department. Cannot be blank."
     });
 
     return isError;
-  } else if ($this.state.personalDetails.deptDetails !== 0) {
-    const activeDept = Enumerable.from($this.state.personalDetails.deptDetails)
-      .where(w => w.dep_status === "A")
-      .toArray();
+  } else if ($this.state.personalDetails.employee_group_id === null) {
+    isError = true;
+    swalMessage({
+      type: "warning",
+      title: "Employee Group. Cannot be blank."
+    });
 
-    if (activeDept.length > 1) {
-      isError = true;
-      swalMessage({
-        type: "warning",
-        title: "Only one Department can be Active."
-      });
-    }
     return isError;
-  } else if ($this.state.personalDetails.hims_d_employee_id !== null) {
-    if ($this.state.personalDetails.employee_group_id === null) {
-      isError = true;
-      swalMessage({
-        type: "warning",
-        title: "Employee Group. Cannot be blank."
-      });
+  } else if ($this.state.personalDetails.hospital_id === null) {
+    isError = true;
+    swalMessage({
+      type: "warning",
+      title: "Branch. Cannot be blank."
+    });
 
-      return isError;
-    } else if ($this.state.personalDetails.hospital_id === null) {
-      isError = true;
-      swalMessage({
-        type: "warning",
-        title: "Hospital. Cannot be blank."
-      });
+    return isError;
+  } else if ($this.state.personalDetails.overtime_group_id === null) {
+    isError = true;
+    swalMessage({
+      type: "warning",
+      title: "Overtime Group. Cannot be blank."
+    });
 
-      return isError;
-    } else if ($this.state.personalDetails.overtime_group_id === null) {
-      isError = true;
-      swalMessage({
-        type: "warning",
-        title: "Overtime Group. Cannot be blank."
-      });
+    return isError;
+  } else if ($this.state.personalDetails.employee_designation_id === null) {
+    isError = true;
+    swalMessage({
+      type: "warning",
+      title: "Designation. Cannot be blank."
+    });
 
-      return isError;
-    }
+    return isError;
+  } else if ($this.state.personalDetails.reporting_to_id === null) {
+    isError = true;
+    swalMessage({
+      type: "warning",
+      title: "Reporting To. Cannot be blank."
+    });
+
+    return isError;
   }
+
+  // else if ($this.state.personalDetails.deptDetails !== 0) {
+  //   const activeDept = Enumerable.from($this.state.personalDetails.deptDetails)
+  //     .where(w => w.dep_status === "A")
+  //     .toArray();
+  //
+  //   if (activeDept.length > 1) {
+  //     isError = true;
+  //     swalMessage({
+  //       type: "warning",
+  //       title: "Only one Department can be Active."
+  //     });
+  //   }
+  //   return isError;
+  // }
 
   return false;
 };
@@ -163,7 +180,6 @@ const InsertUpdateEmployee = $this => {
     querySelector: "data-validate='empPersonal'",
     onSuccess: () => {
       const err = Validations($this);
-      console.log("Input:", $this.state);
 
       if (!err) {
         if ($this.state.personalDetails.insertdeptDetails.length > 0) {
@@ -180,11 +196,6 @@ const InsertUpdateEmployee = $this => {
                 $this.state.personalDetails.insertdeptDetails[i].from_date
               ).format("YYYY-MM-DD");
             }
-            // $this.state.personalDetails.insertdeptDetails[i].from_date === null
-            //   ? null
-            //   : moment(
-            //       $this.state.personalDetails.insertdeptDetails[i].from_date
-            //     ).format("YYYY-MM-DD");
 
             if (
               $this.state.personalDetails.insertdeptDetails[i].to_date !== null
@@ -193,11 +204,6 @@ const InsertUpdateEmployee = $this => {
                 $this.state.personalDetails.insertdeptDetails[i].to_date
               ).format("YYYY-MM-DD");
             }
-            // $this.state.personalDetails.insertdeptDetails[i].to_date === null
-            //   ? null
-            //   : moment(
-            //       $this.state.personalDetails.insertdeptDetails[i].to_date
-            //     ).format("YYYY-MM-DD");
           }
         }
 
@@ -215,11 +221,6 @@ const InsertUpdateEmployee = $this => {
                 $this.state.personalDetails.updatedeptDetails[j].from_date
               ).format("YYYY-MM-DD");
             }
-            // $this.state.personalDetails.updatedeptDetails[j].from_date === null
-            //   ? null
-            //   : moment(
-            //       $this.state.personalDetails.updatedeptDetails[j].from_date
-            //     ).format("YYYY-MM-DD");
 
             if (
               $this.state.personalDetails.updatedeptDetails[j].to_date !== null
@@ -228,11 +229,6 @@ const InsertUpdateEmployee = $this => {
                 $this.state.personalDetails.updatedeptDetails[j].to_date
               ).format("YYYY-MM-DD");
             }
-            // $this.state.personalDetails.updatedeptDetails[j].to_date === null
-            //   ? null
-            //   : moment(
-            //       $this.state.personalDetails.updatedeptDetails[j].to_date
-            //     ).format("YYYY-MM-DD");
           }
         }
 
@@ -256,15 +252,6 @@ const InsertUpdateEmployee = $this => {
         );
         let inputObj = $this.state.personalDetails;
 
-        // if ($this.state.filePreview !== null) {
-        //   inputObj = {
-        //     ...$this.state.personalDetails,
-        //     employee_Image: imageToByteArray($this.state.filePreview)
-        //   };
-        // } else {
-        //   inputObj = $this.state;
-        // }
-
         inputObj.inactive_date =
           inputObj.inactive_date !== null
             ? moment(inputObj.inactive_date).format("YYYY-MM-DD")
@@ -285,6 +272,17 @@ const InsertUpdateEmployee = $this => {
 
         let _arrayImages = [];
         if (inputObj.hims_d_employee_id === null) {
+          let employee_code_exists = _.find(
+            $this.props.Employeedetails,
+            f => f.employee_code === inputObj.employee_code
+          );
+          if (employee_code_exists !== undefined) {
+            swalMessage({
+              title: inputObj.employee_code + " Employee Code. Already Exists",
+              type: "warning"
+            });
+            return;
+          }
           algaehApiCall({
             uri: "/employee/addEmployeeMaster",
             module: "hrManagement",
@@ -306,36 +304,41 @@ const InsertUpdateEmployee = $this => {
                     })
                   );
                 }
-                $this.setState({
-                  hims_d_employee_id: response.data.records.insertId,
-                  personalDetails: {
-                    ...$this.state.personalDetails,
-                    insertearnComp: [],
-                    insertDeductionComp: [],
-                    insertContributeComp: [],
-                    deleteearnComp: [],
-                    updateearnComp: [],
-                    deleteDeductionComp: [],
-                    updateDeductionComp: [],
-                    deleteContributeComp: [],
-                    updateContributeComp: [],
 
-                    insertIdDetails: [],
-                    insertDependentDetails: [],
-                    deleteIdDetails: [],
-                    updateIdDetails: [],
-                    deleteDependentDetails: [],
-                    updateDependentDetails: [],
+                $this.setState(
+                  {
+                    hims_d_employee_id: response.data.records.insertId,
+                    pageDisplay: "PersonalDetails",
+                    personalDetails: {
+                      ...$this.state.personalDetails,
+                      insertearnComp: [],
+                      insertDeductionComp: [],
+                      insertContributeComp: [],
+                      deleteearnComp: [],
+                      updateearnComp: [],
+                      deleteDeductionComp: [],
+                      updateDeductionComp: [],
+                      deleteContributeComp: [],
+                      updateContributeComp: [],
 
-                    insertdeptDetails: [],
-                    updatedeptDetails: [],
+                      insertIdDetails: [],
+                      insertDependentDetails: [],
+                      deleteIdDetails: [],
+                      updateIdDetails: [],
+                      deleteDependentDetails: [],
+                      updateDependentDetails: [],
 
-                    insertservTypeCommission: [],
-                    insertserviceComm: [],
-                    updateserviceComm: [],
-                    updateservTypeCommission: []
-                  }
-                });
+                      insertdeptDetails: [],
+                      updatedeptDetails: [],
+
+                      insertservTypeCommission: [],
+                      insertserviceComm: [],
+                      updateserviceComm: [],
+                      updateservTypeCommission: []
+                    }
+                  },
+                  () => $this.props.onClose && $this.props.onClose(true)
+                );
 
                 swalMessage({
                   type: "success",
@@ -373,35 +376,39 @@ const InsertUpdateEmployee = $this => {
                     })
                   );
                 }
-                $this.setState({
-                  personalDetails: {
-                    ...$this.state.personalDetails,
-                    insertearnComp: [],
-                    insertDeductionComp: [],
-                    insertContributeComp: [],
-                    deleteearnComp: [],
-                    updateearnComp: [],
-                    deleteDeductionComp: [],
-                    updateDeductionComp: [],
-                    deleteContributeComp: [],
-                    updateContributeComp: [],
+                $this.setState(
+                  {
+                    pageDisplay: "PersonalDetails",
+                    personalDetails: {
+                      ...$this.state.personalDetails,
+                      insertearnComp: [],
+                      insertDeductionComp: [],
+                      insertContributeComp: [],
+                      deleteearnComp: [],
+                      updateearnComp: [],
+                      deleteDeductionComp: [],
+                      updateDeductionComp: [],
+                      deleteContributeComp: [],
+                      updateContributeComp: [],
 
-                    insertIdDetails: [],
-                    insertDependentDetails: [],
-                    deleteIdDetails: [],
-                    updateIdDetails: [],
-                    deleteDependentDetails: [],
-                    updateDependentDetails: [],
+                      insertIdDetails: [],
+                      insertDependentDetails: [],
+                      deleteIdDetails: [],
+                      updateIdDetails: [],
+                      deleteDependentDetails: [],
+                      updateDependentDetails: [],
 
-                    insertdeptDetails: [],
-                    updatedeptDetails: [],
+                      insertdeptDetails: [],
+                      updatedeptDetails: [],
 
-                    insertservTypeCommission: [],
-                    insertserviceComm: [],
-                    updateserviceComm: [],
-                    updateservTypeCommission: []
-                  }
-                });
+                      insertservTypeCommission: [],
+                      insertserviceComm: [],
+                      updateserviceComm: [],
+                      updateservTypeCommission: []
+                    }
+                  },
+                  () => $this.props.onClose && $this.props.onClose(true)
+                );
                 swalMessage({
                   type: "success",
                   title: "Updated Successfully."

@@ -10,7 +10,9 @@ import {
   getLabResult,
   // getAnalytes,
   ShowTestAnalyte,
-  CloseTestAnalyte
+  CloseTestAnalyte,
+  ShowCompareTest,
+  CloseCompareTest
 } from "./LabResultEvents";
 
 import { AlgaehDataGrid, AlgaehLabel } from "../../../Wrapper/algaehWrapper";
@@ -19,11 +21,18 @@ import { AlgaehActions } from "../../../../actions/algaehActions";
 import moment from "moment";
 import Options from "../../../../Options.json";
 import TestAnalytes from "./TestAnalytes";
+import CompareTest from "./CompareTest";
+
 class LabResult extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { lab_result: [], openAna: false, test_analytes: [] };
+    this.state = {
+      lab_result: [],
+      openAna: false,
+      test_analytes: [],
+      openCompare: false
+    };
   }
 
   componentDidMount() {
@@ -67,6 +76,25 @@ class LabResult extends Component {
                 <AlgaehDataGrid
                   id="Lab_list_grid"
                   columns={[
+                    {
+                      fieldName: "actions",
+                      label: <AlgaehLabel label={{ forceLabel: "Action" }} />,
+                      displayTemplate: row => {
+                        return (
+                          <span>
+                            <i
+                              onClick={ShowCompareTest.bind(this, this, row)}
+                              className="fas fa-random"
+                            />
+                          </span>
+                        );
+                      },
+                      others: {
+                        maxWidth: 90,
+                        resizable: false,
+                        style: { textAlign: "center" }
+                      }
+                    },
                     {
                       fieldName: "status",
                       label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
@@ -118,22 +146,6 @@ class LabResult extends Component {
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Ordered By" }} />
                       )
-                      // displayTemplate: row => {
-                      //   let display =
-                      //     this.props.assdeptanddoctors.doctors === undefined
-                      //       ? []
-                      //       : this.props.assdeptanddoctors.doctors.filter(
-                      //           f => f.employee_id === row.provider_id
-                      //         );
-                      //
-                      //   return (
-                      //     <span>
-                      //       {display !== null && display.length !== 0
-                      //         ? display[0].full_name
-                      //         : ""}
-                      //     </span>
-                      //   );
-                      // }
                     },
                     {
                       fieldName: "ordered_date",
@@ -175,6 +187,28 @@ class LabResult extends Component {
                   service_name: this.state.service_name,
                   patient_code: this.state.patient_code,
                   full_name: this.state.full_name
+                }}
+              />
+
+              <CompareTest
+                show={this.state.openCompare}
+                onClose={CloseCompareTest.bind(this, this)}
+                HeaderCaption={
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Test Analytes",
+                      align: "ltr"
+                    }}
+                  />
+                }
+                inputsparameters={{
+                  test_analytes: this.state.test_analytes,
+                  service_code: this.state.service_code,
+                  service_name: this.state.service_name,
+                  patient_code: this.state.patient_code,
+                  full_name: this.state.full_name,
+                  list_of_tests: this.state.list_of_tests,
+                  order_id: this.state.order_id
                 }}
               />
             </div>

@@ -13,8 +13,8 @@
                 <tr><td><label class="textEnLft">Invoice No</label>:<span class="valueText">{{header.invoice_number}}</span><label class="textArRht">رقم الفاتورة</label></td><td><label class="textEnLft">Invoice Date</label>:<span class="valueText">{{dateTime header.invoice_date "date"}}</span><label class="textArRht">تاريخ الفاتورة</label></td></tr>
                  <tr><td><label class="textEnLft">Patient Name</label>:<span class="valueText">{{header.patient_full_name}}</span><label class="textArRht">الإسم</label></td><td><label class="textEnLft">Visit Date</label>:<span class="valueText">{{dateTime header.visit_date "date"}}</span><label class="textArRht">  رقم الزيارة</label></td></tr>
                 <tr><td><label class="textEnLft">MR No</label>:<span class="valueText">{{header.patient_code}}</span><label class="textArRht">رقم الملف</label></td><td><label class="textEnLft">Reg. Date</label>:<span class="valueText">{{dateTime header.registration_date "date"}}</span><label class="textArRht">  تاريخ التسجيل</label></td></tr>
-                 <tr><td><label class="textEnLft">Insurance Co.</label>:<span class="valueText">Cash</span><label class="textArRht">  شركة التأمين</label></td><td><label class="textEnLft">Age/Gender</label>:<span class="valueText">{{header.age_in_years}}/{{header.gender}}</span><label class="textArRht">  العمر / الجنس</label></td></tr>
-                  <tr><td><label class="textEnLft">Policy/ Class</label>:<span class="valueText">Cash</span><label class="textArRht">  البوليصة / الفئة</label></td><td><label class="textEnLft">Nationality</label>:<span class="valueText">{{header.nationality}}</span><label class="textArRht">  الجنسية</label></td></tr>
+                 <tr><td><label class="textEnLft">Insurance Co.</label>:<span class="valueText">{{header.insurance_provider_name}}</span><label class="textArRht">  شركة التأمين</label></td><td><label class="textEnLft">Age/Gender</label>:<span class="valueText">{{header.age_in_years}}/{{header.gender}}</span><label class="textArRht">  العمر / الجنس</label></td></tr>
+                  <tr><td><label class="textEnLft">Policy/ Class</label>:<span class="valueText">{{header.network_type}}</span><label class="textArRht">  البوليصة / الفئة</label></td><td><label class="textEnLft">Nationality</label>:<span class="valueText">{{header.nationality}}</span><label class="textArRht">  الجنسية</label></td></tr>
                <tr>
                     <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
                 </tr>
@@ -43,7 +43,7 @@
                     </tr>
                     {{#each detailList}}
                     <tr>
-                        <td>{{ capitalization service_name}}                          
+                        <td>{{ capitalization service_name}}
                           {{#if service_type_id 1 }}
                           {{#if new_visit_patient "N"}}
                             <span>Follow Up</span>

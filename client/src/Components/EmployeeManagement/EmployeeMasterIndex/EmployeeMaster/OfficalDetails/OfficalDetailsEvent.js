@@ -14,7 +14,7 @@ const texthandle = ($this, e) => {
     ) {
       swalMessage({
         type: "error",
-        title: $this.state.date_of_releaving_label + " can not blank"
+        title: $this.state.date_of_releaving_label + " cannot blank"
       });
       return;
     }
@@ -26,18 +26,26 @@ const texthandle = ($this, e) => {
 
   if (name === "sub_department_id") {
     department_name = e.selected.department_name;
+    $this.setState({
+      [name]: value,
+      department_name: department_name,
+      ..._notice
+    });
+    $this.props.EmpMasterIOputs.updateEmployeeTabs({
+      [name]: value,
+      department_name: department_name,
+      ..._notice
+    });
+  } else {
+    $this.setState({
+      [name]: value,
+      ..._notice
+    });
+    $this.props.EmpMasterIOputs.updateEmployeeTabs({
+      [name]: value,
+      ..._notice
+    });
   }
-
-  $this.setState({
-    [name]: value,
-    department_name: department_name,
-    ..._notice
-  });
-  $this.props.EmpMasterIOputs.updateEmployeeTabs({
-    [name]: value,
-    department_name: department_name,
-    ..._notice
-  });
 };
 
 const accomodationProvided = ($this, e) => {
@@ -61,12 +69,13 @@ const datehandle = ($this, ctrl, e) => {
       };
     }
   }
+  let selected_date = moment(ctrl, "YYYY-MM-DD", true).isValid();
   $this.setState({
-    [e]: ctrl,
+    [e]: selected_date === true ? ctrl : null,
     ..._notice
   });
   $this.props.EmpMasterIOputs.updateEmployeeTabs({
-    [e]: ctrl,
+    [e]: selected_date === true ? ctrl : null,
     ..._notice
   });
 };
