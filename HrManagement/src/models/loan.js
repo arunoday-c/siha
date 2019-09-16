@@ -241,7 +241,7 @@ module.exports = {
           loan_issued +
           "" +
           loan_closed +
-          "order by hims_f_loan_application_id desc",
+          " order by hims_f_loan_application_id desc",
         values: [req.userIdentity.hospital_id],
 
         printQuery: true
