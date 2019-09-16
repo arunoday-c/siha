@@ -5047,14 +5047,14 @@ function calc(db, body) {
 //created by irfan: to save valid leave Application
 function saveF(_mysql, req, next, input, msg) {
   // const utilities = new algaehUtilities();
-
+  // console.log("userIdentity: ", req.userIdentity);
   _mysql
     .generateRunningNumber({
       modules: ["EMPLOYEE_LEAVE"],
       tableName: "hims_f_app_numgen",
       identity: {
         algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-        hospital_id: req.userIdentity["x-branch"]
+        hospital_id: req.userIdentity.hospital_id
       }
     })
     .then(numGenLeave => {
