@@ -22,12 +22,11 @@
     padding: 10px;
     border-radius: 10px;
     margin-bottom: 10px;
-    border: 2px solid #d6d6d6;
     background: #fff; }
     .DepartmentOrgView .eachShelf li.eachChild .childCount {
       position: absolute;
-      top: -2px;
-      right: -2px;
+      top: 0;
+      right: 0;
       background: #fff;
       width: auto;
       height: 30px;
@@ -39,6 +38,7 @@
       padding: 0 5px;
       font-size: 0.8rem;
       border: 2px solid #d6d6d6;
+      border-width: 0 0 2px 2px;
       font-weight: bold; }
     .DepartmentOrgView .eachShelf li.eachChild .imgSection {
       display: inline-block;
@@ -88,7 +88,6 @@
       left: -15px;
       z-index: -1; }
   .DepartmentOrgView .eachShelf .clickedLi {
-    border: 2px solid #027468;
     background: #00a796 !important;
     color: #fff; }
     .DepartmentOrgView .eachShelf .clickedLi::after {
@@ -100,3 +99,5 @@
       top: 49%;
       right: -14px;
       z-index: -1; }
+    .DepartmentOrgView .eachShelf .clickedLi .childCount {
+      border-color: #027468 !important; }

@@ -6,7 +6,7 @@
     border-radius: 0;
     margin: 0px auto;
     padding: 0;
-    top: 20%;
+    top: 15%;
     background: #082829;
     z-index: 9999;
     left: 30vw;
@@ -58,6 +58,8 @@
       input[type="button"] {
         font-size: 0.8rem;
         background: #0b3638;
+        white-space: normal;
+        float: left;
         &:hover {
           background: #34b8bc;
         }
@@ -71,6 +73,7 @@
         padding: 8px 0;
         height: 30px;
         font-size: 0.8rem;
+        width: 24.777%;
         &:last-child {
           background: #00a796;
         }

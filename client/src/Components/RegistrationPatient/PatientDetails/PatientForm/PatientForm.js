@@ -359,10 +359,10 @@ class AddPatientForm extends Component {
 
                       <AlgaehDateHandler
                         div={{
-                          className: "col-lg-3 mandatory",
+                          className: "col-lg-3",
                           tabIndex: "6"
                         }}
-                        label={{ fieldName: "hijiri_date", isImp: false }}
+                        label={{ fieldName: "hijiri_date" }}
                         textBox={{ className: "txt-fld" }}
                         maxDate={new Date()}
                         //maxDate={this.state.CurrentDate}

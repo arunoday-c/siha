@@ -204,18 +204,30 @@ class AddAdvanceModal extends PureComponent {
               AlgaehLoader({ show: false });
               if (response.data.success) {
                 let data = response.data.records;
-                $this.setState({
-                  receipt_number: data.receipt_number
+                let IOputs = AdvRefunIOputs.inputParam();
+                IOputs.receipt_number = data.receipt_number;
+                // $this.setState({
+                //   receipt_number: data.receipt_number
+                // },()=>{
+                //   let IOputs = AdvRefunIOputs.inputParam();
+                //   this.setState(IOputs, () => {
+                //     this.props.onClose && this.props.onClose(e);
+                //   });
+                // });
+
+                $this.setState(IOputs, () => {
+                  this.props.onClose && this.props.onClose(e);
+                });
+
+                swalMessage({
+                  title: "Advance Collected Successfully.",
+                  type: "success"
                 });
 
                 context.updateState({
                   advance_amount: data.total_advance_amount,
                   AdvanceOpen: false,
                   RefundOpen: false
-                });
-                swalMessage({
-                  title: "Advance Collected Successfully.",
-                  type: "success"
                 });
               }
             },

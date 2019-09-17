@@ -17,6 +17,7 @@ import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import swal from "sweetalert2";
 import Enumerable from "linq";
 import { AlgaehActions } from "../../../../actions/algaehActions";
+import { stat } from "fs";
 
 class EarningsDeductions extends Component {
   constructor(props) {
@@ -40,7 +41,9 @@ class EarningsDeductions extends Component {
       on_edit: false,
       hims_d_earning_deduction_id: null,
       annual_salary_comp: false
+      // selected_collections: []
     };
+    this.selected_collections = [];
     this.getEarningDeductions();
   }
 
@@ -458,6 +461,7 @@ class EarningsDeductions extends Component {
     });
   }
   onChangeCalculatorInput(e) {
+    this.selected_collections.push(e.target.value);
     this.setState({
       calculator_values: this.state.calculator_values + "" + e.target.value
     });
@@ -467,6 +471,19 @@ class EarningsDeductions extends Component {
       calculator_values: ""
     });
   }
+  onBackspaceHandler(e) {
+    let calLength = this.selected_collections.length;
+    if (calLength === 0) {
+      return;
+    }
+    let lastCharacter = this.selected_collections[calLength - 1];
+    this.selected_collections.pop();
+    let calValues = this.state.calculator_values.replace(lastCharacter, "");
+    this.setState({
+      calculator_values: calValues
+    });
+  }
+
   onApplayFormulaHandler(e) {
     this.setState({
       formula: this.state.calculator_values,
@@ -727,6 +744,12 @@ class EarningsDeductions extends Component {
                   className="col-4"
                   value="Close"
                   onClick={this.CLoseCalculator.bind(this)}
+                />{" "}
+                <input
+                  type="button"
+                  className="col-4"
+                  value="Backspace"
+                  onClick={this.onBackspaceHandler.bind(this)}
                 />
                 <input
                   type="button"
