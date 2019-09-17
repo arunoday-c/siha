@@ -19,13 +19,9 @@ class NewEmployeeProjectRoster extends Component {
       projects: [],
       inputs: {}
     };
-    // this.getAllDepartments();
-    // this.getDesignations();
   }
 
   componentDidMount() {
-    // this.getBranchDetails();
-    // this.getHospitals();
     this.getProjects();
     console.log(React.version);
   }
@@ -72,7 +68,8 @@ class NewEmployeeProjectRoster extends Component {
 
   closeProjectAssign() {
     this.setState({
-      openProjectAssign: false
+      openProjectAssign: false,
+      openAnother: false
     });
     this.getEmployeesForProjectRoster();
   }
