@@ -182,20 +182,18 @@ export default function EmployeeFilter(props) {
   }
 
   function employeeSearch(e) {
-    let input_data = "";
+    let input_data = " hospital_id=" + inputs.hospital_id;
     if (inputs.sub_department_id !== null) {
       input_data += " sub_department_id=" + inputs.sub_department_id;
       if (inputs.designation_id !== null) {
         input_data += " and employee_designation_id=" + inputs.designation_id;
       }
-    } else {
-      input_data = "1=1";
     }
     AlgaehSearch({
       searchGrid: {
         columns: spotlightSearch.Employee_details.employee
       },
-      searchName: "employee",
+      searchName: "employee_project",
       uri: "/gloabelSearch/get",
       inputs: input_data,
       onContainsChange: (text, serchBy, callBack) => {

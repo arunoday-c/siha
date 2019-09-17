@@ -10,7 +10,8 @@ class LeaveAuthDetail extends Component {
     super(props);
     this.state = {
       data: {},
-      leave_his: []
+      leave_his: [],
+      remarks: ""
     };
   }
 
@@ -104,6 +105,13 @@ class LeaveAuthDetail extends Component {
   }
 
   cancelLeave(type) {
+    if (this.state.remarks === "") {
+      swalMessage({
+        title: "Remarks is Mandatory.",
+        type: "warning"
+      });
+      return;
+    }
     let send_data = {
       total_approved_days: this.state.data.total_approved_days,
       authorized_comment: this.state.remarks,
@@ -303,7 +311,9 @@ class LeaveAuthDetail extends Component {
                         <div className="row">
                           {" "}
                           <div className="col-12">
-                            <label>Remarks</label>
+                            <AlgaehLabel
+                              label={{ forceLabel: "Remarks", isImp: true }}
+                            />
                             <textarea
                               name="remarks"
                               value={this.state.remarks}

@@ -354,22 +354,6 @@ const generateReceipt = $this => {
           {
             name: "hims_f_billing_header_id",
             value: $this.state.hims_f_billing_header_id
-          },
-          {
-            name: "patient_id",
-            value: $this.state.hims_d_patient_id
-          },
-          {
-            name: "hims_d_patient_id",
-            value: $this.state.hims_d_patient_id
-          },
-          {
-            name: "visit_id",
-            value: $this.state.patient_visit_id
-          },
-          {
-            name: "visit_date",
-            value: null
           }
         ],
         outputFileType: "PDF"
@@ -553,8 +537,10 @@ const ClosePackageUtilize = ($this, e) => {
             mappingName: "PatientPackageList"
           },
           afterSuccess: data => {
+            debugger;
             if (data.length !== 0 || data.length === undefined) {
               $this.setState({
+                primary_policy_num: $this.state.primary_policy_num,
                 pack_balance_amount: data[0].balance_amount
               });
             }

@@ -8,6 +8,7 @@ import AlgaehModalPopUp from "../../../Wrapper/modulePopUp";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import isEqual from "lodash/isEqual";
+import ButtonType from "../../../Wrapper/algaehButton";
 
 class ProjectEmpAssign extends Component {
   constructor(props) {
@@ -18,7 +19,8 @@ class ProjectEmpAssign extends Component {
       projectList: [],
       projects: [],
       projEmp: [],
-      allChecked: false
+      allChecked: false,
+      loading_Process: false
     };
   }
 
@@ -150,36 +152,40 @@ class ProjectEmpAssign extends Component {
         type: "warning"
       });
     } else {
-      let sendData = {
-        from_date: moment(this.state.from_date).format("YYYY-MM-DD"),
-        to_date: moment(this.state.to_date).format("YYYY-MM-DD"),
-        project_id: this.state.hims_d_project_id,
-        employees: this.state.projEmp,
-        hospital_id: this.state.hospital_id
-      };
+      this.setState({ loading_Process: true }, () => {
+        let sendData = {
+          from_date: moment(this.state.from_date).format("YYYY-MM-DD"),
+          to_date: moment(this.state.to_date).format("YYYY-MM-DD"),
+          project_id: this.state.hims_d_project_id,
+          employees: this.state.projEmp,
+          hospital_id: this.state.hospital_id
+        };
 
-      // console.log(JSON.stringify(sendData));
-
-      algaehApiCall({
-        uri: "/projectjobcosting/addProjectRoster",
-        method: "POST",
-        data: sendData,
-        module: "hrManagement",
-        onSuccess: res => {
-          if (res.data.success) {
-            swalMessage({
-              title: "Record Added Successfully",
-              type: "success"
+        algaehApiCall({
+          uri: "/projectjobcosting/addProjectRoster",
+          method: "POST",
+          data: sendData,
+          module: "hrManagement",
+          onSuccess: res => {
+            if (res.data.success) {
+              this.setState({ loading_Process: false }, () => {
+                swalMessage({
+                  title: "Record Added Successfully",
+                  type: "success"
+                });
+                document.getElementById("clsProjAsgn").click();
+              });
+            }
+          },
+          onFailure: err => {
+            this.setState({ loading_Process: false }, () => {
+              swalMessage({
+                title: err.message,
+                type: "error"
+              });
             });
-            document.getElementById("clsProjAsgn").click();
           }
-        },
-        onFailure: err => {
-          swalMessage({
-            title: err.message,
-            type: "error"
-          });
-        }
+        });
       });
 
       // console.log("SEND DATA:", JSON.stringify(sendData));
@@ -266,7 +272,6 @@ class ProjectEmpAssign extends Component {
               <div className="col-4">
                 <h6>Select Project</h6>
                 <div className="row">
-                  {" "}
                   <AlagehFormGroup
                     div={{ className: "col" }}
                     textBox={{
@@ -287,15 +292,6 @@ class ProjectEmpAssign extends Component {
                   />
                 </div>
 
-                {/* <input
-                  type="text"
-                  autoComplete="off"
-                  name="searchprojects"
-                  className="rosterSrch"
-                  placeholder="Search projects"
-                  value={this.state.searchprojects}
-                  onChange={this.SearchHandler.bind(this)}
-                /> */}
                 <ul className="projectList">
                   {_projectList.map((data, index) => {
                     return (
@@ -336,7 +332,7 @@ class ProjectEmpAssign extends Component {
                         type: "text"
                       },
                       others: {
-                        placeholder: "Search Employee",
+                        placeholder: "Search Employee By Name",
                         tabIndex: "3",
                         disabled: this.state.allChecked
                       }
@@ -385,13 +381,15 @@ class ProjectEmpAssign extends Component {
               <div className="col-lg-4"> &nbsp;</div>
 
               <div className="col-lg-8">
-                <button
+                <ButtonType
+                  classname="btn-primary"
+                  loading={this.state.loading_Process}
                   onClick={this.processAssignment.bind(this)}
-                  type="button"
-                  className="btn btn-primary"
-                >
-                  PROCESS
-                </button>
+                  label={{
+                    forceLabel: "PROCESS",
+                    returnText: true
+                  }}
+                />
 
                 <button
                   onClick={this.props.onClose}

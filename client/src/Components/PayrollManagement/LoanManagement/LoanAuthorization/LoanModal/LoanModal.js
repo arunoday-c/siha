@@ -431,7 +431,7 @@ class LoanModal extends Component {
                     others: { filterable: false }
                   },
                   {
-                    fieldName: "loan_description",
+                    fieldName: "application_reason",
                     label: (
                       <AlgaehLabel label={{ forceLabel: "Reason For Loan" }} />
                     ),

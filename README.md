@@ -23,3 +23,11 @@ add flags in 3 tables Manually
 1. billing module ===> sudo npm link Use in front desk and pharmacy
 2. Laboratory module ===> sudo npm link Use in billing
 3. Radiology module ===> sudo npm link Use in billing
+
+# pharmacy item expiry notification EVENT-TRIGGER
+
+CREATE EVENT IF NOT EXISTS pharmacy_item_expiry_notify
+ON SCHEDULE EVERY 1 DAY
+STARTS TIMESTAMP(CURRENT_DATE) + INTERVAL 1 DAY + INTERVAL 1 HOUR
+ON COMPLETION PRESERVE
+DO call hims_test_db.pharmacy_item_expiry_notify();
