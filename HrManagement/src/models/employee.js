@@ -78,6 +78,13 @@ module.exports = {
           _strAppend +=
             " and E.employee_designation_id='" + req.query.designation_id + "'";
         }
+
+        if (req.query.hospital_id != null) {
+          _strAppend += " and E.hospital_id='" + req.query.hospital_id + "'";
+        } else {
+          _strAppend +=
+            " and E.hospital_id='" + req.userIdentity.hospital_id + "'";
+        }
         utilities.logger().log("Query: ", _strAppend);
         _mysql
           .executeQuery({
@@ -88,9 +95,9 @@ module.exports = {
                 inner join hims_d_department D on SD.department_id = D.hims_d_department_id \
                 inner join hims_d_religion R on E.religion_id = R.hims_d_religion_id \
                 left join hims_d_designation DE on E.employee_designation_id = DE.hims_d_designation_id left join hims_d_nationality N on N.hims_d_nationality_id = E.nationality WHERE \
-                E.record_status = 'A'  and E.hospital_id =?" +
+                E.record_status = 'A' " +
               _strAppend,
-            values: [req.userIdentity.hospital_id],
+            // values: [req.userIdentity.hospital_id],
             printQuery: true
           })
           .then(result => {
