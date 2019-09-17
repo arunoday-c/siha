@@ -26,8 +26,6 @@ class NewEmployeeProjectRoster extends Component {
   }
 
   componentDidMount() {
-    // this.getBranchDetails();
-    // this.getHospitals();
     this.getProjects();
     console.log(React.version);
   }
@@ -74,7 +72,8 @@ class NewEmployeeProjectRoster extends Component {
 
   closeProjectAssign() {
     this.setState({
-      openProjectAssign: false
+      openProjectAssign: false,
+      openAnother: false
     });
     this.getEmployeesForProjectRoster();
   }
