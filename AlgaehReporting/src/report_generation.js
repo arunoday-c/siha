@@ -1036,6 +1036,27 @@ module.exports = {
                                       .replace(/  +/g, " ")
                                       .replace(/&amp;/gi, "&");
                                     worksheet.mergeCells(merge);
+                                  } else {
+                                    cell.value = $(this)
+                                      .text()
+                                      .replace(/\n/g, " ")
+                                      .replace(/  +/g, " ")
+                                      .replace(/&amp;/gi, "&");
+
+                                    const allColumns = worksheet.columns.length;
+                                    const merge = `A${rowID}:${columnToLetter(
+                                      allColumns
+                                    )}${rowID}`;
+                                    worksheet.mergeCells(merge);
+                                    itemRow.font = {
+                                      bold: true
+                                    };
+                                    itemRow.fill = {
+                                      type: "pattern",
+                                      pattern: "solid",
+                                      bgColor: { argb: "000000" },
+                                      fgColor: { argb: "D1FCFF" }
+                                    };
                                   }
                                 } else {
                                   cell.value = $(this)

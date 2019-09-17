@@ -3,6 +3,7 @@ import "./EmployeeProjectRoster.css";
 import ProjectAssign from "./ProjectAssign";
 import ProjectEmpAssign from "./ProjectEmpAssign";
 import moment from "moment";
+import _ from "lodash";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import Enumerable from "linq";
 import swal from "sweetalert2";
@@ -19,6 +20,7 @@ class NewEmployeeProjectRoster extends Component {
       projects: [],
       inputs: {}
     };
+    this.totalCount = 0;
     // this.getAllDepartments();
     // this.getDesignations();
   }
@@ -505,6 +507,17 @@ class NewEmployeeProjectRoster extends Component {
           },
           onSuccess: res => {
             if (res.data.success) {
+              debugger;
+
+              const rosterExists = _.filter(
+                res.data.records,
+                f => f.empProject.length > 0
+              ).length;
+              const rosterNotExists = _.filter(
+                res.data.records,
+                f => f.empProject.length === 0
+              ).length;
+              this.totalCount = `Total Rosters : ${rosterExists} || Total Non Rosters : ${rosterNotExists}`;
               this.setState({
                 employees: res.data.records
               });
@@ -588,6 +601,7 @@ class NewEmployeeProjectRoster extends Component {
                       {this.state.formatingString}
                     </b>
                   </h3>
+                  <span> Total {this.totalCount}</span>
                 </div>
                 <div className="actions">
                   <span style={{ background: "#3f9c62" }} className="legends">
@@ -650,35 +664,38 @@ class NewEmployeeProjectRoster extends Component {
                         </thead>
                         {/* <div className="tbodyScrollCntr"> */}
                         <tbody>
-                          {this.state.employees.map((row, index) => (
-                            <tr key={row.hims_d_employee_id}>
-                              {/* <td>{row.employee_code}</td> */}
-                              <td>
-                                <b> {row.employee_name}</b>
-                                <br />
-                                {row.employee_code}
-                                <br />
-                                <small> {row.designation}</small>
-                              </td>
+                          {this.state.employees.map((row, index) => {
+                            this.totalCount = this.totalCount + 1;
+                            return (
+                              <tr key={row.hims_d_employee_id}>
+                                {/* <td>{row.employee_code}</td> */}
+                                <td>
+                                  <b> {row.employee_name}</b>
+                                  <br />
+                                  {row.employee_code}
+                                  <br />
+                                  <small> {row.designation}</small>
+                                </td>
 
-                              {this.plotEmployeeDates(
-                                row,
-                                row.holidays,
-                                row.employeeLeaves,
-                                row.empProject
-                              )}
-                              <td>
-                                {moment(row.date_of_joining).format(
-                                  "DD-MM-YYYY"
+                                {this.plotEmployeeDates(
+                                  row,
+                                  row.holidays,
+                                  row.employeeLeaves,
+                                  row.empProject
                                 )}
-                              </td>
-                              <td>
-                                {row.exit_date
-                                  ? moment(row.exit_date).format("DD-MM-YYYY")
-                                  : "------"}
-                              </td>
-                            </tr>
-                          ))}
+                                <td>
+                                  {moment(row.date_of_joining).format(
+                                    "DD-MM-YYYY"
+                                  )}
+                                </td>
+                                <td>
+                                  {row.exit_date
+                                    ? moment(row.exit_date).format("DD-MM-YYYY")
+                                    : "------"}
+                                </td>
+                              </tr>
+                            );
+                          })}
                         </tbody>
                         {/* </div> */}
                       </table>

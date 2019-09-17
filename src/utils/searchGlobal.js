@@ -731,6 +731,15 @@ let algaehSearchConfig = (searchName, req) => {
           where E.record_status='A'  and loan_authorize_privilege=?",
         orderBy: " hims_d_employee_id ",
         inputSequence: ["loan_authorize_privilege"]
+      },
+      {
+        searchName: "admin_employee_search",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS  hims_d_employee_id,employee_code,full_name,date_of_joining \
+          from hims_d_employee E left join  algaeh_d_app_user U  on E.hims_d_employee_id=U.employee_id\
+          where E.record_status='A' and U.employee_id is null and hospital_id=?",
+        orderBy: "hims_d_employee_id desc",
+        inputSequence: ["hospital_id"]
       }
     ]
   };

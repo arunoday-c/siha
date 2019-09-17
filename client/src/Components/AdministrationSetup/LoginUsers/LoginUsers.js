@@ -363,7 +363,10 @@ class LoginUsers extends Component {
                     columns={spotlightSearch.Employee_details.loginNewEmployee}
                     displayField="full_name"
                     value={this.state.full_name}
-                    searchName="new_employees"
+                    searchName="admin_employee_search"
+                    extraParameters={{
+                      hospital_id: this.state.hospital_id
+                    }}
                     onClick={this.searchSelect.bind(this)}
                   />
                   <AlagehFormGroup
