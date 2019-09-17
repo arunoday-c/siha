@@ -11,15 +11,9 @@ exports.default = {
   mysqlDb: {
     connectionLimit: 100,
     // host: "166.62.10.184",
-<<<<<<< HEAD
     //host: "49.206.18.38",
     // host: "192.168.0.102",
     host: "127.0.0.1",
-=======
-    // host: "49.206.18.38",
-    host: "192.168.0.102",
-    // host: "127.0.0.1",
->>>>>>> 6707cde0dd70ff51c68682b173870aaa6483686a
     port: 3306,
     user: "algaeh_root",
     password: "alg_hea2018",
@@ -31,11 +25,7 @@ exports.default = {
     // database: "seco",
     // database: "algaeh_hrms_oman_db",
     //database: "medical_db",
-<<<<<<< HEAD
     //database: "hrms_shaksy_db",
-=======
-    // database: "hrms_shaksy_db",
->>>>>>> 6707cde0dd70ff51c68682b173870aaa6483686a
     database: "shaksy_live_db",
 
     multipleStatements: true,

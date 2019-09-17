@@ -732,7 +732,6 @@ let algaehSearchConfig = (searchName, req) => {
         orderBy: " hims_d_employee_id ",
         inputSequence: ["loan_authorize_privilege"]
       },
-<<<<<<< HEAD
       {
         searchName: "admin_employee_search",
         searchQuery:
@@ -741,8 +740,7 @@ let algaehSearchConfig = (searchName, req) => {
           where E.record_status='A' and U.employee_id is null and hospital_id=?",
         orderBy: "hims_d_employee_id desc",
         inputSequence: ["hospital_id"]
-=======
-
+      },
       {
         searchName: "employee_project",
         searchQuery:
@@ -753,7 +751,6 @@ let algaehSearchConfig = (searchName, req) => {
           left join hims_d_designation DS  on  E.employee_designation_id = DS.hims_d_designation_id \
           WHERE E.record_status = 'A' ",
         orderBy: "hims_d_employee_id desc"
->>>>>>> 6707cde0dd70ff51c68682b173870aaa6483686a
       }
     ]
   };
