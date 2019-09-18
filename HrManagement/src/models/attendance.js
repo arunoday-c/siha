@@ -1961,7 +1961,7 @@ module.exports = {
               sum(holidays)as total_holidays,sum(paid_leave)as paid_leave,sum(unpaid_leave)as unpaid_leave,sum(hours)as hours,\
               sum(minutes)as minutes,COALESCE(sum(hours),0)+ COALESCE(concat(floor(sum(minutes)/60)  ,'.',sum(minutes)%60),0) \
               as total_hours,concat(COALESCE(sum(SUBSTRING_INDEX(working_hours, '.', 1)),0)+floor(sum(SUBSTRING_INDEX(working_hours, '.', -1))/60) ,\
-'.',COALESCE(sum(SUBSTRING_INDEX(working_hours, '.', -1))%60,00))  as total_working_hours ,\
+        '.',COALESCE(sum(SUBSTRING_INDEX(working_hours, '.', -1))%60,00))  as total_working_hours ,\
               COALESCE(sum(shortage_hours),0)+ COALESCE(concat(floor(sum(shortage_minutes)/60)  ,'.',sum(shortage_minutes)%60),0) as shortage_hourss ,\
               COALESCE(sum(ot_work_hours),0)+ COALESCE(concat(floor(sum(ot_minutes)/60)  ,'.',sum(ot_minutes)%60),0) as ot_hourss\
               from hims_f_daily_attendance where     \
@@ -2647,7 +2647,7 @@ module.exports = {
                       sum(holidays)as total_holidays,sum(paid_leave)as paid_leave,sum(unpaid_leave)as unpaid_leave,sum(hours)as hours,\
                       sum(minutes)as minutes,COALESCE(sum(hours),0)+ COALESCE(concat(floor(sum(minutes)/60)  ,'.',sum(minutes)%60),0) \
                       as total_hours,concat(COALESCE(sum(SUBSTRING_INDEX(working_hours, '.', 1)),0)+floor(sum(SUBSTRING_INDEX(working_hours, '.', -1))/60) ,\
-'.',COALESCE(sum(SUBSTRING_INDEX(working_hours, '.', -1))%60,00))  as total_working_hours ,\
+          '.',COALESCE(sum(SUBSTRING_INDEX(working_hours, '.', -1))%60,00))  as total_working_hours ,\
                       COALESCE(sum(shortage_hours),0)+ COALESCE(concat(floor(sum(shortage_minutes)/60)  ,'.',sum(shortage_minutes)%60),0) as shortage_hourss ,\
                       COALESCE(sum(ot_work_hours),0)+ COALESCE(concat(floor(sum(ot_minutes)/60)  ,'.',sum(ot_minutes)%60),0) as ot_hourss\
                       from hims_f_daily_attendance where      \
@@ -3424,7 +3424,7 @@ module.exports = {
                                 sum(holidays)as total_holidays,sum(paid_leave)as paid_leave,sum(unpaid_leave)as unpaid_leave,sum(hours)as hours,\
                                 sum(minutes)as minutes,COALESCE(sum(hours),0)+ COALESCE(concat(floor(sum(minutes)/60)  ,'.',sum(minutes)%60),0) \
                                 as total_hours,concat(COALESCE(sum(SUBSTRING_INDEX(working_hours, '.', 1)),0)+floor(sum(SUBSTRING_INDEX(working_hours, '.', -1))/60) ,\
-'.',COALESCE(sum(SUBSTRING_INDEX(working_hours, '.', -1))%60,00))  as total_working_hours ,\
+                        '.',COALESCE(sum(SUBSTRING_INDEX(working_hours, '.', -1))%60,00))  as total_working_hours ,\
                                 COALESCE(sum(shortage_hours),0)+ COALESCE(concat(floor(sum(shortage_minutes)/60)  ,'.',sum(shortage_minutes)%60),0) as shortage_hourss ,\
                                 COALESCE(sum(ot_work_hours),0)+ COALESCE(concat(floor(sum(ot_minutes)/60)  ,'.',sum(ot_minutes)%60),0) as ot_hourss\
                                 from hims_f_daily_attendance where      \
@@ -5058,7 +5058,7 @@ module.exports = {
 									sum(holidays)as total_holidays,sum(paid_leave)as paid_leave,sum(unpaid_leave)as unpaid_leave,sum(hours)as hours,\
 									sum(minutes)as minutes,COALESCE(sum(hours),0)+ COALESCE(concat(floor(sum(minutes)/60)  ,'.',sum(minutes)%60),0) \
 									as total_hours,concat(COALESCE(sum(SUBSTRING_INDEX(working_hours, '.', 1)),0)+floor(sum(SUBSTRING_INDEX(working_hours, '.', -1))/60) ,\
-'.',COALESCE(sum(SUBSTRING_INDEX(working_hours, '.', -1))%60,00))  as total_working_hours ,\
+              '.',COALESCE(sum(SUBSTRING_INDEX(working_hours, '.', -1))%60,00))  as total_working_hours ,\
 									COALESCE(sum(shortage_hours),0)+ COALESCE(concat(floor(sum(shortage_minutes)/60)  ,'.',sum(shortage_minutes)%60),0) as shortage_hours ,\
 									COALESCE(sum(ot_work_hours),0)+ COALESCE(concat(floor(sum(ot_minutes)/60)  ,'.',sum(ot_minutes)%60),0) as ot_work_hours ,   \
 									COALESCE(sum(ot_weekoff_hours),0)+ COALESCE(concat(floor(sum(ot_weekoff_minutes)/60)  ,'.',sum(ot_weekoff_minutes)%60),0) as ot_weekoff_hours,\
@@ -5446,6 +5446,9 @@ getBulkManualTimeSheet: (req, res, next) => {
       if (input.designation_id > 0) {
         strQry += " and E.employee_designation_id=" + input.designation_id;
       }
+      if (input.employee_group_id > 0) {
+        strQry += " and E.employee_group_id=" + input.employee_group_id;
+      }
       _mysql
         .executeQuery({
           query:
@@ -5492,14 +5495,14 @@ getBulkManualTimeSheet: (req, res, next) => {
                   query: `
                 select PR.employee_id,PR.attendance_date,E.employee_code,E.full_name,E.sub_department_id,
                 E.religion_id, E.date_of_joining,PR.project_id,P.project_desc,D.designation
-                from hims_f_project_roster PR
+                from hims_d_employee E left join    hims_f_project_roster PR on E.hims_d_employee_id=PR.employee_id
                 left join hims_f_salary S on PR.employee_id=S.employee_id and PR.hospital_id=S.hospital_id and S.year=? and S.month=?
-                inner join  hims_d_employee E on PR.employee_id=E.hims_d_employee_id
-                inner join  hims_d_project P on P.hims_d_project_id=PR.project_id
+               
+                left join  hims_d_project P on P.hims_d_project_id=PR.project_id
                 inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id          
                 left join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id
-                where PR.hospital_id=? ${strQry} ${project} and ( S.salary_processed is null or  S.salary_processed='N')
-                and PR.attendance_date between date(?) and date(?)
+                where E.hospital_id=? and E.record_status='A' and E.employee_status='A' ${strQry} ${project} and ( S.salary_processed is null or  S.salary_processed='N')
+                and (PR.attendance_date is null or  PR.attendance_date between date(?) and date(?))
                 order by employee_id;
                 select hims_f_leave_application_id,employee_id,leave_application_code,from_leave_session,
                 L.leave_type,from_date,to_leave_session,to_date,holiday_included,weekoff_included,total_applied_days
@@ -6284,6 +6287,11 @@ getBulkManualTimeSheet: (req, res, next) => {
       strQry += " and E.employee_designation_id=" + input.designation_id;
     }
 
+
+    if (input.employee_group_id > 0) {
+      strQry += " and E.employee_group_id=" + input.employee_group_id;
+    }
+
     _mysql
       .executeQuery({
         query: `SELECT  salary_calendar,salary_calendar_fixed_days FROM hims_d_hrms_options limit 1;
@@ -6564,6 +6572,11 @@ getBulkManualTimeSheet: (req, res, next) => {
           // DA.hospital_id=?  and year=? and month=?   ${strQry} and attendance_date between date(?) and\
           // date(?)  group by employee_id,project_id;`,
 
+
+//           delete  PWP  from hims_f_project_wise_payroll PWP
+// inner join hims_d_employee E on PWP.employee_id=E.hims_d_employee_id
+// inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
+// where PWP.hospital_id=1  and year=2019  and month=7 ${strQry}
               _mysql
                 .executeQuery({
                   query: `select employee_id,DA.hospital_id,DA.sub_department_id,year,month,sum(total_days)as total_days,sum(present_days)as present_days,\
@@ -6571,7 +6584,7 @@ getBulkManualTimeSheet: (req, res, next) => {
           sum(holidays)as total_holidays,sum(paid_leave)as paid_leave,sum(unpaid_leave)as unpaid_leave,sum(hours)as hours,\
           sum(minutes)as minutes,COALESCE(sum(hours),0)+ COALESCE(concat(floor(sum(minutes)/60)  ,'.',sum(minutes)%60),0) \
           as total_hours,concat(COALESCE(sum(SUBSTRING_INDEX(working_hours, '.', 1)),0)+floor(sum(SUBSTRING_INDEX(working_hours, '.', -1))/60) ,\
-'.',COALESCE(sum(SUBSTRING_INDEX(working_hours, '.', -1))%60,00))  as total_working_hours ,\
+        '.',COALESCE(sum(SUBSTRING_INDEX(working_hours, '.', -1))%60,00))  as total_working_hours ,\
           COALESCE(sum(shortage_hours),0)+ COALESCE(concat(floor(sum(shortage_minutes)/60)  ,'.',sum(shortage_minutes)%60),0) as shortage_hours ,\
           COALESCE(sum(ot_work_hours),0)+ COALESCE(concat(floor(sum(ot_minutes)/60)  ,'.',sum(ot_minutes)%60),0) as ot_work_hours ,   \
           COALESCE(sum(ot_weekoff_hours),0)+ COALESCE(concat(floor(sum(ot_weekoff_minutes)/60)  ,'.',sum(ot_weekoff_minutes)%60),0) as ot_weekoff_hours,\
@@ -6589,7 +6602,11 @@ getBulkManualTimeSheet: (req, res, next) => {
           inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\
            where      \
           DA.hospital_id=?  and year=? and month=?   ${strQry} and attendance_date between date(?) and\
-          date(?)  group by employee_id,project_id;`,
+          date(?)  group by employee_id,project_id;
+          delete  PWP  from hims_f_project_wise_payroll PWP
+          inner join hims_d_employee E on PWP.employee_id=E.hims_d_employee_id
+          inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
+          where PWP.hospital_id=?  and year=?  and month=? ${strQry}   `,
                   values: [
                     input.hospital_id,
                     input.year,
@@ -6600,7 +6617,10 @@ getBulkManualTimeSheet: (req, res, next) => {
                     input.year,
                     input.month,
                     input.from_date,
-                    input.to_date
+                    input.to_date,
+                    input.hospital_id,
+                    input.year,
+                    input.month
                   ],
                   printQuery: true
                 })
@@ -7223,7 +7243,9 @@ function BulktimesheetCalc(req, res, next) {
         if (input.designation_id > 0) {
           strQry += " and E.employee_designation_id=" + input.designation_id;
         }
-
+        if (input.employee_group_id > 0) {
+          strQry += " and E.employee_group_id=" + input.employee_group_id;
+        }
         _mysql
           .executeQuery({
             query:
@@ -7273,14 +7295,13 @@ function BulktimesheetCalc(req, res, next) {
                     query: `
                   select PR.employee_id,PR.attendance_date,E.employee_code,E.full_name,E.sub_department_id,
                   E.religion_id, E.date_of_joining,PR.project_id,P.project_desc,D.designation
-                  from hims_f_project_roster PR
-                  left join hims_f_salary S on PR.employee_id=S.employee_id and PR.hospital_id=S.hospital_id and S.year=? and S.month=?
-                  inner join  hims_d_employee E on PR.employee_id=E.hims_d_employee_id
-                  inner join  hims_d_project P on P.hims_d_project_id=PR.project_id
+                  from hims_d_employee E left join    hims_f_project_roster PR on E.hims_d_employee_id=PR.employee_id
+                  left join hims_f_salary S on PR.employee_id=S.employee_id and PR.hospital_id=S.hospital_id and S.year=? and S.month=?                 
+                  left join  hims_d_project P on P.hims_d_project_id=PR.project_id
                   inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
                   left join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id
-                  where PR.hospital_id=? ${strQry} ${project} and ( S.salary_processed is null or  S.salary_processed='N')
-                  and PR.attendance_date between date(?) and date(?)
+                  where E.hospital_id=?  and E.record_status='A' and E.employee_status='A' ${strQry} ${project} and ( S.salary_processed is null or  S.salary_processed='N')                  
+                  and (PR.attendance_date is null or   PR.attendance_date between date(?) and date(?))
                   order by employee_id;
                   select hims_f_leave_application_id,employee_id,leave_application_code,from_leave_session,
                   L.leave_type,from_date,to_leave_session,to_date,holiday_included,weekoff_included,total_applied_days
@@ -7717,6 +7738,9 @@ function loadBulkTimeSheet(input, req, res, next) {
       }
       if (input.designation_id > 0) {
         strQry += " and E.employee_designation_id=" + input.designation_id;
+      }
+      if (input.employee_group_id > 0) {
+        strQry += " and E.employee_group_id=" + input.employee_group_id;
       }
 
 

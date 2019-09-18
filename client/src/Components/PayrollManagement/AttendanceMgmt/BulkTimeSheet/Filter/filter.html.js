@@ -9,6 +9,7 @@ import {
   getAttendanceDates,
   getDivisionProject,
   getBranchWiseDepartments,
+  getEmpGroups,
   UploadTimesheet,
   getPreview
 } from "./filter.events";
@@ -28,6 +29,10 @@ export default function Filter(props) {
   const [department, setDepartment] = useState([]);
   const [subDepartments, setSubDepartments] = useState([]);
   const [subDepartmentID, setSubDepartmentID] = useState("");
+
+  const [empGroups, setEmpGroups] = useState([]);
+  const [empGroupId, setEmpGroupId] = useState("");
+
   const [loading, setLoading] = useState(false);
   const [fullName, setFullName] = useState("");
   const [employeeID, setEmployeeId] = useState(0);
@@ -81,6 +86,9 @@ export default function Filter(props) {
         });
         getBranchWiseDepartments({ hospital_id: hospitalID }, data => {
           setDepartment(data);
+        });
+        getEmpGroups(data => {
+          setEmpGroups(data);
         });
       }
     },
@@ -268,6 +276,26 @@ export default function Filter(props) {
           }
         }}
       />
+      <AlagehAutoComplete
+        div={{ className: "col-2 form-group" }}
+        label={{ forceLabel: "Employee Group" }}
+        selector={{
+          name: "group_id",
+          value: empGroupId,
+          className: "select-fld",
+          dataSource: {
+            textField: "group_description",
+            valueField: "hims_d_employee_group_id",
+            data: empGroups
+          },
+          onChange: e => {
+            setEmpGroupId(e.value);
+          },
+          onClear: () => {
+            setEmpGroupId("");
+          }
+        }}
+      />
       <AlgaehAutoSearch
         div={{ className: "col" }}
         label={{ forceLabel: "Employee Search" }}
@@ -336,6 +364,7 @@ export default function Filter(props) {
                 department_id: departmenID,
                 sub_department_id: subDepartmentID,
                 employee_id: employeeID,
+                employee_group_id: empGroupId,
                 month: month,
                 year: moment().format("YYYY")
               });
@@ -366,6 +395,7 @@ export default function Filter(props) {
                 department_id: departmenID,
                 sub_department_id: subDepartmentID,
                 employee_id: employeeID,
+                employee_group_id: empGroupId,
                 month: month,
                 year: moment().format("YYYY")
               },
@@ -389,7 +419,9 @@ export default function Filter(props) {
             setSubDepartmentID("");
             setFullName("");
             setEmployeeId("");
-            setSubDepartments("");
+            setEmpGroupId("");
+            setSubDepartments([]);
+            setEmpGroups([]);
           }}
           style={{ marginLeft: 10, float: "right" }}
           className="btn btn-default"
