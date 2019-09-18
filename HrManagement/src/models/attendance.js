@@ -6287,6 +6287,11 @@ getBulkManualTimeSheet: (req, res, next) => {
       strQry += " and E.employee_designation_id=" + input.designation_id;
     }
 
+
+    if (input.employee_group_id > 0) {
+      strQry += " and E.employee_group_id=" + input.employee_group_id;
+    }
+
     _mysql
       .executeQuery({
         query: `SELECT  salary_calendar,salary_calendar_fixed_days FROM hims_d_hrms_options limit 1;
@@ -6567,6 +6572,11 @@ getBulkManualTimeSheet: (req, res, next) => {
           // DA.hospital_id=?  and year=? and month=?   ${strQry} and attendance_date between date(?) and\
           // date(?)  group by employee_id,project_id;`,
 
+
+//           delete  PWP  from hims_f_project_wise_payroll PWP
+// inner join hims_d_employee E on PWP.employee_id=E.hims_d_employee_id
+// inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
+// where PWP.hospital_id=1  and year=2019  and month=7 ${strQry}
               _mysql
                 .executeQuery({
                   query: `select employee_id,DA.hospital_id,DA.sub_department_id,year,month,sum(total_days)as total_days,sum(present_days)as present_days,\
@@ -6592,7 +6602,11 @@ getBulkManualTimeSheet: (req, res, next) => {
           inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\
            where      \
           DA.hospital_id=?  and year=? and month=?   ${strQry} and attendance_date between date(?) and\
-          date(?)  group by employee_id,project_id;`,
+          date(?)  group by employee_id,project_id;
+          delete  PWP  from hims_f_project_wise_payroll PWP
+          inner join hims_d_employee E on PWP.employee_id=E.hims_d_employee_id
+          inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
+          where PWP.hospital_id=?  and year=?  and month=? ${strQry}   `,
                   values: [
                     input.hospital_id,
                     input.year,
@@ -6603,7 +6617,10 @@ getBulkManualTimeSheet: (req, res, next) => {
                     input.year,
                     input.month,
                     input.from_date,
-                    input.to_date
+                    input.to_date,
+                    input.hospital_id,
+                    input.year,
+                    input.month
                   ],
                   printQuery: true
                 })
@@ -7722,6 +7739,9 @@ function loadBulkTimeSheet(input, req, res, next) {
       }
       if (input.designation_id > 0) {
         strQry += " and E.employee_designation_id=" + input.designation_id;
+      }
+      if (input.employee_group_id > 0) {
+        strQry += " and E.employee_group_id=" + input.employee_group_id;
       }
 
 
