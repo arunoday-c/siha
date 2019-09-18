@@ -54,13 +54,14 @@ module.exports = {
               next();
               return;
             } else {
+              // console.log("userIdentity: ", req.userIdentity);
               _mysql
                 .generateRunningNumber({
                   modules: ["EMPLOYEE_LOAN"],
                   tableName: "hims_f_app_numgen",
                   identity: {
                     algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-                    hospital_id: req.userIdentity["x-branch"]
+                    hospital_id: req.userIdentity.hospital_id
                   }
                 })
                 .then(numGenLeave => {
@@ -240,7 +241,8 @@ module.exports = {
           "" +
           loan_issued +
           "" +
-          loan_closed,
+          loan_closed +
+          " order by hims_f_loan_application_id desc",
         values: [req.userIdentity.hospital_id],
 
         printQuery: true

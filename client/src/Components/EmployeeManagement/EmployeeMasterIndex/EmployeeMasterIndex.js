@@ -4,17 +4,22 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import "./employee_master_index.css";
 import "../../../styles/site.css";
-import { AlgaehLabel, AlgaehDataGrid } from "../../Wrapper/algaehWrapper";
+import {
+  AlgaehLabel,
+  AlgaehDataGrid,
+  AlagehAutoComplete
+} from "../../Wrapper/algaehWrapper";
 import AlgaehFile from "../../Wrapper/algaehFileUpload";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import EmployeeMaster from "./EmployeeMaster/EmployeeMaster";
 import moment from "moment";
 import Options from "../../../Options.json";
 import { getCookie } from "../../../utils/algaehApiCall";
-import { setGlobal } from "../../../utils/GlobalFunctions";
+import { setGlobal, AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
 import {
   getEmployeeDetails,
-  EditEmployeeMaster
+  EditEmployeeMaster,
+  texthandle
 } from "./EmployeeMasterIndexEvent";
 // import variableJson from "../../../utils/GlobalVariables.json";
 
@@ -27,7 +32,10 @@ class EmployeeMasterIndex extends Component {
       Employeedetails: [],
       selectedLang: "en",
       editEmployee: false,
-      forceRender: false
+      forceRender: false,
+      hospital_id: JSON.parse(
+        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+      ).hims_d_hospital_id
     };
   }
 
@@ -49,6 +57,20 @@ class EmployeeMasterIndex extends Component {
         redux: {
           type: "SERVICES_GET_DATA",
           mappingName: "designations"
+        }
+      });
+    }
+
+    if (
+      this.props.organizations === undefined ||
+      this.props.organizations.length === 0
+    ) {
+      this.props.getOrganizations({
+        uri: "/organization/getOrganization",
+        method: "GET",
+        redux: {
+          type: "ORGS_GET_DATA",
+          mappingName: "organizations"
         }
       });
     }
@@ -182,6 +204,33 @@ class EmployeeMasterIndex extends Component {
             </div>
           </div>
           <div className="portlet-body">
+            <div className="row">
+              <AlagehAutoComplete
+                div={{ className: "col-4" }}
+                label={{
+                  forceLabel: "Select Branch"
+                }}
+                selector={{
+                  name: "hospital_id",
+                  className: "select-fld",
+                  value: this.state.hospital_id,
+                  dataSource: {
+                    textField: "hospital_name",
+                    valueField: "hims_d_hospital_id",
+                    data: this.props.organizations
+                  },
+                  onChange: texthandle.bind(this, this),
+                  others: {
+                    tabIndex: "2"
+                  },
+                  onClear: () => {
+                    this.setState({
+                      hospital_id: null
+                    });
+                  }
+                }}
+              />
+            </div>
             <div className="row">
               <div className="col-lg-12" id="employeeIndexGrid">
                 <AlgaehDataGrid
@@ -403,7 +452,8 @@ class EmployeeMasterIndex extends Component {
 function mapStateToProps(state) {
   return {
     subdepartment: state.subdepartment,
-    designations: state.designations
+    designations: state.designations,
+    organizations: state.organizations
   };
 }
 
@@ -411,7 +461,8 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getSubDepartment: AlgaehActions,
-      getDesignations: AlgaehActions
+      getDesignations: AlgaehActions,
+      getOrganizations: AlgaehActions
     },
     dispatch
   );

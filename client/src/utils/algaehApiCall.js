@@ -332,7 +332,7 @@ export function swalMessage(options) {
   const settings = {
     position: "top",
     showConfirmButton: false,
-    timer: 3000,
+    timer: 4000,
     toast: true,
     ...options
   };

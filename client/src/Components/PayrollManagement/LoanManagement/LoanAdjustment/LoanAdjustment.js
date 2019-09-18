@@ -180,7 +180,7 @@ class LoanAdjustment extends Component {
           <div className="col-lg-2">
             <button
               onClick={this.getEmployeeLoans.bind(this)}
-              style={{ marginTop: 21 }}
+              style={{ marginTop: 12 }}
               className="btn btn-primary"
             >
               {!this.state.loading ? (
@@ -191,7 +191,7 @@ class LoanAdjustment extends Component {
             </button>
             <button
               onClick={this.clearState.bind(this)}
-              style={{ marginTop: 21, marginLeft: 5 }}
+              style={{ marginTop: 12, marginLeft: 5 }}
               className="btn btn-default"
             >
               Clear

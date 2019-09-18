@@ -2633,6 +2633,11 @@ module.exports = {
 
                   company_payble = company_payble + company_tax;
 
+                  company_payble = utilities.decimalPoints(
+                    company_payble,
+                    decimal_places
+                  );
+
                   preapp_limit_amount = parseFloat(policydtls.preapp_limit);
 
                   if (policydtls.preapp_limit !== 0) {

@@ -548,21 +548,19 @@ class EmployeeProjectRoster extends Component {
   }
 
   employeeSearch(e) {
-    let input_data = "";
+    let input_data = " hospital_id=" + this.state.hospital_id;
     if (this.state.sub_department_id !== null) {
       input_data += " sub_department_id=" + this.state.sub_department_id;
       if (this.state.designation_id !== null) {
         input_data +=
           " and employee_designation_id=" + this.state.designation_id;
       }
-    } else {
-      input_data = "1=1";
     }
     AlgaehSearch({
       searchGrid: {
         columns: spotlightSearch.Employee_details.employee
       },
-      searchName: "employee",
+      searchName: "employee_project",
       uri: "/gloabelSearch/get",
       inputs: input_data,
       onContainsChange: (text, serchBy, callBack) => {
@@ -751,21 +749,20 @@ class EmployeeProjectRoster extends Component {
           style={{ display: "none" }}
           onClick={this.closeProjectAssign.bind(this)}
         />
-        {this.state.openAnother ? (
-          <ProjectEmpAssign
-            data={{
-              projects: this.state.projects,
-              employees: this.state.employees,
-              hospital_id: this.state.hospital_id
-            }}
-            open={this.state.openAnother}
-            onClose={() =>
-              this.setState({
-                openAnother: false
-              })
-            }
-          />
-        ) : null}
+
+        <ProjectEmpAssign
+          data={{
+            projects: this.state.projects,
+            employees: this.state.employees,
+            hospital_id: this.state.hospital_id
+          }}
+          open={this.state.openAnother}
+          onClose={() =>
+            this.setState({
+              openAnother: false
+            })
+          }
+        />
 
         <div className="row  inner-top-search">
           <AlagehAutoComplete

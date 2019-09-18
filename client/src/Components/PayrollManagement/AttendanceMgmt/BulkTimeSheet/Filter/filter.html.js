@@ -65,28 +65,34 @@ export default function Filter(props) {
     });
   }, []);
 
-  useEffect(() => {
-    if (hospitalID !== "") {
-      getAttendanceDates(data => {
-        if (data.length > 0) {
-          const firstRecord = data[0];
-          setStartDt(firstRecord.at_st_date);
-          setEndDt(firstRecord.at_end_date);
-          dateCalcl(firstRecord.at_st_date, firstRecord.at_end_date);
-        }
-      });
-      getDivisionProject({ division_id: hospitalID }, data => {
-        setProjects(data);
-      });
-      getBranchWiseDepartments({ hospital_id: hospitalID }, data => {
-        setDepartment(data);
-      });
-    }
-  }, [hospitalID]);
+  useEffect(
+    () => {
+      if (hospitalID !== "") {
+        getAttendanceDates(data => {
+          if (data.length > 0) {
+            const firstRecord = data[0];
+            setStartDt(firstRecord.at_st_date);
+            setEndDt(firstRecord.at_end_date);
+            dateCalcl(firstRecord.at_st_date, firstRecord.at_end_date);
+          }
+        });
+        getDivisionProject({ division_id: hospitalID }, data => {
+          setProjects(data);
+        });
+        getBranchWiseDepartments({ hospital_id: hospitalID }, data => {
+          setDepartment(data);
+        });
+      }
+    },
+    [hospitalID]
+  );
 
-  useEffect(() => {
-    dateCalcl();
-  }, [month]);
+  useEffect(
+    () => {
+      dateCalcl();
+    },
+    [month]
+  );
 
   return (
     <div className="row  inner-top-search">
@@ -374,6 +380,21 @@ export default function Filter(props) {
           ) : (
             <i className="fas fa-spinner fa-spin" />
           )}
+        </button>
+
+        <button
+          onClick={() => {
+            setProjectID("");
+            setDepartmenID("");
+            setSubDepartmentID("");
+            setFullName("");
+            setEmployeeId("");
+            setSubDepartments("");
+          }}
+          style={{ marginLeft: 10, float: "right" }}
+          className="btn btn-default"
+        >
+          <span>Clear</span>
         </button>
       </div>
     </div>

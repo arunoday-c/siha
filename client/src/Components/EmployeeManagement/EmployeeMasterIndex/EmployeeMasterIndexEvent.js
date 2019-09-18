@@ -3,20 +3,20 @@ import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import _ from "lodash";
 
 const getEmployeeDetails = $this => {
+  debugger;
   algaehApiCall({
     uri: "/employee/get",
     module: "hrManagement",
     method: "GET",
-
+    data: { hospital_id: $this.state.hospital_id },
     onSuccess: response => {
       if (response.data.success) {
         let data = response.data.records;
-        if (data.length > 0) {
-          $this.setState(
-            { Employeedetails: data, forceRender: !!$this.state.afterClose },
-            () => $this.setState({ forceRender: false })
-          );
-        }
+
+        $this.setState(
+          { Employeedetails: data, forceRender: !!$this.state.afterClose },
+          () => $this.setState({ forceRender: false })
+        );
       }
     },
     onFailure: error => {
@@ -57,4 +57,18 @@ const EditEmployeeMaster = ($this, row) => {
   });
 };
 
-export { getEmployeeDetails, EditEmployeeMaster };
+const texthandle = ($this, e) => {
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+  $this.setState(
+    {
+      [name]: value
+    },
+    () => {
+      getEmployeeDetails($this);
+    }
+  );
+};
+
+export { getEmployeeDetails, EditEmployeeMaster, texthandle };
