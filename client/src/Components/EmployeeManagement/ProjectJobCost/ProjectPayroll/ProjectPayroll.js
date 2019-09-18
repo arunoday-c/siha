@@ -294,6 +294,14 @@ class ProjectPayroll extends Component {
                           )
                         },
                         {
+                          fieldName: "employee_code",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Employee Code" }}
+                            />
+                          )
+                        },
+                        {
                           fieldName: "full_name",
                           label: (
                             <AlgaehLabel
