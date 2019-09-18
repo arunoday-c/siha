@@ -5492,14 +5492,14 @@ getBulkManualTimeSheet: (req, res, next) => {
                   query: `
                 select PR.employee_id,PR.attendance_date,E.employee_code,E.full_name,E.sub_department_id,
                 E.religion_id, E.date_of_joining,PR.project_id,P.project_desc,D.designation
-                from hims_f_project_roster PR
+                from hims_d_employee E left join    hims_f_project_roster PR on E.hims_d_employee_id=PR.employee_id
                 left join hims_f_salary S on PR.employee_id=S.employee_id and PR.hospital_id=S.hospital_id and S.year=? and S.month=?
-                inner join  hims_d_employee E on PR.employee_id=E.hims_d_employee_id
-                inner join  hims_d_project P on P.hims_d_project_id=PR.project_id
+               
+                left join  hims_d_project P on P.hims_d_project_id=PR.project_id
                 inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id          
                 left join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id
-                where PR.hospital_id=? ${strQry} ${project} and ( S.salary_processed is null or  S.salary_processed='N')
-                and PR.attendance_date between date(?) and date(?)
+                where E.hospital_id=? ${strQry} ${project} and ( S.salary_processed is null or  S.salary_processed='N')
+                and PR.attendance_date is null or  PR.attendance_date between date(?) and date(?)
                 order by employee_id;
                 select hims_f_leave_application_id,employee_id,leave_application_code,from_leave_session,
                 L.leave_type,from_date,to_leave_session,to_date,holiday_included,weekoff_included,total_applied_days
@@ -7273,14 +7273,14 @@ function BulktimesheetCalc(req, res, next) {
                     query: `
                   select PR.employee_id,PR.attendance_date,E.employee_code,E.full_name,E.sub_department_id,
                   E.religion_id, E.date_of_joining,PR.project_id,P.project_desc,D.designation
-                  from hims_f_project_roster PR
+                  from hims_d_employee E left join    hims_f_project_roster PR on E.hims_d_employee_id=PR.employee_id
                   left join hims_f_salary S on PR.employee_id=S.employee_id and PR.hospital_id=S.hospital_id and S.year=? and S.month=?
-                  inner join  hims_d_employee E on PR.employee_id=E.hims_d_employee_id
-                  inner join  hims_d_project P on P.hims_d_project_id=PR.project_id
+                 
+                  left join  hims_d_project P on P.hims_d_project_id=PR.project_id
                   inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
                   left join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id
-                  where PR.hospital_id=? ${strQry} ${project} and ( S.salary_processed is null or  S.salary_processed='N')
-                  and PR.attendance_date between date(?) and date(?)
+                  where E.hospital_id=? ${strQry} ${project} and ( S.salary_processed is null or  S.salary_processed='N')
+                  and PR.attendance_date is null or   PR.attendance_date between date(?) and date(?)
                   order by employee_id;
                   select hims_f_leave_application_id,employee_id,leave_application_code,from_leave_session,
                   L.leave_type,from_date,to_leave_session,to_date,holiday_included,weekoff_included,total_applied_days
