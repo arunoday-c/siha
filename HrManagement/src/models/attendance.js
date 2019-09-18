@@ -1961,7 +1961,7 @@ module.exports = {
               sum(holidays)as total_holidays,sum(paid_leave)as paid_leave,sum(unpaid_leave)as unpaid_leave,sum(hours)as hours,\
               sum(minutes)as minutes,COALESCE(sum(hours),0)+ COALESCE(concat(floor(sum(minutes)/60)  ,'.',sum(minutes)%60),0) \
               as total_hours,concat(COALESCE(sum(SUBSTRING_INDEX(working_hours, '.', 1)),0)+floor(sum(SUBSTRING_INDEX(working_hours, '.', -1))/60) ,\
-'.',COALESCE(sum(SUBSTRING_INDEX(working_hours, '.', -1))%60,00))  as total_working_hours ,\
+        '.',COALESCE(sum(SUBSTRING_INDEX(working_hours, '.', -1))%60,00))  as total_working_hours ,\
               COALESCE(sum(shortage_hours),0)+ COALESCE(concat(floor(sum(shortage_minutes)/60)  ,'.',sum(shortage_minutes)%60),0) as shortage_hourss ,\
               COALESCE(sum(ot_work_hours),0)+ COALESCE(concat(floor(sum(ot_minutes)/60)  ,'.',sum(ot_minutes)%60),0) as ot_hourss\
               from hims_f_daily_attendance where     \
@@ -2647,7 +2647,7 @@ module.exports = {
                       sum(holidays)as total_holidays,sum(paid_leave)as paid_leave,sum(unpaid_leave)as unpaid_leave,sum(hours)as hours,\
                       sum(minutes)as minutes,COALESCE(sum(hours),0)+ COALESCE(concat(floor(sum(minutes)/60)  ,'.',sum(minutes)%60),0) \
                       as total_hours,concat(COALESCE(sum(SUBSTRING_INDEX(working_hours, '.', 1)),0)+floor(sum(SUBSTRING_INDEX(working_hours, '.', -1))/60) ,\
-'.',COALESCE(sum(SUBSTRING_INDEX(working_hours, '.', -1))%60,00))  as total_working_hours ,\
+          '.',COALESCE(sum(SUBSTRING_INDEX(working_hours, '.', -1))%60,00))  as total_working_hours ,\
                       COALESCE(sum(shortage_hours),0)+ COALESCE(concat(floor(sum(shortage_minutes)/60)  ,'.',sum(shortage_minutes)%60),0) as shortage_hourss ,\
                       COALESCE(sum(ot_work_hours),0)+ COALESCE(concat(floor(sum(ot_minutes)/60)  ,'.',sum(ot_minutes)%60),0) as ot_hourss\
                       from hims_f_daily_attendance where      \
@@ -3424,7 +3424,7 @@ module.exports = {
                                 sum(holidays)as total_holidays,sum(paid_leave)as paid_leave,sum(unpaid_leave)as unpaid_leave,sum(hours)as hours,\
                                 sum(minutes)as minutes,COALESCE(sum(hours),0)+ COALESCE(concat(floor(sum(minutes)/60)  ,'.',sum(minutes)%60),0) \
                                 as total_hours,concat(COALESCE(sum(SUBSTRING_INDEX(working_hours, '.', 1)),0)+floor(sum(SUBSTRING_INDEX(working_hours, '.', -1))/60) ,\
-'.',COALESCE(sum(SUBSTRING_INDEX(working_hours, '.', -1))%60,00))  as total_working_hours ,\
+                        '.',COALESCE(sum(SUBSTRING_INDEX(working_hours, '.', -1))%60,00))  as total_working_hours ,\
                                 COALESCE(sum(shortage_hours),0)+ COALESCE(concat(floor(sum(shortage_minutes)/60)  ,'.',sum(shortage_minutes)%60),0) as shortage_hourss ,\
                                 COALESCE(sum(ot_work_hours),0)+ COALESCE(concat(floor(sum(ot_minutes)/60)  ,'.',sum(ot_minutes)%60),0) as ot_hourss\
                                 from hims_f_daily_attendance where      \
@@ -5058,7 +5058,7 @@ module.exports = {
 									sum(holidays)as total_holidays,sum(paid_leave)as paid_leave,sum(unpaid_leave)as unpaid_leave,sum(hours)as hours,\
 									sum(minutes)as minutes,COALESCE(sum(hours),0)+ COALESCE(concat(floor(sum(minutes)/60)  ,'.',sum(minutes)%60),0) \
 									as total_hours,concat(COALESCE(sum(SUBSTRING_INDEX(working_hours, '.', 1)),0)+floor(sum(SUBSTRING_INDEX(working_hours, '.', -1))/60) ,\
-'.',COALESCE(sum(SUBSTRING_INDEX(working_hours, '.', -1))%60,00))  as total_working_hours ,\
+              '.',COALESCE(sum(SUBSTRING_INDEX(working_hours, '.', -1))%60,00))  as total_working_hours ,\
 									COALESCE(sum(shortage_hours),0)+ COALESCE(concat(floor(sum(shortage_minutes)/60)  ,'.',sum(shortage_minutes)%60),0) as shortage_hours ,\
 									COALESCE(sum(ot_work_hours),0)+ COALESCE(concat(floor(sum(ot_minutes)/60)  ,'.',sum(ot_minutes)%60),0) as ot_work_hours ,   \
 									COALESCE(sum(ot_weekoff_hours),0)+ COALESCE(concat(floor(sum(ot_weekoff_minutes)/60)  ,'.',sum(ot_weekoff_minutes)%60),0) as ot_weekoff_hours,\
@@ -5445,6 +5445,9 @@ getBulkManualTimeSheet: (req, res, next) => {
       }
       if (input.designation_id > 0) {
         strQry += " and E.employee_designation_id=" + input.designation_id;
+      }
+      if (input.employee_group_id > 0) {
+        strQry += " and E.employee_group_id=" + input.employee_group_id;
       }
       _mysql
         .executeQuery({
@@ -6571,7 +6574,7 @@ getBulkManualTimeSheet: (req, res, next) => {
           sum(holidays)as total_holidays,sum(paid_leave)as paid_leave,sum(unpaid_leave)as unpaid_leave,sum(hours)as hours,\
           sum(minutes)as minutes,COALESCE(sum(hours),0)+ COALESCE(concat(floor(sum(minutes)/60)  ,'.',sum(minutes)%60),0) \
           as total_hours,concat(COALESCE(sum(SUBSTRING_INDEX(working_hours, '.', 1)),0)+floor(sum(SUBSTRING_INDEX(working_hours, '.', -1))/60) ,\
-'.',COALESCE(sum(SUBSTRING_INDEX(working_hours, '.', -1))%60,00))  as total_working_hours ,\
+        '.',COALESCE(sum(SUBSTRING_INDEX(working_hours, '.', -1))%60,00))  as total_working_hours ,\
           COALESCE(sum(shortage_hours),0)+ COALESCE(concat(floor(sum(shortage_minutes)/60)  ,'.',sum(shortage_minutes)%60),0) as shortage_hours ,\
           COALESCE(sum(ot_work_hours),0)+ COALESCE(concat(floor(sum(ot_minutes)/60)  ,'.',sum(ot_minutes)%60),0) as ot_work_hours ,   \
           COALESCE(sum(ot_weekoff_hours),0)+ COALESCE(concat(floor(sum(ot_weekoff_minutes)/60)  ,'.',sum(ot_weekoff_minutes)%60),0) as ot_weekoff_hours,\
@@ -7223,7 +7226,9 @@ function BulktimesheetCalc(req, res, next) {
         if (input.designation_id > 0) {
           strQry += " and E.employee_designation_id=" + input.designation_id;
         }
-
+        if (input.employee_group_id > 0) {
+          strQry += " and E.employee_group_id=" + input.employee_group_id;
+        }
         _mysql
           .executeQuery({
             query:
