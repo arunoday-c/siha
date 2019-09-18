@@ -51,6 +51,20 @@ export function getBranchWiseDepartments(data, callback) {
   });
 }
 
+export function getEmpGroups(callback) {
+  algaehApiCall({
+    uri: "/hrsettings/getEmployeeGroups",
+    method: "GET",
+    module: "hrManagement",
+    data: { record_status: "A" },
+    onSuccess: res => {
+      if (res.data.success) {
+        callback(res.data.records);
+      }
+    }
+  });
+}
+
 export function UploadTimesheet(files, props) {
   AlgaehLoader({ show: true });
   const reader = new FileReader();
