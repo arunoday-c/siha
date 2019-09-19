@@ -94,283 +94,6 @@ module.exports = {
     }
   },
 
-  //created by Adnan: to
-  getEmployeesForProjectRosterOLD: (req, res, next) => {
-    const utilities = new algaehUtilities();
-    let subdept = "";
-    let employee = "";
-    let designation = "";
-    let fromDate = moment(req.query.fromDate).format("YYYY-MM-DD");
-    let toDate = moment(req.query.toDate).format("YYYY-MM-DD");
-    let allEmployees = [];
-    let allHolidays = [];
-    let allLeaves = [];
-    let allProjects = [];
-
-    let outputArray = [];
-    if (req.query.sub_department_id > 0) {
-      subdept = ` and E.sub_department_id=${req.query.sub_department_id} `;
-    }
-    if (req.query.hims_d_employee_id > 0) {
-      employee = ` and E.hims_d_employee_id=${req.query.hims_d_employee_id} `;
-    }
-    if (req.query.designation_id > 0) {
-      designation = ` and E.employee_designation_id=${req.query.designation_id} `;
-    }
-
-    if (
-      req.query.hospital_id > 0 &&
-      req.query.department_id > 0 &&
-      req.query.fromDate != null &&
-      req.query.toDate != null
-    ) {
-      const _mysql = new algaehMysql();
-      _mysql
-        .executeQuery({
-          query: `select hims_d_employee_id,employee_code,full_name as employee_name,sub_department_id,\
-           date_of_joining,exit_date ,religion_id, SD.sub_department_code,SD.sub_department_name ,D.designation_code,D.designation\
-           from hims_d_employee E inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\
-           left join hims_d_designation D on E.employee_designation_id=D.hims_d_designation_id\
-           where E.record_status='A' and E.employee_status='A' and E.hospital_id=? ${subdept} ${designation} ${employee} ;\
-           select hims_d_holiday_id, hospital_id, holiday_date, holiday_description,\
-          weekoff, holiday, holiday_type, religion_id from \
-          hims_d_holiday where record_status='A' and   date(holiday_date) between date(?) and date(?) \
-           and (weekoff='Y' or holiday='Y') and hospital_id=?;\
-           select hims_f_leave_application_id,employee_id,leave_id,leave_description,L.leave_type,from_date,to_date,\
-           from_leave_session,to_leave_session,status\
-            FROM hims_f_leave_application LA inner join hims_d_leave L on LA.leave_id=L.hims_d_leave_id\
-            where (status= 'APR' or status= 'PEN' )AND   ((from_date>= ? and from_date <= ?) or\
-          (to_date >= ? and to_date <= ?) or (from_date <= ? and to_date >= ?));
-          select hims_f_project_roster_id,employee_id,PR.hospital_id,attendance_date,project_id ,abbreviation, project_desc,project_code,start_date,end_date
-        from hims_f_project_roster PR inner join hims_d_project P
-        on PR.project_id = P.hims_d_project_id and P.record_status='A'
-        where date(attendance_date) between date(?) and date(?)`,
-          values: [
-            req.query.hospital_id,
-            fromDate,
-            toDate,
-            req.query.hospital_id,
-            fromDate,
-            toDate,
-            fromDate,
-            toDate,
-            fromDate,
-            toDate,
-            fromDate,
-            toDate
-          ],
-          printQuery: true
-        })
-        .then(result => {
-          _mysql.releaseConnection();
-          allEmployees = result[0];
-          allHolidays = result[1];
-          allLeaves = result[2];
-          allProjects = result[3];
-
-          utilities.logger().log("allProjects: ", allProjects);
-
-          for (let i = 0; i < allEmployees.length; i++) {
-            let holidays = new LINQ(allHolidays)
-              .Where(
-                w =>
-                  ((w.holiday == "Y" && w.holiday_type == "RE") ||
-                    (w.holiday == "Y" &&
-                      w.holiday_type == "RS" &&
-                      w.religion_id == allEmployees[i]["religion_id"]) ||
-                    (w.weekoff == "Y" && w.holiday == "N")) &&
-                  w.holiday_date > allEmployees[i]["date_of_joining"]
-              )
-              .Select(s => {
-                return {
-                  hims_d_holiday_id: s.hims_d_holiday_id,
-                  holiday_date: s.holiday_date,
-                  holiday_description: s.holiday_description,
-                  weekoff: s.weekoff,
-                  holiday: s.holiday,
-                  holiday_type: s.holiday_type,
-                  religion_id: s.religion_id
-                };
-              })
-              .ToArray();
-
-            let leaves = new LINQ(allLeaves)
-              .Where(
-                w => w.employee_id == allEmployees[i]["hims_d_employee_id"]
-              )
-              .Select(s => {
-                return {
-                  hims_f_leave_application_id: s.hims_f_leave_application_id,
-                  employee_id: s.employee_id,
-                  leave_id: s.leave_id,
-                  leave_description: s.leave_description,
-                  leave_type: s.leave_type,
-                  from_date: s.from_date,
-                  to_date: s.to_date,
-                  from_leave_session: s.from_leave_session,
-                  to_leave_session: s.to_leave_session,
-                  status: s.status
-                };
-              })
-              .ToArray();
-
-            let empProject = new LINQ(allProjects)
-              .Where(
-                w => w.employee_id == allEmployees[i]["hims_d_employee_id"]
-              )
-              .Select(s => {
-                return {
-                  hims_f_project_roster_id: s.hims_f_project_roster_id,
-                  employee_id: s.employee_id,
-                  attendance_date: s.attendance_date,
-                  project_id: s.project_id,
-                  project_desc: s.project_desc,
-                  project_code: s.project_code,
-                  abbreviation: s.abbreviation,
-                  start_date: s.start_date,
-                  end_date: s.end_date
-                };
-              })
-              .ToArray();
-
-            // utilities.logger().log("Projects: ", empProject);
-
-            //------------for each leave
-            let employeeLeaves = [];
-
-            // utilities.logger().log("leaves: ", leaves);
-
-            if (leaves.length > 0) {
-              for (let m = 0; m < leaves.length; m++) {
-                let curentLeave = getDaysArray(
-                  new Date(leaves[m]["from_date"]),
-                  new Date(leaves[m]["to_date"])
-                );
-                // generate date range
-                if (curentLeave.length > 0) {
-                  for (let k = 0; k < curentLeave.length; k++) {
-                    if (k == 0) {
-                      if (k == 0 && k == curentLeave.length - 1) {
-                        let temp = new LINQ([leaves[m]])
-                          .Where(
-                            w =>
-                              w.employee_id ==
-                              allEmployees[i]["hims_d_employee_id"]
-                          )
-                          .Select(s => {
-                            return {
-                              hims_f_leave_application_id:
-                                s.hims_f_leave_application_id,
-                              employee_id: s.employee_id,
-                              leave_id: s.leave_id,
-                              leave_description: s.leave_description,
-                              leave_type: s.leave_type,
-                              from_leave_session: s.from_leave_session,
-                              to_leave_session: s.to_leave_session,
-                              status: s.status
-                            };
-                          })
-                          .ToArray();
-
-                        employeeLeaves.push({ ...temp[0], ...curentLeave[k] });
-                      } else {
-                        let temp = new LINQ([leaves[m]])
-                          .Where(
-                            w =>
-                              w.employee_id ==
-                              allEmployees[i]["hims_d_employee_id"]
-                          )
-                          .Select(s => {
-                            return {
-                              hims_f_leave_application_id:
-                                s.hims_f_leave_application_id,
-                              employee_id: s.employee_id,
-                              leave_id: s.leave_id,
-                              leave_description: s.leave_description,
-                              leave_type: s.leave_type,
-                              from_leave_session: s.from_leave_session,
-                              status: s.status
-                            };
-                          })
-                          .ToArray();
-
-                        employeeLeaves.push({ ...temp[0], ...curentLeave[k] });
-                      }
-                    } else if (k == curentLeave.length - 1) {
-                      let temp = new LINQ([leaves[m]])
-                        .Where(
-                          w =>
-                            w.employee_id ==
-                            allEmployees[i]["hims_d_employee_id"]
-                        )
-                        .Select(s => {
-                          return {
-                            hims_f_leave_application_id:
-                              s.hims_f_leave_application_id,
-                            employee_id: s.employee_id,
-                            leave_id: s.leave_id,
-                            leave_description: s.leave_description,
-                            leave_type: s.leave_type,
-                            to_leave_session: s.to_leave_session,
-                            status: s.status
-                          };
-                        })
-                        .ToArray();
-
-                      employeeLeaves.push({ ...temp[0], ...curentLeave[k] });
-                    } else {
-                      let temp = new LINQ([leaves[m]])
-                        .Where(
-                          w =>
-                            w.employee_id ==
-                            allEmployees[i]["hims_d_employee_id"]
-                        )
-                        .Select(s => {
-                          return {
-                            hims_f_leave_application_id:
-                              s.hims_f_leave_application_id,
-                            employee_id: s.employee_id,
-                            leave_id: s.leave_id,
-                            leave_description: s.leave_description,
-                            leave_type: s.leave_type,
-
-                            status: s.status
-                          };
-                        })
-                        .ToArray();
-                      employeeLeaves.push({ ...temp[0], ...curentLeave[k] });
-                    }
-                  }
-                }
-              }
-            }
-
-            outputArray.push({
-              ...allEmployees[i],
-              employeeLeaves,
-              holidays,
-              empProject
-            });
-          }
-
-          req.records = outputArray;
-          next();
-        })
-        .catch(e => {
-          utilities.logger().log("error: ", e);
-          _mysql.releaseConnection();
-          next(e);
-        });
-    } else {
-      req.records = {
-        invalid_input: true,
-        message: "Select Branch & Department"
-      };
-      next();
-      return;
-    }
-  },
-
   //created by irfan: to
   getEmployeesForProjectRoster: (req, res, next) => {
     const input = req.query;
@@ -657,6 +380,264 @@ module.exports = {
       req.records = {
         invalid_input: true,
         message: "Select Branch &  Department"
+      };
+      next();
+      return;
+    }
+  },
+  //created by irfan: to
+  getEmployeesForProjectRosterNEW: (req, res, next) => {
+    const input = req.query;
+    const utilities = new algaehUtilities();
+
+    let fromDate = moment(input.fromDate, "YYYY-MM-DD").format("YYYYMMDD");
+    let toDate = moment(input.toDate, "YYYY-MM-DD").format("YYYYMMDD");
+
+    let outputArray = [];
+
+    let strQry = "";
+
+    if (input.hims_d_employee_id > 0) {
+      strQry += " and E.hims_d_employee_id=" + input.hims_d_employee_id;
+    }
+
+    if (input.department_id > 0) {
+      strQry += " and SD.department_id=" + input.department_id;
+    }
+    if (input.sub_department_id > 0) {
+      strQry += " and E.sub_department_id=" + input.sub_department_id;
+    }
+    if (input.designation_id > 0) {
+      strQry += " and E.employee_designation_id=" + input.designation_id;
+    }
+    if (input.employee_group_id > 0) {
+      strQry += " and E.employee_group_id=" + input.employee_group_id;
+    }
+
+    if (input.hospital_id > 0 && fromDate > 0 && toDate > 0) {
+      const _mysql = new algaehMysql();
+      _mysql
+        .executeQuery({
+          query: `select E.hims_d_employee_id as employee_id,PR.attendance_date,E.employee_code,E.full_name,E.sub_department_id,
+          E.religion_id, E.date_of_joining,PR.project_id,P.project_desc,D.designation
+          from hims_d_employee E left join    hims_f_project_roster PR on E.hims_d_employee_id=PR.employee_id
+          and (PR.attendance_date is null or  PR.attendance_date between date(?) and date(?))
+          left join  hims_d_project P on P.hims_d_project_id=PR.project_id
+          inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id          
+          left join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id
+          where E.hospital_id=? and E.record_status='A' and E.employee_status='A' ${strQry}          
+          order by hims_d_employee_id ; 
+          select hims_f_leave_application_id,employee_id,leave_application_code,from_leave_session,status,
+          from_date,to_leave_session,to_date,holiday_included,weekoff_included,total_applied_days
+          from hims_f_leave_application LA inner join hims_d_leave L on 	LA.leave_id=L.hims_d_leave_id
+          inner join  hims_d_employee E on LA.employee_id=E.hims_d_employee_id
+          inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id            
+          left join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id
+          where    E.hospital_id=?    ${strQry.replace(
+            /PR/gi,
+            "LA"
+          )} and (status= 'APR' or status= 'PEN' ) and  
+            (    (  date(?)>=date(from_date) and	date(?)<=date(to_date)) or
+            ( date(?)>=date(from_date) and   date(?)<=date(to_date))
+          or (date(from_date)>= date(?) and date(from_date)<=date(?) ) or
+          (date(to_date)>=date(?) and date(to_date)<= date(?) ))  ;
+          select hims_d_holiday_id, hospital_id, holiday_date, holiday_description,
+          weekoff, holiday, holiday_type, religion_id from 
+          hims_d_holiday where record_status='A' and   date(holiday_date) between date(?) and date(?) 
+           and (weekoff='Y' or holiday='Y') and hospital_id=?;
+          
+          `,
+          values: [
+            input.fromDate,
+            input.toDate,
+            input.hospital_id,
+            input.hospital_id,
+            input.fromDate,
+            input.fromDate,
+            input.toDate,
+            input.toDate,
+            input.fromDate,
+            input.toDate,
+            input.fromDate,
+            input.toDate,
+            input.fromDate,
+            input.toDate,
+            input.hospital_id
+          ],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          const final_roster = [];
+          const allLeaves = result[1];
+          const allHolidays = result[2];
+
+          const allDates = getDaysArray2(
+            new Date(input.fromDate),
+            new Date(input.toDate)
+          );
+
+          const allEmployees = _.chain(result[0])
+            .groupBy(g => g.employee_id)
+            .map(emp => {
+              allDates.forEach(dat => {
+                const ProjAssgned = emp.find(e => {
+                  return e.attendance_date == dat;
+                });
+
+                if (ProjAssgned == undefined) {
+                  emp.push({
+                    employee_id: emp[0].employee_id,
+                    attendance_date: dat,
+                    employee_code: emp[0].employee_code,
+                    full_name: emp[0].full_name,
+                    sub_department_id: emp[0].sub_department_id,
+                    religion_id: emp[0].religion_id,
+                    date_of_joining: emp[0].date_of_joining,
+                    project_id: null,
+                    project_desc: null,
+                    designation: emp[0].designation
+                  });
+                }
+              });
+              return emp;
+            })
+            .value();
+
+          //----------------------------------------------------
+
+          allEmployees.forEach(employee => {
+            const outputArray = [];
+            let empHolidayweekoff = getEmployeeWeekOffsHolidays(
+              input.from_date,
+              input.to_date,
+              employee[0],
+              allHolidays
+            );
+
+            const empLeave = new LINQ(allLeaves)
+              .Where(w => w.employee_id == employee[0].employee_id)
+              .Select(s => s)
+              .ToArray();
+
+            employee.forEach((row, i) => {
+              let leave = null;
+              if (empLeave.length > 0) {
+                leave = new LINQ(empLeave)
+                  .Where(
+                    w =>
+                      w.from_date <= row["attendance_date"] &&
+                      w.to_date >= row["attendance_date"]
+                  )
+                  .Select(s => {
+                    return {
+                      holiday_included: s.holiday_included,
+                      weekoff_included: s.weekoff_included,
+                      hospital_id: input.branch_id,
+                      employee_id: row.employee_id,
+                      project_id: row.project_id,
+                      project_desc: row.project_desc,
+                      full_name: row.full_name,
+                      sub_department_id: row.sub_department_id,
+                      employee_code: row.employee_code,
+                      attendance_date: row["attendance_date"],
+                      status: s.status,
+                      designation: row.designation
+                    };
+                  })
+                  .FirstOrDefault(null);
+              }
+
+              const holiday_or_weekOff = new LINQ(empHolidayweekoff)
+                .Where(w => w.holiday_date == row["attendance_date"])
+                .Select(s => {
+                  return {
+                    holiday: s.holiday,
+                    weekoff: s.weekoff
+                  };
+                })
+                .FirstOrDefault(null);
+
+              //----------------------------
+
+              if (
+                (holiday_or_weekOff == null && leave != null) ||
+                (leave != null &&
+                  holiday_or_weekOff != null &&
+                  holiday_or_weekOff.holiday == "Y" &&
+                  leave.holiday_included == "Y") ||
+                (leave != null &&
+                  holiday_or_weekOff != null &&
+                  holiday_or_weekOff.weekoff == "Y" &&
+                  leave.weekoff_included == "Y")
+              ) {
+                outputArray.push({
+                  project_id: row.project_id,
+                  project_desc: row.project_desc,
+                  attendance_date: leave.attendance_date,
+                  status: leave.status
+                });
+              } else if (holiday_or_weekOff != null) {
+                if (holiday_or_weekOff.weekoff == "Y") {
+                  outputArray.push({
+                    project_id: row.project_id,
+                    project_desc: row.project_desc,
+                    attendance_date: row["attendance_date"],
+
+                    status: "WO"
+                  });
+                } else if (holiday_or_weekOff.holiday == "Y") {
+                  outputArray.push({
+                    project_id: row.project_id,
+                    project_desc: row.project_desc,
+                    attendance_date: row["attendance_date"],
+
+                    status: "HO"
+                  });
+                } else {
+                  outputArray.push({
+                    project_id: row.project_id,
+                    project_desc: row.project_desc,
+                    attendance_date: row["attendance_date"],
+                    status: row.project_id > 0 ? "PA" : "N"
+                  });
+                }
+              } else {
+                outputArray.push({
+                  project_id: row.project_id,
+                  project_desc: row.project_desc,
+                  attendance_date: row["attendance_date"],
+                  status: row.project_id > 0 ? "PA" : "N"
+                });
+              }
+            });
+
+            final_roster.push({
+              hims_d_employee_id: employee[0].employee_id,
+              employee_name: employee[0].full_name,
+              employee_code: employee[0].employee_code,
+              sub_department_name: employee[0].sub_department_name,
+              date_of_joining: employee[0].date_of_joining,
+              designation: employee[0].designation,
+              projects: _.sortBy(outputArray, s =>
+                parseInt(moment(s.attendance_date, "YYYY-MM-DD").format("MMDD"))
+              )
+            });
+          });
+          //----------------------------------------------------
+
+          req.records = final_roster;
+          next();
+        })
+        .catch(e => {
+          utilities.logger().log("error: ", e);
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "Select Branch & Department"
       };
       next();
       return;
@@ -1189,6 +1170,20 @@ function getDaysArray(start, end) {
       arr.push({ leaveDate: dat });
     }
 
+    return arr;
+  } catch (e) {
+    utilities.logger().log("error rr: ", e);
+  }
+}
+
+//created by irfan: to generate dates
+function getDaysArray2(start, end) {
+  const utilities = new algaehUtilities();
+
+  try {
+    for (var arr = [], dt = start; dt <= end; dt.setDate(dt.getDate() + 1)) {
+      arr.push(moment(dt).format("YYYY-MM-DD"));
+    }
     return arr;
   } catch (e) {
     utilities.logger().log("error rr: ", e);
