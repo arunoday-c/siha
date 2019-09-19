@@ -26,6 +26,7 @@ add flags in 3 tables Manually
 
 # pharmacy item expiry notification EVENT-TRIGGER
 
+SET GLOBAL event_scheduler = ON;
 CREATE EVENT IF NOT EXISTS pharmacy_item_expiry_notify
 ON SCHEDULE EVERY 1 DAY
 STARTS TIMESTAMP(CURRENT_DATE) + INTERVAL 1 DAY + INTERVAL 1 HOUR

@@ -115,9 +115,7 @@ module.exports = {
       employee = ` and E.hims_d_employee_id=${req.query.hims_d_employee_id} `;
     }
     if (req.query.designation_id > 0) {
-      designation = ` and E.employee_designation_id=${
-        req.query.designation_id
-      } `;
+      designation = ` and E.employee_designation_id=${req.query.designation_id} `;
     }
 
     if (
@@ -436,7 +434,7 @@ module.exports = {
         inner join hims_d_employee E on PR.employee_id=E.hims_d_employee_id
         inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
         inner join hims_d_department DP on SD.department_id=DP.hims_d_department_id
-        where PR.hospital_id=? and P.record_status='A' and  date(attendance_date) between date(?) and date(?);`,
+        where PR.hospital_id=? and P.record_status='A' and  date(attendance_date) between date(?) and date(?) ${subdept} ${designation} ${employee} ;`,
           values: [
             input.hospital_id,
             fromDate,

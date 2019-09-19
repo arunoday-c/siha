@@ -21,6 +21,7 @@ import ItemMomentEnquiry from "./Components/Pharmacy/ItemMomentEnquiry/ItemMomen
 import DoctorsWorkbench from "./Components/Workbench/Workbench";
 import NurseWorkbench from "./Components/Workbench/Workbench";
 import CommonDashboard from "./Components/Dashboard/Dashboard";
+import HrDashboard from "./Components/Dashboard/hr-dashboard";
 import PatientPackages from "./Components/PatientPackages/PatientPackages";
 import AcknowledgeList from "./Components/Pharmacy/AcknowledgeList/AcknowledgeSwitch";
 import ExpiringItemList from "./Components/Pharmacy/ExpiringItemList/ExpiringItemList";
@@ -28,8 +29,8 @@ import InvAcknowledgeList from "./Components/Inventory/InvAcknowledgeList/InvAck
 
 import DynamicDashboard from "./Components/Dashboard/dynamicDashboard";
 const PageToPlot = {
-  // Dashboard: CommonDashboard,
-  Dashboard: DynamicDashboard,
+  Dashboard: HrDashboard,
+  //Dashboard: DynamicDashboard,
   // 7: React.lazy(() =>
   //   retry(() => import("./Components/Dashboard/frontdesk-dashboard"))
   // ),
