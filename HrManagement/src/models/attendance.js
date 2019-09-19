@@ -5705,50 +5705,31 @@ getBulkManualTimeSheet: (req, res, next) => {
                               project_desc: row.project_desc,
                               attendance_date: row["attendance_date"],
                               status: "WO",
-                              [moment(
-                                row["attendance_date"],
-                                "YYYY-MM-DD"
-                              ).format("YYYYMMDD")]: "WO",
+                              [moment(row["attendance_date"], "YYYY-MM-DD").format("YYYYMMDD")]: "WO",
                               color: "#E7FEFD"
                             });
-                          } else if (holiday_or_weekOff != null) {
-                            if (holiday_or_weekOff.weekoff == "Y") {
-                              outputArray.push({
-                                attendance_date: row["attendance_date"],
-                                status: "WO",
-                                [moment(
-                                  row["attendance_date"],
-                                  "YYYY-MM-DD"
-                                ).format("YYYYMMDD")]: "WO",
-                                color: "#E7FEFD"
-                              });
-                            } else if (holiday_or_weekOff.holiday == "Y") {
-                              outputArray.push({
-                                attendance_date: row["attendance_date"],
-                                status: "HO",
-                                [moment(
-                                  row["attendance_date"],
-                                  "YYYY-MM-DD"
-                                ).format("YYYYMMDD")]: "HO",
-                                color: "#EAEAFD"
-                              });
-                            }
+                          } else if (holiday_or_weekOff.holiday == "Y") {
+                            outputArray.push({
+                              project_id: row.project_id,
+                              project_desc: row.project_desc,
+                              attendance_date: row["attendance_date"],
+                              status: "HO",
+                              [moment(row["attendance_date"], "YYYY-MM-DD").format("YYYYMMDD")]: "HO",
+                              color: "#EAEAFD"
+                            });
                           } else {
                             outputArray.push({
                               project_id: row.project_id,
                               project_desc: row.project_desc,
                               attendance_date: row["attendance_date"],
                               status: row.project_id > 0 ? "PR" : "N",
-                              [moment(
-                                row["attendance_date"],
-                                "YYYY-MM-DD"
-                              ).format("YYYYMMDD")]:
+                              [moment(row["attendance_date"], "YYYY-MM-DD").format("YYYYMMDD")]:
                                 row.project_id > 0 ? "PR" : "N",
                               color: row.project_id > 0 ? "" : "#F5F5F5",
                               project_desc: row.project_desc
                             });
                           }
-                        } else {
+                        }else {
                           outputArray.push({
                             project_id: row.project_id,
                             project_desc: row.project_desc,
@@ -6577,10 +6558,10 @@ getBulkManualTimeSheet: (req, res, next) => {
           // date(?)  group by employee_id,project_id;`,
 
 
-//           delete  PWP  from hims_f_project_wise_payroll PWP
-// inner join hims_d_employee E on PWP.employee_id=E.hims_d_employee_id
-// inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
-// where PWP.hospital_id=1  and year=2019  and month=7 ${strQry}
+            //           delete  PWP  from hims_f_project_wise_payroll PWP
+            // inner join hims_d_employee E on PWP.employee_id=E.hims_d_employee_id
+            // inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
+            // where PWP.hospital_id=1  and year=2019  and month=7 ${strQry}
               _mysql
                 .executeQuery({
                   query: `select employee_id,DA.hospital_id,DA.sub_department_id,year,month,sum(total_days)as total_days,sum(present_days)as present_days,\
