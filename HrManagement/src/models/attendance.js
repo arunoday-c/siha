@@ -5493,24 +5493,25 @@ getBulkManualTimeSheet: (req, res, next) => {
               _mysql
                 .executeQuery({
                   query: `
-                select PR.employee_id,PR.attendance_date,E.employee_code,E.full_name,E.sub_department_id,
+                select E.hims_d_employee_id as employee_id,PR.attendance_date,E.employee_code,E.full_name,E.sub_department_id,
                 E.religion_id, E.date_of_joining,PR.project_id,P.project_desc,D.designation
-                from hims_d_employee E left join    hims_f_project_roster PR on E.hims_d_employee_id=PR.employee_id
+                from hims_d_employee E left join    hims_f_project_roster PR on E.hims_d_employee_id=PR.employee_id 
+                and (PR.attendance_date is null or  PR.attendance_date between date(?) and date(?))
                 left join hims_f_salary S on PR.employee_id=S.employee_id and PR.hospital_id=S.hospital_id and S.year=? and S.month=?
                
                 left join  hims_d_project P on P.hims_d_project_id=PR.project_id
                 inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id          
                 left join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id
                 where E.hospital_id=? and E.record_status='A' and E.employee_status='A' ${strQry} ${project} and ( S.salary_processed is null or  S.salary_processed='N')
-                and (PR.attendance_date is null or  PR.attendance_date between date(?) and date(?))
-                order by employee_id;
+                
+                order by hims_d_employee_id;
                 select hims_f_leave_application_id,employee_id,leave_application_code,from_leave_session,
                 L.leave_type,from_date,to_leave_session,to_date,holiday_included,weekoff_included,total_applied_days
                 from hims_f_leave_application LA inner join hims_d_leave L on 	LA.leave_id=L.hims_d_leave_id
                 inner join  hims_d_employee E on LA.employee_id=E.hims_d_employee_id
                 inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id            
                 left join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id
-                where    LA.hospital_id=?  ${strQry.replace(
+                where    E.hospital_id=?  ${strQry.replace(
                   /PR/gi,
                   "LA"
                 )} and status='APR' and ((  date(?)>=date(from_date) and
@@ -5521,11 +5522,14 @@ getBulkManualTimeSheet: (req, res, next) => {
                 holiday_type,religion_id from hims_d_holiday  where hospital_id=? and
                 date(holiday_date) between date(?) and date(?);`,
                   values: [
+                    input.from_date,
+                    input.to_date,
                     input.year,
                     input.month,
                     input.branch_id,
-                    input.from_date,
-                    input.to_date,
+                   
+
+
                     input.branch_id,
                     input.from_date,
                     input.from_date,
@@ -7293,23 +7297,24 @@ function BulktimesheetCalc(req, res, next) {
                 _mysql
                   .executeQuery({
                     query: `
-                  select PR.employee_id,PR.attendance_date,E.employee_code,E.full_name,E.sub_department_id,
+                  select E.hims_d_employee_id as employee_id,PR.attendance_date,E.employee_code,E.full_name,E.sub_department_id,
                   E.religion_id, E.date_of_joining,PR.project_id,P.project_desc,D.designation
                   from hims_d_employee E left join    hims_f_project_roster PR on E.hims_d_employee_id=PR.employee_id
+                  and (PR.attendance_date is null or   PR.attendance_date between date(?) and date(?))
                   left join hims_f_salary S on PR.employee_id=S.employee_id and PR.hospital_id=S.hospital_id and S.year=? and S.month=?                 
                   left join  hims_d_project P on P.hims_d_project_id=PR.project_id
                   inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
                   left join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id
                   where E.hospital_id=?  and E.record_status='A' and E.employee_status='A' ${strQry} ${project} and ( S.salary_processed is null or  S.salary_processed='N')                  
-                  and (PR.attendance_date is null or   PR.attendance_date between date(?) and date(?))
-                  order by employee_id;
+                 
+                  order by hims_d_employee_id;
                   select hims_f_leave_application_id,employee_id,leave_application_code,from_leave_session,
                   L.leave_type,from_date,to_leave_session,to_date,holiday_included,weekoff_included,total_applied_days
                   from hims_f_leave_application LA inner join hims_d_leave L on 	LA.leave_id=L.hims_d_leave_id
                   inner join  hims_d_employee E on LA.employee_id=E.hims_d_employee_id
                   inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
                   left join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id
-                  where    LA.hospital_id=?  ${strQry.replace(
+                  where    E.hospital_id=?  ${strQry.replace(
                     /PR/gi,
                     "LA"
                   )} and status='APR' and ((  date(?)>=date(from_date) and
@@ -7320,11 +7325,12 @@ function BulktimesheetCalc(req, res, next) {
                   holiday_type,religion_id from hims_d_holiday  where hospital_id=? and
                   date(holiday_date) between date(?) and date(?);`,
                     values: [
+                      input.from_date,
+                      input.to_date,
                       input.year,
                       input.month,
                       input.branch_id,
-                      input.from_date,
-                      input.to_date,
+                   
                       input.branch_id,
                       input.from_date,
                       input.from_date,

@@ -60,10 +60,11 @@ export function algaehApiCall(options) {
       },
       options
     );
-
     let _baseUrl = settings.baseUrl;
     const _localaddress =
-      window.location.protocol + "//" + window.location.hostname + ":";
+      window.location.protocol + "//" + window.location.hostname; //+ ":";
+
+    const isProxy = window.location.port === "";
 
     if (settings.module === null || settings.module === "") {
       const _defRoute = config.routersAndPorts.default;
@@ -73,7 +74,11 @@ export function algaehApiCall(options) {
           : _defRoute.url;
       const _baseurlInner =
         _defRoute.baseUrl === undefined ? _baseUrl : _defRoute.baseUrl;
-      settings.baseUrl = _url + _defRoute.port + _baseurlInner;
+
+      settings.baseUrl =
+        _url +
+        (isProxy ? _defRoute.path : `:${_defRoute.port}`) +
+        _baseurlInner;
     } else {
       const _myRouter = config.routersAndPorts[settings.module];
       const _url =
@@ -82,7 +87,10 @@ export function algaehApiCall(options) {
           : _myRouter.url;
       const _baseurlInner =
         _myRouter.baseUrl === undefined ? _baseUrl : _myRouter.baseUrl;
-      settings.baseUrl = _url + _myRouter.port + _baseurlInner;
+      settings.baseUrl =
+        _url +
+        (isProxy ? _myRouter.path : `:${_myRouter.port}`) +
+        _baseurlInner;
     }
 
     let queryParametres = "";
@@ -239,7 +247,7 @@ export function algaehApiCall(options) {
           // else {
           else {
             if (settings.module === "documentManagement") {
-              var reader = new FileReader();
+              const reader = new FileReader();
               reader.onload = function() {
                 if (settings.onFileFailure === "function") {
                   settings.onFileFailure(reader.result);
@@ -268,7 +276,7 @@ export function algaehApiCall(options) {
               err.response !== undefined &&
               err.response.headers["content-type"] === "text/plain"
             ) {
-              var reader = new FileReader();
+              const reader = new FileReader();
               reader.onload = function() {
                 swalMessage({
                   title: reader.result,
@@ -340,9 +348,7 @@ export function swalMessage(options) {
   let title = settings.title;
   if (typeof title === "object") {
     if (settings.title.response.data.message !== undefined) {
-      title = `${settings.title.response.status} \n ${
-        settings.title.response.data.message
-      }`;
+      title = `${settings.title.response.status} \n ${settings.title.response.data.message}`;
     } else {
       title = settings.title.message;
     }

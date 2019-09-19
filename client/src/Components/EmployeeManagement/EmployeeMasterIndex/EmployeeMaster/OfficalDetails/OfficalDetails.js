@@ -34,6 +34,9 @@ class OfficalDetails extends Component {
     const HIMS_Active = _.filter(Activated_Modueles, f => {
       return f.module_code === "FTDSK";
     });
+    const HRMS_Active = Activated_Modueles.filter(f => {
+      return f.module_code === "PAYROLL";
+    });
     this.state = {
       enable_active_status: "",
       date_of_releaving_label: "Date of leaving",
@@ -42,7 +45,8 @@ class OfficalDetails extends Component {
       // employee_status: null,
       inactive_date: undefined,
       selectedLang: getCookie("Language"),
-      HIMS_Active: HIMS_Active.length > 0 ? true : false
+      HIMS_Active: HIMS_Active.length > 0 ? true : false,
+      HRMS_Active: HRMS_Active.length > 0 ? true : false
     };
   }
 
@@ -178,7 +182,11 @@ class OfficalDetails extends Component {
         >
           <div className="row">
             <div
-              className="col-lg-8 primary-details"
+              className={
+                this.state.HRMS_Active === false
+                  ? "col-lg-12"
+                  : "col-lg-8 primary-details"
+              }
               style={{ paddingBottom: 0, minHeight: "66.5vh" }}
             >
               <h5>
@@ -408,35 +416,65 @@ class OfficalDetails extends Component {
                     }
                   }}
                 />
-                <AlagehAutoComplete
-                  div={{ className: "col-3 mandatory form-group" }}
-                  label={{
-                    forceLabel: "Employee Group",
-                    isImp: true
-                  }}
-                  selector={{
-                    name: "employee_group_id",
-                    className: "select-fld",
-                    value: this.state.employee_group_id,
-                    dataSource: {
-                      textField: "group_description",
-                      valueField: "hims_d_employee_group_id",
-                      data: this.props.emp_groups
-                    },
-                    onChange: texthandle.bind(this, this),
-                    others: {
-                      tabIndex: "2"
-                    },
-                    onClear: () => {
-                      this.setState({
-                        employee_group_id: null
-                      });
-                      this.props.EmpMasterIOputs.updateEmployeeTabs({
-                        employee_group_id: null
-                      });
-                    }
-                  }}
-                />
+                {this.state.HRMS_Active === true ? (
+                  <AlagehAutoComplete
+                    div={{ className: "col-3 mandatory form-group" }}
+                    label={{
+                      forceLabel: "Employee Group",
+                      isImp: this.state.HRMS_Active
+                    }}
+                    selector={{
+                      name: "employee_group_id",
+                      className: "select-fld",
+                      value: this.state.employee_group_id,
+                      dataSource: {
+                        textField: "group_description",
+                        valueField: "hims_d_employee_group_id",
+                        data: this.props.emp_groups
+                      },
+                      onChange: texthandle.bind(this, this),
+                      others: {
+                        tabIndex: "2"
+                      },
+                      onClear: () => {
+                        this.setState({
+                          employee_group_id: null
+                        });
+                        this.props.EmpMasterIOputs.updateEmployeeTabs({
+                          employee_group_id: null
+                        });
+                      }
+                    }}
+                  />
+                ) : null}
+                {this.state.HRMS_Active === true ? (
+                  <AlagehAutoComplete
+                    div={{ className: "col-3 mandatory form-group" }}
+                    label={{
+                      forceLabel: "Overtime Group",
+                      isImp: this.state.HRMS_Active
+                    }}
+                    selector={{
+                      name: "overtime_group_id",
+                      className: "select-fld",
+                      value: this.state.overtime_group_id,
+                      dataSource: {
+                        textField: "overtime_group_description",
+                        valueField: "hims_d_overtime_group_id",
+                        data: this.props.overTime
+                      },
+                      onChange: texthandle.bind(this, this),
+                      onClear: () => {
+                        this.setState({
+                          overtime_group_id: null
+                        });
+                        this.props.EmpMasterIOputs.updateEmployeeTabs({
+                          overtime_group_id: null
+                        });
+                      }
+                    }}
+                  />
+                ) : null}
                 {_isDoctor === "Y" ? (
                   <AlagehAutoComplete
                     div={{ className: "col-3 mandatory form-group" }}
@@ -470,32 +508,7 @@ class OfficalDetails extends Component {
                     }}
                   />
                 ) : null}
-                <AlagehAutoComplete
-                  div={{ className: "col-3 mandatory form-group" }}
-                  label={{
-                    forceLabel: "Overtime Group",
-                    isImp: true
-                  }}
-                  selector={{
-                    name: "overtime_group_id",
-                    className: "select-fld",
-                    value: this.state.overtime_group_id,
-                    dataSource: {
-                      textField: "overtime_group_description",
-                      valueField: "hims_d_overtime_group_id",
-                      data: this.props.overTime
-                    },
-                    onChange: texthandle.bind(this, this),
-                    onClear: () => {
-                      this.setState({
-                        overtime_group_id: null
-                      });
-                      this.props.EmpMasterIOputs.updateEmployeeTabs({
-                        overtime_group_id: null
-                      });
-                    }
-                  }}
-                />
+
                 {/*<div className="col">
                     <AlgaehLabel
                       label={{
@@ -667,137 +680,139 @@ class OfficalDetails extends Component {
                 </div>
               </div> */}
             </div>
-            <div
-              className="col-lg-4 secondary-details"
-              style={{ paddingBottom: 0, minHeight: "66.5vh" }}
-            >
-              <h5>
-                <span>Employee Bank Details</span>
-              </h5>
-              <div className="row paddin-bottom-5">
-                <AlagehAutoComplete
-                  div={{ className: "col mandatory" }}
-                  label={{
-                    forceLabel: "Select Employee Bank",
-                    isImp: true
-                  }}
-                  selector={{
-                    name: "employee_bank_id",
-                    className: "select-fld",
-                    value: this.state.employee_bank_id,
-                    dataSource: {
-                      textField: "bank_name",
-                      valueField: "hims_d_bank_id",
-                      data: this.props.banks
-                    },
-                    onChange: bankEventhandle.bind(this, this),
-                    onClear: () => {
-                      this.setState({
-                        employee_bank_id: null
-                      });
-                      this.props.EmpMasterIOputs.updateEmployeeTabs({
-                        employee_bank_id: null
-                      });
-                    }
-                  }}
-                />
+            {this.state.HRMS_Active === true ? (
+              <div
+                className="col-lg-4 secondary-details"
+                style={{ paddingBottom: 0, minHeight: "66.5vh" }}
+              >
+                <h5>
+                  <span>Employee Bank Details</span>
+                </h5>
+                <div className="row paddin-bottom-5">
+                  <AlagehAutoComplete
+                    div={{ className: "col mandatory" }}
+                    label={{
+                      forceLabel: "Select Employee Bank",
+                      isImp: true
+                    }}
+                    selector={{
+                      name: "employee_bank_id",
+                      className: "select-fld",
+                      value: this.state.employee_bank_id,
+                      dataSource: {
+                        textField: "bank_name",
+                        valueField: "hims_d_bank_id",
+                        data: this.props.banks
+                      },
+                      onChange: bankEventhandle.bind(this, this),
+                      onClear: () => {
+                        this.setState({
+                          employee_bank_id: null
+                        });
+                        this.props.EmpMasterIOputs.updateEmployeeTabs({
+                          employee_bank_id: null
+                        });
+                      }
+                    }}
+                  />
 
-                <AlagehFormGroup
-                  div={{ className: "col-6 mandatory" }}
-                  label={{
-                    forceLabel: "SWIFT Code",
-                    isImp: true
-                  }}
-                  textBox={{
-                    value: this.state.employee_bank_ifsc_code,
-                    className: "txt-fld",
-                    name: "employee_bank_ifsc_code",
-                    events: {
-                      onChange: texthandle.bind(this, this)
-                    },
-                    disabled: true
-                  }}
-                />
+                  <AlagehFormGroup
+                    div={{ className: "col-6 mandatory" }}
+                    label={{
+                      forceLabel: "SWIFT Code",
+                      isImp: true
+                    }}
+                    textBox={{
+                      value: this.state.employee_bank_ifsc_code,
+                      className: "txt-fld",
+                      name: "employee_bank_ifsc_code",
+                      events: {
+                        onChange: texthandle.bind(this, this)
+                      },
+                      disabled: true
+                    }}
+                  />
 
-                <AlagehFormGroup
-                  div={{ className: "col-12 mandatory" }}
-                  label={{
-                    forceLabel: "Account No.",
-                    isImp: true
-                  }}
-                  textBox={{
-                    value: this.state.employee_account_number,
-                    className: "txt-fld",
-                    name: "employee_account_number",
+                  <AlagehFormGroup
+                    div={{ className: "col-12 mandatory" }}
+                    label={{
+                      forceLabel: "Account No.",
+                      isImp: true
+                    }}
+                    textBox={{
+                      value: this.state.employee_account_number,
+                      className: "txt-fld",
+                      name: "employee_account_number",
 
-                    events: {
-                      onChange: texthandle.bind(this, this)
-                    },
-                    others: {
-                      type: "number"
-                    }
-                  }}
-                />
+                      events: {
+                        onChange: texthandle.bind(this, this)
+                      },
+                      others: {
+                        type: "number"
+                      }
+                    }}
+                  />
+                </div>
+                <h5>
+                  <span>Company Bank Details</span>
+                </h5>
+                <div className="row paddin-bottom-5">
+                  <AlagehAutoComplete
+                    div={{ className: "col mandatory" }}
+                    label={{
+                      forceLabel: "Select Employeer Bank",
+                      isImp: true
+                    }}
+                    selector={{
+                      name: "company_bank_id",
+                      className: "select-fld",
+                      value: this.state.company_bank_id,
+                      dataSource: {
+                        textField: "bank_name",
+                        valueField: "bank_id",
+                        data: this.props.companyaccount
+                      },
+                      onChange: texthandle.bind(this, this),
+                      onClear: () => {
+                        this.setState({
+                          company_bank_id: null
+                        });
+                        this.props.EmpMasterIOputs.updateEmployeeTabs({
+                          company_bank_id: null
+                        });
+                      }
+                    }}
+                  />
+
+                  <AlagehAutoComplete
+                    div={{ className: "col mandatory" }}
+                    label={{
+                      forceLabel: "Mode of Payment",
+                      isImp: true
+                    }}
+                    selector={{
+                      name: "mode_of_payment",
+                      className: "select-fld",
+                      value: this.state.mode_of_payment,
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: variableJson.MODE_OF_PAYMENT
+                      },
+                      onChange: texthandle.bind(this, this),
+                      onClear: () => {
+                        this.setState({
+                          mode_of_payment: null
+                        });
+                        this.props.EmpMasterIOputs.updateEmployeeTabs({
+                          mode_of_payment: null
+                        });
+                      }
+                    }}
+                  />
+                </div>
               </div>
-              <h5>
-                <span>Company Bank Details</span>
-              </h5>
-              <div className="row paddin-bottom-5">
-                <AlagehAutoComplete
-                  div={{ className: "col mandatory" }}
-                  label={{
-                    forceLabel: "Select Employeer Bank",
-                    isImp: true
-                  }}
-                  selector={{
-                    name: "company_bank_id",
-                    className: "select-fld",
-                    value: this.state.company_bank_id,
-                    dataSource: {
-                      textField: "bank_name",
-                      valueField: "bank_id",
-                      data: this.props.companyaccount
-                    },
-                    onChange: texthandle.bind(this, this),
-                    onClear: () => {
-                      this.setState({
-                        company_bank_id: null
-                      });
-                      this.props.EmpMasterIOputs.updateEmployeeTabs({
-                        company_bank_id: null
-                      });
-                    }
-                  }}
-                />
-
-                <AlagehAutoComplete
-                  div={{ className: "col mandatory" }}
-                  label={{
-                    forceLabel: "Mode of Payment",
-                    isImp: true
-                  }}
-                  selector={{
-                    name: "mode_of_payment",
-                    className: "select-fld",
-                    value: this.state.mode_of_payment,
-                    dataSource: {
-                      textField: "name",
-                      valueField: "value",
-                      data: variableJson.MODE_OF_PAYMENT
-                    },
-                    onChange: texthandle.bind(this, this),
-                    onClear: () => {
-                      this.setState({
-                        mode_of_payment: null
-                      });
-                      this.props.EmpMasterIOputs.updateEmployeeTabs({
-                        mode_of_payment: null
-                      });
-                    }
-                  }}
-                />
-              </div>
-            </div>
+            ) : null}
           </div>
         </div>
       </React.Fragment>
