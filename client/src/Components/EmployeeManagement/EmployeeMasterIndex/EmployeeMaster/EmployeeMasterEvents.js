@@ -66,46 +66,6 @@ const Validations = $this => {
     });
 
     return isError;
-  } else if ($this.state.personalDetails.employee_bank_id === null) {
-    isError = true;
-    swalMessage({
-      type: "warning",
-      title: "Employee Bank. Cannot be blank."
-    });
-
-    return isError;
-  } else if ($this.state.personalDetails.employee_bank_ifsc_code === null) {
-    isError = true;
-    swalMessage({
-      type: "warning",
-      title: "SWIFT Code. Cannot be blank."
-    });
-
-    return isError;
-  } else if ($this.state.personalDetails.employee_account_number === null) {
-    isError = true;
-    swalMessage({
-      type: "warning",
-      title: "Account Number. Cannot be blank."
-    });
-
-    return isError;
-  } else if ($this.state.personalDetails.company_bank_id === null) {
-    isError = true;
-    swalMessage({
-      type: "warning",
-      title: "Employeer Bank. Cannot be blank."
-    });
-
-    return isError;
-  } else if ($this.state.personalDetails.mode_of_payment === null) {
-    isError = true;
-    swalMessage({
-      type: "warning",
-      title: "Mode of Payment. Cannot be blank."
-    });
-
-    return isError;
   } else if ($this.state.personalDetails.sub_department_id === null) {
     isError = true;
     swalMessage({
@@ -114,27 +74,11 @@ const Validations = $this => {
     });
 
     return isError;
-  } else if ($this.state.personalDetails.employee_group_id === null) {
-    isError = true;
-    swalMessage({
-      type: "warning",
-      title: "Employee Group. Cannot be blank."
-    });
-
-    return isError;
   } else if ($this.state.personalDetails.hospital_id === null) {
     isError = true;
     swalMessage({
       type: "warning",
       title: "Branch. Cannot be blank."
-    });
-
-    return isError;
-  } else if ($this.state.personalDetails.overtime_group_id === null) {
-    isError = true;
-    swalMessage({
-      type: "warning",
-      title: "Overtime Group. Cannot be blank."
     });
 
     return isError;
@@ -154,6 +98,66 @@ const Validations = $this => {
     });
 
     return isError;
+  }
+
+  if ($this.state.HRMS_Active === true) {
+    if ($this.state.personalDetails.overtime_group_id === null) {
+      isError = true;
+      swalMessage({
+        type: "warning",
+        title: "Overtime Group. Cannot be blank."
+      });
+
+      return isError;
+    } else if ($this.state.personalDetails.employee_group_id === null) {
+      isError = true;
+      swalMessage({
+        type: "warning",
+        title: "Employee Group. Cannot be blank."
+      });
+
+      return isError;
+    } else if ($this.state.personalDetails.employee_bank_id === null) {
+      isError = true;
+      swalMessage({
+        type: "warning",
+        title: "Employee Bank. Cannot be blank."
+      });
+
+      return isError;
+    } else if ($this.state.personalDetails.employee_bank_ifsc_code === null) {
+      isError = true;
+      swalMessage({
+        type: "warning",
+        title: "SWIFT Code. Cannot be blank."
+      });
+
+      return isError;
+    } else if ($this.state.personalDetails.employee_account_number === null) {
+      isError = true;
+      swalMessage({
+        type: "warning",
+        title: "Account Number. Cannot be blank."
+      });
+
+      return isError;
+    } else if ($this.state.personalDetails.company_bank_id === null) {
+      isError = true;
+      swalMessage({
+        type: "warning",
+        title: "Employeer Bank. Cannot be blank."
+      });
+
+      return isError;
+    } else if ($this.state.personalDetails.mode_of_payment === null) {
+      isError = true;
+      swalMessage({
+        type: "warning",
+        title: "Mode of Payment. Cannot be blank."
+      });
+
+      return isError;
+    }
   }
 
   // else if ($this.state.personalDetails.deptDetails !== 0) {

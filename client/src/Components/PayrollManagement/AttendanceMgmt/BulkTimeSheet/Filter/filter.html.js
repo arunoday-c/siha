@@ -70,37 +70,31 @@ export default function Filter(props) {
     });
   }, []);
 
-  useEffect(
-    () => {
-      if (hospitalID !== "") {
-        getAttendanceDates(data => {
-          if (data.length > 0) {
-            const firstRecord = data[0];
-            setStartDt(firstRecord.at_st_date);
-            setEndDt(firstRecord.at_end_date);
-            dateCalcl(firstRecord.at_st_date, firstRecord.at_end_date);
-          }
-        });
-        getDivisionProject({ division_id: hospitalID }, data => {
-          setProjects(data);
-        });
-        getBranchWiseDepartments({ hospital_id: hospitalID }, data => {
-          setDepartment(data);
-        });
-        getEmpGroups(data => {
-          setEmpGroups(data);
-        });
-      }
-    },
-    [hospitalID]
-  );
+  useEffect(() => {
+    if (hospitalID !== "") {
+      getAttendanceDates(data => {
+        if (data.length > 0) {
+          const firstRecord = data[0];
+          setStartDt(firstRecord.at_st_date);
+          setEndDt(firstRecord.at_end_date);
+          dateCalcl(firstRecord.at_st_date, firstRecord.at_end_date);
+        }
+      });
+      getDivisionProject({ division_id: hospitalID }, data => {
+        setProjects(data);
+      });
+      getBranchWiseDepartments({ hospital_id: hospitalID }, data => {
+        setDepartment(data);
+      });
+      getEmpGroups(data => {
+        setEmpGroups(data);
+      });
+    }
+  }, [hospitalID]);
 
-  useEffect(
-    () => {
-      dateCalcl();
-    },
-    [month]
-  );
+  useEffect(() => {
+    dateCalcl();
+  }, [month]);
 
   return (
     <div className="row  inner-top-search">
@@ -144,15 +138,15 @@ export default function Filter(props) {
             textField: "text",
             valueField: "name",
             data: [
-              { name: "01", text: "January" },
-              { name: "02", text: "February" },
-              { name: "03", text: "March" },
-              { name: "04", text: "April" },
-              { name: "05", text: "May" },
-              { name: "06", text: "June" },
-              { name: "07", text: "July" },
-              { name: "08", text: "August" },
-              { name: "09", text: "September" },
+              { name: "1", text: "January" },
+              { name: "2", text: "February" },
+              { name: "3", text: "March" },
+              { name: "4", text: "April" },
+              { name: "5", text: "May" },
+              { name: "6", text: "June" },
+              { name: "7", text: "July" },
+              { name: "8", text: "August" },
+              { name: "9", text: "September" },
               { name: "10", text: "October" },
               { name: "11", text: "November" },
               { name: "12", text: "December" }
@@ -167,7 +161,6 @@ export default function Filter(props) {
         }}
         showLoading={true}
       />
-
       <div className="col mandatory">
         <label className="style_Label ">
           From Date<span className="imp">&nbsp;*</span>
@@ -209,7 +202,6 @@ export default function Filter(props) {
           />
         </div>
       </div>
-
       <AlagehAutoComplete
         div={{ className: "col-2 form-group" }}
         label={{
@@ -232,6 +224,26 @@ export default function Filter(props) {
           }
         }}
         showLoading={true}
+      />{" "}
+      <AlagehAutoComplete
+        div={{ className: "col-2 form-group" }}
+        label={{ forceLabel: "Employee Group" }}
+        selector={{
+          name: "group_id",
+          value: empGroupId,
+          className: "select-fld",
+          dataSource: {
+            textField: "group_description",
+            valueField: "hims_d_employee_group_id",
+            data: empGroups
+          },
+          onChange: e => {
+            setEmpGroupId(e.value);
+          },
+          onClear: () => {
+            setEmpGroupId("");
+          }
+        }}
       />
       <AlagehAutoComplete
         div={{ className: "col-2 form-group" }}
@@ -276,26 +288,6 @@ export default function Filter(props) {
           }
         }}
       />
-      <AlagehAutoComplete
-        div={{ className: "col-2 form-group" }}
-        label={{ forceLabel: "Employee Group" }}
-        selector={{
-          name: "group_id",
-          value: empGroupId,
-          className: "select-fld",
-          dataSource: {
-            textField: "group_description",
-            valueField: "hims_d_employee_group_id",
-            data: empGroups
-          },
-          onChange: e => {
-            setEmpGroupId(e.value);
-          },
-          onClear: () => {
-            setEmpGroupId("");
-          }
-        }}
-      />
       <AlgaehAutoSearch
         div={{ className: "col" }}
         label={{ forceLabel: "Employee Search" }}
@@ -317,7 +309,6 @@ export default function Filter(props) {
           setEmployeeId("");
         }}
       />
-
       {/* <input
         type="file"
         name="manualTimeSheet"
@@ -336,7 +327,6 @@ export default function Filter(props) {
           }
         }}
       /> */}
-
       <div className="col-5" style={{ paddingTop: 19 }}>
         <div className="uploadManualDiv">
           <input
@@ -355,6 +345,7 @@ export default function Filter(props) {
         </div>
         <button
           onClick={() => {
+            debugger;
             if (hospitalID !== "" && fromDate !== "" && toDate !== "") {
               props.downloadExcel({
                 branch_id: hospitalID,
@@ -421,7 +412,6 @@ export default function Filter(props) {
             setEmployeeId("");
             setEmpGroupId("");
             setSubDepartments([]);
-            setEmpGroups([]);
           }}
           style={{ marginLeft: 10, float: "right" }}
           className="btn btn-default"

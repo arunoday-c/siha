@@ -6679,7 +6679,7 @@ getBulkManualTimeSheet: (req, res, next) => {
 
 
                         errorString+=respond.message+"\n";
-                        console.log("errorString:",errorString);
+                   
 
                       } else {
                         insertArray.push(respond.obj);
