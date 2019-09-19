@@ -294,6 +294,14 @@ class ProjectPayroll extends Component {
                           )
                         },
                         {
+                          fieldName: "employee_code",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Employee Code" }}
+                            />
+                          )
+                        },
+                        {
                           fieldName: "full_name",
                           label: (
                             <AlgaehLabel
@@ -325,11 +333,64 @@ class ProjectPayroll extends Component {
                             />
                           )
                         },
+
+                        {
+                          fieldName: "total_working_hours",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Basic Working Hrs" }}
+                            />
+                          ),
+                          others: {
+                            maxWidth: 150,
+                            resizable: false,
+                            filterable: false,
+                            style: { textAlign: "center" }
+                          }
+                        },
+                        {
+                          fieldName: "complete_hours",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Amount" }} />
+                          ),
+                          others: {
+                            maxWidth: 150,
+                            resizable: false,
+                            filterable: false,
+                            style: { textAlign: "center" }
+                          }
+                        },
+                        {
+                          fieldName: "ot_work",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "OT Working Hrs" }}
+                            />
+                          ),
+                          others: {
+                            maxWidth: 150,
+                            resizable: false,
+                            filterable: false,
+                            style: { textAlign: "center" }
+                          }
+                        },
+                        {
+                          fieldName: "amount",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Amount" }} />
+                          ),
+                          others: {
+                            maxWidth: 150,
+                            resizable: false,
+                            filterable: false,
+                            style: { textAlign: "center" }
+                          }
+                        },
                         {
                           fieldName: "complete_hours",
                           label: (
                             <AlgaehLabel
-                              label={{ forceLabel: "Total Working Hr" }}
+                              label={{ forceLabel: "Total Worked Hrs" }}
                             />
                           ),
                           others: {
