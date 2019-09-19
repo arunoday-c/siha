@@ -664,7 +664,6 @@ class NewEmployeeProjectRoster extends Component {
                         {/* <div className="tbodyScrollCntr"> */}
                         <tbody>
                           {this.state.employees.map((row, index) => {
-                            this.totalCount = this.totalCount + 1;
                             return (
                               <tr key={row.hims_d_employee_id}>
                                 {/* <td>{row.employee_code}</td> */}
