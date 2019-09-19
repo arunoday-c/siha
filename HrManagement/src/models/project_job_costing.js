@@ -423,29 +423,29 @@ module.exports = {
           from hims_d_employee E left join    hims_f_project_roster PR on E.hims_d_employee_id=PR.employee_id
           and (PR.attendance_date is null or  PR.attendance_date between date(?) and date(?))
           left join  hims_d_project P on P.hims_d_project_id=PR.project_id
-          inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id          
+          inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
           left join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id
-          where E.hospital_id=? and E.record_status='A' and E.employee_status='A' ${strQry}          
-          order by hims_d_employee_id ; 
+          where E.hospital_id=? and E.record_status='A' and E.employee_status='A' ${strQry}
+          order by hims_d_employee_id ;
           select hims_f_leave_application_id,employee_id,leave_application_code,from_leave_session,status,
           from_date,to_leave_session,to_date,holiday_included,weekoff_included,total_applied_days
           from hims_f_leave_application LA inner join hims_d_leave L on 	LA.leave_id=L.hims_d_leave_id
           inner join  hims_d_employee E on LA.employee_id=E.hims_d_employee_id
-          inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id            
+          inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
           left join  hims_d_designation D on D.hims_d_designation_id=E.employee_designation_id
           where    E.hospital_id=?    ${strQry.replace(
             /PR/gi,
             "LA"
-          )} and (status= 'APR' or status= 'PEN' ) and  
+          )} and (status= 'APR' or status= 'PEN' ) and
             (    (  date(?)>=date(from_date) and	date(?)<=date(to_date)) or
             ( date(?)>=date(from_date) and   date(?)<=date(to_date))
           or (date(from_date)>= date(?) and date(from_date)<=date(?) ) or
           (date(to_date)>=date(?) and date(to_date)<= date(?) ))  ;
           select hims_d_holiday_id, hospital_id, holiday_date, holiday_description,
-          weekoff, holiday, holiday_type, religion_id from 
-          hims_d_holiday where record_status='A' and   date(holiday_date) between date(?) and date(?) 
+          weekoff, holiday, holiday_type, religion_id from
+          hims_d_holiday where record_status='A' and   date(holiday_date) between date(?) and date(?)
            and (weekoff='Y' or holiday='Y') and hospital_id=?;
-          
+
           `,
           values: [
             input.fromDate,
@@ -849,18 +849,19 @@ module.exports = {
     if (input.hospital_id > 0 && input.year > 0 && input.month > 0) {
       _mysql
         .executeQuery({
-          query: `select hims_f_project_wise_payroll_id,employee_id,E.employee_code,E.full_name,d.designation,project_id,\
-          P.project_code,P.project_desc,month,year,sum(worked_hours) as worked_hours,sum(worked_minutes) as worked_minutes,\
-          sum(cost) as project_cost,PWP.hospital_id, SD.sub_department_name, DPT.department_name \
-          from hims_f_project_wise_payroll PWP \
-          inner join hims_d_employee  E on PWP.employee_id=E.hims_d_employee_id\
-          inner join hims_d_project  P on PWP.project_id=P.hims_d_project_id \
-          left join hims_d_employee_group EG on EG.hims_d_employee_group_id = E.employee_group_id  \
-          left join hims_d_designation d on E.employee_designation_id = d.hims_d_designation_id \
-          left join hims_d_sub_department SD on SD.hims_d_sub_department_id = E.sub_department_id  \
-          inner join hims_d_department DPT on SD.department_id = DPT.hims_d_department_id \
-          where PWP.hospital_id=? \
-          and year=? and month=?  ${employee} ${project} group by ${groupBy} ;`,
+          query: `select hims_f_project_wise_payroll_id, PWP.employee_id,E.employee_code,E.full_name,d.designation, \
+          project_id, P.project_code,P.project_desc, PWP.month, PWP.year,sum(worked_hours) as worked_hours,\
+          sum(worked_minutes) as worked_minutes, sum(cost) as project_cost,PWP.hospital_id, SD.sub_department_name, \
+          DPT.department_name , SAL.ot_work_hours + SAL.ot_weekoff_hours + SAL.ot_holiday_hours as ot_work, \
+          SAL.total_working_hours ,SAE.earnings_id,SAE.amount,SAE.per_day_salary, ERD.component_type from hims_f_project_wise_payroll PWP inner join hims_d_employee  E on PWP.employee_id=E.hims_d_employee_id \
+          inner join hims_d_project  P on PWP.project_id=P.hims_d_project_id left join hims_d_employee_group EG \
+          on EG.hims_d_employee_group_id = E.employee_group_id left join hims_d_designation d on \
+          E.employee_designation_id = d.hims_d_designation_id left join hims_d_sub_department SD on SD.hims_d_sub_department_id = E.sub_department_id inner join hims_d_department DPT on SD.department_id = DPT.hims_d_department_id \
+          inner join hims_f_salary SAL on SAL.employee_id = PWP.employee_id and  SAL.month = PWP.month and \
+          SAL.year = PWP.year left join hims_f_salary_earnings SAE on SAE.salary_header_id = SAL.hims_f_salary_id \
+          left join hims_d_earning_deduction ERD on SAE.earnings_id=ERD.hims_d_earning_deduction_id \
+          where component_type='OV' and PWP.hospital_id=? \
+          and PWP.year=? and PWP.month=?  ${employee} ${project} group by ${groupBy} ;`,
           values: [input.hospital_id, input.year, input.month],
           printQuery: true
         })
