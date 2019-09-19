@@ -1,0 +1,8 @@
+version: '2.1'
+
+services:
+  nginx-conf:
+    image: nginx-conf
+    build: .
+    ports:
+      - 80:80
