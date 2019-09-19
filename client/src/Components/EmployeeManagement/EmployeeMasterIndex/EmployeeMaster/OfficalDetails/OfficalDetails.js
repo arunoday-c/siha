@@ -84,7 +84,7 @@ class OfficalDetails extends Component {
         uri: "/employee/get",
         module: "hrManagement",
         method: "GET",
-
+        data: { hospital_requires: false },
         redux: {
           type: "EMPLY_GET_DATA",
           mappingName: "all_employees"

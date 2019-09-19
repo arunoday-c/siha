@@ -79,11 +79,16 @@ module.exports = {
             " and E.employee_designation_id='" + req.query.designation_id + "'";
         }
 
-        if (req.query.hospital_id != null) {
-          _strAppend += " and E.hospital_id='" + req.query.hospital_id + "'";
-        } else {
-          _strAppend +=
-            " and E.hospital_id='" + req.userIdentity.hospital_id + "'";
+        if (
+          req.query.hospital_requires === undefined ||
+          req.query.hospital_requires === true
+        ) {
+          if (req.query.hospital_id != null) {
+            _strAppend += " and E.hospital_id='" + req.query.hospital_id + "'";
+          } else {
+            _strAppend +=
+              " and E.hospital_id='" + req.userIdentity.hospital_id + "'";
+          }
         }
         utilities.logger().log("Query: ", _strAppend);
         _mysql
