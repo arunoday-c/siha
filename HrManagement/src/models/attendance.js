@@ -6450,15 +6450,24 @@ getBulkManualTimeSheet: (req, res, next) => {
                             project_id: day.project_id
                           });
                         } else {
-                          req.records = {
-                            invalid_input: true,
-                            message: `${employee["employee_code"]} on  ${                     
-                              moment(  day.attendance_date, "YYYY-MM-DD").format(
-                                 "DD-MM-YYYY")
-                            } is ${day["status"]} not  PR`
-                          };
-                          next();
-                          return;
+                          // req.records = {
+                          //   invalid_input: true,
+                          //   message: `${employee["employee_code"]} on  ${                     
+                          //     moment(  day.attendance_date, "YYYY-MM-DD").format(
+                          //        "DD-MM-YYYY")
+                          //   } is ${day["status"]} not  PR`
+
+
+                          // };
+                          // next();
+                          // return;
+
+
+
+                          errorString+=`${employee["employee_code"]} on  ${                     
+                            moment(  day.attendance_date, "YYYY-MM-DD").format(
+                               "DD-MM-YYYY")
+                          } is ${day["status"]} not  PR <br />`;
                         }
 
                     case "PR":
@@ -6478,15 +6487,22 @@ getBulkManualTimeSheet: (req, res, next) => {
                           project_id: day.project_id
                         });
                       } else {
-                        req.records = {
-                          invalid_input: true,
-                          message: `${employee["employee_code"]} on  ${
-                            moment(  day.attendance_date, "YYYY-MM-DD").format(
-                              "DD-MM-YYYY")
-                          } is ${day["status"]} not  PR`
-                        };
-                        next();
-                        return;
+                        // req.records = {
+                        //   invalid_input: true,
+                        //   message: `${employee["employee_code"]} on  ${
+                        //     moment(  day.attendance_date, "YYYY-MM-DD").format(
+                        //       "DD-MM-YYYY")
+                        //   } is ${day["status"]} not  PR`
+                        // };
+                        // next();
+                        // return;
+
+                        errorString+=`${employee["employee_code"]} on  ${
+                              moment(  day.attendance_date, "YYYY-MM-DD").format(
+                                "DD-MM-YYYY")
+                            } is ${day["status"]} not  PR   <br />`
+
+
                       }
 
                       break;
@@ -6557,15 +6573,23 @@ getBulkManualTimeSheet: (req, res, next) => {
                                 break;
                         }
 
-                        req.records = {
-                          invalid_input: true,
-                          message: `${employee["employee_code"]} on  ${
-                            moment(  day.attendance_date, "YYYY-MM-DD").format(
-                              "DD-MM-YYYY")
-                          } is ${actual} not ${neww}`
-                        };
-                        next();
-                        return;
+                        // req.records = {
+                        //   invalid_input: true,
+                        //   message: `${employee["employee_code"]} on  ${
+                        //     moment(  day.attendance_date, "YYYY-MM-DD").format(
+                        //       "DD-MM-YYYY")
+                        //   } is ${actual} not ${neww}`
+                        // };
+                        // next();
+                        // return;
+
+                        errorString+=`${employee["employee_code"]} on  ${
+                          moment(  day.attendance_date, "YYYY-MM-DD").format(
+                            "DD-MM-YYYY")
+                        } is ${actual} not ${neww} <br />`
+
+
+
                       }
 
                       break;
@@ -6634,29 +6658,42 @@ getBulkManualTimeSheet: (req, res, next) => {
                               break;
                       }
 
-                      req.records = {
-                        invalid_input: true,
-                        message: `${employee["employee_code"]} on  ${
-                          moment(  day.attendance_date, "YYYY-MM-DD").format(
-                            "DD-MM-YYYY")
-                        } is ${actual} not ${neww}`
-                      };
-                      next();
-                      return;
+                      // req.records = {
+                      //   invalid_input: true,
+                      //   message: `${employee["employee_code"]} on  ${
+                      //     moment(  day.attendance_date, "YYYY-MM-DD").format(
+                      //       "DD-MM-YYYY")
+                      //   } is ${actual} not ${neww}`
+                      // };
+                      // next();
+                      // return;
+
+
+                      errorString+=`${employee["employee_code"]} on  ${
+                            moment(  day.attendance_date, "YYYY-MM-DD").format(
+                              "DD-MM-YYYY")
+                          } is ${actual} not ${neww} <br />`
                     }
                       break;
 
                     case "N":
                       if (day["worked_status"] !== day["status"]) {
-                        req.records = {
-                          invalid_input: true,
-                          message: `${employee["employee_code"]} on  ${
-                            moment(  day.attendance_date, "YYYY-MM-DD").format(
-                              "DD-MM-YYYY")
-                          } is ${day["status"]} not  N`
-                        };
-                        next();
-                        return;
+                        // req.records = {
+                        //   invalid_input: true,
+                        //   message: `${employee["employee_code"]} on  ${
+                        //     moment(  day.attendance_date, "YYYY-MM-DD").format(
+                        //       "DD-MM-YYYY")
+                        //   } is ${day["status"]} not  N`
+                        // };
+                        // next();
+                        // return;
+
+                        errorString+=
+                        `${employee["employee_code"]} on  ${
+                              moment(  day.attendance_date, "YYYY-MM-DD").format(
+                                "DD-MM-YYYY")
+                            } is ${day["status"]} not  N  <br/>`
+
                       }
                       break;
 
@@ -6678,7 +6715,7 @@ getBulkManualTimeSheet: (req, res, next) => {
                         // next();
 
 
-                        errorString+=respond.message+"\n";
+                        errorString+=respond.message+"<br />";
                    
 
                       } else {
@@ -6686,15 +6723,22 @@ getBulkManualTimeSheet: (req, res, next) => {
                       }
                     }else{
 
-                      req.records = {
-                        invalid_input: true,
-                        message: `No project is Assigned for ${employee["employee_code"]} on  ${
-                          moment(  day.attendance_date, "YYYY-MM-DD").format(
-                            "DD-MM-YYYY")
-                        } `
-                      };
-                      next();
-                      return;
+                      // req.records = {
+                      //   invalid_input: true,
+                      //   message: `No project is Assigned for ${employee["employee_code"]} on  ${
+                      //     moment(  day.attendance_date, "YYYY-MM-DD").format(
+                      //       "DD-MM-YYYY")
+                      //   } `
+                      // };
+                      // next();
+                      // return;
+
+
+
+                      errorString+= `No project is Assigned for ${employee["employee_code"]} on  ${
+                            moment(  day.attendance_date, "YYYY-MM-DD").format(
+                              "DD-MM-YYYY")
+                          } <br />`
                     }
                       break;
                   }
