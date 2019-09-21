@@ -461,9 +461,9 @@ let insertOrderedServices = (req, res, next) => {
           _mysql
             .executeQuery({
               query:
-                "SELECT hims_f_ordered_services_id,services_id,created_date, service_type_id, test_type \
-              from hims_f_ordered_services where `patient_id`=? and `doctor_id`=? and `visit_id`=? and \
-              `services_id` in (?)",
+                "SELECT OS.hims_f_ordered_services_id, OS.services_id, OS.created_date, OS.service_type_id, OS.test_type, \
+              S.physiotherapy_service from hims_f_ordered_services OS inner join hims_d_services S where \
+              S.hims_d_services_id = OS.services_id and `patient_id`=? and `doctor_id`=? and `visit_id`=? and `services_id` in (?)",
               values: servicesForPreAproval,
               printQuery: true
             })
@@ -979,12 +979,11 @@ let load_orders_for_bill = (req, res, next) => {
           OS.`net_amout`, OS.`copay_percentage`, OS.`copay_amount`, OS.`deductable_amount`, OS.`deductable_percentage`, \
           OS.`tax_inclusive`, OS.`patient_tax`, OS.`company_tax`, OS.`total_tax`, OS.`patient_resp`, OS.`patient_payable`, \
           OS.`comapany_resp`, OS.`company_payble`, OS.`sec_company`, OS.`sec_deductable_percentage`, OS.`sec_deductable_amount`,\
-          OS.`sec_company_res`, OS.`sec_company_tax`, OS.`sec_company_paybale`, OS.`sec_copay_percntage`, OS.`sec_copay_amount`,OS.teeth_number,\
-          OS.`created_by`, OS.`created_date`, OS.`updated_by`, OS.`updated_date`, OS.`record_status`,\
-          S.`hims_d_services_id`, S.`service_code`, S.`cpt_code`, S.`service_name`, S.`arabic_service_name`, \
-          S.`service_desc`, S.`sub_department_id`, S.`hospital_id`, S.`service_type_id`, S.`procedure_type`, \
-          S.`standard_fee`, S.`followup_free_fee`, S.`followup_paid_fee`, S.`discount`, S.`vat_applicable`, \
-          S.`vat_percent`, S.`service_status` FROM `hims_f_ordered_services` OS,  `hims_d_services` S WHERE \
+          OS.`sec_company_res`, OS.`sec_company_tax`, OS.`sec_company_paybale`, OS.`sec_copay_percntage`, OS.`sec_copay_amount`,OS.teeth_number,OS.`created_by`, OS.`created_date`, OS.`updated_by`, OS.`updated_date`, \
+          OS.`record_status`,S.`hims_d_services_id`, S.`service_code`, S.`cpt_code`, S.`service_name`, S.`arabic_service_name`, \
+          S.`service_desc`, S.`sub_department_id`, S.`hospital_id`, S.`service_type_id`, S.`procedure_type`, S.`standard_fee`, \
+          S.`followup_free_fee`, S.`followup_paid_fee`, S.`discount`, S.`vat_applicable`, S.`vat_percent`, S.`service_status`,\
+          S.`physiotherapy_service` FROM `hims_f_ordered_services` OS,  `hims_d_services` S WHERE \
           OS.services_id = S.hims_d_services_id and  OS.`record_status`='A' and visit_id=? AND OS.`billed`='N'; \
             SELECT  OS.`hims_f_ordered_inventory_id` as ordered_inventory_id, OS.`patient_id`, OS.`visit_id`,\
           OS.`doctor_id`, OS.`service_type_id`, OS.`trans_package_detail_id`,\
@@ -1812,6 +1811,72 @@ let deleteOrderService = (req, res, next) => {
   }
 };
 
+let insertPhysiotherapyServices = (req, res, next) => {
+  const _options = req.connection == null ? {} : req.connection;
+  const _mysql = new algaehMysql(_options);
+  try {
+    let inputParam = { ...req.body };
+    let Services =
+      req.records.ResultOfFetchOrderIds == null
+        ? req.body.billdetails
+        : req.records.ResultOfFetchOrderIds;
+
+    const physothServices = [
+      ...new Set(
+        new LINQ(Services)
+          .Where(w => w.physiotherapy_service == "Y")
+          .Select(s => {
+            return {
+              ordered_services_id: s.hims_f_ordered_services_id || null,
+              patient_id: req.body.patient_id,
+              referred_doctor_id: req.body.incharge_or_provider,
+              visit_id: req.body.visit_id,
+              billed: req.body.billed,
+              ordered_date: s.created_date,
+              hospital_id: req.userIdentity.hospital_id
+            };
+          })
+          .ToArray()
+      )
+    ];
+
+    const IncludeValues = [
+      "ordered_services_id",
+      "patient_id",
+      "visit_id",
+      "referred_doctor_id",
+      "billed",
+      "ordered_date",
+      "hospital_id"
+    ];
+
+    if (physothServices.length > 0) {
+      _mysql
+        .executeQuery({
+          query: "INSERT INTO hims_f_physiotherapy_header(??) VALUES ?",
+          values: physothServices,
+          includeValues: IncludeValues,
+          bulkInsertOrUpdate: true,
+          printQuery: true
+        })
+        .then(insert_physiotherapy => {
+          next();
+        })
+        .catch(e => {
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
+        });
+    } else {
+      next();
+    }
+  } catch (e) {
+    _mysql.rollBackTransaction(() => {
+      next(e);
+    });
+  }
+};
+
 module.exports = {
   insertOrderedServices,
   getPreAprovalList,
@@ -1829,5 +1894,6 @@ module.exports = {
   load_orders_for_bill,
   addPackage,
   getPatientPackage,
-  deleteOrderService
+  deleteOrderService,
+  insertPhysiotherapyServices
 };

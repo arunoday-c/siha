@@ -233,8 +233,6 @@ const onchangegridcol = ($this, row, e) => {
 };
 
 const ondiscountgridcol = ($this, context, row, e) => {
-  
-
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   let oldvalue = e.oldvalue || e.target.oldvalue;
@@ -496,7 +494,6 @@ const makeDiscountZero = ($this, context, e) => {
 };
 
 const makeZeroIngrid = ($this, context, row, e) => {
-  
   if (e.target.value === "") {
     row["discount_amout"] = 0;
     row["discount_percentage"] = 0;

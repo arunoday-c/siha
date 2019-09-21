@@ -17,7 +17,8 @@ import {
   InsertServices,
   CptCodesSearch,
   clearData,
-  numberEventHandaler
+  numberEventHandaler,
+  PhyThryAppilicable
 } from "./HospitalServicesEvent";
 import { AlgaehActions } from "../../../actions/algaehActions";
 
@@ -48,7 +49,9 @@ class HospitalServices extends PureComponent {
       cpt_code_data: null,
       sub_department_id: null,
       record_status: "A",
-      direct_call: true
+      direct_call: true,
+      PhyService: false,
+      physiotherapy_service: "N"
     };
   }
 
@@ -90,6 +93,12 @@ class HospitalServices extends PureComponent {
         IOputs.Applicable = true;
       } else {
         IOputs.Applicable = false;
+      }
+
+      if (IOputs.physiotherapy_service === "Y") {
+        IOputs.PhyService = true;
+      } else {
+        IOputs.PhyService = false;
       }
 
       this.setState({ ...this.state, ...IOputs });
@@ -181,7 +190,7 @@ class HospitalServices extends PureComponent {
                 />
 
                 <AlagehFormGroup
-                  div={{ className: "col-10 form-group" }}
+                  div={{ className: "col-7 form-group" }}
                   label={{
                     fieldName: "cpt_code"
                   }}
@@ -204,6 +213,26 @@ class HospitalServices extends PureComponent {
                     onClick={CptCodesSearch.bind(this, this)}
                     style={{ marginTop: 25, fontSize: "1.4rem" }}
                   />
+                </div>
+
+                <div
+                  className="col-3 customCheckbox"
+                  style={{ border: "none", marginTop: "22px" }}
+                >
+                  <label className="checkbox">
+                    <input
+                      type="checkbox"
+                      name="physiotherapy_service"
+                      value="Y"
+                      checked={this.state.PhyService}
+                      onChange={PhyThryAppilicable.bind(this, this)}
+                    />
+                    <span>
+                      <AlgaehLabel
+                        label={{ forceLabel: "Physiotherapy Service" }}
+                      />
+                    </span>
+                  </label>
                 </div>
                 <AlagehAutoComplete
                   div={{ className: "col-6 form-group" }}

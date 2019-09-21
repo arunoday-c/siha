@@ -2218,7 +2218,7 @@ module.exports = {
             .executeQuery({
               query: `select hims_d_services_id,service_code,cpt_code,service_name,arabic_service_name,service_desc,sub_department_id,\
              service_type_id,procedure_type,standard_fee,followup_free_fee,followup_paid_fee,discount,vat_applicable,\
-             vat_percent,service_status,effective_start_date,effectice_end_date from hims_d_services\
+             vat_percent,service_status,effective_start_date,effectice_end_date,physiotherapy_service from hims_d_services\
              where hospital_id=? and hims_d_services_id in (?);${strQuery}`,
               values: [req.userIdentity.hospital_id, service_ids],
               printQuery: false
@@ -2757,6 +2757,7 @@ module.exports = {
                     service_type_id: records.service_type_id,
                     service_name: records.service_name,
                     services_id: records.hims_d_services_id,
+                    physiotherapy_service: records.physiotherapy_service,
                     quantity: quantity,
                     unit_cost: unit_cost,
                     gross_amount: gross_amount,

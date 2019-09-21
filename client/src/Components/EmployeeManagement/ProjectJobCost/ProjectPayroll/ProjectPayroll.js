@@ -349,10 +349,16 @@ class ProjectPayroll extends Component {
                           }
                         },
                         {
-                          fieldName: "complete_hours",
+                          fieldName: "project_cost",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Amount" }} />
                           ),
+                          displayTemplate: row => {
+                            return (
+                              parseFloat(row.project_cost) -
+                              parseFloat(row.ot_amount)
+                            );
+                          },
                           others: {
                             maxWidth: 150,
                             resizable: false,
@@ -375,7 +381,7 @@ class ProjectPayroll extends Component {
                           }
                         },
                         {
-                          fieldName: "amount",
+                          fieldName: "ot_amount",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Amount" }} />
                           ),
