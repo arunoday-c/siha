@@ -81,11 +81,11 @@ export default class PhysioTherapy extends Component {
     return (
       <div className="PhysioTherapyScreen">
         <div className="row">
-          <div className="col-5">
+          <div className="col-6">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
-                  <h3 className="caption-subject">Patient Details</h3>
+                  <h3 className="caption-subject">List of Patient</h3>
                 </div>
                 {/* <div className="actions">
                   <a className="btn btn-primary btn-circle active">
@@ -95,80 +95,98 @@ export default class PhysioTherapy extends Component {
               </div>
               <div className="portlet-body">
                 <div className="row">
-                  <AlgaehDataGrid
-                    id="physioTreatPatientGrid"
-                    columns={[
-                      {
-                        fieldName: "billed",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Bill Status" }} />
-                        ),
-                        displayTemplate: row => {
-                          return row.billed === "N" ? "Not Billed" : "Billed";
+                  <div className="col-12">
+                    <AlgaehDataGrid
+                      id="physioTreatPatientGrid"
+                      columns={[
+                        {
+                          fieldName: "billed",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Bill Status" }}
+                            />
+                          ),
+                          displayTemplate: row => {
+                            return row.billed === "N" ? "Not Billed" : "Billed";
+                          },
+                          others: {
+                            resizable: false,
+                            style: { textAlign: "center" }
+                          }
                         },
-                        others: {
-                          resizable: false,
-                          style: { textAlign: "center" }
+                        {
+                          fieldName: "patient_code",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Patient Code" }}
+                            />
+                          )
+                        },
+                        {
+                          fieldName: "full_name",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Patient Name" }}
+                            />
+                          )
+                        },
+                        {
+                          fieldName: "employee_id",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Employee ID" }}
+                            />
+                          )
+                        },
+
+                        {
+                          fieldName: "ordered_date",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Ordered Date" }}
+                            />
+                          )
+                        },
+                        {
+                          fieldName: "doctor_name",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Reffered By" }}
+                            />
+                          )
+                        },
+                        {
+                          fieldName: "physiotherapy_status",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Status" }} />
+                          )
                         }
-                      },
-                      {
-                        fieldName: "ordered_date",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Ordered Date" }} />
-                        )
-                      },
-                      {
-                        fieldName: "physiotherapy_status",
-                        label: <AlgaehLabel label={{ forceLabel: "Status" }} />
-                      },
-                      {
-                        fieldName: "patient_code",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Patient Code" }} />
-                        )
-                      },
-                      {
-                        fieldName: "full_name",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Patient Name" }} />
-                        )
-                      },
-                      {
-                        fieldName: "doctor_name",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Reffered By" }} />
-                        )
-                      },
-                      {
-                        fieldName: "employee_id",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Employee ID" }} />
-                        )
-                      }
-                    ]}
-                    keyId="physio_patient_id"
-                    dataSource={{ data: this.state.PhysiotherapyPatient }}
-                    isEditable={false}
-                    filter={true}
-                    paging={{ page: 0, rowsPerPage: 10 }}
-                    onRowSelect={row => {
-                      this.setState({
-                        ...row,
-                        saveEnable: false
-                      });
-                    }}
-                  />
+                      ]}
+                      keyId="physio_patient_id"
+                      dataSource={{ data: this.state.PhysiotherapyPatient }}
+                      isEditable={false}
+                      filter={true}
+                      paging={{ page: 0, rowsPerPage: 10 }}
+                      onRowSelect={row => {
+                        this.setState({
+                          ...row,
+                          saveEnable: false
+                        });
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-          <div className="col-7">
+          <div className="col-6">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">Selected Patient Details</h3>
                 </div>
-
+              </div>
+              <div className="portlet-body" data-validate="SessionDetails">
                 <div className="row">
                   <div className="col">
                     <AlgaehLabel label={{ forceLabel: "Patient Code" }} />
@@ -195,15 +213,10 @@ export default class PhysioTherapy extends Component {
                     </h6>
                   </div>
                 </div>
-
-                <div className="caption">
-                  <h3 className="caption-subject">Treatment Details</h3>
-                </div>
-              </div>
-              <div className="portlet-body" data-validate="SessionDetails">
+                <hr></hr>
                 <div className="row">
                   <AlagehFormGroup
-                    div={{ className: "col-7 mandatory" }}
+                    div={{ className: "col-6 mandatory form-group" }}
                     label={{
                       forceLabel: "Diagnosis",
                       isImp: true
@@ -222,7 +235,7 @@ export default class PhysioTherapy extends Component {
                     }}
                   />
                   <AlagehFormGroup
-                    div={{ className: "col-2 mandatory" }}
+                    div={{ className: "col-3 mandatory form-group" }}
                     label={{
                       forceLabel: "No. of Sessions",
                       isImp: true
@@ -244,9 +257,7 @@ export default class PhysioTherapy extends Component {
                       }
                     }}
                   />
-                </div>
-                <hr />
-                <div className="row">
+
                   <AlgaehDateHandler
                     div={{ className: "col-3 mandatory form-group" }}
                     label={{ forceLabel: "Session Date", isImp: true }}
@@ -284,7 +295,7 @@ export default class PhysioTherapy extends Component {
                   />
 
                   <AlagehAutoComplete
-                    div={{ className: "col mandatory form-group" }}
+                    div={{ className: "col-4 mandatory form-group" }}
                     label={{
                       forceLabel: "Physiotherapy Type",
                       isImp: true
@@ -304,7 +315,7 @@ export default class PhysioTherapy extends Component {
 
                   {this.state.physiotherapy_type === "O" ? (
                     <AlagehFormGroup
-                      div={{ className: "col-2 mandatory form-group" }}
+                      div={{ className: "col-6 mandatory form-group" }}
                       label={{
                         forceLabel: "Others Specify",
                         isImp:
@@ -342,9 +353,11 @@ export default class PhysioTherapy extends Component {
                       }
                     }}
                   />
-                  <div className="col-1">
+                  <div
+                    className="col-1"
+                    style={{ paddingTop: 19, paddingLeft: 0 }}
+                  >
                     <button
-                      style={{ marginTop: 19 }}
                       className="btn btn-primary"
                       onClick={this.AddtoList.bind(this)}
                     >
