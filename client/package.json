@@ -58,12 +58,12 @@
     "build-css": "node-sass-chokidar src/ -o src/",
     "watch-css": "npm run build-css && node-sass-chokidar src/ -o src/ --watch --recursive",
     "start-js": "craco start",
-    "start": "cross-env PORT=1313 npm run start-js",
+    "start": "cross-env PORT=1313 REACT_APP_CDN=development npm run start-js",
     "build-js": "craco --max_old_space_size=4096 build",
-    "build": "cross-env GENERATE_SOURCEMAP=false  npm-run-all build-css build-js",
+    "build": "cross-env REACT_APP_CDN=production.min GENERATE_SOURCEMAP=false  npm-run-all build-css build-js",
     "test": "craco test --env=jsdom",
     "eject": "react-scripts eject",
-    "start-server": "cross-env PORT=1414 npm-run-all -p watch-css start-js"
+    "start-server": "cross-env PORT=1414 REACT_APP_CDN=development npm-run-all -p watch-css start-js"
   },
   "eslintConfig": {
     "rules": {

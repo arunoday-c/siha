@@ -70,37 +70,31 @@ export default function Filter(props) {
     });
   }, []);
 
-  useEffect(
-    () => {
-      if (hospitalID !== "") {
-        getAttendanceDates(data => {
-          if (data.length > 0) {
-            const firstRecord = data[0];
-            setStartDt(firstRecord.at_st_date);
-            setEndDt(firstRecord.at_end_date);
-            dateCalcl(firstRecord.at_st_date, firstRecord.at_end_date);
-          }
-        });
-        getDivisionProject({ division_id: hospitalID }, data => {
-          setProjects(data);
-        });
-        getBranchWiseDepartments({ hospital_id: hospitalID }, data => {
-          setDepartment(data);
-        });
-        getEmpGroups(data => {
-          setEmpGroups(data);
-        });
-      }
-    },
-    [hospitalID]
-  );
+  useEffect(() => {
+    if (hospitalID !== "") {
+      getAttendanceDates(data => {
+        if (data.length > 0) {
+          const firstRecord = data[0];
+          setStartDt(firstRecord.at_st_date);
+          setEndDt(firstRecord.at_end_date);
+          dateCalcl(firstRecord.at_st_date, firstRecord.at_end_date);
+        }
+      });
+      getDivisionProject({ division_id: hospitalID }, data => {
+        setProjects(data);
+      });
+      getBranchWiseDepartments({ hospital_id: hospitalID }, data => {
+        setDepartment(data);
+      });
+      getEmpGroups(data => {
+        setEmpGroups(data);
+      });
+    }
+  }, [hospitalID]);
 
-  useEffect(
-    () => {
-      dateCalcl();
-    },
-    [month]
-  );
+  useEffect(() => {
+    dateCalcl();
+  }, [month]);
 
   return (
     <div className="row  inner-top-search">
@@ -167,7 +161,6 @@ export default function Filter(props) {
         }}
         showLoading={true}
       />
-
       <div className="col mandatory">
         <label className="style_Label ">
           From Date<span className="imp">&nbsp;*</span>
@@ -209,7 +202,6 @@ export default function Filter(props) {
           />
         </div>
       </div>
-
       <AlagehAutoComplete
         div={{ className: "col-2 form-group" }}
         label={{
@@ -232,6 +224,26 @@ export default function Filter(props) {
           }
         }}
         showLoading={true}
+      />{" "}
+      <AlagehAutoComplete
+        div={{ className: "col-2 form-group" }}
+        label={{ forceLabel: "Employee Group" }}
+        selector={{
+          name: "group_id",
+          value: empGroupId,
+          className: "select-fld",
+          dataSource: {
+            textField: "group_description",
+            valueField: "hims_d_employee_group_id",
+            data: empGroups
+          },
+          onChange: e => {
+            setEmpGroupId(e.value);
+          },
+          onClear: () => {
+            setEmpGroupId("");
+          }
+        }}
       />
       <AlagehAutoComplete
         div={{ className: "col-2 form-group" }}
@@ -276,26 +288,6 @@ export default function Filter(props) {
           }
         }}
       />
-      <AlagehAutoComplete
-        div={{ className: "col-2 form-group" }}
-        label={{ forceLabel: "Employee Group" }}
-        selector={{
-          name: "group_id",
-          value: empGroupId,
-          className: "select-fld",
-          dataSource: {
-            textField: "group_description",
-            valueField: "hims_d_employee_group_id",
-            data: empGroups
-          },
-          onChange: e => {
-            setEmpGroupId(e.value);
-          },
-          onClear: () => {
-            setEmpGroupId("");
-          }
-        }}
-      />
       <AlgaehAutoSearch
         div={{ className: "col" }}
         label={{ forceLabel: "Employee Search" }}
@@ -317,7 +309,6 @@ export default function Filter(props) {
           setEmployeeId("");
         }}
       />
-
       {/* <input
         type="file"
         name="manualTimeSheet"
@@ -336,7 +327,6 @@ export default function Filter(props) {
           }
         }}
       /> */}
-
       <div className="col-5" style={{ paddingTop: 19 }}>
         <div className="uploadManualDiv">
           <input
@@ -422,7 +412,6 @@ export default function Filter(props) {
             setEmployeeId("");
             setEmpGroupId("");
             setSubDepartments([]);
-            setEmpGroups([]);
           }}
           style={{ marginLeft: 10, float: "right" }}
           className="btn btn-default"
