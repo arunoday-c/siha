@@ -12,15 +12,17 @@ module.exports = {
         .executeQueryWithTransaction({
           query:
             "INSERT INTO `hims_d_services` (`service_code`, `cpt_code`,`service_name`, `hospital_id`,`service_type_id`, \
-          `sub_department_id`,`standard_fee`, `discount`, `vat_applicable`, `vat_percent`, `effective_start_date`\
+          `physiotherapy_service`,`sub_department_id`,`standard_fee`, `discount`, `vat_applicable`, \
+          `vat_percent`, `effective_start_date`\
           , `created_by` ,`created_date`,`service_status`) \
-       VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+       VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
           values: [
             inputParam.service_code,
             inputParam.cpt_code,
             inputParam.service_name,
             inputParam.hospital_id,
             inputParam.service_type_id,
+            inputParam.physiotherapy_service,
             inputParam.sub_department_id,
             inputParam.standard_fee,
             inputParam.discount,
@@ -144,8 +146,8 @@ module.exports = {
           query:
             "UPDATE `hims_d_services` \
           SET `service_code`=?,  `cpt_code`=?,`service_name`=?, `hospital_id`=?,  `service_type_id`=?,`sub_department_id` = ?, \
-          `standard_fee`=?, `discount`=?,  `vat_applicable`=?,`vat_percent`=?, `updated_by`=?, `updated_date`=?,\
-          `service_status`=? , `record_status`=?\
+          `standard_fee`=?, `discount`=?,  `vat_applicable`=?,`vat_percent`=?, `physiotherapy_service`=?, \
+          `updated_by`=?, `updated_date`=?, `service_status`=? ,  `record_status`=?\
           WHERE `hims_d_services_id`=?",
           values: [
             inputParam.service_code,
@@ -159,6 +161,7 @@ module.exports = {
             inputParam.discount,
             inputParam.vat_applicable,
             inputParam.vat_percent,
+            inputParam.physiotherapy_service,
 
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
@@ -255,9 +258,9 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "select hims_d_services_id, service_code, S.cpt_code, CPT.cpt_code as cpt_p_code, \
-            service_name , service_desc, sub_department_id, hospital_id, service_type_id, standard_fee , \
-            discount, vat_applicable, vat_percent, effective_start_date, effectice_end_date, procedure_type from \
+            "select hims_d_services_id, service_code, S.cpt_code, CPT.cpt_code as cpt_p_code, service_name, service_desc, \
+            sub_department_id, hospital_id, service_type_id, standard_fee , discount, vat_applicable, vat_percent, \
+            effective_start_date, effectice_end_date, procedure_type, physiotherapy_service from \
             hims_d_services S left join hims_d_cpt_code CPT on CPT.hims_d_cpt_code_id = S.cpt_code \
             WHERE S.record_status ='A' " +
             _strAppend +

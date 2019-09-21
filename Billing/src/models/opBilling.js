@@ -431,5 +431,130 @@ module.exports = {
       _mysql.releaseConnection();
       next(e);
     }
+  },
+
+  insertPhysiotherapyServices: (req, res, next) => {
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
+    try {
+      let inputParam = { ...req.body };
+      let Services =
+        req.records.ResultOfFetchOrderIds == null
+          ? req.body.billdetails
+          : req.records.ResultOfFetchOrderIds;
+
+      const physothServices = [
+        ...new Set(
+          new LINQ(Services)
+            .Where(w => w.physiotherapy_service == "Y")
+            .Select(s => {
+              return {
+                ordered_services_id: s.hims_f_ordered_services_id || null,
+                patient_id: req.body.patient_id,
+                referred_doctor_id: req.body.incharge_or_provider,
+                visit_id: req.body.visit_id,
+                billed: req.body.billed,
+                ordered_date: s.created_date,
+                hospital_id: req.userIdentity.hospital_id
+              };
+            })
+            .ToArray()
+        )
+      ];
+
+      const IncludeValues = [
+        "ordered_services_id",
+        "patient_id",
+        "visit_id",
+        "referred_doctor_id",
+        "billed",
+        "ordered_date",
+        "hospital_id"
+      ];
+
+      if (physothServices.length > 0) {
+        _mysql
+          .executeQuery({
+            query: "INSERT INTO hims_f_physiotherapy_header(??) VALUES ?",
+            values: physothServices,
+            includeValues: IncludeValues,
+            bulkInsertOrUpdate: true,
+            printQuery: true
+          })
+          .then(insert_physiotherapy => {
+            next();
+          })
+          .catch(e => {
+            _mysql.rollBackTransaction(() => {
+              next(e);
+            });
+          });
+      } else {
+        next();
+      }
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
+  },
+
+  updatePhysiotherapyServices: (req, res, next) => {
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
+    const utilities = new algaehUtilities();
+    utilities.logger().log("updatePhysiotherapyServices: ");
+    try {
+      let OrderServices = new LINQ(req.body.billdetails)
+        .Where(
+          w =>
+            w.hims_f_ordered_services_id != null &&
+            w.physiotherapy_service == "Y"
+        )
+        .Select(s => {
+          return {
+            ordered_services_id: s.hims_f_ordered_services_id,
+            billed: "Y",
+            updated_date: new Date(),
+            updated_by: req.userIdentity.algaeh_d_app_user_id
+          };
+        })
+        .ToArray();
+
+      let qry = "";
+
+      if (OrderServices.length > 0) {
+        for (let i = 0; i < OrderServices.length; i++) {
+          qry += mysql.format(
+            "UPDATE `hims_f_physiotherapy_header` SET billed=? where ordered_services_id=?;",
+            [OrderServices[i].billed, OrderServices[i].ordered_services_id]
+          );
+        }
+
+        utilities.logger().log("qry: ", qry);
+
+        _mysql
+          .executeQuery({
+            query: qry,
+            printQuery: true
+          })
+          .then(rad_result => {
+            req.records = { PHYSIOTHERAPY: false };
+            next();
+          })
+          .catch(e => {
+            _mysql.rollBackTransaction(() => {
+              next(e);
+            });
+          });
+      } else {
+        req.records = { PHYSIOTHERAPY: true };
+        next();
+      }
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
   }
 };

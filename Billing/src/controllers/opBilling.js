@@ -10,8 +10,10 @@ import {
   updateOrderedServicesBilled,
   updateOrderedPackageBilled,
   updateOrderedConsumablessBilled,
+  updatePhysiotherapyServices,
   selectBill,
-  getPednigBills
+  getPednigBills,
+  insertPhysiotherapyServices
 } from "../models/opBilling";
 import { getReceiptEntry } from "../models/receiptentry";
 
@@ -52,6 +54,17 @@ export default () => {
     updateOrderedServicesBilled,
     updateOrderedConsumablessBilled,
     updateOrderedPackageBilled,
+    updatePhysiotherapyServices,
+    (req, res, next) => {
+      if (
+        req.records.PHYSIOTHERAPY != null &&
+        req.records.PHYSIOTHERAPY == true
+      ) {
+        insertPhysiotherapyServices(req, res, next);
+      } else {
+        next();
+      }
+    },
     updateLabOrderedBilled,
     (req, res, next) => {
       if (req.records.LAB != null && req.records.LAB == true) {
