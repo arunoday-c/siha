@@ -7,8 +7,8 @@ import logger from "redux-logger";
 import routes from "./routes.js";
 import thunk from "redux-thunk";
 import { applyMiddleware, createStore } from "redux";
-import "./index.css";
-import "./styles/site.css";
+import "./index.scss";
+import "./styles/site.scss";
 // import * as serviceWorker from "./serviceWorker";
 
 const middleware =

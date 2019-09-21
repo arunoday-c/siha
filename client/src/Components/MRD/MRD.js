@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./mrd.css";
+import "./mrd.scss";
 import { getCookie } from "../../utils/algaehApiCall";
 import MRDList from "./MRDList/MRDList";
 import PatientMRD from "./PatientMRD/PatientMRD";

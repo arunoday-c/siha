@@ -11,8 +11,8 @@ import { bindActionCreators } from "redux";
 
 import { AlgaehDataGrid, AlgaehLabel } from "../../../Wrapper/algaehWrapper";
 
-import "./OwnMedication.css";
-import "../../../../styles/site.css";
+import "./OwnMedication.scss";
+import "../../../../styles/site.scss";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 
 class OwnMedication extends Component {

@@ -1,11 +1,11 @@
 import React, { PureComponent } from "react";
 import Label from "../Wrapper/label";
-import "../Wrapper/wrapper.css";
+import "../Wrapper/wrapper.scss";
 import { getCookie, swalMessage } from "../../utils/algaehApiCall.js";
 import moment from "moment";
 import config from "../../utils/config.json";
 import { checkSecurity } from "../../utils/GlobalFunctions";
-// import "../../../node_modules/hijri-date-picker/build/css/index.css";
+// import "../../../node_modules/hijri-date-picker/build/css/index.scss";
 export default class DateHandler extends PureComponent {
   generateLabel = () => {
     if (this.props.label != null) {

@@ -21,8 +21,8 @@ import {
   AdjustAmountCalculate,
   dateValidate
 } from "./DoctorCommissionEvents";
-import "./DoctorCommission.css";
-import "../../styles/site.css";
+import "./DoctorCommission.scss";
+import "../../styles/site.scss";
 import { AlgaehActions } from "../../actions/algaehActions";
 
 import GlobalVariables from "../../utils/GlobalVariables.json";

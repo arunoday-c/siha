@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./vitals.css";
+import "./vitals.scss";
 import {
   AlagehFormGroup,
   AlagehAutoComplete,

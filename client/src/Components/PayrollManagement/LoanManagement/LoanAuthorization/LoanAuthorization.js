@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./loan-auth.css";
+import "./loan-auth.scss";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import { AlgaehOpenContainer } from "../../../../utils/GlobalFunctions";
 import {

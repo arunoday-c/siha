@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./ProjectMaster.css";
+import "./ProjectMaster.scss";
 import {
   AlagehFormGroup,
   AlagehAutoComplete,

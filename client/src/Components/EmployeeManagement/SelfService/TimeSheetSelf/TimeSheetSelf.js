@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./TimeSheetSelf.css";
+import "./TimeSheetSelf.scss";
 // import {
 //   AlgaehDateHandler,
 //   AlagehAutoComplete

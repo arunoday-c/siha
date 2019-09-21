@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./PurchaseOrderList.css";
+import "./PurchaseOrderList.scss";
 import PurchaseOrderList from "./PurchaseOrderList";
 import PurchaseOrderEntry from "../PurchaseOrderEntry/PurchaseOrderEntry";
 import { getCookie } from "../../../utils/algaehApiCall";

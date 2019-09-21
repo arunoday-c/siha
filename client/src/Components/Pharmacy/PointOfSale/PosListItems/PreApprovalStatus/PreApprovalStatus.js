@@ -9,8 +9,8 @@ import {
   AlagehFormGroup,
   AlgaehLabel
 } from "../../../../Wrapper/algaehWrapper";
-import "./../../../../../styles/site.css";
-import "./PreApprovalStatus.css";
+import "./../../../../../styles/site.scss";
+import "./PreApprovalStatus.scss";
 import GlobalVariables from "../../../../../utils/GlobalVariables.json";
 import Options from "../../../../../Options.json";
 import moment from "moment";

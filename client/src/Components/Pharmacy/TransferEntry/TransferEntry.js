@@ -21,8 +21,8 @@ import {
   generateMaterialTransPhar,
   AcknowledgeTransferEntry
 } from "./TransferEntryEvents";
-import "./TransferEntry.css";
-import "../../../styles/site.css";
+import "./TransferEntry.scss";
+import "../../../styles/site.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import Options from "../../../Options.json";
 import TransferEntryItems from "./TransferEntryItems/TransferEntryItems";

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./DiagramMaster.css";
+import "./DiagramMaster.scss";
 
 import {
   AlgaehLabel,

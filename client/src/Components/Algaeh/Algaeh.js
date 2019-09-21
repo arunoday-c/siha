@@ -6,7 +6,7 @@ import ScreenElements from "./ScreenElements/ScreenElements";
 import Formula from "./Formula/Formula";
 
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
-import "./algaeh.css";
+import "./algaeh.scss";
 
 class Algaeh extends Component {
   constructor(props) {

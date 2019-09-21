@@ -2,6 +2,7 @@ import React, { useEffect, useState, createContext } from "react";
 import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
 import { FilterComponent } from ".";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import { getEmpGroups } from "../../PayrollManagement/AttendanceMgmt/BulkTimeSheet/Filter/filter.events";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import moment from "moment";
@@ -11,6 +12,7 @@ export const FilterContext = createContext(null);
 export default function EmployeeFilter(props) {
   const [hospitals, setHospitals] = useState([]);
   const [allDepartments, setDepts] = useState([]);
+  const [empGroups, setEmpGroups] = useState([]);
   const [subDepts, setSubDepts] = useState([]);
   const [designations, setDesignations] = useState([]);
   const baseInput = {
@@ -22,6 +24,7 @@ export default function EmployeeFilter(props) {
     department_id: null,
     sub_department_id: null,
     designation_id: null,
+    group_id: null,
     hims_d_employee_id: null,
     emp_name: null,
     hims_d_employee_id: null,
@@ -32,61 +35,49 @@ export default function EmployeeFilter(props) {
   // kind of works like componentDidMount but runs after the first render and runs once
   useEffect(() => {
     getHospitals();
+    getEmpGroups(data => setEmpGroups(data));
   }, []);
 
   // To get the departments after branch changes
-  useEffect(
-    () => {
-      if (inputs.hospital_id) {
-        if (inputs.inputChanged) {
-          clearOtherStates(["hospital_id"]);
-        }
-        getBranchDetails();
+  useEffect(() => {
+    if (inputs.hospital_id) {
+      if (inputs.inputChanged) {
+        clearOtherStates(["hospital_id"]);
       }
-    },
-    [inputs.hospital_id]
-  );
+      getBranchDetails();
+    }
+  }, [inputs.hospital_id]);
 
   // To set the sub depts after department selected
-  useEffect(
-    () => {
-      if (inputs.department_id && allDepartments.length !== 0) {
-        if (inputs.inputChanged) {
-          clearOtherStates(["hospital_id", "department_id"]);
-        }
-        const [reqDept] = allDepartments.filter(
-          dept => dept.hims_d_department_id === inputs.department_id
-        );
-        if (reqDept) {
-          setSubDepts(reqDept.subDepts);
-        } else {
-          swalMessage({
-            title: "Please contact the admin, Error Code: 007",
-            type: "error"
-          });
-        }
+  useEffect(() => {
+    if (inputs.department_id && allDepartments.length !== 0) {
+      if (inputs.inputChanged) {
+        clearOtherStates(["hospital_id", "department_id"]);
+      }
+      const [reqDept] = allDepartments.filter(
+        dept => dept.hims_d_department_id === inputs.department_id
+      );
+      if (reqDept) {
+        setSubDepts(reqDept.subDepts);
       } else {
-        setSubDepts([]);
+        swalMessage({
+          title: "Please contact the admin, Error Code: 007",
+          type: "error"
+        });
       }
-    },
-    [inputs.department_id]
-  );
+    } else {
+      setSubDepts([]);
+    }
+  }, [inputs.department_id]);
 
-  useEffect(
-    () => {
-      if (inputs.sub_department_id) {
-        if (inputs.inputChanged) {
-          clearOtherStates([
-            "hospital_id",
-            "department_id",
-            "sub_department_id"
-          ]);
-        }
-        getDesignations(inputs.sub_department_id);
+  useEffect(() => {
+    if (inputs.sub_department_id) {
+      if (inputs.inputChanged) {
+        clearOtherStates(["hospital_id", "department_id", "sub_department_id"]);
       }
-    },
-    [inputs.sub_department_id]
-  );
+      getDesignations(inputs.sub_department_id);
+    }
+  }, [inputs.sub_department_id]);
 
   function getHospitals() {
     algaehApiCall({
@@ -184,7 +175,7 @@ export default function EmployeeFilter(props) {
   function employeeSearch(e) {
     let input_data = " hospital_id=" + inputs.hospital_id;
     if (inputs.sub_department_id !== null) {
-      input_data += " sub_department_id=" + inputs.sub_department_id;
+      input_data += " and  sub_department_id=" + inputs.sub_department_id;
       if (inputs.designation_id !== null) {
         input_data += " and employee_designation_id=" + inputs.designation_id;
       }
@@ -224,11 +215,11 @@ export default function EmployeeFilter(props) {
   }
 
   function loadFunc() {
-    if (inputs.department_id) {
+    if (inputs.hospital_id) {
       props.loadFunc(inputs);
     } else {
       swalMessage({
-        title: "Please select a department",
+        title: "Please select a hospital",
         type: "warning"
       });
     }
@@ -250,6 +241,7 @@ export default function EmployeeFilter(props) {
         allDepartments,
         subDepts,
         designations,
+        empGroups,
         handlers
       }}
     >

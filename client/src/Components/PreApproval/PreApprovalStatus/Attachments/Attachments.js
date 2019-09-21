@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Dropzone from "react-dropzone";
-import "./Attachments.css";
-import "./../../../../styles/site.css";
+import "./Attachments.scss";
+import "./../../../../styles/site.scss";
 import { AlgaehLabel } from "../../../Wrapper/algaehWrapper";
 
 export default class Attachments extends Component {

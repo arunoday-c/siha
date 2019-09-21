@@ -10,8 +10,8 @@ import {
   AlgaehLabel
 } from "../../../Wrapper/algaehWrapper";
 
-import "./../../../../styles/site.css";
-import "./PatientDetails.css";
+import "./../../../../styles/site.scss";
+import "./PatientDetails.scss";
 
 class PatientDetails extends PureComponent {
   constructor(props) {

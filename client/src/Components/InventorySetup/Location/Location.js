@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./Location.css";
+import "./Location.scss";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";

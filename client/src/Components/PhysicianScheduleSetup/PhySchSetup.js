@@ -13,7 +13,7 @@ import {
   AlgaehModalPopUp
 } from "../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
-import "./phy_sch_setup.css";
+import "./phy_sch_setup.scss";
 import AddDoctorModal from "./AddDoctorModal";
 
 class PhySchSetup extends Component {

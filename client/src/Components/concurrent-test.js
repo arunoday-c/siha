@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./concurrent-test.css";
+import "./concurrent-test.scss";
 
 import {
   AlagehFormGroup,

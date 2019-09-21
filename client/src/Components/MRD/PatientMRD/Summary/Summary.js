@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import "./summary.css";
+import "./summary.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import Enumerable from "linq";
 import { getPatientHistory } from "../PatientProfileHandlers";

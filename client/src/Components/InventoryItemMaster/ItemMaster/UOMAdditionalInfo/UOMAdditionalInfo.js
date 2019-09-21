@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 import { AlgaehActions } from "../../../../actions/algaehActions";
-import "./UOMAdditionalInfo.css";
+import "./UOMAdditionalInfo.scss";
 import {
   AlagehFormGroup,
   AlagehAutoComplete,

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./LeaveYearlyProcess.css";
+import "./LeaveYearlyProcess.scss";
 import moment from "moment";
 import {
   AlagehAutoComplete,

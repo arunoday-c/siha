@@ -5,8 +5,8 @@ import { bindActionCreators } from "redux";
 import Enumerable from "linq";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 import { setGlobal } from "../../../utils/GlobalFunctions";
-import "./PurchaseOrderList.css";
-import "./../../../styles/site.css";
+import "./PurchaseOrderList.scss";
+import "./../../../styles/site.scss";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 
 import {

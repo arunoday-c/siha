@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./leave_encshmnt.css";
+import "./leave_encshmnt.scss";
 
 class LeaveEncashment extends Component {
   render() {

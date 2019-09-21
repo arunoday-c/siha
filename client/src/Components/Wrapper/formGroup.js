@@ -3,7 +3,7 @@ import {
   checkSecurity,
   AlgaehOpenContainer
 } from "../../utils/GlobalFunctions";
-import "./wrapper.css";
+import "./wrapper.scss";
 import Label from "../Wrapper/label";
 import Cleave from "cleave.js/react";
 import NumberFormat from "react-number-format";

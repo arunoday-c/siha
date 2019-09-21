@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./appointment_setup.css";
+import "./appointment_setup.scss";
 import AppointmentStatus from "./AppointmentStatus/AppointmentStatus";
 import AppointmentRooms from "./AppointmentRooms/AppointmentRooms";
 import AppointmentClinics from "./AppointmentClinics/AppointmentClinics";

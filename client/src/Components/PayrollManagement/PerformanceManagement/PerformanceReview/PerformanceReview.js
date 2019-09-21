@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./perf_review.css";
+import "./perf_review.scss";
 
 class PerformanceReview extends Component {
   render() {

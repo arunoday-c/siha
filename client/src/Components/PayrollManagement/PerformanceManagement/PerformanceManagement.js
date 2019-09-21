@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./perf_mgmt.css";
+import "./perf_mgmt.scss";
 import PerformanceReview from "./PerformanceReview/PerformanceReview";
 import SalaryApprisal from "./SalaryApprisal/SalaryApprisal";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";

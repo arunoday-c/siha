@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import "./LeaveSalaryAccural.css";
+import "./LeaveSalaryAccural.scss";
 
 import {
   AlagehAutoComplete,

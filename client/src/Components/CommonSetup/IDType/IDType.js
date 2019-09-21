@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./id_type.css";
+import "./id_type.scss";
 import moment from "moment";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";

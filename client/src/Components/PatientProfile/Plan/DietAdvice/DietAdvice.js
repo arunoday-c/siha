@@ -12,8 +12,8 @@ import {
   AlgaehDataGrid,
   AlgaehLabel
 } from "../../../Wrapper/algaehWrapper";
-import "./DietAdvice.css";
-import "../../../../styles/site.css";
+import "./DietAdvice.scss";
+import "../../../../styles/site.scss";
 
 import {
   texthandle,

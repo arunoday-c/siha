@@ -4,7 +4,7 @@ import {
   AlagehAutoComplete,
   AlagehFormGroup
 } from "../../Wrapper/algaehWrapper";
-import "./ExamDiagramStandolone.css";
+import "./ExamDiagramStandolone.scss";
 import AlgaehCanvas from "../../Wrapper/algaehCanvas";
 import examination from "./ExaminationDiagramEvents";
 import {

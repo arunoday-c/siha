@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./visatype.css";
+import "./visatype.scss";
 
 import moment from "moment";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";

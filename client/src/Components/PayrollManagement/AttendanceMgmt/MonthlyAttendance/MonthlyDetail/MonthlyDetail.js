@@ -1,5 +1,5 @@
 import React from "react";
-import "./MonthlyDetail.css";
+import "./MonthlyDetail.scss";
 import {
   AlgaehDataGrid,
   AlgaehModalPopUp,

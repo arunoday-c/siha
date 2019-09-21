@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./WPS.css";
+import "./WPS.scss";
 import {
   AlgaehDataGrid,
   AlagehAutoComplete,
@@ -69,9 +69,9 @@ export default class WPS extends Component {
       <div className="wps_Screen">
         <div className="row  inner-top-search">
           <AlagehAutoComplete
-            div={{ className: "col" }}
+            div={{ className: "col-2 mandatory form-group" }}
             label={{
-              forceLabel: "Select a Year.",
+              forceLabel: "Year",
               isImp: true
             }}
             selector={{
@@ -92,9 +92,9 @@ export default class WPS extends Component {
             }}
           />
           <AlagehAutoComplete
-            div={{ className: "col" }}
+            div={{ className: "col-2 mandatory form-group" }}
             label={{
-              forceLabel: "Select a Month.",
+              forceLabel: "Month",
               isImp: true
             }}
             selector={{
@@ -116,7 +116,7 @@ export default class WPS extends Component {
             }}
           />
           <AlagehAutoComplete
-            div={{ className: "col form-group" }}
+            div={{ className: "col-3 mandatory form-group" }}
             label={{
               forceLabel: "Select Bank",
               isImp: true
@@ -138,20 +138,22 @@ export default class WPS extends Component {
               }
             }}
           />
-          <div className="col form-group">
-            <button
-              onClick={this.getWpsEmployees.bind(this)}
-              style={{ marginTop: 21 }}
-              className="btn btn-primary"
-            >
-              Load
-            </button>
+          <div
+            className="col form-group"
+            style={{ paddingTop: 21, textAlign: "right" }}
+          >
             <button
               onClick={this.clearState.bind(this)}
-              style={{ marginTop: 21, marginLeft: 5 }}
+              style={{ marginLeft: 5 }}
               className="btn btn-default"
             >
               Clear
+            </button>{" "}
+            <button
+              onClick={this.getWpsEmployees.bind(this)}
+              className="btn btn-primary"
+            >
+              Load
             </button>
           </div>
         </div>

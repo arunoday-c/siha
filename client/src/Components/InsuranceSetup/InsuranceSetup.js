@@ -3,8 +3,8 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import "./insurancesetup.css";
-import "../../styles/site.css";
+import "./insurancesetup.scss";
+import "../../styles/site.scss";
 import {
   AlgaehLabel,
   AlgaehDataGrid,

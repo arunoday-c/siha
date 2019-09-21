@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import "./RulesDetails.css";
+import "./RulesDetails.scss";
 import {
   AlgaehLabel,
   AlagehFormGroup

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./admin_setup.css";
+import "./admin_setup.scss";
 import LoginUsers from "./LoginUsers/LoginUsers";
 import Roles from "./Roles/Roles";
 import Groups from "./Groups/Groups";

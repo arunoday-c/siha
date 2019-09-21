@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./leave_master.css";
+import "./leave_master.scss";
 import AlgaehModalPopUp from "../../../../Wrapper/modulePopUp";
 import LeaveEntitlement from "./LeaveEntitlement/LeaveEntitlement";
 import LeaveDetails from "./LeaveDetails/LeaveDetails";

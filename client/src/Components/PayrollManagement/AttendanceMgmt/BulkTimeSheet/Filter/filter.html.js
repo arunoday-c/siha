@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./filter.html.css";
+import "./filter.html.scss";
 import { AlagehAutoComplete } from "../../../../Wrapper/algaehWrapper";
 import AlgaehAutoSearch from "../../../../Wrapper/autoSearch";
 import { swalMessage } from "../../../../../utils/algaehApiCall";

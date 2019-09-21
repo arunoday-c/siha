@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./EmployeeProjectRoster.css";
+import "./EmployeeProjectRoster.scss";
 import ProjectAssign from "./ProjectAssign";
 import ProjectEmpAssign from "./ProjectEmpAssign";
 import moment from "moment";

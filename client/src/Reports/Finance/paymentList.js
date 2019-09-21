@@ -1,7 +1,7 @@
 import { financeHeader } from "./financeHeader";
 import { getAmountFormart } from "../../utils/GlobalFunctions";
 // import _ from "lodash";
-import "../report-style.css";
+import "../report-style.scss";
 export function printReport(result) {
   if (result === undefined) return null;
   const data = result.project_wise_payroll;

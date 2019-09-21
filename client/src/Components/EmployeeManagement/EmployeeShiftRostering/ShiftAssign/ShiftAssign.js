@@ -5,7 +5,7 @@ import {
   AlgaehDataGrid,
   AlgaehLabel
 } from "../../../Wrapper/algaehWrapper";
-import "./ShiftAssign.css";
+import "./ShiftAssign.scss";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 class ShiftAssign extends PureComponent {

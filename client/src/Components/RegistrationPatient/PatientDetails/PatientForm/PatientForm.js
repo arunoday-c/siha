@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./PatientForm.css";
+import "./PatientForm.scss";
 
 import { AlgaehActions } from "../../../../actions/algaehActions";
 

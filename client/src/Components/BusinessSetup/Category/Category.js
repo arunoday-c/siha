@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./category.css";
+import "./category.scss";
 import {
   AlgaehLabel,
   AlagehFormGroup,

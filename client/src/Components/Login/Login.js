@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import "./Login.css";
+import "./Login.scss";
 import { AlagehAutoComplete } from "../Wrapper/algaehWrapper";
 // import { setSecure } from "../../utils/indexer";
 import {

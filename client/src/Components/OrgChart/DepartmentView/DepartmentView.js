@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import isEqual from "lodash/isEqual";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
-import "./DepartmentView.css";
+import "./DepartmentView.scss";
 
 export default class DepartmentView extends Component {
   constructor(props) {

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { AlagehFormGroup, AlgaehLabel } from "../../../Wrapper/algaehWrapper";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
-import "./EOSGratuity.css";
+import "./EOSGratuity.scss";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 import moment from "moment";

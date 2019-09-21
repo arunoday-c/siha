@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import AddPackageBilling from "./AddPackageBilling/AddPackageBilling";
 
 import DisplayInsuranceDetails from "../DisplayInsuranceDetails/DisplayInsuranceDetails.js";
-import "./PackageBillingDetails.css";
-import "./../../../styles/site.css";
+import "./PackageBillingDetails.scss";
+import "./../../../styles/site.scss";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 
 export default class PackageBillingDetails extends Component {

@@ -4,8 +4,8 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import moment from "moment";
 import MyContext from "../../../utils/MyContext.js";
-import "./SampleCollections.css";
-import "../../../styles/site.css";
+import "./SampleCollections.scss";
+import "../../../styles/site.scss";
 import {
   CollectSample,
   printBarcode,

@@ -11,8 +11,8 @@ import {
   AlagehFormGroup,
   AlgaehModalPopUp
 } from "../../Wrapper/algaehWrapper";
-import "./SickLeave.css";
-import "../../../styles/site.css";
+import "./SickLeave.scss";
+import "../../../styles/site.scss";
 import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 
 class SickLeave extends Component {

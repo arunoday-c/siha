@@ -7,8 +7,8 @@ import moment from "moment";
 
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import ConsumptionItemsEvents from "./InvConsumptionEntryEvents";
-import "./InvConsumptionEntry.css";
-import "../../../styles/site.css";
+import "./InvConsumptionEntry.scss";
+import "../../../styles/site.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
 
 import ConsumptionItems from "./ConsumptionItems/ConsumptionItems";

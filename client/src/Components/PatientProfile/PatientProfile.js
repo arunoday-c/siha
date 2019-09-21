@@ -1,5 +1,5 @@
 import React, { Component, Suspense } from "react";
-import "./patientprofile.css";
+import "./patientprofile.scss";
 import Overview from "./Overview/Overview";
 import Subjective from "./Subjective/Subjective";
 import BasicSubjective from "./Subjective/BasicSubjective";

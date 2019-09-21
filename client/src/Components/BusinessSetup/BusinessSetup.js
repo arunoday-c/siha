@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import "./business_setup.css";
-import "../../styles/site.css";
+import "./business_setup.scss";
+import "../../styles/site.scss";
 import BranchMaster from "./BranchMaster/BranchMaster";
 import DeptMaster from "./DeptMaster/DeptMaster";
 import HolidayList from "./HolidayList/HolidayList";

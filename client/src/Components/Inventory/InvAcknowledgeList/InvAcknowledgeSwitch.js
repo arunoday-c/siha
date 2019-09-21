@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./InvAcknowledgeList.css";
+import "./InvAcknowledgeList.scss";
 import InvAcknowledgeList from "./InvAcknowledgeList";
 import InvTransferEntry from "../InvTransferEntry/InvTransferEntry";
 import { getCookie } from "../../../utils/algaehApiCall";

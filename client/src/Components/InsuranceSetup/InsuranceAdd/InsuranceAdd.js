@@ -3,8 +3,8 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import "./../../../styles/site.css";
-import "./InsuranceAdd.css";
+import "./../../../styles/site.scss";
+import "./InsuranceAdd.scss";
 import { AlgaehModalPopUp } from "../../Wrapper/algaehWrapper";
 
 import InsuranceProvider from "../InsuranceProvider/InsuranceProvider";

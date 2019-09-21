@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./reports.css";
+import "./reports.scss";
 import { AlagehAutoComplete } from "../Wrapper/algaehWrapper";
 import loadActiveReports from "./reports_data";
 import AlgaehReport from "../Wrapper/printReports";

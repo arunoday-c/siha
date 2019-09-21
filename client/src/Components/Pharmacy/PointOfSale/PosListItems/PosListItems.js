@@ -3,8 +3,8 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import MyContext from "../../../../utils/MyContext";
-import "./PosListItems.css";
-import "./../../../../styles/site.css";
+import "./PosListItems.scss";
+import "./../../../../styles/site.scss";
 import {
   AlgaehDataGrid,
   AlgaehLabel,

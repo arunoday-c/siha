@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./doc_master.css";
+import "./doc_master.scss";
 import { DOC_TYPE } from "../../../../utils/GlobalVariables.json";
 import {
   AlagehFormGroup,

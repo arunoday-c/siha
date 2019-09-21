@@ -3,7 +3,7 @@
 import { getCookie } from "../../utils/algaehApiCall";
 import { ReportHeader } from "../ReportHeader";
 import { getAmountFormart } from "../../utils/GlobalFunctions";
-import "../report-style.css";
+import "../report-style.scss";
 
 export function printReport(data) {
   return `<div class="cashReciptStyles">

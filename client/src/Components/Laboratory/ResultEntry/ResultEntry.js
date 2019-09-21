@@ -3,8 +3,8 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import "react-quill/dist/quill.snow.css";
-import "./ResultEntry.css";
-import "./../../../styles/site.css";
+import "./ResultEntry.scss";
+import "./../../../styles/site.scss";
 import {
   AlagehAutoComplete,
   AlagehFormGroup,

@@ -6,8 +6,8 @@ import Enumerable from "linq";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 
-import "./AcknowledgeList.css";
-import "./../../../styles/site.css";
+import "./AcknowledgeList.scss";
+import "./../../../styles/site.scss";
 
 import {
   // LocationchangeTexts,

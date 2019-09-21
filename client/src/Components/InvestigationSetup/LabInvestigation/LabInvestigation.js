@@ -3,8 +3,8 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import "./LabInvestigation.css";
-import "./../../../styles/site.css";
+import "./LabInvestigation.scss";
+import "./../../../styles/site.scss";
 import {
   AlagehFormGroup,
   AlgaehDataGrid,

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import "./DeliveryNoteEntry.css";
+import "./DeliveryNoteEntry.scss";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 import DNItemList from "./DNItemList/DNItemList";
 import { AlgaehLabel, AlagehFormGroup } from "../../Wrapper/algaehWrapper";

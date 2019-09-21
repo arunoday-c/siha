@@ -4,8 +4,8 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 import Enumerable from "linq";
-import "./InventoryItemMaster.css";
-import "../../styles/site.css";
+import "./InventoryItemMaster.scss";
+import "../../styles/site.scss";
 import { AlgaehLabel, AlgaehDataGrid } from "../Wrapper/algaehWrapper";
 
 import ItemMaster from "./ItemMaster/ItemMaster";

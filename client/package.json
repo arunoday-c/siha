@@ -17,6 +17,7 @@
     "cross-env": "^5.1.4",
     "dicom-parser": "^1.8.3",
     "hammerjs": "^2.0.8",
+    "html-webpack-plugin": "^3.2.0",
     "html2canvas": "^1.0.0-alpha.12",
     "js2xmlparser": "^3.0.0",
     "jsbarcode": "^3.9.0",
@@ -81,8 +82,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "html-webpack-plugin": "^3.2.0"
   }
 }

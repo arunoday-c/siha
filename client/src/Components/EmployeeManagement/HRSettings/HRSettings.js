@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./hr_settings.css";
+import "./hr_settings.scss";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import EmployeeGroups from "./EmployeeGroups/EmployeeGroups";
 import EmployeeDesignations from "./EmployeeDesignations/EmployeeDesignations";

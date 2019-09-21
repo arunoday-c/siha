@@ -4,8 +4,8 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb";
 
-import "./OPBillPendingList.css";
-import "./../../styles/site.css";
+import "./OPBillPendingList.scss";
+import "./../../styles/site.scss";
 
 import {
   AlgaehDataGrid,

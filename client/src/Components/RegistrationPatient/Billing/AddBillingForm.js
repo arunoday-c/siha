@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import DisplayOPBilling from "../../BillDetails/BillDetails";
-import "./AddBillingForm.css";
-import "./../../../styles/site.css";
+import "./AddBillingForm.scss";
+import "./../../../styles/site.scss";
 import {
   AlgaehDateHandler,
   AlagehFormGroup,

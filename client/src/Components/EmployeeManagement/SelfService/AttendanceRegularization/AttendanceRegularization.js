@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./att_rglzn.css";
+import "./att_rglzn.scss";
 import {
   AlgaehDateHandler,
   AlagehFormGroup,

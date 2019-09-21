@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import "./Dental.css";
+import "./Dental.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import {
   AlgaehValidation,

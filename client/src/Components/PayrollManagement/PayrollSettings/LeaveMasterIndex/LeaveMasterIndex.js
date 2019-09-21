@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./LeaveMasterIndex.css";
+import "./LeaveMasterIndex.scss";
 import LeaveMaster from "./LeaveMaster/LeaveMaster";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import {

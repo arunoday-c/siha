@@ -1,6 +1,6 @@
 import { header } from "./labHeader";
 import { signature_footer } from "./signature_footer";
-import "../../src/index.css";
+import "../../src/index.scss";
 import moment from "moment";
 
 export function printReport(data) {

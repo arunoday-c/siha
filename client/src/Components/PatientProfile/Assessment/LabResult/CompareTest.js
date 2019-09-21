@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 
-import "./LabResult.css";
-import "./../../../../styles/site.css";
+import "./LabResult.scss";
+import "./../../../../styles/site.scss";
 
 import {
   AlgaehLabel,

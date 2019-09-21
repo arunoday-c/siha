@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./PhysioTherapy.css";
+import "./PhysioTherapy.scss";
 import {
   AlagehFormGroup,
   AlagehAutoComplete,

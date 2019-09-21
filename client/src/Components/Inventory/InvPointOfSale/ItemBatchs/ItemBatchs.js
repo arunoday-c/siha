@@ -3,8 +3,8 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import "./ItemBatchs.css";
-import "./../../../../styles/site.css";
+import "./ItemBatchs.scss";
+import "./../../../../styles/site.scss";
 import {
   AlgaehLabel,
   AlgaehDataGrid,

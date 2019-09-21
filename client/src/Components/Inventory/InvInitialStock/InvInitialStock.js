@@ -32,8 +32,8 @@ import {
   onChamgeGridQuantity,
   EditGrid
 } from "./InvInitialStockEvents";
-import "./InvInitialStock.css";
-import "../../../styles/site.css";
+import "./InvInitialStock.scss";
+import "../../../styles/site.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
 import { getAmountFormart } from "../../../utils/GlobalFunctions";

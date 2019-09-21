@@ -15,8 +15,8 @@ import {
   LocationchangeTexts,
   generateMaterialReqPhar
 } from "./RequisitionEntryEvents";
-import "./RequisitionEntry.css";
-import "../../../styles/site.css";
+import "./RequisitionEntry.scss";
+import "../../../styles/site.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
 
 import GlobalVariables from "../../../utils/GlobalVariables.json";

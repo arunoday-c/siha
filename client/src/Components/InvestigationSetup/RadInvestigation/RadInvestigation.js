@@ -4,8 +4,8 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 import RadTemplate from "../RadTemplate/RadTemplate";
-import "./RadInvestigation.css";
-import "./../../../styles/site.css";
+import "./RadInvestigation.scss";
+import "./../../../styles/site.scss";
 import {
   AlagehAutoComplete,
   AlgaehLabel,

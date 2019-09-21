@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./RCMWorkbench.css";
+import "./RCMWorkbench.scss";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import spotlightSearch from "../../../Search/spotlightSearch.json";

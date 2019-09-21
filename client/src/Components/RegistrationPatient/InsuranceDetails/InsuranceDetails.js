@@ -1,8 +1,8 @@
 import React, { PureComponent } from "react";
 import InsuranceForm from "./InsuranceForm/InsuranceForm.js";
 // import SecondaryInsurance from "./SecondaryInsurance/SecondaryInsurance.js";
-import "./InsuranceDetails.css";
-import "./../../../styles/site.css";
+import "./InsuranceDetails.scss";
+import "./../../../styles/site.scss";
 import AlgaehLabel from "../../Wrapper/label.js";
 
 export default class InsuranceDetails extends PureComponent {

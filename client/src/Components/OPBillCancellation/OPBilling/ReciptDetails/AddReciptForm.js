@@ -3,8 +3,8 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import moment from "moment";
-import "./AddReciptForm.css";
-import "./../../../../styles/site.css";
+import "./AddReciptForm.scss";
+import "./../../../../styles/site.scss";
 
 import { maxCharactersLeft } from "../../../../utils/algaehApiCall";
 import MyContext from "../../../../utils/MyContext";

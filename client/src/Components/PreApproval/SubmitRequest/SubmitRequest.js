@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 
-import "./SubmitRequest.css";
-import "../../../styles/site.css";
+import "./SubmitRequest.scss";
+import "../../../styles/site.scss";
 import {
   AlgaehLabel,
   AlgaehDataGrid,

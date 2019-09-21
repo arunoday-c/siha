@@ -4,8 +4,8 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import Enumerable from "linq";
 
-import "./ResultEntryList.css";
-import "./../../../styles/site.css";
+import "./ResultEntryList.scss";
+import "./../../../styles/site.scss";
 
 import {
   datehandle,

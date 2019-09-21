@@ -1,5 +1,5 @@
 import React from "react";
-import "./AlgaehmainPage.css";
+import "./AlgaehmainPage.scss";
 import { AlagehFormGroup, AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import {
   swalMessage,

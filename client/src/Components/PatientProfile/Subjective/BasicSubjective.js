@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import "./subjective.css";
+import "./subjective.scss";
 
 import {
   AlgaehLabel,
@@ -31,7 +31,7 @@ import Allergies from "../Allergies/Allergies";
 import Examination from "../Examination/Examination";
 import { Validations } from "./Validation";
 import { setGlobal } from "../../../utils/GlobalFunctions";
-import "./basicSubjective.css";
+import "./basicSubjective.scss";
 import _ from "lodash";
 import moment from "moment";
 import { Dimmer, Loader } from "semantic-ui-react";

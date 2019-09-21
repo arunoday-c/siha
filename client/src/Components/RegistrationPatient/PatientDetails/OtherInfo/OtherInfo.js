@@ -5,8 +5,8 @@ import { bindActionCreators } from "redux";
 import MyContext from "../../../../utils/MyContext.js";
 import PatRegIOputs from "../../../../Models/RegistrationPatient.js";
 import { AlagehFormGroup } from "../../../Wrapper/algaehWrapper";
-import "./OtherInfo.css";
-import "../../../../styles/site.css";
+import "./OtherInfo.scss";
+import "../../../../styles/site.scss";
 
 class OtherInfo extends Component {
   constructor(props) {

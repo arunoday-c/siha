@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
-// import "./../../styles/site.css";
+// import "./../../styles/site.scss";
 import {
   AlgaehLabel,
   AlgaehDataGrid,
