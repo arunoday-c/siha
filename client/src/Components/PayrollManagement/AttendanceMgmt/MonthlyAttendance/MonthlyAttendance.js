@@ -523,7 +523,11 @@ export default class MonthlyAttendance extends Component {
                     fieldName: "employee_code",
                     label: (
                       <AlgaehLabel label={{ forceLabel: "Employee Code" }} />
-                    )
+                    ),
+                    others: {
+                      capitalize: true,
+                      fixed: "left"
+                    }
                   },
                   {
                     fieldName: "total_days",
