@@ -38,7 +38,11 @@ export default class MiscEarningsDeductions extends Component {
       hospital_id: JSON.parse(
         AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
       ).hims_d_hospital_id,
-      lockEarnings: false
+      lockEarnings: false,
+      emp_name: null,
+      employee_group_id: null,
+      department_id: null,
+      employee_id: null
     };
     this.getEarnDed("E");
     this.getHospitals();
@@ -139,8 +143,9 @@ export default class MiscEarningsDeductions extends Component {
       component_category: "E",
       earning_deduction_id: null,
       sub_department_id: null,
-      group_id: null,
+      employee_group_id: null,
       department_id: null,
+      employee_id: null,
       loading: false,
       employees: [],
       send_array: [],
@@ -151,7 +156,8 @@ export default class MiscEarningsDeductions extends Component {
       hospital_id: JSON.parse(
         AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
       ).hims_d_hospital_id,
-      lockEarnings: false
+      lockEarnings: false,
+      emp_name: null
     });
   }
 
@@ -173,15 +179,21 @@ export default class MiscEarningsDeductions extends Component {
       this.setState({
         loading: true
       });
+
       algaehApiCall({
         uri: "/employee/getEmployeesForMisED",
         method: "GET",
+        module: "hrManagement",
         data: {
           hospital_id: this.state.hospital_id,
           year: this.state.year,
           month: this.state.month,
           earning_deductions_id: this.state.earning_deduction_id,
-          sub_department_id: this.state.sub_department_id
+          sub_department_id: this.state.sub_department_id,
+
+          department_id: this.state.department_id,
+          employee_id: this.state.employee_id,
+          employee_group_id: this.state.employee_group_id
         },
         onSuccess: res => {
           if (res.data.success) {
@@ -222,6 +234,30 @@ export default class MiscEarningsDeductions extends Component {
     this.setState({
       [value.name]: value.value
     });
+  }
+
+  DeptdropDownHandler(e) {
+    this.setState(
+      {
+        [e.name]: e.value
+      },
+      () => {
+        debugger;
+        const [reqDept] = this.state.allDepartments.filter(
+          dept => dept.hims_d_department_id === this.state.department_id
+        );
+        if (reqDept) {
+          // setSubDepts(reqDept.subDepts);
+
+          this.setState({ sub_departments: reqDept.subDepts });
+        } else {
+          swalMessage({
+            title: "Please contact the admin, Error Code: 007",
+            type: "error"
+          });
+        }
+      }
+    );
   }
 
   applyAmount() {
@@ -361,14 +397,16 @@ export default class MiscEarningsDeductions extends Component {
   getEmployee = row => {
     const {
       sub_department_id,
-      employee_group_id: group_id,
+      employee_group_id,
       hims_d_department_id: department_id,
-      full_name: emp_name
+      full_name: emp_name,
+      hims_d_employee_id: employee_id
     } = row;
     this.setState({
       sub_department_id,
-      group_id,
+      employee_group_id,
       department_id,
+      employee_id,
       emp_name
     });
   };
@@ -502,13 +540,8 @@ export default class MiscEarningsDeductions extends Component {
                 </label>
               </div>
               <div className="row">
-                {" "}
                 <AlagehAutoComplete
                   div={{ className: "col mandatory" }}
-                  // label={{
-                  //   forceLabel: "Earning/ Deduction Code",
-                  //   isImp: true
-                  // }}
                   selector={{
                     name: "earning_deduction_id",
                     className: "select-fld",
@@ -536,8 +569,8 @@ export default class MiscEarningsDeductions extends Component {
               div={{ className: "col-2 form-group" }}
               label={{ forceLabel: "Employee Group" }}
               selector={{
-                name: "group_id",
-                value: this.state.group_id,
+                name: "employee_group_id",
+                value: this.state.employee_group_id,
                 className: "select-fld",
                 dataSource: {
                   textField: "group_description",
@@ -547,7 +580,7 @@ export default class MiscEarningsDeductions extends Component {
                 onChange: this.dropDownHandler.bind(this),
                 onClear: () => {
                   this.setState({
-                    group_id: null
+                    employee_group_id: null
                   });
                 }
               }}
@@ -564,10 +597,12 @@ export default class MiscEarningsDeductions extends Component {
                   valueField: "hims_d_department_id",
                   data: this.state.allDepartments
                 },
-                onChange: this.dropDownHandler.bind(this),
+                onChange: this.DeptdropDownHandler.bind(this),
                 onClear: () => {
                   this.setState({
-                    department_id: null
+                    department_id: null,
+                    sub_department_id: null,
+                    sub_departments: []
                   });
                 }
               }}
@@ -609,7 +644,6 @@ export default class MiscEarningsDeductions extends Component {
               className="col-2 margin-bottom-15"
               style={{ paddingTop: 21, textAlign: "right" }}
             >
-              {" "}
               <button
                 type="button"
                 className="btn btn-default"
@@ -632,14 +666,13 @@ export default class MiscEarningsDeductions extends Component {
                 ) : (
                   <i className="fas fa-spinner fa-spin" />
                 )}
-              </button>{" "}
+              </button>
             </div>
           </div>
 
           <div className="row">
             <div className="col-3">
               <div className="portlet portlet-bordered margin-bottom-15">
-                {" "}
                 <div className="portlet-title">
                   <div className="caption">
                     <h3 className="caption-subject">Assign to All</h3>

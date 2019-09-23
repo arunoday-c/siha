@@ -70,31 +70,37 @@ export default function Filter(props) {
     });
   }, []);
 
-  useEffect(() => {
-    if (hospitalID !== "") {
-      getAttendanceDates(data => {
-        if (data.length > 0) {
-          const firstRecord = data[0];
-          setStartDt(firstRecord.at_st_date);
-          setEndDt(firstRecord.at_end_date);
-          dateCalcl(firstRecord.at_st_date, firstRecord.at_end_date);
-        }
-      });
-      getDivisionProject({ division_id: hospitalID }, data => {
-        setProjects(data);
-      });
-      getBranchWiseDepartments({ hospital_id: hospitalID }, data => {
-        setDepartment(data);
-      });
-      getEmpGroups(data => {
-        setEmpGroups(data);
-      });
-    }
-  }, [hospitalID]);
+  useEffect(
+    () => {
+      if (hospitalID !== "") {
+        getAttendanceDates(data => {
+          if (data.length > 0) {
+            const firstRecord = data[0];
+            setStartDt(firstRecord.at_st_date);
+            setEndDt(firstRecord.at_end_date);
+            dateCalcl(firstRecord.at_st_date, firstRecord.at_end_date);
+          }
+        });
+        getDivisionProject({ division_id: hospitalID }, data => {
+          setProjects(data);
+        });
+        getBranchWiseDepartments({ hospital_id: hospitalID }, data => {
+          setDepartment(data);
+        });
+        getEmpGroups(data => {
+          setEmpGroups(data);
+        });
+      }
+    },
+    [hospitalID]
+  );
 
-  useEffect(() => {
-    dateCalcl();
-  }, [month]);
+  useEffect(
+    () => {
+      dateCalcl();
+    },
+    [month]
+  );
 
   return (
     <div className="row  inner-top-search">
@@ -138,15 +144,15 @@ export default function Filter(props) {
             textField: "text",
             valueField: "name",
             data: [
-              { name: "1", text: "January" },
-              { name: "2", text: "February" },
-              { name: "3", text: "March" },
-              { name: "4", text: "April" },
-              { name: "5", text: "May" },
-              { name: "6", text: "June" },
-              { name: "7", text: "July" },
-              { name: "8", text: "August" },
-              { name: "9", text: "September" },
+              { name: "01", text: "January" },
+              { name: "02", text: "February" },
+              { name: "03", text: "March" },
+              { name: "04", text: "April" },
+              { name: "05", text: "May" },
+              { name: "06", text: "June" },
+              { name: "07", text: "July" },
+              { name: "08", text: "August" },
+              { name: "09", text: "September" },
               { name: "10", text: "October" },
               { name: "11", text: "November" },
               { name: "12", text: "December" }
