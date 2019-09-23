@@ -124,11 +124,24 @@ const bankEventhandle = ($this, e) => {
     employee_bank_ifsc_code: e.selected.bank_code
   });
 };
+
+const otEntitleHandaler = ($this, e) => {
+  debugger;
+  $this.setState({
+    [e.target.name]: e.target.checked ? "Y" : "N",
+    overtime_group_id: null
+  });
+  $this.props.EmpMasterIOputs.updateEmployeeTabs({
+    [e.target.name]: e.target.checked ? "Y" : "N",
+    overtime_group_id: null
+  });
+};
 export {
   texthandle,
   datehandle,
   accomodationProvided,
   employeeStatusHandler,
   dateFormater,
-  bankEventhandle
+  bankEventhandle,
+  otEntitleHandaler
 };

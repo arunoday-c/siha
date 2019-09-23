@@ -21,7 +21,8 @@ export function getEmployeesForProjectRoster(inputs) {
         hospital_id,
         sub_department_id,
         department_id,
-        designation_id
+        designation_id,
+        group_id
       } = inputs;
       const { fromDate, toDate } = getInputDates(inputs);
       algaehApiCall({
@@ -35,7 +36,8 @@ export function getEmployeesForProjectRoster(inputs) {
           department_id: department_id,
           fromDate: fromDate,
           toDate: toDate,
-          designation_id: designation_id
+          designation_id: designation_id,
+          employee_group_id: group_id
         },
         onSuccess: res => {
           const { success, records, message } = res.data;

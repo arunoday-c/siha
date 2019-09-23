@@ -8,7 +8,7 @@ import {
   getEmployeesForProjectRoster,
   getProjects
 } from "./employeeProjectRoster.event";
-import "../EmployeeProjectRoster.css";
+import "../EmployeeProjectRoster.scss";
 export default function EmpProjectRoster(props) {
   const { getProjectRosterState, setProjectRosterState } = useContext(
     ProjectRosterContext
@@ -27,6 +27,7 @@ export default function EmpProjectRoster(props) {
     <div className="EmployeeProjectRoster">
       <EmployeeFilter
         loadFunc={inputs => {
+          debugger;
           AlgaehLoader({ show: true });
           getEmployeesForProjectRoster(inputs)
             .then(result => {

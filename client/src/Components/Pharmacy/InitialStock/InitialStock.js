@@ -492,11 +492,10 @@ class InitialStock extends Component {
                     }}
                   />
 
-                  <AlagehFormGroup
+                  {/*<AlagehFormGroup
                     div={{ className: "col-3 form-group" }}
                     label={{
-                      forceLabel: "Receipt Number(GRN)",
-                      isImp: true
+                      forceLabel: "Receipt Number(GRN)"
                     }}
                     textBox={{
                       value: this.state.grn_number,
@@ -509,7 +508,7 @@ class InitialStock extends Component {
                         autoComplete: "off"
                       }
                     }}
-                  />
+                  />*/}
 
                   <div className="col">
                     <button
@@ -894,20 +893,6 @@ class InitialStock extends Component {
                         );
                       },
                       others: {
-                        filterable: false
-                      }
-                    },
-                    {
-                      fieldName: "grn_number",
-                      label: (
-                        <AlgaehLabel
-                          label={{ forceLabel: "Receipt No. (GRN)" }}
-                        />
-                      ),
-
-                      disabled: true,
-                      others: {
-                        minWidth: 120,
                         filterable: false
                       }
                     }

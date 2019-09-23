@@ -206,7 +206,7 @@ module.exports = {
           query:
             "SELECT hims_m_inventory_item_location_id, item_id, inventory_location_id, item_location_status, \
             batchno, expirydt, barcode, qtyhand, qtypo, cost_uom,avgcost, last_purchase_cost, IL.item_type, grn_id,\
-            grnno, sale_price, mrp_price, sales_uom, git_qty, IM.stocking_uom_id from \
+            grnno, sale_price, mrp_price, sales_uom, git_qty, IM.stocking_uom_id, vendor_batchno from \
             hims_m_inventory_item_location IL,\
             hims_d_inventory_item_master IM where item_id = IM.hims_d_inventory_item_master_id and\
             IL.record_status='A' and qtyhand>0" +
