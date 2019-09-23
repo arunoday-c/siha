@@ -4,7 +4,7 @@ const UpdateOrders = ($this, row) => {
   let dataSend = [];
   let services_details = $this.state.services_details;
   let _index = services_details.indexOf(row);
-
+  debugger;
   if (row.apprv_status === "AP" || row.apprv_status === "RJ") {
     if ($this.props.openFrom === "S") {
       dataSend = [
@@ -44,6 +44,12 @@ const UpdateOrders = ($this, row) => {
               type: "success"
             });
           }
+        },
+        onFailure: error => {
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
         }
       });
     } else if ($this.props.openFrom === "M") {
@@ -72,6 +78,12 @@ const UpdateOrders = ($this, row) => {
               type: "success"
             });
           }
+        },
+        onFailure: error => {
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
         }
       });
     }
