@@ -663,6 +663,8 @@ module.exports = {
             req.userIdentity.leave_authorize_privilege == maxAuth.MaxLeave &&
             input.auth_level == maxAuth.MaxLeave
           ) {
+
+           
             //if he has highest previlege
             getLeaveAuthFields(input.auth_level).then(authFields => {
               _mysql
@@ -683,6 +685,8 @@ module.exports = {
                   printQuery: false
                 })
                 .then(authResult => {
+
+                  
                   if (authResult.affectedRows > 0 && input.status == "R") {
                     _mysql
                       .executeQuery({
@@ -775,9 +779,9 @@ module.exports = {
                                 if (monthArray.length > 0) {
                                   _mysql
                                     .executeQuery({
-                                      query: `select hims_f_employee_monthly_leave_id, total_eligible,close_balance, ${monthArray} ,availed_till_date
-                                      from hims_f_employee_monthly_leave where
-                                    employee_id=? and year=? and leave_id=?`,
+                                      query: `select L.leave_category, hims_f_employee_monthly_leave_id, total_eligible,close_balance, ${monthArray} ,availed_till_date
+                                      from hims_f_employee_monthly_leave ML inner join hims_d_leave L  on ML.leave_id=L.hims_d_leave_id where
+                                    employee_id=? and year=? and ML.leave_id=?`,
                                       values: [
                                         input.employee_id,
                                         input.year,
@@ -787,12 +791,12 @@ module.exports = {
                                     .then(leaveData => {
                                       if (
                                         leaveData.length > 0 &&
-                                        parseFloat(
+                                        (parseFloat(
                                           deductionResult.calculatedLeaveDays
                                         ) <=
                                           parseFloat(
                                             leaveData[0]["close_balance"]
-                                          )
+                                          )||  leaveData[0]["leave_category"]=="A")
                                       ) {
                                         let newCloseBal =
                                           parseFloat(
@@ -977,10 +981,16 @@ module.exports = {
                                           invalid_input: true,
                                           message: "leave balance is low"
                                         };
-                                        connection.rollback(() => {
-                                          releaseDBConnection(db, connection);
-                                          next();
-                                        });
+
+                                        _mysql.rollBackTransaction(() => {
+                                          
+                                        }); 
+                                        next();
+
+                                        // connection.rollback(() => {
+                                        //   releaseDBConnection(db, connection);
+                                        //   next();
+                                        // });
                                       }
                                     })
                                     .catch(error => {
@@ -1657,6 +1667,7 @@ module.exports = {
       let allLeaves = [];
       let allHolidays = [];
 
+      let annual_leave="";
       //ST OF-------calculate Half-day or Full-day from session
       if (input.from_date == input.to_date) {
         if (input.from_session == "FH" && input.to_session == "FH") {
@@ -1773,18 +1784,20 @@ module.exports = {
         .executeQuery({
           query:
             "select hims_f_employee_monthly_leave_id, total_eligible,close_balance, availed_till_date,\
-          leave_id,L.leave_description,include_weekoff,include_holiday from hims_f_employee_monthly_leave ML\
+          leave_id,L.leave_description,L.leave_category,include_weekoff,include_holiday from hims_f_employee_monthly_leave ML\
           inner join hims_d_leave L on ML.leave_id=L.hims_d_leave_id where employee_id=? and year=? and\
           leave_id=? and L.record_status='A';select hims_d_holiday_id,holiday_date,holiday_description,weekoff,\
           holiday,holiday_type,religion_id  from hims_d_holiday  where date(holiday_date) between date(?) and date(?) ",
           values: [input.employee_id, year, input.leave_id, from_date, to_date],
 
-          printQuery: false
+          printQuery: true
         })
         .then(result => {
           allLeaves = result[0];
           allHolidays = result[1];
 
+          annual_leave=result[0][0].leave_category;
+          console.log("annual_leave:",annual_leave)
           if (allLeaves.length > 0) {
             currentClosingBal = allLeaves[0].close_balance;
             let isHoliday = new LINQ(allHolidays)
@@ -1968,7 +1981,7 @@ module.exports = {
                   parseFloat(calculatedLeaveDays) - parseFloat(session_diff);
 
                 //-------END OF------ finally  subtracting week off and holidays from total Applied days
-                if (currentClosingBal >= calculatedLeaveDays) {
+                if (currentClosingBal >= calculatedLeaveDays || annual_leave=="A") {
                   _mysql.releaseConnection();
                   req.records = {
                     leave_applied_days: leave_applied_days,
@@ -2030,7 +2043,7 @@ module.exports = {
                   parseFloat(calculatedLeaveDays) - parseFloat(session_diff);
 
                 //checking if he has enough eligible days
-                if (currentClosingBal >= calculatedLeaveDays) {
+                if (currentClosingBal >= calculatedLeaveDays || annual_leave=="A") {
                   _mysql.releaseConnection();
                   req.records = {
                     leave_applied_days: leave_applied_days,
@@ -2084,7 +2097,7 @@ module.exports = {
       const m_toDate = moment(input.to_date).format("YYYY-MM-DD");
       const from_year = moment(input.from_date).format("YYYY");
       const to_year = moment(input.to_date).format("YYYY");
-
+      let annual_leave="";
       if (
         m_fromDate > m_toDate ||
         (m_fromDate == m_toDate &&
@@ -2123,7 +2136,7 @@ module.exports = {
                   query:
                     "select hims_f_employee_monthly_leave_id, employee_id, year, leave_id, total_eligible,\
                     availed_till_date, close_balance,\
-                    L.hims_d_leave_id,L.leave_code,L.leave_description,L.leave_type from \
+                    L.hims_d_leave_id,L.leave_code,L.leave_category,L.leave_description,L.leave_type from \
                     hims_f_employee_monthly_leave ML inner join\
                     hims_d_leave L on ML.leave_id=L.hims_d_leave_id and L.record_status='A'\
                     where ML.employee_id=? and ML.leave_id=? and  ML.year in (?)",
@@ -2141,7 +2154,10 @@ module.exports = {
                     let m_availed_till_date = result[0]["availed_till_date"];
                     let m_close_balance = result[0]["close_balance"];
 
-                    if (m_close_balance >= input.total_applied_days) {
+
+                    annual_leave=result[0].leave_category;
+
+                    if (m_close_balance >= input.total_applied_days || annual_leave=="A") {
                       _mysql
                         .executeQuery({
                           query:
@@ -4609,7 +4625,7 @@ function calc(db, body) {
       let dateEnd = moment(to_date);
       let dateRange = [];
       let currentClosingBal = 0;
-
+      let annual_leave="";
       let leaveDeductionArray = [];
       //--- START OF-------calculate Half-day or Full-day from session
 
@@ -4756,17 +4772,15 @@ function calc(db, body) {
         _mysql
           .executeQuery({
             query:
-              " select hims_d_leave_id,leave_code,leave_description,include_weekoff,\
+              " select hims_d_leave_id,leave_code,leave_category,leave_description,include_weekoff,\
           include_holiday from hims_d_leave where hims_d_leave_id=?  and record_status='A'",
             values: [input.leave_id],
 
             printQuery: false
           })
           .then(result => {
-            // _mysql.releaseConnection();
-            // req.records = result;
-            // next();
-
+           
+            annual_leave=result[0].leave_category;
             // subtracting  week off or holidays fom LeaveApplied Days
             if (
               result.length > 0 &&
@@ -4952,7 +4966,8 @@ function calc(db, body) {
 
                   //-------END OF------ finally  subtracting week off and holidays from total Applied days
 
-                  if (currentClosingBal >= calculatedLeaveDays) {
+                  if (currentClosingBal >= calculatedLeaveDays||
+                    input.cancel == "Y" || annual_leave=="A") {
                     resolve({
                       leave_applied_days: leave_applied_days,
                       calculatedLeaveDays: calculatedLeaveDays,
@@ -5010,7 +5025,7 @@ function calc(db, body) {
               //checking if he has enough eligible days
               if (
                 currentClosingBal >= calculatedLeaveDays ||
-                input.cancel == "Y"
+                input.cancel == "Y"|| annual_leave=="A"
               ) {
                 resolve({
                   leave_applied_days: leave_applied_days,
