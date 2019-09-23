@@ -14,6 +14,7 @@ exports.default = {
     host: "49.206.18.38",
     // host: "192.168.0.102",
     //host: "127.0.0.1",
+
     port: 3306,
     user: "algaeh_root",
     password: "alg_hea2018",
