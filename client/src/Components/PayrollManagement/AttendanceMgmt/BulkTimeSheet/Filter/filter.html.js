@@ -14,6 +14,8 @@ import {
   getPreview
 } from "./filter.events";
 import moment from "moment";
+import spotlightSearch from "../../../../../Search/spotlightSearch.json";
+
 export default function Filter(props) {
   let fileInput = React.createRef();
   const [hospitals, setHospitals] = useState([]);
@@ -299,12 +301,19 @@ export default function Filter(props) {
         label={{ forceLabel: "Employee Search" }}
         title="Employee Search"
         name="fullName"
-        columns={[{ fieldName: "employee_code", fieldName: "full_name" }]}
+        columns={spotlightSearch.Employee_details.employee}
         displayField="full_name"
         searchName="employee"
         value={fullName}
-        template={({ full_name }) => {
-          return <div className="col-12 padd-10">{full_name}</div>;
+        template={({ full_name, employee_code }) => {
+          return (
+            <div className="row">
+              <div className="col-12 padd-10">
+                <small>{employee_code}</small>
+                <p>{full_name}</p>
+              </div>
+            </div>
+          );
         }}
         onClick={item => {
           setFullName(item.full_name);
