@@ -100,7 +100,8 @@ export default {
       present_city_id: null,
       department_name: null,
       employeeImage: undefined,
-      reporting_to_id: null
+      reporting_to_id: null,
+      entitled_daily_ot: "N"
     };
     return output;
   }

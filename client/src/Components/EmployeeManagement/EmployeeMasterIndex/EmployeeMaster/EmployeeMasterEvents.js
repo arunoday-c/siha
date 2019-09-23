@@ -101,7 +101,10 @@ const Validations = $this => {
   }
 
   if ($this.state.HRMS_Active === true) {
-    if ($this.state.personalDetails.overtime_group_id === null) {
+    if (
+      $this.state.personalDetails.entitled_daily_ot === "Y" &&
+      $this.state.personalDetails.overtime_group_id === null
+    ) {
       isError = true;
       swalMessage({
         type: "warning",
