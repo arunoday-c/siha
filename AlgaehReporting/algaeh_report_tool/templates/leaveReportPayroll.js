@@ -17,6 +17,9 @@ const executePDF = function executePDFMethod(options) {
       if (input.hims_d_leave_id > 0) {
         str += ` and leave_id=${input.hims_d_leave_id}`;
       }
+      if (input.employee_group_id > 0) {
+        str += ` and E.employee_group_id= ${input.employee_group_id}`;
+      }
       if (
         input.status !== "" &&
         input.status !== null &&

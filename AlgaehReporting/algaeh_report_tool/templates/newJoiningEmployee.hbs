@@ -29,6 +29,7 @@
                         <th>Sub Dept.</th>
                         <th>Designation</th>
                         <th>Date of Joining</th>
+                        <th>Emp. Group</th>
                         <th>Nationality</th>
                         <th>Religion</th>
                         <th>Emp. Type</th>
@@ -47,6 +48,7 @@
                         <td>{{employee_code}}</td>
                         <td style="text-align: left;">{{full_name}}</td>
                         <td>{{sex}}</td>
+                        <td>{{group_description}}</td>
                         <td>{{department_name}}</td>
                         <td>{{sub_department_name}}</td>
                         <td>{{designation}}</td>
@@ -59,7 +61,7 @@
                     {{/each }}
                     {{else}}
                     <tr>
-                        <td colspan="12" class="noResultTextReport">No Records Found</td>
+                        <td colspan="13" class="noResultTextReport">No Records Found</td>
                     </tr>{{/hasElement }}
                 </tbody>
 

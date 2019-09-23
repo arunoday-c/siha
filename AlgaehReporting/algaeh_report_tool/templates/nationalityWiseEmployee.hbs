@@ -16,13 +16,14 @@
         </section> --}}
         <section>
             <table class="tableForData" cell-padding="0">
-                <thead >
+                <thead>
 
                     <tr>
                         <th>Sl No.</th>
                         <th>Employee Code</th>
                         <th>Employee Name</th>
                         <th>Gender</th>
+                        <th>Emp. Group</th>
                         <th>Dept. </th>
                         <th>Sub Dept.</th>
                         <th>Designation</th>
@@ -39,9 +40,9 @@
 
                     {{#each result}}
                     <tr>
-                        <td colspan="11"
-                        excelfill='{"type":"pattern","pattern":"solid","fgColor":{"argb":"CDF4EF"},"bgColor":{"argb":"747474"}}'
-                         class="tableSubHdg">Nationality: {{nationality}}
+                        <td colspan="12"
+                            excelfill='{"type":"pattern","pattern":"solid","fgColor":{"argb":"CDF4EF"},"bgColor":{"argb":"747474"}}'
+                            class="tableSubHdg">Nationality: {{nationality}}
                             <span class="textFloatRight">No
                                 Employees: {{no_employee}}</span>
 
@@ -53,6 +54,7 @@
                         <td>{{employee_code}}</td>
                         <td style="text-align: left;">{{full_name}}</td>
                         <td>{{sex}}</td>
+                        <td>{{group_description}}</td>
                         <td>{{department_name}}</td>
                         <td>{{sub_department_name}}</td>
                         <td>{{designation}}</td>
@@ -64,7 +66,7 @@
                     {{/each }}{{/each }}
                     {{else}}
                     <tr>
-                        <td colspan="11" class="noResultTextReport">No Records Found</td>
+                        <td colspan="12" class="noResultTextReport">No Records Found</td>
                     </tr>{{/hasElement }}
                 </tbody>
 
