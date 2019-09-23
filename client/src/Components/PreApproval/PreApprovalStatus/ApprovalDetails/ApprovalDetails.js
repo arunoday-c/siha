@@ -24,8 +24,8 @@ import {
 } from "./ApprovalDetailsEvents";
 
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
-import "./../../../../styles/site.css";
-import "./ApprovalDetails.css";
+import "./../../../../styles/site.scss";
+import "./ApprovalDetails.scss";
 import MyContext from "../../../../utils/MyContext.js";
 import Options from "../../../../Options.json";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";

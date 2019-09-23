@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./Eye.css";
+import "./Eye.scss";
 import {
   AlagehAutoComplete,
   AlagehFormGroup,

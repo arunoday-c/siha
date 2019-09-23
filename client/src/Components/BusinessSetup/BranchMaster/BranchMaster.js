@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./BranchMaster.css";
+import "./BranchMaster.scss";
 import {
   AlagehFormGroup,
   AlagehAutoComplete

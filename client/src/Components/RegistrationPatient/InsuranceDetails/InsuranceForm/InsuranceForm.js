@@ -3,8 +3,8 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import "./InsuranceForm.css";
-import "./../../../../styles/site.css";
+import "./InsuranceForm.scss";
+import "./../../../../styles/site.scss";
 import MyContext from "../../../../utils/MyContext.js";
 import {
   AlgaehLabel,

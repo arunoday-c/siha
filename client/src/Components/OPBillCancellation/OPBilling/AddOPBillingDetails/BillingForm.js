@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import AddOPBillingForm from "./AddOPBillingForm.js";
-import "./AddOPBillingForm.css";
+import "./AddOPBillingForm.scss";
 
 export default class BillingForm extends Component {
   constructor(props) {

@@ -5,8 +5,8 @@ import { bindActionCreators } from "redux";
 
 import NetworkPlanList from "../NetworkPlanList/NetworkPlanList";
 
-import "./NetworkPlan.css";
-import "./../../../styles/site.css";
+import "./NetworkPlan.scss";
+import "./../../../styles/site.scss";
 import {
   AlgaehLabel,
   AlgaehDateHandler,

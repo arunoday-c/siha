@@ -24,8 +24,8 @@ import {
   getCashiersAndShiftMAP
 } from "./PointOfSaleEvents";
 // getCtrlCode,
-import "./PointOfSale.css";
-import "../../../styles/site.css";
+import "./PointOfSale.scss";
+import "../../../styles/site.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import ReactDOM from "react-dom";
 

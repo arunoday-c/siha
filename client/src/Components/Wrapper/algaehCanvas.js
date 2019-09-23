@@ -6,7 +6,7 @@ import icona from "tui-image-editor/dist/svg/icon-a.svg";
 import iconb from "tui-image-editor/dist/svg/icon-b.svg";
 import iconc from "tui-image-editor/dist/svg/icon-c.svg";
 import icond from "tui-image-editor/dist/svg/icon-d.svg";
-import "./imageEditor.css";
+import "./imageEditor.scss";
 import Webcam from "react-webcam";
 import moment from "moment";
 import { swalMessage } from "../../utils/algaehApiCall";

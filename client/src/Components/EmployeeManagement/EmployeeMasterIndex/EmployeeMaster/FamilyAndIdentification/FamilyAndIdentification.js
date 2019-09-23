@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./FamilyAndIdentification.css";
+import "./FamilyAndIdentification.scss";
 import {
   AlgaehDateHandler,
   AlagehFormGroup,

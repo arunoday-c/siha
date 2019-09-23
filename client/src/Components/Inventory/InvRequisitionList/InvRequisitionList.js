@@ -5,8 +5,8 @@ import { bindActionCreators } from "redux";
 import Enumerable from "linq";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
-import "./InvRequisitionList.css";
-import "./../../../styles/site.css";
+import "./InvRequisitionList.scss";
+import "./../../../styles/site.scss";
 
 import {
   // LocationchangeTexts,

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./payroll_settings.css";
+import "./payroll_settings.scss";
 import EarningsDeductions from "./EarningsDeductions/EarningsDeductions";
 import LoanMaster from "./LoanMaster/LoanMaster";
 import HolidayMaster from "./HolidayMaster/HolidayMaster";

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./dept.css";
+import "./dept.scss";
 import {
   AlgaehDateHandler,
   AlagehFormGroup,

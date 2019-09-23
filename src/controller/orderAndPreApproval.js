@@ -20,7 +20,8 @@ import {
   insertInvOrderedServices,
   addPackage,
   getPatientPackage,
-  deleteOrderService
+  deleteOrderService,
+  insertPhysiotherapyServices
 } from "../model/orderAndPreApproval";
 import { insertRadOrderedServices } from "../model/radiology";
 import { insertLadOrderedServices } from "../model/laboratory";
@@ -32,6 +33,7 @@ export default ({ config, db }) => {
   api.post(
     "/insertOrderedServices",
     insertOrderedServices,
+    insertPhysiotherapyServices,
     insertLadOrderedServices,
     insertRadOrderedServices,
     (req, res, next) => {

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./MicroGroupType.css";
+import "./MicroGroupType.scss";
 import {
   AlgaehDateHandler,
   AlagehFormGroup,

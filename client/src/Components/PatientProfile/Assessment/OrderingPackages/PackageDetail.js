@@ -4,8 +4,8 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 // import moment from "moment";
-import "./OrderingPackages.css";
-import "../../../../styles/site.css";
+import "./OrderingPackages.scss";
+import "../../../../styles/site.scss";
 
 import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";

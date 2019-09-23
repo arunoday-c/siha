@@ -28,8 +28,8 @@ import {
   ClosePackageMaster,
   ShowPackageMaster
 } from "./OrderingPackagesHandaler";
-import "./OrderingPackages.css";
-import "../../../../styles/site.css";
+import "./OrderingPackages.scss";
+import "../../../../styles/site.scss";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import { getCookie } from "../../../../utils/algaehApiCall";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";

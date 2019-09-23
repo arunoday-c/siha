@@ -5,8 +5,8 @@ import { bindActionCreators } from "redux";
 
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 
-import "./PrescriptionList.css";
-import "./../../../styles/site.css";
+import "./PrescriptionList.scss";
+import "./../../../styles/site.scss";
 
 import {
   AlgaehDataGrid,

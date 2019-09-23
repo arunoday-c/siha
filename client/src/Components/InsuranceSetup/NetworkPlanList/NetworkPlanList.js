@@ -5,8 +5,8 @@ import { bindActionCreators } from "redux";
 import moment from "moment";
 import Options from "../../../Options.json";
 
-import "./NetworkPlanList.css";
-import "./../../../styles/site.css";
+import "./NetworkPlanList.scss";
+import "./../../../styles/site.scss";
 import {
   AlgaehLabel,
   AlgaehDataGrid,

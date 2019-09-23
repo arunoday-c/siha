@@ -4,7 +4,7 @@ import PatientDetails from "./PatientDetails/PatientDetails.js";
 import ConsultationDetails from "./ConsultationDetails/ConsultationDetails.js";
 import InsuranceDetails from "./InsuranceDetails/InsuranceDetails.js";
 import Billing from "./Billing/AddBillingForm";
-import "./registration.css";
+import "./registration.scss";
 import PatRegIOputs from "../../Models/RegistrationPatient";
 import BillingIOputs from "../../Models/Billing";
 import extend from "extend";
@@ -25,7 +25,8 @@ import {
 import AddAdvanceModal from "../Advance/AdvanceModal";
 import {
   imageToByteArray,
-  AlgaehValidation
+  AlgaehValidation,
+  AlgaehOpenContainer
 } from "../../utils/GlobalFunctions";
 import { setGlobal } from "../../utils/GlobalFunctions";
 import { AlgaehActions } from "../../actions/algaehActions";
@@ -60,6 +61,7 @@ const emptyObject = extend(
 class RegistrationPatient extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       AdvanceOpen: false,
       RefundOpen: false,
@@ -68,6 +70,9 @@ class RegistrationPatient extends Component {
       isPackUtOpen: false,
       UpdatepatientDetail: false
     };
+    this.employee_id_required = JSON.parse(
+      AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+    ).requied_emp_id;
   }
 
   componentWillMount() {
@@ -743,7 +748,10 @@ class RegistrationPatient extends Component {
             },
             jsonFile: {
               fileName: "spotlightSearch",
-              fieldName: "frontDesk.patients"
+              fieldName:
+                this.employee_id_required === "N"
+                  ? "frontDesk.patients"
+                  : "frontDesk.emp_id_patients"
             },
             searchName: "patients"
           }}

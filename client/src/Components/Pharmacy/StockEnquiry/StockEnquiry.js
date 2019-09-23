@@ -19,8 +19,8 @@ import {
   getBatchWiseData,
   closeBatchWise
 } from "./StockEnquiryEvents";
-import "./StockEnquiry.css";
-import "../../../styles/site.css";
+import "./StockEnquiry.scss";
+import "../../../styles/site.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import Enumerable from "linq";
 import BatchWiseStock from "./BatchWiseStock";

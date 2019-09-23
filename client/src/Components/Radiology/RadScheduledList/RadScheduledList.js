@@ -5,8 +5,8 @@ import { bindActionCreators } from "redux";
 
 import RadResultEntry from "../RadResultEntry/RadResultEntry";
 
-import "./RadScheduledList.css";
-import "./../../../styles/site.css";
+import "./RadScheduledList.scss";
+import "./../../../styles/site.scss";
 
 import {
   datehandle,

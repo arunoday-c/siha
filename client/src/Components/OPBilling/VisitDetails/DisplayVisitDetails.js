@@ -4,8 +4,8 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 import { AlgaehDataGrid, AlgaehLabel } from "../../Wrapper/algaehWrapper";
-import "./DisplayVisitDetails.css";
-import "./../../../styles/site.css";
+import "./DisplayVisitDetails.scss";
+import "./../../../styles/site.scss";
 
 import { AlgaehActions } from "../../../actions/algaehActions";
 import MyContext from "../../../utils/MyContext.js";

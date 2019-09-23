@@ -4,8 +4,8 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import RichTextEditor from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import "./RadResultEntry.css";
-import "./../../../styles/site.css";
+import "./RadResultEntry.scss";
+import "./../../../styles/site.scss";
 import {
   AlagehAutoComplete,
   AlgaehDateHandler,

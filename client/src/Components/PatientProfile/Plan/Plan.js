@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./plan.css";
+import "./plan.scss";
 import {
   AlgaehLabel,
   AlagehFormGroup,

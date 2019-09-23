@@ -10,7 +10,7 @@ import {
 import AlgaehAutoSearch from "../Wrapper/autoSearch";
 import { getLabelFromLanguage } from "../../utils/GlobalFunctions";
 import GlobalVariables from "../../utils/GlobalVariables";
-import "./appointment.css";
+import "./appointment.scss";
 import spotlightSearch from "../../Search/spotlightSearch.json";
 
 function AppointmentComponent(props) {

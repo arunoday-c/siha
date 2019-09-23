@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./appointment_clinics.css";
+import "./appointment_clinics.scss";
 import {
   AlagehAutoComplete,
   AlagehFormGroup,

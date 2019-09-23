@@ -10,8 +10,8 @@ import {
 } from "../../Wrapper/algaehWrapper";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 
-import "./ExpiringItemList.css";
-import "../../../styles/site.css";
+import "./ExpiringItemList.scss";
+import "../../../styles/site.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import Enumerable from "linq";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./physical_examination.css";
+import "./physical_examination.scss";
 
 import {
   AlagehFormGroup,

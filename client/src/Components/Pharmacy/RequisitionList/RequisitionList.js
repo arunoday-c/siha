@@ -7,8 +7,8 @@ import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 // import { setGlobal } from "../../../utils/GlobalFunctions";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 
-import "./RequisitionList.css";
-import "./../../../styles/site.css";
+import "./RequisitionList.scss";
+import "./../../../styles/site.scss";
 
 import {
   // LocationchangeTexts,

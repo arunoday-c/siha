@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 
 import GlobalVariables from "../../../utils/GlobalVariables.json";
-import "./Eye.css";
+import "./Eye.scss";
 import {
   AlgaehDateHandler,
   AlagehAutoComplete,

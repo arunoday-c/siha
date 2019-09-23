@@ -1,7 +1,7 @@
 import { PatReportHeader } from "./PatReportHeader";
 import { getAmountFormart } from "../../utils/GlobalFunctions";
 import _ from "lodash";
-import "../report-style.css";
+import "../report-style.scss";
 import moment from "moment";
 
 export function printReport(result) {

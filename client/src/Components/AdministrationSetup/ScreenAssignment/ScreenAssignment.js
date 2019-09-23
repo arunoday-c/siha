@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./screen_assignment.css";
+import "./screen_assignment.scss";
 import {
   AlgaehLabel,
   AlagehAutoComplete

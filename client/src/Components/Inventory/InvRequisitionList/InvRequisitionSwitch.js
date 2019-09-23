@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./InvRequisitionList.css";
+import "./InvRequisitionList.scss";
 import InvRequisitionList from "./InvRequisitionList";
 import InvRequisitionEntry from "../InvRequisitionEntry/InvRequisitionEntry";
 import InvTransferEntry from "../InvTransferEntry/InvTransferEntry";

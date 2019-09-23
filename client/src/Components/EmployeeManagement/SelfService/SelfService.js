@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./SelfService.css";
+import "./SelfService.scss";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import AlgaehFile from "../../Wrapper/algaehFileUpload";
 import ActivityFeed from "./ActivityFeed/ActivityFeed";

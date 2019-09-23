@@ -20,3 +20,9 @@
         float: right;
         margin-top: 7px;
         color: #ccc; }
+
+#physioTreatPatientGrid .ReactTable {
+  max-height: 70vh !important; }
+
+#physioTreatGrid .ReactTable {
+  max-height: 35vh !important; }

@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import ItemDetails from "./ItemDetails/ItemDetails";
 import UOMAdditionalInfo from "./UOMAdditionalInfo/UOMAdditionalInfo";
 
-import "./../../../styles/site.css";
-import "./ItemMaster.css";
+import "./../../../styles/site.scss";
+import "./ItemMaster.scss";
 
 import {
   AlgaehModalPopUp,

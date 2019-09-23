@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./acq_entry.css";
+import "./acq_entry.scss";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 
 import {

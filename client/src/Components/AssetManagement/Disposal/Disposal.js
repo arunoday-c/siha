@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./disposal.css";
+import "./disposal.scss";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 
 import {

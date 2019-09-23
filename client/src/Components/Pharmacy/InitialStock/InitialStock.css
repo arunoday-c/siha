@@ -1,8 +1,0 @@
-.hptl-phase1-initial-stock-form {
-  padding-bottom: 60px; }
-  .hptl-phase1-initial-stock-form .go-button {
-    cursor: pointer;
-    margin-top: 2.5vh; }
-  @media screen and (min-width: 481px) and (max-width: 1024px) and (orientation: landscape) {
-    .hptl-phase1-initial-stock-form #initialStockCntr .ReactTable {
-      max-width: 93.2vw !important; } }

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./day_end_prc.css";
+import "./day_end_prc.scss";
 
 import {
   AlgaehDataGrid,

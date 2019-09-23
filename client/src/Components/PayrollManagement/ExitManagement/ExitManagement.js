@@ -4,7 +4,7 @@ import EOSGratuity from "./EOSGratuity/EOSGratuity";
 import FinalSettlement from "./FinalSettlement/FinalSettlement";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 
-import "./ExitManagement.css";
+import "./ExitManagement.scss";
 class ExitManagement extends Component {
   constructor(props) {
     super(props);

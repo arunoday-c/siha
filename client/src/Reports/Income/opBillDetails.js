@@ -1,7 +1,7 @@
 import Enumerable from "linq";
 import { getAmountFormart } from "../../utils/GlobalFunctions";
 import { incomeHeader } from "./incomeHeader";
-import "../report-style.css";
+import "../report-style.scss";
 export function printReport(data) {
   let AllTotal = Enumerable.from(data).sum(s => parseFloat(s.total_amount));
 

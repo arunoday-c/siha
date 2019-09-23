@@ -4,8 +4,8 @@ import {
   AlagehFormGroup,
   AlagehAutoComplete
 } from "../../../Wrapper/algaehWrapper";
-import "./Referal.css";
-import "../../../../styles/site.css";
+import "./Referal.scss";
+import "../../../../styles/site.scss";
 import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
 import _ from "lodash";
 import { texthandle, addReferal, radioChange } from "./ReferalEvents";

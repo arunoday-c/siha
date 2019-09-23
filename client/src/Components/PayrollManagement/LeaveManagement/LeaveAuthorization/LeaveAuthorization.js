@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./LeaveAuthorization.css";
+import "./LeaveAuthorization.scss";
 import {
   AlagehAutoComplete,
   AlgaehLabel,

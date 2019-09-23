@@ -32,6 +32,9 @@ const LoadSalaryPayment = ($this, inputs) => {
           if (inputs.department_id !== null) {
             inputObj.department_id = inputs.department_id;
           }
+          if (inputs.group_id !== null) {
+            inputObj.group_id = inputs.group_id;
+          }
 
           algaehApiCall({
             uri: "/salary/getSalaryProcessToPay",

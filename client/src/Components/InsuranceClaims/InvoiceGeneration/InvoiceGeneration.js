@@ -16,9 +16,9 @@ import {
   ClearData,
   getCtrlCode
 } from "./InvoiceGenerationHandaler";
-import "./InvoiceGeneration.css";
+import "./InvoiceGeneration.scss";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-import "../../../styles/site.css";
+import "../../../styles/site.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { getCookie } from "../../../utils/algaehApiCall";
 import AlgaehReport from "../../Wrapper/printReports.js";

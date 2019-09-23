@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 import { AlgaehActions } from "../../../actions/algaehActions";
-import "./PatientDetails.css";
+import "./PatientDetails.scss";
 import { AlgaehLabel, AlagehAutoComplete } from "../../Wrapper/algaehWrapper";
 import MyContext from "../../../utils/MyContext.js";
 import { PatientSearch, selectVisit } from "./DisPatientHandlers";

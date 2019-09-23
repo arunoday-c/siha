@@ -162,9 +162,7 @@ let selectLoginUser = (req, res, next) => {
         req.query.algaeh_d_app_user_id != undefined &&
         req.query.algaeh_d_app_user_id != null
       ) {
-        algaeh_d_app_user_id = ` and algaeh_d_app_user_id=${
-          req.query.algaeh_d_app_user_id
-        } `;
+        algaeh_d_app_user_id = ` and algaeh_d_app_user_id=${req.query.algaeh_d_app_user_id} `;
       }
 
       _mysql
@@ -213,9 +211,7 @@ let selectAppGroup = (req, res, next) => {
 
       let algaeh_d_app_group_id = "";
       if (req.query.algaeh_d_app_group_id > 0) {
-        algaeh_d_app_group_id = ` and algaeh_d_app_user_id=${
-          req.query.algaeh_d_app_group_id
-        } `;
+        algaeh_d_app_group_id = ` and algaeh_d_app_user_id=${req.query.algaeh_d_app_group_id} `;
       }
 
       _mysql
@@ -408,10 +404,7 @@ let createUserLogin = (req, res, next) => {
         next(error);
       }
 
-      if (
-        req.userIdentity.algaeh_d_app_user_id == "AD" &&
-        input.user_type != "AD"
-      ) {
+      if (req.userIdentity.user_type == "AD" && input.user_type != "AD") {
         req.records = {
           validUser: false,
           message: "You don't have rights to add this user"

@@ -8,8 +8,8 @@ import {
   AlagehFormGroup,
   AlgaehDateHandler
 } from "../../../Wrapper/algaehWrapper";
-import "./FollowUp.css";
-import "../../../../styles/site.css";
+import "./FollowUp.scss";
+import "../../../../styles/site.scss";
 
 import {
   texthandle,

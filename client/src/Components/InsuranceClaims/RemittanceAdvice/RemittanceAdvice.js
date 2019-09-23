@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import "./RemittanceAdvice.css";
+import "./RemittanceAdvice.scss";
 
 // import moment from "moment";
 // import Options from "../../../Options.json";

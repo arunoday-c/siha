@@ -1,5 +1,5 @@
 import React from "react";
-import "./LeaveEncashment.css";
+import "./LeaveEncashment.scss";
 import Enumerable from "linq";
 import {
   AlagehFormGroup,

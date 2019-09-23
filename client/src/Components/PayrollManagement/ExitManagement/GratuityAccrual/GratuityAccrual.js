@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import "./GratuityAccrual.css";
+import "./GratuityAccrual.scss";
 
 import {
   AlagehAutoComplete,

@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 import extend from "extend";
-import "./earnings_deductions.css";
+import "./earnings_deductions.scss";
 import {
   AlagehAutoComplete,
   AlagehFormGroup,

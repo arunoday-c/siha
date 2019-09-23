@@ -21,8 +21,8 @@ import {
   generateMaterialTransInv,
   AcknowledgeTransferEntry
 } from "./InvTransferEntryEvents";
-import "./InvTransferEntry.css";
-import "../../../styles/site.css";
+import "./InvTransferEntry.scss";
+import "../../../styles/site.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
 
 import Options from "../../../Options.json";

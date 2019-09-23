@@ -34,8 +34,8 @@ import {
   EditGrid,
   CancelGrid
 } from "./OrderMedicationEvents";
-import "./OrderMedication.css";
-import "../../../../styles/site.css";
+import "./OrderMedication.scss";
+import "../../../../styles/site.scss";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import moment from "moment";
 import AlgaehAutoSearch from "../../../Wrapper/autoSearch";

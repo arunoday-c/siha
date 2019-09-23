@@ -33,6 +33,9 @@ const SalaryProcess = ($this, inputs, from) => {
           if (inputs.department_id !== null) {
             inputObj.department_id = inputs.department_id;
           }
+          if (inputs.group_id !== null) {
+            inputObj.group_id = inputs.group_id;
+          }
 
           algaehApiCall({
             uri: "/salary/processSalary",

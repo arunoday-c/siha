@@ -12,8 +12,8 @@ import {
 } from "../../Wrapper/algaehWrapper";
 import ButtonType from "../../Wrapper/algaehButton";
 
-import "./PackageUtilize.css";
-import "../../../styles/site.css";
+import "./PackageUtilize.scss";
+import "../../../styles/site.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
 
 import { getAmountFormart } from "../../../utils/GlobalFunctions";

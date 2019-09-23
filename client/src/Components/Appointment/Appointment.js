@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../actions/algaehActions";
 
-import "./appointment.css";
+import "./appointment.scss";
 import moment from "moment";
 import {
   setGlobal,

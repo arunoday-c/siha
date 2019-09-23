@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./employee_groups.css";
+import "./employee_groups.scss";
 import {
   AlagehFormGroup,
   AlagehAutoComplete,

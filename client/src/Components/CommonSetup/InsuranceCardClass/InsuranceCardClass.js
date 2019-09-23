@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./InsuranceCardClass.css";
+import "./InsuranceCardClass.scss";
 import moment from "moment";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";

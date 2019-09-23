@@ -3,8 +3,8 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import "./NewInvestigation.css";
-import "./../../../styles/site.css";
+import "./NewInvestigation.scss";
+import "./../../../styles/site.scss";
 import {
   AlgaehLabel,
   AlagehFormGroup,

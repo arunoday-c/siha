@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import "./Dental.css";
+import "./Dental.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import {
   AlgaehValidation,
@@ -249,11 +249,13 @@ class Dental extends Component {
                     discount_percentage: 0
                   },
                   () => {
-                    let inputObj = {
+                    let inputData = {
                       hims_f_treatment_plan_id: this.state
-                        .hims_f_treatment_plan_id
+                        .hims_f_treatment_plan_id,
+                      approve_status: this.state.approval_status,
+                      plan_name: this.state.selected_plan
                     };
-                    this.loadDentalTreatment(inputObj);
+                    this.loadDentalTreatment(inputData);
                   }
                 );
               }
@@ -525,10 +527,13 @@ class Dental extends Component {
                 type: "success"
               });
               debugger;
-              let inputObj = {
-                hims_f_treatment_plan_id: this.state.hims_f_treatment_plan_id
+              let inputData = {
+                hims_f_treatment_plan_id: this.state.hims_f_treatment_plan_id,
+                approve_status: this.state.approval_status,
+                plan_name: this.state.selected_plan
               };
-              this.loadDentalTreatment(inputObj);
+              this.loadDentalTreatment(inputData);
+
               teeth = [];
               my_send_obj = {};
               this.setState({
@@ -1891,10 +1896,12 @@ class Dental extends Component {
             if (res.data.success) {
               debugger;
 
-              let inputObj = {
-                hims_f_treatment_plan_id: data.treatment_plan_id
+              let inputData = {
+                hims_f_treatment_plan_id: this.state.hims_f_treatment_plan_id,
+                approve_status: this.state.approval_status,
+                plan_name: this.state.selected_plan
               };
-              this.loadDentalTreatment(inputObj);
+              this.loadDentalTreatment(inputData);
               swalMessage({
                 title: "Record Deleted",
                 type: "success"
@@ -1932,8 +1939,12 @@ class Dental extends Component {
             title: "Record Updated",
             type: "success"
           });
-          let Obj = { hims_f_treatment_plan_id: data.treatment_plan_id };
-          this.loadDentalTreatment(Obj);
+          let inputData = {
+            hims_f_treatment_plan_id: this.state.hims_f_treatment_plan_id,
+            approve_status: this.state.approval_status,
+            plan_name: this.state.selected_plan
+          };
+          this.loadDentalTreatment(inputData);
           this.getTreatementPlans();
         }
       },

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./filter.html.css";
+import "./filter.html.scss";
 import { AlagehAutoComplete } from "../../../../Wrapper/algaehWrapper";
 import AlgaehAutoSearch from "../../../../Wrapper/autoSearch";
 import { swalMessage } from "../../../../../utils/algaehApiCall";
@@ -14,6 +14,8 @@ import {
   getPreview
 } from "./filter.events";
 import moment from "moment";
+import spotlightSearch from "../../../../../Search/spotlightSearch.json";
+
 export default function Filter(props) {
   let fileInput = React.createRef();
   const [hospitals, setHospitals] = useState([]);
@@ -70,31 +72,37 @@ export default function Filter(props) {
     });
   }, []);
 
-  useEffect(() => {
-    if (hospitalID !== "") {
-      getAttendanceDates(data => {
-        if (data.length > 0) {
-          const firstRecord = data[0];
-          setStartDt(firstRecord.at_st_date);
-          setEndDt(firstRecord.at_end_date);
-          dateCalcl(firstRecord.at_st_date, firstRecord.at_end_date);
-        }
-      });
-      getDivisionProject({ division_id: hospitalID }, data => {
-        setProjects(data);
-      });
-      getBranchWiseDepartments({ hospital_id: hospitalID }, data => {
-        setDepartment(data);
-      });
-      getEmpGroups(data => {
-        setEmpGroups(data);
-      });
-    }
-  }, [hospitalID]);
+  useEffect(
+    () => {
+      if (hospitalID !== "") {
+        getAttendanceDates(data => {
+          if (data.length > 0) {
+            const firstRecord = data[0];
+            setStartDt(firstRecord.at_st_date);
+            setEndDt(firstRecord.at_end_date);
+            dateCalcl(firstRecord.at_st_date, firstRecord.at_end_date);
+          }
+        });
+        getDivisionProject({ division_id: hospitalID }, data => {
+          setProjects(data);
+        });
+        getBranchWiseDepartments({ hospital_id: hospitalID }, data => {
+          setDepartment(data);
+        });
+        getEmpGroups(data => {
+          setEmpGroups(data);
+        });
+      }
+    },
+    [hospitalID]
+  );
 
-  useEffect(() => {
-    dateCalcl();
-  }, [month]);
+  useEffect(
+    () => {
+      dateCalcl();
+    },
+    [month]
+  );
 
   return (
     <div className="row  inner-top-search">
@@ -138,15 +146,15 @@ export default function Filter(props) {
             textField: "text",
             valueField: "name",
             data: [
-              { name: "1", text: "January" },
-              { name: "2", text: "February" },
-              { name: "3", text: "March" },
-              { name: "4", text: "April" },
-              { name: "5", text: "May" },
-              { name: "6", text: "June" },
-              { name: "7", text: "July" },
-              { name: "8", text: "August" },
-              { name: "9", text: "September" },
+              { name: "01", text: "January" },
+              { name: "02", text: "February" },
+              { name: "03", text: "March" },
+              { name: "04", text: "April" },
+              { name: "05", text: "May" },
+              { name: "06", text: "June" },
+              { name: "07", text: "July" },
+              { name: "08", text: "August" },
+              { name: "09", text: "September" },
               { name: "10", text: "October" },
               { name: "11", text: "November" },
               { name: "12", text: "December" }
@@ -293,12 +301,19 @@ export default function Filter(props) {
         label={{ forceLabel: "Employee Search" }}
         title="Employee Search"
         name="fullName"
-        columns={[{ fieldName: "employee_code", fieldName: "full_name" }]}
+        columns={spotlightSearch.Employee_details.employee}
         displayField="full_name"
         searchName="employee"
         value={fullName}
-        template={({ full_name }) => {
-          return <div className="col-12 padd-10">{full_name}</div>;
+        template={({ full_name, employee_code }) => {
+          return (
+            <div className="row">
+              <div className="col-12 padd-10">
+                <small>{employee_code}</small>
+                <p>{full_name}</p>
+              </div>
+            </div>
+          );
         }}
         onClick={item => {
           setFullName(item.full_name);

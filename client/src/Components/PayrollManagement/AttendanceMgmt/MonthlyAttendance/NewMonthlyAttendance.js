@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./MonthlyAttendance.css";
+import "./MonthlyAttendance.scss";
 import { AlgaehLabel, AlgaehDataGrid } from "../../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
@@ -62,14 +62,14 @@ export default class NewMonthlyAttendance extends Component {
                 : undefined,
             department_id: inputs.department_id,
             hims_d_employee_id: inputs.hims_d_employee_id,
-            designation_id: inputs.designation_id
+            designation_id: inputs.designation_id,
+            group_id: inputs.group_id
           },
           module: "hrManagement",
           onSuccess: res => {
             if (res.data.success) {
               this.setState({
                 data: res.data.records.attendance,
-
                 formatingString: this.monthFormatorString(
                   res.data.records.from_date,
                   res.data.records.to_date

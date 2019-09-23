@@ -9,7 +9,7 @@ import CreditDetails from "../CreditDetails";
 
 import SettlementIOputs from "../../Models/OPCreditSettlement";
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
-import "./OPCreditSettlement.css";
+import "./OPCreditSettlement.scss";
 import MyContext from "../../utils/MyContext.js";
 import AlgaehLabel from "../Wrapper/label.js";
 

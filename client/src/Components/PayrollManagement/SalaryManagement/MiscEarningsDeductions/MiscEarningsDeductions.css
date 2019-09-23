@@ -2,3 +2,20 @@
   width: 74%;
   display: inline-block;
   margin: 0; }
+
+.misc_earn_dedc .globalSearchCntr h6 {
+  width: 100%;
+  overflow: hidden;
+  -o-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin: 0;
+  padding: 0 7px;
+  line-height: 26px;
+  border: 1px solid #dededf;
+  height: 30px;
+  border-radius: 4px;
+  font-size: 1rem; }
+
+#MiscEarningsDeductionsGrid_Cntr .ReactTable {
+  max-height: 46vh !important; }

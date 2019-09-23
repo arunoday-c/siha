@@ -5,7 +5,7 @@ import { bindActionCreators } from "redux";
 
 import moment from "moment";
 
-import "./../../../styles/site.css";
+import "./../../../styles/site.scss";
 import {
   AlgaehLabel,
   AlagehFormGroup,

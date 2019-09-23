@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import ReciptDetails from "./ReciptDetails/AddReciptForm";
 import { AlgaehActions } from "../../actions/algaehActions";
-import "./CreditDetails.css";
+import "./CreditDetails.scss";
 import {
   AlgaehLabel,
   AlgaehDataGrid,

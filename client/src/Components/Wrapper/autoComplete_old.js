@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
 import Label from "./label";
-import "../Wrapper/autoComplete.css";
+import "../Wrapper/autoComplete.scss";
 import Enumarable from "linq";
 import { checkSecurity } from "../../utils/GlobalFunctions";
 class AutoComplete extends PureComponent {

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./HolidayListSelf.css";
+import "./HolidayListSelf.scss";
 import { algaehApiCall } from "../../../../utils/algaehApiCall";
 import { AlgaehDataGrid, AlgaehLabel } from "../../../Wrapper/algaehWrapper";
 import moment from "moment";

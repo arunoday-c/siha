@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import "./employee_master_index.css";
-import "../../../styles/site.css";
+import "./employee_master_index.scss";
+import "../../../styles/site.scss";
 import {
   AlgaehLabel,
   AlgaehDataGrid,

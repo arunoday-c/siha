@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./AppSetup.css";
+import "./AppSetup.scss";
 
 import {
   AlgaehDataGrid,

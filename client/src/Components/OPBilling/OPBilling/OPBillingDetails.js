@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import AddOPBillingDetails from "./AddOPBillingDetails/AddOPBillingForm";
 
 import DisplayInsuranceDetails from "../DisplayInsuranceDetails/DisplayInsuranceDetails.js";
-import "./OPBillingDetails.css";
-import "./../../../styles/site.css";
+import "./OPBillingDetails.scss";
+import "./../../../styles/site.scss";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 
 export default class OPBillingDetails extends Component {

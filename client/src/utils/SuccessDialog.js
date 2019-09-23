@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "../styles/site.css";
+import "../styles/site.scss";
 
 class SuccessDialog extends Component {
   render() {

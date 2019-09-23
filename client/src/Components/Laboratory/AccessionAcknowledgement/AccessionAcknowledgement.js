@@ -4,8 +4,8 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 
-import "./AccessionAcknowledgement.css";
-import "./../../../styles/site.css";
+import "./AccessionAcknowledgement.scss";
+import "./../../../styles/site.scss";
 
 import {
   texthandle,

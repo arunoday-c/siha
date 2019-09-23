@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./LeaveSalarySetup.css";
+import "./LeaveSalarySetup.scss";
 import {
   AlagehFormGroup,
   AlgaehLabel,

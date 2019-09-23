@@ -7,8 +7,8 @@ import { AlagehFormGroup } from "../../Wrapper/algaehWrapper";
 
 import { texthandle, saveTemplate, rtehandle } from "./RadTemplateEvents";
 
-import "./RadTemplate.css";
-import "./../../../styles/site.css";
+import "./RadTemplate.scss";
+import "./../../../styles/site.scss";
 import { AlgaehModalPopUp } from "../../Wrapper/algaehWrapper";
 import MyContext from "../../../utils/MyContext.js";
 

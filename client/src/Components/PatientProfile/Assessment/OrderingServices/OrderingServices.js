@@ -32,8 +32,8 @@ import {
   openViewFavouriteOrder,
   closeViewFavouriteOrder
 } from "./OrderingServicesHandaler";
-import "./OrderingServices.css";
-import "../../../../styles/site.css";
+import "./OrderingServices.scss";
+import "../../../../styles/site.scss";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import { getCookie } from "../../../../utils/algaehApiCall";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";

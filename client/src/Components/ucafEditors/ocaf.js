@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./udocaf.css";
+import "./udocaf.scss";
 import { AlagehFormGroup, AlgaehDateHandler } from "../Wrapper/algaehWrapper";
 import _ from "lodash";
 import AlgaehFileUploader from "../Wrapper/algaehFileUpload";

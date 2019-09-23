@@ -7,8 +7,8 @@ import { AlgaehDataGrid, AlgaehLabel } from "../../../Wrapper/algaehWrapper";
 import OrderingServices from "../OrderingServices/OrderingServices";
 import OrderingPackages from "../OrderingPackages/OrderingPackages";
 import OrderConsumables from "../OrderConsumables/OrderConsumables";
-import "./OrderedList.css";
-import "../../../../styles/site.css";
+import "./OrderedList.scss";
+import "../../../../styles/site.scss";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import {
   getCookie,

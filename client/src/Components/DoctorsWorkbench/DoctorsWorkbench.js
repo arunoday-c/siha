@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./doctor_workbench.css";
+import "./doctor_workbench.scss";
 import { AlgaehDataGrid, AlgaehLabel } from "../Wrapper/algaehWrapper";
 import {
   algaehApiCall,

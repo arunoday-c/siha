@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./loan-adjustment.css";
+import "./loan-adjustment.scss";
 
 import {
   AlagehFormGroup,

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import "./EmployeeMaster.css";
+import "./EmployeeMaster.scss";
 import CommissionSetup from "./CommissionSetup/CommissionSetup";
 import PersonalDetails from "./PersonalDetails/PersonalDetails";
 import FamilyAndIdentification from "./FamilyAndIdentification/FamilyAndIdentification";

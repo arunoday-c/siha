@@ -1,5 +1,5 @@
 // import React, { Component } from "react";
-// import "./LeaveEncashment.css";
+// import "./LeaveEncashment.scss";
 
 // import {
 //   AlgaehDateHandler,

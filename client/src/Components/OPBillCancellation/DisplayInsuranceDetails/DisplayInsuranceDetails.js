@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import PrimaryInsurance from "./PrimaryInsurance/PrimaryInsuranceDetails.js";
 // import SecondaryInsurance from "./SecondaryInsurance/SecondaryInsuranceDetails.js";
-import "./DisplayInsuranceDetails.css";
-import "./../../../styles/site.css";
+import "./DisplayInsuranceDetails.scss";
+import "./../../../styles/site.scss";
 
 export default class DisplayInsuranceDetails extends Component {
   constructor(props) {

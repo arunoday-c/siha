@@ -1350,9 +1350,11 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
                       100
                     ).toFixed(2);
                   }
-                  total_tax = (patient_tax + company_tax).toFixed(2);
+                  total_tax = parseFloat(patient_tax + company_tax).toFixed(2);
 
-                  patient_payable = (patient_resp + patient_tax).toFixed(2);
+                  patient_payable = parseFloat(
+                    patient_resp + patient_tax
+                  ).toFixed(2);
                   console.log("approved_amount: ", approved_amount);
                   console.log("unit_cost: ", unit_cost);
 
@@ -1367,7 +1369,9 @@ let getBillDetailsFunctionality = (req, res, next, resolve) => {
 
                   company_payble = net_amout - patient_resp;
 
-                  company_payble = (company_payble + company_tax).toFixed(2);
+                  company_payble = parseFloat(
+                    company_payble + company_tax
+                  ).toFixed(2);
 
                   preapp_limit_amount = policydtls.preapp_limit;
                   if (policydtls.preapp_limit !== 0) {

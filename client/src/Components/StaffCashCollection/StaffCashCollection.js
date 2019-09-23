@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
-import "./StaffCashCollection.css";
-import "../../styles/site.css";
+import "./StaffCashCollection.scss";
+import "../../styles/site.scss";
 import {
   AlgaehLabel,
   AlgaehDataGrid,

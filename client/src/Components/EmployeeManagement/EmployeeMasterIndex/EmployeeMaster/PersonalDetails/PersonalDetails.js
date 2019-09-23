@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./PersonalDetails.css";
+import "./PersonalDetails.scss";
 import { AlgaehActions } from "../../../../../actions/algaehActions";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";

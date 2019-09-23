@@ -1664,5 +1664,18 @@
     { "name": "Day", "value": "D" },
     { "name": "Month", "value": "M" },
     { "name": "Year", "value": "Y" }
+  ],
+  "FORMAT_PHYSIOTHERAPY_TYPE": [
+    { "name": "Ultrasounds", "value": "U" },
+    { "name": "Tens", "value": "T" },
+    { "name": "Short Waves", "value": "S" },
+    { "name": "Hot packs", "value": "H" },
+    { "name": "Ice packs", "value": "I" },
+    { "name": "Others", "value": "O" }
+  ],
+  "FORMAT_SESSION_STATUS": [
+    { "name": "Pending", "value": "P" },
+    { "name": "In-Progress", "value": "I" },
+    { "name": "Completed", "value": "C" }
   ]
 }

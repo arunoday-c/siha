@@ -157,11 +157,29 @@ const numberEventHandaler = ($this, e) => {
   }
 };
 
+const PhyThryAppilicable = ($this, e) => {
+  let PhyService = false;
+  let Value = "N";
+
+  if ($this.state.PhyService === true) {
+    PhyService = false;
+    Value = "N";
+  } else if ($this.state.PhyService === false) {
+    PhyService = true;
+    Value = "Y";
+  }
+  $this.setState({
+    [e.target.name]: Value,
+    PhyService: PhyService
+  });
+};
+
 export {
   texthandle,
   VatAppilicable,
   InsertServices,
   clearData,
   CptCodesSearch,
-  numberEventHandaler
+  numberEventHandaler,
+  PhyThryAppilicable
 };

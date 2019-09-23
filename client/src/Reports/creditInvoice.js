@@ -1,6 +1,6 @@
 import { header } from "./header";
 import { signature_footer } from "./signature_footer";
-import "../../src/index.css";
+import "../../src/index.scss";
 
 export function printReport(data) {
   return `

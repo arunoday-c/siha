@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./AttendanceSettings.css";
+import "./AttendanceSettings.scss";
 import { getDays } from "../../../../utils/GlobalFunctions";
 import {
   AlagehFormGroup,

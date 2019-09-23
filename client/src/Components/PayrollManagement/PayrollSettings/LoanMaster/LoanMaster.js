@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./loan_master.css";
+import "./loan_master.scss";
 import {
   AlagehFormGroup,
   AlgaehLabel,

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./Analyte.css";
+import "./Analyte.scss";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";

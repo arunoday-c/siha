@@ -14,8 +14,8 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 
-import "./../../../../styles/site.css";
-import "./RequestDetails.css";
+import "./../../../../styles/site.scss";
+import "./RequestDetails.scss";
 import {
   texthandle,
   updateServices,

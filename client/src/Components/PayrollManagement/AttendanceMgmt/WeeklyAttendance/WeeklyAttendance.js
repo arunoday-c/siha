@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
-import "./WeeklyAttendance.css";
+import "./WeeklyAttendance.scss";
 import {
   AlagehAutoComplete,
   AlgaehLabel,

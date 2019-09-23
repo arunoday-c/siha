@@ -3,8 +3,8 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import "./InventorySetup.css";
-import "../../index.css";
+import "./InventorySetup.scss";
+import "../../index.scss";
 import ItemCategory from "./ItemCategory/ItemCategory";
 import ItemGroup from "./ItemGroup/ItemGroup";
 import ItemUOM from "./ItemUOM/ItemUOM";

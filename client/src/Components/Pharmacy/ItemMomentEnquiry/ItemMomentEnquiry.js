@@ -19,8 +19,8 @@ import {
   ProcessItemMoment,
   dateValidate
 } from "./ItemMomentEnquiryEvents";
-import "./ItemMomentEnquiry.css";
-import "../../../styles/site.css";
+import "./ItemMomentEnquiry.scss";
+import "../../../styles/site.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import { getAmountFormart } from "../../../utils/GlobalFunctions";

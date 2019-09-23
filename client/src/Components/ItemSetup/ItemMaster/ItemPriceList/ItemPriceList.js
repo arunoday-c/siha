@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./item_price_list.css";
+import "./item_price_list.scss";
 import MyContext from "../../../../utils/MyContext";
 // import { texthandle } from "./ItemPriceListEvents";
 import {

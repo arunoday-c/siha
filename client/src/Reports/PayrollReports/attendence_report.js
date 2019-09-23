@@ -1,6 +1,6 @@
 import { payrollHeader } from "./payrollHeader";
 import _ from "lodash";
-import "../report-style.css";
+import "../report-style.scss";
 export function printReport(result) {
   if (result === undefined) return null;
   const data = result;

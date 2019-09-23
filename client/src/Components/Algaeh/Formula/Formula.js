@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./formula.css";
+import "./formula.scss";
 import {
   AlagehFormGroup,
   AlgaehDataGrid

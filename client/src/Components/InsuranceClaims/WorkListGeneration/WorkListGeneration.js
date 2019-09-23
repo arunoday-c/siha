@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
-import "./WorkListGeneration.css";
+import "./WorkListGeneration.scss";
 
 import AlgaehLabel from "../../Wrapper/label.js";
 

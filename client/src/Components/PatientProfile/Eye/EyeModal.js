@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 import GlobalVariables from "../../../utils/GlobalVariables.json";
-import "./Eye.css";
+import "./Eye.scss";
 import {
   AlgaehDateHandler,
   AlagehAutoComplete,

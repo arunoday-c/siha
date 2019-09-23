@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./allergies.css";
+import "./allergies.scss";
 import {
   AlgaehDataGrid,
   AlgaehDateHandler,

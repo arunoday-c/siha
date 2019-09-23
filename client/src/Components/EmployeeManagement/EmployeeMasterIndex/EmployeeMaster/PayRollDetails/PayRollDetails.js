@@ -6,7 +6,7 @@ import { AlgaehActions } from "../../../../../actions/algaehActions";
 import GlobalVariables from "../../../../../utils/GlobalVariables";
 import { getAmountFormart } from "../../../../../utils/GlobalFunctions";
 
-import "./PayRollDetails.css";
+import "./PayRollDetails.scss";
 
 import {
   AlagehFormGroup,

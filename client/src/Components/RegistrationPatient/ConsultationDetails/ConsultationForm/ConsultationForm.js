@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 
-import "./ConsultationForm.css";
-import "./../../../../styles/site.css";
+import "./ConsultationForm.scss";
+import "./../../../../styles/site.scss";
 
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
