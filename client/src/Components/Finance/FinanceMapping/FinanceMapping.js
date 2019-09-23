@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./FinanceMapping.css";
+import "./FinanceMapping.scss";
 
 import {
   // AlgaehDataGrid,

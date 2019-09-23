@@ -1,5 +1,5 @@
 // import React, { Component } from "react";
-// import "./leave_details.css";
+// import "./leave_details.scss";
 
 // import {
 //   AlgaehDateHandler,

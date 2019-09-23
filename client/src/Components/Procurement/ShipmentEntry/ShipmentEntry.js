@@ -2,7 +2,7 @@ import React, { Component } from "react";
 //import { withRouter } from "react-router-dom";
 //import { connect } from "react-redux";
 // import { bindActionCreators } from "redux";
-import "./ShipmentEntry.css";
+import "./ShipmentEntry.scss";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 import {
   AlgaehLabel,

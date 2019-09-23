@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import "./LeaveEncashmentProcess.css";
+import "./LeaveEncashmentProcess.scss";
 import {
   texthandler,
   LoadEncashment,

@@ -17,8 +17,8 @@ import {
   getBatchWiseData,
   closeBatchWise
 } from "./InvStockEnquiryEvents";
-import "./InvStockEnquiry.css";
-import "../../../styles/site.css";
+import "./InvStockEnquiry.scss";
+import "../../../styles/site.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import BatchWiseStock from "./BatchWiseStock";
 import { getAmountFormart } from "../../../utils/GlobalFunctions";

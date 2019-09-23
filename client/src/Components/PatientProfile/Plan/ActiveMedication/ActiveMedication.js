@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { AlgaehDataGrid, AlgaehLabel } from "../../../Wrapper/algaehWrapper";
 
-import "./ActiveMedication.css";
-import "../../../../styles/site.css";
+import "./ActiveMedication.scss";
+import "../../../../styles/site.scss";
 
 import _ from "lodash";
 class ActiveMedication extends Component {

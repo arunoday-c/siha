@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./DentalLab.css";
+import "./DentalLab.scss";
 import {
   AlgaehDataGrid,
   AlgaehLabel,

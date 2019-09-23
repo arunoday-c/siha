@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./mrd_list.css";
+import "./mrd_list.scss";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import {
   AlgaehDataGrid,

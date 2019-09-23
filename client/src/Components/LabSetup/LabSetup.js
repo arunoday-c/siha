@@ -3,8 +3,8 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import "./LabSetup.css";
-import "../../index.css";
+import "./LabSetup.scss";
+import "../../index.scss";
 // import LabSection from "./LabSection/LabSection";
 import LabContainer from "./LabContainer/LabContainer";
 import LabSpecimen from "./LabSpecimen/LabSpecimen";

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./Notifications.css";
+import "./Notifications.scss";
 import { Header, Segment, Portal, Button } from "semantic-ui-react";
 // import isEqual from "lodash/isEqual";
 import alNotification from "../../Wrapper/algaehNotification.js";

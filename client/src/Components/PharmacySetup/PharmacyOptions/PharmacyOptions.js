@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./PharmacyOptions.css";
+import "./PharmacyOptions.scss";
 import {
   AlagehFormGroup,
   AlgaehLabel,

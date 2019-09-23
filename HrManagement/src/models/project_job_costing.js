@@ -850,16 +850,20 @@ module.exports = {
       _mysql
         .executeQuery({
           query: `select hims_f_project_wise_payroll_id, PWP.employee_id,E.employee_code,E.full_name,d.designation, \
-          project_id, P.project_code,P.project_desc, PWP.month, PWP.year,sum(worked_hours) as worked_hours,\
-          sum(worked_minutes) as worked_minutes, sum(cost) as project_cost,PWP.hospital_id, SD.sub_department_name, \
-          DPT.department_name , SAL.ot_work_hours + SAL.ot_weekoff_hours + SAL.ot_holiday_hours as ot_work, \
-          SAL.total_working_hours ,SAE.earnings_id,SAE.amount,SAE.per_day_salary, ERD.component_type from hims_f_project_wise_payroll PWP inner join hims_d_employee  E on PWP.employee_id=E.hims_d_employee_id \
-          inner join hims_d_project  P on PWP.project_id=P.hims_d_project_id left join hims_d_employee_group EG \
-          on EG.hims_d_employee_group_id = E.employee_group_id left join hims_d_designation d on \
-          E.employee_designation_id = d.hims_d_designation_id left join hims_d_sub_department SD on SD.hims_d_sub_department_id = E.sub_department_id inner join hims_d_department DPT on SD.department_id = DPT.hims_d_department_id \
+          project_id, P.project_code,P.project_desc, PWP.month, PWP.year,sum(worked_hours) as worked_hours, \
+          sum(worked_minutes) as worked_minutes, sum(cost) as project_cost,PWP.hospital_id, SD.sub_department_name, \ DPT.department_name, SAL.ot_work_hours + SAL.ot_weekoff_hours + SAL.ot_holiday_hours as ot_work, \
+          SAL.total_working_hours, coalesce (SE.amount, 0) as ot_amount,SE.component_type from hims_f_project_wise_payroll PWP \
+          inner join hims_d_employee  E on PWP.employee_id=E.hims_d_employee_id \
+          inner join hims_d_project  P on PWP.project_id=P.hims_d_project_id  \
+          left join hims_d_employee_group EG on EG.hims_d_employee_group_id = E.employee_group_id  \
+          left join hims_d_designation d on E.employee_designation_id = d.hims_d_designation_id \
+          left join hims_d_sub_department SD on SD.hims_d_sub_department_id = E.sub_department_id\
+          inner join hims_d_department DPT on SD.department_id = DPT.hims_d_department_id \
           inner join hims_f_salary SAL on SAL.employee_id = PWP.employee_id and  SAL.month = PWP.month and \
-          SAL.year = PWP.year left join hims_f_salary_earnings SAE on SAE.salary_header_id = SAL.hims_f_salary_id \
-          left join hims_d_earning_deduction ERD on SAE.earnings_id=ERD.hims_d_earning_deduction_id \
+          SAL.year = PWP.year left join \
+          (select ER.*,ERD.component_type from  hims_f_salary_earnings ER \
+          inner join hims_d_earning_deduction ERD on ER.earnings_id=ERD.hims_d_earning_deduction_id \
+          and ERD.component_type='OV') as SE on SAL.hims_f_salary_id=SE.salary_header_id \
           where component_type='OV' and PWP.hospital_id=? \
           and PWP.year=? and PWP.month=?  ${employee} ${project} group by ${groupBy} ;`,
           values: [input.hospital_id, input.year, input.month],

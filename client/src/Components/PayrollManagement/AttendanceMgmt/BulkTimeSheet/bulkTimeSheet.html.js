@@ -1,5 +1,5 @@
 import React, { useState, memo } from "react";
-import "./bulkTimeSheet.html.css";
+import "./bulkTimeSheet.html.scss";
 import Filter from "./Filter/filter.html";
 import {
   AlagehAutoComplete,

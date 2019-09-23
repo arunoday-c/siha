@@ -17,8 +17,8 @@ import {
   datehandle,
   texthandle
 } from "./InvStockEnquiryEvents";
-import "./InvStockEnquiry.css";
-import "../../../styles/site.css";
+import "./InvStockEnquiry.scss";
+import "../../../styles/site.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { getAmountFormart } from "../../../utils/GlobalFunctions";
 

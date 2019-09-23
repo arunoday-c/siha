@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./EmployeeDocuments.css";
+import "./EmployeeDocuments.scss";
 import {
   AlgaehLabel,
   AlagehAutoComplete,

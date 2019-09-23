@@ -1,7 +1,0 @@
-#rcm_desktop_cntr .ReactTable {
-  max-width: 96vw !important;
-  max-height: 45vh !important; }
-
-@media screen and (min-width: 481px) and (max-width: 1024px) and (orientation: landscape) {
-  #rcm_desktop_cntr .ReactTable {
-    max-width: 94vw !important; } }

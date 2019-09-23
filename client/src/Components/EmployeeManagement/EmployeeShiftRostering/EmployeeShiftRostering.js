@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./EmployeeShiftRostering.css";
+import "./EmployeeShiftRostering.scss";
 import {
   AlgaehDateHandler,
   AlagehAutoComplete,

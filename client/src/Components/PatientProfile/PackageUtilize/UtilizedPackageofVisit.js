@@ -8,7 +8,7 @@ import {
   AlgaehLabel,
   AlgaehModalPopUp
 } from "../../Wrapper/algaehWrapper";
-import "../../../styles/site.css";
+import "../../../styles/site.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import {
   getCookie,

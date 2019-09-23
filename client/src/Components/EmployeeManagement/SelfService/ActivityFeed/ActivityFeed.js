@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./ActivityFeed.css";
+import "./ActivityFeed.scss";
 // import moment from "moment";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";

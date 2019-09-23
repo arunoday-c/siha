@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./LoanRequest.css";
+import "./LoanRequest.scss";
 import {
   getAmountFormart,
   AlgaehValidation

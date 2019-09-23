@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./cat_spl_map.css";
+import "./cat_spl_map.scss";
 import {
   AlgaehLabel,
   AlagehAutoComplete,

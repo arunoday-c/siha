@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./subjective.css";
+import "./subjective.scss";
 import ReviewofSystems from "../ReviewofSystems/ReviewofSystems";
 import ChiefComplaints from "../ChiefComplaints/ChiefComplaints.js";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";

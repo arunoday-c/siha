@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import "./salary_apprsl.css";
+import "./salary_apprsl.scss";
 import {
   AlagehFormGroup,
   AlgaehLabel,

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./nurse_workbench.css";
+import "./nurse_workbench.scss";
 import moment from "moment";
 import { AlgaehLabel, AlagehFormGroup } from "../Wrapper/algaehWrapper";
 import Enumerable from "linq";

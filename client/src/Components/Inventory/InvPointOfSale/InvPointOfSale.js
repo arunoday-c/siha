@@ -18,8 +18,8 @@ import {
   LocationchangeTexts,
   closePopup
 } from "./InvPointOfSaleEvents";
-import "./InvPointOfSale.css";
-import "../../../styles/site.css";
+import "./InvPointOfSale.scss";
+import "../../../styles/site.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import ReactDOM from "react-dom";
 

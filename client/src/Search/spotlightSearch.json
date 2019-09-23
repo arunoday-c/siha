@@ -18,9 +18,32 @@
         "label": "Contact Number"
       },
       {
+        "fieldName": "primary_id_no",
+        "label": "Primary ID No."
+      }
+    ],
+    "emp_id_patients": [
+      {
         "fieldName": "employee_id",
         "label": "Employee ID"
       },
+      {
+        "fieldName": "patient_code",
+        "label": "Patient Code"
+      },
+      {
+        "fieldName": "full_name",
+        "label": "Name"
+      },
+      {
+        "fieldName": "arabic_name",
+        "label": "Arabic Name"
+      },
+      {
+        "fieldName": "contact_number",
+        "label": "Contact Number"
+      },
+
       {
         "fieldName": "primary_id_no",
         "label": "Primary ID No."

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./overtime_groups.css";
+import "./overtime_groups.scss";
 import {
   AlagehFormGroup,
   // AlagehAutoComplete,

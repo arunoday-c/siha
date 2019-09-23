@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./apply_leave.css";
+import "./apply_leave.scss";
 import {
   AlgaehDateHandler,
   AlagehFormGroup,

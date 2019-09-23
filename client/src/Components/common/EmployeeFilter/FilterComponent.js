@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import "./FilterComponent.css";
+import "./FilterComponent.scss";
 import { FilterContext } from ".";
 import { MONTHS } from "../../../utils/GlobalVariables.json";
 import { AlagehAutoComplete, AlgaehLabel } from "../../Wrapper/algaehWrapper";
@@ -11,6 +11,7 @@ export default function FilterComponent(props) {
     inputs,
     hospitals,
     allDepartments,
+    empGroups,
     subDepts,
     designations,
     handlers
@@ -73,10 +74,29 @@ export default function FilterComponent(props) {
         }}
         showLoading={true}
       />
-
       <AlagehAutoComplete
-        div={{ className: "col-2 form-group mandatory" }}
-        label={{ forceLabel: "Department", isImp: true }}
+        div={{ className: "col-2 form-group" }}
+        label={{ forceLabel: "Employee Group" }}
+        selector={{
+          name: "group_id",
+          value: inputs.group_id,
+          className: "select-fld",
+          dataSource: {
+            textField: "group_description",
+            valueField: "hims_d_employee_group_id",
+            data: empGroups
+          },
+          onChange: handlers.dropDownHandler,
+          onClear: () => {
+            handlers.clearInputState({
+              group_id: ""
+            });
+          }
+        }}
+      />
+      <AlagehAutoComplete
+        div={{ className: "col-2 form-group" }}
+        label={{ forceLabel: "Department", isImp: false }}
         selector={{
           name: "department_id",
           value: inputs.department_id,
@@ -146,13 +166,13 @@ export default function FilterComponent(props) {
         }}
       />
 
-      <div className="col-2 globalSearchCntr">
+      <div className="col globalSearchCntr">
         <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
         <h6 onClick={handlers.employeeSearch}>
           {inputs.emp_name ? inputs.emp_name : "------"}
         </h6>
       </div>
-      <div className="col-12 form-group">
+      <div className="col-2 form-group" style={{ paddingTop: 19 }}>
         <button
           onClick={handlers.loadFunc}
           style={{ marginLeft: 10, float: "right" }}

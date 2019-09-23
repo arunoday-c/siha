@@ -3,8 +3,8 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import "./InsuranceProvider.css";
-import "./../../../styles/site.css";
+import "./InsuranceProvider.scss";
+import "./../../../styles/site.scss";
 import {
   AlgaehDateHandler,
   AlagehFormGroup,

@@ -7,7 +7,7 @@ import PatientVisitDetails from "./PatientVisitDetails/PatientVisitDetails.js";
 
 import OPBillingDetails from "./OPBilling/OPBillingDetails";
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
-import "./OPBillCancellation.css";
+import "./OPBillCancellation.scss";
 import MyContext from "../../utils/MyContext.js";
 import AlgaehLabel from "../Wrapper/label.js";
 import BillingIOputs from "../../Models/BillCancellation";

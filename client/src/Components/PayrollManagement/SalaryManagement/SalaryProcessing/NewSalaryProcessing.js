@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./SalaryProcessing.css";
+import "./SalaryProcessing.scss";
 
 import { AlgaehLabel, AlgaehDataGrid } from "../../../Wrapper/algaehWrapper";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";

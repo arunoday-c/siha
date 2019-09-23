@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import "./ValidateBills.css";
+import "./ValidateBills.scss";
 import {
   AlgaehModalPopUp,
   AlgaehDataGrid,

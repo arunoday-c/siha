@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./review_of_systems.css";
+import "./review_of_systems.scss";
 
 class ReviewofSystems extends Component {
   render() {

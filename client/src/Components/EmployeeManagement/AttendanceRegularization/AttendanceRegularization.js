@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./AttendanceRegularization.css";
+import "./AttendanceRegularization.scss";
 import { AlgaehDateHandler } from "../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import ReactTable from "react-table";

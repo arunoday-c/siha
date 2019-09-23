@@ -13,8 +13,8 @@ import {
   ViewInsurance,
   getCashiersAndShiftMAP
 } from "./SalesReturnEvents";
-import "./SalesReturn.css";
-import "../../../styles/site.css";
+import "./SalesReturn.scss";
+import "../../../styles/site.scss";
 import { AlgaehActions } from "../../../actions/algaehActions";
 
 import ItemListsReturn from "./ItemListsReturn/ItemListsReturn";

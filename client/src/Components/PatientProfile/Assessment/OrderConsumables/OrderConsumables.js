@@ -24,8 +24,8 @@ import {
   ItemChargable,
   makeZeroIngrid
 } from "./OrderConsumablesHandaler";
-import "./OrderConsumables.css";
-import "../../../../styles/site.css";
+import "./OrderConsumables.scss";
+import "../../../../styles/site.scss";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import { getCookie } from "../../../../utils/algaehApiCall";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";

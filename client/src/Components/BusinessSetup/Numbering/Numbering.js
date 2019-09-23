@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./numbering.css";
+import "./numbering.scss";
 import { AlagehFormGroup } from "../../Wrapper/algaehWrapper";
 import { algaehApiCall } from "../../../utils/algaehApiCall.js";
 

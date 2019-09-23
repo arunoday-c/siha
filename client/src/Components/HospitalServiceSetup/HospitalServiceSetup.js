@@ -4,8 +4,8 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 import Enumerable from "linq";
-import "./HospitalServiceSetup.css";
-import "../../styles/site.css";
+import "./HospitalServiceSetup.scss";
+import "../../styles/site.scss";
 import {
   AlgaehLabel,
   AlgaehDataGrid,

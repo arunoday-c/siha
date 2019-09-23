@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import "./Equipment.css";
+import "./Equipment.scss";
 
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";

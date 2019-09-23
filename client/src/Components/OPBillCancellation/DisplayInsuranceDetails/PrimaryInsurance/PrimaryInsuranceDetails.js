@@ -4,8 +4,8 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 import { AlgaehActions } from "../../../../actions/algaehActions";
-import "./PrimaryInsuranceDetails.css";
-import "./../../../../styles/site.css";
+import "./PrimaryInsuranceDetails.scss";
+import "./../../../../styles/site.scss";
 import { AlagehFormGroup, AlgaehLabel } from "../../../Wrapper/algaehWrapper";
 import moment from "moment";
 import Options from "../../../../Options.json";

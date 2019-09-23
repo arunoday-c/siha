@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./payroll_wb.css";
+import "./payroll_wb.scss";
 import OverTimeMgmt from "./OvertimeManagement/OvertimeManagement";
 import LeaveSalaryAccural from "./LeaveSalaryAccural/LeaveSalaryAccural";
 import EmployeeReceipts from "./EmployeeReceipts/EmployeeReceipts";

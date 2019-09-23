@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import AlgaehModalPopUp from "../../../../Wrapper/modulePopUp";
-import "./LeaveAuthDetail.css";
+import "./LeaveAuthDetail.scss";
 import { AlgaehLabel, AlgaehDataGrid } from "../../../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../../../utils/algaehApiCall";
 import moment from "moment";

@@ -1,7 +1,0 @@
-#ShipmentGrid .ReactTable {
-  max-width: 95vw !important;
-  max-height: 42vh !important; }
-
-@media screen and (min-width: 481px) and (max-width: 1024px) and (orientation: landscape) {
-  #ShipmentGrid .ReactTable {
-    max-width: 95vw !important; } }

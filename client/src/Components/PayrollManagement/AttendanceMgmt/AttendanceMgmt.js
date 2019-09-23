@@ -6,7 +6,7 @@ import WeeklyAttendance from "./WeeklyAttendance/WeeklyAttendance";
 import AbsenceManagement from "./AbsenceManagement/AbsenceManagement";
 import ManualAttendance from "./ManualAttendance/ManualAttendance";
 import BulkTimeSheet from "./BulkTimeSheet";
-import "./AttendanceMgmt.css";
+import "./AttendanceMgmt.scss";
 // import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 // import { AlgaehCloseContainer } from "../../../utils/GlobalFunctions";
 

@@ -1,6 +1,6 @@
 import { incomeHeader } from "./incomeHeader";
 import moment from "moment";
-import "../report-style.css";
+import "../report-style.scss";
 
 export function printReport(data) {
   return `

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./loan_mgmt.css";
+import "./loan_mgmt.scss";
 import LoanAdjustment from "./LoanAdjustment/LoanAdjustment";
 import LoanAuthorization from "./LoanAuthorization/LoanAuthorization";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";

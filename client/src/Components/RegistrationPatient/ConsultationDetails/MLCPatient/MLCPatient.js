@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./MLCPatient.css";
+import "./MLCPatient.scss";
 import MyContext from "../../../../utils/MyContext.js";
 import AlagehFormGroup from "../../../Wrapper/formGroup.js";
 import AlgaehLabel from "../../../Wrapper/label.js";

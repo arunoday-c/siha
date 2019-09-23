@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 import { AlgaehActions } from "../../../../actions/algaehActions";
-import "./ProjectMapping.css";
+import "./ProjectMapping.scss";
 import {
   AlagehAutoComplete,
   AlgaehLabel,

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./AbsenceManagement.css";
+import "./AbsenceManagement.scss";
 import {
   AlagehAutoComplete,
   AlgaehLabel,

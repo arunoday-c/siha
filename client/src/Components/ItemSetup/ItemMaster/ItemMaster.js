@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import ItemDetails from "./ItemDetails/ItemDetails";
-import "./../../../styles/site.css";
-import "./ItemMaster.css";
+import "./../../../styles/site.scss";
+import "./ItemMaster.scss";
 import {
   AlgaehLabel,
   AlgaehModalPopUp,
@@ -17,7 +17,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../../actions/algaehActions";
-// import "./ItemDetails.css";
+// import "./ItemDetails.scss";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 import {
   radioChange,

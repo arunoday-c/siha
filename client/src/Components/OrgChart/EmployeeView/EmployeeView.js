@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import "./EmployeeView.css";
+import "./EmployeeView.scss";
 
 export default function EmployeeView(props) {
   return (

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./historical_data.css";
+import "./historical_data.scss";
 import ReactTable from "react-table";
 import "react-table/react-table.css";
 import treeTableHOC from "react-table/lib/hoc/treeTable";

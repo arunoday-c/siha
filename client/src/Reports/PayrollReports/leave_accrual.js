@@ -1,6 +1,6 @@
 // import React, { Component } from "react";
 import { payrollHeader } from "./payrollHeader";
-import "../report-style.css";
+import "../report-style.scss";
 import _ from "lodash";
 import { getAmountFormart } from "../../utils/GlobalFunctions";
 

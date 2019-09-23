@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import "./EmployeePaymentCancel.css";
+import "./EmployeePaymentCancel.scss";
 import { AlgaehLabel, AlgaehDataGrid } from "../../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import {

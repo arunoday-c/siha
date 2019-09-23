@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./dashboard.css";
+import "./dashboard.scss";
 import { Bar } from "react-chartjs-2";
 import { HorizontalBar } from "react-chartjs-2";
 // import { Doughnut } from "react-chartjs-2";

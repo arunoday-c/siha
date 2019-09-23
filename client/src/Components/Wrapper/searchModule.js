@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "../Wrapper/spotlight.css";
+import "../Wrapper/spotlight.scss";
 import { AlgaehDataGrid } from "../Wrapper/algaehWrapper";
 import { algaehApiCall, getCookie } from "../../utils/algaehApiCall";
 import ReactDOM from "react-dom";

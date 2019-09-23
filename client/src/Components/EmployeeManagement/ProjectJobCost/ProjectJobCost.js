@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./ProjectJobCost.css";
+import "./ProjectJobCost.scss";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 // import EmployeeProjectRoster from "./EmployeeProjectRoster/EmployeeProjectRoster";
 import NewEmployeeProjectRoster from "./EmployeeProjectRoster/NewEmployeeProjectRoster";

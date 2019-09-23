@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 
-import "./SecondaryInsuranceDetails.css";
-import "./../../../../../styles/site.css";
+import "./SecondaryInsuranceDetails.scss";
+import "./../../../../../styles/site.scss";
 import {
   AlagehFormGroup,
   AlgaehLabel

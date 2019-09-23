@@ -4,8 +4,8 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 import moment from "moment";
-import "./AdvanceModal.css";
-import "./../../styles/site.css";
+import "./AdvanceModal.scss";
+import "./../../styles/site.scss";
 import {
   AlgaehLabel,
   AlagehFormGroup,

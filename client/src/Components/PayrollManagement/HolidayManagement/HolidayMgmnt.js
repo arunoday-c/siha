@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./HolidayMgmnt.css";
+import "./HolidayMgmnt.scss";
 import HolidayMgmntClndr from "./HolidayMgmntClndr/HolidayMgmntClndr";
 // import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 

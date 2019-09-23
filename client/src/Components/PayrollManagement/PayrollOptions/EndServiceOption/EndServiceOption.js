@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./EndServiceOption.css";
+import "./EndServiceOption.scss";
 import {
   AlagehFormGroup,
   AlgaehLabel,

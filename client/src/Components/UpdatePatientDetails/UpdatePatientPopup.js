@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PatientDetails from "./PatientDetails/PatientDetails.js";
 
-import "./registration.css";
+import "./registration.scss";
 import PatRegIOputs from "../../Models/UpdatePatientDetails";
 
 import { withRouter } from "react-router-dom";

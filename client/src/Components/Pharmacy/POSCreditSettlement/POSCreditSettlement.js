@@ -9,7 +9,7 @@ import CreditDetails from "../../CreditDetails";
 
 import SettlementIOputs from "../../../Models/POSCreditSettlement";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
-import "./POSCreditSettlement.css";
+import "./POSCreditSettlement.scss";
 import MyContext from "../../../utils/MyContext.js";
 import AlgaehLabel from "../../Wrapper/label.js";
 import { getCookie } from "../../../utils/algaehApiCall";

@@ -23,8 +23,8 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 
 import MyContext from "../../../../utils/MyContext";
-import "./AddReciptForm.css";
-import "./../../../../styles/site.css";
+import "./AddReciptForm.scss";
+import "./../../../../styles/site.scss";
 
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";

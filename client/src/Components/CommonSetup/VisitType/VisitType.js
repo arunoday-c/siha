@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import "./visit_type.css";
+import "./visit_type.scss";
 import moment from "moment";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";

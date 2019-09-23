@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import PrimaryInsurance from "./PrimaryInsurance/DisInsuranceDetails.js";
 // import SecondaryInsurance from "./SecondaryInsurance/DisplaySecondaryInsurance.js";
-import "./DisplayInsuranceDetails.css";
-import "./../../../../styles/site.css";
+import "./DisplayInsuranceDetails.scss";
+import "./../../../../styles/site.scss";
 import { AlgaehModalPopUp } from "../../../Wrapper/algaehWrapper";
 
 export default class DisplayInsuranceDetails extends Component {

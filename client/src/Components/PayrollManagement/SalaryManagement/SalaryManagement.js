@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./SalaryManagement.css";
+import "./SalaryManagement.scss";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 // import SalaryPayments from "./SalaryPayments/SalaryPayments";
 // import SalaryProcessing from "./SalaryProcessing/SalaryProcessing";
@@ -59,7 +59,19 @@ export default class SalaryManagement extends Component {
                   />
                 }
               </li>
-
+              <li
+                algaehtabs={"MiscEarningsDeductions"}
+                className={"nav-item tab-button "}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "miscellaneous Earnings & Deductions"
+                    }}
+                  />
+                }
+              </li>
               {/* <li
                 algaehtabs={"SalaryPayments"}
                 className={"nav-item tab-button"}
@@ -83,19 +95,6 @@ export default class SalaryManagement extends Component {
                   <AlgaehLabel
                     label={{
                       forceLabel: "Salary Payments"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"MiscEarningsDeductions"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "miscellaneous Earnings & Deductions"
                     }}
                   />
                 }

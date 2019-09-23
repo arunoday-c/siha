@@ -5,8 +5,8 @@ import { bindActionCreators } from "redux";
 
 import moment from "moment";
 
-import "./SubInsurance.css";
-import "./../../../styles/site.css";
+import "./SubInsurance.scss";
+import "./../../../styles/site.scss";
 import {
   AlgaehLabel,
   AlgaehDateHandler,

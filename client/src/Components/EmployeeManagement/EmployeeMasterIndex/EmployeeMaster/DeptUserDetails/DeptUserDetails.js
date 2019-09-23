@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 import { AlgaehActions } from "../../../../../actions/algaehActions";
-import "./DeptUserDetails.css";
+import "./DeptUserDetails.scss";
 import {
   AlgaehDateHandler,
   AlagehAutoComplete,

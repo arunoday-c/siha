@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './PatientHistory.css';
+import './PatientHistory.scss';
 import { AlgaehModalPopUp, AlgaehLabel } from '../../Wrapper/algaehWrapper';
 import { algaehApiCall, swalMessage, maxCharactersLeft } from '../../../utils/algaehApiCall';
 import { getPatientHistory } from '../PatientProfileHandlers';

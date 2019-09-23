@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./HolidayMgmntClndr.css";
+import "./HolidayMgmntClndr.scss";
 import {
   AlagehAutoComplete,
   AlgaehLabel,

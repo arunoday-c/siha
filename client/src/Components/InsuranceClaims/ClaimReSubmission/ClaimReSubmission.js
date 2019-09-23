@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import "./ClaimReSubmission.css";
+import "./ClaimReSubmission.scss";
 
 // import moment from "moment";
 // import Options from "../../../Options.json";

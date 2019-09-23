@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import "./front_desk.css";
+import "./front_desk.scss";
 import Appointment from "../Appointment/Appointment";
 // import AppointmentAr from "../AppointmentAr/AppointmentAr";
 import RegistrationPatient from "../RegistrationPatient/RegistrationPatient";

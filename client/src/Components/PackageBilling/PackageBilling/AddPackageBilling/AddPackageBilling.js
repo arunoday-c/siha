@@ -3,8 +3,8 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import MyContext from "../../../../utils/MyContext";
-import "./AddPackageBilling.css";
-import "./../../../../styles/site.css";
+import "./AddPackageBilling.scss";
+import "./../../../../styles/site.scss";
 import extend from "extend";
 import {
   AlgaehDataGrid,

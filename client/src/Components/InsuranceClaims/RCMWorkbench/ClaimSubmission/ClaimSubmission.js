@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./ClaimSubmission.css";
+import "./ClaimSubmission.scss";
 import {
   AlgaehModalPopUp,
   AlgaehDataGrid,

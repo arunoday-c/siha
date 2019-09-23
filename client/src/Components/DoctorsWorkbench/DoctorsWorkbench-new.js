@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./doctor_workbench.css";
+import "./doctor_workbench.scss";
 // import io from "socket.io-client";
 const MyDaypanel = React.memo(React.lazy(() => import("./Myday")));
 const Loading = React.memo(React.lazy(() => import("../Wrapper/loading")));

@@ -6,7 +6,7 @@ import { bindActionCreators } from "redux";
 import PatientDetails from "./PatientDisDetails/PatientDetails.js";
 import PackageBillingDetails from "./PackageBilling/PackageBillingDetails";
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
-import "./PackageBilling.css";
+import "./PackageBilling.scss";
 import MyContext from "../../utils/MyContext.js";
 import AlgaehLabel from "../Wrapper/label.js";
 import BillingIOputs from "../../Models/PackageBilling";

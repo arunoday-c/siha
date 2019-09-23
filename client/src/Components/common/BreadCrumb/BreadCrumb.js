@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import "./breadcrumb.css";
+import "./breadcrumb.scss";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import { SearchDetails, EditDetails } from "./BreadCurmbFunctionality";
 class BreadCrumb extends PureComponent {

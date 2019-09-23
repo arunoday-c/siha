@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./RequisitionList.css";
+import "./RequisitionList.scss";
 import RequisitionList from "./RequisitionList";
 import RequisitionEntry from "../RequisitionEntry/RequisitionEntry";
 import TransferEntry from "../TransferEntry/TransferEntry";

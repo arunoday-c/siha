@@ -2,7 +2,7 @@ import React, { PureComponent } from "react";
 import PatientForm from "./PatientForm/PatientForm.js";
 import OtherInfo from "./OtherInfo/OtherInfo.js";
 import AlgaehLabel from "../../Wrapper/label.js";
-import "./PatientDetails.css";
+import "./PatientDetails.scss";
 import { SetBulkState } from "../../../utils/GlobalFunctions";
 import MyContext from "../../../utils/MyContext.js";
 

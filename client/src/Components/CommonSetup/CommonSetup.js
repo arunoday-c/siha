@@ -3,8 +3,8 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import "./common_setup.css";
-import "../../index.css";
+import "./common_setup.scss";
+import "../../index.scss";
 import PatientType from "./PatientType/PatientType.js";
 import VisaType from "./VisaType/VisaType.js";
 import IDType from "./IDType/IDType";

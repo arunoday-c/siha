@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import "./login_users.css";
+import "./login_users.scss";
 import {
   AlgaehDataGrid,
   AlgaehLabel,

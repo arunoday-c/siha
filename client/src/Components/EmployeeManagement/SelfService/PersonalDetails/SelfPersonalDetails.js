@@ -7,7 +7,7 @@ import {
   AlagehAutoComplete
 } from "../../../Wrapper/algaehWrapper";
 import AlgaehFile from "../../../Wrapper/algaehFileUpload";
-import "./PersonalDetails.css";
+import "./PersonalDetails.scss";
 import {
   algaehApiCall,
   swalMessage,

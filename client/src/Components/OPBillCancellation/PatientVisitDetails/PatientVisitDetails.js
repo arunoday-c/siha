@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 import { AlgaehActions } from "../../../actions/algaehActions";
-import "./PatientVisitDetails.css";
+import "./PatientVisitDetails.scss";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import MyContext from "../../../utils/MyContext.js";
 import { BillSearch } from "./PatientVisitDetailsEvent";
