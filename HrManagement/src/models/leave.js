@@ -1796,8 +1796,9 @@ module.exports = {
           allLeaves = result[0];
           allHolidays = result[1];
 
+          
           annual_leave=result[0][0].leave_category;
-          console.log("annual_leave:",annual_leave)
+        
           if (allLeaves.length > 0) {
             currentClosingBal = allLeaves[0].close_balance;
             let isHoliday = new LINQ(allHolidays)
@@ -1980,6 +1981,8 @@ module.exports = {
                 calculatedLeaveDays =
                   parseFloat(calculatedLeaveDays) - parseFloat(session_diff);
 
+
+                
                 //-------END OF------ finally  subtracting week off and holidays from total Applied days
                 if (currentClosingBal >= calculatedLeaveDays || annual_leave=="A") {
                   _mysql.releaseConnection();
@@ -2042,6 +2045,8 @@ module.exports = {
                 calculatedLeaveDays =
                   parseFloat(calculatedLeaveDays) - parseFloat(session_diff);
 
+
+                
                 //checking if he has enough eligible days
                 if (currentClosingBal >= calculatedLeaveDays || annual_leave=="A") {
                   _mysql.releaseConnection();
@@ -2626,14 +2631,14 @@ module.exports = {
         .executeQuery({
           query:
             "select hims_f_employee_monthly_leave_id, employee_id, year, leave_id, L.leave_code,\
-L.leave_description,L.leave_type,total_eligible, availed_till_date, close_balance,\
-E.employee_code ,E.full_name as employee_name,\
-LD.hims_d_leave_detail_id,LD.employee_type, LD.eligible_days \
-from hims_f_employee_monthly_leave  ML inner join hims_d_leave L on ML.leave_id=L.hims_d_leave_id       \
-inner join hims_d_leave_detail LD on L.hims_d_leave_id=LD.leave_header_id  \
-inner join hims_d_employee E on ML.employee_id=E.hims_d_employee_id and E.record_status='A' \
-and L.record_status='A' where ML.year=? and ML.employee_id=?  and  LD.employee_type=E.employee_type and  (LD.gender=E.sex or LD.gender='BOTH' ) \
-  order by hims_f_employee_monthly_leave_id desc;",
+        L.leave_description,L.leave_type,total_eligible, availed_till_date, close_balance,\
+        E.employee_code ,E.full_name as employee_name,\
+        LD.hims_d_leave_detail_id,LD.employee_type, LD.eligible_days \
+        from hims_f_employee_monthly_leave  ML inner join hims_d_leave L on ML.leave_id=L.hims_d_leave_id       \
+        inner join hims_d_leave_detail LD on L.hims_d_leave_id=LD.leave_header_id  \
+        inner join hims_d_employee E on ML.employee_id=E.hims_d_employee_id and E.record_status='A' \
+        and L.record_status='A' where ML.year=? and ML.employee_id=?  and  LD.employee_type=E.employee_type and  (LD.gender=E.sex or LD.gender='BOTH' ) \
+          order by hims_f_employee_monthly_leave_id desc;",
           values: [req.query.year, req.query.employee_id],
           printQuery: true
         })
@@ -2739,7 +2744,7 @@ and L.record_status='A' where ML.year=? and ML.employee_id=?  and  LD.employee_t
     try {
       const userPrivilege = req.userIdentity.leave_authorize_privilege;
 
-      console.log("userPrivilege:", userPrivilege);
+     
       if (userPrivilege != "N") {
         const _mysql = new algaehMysql();
 

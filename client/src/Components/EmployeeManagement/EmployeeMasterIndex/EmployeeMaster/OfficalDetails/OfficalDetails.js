@@ -13,6 +13,7 @@ import {
   texthandle,
   datehandle,
   accomodationProvided,
+  otEntitleHandaler,
   employeeStatusHandler,
   dateFormater,
   bankEventhandle
@@ -448,32 +449,64 @@ class OfficalDetails extends Component {
                   />
                 ) : null}
                 {this.state.HRMS_Active === true ? (
-                  <AlagehAutoComplete
-                    div={{ className: "col-3 mandatory form-group" }}
-                    label={{
-                      forceLabel: "Overtime Group",
-                      isImp: this.state.HRMS_Active
-                    }}
-                    selector={{
-                      name: "overtime_group_id",
-                      className: "select-fld",
-                      value: this.state.overtime_group_id,
-                      dataSource: {
-                        textField: "overtime_group_description",
-                        valueField: "hims_d_overtime_group_id",
-                        data: this.props.overTime
-                      },
-                      onChange: texthandle.bind(this, this),
-                      onClear: () => {
-                        this.setState({
-                          overtime_group_id: null
-                        });
-                        this.props.EmpMasterIOputs.updateEmployeeTabs({
-                          overtime_group_id: null
-                        });
-                      }
-                    }}
-                  />
+                  <React.Fragment>
+                    <div
+                      className="col-4 customCheckbox"
+                      style={{ border: "none" }}
+                    >
+                      <label
+                        className="checkbox inline"
+                        style={{ paddingBottom: 1 }}
+                      >
+                        <input
+                          type="checkbox"
+                          name="entitled_daily_ot"
+                          checked={
+                            this.state.entitled_daily_ot === "Y" ? true : false
+                          }
+                          onChange={otEntitleHandaler.bind(this, this)}
+                        />
+                        <span>
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "OT Entitle"
+                            }}
+                          />
+                        </span>
+                      </label>
+                      <div className="row">
+                        {this.state.entitled_daily_ot === "Y" ? (
+                          <AlagehAutoComplete
+                            div={{ className: "col mandatory form-group" }}
+                            label={
+                              {
+                                //forceLabel: "Overtime Group",
+                              }
+                            }
+                            selector={{
+                              name: "overtime_group_id",
+                              className: "select-fld",
+                              value: this.state.overtime_group_id,
+                              dataSource: {
+                                textField: "overtime_group_description",
+                                valueField: "hims_d_overtime_group_id",
+                                data: this.props.overTime
+                              },
+                              onChange: texthandle.bind(this, this),
+                              onClear: () => {
+                                this.setState({
+                                  overtime_group_id: null
+                                });
+                                this.props.EmpMasterIOputs.updateEmployeeTabs({
+                                  overtime_group_id: null
+                                });
+                              }
+                            }}
+                          />
+                        ) : null}
+                      </div>
+                    </div>
+                  </React.Fragment>
                 ) : null}
                 {_isDoctor === "Y" ? (
                   <AlagehAutoComplete
@@ -490,12 +523,7 @@ class OfficalDetails extends Component {
                         valueField: "hims_d_services_id",
                         data: this.props.depservices
                       },
-                      // others: {
-                      //   disabled:
-                      //     this.state.hims_d_employee_id === null
-                      //       ? false
-                      //       : true
-                      // },
+
                       onChange: texthandle.bind(this, this),
                       onClear: () => {
                         this.setState({
@@ -508,19 +536,6 @@ class OfficalDetails extends Component {
                     }}
                   />
                 ) : null}
-
-                {/*<div className="col">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Reporting to"
-                      }}
-                    />
-                    <h6>
-                      {this.state.reporting_to_id === null
-                        ? "Not Defined"
-                        : reporting_to.full_name}
-                    </h6>
-                  </div>*/}
               </div>
               <h5>
                 <span>Relieving Details</span>

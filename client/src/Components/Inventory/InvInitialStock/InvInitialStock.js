@@ -478,7 +478,7 @@ class InvInitialStock extends Component {
                     }}
                   />
 
-                  <AlagehFormGroup
+                  {/*<AlagehFormGroup
                     div={{ className: "col-lg-3 form-group" }}
                     label={{
                       forceLabel: "Receipt Number(GRN)",
@@ -495,7 +495,7 @@ class InvInitialStock extends Component {
                         autoComplete: "off"
                       }
                     }}
-                  />
+                  />*/}
 
                   <div className="col-lg-3">
                     <button
@@ -883,19 +883,6 @@ class InvInitialStock extends Component {
                         );
                       },
                       others: { filterable: false }
-                    },
-                    {
-                      fieldName: "grn_number",
-                      label: (
-                        <AlgaehLabel
-                          label={{ forceLabel: "Receipt No. (GRN)" }}
-                        />
-                      ),
-                      disabled: true,
-                      others: {
-                        minWidth: 130,
-                        filterable: false
-                      }
                     }
                   ]}
                   keyId="item_id"
