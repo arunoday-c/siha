@@ -61,7 +61,7 @@ export default React.memo(function(props) {
         } else {
           swalMessage({
             title: "Delete request cancelled",
-            type: "error"
+            type: "info"
           });
           reject();
         }
