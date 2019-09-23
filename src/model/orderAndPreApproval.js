@@ -490,6 +490,7 @@ let insertOrderedServices = (req, res, next) => {
                   "visit_id",
                   "insurance_provider_id",
                   "insurance_network_office_id",
+                  "network_id",
                   "icd_code",
                   "requested_quantity",
                   "insurance_service_name",
