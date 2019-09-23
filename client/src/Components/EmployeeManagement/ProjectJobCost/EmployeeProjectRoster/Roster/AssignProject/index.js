@@ -1,4 +1,6 @@
 import React, { useContext, useState } from "react";
+import _ from "lodash";
+import moment from "moment";
 import AlgaehModalPopUp from "../../../../../Wrapper/modulePopUp";
 import {
   AlgaehDateHandler,
@@ -6,13 +8,29 @@ import {
 } from "../../../../../Wrapper/algaehWrapper";
 import ButtonType from "../../../../../Wrapper/algaehButton";
 import { ProjectRosterContext } from "../index";
-import _ from "lodash";
-import "../../project_assign.scss";
 
+import "../../project_assign.scss";
+import {
+  algaehApiCall,
+  swalMessage
+} from "../../../../../../utils/algaehApiCall";
 export default function(props) {
-  const { showPopup, onClose, loadingProjects, projects } = props;
+  const {
+    showPopup,
+    onClose,
+    loadingProjects,
+    projects,
+    isEditing,
+    onRefreshTable
+  } = props;
   const { getProjectRosterState } = useContext(ProjectRosterContext);
-  const { employees, toDate, fromDate } = getProjectRosterState();
+  const {
+    employees,
+    filterEmployees,
+    toDate,
+    fromDate,
+    inputs
+  } = getProjectRosterState();
   const [from_date, setFromDate] = useState("");
   const [to_date, setToDate] = useState("");
   const [searchEmployee, setSearchEmployee] = useState("");
@@ -22,6 +40,88 @@ export default function(props) {
   const [checkAllEmployees, setCheckAllEmployees] = useState(false);
   const [loadingProcess, setLoadingProcess] = useState(false);
   const [changeState, setChangeState] = useState(false);
+
+  let from_dt =
+    from_date === "" && isEditing !== undefined
+      ? isEditing.attendance_date
+      : from_date === "" && isEditing === undefined
+      ? fromDate
+      : from_date;
+  let to_dt =
+    to_date === "" && isEditing !== undefined
+      ? isEditing.attendance_date
+      : to_date === "" && isEditing === undefined
+      ? toDate
+      : to_date;
+  const employeeShow =
+    filterEmployees.length === 0 ? employees : filterEmployees;
+  function processAsssignProject(data) {
+    const {
+      selectedProjectID,
+      selectedEmployees,
+      from_date,
+      to_date,
+      hospital_id,
+      isEditing
+    } = data;
+    console.log("data", data);
+    return new Promise((resolve, reject) => {
+      try {
+        if (isEditing === undefined) {
+          if (selectedProjectID === "") {
+            reject(new Error("Project id is not selected"));
+            return;
+          }
+          if (selectedEmployees.length === 0) {
+            reject(new Error("Please select atleast one employee"));
+            return;
+          }
+        }
+        let rosters = selectedEmployees;
+        let projectID = selectedProjectID;
+        if (isEditing !== undefined) {
+          rosters = [isEditing.hims_d_employee_id];
+          projectID =
+            selectedProjectID === "" ? isEditing.project_id : selectedProjectID;
+        }
+
+        algaehApiCall({
+          uri: "/projectjobcosting/addProjectRoster",
+          method: "post",
+          module: "hrManagement",
+          data: {
+            from_date: from_date,
+            to_date: to_date,
+            project_id: projectID,
+            roster: rosters
+          },
+          onSuccess: res => {
+            const { success, records } = res.data;
+            if (success) {
+              swalMessage({
+                title: "Records updated successfully",
+                type: "success"
+              });
+              onRefreshTable();
+              resolve();
+            } else if (!success) {
+              swalMessage({
+                title: records.message,
+                type: "warning"
+              });
+              reject();
+            }
+          },
+          onCatch: err => {
+            reject(err);
+          }
+        });
+      } catch (e) {
+        reject(e);
+      }
+    });
+  }
+
   return (
     <AlgaehModalPopUp
       className="col-lg-12 ShiftAssign"
@@ -51,12 +151,12 @@ export default function(props) {
               }}
               events={{
                 onChange: selDate => {
-                  setFromDate(selDate);
+                  setFromDate(moment(selDate).format("YYYY-MM-DD"));
                 }
               }}
               maxDate={toDate}
               minDate={fromDate}
-              value={from_date === "" ? fromDate : from_date}
+              value={from_dt}
             />
             <AlgaehDateHandler
               div={{ className: "col-3 mandatory" }}
@@ -73,18 +173,23 @@ export default function(props) {
               }}
               events={{
                 onChange: selDate => {
-                  setToDate(selDate);
+                  setToDate(moment(selDate).format("YYYY-MM-DD"));
                 }
               }}
               maxDate={toDate}
               minDate={fromDate}
-              value={to_date === "" ? toDate : to_date}
+              value={to_dt}
             />
           </div>
           <hr />
           <div className="row">
             <div className="col-4">
-              <h6>Select Project</h6>
+              <h6>
+                Select Project{" "}
+                {isEditing !== undefined ? (
+                  <small> &#123;{isEditing.project_desc}&#125;</small>
+                ) : null}{" "}
+              </h6>
               <div className="row">
                 <AlagehFormGroup
                   div={{ className: "col" }}
@@ -124,7 +229,11 @@ export default function(props) {
                           id={data.project_id}
                           name="hims_d_project_id"
                           checked={
-                            selectedProjectID === data.project_id ? true : false
+                            selectedProjectID === "" && isEditing !== undefined
+                              ? isEditing.project_id === data.project_id
+                              : selectedProjectID === data.project_id
+                              ? true
+                              : false
                           }
                           onChange={e => {
                             setSelectedProjectID(data.project_id);
@@ -145,6 +254,7 @@ export default function(props) {
                 </ul>
               )}
             </div>
+
             <div className="col-8">
               <h6>Assign Employee</h6>
               <div className="row">
@@ -180,7 +290,7 @@ export default function(props) {
                       onChange={e => {
                         setCheckAllEmployees(e.target.checked);
                         if (e.target.checked) {
-                          const checkedall = employees.map(employee => {
+                          const checkedall = employeeShow.map(employee => {
                             return employee.hims_d_employee_id;
                           });
                           setSelectedEmployees(checkedall);
@@ -192,51 +302,68 @@ export default function(props) {
                   </span>
                   <p>Employee Names</p>
                 </li>
-                {employees.map(data => {
-                  if (
-                    data.employee_name
-                      .toLowerCase()
-                      .indexOf(searchEmployee.toLowerCase()) === -1
-                  ) {
-                    return null;
-                  }
-                  console.log(
-                    selectedEmployees.includes(data.hims_d_employee_id)
-                  );
-                  return (
-                    <li key={data.hims_d_employee_id}>
-                      <span>
-                        <input
-                          id={data.employee_code}
-                          type="checkbox"
-                          checked={selectedEmployees.includes(
-                            data.hims_d_employee_id
-                          )}
-                          onChange={e => {
-                            setChangeState(!changeState);
-                            let existingEmployees = selectedEmployees;
-                            if (e.target.checked) {
-                              existingEmployees.push(data.hims_d_employee_id);
-                            } else {
-                              existingEmployees = _.filter(
-                                existingEmployees,
-                                f => f !== data.hims_d_employee_id
-                              );
-                            }
+                {isEditing === undefined ? (
+                  employeeShow.map(data => {
+                    if (
+                      data.employee_name
+                        .toLowerCase()
+                        .indexOf(searchEmployee.toLowerCase()) === -1
+                    ) {
+                      return null;
+                    }
 
-                            setSelectedEmployees(existingEmployees);
-                          }}
-                        />
-                      </span>
-                      <p>
-                        <label htmlFor={data.employee_code}>
-                          <b>{data.employee_name}</b>
-                          <small>{data.employee_code}</small>
-                        </label>
-                      </p>
-                    </li>
-                  );
-                })}
+                    return (
+                      <li key={data.hims_d_employee_id}>
+                        <span>
+                          <input
+                            id={data.employee_code}
+                            type="checkbox"
+                            checked={selectedEmployees.includes(
+                              data.hims_d_employee_id
+                            )}
+                            onChange={e => {
+                              setChangeState(!changeState);
+                              let existingEmployees = selectedEmployees;
+                              if (e.target.checked) {
+                                existingEmployees.push(data.hims_d_employee_id);
+                              } else {
+                                existingEmployees = _.filter(
+                                  existingEmployees,
+                                  f => f !== data.hims_d_employee_id
+                                );
+                              }
+
+                              setSelectedEmployees(existingEmployees);
+                            }}
+                          />
+                        </span>
+                        <p>
+                          <label htmlFor={data.employee_code}>
+                            <b>{data.employee_name}</b>
+                            <small>{data.employee_code}</small>
+                          </label>
+                        </p>
+                      </li>
+                    );
+                  })
+                ) : (
+                  <li>
+                    <span>
+                      <input
+                        id={isEditing.employee_code}
+                        type="checkbox"
+                        checked={true}
+                        disabled
+                      />
+                    </span>
+                    <p>
+                      <label htmlFor={isEditing.employee_code}>
+                        <b>{isEditing.employee_name}</b>
+                        <small>{isEditing.employee_code}</small>
+                      </label>
+                    </p>
+                  </li>
+                )}
               </ul>
             </div>
           </div>
@@ -253,6 +380,39 @@ export default function(props) {
                 loading={loadingProcess}
                 onClick={() => {
                   setLoadingProcess(true);
+                  let from_dt =
+                    from_date === "" && isEditing !== undefined
+                      ? isEditing.attendance_date
+                      : from_date === "" && isEditing === undefined
+                      ? fromDate
+                      : from_date;
+                  let to_dt =
+                    to_date === "" && isEditing !== undefined
+                      ? isEditing.attendance_date
+                      : to_date === "" && isEditing === undefined
+                      ? toDate
+                      : to_date;
+
+                  processAsssignProject({
+                    selectedProjectID,
+                    selectedEmployees,
+                    from_date: from_dt,
+                    to_date: to_dt,
+                    hospital_id: inputs.hospital_id,
+                    isEditing
+                  })
+                    .then(() => {
+                      setLoadingProcess(false);
+                      setSelectedProjectID("");
+                      setSelectedEmployees([]);
+                      setCheckAllEmployees(false);
+                      setFromDate("");
+                      setToDate("");
+                      onClose();
+                    })
+                    .catch(error => {
+                      setLoadingProcess(false);
+                    });
                 }}
                 label={{
                   forceLabel: "PROCESS",
@@ -262,6 +422,11 @@ export default function(props) {
 
               <button
                 onClick={() => {
+                  setSelectedProjectID("");
+                  setSelectedEmployees([]);
+                  setCheckAllEmployees(false);
+                  setFromDate("");
+                  setToDate("");
                   onClose();
                 }}
                 type="button"

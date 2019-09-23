@@ -3,7 +3,9 @@ import { ProjectRosterContext } from "./index";
 import Table from "./table";
 import ProjectAssigned from "./AssignProject";
 import { EmployeeFilter } from "../../../../common/EmployeeFilter";
+import _ from "lodash";
 import AlgaehLoader from "../../../../Wrapper/fullPageLoader";
+import { Search } from "semantic-ui-react";
 import {
   getEmployeesForProjectRoster,
   getProjects
@@ -18,16 +20,36 @@ export default function EmpProjectRoster(props) {
     total_rosted,
     total_non_rosted,
     fromDate,
-    toDate
+    toDate,
+    inputs
   } = getProjectRosterState();
   const [showPopup, setShowPopup] = useState(false);
   const [projects, setProjects] = useState([]);
   const [loadingProjects, setLoadingProjects] = useState(false);
+  const [isEditing, setIsEditing] = useState(undefined);
+  const [filterStatus, setFilterStatus] = useState("0");
+  const [filterValue, setFilterValue] = useState("");
+  const [filterLoading, setFilterLoading] = useState(false);
+  function editingProjectRoster(data) {
+    setShowPopup(true);
+    setIsEditing(data);
+    if (projects.length === 0) {
+      setLoadingProjects(true);
+      getProjects()
+        .then(result => {
+          setLoadingProjects(false);
+          setProjects(result);
+        })
+        .catch(error => {
+          setProjects([]);
+          setLoadingProjects(false);
+        });
+    }
+  }
   return (
     <div className="EmployeeProjectRoster">
       <EmployeeFilter
         loadFunc={inputs => {
-          debugger;
           AlgaehLoader({ show: true });
           getEmployeesForProjectRoster(inputs)
             .then(result => {
@@ -53,15 +75,11 @@ export default function EmpProjectRoster(props) {
         <div className="col-12">
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
-              <div
-                className="caption"
-                style={{ borderRight: " 1px solid #000", paddingRight: 25 }}
-              >
+              <div className="caption" style={{ paddingRight: 10 }}>
                 <h3 className="caption-subject">
-                  Project Rostering List : Total Rosters :{total_rosted}
-                  <b style={{ color: "#33b8bc" }}>
-                    Total Non Rosters :{total_non_rosted}
-                  </b>
+                  Project Rostering List:
+                  <small> Assigned :{total_rosted}</small> |
+                  <small> Pending :{total_non_rosted}</small>
                 </h3>
               </div>
               <div className="actions">
@@ -78,39 +96,135 @@ export default function EmpProjectRoster(props) {
                   Leave Approval Pending (PEN)
                 </span>
               </div>
-              {total_rosted === 0 && (
-                <button
-                  className="btn btn-primary"
-                  style={{ marginLeft: 25 }}
-                  onClick={e => {
-                    setShowPopup(true);
-                    if (projects.length === 0) {
-                      setLoadingProjects(true);
-                      getProjects()
-                        .then(result => {
-                          setLoadingProjects(false);
-                          setProjects(result);
-                        })
-                        .catch(error => {
-                          setProjects([]);
-                          setLoadingProjects(false);
-                        });
-                    }
-                  }}
-                >
-                  Assign New Project
-                </button>
-              )}
+              <select
+                style={{ marginLeft: 10 }}
+                onChange={e => {
+                  // AlgaehLoader(true);
+                  let selected = e.target.value;
+                  setFilterStatus(selected);
+                  if (selected === "0") {
+                    setProjectRosterState({ filterEmployees: [] });
+                  } else {
+                    const emp = employees.map(employee => {
+                      let allProjects = employee.projects;
+
+                      const projs = employee.projects.filter(f => {
+                        return f.status === "N";
+                      });
+                      if (selected === "1") {
+                        if (projs.length === 0) {
+                          return {
+                            ...employee,
+                            projects: allProjects
+                          };
+                        }
+                      } else {
+                        if (projs.length > 0) {
+                          return {
+                            ...employee,
+                            projects: allProjects
+                          };
+                        }
+                      }
+                    });
+                    const allEmployees = emp.filter(f => {
+                      return f !== undefined;
+                    });
+                    setProjectRosterState({
+                      filterEmployees: allEmployees
+                    });
+                    // AlgaehLoader(false);
+                  }
+                }}
+                value={filterStatus}
+              >
+                <option value="0">Show All</option>
+                <option value="1">Show Assigned</option>
+                <option value="2">Show Pending</option>
+              </select>
+
+              <button
+                className="btn btn-primary"
+                style={{ marginLeft: 25 }}
+                onClick={e => {
+                  setIsEditing(undefined);
+                  setShowPopup(true);
+
+                  if (projects.length === 0) {
+                    setLoadingProjects(true);
+                    getProjects()
+                      .then(result => {
+                        setLoadingProjects(false);
+                        setProjects(result);
+                      })
+                      .catch(error => {
+                        setProjects([]);
+                        setLoadingProjects(false);
+                      });
+                  }
+                }}
+              >
+                Assign New Project
+              </button>
             </div>
             <ProjectAssigned
               showPopup={showPopup}
               projects={projects}
               loadingProjects={loadingProjects}
+              isEditing={isEditing}
+              onRefreshTable={() => {
+                AlgaehLoader({ show: true });
+                getEmployeesForProjectRoster(inputs)
+                  .then(result => {
+                    const { records, fromDate, toDate } = result;
+                    setProjectRosterState({
+                      total_rosted: records.total_rosted,
+                      total_non_rosted: records.total_non_rosted,
+                      employees: records.roster
+                    });
+                    AlgaehLoader({ show: false });
+                  })
+                  .catch(error => {
+                    setProjectRosterState({ employees: [], dates: [] });
+                    AlgaehLoader({ show: false });
+                  });
+              }}
               onClose={() => {
                 setShowPopup(false);
               }}
             />
             <div className="portlet-body">
+              <div className="col-12">
+                <div className="row">
+                  {/*<div className="col-3">
+                    <Search
+                      loading={filterLoading}
+                      onSearchChange={e => {
+
+                        _.debounce(
+                          (e, { value }) => {
+
+                            setFilterValue(value);
+                            setFilterLoading(true);
+                          },
+                          500,
+                          {
+                            leading: true
+                          }
+                        );
+                      }}
+                      onResultSelect={e => {
+                        debugger;
+                      }}
+                      resultRenderer={data => {
+                        return <strong>{data.employee_name}</strong>;
+                      }}
+                      results={employees}
+                      value={filterValue}
+                    />
+                </div>*/}
+                </div>
+              </div>
               <div className="col-12" id="projectRosterTable">
                 <div className="row">
                   {employees.length === 0 ? (
@@ -119,7 +233,7 @@ export default function EmpProjectRoster(props) {
                       <i className="fas fa-user-clock" />
                     </div>
                   ) : (
-                    <Table />
+                    <Table editing={editingProjectRoster} />
                   )}
                 </div>
               </div>

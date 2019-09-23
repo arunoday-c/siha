@@ -6,6 +6,7 @@ export const ProjectRosterContext = createContext(undefined);
 export default function(props) {
   const [projectRoster, setProjectRoster] = useState({
     employees: [],
+    filterEmployees: [],
     inputs: {},
     dates: [],
     total_rosted: 0,
