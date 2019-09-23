@@ -213,6 +213,15 @@ class BatchWiseStock extends Component {
                       disabled: true
                     },
                     {
+                      fieldName: "vendor_batchno",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Vendor Batch No." }}
+                        />
+                      ),
+                      disabled: true
+                    },
+                    {
                       fieldName: "expirydt",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Expiry Date" }} />
