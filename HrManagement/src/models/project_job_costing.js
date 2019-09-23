@@ -704,7 +704,7 @@ module.exports = {
       next();
     }
   },
-  addProjectRoster: (req, res, next) => {
+  addProjectRosterOLD: (req, res, next) => {
     const _mysql = new algaehMysql();
     const utilities = new algaehUtilities();
     try {
@@ -821,6 +821,67 @@ module.exports = {
           _mysql.releaseConnection();
           next(e);
         });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  //created by irfan: to
+  addProjectRoster: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const utilities = new algaehUtilities();
+    try {
+      let input = req.body;
+      if (
+        moment(input.from_date, "YYYY-MM-DD").format("YYYYMMDD") > 0 &&
+        moment(input.to_date, "YYYY-MM-DD").format("YYYYMMDD") > 0
+      ) {
+        const allDates = getDaysArray2(
+          new Date(input.from_date),
+          new Date(input.to_date)
+        );
+
+        const insertArray = [];
+
+        input.roster.forEach(item => {
+          allDates.forEach(dat => {
+            insertArray.push({
+              employee_id: item["employee_id"],
+              attendance_date: dat,
+              project_id: input["project_id"],
+              hospital_id: input["hospital_id"]
+            });
+          });
+        });
+
+        _mysql
+          .executeQuery({
+            query:
+              "INSERT INTO hims_f_project_roster (??) VALUES ? \
+              ON DUPLICATE KEY UPDATE project_id= values(project_id); ",
+            values: insertArray,
+            bulkInsertOrUpdate: true,
+            printQuery: false
+          })
+          .then(result => {
+            _mysql.releaseConnection();
+            req.records = result;
+            next();
+          })
+          .catch(e => {
+            _mysql.releaseConnection();
+            next(e);
+          });
+      } else {
+        //please send valid
+
+        req.records = {
+          invalid_input: true,
+          message: "Please Provide valid From & to dates"
+        };
+
+        next();
+      }
     } catch (e) {
       _mysql.releaseConnection();
       next(e);
