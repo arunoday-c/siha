@@ -207,6 +207,7 @@ class Dental extends Component {
   }
 
   saveBill() {
+    debugger;
     let inputObj = {
       visit_id: Window.global["visit_is"],
       patient_id: Window.global["current_patient"],
@@ -219,7 +220,7 @@ class Dental extends Component {
             d_treatment_id: this.state.hims_f_dental_treatment_id,
             visit_id: Window.global["visit_id"],
             patient_id: Window.global["current_patient"],
-            pre_approval: "N",
+            // pre_approval: "N",
             doctor_id: Window.global["provider_id"]
             // teeth_number: teeth_number
           }
@@ -339,12 +340,28 @@ class Dental extends Component {
               }
             ],
             onSuccess: res => {
+              debugger;
               if (res.data.success) {
-                res.data.records.billdetails[0].teeth_number = row.teeth_number;
+                let dataOutput = res.data.records.billdetails[0];
+                if (dataOutput.pre_approval === "Y") {
+                  swalMessage({
+                    title: "Selected Service is Pre-Approval required.",
+                    type: "warning"
+                  });
+                }
+                dataOutput.teeth_number = row.teeth_number;
+
+                dataOutput.insurance_provider_id = this.state.ins_details.insurance_provider_id;
+                dataOutput.insurance_sub_id = this.state.ins_details.sub_insurance_provider_id;
+                dataOutput.network_id = this.state.ins_details.network_id;
+                dataOutput.insurance_network_office_id = this.state.ins_details.hims_d_insurance_network_office_id;
+                dataOutput.policy_number = this.state.ins_details.policy_number;
+                dataOutput.requested_quantity = dataOutput.quantity;
+                dataOutput.insurance_service_name = dataOutput.service_name;
 
                 this.setState({
                   discount_percentage: 0,
-                  billDetails: res.data.records.billdetails[0],
+                  billDetails: dataOutput,
 
                   hims_f_dental_treatment_id: row.hims_f_dental_treatment_id
                 });
