@@ -8,7 +8,6 @@ export default React.memo(function(props) {
     <tbody>
       {employees.map((row, index) => (
         <tr key={row.hims_d_employee_id}>
-          {console.log("row-" + index, row)}
           <td>
             <b> {row.employee_name} </b>
             <br></br>
@@ -16,7 +15,9 @@ export default React.memo(function(props) {
             <br></br>
             <small>{row.designation}</small>
           </td>
-          <TD {...props} row={row} />
+          <TD {...row} />
+          <td>{row.date_of_joining} </td>
+          <td>{row.exit_date}</td>
         </tr>
       ))}
     </tbody>

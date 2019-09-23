@@ -95,7 +95,7 @@ module.exports = {
   },
 
   //created by irfan: to
-  getEmployeesForProjectRoster: (req, res, next) => {
+  getEmployeesForProjectRosterOLD: (req, res, next) => {
     const input = req.query;
     const utilities = new algaehUtilities();
     let subdept = "";
@@ -386,7 +386,7 @@ module.exports = {
     }
   },
   //created by irfan: to
-  getEmployeesForProjectRosterNEW: (req, res, next) => {
+  getEmployeesForProjectRoster: (req, res, next) => {
     const input = req.query;
     const utilities = new algaehUtilities();
 
@@ -418,8 +418,8 @@ module.exports = {
       const _mysql = new algaehMysql();
       _mysql
         .executeQuery({
-          query: `select E.hims_d_employee_id as employee_id,PR.attendance_date,E.employee_code,E.full_name,E.sub_department_id,
-          E.religion_id, E.date_of_joining,PR.project_id,P.project_desc,D.designation
+          query: `select PR.hims_f_project_roster_id, E.hims_d_employee_id as employee_id,PR.attendance_date,P.abbreviation,E.employee_code,E.full_name,E.sub_department_id,
+          E.religion_id,E.exit_date, E.date_of_joining,PR.project_id,P.project_desc,D.designation
           from hims_d_employee E left join    hims_f_project_roster PR on E.hims_d_employee_id=PR.employee_id
           and (PR.attendance_date is null or  PR.attendance_date between date(?) and date(?))
           left join  hims_d_project P on P.hims_d_project_id=PR.project_id
@@ -476,10 +476,20 @@ module.exports = {
             new Date(input.fromDate),
             new Date(input.toDate)
           );
-
+          let total_rosetd = 0;
+          let total_non_rosted = 0;
           const allEmployees = _.chain(result[0])
             .groupBy(g => g.employee_id)
             .map(emp => {
+              const rosterAssigned = _.find(
+                emp,
+                f => f.attendance_date !== null
+              );
+              if (rosterAssigned !== undefined) {
+                total_rosetd = total_rosetd + 1;
+              } else {
+                total_non_rosted = total_non_rosted + 1;
+              }
               allDates.forEach(dat => {
                 const ProjAssgned = emp.find(e => {
                   return e.attendance_date == dat;
@@ -496,7 +506,10 @@ module.exports = {
                     date_of_joining: emp[0].date_of_joining,
                     project_id: null,
                     project_desc: null,
-                    designation: emp[0].designation
+                    abbreviation: null,
+                    designation: emp[0].designation,
+                    exit_date: emp[0].exit_date,
+                    hims_f_project_roster_id: null
                   });
                 }
               });
@@ -572,61 +585,80 @@ module.exports = {
                   leave.weekoff_included == "Y")
               ) {
                 outputArray.push({
+                  hims_f_project_roster_id: row.hims_f_project_roster_id,
                   project_id: row.project_id,
                   project_desc: row.project_desc,
+                  abbreviation: row.abbreviation,
                   attendance_date: leave.attendance_date,
                   status: leave.status
                 });
               } else if (holiday_or_weekOff != null) {
                 if (holiday_or_weekOff.weekoff == "Y") {
                   outputArray.push({
+                    hims_f_project_roster_id: row.hims_f_project_roster_id,
                     project_id: row.project_id,
                     project_desc: row.project_desc,
+                    abbreviation: row.abbreviation,
                     attendance_date: row["attendance_date"],
 
                     status: "WO"
                   });
                 } else if (holiday_or_weekOff.holiday == "Y") {
                   outputArray.push({
+                    hims_f_project_roster_id: row.hims_f_project_roster_id,
                     project_id: row.project_id,
                     project_desc: row.project_desc,
+                    abbreviation: row.abbreviation,
                     attendance_date: row["attendance_date"],
 
                     status: "HO"
                   });
                 } else {
                   outputArray.push({
+                    hims_f_project_roster_id: row.hims_f_project_roster_id,
                     project_id: row.project_id,
                     project_desc: row.project_desc,
+                    abbreviation: row.abbreviation,
                     attendance_date: row["attendance_date"],
                     status: row.project_id > 0 ? "PA" : "N"
                   });
                 }
               } else {
                 outputArray.push({
+                  hims_f_project_roster_id: row.hims_f_project_roster_id,
                   project_id: row.project_id,
                   project_desc: row.project_desc,
+                  abbreviation: row.abbreviation,
                   attendance_date: row["attendance_date"],
                   status: row.project_id > 0 ? "PA" : "N"
                 });
               }
             });
+            const projectList = _.sortBy(outputArray, s =>
+              parseInt(moment(s.attendance_date, "YYYY-MM-DD").format("MMDD"))
+            );
 
             final_roster.push({
+              hims_f_project_roster_id: employee[0].hims_f_project_roster_id,
               hims_d_employee_id: employee[0].employee_id,
               employee_name: employee[0].full_name,
               employee_code: employee[0].employee_code,
               sub_department_name: employee[0].sub_department_name,
               date_of_joining: employee[0].date_of_joining,
               designation: employee[0].designation,
-              projects: _.sortBy(outputArray, s =>
-                parseInt(moment(s.attendance_date, "YYYY-MM-DD").format("MMDD"))
-              )
+              exit_date: employee[0].exit_date,
+
+              projects: projectList
             });
           });
           //----------------------------------------------------
 
-          req.records = final_roster;
+          req.records = {
+            datesArray: allDates,
+            roster: final_roster,
+            total_rosted: total_rosetd,
+            total_non_rosted: total_non_rosted
+          };
           next();
         })
         .catch(e => {

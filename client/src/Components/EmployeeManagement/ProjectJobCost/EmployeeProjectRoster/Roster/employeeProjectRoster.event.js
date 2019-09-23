@@ -14,7 +14,6 @@ function getInputDates(inputs) {
 }
 
 export function getEmployeesForProjectRoster(inputs) {
-  debugger;
   return new Promise((resolve, reject) => {
     try {
       const {
@@ -40,6 +39,31 @@ export function getEmployeesForProjectRoster(inputs) {
         },
         onSuccess: res => {
           const { success, records, message } = res.data;
+          if (success === true) {
+            resolve({ records, fromDate, toDate });
+          } else {
+            reject(new Error(message));
+          }
+        },
+        onCatch: error => {
+          reject(error);
+        }
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+}
+
+export function getProjects() {
+  return new Promise((resolve, reject) => {
+    try {
+      algaehApiCall({
+        uri: "/projectjobcosting/getDivisionProject",
+        module: "hrManagement",
+        method: "GET",
+        onSuccess: response => {
+          const { success, records, message } = response.data;
           if (success === true) {
             resolve(records);
           } else {
