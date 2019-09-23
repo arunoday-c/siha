@@ -27,12 +27,15 @@ const executePDF = function executePDFMethod(options) {
       if (input.designation_id > 0) {
         strQuery += ` and E.employee_designation_id=${input.designation_id}`;
       }
+      if (input.employee_group_id > 0) {
+        strQuery += ` and E.employee_group_id=${input.employee_group_id}`;
+      }
 
       options.mysql
         .executeQuery({
           query: ` 
           select  hospital_name FROM hims_d_hospital where hims_d_hospital_id=?;
-          select hims_d_employee_id,employee_code,full_name,sex,date_of_joining,
+          select hims_d_employee_id,employee_code,full_name,sex,date_of_joining,G.group_description,
           case employee_status when 'A' then 'ACTIVE' when 'I' then 'INACTIVE'
           when 'R' then 'RESIGNED' when 'T' then 'TERMINATED' when 'E' then 'RETIRED'
           end asemployee_status,DG.designation,N.nationality,R.religion_name,
@@ -46,6 +49,7 @@ const executePDF = function executePDFMethod(options) {
           left join hims_d_nationality N on E.nationality=N.hims_d_nationality_id
           left join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
           left join hims_d_department D on SD.department_id=D.hims_d_department_id
+           left join hims_d_employee_group G on E.employee_group_id=G.hims_d_employee_group_id
           where E.hospital_id=? and E.record_status='A'  ${strQuery}; `,
           values: [input.hospital_id, input.hospital_id],
           printQuery: true

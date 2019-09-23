@@ -532,38 +532,38 @@ class LeaveAuthDetail extends Component {
                                   </span>
                                 );
                               }
-                            },
-                            {
-                              fieldName: "authorized",
-
-                              label: (
-                                <AlgaehLabel
-                                  label={{ forceLabel: "Authorized" }}
-                                />
-                              ),
-                              displayTemplate: row => {
-                                return (
-                                  <span>
-                                    {row.authorized3 === "Y" &&
-                                    row.authorized2 === "Y" &&
-                                    row.authorized1 === "Y"
-                                      ? "Yes"
-                                      : "No"}
-                                  </span>
-                                );
-                              },
-                              editorTemplate: row => {
-                                return (
-                                  <span>
-                                    {row.authorized3 === "Y" &&
-                                    row.authorized2 === "Y" &&
-                                    row.authorized1 === "Y"
-                                      ? "Yes"
-                                      : "No"}
-                                  </span>
-                                );
-                              }
                             }
+                            // {
+                            //   fieldName: "authorized",
+
+                            //   label: (
+                            //     <AlgaehLabel
+                            //       label={{ forceLabel: "Authorized" }}
+                            //     />
+                            //   ),
+                            //   displayTemplate: row => {
+                            //     return (
+                            //       <span>
+                            //         {row.authorized3 === "Y" &&
+                            //         row.authorized2 === "Y" &&
+                            //         row.authorized1 === "Y"
+                            //           ? "Yes"
+                            //           : "No"}
+                            //       </span>
+                            //     );
+                            //   },
+                            //   editorTemplate: row => {
+                            //     return (
+                            //       <span>
+                            //         {row.authorized3 === "Y" &&
+                            //         row.authorized2 === "Y" &&
+                            //         row.authorized1 === "Y"
+                            //           ? "Yes"
+                            //           : "No"}
+                            //       </span>
+                            //     );
+                            //   }
+                            // }
                           ]}
                           keyId="algaeh_d_module_id"
                           dataSource={{

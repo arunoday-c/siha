@@ -1640,7 +1640,7 @@
   ],
   "DATE_OF_JOIN": [
     { "name": "AFTER", "value": "A" },
-    { "name": "IN", "value": "I" },
+    { "name": "ON", "value": "I" },
     { "name": "BEFORE", "value": "B" }
   ],
   "TEST_SECTION": [

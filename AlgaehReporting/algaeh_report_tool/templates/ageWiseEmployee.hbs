@@ -24,6 +24,7 @@
                         <th>Age</th>
                         <th>DOB</th>
                         <th>Gender</th>
+                        <th>Emp. Group</th>
                         <th>Dept. </th>
                         <th>Sub Dept.</th>
                         <th>Designation</th>
@@ -45,6 +46,7 @@
                         <td>{{new_age}}</td>
                         <td>{{date_of_birth}}</td>
                         <td>{{sex}}</td>
+                        <td>{{group_description}}</td>
                         <td>{{department_name}}</td>
                         <td>{{sub_department_name}}</td>
                         <td>{{designation}}</td>
@@ -57,7 +59,7 @@
                     {{/each }}
                     {{else}}
                     <tr>
-                        <td colspan="14" class="noResultTextReport">No Records Found</td>
+                        <td colspan="15" class="noResultTextReport">No Records Found</td>
                     </tr>{{/hasElement }}
                 </tbody>
 

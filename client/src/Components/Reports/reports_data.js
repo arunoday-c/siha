@@ -34,6 +34,7 @@ const Hims_Reports = [
         pageOrentation: "landscape", //"portrait",
         reportParameters: [
           {
+            className: "col-2 mandatory",
             type: "date",
             name: "from_date",
             isImp: true,
@@ -43,6 +44,7 @@ const Hims_Reports = [
             }
           },
           {
+            className: "col-2 mandatory",
             type: "date",
             name: "to_date",
             isImp: true,
@@ -52,6 +54,7 @@ const Hims_Reports = [
             }
           },
           {
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "sub_department_id",
             initialLoad: true,
@@ -91,6 +94,7 @@ const Hims_Reports = [
             }
           },
           {
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "provider_id",
             initialLoad: true,
@@ -133,7 +137,7 @@ const Hims_Reports = [
         requireIframe: true,
         reportParameters: [
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "date",
             name: "from_date",
             isImp: true,
@@ -143,7 +147,7 @@ const Hims_Reports = [
             }
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "date",
             name: "to_date",
             isImp: true,
@@ -161,7 +165,7 @@ const Hims_Reports = [
         requireIframe: true,
         reportParameters: [
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -178,7 +182,7 @@ const Hims_Reports = [
             }
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "date",
             name: "from_date",
             isImp: true,
@@ -188,7 +192,7 @@ const Hims_Reports = [
             }
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "date",
             name: "to_date",
             isImp: true,
@@ -205,7 +209,7 @@ const Hims_Reports = [
         requireIframe: true,
         reportParameters: [
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
 
             initialLoad: true,
@@ -222,7 +226,7 @@ const Hims_Reports = [
             }
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "date",
             name: "from_date",
             isImp: true,
@@ -232,7 +236,7 @@ const Hims_Reports = [
             }
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "date",
             name: "to_date",
             isImp: true,
@@ -267,7 +271,7 @@ const Hims_Reports = [
         requireIframe: true,
         reportParameters: [
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "date",
             name: "from_date",
             isImp: true,
@@ -277,7 +281,7 @@ const Hims_Reports = [
             }
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "date",
             name: "to_date",
             isImp: true,
@@ -296,7 +300,7 @@ const Hims_Reports = [
         pageOrentation: "landscape", //"portrait",
         reportParameters: [
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "receipt_type",
             initialLoad: true,
@@ -327,7 +331,7 @@ const Hims_Reports = [
             }
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "date",
             name: "from_date",
             isImp: true,
@@ -337,7 +341,7 @@ const Hims_Reports = [
             }
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "date",
             name: "to_date",
             isImp: true,
@@ -347,7 +351,7 @@ const Hims_Reports = [
             }
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -420,7 +424,7 @@ const Hims_Reports = [
         pageOrentation: "landscape", //"portrait",
         reportParameters: [
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -437,7 +441,7 @@ const Hims_Reports = [
             }
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "date",
             name: "from_date",
             isImp: true,
@@ -447,7 +451,7 @@ const Hims_Reports = [
             }
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "date",
             name: "to_date",
             isImp: true,
@@ -516,6 +520,7 @@ const Hims_Reports = [
         reportQuery: "patOutstandingSum",
         reportParameters: [
           {
+            className: "col-2 mandatory",
             type: "date",
             name: "till_date",
             label: "Till Date",
@@ -544,7 +549,7 @@ const HR_Payroll_Reports = [
         pageOrentation: "landscape",
         reportParameters: [
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -582,6 +587,22 @@ const HR_Payroll_Reports = [
                   department_id_list: []
                 });
               }
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "employee_group_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Employee Group",
+            link: {
+              uri: "/hrsettings/getEmployeeGroups",
+              module: "hrManagement"
+            },
+            dataSource: {
+              textField: "group_description",
+              valueField: "hims_d_employee_group_id"
             }
           },
           {
@@ -655,6 +676,84 @@ const HR_Payroll_Reports = [
               valueField: "value",
               data: EMPLOYEE_TYPE
             }
+          }
+        ]
+      },
+      {
+        subitem: "Employee - Age Wise",
+        reportName: "ageWiseEmployee",
+        requireIframe: true,
+        pageSize: "A3",
+        pageOrentation: "landscape",
+        reportParameters: [
+          {
+            className: "col-2 mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "branch",
+            link: {
+              uri: "/organization/getOrganization"
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            },
+
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/branchMaster/getBranchWiseDepartments",
+                  module: "masterSettings",
+                  method: "GET",
+                  data: { hospital_id: currentEvent.value },
+
+                  onSuccess: result => {
+                    reportState.setState({
+                      department_id_list: result.data.records
+                    });
+                  }
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  department_id_list: []
+                });
+              }
+            }
+          },
+          {
+            className: "col-2 mandatory",
+            type: "dropdown",
+            name: "age_range",
+            initialLoad: true,
+            isImp: true,
+            label: "RANGE",
+            link: {},
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: COMPARISON
+            }
+          },
+          {
+            className: "col-2 mandatory",
+            type: "text",
+            name: "age",
+            initialLoad: false,
+            isImp: true,
+            label: "ENTER AGE",
+            link: {},
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: undefined
+            }
           },
           {
             className: "col-2",
@@ -671,56 +770,6 @@ const HR_Payroll_Reports = [
               textField: "group_description",
               valueField: "hims_d_employee_group_id"
             }
-          }
-        ]
-      },
-      {
-        subitem: "Employee - Age Wise",
-        reportName: "ageWiseEmployee",
-        requireIframe: true,
-        pageSize: "A3",
-        pageOrentation: "landscape",
-        reportParameters: [
-          {
-            className: "col-2",
-            type: "dropdown",
-            name: "hospital_id",
-            initialLoad: true,
-            isImp: true,
-            label: "branch",
-            link: {
-              uri: "/organization/getOrganization"
-            },
-            value: hospital_id,
-            dataSource: {
-              textField: "hospital_name",
-              valueField: "hims_d_hospital_id",
-              data: undefined
-            },
-
-            events: {
-              onChange: (reportState, currentEvent) => {
-                //provider_id_list CONTROL NAME AND APPEND BY _LIST
-                algaehApiCall({
-                  uri: "/branchMaster/getBranchWiseDepartments",
-                  module: "masterSettings",
-                  method: "GET",
-                  data: { hospital_id: currentEvent.value },
-
-                  onSuccess: result => {
-                    reportState.setState({
-                      department_id_list: result.data.records
-                    });
-                  }
-                });
-              },
-              onClear: (reportState, currentName) => {
-                reportState.setState({
-                  [currentName]: undefined,
-                  department_id_list: []
-                });
-              }
-            }
           },
           {
             className: "col-2",
@@ -763,34 +812,6 @@ const HR_Payroll_Reports = [
             dataSource: {
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",
-              data: undefined
-            }
-          },
-          {
-            className: "col-2",
-            type: "dropdown",
-            name: "age_range",
-            initialLoad: true,
-            isImp: true,
-            label: "RANGE",
-            link: {},
-            dataSource: {
-              textField: "name",
-              valueField: "value",
-              data: COMPARISON
-            }
-          },
-          {
-            className: "col-2",
-            type: "text",
-            name: "age",
-            initialLoad: false,
-            isImp: true,
-            label: "ENTER AGE",
-            link: {},
-            dataSource: {
-              textField: "name",
-              valueField: "value",
               data: undefined
             }
           }
@@ -804,7 +825,7 @@ const HR_Payroll_Reports = [
         pageOrentation: "landscape",
         reportParameters: [
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -842,50 +863,6 @@ const HR_Payroll_Reports = [
                   department_id_list: []
                 });
               }
-            }
-          },
-          {
-            className: "col-2",
-            type: "dropdown",
-            name: "department_id",
-            initialLoad: true,
-            isImp: false,
-            label: "Department",
-            link: {
-              uri: "/department/get",
-              module: "masterSettings"
-            },
-            dataSource: {
-              textField: "department_name",
-              valueField: "hims_d_department_id",
-              data: undefined
-            },
-            events: {
-              onChange: (reportState, currentEvent) => {
-                reportState.setState({
-                  [currentEvent.name]: currentEvent.value,
-                  department_id: currentEvent.value,
-                  sub_department_id_list: currentEvent.selected.subDepts
-                });
-              },
-              onClear: (reportState, currentName) => {
-                reportState.setState({
-                  [currentName]: undefined,
-                  sub_department_id_list: []
-                });
-              }
-            }
-          },
-          {
-            className: "col-2",
-            type: "dropdown",
-            name: "sub_department_id",
-            isImp: false,
-            label: "Sub Department",
-            dataSource: {
-              textField: "sub_department_name",
-              valueField: "hims_d_sub_department_id",
-              data: undefined
             }
           },
           {
@@ -901,55 +878,21 @@ const HR_Payroll_Reports = [
               valueField: "value",
               data: EMP_FORMAT_GENDER
             }
-          }
-        ]
-      },
-      {
-        subitem: "Employee - Nationality Wise",
-        reportName: "nationalityWiseEmployee",
-        requireIframe: true,
-        pageSize: "A3",
-        pageOrentation: "landscape",
-        reportParameters: [
+          },
           {
             className: "col-2",
             type: "dropdown",
-            name: "hospital_id",
+            name: "employee_group_id",
             initialLoad: true,
-            isImp: true,
-            label: "branch",
+            isImp: false,
+            label: "Employee Group",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/hrsettings/getEmployeeGroups",
+              module: "hrManagement"
             },
-            value: hospital_id,
             dataSource: {
-              textField: "hospital_name",
-              valueField: "hims_d_hospital_id",
-              data: undefined
-            },
-
-            events: {
-              onChange: (reportState, currentEvent) => {
-                //provider_id_list CONTROL NAME AND APPEND BY _LIST
-                algaehApiCall({
-                  uri: "/branchMaster/getBranchWiseDepartments",
-                  module: "masterSettings",
-                  method: "GET",
-                  data: { hospital_id: currentEvent.value },
-
-                  onSuccess: result => {
-                    reportState.setState({
-                      department_id_list: result.data.records
-                    });
-                  }
-                });
-              },
-              onClear: (reportState, currentName) => {
-                reportState.setState({
-                  [currentName]: undefined,
-                  department_id_list: []
-                });
-              }
+              textField: "group_description",
+              valueField: "hims_d_employee_group_id"
             }
           },
           {
@@ -994,6 +937,56 @@ const HR_Payroll_Reports = [
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",
               data: undefined
+            }
+          }
+        ]
+      },
+      {
+        subitem: "Employee - Nationality Wise",
+        reportName: "nationalityWiseEmployee",
+        requireIframe: true,
+        pageSize: "A3",
+        pageOrentation: "landscape",
+        reportParameters: [
+          {
+            className: "col-2 mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "branch",
+            link: {
+              uri: "/organization/getOrganization"
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            },
+
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/branchMaster/getBranchWiseDepartments",
+                  module: "masterSettings",
+                  method: "GET",
+                  data: { hospital_id: currentEvent.value },
+
+                  onSuccess: result => {
+                    reportState.setState({
+                      department_id_list: result.data.records
+                    });
+                  }
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  department_id_list: []
+                });
+              }
             }
           },
           {
@@ -1011,55 +1004,21 @@ const HR_Payroll_Reports = [
               valueField: "hims_d_nationality_id",
               data: undefined
             }
-          }
-        ]
-      },
-      {
-        subitem: "Employee - Religion Wise",
-        reportName: "religionWiseEmployee",
-        requireIframe: true,
-        pageSize: "A3",
-        pageOrentation: "landscape",
-        reportParameters: [
+          },
           {
             className: "col-2",
             type: "dropdown",
-            name: "hospital_id",
+            name: "employee_group_id",
             initialLoad: true,
-            isImp: true,
-            label: "branch",
+            isImp: false,
+            label: "Employee Group",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/hrsettings/getEmployeeGroups",
+              module: "hrManagement"
             },
-            value: hospital_id,
             dataSource: {
-              textField: "hospital_name",
-              valueField: "hims_d_hospital_id",
-              data: undefined
-            },
-
-            events: {
-              onChange: (reportState, currentEvent) => {
-                //provider_id_list CONTROL NAME AND APPEND BY _LIST
-                algaehApiCall({
-                  uri: "/branchMaster/getBranchWiseDepartments",
-                  module: "masterSettings",
-                  method: "GET",
-                  data: { hospital_id: currentEvent.value },
-
-                  onSuccess: result => {
-                    reportState.setState({
-                      department_id_list: result.data.records
-                    });
-                  }
-                });
-              },
-              onClear: (reportState, currentName) => {
-                reportState.setState({
-                  [currentName]: undefined,
-                  department_id_list: []
-                });
-              }
+              textField: "group_description",
+              valueField: "hims_d_employee_group_id"
             }
           },
           {
@@ -1104,6 +1063,56 @@ const HR_Payroll_Reports = [
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",
               data: undefined
+            }
+          }
+        ]
+      },
+      {
+        subitem: "Employee - Religion Wise",
+        reportName: "religionWiseEmployee",
+        requireIframe: true,
+        pageSize: "A3",
+        pageOrentation: "landscape",
+        reportParameters: [
+          {
+            className: "col-2 mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "branch",
+            link: {
+              uri: "/organization/getOrganization"
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            },
+
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/branchMaster/getBranchWiseDepartments",
+                  module: "masterSettings",
+                  method: "GET",
+                  data: { hospital_id: currentEvent.value },
+
+                  onSuccess: result => {
+                    reportState.setState({
+                      department_id_list: result.data.records
+                    });
+                  }
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  department_id_list: []
+                });
+              }
             }
           },
           {
@@ -1121,55 +1130,21 @@ const HR_Payroll_Reports = [
               valueField: "hims_d_religion_id",
               data: undefined
             }
-          }
-        ]
-      },
-      {
-        subitem: "Employee - Designation Wise",
-        reportName: "designationWiseEmployee",
-        requireIframe: true,
-        pageSize: "A3",
-        pageOrentation: "landscape",
-        reportParameters: [
+          },
           {
             className: "col-2",
             type: "dropdown",
-            name: "hospital_id",
+            name: "employee_group_id",
             initialLoad: true,
-            isImp: true,
-            label: "branch",
+            isImp: false,
+            label: "Employee Group",
             link: {
-              uri: "/organization/getOrganization"
+              uri: "/hrsettings/getEmployeeGroups",
+              module: "hrManagement"
             },
-            value: hospital_id,
             dataSource: {
-              textField: "hospital_name",
-              valueField: "hims_d_hospital_id",
-              data: undefined
-            },
-
-            events: {
-              onChange: (reportState, currentEvent) => {
-                //provider_id_list CONTROL NAME AND APPEND BY _LIST
-                algaehApiCall({
-                  uri: "/branchMaster/getBranchWiseDepartments",
-                  module: "masterSettings",
-                  method: "GET",
-                  data: { hospital_id: currentEvent.value },
-
-                  onSuccess: result => {
-                    reportState.setState({
-                      department_id_list: result.data.records
-                    });
-                  }
-                });
-              },
-              onClear: (reportState, currentName) => {
-                reportState.setState({
-                  [currentName]: undefined,
-                  department_id_list: []
-                });
-              }
+              textField: "group_description",
+              valueField: "hims_d_employee_group_id"
             }
           },
           {
@@ -1214,6 +1189,56 @@ const HR_Payroll_Reports = [
               textField: "sub_department_name",
               valueField: "hims_d_sub_department_id",
               data: undefined
+            }
+          }
+        ]
+      },
+      {
+        subitem: "Employee - Designation Wise",
+        reportName: "designationWiseEmployee",
+        requireIframe: true,
+        pageSize: "A3",
+        pageOrentation: "landscape",
+        reportParameters: [
+          {
+            className: "col-2 mandatory",
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "branch",
+            link: {
+              uri: "/organization/getOrganization"
+            },
+            value: hospital_id,
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            },
+
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                algaehApiCall({
+                  uri: "/branchMaster/getBranchWiseDepartments",
+                  module: "masterSettings",
+                  method: "GET",
+                  data: { hospital_id: currentEvent.value },
+
+                  onSuccess: result => {
+                    reportState.setState({
+                      department_id_list: result.data.records
+                    });
+                  }
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  department_id_list: []
+                });
+              }
             }
           },
           {
@@ -1232,6 +1257,66 @@ const HR_Payroll_Reports = [
               valueField: "hims_d_designation_id",
               data: undefined
             }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "employee_group_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Employee Group",
+            link: {
+              uri: "/hrsettings/getEmployeeGroups",
+              module: "hrManagement"
+            },
+            dataSource: {
+              textField: "group_description",
+              valueField: "hims_d_employee_group_id"
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "department_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Department",
+            link: {
+              uri: "/department/get",
+              module: "masterSettings"
+            },
+            dataSource: {
+              textField: "department_name",
+              valueField: "hims_d_department_id",
+              data: undefined
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                reportState.setState({
+                  [currentEvent.name]: currentEvent.value,
+                  department_id: currentEvent.value,
+                  sub_department_id_list: currentEvent.selected.subDepts
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  sub_department_id_list: []
+                });
+              }
+            }
+          },
+          {
+            className: "col-2 ",
+            type: "dropdown",
+            name: "sub_department_id",
+            isImp: false,
+            label: "Sub Department",
+            dataSource: {
+              textField: "sub_department_name",
+              valueField: "hims_d_sub_department_id",
+              data: undefined
+            }
           }
         ]
       },
@@ -1243,7 +1328,7 @@ const HR_Payroll_Reports = [
         pageOrentation: "landscape",
         reportParameters: [
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -1281,50 +1366,6 @@ const HR_Payroll_Reports = [
                   department_id_list: []
                 });
               }
-            }
-          },
-          {
-            className: "col-2",
-            type: "dropdown",
-            name: "department_id",
-            initialLoad: true,
-            isImp: false,
-            label: "Department",
-            link: {
-              uri: "/department/get",
-              module: "masterSettings"
-            },
-            dataSource: {
-              textField: "department_name",
-              valueField: "hims_d_department_id",
-              data: undefined
-            },
-            events: {
-              onChange: (reportState, currentEvent) => {
-                reportState.setState({
-                  [currentEvent.name]: currentEvent.value,
-                  department_id: currentEvent.value,
-                  sub_department_id_list: currentEvent.selected.subDepts
-                });
-              },
-              onClear: (reportState, currentName) => {
-                reportState.setState({
-                  [currentName]: undefined,
-                  sub_department_id_list: []
-                });
-              }
-            }
-          },
-          {
-            className: "col-2",
-            type: "dropdown",
-            name: "sub_department_id",
-            isImp: false,
-            label: "Sub Department",
-            dataSource: {
-              textField: "sub_department_name",
-              valueField: "hims_d_sub_department_id",
-              data: undefined
             }
           },
           {
@@ -1370,6 +1411,66 @@ const HR_Payroll_Reports = [
             others: {
               sort: "off"
             }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "employee_group_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Employee Group",
+            link: {
+              uri: "/hrsettings/getEmployeeGroups",
+              module: "hrManagement"
+            },
+            dataSource: {
+              textField: "group_description",
+              valueField: "hims_d_employee_group_id"
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "department_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Department",
+            link: {
+              uri: "/department/get",
+              module: "masterSettings"
+            },
+            dataSource: {
+              textField: "department_name",
+              valueField: "hims_d_department_id",
+              data: undefined
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                reportState.setState({
+                  [currentEvent.name]: currentEvent.value,
+                  department_id: currentEvent.value,
+                  sub_department_id_list: currentEvent.selected.subDepts
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  sub_department_id_list: []
+                });
+              }
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "sub_department_id",
+            isImp: false,
+            label: "Sub Department",
+            dataSource: {
+              textField: "sub_department_name",
+              valueField: "hims_d_sub_department_id",
+              data: undefined
+            }
           }
         ]
       }
@@ -1387,7 +1488,7 @@ const HR_Payroll_Reports = [
         pageOrentation: "landscape",
         reportParameters: [
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "year",
             sort: "off",
@@ -1405,7 +1506,7 @@ const HR_Payroll_Reports = [
             // }
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             sort: "off",
             name: "month",
@@ -1422,7 +1523,7 @@ const HR_Payroll_Reports = [
             }
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -1436,6 +1537,21 @@ const HR_Payroll_Reports = [
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
               data: undefined
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "employee_group_id",
+            initialLoad: true,
+            label: "Employee Group",
+            link: {
+              uri: "/hrsettings/getEmployeeGroups",
+              module: "hrManagement"
+            },
+            dataSource: {
+              textField: "group_description",
+              valueField: "hims_d_employee_group_id"
             }
           },
           {
@@ -1489,21 +1605,6 @@ const HR_Payroll_Reports = [
               valueField: "hims_d_sub_department_id",
               data: undefined
             }
-          },
-          {
-            className: "col-2",
-            type: "dropdown",
-            name: "employee_group_id",
-            initialLoad: true,
-            label: "Group",
-            link: {
-              uri: "/hrsettings/getEmployeeGroups",
-              module: "hrManagement"
-            },
-            dataSource: {
-              textField: "group_description",
-              valueField: "hims_d_employee_group_id"
-            }
           }
         ]
       },
@@ -1513,7 +1614,7 @@ const HR_Payroll_Reports = [
         requireIframe: true,
         reportParameters: [
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -1551,6 +1652,21 @@ const HR_Payroll_Reports = [
                   department_id_list: []
                 });
               }
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "employee_group_id",
+            initialLoad: true,
+            label: "Employee Group",
+            link: {
+              uri: "/hrsettings/getEmployeeGroups",
+              module: "hrManagement"
+            },
+            dataSource: {
+              textField: "group_description",
+              valueField: "hims_d_employee_group_id"
             }
           },
           {
@@ -1650,7 +1766,7 @@ const HR_Payroll_Reports = [
         input: "sub_department_id=?",
         reportParameters: [
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "year",
             isImp: true,
@@ -1666,7 +1782,7 @@ const HR_Payroll_Reports = [
             // }
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             sort: "off",
             name: "month",
@@ -1683,7 +1799,7 @@ const HR_Payroll_Reports = [
             }
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -1697,6 +1813,21 @@ const HR_Payroll_Reports = [
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
               data: undefined
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "employee_group_id",
+            initialLoad: true,
+            label: "Employee Group",
+            link: {
+              uri: "/hrsettings/getEmployeeGroups",
+              module: "hrManagement"
+            },
+            dataSource: {
+              textField: "group_description",
+              valueField: "hims_d_employee_group_id"
             }
           },
           {
@@ -1762,7 +1893,7 @@ const HR_Payroll_Reports = [
         pageOrentation: "landscape",
         reportParameters: [
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "year",
             isImp: true,
@@ -1778,7 +1909,7 @@ const HR_Payroll_Reports = [
             // }
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             sort: "off",
             name: "month",
@@ -1795,7 +1926,7 @@ const HR_Payroll_Reports = [
             }
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -1809,6 +1940,21 @@ const HR_Payroll_Reports = [
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
               data: undefined
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "employee_group_id",
+            initialLoad: true,
+            label: "Employee Group",
+            link: {
+              uri: "/hrsettings/getEmployeeGroups",
+              module: "hrManagement"
+            },
+            dataSource: {
+              textField: "group_description",
+              valueField: "hims_d_employee_group_id"
             }
           },
           {
@@ -1970,7 +2116,7 @@ const HR_Payroll_Reports = [
         pageOrentation: "landscape", //"portrait",
         reportParameters: [
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -1984,6 +2130,41 @@ const HR_Payroll_Reports = [
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
               data: undefined
+            }
+          },
+          {
+            className: "col-2 mandatory",
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            className: "col-2 mandatory",
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "employee_group_id",
+            initialLoad: true,
+            label: "Employee Group",
+            link: {
+              uri: "/hrsettings/getEmployeeGroups",
+              module: "hrManagement"
+            },
+            dataSource: {
+              textField: "group_description",
+              valueField: "hims_d_employee_group_id"
             }
           },
           {
@@ -2037,26 +2218,6 @@ const HR_Payroll_Reports = [
               valueField: "hims_d_sub_department_id",
               data: undefined
             }
-          },
-          {
-            className: "col-2",
-            type: "date",
-            name: "from_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
-            }
-          },
-          {
-            className: "col-2",
-            type: "date",
-            name: "to_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
-            }
           }
         ]
         //reportParameters: () => <General ui="asset_warty_exp_rep" />
@@ -2069,7 +2230,7 @@ const HR_Payroll_Reports = [
         pageOrentation: "landscape",
         reportParameters: [
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "year",
             isImp: true,
@@ -2085,7 +2246,7 @@ const HR_Payroll_Reports = [
             // }
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             sort: "off",
             name: "month",
@@ -2102,7 +2263,7 @@ const HR_Payroll_Reports = [
             }
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -2116,6 +2277,21 @@ const HR_Payroll_Reports = [
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
               data: undefined
+            }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "employee_group_id",
+            initialLoad: true,
+            label: "Employee Group",
+            link: {
+              uri: "/hrsettings/getEmployeeGroups",
+              module: "hrManagement"
+            },
+            dataSource: {
+              textField: "group_description",
+              valueField: "hims_d_employee_group_id"
             }
           },
           {
@@ -2180,7 +2356,7 @@ const HR_Payroll_Reports = [
         pageOrentation: "landscape", //"portrait",
         reportParameters: [
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "year",
             isImp: true,
@@ -2196,7 +2372,7 @@ const HR_Payroll_Reports = [
             // }
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             sort: "off",
             name: "month",
@@ -2213,7 +2389,7 @@ const HR_Payroll_Reports = [
             }
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -2230,7 +2406,7 @@ const HR_Payroll_Reports = [
             }
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "employee_group_id",
             initialLoad: true,
@@ -2331,7 +2507,7 @@ const HR_Payroll_Reports = [
         pageOrentation: "landscape",
         reportParameters: [
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "year",
             isImp: true,
@@ -2347,7 +2523,7 @@ const HR_Payroll_Reports = [
             // }
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             sort: "off",
             name: "month",
@@ -2364,7 +2540,7 @@ const HR_Payroll_Reports = [
             }
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -2378,6 +2554,40 @@ const HR_Payroll_Reports = [
               textField: "hospital_name",
               valueField: "hims_d_hospital_id",
               data: undefined
+            }
+          },
+          {
+            className: "col-2 form-group",
+            type: "dropdown",
+            name: "project_id",
+            initialLoad: true,
+            label: "Project",
+            link: {
+              uri: "/hrsettings/getProjects",
+              module: "hrManagement"
+            },
+            dataSource: {
+              textField: "project_desc",
+              valueField: "hims_d_project_id"
+            }
+            // events: {
+            //   onChange: (reportState, currentValue) => {}
+            // }
+          },
+          {
+            className: "col-2",
+            type: "dropdown",
+            name: "employee_group_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Employee Group",
+            link: {
+              uri: "/hrsettings/getEmployeeGroups",
+              module: "hrManagement"
+            },
+            dataSource: {
+              textField: "group_description",
+              valueField: "hims_d_employee_group_id"
             }
           },
           {
@@ -2431,40 +2641,6 @@ const HR_Payroll_Reports = [
               valueField: "hims_d_sub_department_id",
               data: undefined
             }
-          },
-          {
-            className: "col-2",
-            type: "dropdown",
-            name: "project_id",
-            initialLoad: true,
-            label: "Project",
-            link: {
-              uri: "/hrsettings/getProjects",
-              module: "hrManagement"
-            },
-            dataSource: {
-              textField: "project_desc",
-              valueField: "hims_d_project_id"
-            }
-            // events: {
-            //   onChange: (reportState, currentValue) => {}
-            // }
-          },
-          {
-            className: "col-2",
-            type: "dropdown",
-            name: "employee_group_id",
-            initialLoad: true,
-            isImp: false,
-            label: "Employee Group",
-            link: {
-              uri: "/hrsettings/getEmployeeGroups",
-              module: "hrManagement"
-            },
-            dataSource: {
-              textField: "group_description",
-              valueField: "hims_d_employee_group_id"
-            }
           }
         ]
       },
@@ -2480,7 +2656,7 @@ const HR_Payroll_Reports = [
         pageOrentation: "landscape",
         reportParameters: [
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "year",
             isImp: true,
@@ -2496,7 +2672,7 @@ const HR_Payroll_Reports = [
             // }
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             sort: "off",
             name: "month",
@@ -2513,7 +2689,7 @@ const HR_Payroll_Reports = [
             }
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -2599,7 +2775,7 @@ const Inventory_Reports = [
         pageOrentation: "portrait", //"landscape",
         reportParameters: [
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -2616,7 +2792,7 @@ const Inventory_Reports = [
             }
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "date",
             name: "from_date",
             isImp: true,
@@ -2626,7 +2802,7 @@ const Inventory_Reports = [
             }
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "date",
             name: "to_date",
             isImp: true,
@@ -2636,7 +2812,7 @@ const Inventory_Reports = [
             }
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "sub_department_id",
             initialLoad: true,
@@ -2741,7 +2917,7 @@ const Pharmacy_Reports = [
         pageOrentation: "landscape", //"portrait",
         reportParameters: [
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "date",
             name: "from_date",
             isImp: true,
@@ -2751,6 +2927,7 @@ const Pharmacy_Reports = [
             }
           },
           {
+            className: "col-2 mandatory",
             type: "time",
             name: "from_time",
             label: "From Time",
@@ -2758,7 +2935,7 @@ const Pharmacy_Reports = [
             value: "00:00"
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "date",
             name: "to_date",
             isImp: true,
@@ -2768,6 +2945,7 @@ const Pharmacy_Reports = [
             }
           },
           {
+            className: "col-2 mandatory",
             type: "time",
             name: "to_time",
             label: "To Time",
@@ -2775,7 +2953,7 @@ const Pharmacy_Reports = [
             value: "23:59"
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -2815,7 +2993,7 @@ const Pharmacy_Reports = [
             }
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "location_id",
 
@@ -2871,7 +3049,7 @@ const Pharmacy_Reports = [
         requireIframe: true,
         reportParameters: [
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "date",
             name: "from_date",
             isImp: true,
@@ -2881,7 +3059,7 @@ const Pharmacy_Reports = [
             }
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "date",
             name: "to_date",
             isImp: true,
@@ -2891,7 +3069,7 @@ const Pharmacy_Reports = [
             }
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -2908,7 +3086,7 @@ const Pharmacy_Reports = [
             }
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "location_id",
             initialLoad: true,
@@ -2936,7 +3114,7 @@ const Pharmacy_Reports = [
         requireIframe: true,
         reportParameters: [
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "date",
             name: "from_date",
             isImp: true,
@@ -2946,7 +3124,7 @@ const Pharmacy_Reports = [
             }
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "date",
             name: "to_date",
             isImp: true,
@@ -2956,7 +3134,7 @@ const Pharmacy_Reports = [
             }
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -2973,7 +3151,7 @@ const Pharmacy_Reports = [
             }
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "location_id",
             initialLoad: true,
@@ -3001,7 +3179,7 @@ const Pharmacy_Reports = [
         requireIframe: true,
         reportParameters: [
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "date",
             name: "from_date",
             isImp: true,
@@ -3011,7 +3189,7 @@ const Pharmacy_Reports = [
             }
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "date",
             name: "to_date",
             isImp: true,
@@ -3022,7 +3200,7 @@ const Pharmacy_Reports = [
           },
 
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -3039,7 +3217,7 @@ const Pharmacy_Reports = [
             }
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "location_id",
             initialLoad: true,
@@ -3068,7 +3246,7 @@ const Pharmacy_Reports = [
         pageOrentation: "landscape", //"portrait",
         reportParameters: [
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -3213,7 +3391,7 @@ const Pharmacy_Reports = [
             }
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "expiry_status",
             initialLoad: true,
@@ -3227,7 +3405,7 @@ const Pharmacy_Reports = [
           },
 
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "date",
             name: "from_date",
             isImp: true,
@@ -3238,7 +3416,7 @@ const Pharmacy_Reports = [
           },
 
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "date",
             name: "to_date",
             isImp: true,
@@ -3255,7 +3433,7 @@ const Pharmacy_Reports = [
         requireIframe: true,
         reportParameters: [
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "date",
             name: "to_date",
             isImp: true,
@@ -3266,7 +3444,7 @@ const Pharmacy_Reports = [
             }
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -3307,7 +3485,7 @@ const Pharmacy_Reports = [
           },
 
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "location_id",
             initialLoad: true,
@@ -3321,7 +3499,7 @@ const Pharmacy_Reports = [
           },
 
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "category_id",
             initialLoad: true,
@@ -3384,7 +3562,7 @@ const Pharmacy_Reports = [
         requireIframe: true,
         reportParameters: [
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -3439,7 +3617,7 @@ const Pharmacy_Reports = [
           },
 
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "item_id",
             initialLoad: true,
@@ -3458,6 +3636,7 @@ const Pharmacy_Reports = [
           },
 
           {
+            className: "col-2 mandatory",
             type: "date",
             name: "from_date",
             isImp: true,
@@ -3467,6 +3646,7 @@ const Pharmacy_Reports = [
             }
           },
           {
+            className: "col-2 mandatory",
             type: "date",
             name: "to_date",
             isImp: true,
@@ -3486,7 +3666,7 @@ const Pharmacy_Reports = [
         pageOrentation: "landscape", //"portrait",
         reportParameters: [
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "date",
             name: "from_date",
             isImp: true,
@@ -3496,7 +3676,7 @@ const Pharmacy_Reports = [
             }
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "date",
             name: "to_date",
             isImp: true,
@@ -3506,7 +3686,7 @@ const Pharmacy_Reports = [
             }
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "hospital_id",
             initialLoad: true,
@@ -3568,7 +3748,7 @@ const Pharmacy_Reports = [
         requireIframe: true,
         reportParameters: [
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "date",
             name: "from_date",
             isImp: true,
@@ -3578,7 +3758,7 @@ const Pharmacy_Reports = [
             }
           },
           {
-            className: "col-2",
+            className: "col-2 mandatory",
             type: "date",
             name: "to_date",
             isImp: true,
@@ -3699,6 +3879,7 @@ const insurance_reports = [
         template_name: "allClaimStatementInsurance",
         reportParameters: [
           {
+            className: "col-2 mandatory",
             type: "date",
             name: "from_date",
             isImp: true,
@@ -3708,6 +3889,7 @@ const insurance_reports = [
             }
           },
           {
+            className: "col-2 mandatory",
             type: "date",
             name: "to_date",
             isImp: true,
@@ -3717,6 +3899,7 @@ const insurance_reports = [
             }
           },
           {
+            className: "col-2 mandatory",
             type: "dropdown",
             name: "",
             initialLoad: true,
