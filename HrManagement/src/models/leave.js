@@ -1796,8 +1796,9 @@ module.exports = {
           allLeaves = result[0];
           allHolidays = result[1];
 
+          
           annual_leave=result[0][0].leave_category;
-          console.log("annual_leave:",annual_leave)
+        
           if (allLeaves.length > 0) {
             currentClosingBal = allLeaves[0].close_balance;
             let isHoliday = new LINQ(allHolidays)
@@ -1980,6 +1981,8 @@ module.exports = {
                 calculatedLeaveDays =
                   parseFloat(calculatedLeaveDays) - parseFloat(session_diff);
 
+
+                
                 //-------END OF------ finally  subtracting week off and holidays from total Applied days
                 if (currentClosingBal >= calculatedLeaveDays || annual_leave=="A") {
                   _mysql.releaseConnection();
@@ -2042,6 +2045,8 @@ module.exports = {
                 calculatedLeaveDays =
                   parseFloat(calculatedLeaveDays) - parseFloat(session_diff);
 
+
+                
                 //checking if he has enough eligible days
                 if (currentClosingBal >= calculatedLeaveDays || annual_leave=="A") {
                   _mysql.releaseConnection();
@@ -2739,7 +2744,7 @@ and L.record_status='A' where ML.year=? and ML.employee_id=?  and  LD.employee_t
     try {
       const userPrivilege = req.userIdentity.leave_authorize_privilege;
 
-      console.log("userPrivilege:", userPrivilege);
+     
       if (userPrivilege != "N") {
         const _mysql = new algaehMysql();
 
