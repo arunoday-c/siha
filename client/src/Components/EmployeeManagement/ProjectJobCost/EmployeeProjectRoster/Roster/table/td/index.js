@@ -23,7 +23,7 @@ export default React.memo(function(props) {
     getProjectRosterState,
     setProjectRosterState
   } = useContext(ProjectRosterContext);
-  const { inputs } = getProjectRosterState();
+  const { inputs, filterTrue, selectedFilter } = getProjectRosterState();
 
   return (
     <React.Fragment>
@@ -104,6 +104,37 @@ export default React.memo(function(props) {
                         getEmployeesForProjectRoster(inputs)
                           .then(result => {
                             const { records, fromDate, toDate } = result;
+                            let filterData = {};
+
+                            if (filterTrue === true && selectedFilter !== "0") {
+                              const empl = records.roster;
+                              const emp = empl.map(employee => {
+                                let allProjects = employee.projects;
+                                const projs = employee.projects.filter(f => {
+                                  return f.status === "N";
+                                });
+                                if (selectedFilter === "1") {
+                                  if (projs.length === 0) {
+                                    return {
+                                      ...employee,
+                                      projects: allProjects
+                                    };
+                                  }
+                                } else {
+                                  if (projs.length > 0) {
+                                    return {
+                                      ...employee,
+                                      projects: allProjects
+                                    };
+                                  }
+                                }
+                              });
+                              const allEmployees = emp.filter(f => {
+                                return f !== undefined;
+                              });
+                              filterData["filterEmployees"] = allEmployees;
+                            }
+
                             setProjectRosterState({
                               total_rosted: records.total_rosted,
                               total_non_rosted: records.total_non_rosted,
@@ -111,7 +142,8 @@ export default React.memo(function(props) {
                               dates: records.datesArray,
                               inputs: inputs,
                               fromDate: fromDate,
-                              toDate: toDate
+                              toDate: toDate,
+                              ...filterData
                             });
                             AlgaehLoader({ show: false });
                           })

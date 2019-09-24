@@ -113,7 +113,8 @@ export default function EmpProjectRoster(props) {
                   if (selected === "0") {
                     setProjectRosterState({
                       filterEmployees: [],
-                      filterTrue: false
+                      filterTrue: false,
+                      selectedFilter: selected
                     });
                   } else {
                     const emp = employees.map(employee => {
@@ -142,6 +143,7 @@ export default function EmpProjectRoster(props) {
                       return f !== undefined;
                     });
                     setProjectRosterState({
+                      selectedFilter: selected,
                       filterTrue: true,
                       filterEmployees: allEmployees
                     });
