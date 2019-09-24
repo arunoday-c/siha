@@ -25,8 +25,8 @@ exports.default = {
     //database: "hims_test_db",
     // database: "seco",
     // database: "algaeh_hrms_oman_db",
-    database: "shahid_db",
-    // database: "shaksy_live_db",
+    // database: "shahid_db",
+    database: "shaksy_live_db",
 
     multipleStatements: true,
     acquireTimeout: 20000,
