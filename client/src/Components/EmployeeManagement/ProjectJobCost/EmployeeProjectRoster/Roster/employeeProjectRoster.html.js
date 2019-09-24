@@ -9,6 +9,7 @@ import {
   getEmployeesForProjectRoster,
   getProjects
 } from "./employeeProjectRoster.event";
+import { swalMessage } from "../../../../../utils/algaehApiCall";
 import "../EmployeeProjectRoster.scss";
 export default function EmpProjectRoster(props) {
   const { getProjectRosterState, setProjectRosterState } = useContext(
@@ -70,13 +71,14 @@ export default function EmpProjectRoster(props) {
               AlgaehLoader({ show: false });
             })
             .catch(error => {
+              AlgaehLoader({ show: false });
+              swalMessage({ title: error, type: "info" });
               setProjectRosterState({
                 employees: [],
                 dates: [],
                 filterTrue: false,
                 filterEmployees: []
               });
-              AlgaehLoader({ show: false });
             });
         }}
       />

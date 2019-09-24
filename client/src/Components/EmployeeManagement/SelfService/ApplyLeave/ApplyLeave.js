@@ -21,6 +21,10 @@ import Socket from "../../../../sockets";
 class ApplyLeave extends Component {
   constructor(props) {
     super(props);
+    const obritery = JSON.parse(
+      AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+    );
+
     this.state = {
       extra: {},
       selectedLang: this.props.SelectLanguage,
@@ -36,9 +40,7 @@ class ApplyLeave extends Component {
       to_leave_session: props.leave.to_session ? props.leave.to_session : null,
       absent_id: props.leave.absent_id ? props.leave.absent_id : null,
       leave_from: props.leave.leave_from ? props.leave.leave_from : null,
-      hospital_id: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).hims_d_hospital_id
+      hospital_id: obritery.hims_d_hospital_id
     };
     this.leaveSocket = Socket;
     this.getLeaveTypes();
@@ -274,7 +276,8 @@ class ApplyLeave extends Component {
         hims_d_leave_detail_id: this.state.hims_d_leave_detail_id,
         religion_id: this.state.religion_id,
         leave_id: this.state.leave_id,
-        employee_id: this.state.employee_id
+        employee_id: this.state.employee_id,
+        hospital_id: this.state.hospital_id
       },
       onSuccess: res => {
         if (res.data.success) {
