@@ -1668,6 +1668,10 @@ module.exports = {
       let allHolidays = [];
 
       let annual_leave="";
+
+      let hospital_id=req.userIdentity.hospital_id;
+
+      if(hospital_id>0){
       //ST OF-------calculate Half-day or Full-day from session
       if (input.from_date == input.to_date) {
         if (input.from_session == "FH" && input.to_session == "FH") {
@@ -1787,8 +1791,8 @@ module.exports = {
           leave_id,L.leave_description,L.leave_category,include_weekoff,include_holiday from hims_f_employee_monthly_leave ML\
           inner join hims_d_leave L on ML.leave_id=L.hims_d_leave_id where employee_id=? and year=? and\
           leave_id=? and L.record_status='A';select hims_d_holiday_id,holiday_date,holiday_description,weekoff,\
-          holiday,holiday_type,religion_id  from hims_d_holiday  where date(holiday_date) between date(?) and date(?) ",
-          values: [input.employee_id, year, input.leave_id, from_date, to_date],
+          holiday,holiday_type,religion_id  from hims_d_holiday  where hospital_id=? and  date(holiday_date) between date(?) and date(?) ",
+          values: [input.employee_id, year, input.leave_id,hospital_id, from_date, to_date],
 
           printQuery: true
         })
@@ -2088,6 +2092,18 @@ module.exports = {
           _mysql.releaseConnection();
           next(e);
         });
+      }else{
+        req.records = {
+          invalid_input: true,
+          message: "Please Valid branch id "
+        };
+  
+        next();
+        return;
+
+
+      }
+
     } catch (e) {
       next(e);
     }
@@ -4609,10 +4625,13 @@ function getLeaveAuthFields(auth_level) {
 function calc(db, body) {
   try {
     return new Promise((resolve, reject) => {
+
+     
       //  let db = null;
       let _mysql = db;
       let input = body;
-
+      let hospital_id=req.userIdentity.hospital_id;
+      if(hospital_id>0){
       const utilities = new algaehUtilities();
       let from_date = moment(input.from_date).format("YYYY-MM-DD");
       let to_date = moment(input.to_date).format("YYYY-MM-DD");
@@ -4632,6 +4651,8 @@ function calc(db, body) {
       let currentClosingBal = 0;
       let annual_leave="";
       let leaveDeductionArray = [];
+
+
       //--- START OF-------calculate Half-day or Full-day from session
 
       if (input.from_date == input.to_date) {
@@ -4796,8 +4817,9 @@ function calc(db, body) {
                 .executeQuery({
                   query:
                     "select hims_d_holiday_id,holiday_date,holiday_description,weekoff,holiday,holiday_type,religion_id\
-                  from hims_d_holiday H where date(holiday_date) between date(?) and date(?) ;",
+                  from hims_d_holiday  where hospital_id=? and  date(holiday_date) between date(?) and date(?) ;",
                   values: [
+                    hospital_id,
                     moment(from_date).format("YYYY-MM-DD"),
                     moment(to_date).format("YYYY-MM-DD")
                   ],
@@ -5058,7 +5080,24 @@ function calc(db, body) {
             next(e);
           });
       });
+
+    }
+
+
+      else {
+        // invalid data
+
+        resolve({
+          invalid_input: true,
+          message: `invalid data`
+        });
+      }
+
     });
+
+
+
+
   } catch (e) {
     next(e);
   }
