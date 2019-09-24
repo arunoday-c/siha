@@ -4630,7 +4630,7 @@ function calc(db, body) {
       //  let db = null;
       let _mysql = db;
       let input = body;
-      let hospital_id=req.userIdentity.hospital_id;
+      let hospital_id=1;
       if(hospital_id>0){
       const utilities = new algaehUtilities();
       let from_date = moment(input.from_date).format("YYYY-MM-DD");
