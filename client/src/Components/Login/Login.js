@@ -68,7 +68,6 @@ export default class Login extends Component {
       data: this.state,
       timeout: 10000,
       onSuccess: response => {
-        console.log(response);
         if (response.data.success === true) {
           setCookie("userName", response.data.records.user_display_name);
           setCookie("keyResources", response.data.records.keyResources, 30);
