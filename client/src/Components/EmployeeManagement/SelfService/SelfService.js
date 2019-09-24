@@ -207,7 +207,7 @@ export default class SelfService extends Component {
                 }
               </li> */}
               <li
-                algaehtabs={"AttendanceRegularization"}
+                algaehtabs={"AttendanceRegularization active"}
                 className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
                 ref={attReg => {

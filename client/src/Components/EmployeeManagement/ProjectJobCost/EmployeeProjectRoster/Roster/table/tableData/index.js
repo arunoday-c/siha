@@ -3,9 +3,8 @@ import { ProjectRosterContext } from "../../index";
 import TD from "../td";
 export default React.memo(function(props) {
   const { getProjectRosterState } = useContext(ProjectRosterContext);
-  const { employees, filterEmployees } = getProjectRosterState();
-  const loadEmployees =
-    filterEmployees.length === 0 ? employees : filterEmployees;
+  const { employees, filterEmployees, filterTrue } = getProjectRosterState();
+  const loadEmployees = filterTrue === false ? employees : filterEmployees;
   return (
     <tbody>
       {loadEmployees.map((row, index) => (

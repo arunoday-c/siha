@@ -26,6 +26,7 @@
                         <th>Emp. Group</th>
                         <th>Total Worked Hr</th>
                         <th>Project Cost</th>
+                        <th>Project Name</th>
 
                     </tr>
                 </thead>
@@ -33,14 +34,14 @@
                     {{#hasElement result}}
                     {{#each result}}
                     <tr>
-                        <td colspan="8" class="tableSubHdg0">Designation: {{designation}}
+                        <td colspan="9" class="tableSubHdg0">Designation: {{designation}}
                             <span class="textFloatRight">Total No Employees: <b>{{no_employees}}</b></span><span
                                 class="textFloatRight">No Projects: <b>{{no_projects}}</b></span>
                         </td>
                     </tr>
                     {{#each projects}}
                     <tr>
-                        <td colspan="8" class="tableSubHdg">Projects: {{project_name}}
+                        <td colspan="9" class="tableSubHdg">Projects: {{project_name}}
                             <span class="textFloatRight">Total Cost: <b>{{project_cost}}</b></span><span
                                 class="textFloatRight">No Hours: <b>{{no_hours}}</b></span><span
                                 class="textFloatRight">Total No Employees: <b>{{no_employees}}</b></span>
@@ -70,11 +71,12 @@
                         <td>{{group_description}}</td>
                         <td>{{complete_hours}}</td>
                         <td>{{project_cost}}</td>
+                        <td>{{project_desc}}</td>
                     </tr>
                     {{/each }}{{/each }}{{/each }}{{/each }}{{/each }}
                     {{else}}
                     <tr>
-                        <td colspan="8" class="noResultTextReport">No Records Found</td>
+                        <td colspan="9" class="noResultTextReport">No Records Found</td>
                     </tr>{{/hasElement }}
                 </tbody>
 
