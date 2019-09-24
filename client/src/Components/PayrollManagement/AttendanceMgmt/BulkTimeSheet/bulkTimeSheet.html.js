@@ -119,13 +119,15 @@ function BulkTimeSheet(props) {
                       <span>{item.employee_name}</span>
                       <small>{item.employee_code}</small>
                     </td>
-                    {item.roster.map((itm, indx) => (
-                      <TableCells
-                        itm={itm}
-                        indx={indx}
-                        key={itm.hims_f_daily_time_sheet_id}
-                      />
-                    ))}
+                    {item.roster.map((itm, indx) => {
+                      return (
+                        <TableCells
+                          itm={itm}
+                          indx={indx}
+                          key={`${item.employee_id}_${itm.attendance_date}`}
+                        />
+                      );
+                    })}
                   </tr>
                 ))}
               </tbody>
@@ -183,15 +185,10 @@ function TableCells(props) {
   const { itm, indx } = props;
   const [enable, setEnable] = useState(false);
   return (
-    <td
-      keys={itm.hims_f_daily_time_sheet_id}
-      onDoubleClick={() => setEnable(state => !state)}
-    >
+    <td onDoubleClick={() => setEnable(state => !state)}>
       <small>{itm.status}</small>
 
-      <span contentEditable={itm.status === "N" ? "false" : "true" && enable}>
-        {itm.worked_hours}
-      </span>
+      <span>{itm.worked_hours}</span>
     </td>
   );
 }

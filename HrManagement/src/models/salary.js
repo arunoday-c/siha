@@ -66,7 +66,7 @@ module.exports = {
             inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id  where \
             A.`year`=? and A.`month`=? and A.hospital_id=?" +
             _stringData +
-            " and hims_f_employee_annual_leave_id is null and (S.salary_processed is null or  S.salary_processed='N');";
+            " and (hims_f_employee_annual_leave_id is null OR from_normal_salary='Y') and (S.salary_processed is null or  S.salary_processed='N');";
         } else {
           inputValues.push(input.hospital_id);
           if (input.employee_id != null) {
@@ -2030,15 +2030,17 @@ module.exports = {
       from hims_d_employee E, hims_d_employee_group EG,hims_d_hrms_options O, hims_d_employee_earnings EE ,hims_d_earning_deduction ED\
       where E.employee_group_id = EG.hims_d_employee_group_id and EE.employee_id = E.hims_d_employee_id and \
       EE.earnings_id=ED.hims_d_earning_deduction_id and \
-      ED.annual_salary_comp='Y' and E.leave_salary_process = 'Y' and E.hims_d_employee_id in (?) group by EE.employee_id;",
+      ED.annual_salary_comp='Y' and E.leave_salary_process = 'Y' and E.hims_d_employee_id in (?) group by EE.employee_id; SELECT hims_d_leave_id FROM hims_d_leave where leave_category='A';",
           values: [inputParam.employee_id],
 
           printQuery: true
         })
-        .then(leave_accrual_detail => {
-          utilities
-            .logger()
-            .log("leave_accrual_detail: ", leave_accrual_detail);
+        .then(leave_accrual_data => {
+          utilities.logger().log("leave_accrual_data: ", leave_accrual_data[0]);
+          let leave_accrual_detail = leave_accrual_data[0];
+          let annual_leave_data = leave_accrual_data[1];
+
+          utilities.logger().log("annual_leave_data: ", annual_leave_data);
           if (leave_accrual_detail.length > 0) {
             _mysql
               .generateRunningNumber({
@@ -2075,9 +2077,10 @@ module.exports = {
                 _mysql
                   .executeQuery({
                     query:
-                      "INSERT INTO `hims_f_leave_salary_accrual_header` (leave_salary_number,year,month, total_leave_salary,total_airfare_amount, hospital_id\
-                      ,leave_salary_date ,created_date,created_by)\
-                      VALUE(?,?,?,?,?,?,?,?);",
+                      "INSERT INTO `hims_f_leave_salary_accrual_header` (leave_salary_number,year, month,  \
+                        total_leave_salary, total_airfare_amount, hospital_id, leave_salary_date , \
+                        created_date, created_by)\
+                      VALUE(?,?,?,?,?,?,?,?,?);",
                     values: [
                       leave_salary_number,
                       inputParam.year,
@@ -2126,6 +2129,7 @@ module.exports = {
                           .then(salary_process => {
                             InsertEmployeeLeaveSalary({
                               leave_salary_accrual_detail: leave_salary_accrual_detail,
+                              annual_leave_data: annual_leave_data,
                               _mysql: _mysql,
                               next: next
                             })
@@ -3122,21 +3126,39 @@ function InsertEmployeeLeaveSalary(options) {
       let leave_salary_accrual_detail = options.leave_salary_accrual_detail;
       let _mysql = options._mysql;
       let strQry = "";
-      //ToDO
+      let annual_leave_data = options.annual_leave_data;
+
       for (let i = 0; i < leave_salary_accrual_detail.length; i++) {
         _mysql
           .executeQuery({
             query:
-              "select hims_f_employee_leave_salary_header_id,employee_id,leave_days,leave_salary_amount,airticket_amount,balance_leave_days,\
-                balance_leave_salary_amount,balance_airticket_amount,airfare_months from \
-                hims_f_employee_leave_salary_header where year = ? and employee_id = ?;",
+              "select hims_f_employee_leave_salary_header_id,employee_id,leave_days,leave_salary_amount, \
+                airticket_amount, balance_leave_days, balance_leave_salary_amount, balance_airticket_amount, \
+                airfare_months from hims_f_employee_leave_salary_header where year = ? and employee_id = ?;\
+                select hims_f_employee_monthly_leave_id, close_balance from hims_f_employee_monthly_leave where year = ? and employee_id = ? and leave_id=?;",
             values: [
               leave_salary_accrual_detail[i].year,
-              leave_salary_accrual_detail[i].employee_id
+              leave_salary_accrual_detail[i].employee_id,
+              leave_salary_accrual_detail[i].year,
+              leave_salary_accrual_detail[i].employee_id,
+              annual_leave_data[0].hims_d_leave_id
             ],
             printQuery: true
           })
-          .then(employee_leave_salary_header => {
+          .then(employee_leave_salary => {
+            let employee_leave_salary_header = employee_leave_salary[0];
+            let monthly_leave = employee_leave_salary[1][0];
+
+            const utilities = new algaehUtilities();
+
+            utilities
+              .logger()
+              .log(
+                "employee_leave_salary_header: ",
+                employee_leave_salary_header
+              );
+            // utilities.logger().log("monthly_leave: ", monthly_leave);
+
             if (employee_leave_salary_header.length > 0) {
               let leave_days =
                 parseFloat(employee_leave_salary_header[0].leave_days) +
@@ -3163,10 +3185,15 @@ function InsertEmployeeLeaveSalary(options) {
               let airfare_months =
                 parseFloat(employee_leave_salary_header[0].airfare_months) + 1;
 
+              let monthly_close_balance =
+                parseFloat(monthly_leave.close_balance) +
+                parseFloat(leave_salary_accrual_detail[i].leave_days);
+
               strQry += mysql.format(
                 "UPDATE `hims_f_employee_leave_salary_header` SET leave_days=?,`leave_salary_amount`=?,\
                   `airticket_amount`=?,`balance_leave_days`=?,`balance_leave_salary_amount`=?,\
                   `balance_airticket_amount`=?,`airfare_months`=? where  hims_f_employee_leave_salary_header_id=?;\
+                  UPDATE hims_f_employee_monthly_leave set close_balance=? where hims_f_employee_monthly_leave_id=?;\
                   INSERT INTO `hims_f_employee_leave_salary_detail`(employee_leave_salary_header_id,leave_days,\
                     leave_salary_amount,airticket_amount) VALUE(?,?,?,?)",
                 [
@@ -3179,7 +3206,8 @@ function InsertEmployeeLeaveSalary(options) {
                   airfare_months,
                   employee_leave_salary_header[0]
                     .hims_f_employee_leave_salary_header_id,
-
+                  monthly_close_balance,
+                  monthly_leave.hims_f_employee_monthly_leave_id,
                   employee_leave_salary_header[0]
                     .hims_f_employee_leave_salary_header_id,
                   leave_salary_accrual_detail[i].leave_days,
@@ -3246,7 +3274,31 @@ function InsertEmployeeLeaveSalary(options) {
                       printQuery: true
                     })
                     .then(leave_detail => {
-                      resolve();
+                      utilities.logger().log("monthly_leave: ", monthly_leave);
+                      let monthly_close_balance =
+                        parseFloat(monthly_leave.close_balance) +
+                        parseFloat(leave_salary_accrual_detail[i].leave_days);
+
+                      utilities
+                        .logger()
+                        .log("monthly_close_balance: ", monthly_close_balance);
+                      _mysql
+                        .executeQuery({
+                          query:
+                            "UPDATE hims_f_employee_monthly_leave set close_balance=? where hims_f_employee_monthly_leave_id=?;",
+                          values: [
+                            monthly_close_balance,
+                            monthly_leave.hims_f_employee_monthly_leave_id
+                          ],
+
+                          printQuery: true
+                        })
+                        .then(monthly_leave => {
+                          // resolve();
+                        })
+                        .catch(error => {
+                          reject(error);
+                        });
                     })
                     .catch(error => {
                       reject(error);
