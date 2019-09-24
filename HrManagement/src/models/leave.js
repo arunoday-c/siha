@@ -1669,9 +1669,9 @@ module.exports = {
 
       let annual_leave="";
 
-      let hospital_id=req.userIdentity.hospital_id;
+      
 
-      if(hospital_id>0){
+      if(input.employee_branch>0){
       //ST OF-------calculate Half-day or Full-day from session
       if (input.from_date == input.to_date) {
         if (input.from_session == "FH" && input.to_session == "FH") {
@@ -1792,7 +1792,7 @@ module.exports = {
           inner join hims_d_leave L on ML.leave_id=L.hims_d_leave_id where employee_id=? and year=? and\
           leave_id=? and L.record_status='A';select hims_d_holiday_id,holiday_date,holiday_description,weekoff,\
           holiday,holiday_type,religion_id  from hims_d_holiday  where hospital_id=? and  date(holiday_date) between date(?) and date(?) ",
-          values: [input.employee_id, year, input.leave_id,hospital_id, from_date, to_date],
+          values: [input.employee_id, year, input.leave_id,input.employee_branch, from_date, to_date],
 
           printQuery: true
         })
@@ -4630,8 +4630,8 @@ function calc(db, body) {
       //  let db = null;
       let _mysql = db;
       let input = body;
-      let hospital_id=1;
-      if(hospital_id>0){
+      
+      if(input.employee_branch>0){
       const utilities = new algaehUtilities();
       let from_date = moment(input.from_date).format("YYYY-MM-DD");
       let to_date = moment(input.to_date).format("YYYY-MM-DD");
@@ -4819,7 +4819,7 @@ function calc(db, body) {
                     "select hims_d_holiday_id,holiday_date,holiday_description,weekoff,holiday,holiday_type,religion_id\
                   from hims_d_holiday  where hospital_id=? and  date(holiday_date) between date(?) and date(?) ;",
                   values: [
-                    hospital_id,
+                    input.employee_branch,
                     moment(from_date).format("YYYY-MM-DD"),
                     moment(to_date).format("YYYY-MM-DD")
                   ],
