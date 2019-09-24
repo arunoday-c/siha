@@ -19,7 +19,7 @@ export default function FilterComponent(props) {
   return (
     <div className="row inner-top-search FilterCompnentDiv">
       <AlagehAutoComplete
-        div={{ className: "col mandatory" }}
+        div={{ className: "col-1 mandatory" }}
         label={{
           forceLabel: "Year",
           isImp: true
@@ -37,7 +37,7 @@ export default function FilterComponent(props) {
         }}
       />
       <AlagehAutoComplete
-        div={{ className: "col mandatory" }}
+        div={{ className: "col-2 mandatory" }}
         label={{
           forceLabel: "Month",
           isImp: true

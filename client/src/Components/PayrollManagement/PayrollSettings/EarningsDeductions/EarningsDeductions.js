@@ -1119,7 +1119,7 @@ class EarningsDeductions extends Component {
                     </div>
                   </div>
                   <div className="col-4">
-                    <label>Annual Salary Component</label>
+                    <label>Leave Salary Component</label>
                     <div className="customCheckbox">
                       <label className="checkbox inline">
                         <input
