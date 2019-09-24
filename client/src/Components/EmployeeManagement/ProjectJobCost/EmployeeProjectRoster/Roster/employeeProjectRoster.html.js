@@ -51,9 +51,11 @@ export default function EmpProjectRoster(props) {
       <EmployeeFilter
         loadFunc={inputs => {
           AlgaehLoader({ show: true });
+          setFilterStatus("0");
           getEmployeesForProjectRoster(inputs)
             .then(result => {
               const { records, fromDate, toDate } = result;
+
               setProjectRosterState({
                 total_rosted: records.total_rosted,
                 total_non_rosted: records.total_non_rosted,
@@ -61,12 +63,19 @@ export default function EmpProjectRoster(props) {
                 dates: records.datesArray,
                 inputs: inputs,
                 fromDate: fromDate,
-                toDate: toDate
+                toDate: toDate,
+                filterTrue: false,
+                filterEmployees: []
               });
               AlgaehLoader({ show: false });
             })
             .catch(error => {
-              setProjectRosterState({ employees: [], dates: [] });
+              setProjectRosterState({
+                employees: [],
+                dates: [],
+                filterTrue: false,
+                filterEmployees: []
+              });
               AlgaehLoader({ show: false });
             });
         }}
