@@ -1,87 +1,74 @@
 import React, { useContext } from "react";
-import swal from "sweetalert2";
-import momemt from "moment";
+
 import { ProjectRosterContext } from "../../index";
 import {
   algaehApiCall,
   swalMessage
 } from "../../../../../../../utils/algaehApiCall";
+import { deleteProjectRoster } from "./index.event";
 import AlgaehLoader from "../../../../../../Wrapper/fullPageLoader";
 export default React.memo(function(props) {
-  const { projects, employee_code } = props;
+  const {
+    projects,
+    employee_code,
+    editing,
+    employee_name,
+    designation,
+    date_of_joining,
+    exit_date,
+    hims_d_employee_id
+  } = props;
   const {
     getEmployeesForProjectRoster,
     getProjectRosterState,
     setProjectRosterState
   } = useContext(ProjectRosterContext);
   const { inputs } = getProjectRosterState();
-  function deleteProjectRoster(data) {
-    return new Promise((resolve, reject) => {
-      swal({
-        title: `Do you want to delete?`,
-        text: `${data.project_desc} for the ${momemt(
-          data.attendance_date
-        ).format("DD-MM-YYYY")}`,
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Yes",
-        confirmButtonColor: "#44b8bd",
-        cancelButtonColor: "#d33",
-        cancelButtonText: "No"
-      }).then(willDelete => {
-        if (willDelete.value) {
-          algaehApiCall({
-            uri: "/projectjobcosting/deleteProjectRoster",
-            method: "DELETE",
-            module: "hrManagement",
-            data: {
-              hims_f_project_roster_id: data.hims_f_project_roster_id
-            },
-            onSuccess: res => {
-              const { success } = res.data;
-              if (success) {
-                swalMessage({
-                  title: "Record Deleted Successfully . .",
-                  type: "success"
-                });
-                resolve();
-                // this.getEmployeesForProjectRoster();
-              } else if (!success) {
-                swalMessage({
-                  title: res.data.records.message,
-                  type: "warning"
-                });
-                reject();
-              }
-            },
-            onCatch: e => {
-              reject();
-            }
-          });
-        } else {
-          swalMessage({
-            title: "Delete request cancelled",
-            type: "info"
-          });
-          reject();
-        }
-      });
-    });
-  }
+
   return (
     <React.Fragment>
       {projects.map(item => {
         const style =
           item.status === "WO"
-            ? { style: { backgroundColor: "#459C62", color: "#fff" } }
+            ? {
+                style: {
+                  backgroundColor: "#459C62",
+                  color: "#fff",
+                  cursor: "pointer"
+                }
+              }
             : item.status === "HO"
-            ? { style: { backgroundColor: "#3F789C", color: "#fff" } }
+            ? {
+                style: {
+                  backgroundColor: "#3F789C",
+                  color: "#fff",
+                  cursor: "pointer"
+                }
+              }
             : item.status === "APR"
-            ? { style: { backgroundColor: "#879C3F", color: "#fff" } }
+            ? {
+                style: {
+                  backgroundColor: "#879C3F",
+                  color: "#fff",
+                  cursor: "pointer"
+                }
+              }
             : item.status === "PEN"
-            ? { style: { backgroundColor: "#9C7D3F", color: "#fff" } }
+            ? {
+                style: {
+                  backgroundColor: "#9C7D3F",
+                  color: "#fff",
+                  cursor: "pointer"
+                }
+              }
             : item.status === "N"
-            ? { style: { backgroundColor: "#f78fa2", color: "#000" } }
+            ? {
+                style: {
+                  backgroundColor: "#f78fa2",
+                  color: "#000",
+                  cursor: "pointer"
+                }
+              }
             : {};
 
         return (
@@ -89,6 +76,21 @@ export default React.memo(function(props) {
             key={`${employee_code + item.attendance_date}`}
             className="time_cell editAction"
             {...style}
+            onClick={e => {
+              if (e.target.nodeName !== "LI") {
+                editing({
+                  ...item,
+                  ...{
+                    employee_name,
+                    designation,
+                    date_of_joining,
+                    exit_date,
+                    hims_d_employee_id,
+                    employee_code
+                  }
+                });
+              }
+            }}
           >
             {item.status !== "N" ? (
               <React.Fragment>

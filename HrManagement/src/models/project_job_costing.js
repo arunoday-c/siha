@@ -846,7 +846,7 @@ module.exports = {
         input.roster.forEach(item => {
           allDates.forEach(dat => {
             insertArray.push({
-              employee_id: item["employee_id"],
+              employee_id: item,
               attendance_date: dat,
               project_id: input["project_id"],
               hospital_id: input["hospital_id"]

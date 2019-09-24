@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import moment from "moment";
 import { ProjectRosterContext } from "../index";
 import TableData from "./tableData";
-export default function() {
+export default function(props) {
   const { getProjectRosterState } = useContext(ProjectRosterContext);
   const { inputs, dates } = getProjectRosterState();
 
@@ -22,7 +22,7 @@ export default function() {
           <th>Exit Date</th>
         </tr>
       </thead>
-      <TableData />
+      <TableData {...props} />
     </table>
   );
 }

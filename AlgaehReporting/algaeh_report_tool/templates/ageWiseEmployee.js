@@ -25,6 +25,10 @@ const executePDF = function executePDFMethod(options) {
         strQuery += ` and E.sub_department_id=${input.sub_department_id}`;
       }
 
+      if (input.employee_group_id > 0) {
+        strQuery += ` and E.employee_group_id=${input.employee_group_id}`;
+      }
+
       let return_age = "ALL";
       let isAge = "";
 
@@ -56,7 +60,7 @@ const executePDF = function executePDFMethod(options) {
         .executeQuery({
           query: ` 
           select  hospital_name FROM hims_d_hospital where hims_d_hospital_id=?;
-          select * from (select hims_d_employee_id,employee_code,full_name,sex,date_of_joining,
+          select * from (select hims_d_employee_id,employee_code,full_name,sex,date_of_joining,G.group_description,
           E.date_of_birth, TIMESTAMPDIFF(YEAR, E.date_of_birth, CURDATE()) AS new_age,
           case employee_status when 'A' then 'ACTIVE' when 'I' then 'INACTIVE'
           when 'R' then 'RESIGNED' when 'T' then 'TERMINATED' when 'E' then 'RETIRED'
@@ -71,6 +75,7 @@ const executePDF = function executePDFMethod(options) {
           left join hims_d_nationality N on E.nationality=N.hims_d_nationality_id
           left join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
           left join hims_d_department D on SD.department_id=D.hims_d_department_id
+           left join hims_d_employee_group G on E.employee_group_id=G.hims_d_employee_group_id
           where E.hospital_id=? and E.record_status='A'  ${strQuery} )as EM ${isAge} order by new_age ; `,
           values: [input.hospital_id, input.hospital_id],
           printQuery: true

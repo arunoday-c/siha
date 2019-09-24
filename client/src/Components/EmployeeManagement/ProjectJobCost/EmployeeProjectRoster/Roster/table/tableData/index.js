@@ -3,10 +3,12 @@ import { ProjectRosterContext } from "../../index";
 import TD from "../td";
 export default React.memo(function(props) {
   const { getProjectRosterState } = useContext(ProjectRosterContext);
-  const { employees } = getProjectRosterState();
+  const { employees, filterEmployees } = getProjectRosterState();
+  const loadEmployees =
+    filterEmployees.length === 0 ? employees : filterEmployees;
   return (
     <tbody>
-      {employees.map((row, index) => (
+      {loadEmployees.map((row, index) => (
         <tr key={row.hims_d_employee_id}>
           <td>
             <b> {row.employee_name} </b>
@@ -15,7 +17,7 @@ export default React.memo(function(props) {
             <br></br>
             <small>{row.designation}</small>
           </td>
-          <TD {...row} />
+          <TD {...row} {...props} />
           <td>{row.date_of_joining} </td>
           <td>{row.exit_date}</td>
         </tr>
