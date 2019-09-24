@@ -61,7 +61,7 @@ const executePDF = function executePDFMethod(options) {
           query: ` 
           select  hospital_name FROM hims_d_hospital where hims_d_hospital_id=?;
           select * from (select hims_d_employee_id,employee_code,full_name,sex,date_of_joining,G.group_description,
-          E.date_of_birth, TIMESTAMPDIFF(YEAR, E.date_of_birth, CURDATE()) AS new_age
+          E.date_of_birth, TIMESTAMPDIFF(YEAR, E.date_of_birth, CURDATE()) AS new_age,
           case employee_status when 'A' then 'ACTIVE' when 'I' then 'INACTIVE'
           when 'R' then 'RESIGNED' when 'T' then 'TERMINATED' when 'E' then 'RETIRED'
           end as  employee_status,DG.designation,N.nationality,R.religion_name,
