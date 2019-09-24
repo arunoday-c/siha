@@ -8,6 +8,7 @@ export default function(props) {
     employees: [],
     filterEmployees: [],
     filterTrue: false,
+    selectedFilter: "0",
     inputs: {},
     dates: [],
     total_rosted: 0,
