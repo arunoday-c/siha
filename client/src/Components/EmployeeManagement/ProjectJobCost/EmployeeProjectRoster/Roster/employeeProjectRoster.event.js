@@ -44,7 +44,7 @@ export function getEmployeesForProjectRoster(inputs) {
           if (success === true) {
             resolve({ records, fromDate, toDate });
           } else {
-            reject(new Error(message));
+            reject(new Error(records.message));
           }
         },
         onCatch: error => {
