@@ -28,7 +28,8 @@ let encryption = data => {
       currency_symbol: data["currency_symbol"],
       thousand_separator: data["thousand_separator"],
       decimal_separator: data["decimal_separator"],
-      page_to_redirect: data["page_to_redirect"]
+      page_to_redirect: data["page_to_redirect"],
+      employee_branch: data["employee_branch"]
     }
   });
   debugLog("stringData", stringData);
