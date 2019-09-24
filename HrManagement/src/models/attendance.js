@@ -2132,6 +2132,10 @@ module.exports = {
         strQry += " and E.employee_designation_id=" + input.designation_id;
       }
 
+      if (input.employee_group_id > 0) {
+        strQry += ` and E.employee_group_id=${input.employee_group_id}`;
+      }
+
       let from_date = null;
       let to_date = null;
 
@@ -8295,7 +8299,7 @@ function bulkTimeValidate(day, employee_code, STDWH, STDWM, HALF_HR, HALF_MIN) {
     };
   }
 }
-function loadBulkTimeSheet(input, req, res, next) {
+function loadBulkTimeSheetbkup(input, req, res, next) {
   const _mysql = new algaehMysql();
 
   try {
@@ -8500,6 +8504,205 @@ function loadBulkTimeSheet(input, req, res, next) {
 
 
 
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "Please send valid input"
+      };
+      next();
+    }
+  } catch (e) {
+    next(e);
+  }
+}
+
+//created by:irfan
+function loadBulkTimeSheet(input, req, res, next) {
+  const _mysql = new algaehMysql();
+
+  try {
+    if (
+      input.branch_id > 0 &&
+      input.from_date != undefined &&
+      input.to_date != undefined
+    ) {
+      let strQry = "";
+      let project = "";
+
+      if (input.project_id > 0) {
+        project = " and PR.project_id=" + input.project_id;
+      }
+
+      if (input.employee_id > 0) {
+        strQry += " and TS.employee_id =" + input.employee_id;
+      }
+
+      if (input.department_id > 0) {
+        strQry += " and SD.department_id=" + input.department_id;
+      }
+      if (input.sub_department_id > 0) {
+        strQry += " and E.sub_department_id=" + input.sub_department_id;
+      }
+      if (input.designation_id > 0) {
+        strQry += " and E.employee_designation_id=" + input.designation_id;
+      }
+      if (input.employee_group_id > 0) {
+        strQry += " and E.employee_group_id=" + input.employee_group_id;
+      }
+
+      _mysql
+        .executeQuery({
+          query:
+            "select attendance_starts,at_st_date,at_end_date  from hims_d_hrms_options;"
+        })
+        .then(options => {
+          if (
+            options.length > 0 &&
+            options[0]["attendance_starts"] == "PM" &&
+            options[0]["at_st_date"] > 0 &&
+            options[0]["at_end_date"] > 0
+          ) {
+            const f_date =
+              options[0]["at_st_date"] + "-" + input.month + "-" + input.year;
+            const t_date =
+              options[0]["at_end_date"] + "-" + input.month + "-" + input.year;
+
+            const valid_from_date = moment(f_date, "DD-M-YYYY")
+              .subtract(1, "months")
+              .format("YYYYMMDD");
+            const valid_to_date = moment(t_date, "DD-M-YYYY").format(
+              "YYYYMMDD"
+            );
+
+            const input_from_date = moment(
+              input.from_date,
+              "YYYY-MM-DD"
+            ).format("YYYYMMDD");
+            const input_to_date = moment(input.to_date, "YYYY-MM-DD").format(
+              "YYYYMMDD"
+            );
+
+            if (
+              valid_from_date <= input_from_date &&
+              valid_to_date >= input_from_date &&
+              input_to_date >= valid_from_date &&
+              input_to_date <= valid_to_date
+            ) {
+              _mysql
+                .executeQuery({
+                  query: `select hims_f_daily_time_sheet_id,TS.sub_department_id, TS.employee_id, TS.attendance_date, \
+									 status,worked_hours,employee_code,full_name as employee_name,\
+									P.project_code,P.project_desc from  hims_f_daily_time_sheet TS \
+                  inner join hims_d_employee E on TS.employee_id=E.hims_d_employee_id\
+                  inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\              
+									left join hims_f_project_roster PR on TS.employee_id=PR.employee_id and TS.hospital_id=PR.hospital_id  and TS.attendance_date=PR.attendance_date\
+									left join hims_d_project P on PR.project_id=P.hims_d_project_id\
+									where  TS.hospital_id=? and  TS.attendance_date between (?) and (?) ${strQry} ${project}; `,
+                  values: [input.branch_id, input.from_date, input.to_date],
+                  printQuery: true
+                })
+                .then(result => {
+                  //  console.log("result:",result);
+
+                  _mysql.releaseConnection();
+                  const outputArray = [];
+                  const allDates = getDaysArray(
+                    new Date(input.from_date),
+                    new Date(input.to_date)
+                  );
+
+                  _.chain(result)
+                    .groupBy(g => g.employee_id)
+                    .forEach(emp => {
+                      allDates.forEach(dat => {
+                        const attUplded = emp.find(e => {
+                          return e.attendance_date == dat;
+                        });
+                        if (attUplded == undefined) {
+                          emp.push({
+                            hims_f_daily_time_sheet_id: null,
+                            attendance_date: dat,
+                            status: "N",
+                            worked_hours: "0.00"
+                          });
+                        }
+                      });
+
+                      outputArray.push({
+                        employee_id: emp[0].employee_id,
+                        employee_code: emp[0].employee_code,
+                        employee_name: emp[0].employee_name,
+                        sub_department_id: emp[0].sub_department_id,
+                        roster: _.chain(emp)
+                          .sortBy(s =>
+                            parseInt(
+                              moment(s.attendance_date, "YYYY-MM-DD").format(
+                                "MMDD"
+                              )
+                            )
+                          )
+                          .map(f => {
+                            return {
+                              hims_f_daily_time_sheet_id:
+                                f.hims_f_daily_time_sheet_id,
+                              attendance_date: f.attendance_date,
+                              status: f.status,
+                              worked_hours: f.worked_hours
+                            };
+                          })
+                          .value()
+                      });
+
+                      // return empl;
+                    })
+                    .value();
+
+                  req.records = {
+                    hospital_id: input.branch_id,
+                    from_date: input.from_date,
+                    to_date: input.to_date,
+                    project_id: input.project_id,
+                    employee_id: input.employee_id,
+                    department_id: input.department_id,
+                    sub_department_id: input.sub_department_id,
+                    year: input.year,
+                    month: input.month,
+                    data: outputArray
+                  };
+
+                  next();
+                })
+                .catch(e => {
+                  _mysql.releaseConnection();
+                  next(e);
+                });
+            } else {
+              _mysql.releaseConnection();
+              req.records = {
+                message: ` date range should be between ${moment(
+                  valid_from_date,
+                  "YYYYMMDD"
+                ).format("DD-MM-YYYY")} and ${moment(
+                  valid_to_date,
+                  "YYYYMMDD"
+                ).format("DD-MM-YYYY")}`,
+                invalid_input: true
+              };
+              next();
+            }
+          } else {
+            _mysql.releaseConnection();
+            req.records = {
+              message: "Please define HRMS options",
+              invalid_input: true
+            };
+            next();
+          }
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
     } else {
       req.records = {
         invalid_input: true,
