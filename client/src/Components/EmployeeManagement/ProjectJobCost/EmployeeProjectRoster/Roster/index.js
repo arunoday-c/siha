@@ -7,6 +7,7 @@ export default function(props) {
   const [projectRoster, setProjectRoster] = useState({
     employees: [],
     filterEmployees: [],
+    filterTrue: false,
     inputs: {},
     dates: [],
     total_rosted: 0,

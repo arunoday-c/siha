@@ -27,6 +27,7 @@ export default function(props) {
   const {
     employees,
     filterEmployees,
+    filterTrue,
     toDate,
     fromDate,
     inputs
@@ -53,8 +54,7 @@ export default function(props) {
       : to_date === "" && isEditing === undefined
       ? toDate
       : to_date;
-  const employeeShow =
-    filterEmployees.length === 0 ? employees : filterEmployees;
+  const employeeShow = filterTrue === false ? employees : filterEmployees;
   function processAsssignProject(data) {
     const {
       selectedProjectID,

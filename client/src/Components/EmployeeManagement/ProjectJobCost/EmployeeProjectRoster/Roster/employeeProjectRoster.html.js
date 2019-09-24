@@ -3,7 +3,6 @@ import { ProjectRosterContext } from "./index";
 import Table from "./table";
 import ProjectAssigned from "./AssignProject";
 import { EmployeeFilter } from "../../../../common/EmployeeFilter";
-import _ from "lodash";
 import AlgaehLoader from "../../../../Wrapper/fullPageLoader";
 import { Search } from "semantic-ui-react";
 import {
@@ -16,6 +15,7 @@ export default function EmpProjectRoster(props) {
     ProjectRosterContext
   );
   const {
+    filterTrue,
     employees,
     total_rosted,
     total_non_rosted,
@@ -99,11 +99,13 @@ export default function EmpProjectRoster(props) {
               <select
                 style={{ marginLeft: 10 }}
                 onChange={e => {
-                  // AlgaehLoader(true);
                   let selected = e.target.value;
                   setFilterStatus(selected);
                   if (selected === "0") {
-                    setProjectRosterState({ filterEmployees: [] });
+                    setProjectRosterState({
+                      filterEmployees: [],
+                      filterTrue: false
+                    });
                   } else {
                     const emp = employees.map(employee => {
                       let allProjects = employee.projects;
@@ -131,9 +133,9 @@ export default function EmpProjectRoster(props) {
                       return f !== undefined;
                     });
                     setProjectRosterState({
+                      filterTrue: true,
                       filterEmployees: allEmployees
                     });
-                    // AlgaehLoader(false);
                   }
                 }}
                 value={filterStatus}
@@ -194,37 +196,6 @@ export default function EmpProjectRoster(props) {
               }}
             />
             <div className="portlet-body">
-              <div className="col-12">
-                <div className="row">
-                  {/*<div className="col-3">
-                    <Search
-                      loading={filterLoading}
-                      onSearchChange={e => {
-
-                        _.debounce(
-                          (e, { value }) => {
-
-                            setFilterValue(value);
-                            setFilterLoading(true);
-                          },
-                          500,
-                          {
-                            leading: true
-                          }
-                        );
-                      }}
-                      onResultSelect={e => {
-                        debugger;
-                      }}
-                      resultRenderer={data => {
-                        return <strong>{data.employee_name}</strong>;
-                      }}
-                      results={employees}
-                      value={filterValue}
-                    />
-                </div>*/}
-                </div>
-              </div>
               <div className="col-12" id="projectRosterTable">
                 <div className="row">
                   {employees.length === 0 ? (
