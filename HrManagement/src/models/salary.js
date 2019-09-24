@@ -42,6 +42,13 @@ module.exports = {
             _stringData += " and SD.department_id=?";
             inputValues.push(input.department_id);
           }
+
+          utilities.logger().log("group_id: ", input.group_id);
+
+          if (input.group_id != null) {
+            _stringData += " and E.employee_group_id=?";
+            inputValues.push(input.group_id);
+          }
           strQuery =
             "select A.hims_f_attendance_monthly_id, A.employee_id, A.year, A.month, A.hospital_id, \
             A.sub_department_id, A.total_days,A.present_days, A.absent_days, A.total_work_days, \
@@ -1411,8 +1418,8 @@ module.exports = {
                                                                     "INSERT INTO `hims_f_salary` (salary_number,month,year,employee_id,sub_department_id,salary_date,per_day_sal,total_days,\
                                                                  present_days,absent_days,total_work_days,total_weekoff_days,total_holidays,total_leave,paid_leave,\
                                                                  unpaid_leave,loan_payable_amount,loan_due_amount,advance_due,gross_salary,total_earnings,total_deductions,\
-                                                                 total_contributions,net_salary, total_paid_days) \
-                                                                VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ",
+                                                                 total_contributions,net_salary, total_paid_days, salary_type) \
+                                                                VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ",
                                                                   values: [
                                                                     _salary_number,
                                                                     parseInt(
@@ -1490,7 +1497,12 @@ module.exports = {
                                                                       i
                                                                     ][
                                                                       "total_paid_days"
-                                                                    ]
+                                                                    ],
+                                                                    req.query
+                                                                      .leave_salary ==
+                                                                    null
+                                                                      ? "NS"
+                                                                      : "LS"
                                                                   ],
                                                                   printQuery: true
                                                                 }
@@ -1882,6 +1894,9 @@ module.exports = {
       _stringData +=
         inputParam.department_id != null ? " and SD.department_id=? " : "";
 
+      _stringData +=
+        inputParam.group_id != null ? " and emp.employee_group_id=? " : "";
+
       _mysql
         .executeQuery({
           query:
@@ -1955,6 +1970,9 @@ module.exports = {
 
       _stringData +=
         inputParam.department_id != null ? " and SD.department_id=? " : "";
+
+      _stringData +=
+        inputParam.group_id != null ? " and emp.employee_group_id=? " : "";
       /* Select statemwnt  */
 
       _mysql
@@ -2057,7 +2075,7 @@ module.exports = {
                 _mysql
                   .executeQuery({
                     query:
-                      "INSERT INTO `hims_f_leave_salary_accrual_header` (leave_salary_number,year,month, total_leave_salary,total_airfare_amount\
+                      "INSERT INTO `hims_f_leave_salary_accrual_header` (leave_salary_number,year,month, total_leave_salary,total_airfare_amount, hospital_id\
                       ,leave_salary_date ,created_date,created_by)\
                       VALUE(?,?,?,?,?,?,?,?);",
                     values: [
@@ -2066,6 +2084,7 @@ module.exports = {
                       inputParam.month,
                       total_leave_salary,
                       total_airfare_amount,
+                      req.userIdentity.hospital_id,
                       moment(new Date()).format("YYYY-MM-DD"),
                       new Date(),
                       req.userIdentity.algaeh_d_app_user_id

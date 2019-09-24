@@ -367,6 +367,7 @@ const getRequisitionDetails = (
             data.stock_detail[i].item_uom;
 
           data.stock_detail[i].removed = "N";
+          data.stock_detail[i].ack_quantity = 0;
         }
         data.quantity_transferred = 0;
         data.item_details = null;
