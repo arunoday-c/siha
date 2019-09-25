@@ -62,7 +62,6 @@
           font-weight: bold;
           small {
             display: block;
-            border-bottom: 1px dotted #d4d4d4;
             font-weight: normal;
           }
 
@@ -81,6 +80,18 @@
             padding: 3px;
             small {
               border-bottom: none;
+            }
+          }
+          span {
+            display: inline-block;
+            width: 100%;
+            border-top: 1px dotted #d4d4d4;
+            border-bottom: 1px dotted #d4d4d4;
+          }
+          &:first-child {
+            span {
+              display: inline-block;
+              border: none;
             }
           }
         }
