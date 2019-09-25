@@ -91,7 +91,7 @@ function BulkTimeSheet(props) {
       <div className="portlet portlet-bordered margin-top-15">
         <div className="portlet-title">
           <div className="caption">
-            <label className="label">Total Employees : {data.length}</label>
+            <h3 className="caption-subject">Total Employees : {data.length}</h3>
           </div>
           <div className="actions" />
         </div>

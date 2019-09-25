@@ -162,6 +162,7 @@ export default class LeaveAuthorization extends Component {
       method: "GET",
       module: "hrManagement",
       data: {
+        hospital_id: this.state.hospital_id,
         auth_level: "AL" + this.state.auth_level,
         employee_id: this.state.hims_d_employee_id,
         leave_status: this.state.leave_status,
