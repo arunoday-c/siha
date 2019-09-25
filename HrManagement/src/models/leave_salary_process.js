@@ -27,10 +27,11 @@ module.exports = {
           _mysql
             .executeQuery({
               query:
-                "SELECT hims_f_leave_application_id, from_date, to_date, leave_type, total_approved_days, E.hospital_id FROM \
-              hims_f_leave_application,  hims_d_employee E \
-              where E.hims_d_employee_id = hims_f_leave_application.employee_id and status='APR' and processed = 'N' and leave_id=? and \
-              employee_id=?;",
+                "SELECT hims_f_leave_application_id, from_date, to_date, leave_type, total_approved_days, \
+                E.hospital_id FROM hims_f_leave_application LA inner join  hims_d_employee E \
+                on E.hims_d_employee_id = LA.employee_id left join  hims_f_employee_annual_leave AL \
+                on LA.hims_f_leave_application_id = AL.leave_application_id where AL.from_normal_salary = 'N' \
+                and status='APR' and processed = 'N' and leave_id=? and LA.employee_id=?;",
               values: [leave_id, _leaveSalary.employee_id],
               printQuery: true
             })

@@ -118,7 +118,6 @@ function BulkTimeSheet(props) {
                     <td>
                       <span>{item.employee_name}</span>
                       <small>{item.employee_code}</small>
-                      <span>{item.employee_name}</span>
                     </td>
                     {item.roster.map((itm, indx) => {
                       return (

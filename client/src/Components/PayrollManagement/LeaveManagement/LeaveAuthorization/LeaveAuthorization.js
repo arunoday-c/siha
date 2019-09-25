@@ -455,11 +455,18 @@ export default class LeaveAuthorization extends Component {
                                   }
                                 }
                                 className="fas fa-thumbs-up"
-                                onClick={this.authorizeLeave.bind(
-                                  this,
-                                  "A",
-                                  row
-                                )}
+                                // onClick={this.authorizeLeave.bind(
+                                //   this,
+                                //   "A",
+                                //   row
+                                // )}
+                                onClick={() => {
+                                  this.setState({
+                                    open: true,
+                                    currLeavAppln: row,
+                                    type: row.status === "APR" ? "C" : undefined
+                                  });
+                                }}
                               />
 
                               <i
