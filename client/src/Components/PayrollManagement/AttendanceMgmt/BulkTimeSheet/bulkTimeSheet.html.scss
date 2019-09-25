@@ -99,3 +99,22 @@
     }
   }
 }
+.bulkUploadErrorMessage {
+  background: #ececec;
+  padding-left: 10px;
+  border-radius: 4px;
+  h5 {
+    text-align: center;
+    border-bottom: 1px solid #fff;
+    color: #2e2e2e;
+    padding: 10px 0;
+  }
+  p {
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: 40vh;
+    color: red;
+    font-size: 1rem;
+    line-height: 1.7rem;
+  }
+}

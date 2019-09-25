@@ -97,7 +97,10 @@ function BulkTimeSheet(props) {
         </div>
         <div className="portlet-body bulkTimeSheetPreviewCntr">
           {message !== "" ? (
-            <p>{message}</p>
+            <div className="bulkUploadErrorMessage">
+              <h5>Please validate below details in excel template</h5>
+              <p dangerouslySetInnerHTML={{ __html: message }}></p>
+            </div>
           ) : (
             <table id="bulkTimeSheetPreview">
               <thead>
@@ -187,8 +190,8 @@ function TableCells(props) {
   return (
     <td onDoubleClick={() => setEnable(state => !state)}>
       <small>{itm.status}</small>
-
       <span>{itm.worked_hours}</span>
+      <small>{itm.abbreviation}</small>
     </td>
   );
 }

@@ -1479,7 +1479,7 @@ export default class WeeklyAttendance extends Component {
           </div>
         </div>
 
-        <div className="hptl-phase1-footer">
+        {/* <div className="hptl-phase1-footer">
           <div className="row">
             <div className="col-lg-12">
               <button
@@ -1518,7 +1518,7 @@ export default class WeeklyAttendance extends Component {
               </button>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     );
   }
