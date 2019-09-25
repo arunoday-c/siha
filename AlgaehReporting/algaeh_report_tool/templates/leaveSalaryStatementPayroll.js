@@ -32,7 +32,7 @@ const executePDF = function executePDFMethod(options) {
             left join hims_d_department DP on SD.department_id=DP.hims_d_department_id
             left join  hims_d_nationality NA  on E.nationality=NA.hims_d_nationality_id
             left join  hims_d_hospital HO  on E.hospital_id=HO.hims_d_hospital_id
-            WHERE S.salary_type='NS' and E.hospital_id=? and S.year=? and S.month=? ${strData} ;`,
+            WHERE S.salary_type='LS' and E.hospital_id=? and S.year=? and S.month=? ${strData} ;`,
           values: [input.hospital_id, input.year, input.month],
           printQuery: true
         })
@@ -72,7 +72,7 @@ const executePDF = function executePDFMethod(options) {
             resolve(result);
           } else {
             resolve({
-              result: ress
+              result: { details: ress }
             });
           }
         })
