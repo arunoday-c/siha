@@ -46,8 +46,7 @@ export default ({ config, db }) => {
             user_id: rowDetails.algaeh_d_app_user_id,
             roles_id: rowDetails.app_d_app_roles_id,
             hospital_id: rowDetails.hospital_id,
-            group_id: rowDetails.algaeh_d_app_group_id,
-            employee_branch: rowDetails.employee_branch
+            group_id: rowDetails.algaeh_d_app_group_id
           };
           // let keymoduleDetails = encryption(hospitalDetails);
 
