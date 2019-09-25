@@ -5,6 +5,7 @@ import LeaveSalaryAccural from "./LeaveSalaryAccural/LeaveSalaryAccural";
 import EmployeeReceipts from "./EmployeeReceipts/EmployeeReceipts";
 import EmployeePayments from "./EmployeePayments/EmployeePayments";
 import EmployeePaymentCancel from "./EmployeePaymentCancel/EmployeePaymentCancel";
+import OpeningBalance from "./OpeningBalance/OpeningBalance";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 
 class PayrollWorkbench extends Component {
@@ -100,6 +101,19 @@ class PayrollWorkbench extends Component {
                   />
                 }
               </li>
+              <li
+                algaehtabs={"OpeningBalance"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Opening Balance"
+                    }}
+                  />
+                }
+              </li>
             </ul>
           </div>
         </div>
@@ -114,6 +128,8 @@ class PayrollWorkbench extends Component {
             <EmployeePayments />
           ) : this.state.pageDisplay === "EmployeePaymentCancel" ? (
             <EmployeePaymentCancel />
+          ) : this.state.pageDisplay === "OpeningBalance" ? (
+            <OpeningBalance />
           ) : null}
         </div>
       </div>
