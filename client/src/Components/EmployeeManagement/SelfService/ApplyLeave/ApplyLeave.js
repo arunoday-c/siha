@@ -24,7 +24,9 @@ class ApplyLeave extends Component {
     const obritery = JSON.parse(
       AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
     );
-
+    const orbKeyData = JSON.parse(
+      AlgaehOpenContainer(sessionStorage.getItem("keyData"))
+    );
     this.state = {
       extra: {},
       selectedLang: this.props.SelectLanguage,
@@ -40,7 +42,8 @@ class ApplyLeave extends Component {
       to_leave_session: props.leave.to_session ? props.leave.to_session : null,
       absent_id: props.leave.absent_id ? props.leave.absent_id : null,
       leave_from: props.leave.leave_from ? props.leave.leave_from : null,
-      hospital_id: obritery.hims_d_hospital_id
+      hospital_id: obritery.hims_d_hospital_id,
+      employee_branch: orbKeyData.employee_branch
     };
     this.leaveSocket = Socket;
     this.getLeaveTypes();
@@ -277,7 +280,8 @@ class ApplyLeave extends Component {
         religion_id: this.state.religion_id,
         leave_id: this.state.leave_id,
         employee_id: this.state.employee_id,
-        hospital_id: this.state.hospital_id
+        hospital_id: this.state.hospital_id,
+        employee_branch: this.state.employee_branch
       },
       onSuccess: res => {
         if (res.data.success) {
@@ -290,10 +294,10 @@ class ApplyLeave extends Component {
                 weekoff_included: res.data.records.include_week_offs,
                 weekoff_days: res.data.records.total_weekOff
               }
-            },
-            () => {
-              console.log("Extra:", this.state.extra);
             }
+            // () => {
+            //   console.log("Extra:", this.state.extra);
+            // }
           );
         } else if (!res.data.success) {
           swalMessage({
@@ -453,6 +457,7 @@ class ApplyLeave extends Component {
             absent_id: this.state.absent_id,
             leave_from: this.state.leave_from ? this.state.leave_from : "SS",
             hospital_id: this.state.hospital_id,
+            employee_branch: this.state.employee_branch,
             ...this.state.extra
           },
           onSuccess: res => {
@@ -495,7 +500,8 @@ class ApplyLeave extends Component {
       method: "GET",
       module: "hrManagement",
       data: {
-        employee_id: this.state.employee_id
+        employee_id: this.state.employee_id,
+        employee_branch: this.state.employee_branch
       },
       onSuccess: res => {
         if (res.data.success) {
@@ -518,7 +524,8 @@ class ApplyLeave extends Component {
         year: moment().year(),
         gender: this.state.gender,
         employee_type: this.state.employee_type,
-        selfservice: "Y"
+        selfservice: "Y",
+        employee_branch: this.state.employee_branch
       },
       onSuccess: res => {
         if (res.data.success) {
