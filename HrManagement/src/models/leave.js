@@ -893,6 +893,14 @@ module.exports = {
                                         }
 
                                         let anualLeave = "";
+                                        console.log(
+                                          "annual_leave_process_separately: ",
+                                          annual_leave_process_separately
+                                        );
+                                        console.log(
+                                          "leave_category: ",
+                                          input.leave_category
+                                        );
                                         if (
                                           annual_leave_process_separately ==
                                             "Y" &&
@@ -907,8 +915,15 @@ module.exports = {
                                                       input.hims_f_leave_application_id
                                                     },
                                                     ${input.hospital_id},
-                                                    ${input.from_normal_salary}
+                                                    '${
+                                                      input.from_normal_salary
+                                                    }'
                                                     );`;
+
+                                          console.log(
+                                            "anualLeave: ",
+                                            anualLeave
+                                          );
                                         }
 
                                         //if he is regularizing absent to leave
