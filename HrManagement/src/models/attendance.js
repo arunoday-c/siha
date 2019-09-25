@@ -8528,7 +8528,7 @@ function loadBulkTimeSheet(input, req, res, next) {
                 .executeQuery({
                   query: `select hims_f_daily_time_sheet_id,TS.sub_department_id, TS.employee_id, TS.attendance_date, \
 									 status,worked_hours,employee_code,full_name as employee_name,\
-									P.project_code,P.project_desc from  hims_f_daily_time_sheet TS \
+									P.project_code,P.project_desc,P.abbreviation from  hims_f_daily_time_sheet TS \
                   inner join hims_d_employee E on TS.employee_id=E.hims_d_employee_id\
                   inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\
 									left join hims_f_project_roster PR on TS.employee_id=PR.employee_id and TS.hospital_id=PR.hospital_id  and TS.attendance_date=PR.attendance_date\
@@ -8556,12 +8556,16 @@ function loadBulkTimeSheet(input, req, res, next) {
                           const attUplded = emp.find(e => {
                             return e.attendance_date == dat;
                           });
+
                           if (attUplded == undefined) {
                             emp.push({
                               hims_f_daily_time_sheet_id: null,
                               attendance_date: dat,
                               status: "N",
-                              worked_hours: "0.00"
+                              worked_hours: "0.00",
+                              project_code: emp.project_code,
+                              project_desc: emp.project_desc,
+                              abbreviation: emp.abbreviation
                             });
                           }
                         });
@@ -8585,7 +8589,10 @@ function loadBulkTimeSheet(input, req, res, next) {
                                   f.hims_f_daily_time_sheet_id,
                                 attendance_date: f.attendance_date,
                                 status: f.status,
-                                worked_hours: f.worked_hours
+                                worked_hours: f.worked_hours,
+                                project_code: f.project_code,
+                                project_desc: f.project_desc,
+                                abbreviation: f.abbreviation
                               };
                             })
                             .value()
