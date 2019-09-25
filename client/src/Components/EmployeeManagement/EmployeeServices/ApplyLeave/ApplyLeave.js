@@ -569,7 +569,8 @@ class ApplyLeave extends Component {
       {
         employee_id: data.hims_d_employee_id,
         full_name: data.full_name,
-        display_name: data.full_name
+        display_name: data.full_name,
+        sub_department_id: data.sub_department_id
       },
       () => this.getEmployees()
     );

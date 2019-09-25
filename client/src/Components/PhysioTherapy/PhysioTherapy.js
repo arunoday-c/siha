@@ -15,6 +15,7 @@ import moment from "moment";
 import GlobalVariables from "../../utils/GlobalVariables.json";
 import { AlgaehValidation } from "../../utils/GlobalFunctions";
 import Options from "../../Options.json";
+import { swalMessage } from "../../utils/algaehApiCall";
 
 export default class PhysioTherapy extends Component {
   constructor(props) {
@@ -63,6 +64,7 @@ export default class PhysioTherapy extends Component {
   }
 
   ClearData() {
+    PhysioTherapyEvent().getPhysiotherapyTreatment(this);
     this.setState({
       hims_f_physiotherapy_header_id: null,
       selectedPatient: {},
@@ -168,10 +170,17 @@ export default class PhysioTherapy extends Component {
                       filter={true}
                       paging={{ page: 0, rowsPerPage: 10 }}
                       onRowSelect={row => {
-                        this.setState({
-                          ...row,
-                          saveEnable: false
-                        });
+                        if (row.billed === "Y") {
+                          this.setState({
+                            ...row,
+                            saveEnable: false
+                          });
+                        } else {
+                          swalMessage({
+                            title: "Billing Not done.",
+                            type: "warning"
+                          });
+                        }
                       }}
                     />
                   </div>
@@ -213,7 +222,7 @@ export default class PhysioTherapy extends Component {
                     </h6>
                   </div>
                 </div>
-                <hr></hr>
+                <hr />
                 <div className="row">
                   <AlagehFormGroup
                     div={{ className: "col-6 mandatory form-group" }}
