@@ -22,6 +22,7 @@
                         <th excelwidth="6">Sl No.</th>
                         <th excelwidth="18">Employee Code</th>
                         <th excelwidth="50">Employee Name</th>
+                        <th excelwidth="18">Salary No Name</th>
                         <th excelwidth="18">Nationality</th>
                         <th excelwidth="18">Working Days</th>
                         <th excelwidth="18">Present Days</th>
@@ -38,7 +39,7 @@
                     {{#hasElement details}}
                     {{#each details}}
                     <tr style="border-top:2px dashed #000">
-                        <td colspan="6" excelcellmerge="A:F" excelfonts='{"bold":true}'
+                        <td colspan="7" excelcellmerge="A:F" excelfonts='{"bold":true}'
                             excelfill='{"type":"pattern","pattern":"solid","fgColor":{"argb":"e8feff"},"bgColor":{"argb":"000000"}}'
                             class="tableSubHdg">Department: {{department_name}}
                         </td>
@@ -51,7 +52,7 @@
 
                     {{#each sub_dept}}
                     <tr style="border-top:2px dashed #000">
-                        <td colspan="6" excelcellmerge="A:F" excelfonts='{"bold":true}'
+                        <td colspan="7" excelcellmerge="A:F" excelfonts='{"bold":true}'
                             excelfill='{"type":"pattern","pattern":"solid","fgColor":{"argb":"fffff5"},"bgColor":{"argb":"000000"}}'
                             class="tableSubHdg2">Sub Department:
                             {{sub_department_name}}
@@ -68,6 +69,7 @@
                         <td excelalignment='{"vertical":"middle","horizontal":"center"}'>{{inc @index}}</td>
                         <td excelalignment='{"vertical":"middle","horizontal":"center"}'>{{employee_code}}</td>
                         <td excelalignment='{"vertical":"middle","horizontal":"left"}'>{{employee_name}}</td>
+                        <td excelalignment='{"vertical":"middle","horizontal":"center"}'>{{salary_number}}</td>
                         <td excelalignment='{"vertical":"middle","horizontal":"center"}'>{{nationality}}</td>
                         <td excelalignment='{"vertical":"middle","horizontal":"center"}'>{{total_days}}</td>
                         <td excelalignment='{"vertical":"middle","horizontal":"center"}'>{{display_present_days}}</td>
@@ -83,7 +85,7 @@
 
                     {{else}}
                     <tr>
-                        <td colspan="11" class="noResultTextReport">No Records Found</td>
+                        <td colspan="12" class="noResultTextReport">No Records Found</td>
                     </tr>{{/hasElement }}
 
 

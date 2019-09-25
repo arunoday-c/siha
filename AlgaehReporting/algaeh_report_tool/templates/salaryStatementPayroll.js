@@ -22,7 +22,7 @@ const executePDF = function executePDFMethod(options) {
 
       options.mysql
         .executeQuery({
-          query: `select employee_id,S.total_earnings,S.total_deductions,S.total_contributions,
+          query: `select employee_id,S.total_earnings,S.total_deductions,S.total_contributions,S.salary_number,
               S.total_days,S.display_present_days,
             S.net_salary,S.advance_due,S.loan_due_amount,E.employee_code,full_name as employee_name,
             E.mode_of_payment,SD.hims_d_sub_department_id,SD.sub_department_code,SD.sub_department_name,
@@ -32,7 +32,7 @@ const executePDF = function executePDFMethod(options) {
             left join hims_d_department DP on SD.department_id=DP.hims_d_department_id
             left join  hims_d_nationality NA  on E.nationality=NA.hims_d_nationality_id
             left join  hims_d_hospital HO  on E.hospital_id=HO.hims_d_hospital_id
-            WHERE    E.hospital_id=? and S.year=? and S.month=? ${strData} ;`,
+            WHERE S.salary_type='NS' and E.hospital_id=? and S.year=? and S.month=? ${strData} ;`,
           values: [input.hospital_id, input.year, input.month],
           printQuery: true
         })
