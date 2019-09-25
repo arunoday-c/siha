@@ -7762,8 +7762,8 @@ function getDaysArray(start, end) {
   }
 }
 
-//created by :irfan
-
+//created by :irfan to match downloaded file with uploadded file 
+//for leave,holiday,etc
 function BulktimesheetCalc(req, res, next) {
   const _mysql = new algaehMysql();
 
@@ -8150,7 +8150,7 @@ function BulktimesheetCalc(req, res, next) {
     next(e);
   });
 }
-
+//created by :irfan to validate entered time string 
 function bulkTimeValidate(day, employee_code, STDWH, STDWM, HALF_HR, HALF_MIN) {
   let actual_hours = 0;
   let actual_mins = 0;

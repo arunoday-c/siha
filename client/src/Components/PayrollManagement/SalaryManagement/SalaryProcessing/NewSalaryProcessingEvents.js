@@ -3,6 +3,8 @@ import { swalMessage, algaehApiCall } from "../../../../utils/algaehApiCall.js";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import moment from "moment";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
+import _ from "lodash";
+import swal from "sweetalert2";
 
 const SalaryProcess = ($this, inputs, from) => {
   AlgaehValidation({
@@ -132,71 +134,88 @@ const ClearData = $this => {
 };
 
 const FinalizeSalary = $this => {
-  AlgaehLoader({ show: true });
-  const { salaryprocess_header } = $this.state;
+  swal({
+    title: "Are you sure want to Finalize the Salary ?",
+    type: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes",
+    confirmButtonColor: "#44b8bd",
+    cancelButtonColor: "#d33",
+    cancelButtonText: "No"
+  }).then(willFinalize => {
+    if (willFinalize.value) {
+      AlgaehLoader({ show: true });
+      const { salaryprocess_header } = $this.state;
 
-  const salary_header_id = salaryprocess_header.map(o => {
-    return o.hims_f_salary_id;
-  });
+      const salary_header_id = salaryprocess_header.map(o => {
+        return o.hims_f_salary_id;
+      });
 
-  const employee_id = salaryprocess_header.map(o => {
-    return o.employee_id;
-  });
+      const employee_id = salaryprocess_header.map(o => {
+        return o.employee_id;
+      });
 
-  const net_salary = salaryprocess_header.map(o => {
-    return {
-      net_salary: o.net_salary,
-      total_paid_days: o.total_paid_days,
-      employee_id: o.employee_id
-    };
-  });
+      const net_salary = salaryprocess_header.map(o => {
+        return {
+          net_salary: o.net_salary,
+          total_paid_days: o.total_paid_days,
+          employee_id: o.employee_id
+        };
+      });
+      debugger;
+      const _leave_salary_acc = _.filter(salaryprocess_header, f => {
+        return f.leave_salary_accrual_amount > 0;
+      });
 
-  const salary_date =
-    "01-" + $this.state.inputs.month + "-" + $this.state.inputs.year;
-  const salary_end_date = moment(salary_date)
-    .endOf("month")
-    .format("YYYY-MM-DD");
+      const salary_date =
+        "01-" + $this.state.inputs.month + "-" + $this.state.inputs.year;
+      const salary_end_date = moment(salary_date)
+        .endOf("month")
+        .format("YYYY-MM-DD");
 
-  let inputObj = {
-    fron_salary: "Y",
-    salary_end_date: salary_end_date,
-    salary_header_id: salary_header_id,
-    employee_id: employee_id,
-    year: $this.state.inputs.year,
-    month: $this.state.inputs.month,
-    hospital_id: $this.state.inputs.hospital_id,
-    net_salary: net_salary
-  };
+      let inputObj = {
+        fron_salary: "Y",
+        salary_end_date: salary_end_date,
+        salary_header_id: salary_header_id,
+        employee_id: employee_id,
+        year: $this.state.inputs.year,
+        month: $this.state.inputs.month,
+        hospital_id: $this.state.inputs.hospital_id,
+        net_salary: net_salary,
+        _leave_salary_acc: _leave_salary_acc
+      };
 
-  algaehApiCall({
-    uri: "/salary/finalizedSalaryProcess",
-    module: "hrManagement",
-    data: inputObj,
-    method: "PUT",
-    onSuccess: response => {
-      if (response.data.success) {
-        SalaryProcess($this, null, "finalize");
-        $this.setState({
-          finalizeBtn: true
-        });
-        AlgaehLoader({ show: false });
-        swalMessage({
-          title: "Finalized Successfully.",
-          type: "success"
-        });
-      } else {
-        AlgaehLoader({ show: false });
-        swalMessage({
-          title: response.data.result,
-          type: "error"
-        });
-      }
-    },
-    onFailure: error => {
-      AlgaehLoader({ show: false });
-      swalMessage({
-        title: error.message || error.response.data.message,
-        type: "error"
+      algaehApiCall({
+        uri: "/salary/finalizedSalaryProcess",
+        module: "hrManagement",
+        data: inputObj,
+        method: "PUT",
+        onSuccess: response => {
+          if (response.data.success) {
+            SalaryProcess($this, null, "finalize");
+            $this.setState({
+              finalizeBtn: true
+            });
+            AlgaehLoader({ show: false });
+            swalMessage({
+              title: "Finalized Successfully.",
+              type: "success"
+            });
+          } else {
+            AlgaehLoader({ show: false });
+            swalMessage({
+              title: response.data.result,
+              type: "error"
+            });
+          }
+        },
+        onFailure: error => {
+          AlgaehLoader({ show: false });
+          swalMessage({
+            title: error.message || error.response.data.message,
+            type: "error"
+          });
+        }
       });
     }
   });

@@ -4,6 +4,7 @@ import "./LeaveAuthDetail.scss";
 import { AlgaehLabel, AlgaehDataGrid } from "../../../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../../../utils/algaehApiCall";
 import moment from "moment";
+import { AlgaehOpenContainer } from "../../../../../utils/GlobalFunctions";
 
 class LeaveAuthDetail extends Component {
   constructor(props) {
@@ -11,11 +12,18 @@ class LeaveAuthDetail extends Component {
     this.state = {
       data: {},
       leave_his: [],
-      remarks: ""
+      remarks: "",
+      from_normal_salary: "N"
     };
   }
 
   componentWillReceiveProps(nextProps) {
+    debugger;
+    const hospitaldetails = JSON.parse(
+      AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+    );
+    const selected_emp_nationality = nextProps.data.nationality;
+
     this.setState(
       {
         data: nextProps.data
@@ -25,7 +33,9 @@ class LeaveAuthDetail extends Component {
         if (nextProps.open) {
           this.getEmployeeLeaveHistory();
         }
-        // nextProps.open ? this.getEmployeeLeaveHistory() : null;
+        if (selected_emp_nationality === hospitaldetails.default_nationality) {
+          this.setState({ from_normal_salary: "Y" });
+        }
       }
     );
   }
@@ -68,7 +78,9 @@ class LeaveAuthDetail extends Component {
       to_date: this.state.data.to_date,
       leave_from: this.state.data.leave_from,
       absent_id: this.state.data.absent_id,
-      leave_category: this.state.leave_category
+      leave_category: this.state.data.leave_category,
+      hospital_id: this.state.data.hospital_id,
+      from_normal_salary: this.state.from_normal_salary
     };
 
     algaehApiCall({
@@ -171,6 +183,13 @@ class LeaveAuthDetail extends Component {
     });
   }
 
+  radioChange(e) {
+    const _value = e.target.checked ? "Y" : "N";
+    this.setState({
+      [e.target.name]: _value
+    });
+  }
+
   render() {
     return (
       <AlgaehModalPopUp
@@ -226,6 +245,23 @@ class LeaveAuthDetail extends Component {
                         Current Leave Application
                       </h3>
                     </div>
+                    {this.state.data.leave_category === "A" ? (
+                      <label className="checkbox inline">
+                        <input
+                          type="checkbox"
+                          name="from_normal_salary"
+                          value="Y"
+                          checked={
+                            this.state.from_normal_salary === "Y" ? true : false
+                          }
+                          onChange={this.radioChange.bind(this)}
+                          disabled={
+                            this.props.type !== undefined ? true : false
+                          }
+                        />
+                        <span>From Normal Salary</span>
+                      </label>
+                    ) : null}
                   </div>
                   <div className="portlet-body">
                     <div className="row">

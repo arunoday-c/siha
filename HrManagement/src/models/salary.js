@@ -54,8 +54,8 @@ module.exports = {
             A.sub_department_id, A.total_days,A.present_days, A.absent_days, A.total_work_days, \
             A.display_present_days,A.total_weekoff_days, A.total_holidays, A.total_leave, A.paid_leave, A.unpaid_leave, \
             A.total_paid_days, A.total_hours, A.total_working_hours, A.ot_work_hours, \
-            A.ot_weekoff_hours,A.ot_holiday_hours, A.shortage_hours,\
-            E.employee_code,E.gross_salary, S.hims_f_salary_id,S.salary_processed \
+            A.ot_weekoff_hours,A.ot_holiday_hours, A.shortage_hours, E.employee_code, E.gross_salary, \
+            S.hims_f_salary_id,S.salary_processed, AL.from_normal_salary, LA.total_applied_days \
             from hims_f_attendance_monthly as A \
             inner join  hims_d_employee as E on  E.hims_d_employee_id = A.employee_id and \
             A.hospital_id = E.hospital_id \
@@ -63,6 +63,7 @@ module.exports = {
             and S.employee_id = A.employee_id \
             left join hims_f_employee_annual_leave AL on E.hims_d_employee_id=AL.employee_id \
             and  AL.year=? and AL.month=? and AL.cancelled='N' \
+            left join hims_f_leave_application LA on LA.hims_f_leave_application_id=AL.leave_application_id \
             inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id  where \
             A.`year`=? and A.`month`=? and A.hospital_id=?" +
             _stringData +
@@ -177,8 +178,8 @@ module.exports = {
               .executeQuery({
                 query:
                   "select hims_d_employee_earnings_id,employee_id,earnings_id,amount,EE.formula,allocate,\
-              EE.calculation_method,ED.calculation_type,ED.component_frequency,ED.overtime_applicable\
-              from hims_d_employee_earnings EE inner join hims_d_earning_deduction ED\
+              EE.calculation_method,ED.calculation_type,ED.component_frequency,ED.overtime_applicable,\
+              ED.annual_salary_comp from hims_d_employee_earnings EE inner join hims_d_earning_deduction ED\
               on EE.earnings_id=ED.hims_d_earning_deduction_id and ED.record_status='A'\
               where ED.component_frequency='M' and ED.component_category='E' and EE.employee_id in (?);\
             select hims_d_employee_deductions_id,employee_id,deductions_id,amount,EMP_D.formula,\
@@ -256,7 +257,7 @@ module.exports = {
                     for (let i = 0; i < empResult.length; i++) {
                       utilities.logger().log("empResult ", empResult[i]);
                       let results = Salaryresults;
-
+                      let leave_salary_accrual_amount = 0;
                       let final_earning_amount = 0;
                       let current_earning_amt_array = [];
 
@@ -317,7 +318,8 @@ module.exports = {
                             earningOutput.current_earning_amt_array;
                           final_earning_amount =
                             earningOutput.final_earning_amount;
-
+                          leave_salary_accrual_amount =
+                            earningOutput.accrual_amount;
                           utilities
                             .logger()
                             .log("_earning_amount : ", final_earning_amount);
@@ -553,10 +555,10 @@ module.exports = {
                                           _headerQuery += _mysql.mysqlQueryFormat(
                                             "INSERT INTO `hims_f_salary` (salary_number,month,year,employee_id,sub_department_id,salary_date,per_day_sal,total_days,\
                                               present_days,absent_days,total_work_days,total_weekoff_days,total_holidays,total_leave,paid_leave,\
-                                              unpaid_leave,total_hours, total_working_hours, ot_work_hours, ot_weekoff_hours, ot_holiday_hours, \
+                                              unpaid_leave,total_hours, total_working_hours, ot_work_hours, ot_weekoff_hours, ot_holiday_hours, leave_salary_accrual_amount, leave_salary_days,\
                                               shortage_hours,display_present_days,loan_payable_amount,loan_due_amount,advance_due,gross_salary,total_earnings,total_deductions,\
                                               total_contributions,net_salary, total_paid_days, hospital_id) \
-                                             VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ;",
+                                             VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ;",
                                             [
                                               _salary_number,
                                               parseInt(month_number),
@@ -583,6 +585,10 @@ module.exports = {
                                               empResult[i]["ot_work_hours"],
                                               empResult[i]["ot_weekoff_hours"],
                                               empResult[i]["ot_holiday_hours"],
+                                              leave_salary_accrual_amount,
+                                              empResult[i][
+                                                "total_applied_days"
+                                              ],
                                               empResult[i]["shortage_hours"],
                                               empResult[i][
                                                 "display_present_days"
@@ -1900,10 +1906,11 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "select hims_f_salary_id, employee_id,salary_number, total_days, absent_days, total_work_days,  total_weekoff_days, total_holidays, total_leave, paid_leave, unpaid_leave, present_days,  pending_unpaid_leave, total_paid_days, hims_f_salary.gross_salary, hims_f_salary.net_salary, \
-            advance_due,display_present_days, hims_f_salary.total_earnings,hims_f_salary.total_deductions,loan_payable_amount, \
-            loan_due_amount, salary_processed, salary_paid, emp.employee_code, emp.full_name \
-            from hims_f_salary, hims_d_employee emp, hims_d_sub_department SD where hims_f_salary.employee_id = emp.hims_d_employee_id and emp.sub_department_id=SD.hims_d_sub_department_id \
+            "select hims_f_salary_id, employee_id, salary_number, S.year, total_days, absent_days, total_work_days,  total_weekoff_days, total_holidays, total_leave, paid_leave, unpaid_leave, present_days,  pending_unpaid_leave, total_paid_days, S.gross_salary, S.net_salary, advance_due, display_present_days, \
+            S.total_earnings,S.total_deductions,loan_payable_amount, loan_due_amount, salary_processed, salary_paid, \
+            leave_salary_accrual_amount, leave_salary_days, emp.employee_code, emp.full_name from hims_f_salary S, \
+            hims_d_employee emp, hims_d_sub_department SD where S.employee_id = emp.hims_d_employee_id and \
+            emp.sub_department_id=SD.hims_d_sub_department_id \
             and `year` = ? and `month` = ? and emp.hospital_id=? " +
             _stringData,
           values: _.valuesIn(inputParam),
@@ -2017,6 +2024,10 @@ module.exports = {
       const decimal_places = req.userIdentity.decimal_places;
 
       utilities.logger().log("employee_id: ", inputParam.employee_id);
+      utilities
+        .logger()
+        .log("_leave_salary_acc: ", inputParam._leave_salary_acc.length);
+
       _mysql
         .executeQuery({
           query:
@@ -2025,12 +2036,12 @@ module.exports = {
             " as year," +
             inputParam.month +
             " as month, \
-      CASE when airfare_factor = 'PB' then ((amount / 100)*airfare_percentage) else (airfare_amount/airfare_eligibility) end airfare_amount,\
-      sum((EE.amount *12)/365)* EG.monthly_accrual_days as leave_salary\
-      from hims_d_employee E, hims_d_employee_group EG,hims_d_hrms_options O, hims_d_employee_earnings EE ,hims_d_earning_deduction ED\
-      where E.employee_group_id = EG.hims_d_employee_group_id and EE.employee_id = E.hims_d_employee_id and \
-      EE.earnings_id=ED.hims_d_earning_deduction_id and \
-      ED.annual_salary_comp='Y' and E.leave_salary_process = 'Y' and E.hims_d_employee_id in (?) group by EE.employee_id; SELECT hims_d_leave_id FROM hims_d_leave where leave_category='A';",
+            CASE when airfare_factor = 'PB' then ((amount / 100)*airfare_percentage) else (airfare_amount/airfare_eligibility) end airfare_amount,\
+            sum((EE.amount *12)/365)* EG.monthly_accrual_days as leave_salary\
+            from hims_d_employee E, hims_d_employee_group EG,hims_d_hrms_options O, hims_d_employee_earnings EE ,hims_d_earning_deduction ED\
+            where E.employee_group_id = EG.hims_d_employee_group_id and EE.employee_id = E.hims_d_employee_id and \
+            EE.earnings_id=ED.hims_d_earning_deduction_id and \
+            ED.annual_salary_comp='Y' and E.leave_salary_process = 'Y' and E.hims_d_employee_id in (?) group by EE.employee_id; SELECT hims_d_leave_id FROM hims_d_leave where leave_category='A';",
           values: [inputParam.employee_id],
 
           printQuery: true
@@ -2176,13 +2187,45 @@ module.exports = {
                                                 .log(
                                                   "Employee_Leave_Salary gratuity_provision: "
                                                 );
-                                              _mysql.commitTransaction(() => {
-                                                _mysql.releaseConnection();
-                                                req.records = {
-                                                  leave_salary_number: leave_salary_number
-                                                };
-                                                next();
-                                              });
+                                              if (
+                                                inputParam._leave_salary_acc
+                                                  .length > 0
+                                              ) {
+                                                UpdateLeaveSalaryProvission({
+                                                  inputParam: inputParam,
+                                                  _mysql: _mysql,
+                                                  next: next,
+                                                  decimal_places: decimal_places
+                                                })
+                                                  .then(
+                                                    Leave_Salary_Provission => {
+                                                      _mysql.commitTransaction(
+                                                        () => {
+                                                          _mysql.releaseConnection();
+                                                          req.records = {
+                                                            leave_salary_number: leave_salary_number
+                                                          };
+                                                          next();
+                                                        }
+                                                      );
+                                                    }
+                                                  )
+                                                  .catch(e => {
+                                                    _mysql.rollBackTransaction(
+                                                      () => {
+                                                        next(e);
+                                                      }
+                                                    );
+                                                  });
+                                              } else {
+                                                _mysql.commitTransaction(() => {
+                                                  _mysql.releaseConnection();
+                                                  req.records = {
+                                                    leave_salary_number: leave_salary_number
+                                                  };
+                                                  next();
+                                                });
+                                              }
                                             })
                                             .catch(e => {
                                               _mysql.rollBackTransaction(() => {
@@ -2207,13 +2250,41 @@ module.exports = {
                                           utilities
                                             .logger()
                                             .log("else gratuity_provision: ");
-                                          _mysql.commitTransaction(() => {
-                                            _mysql.releaseConnection();
-                                            req.records = {
-                                              leave_salary_number: leave_salary_number
-                                            };
-                                            next();
-                                          });
+                                          if (
+                                            inputParam._leave_salary_acc
+                                              .length > 0
+                                          ) {
+                                            UpdateLeaveSalaryProvission({
+                                              inputParam: inputParam,
+                                              _mysql: _mysql,
+                                              next: next,
+                                              decimal_places: decimal_places
+                                            })
+                                              .then(Leave_Salary_Provission => {
+                                                _mysql.commitTransaction(() => {
+                                                  _mysql.releaseConnection();
+                                                  req.records = {
+                                                    leave_salary_number: leave_salary_number
+                                                  };
+                                                  next();
+                                                });
+                                              })
+                                              .catch(e => {
+                                                _mysql.rollBackTransaction(
+                                                  () => {
+                                                    next(e);
+                                                  }
+                                                );
+                                              });
+                                          } else {
+                                            _mysql.commitTransaction(() => {
+                                              _mysql.releaseConnection();
+                                              req.records = {
+                                                leave_salary_number: leave_salary_number
+                                              };
+                                              next();
+                                            });
+                                          }
                                         })
                                         .catch(e => {
                                           _mysql.rollBackTransaction(() => {
@@ -2305,11 +2376,32 @@ module.exports = {
                             decimal_places: decimal_places
                           })
                             .then(gratuity_provision => {
-                              _mysql.commitTransaction(() => {
-                                _mysql.releaseConnection();
-                                req.records = gratuity_provision;
-                                next();
-                              });
+                              if (inputParam._leave_salary_acc.length > 0) {
+                                UpdateLeaveSalaryProvission({
+                                  inputParam: inputParam,
+                                  _mysql: _mysql,
+                                  next: next,
+                                  decimal_places: decimal_places
+                                })
+                                  .then(Leave_Salary_Provission => {
+                                    _mysql.commitTransaction(() => {
+                                      _mysql.releaseConnection();
+                                      req.records = gratuity_provision;
+                                      next();
+                                    });
+                                  })
+                                  .catch(e => {
+                                    _mysql.rollBackTransaction(() => {
+                                      next(e);
+                                    });
+                                  });
+                              } else {
+                                _mysql.commitTransaction(() => {
+                                  _mysql.releaseConnection();
+                                  req.records = gratuity_provision;
+                                  next();
+                                });
+                              }
                             })
                             .catch(e => {
                               _mysql.rollBackTransaction(() => {
@@ -2330,11 +2422,32 @@ module.exports = {
                         decimal_places: decimal_places
                       })
                         .then(gratuity_provision => {
-                          _mysql.commitTransaction(() => {
-                            _mysql.releaseConnection();
-                            req.records = gratuity_provision;
-                            next();
-                          });
+                          if (inputParam._leave_salary_acc.length > 0) {
+                            UpdateLeaveSalaryProvission({
+                              inputParam: inputParam,
+                              _mysql: _mysql,
+                              next: next,
+                              decimal_places: decimal_places
+                            })
+                              .then(Leave_Salary_Provission => {
+                                _mysql.commitTransaction(() => {
+                                  _mysql.releaseConnection();
+                                  req.records = gratuity_provision;
+                                  next();
+                                });
+                              })
+                              .catch(e => {
+                                _mysql.rollBackTransaction(() => {
+                                  next(e);
+                                });
+                              });
+                          } else {
+                            _mysql.commitTransaction(() => {
+                              _mysql.releaseConnection();
+                              req.records = gratuity_provision;
+                              next();
+                            });
+                          }
                         })
                         .catch(e => {
                           _mysql.rollBackTransaction(() => {
@@ -3599,9 +3712,9 @@ function getEarningComponents(options) {
       let current_earning_per_day_salary = 0;
       let leave_salary_days = 0;
 
-      let total_days = empResult["total_days"];
+      let accrual_amount = 0;
 
-      // const utilities = new algaehUtilities();
+      let total_days = empResult["total_days"];
 
       if (_earnings.length == 0) {
         resolve({ current_earning_amt_array, final_earning_amount });
@@ -3636,11 +3749,37 @@ function getEarningComponents(options) {
             per_day_salary: current_earning_per_day_salary
           });
         } else if (obj["calculation_type"] == "V") {
-          utilities.logger().log("leave_salary: ", leave_salary);
+          utilities
+            .logger()
+            .log("from_normal_salary: ", empResult["from_normal_salary"]);
+
+          utilities
+            .logger()
+            .log("annual_salary_comp: ", obj.annual_salary_comp);
+
+          let leave_period =
+            empResult["total_applied_days"] === null
+              ? 0
+              : parseFloat(empResult["total_applied_days"]);
+
+          utilities.logger().log("leave_period: ", leave_period);
+          let annual_per_day_sal = 0;
+
+          utilities.logger().log("annual_per_day_sal: ", annual_per_day_sal);
+
           if (leave_salary == null || leave_salary == undefined) {
             utilities
               .logger()
               .log("salary_calendar: ", hrms_option[0].salary_calendar);
+
+            utilities.logger().log("amount: ", obj["amount"]);
+            utilities
+              .logger()
+              .log(
+                "salary_calendar_fixed_days: ",
+                hrms_option[0].salary_calendar_fixed_days
+              );
+
             if (hrms_option[0].salary_calendar == "F") {
               current_earning_per_day_salary = parseFloat(
                 obj["amount"] /
@@ -3659,30 +3798,56 @@ function getEarningComponents(options) {
                 .log("unpaid_leave: ", empResult["unpaid_leave"]);
               utilities.logger().log("absent_days: ", empResult["absent_days"]);
 
+              if (
+                empResult["from_normal_salary"] === "Y" &&
+                obj.annual_salary_comp === "Y"
+              ) {
+                annual_per_day_sal =
+                  current_earning_per_day_salary * leave_period;
+              }
               let days =
                 parseFloat(empResult["unpaid_leave"]) +
-                parseFloat(empResult["absent_days"]);
-
+                parseFloat(empResult["absent_days"]) +
+                leave_period;
               utilities.logger().log("days: ", days);
+
               let amount = current_earning_per_day_salary * days;
               utilities.logger().log("amount: ", amount);
               current_earning_amt = obj["amount"] - amount;
+              current_earning_amt = current_earning_amt + annual_per_day_sal;
               utilities
                 .logger()
                 .log("current_earning_amt: ", current_earning_amt);
             } else {
+              let total_paid_days =
+                parseFloat(empResult["total_paid_days"]) - leave_period;
               current_earning_per_day_salary = parseFloat(
-                obj["amount"] / parseFloat(empResult["total_days"])
+                obj["amount"] / empResult["total_days"]
               );
-
+              if (
+                empResult["from_normal_salary"] === "Y" &&
+                obj.annual_salary_comp === "Y"
+              ) {
+                annual_per_day_sal =
+                  current_earning_per_day_salary * leave_period;
+              }
               current_earning_amt =
-                current_earning_per_day_salary *
-                parseFloat(empResult["total_paid_days"]);
+                current_earning_per_day_salary * total_paid_days;
+
+              current_earning_amt = current_earning_amt + annual_per_day_sal;
             }
           } else if (leave_salary == "N") {
             leave_salary_days =
               parseFloat(empResult["total_days"]) -
               parseFloat(empResult["paid_leave"]);
+
+            // if (
+            //   empResult["from_normal_salary"] === "Y" &&
+            //   obj.annual_salary_comp === "Y"
+            // ) {
+            //   annual_per_day_sal =
+            //     current_earning_per_day_salary * leave_period;
+            // }
 
             current_earning_per_day_salary = parseFloat(
               obj["amount"] / parseFloat(empResult["total_days"])
@@ -3696,7 +3861,7 @@ function getEarningComponents(options) {
 
           utilities.logger().log("current_earning_amt: ", current_earning_amt);
           //Apply Leave Rule
-
+          accrual_amount = accrual_amount + annual_per_day_sal;
           if (leave_salary != "Y") {
             utilities.logger().log("total_days: ", total_days);
             let perday_salary = current_earning_amt / total_days;
@@ -3838,7 +4003,11 @@ function getEarningComponents(options) {
         return parseFloat(s.amount);
       });
 
-      resolve({ current_earning_amt_array, final_earning_amount });
+      resolve({
+        current_earning_amt_array,
+        final_earning_amount,
+        accrual_amount
+      });
     } catch (e) {
       reject(e);
     }
@@ -4573,6 +4742,88 @@ function InsertGratuityProvision(options) {
         .catch(e => {
           reject(e);
         });
+    } catch (e) {
+      reject(e);
+    }
+  }).catch(e => {
+    options.next(e);
+  });
+}
+function UpdateLeaveSalaryProvission(options) {
+  return new Promise((resolve, reject) => {
+    try {
+      let inputParam = options.inputParam;
+      let _mysql = options._mysql;
+
+      // let total_hours_project = options.total_hours_project;
+      let strQry = "";
+
+      const utilities = new algaehUtilities();
+
+      utilities.logger().log("UpdateLeaveSalaryProvission: ");
+
+      for (let i = 0; i < inputParam._leave_salary_acc.length; i++) {
+        _mysql
+          .executeQuery({
+            query:
+              "select * from `hims_f_employee_leave_salary_header` where employee_id=? and year=?",
+            values: [
+              inputParam._leave_salary_acc[i].employee_id,
+              inputParam._leave_salary_acc[i].year
+            ],
+            printQuery: true
+          })
+          .then(leave_salary_header => {
+            utilities
+              .logger()
+              .log("leave_salary_header: ", leave_salary_header);
+
+            let balance_leave_days =
+              parseFloat(leave_salary_header[0].balance_leave_days) -
+              parseFloat(inputParam._leave_salary_acc[i].leave_salary_days);
+            let balance_leave_salary_amount =
+              parseFloat(leave_salary_header[0].balance_leave_salary_amount) -
+              parseFloat(
+                inputParam._leave_salary_acc[i].leave_salary_accrual_amount
+              );
+
+            utilities.logger().log("balance_leave_days: ", balance_leave_days);
+            utilities
+              .logger()
+              .log(
+                "balance_leave_salary_amount: ",
+                balance_leave_salary_amount
+              );
+
+            strQry += _mysql.mysqlQueryFormat(
+              "UPDATE `hims_f_employee_leave_salary_header` SET `balance_leave_days`=?, \
+              `balance_leave_salary_amount` = ? where hims_f_employee_leave_salary_header_id=?",
+              [
+                balance_leave_days,
+                balance_leave_salary_amount,
+                leave_salary_header[0].hims_f_employee_leave_salary_header_id
+              ]
+            );
+
+            if (i === inputParam._leave_salary_acc.length - 1) {
+              utilities.logger().log("strQry: ", strQry);
+              _mysql
+                .executeQuery({
+                  query: strQry,
+                  printQuery: true
+                })
+                .then(project_wise_payroll => {
+                  resolve();
+                })
+                .catch(e => {
+                  reject(e);
+                });
+            }
+          })
+          .catch(e => {
+            reject(e);
+          });
+      }
     } catch (e) {
       reject(e);
     }
