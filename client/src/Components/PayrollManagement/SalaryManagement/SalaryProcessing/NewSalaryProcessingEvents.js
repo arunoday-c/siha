@@ -3,6 +3,7 @@ import { swalMessage, algaehApiCall } from "../../../../utils/algaehApiCall.js";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import moment from "moment";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
+import _ from "lodash";
 
 const SalaryProcess = ($this, inputs, from) => {
   AlgaehValidation({
@@ -150,6 +151,10 @@ const FinalizeSalary = $this => {
       employee_id: o.employee_id
     };
   });
+  debugger;
+  const _leave_salary_acc = _.filter(salaryprocess_header, f => {
+    return f.leave_salary_accrual_amount > 0;
+  });
 
   const salary_date =
     "01-" + $this.state.inputs.month + "-" + $this.state.inputs.year;
@@ -165,7 +170,8 @@ const FinalizeSalary = $this => {
     year: $this.state.inputs.year,
     month: $this.state.inputs.month,
     hospital_id: $this.state.inputs.hospital_id,
-    net_salary: net_salary
+    net_salary: net_salary,
+    _leave_salary_acc: _leave_salary_acc
   };
 
   algaehApiCall({
