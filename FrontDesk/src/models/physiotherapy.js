@@ -45,7 +45,10 @@ module.exports = {
         k < inputparam.physiotherapy_treatment_detail.length;
         k++
       ) {
-        if (inputparam.hims_f_physiotherapy_detail_id != null) {
+        if (
+          inputparam.physiotherapy_treatment_detail[k]
+            .hims_f_physiotherapy_detail_id == null
+        ) {
           strQry += mysql.format(
             "INSERT INTO `hims_f_physiotherapy_detail`(`physiotherapy_header_id`, `session_status`,\
             `session_date`, `session_time`, `physiotherapy_type`, `others_specify`, `treatment_remarks`) \
@@ -89,7 +92,8 @@ module.exports = {
             inputparam.no_of_session,
             inputparam.physioth_doctor_id,
             inputparam.hims_f_physiotherapy_header_id
-          ]
+          ],
+          printQuery: true
         })
         .then(result => {
           _mysql.releaseConnection();

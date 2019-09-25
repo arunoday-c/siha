@@ -42,48 +42,7 @@ export default function PhysioTherapyEvent() {
     },
 
     getPhysiotherapyTreatment: $this => {
-      algaehApiCall({
-        uri: "/physiotherapy/getPhysiotherapyTreatment",
-        module: "frontDesk",
-        method: "GET",
-        onSuccess: res => {
-          if (res.data.success) {
-            let Physiotherapy_Treatment = Enumerable.from(res.data.records)
-              .groupBy("$.visit_id", null, (k, g) => {
-                let firstRecordSet = Enumerable.from(g).firstOrDefault();
-                return {
-                  hims_f_physiotherapy_header_id:
-                    firstRecordSet.hims_f_physiotherapy_header_id,
-                  physioth_diagnosis: firstRecordSet.physioth_diagnosis,
-                  no_of_session: firstRecordSet.no_of_session,
-                  patient_code: firstRecordSet.patient_code,
-                  full_name: firstRecordSet.full_name,
-                  ordered_date: firstRecordSet.ordered_date,
-                  physiotherapy_treatment_detail:
-                    firstRecordSet.hims_f_physiotherapy_detail_id === null
-                      ? []
-                      : g.getSource(),
-                  provider_id: firstRecordSet.provider_id,
-                  billed: firstRecordSet.billed,
-                  doctor_name: firstRecordSet.doctor_name,
-                  physiotherapy_status:
-                    firstRecordSet.physiotherapy_status === "A"
-                      ? "Active"
-                      : "Completed",
-                  data_exists:
-                    firstRecordSet.hims_f_physiotherapy_detail_id === null
-                      ? false
-                      : true
-                };
-              })
-              .toArray();
-
-            $this.setState({
-              PhysiotherapyPatient: Physiotherapy_Treatment
-            });
-          }
-        }
-      });
+      getPhysioyTreatmentFunction($this);
     },
 
     AddtoList: $this => {
@@ -146,6 +105,7 @@ export default function PhysioTherapyEvent() {
               title: "Saved Succesfully",
               type: "success"
             });
+            getPhysioyTreatmentFunction($this);
           }
         },
         onFailure: error => {
@@ -158,4 +118,49 @@ export default function PhysioTherapyEvent() {
       });
     }
   };
+}
+
+function getPhysioyTreatmentFunction($this) {
+  algaehApiCall({
+    uri: "/physiotherapy/getPhysiotherapyTreatment",
+    module: "frontDesk",
+    method: "GET",
+    onSuccess: res => {
+      if (res.data.success) {
+        let Physiotherapy_Treatment = Enumerable.from(res.data.records)
+          .groupBy("$.visit_id", null, (k, g) => {
+            let firstRecordSet = Enumerable.from(g).firstOrDefault();
+            return {
+              hims_f_physiotherapy_header_id:
+                firstRecordSet.hims_f_physiotherapy_header_id,
+              physioth_diagnosis: firstRecordSet.physioth_diagnosis,
+              no_of_session: firstRecordSet.no_of_session,
+              patient_code: firstRecordSet.patient_code,
+              full_name: firstRecordSet.full_name,
+              ordered_date: firstRecordSet.ordered_date,
+              physiotherapy_treatment_detail:
+                firstRecordSet.hims_f_physiotherapy_detail_id === null
+                  ? []
+                  : g.getSource(),
+              provider_id: firstRecordSet.provider_id,
+              billed: firstRecordSet.billed,
+              doctor_name: firstRecordSet.doctor_name,
+              physiotherapy_status:
+                firstRecordSet.physiotherapy_status === "A"
+                  ? "Active"
+                  : "Completed",
+              data_exists:
+                firstRecordSet.hims_f_physiotherapy_detail_id === null
+                  ? false
+                  : true
+            };
+          })
+          .toArray();
+
+        $this.setState({
+          PhysiotherapyPatient: Physiotherapy_Treatment
+        });
+      }
+    }
+  });
 }
