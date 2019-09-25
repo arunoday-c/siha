@@ -2117,10 +2117,7 @@ authorizeLeave: (req, res, next) => {
       .catch(error => {
         _mysql.releaseConnection();
         next(error);
-      });
-
-
-    
+      });   
 
     } catch (e) {
       next(e);
