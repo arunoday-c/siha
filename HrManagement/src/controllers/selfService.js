@@ -11,7 +11,8 @@ import {
   addEmployeeDependentDetails,
   getEmployeeAdvance,
   addEmployeeAdvance,
-  addEmployeeIdentification
+  addEmployeeIdentification,
+  getRejoinAnnualLeave
 } from "../models/selfService";
 
 export default () => {
@@ -19,6 +20,15 @@ export default () => {
 
   // created by Adnan :
   api.get("/getLeaveMaster", getLeaveMaster, (req, res, next) => {
+    let result = req.records;
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: result
+    });
+    next();
+  });
+
+  api.get("/getRejoinAnnualLeave", getRejoinAnnualLeave, (req, res, next) => {
     let result = req.records;
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,

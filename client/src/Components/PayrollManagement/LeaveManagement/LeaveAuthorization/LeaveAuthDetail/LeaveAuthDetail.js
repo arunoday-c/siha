@@ -141,6 +141,7 @@ class LeaveAuthDetail extends Component {
       from_date: this.state.data.from_date,
       to_date: this.state.data.to_date,
       leave_category: this.state.data.leave_category,
+      hospital_id: this.state.data.hospital_id,
       leave_from: this.state.data.leave_from
     };
 
