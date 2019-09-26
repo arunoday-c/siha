@@ -13,6 +13,14 @@
       height: 30px;
       border-radius: 4px;
       font-size: 1rem;
+      position: relative;
+      i {
+        position: absolute;
+        right: 7px;
+        top: 9px;
+        font-size: 14px;
+        color: #808080;
+      }
     }
   }
   // & > div {

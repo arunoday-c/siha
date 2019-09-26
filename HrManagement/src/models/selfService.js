@@ -435,6 +435,44 @@ module.exports = {
         _mysql.releaseConnection();
         next(error);
       });
+  },
+  getRejoinAnnualLeave: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    return new Promise((resolve, reject) => {
+      try {
+        // const utilities = new algaehUtilities();
+
+        _mysql
+          .executeQuery({
+            query:
+              "SELECT E.hims_d_employee_id, E.employee_code, E.full_name, E.last_salary_process_date, \
+                SD.sub_department_name, D.department_name, EG.group_description, LA.from_date, \
+                LA.to_date FROM hims_d_employee E \
+                inner join hims_d_sub_department SD on E.sub_department_id = SD.hims_d_sub_department_id \
+                inner join hims_d_department D on SD.department_id = D.hims_d_department_id \
+                inner join hims_d_employee_group EG on EG.hims_d_employee_group_id = E.employee_group_id \
+                left join hims_f_leave_application LA on E.hims_d_employee_id = LA.employee_id \
+                where E.record_status = 'A' and E.suspend_salary = 'Y' ",
+            printQuery: true
+          })
+          .then(result => {
+            _mysql.releaseConnection();
+            req.records = result;
+            next();
+            resolve(result);
+          })
+          .catch(e => {
+            next(e);
+            reject(e);
+          });
+      } catch (e) {
+        reject(e);
+        next(e);
+      }
+    }).catch(e => {
+      _mysql.releaseConnection();
+      next(e);
+    });
   }
 
   //TODO

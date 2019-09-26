@@ -169,7 +169,8 @@ export default function FilterComponent(props) {
       <div className="col globalSearchCntr">
         <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
         <h6 onClick={handlers.employeeSearch}>
-          {inputs.emp_name ? inputs.emp_name : "------"}
+          {inputs.emp_name ? inputs.emp_name : "Search Employee"}
+          <i className="fas fa-search fa-lg"></i>
         </h6>
       </div>
       <div className="col-2 form-group" style={{ paddingTop: 19 }}>

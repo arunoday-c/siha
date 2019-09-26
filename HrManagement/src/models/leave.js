@@ -3535,7 +3535,7 @@ module.exports = {
     let range = "";
 
     if (req.query.employee_id > 0) {
-      employee = ` and employee_id=${req.query.employee_id} `;
+      employee = ` and LA.employee_id=${req.query.employee_id} `;
     }
 
     if (

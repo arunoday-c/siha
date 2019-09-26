@@ -290,7 +290,17 @@ export default class AbsenceManagement extends Component {
     return (
       <div className="AbsenceManagement">
         <div className="row inner-top-search">
-          <div className="col" style={{ marginTop: 10 }}>
+          <div className="col-2 globalSearchCntr">
+            <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+            <h6 onClick={this.employeeSearch.bind(this)}>
+              {this.state.employee_name
+                ? this.state.employee_name
+                : "Search Employee"}
+              <i className="fas fa-search fa-lg"></i>
+            </h6>
+          </div>
+
+          {/* <div className="col" style={{ marginTop: 10 }}>
             <div
               className="row"
               style={{
@@ -322,7 +332,7 @@ export default class AbsenceManagement extends Component {
                 />
               </div>
             </div>
-          </div>
+          </div> */}
 
           <AlgaehDateHandler
             div={{ className: "col mandatory" }}
