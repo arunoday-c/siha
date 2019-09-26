@@ -346,6 +346,7 @@ class EmployeeReceipts extends Component {
             <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
             <h6 onClick={() => EmployeeSearch()}>
               {/* {inputs.emp_name ? inputs.emp_name : "------"} */}
+              <i className="fas fa-search fa-lg"></i>
             </h6>
           </div>
 

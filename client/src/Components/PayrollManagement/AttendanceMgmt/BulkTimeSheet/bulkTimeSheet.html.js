@@ -91,13 +91,16 @@ function BulkTimeSheet(props) {
       <div className="portlet portlet-bordered margin-top-15">
         <div className="portlet-title">
           <div className="caption">
-            <label className="label">Total Employees : {data.length}</label>
+            <h3 className="caption-subject">Total Employees : {data.length}</h3>
           </div>
           <div className="actions" />
         </div>
         <div className="portlet-body bulkTimeSheetPreviewCntr">
           {message !== "" ? (
-            <p>{message}</p>
+            <div className="bulkUploadErrorMessage">
+              <h5>Please validate below details in excel template</h5>
+              <p dangerouslySetInnerHTML={{ __html: message }}></p>
+            </div>
           ) : (
             <table id="bulkTimeSheetPreview">
               <thead>
@@ -187,8 +190,8 @@ function TableCells(props) {
   return (
     <td onDoubleClick={() => setEnable(state => !state)}>
       <small>{itm.status}</small>
-
       <span>{itm.worked_hours}</span>
+      <small>{itm.abbreviation}</small>
     </td>
   );
 }

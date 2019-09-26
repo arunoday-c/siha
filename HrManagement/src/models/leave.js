@@ -3641,7 +3641,7 @@ module.exports = {
                   "" +
                   employee +
                   " order by hims_f_leave_application_id desc",
-                values: [req.userIdentity.hospital_id],
+                values: [req.query.hospital_id],
 
                 printQuery: true
               })

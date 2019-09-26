@@ -120,7 +120,7 @@ class LeaveEncashmentProcess extends Component {
               }}
             /> */}
 
-            <AlagehFormGroup
+            {/* <AlagehFormGroup
               div={{ className: "col form-group" }}
               label={{
                 forceLabel: "Select A Employee",
@@ -153,6 +153,16 @@ class LeaveEncashmentProcess extends Component {
               >
                 <i className="fas fa-search" />
               </span>
+            </div> */}
+
+            <div className="col-2 globalSearchCntr">
+              <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+              <h6 onClick={employeeSearch.bind(this, this)}>
+                {this.state.employee_name
+                  ? this.state.employee_name
+                  : "Search Employee"}
+                <i className="fas fa-search fa-lg"></i>
+              </h6>
             </div>
 
             <AlagehAutoComplete

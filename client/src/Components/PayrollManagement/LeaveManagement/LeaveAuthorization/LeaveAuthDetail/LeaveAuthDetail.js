@@ -246,23 +246,6 @@ class LeaveAuthDetail extends Component {
                         Current Leave Application
                       </h3>
                     </div>
-                    {this.state.data.leave_category === "A" ? (
-                      <label className="checkbox inline">
-                        <input
-                          type="checkbox"
-                          name="from_normal_salary"
-                          value="Y"
-                          checked={
-                            this.state.from_normal_salary === "Y" ? true : false
-                          }
-                          onChange={this.radioChange.bind(this)}
-                          disabled={
-                            this.props.type !== undefined ? true : false
-                          }
-                        />
-                        <span>From Normal Salary</span>
-                      </label>
-                    ) : null}
                   </div>
                   <div className="portlet-body">
                     <div className="row">
@@ -357,6 +340,36 @@ class LeaveAuthDetail extends Component {
                               onChange={this.textHandler.bind(this)}
                               className="textArea"
                             />
+                          </div>
+                          <div className="col-12 form-group">
+                            {this.state.data.leave_category === "A" ? (
+                              <div
+                                className="customCheckbox"
+                                style={{
+                                  textAlign: "right"
+                                }}
+                              >
+                                <label className="checkbox inline">
+                                  <input
+                                    type="checkbox"
+                                    name="from_normal_salary"
+                                    value="Y"
+                                    checked={
+                                      this.state.from_normal_salary === "Y"
+                                        ? true
+                                        : false
+                                    }
+                                    onChange={this.radioChange.bind(this)}
+                                    disabled={
+                                      this.props.type !== undefined
+                                        ? true
+                                        : false
+                                    }
+                                  />
+                                  <span>From Normal Salary</span>
+                                </label>
+                              </div>
+                            ) : null}
                           </div>
                         </div>
                       </div>
