@@ -99,7 +99,7 @@ function BulkTimeSheet(props) {
           {message !== "" ? (
             <div className="bulkUploadErrorMessage">
               <h5>Please validate below details in excel template</h5>
-              <p dangerouslySetInnerHTML={{ __html: message }}></p>
+              <ol dangerouslySetInnerHTML={{ __html: message }}></ol>
             </div>
           ) : (
             <table id="bulkTimeSheetPreview">
