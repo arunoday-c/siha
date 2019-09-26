@@ -16,10 +16,13 @@
       border-radius: 4px;
       font-size: 1rem;
       background: #fff;
-      .fa-search {
-        float: right;
-        margin-top: 7px;
-        color: #ccc;
+      position: relative;
+      i {
+        position: absolute;
+        right: 7px;
+        top: 9px;
+        font-size: 14px;
+        color: #808080;
       }
     }
     margin-bottom: 15px;

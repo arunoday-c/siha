@@ -236,7 +236,17 @@ export default class LeaveYearlyProcess extends Component {
               }}
             />
 
-            <div className="col-3" style={{ marginTop: 10 }}>
+            <div className="col-2 globalSearchCntr">
+              <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+              <h6 onClick={this.employeeSearch.bind(this)}>
+                {this.state.employee_name
+                  ? this.state.employee_name
+                  : "Search Employee"}
+                <i className="fas fa-search fa-lg"></i>
+              </h6>
+            </div>
+
+            {/* <div className="col-3" style={{ marginTop: 10 }}>
               <div
                 className="row"
                 style={{
@@ -268,7 +278,7 @@ export default class LeaveYearlyProcess extends Component {
                   />
                 </div>
               </div>
-            </div>
+            </div> */}
 
             <AlagehAutoComplete
               div={{ className: "col-3 form-group" }}

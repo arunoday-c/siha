@@ -89,7 +89,7 @@ class LeaveSalaryProcess extends Component {
       <div className="leave_en_auth row">
         <div className="col-12">
           <div className="row inner-top-search">
-            <div className="col" style={{ marginTop: 10 }}>
+            {/* <div className="col" style={{ marginTop: 10 }}>
               <div
                 className="row"
                 style={{
@@ -121,8 +121,27 @@ class LeaveSalaryProcess extends Component {
                   />
                 </div>
               </div>
+            </div> */}
+            <div className="col-2 globalSearchCntr">
+              <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+              <h6 onClick={employeeSearch.bind(this, this)}>
+                {this.state.employee_name
+                  ? this.state.employee_name
+                  : "Search Employee"}
+                <i className="fas fa-search fa-lg"></i>
+              </h6>
             </div>
-            <div className="col">
+            <div className="col-2 globalSearchCntr">
+              <AlgaehLabel label={{ forceLabel: "Search Leave Salary No." }} />
+              <h6 onClick={LoadLeaveSalary.bind(this, this)}>
+                {this.state.leave_salary_number
+                  ? this.state.leave_salary_number
+                  : "Search Leave Salary No."}
+                <i className="fas fa-search fa-lg"></i>
+              </h6>
+            </div>
+
+            <div className="col-2">
               <AlgaehLabel
                 label={{
                   forceLabel: "Date"
@@ -137,7 +156,7 @@ class LeaveSalaryProcess extends Component {
               </h6>
             </div>
 
-            <div className="col" style={{ marginTop: 10 }}>
+            {/* <div className="col" style={{ marginTop: 10 }}>
               <div
                 className="row"
                 style={{
@@ -175,7 +194,7 @@ class LeaveSalaryProcess extends Component {
                   />
                 </div>
               </div>
-            </div>
+            </div> */}
 
             <div className="col form-group">
               <button
