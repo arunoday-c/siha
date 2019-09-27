@@ -2,7 +2,7 @@ import algaehMysql from "algaeh-mysql";
 import extend from "extend";
 import mysql from "mysql";
 
-module.exports = {
+export default{
   //Addded by noor code modification
   addPatientInsuranceData: (req, res, next) => {
     const _mysql = req.options == null ? req.db : new algaehMysql();

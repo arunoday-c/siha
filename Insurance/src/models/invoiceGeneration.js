@@ -1,6 +1,6 @@
 import algaehMysql from "algaeh-mysql";
 import { LINQ } from "node-linq";
-module.exports = {
+export default {
   //created by:irfan
   getVisitWiseBillDetailS: (req, res, next) => {
     const _mysql = new algaehMysql();

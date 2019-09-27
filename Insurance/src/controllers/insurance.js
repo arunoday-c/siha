@@ -1,6 +1,8 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import {
+import insuranceModels from "../models/insurance";
+
+const {
   addPatientInsuranceData,
   getListOfInsuranceProvider,
   getSubInsurance,
@@ -21,7 +23,7 @@ import {
   deleteNetworkAndNetworkOfficRecords,
   getInsuranceProviders,
   getSubInsuraces
-} from "../models/insurance";
+} = insuranceModels;
 
 export default () => {
   let api = Router();

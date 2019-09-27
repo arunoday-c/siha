@@ -1,6 +1,8 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import {
+import invoiceModels from "../models/invoiceGeneration";
+
+const {
   getVisitWiseBillDetailS,
   addInvoiceGeneration,
   getInvoicesForClaims,
@@ -10,7 +12,7 @@ import {
   addInvoiceIcd,
   updateClaimValidatedStatus,
   updateInvoiceDetails
-} from "../models/invoiceGeneration";
+} = invoiceModels;
 
 export default () => {
   let api = Router();
