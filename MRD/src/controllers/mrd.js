@@ -1,6 +1,8 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import {
+import mrdModels from "../models/mrd";
+
+const {
   getPatientMrdList,
   getPatientEncounterDetails,
   getPatientChiefComplaint,
@@ -9,7 +11,7 @@ import {
   getPatientInvestigation,
   getPatientPaymentDetails,
   getPatientTreatments
-} from "../models/mrd";
+} = mrdModels;
 
 export default () => {
   let api = Router();

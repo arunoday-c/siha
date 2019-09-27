@@ -3,7 +3,7 @@ import { LINQ } from "node-linq";
 import moment from "moment";
 import algaehUtilities from "algaeh-utilities/utilities";
 
-module.exports = {
+export default {
   getPatientMrdList: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
