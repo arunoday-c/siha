@@ -4,7 +4,7 @@ import algaehUtilities from "algaeh-utilities/utilities";
 //import mysql from "mysql";
 import moment from "moment";
 import { LINQ } from "node-linq";
-module.exports = {
+export default {
   //created by irfan: to add Appointment Status
   addAppointmentStatus: (req, res, next) => {
     const _mysql = new algaehMysql();

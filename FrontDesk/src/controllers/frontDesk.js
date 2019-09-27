@@ -1,37 +1,38 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import {
+import frontModels from "../models/frontDesk";
+import regModels from "../models/patientRegistration";
+import visitModels from "../models/visit";
+import billModels from "algaeh-billing/src/models/billing";
+import labModels from "algaeh-laboratory/src/models/laboratory";
+import radModels from "algaeh-radiology/src/models/radiology";
+import opModels from "algaeh-billing/src/models/opCreditSettlement";
+
+const {
+  insertPatientVisitData,
+  addPatientInsuranceData,
+  addEpisodeEncounterData
+} = visitModels;
+const { insertPatientData } = regModels;
+const {
   selectFrontDesk,
   addFrontDesk,
   updateFrontDesk,
   getCashHandoverDetails,
   updateCashHandoverDetails
-} from "../models/frontDesk";
-import { insertPatientData } from "../models/patientRegistration";
-import algaehPath from "algaeh-module-bridge";
-import {
-  insertPatientVisitData,
-  addPatientInsuranceData,
-  addEpisodeEncounterData
-} from "../models/visit";
+} = frontModels;
 
 const {
   newReceiptData,
   addBillData,
   addCashHandover,
   updatePatientPackage
-} = algaehPath("algaeh-billing/src/models/billing");
+} = billModels;
 
-const { insertLadOrderedServices } = algaehPath(
-  "algaeh-laboratory/src/models/laboratory"
-);
-const { insertRadOrderedServices } = algaehPath(
-  "algaeh-radiology/src/models/radiology"
-);
+const { insertLadOrderedServices } = labModels;
+const { insertRadOrderedServices } = radModels;
 
-const { getPatientwiseBill } = algaehPath(
-  "algaeh-billing/src/models/opCreditSettlement"
-);
+const { getPatientwiseBill } = opModels;
 
 export default () => {
   const api = Router();

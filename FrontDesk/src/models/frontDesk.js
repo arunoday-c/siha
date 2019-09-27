@@ -4,7 +4,7 @@ import algaehUtilities from "algaeh-utilities/utilities";
 import { LINQ } from "node-linq";
 import moment from "moment";
 
-module.exports = {
+export default {
   selectFrontDesk: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {

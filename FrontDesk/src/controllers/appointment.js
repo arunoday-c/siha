@@ -1,6 +1,8 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import {
+import appointmentModels from "../models/appointment";
+
+const {
   addAppointmentStatus,
   addAppointmentRoom,
   addAppointmentClinic,
@@ -27,7 +29,7 @@ import {
   cancelPatientAppointment,
   deleteSchedule,
   getAppointmentSlip
-} from "../models/appointment";
+} = appointmentModels;
 
 export default () => {
   const api = Router();

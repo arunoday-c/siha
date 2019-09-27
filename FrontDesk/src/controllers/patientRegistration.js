@@ -1,9 +1,8 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import {
-  getPatientInsurance,
-  updatePatientData
-} from "../models/patientRegistration";
+import regModels from "../models/patientRegistration";
+
+const { getPatientInsurance, updatePatientData } = regModels;
 
 export default () => {
   const api = Router();

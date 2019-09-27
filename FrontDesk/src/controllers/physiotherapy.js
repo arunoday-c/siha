@@ -1,9 +1,8 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import {
-  getPhysiotherapyTreatment,
-  savePhysiotherapyTreatment
-} from "../models/physiotherapy";
+import physioModels from "../models/physiotherapy";
+const { getPhysiotherapyTreatment, savePhysiotherapyTreatment } = physioModels;
+
 export default () => {
   const api = Router();
 

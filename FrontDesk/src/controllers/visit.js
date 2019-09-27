@@ -1,6 +1,8 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import { closeVisit, checkVisitExists, getProviders } from "../models/visit";
+import visitModels from "../models/visit";
+const { closeVisit, checkVisitExists, getProviders } = visitModels;
+
 export default () => {
   const api = Router();
   api.post("/closeVisit", closeVisit, (req, res, next) => {
