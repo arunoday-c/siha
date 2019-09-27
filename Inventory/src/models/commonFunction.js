@@ -169,6 +169,6 @@ let updateIntoInvItemLocation = (req, res, next) => {
   }
 };
 
-module.exports = {
+export default {
   updateIntoInvItemLocation
 };

@@ -1,6 +1,6 @@
 import algaehMysql from "algaeh-mysql";
 import moment from "moment";
-module.exports = {
+export default {
   getInventoryConsumption: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {

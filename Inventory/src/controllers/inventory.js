@@ -1,8 +1,9 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import algaehPath from "algaeh-module-bridge";
+import serviceModels from "algaeh-master-settings/src/models/serviceTypes";
+import invModels from "../models/inventory";
 
-import {
+const {
   addItemMaster,
   addItemCategory,
   addItemGroup,
@@ -24,11 +25,9 @@ import {
   updateLocationPermission,
   addProcedureItems,
   getItemMasterWithSalesPrice
-} from "../models/inventory";
+} = invModels;
 
-const { addServices, updateServicesOthrs } = algaehPath(
-  "algaeh-master-settings/src/models/serviceTypes"
-);
+const { addServices, updateServicesOthrs } = serviceModels;
 
 export default () => {
   let api = Router();

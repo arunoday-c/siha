@@ -2,7 +2,7 @@ import algaehMysql from "algaeh-mysql";
 import algaehUtilities from "algaeh-utilities/utilities";
 import mysql from "mysql";
 
-module.exports = {
+export default {
   getUomLocationStock: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {

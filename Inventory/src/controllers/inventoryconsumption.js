@@ -1,11 +1,10 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import {
-  getInventoryConsumption,
-  addInventoryConsumption
-} from "../models/inventoryconsumption";
+import invModels from "../models/inventoryconsumption";
+import comModels from "../models/commonFunction";
 
-import { updateIntoInvItemLocation } from "../models/commonFunction";
+const { getInventoryConsumption, addInventoryConsumption } = invModels;
+const { updateIntoInvItemLocation } = comModels;
 
 export default () => {
   const api = Router();

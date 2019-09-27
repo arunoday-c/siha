@@ -3,7 +3,7 @@ import moment from "moment";
 import algaehUtilities from "algaeh-utilities/utilities";
 import { LINQ } from "node-linq";
 import _ from "lodash";
-module.exports = {
+export default {
   gettransferEntryOld: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {

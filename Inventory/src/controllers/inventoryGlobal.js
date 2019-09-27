@@ -1,13 +1,15 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import {
+import invModels from "../models/inventoryGlobal";
+
+const {
   getUomLocationStock,
   getItemMoment,
   getItemLocationStock,
   getUserLocationPermission,
   getItemandLocationStock,
   getConsumptionSelectedMonth
-} from "../models/inventoryGlobal";
+} = invModels;
 
 export default () => {
   const api = Router();

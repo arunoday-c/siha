@@ -1,10 +1,8 @@
 import algaehMysql from "algaeh-mysql";
 import moment from "moment";
-import algaehPath from "algaeh-module-bridge";
 import algaehUtilities from "algaeh-utilities/utilities";
-import { LINQ } from "node-linq";
 
-module.exports = {
+export default {
   getPosEntry: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {

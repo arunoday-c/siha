@@ -3,7 +3,7 @@ import mysql from "mysql";
 import moment from "moment";
 import algaehUtilities from "algaeh-utilities/utilities";
 
-module.exports = {
+export default {
   addItemMaster: (req, res, next) => {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
