@@ -1,5 +1,5 @@
 import algaehMysql from "algaeh-mysql";
-module.exports = {
+export default {
   getPatientDiagnosis: (req, res, next) => {
     let input = req.query;
     const _mysql = new algaehMysql();

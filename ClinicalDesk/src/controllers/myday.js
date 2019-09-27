@@ -1,11 +1,14 @@
 import { Router } from "express";
 import algaehUtilities from "algaeh-utilities/utilities";
-import {
+import dayModels from "../models/myday";
+
+const {
   getMydayList,
   patientEncounterUpdate,
   getPatientDetailList,
   getPatientVisits
-} from "../models/myday";
+} = dayModels;
+
 export default () => {
   const api = Router();
   const utilities = new algaehUtilities();

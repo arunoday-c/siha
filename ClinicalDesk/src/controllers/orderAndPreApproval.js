@@ -1,13 +1,9 @@
 import { Router } from "express";
 import algaehUtilities from "algaeh-utilities/utilities";
-import {
-  insertInvOrderedServices,
-  addProcedureItems
-} from "../models/orderAndPreApproval";
-import algaehPath from "algaeh-module-bridge";
-const { updateIntoInvItemLocation } = algaehPath(
-  "algaeh-inventory/src/models/commonFunction"
-);
+import orderModels from "../models/orderAndPreApproval";
+const { insertInvOrderedServices, addProcedureItems } = orderModels;
+import comModels from "algaeh-inventory/src/models/commonFunction";
+const { updateIntoInvItemLocation } = comModels;
 
 export default () => {
   const api = Router();

@@ -1,6 +1,7 @@
 import { Router } from "express";
 import algaehUtilities from "algaeh-utilities/utilities";
-import { getPatientDiagnosis } from "../models/dashboard";
+import models from "../models/dashboard";
+const { getPatientDiagnosis } = models;
 export default () => {
   const api = Router();
   const utilities = new algaehUtilities();

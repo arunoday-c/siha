@@ -1,6 +1,6 @@
 import algaehMysql from "algaeh-mysql";
 import algaehUtilities from "algaeh-utilities/utilities";
-module.exports = {
+export default {
   getMydayList: (req, res, next) => {
     const utilities = new algaehUtilities();
     const input = {

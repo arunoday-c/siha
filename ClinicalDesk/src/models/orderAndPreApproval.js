@@ -2,7 +2,7 @@ import algaehMysql from "algaeh-mysql";
 import algaehUtilities from "algaeh-utilities/utilities";
 import { LINQ } from "node-linq";
 
-module.exports = {
+export default {
   insertInvOrderedServices: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
