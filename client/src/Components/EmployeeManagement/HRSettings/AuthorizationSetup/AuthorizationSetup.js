@@ -39,8 +39,8 @@ class AuthorizationSetup extends Component {
       processLoanBtn: true,
       checkAll: false,
       Employeedetails: [],
-      leave_level_set: "AL1",
-      loan_level_set: "AL1",
+      leave_level_set: "1",
+      loan_level_set: "1",
       employee_id: null,
       saveEnable: true,
 
@@ -91,8 +91,8 @@ class AuthorizationSetup extends Component {
       l_sub_department_id: null,
       l_employee_id: null,
       l_full_name: "",
-      leave_level_set: "AL1",
-      loan_level_set: "AL1"
+      leave_level_set: "1",
+      loan_level_set: "1"
     });
   }
   selectAll(e) {
@@ -260,9 +260,9 @@ class AuthorizationSetup extends Component {
                     <input
                       type="radio"
                       name="leave_level_set"
-                      value="AL1"
+                      value="1"
                       checked={
-                        this.state.leave_level_set === "AL1" ? true : false
+                        this.state.leave_level_set === "1" ? true : false
                       }
                       onChange={this.radioChange.bind(this)}
                     />
@@ -273,9 +273,9 @@ class AuthorizationSetup extends Component {
                       <input
                         type="radio"
                         name="leave_level_set"
-                        value="AL2"
+                        value="2"
                         checked={
-                          this.state.leave_level_set === "AL2" ? true : false
+                          this.state.leave_level_set === "2" ? true : false
                         }
                         onChange={this.radioChange.bind(this)}
                       />
@@ -287,9 +287,9 @@ class AuthorizationSetup extends Component {
                       <input
                         type="radio"
                         name="leave_level_set"
-                        value="AL3"
+                        value="3"
                         checked={
-                          this.state.leave_level_set === "AL3" ? true : false
+                          this.state.leave_level_set === "3" ? true : false
                         }
                         onChange={this.radioChange.bind(this)}
                       />
@@ -377,10 +377,8 @@ class AuthorizationSetup extends Component {
                     <input
                       type="radio"
                       name="loan_level_set"
-                      value="AL1"
-                      checked={
-                        this.state.loan_level_set === "AL1" ? true : false
-                      }
+                      value="1"
+                      checked={this.state.loan_level_set === "1" ? true : false}
                       onChange={this.radioChange.bind(this)}
                     />
                     <span>Level 1</span>
@@ -390,9 +388,9 @@ class AuthorizationSetup extends Component {
                       <input
                         type="radio"
                         name="loan_level_set"
-                        value="AL2"
+                        value="2"
                         checked={
-                          this.state.loan_level_set === "AL2" ? true : false
+                          this.state.loan_level_set === "2" ? true : false
                         }
                         onChange={this.radioChange.bind(this)}
                       />

@@ -853,16 +853,16 @@ let getLeaveLevels = (req, res, next) => {
 
     let auth_levels = [];
     switch (userPrivilege) {
-      case "AL1":
+      case "1":
         auth_levels.push({ name: "Level 1", value: 1 });
         break;
-      case "AL2":
+      case "2":
         auth_levels.push(
           { name: "Level 2", value: 2 },
           { name: "Level 1", value: 1 }
         );
         break;
-      case "AL3":
+      case "3":
         auth_levels.push(
           { name: "Level 3", value: 3 },
           { name: "Level 2", value: 2 },
@@ -5566,9 +5566,9 @@ let cancelLeaveBACKup_28_JAN_2018 = (req, res, next) => {
 
     let input = extend({}, req.body);
     if (
-      req.userIdentity.leave_authorize_privilege == "AL1" ||
-      req.userIdentity.leave_authorize_privilege == "AL2" ||
-      req.userIdentity.leave_authorize_privilege == "AL3"
+      req.userIdentity.leave_authorize_privilege == "1" ||
+      req.userIdentity.leave_authorize_privilege == "2" ||
+      req.userIdentity.leave_authorize_privilege == "3"
     ) {
       db.getConnection((error, connection) => {
         if (error) {

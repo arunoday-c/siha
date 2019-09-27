@@ -185,13 +185,13 @@ export default function AuthorizationSetupEvent() {
         return;
       }
 
-      if ($this.state.loan_level_set === "AL1") {
+      if ($this.state.loan_level_set === "1") {
         for (var i = 0; i < employees_list.length; i++) {
           if (employees_list[i].select_to_process === "Y") {
             employees_list[i].loan_level1 = $this.state.lo_employee_id;
           }
         }
-      } else if ($this.state.loan_level_set === "AL2") {
+      } else if ($this.state.loan_level_set === "2") {
         for (var i = 0; i < employees_list.length; i++) {
           if (employees_list[i].select_to_process === "Y") {
             employees_list[i].loan_level2 = $this.state.lo_employee_id;
@@ -214,19 +214,19 @@ export default function AuthorizationSetupEvent() {
         return;
       }
 
-      if ($this.state.leave_level_set === "AL1") {
+      if ($this.state.leave_level_set === "1") {
         for (var i = 0; i < employees_list.length; i++) {
           if (employees_list[i].select_to_process === "Y") {
             employees_list[i].leave_level1 = $this.state.l_employee_id;
           }
         }
-      } else if ($this.state.leave_level_set === "AL2") {
+      } else if ($this.state.leave_level_set === "2") {
         for (var i = 0; i < employees_list.length; i++) {
           if (employees_list[i].select_to_process === "Y") {
             employees_list[i].leave_level2 = $this.state.l_employee_id;
           }
         }
-      } else if ($this.state.leave_level_set === "AL3") {
+      } else if ($this.state.leave_level_set === "3") {
         for (var i = 0; i < employees_list.length; i++) {
           if (employees_list[i].select_to_process === "Y") {
             employees_list[i].leave_level3 = $this.state.l_employee_id;
@@ -260,8 +260,8 @@ export default function AuthorizationSetupEvent() {
               l_sub_department_id: null,
               l_employee_id: null,
               l_full_name: "",
-              leave_level_set: "AL1",
-              loan_level_set: "AL1"
+              leave_level_set: "1",
+              loan_level_set: "1"
             });
             swalMessage({
               title: "Record Added Successfully",

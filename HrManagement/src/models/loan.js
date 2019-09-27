@@ -204,9 +204,9 @@ module.exports = {
     }
 
     let auth_level = "";
-    if (req.query.auth_level == "AL1") {
+    if (req.query.auth_level == "1") {
       auth_level = " and authorized1='P' ";
-    } else if (req.query.auth_level == "AL2") {
+    } else if (req.query.auth_level == "2") {
       auth_level = " and authorized1='A' and authorized2='P' ";
     }
 
@@ -264,23 +264,23 @@ module.exports = {
 
       let auth_levels = [];
       switch (userPrivilege) {
-        case "AL1":
+        case "1":
           auth_levels.push({ name: "Level 1", value: 1 });
           break;
-        case "AL2":
+        case "2":
           auth_levels.push(
             { name: "Level 2", value: 2 },
             { name: "Level 1", value: 1 }
           );
           break;
-        case "AL3":
+        case "3":
           auth_levels.push(
             { name: "Level 3", value: 3 },
             { name: "Level 2", value: 2 },
             { name: "Level 1", value: 1 }
           );
           break;
-        case "AL4":
+        case "4":
           auth_levels.push(
             { name: "Level 4", value: 4 },
             { name: "Level 3", value: 3 },
@@ -309,8 +309,8 @@ module.exports = {
       })
         .then(maxAuth => {
           if (
-            req.userIdentity.loan_authorize_privilege != maxAuth.MaxLoan ||
-            input.auth_level != maxAuth.MaxLoan
+            req.userIdentity.loan_authorize_privilege < maxAuth.MaxLoan ||
+            input.auth_level < maxAuth.MaxLoan
           ) {
             //for lower level authorize
             getLoanAuthFields(input.auth_level).then(authFields => {
@@ -381,8 +381,8 @@ module.exports = {
                 });
             });
           } else if (
-            req.userIdentity.loan_authorize_privilege == maxAuth.MaxLoan &&
-            input.auth_level == maxAuth.MaxLoan
+            req.userIdentity.loan_authorize_privilege >= maxAuth.MaxLoan &&
+            input.auth_level >= maxAuth.MaxLoan
           ) {
             //if he has highest previlege
             getLoanAuthFields(input.auth_level).then(authFields => {
@@ -418,9 +418,7 @@ module.exports = {
 
                     if (input.authorized == "R") {
                       qry = `update hims_f_loan_application set loan_authorized='REJ'\
-                  where record_status='A' and loan_authorized='PEN' and hims_f_loan_application_id=${
-                    input.hims_f_loan_application_id
-                  }`;
+                  where record_status='A' and loan_authorized='PEN' and hims_f_loan_application_id=${input.hims_f_loan_application_id}`;
                     } else if (input.authorized == "A") {
                       qry = `update hims_f_loan_application set loan_authorized='APR',authorized_date='${moment().format(
                         "YYYY-MM-DD"
@@ -644,7 +642,7 @@ function getLoanAuthFields(auth_level) {
   return new Promise((resolve, reject) => {
     let authFields;
     switch (auth_level) {
-      case "AL1":
+      case "1":
         authFields = [
           "authorized1=?",
           "authorized1_by=?",
@@ -652,7 +650,7 @@ function getLoanAuthFields(auth_level) {
         ];
         break;
 
-      case "AL2":
+      case "2":
         authFields = [
           "authorized2=?",
           "authorized2_by=?",
@@ -660,7 +658,7 @@ function getLoanAuthFields(auth_level) {
         ];
         break;
 
-      case "AL3":
+      case "3":
         authFields = [
           "authorized3=?",
           "authorized3_by=?",
@@ -668,14 +666,14 @@ function getLoanAuthFields(auth_level) {
         ];
         break;
 
-      case "AL4":
+      case "4":
         authFields = [
           "authorized4=?",
           "authorized4_by=?",
           "authorized4_date=?"
         ];
         break;
-      case "AL5":
+      case "5":
         authFields = [
           "authorized5=?",
           "authorized5_by=?",
