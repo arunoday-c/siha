@@ -52,6 +52,7 @@ import {
 import { SetBulkState } from "../../utils/GlobalFunctions";
 import PackageUtilize from "../PatientProfile/PackageUtilize/PackageUtilize";
 import UpdatePatientPopup from "../UpdatePatientDetails/UpdatePatientPopup";
+import _ from "lodash";
 
 const emptyObject = extend(
   PatRegIOputs.inputParam(),
@@ -333,6 +334,19 @@ class RegistrationPatient extends Component {
           });
         }
       });
+    }
+
+    if (
+      this.props.visittypes !== undefined &&
+      this.props.visittypes.length > 0
+    ) {
+      const exit_consultation = _.find(this.props.visittypes, f => {
+        return f.consultation == "Y";
+      });
+      if (exit_consultation.hims_d_visit_type_id !== null) {
+        this.state.visit_type = exit_consultation.hims_d_visit_type_id;
+        this.state.consultation = "Y";
+      }
     }
   }
 
