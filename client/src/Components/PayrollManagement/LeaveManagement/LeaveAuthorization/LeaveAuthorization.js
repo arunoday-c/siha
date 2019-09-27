@@ -85,7 +85,7 @@ export default class LeaveAuthorization extends Component {
       total_approved_days: data.total_approved_days,
       authorized_comment: this.state.remarks,
       hims_f_leave_application_id: data.hims_f_leave_application_id,
-      auth_level: "AL" + this.state.auth_level,
+      auth_level: this.state.auth_level,
       status: type,
       employee_id: data.employee_id,
       leave_id: data.leave_id,
@@ -164,7 +164,7 @@ export default class LeaveAuthorization extends Component {
       module: "hrManagement",
       data: {
         hospital_id: this.state.hospital_id,
-        auth_level: "AL" + this.state.auth_level,
+        auth_level: this.state.auth_level,
         employee_id: this.state.hims_d_employee_id,
         leave_status: this.state.leave_status,
         from_date: this.state.from_date,
