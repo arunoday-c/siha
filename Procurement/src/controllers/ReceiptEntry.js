@@ -1,28 +1,24 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import {
+import receiptModels from "../models/ReceiptEntry";
+// import pharmacyModels from "algaeh-pharmacy/src/models/commonFunction";
+// import inventoryModels from "algaeh-inventory/src/models/commonFunction";
+// import algaehUtilities from "algaeh-utilities/utilities";
+
+const {
   addReceiptEntry,
   getReceiptEntry,
   updateReceiptEntry,
   updateDNEntry,
   getDeliveryForReceipt,
   getDeliveryItemDetails
-} from "../models/ReceiptEntry";
-
-// import { x } from "algaeh-inventory/src/models/commonFunction";
-import algaehPath from "algaeh-module-bridge";
-const { updateIntoItemLocation } = algaehPath(
-  "algaeh-pharmacy/src/models/commonFunction"
-);
-
-const { updateIntoInvItemLocation } = algaehPath(
-  "algaeh-inventory/src/models/commonFunction"
-);
-import algaehUtilities from "algaeh-utilities/utilities";
+} = receiptModels;
+// const { updateIntoItemLocation } = pharmacyModels;
+// const { updateIntoInvItemLocation } = inventoryModels;
 
 export default () => {
   const api = Router();
-  const utilities = new algaehUtilities();
+  // const utilities = new algaehUtilities();
   api.get("/getReceiptEntry", getReceiptEntry, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,

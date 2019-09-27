@@ -1,6 +1,9 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import {
+import purchaseModels from "../models/PurchaseOrderEntry";
+import algaehUtilities from "algaeh-utilities/utilities";
+
+const {
   getPurchaseOrderEntry,
   getAuthPurchaseList,
   getPharRequisitionEntryPO,
@@ -10,8 +13,7 @@ import {
   updateInvReqEntry,
   updatePurchaseOrderEntry,
   releaseDB
-} from "../models/PurchaseOrderEntry";
-import algaehUtilities from "algaeh-utilities/utilities";
+} = purchaseModels;
 
 export default () => {
   const api = Router();

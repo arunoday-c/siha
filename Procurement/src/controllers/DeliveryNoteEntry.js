@@ -1,31 +1,20 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
 import algaehUtilities from "algaeh-utilities/utilities";
+import deliveyModels from "../models/DeliveryNoteEntry";
+import pharmacyComModels from "algaeh-pharmacy/src/models/commonFunction";
+import inventoryComModels from "algaeh-inventory/src/models/commonFunction";
 
-import {
+const {
   generateNumber,
   addDeliveryNoteEntry,
   getDeliveryNoteEntry,
   updateDeliveryNoteEntry,
   updatePOEntry
-} from "../models/DeliveryNoteEntry";
+} = deliveyModels;
 
-import algaehPath from "algaeh-module-bridge";
-const { updateItemMaster } = algaehPath(
-  "algaeh-pharmacy/src/models/pharmacyGlobal"
-);
-
-const { updateInventoryItemMaster } = algaehPath(
-  "algaeh-inventory/src/models/inventoryGlobal"
-);
-
-const { updateIntoItemLocation } = algaehPath(
-  "algaeh-pharmacy/src/models/commonFunction"
-);
-
-const { updateIntoInvItemLocation } = algaehPath(
-  "algaeh-inventory/src/models/commonFunction"
-);
+const { updateIntoItemLocation } = pharmacyComModels;
+const { updateIntoInvItemLocation } = inventoryComModels;
 
 export default () => {
   const api = Router();
