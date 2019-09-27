@@ -1,6 +1,8 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import {
+import labModels from "../models/labmasters";
+
+const {
   selectSection,
   insertSection,
   updateSection,
@@ -31,7 +33,7 @@ import {
   selectGroupAntiMap,
   insertGroupAntiMap,
   updateGroupAntiMap
-} from "../models/labmasters";
+} = labModels;
 
 export default () => {
   const api = Router();

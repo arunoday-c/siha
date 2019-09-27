@@ -3,7 +3,7 @@ import algaehUtilities from "algaeh-utilities/utilities";
 import moment from "moment";
 import mysql from "mysql";
 
-module.exports = {
+export default {
   getInvestigTestList: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {

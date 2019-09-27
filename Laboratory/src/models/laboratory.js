@@ -6,7 +6,7 @@ import pad from "node-string-pad";
 import moment from "moment";
 import mysql from "mysql";
 
-module.exports = {
+export default {
   getLabOrderedServices: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {

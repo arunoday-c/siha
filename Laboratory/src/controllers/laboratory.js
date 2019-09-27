@@ -1,6 +1,8 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import {
+import labModels from "../models/laboratory";
+
+const {
   getLabOrderedServices,
   updateLabOrderServices,
   getTestAnalytes,
@@ -10,7 +12,7 @@ import {
   getMicroResult,
   getPatientTestList,
   getComparedLabResult
-} from "../models/laboratory";
+} = labModels;
 
 export default () => {
   const api = Router();

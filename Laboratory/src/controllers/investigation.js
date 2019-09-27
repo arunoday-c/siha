@@ -1,12 +1,14 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import {
+import invModels from "../models/investigation";
+
+const {
   addInvestigationTest,
   getInvestigTestList,
   updateInvestigationTest,
   deleteLabAnalyte,
   deleteRadTemplate
-} from "../models/investigation";
+} = invModels;
 
 export default () => {
   const api = Router();
