@@ -1,6 +1,19 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import {
+import models from "../models/billing";
+import labModels from "algaeh-laboratory/src/models/laboratory";
+import radModels from "algaeh-radiology/src/models/radiology";
+
+//this stuff will be removed if i did succeed
+// import algaehPath from "algaeh-module-bridge";
+// const { insertLadOrderedServices } = algaehPath(
+//   "algaeh-laboratory/src/models/laboratory"
+// );
+// const { insertRadOrderedServices } = algaehPath(
+//   "algaeh-radiology/src/models/radiology"
+// );
+
+const {
   newReceiptData,
   patientAdvanceRefund,
   billingCalculations,
@@ -11,15 +24,10 @@ import {
   getEmployeeAndDepartments,
   closePackage,
   addCashHandover
-} from "../models/billing";
+} = models;
 
-import algaehPath from "algaeh-module-bridge";
-const { insertLadOrderedServices } = algaehPath(
-  "algaeh-laboratory/src/models/laboratory"
-);
-const { insertRadOrderedServices } = algaehPath(
-  "algaeh-radiology/src/models/radiology"
-);
+const { insertLadOrderedServices } = labModels;
+const { insertRadOrderedServices } = radModels;
 
 export default () => {
   const api = Router();

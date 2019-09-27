@@ -1,14 +1,18 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import {
+import opCreditModels from "../models/opCreditSettlement";
+import billModels from "../models/billing";
+import recModels from "../models/receiptentry";
+
+const {
   addCreidtSettlement,
   getCreidtSettlement,
   updateOPBilling,
   getPatientwiseBill
-} from "../models/opCreditSettlement";
-import { addCashHandover } from "../models/billing";
+} = opCreditModels;
 
-import { getReceiptEntry, addReceiptEntry } from "../models/receiptentry";
+const { addCashHandover } = billModels;
+const { getReceiptEntry, addReceiptEntry } = recModels;
 
 export default () => {
   const api = Router();

@@ -6,7 +6,7 @@ import extend from "extend";
 import _ from "lodash";
 import mysql from "mysql";
 
-module.exports = {
+export default {
   newReceiptData: (req, res, next) => {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);

@@ -5,7 +5,7 @@ import { LINQ } from "node-linq";
 import mysql from "mysql";
 import moment from "moment";
 
-module.exports = {
+export default {
   addOpBIlling: (req, res, next) => {
     const _mysql = new algaehMysql();
 

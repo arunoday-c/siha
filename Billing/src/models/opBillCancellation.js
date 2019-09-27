@@ -3,7 +3,7 @@ import _ from "lodash";
 import algaehUtilities from "algaeh-utilities/utilities";
 import appsettings from "algaeh-utilities/appsettings.json";
 
-module.exports = {
+export default {
   addOpBillCancellation: (req, res, next) => {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
@@ -559,7 +559,7 @@ module.exports = {
       }
     } catch (e) {
       _mysql.rollBackTransaction(() => {
-        next(error);
+        next(e);
       });
     }
   }

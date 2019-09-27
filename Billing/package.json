@@ -1,16 +1,18 @@
 {
   "name": "algaeh-billing",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Algaeh Billing Module",
   "main": "dist",
   "scripts": {
-    "billing_server": "cross-env PORT=3014 NODE_ENV=development nodemon -w src --exec \"babel-node src/billing_server.js \"",
-    "build": "babel src -s -D -d dist ",
+    "billing_server": "npm-run-all -p run-webpack run-dev",
+    "build": "webpack --config webpack.prod.js",
+    "run-webpack": "webpack --watch --config webpack.dev.js",
     "dev": "npm run billing_server",
     "api": "npm run billing_server",
     "lint": "eslint src && eslint test",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "cross-env PORT=3014 NODE_ENV=production pm2 start  -i 2 billing_server.js"
+    "start": "cross-env PORT=3014 NODE_ENV=production pm2 start -i 2 build/app.js",
+    "run-dev": "cross-env PORT=3014 NODE_ENV=development nodemon build/app.js"
   },
   "dependencies": {
     "algaeh-mysql": "^1.2.11",
@@ -24,17 +26,22 @@
     "extend": "^3.0.2",
     "mathjs": "^5.1.2",
     "node-linq": "0.0.5",
-    "winston": "^2.4.2",
+    "winston": "^3.1.0",
     "winston-daily-rotate-file": "^3.1.4"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.0",
-    "babel-eslint": "^8.2.3",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-stage-0": "^6.24.1",
-    "eslint": "^4.19.1",
-    "nodemon": "^1.17.3"
+    "@babel/cli": "^7.6.2",
+    "@babel/core": "^7.6.2",
+    "@babel/node": "^7.6.2",
+    "@babel/preset-env": "^7.6.2",
+    "babel-loader": "^8.0.6",
+    "nodemon": "^1.17.3",
+    "npm-run-all": "^4.1.5",
+    "obfuscator-loader": "^1.1.2",
+    "webpack": "^4.40.2",
+    "webpack-cli": "^3.3.9",
+    "webpack-merge": "^4.2.2",
+    "webpack-node-externals": "^1.7.2"
   },
   "keywords": [],
   "author": "",
