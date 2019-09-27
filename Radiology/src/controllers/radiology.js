@@ -1,10 +1,12 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import {
+import radModels from "../models/radiology";
+
+const {
   getRadOrderedServices,
   updateRadOrderedServices,
   getRadTemplateList
-} from "../models/radiology";
+} = radModels;
 
 export default () => {
   const api = Router();

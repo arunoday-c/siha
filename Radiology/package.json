@@ -6,11 +6,14 @@
   "scripts": {
     "radiology_server": "cross-env PORT=3012 NODE_ENV=development nodemon -w src --exec \"babel-node src/radiology_server.js \"",
     "build": "babel src -s -D -d dist ",
+    "build-webpack": "webpack --mode production",
+    "run-webpack": "webpack --watch --mode development",
     "dev": "npm run radiology_server",
     "api": "npm run radiology_server",
     "lint": "eslint src && eslint test",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "cross-env PORT=3012 NODE_ENV=production pm2 start  -i 1 radiology_server.js"
+    "start": "cross-env PORT=3012 NODE_ENV=production pm2 start -i 2 build/app.js",
+    "run-dev": "cross-env PORT=3012 NODE_ENV=development node build/app.js"
   },
   "eslintConfig": {
     "parserOptions": {
@@ -37,17 +40,20 @@
     "cryptr": "^4.0.0",
     "express": "^4.16.3",
     "node-linq": "0.0.5",
-    "winston": "^2.4.2",
+    "winston": "^3.1.0",
     "winston-daily-rotate-file": "^3.1.4"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.0",
-    "babel-eslint": "^8.2.3",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-stage-0": "^6.24.1",
-    "eslint": "^4.19.1",
-    "nodemon": "^1.17.3"
+    "@babel/cli": "^7.6.2",
+    "@babel/core": "^7.6.2",
+    "@babel/node": "^7.6.2",
+    "@babel/preset-env": "^7.6.2",
+    "babel-loader": "^8.0.6",
+    "nodemon": "^1.17.3",
+    "obfuscator-loader": "^1.1.2",
+    "webpack": "^4.40.2",
+    "webpack-cli": "^3.3.9",
+    "webpack-node-externals": "^1.7.2"
   },
   "keywords": [],
   "author": "Algaeh Technologies Pvt. Ltd.",
