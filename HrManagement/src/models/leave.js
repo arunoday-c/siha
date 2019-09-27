@@ -4667,10 +4667,10 @@ module.exports = {
                     return item["leave_id"] == leave["hims_d_leave_id"];
                   });
                   if (leave_assignd != undefined) {
-                    data[leave["hims_d_leave_id"]] =
+                    data[''+leave["hims_d_leave_id"]+''] =
                       leave_assignd["close_balance"];
                   } else {
-                    data[leave["hims_d_leave_id"]] = 0;
+                    data[''+leave["hims_d_leave_id"]+''] = "N";
                   }
                 });
 
