@@ -176,6 +176,6 @@ let updateIntoItemLocation = (req, res, next) => {
   }
 };
 
-module.exports = {
+export default {
   updateIntoItemLocation
 };

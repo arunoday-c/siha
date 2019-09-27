@@ -4,7 +4,7 @@ import { LINQ } from "node-linq";
 import algaehUtilities from "algaeh-utilities/utilities";
 import mysql from "mysql";
 
-module.exports = {
+export default {
   getrequisitionEntry: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {

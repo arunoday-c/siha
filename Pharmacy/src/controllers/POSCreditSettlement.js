@@ -1,18 +1,18 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import algaehPath from "algaeh-module-bridge";
+import receiptModels from "algaeh-billing/src/models/receiptentry";
+import billModels from "algaeh-billing/src/models/billing";
+import posCreditModels from "../models/POSCreditSettlement";
 
-import {
+const {
   addPOSCreidtSettlement,
   getPOSCreidtSettlement,
   updatePOSBilling,
   getPatientPOSCriedt
-} from "../models/POSCreditSettlement";
+} = posCreditModels;
+const { addReceiptEntry, getReceiptEntry } = receiptModels;
+const { addCashHandover } = billModels;
 
-const { addReceiptEntry, getReceiptEntry } = algaehPath(
-  "algaeh-billing/src/models/receiptentry"
-);
-const { addCashHandover } = algaehPath("algaeh-billing/src/models/billing");
 export default () => {
   const api = Router();
   api.get(

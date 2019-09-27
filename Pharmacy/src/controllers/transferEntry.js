@@ -1,15 +1,19 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
 
-import {
+import transferModels from "../models/transferEntry";
+import comModels from "../models/commonFunction";
+import reqModels from "../models/requisitionEntry";
+const { updaterequisitionEntryOnceTranfer } = reqModels;
+const { updateIntoItemLocation } = comModels;
+const {
   gettransferEntry,
   addtransferEntry,
   updatetransferEntry,
   getrequisitionEntryTransfer,
   getAckTransferList
-} from "../models/transferEntry";
-import { updateIntoItemLocation } from "../models/commonFunction";
-import { updaterequisitionEntryOnceTranfer } from "../models/requisitionEntry";
+} = transferModels;
+
 export default () => {
   const api = Router();
   api.get("/gettransferEntry", gettransferEntry, (req, res, next) => {

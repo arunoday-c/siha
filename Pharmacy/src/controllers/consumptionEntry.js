@@ -1,12 +1,10 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import {
-  getconsumptionEntry,
-  addconsumptionEntry
-} from "../models/consumptionEntry";
+import conEntryModels from "../models/consumptionEntry";
+import comModels from "../models/commonFunction";
+const { getconsumptionEntry, addconsumptionEntry } = conEntryModels;
 
-import { updateIntoItemLocation } from "../models/commonFunction";
-
+const { updateIntoItemLocation } = comModels;
 export default () => {
   const api = Router();
   api.get("/getconsumptionEntry", getconsumptionEntry, (req, res, next) => {

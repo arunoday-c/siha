@@ -4,7 +4,7 @@ import algaehUtilities from "algaeh-utilities/utilities";
 import _ from "lodash";
 import { LINQ } from "node-linq";
 
-module.exports = {
+export default {
   gettransferEntryBACKUP: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {

@@ -2,7 +2,7 @@ import algaehMysql from "algaeh-mysql";
 import moment from "moment";
 import algaehUtilities from "algaeh-utilities/utilities";
 
-module.exports = {
+export default {
   generateNumber: (req, res, next) => {
     const _mysql = new algaehMysql();
 

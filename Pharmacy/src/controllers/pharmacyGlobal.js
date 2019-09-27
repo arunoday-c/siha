@@ -1,6 +1,8 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import {
+import pharModels from "../models/pharmacyGlobal";
+
+const {
   getUomLocationStock,
   getVisitPrescriptionDetails,
   getItemMoment,
@@ -10,7 +12,7 @@ import {
   getConsumptionSelectedMonth,
   insertExpiryNotification,
   getExpiringItemList
-} from "../models/pharmacyGlobal";
+} = pharModels;
 
 export default () => {
   const api = Router();

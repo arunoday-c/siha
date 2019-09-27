@@ -1,16 +1,16 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import {
+import intModels from "../models/initialstock";
+import comModels from "../models/commonFunction";
+import pharModels from "../models/pharmacyGlobal";
+const {
   generateNumber,
   getPharmacyInitialStock,
   addPharmacyInitialStock,
   updatePharmacyInitialStock
-} from "../models/initialstock";
-
-import { updateIntoItemLocation } from "../models/commonFunction";
-
-import { updateItemMaster } from "../models/pharmacyGlobal";
-
+} = intModels;
+const { updateIntoItemLocation } = comModels;
+const { updateItemMaster } = pharModels;
 export default () => {
   const api = Router();
   api.get(

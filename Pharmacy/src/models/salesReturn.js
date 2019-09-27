@@ -4,7 +4,7 @@ import algaehUtilities from "algaeh-utilities/utilities";
 import mysql from "mysql";
 import _ from "lodash";
 
-module.exports = {
+export default {
   getsalesReturn: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {

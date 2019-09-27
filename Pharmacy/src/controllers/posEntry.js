@@ -1,8 +1,15 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import algaehPath from "algaeh-module-bridge";
+import algaehUtilities from "algaeh-utilities/utilities";
+import posEntryModels from "../models/posEntry";
+import comModels from "../models/commonFunction";
+import billModels from "algaeh-billing/src/models/billing";
+import receiptModels from "algaeh-billing/src/models/receiptentry";
+// import s from "algaeh-billing/src/models/receiptentry"
+const { addReceiptEntry, getReceiptEntry } = receiptModels;
+const { addCashHandover } = billModels;
 
-import {
+const {
   getPosEntry,
   addPosEntry,
   updatePosEntry,
@@ -10,15 +17,9 @@ import {
   cancelPosEntry,
   insertPreApprovalOutsideCustomer,
   updatePOSDetailForPreApproval
-} from "../models/posEntry";
+} = posEntryModels;
 
-import { updateIntoItemLocation } from "../models/commonFunction";
-// import s from "algaeh-billing/src/models/receiptentry"
-const { addReceiptEntry, getReceiptEntry } = algaehPath(
-  "algaeh-billing/src/models/receiptentry"
-);
-const { addCashHandover } = algaehPath("algaeh-billing/src/models/billing");
-import algaehUtilities from "algaeh-utilities/utilities";
+const { updateIntoItemLocation } = comModels;
 
 export default () => {
   const api = Router();

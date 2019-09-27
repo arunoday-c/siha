@@ -1,12 +1,13 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
 
-import {
+import reqModels from "../models/requisitionEntry";
+const {
   getrequisitionEntry,
   addrequisitionEntry,
   updaterequisitionEntry,
   getAuthrequisitionList
-} from "../models/requisitionEntry";
+} = reqModels;
 
 export default () => {
   const api = Router();
