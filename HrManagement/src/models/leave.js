@@ -4618,7 +4618,95 @@ module.exports = {
           next(e);
         });
     }
+  },
+
+  //created by irfan:
+  getLeaveBalances: (req, res, next) => {
+    let input = req.query;
+    if (input.hospital_id > 0 && input.year > 0) {
+      const _mysql = new algaehMysql();
+
+      let strQry = "";
+      if (input.employee_group_id > 0) {
+        strQry += " and E.employee_group_id=" + input.employee_group_id;
+      }
+      if (input.hims_d_employee_id > 0) {
+        strQry += " and E.hims_d_employee_id=" + input.hims_d_employee_id;
+      }
+
+      _mysql
+        .executeQuery({
+          query: `select E.hims_d_employee_id,E.employee_code,E.full_name,ML.leave_id ,ML.total_eligible,\
+              ML.availed_till_date,ML.close_balance from hims_d_employee E \
+              left join  hims_f_employee_monthly_leave ML on ML.employee_id=E.hims_d_employee_id and ML.year=?\
+              where  E.hospital_id=? and  E.record_status='A' ${strQry} order by hims_d_employee_id;\
+              select hims_d_leave_id, leave_code, leave_description from hims_d_leave \
+              where record_status='A';`,
+          values: [input.year, input.hospital_id],
+
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          const employees = result[0];
+          const leave_master = result[1];
+
+          const outputArray = [];
+        
+          if (employees.length > 0 && leave_master.length > 0) {
+            _.chain(employees)
+              .groupBy(g => g.hims_d_employee_id)
+              .forEach(emp => {
+                let data = {
+                  employee_code: emp[0]["employee_code"],
+                  full_name: emp[0]["full_name"],
+                  hims_d_employee_id: emp[0]["hims_d_employee_id"]
+                };
+                leave_master.forEach(leave => {
+                  const leave_assignd = emp.find(item => {
+                    return item["leave_id"] == leave["hims_d_leave_id"];
+                  });
+                  if (leave_assignd != undefined) {
+                    data[leave["hims_d_leave_id"]] =
+                      leave_assignd["close_balance"];
+                  } else {
+                    data[leave["hims_d_leave_id"]] = 0;
+                  }
+                });
+
+                outputArray.push(data);
+              })
+              .value();
+          
+              req.records = outputArray;
+              next();
+          
+          
+            } else {
+            req.records = {
+              invalid_input: true,
+              message: `No Employees Found`
+            };
+            next();
+            return;
+          }
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "please provide valid input"
+      };
+
+      next();
+      return;
+    }
   }
+
+
 };
 
 // finish
