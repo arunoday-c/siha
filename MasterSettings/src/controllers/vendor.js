@@ -1,11 +1,13 @@
 import { Router } from "express";
 import algaehUtlities from "algaeh-utilities/utilities";
-import {
+import vendorModels from "../models/vendor";
+
+const {
   addVendorMaster,
   getVendorMaster,
   updateVendorMaster,
   deleteVendorMaster
-} from "../models/vendor";
+} = vendorModels;
 
 export default () => {
   let api = Router();

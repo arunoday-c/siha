@@ -3,7 +3,7 @@ import algaehUtilities from "algaeh-utilities/utilities";
 import mysql from "mysql";
 import _ from "lodash";
 
-module.exports = {
+export default {
   addFavouriteOrder: (req, res, next) => {
     let input = req.body;
     const _mysql = new algaehMysql();

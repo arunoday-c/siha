@@ -1,6 +1,8 @@
 import { Router } from "express";
 import algaehUtlities from "algaeh-utilities/utilities";
-import { getSFDA } from "../models/sfda";
+import sfda from "../models/sfda";
+
+const { getSFDA } = sfda;
 
 export default () => {
   let api = Router();

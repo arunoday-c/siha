@@ -3,7 +3,7 @@ import mysql from "mysql";
 import moment from "moment";
 import _ from "lodash";
 
-module.exports = {
+export default {
   addPackage: (req, res, next) => {
     const _options = req.connection == null ? {} : req.connection;
 

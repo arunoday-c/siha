@@ -1,5 +1,5 @@
 import algaehMysql from "algaeh-mysql";
-module.exports = {
+export default {
   addCompanyAccount: (req, res, next) => {
     const _mysql = new algaehMysql();
 

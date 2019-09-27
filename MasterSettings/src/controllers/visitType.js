@@ -1,11 +1,8 @@
 import { Router } from "express";
 import algaehUtlities from "algaeh-utilities/utilities";
-import {
-  selectStatement,
-  addVisit,
-  updateVisit,
-  deleteVisitType
-} from "../models/visitType";
+import visaModels from "../models/visitType";
+
+const { selectStatement, addVisit, updateVisit, deleteVisitType } = visaModels;
 
 export default () => {
   let api = Router();

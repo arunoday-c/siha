@@ -3,7 +3,7 @@ import algaehUtilities from "algaeh-utilities/utilities";
 import mysql from "mysql";
 import _ from "lodash";
 
-module.exports = {
+export default {
   addServices: (req, res, next) => {
     let inputParam = req.body;
     const _mysql = new algaehMysql();

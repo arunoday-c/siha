@@ -1,5 +1,8 @@
 import { Router } from "express";
-import {
+import branchModels from "../models/branchMaster";
+import algaehUtlities from "algaeh-utilities/utilities";
+
+const {
   addBranchMaster,
   getBranchMaster,
   getActiveBranches,
@@ -9,8 +12,8 @@ import {
   modifyBranchMaster,
   getDepartmentsChart,
   dummy_roster
-} from "../models/branchMaster";
-import algaehUtlities from "algaeh-utilities/utilities";
+} = branchModels;
+
 export default () => {
   let api = Router();
   const utlities = new algaehUtlities();

@@ -1,6 +1,11 @@
 import { Router } from "express";
 import algaehUtlities from "algaeh-utilities/utilities";
-import {
+import deptModels from "../models/department";
+import invModels from "algaeh-inventory/src/models/inventory";
+
+const { addInventoryLocation } = invModels;
+
+const {
   addDepartment,
   updateDepartment,
   selectDepartment,
@@ -13,9 +18,8 @@ import {
   deleteSubDepartment,
   makeSubDepartmentInActive,
   makeDepartmentInActive
-} from "../models/department";
+} = deptModels;
 
-import algaehPath from "algaeh-module-bridge";
 import { LINQ } from "node-linq";
 
 export default () => {
@@ -61,10 +65,6 @@ export default () => {
     "/add/subdepartment",
     (req, res, next) => {
       if (req.body.Inventory_Active == true) {
-        const { addInventoryLocation } = algaehPath(
-          "algaeh-inventory/src/models/inventory"
-        );
-
         addInventoryLocation(req, res, next);
       } else {
         next();

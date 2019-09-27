@@ -1,11 +1,13 @@
 import { Router } from "express";
 import algaehUtlities from "algaeh-utilities/utilities";
-import {
+import insureModels from "../models/InsuranceCardClass";
+
+const {
   addInsuranceCardClass,
   getInsuranceCardClass,
   updateInsuranceCardClass,
   deleteInsuranceCardClass
-} from "../models/InsuranceCardClass";
+} = insureModels;
 
 export default () => {
   let api = Router();

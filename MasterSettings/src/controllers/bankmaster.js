@@ -1,6 +1,8 @@
 import { Router } from "express";
 import algaehUtlities from "algaeh-utilities/utilities";
-import { addBank, getBank, updateBank, deleteBank } from "../models/bankmaster";
+import bankModels from "../models/bankmaster";
+
+const { addBank, getBank, updateBank, deleteBank } = bankModels;
 
 export default () => {
   let api = Router();

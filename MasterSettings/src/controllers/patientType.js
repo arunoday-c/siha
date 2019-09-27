@@ -1,11 +1,13 @@
 import { Router } from "express";
 import algaehUtlities from "algaeh-utilities/utilities";
-import {
+import patientModels from "../models/patientType";
+
+const {
   addPatientType,
   updatePatientType,
   deletePatientType,
   getPatientType
-} from "../models/patientType";
+} = patientModels;
 
 export default () => {
   let api = Router();

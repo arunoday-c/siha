@@ -1,11 +1,12 @@
 import { Router } from "express";
 import algaehUtlities from "algaeh-utilities/utilities";
-import {
-  addPackage,
-  getPackage,
-  updatePackageSetup
-} from "../models/packagesetup";
-import { addServices, updateServicesOthrs } from "../models/serviceTypes";
+import packModels from "../models/packagesetup";
+import serviceModels from "../models/serviceTypes";
+
+const { addPackage, getPackage, updatePackageSetup } = packModels;
+
+const { addServices, updateServicesOthrs } = serviceModels;
+
 export default () => {
   let api = Router();
   const utlities = new algaehUtlities();

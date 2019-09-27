@@ -1,11 +1,13 @@
 import { Router } from "express";
 import algaehUtlities from "algaeh-utilities/utilities";
-import {
+import currencyModels from "../models/currency";
+
+const {
   addCurrencyMaster,
   getCurrencyMaster,
   deleteCurrencyMaster,
   updateCurrencyMaster
-} from "../models/currency";
+} = currencyModels;
 
 export default () => {
   let api = Router();

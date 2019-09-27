@@ -1,6 +1,8 @@
 import { Router } from "express";
 import algaehUtlities from "algaeh-utilities/utilities";
-import {
+import shiftModels from "../models/shiftAndCounter";
+
+const {
   addShiftMaster,
   addCounterMaster,
   getCounterMaster,
@@ -12,7 +14,7 @@ import {
   getCashiersAndShiftMAP,
   updateCashiersAndShiftMAP,
   deleteCashiersAndShiftMAP
-} from "../models/shiftAndCounter";
+} = shiftModels;
 
 export default () => {
   let api = Router();

@@ -1,6 +1,8 @@
 import { Router } from "express";
 import algaehUtlities from "algaeh-utilities/utilities";
-import {
+import specialModels from "../models/specialityAndCategory";
+
+const {
   addEmployeeSpecialityMaster,
   getEmployeeSpecialityMaster,
   addEmployeeCategoryMaster,
@@ -16,7 +18,7 @@ import {
   updateCategorySpecialityMap,
   deleteCategorySpecialityMap,
   makeCategorySpecialityMapInActive //Not In use
-} from "../models/specialityAndCategory";
+} = specialModels;
 
 export default () => {
   let api = Router();

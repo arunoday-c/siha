@@ -1,6 +1,8 @@
 import { Router } from "express";
 import algaehUtlities from "algaeh-utilities/utilities";
-import {
+import serviceModels from "../models/serviceTypes";
+
+const {
   getServiceType,
   getServices,
   getServiceInsured,
@@ -9,7 +11,7 @@ import {
   addProcedure,
   getProcedures,
   updateProcedures
-} from "../models/serviceTypes";
+} = serviceModels;
 
 export default () => {
   let api = Router();

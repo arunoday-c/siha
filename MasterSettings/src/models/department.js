@@ -1,7 +1,7 @@
 import algaehMysql from "algaeh-mysql";
 import { LINQ } from "node-linq";
 
-module.exports = {
+export default {
   addDepartment: (req, res, next) => {
     return new Promise((resolve, reject) => {
       let input = req.body;

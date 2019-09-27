@@ -1,11 +1,13 @@
 import { Router } from "express";
 import algaehUtlities from "algaeh-utilities/utilities";
-import {
+import idModels from "../models/identity";
+
+const {
   addIdentity,
   updateIdentity,
   selectIdentity,
   deleteIdentity
-} from "../models/identity";
+} = idModels;
 
 export default () => {
   let api = Router();

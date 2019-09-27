@@ -1,12 +1,14 @@
 import { Router } from "express";
 import algaehUtlities from "algaeh-utilities/utilities";
-import {
+import favModels from "../models/favouriteOrders";
+
+const {
   addFavouriteOrder,
   getFavouriteOrder,
   updateFavouriteOrder,
   addFavouriteServices,
   getFavouriteServices
-} from "../models/favouriteOrders";
+} = favModels;
 
 export default () => {
   let api = Router();
