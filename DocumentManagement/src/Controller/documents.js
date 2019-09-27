@@ -2,8 +2,9 @@ import { Router } from "express";
 import docs from "../Model/documents";
 export default db => {
   const api = Router();
-  api.post("/save", docs(db).saveDocument);
-  api.get("/get", docs(db).getDocument);
-  api.delete("/delete", docs(db).deleteDocument);
+  const { saveDocument, getDocument, deleteDocument } = docs(db);
+  api.post("/save", saveDocument);
+  api.get("/get", getDocument);
+  api.delete("/delete", deleteDocument);
   return api;
 };

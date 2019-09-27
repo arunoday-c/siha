@@ -9,7 +9,8 @@ let departmentImageSchema = new Schema({
   updatedDate: Date
 });
 
-module.exports = mongoose.model(
+const DeptImages = mongoose.model(
   "algaeh_department_images",
   departmentImageSchema
 );
+export default DeptImages;

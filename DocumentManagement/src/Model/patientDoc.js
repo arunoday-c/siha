@@ -9,4 +9,5 @@ let patientSchema = new Schema({
   updatedDate: Date
 });
 
-module.exports = mongoose.model("algaeh_hims_patients", patientSchema);
+const patientModel = mongoose.model("algaeh_hims_patients", patientSchema);
+export default patientModel;

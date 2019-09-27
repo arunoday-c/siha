@@ -1,11 +1,10 @@
-import mongoose from "mongoose";
 import EmployeeDocModel from "./employeeDoc";
 import PatientDocModel from "./patientDoc";
 import CompanyDocModel from "./company";
 import DepartmentImageModel from "./departmentImages";
 //import { logger, debugLog } from "../Utils/logging";
 import stream from "stream";
-module.exports = db => {
+export default db => {
   return {
     saveDocument: (req, res, next) => {
       let buffer = "";

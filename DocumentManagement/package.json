@@ -1,30 +1,17 @@
 {
-  "name": "documentmanagement",
-  "version": "1.0.0",
+  "name": "algaeh-document-management",
+  "version": "2.0.0",
   "description": "Algaeh document management",
   "main": "dist",
   "scripts": {
-    "document_server": "cross-env  PORT=3006 NODE_ENV=development nodemon -w src --exec \"babel-node src/document_management_server.js \"",
-    "prod_build": "babel src -s -D -d dist ",
+    "document_server": "run-p run-webpack run-dev",
+    "build": "webpack --config webpack.prod.js",
+    "run-webpack": "webpack --watch --config webpack.dev.js",
     "dev": "npm run document_server",
     "lint": "eslint src && eslint test",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "pm2": "concurrently --kill-others  cross-env NODE_ENV=production  pm2 start  --max-memory-restart 850M \"babel-node src/document_management_server.js \""
-  },
-  "eslintConfig": {
-    "parserOptions": {
-      "ecmaVersion": 7,
-      "sourceType": "module"
-    },
-    "env": {
-      "node": true
-    },
-    "rules": {
-      "no-eval": 0,
-      "no-console": 0,
-      "no-unused-vars": 1,
-      "no-script-url": 0
-    }
+    "pm2": "concurrently --kill-others  cross-env NODE_ENV=production  pm2 start  --max-memory-restart 850M \"babel-node src/document_management_server.js \"",
+    "run-dev": "cross-env PORT=3006 NODE_ENV=development nodemon --exec 'node build/app.js'"
   },
   "author": "Algaeh technologies private limited.",
   "license": "ISC",
@@ -37,16 +24,21 @@
     "moment": "^2.22.1",
     "mongoose": "^5.3.12",
     "rotating-file-stream": "^1.3.6",
-    "winston": "^2.4.2",
+    "winston": "^3.1.0",
     "winston-daily-rotate-file": "^3.1.4"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.0",
-    "babel-eslint": "^8.2.3",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-stage-0": "^6.24.1",
-    "eslint": "^4.19.1",
-    "nodemon": "^1.17.3"
+    "@babel/cli": "^7.6.2",
+    "@babel/core": "^7.6.2",
+    "@babel/node": "^7.6.2",
+    "@babel/preset-env": "^7.6.2",
+    "babel-loader": "^8.0.6",
+    "nodemon": "^1.17.3",
+    "npm-run-all": "^4.1.5",
+    "obfuscator-loader": "^1.1.2",
+    "webpack": "^4.40.2",
+    "webpack-cli": "^3.3.9",
+    "webpack-merge": "^4.2.2",
+    "webpack-node-externals": "^1.7.2"
   }
 }

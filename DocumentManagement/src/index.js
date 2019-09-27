@@ -4,7 +4,8 @@ import bodyParser from "body-parser";
 import exxpress from "express";
 import keys from "algaeh-keys";
 import router from "./routes";
-import { logger } from "./Utils/logging";
+import utils from "./Utils/logging";
+const { logger } = utils;
 const app = exxpress();
 const portNumber = process.env.PORT; //keys.port;
 app.server = http.createServer(app);
@@ -94,4 +95,3 @@ app.server.listen(portNumber);
 console.log(`Document management server started on port ${portNumber} *`);
 
 export default app;
-module.exports = app;

@@ -7,7 +7,7 @@ const tsFormat = () => {
   return moment(new Date()).format("DD-MM-YYYY HH:mm:ss");
 }; //new Date().toLocaleTimeString();
 // let logDirectory = path.join(__dirname, "../../" + keys.logpath);
-const logger = new winston.Logger({
+const logger = winston.createLogger({
   transports: [
     new rotatingDate({
       filename: `LOGS/hims-app-%DATE%.log`,
@@ -36,4 +36,4 @@ let debugLog = (message, obj) => {
 };
 
 //winston.add(winston.transports.Http, rotatingDate);
-module.exports = { logger, debugLog, debugFunction };
+export default { logger, debugLog, debugFunction };

@@ -9,4 +9,5 @@ let companySchema = new Schema({
   updatedDate: Date
 });
 
-module.exports = mongoose.model("algaeh_hims_company", companySchema);
+const compModel = mongoose.model("algaeh_hims_company", companySchema);
+export default compModel;

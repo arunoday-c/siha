@@ -9,4 +9,5 @@ let employeeSchema = new Schema({
   updatedDate: Date
 });
 
-module.exports = mongoose.model("algaeh_hims_employees", employeeSchema);
+const empModel = mongoose.model("algaeh_hims_employees", employeeSchema);
+export default empModel;
