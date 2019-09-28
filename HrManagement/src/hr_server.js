@@ -19,9 +19,6 @@ app.use(
 );
 
 app.use(compression());
-if (process.env.NODE_ENV == "production") {
-  app.set("view cache", true);
-}
 
 app.use((req, res, next) => {
   const reqH = req.headers;

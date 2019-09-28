@@ -19,7 +19,7 @@ const keys = algaehKeys.default;
 let app = express();
 const _port = process.env.PORT;
 app.use(compression());
-if (process.env.NODE_ENV == "production") {
+if (process.env.NODE_ENV !== "production") {
   console.log("Running prod...." + _port);
   app.use(express.static("build"));
 }
@@ -56,17 +56,19 @@ app.use(
 
 //passport config
 app.use(passport.initialize());
-passport.use(
-  new LocalStrategy(
-    {
-      usernameField: "username",
-      passwordField: "password"
-    },
-    (username, password, done) => {
-      return done(null, username);
-    }
-  )
-);
+// passport.use(
+//   new LocalStrategy(
+//     {
+//       usernameField: "username",
+//       passwordField: "password"
+//     },
+//     (username, password, done) => {
+//       console.log("username",username);
+//       console.log("password",password);
+//       return done(null, username);
+//     }
+//   )
+// );
 
 passport.serializeUser((user, done) => {
   done(null, user);
@@ -74,16 +76,25 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser((id, done) => {
   done(null, { msg: "done" });
 });
-if (process.env.NODE_ENV == "production") {
-  app.set("view cache", true);
-}
+
+passport.use(new LocalStrategy(
+  (username, password, done)=>{
+    console.log("username",username);
+    console.log("password",password);
+     return done(null, username);
+  }
+));
+
+// if (process.env.NODE_ENV == "production") {
+//   app.set("view cache", true);
+// }
 app.use((req, res, next) => {
   // const _mydate = "20190330";
   // if (parseInt(moment().format("YYYYMMDD")) > parseInt(_mydate)) {
   //   res.status(500).json({ success: false, message: "Demo version expired" });
   //   return;
   // }
-
+console.log("req",typeof req.login);
   let reqH = req.headers;
 
   let reqUser = "";

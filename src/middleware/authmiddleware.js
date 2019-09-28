@@ -4,34 +4,36 @@ import expressjwt from "express-jwt";
 const config = require("algaeh-keys/keys");
 import moment from "moment";
 import { debugLog } from "../utils/logging";
-const TOKENTIME = config.default.TOKENTIME;
+// const TOKENTIME = config.default.TOKENTIME;
 const SECRET = config.default.SECRETKey;
 
 let authenticate = expressjwt({ secret: SECRET });
 
 let generateAccessToken = (req, res, next) => {
-  req.token = req.token || {};
-  req.result.success = req.result.success || false;
-  if (req.result.success == true) {
+  const { success, token } = req.result;
+  // req.token = req.token || {};
+  // req.result.success = req.result.success || false;
+  if (success === true) {
     req.token = jwt.sign(
       {
         id: req.body.username,
         iat: Math.floor(Date.now() / 1000) - 30
       },
-      SECRET,
-      {
-        expiresIn: "10d" //TOKENTIME
-      }
+      SECRET
+      // {
+      //   expiresIn: "10d" //TOKENTIME
+      // }
     );
     next();
   }
 };
-const days = moment.duration(TOKENTIME, "seconds").asDays();
+// const days = moment.duration(TOKENTIME, "seconds").asDays();
+  
 let respond = (req, res) => {
   res.status(200).json({
     user: req.user,
     token: req.token,
-    days: days,
+    // days: days,
     hospitalList: req.result.hospitalList,
     activemoduleList: req.result.activemoduleList
   });
