@@ -71,6 +71,8 @@
     "node-linq": "0.0.5",
     "node-model-validation": "^1.0.1",
     "node-string-pad": "0.0.4",
+    "nodemailer": "^6.3.0",
+    "nodemailer-express-handlebars": "^3.1.0",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
     "path": "^0.12.7",
