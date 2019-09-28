@@ -1,52 +1,31 @@
-import React, { Component } from "react";
-
-import "./Login.scss";
+import React, { useState, useEffect, useRef } from "react";
 import { AlagehAutoComplete } from "../Wrapper/algaehWrapper";
-// import { setSecure } from "../../utils/indexer";
+import { AlagehFormGroup } from "../Wrapper/algaehWrapper";
 import {
   algaehApiCall,
   setCookie,
   swalMessage
 } from "../../utils/algaehApiCall.js";
-import { AlagehFormGroup } from "../Wrapper/algaehWrapper";
 import { getTokenDetals } from "../../actions/Login/Loginactions.js";
 import { AlgaehCloseContainer } from "../../utils/GlobalFunctions";
+import connecting from "../../assets/svg/connecting.svg";
+import "./Login.scss";
 import sockets from "../../sockets";
+export default function() {
+  const [login, setLogin] = useState({
+    username: "",
+    password: "",
+    token: "",
+    item_id: "",
+    hospitalList: [],
+    loading: true
+  });
+  let userRef = useRef(undefined);
+  let passwordRef = useRef(undefined);
 
-export default class Login extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      userErrorText: "",
-      pwdErrorText: "",
-      userError: false,
-      pwdError: false,
-      username: "",
-      password: "",
-      token: "",
-      item_id: "",
-      hospitalList: []
-    };
-    sessionStorage.clear();
-  }
-
-  componentDidMount() {
-    getTokenDetals(this);
-  }
-
-  componentWillMount() {
-    this.deleteAllPreviousCookies();
-    this.deleteAllPreviousLocalStorage();
-    setCookie("ScreenName", "Login", 30);
-    setCookie("Language", "en", 30);
-  }
-
-  deleteAllPreviousLocalStorage() {
+  useEffect(() => {
     window.localStorage.clear();
-  }
-  deleteAllPreviousCookies() {
     let cookies = document.cookie.split(";");
-
     for (let i = 0; i < cookies.length; i++) {
       const cookie = cookies[i];
       const eqPos = cookie.indexOf("=");
@@ -54,135 +33,40 @@ export default class Login extends Component {
       if (String(name).trim() !== "authToken")
         document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
     }
-  }
-
-  handleLogin(e) {
-    e.preventDefault();
-
-    if (this.state.item_id === "") {
-      document.getElementsByName("item_id")[0].focus();
-      return;
-    }
-    algaehApiCall({
-      uri: "/apiAuth/authUser",
-      data: this.state,
-      timeout: 10000,
-      onSuccess: response => {
-        if (response.data.success === true) {
-          setCookie("userName", response.data.records.user_display_name);
-          setCookie("keyResources", response.data.records.keyResources, 30);
-
-          sessionStorage.setItem(
-            "keyData",
-            AlgaehCloseContainer(JSON.stringify(response.data.records.keyData))
-          );
-
-          sessionStorage.setItem(
-            "CurrencyDetail",
-            AlgaehCloseContainer(
-              JSON.stringify(response.data.records.hospitalDetails)
-            )
-          );
-
-          sessionStorage.setItem(
-            "appRole",
-            response.data.records.app_d_app_roles_id
-          );
-          // window.history.pushState(null, null, window.location.href);
-          // window.onpopstate = function(event) {
-          //   window.history.go(1);
-          // };
-          window.location.replace("/#/Home");
-          // setSecure(response.data.records.secureModels);
-
-          // this.getHospitalDetails();
+    setCookie("ScreenName", "Login", 30);
+    setCookie("Language", "en", 30);
+    (() => {
+      getTokenDetals({
+        loading: enabled => {
+          setLogin({ ...login, loading: enabled });
+        },
+        setHospitals: list => {
+          setLogin({ ...login, loading: false, hospitalList: list });
         }
-      },
-      onFailure: error => {
-        if (error) {
-          if (error.response) {
-            if (
-              error.response.status !== null &&
-              error.response.status === 404
-            ) {
-              this.unsuccessfulSignIn(
-                "Username or Password or Branch Incorrect",
-                "Invalid User Details."
-              );
-            } else if (
-              error.response.status !== null &&
-              error.response.status > 400
-            ) {
-              this.unsuccessfulSignIn(
-                "Server is not responding, Please contact administator.",
-                "Failure"
-              );
-            }
-          } else {
-            this.unsuccessfulSignIn(
-              "Server is not responding, Please contact administator.",
-              "Failure"
-            );
-          }
-        } else {
-          this.unsuccessfulSignIn(
-            "Server is not responding, Please contact administator.",
-            "Failure"
-          );
-        }
-      }
-    });
-  }
+      });
+    })();
+  }, []);
 
-  unsuccessfulSignIn(message, title) {
-    swalMessage({
-      title: message,
-      type: "error"
-    });
-
-    this.setState({ password: "", username: "" });
-    document.querySelector("[name='username']").focus();
-  }
-
-  texthandle(e) {
-    this.setState({
-      [e.target.name]: e.target.value
-    });
-  }
-  onHospitalChange(selector) {
-    this.setState({ item_id: selector.value });
-
-    setCookie("HospitalName", selector.selected.hospital_name);
-    setCookie("HospitalId", selector.value);
-    setCookie("algaeh_api_auth_id", selector.selected.algaeh_api_auth_id);
-  }
-  onHospitalClear(name) {
-    this.setState({ item_id: null });
-  }
-
-  render() {
-    return (
-      <div className="login bg">
-        <div className="container margintop15">
-          <div className="row-eq-height">
-            {/*<div
-              id="emptyDiv"
-              className="col-lg-5 offset-2"
-              style={{ backgroundColor: "#007379CC" }}
-            >
-               Add Client's Logo and other details here
-            </div> */}
-            {/* <div className="loginTopbar">
-              <div className="companyLogo" />
-              <div className="productLogo" />
-            </div> */}
-
+  return (
+    <div className="login bg">
+      <div className="container margintop15">
+        <div className="row-eq-height">
+          {login.loading ? (
+            <div className="connectingServerDiv">
+              {" "}
+              <img src={connecting} />
+              <p className="saving">
+                Please wait, Connecting to server<span>.</span>
+                <span>.</span>
+                <span>.</span>
+              </p>
+            </div>
+          ) : (
             <div id="loginForm" className="loginFormContainer">
               <div className="col-12">
                 <div className="row">
                   <div className="col-12">
                     <div className="companyLogo" />
-                    {/* <h3 className="LoginCntrHdg">Login</h3> */}
                   </div>
                   <div
                     className="col-12"
@@ -192,75 +76,131 @@ export default class Login extends Component {
                     }}
                   >
                     <form
-                      onSubmit={this.handleLogin.bind(this)}
+                      onSubmit={e => {
+                        e.preventDefault();
+                        if (login.username === "") {
+                          userRef.focus();
+                          return;
+                        } else if (login.password === "") {
+                          passwordRef.focus();
+                          return;
+                        } else if (login.item_id === "") {
+                          document.getElementsByName("item_id")[0].focus();
+                          return;
+                        }
+                        algaehApiCall({
+                          uri: "/apiAuth/authUser",
+                          data: login,
+                          onSuccess: response => {
+                            const { success, records, message } = response.data;
+                            if (success === true) {
+                              setCookie("userName", records.user_display_name);
+                              setCookie(
+                                "keyResources",
+                                records.keyResources,
+                                30
+                              );
+                              sessionStorage.setItem(
+                                "keyData",
+                                AlgaehCloseContainer(
+                                  JSON.stringify(records.keyData)
+                                )
+                              );
+                              sessionStorage.setItem(
+                                "CurrencyDetail",
+                                AlgaehCloseContainer(
+                                  JSON.stringify(records.hospitalDetails)
+                                )
+                              );
+
+                              sessionStorage.setItem(
+                                "appRole",
+                                records.app_d_app_roles_id
+                              );
+
+                              window.location.replace("/#/Home");
+                            }
+                          }
+                        });
+                      }}
                       className="row"
                       autoComplete="none"
                     >
                       <AlagehFormGroup
                         div={{ className: "col-12 form-group" }}
-                        // label={{
-                        //   fieldName: "username",
-                        //   isImp: true
-                        // }}
                         textBox={{
                           className: "txt-fld",
                           name: "username",
-                          value: this.state.username,
+                          value: login.username,
                           events: {
-                            onChange: this.texthandle.bind(this)
+                            onChange: e => {
+                              setLogin({ ...login, username: e.target.value });
+                            }
                           },
                           others: {
                             tabIndex: "1",
-                            placeholder: "Enter Username"
-                          },
-                          error: this.state.userError,
-                          helperText: this.state.userErrorText
+                            placeholder: "Enter Username",
+                            ref: c => {
+                              userRef = c;
+                            }
+                          }
                         }}
                       />
                       <br />
                       <AlagehFormGroup
                         div={{ className: "col-12 form-group" }}
-                        // label={{
-                        //   fieldName: "password",
-                        //   isImp: true
-                        // }}
                         textBox={{
                           className: "txt-fld",
                           name: "password",
-                          value: this.state.password,
+                          value: login.password,
                           events: {
-                            onChange: this.texthandle.bind(this)
+                            onChange: e => {
+                              setLogin({ ...login, password: e.target.value });
+                            }
                           },
                           others: {
                             type: "password",
                             tabIndex: "2",
-                            placeholder: "Enter Password"
-                          },
-                          error: this.state.pwdError,
-                          helperText: this.state.pwdErrorText
+                            placeholder: "Enter Password",
+                            ref: c => {
+                              passwordRef = c;
+                            }
+                          }
                         }}
                       />
                       <br />
                       <AlagehAutoComplete
                         div={{ className: "col-12 form-group" }}
-                        // label={{
-                        //   forceLabel: "Select Division/Branch",
-                        //   isImp: true
-                        // }}
                         selector={{
                           name: "item_id",
                           className: "select-fld",
-                          value: this.state.item_id,
+                          value: login.item_id,
                           autoComplete: "off",
                           dataSource: {
                             textField: "hospital_name",
                             valueField: "hims_d_hospital_id",
-                            data: this.state.hospitalList
+                            data: login.hospitalList
                           },
                           placeholder: "Select a Branch",
-                          others: { tabIndex: "3" },
-                          onChange: this.onHospitalChange.bind(this),
-                          onClear: this.onHospitalClear.bind(this)
+                          others: {
+                            tabIndex: "3"
+                          },
+                          onChange: selector => {
+                            setCookie(
+                              "HospitalName",
+                              selector.selected.hospital_name
+                            );
+                            setCookie("HospitalId", selector.value);
+                            setCookie(
+                              "algaeh_api_auth_id",
+                              selector.selected.algaeh_api_auth_id
+                            );
+
+                            setLogin({ ...login, item_id: selector.value });
+                          },
+                          onClear: () => {
+                            setLogin({ ...login, item_id: "" });
+                          }
                         }}
                       />
                       <div className="col-12 form-group">
@@ -289,17 +229,17 @@ export default class Login extends Component {
                 </div>
               </div>
             </div>
-            <div className="loginFooter">
-              <p>
-                COPYRIGHT © 2019-2020. ALL RIGHTS RESERVED.{" "}
-                <a href="http://algaeh.com/" target="_blank">
-                  ALGAEH TECHNOLOGIES PVT. LTD.
-                </a>
-              </p>
-            </div>
+          )}
+          <div className="loginFooter">
+            <p>
+              COPYRIGHT © 2019-2020. ALL RIGHTS RESERVED.{" "}
+              <a href="http://algaeh.com/" target="_blank">
+                ALGAEH TECHNOLOGIES PVT. LTD.
+              </a>
+            </p>
           </div>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
 }

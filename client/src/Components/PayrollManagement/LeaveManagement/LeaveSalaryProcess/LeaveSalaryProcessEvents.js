@@ -121,6 +121,7 @@ const LeaveSalProcess = $this => {
     module: "hrManagement",
     data: inputObj,
     onSuccess: response => {
+      debugger;
       if (response.data.success) {
         if (response.data.result.length > 0) {
           let salaryObj = [];
