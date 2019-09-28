@@ -109,8 +109,10 @@ class DataGrid extends Component {
     debugger;
     const editable = this.state.editableRows[cellInfo.index];
     const rowDetail =
-      this.state.data.length !== this.props.dataSource.data.length
-        ? this.props.dataSource.data[cellInfo.index]
+      this.props.dataSource.data !== undefined
+        ? this.state.data.length !== this.props.dataSource.data.length
+          ? this.props.dataSource.data[cellInfo.index]
+          : this.state.data[cellInfo.index]
         : this.state.data[cellInfo.index];
 
     const _fullNonEditor =

@@ -529,6 +529,10 @@ module.exports = {
                     let balance_leave_salary_amount = 0;
                     let balance_airticket_amount = 0;
 
+                    let utilized_leave_days = 0;
+                    let utilized_leave_salary_amount = 0;
+                    let utilized_airticket_amount = 0;
+
                     if (start_year == end_year) {
                       balance_leave_days =
                         parseFloat(leave_salary_header.balance_leave_days) -
@@ -544,11 +548,26 @@ module.exports = {
                           leave_salary_header.balance_airticket_amount
                         ) - parseFloat(leave_salary.airfare_amount);
 
+                      utilized_leave_days =
+                        parseFloat(leave_salary_header.utilized_leave_days) +
+                        parseFloat(leave_salary.leave_period);
+
+                      utilized_leave_salary_amount =
+                        parseFloat(
+                          leave_salary_header.utilized_leave_salary_amount
+                        ) + parseFloat(leave_salary.leave_amount);
+
+                      utilized_airticket_amount =
+                        parseFloat(
+                          leave_salary_header.utilized_airticket_amount
+                        ) + parseFloat(leave_salary.airfare_amount);
+
                       _mysql
                         .executeQuery({
                           query:
                             "UPDATE `hims_f_employee_leave_salary_header` SET `balance_leave_days`=?, \
-                        `balance_leave_salary_amount` = ?, `balance_airticket_amount` = ? \
+                        `balance_leave_salary_amount` = ?, `balance_airticket_amount` = ?, `utilized_leave_days`=?, \
+                        `utilized_leave_salary_amount` = ?, `utilized_airticket_amount` = ? \
                         where employee_id=?;\
                         UPDATE `hims_d_employee` SET \
                         `suspend_salary`='Y', `last_salary_process_date`=? where hims_d_employee_id=?; UPDATE `hims_f_salary` SET \
@@ -557,6 +576,9 @@ module.exports = {
                             balance_leave_days,
                             balance_leave_salary_amount,
                             balance_airticket_amount,
+                            utilized_leave_days,
+                            utilized_leave_salary_amount,
+                            utilized_airticket_amount,
                             inputParam.employee_id,
                             moment(leave_salary.leave_end_date).format(
                               "YYYY-MM-DD"
@@ -608,19 +630,37 @@ module.exports = {
                           leave_salary_header.balance_leave_salary_amount
                         ) - parseFloat(leave_salary.leave_amount);
 
-                      balance_leave_salary_amount =
+                      balance_airticket_amount =
                         parseFloat(
                           leave_salary_header.balance_airticket_amount
                         ) - parseFloat(leave_salary.airfare_amount);
 
+                      utilized_leave_days =
+                        parseFloat(leave_salary_header.utilized_leave_days) +
+                        parseFloat(no_of_days);
+
+                      utilized_leave_salary_amount =
+                        parseFloat(
+                          leave_salary_header.utilized_leave_salary_amount
+                        ) + parseFloat(leave_salary.leave_amount);
+
+                      utilized_airticket_amount =
+                        parseFloat(
+                          leave_salary_header.utilized_airticket_amount
+                        ) + parseFloat(leave_salary.airfare_amount);
+
                       let strQuery =
                         "UPDATE `hims_f_employee_leave_salary_header` SET `balance_leave_days`=?, \
-                        `balance_leave_salary_amount` = ?, `balance_airticket_amount` = ? where employee_id=?;";
+                        `balance_leave_salary_amount` = ?, `balance_airticket_amount` = ?, `utilized_leave_days`=?, \
+                        `utilized_leave_salary_amount` = ?, `utilized_airticket_amount` = ? where employee_id=?;";
 
                       values.push(
                         balance_leave_days,
                         balance_leave_salary_amount,
                         balance_airticket_amount,
+                        utilized_leave_days,
+                        utilized_leave_salary_amount,
+                        utilized_airticket_amount,
                         inputParam.employee_id
                       );
 
@@ -637,19 +677,37 @@ module.exports = {
                           leave_salary_header.balance_leave_salary_amount
                         ) - parseFloat(leave_salary.leave_amount);
 
-                      balance_leave_salary_amount =
+                      balance_airticket_amount =
                         parseFloat(
                           leave_salary_header.balance_airticket_amount
                         ) - parseFloat(leave_salary.airfare_amount);
 
+                      utilized_leave_days =
+                        parseFloat(leave_salary_header.utilized_leave_days) +
+                        parseFloat(no_of_days);
+
+                      utilized_leave_salary_amount =
+                        parseFloat(
+                          leave_salary_header.utilized_leave_salary_amount
+                        ) + parseFloat(leave_salary.leave_amount);
+
+                      utilized_airticket_amount =
+                        parseFloat(
+                          leave_salary_header.utilized_airticket_amount
+                        ) + parseFloat(leave_salary.airfare_amount);
+
                       strQuery +=
                         "UPDATE `hims_f_employee_leave_salary_header` SET `balance_leave_days`=?, \
-                        `balance_leave_salary_amount` = ?, `balance_airticket_amount` = ? where employee_id=?;";
+                        `balance_leave_salary_amount` = ?, `balance_airticket_amount` = ? , `utilized_leave_days`=?, \
+                        `utilized_leave_salary_amount` = ?, `utilized_airticket_amount` = ? where employee_id=?;";
 
                       values.push(
                         balance_leave_days,
                         balance_leave_salary_amount,
                         balance_airticket_amount,
+                        utilized_leave_days,
+                        utilized_leave_salary_amount,
+                        utilized_airticket_amount,
                         inputParam.employee_id
                       );
 
@@ -886,6 +944,10 @@ module.exports = {
                 let balance_leave_salary_amount = 0;
                 let balance_airticket_amount = 0;
 
+                let utilized_leave_days = 0;
+                let utilized_leave_salary_amount = 0;
+                let utilized_airticket_amount = 0;
+
                 if (start_year == end_year) {
                   balance_leave_days =
                     parseFloat(leave_salary_header.balance_leave_days) +
@@ -900,17 +962,34 @@ module.exports = {
                     parseFloat(leave_salary_header.balance_airticket_amount) +
                     parseFloat(leave_salary.airfare_amount);
 
+                  utilized_leave_days =
+                    parseFloat(leave_salary_header.utilized_leave_days) +
+                    parseFloat(leave_salary.leave_period);
+
+                  utilized_leave_salary_amount =
+                    parseFloat(
+                      leave_salary_header.utilized_leave_salary_amount
+                    ) + parseFloat(leave_salary.leave_amount);
+
+                  utilized_airticket_amount =
+                    parseFloat(leave_salary_header.utilized_airticket_amount) +
+                    parseFloat(leave_salary.airfare_amount);
+
                   _mysql
                     .executeQuery({
                       query:
                         "UPDATE `hims_f_employee_leave_salary_header` SET `balance_leave_days`=?, \
-                        `balance_leave_salary_amount` = ?, `balance_airticket_amount` = ? where employee_id=?; \
+                        `balance_leave_salary_amount` = ?, `balance_airticket_amount` = ?, `utilized_leave_days`=?, \
+                        `utilized_leave_salary_amount` = ?, `utilized_airticket_amount` = ? where employee_id=?; \
                         UPDATE `hims_d_employee` SET `suspend_salary`='N', `last_salary_process_date`=null \
                         where hims_d_employee_id=?; UPDATE `hims_f_salary` SET `salary_paid`='N' where hims_f_salary_id in (?);",
                       values: [
                         balance_leave_days,
                         balance_leave_salary_amount,
                         balance_airticket_amount,
+                        utilized_leave_days,
+                        utilized_leave_salary_amount,
+                        utilized_airticket_amount,
                         inputParam.employee_id,
                         inputParam.employee_id,
                         salary_header_id
@@ -961,14 +1040,31 @@ module.exports = {
                     parseFloat(leave_salary_header.balance_airticket_amount) +
                     parseFloat(leave_salary.airfare_amount);
 
+                  utilized_leave_days =
+                    parseFloat(leave_salary_header.utilized_leave_days) +
+                    parseFloat(no_of_days);
+
+                  utilized_leave_salary_amount =
+                    parseFloat(
+                      leave_salary_header.utilized_leave_salary_amount
+                    ) + parseFloat(leave_salary.leave_amount);
+
+                  utilized_airticket_amount =
+                    parseFloat(leave_salary_header.utilized_airticket_amount) +
+                    parseFloat(leave_salary.airfare_amount);
+
                   let strQuery =
                     "UPDATE `hims_f_employee_leave_salary_header` SET `balance_leave_days`=?, `balance_leave_salary_amount` = ?, \
-                      `balance_airticket_amount` = ? where employee_id=?;";
+                      `balance_airticket_amount` = ?, `utilized_leave_days`=?, \
+                      `utilized_leave_salary_amount` = ?, `utilized_airticket_amount` = ? where employee_id=?;";
 
                   values.push(
                     balance_leave_days,
                     balance_leave_salary_amount,
                     balance_airticket_amount,
+                    utilized_leave_days,
+                    utilized_leave_salary_amount,
+                    utilized_airticket_amount,
                     inputParam.employee_id
                   );
 
@@ -989,14 +1085,31 @@ module.exports = {
                     parseFloat(leave_salary_header.balance_airticket_amount) +
                     parseFloat(leave_salary.airfare_amount);
 
+                  utilized_leave_days =
+                    parseFloat(leave_salary_header.utilized_leave_days) +
+                    parseFloat(no_of_days);
+
+                  utilized_leave_salary_amount =
+                    parseFloat(
+                      leave_salary_header.utilized_leave_salary_amount
+                    ) + parseFloat(leave_salary.leave_amount);
+
+                  utilized_airticket_amount =
+                    parseFloat(leave_salary_header.utilized_airticket_amount) +
+                    parseFloat(leave_salary.airfare_amount);
+
                   strQuery +=
                     "UPDATE `hims_f_employee_leave_salary_header` SET `balance_leave_days`=?, `balance_leave_salary_amount` = ?, \
-                      `balance_airticket_amount` = ? where employee_id=?;";
+                      `balance_airticket_amount` = ?, `utilized_leave_days`=?, \
+                      `utilized_leave_salary_amount` = ?, `utilized_airticket_amount` = ? where employee_id=?;";
 
                   values.push(
                     balance_leave_days,
                     balance_leave_salary_amount,
                     balance_airticket_amount,
+                    utilized_leave_days,
+                    utilized_leave_salary_amount,
+                    utilized_airticket_amount,
                     inputParam.employee_id
                   );
 
