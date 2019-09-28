@@ -3247,10 +3247,9 @@ function InsertEmployeeLeaveSalary(options) {
             query:
               "select hims_f_employee_leave_salary_header_id,employee_id,leave_days,leave_salary_amount, \
                 airticket_amount, balance_leave_days, balance_leave_salary_amount, balance_airticket_amount, \
-                airfare_months from hims_f_employee_leave_salary_header where year = ? and employee_id = ?;\
+                airfare_months from hims_f_employee_leave_salary_header where employee_id = ?;\
                 select hims_f_employee_monthly_leave_id, close_balance from hims_f_employee_monthly_leave where year = ? and employee_id = ? and leave_id=?;",
             values: [
-              leave_salary_accrual_detail[i].year,
               leave_salary_accrual_detail[i].employee_id,
               leave_salary_accrual_detail[i].year,
               leave_salary_accrual_detail[i].employee_id,
@@ -4766,11 +4765,8 @@ function UpdateLeaveSalaryProvission(options) {
         _mysql
           .executeQuery({
             query:
-              "select * from `hims_f_employee_leave_salary_header` where employee_id=? and year=?",
-            values: [
-              inputParam._leave_salary_acc[i].employee_id,
-              inputParam._leave_salary_acc[i].year
-            ],
+              "select * from `hims_f_employee_leave_salary_header` where employee_id=?",
+            values: [inputParam._leave_salary_acc[i].employee_id],
             printQuery: true
           })
           .then(leave_salary_header => {

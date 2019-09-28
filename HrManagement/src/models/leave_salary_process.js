@@ -170,14 +170,13 @@ module.exports = {
           query:
             "select hospital_id,airfare_process from hims_d_employee where hims_d_employee_id=?;\
           SELECT balance_leave_days,balance_leave_salary_amount,balance_airticket_amount,airfare_months FROM \
-          hims_f_employee_leave_salary_header where employee_id=? and `year`=?; \
+          hims_f_employee_leave_salary_header where employee_id=?; \
           SELECT EE.employee_id,EE.earnings_id,EE.amount FROM hims_d_earning_deduction ED, \
           hims_d_employee_earnings EE where EE.earnings_id=ED.hims_d_earning_deduction_id and \
           ED.annual_salary_comp='Y' and EE.employee_id=?;select attendance_type from hims_d_hrms_options;",
           values: [
             req.query.hims_d_employee_id,
             req.query.hims_d_employee_id,
-            req.query.year,
             req.query.hims_d_employee_id
           ],
           printQuery: true
@@ -755,10 +754,9 @@ function InsertEmployeeLeaveSalary(options) {
           query:
             "select hims_f_employee_leave_salary_header_id,employee_id,leave_days,leave_salary_amount, \
                 airticket_amount, balance_leave_days, balance_leave_salary_amount, balance_airticket_amount, \
-                airfare_months from hims_f_employee_leave_salary_header where year = ? and employee_id = ?;\
+                airfare_months from hims_f_employee_leave_salary_header where employee_id = ?;\
                 select hims_f_employee_monthly_leave_id, close_balance from hims_f_employee_monthly_leave where year = ? and employee_id = ? and leave_id=?;",
           values: [
-            leave_salary_accrual_detail.year,
             leave_salary_accrual_detail.employee_id,
             leave_salary_accrual_detail.year,
             leave_salary_accrual_detail.employee_id,
