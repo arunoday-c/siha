@@ -9,12 +9,13 @@ import {
   AlgaehCloseContainer
 } from "../../utils/GlobalFunctions";
 
-export function getTokenDetals(that) {
+export function getTokenDetals(options) {
   var auth_url = "/api/v1/apiAuth";
   var username = config.apiAuth.user;
   var password = config.apiAuth.password;
   var basicAuth = "Basic " + btoa(username + ":" + password);
-
+  // that.setState({ loading: true });
+  options.loading(true);
   new Promise((resolve, reject) => {
     getLocalIP(myIP => {
       if (myIP !== undefined) {
@@ -44,11 +45,14 @@ export function getTokenDetals(that) {
           "ModuleDetails",
           AlgaehCloseContainer(JSON.stringify(response.data.activemoduleList))
         );
-        that.setState({
-          hospitalList: response.data.hospitalList
-        });
+        options.setHospitals(response.data.hospitalList);
+        // that.setState({
+        //   hospitalList: response.data.hospitalList,
+        //   loading: false
+        // });
       })
       .catch(err => {
+        options.loading(false);
         console.error("Error : ", err.message);
         successfulMessage({
           message:
