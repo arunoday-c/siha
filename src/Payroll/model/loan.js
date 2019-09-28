@@ -269,10 +269,10 @@ let getLoanLevels = (req, res, next) => {
 
     let auth_levels = [];
     switch (userPrivilege) {
-      case "AL1":
+      case "1":
         auth_levels.push({ name: "Level 1", value: 1 });
         break;
-      case "AL2":
+      case "2":
         auth_levels.push(
           { name: "Level 2", value: 2 },
           { name: "Level 1", value: 1 }

@@ -108,7 +108,8 @@ module.exports = {
                 next();
               } else {
                 utilities.logger().log("req.connection Else : ");
-                resolve(empResult);
+                resolve();
+                // resolve({ invalid_input: true, message: `invalid data` });
               }
               return;
             }
@@ -2047,11 +2048,11 @@ module.exports = {
           printQuery: true
         })
         .then(leave_accrual_data => {
-          utilities.logger().log("leave_accrual_data: ", leave_accrual_data[0]);
+          // utilities.logger().log("leave_accrual_data: ", leave_accrual_data[0]);
           let leave_accrual_detail = leave_accrual_data[0];
           let annual_leave_data = leave_accrual_data[1];
 
-          utilities.logger().log("annual_leave_data: ", annual_leave_data);
+          // utilities.logger().log("annual_leave_data: ", annual_leave_data);
           if (leave_accrual_detail.length > 0) {
             _mysql
               .generateRunningNumber({
@@ -2065,9 +2066,9 @@ module.exports = {
               .then(generatedNumbers => {
                 let leave_salary_number = generatedNumbers[0];
 
-                utilities
-                  .logger()
-                  .log("leave_accrual_detail: ", leave_accrual_detail);
+                // utilities
+                //   .logger()
+                //   .log("leave_accrual_detail: ", leave_accrual_detail);
 
                 let leave_salary_accrual_detail = leave_accrual_detail;
 
@@ -2142,9 +2143,13 @@ module.exports = {
                               leave_salary_accrual_detail: leave_salary_accrual_detail,
                               annual_leave_data: annual_leave_data,
                               _mysql: _mysql,
-                              next: next
+                              next: next,
+                              decimal_places: req.userIdentity.decimal_places
                             })
                               .then(Employee_Leave_Salary => {
+                                // utilities
+                                //   .logger()
+                                //   .log("InsertEmployeeLeaveSalary: ");
                                 _mysql
                                   .executeQuery({
                                     query:
@@ -2164,6 +2169,12 @@ module.exports = {
                                     printQuery: true
                                   })
                                   .then(project_wise_payroll => {
+                                    // utilities
+                                    //   .logger()
+                                    //   .log(
+                                    //     "project_wise_payroll: ",
+                                    //     project_wise_payroll
+                                    //   );
                                     if (project_wise_payroll.length > 0) {
                                       UpdateProjectWisePayroll({
                                         project_wise_payroll: project_wise_payroll,
@@ -2172,9 +2183,9 @@ module.exports = {
                                         next: next
                                       })
                                         .then(Employee_Leave_Salary => {
-                                          utilities
-                                            .logger()
-                                            .log("Employee_Leave_Salary: ");
+                                          // utilities
+                                          //   .logger()
+                                          //   .log("Employee_Leave_Salary: ");
                                           InsertGratuityProvision({
                                             inputParam: inputParam,
                                             _mysql: _mysql,
@@ -2470,9 +2481,8 @@ module.exports = {
           }
         })
         .catch(e => {
-          _mysql.rollBackTransaction(() => {
-            next(e);
-          });
+          _mysql.releaseConnection();
+          next(e);
         });
     } catch (e) {
       next(e);
@@ -3240,6 +3250,8 @@ function InsertEmployeeLeaveSalary(options) {
       let _mysql = options._mysql;
       let strQry = "";
       let annual_leave_data = options.annual_leave_data;
+      let decimal_places = options.decimal_places;
+      const utilities = new algaehUtilities();
 
       for (let i = 0; i < leave_salary_accrual_detail.length; i++) {
         _mysql
@@ -3247,10 +3259,10 @@ function InsertEmployeeLeaveSalary(options) {
             query:
               "select hims_f_employee_leave_salary_header_id,employee_id,leave_days,leave_salary_amount, \
                 airticket_amount, balance_leave_days, balance_leave_salary_amount, balance_airticket_amount, \
-                airfare_months from hims_f_employee_leave_salary_header where year = ? and employee_id = ?;\
+                airfare_months,utilized_leave_days,  utilized_leave_salary_amount, utilized_airticket_amount \
+                from hims_f_employee_leave_salary_header where employee_id = ?;\
                 select hims_f_employee_monthly_leave_id, close_balance from hims_f_employee_monthly_leave where year = ? and employee_id = ? and leave_id=?;",
             values: [
-              leave_salary_accrual_detail[i].year,
               leave_salary_accrual_detail[i].employee_id,
               leave_salary_accrual_detail[i].year,
               leave_salary_accrual_detail[i].employee_id,
@@ -3262,15 +3274,34 @@ function InsertEmployeeLeaveSalary(options) {
             let employee_leave_salary_header = employee_leave_salary[0];
             let monthly_leave = employee_leave_salary[1][0];
 
-            const utilities = new algaehUtilities();
-
             utilities
               .logger()
               .log(
                 "employee_leave_salary_header: ",
                 employee_leave_salary_header
               );
-            // utilities.logger().log("monthly_leave: ", monthly_leave);
+            utilities
+              .logger()
+              .log(
+                "utilized_leave_days: ",
+                employee_leave_salary_header[0].utilized_leave_days
+              );
+
+            utilities
+              .logger()
+              .log(
+                "utilized_leave_salary_amount: ",
+                employee_leave_salary_header[0].utilized_leave_salary_amount
+              );
+
+            utilities
+              .logger()
+              .log(
+                "utilized_airticket_amount: ",
+                parseFloat(
+                  employee_leave_salary_header[0].utilized_airticket_amount
+                )
+              );
 
             if (employee_leave_salary_header.length > 0) {
               let leave_days =
@@ -3302,13 +3333,52 @@ function InsertEmployeeLeaveSalary(options) {
                 parseFloat(monthly_leave.close_balance) +
                 parseFloat(leave_salary_accrual_detail[i].leave_days);
 
+              let utilized_leave_days =
+                parseFloat(
+                  employee_leave_salary_header[0].utilized_leave_days
+                ) + parseFloat(leave_salary_accrual_detail[i].leave_days);
+              let utilized_leave_salary_amount =
+                parseFloat(
+                  employee_leave_salary_header[0].utilized_leave_salary_amount
+                ) + parseFloat(leave_salary_accrual_detail[i].leave_salary);
+              let utilized_airticket_amount =
+                parseFloat(
+                  employee_leave_salary_header[0].utilized_airticket_amount
+                ) + parseFloat(leave_salary_accrual_detail[i].airfare_amount);
+
+              leave_salary_amount = utilities.decimalPoints(
+                leave_salary_amount,
+                decimal_places
+              );
+              airticket_amount = utilities.decimalPoints(
+                airticket_amount,
+                decimal_places
+              );
+              balance_leave_salary_amount = utilities.decimalPoints(
+                balance_leave_salary_amount,
+                decimal_places
+              );
+              balance_airticket_amount = utilities.decimalPoints(
+                balance_airticket_amount,
+                decimal_places
+              );
+              utilized_leave_salary_amount = utilities.decimalPoints(
+                utilized_leave_salary_amount,
+                decimal_places
+              );
+              utilized_airticket_amount = utilities.decimalPoints(
+                utilized_airticket_amount,
+                decimal_places
+              );
+
               strQry += mysql.format(
                 "UPDATE `hims_f_employee_leave_salary_header` SET leave_days=?,`leave_salary_amount`=?,\
                   `airticket_amount`=?,`balance_leave_days`=?,`balance_leave_salary_amount`=?,\
-                  `balance_airticket_amount`=?,`airfare_months`=? where  hims_f_employee_leave_salary_header_id=?;\
+                  `balance_airticket_amount`=?,`airfare_months`=?, `utilized_leave_days`=?, \
+                  `utilized_leave_salary_amount` = ?, `utilized_airticket_amount` = ? where  hims_f_employee_leave_salary_header_id=?;\
                   UPDATE hims_f_employee_monthly_leave set close_balance=? where hims_f_employee_monthly_leave_id=?;\
                   INSERT INTO `hims_f_employee_leave_salary_detail`(employee_leave_salary_header_id,leave_days,\
-                    leave_salary_amount,airticket_amount) VALUE(?,?,?,?)",
+                    leave_salary_amount,airticket_amount, year, month) VALUE(?,?,?,?,?,?)",
                 [
                   leave_days,
                   leave_salary_amount,
@@ -3317,6 +3387,9 @@ function InsertEmployeeLeaveSalary(options) {
                   balance_leave_salary_amount,
                   balance_airticket_amount,
                   airfare_months,
+                  utilized_leave_days,
+                  utilized_leave_salary_amount,
+                  utilized_airticket_amount,
                   employee_leave_salary_header[0]
                     .hims_f_employee_leave_salary_header_id,
                   monthly_close_balance,
@@ -3325,7 +3398,9 @@ function InsertEmployeeLeaveSalary(options) {
                     .hims_f_employee_leave_salary_header_id,
                   leave_salary_accrual_detail[i].leave_days,
                   leave_salary_accrual_detail[i].leave_salary,
-                  leave_salary_accrual_detail[i].airfare_amount
+                  leave_salary_accrual_detail[i].airfare_amount,
+                  leave_salary_accrual_detail[i].year,
+                  leave_salary_accrual_detail[i].month
                 ]
               );
 
@@ -3343,8 +3418,8 @@ function InsertEmployeeLeaveSalary(options) {
                   query:
                     "INSERT INTO `hims_f_employee_leave_salary_header`  (`year`,`employee_id`,`leave_days`,\
                       `leave_salary_amount`,`airticket_amount`,`balance_leave_days`,`balance_leave_salary_amount`,\
-                      `balance_airticket_amount`,`airfare_months`)\
-                       VALUE(?,?,?,?,?,?,?,?,?)",
+                      `balance_airticket_amount`,`airfare_months`,`utilized_leave_days`, `utilized_leave_salary_amount`, `utilized_airticket_amount`)\
+                       VALUE(?,?,?,?,?,?,?,?,?,?,?,?)",
                   values: [
                     leave_salary_accrual_detail[i].year,
                     leave_salary_accrual_detail[i].employee_id,
@@ -3354,7 +3429,10 @@ function InsertEmployeeLeaveSalary(options) {
                     leave_salary_accrual_detail[i].leave_days,
                     leave_salary_accrual_detail[i].leave_salary,
                     leave_salary_accrual_detail[i].airfare_amount,
-                    "1"
+                    "1",
+                    "0",
+                    "0",
+                    "0"
                   ],
                   printQuery: true
                 })
@@ -3383,6 +3461,10 @@ function InsertEmployeeLeaveSalary(options) {
                         "INSERT INTO hims_f_employee_leave_salary_detail(??) VALUES ?",
                       values: inputValues,
                       includeValues: IncludeValues,
+                      extraValues: {
+                        year: leave_salary_accrual_detail.year,
+                        month: leave_salary_accrual_detail.month
+                      },
                       bulkInsertOrUpdate: true,
                       printQuery: true
                     })
@@ -4464,6 +4546,7 @@ function InsertGratuityProvision(options) {
 
       const utilities = new algaehUtilities();
 
+      // console.log("_mysql: ", _mysql);
       utilities.logger().log("InsertGratuityProvision: ");
 
       _mysql
@@ -4482,6 +4565,8 @@ function InsertGratuityProvision(options) {
           printQuery: true
         })
         .then(result => {
+          console.log("Gratuity Provision result: ", result);
+          utilities.logger().log("Gratuity Provision result: ", result);
           const _employee = result[0];
           const _options = result[1];
 
@@ -4740,6 +4825,7 @@ function InsertGratuityProvision(options) {
           }
         })
         .catch(e => {
+          utilities.logger().log("Gratuity Provision Error: ");
           reject(e);
         });
     } catch (e) {
@@ -4766,11 +4852,8 @@ function UpdateLeaveSalaryProvission(options) {
         _mysql
           .executeQuery({
             query:
-              "select * from `hims_f_employee_leave_salary_header` where employee_id=? and year=?",
-            values: [
-              inputParam._leave_salary_acc[i].employee_id,
-              inputParam._leave_salary_acc[i].year
-            ],
+              "select * from `hims_f_employee_leave_salary_header` where employee_id=?",
+            values: [inputParam._leave_salary_acc[i].employee_id],
             printQuery: true
           })
           .then(leave_salary_header => {

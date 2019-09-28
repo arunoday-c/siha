@@ -3,6 +3,7 @@ import "./EmployeeServices.scss";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import ApplyLeave from "./ApplyLeave/ApplyLeave";
 import LoanRequest from "./LoanRequest/LoanRequest";
+import RejoinAnnualLeave from "./RejoinAnnualLeave/RejoinAnnualLeave";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 export default class SelfService extends Component {
@@ -102,6 +103,19 @@ export default class SelfService extends Component {
                   />
                 }
               </li>
+              <li
+                algaehtabs={"RejoinFromAnnual"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Rejoin From Annual Leave"
+                    }}
+                  />
+                }
+              </li>
             </ul>
           </div>
         </div>
@@ -118,6 +132,8 @@ export default class SelfService extends Component {
             />
           ) : this.state.pageDisplay === "AdvanceRequest" ? (
             <LoanRequest type="AD" />
+          ) : this.state.pageDisplay === "RejoinFromAnnual" ? (
+            <RejoinAnnualLeave />
           ) : null}
         </div>
       </div>

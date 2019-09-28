@@ -895,7 +895,17 @@ export default class WeeklyAttendance extends Component {
             }}
           />
 
-          <div className="col-2" style={{ marginTop: 10 }}>
+          <div className="col-2 globalSearchCntr">
+            <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+            <h6 onClick={this.employeeSearch.bind(this)}>
+              {this.state.employee_name
+                ? this.state.employee_name
+                : "Search Employee"}
+              <i className="fas fa-search fa-lg"></i>
+            </h6>
+          </div>
+
+          {/* <div className="col-2" style={{ marginTop: 10 }}>
             <div
               className="row"
               style={{
@@ -906,10 +916,11 @@ export default class WeeklyAttendance extends Component {
             >
               <div className="col">
                 <AlgaehLabel label={{ forceLabel: "Employee Name" }} />
-                <h6 className="textEllipsis">
+                <h6 className="textEllipsis" onClick={this.employeeSearch.bind(this)}>
                   {this.state.employee_name
                     ? this.state.employee_name
-                    : "------"}
+                    : "Search Employee"}
+                  <i className="fas fa-search fa-lg"></i>
                 </h6>
               </div>
               <div
@@ -923,11 +934,11 @@ export default class WeeklyAttendance extends Component {
                     paddingLeft: 3,
                     cursor: "pointer"
                   }}
-                  onClick={this.employeeSearch.bind(this)}
+                
                 />
               </div>
             </div>
-          </div>
+          </div> */}
 
           <div className="col form-group">
             <button
@@ -1479,7 +1490,7 @@ export default class WeeklyAttendance extends Component {
           </div>
         </div>
 
-        <div className="hptl-phase1-footer">
+        {/* <div className="hptl-phase1-footer">
           <div className="row">
             <div className="col-lg-12">
               <button
@@ -1518,7 +1529,7 @@ export default class WeeklyAttendance extends Component {
               </button>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     );
   }

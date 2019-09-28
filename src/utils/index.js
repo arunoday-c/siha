@@ -592,20 +592,20 @@ let getMaxAuth = options => {
         //LEAVE
         switch (result[0]["leave_level"]) {
           case "1":
-            MaxLeave = "AL1";
+            MaxLeave = "1";
             break;
 
           case "2":
-            MaxLeave = "AL2";
+            MaxLeave = "2";
             break;
           case "3":
-            MaxLeave = "AL3";
+            MaxLeave = "3";
             break;
           // case "4":
-          //   MaxLeave = "AL4";
+          //   MaxLeave = "4";
           //   break;
           // case "5":
-          //   MaxLeave = "AL5";
+          //   MaxLeave = "5";
           //   break;
           // default:
         }
@@ -613,60 +613,60 @@ let getMaxAuth = options => {
         //LOAN
         switch (result[0]["loan_level"]) {
           case "1":
-            MaxLoan = "AL1";
+            MaxLoan = "1";
             break;
 
           case "2":
-            MaxLoan = "AL2";
+            MaxLoan = "2";
             break;
           // case "3":
-          //   MaxLoan = "AL3";
+          //   MaxLoan = "3";
           //   break;
           // case "4":
-          //   MaxLoan = "AL4";
+          //   MaxLoan = "4";
           //   break;
           // case "5":
-          //   MaxLoan = "AL5";
+          //   MaxLoan = "5";
           //   break;
           // default:
         }
         //LEAVE ENCASH
         switch (result[0]["leave_encash_level"]) {
           case "1":
-            MaxLeaveEncash = "AL1";
+            MaxLeaveEncash = "1";
             break;
 
           case "2":
-            MaxLeaveEncash = "AL2";
+            MaxLeaveEncash = "2";
             break;
           case "3":
-            MaxLeaveEncash = "AL3";
+            MaxLeaveEncash = "3";
             break;
           // case "4":
-          //   MaxLeaveEncash = "AL4";
+          //   MaxLeaveEncash = "4";
           //   break;
           // case "5":
-          //   MaxLeaveEncash = "AL5";
+          //   MaxLeaveEncash = "5";
           //   break;
           // default:
         }
         //REVIEW AUTH
         switch (result[0]["review_auth_level"]) {
           case "1":
-            MaxreviewAuth = "AL1";
+            MaxreviewAuth = "1";
             break;
 
           case "2":
-            MaxreviewAuth = "AL2";
+            MaxreviewAuth = "2";
             break;
           case "3":
-            MaxreviewAuth = "AL3";
+            MaxreviewAuth = "3";
             break;
           // case "4":
-          //   MaxreviewAuth = "AL4";
+          //   MaxreviewAuth = "4";
           //   break;
           // case "5":
-          //   MaxreviewAuth = "AL5";
+          //   MaxreviewAuth = "5";
           //   break;
           // default:
         }

@@ -79,6 +79,11 @@ module.exports = {
             " and E.employee_designation_id='" + req.query.designation_id + "'";
         }
 
+        if (req.query.suspend_salary != null) {
+          _strAppend +=
+            " and E.suspend_salary='" + req.query.suspend_salary + "'";
+        }
+
         if (
           req.query.hospital_requires === undefined ||
           req.query.hospital_requires === true
@@ -1298,6 +1303,29 @@ module.exports = {
       next();
       return;
     }
+  },
+
+  UpdateEmployeeRejoined: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = req.body;
+
+    _mysql
+      .executeQuery({
+        query:
+          "Update hims_d_employee set suspend_salary = 'N', last_salary_process_date= ? where hims_d_employee_id=?",
+        values: [input.last_salary_process_date, input.hims_d_employee_id],
+
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
   }
 };
 

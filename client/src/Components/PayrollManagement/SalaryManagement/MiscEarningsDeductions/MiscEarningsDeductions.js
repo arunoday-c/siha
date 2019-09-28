@@ -636,18 +636,20 @@ export default class MiscEarningsDeductions extends Component {
             <div className="col globalSearchCntr">
               <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
               <h6 onClick={this.openSearch}>
-                {this.state.emp_name ? this.state.emp_name : "------"}
+                {this.state.emp_name ? this.state.emp_name : "Search Employee"}
+                <i className="fas fa-search fa-lg"></i>
               </h6>
             </div>
 
             <div
               className="col-2 margin-bottom-15"
-              style={{ paddingTop: 21, textAlign: "right" }}
+              style={{ paddingTop: 19, textAlign: "right" }}
             >
               <button
                 type="button"
                 className="btn btn-default"
                 onClick={this.clearState.bind(this)}
+                style={{ marginRight: 10 }}
               >
                 <AlgaehLabel
                   label={{ forceLabel: "Clear", returnText: true }}

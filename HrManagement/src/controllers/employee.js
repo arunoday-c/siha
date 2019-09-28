@@ -23,7 +23,8 @@ import {
   getEmployeesForMisED,
   addMisEarnDedcToEmployees,
   getEmployeeDepartmentsWise,
-  getEmployeeDesignationWise
+  getEmployeeDesignationWise,
+  UpdateEmployeeRejoined
 } from "../models/employee";
 export default () => {
   const api = Router();
@@ -270,5 +271,17 @@ export default () => {
       }
     }
   );
+
+  api.put(
+    "/UpdateEmployeeRejoined",
+    UpdateEmployeeRejoined,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+
   return api;
 };

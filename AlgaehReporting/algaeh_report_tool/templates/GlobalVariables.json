@@ -1581,21 +1581,21 @@
     { "name": "General user", "value": "GN" }
   ],
   "LOAN_PRIVILEGE": [
-    { "name": "Level 1", "value": "AL1" },
-    { "name": "Level 2", "value": "AL2" },
-    { "name": "Level 3", "value": "AL3" },
-    { "name": "Level 4", "value": "AL4" },
-    { "name": "Level 5", "value": "AL5" },
-    { "name": "Level 6", "value": "AL6" },
+    { "name": "Level 1", "value": "1" },
+    { "name": "Level 2", "value": "2" },
+    { "name": "Level 3", "value": "3" },
+    { "name": "Level 4", "value": "4" },
+    { "name": "Level 5", "value": "5" },
+    { "name": "Level 6", "value": "6" },
     { "name": "None", "value": "N" }
   ],
   "LEAVE_PRIVILEGE": [
-    { "name": "Level 1", "value": "AL1" },
-    { "name": "Level 2", "value": "AL2" },
-    { "name": "Level 3", "value": "AL3" },
-    { "name": "Level 4", "value": "AL4" },
-    { "name": "Level 5", "value": "AL5" },
-    { "name": "Level 6", "value": "AL6" },
+    { "name": "Level 1", "value": "1" },
+    { "name": "Level 2", "value": "2" },
+    { "name": "Level 3", "value": "3" },
+    { "name": "Level 4", "value": "4" },
+    { "name": "Level 5", "value": "5" },
+    { "name": "Level 6", "value": "6" },
     { "name": "None", "value": "N" }
   ],
   "REQUSITION_STATUS": [

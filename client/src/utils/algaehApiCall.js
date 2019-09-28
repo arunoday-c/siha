@@ -60,6 +60,11 @@ export function algaehApiCall(options) {
       },
       options
     );
+
+    if (settings.uri === null) {
+      return;
+    }
+
     let _baseUrl = settings.baseUrl;
     const _localaddress =
       window.location.protocol + "//" + window.location.hostname; //+ ":";

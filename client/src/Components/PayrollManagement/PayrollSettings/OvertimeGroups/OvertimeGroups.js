@@ -307,7 +307,7 @@ class OvertimeGroups extends Component {
                                 checked={this.state.payment_type === "RT"}
                                 onChange={this.changeTexts.bind(this)}
                               />
-                              <span>Rate per Hour</span>
+                              <span>Fixed Rate per Hour</span>
                             </label>
 
                             <label className="radio inline">
@@ -318,7 +318,7 @@ class OvertimeGroups extends Component {
                                 checked={this.state.payment_type === "PC"}
                                 onChange={this.changeTexts.bind(this)}
                               />
-                              <span>% of Components</span>
+                              <span>% of Components Based</span>
                             </label>
                           </div>
                         </div>

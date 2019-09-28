@@ -87,6 +87,19 @@ export default class AttendanceMgmt extends Component {
                 }
               </li>
               <li
+                algaehtabs={"BulkManualTimeSheet"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Manual Timesheet (Single/Bulk)"
+                    }}
+                  />
+                }
+              </li>
+              <li
                 algaehtabs={"WeeklyAttendance"}
                 className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
@@ -94,11 +107,11 @@ export default class AttendanceMgmt extends Component {
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Employee Timesheet"
+                      forceLabel: "Biometric Timesheet"
                     }}
                   />
                 }
-              </li>
+              </li>{" "}
               <li
                 algaehtabs={"AbsenceManagement"}
                 className={"nav-item tab-button"}
@@ -125,19 +138,6 @@ export default class AttendanceMgmt extends Component {
                   />
                 }
               </li> */}
-              <li
-                algaehtabs={"BulkManualTimeSheet"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Manual Timesheet (Single/Bulk)"
-                    }}
-                  />
-                }
-              </li>
             </ul>
           </div>
         </div>

@@ -62,8 +62,9 @@ export default class LeaveAuthorization extends Component {
       searchGrid: {
         columns: spotlightSearch.Employee_details.employee
       },
-      searchName: "employee",
+      searchName: "employee_branch_wise",
       uri: "/gloabelSearch/get",
+      inputs: "hospital_id = " + this.state.hospital_id,
       onContainsChange: (text, serchBy, callBack) => {
         callBack(text);
       },
@@ -84,7 +85,7 @@ export default class LeaveAuthorization extends Component {
       total_approved_days: data.total_approved_days,
       authorized_comment: this.state.remarks,
       hims_f_leave_application_id: data.hims_f_leave_application_id,
-      auth_level: "AL" + this.state.auth_level,
+      auth_level: this.state.auth_level,
       status: type,
       employee_id: data.employee_id,
       leave_id: data.leave_id,
@@ -162,7 +163,8 @@ export default class LeaveAuthorization extends Component {
       method: "GET",
       module: "hrManagement",
       data: {
-        auth_level: "AL" + this.state.auth_level,
+        hospital_id: this.state.hospital_id,
+        auth_level: this.state.auth_level,
         employee_id: this.state.hims_d_employee_id,
         leave_status: this.state.leave_status,
         from_date: this.state.from_date,
@@ -358,7 +360,18 @@ export default class LeaveAuthorization extends Component {
               }}
             />
 
-            <div className="col-lg-3" style={{ marginTop: 10 }}>
+            <div className="col-3 globalSearchCntr">
+              <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+              <h6 onClick={this.employeeSearch.bind(this)}>
+                {/* {this.state.emp_name ? this.state.emp_name : "------"} */}
+                {this.state.employee_name
+                  ? this.state.employee_name
+                  : "Search Employee"}
+                <i className="fas fa-search fa-lg"></i>
+              </h6>
+            </div>
+
+            {/* <div className="col-lg-3" style={{ marginTop: 10 }}>
               <div
                 className="row"
                 style={{
@@ -390,7 +403,7 @@ export default class LeaveAuthorization extends Component {
                   />
                 </div>
               </div>
-            </div>
+            </div> */}
 
             <div className="col form-group">
               <button

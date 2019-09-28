@@ -115,19 +115,6 @@ class AddConsultationForm extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (
-      this.props.visittypes !== undefined &&
-      this.props.visittypes.length > 0
-    ) {
-      const exit_consultation = _.find(this.props.visittypes, f => {
-        return f.consultation == "Y";
-      });
-      if (exit_consultation.hims_d_visit_type_id !== null) {
-        nextProps.PatRegIOputs.visit_type =
-          exit_consultation.hims_d_visit_type_id;
-        nextProps.PatRegIOputs.consultation = "Y";
-      }
-    }
     this.setState(nextProps.PatRegIOputs);
   }
 

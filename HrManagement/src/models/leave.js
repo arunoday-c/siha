@@ -23,20 +23,20 @@ function getMaxAuth(options) {
         //LEAVE
         switch (result[0]["leave_level"]) {
           case "1":
-            MaxLeave = "AL1";
+            MaxLeave = "1";
             break;
 
           case "2":
-            MaxLeave = "AL2";
+            MaxLeave = "2";
             break;
           case "3":
-            MaxLeave = "AL3";
+            MaxLeave = "3";
             break;
           case "4":
-            MaxLeave = "AL4";
+            MaxLeave = "4";
             break;
           case "5":
-            MaxLeave = "AL5";
+            MaxLeave = "5";
             break;
           default:
         }
@@ -44,60 +44,60 @@ function getMaxAuth(options) {
         //LOAN
         switch (result[0]["loan_level"]) {
           case "1":
-            MaxLoan = "AL1";
+            MaxLoan = "1";
             break;
 
           case "2":
-            MaxLoan = "AL2";
+            MaxLoan = "2";
             break;
           case "3":
-            MaxLoan = "AL3";
+            MaxLoan = "3";
             break;
           case "4":
-            MaxLoan = "AL4";
+            MaxLoan = "4";
             break;
           case "5":
-            MaxLoan = "AL5";
+            MaxLoan = "5";
             break;
           default:
         }
         //LEAVE ENCASH
         switch (result[0]["leave_encash_level"]) {
           case "1":
-            MaxLeaveEncash = "AL1";
+            MaxLeaveEncash = "1";
             break;
 
           case "2":
-            MaxLeaveEncash = "AL2";
+            MaxLeaveEncash = "2";
             break;
           case "3":
-            MaxLeaveEncash = "AL3";
+            MaxLeaveEncash = "3";
             break;
           case "4":
-            MaxLeaveEncash = "AL4";
+            MaxLeaveEncash = "4";
             break;
           case "5":
-            MaxLeaveEncash = "AL5";
+            MaxLeaveEncash = "5";
             break;
           default:
         }
         //REVIEW AUTH
         switch (result[0]["review_auth_level"]) {
           case "1":
-            MaxreviewAuth = "AL1";
+            MaxreviewAuth = "1";
             break;
 
           case "2":
-            MaxreviewAuth = "AL2";
+            MaxreviewAuth = "2";
             break;
           case "3":
-            MaxreviewAuth = "AL3";
+            MaxreviewAuth = "3";
             break;
           case "4":
-            MaxreviewAuth = "AL4";
+            MaxreviewAuth = "4";
             break;
           case "5":
-            MaxreviewAuth = "AL5";
+            MaxreviewAuth = "5";
             break;
           default:
         }
@@ -586,10 +586,12 @@ module.exports = {
         mysql: _mysql
       })
         .then(maxAuth => {
+         
           if (
-            req.userIdentity.leave_authorize_privilege != maxAuth.MaxLeave ||
-            input.auth_level != maxAuth.MaxLeave
+            req.userIdentity.leave_authorize_privilege < maxAuth.MaxLeave ||
+            input.auth_level < maxAuth.MaxLeave
           ) {
+            
             //for lower level authorize
             if (input.status == "R") {
               _mysql
@@ -616,7 +618,7 @@ module.exports = {
               calc(_mysql, req.body)
                 .then(deductionResult => {
                   if (deductionResult.invalid_input == true) {
-                    console.log("deductionResult:", deductionResult);
+                    // console.log("deductionResult:", deductionResult);
                     _mysql.releaseConnection();
                     req.records = {
                       invalid_input: true,
@@ -625,7 +627,7 @@ module.exports = {
                     };
                     next();
                   } else {
-                    getLeaveAuthFields(input.auth_level).then(authFields => {
+                    getLeaveAuthFields(input["auth_level"]).then(authFields => {
                       _mysql
                         .executeQuery({
                           query:
@@ -661,11 +663,13 @@ module.exports = {
                 });
             }
           } else if (
-            req.userIdentity.leave_authorize_privilege == maxAuth.MaxLeave &&
-            input.auth_level == maxAuth.MaxLeave
+            req.userIdentity.leave_authorize_privilege >= maxAuth.MaxLeave &&
+            input.auth_level >= maxAuth.MaxLeave
           ) {
-            //if he has highest previlege
-            getLeaveAuthFields(input.auth_level).then(authFields => {
+           
+           // const auth_level=input.auth_level;
+           
+            getLeaveAuthFields(input["auth_level"]).then(authFields => {
               _mysql
                 .executeQueryWithTransaction({
                   query:
@@ -682,9 +686,11 @@ module.exports = {
                     req.userIdentity.algaeh_d_app_user_id,
                     input.hims_f_leave_application_id
                   ],
-                  printQuery: false
+                  printQuery: true
                 })
                 .then(authResult => {
+
+                
                   if (authResult[0].affectedRows > 0 && input.status == "R") {
                     _mysql
                       .executeQuery({
@@ -710,7 +716,7 @@ module.exports = {
                     input.status == "A"
                   ) {
                     let month_number = 0;
-
+                    
                     if (
                       authResult[1][0]["attendance_starts"] == "PM" &&
                       authResult[1][0]["at_end_date"] > 0
@@ -893,14 +899,7 @@ module.exports = {
                                         }
 
                                         let anualLeave = "";
-                                        console.log(
-                                          "annual_leave_process_separately: ",
-                                          annual_leave_process_separately
-                                        );
-                                        console.log(
-                                          "leave_category: ",
-                                          input.leave_category
-                                        );
+                                    
                                         if (
                                           annual_leave_process_separately ==
                                             "Y" &&
@@ -920,10 +919,7 @@ module.exports = {
                                                     }'
                                                     );`;
 
-                                          console.log(
-                                            "anualLeave: ",
-                                            anualLeave
-                                          );
+                                         
                                         }
 
                                         //if he is regularizing absent to leave
@@ -2844,23 +2840,23 @@ module.exports = {
 
               if (result[0][0]["authorization_plan"] == "R") {
                 switch (userPrivilege) {
-                  case "AL1":
+                  case "1":
                     auth_levels.push({ name: "Level 1", value: 1 });
                     break;
-                  case "AL2":
+                  case "2":
                     auth_levels.push(
                       { name: "Level 2", value: 2 },
                       { name: "Level 1", value: 1 }
                     );
                     break;
-                  case "AL3":
+                  case "3":
                     auth_levels.push(
                       { name: "Level 3", value: 3 },
                       { name: "Level 2", value: 2 },
                       { name: "Level 1", value: 1 }
                     );
                     break;
-                  case "AL4":
+                  case "4":
                     auth_levels.push(
                       { name: "Level 4", value: 4 },
                       { name: "Level 3", value: 3 },
@@ -2868,7 +2864,7 @@ module.exports = {
                       { name: "Level 1", value: 1 }
                     );
                     break;
-                  case "AL5":
+                  case "5":
                     auth_levels.push(
                       { name: "Level 5", value: 5 },
                       { name: "Level 4", value: 4 },
@@ -2882,13 +2878,13 @@ module.exports = {
                 ///------------------------
 
                 switch (userPrivilege) {
-                  case "AL1":
+                  case "1":
                     if (result[1].length > 0) {
                       auth_levels.push({ name: "Level 1", value: 1 });
                     }
 
                     break;
-                  case "AL2":
+                  case "2":
                     if (result[1].length > 0) {
                       auth_levels.push(
                         { name: "Level 2", value: 2 },
@@ -2899,7 +2895,7 @@ module.exports = {
                     }
 
                     break;
-                  case "AL3":
+                  case "3":
                     if (result[1].length > 0) {
                       auth_levels.push(
                         { name: "Level 3", value: 3 },
@@ -2910,7 +2906,7 @@ module.exports = {
                     }
 
                     break;
-                  case "AL4":
+                  case "4":
                     if (result[1].length > 0) {
                       auth_levels.push(
                         { name: "Level 4", value: 4 },
@@ -2921,7 +2917,7 @@ module.exports = {
                     }
 
                     break;
-                  case "AL5":
+                  case "5":
                     if (result[1].length > 0) {
                       auth_levels.push(
                         { name: "Level 5", value: 5 },
@@ -3535,7 +3531,7 @@ module.exports = {
     let range = "";
 
     if (req.query.employee_id > 0) {
-      employee = ` and employee_id=${req.query.employee_id} `;
+      employee = ` and LA.employee_id=${req.query.employee_id} `;
     }
 
     if (
@@ -3563,41 +3559,41 @@ module.exports = {
           let auth_level = "";
 
           if (options[0]["authorization_plan"] == "A") {
-            if (req.query.auth_level == "AL1") {
+            if (req.query.auth_level == "1") {
               auth_level =
-                "  authorized1='N'  and AUS.leave_level1=" +
+                " and authorized1='N'  and AUS.leave_level1=" +
                 req.userIdentity.employee_id;
-            } else if (req.query.auth_level == "AL2") {
+            } else if (req.query.auth_level == "2") {
               auth_level =
-                "  authorized1='Y' and authorized2='N'  and AUS.leave_level2=" +
+                " and authorized1='Y' and authorized2='N'  and AUS.leave_level2=" +
                 req.userIdentity.employee_id;
-            } else if (req.query.auth_level == "AL3") {
+            } else if (req.query.auth_level == "3") {
               auth_level =
-                "  authorized1='Y' and authorized2='Y' and authorized3='N' and AUS.leave_level3=" +
+                " and authorized1='Y' and authorized2='Y' and authorized3='N' and AUS.leave_level3=" +
                 req.userIdentity.employee_id;
-            } else if (req.query.auth_level == "AL4") {
+            } else if (req.query.auth_level == "4") {
               auth_level =
-                "  authorized1='Y' and authorized2='Y' and authorized3='Y' and authorized4='N' ";
-            } else if (req.query.auth_level == "AL5") {
+                " and authorized1='Y' and authorized2='Y' and authorized3='Y' and authorized4='N' ";
+            } else if (req.query.auth_level == "5") {
               auth_level =
-                "  authorized1='Y' and authorized2='Y' and authorized3='Y' and authorized4='Y'  and authorized5='N' ";
+                " and authorized1='Y' and authorized2='Y' and authorized3='Y' and authorized4='Y'  and authorized5='N' ";
             }
           } else {
-            if (req.query.auth_level == "AL1") {
+            if (req.query.auth_level == "1") {
               auth_level =
-                "  authorized1='N' AND E.reporting_to_id=" +
+                " and authorized1='N' AND E.reporting_to_id=" +
                 req.userIdentity.employee_id;
-            } else if (req.query.auth_level == "AL2") {
-              auth_level = "  authorized1='Y' and authorized2='N' ";
-            } else if (req.query.auth_level == "AL3") {
+            } else if (req.query.auth_level == "2") {
+              auth_level = " and authorized1='Y' and authorized2='N' ";
+            } else if (req.query.auth_level == "3") {
               auth_level =
-                "  authorized1='Y' and authorized2='Y' and authorized3='N' ";
-            } else if (req.query.auth_level == "AL4") {
+                " and authorized1='Y' and authorized2='Y' and authorized3='N' ";
+            } else if (req.query.auth_level == "4") {
               auth_level =
-                "  authorized1='Y' and authorized2='Y' and authorized3='Y' and authorized4='N' ";
-            } else if (req.query.auth_level == "AL5") {
+                " and authorized1='Y' and authorized2='Y' and authorized3='Y' and authorized4='N' ";
+            } else if (req.query.auth_level == "5") {
               auth_level =
-                "  authorized1='Y' and authorized2='Y' and authorized3='Y' and authorized4='Y'  and authorized5='N' ";
+                " and authorized1='Y' and authorized2='Y' and authorized3='Y' and authorized4='Y'  and authorized5='N' ";
             }
           }
 
@@ -3613,7 +3609,7 @@ module.exports = {
             auth_level = "";
             leave_status = "  status='CAN' ";
           } else {
-            leave_status = "  status='PEN' and ";
+            leave_status = "  status='PEN'  ";
           }
 
           if (req.userIdentity.leave_authorize_privilege != "N") {
@@ -3641,7 +3637,7 @@ module.exports = {
                   "" +
                   employee +
                   " order by hims_f_leave_application_id desc",
-                values: [req.userIdentity.hospital_id],
+                values: [req.query.hospital_id],
 
                 printQuery: true
               })
@@ -4356,7 +4352,7 @@ module.exports = {
         mysql: _mysql
       })
         .then(result => {
-          if (req.userIdentity.leave_authorize_privilege == result.MaxLeave) {
+          if (req.userIdentity.leave_authorize_privilege >= result.MaxLeave) {
             _mysql
               .executeQuery({
                 query:
@@ -4622,17 +4618,107 @@ module.exports = {
           next(e);
         });
     }
+  },
+
+  //created by irfan:
+  getLeaveBalances: (req, res, next) => {
+    let input = req.query;
+    if (input.hospital_id > 0 && input.year > 0) {
+      const _mysql = new algaehMysql();
+
+      let strQry = "";
+      if (input.employee_group_id > 0) {
+        strQry += " and E.employee_group_id=" + input.employee_group_id;
+      }
+      if (input.hims_d_employee_id > 0) {
+        strQry += " and E.hims_d_employee_id=" + input.hims_d_employee_id;
+      }
+
+      _mysql
+        .executeQuery({
+          query: `select E.hims_d_employee_id,E.employee_code,E.full_name,ML.leave_id ,ML.total_eligible,\
+              ML.availed_till_date,ML.close_balance from hims_d_employee E \
+              left join  hims_f_employee_monthly_leave ML on ML.employee_id=E.hims_d_employee_id and ML.year=?\
+              where  E.hospital_id=? and  E.record_status='A' ${strQry} order by hims_d_employee_id;\
+              select hims_d_leave_id, leave_code, leave_description from hims_d_leave \
+              where record_status='A';`,
+          values: [input.year, input.hospital_id],
+
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          const employees = result[0];
+          const leave_master = result[1];
+
+          const outputArray = [];
+        
+          if (employees.length > 0 && leave_master.length > 0) {
+            _.chain(employees)
+              .groupBy(g => g.hims_d_employee_id)
+              .forEach(emp => {
+                let data = {
+                  employee_code: emp[0]["employee_code"],
+                  full_name: emp[0]["full_name"],
+                  hims_d_employee_id: emp[0]["hims_d_employee_id"]
+                };
+                leave_master.forEach(leave => {
+                  const leave_assignd = emp.find(item => {
+                    return item["leave_id"] == leave["hims_d_leave_id"];
+                  });
+                  if (leave_assignd != undefined) {
+                    data[''+leave["hims_d_leave_id"]+''] =
+                      leave_assignd["close_balance"];
+                  } else {
+                    data[''+leave["hims_d_leave_id"]+''] = "N";
+                  }
+                });
+
+                outputArray.push(data);
+              })
+              .value();
+          
+              req.records = outputArray;
+              next();
+          
+          
+            } else {
+            req.records = {
+              invalid_input: true,
+              message: `No Employees Found`
+            };
+            next();
+            return;
+          }
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "please provide valid input"
+      };
+
+      next();
+      return;
+    }
   }
+
+
 };
 
 // finish
 
 //created by irfan: to get database field for authrzation
 function getLeaveAuthFields(auth_level) {
+ 
   return new Promise((resolve, reject) => {
     let authFields;
+   
     switch (auth_level) {
-      case "AL1":
+      case 1 :
         authFields = [
           "authorized1=?",
           "authorized1_date=?",
@@ -4641,7 +4727,7 @@ function getLeaveAuthFields(auth_level) {
         ];
         break;
 
-      case "AL2":
+      case 2 :
         authFields = [
           "authorized2=?",
           "authorized2_date=?",
@@ -4650,7 +4736,7 @@ function getLeaveAuthFields(auth_level) {
         ];
         break;
 
-      case "AL3":
+      case 3 :
         authFields = [
           "authorized3=?",
           "authorized3_date=?",
@@ -4660,7 +4746,7 @@ function getLeaveAuthFields(auth_level) {
         ];
         break;
 
-      case "AL4":
+      case 4 :
         authFields = [
           "authorized4=?",
           "authorized4_date=?",
@@ -4669,7 +4755,7 @@ function getLeaveAuthFields(auth_level) {
           "authorized4_comment=?"
         ];
         break;
-      case "AL5":
+      case 5 :
         authFields = [
           "authorized5=?",
           "authorized5_date=?",

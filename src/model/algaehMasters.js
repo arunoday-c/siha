@@ -1550,18 +1550,12 @@ let assignScreens = (req, res, next) => {
             let qry = "";
 
             if (input.delete_screens.length > 0) {
-              qry += ` delete from algaeh_m_screen_role_privilage_mapping where algaeh_m_screen_role_privilage_mapping_id in (${
-                input.delete_screens
-              });`;
+              qry += ` delete from algaeh_m_screen_role_privilage_mapping where algaeh_m_screen_role_privilage_mapping_id in (${input.delete_screens});`;
             }
 
             if (input.delete_modules.length > 0) {
-              qry += ` delete from algaeh_m_screen_role_privilage_mapping where module_role_map_id in ( ${
-                input.delete_modules
-              });
-              delete from algaeh_m_module_role_privilage_mapping where algaeh_m_module_role_privilage_mapping_id in (${
-                input.delete_modules
-              });`;
+              qry += ` delete from algaeh_m_screen_role_privilage_mapping where module_role_map_id in ( ${input.delete_modules});
+              delete from algaeh_m_module_role_privilage_mapping where algaeh_m_module_role_privilage_mapping_id in (${input.delete_modules});`;
             }
 
             if (input.update_screens.length > 0) {
@@ -1868,35 +1862,35 @@ let getHrmsAuthLevels = (req, res, next) => {
                     break;
                   case "2":
                     leave_levels.push(
-                      { name: "Level 2", value: "AL2" },
-                      { name: "Level 1", value: "AL1" },
+                      { name: "Level 2", value: "2" },
+                      { name: "Level 1", value: "1" },
                       { name: "None", value: "N" }
                     );
                     break;
                   case "3":
                     leave_levels.push(
-                      { name: "Level 3", value: "AL3" },
-                      { name: "Level 2", value: "AL2" },
-                      { name: "Level 1", value: "AL1" },
+                      { name: "Level 3", value: "3" },
+                      { name: "Level 2", value: "2" },
+                      { name: "Level 1", value: "1" },
                       { name: "None", value: "N" }
                     );
                     break;
                   case "4":
                     leave_levels.push(
-                      { name: "Level 4", value: "AL4" },
-                      { name: "Level 3", value: "AL3" },
-                      { name: "Level 2", value: "AL2" },
-                      { name: "Level 1", value: "AL1" },
+                      { name: "Level 4", value: "4" },
+                      { name: "Level 3", value: "3" },
+                      { name: "Level 2", value: "2" },
+                      { name: "Level 1", value: "1" },
                       { name: "None", value: "N" }
                     );
                     break;
                   case "5":
                     leave_levels.push(
-                      { name: "Level 5", value: "AL5" },
-                      { name: "Level 4", value: "AL4" },
-                      { name: "Level 3", value: "AL3" },
-                      { name: "Level 2", value: "AL2" },
-                      { name: "Level 1", value: "AL1" },
+                      { name: "Level 5", value: "5" },
+                      { name: "Level 4", value: "4" },
+                      { name: "Level 3", value: "3" },
+                      { name: "Level 2", value: "2" },
+                      { name: "Level 1", value: "1" },
                       { name: "None", value: "N" }
                     );
                     break;
@@ -1913,35 +1907,35 @@ let getHrmsAuthLevels = (req, res, next) => {
                     break;
                   case "2":
                     loan_levels.push(
-                      { name: "Level 2", value: "AL2" },
-                      { name: "Level 1", value: "AL1" },
+                      { name: "Level 2", value: "2" },
+                      { name: "Level 1", value: "1" },
                       { name: "None", value: "N" }
                     );
                     break;
                   case "3":
                     loan_levels.push(
-                      { name: "Level 3", value: "AL3" },
-                      { name: "Level 2", value: "AL2" },
-                      { name: "Level 1", value: "AL1" },
+                      { name: "Level 3", value: "3" },
+                      { name: "Level 2", value: "2" },
+                      { name: "Level 1", value: "1" },
                       { name: "None", value: "N" }
                     );
                     break;
                   case "4":
                     loan_levels.push(
-                      { name: "Level 4", value: "AL4" },
-                      { name: "Level 3", value: "AL3" },
-                      { name: "Level 2", value: "AL2" },
-                      { name: "Level 1", value: "AL1" },
+                      { name: "Level 4", value: "4" },
+                      { name: "Level 3", value: "3" },
+                      { name: "Level 2", value: "2" },
+                      { name: "Level 1", value: "1" },
                       { name: "None", value: "N" }
                     );
                     break;
                   case "5":
                     loan_levels.push(
-                      { name: "Level 5", value: "AL5" },
-                      { name: "Level 4", value: "AL4" },
-                      { name: "Level 3", value: "AL3" },
-                      { name: "Level 2", value: "AL2" },
-                      { name: "Level 1", value: "AL1" },
+                      { name: "Level 5", value: "5" },
+                      { name: "Level 4", value: "4" },
+                      { name: "Level 3", value: "3" },
+                      { name: "Level 2", value: "2" },
+                      { name: "Level 1", value: "1" },
                       { name: "None", value: "N" }
                     );
                     break;
