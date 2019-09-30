@@ -1,4 +1,0 @@
-{
-  "insert_account_user":
-    "INSERT INTO `algaeh_d_api_auth`(`username`, `password`,`created_date`,`created_by`,`updated_date`, `updated_by`, `record_status`) VALUES ('clienttestuser', 'clienttestuser', now(), 'chai', now(), 'chai', 'A');"
-}
