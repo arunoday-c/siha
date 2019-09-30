@@ -11,8 +11,9 @@
     "api": "npm run billing_server",
     "lint": "eslint src && eslint test",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "cross-env PORT=3014 NODE_ENV=production pm2 start -i 2 build/app.js",
-    "run-dev": "cross-env PORT=3014 NODE_ENV=development nodemon build/app.js"
+    "run-prod": "cross-env PORT=3014 NODE_ENV=production pm2 start -i 2 build/app.js",
+    "start": "run-s build run-prod",
+    "run-dev": "cross-env PORT=3014 NODE_ENV=development nodemon --exec 'node build/app.js'"
   },
   "dependencies": {
     "algaeh-mysql": "^1.2.11",

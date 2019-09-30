@@ -16,17 +16,18 @@ const { debugLog } = logging;
 export default ({ config, db }) => {
   let api = Router();
   // '/v1/apiAuth'
-  api.get(
-    "/",
-    apiAuth,
-    passport.authenticate("local", {
-      session: false,
-      scope: []
-    }),
-
-    generateAccessToken,
-    respond
-  );
+  // api.get(
+  //   "/",
+  //   apiAuth,
+  //   passport.authenticate("local", {
+  //     session: false,
+  //     scope: []
+  //   }),
+  //
+  //   generateAccessToken,
+  //   respond
+  // );
+  api.get("/", apiAuth, generateAccessToken, respond);
 
   //'/v1/authUser
   api.post(
@@ -39,7 +40,6 @@ export default ({ config, db }) => {
       } else {
         if (result[0][0]["locked"] == "N") {
           let rowDetails = result[0][0];
-          debugLog("rowDetails: ", rowDetails);
           let encrypDetsil = { ...result[0][0], ...result[1][0] };
           let hospitalDetails = { ...result[1][0] };
 
@@ -52,7 +52,20 @@ export default ({ config, db }) => {
           };
           // let keymoduleDetails = encryption(hospitalDetails);
 
-          res.status(httpStatus.ok).json({
+          // res.status(httpStatus.ok).json({
+          //   success: true,
+          //   records: {
+          //     username: rowDetails["username"],
+          //     user_display_name: rowDetails["user_display_name"],
+          //     keyResources: keyData,
+          //     keyData: specfic_date,
+          //     secureModels: req.secureModels,
+          //     hospitalDetails: hospitalDetails,
+          //     app_d_app_roles_id: rowDetails.app_d_app_roles_id,
+          //     page_to_redirect: rowDetails.page_to_redirect
+          //   }
+          // });
+          req.result = {
             success: true,
             records: {
               username: rowDetails["username"],
@@ -64,7 +77,7 @@ export default ({ config, db }) => {
               app_d_app_roles_id: rowDetails.app_d_app_roles_id,
               page_to_redirect: rowDetails.page_to_redirect
             }
-          });
+          };
           next();
         } else {
           next(
@@ -79,7 +92,13 @@ export default ({ config, db }) => {
         }
       }
     },
-    releaseConnection
+    passport.authenticate("local", {
+      session: false,
+      scope: []
+    }),
+    (req, res) => {
+      res.status(httpStatus.ok).json(req.result);
+    }
   );
 
   return api;

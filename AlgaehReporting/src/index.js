@@ -6,18 +6,20 @@ import compression from "compression";
 import moment from "moment";
 import fs from "fs";
 import path from "path";
-import {
-  getReport,
-  getReportMultiPrint,
-  merdgeTosingleReport,
-  getExcelReport,
-  getRawReport
-} from "./report_generation";
+import reportGen from "./report_generation";
 import algaehUtilities from "algaeh-utilities/utilities";
 const bwipjs = require("bwip-js");
 const exec = require("child_process").exec;
 const app = exxpress();
 app.server = http.createServer(app);
+
+const {
+  getReport,
+  getReportMultiPrint,
+  merdgeTosingleReport,
+  getExcelReport,
+  getRawReport
+} = reportGen;
 
 app.use(cors());
 const _port = process.env.PORT;
@@ -184,4 +186,3 @@ process.on("unhandledRejection", (reason, promise) => {
 app.server.listen(_port);
 console.log(`Report Server is running  on PORT  - ${_port} *`);
 export default app;
-module.exports = app;

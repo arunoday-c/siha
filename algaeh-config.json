@@ -1,8 +1,3 @@
 {
-  "run": [
-"Core",
-"DocumentManagement",
-"HrManagement",
- "MasterSettings"
-  ]
+ "run":["algaeh-core","Billing","DocumentManagement","FrontDesk","Inventory","Laboratory","MasterSettings","Pharmacy","Procurement","Radiology","MRD","Insurance","AlgaehReporting"]
 }

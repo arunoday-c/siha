@@ -13,19 +13,18 @@ import path from "path";
 import httpStatus from "./utils/httpStatus";
 import logUtils from "./utils/logging";
 import jwtDecode from "jwt-decode";
-import cryptUtils from "./utils/cryptography";
+import cryptoUtils from "./utils/cryptography";
 import algaehKeys from "algaeh-keys";
 const keys = algaehKeys.default;
-
-const { decryption } = cryptUtils;
-const { logger, requestTracking } = logUtils;
-
 let app = express();
 const _port = process.env.PORT;
+const { logger, requestTracking } = logUtils;
+const { decryption } = cryptoUtils;
+
 app.use(compression());
-if (process.env.NODE_ENV == "production") {
+if (process.env.NODE_ENV === "production") {
   console.log("Running prod...." + _port);
-  app.use(express.static("build"));
+  app.use(express.static("dist"));
 }
 
 app.use(
@@ -35,21 +34,7 @@ app.use(
   })
 );
 
-// if (keys.useSSL) {
-//   const _privateKey = require("algaeh-keys/private.key");
-//   const _certificate = require("algaeh-keys/certificate.crt");
-//   const _ca = require("algaeh-keys/ca_bundle.crt");
-//   var https_options = {
-//     key: fs.readFileSync(_privateKey),
-
-//     cert: fs.readFileSync(_certificate),
-
-//     ca: [fs.readFileSync(_ca)]
-//   };
-//   app.server = https.createServer(https_options, app);
-// } else {
 app.server = http.createServer(app);
-// }
 
 //parse application json
 app.use(
@@ -60,17 +45,19 @@ app.use(
 
 //passport config
 app.use(passport.initialize());
-passport.use(
-  new LocalStrategy(
-    {
-      usernameField: "username",
-      passwordField: "password"
-    },
-    (username, password, done) => {
-      return done(null, username);
-    }
-  )
-);
+// passport.use(
+//   new LocalStrategy(
+//     {
+//       usernameField: "username",
+//       passwordField: "password"
+//     },
+//     (username, password, done) => {
+//       console.log("username",username);
+//       console.log("password",password);
+//       return done(null, username);
+//     }
+//   )
+// );
 
 passport.serializeUser((user, done) => {
   done(null, user);
@@ -78,16 +65,25 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser((id, done) => {
   done(null, { msg: "done" });
 });
-if (process.env.NODE_ENV == "production") {
-  app.set("view cache", true);
-}
+
+passport.use(
+  new LocalStrategy((username, password, done) => {
+    console.log("username", username);
+    console.log("password", password);
+    return done(null, username);
+  })
+);
+
+// if (process.env.NODE_ENV == "production") {
+//   app.set("view cache", true);
+// }
 app.use((req, res, next) => {
   // const _mydate = "20190330";
   // if (parseInt(moment().format("YYYYMMDD")) > parseInt(_mydate)) {
   //   res.status(500).json({ success: false, message: "Demo version expired" });
   //   return;
   // }
-
+  console.log("req", typeof req.login);
   let reqH = req.headers;
 
   let reqUser = "";

@@ -219,7 +219,6 @@ export function algaehApiCall(options) {
             settings.onSuccess(response);
         })
         .catch(err => {
-          debugger;
           AlgaehLoader({ show: false });
           if (
             settings.cancelRequestId !== undefined ||
@@ -311,7 +310,6 @@ export function algaehApiCall(options) {
               err.response.headers["content-type"] ===
                 "application/json; charset=utf-8"
             ) {
-              debugger;
               if (
                 err.response.data !== undefined &&
                 err.response.data.success !== undefined
@@ -354,14 +352,11 @@ export function swalMessage(options) {
   const toast = swal.mixin(settings);
   let title = settings.title;
   if (typeof title === "object") {
-    debugger;
     if (
       settings.title.response !== undefined &&
       settings.title.response.data.message !== undefined
     ) {
-      title = `${settings.title.response.status} \n ${
-        settings.title.response.data.message
-      }`;
+      title = `${settings.title.response.status} \n ${settings.title.response.data.message}`;
     } else {
       title = settings.title.message;
     }

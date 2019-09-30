@@ -1,0 +1,22 @@
+{
+  "moduleList": {
+    "algaeh-laboratory": "../Laboratory",
+    "algaeh-radiology": "../Radiology",
+    "algaeh-pharmacy": "../Pharmacy",
+    "algaeh-keys": "../keys",
+    "algaeh-utilities": "../AlgaehUtilities",
+    "algaeh-billing": "../Billing",
+    "algaeh-clinicaldesk": "../ClinicalDesk",
+    "algaeh-document-management": "../DocumentManagement",
+    "algaeh-front-desk": "../FrontDesk",
+    "algaeh-general": "../General",
+    "algaeh-hr-management": "../HrManagement",
+    "algaeh-insurance": "../Insurance",
+    "algaeh-inventory": "../Inventory",
+    "algaeh-mrd": "../MRD",
+    "algaeh-master-settings": "../MasterSettings",
+    "algaeh-procurement": "../Procurement",
+    "algaeh-sockets": "../Sockets",
+    "hims-core": "../Core"
+  }
+}

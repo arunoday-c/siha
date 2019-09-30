@@ -1,5 +1,7 @@
 
 # Created by https://www.gitignore.io/api/node,macos,linux,windows,visualstudiocode
+.vscode/
+build/
 dist
 client/build
 apiBuild/

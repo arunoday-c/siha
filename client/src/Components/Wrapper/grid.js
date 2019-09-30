@@ -106,7 +106,7 @@ class DataGrid extends Component {
     });
   }
   renderEditable = (templates, cellInfo) => {
-    debugger;
+     
     const editable = this.state.editableRows[cellInfo.index];
     const rowDetail =
       this.props.dataSource.data !== undefined
@@ -129,7 +129,7 @@ class DataGrid extends Component {
       _value = _value.toLowerCase();
       _calss = { className: "textCapitalize" };
     }
-    debugger;
+     
     if (editable === undefined || editable === false) {
       if (templates.displayTemp !== undefined) {
         if (_calss.className !== undefined) {
@@ -368,7 +368,7 @@ class DataGrid extends Component {
       ...inputProps,
       ..._pagaeInput
     };
-    debugger;
+     
     new Promise((resolve, reject) => {
       if ($this.props.dataSource.validateBeforeServiceCall !== undefined) {
         resolve($this.props.dataSource.validateBeforeServiceCall($this));
@@ -546,7 +546,7 @@ class DataGrid extends Component {
             });
           });
         } else {
-          debugger;
+           
           const _total = Math.ceil(
             this.props.dataSource.uri === undefined
               ? this.props.dataSource.data !== undefined
@@ -596,7 +596,7 @@ class DataGrid extends Component {
     else return false;
   }
   componentWillReceiveProps(props) {
-    debugger;
+     
     if (props.uiUpdate !== undefined) {
       this.setState({ uiUpdate: props.uiUpdate });
     }
@@ -907,7 +907,7 @@ class DataGrid extends Component {
   }
 
   render() {
-    debugger;
+     
     const _data =
       this.props.dataSource.data !== undefined
         ? this.state.data.length !== this.props.dataSource.data.length

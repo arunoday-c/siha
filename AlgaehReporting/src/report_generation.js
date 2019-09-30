@@ -6,13 +6,15 @@ import path from "path";
 import moment from "moment";
 import merge from "easy-pdf-merge";
 import hbs from "handlebars";
-import "babel-polyfill";
-import chrome from "algaeh-keys";
+// import "babel-polyfill";
+import "core-js/stable";
+import "regenerator-runtime/runtime";
+// import chrome from "algaeh-keys";
 
 import cheerio from "cheerio";
 import Excel from "exceljs/modern.browser";
-const chromePath =
-  chrome.default.chromePuppeteer != null ? chrome.default.chromePuppeteer : {};
+// const chromePath =
+  // chrome.default.chromePuppeteer != null ? chrome.default.chromePuppeteer : {};
 
 const XlsxTemplate = require("xlsx-template");
 
@@ -30,6 +32,7 @@ const compile = async function(templateName, data) {
       "algaeh_report_tool/templates",
       `${templateName}.hbs`
     );
+    console.log(filePath)
     const html = await fs.readFile(filePath, "utf-8");
     const comp = await hbs.compile(html)(data);
     //
@@ -265,7 +268,7 @@ const arrayFirstRowToObject = (data, index) => {
   }
 };
 
-module.exports = {
+export default {
   getReport: async (req, res) => {
     const input = req.query;
     const _mysql = new algaehMysql();
@@ -340,7 +343,7 @@ module.exports = {
                   const startGenerate = async () => {
                     const _outPath = _path + ".pdf";
                     _reportOutput.push(_outPath);
-                    const browser = await puppeteer.launch(chromePath);
+                    const browser = await puppeteer.launch({headless: true});
                     const page = await browser.newPage();
                     const _pdfTemplating = {};
                     if (
@@ -622,7 +625,7 @@ module.exports = {
                       const _outPath = _path + ".pdf";
                       subReportCollection.push(_outPath);
                       const startGenerate = async () => {
-                        const browser = await puppeteer.launch(chromePath);
+                        const browser = await puppeteer.launch({headless: true});
                         const page = await browser.newPage();
                         const _pdfTemplating = {};
                         if (

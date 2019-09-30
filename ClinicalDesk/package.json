@@ -11,7 +11,8 @@
     "api": "npm run clinical_desk_server",
     "lint": "eslint src && eslint test",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "cross-env PORT=3011 NODE_ENV=production pm2 start  -i 1 clinical_desk_server.js",
+    "run-prod": "cross-env PORT=3011 NODE_ENV=production pm2 start  -i 1 build/app.js",
+    "start": "run-s build run-prod",
     "run-dev": "cross-env PORT=3011 NODE_ENV=development nodemon ./build/app.js"
   },
   "eslintConfig": {

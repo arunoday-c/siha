@@ -169,10 +169,10 @@ process.on("warning", warning => {
   logger.log("warn", warning);
 });
 process.on("uncaughtException", error => {
-  logger.log("uncatched Exception", error);
+  logger.log("error", error);
 });
 process.on("unhandledRejection", (reason, promise) => {
-  logger.error("Unhandled rejection", { reason: reason, promise: promise });
+  logger.error("error", { reason: reason, promise: promise });
 });
 //Error Handling MiddleWare
 app.use((error, req, res, next) => {
@@ -236,4 +236,3 @@ app.server.listen(_port);
 console.log(`started on port ${_port}`);
 
 export default app;
-module.exports = app;
