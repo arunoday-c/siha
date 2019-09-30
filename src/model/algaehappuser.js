@@ -3,6 +3,8 @@ import extend from "extend";
 import httpStatus from "../utils/httpStatus";
 import { logger, debugFunction, debugLog } from "../utils/logging";
 import algaehMysql from "algaeh-mysql";
+import { resolve } from "dns";
+import { rejects } from "assert";
 const keyPath = require("algaeh-keys/keys");
 
 let selectAppUsers = (req, res, next) => {
@@ -388,7 +390,7 @@ let selectRoles = (req, res, next) => {
 };
 
 //created by irfan: to
-let createUserLogin = (req, res, next) => {
+let createUserLogin_OLD = (req, res, next) => {
   // const _mysql = new algaehMysql();
   try {
     // _mysql.executeQueryWithTransaction()
@@ -518,6 +520,235 @@ let createUserLogin = (req, res, next) => {
                                     req.records = user_employee_res;
                                     next();
                                   });
+                                }
+                              );
+                            } else {
+                              connection.rollback(() => {
+                                releaseDBConnection(db, connection);
+                                next(error);
+                              });
+                              req.records = {
+                                validUser: false,
+                                message: "Please Select a employee"
+                              };
+                              next();
+                            }
+                            //--------
+                          }
+                        );
+                      } else {
+                        connection.rollback(() => {
+                          releaseDBConnection(db, connection);
+                          next(error);
+                        });
+                        req.records = {
+                          validUser: false,
+                          message: "Please Select a Role"
+                        };
+                        next();
+                      }
+                    }
+                  );
+                } else {
+                  connection.rollback(() => {
+                    releaseDBConnection(db, connection);
+                    next(error);
+                  });
+                  req.records = {
+                    validUser: false,
+                    message: "Please enter valid password"
+                  };
+                  next();
+                }
+              }
+            );
+          });
+        } else {
+          req.records = {
+            validUser: false,
+            message: "You don't have Admin Privilege"
+          };
+          next();
+        }
+      }
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to
+let createUserLogin = (req, res, next) => {
+  // const _mysql = new algaehMysql();
+  try {
+    // _mysql.executeQueryWithTransaction()
+
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      if (req.userIdentity.user_type == "AD" && input.user_type == "AD") {
+        req.records = {
+          validUser: false,
+          message: "You don't have rights to add this user"
+        };
+        next();
+      } else {
+        if (req.userIdentity.role_type != "GN") {
+          connection.beginTransaction(error => {
+            if (error) {
+              connection.rollback(() => {
+                releaseDBConnection(db, connection);
+                next(error);
+              });
+            }
+            connection.query(
+              "INSERT INTO `algaeh_d_app_user` (username, user_display_name,employee_id, user_type, effective_start_date, created_date, created_by, updated_date, updated_by)\
+          VALUE(?,?,?,?,?,?,?,?,?)",
+              [
+                input.username,
+                input.user_display_name,
+                input.employee_id,
+                input.user_type,
+                new Date(),
+                new Date(),
+                input.created_by,
+                new Date(),
+                input.updated_by
+              ],
+              (error, result) => {
+                if (error) {
+                  connection.rollback(() => {
+                    releaseDBConnection(db, connection);
+                    next(error);
+                  });
+                }
+
+                if (result.insertId != null && result.insertId != undefined) {
+                  let new_password = "12345";
+                  if (process.env.NODE_ENV == "production") {
+                    new_password = generatePwd();
+                  }
+
+                  connection.query(
+                    "INSERT INTO `algaeh_d_app_password` ( userid,password,created_date, created_by, updated_date, updated_by)\
+                VALUE(?,md5(?),?,?,?,?)",
+                    [
+                      result.insertId,
+                      new_password,
+                      new Date(),
+                      input.created_by,
+                      new Date(),
+                      input.updated_by
+                    ],
+                    (error, pwdResult) => {
+                      if (error) {
+                        connection.rollback(() => {
+                          releaseDBConnection(db, connection);
+                          next(error);
+                        });
+                      }
+
+                      if (pwdResult.insertId > 0 && input.role_id > 0) {
+                        connection.query(
+                          "INSERT INTO `algaeh_m_role_user_mappings` ( user_id,  role_id,created_date, created_by, updated_date, updated_by)\
+                      VALUE(?,?,?,?,?,?)",
+                          [
+                            result.insertId,
+                            input.role_id,
+                            new Date(),
+                            input.created_by,
+                            new Date(),
+                            input.updated_by
+                          ],
+                          (error, finalResult) => {
+                            if (error) {
+                              connection.rollback(() => {
+                                releaseDBConnection(db, connection);
+                                next(error);
+                              });
+                            }
+
+                            //--------
+
+                            if (
+                              finalResult.insertId > 0 &&
+                              input.employee_id > 0
+                            ) {
+                              connection.query(
+                                "INSERT INTO `hims_m_user_employee` (user_id,hospital_id,created_by,created_date,updated_by,updated_date)\
+                                VALUE(?,?,?,?,?,?);\
+                                select trim(email)as email  from hims_d_employee where hims_d_employee_id=?;                                ",
+                                [
+                                  result.insertId,
+
+                                  input.hospital_id,
+                                  input.created_by,
+                                  new Date(),
+                                  input.updated_by,
+                                  new Date(),
+                                  input.employee_id
+                                ],
+                                (error, user_employee_res) => {
+                                  if (error) {
+                                    connection.rollback(() => {
+                                      releaseDBConnection(db, connection);
+                                      next(error);
+                                    });
+                                  }
+
+                                  // "production"
+                                  if (
+                                    user_employee_res[1][0]["email"] != null &&
+                                    process.env.NODE_ENV == "production"
+                                  ) {
+                                    sendMailFunction(
+                                      input.username,
+                                      new_password,
+                                      "",
+                                      user_employee_res[1][0]["email"]
+                                    )
+                                      .then(rs => {
+                                        console.log("resultemail:", rs);
+                                      })
+                                      .catch(e => {
+                                        console.log("resultemail:", e);
+                                      });
+
+                                    connection.commit(error => {
+                                      if (error) {
+                                        connection.rollback(() => {
+                                          releaseDBConnection(db, connection);
+                                          next(error);
+                                        });
+                                      }
+
+                                      releaseDBConnection(db, connection);
+                                      req.records = user_employee_res;
+                                      next();
+                                    });
+                                  } else {
+                                    console.log("new_password:", new_password);
+
+                                    connection.commit(error => {
+                                      if (error) {
+                                        connection.rollback(() => {
+                                          releaseDBConnection(db, connection);
+                                          next(error);
+                                        });
+                                      }
+                                      releaseDBConnection(db, connection);
+                                      req.records = user_employee_res;
+                                      next();
+                                    });
+                                  }
                                 }
                               );
                             } else {
@@ -720,4 +951,70 @@ function generatePwd() {
   return Math.random()
     .toString(36)
     .slice(-8);
+}
+
+function sendMailFunction(n_name, n_Password, n_from_mail, n_to_mail) {
+  return new Promise((resolve, reject) => {
+    const nodemailer = require("nodemailer");
+    const hbs = require("nodemailer-express-handlebars");
+    const mydata = {
+      name: n_name,
+      Password: n_Password
+    };
+    let transporter = nodemailer.createTransport({
+      service: "gmail",
+      host: "smtp.gmail.com",
+      secure: "false",
+      port: "465",
+      auth: {
+        user: "we@algaeh.com",
+        pass: "heagla100%"
+      }
+    });
+
+    transporter.use(
+      "compile",
+      hbs({
+        viewEngine: {
+          extName: ".handlebars",
+          partialsDir: "./src/model/views/",
+          layoutsDir: "./src/model/views/",
+          defaultLayout: "index.handlebars"
+        },
+        viewPath: "./src/model/views/"
+      })
+    );
+
+    let mailOptions = {
+      from: "we@algaeh.com",
+      // to: "irfan.algaeh@gmail.com",
+      to: n_to_mail,
+      subject: "HRMS Application Credentials",
+      template: "index",
+      context: {
+        name: mydata.name,
+        Password: mydata.Password
+      }
+    };
+
+    transporter.sendMail(mailOptions, function(e, r) {
+      transporter.close();
+      if (e) {
+        console.log(e);
+        const data = {
+          error: true,
+          message: e
+        };
+        reject(data);
+      } else {
+        //console.log(r);
+        const data = {
+          error: false,
+          message: "Password is sent to your email"
+        };
+
+        resolve(data);
+      }
+    });
+  });
 }
