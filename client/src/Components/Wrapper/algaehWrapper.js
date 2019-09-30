@@ -7,7 +7,7 @@ import DataGrid from "./grid";
 import AlgaehSearch from "./globalSearch";
 import AlgaehModalPopUp from "./modulePopUp";
 import algaehErrorBoundary from "./algaehErrorBoundary";
-import "hijri-date";
+// import "hijri-date";
 
 const AlgaehLabel = Label;
 const AlagehFormGroup = FormGroup;
