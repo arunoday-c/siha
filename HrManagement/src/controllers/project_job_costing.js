@@ -1,6 +1,8 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import {
+import project_job_costing from "../models/project_job_costing";
+
+const {
   getDivisionProject,
   addDivisionProject,
   deleteDivisionProject,
@@ -15,7 +17,7 @@ import {
   getSubActivity,
   updateActivity,
   updateSubActivity
-} from "../models/project_job_costing";
+} = project_job_costing;
 
 export default () => {
   const api = Router();

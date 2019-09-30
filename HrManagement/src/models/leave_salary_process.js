@@ -3,10 +3,13 @@ import _ from "lodash";
 import algaehUtilities from "algaeh-utilities/utilities";
 import moment from "moment";
 // import mysql from "mysql";
-import { processAttendance } from "./attendance";
-import { newProcessSalary } from "./salary";
+import attendance from "./attendance";
+import salary from "./salary";
 
-module.exports = {
+const { newProcessSalary } = salary;
+const { processAttendance } = attendance;
+
+export default {
   getLeaveSalaryProcess: (req, res, next) => {
     try {
       const _mysql = new algaehMysql();

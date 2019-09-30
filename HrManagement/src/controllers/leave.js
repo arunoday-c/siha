@@ -1,6 +1,8 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import {
+import leave from "../models/leave";
+
+const {
   authorizeLeave,
   calculateLeaveDays,
   applyEmployeeLeave,
@@ -27,7 +29,8 @@ import {
   deleteLeaveApplication,
   cancelLeave,
   getLeaveBalances
-} from "../models/leave";
+} = leave;
+
 export default () => {
   const api = Router();
   api.put("/authorizeLeave", authorizeLeave, (req, res, next) => {

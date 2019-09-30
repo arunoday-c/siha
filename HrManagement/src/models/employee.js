@@ -5,7 +5,7 @@ import moment from "moment";
 import extend from "extend";
 import mysql from "mysql";
 
-module.exports = {
+export default {
   addMisEarnDedcToEmployee: (req, res, next) => {
     const _mysql = new algaehMysql();
     return new Promise((resolve, reject) => {

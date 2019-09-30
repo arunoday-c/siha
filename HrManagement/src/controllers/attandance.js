@@ -1,6 +1,10 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import {
+import attendence from "../models/attendance";
+import bulkModels from "../models/bulkmaunaltimesheet";
+
+const { excelManualTimeSheet, excelManualTimeSheetRead } = bulkModels;
+const {
   markAbsent,
   cancelAbsent,
   getAllAbsentEmployee,
@@ -29,11 +33,8 @@ import {
   uploadBulkManualTimeSheet,
   previewBulkTimeSheet,
   postBulkTimeSheetMonthWise
-} from "../models/attendance";
-import {
-  excelManualTimeSheet,
-  excelManualTimeSheetRead
-} from "../models/bulkmaunaltimesheet";
+} = attendence;
+
 export default () => {
   const api = Router();
 

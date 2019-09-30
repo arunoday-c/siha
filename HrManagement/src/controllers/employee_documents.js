@@ -1,12 +1,14 @@
 import { Router } from "express";
 import algaehUtilities from "algaeh-utilities/utilities";
-import {
+import empDocModels from "../models/employee_documents";
+
+const {
   getEmployeeDepenedents,
   getCompanyDependents,
   getDocumentTypes,
   saveDocument,
   getDocumentsDetails
-} from "../models/employee_documents";
+} = empDocModels;
 
 export default () => {
   const api = Router();

@@ -1,5 +1,8 @@
 import { Router } from "express";
-import { generateExcel } from "../models/excel_file";
+import excel_file from "../models/excel_file";
+
+const { generateExcel } = excel_file;
+
 export default () => {
   const api = Router();
   api.post("/create", generateExcel);

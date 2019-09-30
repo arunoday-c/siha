@@ -146,7 +146,7 @@ function getDays(start, end) {
     // utilities.logger().log("error rr: ", e);
   }
 }
-module.exports = {
+export default {
   //created by irfan: to
   getEmployeesForShiftRosterbackup18_feb: (req, res, next) => {
     const utilities = new algaehUtilities();

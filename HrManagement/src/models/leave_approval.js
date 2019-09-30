@@ -1,7 +1,7 @@
 import algaehMysql from "algaeh-mysql";
 import utiliites from "algaeh-utilities";
 import moment from "moment";
-module.exports = {
+export default {
   getAppliedLeaveDays: (req, res, next) => {
     const _mysql = new algaehMysql();
     const _leaveDetails = req.query;

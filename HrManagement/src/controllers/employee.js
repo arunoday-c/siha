@@ -1,6 +1,8 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import {
+import empModels from "../models/employee";
+
+const {
   addMisEarnDedcToEmployee,
   getEmployee,
   addEmployeeMaster,
@@ -25,7 +27,8 @@ import {
   getEmployeeDepartmentsWise,
   getEmployeeDesignationWise,
   UpdateEmployeeRejoined
-} from "../models/employee";
+} = empModels;
+
 export default () => {
   const api = Router();
   api.post(

@@ -1,11 +1,14 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import {
+import leave_salary_process from "../models/leave_salary_process";
+
+const {
   getLeaveSalaryProcess,
   processLeaveSalary,
   InsertLeaveSalary,
   getLeaveSalary
-} from "../models/leave_salary_process";
+} = leave_salary_process;
+
 export default () => {
   const api = Router();
   api.get("/getLeaveSalaryProcess", getLeaveSalaryProcess, (req, res, next) => {

@@ -1,6 +1,8 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import {
+import payrollsettings from "../models/payrollsettings";
+
+const {
   getMiscEarningDeductions,
   getLoanMaster,
   addLoanMaster,
@@ -12,7 +14,8 @@ import {
   getEarningDeduction,
   addEarningDeduction,
   updateEarningDeduction
-} from "../models/payrollsettings";
+} = payrollsettings;
+
 export default () => {
   const api = Router();
   api.get(

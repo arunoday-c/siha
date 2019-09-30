@@ -1,6 +1,8 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import {
+import hrsettings from "../models/hrsettings";
+
+const {
   getEmployeeGroups,
   addEmployeeGroups,
   updateEmployeeGroup,
@@ -18,7 +20,8 @@ import {
   updateProjects,
   getEmployeeAuthorizationSetup,
   addEmployeeAuthorizationSetup
-} from "../models/hrsettings";
+} = hrsettings;
+
 export default () => {
   const api = Router();
   api.get("/getEmployeeGroups", getEmployeeGroups, (req, res, next) => {

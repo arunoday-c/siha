@@ -1,6 +1,9 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import { getLeaveSalaryAccural } from "../models/leave_salary_accural";
+import leave_salary_accural from "../models/leave_salary_accural";
+
+const { getLeaveSalaryAccural } = leave_salary_accural;
+
 export default () => {
   const api = Router();
 
