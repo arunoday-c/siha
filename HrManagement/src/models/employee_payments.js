@@ -3,7 +3,7 @@ import _ from "lodash";
 import algaehUtilities from "algaeh-utilities/utilities";
 import moment from "moment";
 
-module.exports = {
+export default {
   getLoanTopayment: (req, res, next) => {
     try {
       const _mysql = new algaehMysql();
@@ -1166,6 +1166,95 @@ module.exports = {
         hims_f_employee_payments.employee_id = emp.hims_d_employee_id " +
             _stringData,
           values: inputValues,
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(e => {
+          next(e);
+        });
+    } catch (e) {
+      next(e);
+    }
+  },
+
+  getEmployeeLeaveSalary: (req, res, next) => {
+    try {
+      const _mysql = new algaehMysql();
+      const input = req.query;
+
+      let inputValues = [];
+
+      let strQry = "";
+      if (input.employee_group_id > 0) {
+        strQry += " and E.employee_group_id=" + input.employee_group_id;
+      }
+      if (input.hims_d_employee_id > 0) {
+        strQry += " and E.hims_d_employee_id=" + input.hims_d_employee_id;
+      }
+
+      _mysql
+        .executeQuery({
+          query:
+            "select E.employee_code, E.full_name, LS.hims_f_employee_leave_salary_header_id, LS.leave_days, \
+            LS.leave_salary_amount, LS.airticket_amount, LS.balance_leave_days, LS.balance_leave_salary_amount, \
+            LS.balance_airticket_amount, LS.airfare_months, LS.utilized_leave_days, LS.utilized_leave_salary_amount, \
+            LS.utilized_airticket_amount from hims_d_employee E left join hims_f_employee_leave_salary_header LS \
+            on E.hims_d_employee_id=LS.employee_id where E.leave_salary_process = 'Y' and E.hospital_id=? " +
+            strQry,
+          values: [input.hospital_id],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(e => {
+          next(e);
+        });
+    } catch (e) {
+      next(e);
+    }
+  },
+  updateEmployeeLeaveSalary: (req, res, next) => {
+    try {
+      const _mysql = new algaehMysql();
+      const input = req.body;
+
+      const utilized_leave_days =
+        parseFloat(input.leave_days) - parseFloat(input.balance_leave_days);
+      const utilized_leave_salary_amount =
+        parseFloat(input.leave_salary_amount) -
+        parseFloat(input.balance_leave_salary_amount);
+      const utilized_airticket_amount =
+        parseFloat(input.airticket_amount) -
+        parseFloat(input.balance_airticket_amount);
+
+      _mysql
+        .executeQuery({
+          query:
+            "UPDATE hims_f_employee_leave_salary_header set leave_days=?, leave_salary_amount=?, airticket_amount=?, \
+            balance_leave_days=?, balance_leave_salary_amount=?, balance_airticket_amount=?, airfare_months=?, \
+            utilized_leave_days = ?, utilized_leave_salary_amount=?, utilized_airticket_amount=? \
+            where  hims_f_employee_leave_salary_header_id=?",
+
+          values: [
+            input.leave_days,
+            input.leave_salary_amount,
+            input.airticket_amount,
+            input.balance_leave_days,
+            input.balance_leave_salary_amount,
+            input.balance_airticket_amount,
+            input.airfare_months,
+            utilized_leave_days,
+            utilized_leave_salary_amount,
+            utilized_airticket_amount,
+            input.hims_f_employee_leave_salary_header_id
+          ],
           printQuery: true
         })
         .then(result => {

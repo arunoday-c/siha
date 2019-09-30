@@ -1,7 +1,7 @@
 import algaehExcel from "algaeh-utilities/excel-generation";
 import algaehMysql from "algaeh-mysql";
 
-module.exports = {
+export default {
   generateExcel: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {

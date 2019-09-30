@@ -1,12 +1,15 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import {
+import encashment_process from "../models/encashment_process";
+
+const {
   getEncashmentToProcess,
   getLeaveEncashLevels,
   InsertLeaveEncashment,
   getLeaveEncash,
   UpdateLeaveEncash
-} from "../models/encashment_process";
+} = encashment_process;
+
 export default () => {
   const api = Router();
   api.get(

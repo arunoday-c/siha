@@ -32,7 +32,7 @@ async function generateDates(fromdate, todate, format) {
   return await columns;
 }
 
-export function excelManualTimeSheet(req, res, next) {
+function excelManualTimeSheet(req, res, next) {
   //return excelManualTimeSheetRead(req, res, next);
   new Promise((resolve, reject) => {
     const query = req.query;
@@ -375,7 +375,7 @@ export function excelManualTimeSheet(req, res, next) {
   });
 }
 
-export function excelManualTimeSheetRead(req, res, next) {
+function excelManualTimeSheetRead(req, res, next) {
   let buffer = "";
   const isValidDate = d => {
     return d instanceof Date && !isNaN(d);
@@ -460,3 +460,8 @@ export function excelManualTimeSheetRead(req, res, next) {
       });
   });
 }
+
+export default {
+  excelManualTimeSheet,
+  excelManualTimeSheetRead
+};

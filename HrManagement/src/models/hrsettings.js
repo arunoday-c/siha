@@ -2,7 +2,7 @@ import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
 import algaehUtilities from "algaeh-utilities/utilities";
 
-module.exports = {
+export default {
   getEmployeeGroups: (req, res, next) => {
     try {
       const _mysql = new algaehMysql();

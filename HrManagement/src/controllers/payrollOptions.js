@@ -1,6 +1,8 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import {
+import payrollOptions from "../models/payrollOptions";
+
+const {
   getHrmsOptions,
   updateHrmsOptions,
   getEosOptions,
@@ -8,7 +10,8 @@ import {
   getSalarySetUp,
   getLeaveSalaryOptions,
   updateLeaveSalaryOptions
-} from "../models/payrollOptions";
+} = payrollOptions;
+
 export default () => {
   const api = Router();
   api.get("/getHrmsOptions", getHrmsOptions, (req, res, next) => {

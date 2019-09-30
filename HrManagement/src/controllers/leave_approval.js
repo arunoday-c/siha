@@ -1,6 +1,9 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import { getAppliedLeaveDays } from "../models/leave_approval";
+import leave_approval from "../models/leave_approval";
+
+const { getAppliedLeaveDays } = leave_approval;
+
 export default () => {
   const api = Router();
   api.get("/getAppliedLeaveDays", getAppliedLeaveDays, (req, res, next) => {

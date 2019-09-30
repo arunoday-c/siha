@@ -1,7 +1,7 @@
 import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
 
-module.exports = {
+export default {
   getEncashmentToProcess: (req, res, next) => {
     const _mysql = new algaehMysql();
     const _EncashDetails = req.query;

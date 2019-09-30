@@ -1,6 +1,8 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import {
+import empPaymentModels from "../models/employee_payments";
+
+const {
   getLoanTopayment,
   getAdvanceTopayment,
   InsertEmployeePayment,
@@ -9,10 +11,14 @@ import {
   CancelEmployeePayment,
   getGratuityTopayment,
   getFinalSettleTopayment,
-  getLeaveSettleTopayment
-} from "../models/employee_payments";
+  getLeaveSettleTopayment,
+  getEmployeeLeaveSalary,
+  updateEmployeeLeaveSalary
+} = empPaymentModels;
+
 export default () => {
   const api = Router();
+
   api.get("/getLoanTopayment", getLoanTopayment, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
@@ -91,6 +97,28 @@ export default () => {
       result: req.records
     });
   });
+
+  api.get(
+    "/getEmployeeLeaveSalary",
+    getEmployeeLeaveSalary,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+
+  api.put(
+    "/updateEmployeeLeaveSalary",
+    updateEmployeeLeaveSalary,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        result: req.records
+      });
+    }
+  );
 
   return api;
 };
