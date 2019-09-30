@@ -9,6 +9,7 @@
     "algaeh-clinicaldesk": "../ClinicalDesk",
     "algaeh-document-management": "../DocumentManagement",
     "algaeh-front-desk": "../FrontDesk",
+    "algaeh-finance": "../algaeh-finance",
     "algaeh-general": "../General",
     "algaeh-hr-management": "../HrManagement",
     "algaeh-insurance": "../Insurance",

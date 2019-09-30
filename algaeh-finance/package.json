@@ -1,20 +1,23 @@
 {
-  "name": "algaeh-billing",
+  "name": "algaeh-finance",
   "version": "2.0.0",
-  "description": "Algaeh Billing Module",
-  "main": "dist",
+  "description": "Algaeh Finance Microservice with frontend",
+  "main": "index.js",
   "scripts": {
-    "billing_server": "npm-run-all -p run-webpack run-dev",
-    "build": "webpack --config webpack.prod.js",
+    "finance_server": "run-p run-webpack run-dev",
+    "dev:client": "npm start --prefix client",
+    "dev:server": "npm run finance_server",
+    "dev": "run-p dev:*",
+    "build": "run-p build:*",
+    "build:client": "npm run build --prefix client",
+    "build:server": "webpack --config webpack.prod.js",
+    "prod:server": "cross-env NODE_ENV=production PORT=3007 node build/finance_server.js",
     "run-webpack": "webpack --watch --config webpack.dev.js",
-    "dev": "npm run billing_server",
-    "api": "npm run billing_server",
-    "lint": "eslint src && eslint test",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "run-prod": "cross-env PORT=3014 NODE_ENV=production pm2 start -i 2 build/app.js",
-    "start": "run-s build run-prod",
-    "run-dev": "cross-env PORT=3014 NODE_ENV=development nodemon --exec 'node build/app.js'"
+    "run-dev": "cross-env PORT=3007 NODE_ENV=development nodemon --exec 'node build/app.js'"
   },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "dependencies": {
     "algaeh-mysql": "^1.2.11",
     "body-parser": "^1.18.2",
@@ -43,8 +46,5 @@
     "webpack-cli": "^3.3.9",
     "webpack-merge": "^4.2.2",
     "webpack-node-externals": "^1.7.2"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  }
 }

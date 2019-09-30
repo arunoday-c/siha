@@ -108,6 +108,10 @@ class OpeningBalance extends Component {
     all_functions.changeChecks(this, e);
   }
 
+  updateEmployeeOpeningBalance(row) {
+    debugger;
+    all_functions.updateEmployeeOpeningBalance(this, row);
+  }
   render() {
     let allYears = getYears();
 
@@ -309,9 +313,18 @@ class OpeningBalance extends Component {
                           dataSource={{
                             data: this.state.leave_balance
                           }}
+                          isEditable={true}
                           filter={true}
                           paging={{ page: 0, rowsPerPage: 20 }}
                           forceRender={true}
+                          events={{
+                            onEdit: () => {},
+                            onDelete: () => {},
+                            onDone: () => {}
+                          }}
+                          actions={{
+                            allowDelete: false
+                          }}
                         />
                       </div>
                     ) : this.state.selected_type === "LO" ? (
@@ -349,11 +362,18 @@ class OpeningBalance extends Component {
                           columns={this.state.leave_dynamic_date}
                           keyId="leave_salary_opening"
                           dataSource={{
-                            data: []
+                            data: this.state.leave_balance
                           }}
-                          filter={true}
+                          isEditable={true}
                           paging={{ page: 0, rowsPerPage: 20 }}
                           forceRender={true}
+                          events={{
+                            onEdit: () => {},
+                            onDone: this.updateEmployeeOpeningBalance.bind(this)
+                          }}
+                          actions={{
+                            allowDelete: false
+                          }}
                         />
                       </div>
                     ) : null}

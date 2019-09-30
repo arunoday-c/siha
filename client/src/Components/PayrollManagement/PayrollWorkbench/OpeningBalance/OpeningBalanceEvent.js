@@ -59,9 +59,15 @@ export default function ManualAttendanceEvents() {
       }
 
       debugger;
+      let selected_uri = "";
+      if ($this.state.selected_type === "LE") {
+        selected_uri = "/leave/getLeaveBalances";
+      } else if ($this.state.selected_type === "LS") {
+        selected_uri = "/employeepayments/getEmployeeLeaveSalary";
+      }
 
       algaehApiCall({
-        uri: "/leave/getLeaveBalances",
+        uri: selected_uri,
         module: "hrManagement",
         data: inputObj,
         method: "GET",
@@ -114,13 +120,15 @@ export default function ManualAttendanceEvents() {
         case "LE":
           getLeaveMasterData($this);
           $this.setState({
-            selected_type: "LE"
+            selected_type: "LE",
+            leave_balance: []
           });
           break;
         case "LO":
           getLoanMasterData($this);
           $this.setState({
-            selected_type: "LO"
+            selected_type: "LO",
+            leave_balance: []
           });
           break;
         case "GR":
@@ -167,7 +175,8 @@ export default function ManualAttendanceEvents() {
 
           $this.setState({
             selected_type: "GR",
-            leave_dynamic_date: leave_dynamic_date
+            leave_dynamic_date: leave_dynamic_date,
+            leave_balance: []
           });
           break;
         case "LS":
@@ -175,6 +184,10 @@ export default function ManualAttendanceEvents() {
             {
               fieldName: "employee_code",
               label: <AlgaehLabel label={{ forceLabel: "Emp. Code" }} />,
+              disabled: true,
+              editorTemplate: row => {
+                return row.employee_code;
+              },
               others: {
                 maxWidth: 105,
                 fixed: "left"
@@ -183,21 +196,38 @@ export default function ManualAttendanceEvents() {
             {
               fieldName: "full_name",
               label: <AlgaehLabel label={{ forceLabel: "Employee Name" }} />,
+              editorTemplate: row => {
+                return row.full_name;
+              },
+              disabled: true,
               others: {
                 minWidth: 200,
                 fixed: "left"
               }
             },
             {
-              fieldName: "year",
-              label: <AlgaehLabel label={{ forceLabel: "Year" }} />,
-              others: {
-                filterable: false
-              }
-            },
-            {
               fieldName: "leave_days",
               label: <AlgaehLabel label={{ forceLabel: "Leave Days" }} />,
+              editorTemplate: row => {
+                return (
+                  <AlagehFormGroup
+                    div={{ className: "col" }}
+                    textBox={{
+                      number: {
+                        allowNegative: false,
+                        thousandSeparator: ","
+                      },
+                      dontAllowKeys: ["-", "e", "."],
+                      className: "txt-fld",
+                      name: "leave_days",
+                      value: row.leave_days,
+                      events: {
+                        onChange: changeGridEditors.bind($this, $this, row)
+                      }
+                    }}
+                  />
+                );
+              },
               others: {
                 minWidth: 200,
                 fixed: "center"
@@ -210,12 +240,52 @@ export default function ManualAttendanceEvents() {
               ),
               others: {
                 filterable: false
+              },
+              editorTemplate: row => {
+                return (
+                  <AlagehFormGroup
+                    div={{ className: "col" }}
+                    textBox={{
+                      number: {
+                        allowNegative: false,
+                        thousandSeparator: ","
+                      },
+                      dontAllowKeys: ["-", "e", "."],
+                      className: "txt-fld",
+                      name: "leave_salary_amount",
+                      value: row.leave_salary_amount,
+                      events: {
+                        onChange: changeGridEditors.bind($this, $this, row)
+                      }
+                    }}
+                  />
+                );
               }
             },
 
             {
               fieldName: "airticket_amount",
               label: <AlgaehLabel label={{ forceLabel: "Airticket Amount" }} />,
+              editorTemplate: row => {
+                return (
+                  <AlagehFormGroup
+                    div={{ className: "col" }}
+                    textBox={{
+                      number: {
+                        allowNegative: false,
+                        thousandSeparator: ","
+                      },
+                      dontAllowKeys: ["-", "e", "."],
+                      className: "txt-fld",
+                      name: "airticket_amount",
+                      value: row.airticket_amount,
+                      events: {
+                        onChange: changeGridEditors.bind($this, $this, row)
+                      }
+                    }}
+                  />
+                );
+              },
               others: {
                 filterable: false
               }
@@ -225,6 +295,26 @@ export default function ManualAttendanceEvents() {
               label: (
                 <AlgaehLabel label={{ forceLabel: "Balance Leave Days" }} />
               ),
+              editorTemplate: row => {
+                return (
+                  <AlagehFormGroup
+                    div={{ className: "col" }}
+                    textBox={{
+                      number: {
+                        allowNegative: false,
+                        thousandSeparator: ","
+                      },
+                      dontAllowKeys: ["-", "e", "."],
+                      className: "txt-fld",
+                      name: "balance_leave_days",
+                      value: row.balance_leave_days,
+                      events: {
+                        onChange: changeGridEditors.bind($this, $this, row)
+                      }
+                    }}
+                  />
+                );
+              },
               others: {
                 minWidth: 200,
                 fixed: "center"
@@ -237,6 +327,26 @@ export default function ManualAttendanceEvents() {
                   label={{ forceLabel: "Balance Leave Salary Amount" }}
                 />
               ),
+              editorTemplate: row => {
+                return (
+                  <AlagehFormGroup
+                    div={{ className: "col" }}
+                    textBox={{
+                      number: {
+                        allowNegative: false,
+                        thousandSeparator: ","
+                      },
+                      dontAllowKeys: ["-", "e", "."],
+                      className: "txt-fld",
+                      name: "balance_leave_salary_amount",
+                      value: row.balance_leave_salary_amount,
+                      events: {
+                        onChange: changeGridEditors.bind($this, $this, row)
+                      }
+                    }}
+                  />
+                );
+              },
               others: {
                 filterable: false
               }
@@ -248,6 +358,26 @@ export default function ManualAttendanceEvents() {
                   label={{ forceLabel: "Balance Airticket Amount" }}
                 />
               ),
+              editorTemplate: row => {
+                return (
+                  <AlagehFormGroup
+                    div={{ className: "col" }}
+                    textBox={{
+                      number: {
+                        allowNegative: false,
+                        thousandSeparator: ","
+                      },
+                      dontAllowKeys: ["-", "e", "."],
+                      className: "txt-fld",
+                      name: "balance_airticket_amount",
+                      value: row.balance_airticket_amount,
+                      events: {
+                        onChange: changeGridEditors.bind($this, $this, row)
+                      }
+                    }}
+                  />
+                );
+              },
               others: {
                 filterable: false
               }
@@ -255,6 +385,26 @@ export default function ManualAttendanceEvents() {
             {
               fieldName: "airfare_months",
               label: <AlgaehLabel label={{ forceLabel: "Airfare Months" }} />,
+              editorTemplate: row => {
+                return (
+                  <AlagehFormGroup
+                    div={{ className: "col" }}
+                    textBox={{
+                      number: {
+                        allowNegative: false,
+                        thousandSeparator: ","
+                      },
+                      dontAllowKeys: ["-", "e", "."],
+                      className: "txt-fld",
+                      name: "airfare_months",
+                      value: row.airfare_months,
+                      events: {
+                        onChange: changeGridEditors.bind($this, $this, row)
+                      }
+                    }}
+                  />
+                );
+              },
               others: {
                 filterable: false
               }
@@ -262,14 +412,62 @@ export default function ManualAttendanceEvents() {
           ];
           $this.setState({
             selected_type: "LS",
-            leave_dynamic_date: leave_dynamic_date
+            leave_dynamic_date: leave_dynamic_date,
+            leave_balance: []
           });
           break;
         default:
           break;
       }
+    },
+    updateEmployeeOpeningBalance: ($this, row) => {
+      debugger;
+      if (
+        row.hims_f_employee_leave_salary_header_id === undefined ||
+        row.hims_f_employee_leave_salary_header_id === null
+      ) {
+        return;
+      }
+      let selected_uri = "";
+      if ($this.state.selected_type === "LE") {
+        selected_uri = "/leave/getLeaveBalances";
+      } else if ($this.state.selected_type === "LS") {
+        selected_uri = "/employeepayments/updateEmployeeLeaveSalary";
+      }
+
+      algaehApiCall({
+        uri: selected_uri,
+        module: "hrManagement",
+        data: row,
+        method: "PUT",
+        onSuccess: response => {
+          swalMessage({
+            title: "Updated Succesfully..",
+            type: "success"
+          });
+        },
+        onFailure: error => {
+          swalMessage({
+            title: error.message || error.response.data.message,
+            type: "error"
+          });
+        }
+      });
     }
   };
+}
+
+function changeGridEditors($this, row, e) {
+  let leave_balance = $this.state.leave_balance;
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+  let _index = leave_balance.indexOf(row);
+  row[name] = value;
+  leave_balance[_index] = row;
+  $this.setState({
+    leave_balance: leave_balance
+  });
 }
 
 function getLeaveMasterData($this) {
@@ -285,6 +483,10 @@ function getLeaveMasterData($this) {
             {
               fieldName: "employee_code",
               label: <AlgaehLabel label={{ forceLabel: "Emp. Code" }} />,
+              disabled: true,
+              editorTemplate: row => {
+                return row.employee_code;
+              },
               others: {
                 maxWidth: 105,
                 fixed: "left"
@@ -293,6 +495,10 @@ function getLeaveMasterData($this) {
             {
               fieldName: "full_name",
               label: <AlgaehLabel label={{ forceLabel: "Employee Name" }} />,
+              editorTemplate: row => {
+                return row.full_name;
+              },
+              disabled: true,
               others: {
                 minWidth: 200,
                 fixed: "left"
@@ -305,6 +511,33 @@ function getLeaveMasterData($this) {
               label: (
                 <AlgaehLabel label={{ forceLabel: item.leave_description }} />
               ),
+              displayTemplate: row => {
+                return row[item.hims_d_leave_id] === "N"
+                  ? "Not Applicable"
+                  : row[item.hims_d_leave_id];
+              },
+              editorTemplate: row => {
+                return row[item.hims_d_leave_id] === "N" ? (
+                  "Not Applicable"
+                ) : (
+                  <AlagehFormGroup
+                    div={{ className: "col" }}
+                    textBox={{
+                      number: {
+                        allowNegative: false,
+                        thousandSeparator: ","
+                      },
+                      dontAllowKeys: ["-", "e", "."],
+                      className: "txt-fld",
+                      name: "close_balance",
+                      value: row[item.hims_d_leave_id],
+                      events: {
+                        onChange: changeGridEditors.bind($this, $this, row)
+                      }
+                    }}
+                  />
+                );
+              },
               others: {
                 filterable: false
               }
