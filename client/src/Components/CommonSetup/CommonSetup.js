@@ -59,10 +59,24 @@ class CommonSetup extends Component {
         <div className="row">
           <div className="tabMaster toggle-section">
             <ul className="nav">
+              {" "}
+              <li
+                algaehtabs={"VisaType"}
+                className={"nav-item tab-button active"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "visa_type"
+                    }}
+                  />
+                }
+              </li>
               {this.state.HIMS_Active === true ? (
                 <li
                   algaehtabs={"VisitType"}
-                  className={"nav-item tab-button active"}
+                  className={"nav-item tab-button "}
                   onClick={this.openTab.bind(this)}
                 >
                   {
@@ -74,19 +88,6 @@ class CommonSetup extends Component {
                   }
                 </li>
               ) : null}
-              <li
-                algaehtabs={"VisaType"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "visa_type"
-                    }}
-                  />
-                }
-              </li>
               <li
                 algaehtabs={"IDType"}
                 className={"nav-item tab-button"}
