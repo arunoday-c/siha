@@ -222,6 +222,7 @@ class BasicSubjective extends Component {
     });
   }
   componentWillUnmount() {
+    debugger;
     const err = Validations(this);
     if (!err) {
       if (this.state.hims_f_episode_chief_complaint_id === null) {
@@ -976,6 +977,18 @@ class BasicSubjective extends Component {
                     <OrderedList
                       vat_applicable={this.props.vat_applicable}
                       openData="Investigation"
+                      chief_complaint={
+                        this.state.chief_complaint === null ||
+                        this.state.chief_complaint.length < 4
+                          ? true
+                          : false
+                      }
+                      significant_signs={
+                        this.state.significant_signs === null ||
+                        this.state.significant_signs.length < 4
+                          ? true
+                          : false
+                      }
                     />
                   ) : this.state.pageDisplay === "OrderConsumable" ? (
                     <OrderedList

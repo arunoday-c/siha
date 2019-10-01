@@ -38,6 +38,21 @@ class OrderedList extends PureComponent {
   }
 
   ShowModel(e) {
+    if (this.props.chief_complaint === true) {
+      swalMessage({
+        type: "warning",
+        title: "Enter Chief Complaint. Atlest 4 letter"
+      });
+      return;
+    }
+    if (this.props.significant_signs === true) {
+      swalMessage({
+        type: "warning",
+        title: "Enter Significant Signs. Atlest 4 letter"
+      });
+      return;
+    }
+
     this.setState({
       ...this.state,
       isOpen: !this.state.isOpen
