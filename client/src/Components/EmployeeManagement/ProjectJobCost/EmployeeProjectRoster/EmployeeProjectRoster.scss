@@ -220,13 +220,14 @@
           td {
             padding: 3px;
             text-align: center;
-            border-right: 1px solid #ececec;
-            border-top: 1px solid #ececec;
+            border-right: 1px solid #fff;
+            border-top: 1px solid #fff;
             width: 45px;
             font-size: 0.8em;
             &:nth-child(1) {
               text-align: left;
               width: 200px;
+              border-right: 1px dashed #868686;
             }
             &:last-child,
             &:nth-last-child(2) {
