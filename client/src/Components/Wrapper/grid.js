@@ -106,7 +106,6 @@ class DataGrid extends Component {
     });
   }
   renderEditable = (templates, cellInfo) => {
-     
     const editable = this.state.editableRows[cellInfo.index];
     const rowDetail =
       this.props.dataSource.data !== undefined
@@ -129,7 +128,7 @@ class DataGrid extends Component {
       _value = _value.toLowerCase();
       _calss = { className: "textCapitalize" };
     }
-     
+
     if (editable === undefined || editable === false) {
       if (templates.displayTemp !== undefined) {
         if (_calss.className !== undefined) {
@@ -213,7 +212,10 @@ class DataGrid extends Component {
   toggleRowEditable = index => {
     let existsing = sessionStorage.getItem(this.props.id);
     existsing = existsing !== null ? JSON.parse(existsing)["collection"] : [];
-    const prevStateIndexData = this.state.data[index];
+    const prevStateIndexData =
+      this.props.forceRender === true
+        ? this.props.dataSource.data[index]
+        : this.state.data[index];
     let row = Enumerable.from(existsing)
       .where(w => w.rowIdx === index)
       .firstOrDefault();
@@ -223,6 +225,7 @@ class DataGrid extends Component {
     } else {
       row = {};
     }
+
     row = prevStateIndexData;
     row["rowIdx"] = index;
     existsing.push(row);
@@ -294,13 +297,17 @@ class DataGrid extends Component {
     }
   };
   toggleRowSave = index => {
+    debugger;
     const existsing = Enumerable.from(
       JSON.parse(sessionStorage.getItem(this.props.id))["collection"]
     )
       .where(w => w.rowIdx === index)
       .firstOrDefault();
 
-    const row = this.state.data[index];
+    const row =
+      this.props.forceRender === true
+        ? this.props.dataSource.data[index]
+        : this.state.data[index];
     if (this.props.byForceEvents === undefined) {
       if (JSON.stringify(existsing) === JSON.stringify(row)) {
         this.setState({
@@ -368,7 +375,7 @@ class DataGrid extends Component {
       ...inputProps,
       ..._pagaeInput
     };
-     
+    debugger;
     new Promise((resolve, reject) => {
       if ($this.props.dataSource.validateBeforeServiceCall !== undefined) {
         resolve($this.props.dataSource.validateBeforeServiceCall($this));
@@ -546,7 +553,7 @@ class DataGrid extends Component {
             });
           });
         } else {
-           
+          debugger;
           const _total = Math.ceil(
             this.props.dataSource.uri === undefined
               ? this.props.dataSource.data !== undefined
@@ -596,7 +603,7 @@ class DataGrid extends Component {
     else return false;
   }
   componentWillReceiveProps(props) {
-     
+    debugger;
     if (props.uiUpdate !== undefined) {
       this.setState({ uiUpdate: props.uiUpdate });
     }
@@ -907,7 +914,7 @@ class DataGrid extends Component {
   }
 
   render() {
-     
+    debugger;
     const _data =
       this.props.dataSource.data !== undefined
         ? this.state.data.length !== this.props.dataSource.data.length
