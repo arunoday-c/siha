@@ -2,7 +2,7 @@ import algaehMysql from "algaeh-mysql";
 import algaehUtilities from "algaeh-utilities/utilities";
 import { LINQ } from "node-linq";
 import _ from "lodash";
-module.exports = {
+export default {
   //created by irfan: to
   getHrmsOptions: (req, res, next) => {
     const _mysql = new algaehMysql();

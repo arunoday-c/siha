@@ -1,6 +1,6 @@
 import algaehMysql from "algaeh-mysql";
 
-module.exports = {
+export default {
   getEmployeeDepenedents: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {

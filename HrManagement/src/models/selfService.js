@@ -3,7 +3,7 @@ import _ from "lodash";
 // import moment from "moment";
 // import { LINQ } from "node-linq";
 
-module.exports = {
+export default {
   getLeaveMaster: (req, res, next) => {
     const _mysql = new algaehMysql();
     return new Promise((resolve, reject) => {

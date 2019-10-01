@@ -1,14 +1,16 @@
 import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
-import extend from "extend";
 import moment from "moment";
 import { LINQ } from "node-linq";
 //import utilities from "algaeh-utilities";
 import algaehUtilities from "algaeh-utilities/utilities";
 //import { getMaxAuth } from "../../../src/utils";
 // import Sync from "sync";
-import { getMaxAuth } from "../models/leave";
-module.exports = {
+import leave from "../models/leave";
+
+const { getMaxAuth } = leave;
+
+export default {
   //created by irfan:
   addLoanApplication: (req, res, next) => {
     const utilities = new algaehUtilities();

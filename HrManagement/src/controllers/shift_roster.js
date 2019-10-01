@@ -1,11 +1,14 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import {
+import shift_roster from "../models/shift_roster";
+
+const {
   getEmployeesForShiftRoster,
   addShiftRoster,
   deleteShiftRoster,
   pasteRoster
-} from "../models/shift_roster";
+} = shift_roster;
+
 export default () => {
   const api = Router();
 

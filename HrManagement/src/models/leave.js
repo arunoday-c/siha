@@ -110,7 +110,7 @@ function getMaxAuth(options) {
       });
   });
 }
-module.exports = {
+export default {
   getMaxAuth: getMaxAuth,
   //created by irfan: to
   authorizeLeaveBKP_14_sept_2019: (req, res, next) => {

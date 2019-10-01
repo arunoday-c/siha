@@ -1,6 +1,8 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import {
+import loan from "../models/loan";
+
+const {
   addLoanApplication,
   adjustLoanApplication,
   getLoanApplication,
@@ -8,7 +10,8 @@ import {
   getLoanLevels,
   addLoanReciept,
   getEmployeeLoanReciept
-} from "../models/loan";
+} = loan;
+
 export default () => {
   const api = Router();
 

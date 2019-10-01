@@ -6,7 +6,7 @@ apiBuild/
 ### ignore netbeans ###
 nbproject/
 # ignore keys->dev
-dev.js
+development.js
 
 # ignore *-lock.json
 package-lock.json

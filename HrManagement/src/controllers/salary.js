@@ -1,6 +1,8 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import {
+import salaryModels from "../models/salary";
+
+const {
   processSalary,
   getSalaryProcess,
   getSalaryProcessToPay,
@@ -9,7 +11,7 @@ import {
   getWpsEmployees,
   newProcessSalary,
   detailSalaryStatement
-} from "../models/salary";
+} = salaryModels;
 
 export default () => {
   const api = Router();

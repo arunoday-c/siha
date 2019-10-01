@@ -1,6 +1,9 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import { finalSettlement, finalSettlemntAdd } from "../models/final_settlement";
+import final_settlement from "../models/final_settlement";
+
+const { finalSettlement, finalSettlemntAdd } = final_settlement;
+
 export default () => {
   const api = Router();
   api.get("/", finalSettlement, (req, res, next) => {

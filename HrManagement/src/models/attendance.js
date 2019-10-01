@@ -3,10 +3,12 @@ import _ from "lodash";
 import moment from "moment";
 import { LINQ } from "node-linq";
 import algaehUtilities from "algaeh-utilities/utilities";
-import { getEmployeeWeekOffsHolidays, getDays } from "./shift_roster";
+import shift_roster from "./shift_roster";
 import mysql from "mysql";
 
-module.exports = {
+const { getEmployeeWeekOffsHolidays, getDays } = shift_roster
+
+export default {
   //created by irfan: to mark absent
   markAbsent: (req, res, next) => {
     const _mysql = new algaehMysql();

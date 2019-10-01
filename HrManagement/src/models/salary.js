@@ -5,7 +5,7 @@ import { LINQ } from "node-linq";
 import mysql from "mysql";
 import algaehUtilities from "algaeh-utilities/utilities";
 
-module.exports = {
+export default {
   newProcessSalary: (req, res, next) => {
     // console.log("req.connection: ", req.connection);
     const _options = req.connection == null ? {} : req.connection;

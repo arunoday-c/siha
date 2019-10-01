@@ -2,7 +2,7 @@ import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
 
 import moment from "moment";
-module.exports = {
+export default {
   getMiscEarningDeductions: (req, res, next) => {
     const _mysql = new algaehMysql();
     let _stringData = " ";

@@ -1,7 +1,7 @@
 import utlities from "algaeh-utilities";
 import algaehMysql from "algaeh-mysql";
 // import keys from "../../../keys/keys";
-module.exports = {
+export default {
   generalLedgerGet: (req, res, next) => {
     const _mysql = new algaehMysql();
     /* Select statemwnt  */

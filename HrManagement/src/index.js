@@ -1,13 +1,15 @@
 import http from "http";
 import cors from "cors";
 import bodyParser from "body-parser";
-import express from "express";
+import exxpress from "express";
 import keys from "algaeh-keys";
 import utliites from "algaeh-utilities";
 import routes from "./routes";
 import compression from "compression";
-const app = express();
+
+const app = exxpress();
 app.server = http.createServer(app);
+
 app.use(cors());
 const _port = process.env.PORT;
 app.use(
@@ -15,7 +17,9 @@ app.use(
     limit: keys.bodyLimit
   })
 );
+
 app.use(compression());
+
 app.use((req, res, next) => {
   const reqH = req.headers;
   const _token = reqH["x-api-key"];
@@ -121,6 +125,5 @@ app.use((error, req, res, next) => {
   });
 });
 app.server.listen(_port);
-console.log(`General Server is running  on PORT  - ${_port} *`);
+console.log(`HR MANAGEMENT Server is running  on PORT  - ${_port} *`);
 export default app;
-module.exports = app;

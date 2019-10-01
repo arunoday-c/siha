@@ -1,5 +1,5 @@
 if (process.env.NODE_ENV == "development") {
-  module.exports = require("./dev");
+  module.exports = require("./development");
 } else if (process.env.NODE_ENV == "test") {
   module.exports = require("./test");
 } else {

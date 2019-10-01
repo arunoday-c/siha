@@ -1,6 +1,6 @@
 import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
-module.exports = {
+export default {
   InsertOTManagement: (req, res, next) => {
     const _input = req.body;
     const _mysql = new algaehMysql();

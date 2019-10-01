@@ -1,6 +1,8 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import {
+import selfService from "../models/selfService";
+
+const {
   getLeaveMaster,
   getEmployeeBasicDetails,
   getEmployeeDependentDetails,
@@ -13,7 +15,7 @@ import {
   addEmployeeAdvance,
   addEmployeeIdentification,
   getRejoinAnnualLeave
-} from "../models/selfService";
+} = selfService;
 
 export default () => {
   let api = Router();
