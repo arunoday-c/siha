@@ -967,6 +967,16 @@ class EmployeeProjectRoster extends Component {
                   </h3>
                 </div>
                 <div className="actions">
+                  {" "}
+                  <span
+                    style={{
+                      background: "rgb(255, 230, 234)",
+                      color: "rgb(228, 34, 69)"
+                    }}
+                    className="legends"
+                  >
+                    Not Assigned
+                  </span>{" "}
                   <span style={{ background: "#3f9c62" }} className="legends">
                     Weekly Off (WO)
                   </span>
@@ -979,7 +989,6 @@ class EmployeeProjectRoster extends Component {
                   <span style={{ background: "#9c7d3f" }} className="legends">
                     Leave Applied (LA)
                   </span>
-
                   {/* <EmployeeMaster
                     HeaderCaption={
                       <AlgaehLabel
