@@ -1,22 +1,91 @@
 import React from "react";
+import { Accordion } from "semantic-ui-react";
 import "./liablity.scss";
 import {
   AlgaehFormGroup,
   AlgaehDateHandler,
   AlgaehDropDown
-} from "../../Wrappers";
+} from "../../../Wrappers";
 import {
   country_list,
   currency_list,
   account_role,
   liabilityType,
   interestperiodType
-} from "../../data/dropdownList";
+} from "../../../data/dropdownList";
 
 export default function Liablity() {
+  const level1Panels = [
+    { key: "panel-1a", title: "Bank Account" },
+    { key: "panel-1a", title: "Cash in Hand" },
+    {
+      key: "panel-1a",
+      title: "Accounts Receivable"
+    },
+    {
+      key: "panel-1a",
+      title: "Cheque Receivable"
+    },
+    { key: "panel-1a", title: "Inventory" },
+    {
+      key: "panel-1a",
+      title: "Department Stock"
+    },
+    {
+      key: "panel-1a",
+      title: "Advance, Deposits and Pre-Payments"
+    }
+  ];
+
+  const Level1Content = (
+    <div>
+      <Accordion.Accordion panels={level1Panels} />
+    </div>
+  );
+  const rootPanels = [
+    {
+      key: "panel-1",
+      title: "Current assets",
+      content: { content: Level1Content }
+    },
+    {
+      key: "panel-2",
+      title: "Non Current Assets"
+    },
+    {
+      key: "panel-3",
+      title: "Intangable Assets"
+    }
+  ];
+
+  const AssetAccountNested = () => (
+    <Accordion defaultActiveIndex={0} panels={rootPanels} styled />
+  );
+
   return (
-    <div className="container-fluid">
-      <h4>Liablity accounts</h4>
+    <div className="container-fluid liablityModuleScreen">
+      <div className="portlet portlet-bordered margin-bottom-15">
+        <div className="portlet-title">
+          <div className="caption">
+            <h3 className="caption-subject">Liablity accounts</h3>
+          </div>
+          <div className="actions">
+            {" "}
+            <a className="btn btn-primary btn-circle active">
+              <i className="fas fa-plus" />
+            </a>
+          </div>
+        </div>
+        <div className="portlet-body">
+          <div className="col">
+            <div className="row">
+              {" "}
+              <AssetAccountNested></AssetAccountNested>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="card">
         <h5 className="card-header">New Liablity Account</h5>
         <div className="card-body">

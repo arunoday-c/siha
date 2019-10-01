@@ -4,12 +4,12 @@ import {
   AlgaehFormGroup,
   AlgaehDateHandler,
   AlgaehDropDown
-} from "../../Wrappers";
+} from "../../../Wrappers";
 import {
   country_list,
   currency_list,
   account_role
-} from "../../data/dropdownList";
+} from "../../../data/dropdownList";
 export default function Capital() {
   return (
     <div className="container-fluid">

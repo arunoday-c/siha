@@ -1,22 +1,22 @@
-// @flow
 import React from "react";
-import "./expense.scss";
+import "./income.scss";
 import {
   AlgaehFormGroup,
   AlgaehDateHandler,
   AlgaehDropDown
-} from "../../Wrappers";
+} from "../../../Wrappers";
 import {
   country_list,
   currency_list,
   account_role
-} from "../../data/dropdownList";
-export default function Expense() {
+} from "../../../data/dropdownList";
+
+export default function Income() {
   return (
     <div className="container-fluid">
-      <h4>Expense accounts</h4>
+      <h4>Income accounts</h4>
       <div className="card">
-        <h5 className="card-header">New Expense Account</h5>
+        <h5 className="card-header">New Income Account</h5>
         <div className="card-body">
           <div className="row">
             <AlgaehFormGroup
@@ -24,7 +24,7 @@ export default function Expense() {
                 className: "form-group algaeh-text-fld col-xs-4 col-md-3"
               }}
               label={{
-                forceLabel: "Expense Name",
+                forceLabel: "Income Name",
                 isImp: true
               }}
               textBox={{
@@ -32,7 +32,7 @@ export default function Expense() {
                 value: "",
                 className: "form-control",
                 id: "name",
-                placeholder: " Enter Expense Name",
+                placeholder: " Enter Income Name",
                 autocomplete: false
               }}
             />{" "}

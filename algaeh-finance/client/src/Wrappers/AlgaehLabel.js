@@ -9,13 +9,17 @@ type Props = {
 };
 
 export default function AlgaehLabel(props: Props) {
-  const { htmlFor, forceLabel, isImp, fieldName } = props;
-
-  const label = forceLabel ? forceLabel : fieldName;
+  let label = props.forceLabel ? props.forceLabel : props.fieldName;
+  if (props.label) {
+    label = props.label.fieldName;
+  }
 
   return (
-    <label htmlFor={htmlFor} className="control-label">
-      {`${label} ${isImp ? "*" : ""}`}
+    <label
+      htmlFor={props.htmlFor ? props.htmlFor : ""}
+      className="control-label"
+    >
+      {`${label} ${props.isImp ? "*" : ""}`}
     </label>
   );
 }

@@ -11,8 +11,8 @@ function App(props) {
     <>
       <ul className="nav nav-tabs" style={{ marginBottom: 15 }}>
         <li className="nav-item">
-          <Link className="nav-link active" to="/assets">
-            Assets
+          <Link className="nav-link active" to="/accounts">
+            Accounts
           </Link>
         </li>
         <li className="nav-item">

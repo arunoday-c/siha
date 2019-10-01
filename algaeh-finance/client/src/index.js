@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import Routes from "./Routes";
 import * as serviceWorker from "./serviceWorker";
-
+import "./styles/index.scss";
 ReactDOM.render(<Routes />, document.getElementById("root"));
 
 // If you want your app to work offline and load faster, you can change
