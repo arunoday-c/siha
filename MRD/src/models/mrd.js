@@ -219,7 +219,7 @@ export default {
           query:
             "select hims_f_ordered_services_id, OS.patient_id, OS.visit_id,visit_date, OS.doctor_id,\
           E.full_name as provider_name, OS.service_type_id,\
-          services_id,S.service_name,hims_f_lab_order_id, L.billed as lab_billed, \
+          OS.services_id,S.service_name,hims_f_lab_order_id, L.billed as lab_billed, \
           L.status as lab_ord_status,R.hims_f_rad_order_id,R.billed as rad_billed, R.status as rad_ord_status\
           from  hims_f_ordered_services OS \
           inner join hims_d_services S on  OS.services_id=S.hims_d_services_id \
