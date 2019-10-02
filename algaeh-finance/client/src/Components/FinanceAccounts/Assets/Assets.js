@@ -1,22 +1,92 @@
+// @flow
 import React from "react";
-import "./liablity.scss";
+import { Accordion } from "semantic-ui-react";
+import "./assets.scss";
 import {
   AlgaehFormGroup,
   AlgaehDateHandler,
   AlgaehDropDown
-} from "../../Wrappers";
+} from "../../../Wrappers";
 import {
+  country_list,
   currency_list,
-  liabilityType,
-  interestperiodType
-} from "../../data/dropdownList";
+  account_role
+} from "../../../data/dropdownList";
 
-export default function Liablity() {
+export default function Assets() {
+  const level1Panels = [
+    { key: "panel-1a", title: "Bank Account" },
+    { key: "panel-1a", title: "Cash in Hand" },
+    {
+      key: "panel-1a",
+      title: "Accounts Receivable"
+    },
+    {
+      key: "panel-1a",
+      title: "Cheque Receivable"
+    },
+    { key: "panel-1a", title: "Inventory" },
+    {
+      key: "panel-1a",
+      title: "Department Stock"
+    },
+    {
+      key: "panel-1a",
+      title: "Advance, Deposits and Pre-Payments"
+    }
+  ];
+
+  const Level1Content = (
+    <div>
+      <Accordion.Accordion panels={level1Panels} />
+    </div>
+  );
+  const rootPanels = [
+    {
+      key: "panel-1",
+      title: "Current assets",
+      content: { content: Level1Content }
+    },
+    {
+      key: "panel-2",
+      title: "Non Current Assets"
+    },
+    {
+      key: "panel-3",
+      title: "Intangable Assets"
+    }
+  ];
+
+  const AssetAccountNested = () => (
+    <Accordion defaultActiveIndex={0} panels={rootPanels} styled />
+  );
+
   return (
-    <div className="container-fluid">
-      <h4>Liablity accounts</h4>
+    <div className="container-fluid assetsModuleScreen">
+      <div className="portlet portlet-bordered margin-bottom-15">
+        <div className="portlet-title">
+          <div className="caption">
+            <h3 className="caption-subject">Asset Accounts</h3>
+          </div>
+          <div className="actions">
+            {" "}
+            <a className="btn btn-primary btn-circle active">
+              <i className="fas fa-plus" />
+            </a>
+          </div>
+        </div>
+        <div className="portlet-body">
+          <div className="col">
+            <div className="row">
+              {" "}
+              <AssetAccountNested></AssetAccountNested>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="card">
-        <h5 className="card-header">New Liablity Account</h5>
+        <h5 className="card-header">New Asset Account</h5>
         <div className="card-body">
           <div className="row">
             <AlgaehFormGroup
@@ -24,7 +94,7 @@ export default function Liablity() {
                 className: "form-group algaeh-text-fld col-xs-4 col-md-3"
               }}
               label={{
-                forceLabel: "Liablity Name",
+                forceLabel: "Asset Name",
                 isImp: true
               }}
               textBox={{
@@ -55,104 +125,13 @@ export default function Liablity() {
                 data: currency_list
               }}
             />{" "}
-            <AlgaehDropDown
-              div={{
-                className: "form-group algaeh-select-fld col-xs-4 col-md-3"
-              }}
-              label={{
-                forceLabel: "Select Liability type",
-                isImp: true
-              }}
-              selector={{
-                className: "form-control",
-                name: "country",
-                onChange: "value"
-              }}
-              dataSource={{
-                textField: "name",
-                valueField: "value",
-                data: liabilityType
-              }}
-            />{" "}
-            <AlgaehFormGroup
-              div={{
-                className: "form-group algaeh-text-fld col-xs-4 col-md-3"
-              }}
-              label={{
-                forceLabel: "Start amount of debt",
-                isImp: true
-              }}
-              textBox={{
-                type: "number",
-                value: "",
-                className: "form-control",
-                id: "name",
-                placeholder: " Enter amount of debt",
-                autocomplete: false
-              }}
-            />{" "}
-            <AlgaehDateHandler
-              div={{
-                className: "form-group algaeh-email-fld col-xs-4 col-md-3"
-              }}
-              label={{
-                forceLabel: "Start date of debt",
-                isImp: true
-              }}
-              textBox={{
-                name: "enter_date",
-                className: "form-control"
-              }}
-              events={{
-                onChange: e => console.log(e.target)
-              }}
-              value={new Date()}
-              maxDate={new Date()}
-              minDate={new Date()}
-            />{" "}
-            <AlgaehFormGroup
-              div={{
-                className: "form-group algaeh-text-fld col-xs-4 col-md-3"
-              }}
-              label={{
-                forceLabel: "Interest %",
-                isImp: true
-              }}
-              textBox={{
-                type: "number",
-                value: "",
-                className: "form-control",
-                id: "name",
-                placeholder: "%",
-                autocomplete: false
-              }}
-            />{" "}
-            <AlgaehDropDown
-              div={{
-                className: "form-group algaeh-select-fld col-xs-4 col-md-3"
-              }}
-              label={{
-                forceLabel: "Select Interest period",
-                isImp: true
-              }}
-              selector={{
-                className: "form-control",
-                name: "country",
-                onChange: "value"
-              }}
-              dataSource={{
-                textField: "name",
-                valueField: "value",
-                data: interestperiodType
-              }}
-            />{" "}
             <AlgaehFormGroup
               div={{
                 className: "form-group algaeh-text-fld col-xs-4 col-md-3"
               }}
               label={{
                 forceLabel: "IBAN",
-                isImp: false
+                isImp: true
               }}
               textBox={{
                 type: "text",
@@ -169,7 +148,7 @@ export default function Liablity() {
               }}
               label={{
                 forceLabel: "BIC",
-                isImp: false
+                isImp: true
               }}
               textBox={{
                 type: "text",
@@ -186,7 +165,7 @@ export default function Liablity() {
               }}
               label={{
                 forceLabel: "Account number",
-                isImp: false
+                isImp: true
               }}
               textBox={{
                 type: "text",
@@ -195,6 +174,61 @@ export default function Liablity() {
                 id: "name",
                 placeholder: " Enter Account number",
                 autocomplete: false
+              }}
+            />{" "}
+            <AlgaehFormGroup
+              div={{
+                className: "form-group algaeh-text-fld col-xs-4 col-md-3"
+              }}
+              label={{
+                forceLabel: "Opening Balance",
+                isImp: true
+              }}
+              textBox={{
+                type: "number",
+                value: "",
+                className: "form-control",
+                id: "name",
+                placeholder: " Enter Opening Balance",
+                autocomplete: false
+              }}
+            />
+            <AlgaehDateHandler
+              div={{
+                className: "form-group algaeh-email-fld col-xs-4 col-md-3"
+              }}
+              label={{
+                forceLabel: "Opening balance date",
+                isImp: true
+              }}
+              textBox={{
+                name: "enter_date",
+                className: "form-control"
+              }}
+              events={{
+                onChange: e => console.log(e.target)
+              }}
+              value={new Date()}
+              maxDate={new Date()}
+              minDate={new Date()}
+            />
+            <AlgaehDropDown
+              div={{
+                className: "form-group algaeh-select-fld col-xs-4 col-md-3"
+              }}
+              label={{
+                forceLabel: "Select Account role",
+                isImp: true
+              }}
+              selector={{
+                className: "form-control",
+                name: "country",
+                onChange: "value"
+              }}
+              dataSource={{
+                textField: "name",
+                valueField: "value",
+                data: account_role
               }}
             />{" "}
             <div className="form-group algaeh-checkbox-fld col-xs-4 col-md-3">

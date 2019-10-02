@@ -11,6 +11,8 @@ import moment from "moment";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import { setGlobal } from "../../../utils/GlobalFunctions";
 import _ from "lodash";
+import { Validations } from "./Validation";
+
 export default function SubjectiveHandler() {
   return {
     dataLevelUpdate: ($this, e) => {
@@ -62,39 +64,43 @@ export default function SubjectiveHandler() {
         onset_date: moment(ctrl)._d
       });
     },
+
     IcdsSearch: ($this, diagType) => {
-      AlgaehSearch({
-        searchGrid: {
-          columns: spotlightSearch.Diagnosis.IcdCodes
-        },
-        searchName: "IcdCodes",
-        uri: "/gloabelSearch/get",
-        onContainsChange: (text, serchBy, callBack) => {
-          callBack(text);
-        },
-        onRowSelect: row => {
-          if (diagType === "Final") {
-            const existingComplaints =
-              $this.props.patient_diagnosis === undefined
-                ? []
-                : $this.props.patient_diagnosis;
-            const isFind = _.find(
-              existingComplaints,
-              f => f.daignosis_id === row.hims_d_icd_id
-            );
-            if (isFind === undefined) {
-              insertFinalICDS($this, row);
-            } else {
-              swalMessage({
-                title: "Same diagnosis is alreday in use,con't add duplicate",
-                type: "info"
-              });
+      const err = Validations($this);
+      if (!err) {
+        AlgaehSearch({
+          searchGrid: {
+            columns: spotlightSearch.Diagnosis.IcdCodes
+          },
+          searchName: "IcdCodes",
+          uri: "/gloabelSearch/get",
+          onContainsChange: (text, serchBy, callBack) => {
+            callBack(text);
+          },
+          onRowSelect: row => {
+            if (diagType === "Final") {
+              const existingComplaints =
+                $this.props.patient_diagnosis === undefined
+                  ? []
+                  : $this.props.patient_diagnosis;
+              const isFind = _.find(
+                existingComplaints,
+                f => f.daignosis_id === row.hims_d_icd_id
+              );
+              if (isFind === undefined) {
+                insertFinalICDS($this, row);
+              } else {
+                swalMessage({
+                  title: "Same diagnosis is alreday in use,con't add duplicate",
+                  type: "info"
+                });
+              }
+            } else if (diagType === "Intial") {
+              // insertInitialICDS($this, row);
             }
-          } else if (diagType === "Intial") {
-            // insertInitialICDS($this, row);
           }
-        }
-      });
+        });
+      }
     },
     onchangegridcol: ($this, row, from, e) => {
       if (e.selected.value === "P" && row.diagnosis_type !== "P") {

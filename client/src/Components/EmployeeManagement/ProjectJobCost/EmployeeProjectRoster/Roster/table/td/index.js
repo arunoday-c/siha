@@ -64,8 +64,8 @@ export default React.memo(function(props) {
             : item.status === "N"
             ? {
                 style: {
-                  backgroundColor: "#f78fa2",
-                  color: "#000",
+                  backgroundColor: "rgb(255, 230, 234)",
+                  color: "rgb(228, 34, 69)",
                   cursor: "pointer"
                 }
               }

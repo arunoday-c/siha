@@ -1,20 +1,19 @@
-// @flow
 import React from "react";
-import "./assets.scss";
+import "./capital.scss";
 import {
   AlgaehFormGroup,
   AlgaehDateHandler,
   AlgaehDropDown
-} from "../../Wrappers";
+} from "../../../Wrappers";
 import {
   country_list,
   currency_list,
   account_role
-} from "../../data/dropdownList";
-export default function Assets() {
+} from "../../../data/dropdownList";
+export default function Capital() {
   return (
     <div className="container-fluid">
-      <h4>Asset accounts</h4>
+      <h4>Capital accounts</h4>
       <div className="card">
         <h5 className="card-header">New Asset Account</h5>
         <div className="card-body">

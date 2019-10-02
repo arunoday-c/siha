@@ -315,7 +315,6 @@ class OpeningBalance extends Component {
                           }}
                           isEditable={true}
                           filter={true}
-                          paging={{ page: 0, rowsPerPage: 20 }}
                           forceRender={true}
                           events={{
                             onEdit: () => {},
