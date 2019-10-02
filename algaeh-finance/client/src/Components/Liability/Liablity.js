@@ -6,9 +6,7 @@ import {
   AlgaehDropDown
 } from "../../Wrappers";
 import {
-  country_list,
   currency_list,
-  account_role,
   liabilityType,
   interestperiodType
 } from "../../data/dropdownList";

@@ -5,16 +5,17 @@ const app = express();
 
 app.use(cors());
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "/../client/build")));
+  console.log(path.resolve("./", "client/build"), "prod");
+  app.use(express.static(path.resolve("./", "client/build")));
 } else {
-  app.get("/", (req, res) => {
-    res.redirect("http://localhost:1315");
-  });
+  console.log(path.resolve("./", "client/dist"), "dev");
+  app.use(express.static(path.resolve("./", "client/dist")));
 }
 
 app.get("/api/v1", (req, res) => {
   console.log("accessed");
   res.json({ message: "Hello From Api" });
 });
+const PORT = process.env.PORT || 3007;
 
-app.listen(3007);
+app.listen(PORT, () => console.log("Finance server started"));
