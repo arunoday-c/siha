@@ -16,23 +16,18 @@ function App(props) {
           </Link>
         </li>
         <li className="nav-item">
-          <Link className="nav-link" to="/liability">
-            Liability
+          <Link className="nav-link" to="/transactions">
+            Transactions
           </Link>
         </li>
         <li className="nav-item">
-          <Link className="nav-link" to="/income">
-            Income
+          <Link className="nav-link" to="/journal">
+            Journal Ledger
           </Link>
         </li>
         <li className="nav-item">
-          <Link className="nav-link" to="/capital">
-            Capital
-          </Link>
-        </li>{" "}
-        <li className="nav-item">
-          <Link className="nav-link" to="/expense">
-            Expense
+          <Link className="nav-link" to="/reports">
+            Financial Reports
           </Link>
         </li>
       </ul>

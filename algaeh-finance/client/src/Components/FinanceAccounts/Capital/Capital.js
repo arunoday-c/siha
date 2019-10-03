@@ -5,11 +5,7 @@ import {
   AlgaehDateHandler,
   AlgaehDropDown
 } from "../../../Wrappers";
-import {
-  country_list,
-  currency_list,
-  account_role
-} from "../../../data/dropdownList";
+import { currency_list, account_role } from "../../../data/dropdownList";
 export default function Capital() {
   return (
     <div className="container-fluid">

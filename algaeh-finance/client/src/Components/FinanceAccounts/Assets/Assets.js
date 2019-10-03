@@ -7,11 +7,7 @@ import {
   AlgaehDateHandler,
   AlgaehDropDown
 } from "../../../Wrappers";
-import {
-  country_list,
-  currency_list,
-  account_role
-} from "../../../data/dropdownList";
+import { currency_list, account_role } from "../../../data/dropdownList";
 
 export default function Assets() {
   const level1Panels = [
@@ -40,10 +36,9 @@ export default function Assets() {
     <div>
       <div className="innerContentDiv">
         <span>
-          {" "}
-          <a className="btn btn-primary active">
+          <button className="btn btn-primary active">
             <i className="fas fa-plus" /> Add Child
-          </a>{" "}
+          </button>
         </span>
         <span>
           {" "}
@@ -83,9 +78,9 @@ export default function Assets() {
           </div>
           <div className="actions">
             {" "}
-            <a className="btn btn-primary  active">
+            <button className="btn btn-primary  active">
               <i className="fas fa-plus" /> New Account Heads
-            </a>
+            </button>
           </div>
         </div>
         <div className="portlet-body">

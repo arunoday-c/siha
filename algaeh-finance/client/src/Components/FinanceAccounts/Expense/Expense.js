@@ -1,16 +1,8 @@
 // @flow
 import React from "react";
 import "./expense.scss";
-import {
-  AlgaehFormGroup,
-  AlgaehDateHandler,
-  AlgaehDropDown
-} from "../../../Wrappers";
-import {
-  country_list,
-  currency_list,
-  account_role
-} from "../../../data/dropdownList";
+import { AlgaehFormGroup } from "../../../Wrappers";
+
 export default function Expense() {
   return (
     <div className="container-fluid">

@@ -69,9 +69,9 @@ export default function Liablity() {
           </div>
           <div className="actions">
             {" "}
-            <a className="btn btn-primary btn-circle active">
+            <button className="btn btn-primary btn-circle active">
               <i className="fas fa-plus" />
-            </a>
+            </button>
           </div>
         </div>
         <div className="portlet-body">
