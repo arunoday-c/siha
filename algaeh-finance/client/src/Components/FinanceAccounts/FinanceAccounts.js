@@ -6,7 +6,7 @@ import Income from "./Income";
 import Capital from "./Capital";
 import Expense from "./Expense";
 
-export default function FinanceAccounts() {
+export default function FinanceAccounts(props) {
   const [activeTab, setActiveTab] = useState("Assets");
 
   function openTab(e) {
@@ -25,7 +25,6 @@ export default function FinanceAccounts() {
       <div className="row">
         <div className="tabMaster toggle-section">
           <ul className="nav">
-            {" "}
             <li
               algaehtabs={"Assets"}
               className={"nav-item tab-button active"}

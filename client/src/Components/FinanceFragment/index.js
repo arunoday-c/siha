@@ -22,27 +22,33 @@ export default function FinanceFragment(props) {
         } = manifest;
         const hash = js.split(".")[1];
         console.log(hash, "hash");
-        const existing = document.querySelectorAll(`#${hash}`);
-        if (existing) {
-          console.log(existing);
-        }
-        const script = document.createElement("script");
-        script.src = `${PREFIX}${js}`;
-        script.type = "text/javascript";
-        script.crossOrigin = "anonymous";
-        script.onload = () => {
-          console.log(window[componentName], componentName);
+        const script = document.getElementById("finance-script");
+        const hashAttr = script.getAttribute("data-hash");
+        console.log(hashAttr !== hash, "the truth");
+        if (hashAttr !== hash) {
+          script.remove();
+          const newScript = document.createElement("script");
+          newScript.src = `${PREFIX}${js}`;
+          newScript.type = "text/javascript";
+          newScript.setAttribute("data-hash", hash);
+          newScript.id = "finance-script";
+          newScript.crossOrigin = "anonymous";
+          newScript.onload = () => {
+            console.log(window[componentName], componentName);
+            setComp(window[componentName]);
+          };
+          document.body.appendChild(newScript);
+        } else {
           setComp(window[componentName]);
-        };
-        // document.body.appendChild(script1);
-        document.body.appendChild(script);
+        }
       })
       .catch(err => setErr(err));
   }, []);
 
   if (Component) {
     const ReqComp = Component[props.path];
-    return <ReqComp />;
+    console.log(ReqComp);
+    return <ReqComp hello="this is from hims" />;
   }
   if (err) {
     return <div>Error occured</div>;

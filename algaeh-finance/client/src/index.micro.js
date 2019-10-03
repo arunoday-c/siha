@@ -1,10 +1,10 @@
-import Account from "./Components/FinanceAccounts";
+import Accounts from "./Components/FinanceAccounts";
 import Transactions from "./Components/Transactions";
 import JournalLedger from "./Components/JournalLedger";
 import FinanceReports from "./Components/FinanceReports";
 
 const Pages = {
-  Account,
+  Accounts,
   Transactions,
   JournalLedger,
   FinanceReports

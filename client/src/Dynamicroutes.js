@@ -31,11 +31,11 @@ import FinanceFragment from "./Components/FinanceFragment";
 
 // Capital, Expense, Income, Liabili;
 
-const Assets = () => <FinanceFragment path="Assets" />;
-const Liabilities = () => <FinanceFragment path="Liability" />;
-const Income = () => <FinanceFragment path="Income" />;
-const Capital = () => <FinanceFragment path="Capital" />;
-const Expense = () => <FinanceFragment path="Expense" />;
+const Accounts = () => <FinanceFragment path="Accounts" />;
+const Transactions = () => <FinanceFragment path="Transactions" />;
+const JournalLedger = () => <FinanceFragment path="JournalLedger" />;
+const FinanceReports = () => <FinanceFragment path="FinanceReports" />;
+
 const PageToPlot = {
   Dashboard: HrDashboard,
   //Dashboard: DynamicDashboard,
@@ -499,11 +499,10 @@ const PageToPlot = {
   DentalLab: React.lazy(() =>
     retry(() => import("./Components/Laboratory/DentalLab/DentalLab"))
   ),
-  Assets,
-  Liabilities,
-  Income,
-  Capital,
-  Expense
+  Accounts,
+  Transactions,
+  JournalLedger,
+  FinanceReports
 };
 
 const DirectRoutes = React.memo(props => {
