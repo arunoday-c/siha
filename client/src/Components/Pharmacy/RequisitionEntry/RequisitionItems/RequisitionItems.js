@@ -85,7 +85,7 @@ class RequisitionItems extends Component {
   }
 
   render() {
-    let month_name = moment(this.state.requistion_date).format("MMMM");
+    // let month_name = moment(this.state.requistion_date).format("MMMM");
     return (
       <React.Fragment>
         <MyContext.Consumer>

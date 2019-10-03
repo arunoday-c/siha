@@ -4,27 +4,20 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 import {
-  AlagehFormGroup,
   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehAutoComplete,
   AlgaehModalPopUp
 } from "../../../Wrapper/algaehWrapper";
 import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import PackageDetail from "./PackageDetail";
 import {
-  serviceTypeHandeler,
-  texthandle,
   serviceHandeler,
   ProcessService,
   deleteServices,
   SaveOrdersServices,
-  calculateAmount,
   updateBillDetail,
-  onchangegridcol,
   EditGrid,
-  makeZeroIngrid,
   ClosePackageMaster,
   ShowPackageMaster
 } from "./OrderingPackagesHandaler";
@@ -32,7 +25,7 @@ import "./OrderingPackages.scss";
 import "../../../../styles/site.scss";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import { getCookie } from "../../../../utils/algaehApiCall";
-import GlobalVariables from "../../../../utils/GlobalVariables.json";
+// import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 import ButtonType from "../../../Wrapper/algaehButton";
 import _ from "lodash";
@@ -232,7 +225,7 @@ class OrderingPackages extends Component {
 
   ShowPackageDetail(row) {
     let orderservicesdata = this.state.orderservicesdata;
-    let selected_row_index = orderservicesdata.indexOf(row);
+    // let selected_row_index = orderservicesdata.indexOf(row);
     this.setState({
       isOpenItems: !this.state.isOpenItems,
       package_detail: row,
@@ -747,79 +740,3 @@ export default withRouter(
     mapDispatchToProps
   )(OrderingPackages)
 );
-{
-  /*
-  {
-    fieldName: "discount_percentage",
-    label: (
-      <AlgaehLabel
-        label={{ fieldName: "discount_percentage" }}
-      />
-    ),
-    displayTemplate: row => {
-      return (
-        <AlagehFormGroup
-          div={{}}
-          textBox={{
-            decimal: { allowNegative: false },
-            value: row.discount_percentage,
-            className: "txt-fld",
-            name: "discount_percentage",
-            events: {
-              onChange: calculateAmount.bind(
-                this,
-                this,
-                row
-              )
-            },
-            others: {
-              disabled:
-                this.state.insured === "Y" ? true : false,
-              onBlur: makeZeroIngrid.bind(this, this, row),
-              onFocus: e => {
-                e.target.oldvalue = e.target.value;
-              }
-            }
-          }}
-        />
-      );
-    }
-  },
-  {
-    fieldName: "discount_amout",
-    label: (
-      <AlgaehLabel
-        label={{ fieldName: "discount_amout" }}
-      />
-    ),
-    displayTemplate: row => {
-      return (
-        <AlagehFormGroup
-          div={{}}
-          textBox={{
-            decimal: { allowNegative: false },
-            value: row.discount_amout,
-            className: "txt-fld",
-            name: "discount_amout",
-            events: {
-              onChange: calculateAmount.bind(
-                this,
-                this,
-                row
-              )
-            },
-            others: {
-              disabled:
-                this.state.insured === "Y" ? true : false,
-              onBlur: makeZeroIngrid.bind(this, this, row),
-              onFocus: e => {
-                e.target.oldvalue = e.target.value;
-              }
-            }
-          }}
-        />
-      );
-    }
-  },
-  */
-}

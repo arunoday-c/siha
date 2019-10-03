@@ -4,7 +4,7 @@ import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import NewMonthlyAttendence from "./MonthlyAttendance/NewMonthlyAttendance";
 import WeeklyAttendance from "./WeeklyAttendance/WeeklyAttendance";
 import AbsenceManagement from "./AbsenceManagement/AbsenceManagement";
-import ManualAttendance from "./ManualAttendance/ManualAttendance";
+// import ManualAttendance from "./ManualAttendance/ManualAttendance";
 import BulkTimeSheet from "./BulkTimeSheet";
 import "./AttendanceMgmt.scss";
 // import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";

@@ -95,7 +95,7 @@ export default function OrderProcedureItemsEvent() {
           if (response.data.success === true) {
             $this.state.transaction_type = "CS";
             $this.state.location_id = $this.state.inventory_location_id;
-            $this.state.location_type = $this.state.location_type;
+            // $this.state.location_type = $this.state.location_type;
             $this.state.inventory_stock_detail = $this.state.Procedure_items;
             $this.state.transaction_date = new Date();
             $this.state.provider_id = Window.global["provider_id"];

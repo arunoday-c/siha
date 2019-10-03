@@ -3,10 +3,7 @@ import AlgaehSearch from "../../../Wrapper/globalSearch";
 import Insurance from "../../../../Search/Insurance.json";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall.js";
 import swal from "sweetalert2";
-import {
-  SetBulkState,
-  AlgaehValidation
-} from "../../../../utils/GlobalFunctions";
+import { SetBulkState } from "../../../../utils/GlobalFunctions";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import { AlgaehOpenContainer } from "../../../../utils/GlobalFunctions";
 

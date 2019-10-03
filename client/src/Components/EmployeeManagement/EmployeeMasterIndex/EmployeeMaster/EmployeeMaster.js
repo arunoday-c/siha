@@ -6,7 +6,7 @@ import "./EmployeeMaster.scss";
 import CommissionSetup from "./CommissionSetup/CommissionSetup";
 import PersonalDetails from "./PersonalDetails/PersonalDetails";
 import FamilyAndIdentification from "./FamilyAndIdentification/FamilyAndIdentification";
-import DeptUserDetails from "./DeptUserDetails/DeptUserDetails";
+// import DeptUserDetails from "./DeptUserDetails/DeptUserDetails";
 import PayRollDetails from "./PayRollDetails/PayRollDetails";
 import OfficalDetails from "./OfficalDetails/OfficalDetails";
 import RulesDetails from "./RulesDetails/RulesDetails";

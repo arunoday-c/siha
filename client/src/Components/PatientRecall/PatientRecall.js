@@ -5,7 +5,7 @@ import {
   AlagehAutoComplete
 } from "../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
-import { AlgaehValidation } from "../../utils/GlobalFunctions";
+// import { AlgaehValidation } from "../../utils/GlobalFunctions";
 import moment from "moment";
 import Options from "../../Options.json";
 

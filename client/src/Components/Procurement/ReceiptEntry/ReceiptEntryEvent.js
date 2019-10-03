@@ -5,7 +5,6 @@ import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import ReceiptEntryInv from "../../../Models/ReceiptEntry";
-import Enumerable from "linq";
 import _ from "lodash";
 
 let texthandlerInterval = null;
@@ -608,13 +607,13 @@ const PostReceiptEntry = $this => {
 };
 
 const PurchaseOrderSearch = ($this, e) => {
-  let Inputs = "";
-
-  if ($this.state.grn_for === "PHR") {
-    Inputs = "pharmcy_location_id = " + $this.state.pharmcy_location_id;
-  } else {
-    Inputs = "inventory_location_id = " + $this.state.inventory_location_id;
-  }
+  // let Inputs = "";
+  //
+  // if ($this.state.grn_for === "PHR") {
+  //   Inputs = "pharmcy_location_id = " + $this.state.pharmcy_location_id;
+  // } else {
+  //   Inputs = "inventory_location_id = " + $this.state.inventory_location_id;
+  // }
   // inputs: Inputs,
   AlgaehSearch({
     searchGrid: {
@@ -677,6 +676,7 @@ const getDeliveryForReceipt = ($this, row) => {
               sub_total: sub_total,
               detail_discount: detail_discount,
               net_total: net_total,
+              total_tax: total_tax,
               net_payable: net_payable,
               saveEnable: false,
               poSelected: true,
