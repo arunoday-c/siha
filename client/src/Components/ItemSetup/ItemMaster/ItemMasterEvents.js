@@ -6,7 +6,7 @@ import {
 import ItemSetup from "../../../Models/ItemSetup";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import _ from "lodash";
-import AlgaehLoader from "../../Wrapper/fullPageLoader";
+// import AlgaehLoader from "../../Wrapper/fullPageLoader";
 
 const Validations = $this => {
   let isError = false;

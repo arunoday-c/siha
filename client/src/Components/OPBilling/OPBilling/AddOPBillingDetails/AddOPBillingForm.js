@@ -5,7 +5,7 @@ import { bindActionCreators } from "redux";
 import MyContext from "../../../../utils/MyContext";
 import "./AddOPBillingForm.scss";
 import "./../../../../styles/site.scss";
-import extend from "extend";
+// import extend from "extend";
 import {
   AlgaehDataGrid,
   AlgaehLabel,
@@ -18,14 +18,14 @@ import {
   serviceHandeler,
   discounthandle,
   adjustadvance,
-  billheaderCalculation,
-  onchangegridcol,
+  // billheaderCalculation,
+  // onchangegridcol,
   credittexthandle,
   EditGrid,
   CancelGrid,
-  onquantitycol,
+  // onquantitycol,
   ondiscountgridcol,
-  calculateAmount,
+  // calculateAmount,
   makeZero,
   makeDiscountZero,
   makeZeroIngrid

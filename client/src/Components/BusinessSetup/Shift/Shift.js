@@ -903,7 +903,6 @@ class Shift extends Component {
                   actions={{
                     allowDelete: false
                   }}
-                  filter={true}
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
                     onEdit: () => {},

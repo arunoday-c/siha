@@ -3,7 +3,7 @@ import moment from "moment";
 import Enumerable from "linq";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 import Options from "../../../../Options.json";
-import AlgaehReport from "../../../Wrapper/printReports";
+// import AlgaehReport from "../../../Wrapper/printReports";
 import _ from "lodash";
 import extend from "extend";
 
@@ -65,7 +65,7 @@ const assignDataandclear = (
       [assignData]: stock_detail,
       [assignPo]: po_entry_detail,
       addedItem: true,
-      saveEnable: false,
+      // saveEnable: false,
       completed: "N",
       phar_item_category: null,
       phar_item_group: null,

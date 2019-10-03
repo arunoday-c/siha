@@ -873,11 +873,12 @@ const closeViewFavouriteOrder = ($this, e) => {
   }
 };
 const getFavouriteServices = $this => {
+  // debugger;
   algaehApiCall({
     uri: "/favouriteOrders/getFavouriteServices",
     module: "masterSettings",
     method: "GET",
-    date: { doctor_id: Window.global["provider_id"] },
+    data: { doctor_id: Window.global["provider_id"] },
     onSuccess: response => {
       if (response.data.success) {
         $this.setState({
