@@ -38,6 +38,19 @@ export default function Assets() {
 
   const Level1Content = (
     <div>
+      <div className="innerContentDiv">
+        <span>
+          {" "}
+          <a className="btn btn-primary active">
+            <i className="fas fa-plus" /> Add Child
+          </a>{" "}
+        </span>
+        <span>
+          {" "}
+          <small>Total</small>
+          SAR 4000
+        </span>
+      </div>
       <Accordion.Accordion panels={level1Panels} />
     </div>
   );
@@ -70,8 +83,8 @@ export default function Assets() {
           </div>
           <div className="actions">
             {" "}
-            <a className="btn btn-primary btn-circle active">
-              <i className="fas fa-plus" />
+            <a className="btn btn-primary  active">
+              <i className="fas fa-plus" /> New Account Heads
             </a>
           </div>
         </div>

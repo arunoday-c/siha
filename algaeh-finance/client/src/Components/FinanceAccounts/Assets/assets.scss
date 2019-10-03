@@ -3,3 +3,18 @@
     width: 100vw;
   }
 }
+.innerContentDiv {
+  float: right;
+  margin-top: -55px;
+  span {
+    margin-left: 10px;
+    float: right;
+    text-align: right;
+    line-height: 17px;
+    font-size: 1.3rem;
+    small {
+      display: block;
+      font-size: 0.9rem;
+    }
+  }
+}

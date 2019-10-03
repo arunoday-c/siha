@@ -1,6 +1,6 @@
 import React from "react";
 import "./income.scss";
-import { AlgaehFormGroup } from "../../Wrappers";
+import { AlgaehFormGroup } from "../../../Wrappers";
 
 export default function Income() {
   return (

@@ -94,7 +94,7 @@ export default function FinanceAccounts() {
           </ul>
         </div>
       </div>
-      <div className="common-section">
+      <div className="row common-section">
         {activeTab === "Assets" ? (
           <Assets />
         ) : activeTab === "Liabilities" ? (
