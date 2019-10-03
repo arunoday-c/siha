@@ -56,17 +56,6 @@ class LabAnalyte extends Component {
           type: "ANALYTES_GET_DATA",
           mappingName: "labanalytes"
         }
-        // afterSuccess: data => {
-        //   if (data.length === 0 || data.length === undefined) {
-        //     if (data.response.data.success === false) {
-        //       successfulMessage({
-        //         message: data.response.data.message,
-        //         title: "Warning",
-        //         icon: "warning"
-        //       });
-        //     }
-        //   }
-        // }
       });
     }
   }
