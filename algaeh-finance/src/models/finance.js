@@ -56,7 +56,8 @@ export default {
                   leafnode: "Y",
                   finance_account_child_id: data["finance_account_child_id"],
                   child_name: data["child_name"],
-                  child_created_from: data["child_created_from"]
+                  child_created_from: data["child_created_from"],
+                  account_level: data["account_level"]
                 });
               } else if (i == 0) {
                 outputArray.push({
@@ -64,7 +65,8 @@ export default {
                   finance_account_head_id: data["finance_account_head_id"],
                   account_code: data["account_code"],
                   account_name: data["account_name"],
-                  head_created_from: data["head_created_from"]
+                  head_created_from: data["head_created_from"],
+                  account_level: data["account_level"]
                 });
               }
             });
