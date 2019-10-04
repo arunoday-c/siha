@@ -79,6 +79,16 @@ export default {
           _mysql.releaseConnection();
           next(e);
         });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "Please provide Valid Input"
+      };
     }
   }
 };
+
+// select finance_account_head_id,account_code,account_name, concat(account_code,'.',(
+//   select SUBSTRING_INDEX(account_code, '.', -1)+1
+//   FROM finance_account_head where parent_acc_id=10)) as new_code
+//   FROM finance_account_head where finance_account_head_id=10;

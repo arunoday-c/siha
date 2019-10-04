@@ -8,7 +8,7 @@ export default () => {
   const api = Router();
 
   api.get("/getAccountHeads", getAccountHeads, (req, res, next) => {
-    if (req.records.no_data == true) {
+    if (req.records.invalid_input == true) {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: false,
         result: req.records

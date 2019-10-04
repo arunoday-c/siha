@@ -1858,7 +1858,7 @@ let getHrmsAuthLevels = (req, res, next) => {
                 switch (result[0]["leave_level"]) {
                   case "1":
                     leave_levels.push(
-                      { name: "Level 1", value: 1 },
+                      { name: "Level 1", value: "1" },
                       { name: "None", value: "N" }
                     );
                     break;
@@ -1903,7 +1903,7 @@ let getHrmsAuthLevels = (req, res, next) => {
                 switch (result[0]["loan_level"]) {
                   case "1":
                     loan_levels.push(
-                      { name: "Level 1", value: 1 },
+                      { name: "Level 1", value: "1" },
                       { name: "None", value: "N" }
                     );
                     break;
