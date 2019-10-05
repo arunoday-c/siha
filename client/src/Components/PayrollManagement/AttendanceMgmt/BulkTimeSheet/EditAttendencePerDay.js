@@ -49,19 +49,27 @@ export default function EditAttendencePerDay(props) {
 
   return (
     <AlgaehModalPopUp
-      className="col-lg-12 ShiftAssign"
+      class="editBulkCellPopup"
       openPopup={project_state.showPopup}
-      title="Edit Attendance"
+      title="Edit Time or Project"
       events={{
         onClose: () => {
           onClose();
         }
       }}
     >
-      <div className="popupInner" data-validate="LvEdtGrd">
+      <div className="popupInner" data-validate="editBulkCell">
         <div className="col-12">
-          <div className="row">
-            <div className="col">
+          <div className="row margin-top-15">
+            <div className="col-8 form-group">
+              <AlgaehLabel
+                label={{
+                  forceLabel: "Employee Name"
+                }}
+              />
+              <h6>Employee Name Here</h6>
+            </div>
+            <div className="col-4 form-group">
               <AlgaehLabel
                 label={{
                   forceLabel: "Selected Date"
@@ -74,9 +82,9 @@ export default function EditAttendencePerDay(props) {
               </h6>
             </div>
             <AlagehAutoComplete
-              div={{ className: "col form-group" }}
+              div={{ className: "col-7 form-group mandatory" }}
               label={{
-                forceLabel: "Select Project",
+                forceLabel: "Assigned Project",
                 isImp: true
               }}
               selector={{
@@ -100,7 +108,7 @@ export default function EditAttendencePerDay(props) {
             />
 
             <AlagehFormGroup
-              div={{ className: "col form-group" }}
+              div={{ className: "col-5 form-group mandatory" }}
               label={{
                 forceLabel: "Worked Hours",
                 isImp: true

@@ -118,7 +118,7 @@ class OpeningBalance extends Component {
     return (
       <div className="openingBalanceScreen">
         <div className="row  inner-top-search">
-          <div className="col form-group">
+          <div className="col-4 form-group">
             <label className="label">Enter Opening Balance For</label>
             <div className="customRadio">
               <label className="radio inline">
@@ -164,7 +164,7 @@ class OpeningBalance extends Component {
             </div>
           </div>
           <AlagehAutoComplete
-            div={{ className: "col" }}
+            div={{ className: "col-2 mandatory" }}
             label={{
               forceLabel: "Select a Year.",
               isImp: true
@@ -243,34 +243,34 @@ class OpeningBalance extends Component {
             </h6>
           </div>
 
-          <div className="col form-group" style={{ textAlign: "right" }}>
+          <div className="col-12 form-group" style={{ textAlign: "right" }}>
             <button
               onClick={this.clearState.bind(this)}
-              style={{ marginTop: 19, marginLeft: 10 }}
-              className="btn btn-default"
+              style={{ marginLeft: 10 }}
+              className="btn btn-default btn-with-icon"
             >
               Clear
             </button>
             <button
               onClick={this.PreviewData.bind(this)}
-              style={{ marginTop: 19, marginLeft: 10 }}
-              className="btn btn-default"
+              style={{ marginLeft: 10 }}
+              className="btn btn-default btn-with-icon"
             >
-              Preview
+              <i className="fas fa-eye"></i> Preview
             </button>
             <button
               onClick={this.clearState.bind(this)}
-              style={{ marginTop: 19, marginLeft: 10 }}
-              className="btn btn-default"
+              style={{ marginLeft: 10 }}
+              className="btn btn-default btn-with-icon"
             >
-              Download
+              <i className="fas fa-file-download"></i> Download
             </button>
             <button
               onClick={this.clearState.bind(this)}
-              style={{ marginTop: 19, marginLeft: 10 }}
-              className="btn btn-primary"
+              style={{ marginLeft: 10 }}
+              className="btn btn-primary btn-with-icon"
             >
-              Upload
+              <i className="fas fa-file-upload"></i> Upload
             </button>
           </div>
         </div>
@@ -286,8 +286,7 @@ class OpeningBalance extends Component {
               </div>
               <div className="portlet-body">
                 <div className="row">
-                  <div className="col-12" id="leave_opening_balance_Cntr">
-                    {/*<AlgaehDataGrid
+                  {/*<AlgaehDataGrid
                       id="leave_opening_balance"
                       columns={this.state.leave_dynamic_date}
                       keyId="leave_opening"
@@ -304,79 +303,78 @@ class OpeningBalance extends Component {
                         onDelete: () => {}
                       }}
                     />*/}
-                    {this.state.selected_type === "LE" ? (
-                      <div className="col-12" id="leave_opening_balance_Cntr">
-                        <AlgaehDataGrid
-                          id="leave_opening_balance"
-                          columns={this.state.leave_dynamic_date}
-                          keyId="leave_opening"
-                          dataSource={{
-                            data: this.state.leave_balance
-                          }}
-                          isEditable={true}
-                          filter={true}
-                          forceRender={true}
-                          events={{
-                            onEdit: () => {},
-                            onDelete: () => {},
-                            onDone: () => {}
-                          }}
-                          actions={{
-                            allowDelete: false
-                          }}
-                        />
-                      </div>
-                    ) : this.state.selected_type === "LO" ? (
-                      <div className="col-12" id="leave_opening_balance_Cntr">
-                        <AlgaehDataGrid
-                          id="loan_opening_balance"
-                          columns={this.state.leave_dynamic_date}
-                          keyId="loan_opening"
-                          dataSource={{
-                            data: []
-                          }}
-                          filter={true}
-                          paging={{ page: 0, rowsPerPage: 20 }}
-                          forceRender={true}
-                        />
-                      </div>
-                    ) : this.state.selected_type === "GR" ? (
-                      <div className="col-12" id="leave_opening_balance_Cntr">
-                        <AlgaehDataGrid
-                          id="gratuity_opening_balance"
-                          columns={this.state.leave_dynamic_date}
-                          keyId="gratuity_opening"
-                          dataSource={{
-                            data: []
-                          }}
-                          filter={true}
-                          paging={{ page: 0, rowsPerPage: 20 }}
-                          forceRender={true}
-                        />
-                      </div>
-                    ) : this.state.selected_type === "LS" ? (
-                      <div className="col-12" id="leave_opening_balance_Cntr">
-                        <AlgaehDataGrid
-                          id="leave_salary_opening_balance"
-                          columns={this.state.leave_dynamic_date}
-                          keyId="leave_salary_opening"
-                          dataSource={{
-                            data: this.state.leave_balance
-                          }}
-                          isEditable={true}
-                          paging={{ page: 0, rowsPerPage: 20 }}
-                          forceRender={true}
-                          events={{
-                            onEdit: () => {},
-                            onDone: this.updateEmployeeOpeningBalance.bind(this)
-                          }}
-                          actions={{
-                            allowDelete: false
-                          }}
-                        />
-                      </div>
-                    ) : null}
-                  </div>
+                  {this.state.selected_type === "LE" ? (
+                    <div className="col-12" id="Opening_balance_Cntr">
+                      <AlgaehDataGrid
+                        id="leave_opening_balance"
+                        columns={this.state.leave_dynamic_date}
+                        keyId="leave_opening"
+                        dataSource={{
+                          data: this.state.leave_balance
+                        }}
+                        isEditable={true}
+                        filter={true}
+                        forceRender={true}
+                        events={{
+                          onEdit: () => {},
+                          onDelete: () => {},
+                          onDone: () => {}
+                        }}
+                        actions={{
+                          allowDelete: false
+                        }}
+                      />
+                    </div>
+                  ) : this.state.selected_type === "LO" ? (
+                    <div className="col-12" id="Opening_balance_Cntr">
+                      <AlgaehDataGrid
+                        id="loan_opening_balance"
+                        columns={this.state.leave_dynamic_date}
+                        keyId="loan_opening"
+                        dataSource={{
+                          data: []
+                        }}
+                        filter={true}
+                        paging={{ page: 0, rowsPerPage: 20 }}
+                        forceRender={true}
+                      />
+                    </div>
+                  ) : this.state.selected_type === "GR" ? (
+                    <div className="col-12" id="Opening_balance_Cntr">
+                      <AlgaehDataGrid
+                        id="gratuity_opening_balance"
+                        columns={this.state.leave_dynamic_date}
+                        keyId="gratuity_opening"
+                        dataSource={{
+                          data: []
+                        }}
+                        filter={true}
+                        paging={{ page: 0, rowsPerPage: 20 }}
+                        forceRender={true}
+                      />
+                    </div>
+                  ) : this.state.selected_type === "LS" ? (
+                    <div className="col-12" id="Opening_balance_Cntr">
+                      <AlgaehDataGrid
+                        id="leave_salary_opening_balance"
+                        columns={this.state.leave_dynamic_date}
+                        keyId="leave_salary_opening"
+                        dataSource={{
+                          data: this.state.leave_balance
+                        }}
+                        isEditable={true}
+                        paging={{ page: 0, rowsPerPage: 20 }}
+                        forceRender={true}
+                        events={{
+                          onEdit: () => {},
+                          onDone: this.updateEmployeeOpeningBalance.bind(this)
+                        }}
+                        actions={{
+                          allowDelete: false
+                        }}
+                      />
+                    </div>
+                  ) : null}
                 </div>
               </div>
             </div>
