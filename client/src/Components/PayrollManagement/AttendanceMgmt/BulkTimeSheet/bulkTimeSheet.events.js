@@ -56,3 +56,27 @@ export function processDetails(data, error, result) {
     }
   });
 }
+export function getProjects() {
+  return new Promise((resolve, reject) => {
+    try {
+      algaehApiCall({
+        uri: "/projectjobcosting/getDivisionProject",
+        module: "hrManagement",
+        method: "GET",
+        onSuccess: response => {
+          const { success, records, message } = response.data;
+          if (success === true) {
+            resolve(records);
+          } else {
+            reject(new Error(message));
+          }
+        },
+        onCatch: error => {
+          reject(error);
+        }
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+}
