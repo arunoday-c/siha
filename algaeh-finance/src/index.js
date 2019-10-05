@@ -29,44 +29,48 @@ app.use((req, res, next) => {
     .logger()
     .log("Xapi", _token, "debug");
   const _verify = utliites.AlgaehUtilities().tokenVerify(_token);
-  if (_verify) {
-    let header = reqH["x-app-user-identity"];
-    if (header != null && header != "" && header != "null") {
-      header = utliites.AlgaehUtilities().decryption(header);
-      req.userIdentity = header;
-      let reqUser = utliites.AlgaehUtilities().getTokenData(_token).id;
-      utliites
-        .AlgaehUtilities()
-        .logger("res-tracking")
-        .log(
-          "",
-          {
-            dateTime: new Date().toLocaleString(),
-            requestIdentity: {
-              requestClient: reqH["x-client-ip"],
-              requestAPIUser: reqUser,
-              reqUserIdentity: req.userIdentity
+  if (req.url.indexOf("/api") > -1) {
+    if (_verify) {
+      let header = reqH["x-app-user-identity"];
+      if (header != null && header != "" && header != "null") {
+        header = utliites.AlgaehUtilities().decryption(header);
+        req.userIdentity = header;
+        let reqUser = utliites.AlgaehUtilities().getTokenData(_token).id;
+        utliites
+          .AlgaehUtilities()
+          .logger("res-tracking")
+          .log(
+            "",
+            {
+              dateTime: new Date().toLocaleString(),
+              requestIdentity: {
+                requestClient: reqH["x-client-ip"],
+                requestAPIUser: reqUser,
+                reqUserIdentity: req.userIdentity
+              },
+              requestUrl: req.originalUrl,
+              requestHeader: {
+                host: reqH.host,
+                "user-agent": reqH["user-agent"],
+                "cache-control": reqH["cache-control"],
+                origin: reqH.origin
+              },
+              requestMethod: req.method
             },
-            requestUrl: req.originalUrl,
-            requestHeader: {
-              host: reqH.host,
-              "user-agent": reqH["user-agent"],
-              "cache-control": reqH["cache-control"],
-              origin: reqH.origin
-            },
-            requestMethod: req.method
-          },
-          "info"
-        );
-    }
+            "info"
+          );
+      }
 
-    res.setHeader("connection", "keep-alive");
-    next();
+      res.setHeader("connection", "keep-alive");
+      next();
+    } else {
+      res.status(utliites.AlgaehUtilities().httpStatus().unAuthorized).json({
+        success: false,
+        message: "unauthorized access"
+      });
+    }
   } else {
-    res.status(utliites.AlgaehUtilities().httpStatus().unAuthorized).json({
-      success: false,
-      message: "unauthorized access"
-    });
+    next();
   }
 });
 
