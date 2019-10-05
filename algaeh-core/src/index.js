@@ -123,10 +123,10 @@ app.use((req, res, next) => {
   next();
 });
 
-let logdir = path.resolve("../", "LOGS");
-if (!fs.existsSync(logdir)) {
-  fs.mkdirSync(logdir);
-}
+// let logdir = path.resolve("../", "LOGS");
+// if (!fs.existsSync(logdir)) {
+//   fs.mkdirSync(logdir);
+// }
 
 app.set("trust proxy", true);
 //api routeres v1
@@ -196,7 +196,7 @@ app.use((error, req, res, next) => {
     reqUserIdentity: req.userIdentity,
     errorDescription: error
   };
-  logger.log("error", "%j", _error);
+  logger.log("error", _error);
 });
 
 app.server.listen(_port);

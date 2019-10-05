@@ -1,6 +1,6 @@
 const cryptr = require("cryptr");
 const jwt = require("jsonwebtoken");
-const winston = require("winston");
+// const winston = require("winston");
 const path = require("path");
 
 require("winston-daily-rotate-file");
@@ -91,6 +91,8 @@ algaehUtilities.prototype.logger = function(reqTracker) {
   if (!fs.existsSync(_logPath)) {
     fs.mkdirSync(_logPath);
   }
+
+  let winston = require("winston");
   var _levels = process.env.NODE_ENV == "production" ? "info" : "debug";
   var transport = new winston.transports.DailyRotateFile({
     filename: `${_logPath}/%DATE%.log`,
@@ -101,29 +103,29 @@ algaehUtilities.prototype.logger = function(reqTracker) {
     level: _levels,
     eol: "\r\n"
   });
-  var colorizer = winston.format.colorize();
-  colorizer.addColors({
-    error: "red",
-    warn: "yellow",
-    info: "cyan",
-    debug: "green"
-  });
+  // var colorizer = winston.format.colorize();
+  // colorizer.addColors({
+  //   error: "red",
+  //   warn: "yellow",
+  //   info: "cyan",
+  //   debug: "green"
+  // });
   var logger = winston.createLogger({
     handleExceptions: true,
     format: winston.format.combine(
       winston.format.timestamp(),
-      // winston.format.prettyPrint(),
+      winston.format.prettyPrint(),
       // winston.format.colorize(),
-      winston.format.json(),
-      winston.format.printf(msg => {
-        var _data = colorizer.colorize(
-          msg.level,
-          `{${new Date(msg.timestamp).toLocaleString()} - ${msg.level}:   -${
-            msg.message
-          } , data -${msg.data} } `
-        );
-        return _data;
-      })
+      winston.format.json()
+      // winston.format.printf(msg => {
+      //   var _data = colorizer.colorize(
+      //     msg.level,
+      //     `{${new Date(msg.timestamp).toLocaleString()} - ${msg.level}:   -${
+      //       msg.message
+      //     } , data -${msg.data} } `
+      //   );
+      //   return _data;
+      // })
     ),
     transports: [transport]
   });
@@ -131,15 +133,20 @@ algaehUtilities.prototype.logger = function(reqTracker) {
     log: (message, obj, logtype) => {
       logtype = logtype || "debug";
       var _data =
-        obj != null
-          ? { data: typeof obj == "string" ? obj : JSON.stringify(obj) }
+        obj !== null
+          ? { data: typeof obj === "string" ? obj : JSON.stringify(obj) }
           : {};
+      if (message === "" && obj === "") {
+        logger.close();
+        return;
+      }
 
       logger.log({
         level: logtype,
         message: message,
         ..._data
       });
+      logger.close();
       return this;
     }
   };
