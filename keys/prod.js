@@ -23,6 +23,18 @@ exports.default = {
   mongoDb: {
     connectionURI: ""
   },
+  redis: {
+    host: "127.0.0.1",
+    port: 6379,
+    maxRetriesPerRequest: 5,
+    reconnectOnError: function(err) {
+      console.error(err);
+      var targetError = "READONLY";
+      if (err.message.slice(0, targetError.length) === targetError) {
+        return true;
+      }
+    }
+  },
   dbFormat: {
     date: "YYYY-MM-DD"
   },

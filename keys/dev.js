@@ -41,6 +41,10 @@ exports.default = {
     connectionURI:
       "mongodb://algaeh_root:medteam2013@49.206.18.38:27017/algaeh_hims_mongo_db"
   },
+  redis:{
+    host:"127.0.0.1",
+    port:6379
+  },
   running: {
     date: "20190429",
     counter: 0

@@ -98,6 +98,7 @@ export function getPreview(data, props) {
     module: "hrManagement",
     onSuccess: response => {
       AlgaehLoader({ show: false });
+      debugger;
       if (response.data.success === true) {
         props.preview(response.data.result);
       } else {

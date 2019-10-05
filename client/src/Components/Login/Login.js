@@ -1,13 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
+import Swal from "sweetalert2";
 import { AlagehAutoComplete } from "../Wrapper/algaehWrapper";
 import { AlagehFormGroup } from "../Wrapper/algaehWrapper";
 import {
   algaehApiCall,
   setCookie,
-  swalMessage
+  swalMessage,
+  getLocalIP
 } from "../../utils/algaehApiCall.js";
 import { getTokenDetals } from "../../actions/Login/Loginactions.js";
-import { AlgaehCloseContainer } from "../../utils/GlobalFunctions";
+import { AlgaehCloseContainer, encrypter } from "../../utils/GlobalFunctions";
 import connecting from "../../assets/svg/connecting.svg";
 import "./Login.scss";
 import sockets from "../../sockets";
@@ -47,6 +49,62 @@ export default function() {
     })();
   }, []);
 
+  function popUpMessage(message) {
+    //const { value: password } =
+    Swal.fire({
+      title: "Alert !",
+      text: message,
+      input: "password",
+      inputPlaceholder: "Re-enter your password",
+      inputAttributes: {
+        autocapitalize: "off",
+        autocorrect: "off"
+      }
+    }).then(({ value }) => {
+      if (value !== "") {
+        const { username, item_id } = login;
+        getLocalIP(identity => {
+          const dataSent = encrypter(
+            JSON.stringify({
+              username: username,
+              password: value,
+              item_id: item_id,
+              identity: identity
+            })
+          );
+
+          algaehApiCall({
+            uri: "/apiAuth/relogin",
+            data: { post: dataSent },
+            method: "POST",
+            onSuccess: response => {
+              const { success, records, message } = response.data;
+              if (success === true) {
+                setCookie("userName", records.user_display_name);
+                setCookie("keyResources", records.keyResources, 30);
+                sessionStorage.setItem(
+                  "keyData",
+                  AlgaehCloseContainer(JSON.stringify(records.keyData))
+                );
+                sessionStorage.setItem(
+                  "CurrencyDetail",
+                  AlgaehCloseContainer(JSON.stringify(records.hospitalDetails))
+                );
+
+                sessionStorage.setItem("appRole", records.app_d_app_roles_id);
+
+                window.location.replace("/#/Home");
+              } else {
+                //  popUpMessage(message);
+                swalMessage({ type: "warning", title: message });
+              }
+            }
+          });
+        });
+      }
+    });
+  }
+
   return (
     <div className="login bg">
       <div className="container margintop15">
@@ -78,49 +136,72 @@ export default function() {
                     <form
                       onSubmit={e => {
                         e.preventDefault();
-                        if (login.username === "") {
+                        const { username, password, item_id } = login;
+                        if (username === "") {
                           userRef.focus();
                           return;
-                        } else if (login.password === "") {
+                        } else if (password === "") {
                           passwordRef.focus();
                           return;
-                        } else if (login.item_id === "") {
+                        } else if (item_id === "") {
                           document.getElementsByName("item_id")[0].focus();
                           return;
                         }
-                        algaehApiCall({
-                          uri: "/apiAuth/authUser",
-                          data: login,
-                          onSuccess: response => {
-                            const { success, records, message } = response.data;
-                            if (success === true) {
-                              setCookie("userName", records.user_display_name);
-                              setCookie(
-                                "keyResources",
-                                records.keyResources,
-                                30
-                              );
-                              sessionStorage.setItem(
-                                "keyData",
-                                AlgaehCloseContainer(
-                                  JSON.stringify(records.keyData)
-                                )
-                              );
-                              sessionStorage.setItem(
-                                "CurrencyDetail",
-                                AlgaehCloseContainer(
-                                  JSON.stringify(records.hospitalDetails)
-                                )
-                              );
 
-                              sessionStorage.setItem(
-                                "appRole",
-                                records.app_d_app_roles_id
-                              );
+                        getLocalIP(identity => {
+                          const dataSent = encrypter(
+                            JSON.stringify({
+                              username: username,
+                              password: password,
+                              item_id: item_id,
+                              identity: identity
+                            })
+                          );
 
-                              window.location.replace("/#/Home");
+                          algaehApiCall({
+                            uri: "/apiAuth/authUser",
+                            data: { post: dataSent },
+                            onSuccess: response => {
+                              const {
+                                success,
+                                records,
+                                message
+                              } = response.data;
+                              if (success === true) {
+                                setCookie(
+                                  "userName",
+                                  records.user_display_name
+                                );
+                                setCookie(
+                                  "keyResources",
+                                  records.keyResources,
+                                  30
+                                );
+                                sessionStorage.setItem(
+                                  "keyData",
+                                  AlgaehCloseContainer(
+                                    JSON.stringify(records.keyData)
+                                  )
+                                );
+                                sessionStorage.setItem(
+                                  "CurrencyDetail",
+                                  AlgaehCloseContainer(
+                                    JSON.stringify(records.hospitalDetails)
+                                  )
+                                );
+
+                                sessionStorage.setItem(
+                                  "appRole",
+                                  records.app_d_app_roles_id
+                                );
+
+                                window.location.replace("/#/Home");
+                              } else {
+                                popUpMessage(message);
+                                // swalMessage({ type: "warning", title: message });
+                              }
                             }
-                          }
+                          });
                         });
                       }}
                       className="row"

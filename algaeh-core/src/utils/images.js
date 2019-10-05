@@ -25,7 +25,7 @@ let downloadImage = (dataString, folderName, imageName) => {
     return new Error("Invalid input string");
   }
   response.type = matches[1];
-  response.data = new Buffer(matches[2], "base64");
+  response.data = new Buffer.from(matches[2], "base64");
   // return response;
   fs.writeFile(
     logDirectory + "/" + folderName + "/" + imageName + ".webp",
@@ -43,7 +43,7 @@ function readFileToBase64(folderName, imageName) {
     return null;
   }
   var bitmap = fs.readFileSync(filePath);
-  let bufferFile = new Buffer(bitmap).toString("base64");
+  let bufferFile = new Buffer.from(bitmap).toString("base64");
   //PAT-A-0000377 convert binary data to base64 encoded string
   return bufferFile;
 }

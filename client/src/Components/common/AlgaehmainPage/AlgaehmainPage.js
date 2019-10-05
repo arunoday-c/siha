@@ -446,7 +446,19 @@ class PersistentDrawer extends React.Component {
     if (sockets.connected) {
       sockets.emit("user_logout");
     }
-    window.location.href = window.location.origin + "/#";
+    algaehApiCall({
+      uri: "/apiAuth/logout",
+      method: "GET",
+      onSuccess: response => {
+        const { message } = response.data;
+        swalMessage({
+          title: message,
+          type: "success"
+        });
+        window.location.href = window.location.origin + "/#";
+        //  window.location.reload();
+      }
+    });
   }
 
   handlePanel = () => {

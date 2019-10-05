@@ -741,3 +741,9 @@ export function getUserPreferences(options) {
     }
   });
 }
+export function encrypter(string) {
+  let cipher = crypto.createCipher("aes-256-ctr", "3BLqrRGAej");
+  let crypted = cipher.update(string, "utf8", "hex");
+  crypted += cipher.final("hex");
+  return crypted;
+}

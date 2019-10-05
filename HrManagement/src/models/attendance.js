@@ -6,9 +6,59 @@ import algaehUtilities from "algaeh-utilities/utilities";
 import shift_roster from "./shift_roster";
 import mysql from "mysql";
 
-const { getEmployeeWeekOffsHolidays, getDays } = shift_roster
+const { getEmployeeWeekOffsHolidays, getDays } = shift_roster;
 
 export default {
+  SaveAttendanceAndProject: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = req.body;
+
+    _mysql
+      .executeQuery({
+        query:
+          "UPDATE hims_f_project_roster set project_id=? where hims_f_project_roster_id=?;\
+          UPDATE hims_f_daily_time_sheet set worked_hours=? where hims_f_daily_time_sheet_id=?;",
+        values: [
+          input.project_id,
+          input.hims_f_project_roster_id,
+          input.worked_hours,
+          input.hims_f_daily_time_sheet_id
+        ],
+        printQuery: true
+      })
+      .then(update_result => {
+        _mysql
+          .executeQuery({
+            query:
+              "select hims_f_daily_time_sheet_id,TS.sub_department_id, TS.employee_id, TS.attendance_date, \
+               status,worked_hours,employee_code,full_name as employee_name,PR.hims_f_project_roster_id,\
+              PR.project_id,P.project_code,P.project_desc,P.abbreviation from  hims_f_daily_time_sheet TS \
+              inner join hims_d_employee E on TS.employee_id=E.hims_d_employee_id\
+              inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\
+              left join hims_f_project_roster PR on TS.employee_id=PR.employee_id and TS.hospital_id=PR.hospital_id  and TS.attendance_date=PR.attendance_date\
+              left join hims_d_project P on PR.project_id=P.hims_d_project_id where \
+              TS.hims_f_daily_time_sheet_id=? and PR.hims_f_project_roster_id=?;",
+            values: [
+              input.hims_f_daily_time_sheet_id,
+              input.hims_f_project_roster_id
+            ],
+            printQuery: true
+          })
+          .then(result => {
+            _mysql.releaseConnection();
+            req.records = result;
+            next();
+          })
+          .catch(e => {
+            _mysql.releaseConnection();
+            next(e);
+          });
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
   //created by irfan: to mark absent
   markAbsent: (req, res, next) => {
     const _mysql = new algaehMysql();
@@ -6394,15 +6444,13 @@ export default {
               );
               const HALF_MIN = parseInt(total_minutes / 2) % parseInt(60);
 
-              
               rawData.forEach(employee => {
                 const attEmp = atResult.find(emp => {
                   return emp["employee_code"] == employee["employee_code"];
                 });
 
                 if (attEmp != undefined) {
-
-                // utilities.logger().log("attEmp:", attEmp);
+                  // utilities.logger().log("attEmp:", attEmp);
                   const data = employee.dates.map(date => {
                     const projInfo = attEmp.dates.find(dat => {
                       return (
@@ -6440,7 +6488,10 @@ export default {
                 employee.dates.forEach(day => {
                   switch (day["worked_status"]) {
                     case "AB":
-                      if (day["worked_status"] == "AB" && day["status"] == "PR") {
+                      if (
+                        day["worked_status"] == "AB" &&
+                        day["status"] == "PR"
+                      ) {
                         insertArray.push({
                           worked_hours: 0,
                           hours: 0,
@@ -6452,18 +6503,20 @@ export default {
                           status: day["worked_status"],
                           sub_department_id: day.sub_department_id,
                           project_id: day.project_id,
-                          is_anual_leave: day.leave_category=="A"?"Y":"N"
+                          is_anual_leave: day.leave_category == "A" ? "Y" : "N"
                         });
                       } else {
                         errorString += ` <li> ${
                           employee["employee_code"]
-                        } on  ${moment(day.attendance_date, "YYYY-MM-DD").format(
-                          "DD-MM-YYYY"
-                        )} is ${day["status"]} not  PR </li>`;
+                        } on  ${moment(
+                          day.attendance_date,
+                          "YYYY-MM-DD"
+                        ).format("DD-MM-YYYY")} is ${
+                          day["status"]
+                        } not  PR </li>`;
                       }
 
                     case "PR":
-                    
                       if (day["worked_status"] == day["status"]) {
                         insertArray.push({
                           worked_hours: STDWH + "." + STDWM,
@@ -6476,14 +6529,17 @@ export default {
                           status: day["worked_status"],
                           sub_department_id: day.sub_department_id,
                           project_id: day.project_id,
-                          is_anual_leave: day.leave_category=="A"?"Y":"N"
+                          is_anual_leave: day.leave_category == "A" ? "Y" : "N"
                         });
                       } else {
                         errorString += ` <li> ${
                           employee["employee_code"]
-                        } on  ${moment(day.attendance_date, "YYYY-MM-DD").format(
-                          "DD-MM-YYYY"
-                        )} is ${day["status"]} not  PR   </li>`;
+                        } on  ${moment(
+                          day.attendance_date,
+                          "YYYY-MM-DD"
+                        ).format("DD-MM-YYYY")} is ${
+                          day["status"]
+                        } not  PR   </li>`;
                       }
 
                       break;
@@ -6506,7 +6562,7 @@ export default {
                           status: day["worked_status"],
                           sub_department_id: day.sub_department_id,
                           project_id: day.project_id,
-                          is_anual_leave: day.leave_category=="A"?"Y":"N"
+                          is_anual_leave: day.leave_category == "A" ? "Y" : "N"
                         });
                       } else {
                         let actual = "";
@@ -6561,9 +6617,10 @@ export default {
 
                         errorString += ` <li> ${
                           employee["employee_code"]
-                        } on  ${moment(day.attendance_date, "YYYY-MM-DD").format(
-                          "DD-MM-YYYY"
-                        )} is ${actual} not ${neww} </li>`;
+                        } on  ${moment(
+                          day.attendance_date,
+                          "YYYY-MM-DD"
+                        ).format("DD-MM-YYYY")} is ${actual} not ${neww} </li>`;
                       }
 
                       break;
@@ -6583,7 +6640,7 @@ export default {
                           status: day["worked_status"],
                           sub_department_id: day.sub_department_id,
                           project_id: day.project_id,
-                          is_anual_leave: day.leave_category=="A"?"Y":"N"
+                          is_anual_leave: day.leave_category == "A" ? "Y" : "N"
                         });
                       } else {
                         let actual = "";
@@ -6637,9 +6694,10 @@ export default {
 
                         errorString += ` <li> ${
                           employee["employee_code"]
-                        } on  ${moment(day.attendance_date, "YYYY-MM-DD").format(
-                          "DD-MM-YYYY"
-                        )} is ${actual} not ${neww} </li>`;
+                        } on  ${moment(
+                          day.attendance_date,
+                          "YYYY-MM-DD"
+                        ).format("DD-MM-YYYY")} is ${actual} not ${neww} </li>`;
                       }
                       break;
 
@@ -6647,9 +6705,12 @@ export default {
                       if (day["worked_status"] !== day["status"]) {
                         errorString += ` <li> ${
                           employee["employee_code"]
-                        } on  ${moment(day.attendance_date, "YYYY-MM-DD").format(
-                          "DD-MM-YYYY"
-                        )} is ${day["status"]} not  N </li>`;
+                        } on  ${moment(
+                          day.attendance_date,
+                          "YYYY-MM-DD"
+                        ).format("DD-MM-YYYY")} is ${
+                          day["status"]
+                        } not  N </li>`;
                       }
                       break;
 
@@ -6672,9 +6733,10 @@ export default {
                       } else {
                         errorString += ` <li> No project is Assigned for ${
                           employee["employee_code"]
-                        } on  ${moment(day.attendance_date, "YYYY-MM-DD").format(
-                          "DD-MM-YYYY"
-                        )} </li>`;
+                        } on  ${moment(
+                          day.attendance_date,
+                          "YYYY-MM-DD"
+                        ).format("DD-MM-YYYY")} </li>`;
                       }
                       break;
                   }
@@ -6754,8 +6816,7 @@ export default {
     } catch (e) {
       next(e);
     }
-  }
-    ,
+  },
   //created by irfan:
   previewBulkTimeSheet: (req, res, next) => {
     try {
@@ -6894,26 +6955,23 @@ export default {
                 case "PL":
                   paid_leave = 1;
 
-                  if(AttenResult[i]["is_anual_leave"]=="Y")
-                  anual_leave=1;
+                  if (AttenResult[i]["is_anual_leave"] == "Y") anual_leave = 1;
                   break;
                 case "UL":
                   unpaid_leave = 1;
-                  if(AttenResult[i]["is_anual_leave"]=="Y")
-                  anual_leave=1;
+                  if (AttenResult[i]["is_anual_leave"] == "Y") anual_leave = 1;
                   break;
                 case "HPL":
                   paid_leave = 0.5;
-                  if(AttenResult[i]["is_anual_leave"]=="Y")
-                  anual_leave=0.5;
+                  if (AttenResult[i]["is_anual_leave"] == "Y")
+                    anual_leave = 0.5;
                   break;
                 case "HUL":
                   unpaid_leave = 0.5;
-                  if(AttenResult[i]["is_anual_leave"]=="Y")
-                  anual_leave=0.5;
+                  if (AttenResult[i]["is_anual_leave"] == "Y")
+                    anual_leave = 0.5;
                   break;
               }
-
 
               let display_present_days = 0;
               let present_days = 0;
@@ -6959,7 +7017,7 @@ export default {
                 holidays: AttenResult[i]["status"] == "HO" ? 1 : 0,
                 paid_leave: paid_leave,
                 unpaid_leave: unpaid_leave,
-                anual_leave:anual_leave,
+                anual_leave: anual_leave,
                 total_hours:
                   AttenResult[i]["consider_ot_shrtg"] == "Y"
                     ? AttenResult[i]["worked_hours"]
@@ -7138,7 +7196,7 @@ export default {
                         const t_paid_days =
                           options["salary_calendar_fixed_days"] -
                           parseFloat(DilayResult[i]["absent_days"]) -
-                          parseFloat(DilayResult[i]["unpaid_leave"])-
+                          parseFloat(DilayResult[i]["unpaid_leave"]) -
                           parseFloat(DilayResult[i]["anual_leave"]);
 
                         DilayResult[i]["total_work_days"] =
@@ -7162,7 +7220,7 @@ export default {
                             parseFloat(DilayResult[i]["present_days"]) +
                             parseFloat(DilayResult[i]["paid_leave"]) +
                             parseFloat(DilayResult[i]["total_weekoff_days"]) +
-                            parseFloat(DilayResult[i]["total_holidays"])-
+                            parseFloat(DilayResult[i]["total_holidays"]) -
                             parseFloat(DilayResult[i]["anual_leave"]),
                           total_leave:
                             parseFloat(DilayResult[i]["paid_leave"]) +
@@ -7706,7 +7764,7 @@ function getDaysArray(start, end) {
   }
 }
 
-//created by :irfan to match downloaded file with uploadded file 
+//created by :irfan to match downloaded file with uploadded file
 //for leave,holiday,etc
 function BulktimesheetCalc(req, res, next) {
   const _mysql = new algaehMysql();
@@ -7841,7 +7899,7 @@ function BulktimesheetCalc(req, res, next) {
                   })
                   .then(result => {
                     _mysql.releaseConnection();
-                   
+
                     if (result[0].length > 0) {
                       const allLeaves = result[1];
                       const allHolidays = result[2];
@@ -7949,7 +8007,7 @@ function BulktimesheetCalc(req, res, next) {
                                   attendance_date: row["attendance_date"],
                                   status: leave_status,
                                   designation: row.designation,
-                                  leave_category:s.leave_category
+                                  leave_category: s.leave_category
                                 };
                               })
                               .FirstOrDefault(null);
@@ -7987,7 +8045,7 @@ function BulktimesheetCalc(req, res, next) {
                               project_desc: row.project_desc,
                               attendance_date: leave.attendance_date,
                               status: leave.status,
-                              leave_category:leave.leave_category
+                              leave_category: leave.leave_category
                             });
                           } else if (holiday_or_weekOff != null) {
                             if (holiday_or_weekOff.weekoff == "Y") {
@@ -8096,7 +8154,7 @@ function BulktimesheetCalc(req, res, next) {
     next(e);
   });
 }
-//created by :irfan to validate entered time string 
+//created by :irfan to validate entered time string
 function bulkTimeValidate(day, employee_code, STDWH, STDWM, HALF_HR, HALF_MIN) {
   let actual_hours = 0;
   let actual_mins = 0;
@@ -8144,7 +8202,7 @@ function bulkTimeValidate(day, employee_code, STDWH, STDWM, HALF_HR, HALF_MIN) {
             status: day.status,
             sub_department_id: day.sub_department_id,
             project_id: day.project_id,
-            is_anual_leave: day.leave_category=="A"?"Y":"N"
+            is_anual_leave: day.leave_category == "A" ? "Y" : "N"
           }
         };
       } else {
@@ -8190,7 +8248,7 @@ function bulkTimeValidate(day, employee_code, STDWH, STDWM, HALF_HR, HALF_MIN) {
             status: day.status,
             sub_department_id: day.sub_department_id,
             project_id: day.project_id,
-            is_anual_leave: day.leave_category=="A"?"Y":"N"
+            is_anual_leave: day.leave_category == "A" ? "Y" : "N"
           }
         };
       } else {
@@ -8475,8 +8533,8 @@ function loadBulkTimeSheet(input, req, res, next) {
               _mysql
                 .executeQuery({
                   query: `select hims_f_daily_time_sheet_id,TS.sub_department_id, TS.employee_id, TS.attendance_date, \
-									 status,worked_hours,employee_code,full_name as employee_name,\
-									P.project_code,P.project_desc,P.abbreviation from  hims_f_daily_time_sheet TS \
+									 status,worked_hours,employee_code,full_name as employee_name,PR.hims_f_project_roster_id,\
+									PR.project_id,P.project_code,P.project_desc,P.abbreviation from  hims_f_daily_time_sheet TS \
                   inner join hims_d_employee E on TS.employee_id=E.hims_d_employee_id\
                   inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\
 									left join hims_f_project_roster PR on TS.employee_id=PR.employee_id and TS.hospital_id=PR.hospital_id  and TS.attendance_date=PR.attendance_date\
@@ -8535,12 +8593,15 @@ function loadBulkTimeSheet(input, req, res, next) {
                               return {
                                 hims_f_daily_time_sheet_id:
                                   f.hims_f_daily_time_sheet_id,
+                                hims_f_project_roster_id:
+                                  f.hims_f_project_roster_id,
                                 attendance_date: f.attendance_date,
                                 status: f.status,
                                 worked_hours: f.worked_hours,
                                 project_code: f.project_code,
                                 project_desc: f.project_desc,
-                                abbreviation: f.abbreviation
+                                abbreviation: f.abbreviation,
+                                project_id: f.project_id
                               };
                             })
                             .value()
