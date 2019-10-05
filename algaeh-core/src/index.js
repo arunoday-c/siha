@@ -15,6 +15,7 @@ import logUtils from "./utils/logging";
 import jwtDecode from "jwt-decode";
 import cryptoUtils from "./utils/cryptography";
 import algaehKeys from "algaeh-keys";
+import { userSecurity } from "algaeh-utilities/checksecurity";
 const keys = algaehKeys.default;
 let app = express();
 const _port = process.env.PORT;
@@ -45,58 +46,35 @@ app.use(
 
 //passport config
 app.use(passport.initialize());
-// passport.use(
-//   new LocalStrategy(
-//     {
-//       usernameField: "username",
-//       passwordField: "password"
-//     },
-//     (username, password, done) => {
-//       console.log("username",username);
-//       console.log("password",password);
-//       return done(null, username);
-//     }
-//   )
-// );
+passport.use(
+  new LocalStrategy(
+    {
+      usernameField: "username",
+      passwordField: "password"
+    },
+    (username, password, done) => {
+      return done(null, username);
+    }
+  )
+);
 
 passport.serializeUser((user, done) => {
   done(null, user);
 });
 passport.deserializeUser((id, done) => {
-  done(null, { msg: "done" });
+  done(null, { id: id, msg: "done" });
 });
 
-passport.use(
-  new LocalStrategy((username, password, done) => {
-    console.log("username", username);
-    console.log("password", password);
-    return done(null, username);
-  })
-);
-
-// if (process.env.NODE_ENV == "production") {
-//   app.set("view cache", true);
-// }
 app.use((req, res, next) => {
-  // const _mydate = "20190330";
-  // if (parseInt(moment().format("YYYYMMDD")) > parseInt(_mydate)) {
-  //   res.status(500).json({ success: false, message: "Demo version expired" });
-  //   return;
-  // }
-  console.log("req", typeof req.login);
   let reqH = req.headers;
-
   let reqUser = "";
-  // res.setHeader("connection", "keep-alive");
-  //res.setHeader("Transfer-Encoding", "gzip");
 
   if (req.url != "/api/v1/apiAuth") {
-    if (req.url != "/api/v1/apiAuth/authUser") {
-      // res.setHeader("Content-Encoding", "gzip");
-      //  res.setHeader("connection", "keep-alive");
-    }
     reqUser = jwtDecode(reqH["x-api-key"]).id;
-    if (req.url != "/api/v1/apiAuth/authUser") {
+    if (
+      req.url != "/api/v1/apiAuth/authUser" &&
+      req.url != "/api/v1/apiAuth/relogin"
+    ) {
       let header = req.headers["x-app-user-identity"];
 
       if (header != null && header != "" && header != "null") {
@@ -104,13 +82,23 @@ app.use((req, res, next) => {
 
         req.body.created_by = header.algaeh_d_app_user_id;
         req.body.updated_by = header.algaeh_d_app_user_id;
-        //  req.userIdentity = header;
         req.userIdentity = { ...header, "x-branch": reqH["x-branch"] };
+
+        const { username } = req.userIdentity;
+        userSecurity(reqH["x-client-ip"], username).catch(error => {
+          res.status(httpStatus.locked).json({
+            success: false,
+            message: error,
+            username: error === "false" ? undefined : username
+          });
+          return;
+        });
       } else {
         res.status(httpStatus.unAuthorized).json({
           success: false,
           message: "unauthorized credentials cannot procees.."
         });
+        return;
       }
     }
   }
@@ -135,21 +123,11 @@ app.use((req, res, next) => {
   next();
 });
 
-let logdir = path.resolve("../", "LOGS");
-if (!fs.existsSync(logdir)) {
-  fs.mkdirSync(logdir);
-}
+// let logdir = path.resolve("../", "LOGS");
+// if (!fs.existsSync(logdir)) {
+//   fs.mkdirSync(logdir);
+// }
 
-// var accessLogStream = fs.createWriteStream(path.join(logdir, "access.log"), {
-//   flags: "a"
-// });
-
-// var accessLogStream = rfs("access.log", {
-//   size: "5M",
-//   path: logdir
-// });
-
-//app.use(morgan("combined", { streamexceptionHandlers: accessLogStream }));
 app.set("trust proxy", true);
 //api routeres v1
 app.use("/api/v1", routes);
@@ -218,7 +196,7 @@ app.use((error, req, res, next) => {
     reqUserIdentity: req.userIdentity,
     errorDescription: error
   };
-  logger.log("error", "%j", _error);
+  logger.log("error", _error);
 });
 
 app.server.listen(_port);

@@ -66,43 +66,38 @@ export default function Filter(props) {
     setFromDate(minDate);
     setToDate(maxDate);
   };
+
   useEffect(() => {
     getHospitals(data => {
       setHospitals(data);
     });
   }, []);
 
-  useEffect(
-    () => {
-      if (hospitalID !== "") {
-        getAttendanceDates(data => {
-          if (data.length > 0) {
-            const firstRecord = data[0];
-            setStartDt(firstRecord.at_st_date);
-            setEndDt(firstRecord.at_end_date);
-            dateCalcl(firstRecord.at_st_date, firstRecord.at_end_date);
-          }
-        });
-        getDivisionProject({ division_id: hospitalID }, data => {
-          setProjects(data);
-        });
-        getBranchWiseDepartments({ hospital_id: hospitalID }, data => {
-          setDepartment(data);
-        });
-        getEmpGroups(data => {
-          setEmpGroups(data);
-        });
-      }
-    },
-    [hospitalID]
-  );
+  useEffect(() => {
+    if (hospitalID !== "") {
+      getAttendanceDates(data => {
+        if (data.length > 0) {
+          const firstRecord = data[0];
+          setStartDt(firstRecord.at_st_date);
+          setEndDt(firstRecord.at_end_date);
+          dateCalcl(firstRecord.at_st_date, firstRecord.at_end_date);
+        }
+      });
+      getDivisionProject({ division_id: hospitalID }, data => {
+        setProjects(data);
+      });
+      getBranchWiseDepartments({ hospital_id: hospitalID }, data => {
+        setDepartment(data);
+      });
+      getEmpGroups(data => {
+        setEmpGroups(data);
+      });
+    }
+  }, [hospitalID]);
 
-  useEffect(
-    () => {
-      dateCalcl();
-    },
-    [month]
-  );
+  useEffect(() => {
+    dateCalcl();
+  }, [month]);
 
   return (
     <div className="row  inner-top-search">
@@ -330,15 +325,15 @@ export default function Filter(props) {
         value={onlyExcel}
         onChange={e => {
           if (e.target.files.length > 0) {
-            if (e.target.files[0].name.indexOf(".xlsx") > -1) {
-              UploadTimesheet(e.target.files, props);
-            } else {
-              setOnlyExcel("");
-              swalMessage({
-                type: "error",
-                title: "Accept only .xlsx files"
-              });
-            }
+        if (e.target.files[0].name.indexOf(".xlsx") > -1) {
+        UploadTimesheet(e.target.files, props);
+        } else {
+        setOnlyExcel("");
+        swalMessage({
+        type: "error",
+        title: "Accept only .xlsx files"
+        });
+        }
           }
         }}
       /> */}

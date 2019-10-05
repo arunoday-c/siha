@@ -32,7 +32,8 @@ const {
   getBulkManualTimeSheet,
   uploadBulkManualTimeSheet,
   previewBulkTimeSheet,
-  postBulkTimeSheetMonthWise
+  postBulkTimeSheetMonthWise,
+  SaveAttendanceAndProject
 } = attendence;
 
 export default () => {
@@ -458,6 +459,17 @@ export default () => {
           result: req.records
         });
       }
+    }
+  );
+
+  api.post(
+    "/SaveAttendanceAndProject",
+    SaveAttendanceAndProject,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        result: req.records
+      });
     }
   );
 

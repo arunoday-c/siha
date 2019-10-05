@@ -6,8 +6,13 @@ import Agent from "agentkeepalive";
 import config from "../utils/config.json";
 import axiosCancel from "axios-cancel";
 import AlgaehLoader from "../Components/Wrapper/fullPageLoader.js";
+import {
+  encrypter,
+  AlgaehCloseContainer,
+  AlgaehOpenContainer
+} from "./GlobalFunctions";
 const dateFormat = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/;
-
+let showOtherPopup = true;
 export function algaehApiCall(options) {
   // "baseUrl": "http://192.168.0.149:3000/api/v1",
 
@@ -220,6 +225,9 @@ export function algaehApiCall(options) {
         })
         .catch(err => {
           AlgaehLoader({ show: false });
+          if (!showOtherPopup) {
+            return;
+          }
           if (
             settings.cancelRequestId !== undefined ||
             settings.cancelRequestId !== null ||
@@ -228,9 +236,15 @@ export function algaehApiCall(options) {
             if (axios.isCancel(err)) {
               if (process.env.NODE_ENV === "development")
                 console.warn("Request canceled :", err.message);
-              // AlgaehLoader({
-              //   show: false
-              // });
+            }
+          }
+
+          if (err.response !== undefined) {
+            const { status, data } = err.response;
+            if (status === 423) {
+              showOtherPopup = false;
+              reLoginPopup(data);
+              return;
             }
           }
 
@@ -243,14 +257,7 @@ export function algaehApiCall(options) {
                   JSON.stringify(err)
               );
             }
-
-            // swalMessage({
-            //   title: "Request taking long time to process....!",
-            //   type: "info"
-            // });
-          }
-          // else {
-          else {
+          } else {
             if (settings.module === "documentManagement") {
               const reader = new FileReader();
               reader.onload = function() {
@@ -266,6 +273,7 @@ export function algaehApiCall(options) {
                 err.message === "Network Error"
               ) {
                 const routers = config.routersAndPorts;
+
                 swalMessage({
                   title:
                     "'" +
@@ -327,18 +335,91 @@ export function algaehApiCall(options) {
                 });
               }
             }
-            //AlgaehLoader({ show: false });
           }
 
-          // ReactDOM.unmountComponentAtNode(
-          //   document.getElementById("fullPageLoader")
-          // );
           if (typeof settings.onCatch === "function") {
             settings.onCatch(err);
           }
         });
     }
   });
+}
+
+export function reLoginPopup({ message, username }) {
+  if (username === undefined) {
+    window.location.href = window.location.origin + "/#";
+    return;
+  }
+  swal
+    .fire({
+      text: message,
+      imageUrl:
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEwAACxMBAJqcGAAAAfpJREFUWIXtlc9rE0EUx7/vdQvrIXhY8RREkB7rpd68+UeElKqQU6AlG1csnkouYvFQWAIKOcUfRSTqP+Cpt1K9efNmTzkF6hQk4uQ9L90gIbuZsAkL4vc0O/Od7/swO7sP+K+CRfNu6PV6K/1+v6qqm8x8S0SuADDM/EVVD33ff1ev138vBSCO4zVm/gDgZobt62g0qkRR9G2hAHEcrwE4ZuZglldEBqp62wWCXYq3Wi0PwMekuIj8BLBnrb0xGAxWmfk6gL2LeTBzQETvO53O6qxszwUgCIIqgPWkuKreCcPw5C/LKYAn7Xb7E4AjAJeYeX04HFYBvMnKdjoBAJvjDcz7URSdTDOFYfgZwH7yTER3ZwW7AmwkA2vt2xnew2QgIhtZRmcAEbmajMvl8mmWt9FofB+HO1xYJwBmHn8tlUpllOUlInXJnAtgmSocIPVH1O12fWPMgapuMfPlHDXOAbwulUqParXacHIx9T9gjDkgom2iudvFpEoAdowxCqAxuZj6ClR1K2/libx70+ZTAXIeu3Ne4ZcwL8BDVfVVdbcQAFV90Ww2f1lrnxcCQERNAPA870EhAACeXYA8LQogt3IDxHF8rVAAZs5sz0sHyKssgPNFFhKRH/MCvFwkABFNzUvthqq6S0QQkfs5+8KZqr4C8DhHxj+sP0qDqkZPL8SGAAAAAElFTkSuQmCC",
+      confirmButtonColor: "#3085d6",
+      confirmButtonText: "Yes",
+      showCancelButton: true,
+      allowOutsideClick: false,
+      cancelButtonText: "No",
+      input: "password",
+      inputPlaceholder: "Re-enter your password",
+      inputAttributes: {
+        autocapitalize: "off",
+        autocorrect: "off"
+      }
+    })
+    .then(rest => {
+      debugger;
+      const { value, dismiss } = rest;
+      showOtherPopup = true;
+      if (dismiss === "cancel") {
+        window.location.href = window.location.origin + "/#";
+        return;
+      }
+      if (value !== undefined && value !== "") {
+        const item_id = getCookie("HospitalId");
+        getLocalIP(identity => {
+          const dataSent = encrypter(
+            JSON.stringify({
+              username: username,
+              password: value,
+              item_id: item_id,
+              identity: identity
+            })
+          );
+
+          algaehApiCall({
+            uri: "/apiAuth/relogin",
+            data: { post: dataSent },
+            method: "POST",
+            onSuccess: response => {
+              const { success, records, message } = response.data;
+              if (success === true) {
+                setCookie("userName", records.user_display_name);
+                setCookie("keyResources", records.keyResources, 30);
+                sessionStorage.setItem(
+                  "keyData",
+                  AlgaehCloseContainer(JSON.stringify(records.keyData))
+                );
+                sessionStorage.setItem(
+                  "CurrencyDetail",
+                  AlgaehCloseContainer(JSON.stringify(records.hospitalDetails))
+                );
+
+                sessionStorage.setItem("appRole", records.app_d_app_roles_id);
+                swalMessage({ type: "success", title: "Continue" });
+              } else {
+                swalMessage({ type: "warning", title: message });
+              }
+            }
+          });
+        });
+
+        //  window.location.href = window.location.origin + "/#";
+        //  window.location.reload();
+      } else {
+        window.location.reload();
+      }
+    });
 }
 
 export function swalMessage(options) {
@@ -448,53 +529,63 @@ export function valueReviver(key, value) {
   return value;
 }
 export function getLocalIP(callback) {
-  if (window.myIP !== undefined && window.myIP !== "") {
-    callback(window.myIP);
-    return;
+  const identity = window.localStorage.getItem("identity");
+  if (identity === null) {
+    const generator = new IDGenerator();
+    const _IdGen = generator.generate();
+    window.localStorage.setItem("identity", AlgaehCloseContainer(_IdGen));
+    callback(_IdGen);
+  } else {
+    callback(AlgaehOpenContainer(identity));
   }
-  return new Promise((resolve, reject) => {
-    window.RTCPeerConnection =
-      /*window.RTCPeerConnection ||*/ window.webkitRTCPeerConnection ||
-      window.mozRTCPeerConnection;
 
-    if (!window.RTCPeerConnection) {
-      reject("Your browser does not support this API");
-    }
-
-    let pc = new RTCPeerConnection({ iceServers: [] }),
-      noop = function(myIP) {
-        if (myIP !== undefined) {
-          window.myIP = myIP;
-          resolve(myIP);
-        }
-      };
-    pc.createDataChannel(""); //create a bogus data channel
-    pc.createOffer(pc.setLocalDescription.bind(pc), noop); // create offer and set local description
-    pc.onicecandidate = function(ice) {
-      if (ice && ice.candidate && ice.candidate.candidate) {
-        let myIP = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/.exec(
-          ice.candidate.candidate
-        );
-        if (myIP === null) {
-          const generator = new IDGenerator();
-          const _IdGen = generator.generate();
-          window.myIP = _IdGen;
-          callback(_IdGen);
-        } else {
-          pc.onicecandidate = noop(myIP[1]);
-        }
-      }
-    };
-  })
-    .then(myIP => {
-      callback(myIP);
-    })
-    .catch(e => {
-      const generator = new IDGenerator();
-      const _IdGen = generator.generate();
-      window.myIP = _IdGen;
-      callback(_IdGen);
-    });
+  // if (window.myIP !== undefined && window.myIP !== "") {
+  //   callback(window.myIP);
+  //   return;
+  // }
+  // return new Promise((resolve, reject) => {
+  //   window.RTCPeerConnection =
+  //     /*window.RTCPeerConnection ||*/ window.webkitRTCPeerConnection ||
+  //     window.mozRTCPeerConnection;
+  //
+  //   if (!window.RTCPeerConnection) {
+  //     reject("Your browser does not support this API");
+  //   }
+  //
+  //   let pc = new RTCPeerConnection({ iceServers: [] }),
+  //     noop = function(myIP) {
+  //       if (myIP !== undefined) {
+  //         window.myIP = myIP;
+  //         resolve(myIP);
+  //       }
+  //     };
+  //   pc.createDataChannel(""); //create a bogus data channel
+  //   pc.createOffer(pc.setLocalDescription.bind(pc), noop); // create offer and set local description
+  //   pc.onicecandidate = function(ice) {
+  //     if (ice && ice.candidate && ice.candidate.candidate) {
+  //       let myIP = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/.exec(
+  //         ice.candidate.candidate
+  //       );
+  //       if (myIP === null) {
+  //         const generator = new IDGenerator();
+  //         const _IdGen = generator.generate();
+  //         window.myIP = _IdGen;
+  //         callback(_IdGen);
+  //       } else {
+  //         pc.onicecandidate = noop(myIP[1]);
+  //       }
+  //     }
+  //   };
+  // })
+  //   .then(myIP => {
+  //     callback(myIP);
+  //   })
+  //   .catch(e => {
+  //     const generator = new IDGenerator();
+  //     const _IdGen = generator.generate();
+  //     window.myIP = _IdGen;
+  //     callback(_IdGen);
+  //   });
 }
 
 function IDGenerator() {

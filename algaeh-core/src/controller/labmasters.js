@@ -5,7 +5,7 @@ import httpStatus from "../utils/httpStatus";
 import logUtils from "../utils/logging";
 
 const { debugLog } = logUtils;
-const { releaseConnection, bulkMasters } = utils;
+const { releaseConnection } = utils; //bulkMasters
 const {
   selectSection, //Done
   insertSection, //Done

@@ -11,7 +11,7 @@ import formulas from "../model/algaeh_formulas";
 
 const { getFormula } = formulas;
 const { getCacheData, setCacheData } = caching;
-const { bulkMasters } = utils;
+// const { bulkMasters } = utils;
 const {
   titleMaster,
   countryMaster,
@@ -175,7 +175,7 @@ export default () => {
             })
             .ToArray();
         }
-        bulkMasters("countryStateCity", result);
+        // bulkMasters("countryStateCity", result);
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           records: result,
           success: true
