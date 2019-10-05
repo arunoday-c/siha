@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../../../../actions/algaehActions";
-import GlobalVariables from "../../../../../utils/GlobalVariables";
+// import GlobalVariables from "../../../../../utils/GlobalVariables";
 import { getAmountFormart } from "../../../../../utils/GlobalFunctions";
 
 import "./PayRollDetails.scss";
@@ -32,8 +32,8 @@ import {
   updateContibuteComponent,
   getEmpEarningComponents,
   getEmpDeductionComponents,
-  getEmpContibuteComponents,
-  CalculateBasedonFormula
+  getEmpContibuteComponents
+  // CalculateBasedonFormula
 } from "./PayRollDetailsEvent.js";
 import Enumerable from "linq";
 

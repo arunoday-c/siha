@@ -26,8 +26,16 @@ import PatientPackages from "./Components/PatientPackages/PatientPackages";
 import AcknowledgeList from "./Components/Pharmacy/AcknowledgeList/AcknowledgeSwitch";
 import ExpiringItemList from "./Components/Pharmacy/ExpiringItemList/ExpiringItemList";
 import InvAcknowledgeList from "./Components/Inventory/InvAcknowledgeList/InvAcknowledgeSwitch";
-
 import DynamicDashboard from "./Components/Dashboard/dynamicDashboard";
+import FinanceFragment from "./Components/FinanceFragment";
+
+// Capital, Expense, Income, Liabili;
+
+const Accounts = () => <FinanceFragment path="Accounts" />;
+const Transactions = () => <FinanceFragment path="Transactions" />;
+const JournalLedger = () => <FinanceFragment path="JournalLedger" />;
+const FinanceReports = () => <FinanceFragment path="FinanceReports" />;
+
 const PageToPlot = {
   Dashboard: HrDashboard,
   //Dashboard: DynamicDashboard,
@@ -490,7 +498,11 @@ const PageToPlot = {
   ),
   DentalLab: React.lazy(() =>
     retry(() => import("./Components/Laboratory/DentalLab/DentalLab"))
-  )
+  ),
+  Accounts,
+  Transactions,
+  JournalLedger,
+  FinanceReports
 };
 
 const DirectRoutes = React.memo(props => {

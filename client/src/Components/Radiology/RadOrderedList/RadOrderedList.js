@@ -2,14 +2,11 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 
 import "./RadOrderedList.scss";
 import "./../../../styles/site.scss";
 
 import {
-  texthandle,
-  PatientSearch,
   datehandle,
   getRadTestList,
   UpdateRadOrder,
@@ -19,15 +16,9 @@ import {
 import {
   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehFormGroup,
-  AlagehAutoComplete,
   AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
 
-import {
-  FORMAT_PRIORITY,
-  FORMAT_RAD_STATUS
-} from "../../../utils/GlobalVariables.json";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import moment from "moment";
 import Options from "../../../Options.json";
@@ -54,17 +45,6 @@ class RadOrderedList extends Component {
   }
 
   componentDidMount() {
-    {
-      /*this.props.getTestCategory({
-      uri: "/labmasters/selectTestCategory",
-      module: "laboratory",
-      method: "GET",
-      redux: {
-        type: "TESTCATEGORY_GET_DATA",
-        mappingName: "testcategory"
-      }
-    });*/
-    }
     getRadTestList(this, this);
   }
   changeDateFormat = date => {

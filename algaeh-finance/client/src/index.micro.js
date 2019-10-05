@@ -1,12 +1,13 @@
-import React from "react";
-import Routes from "./Routes";
+import Accounts from "./Components/FinanceAccounts";
+import Transactions from "./Components/Transactions";
+import JournalLedger from "./Components/JournalLedger";
+import FinanceReports from "./Components/FinanceReports";
 
-type Props = {
-  path: string
+const Pages = {
+  Accounts,
+  Transactions,
+  JournalLedger,
+  FinanceReports
 };
 
-function Index(props: Props) {
-  return <Routes path={props.path} />;
-}
-
-window.FinanceComponent = Index;
+window.FinanceComponent = Pages;

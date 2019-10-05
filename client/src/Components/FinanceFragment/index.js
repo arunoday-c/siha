@@ -3,9 +3,10 @@ import axios from "axios";
 
 export default function FinanceFragment(props) {
   // const { hostname, protocol } = window.location;
+  console.log(props);
   const [Component, setComp] = useState(null);
   const [err, setErr] = useState(null);
-  const PREFIX = "/finance";
+  const PREFIX = window.location.port ? "http://localhost:3007" : "/finance";
 
   useEffect(() => {
     function loadManifest() {
@@ -16,34 +17,38 @@ export default function FinanceFragment(props) {
       .then(res => res.data)
       .then(manifest => {
         const {
-          micro: { js, css },
+          micro: { js },
           metadata: { componentName }
         } = manifest;
-
-        const runtime = manifest["runtime~micro"];
-        const runtimeSrc = document.createElement("script");
-        runtimeSrc.src = `${runtime["js"]}`;
-        runtimeSrc.type = "text/javascript";
-        runtimeSrc.crossOrigin = "anonymous";
-        document.body.appendChild(runtimeSrc);
-        const style = document.createElement("link");
-        style.href = `${css}`;
-        style.rel = "stylesheet";
-        document.head.appendChild(style);
-        const script = document.createElement("script");
-        script.src = `${js}`;
-        script.type = "text/javascript";
-        script.crossOrigin = "anonymous";
-        script.onload = () => {
+        const hash = js.split(".")[1];
+        console.log(hash, "hash");
+        const script = document.getElementById("finance-script");
+        const hashAttr = script.getAttribute("data-hash");
+        console.log(hashAttr !== hash, "the truth");
+        if (hashAttr !== hash) {
+          script.remove();
+          const newScript = document.createElement("script");
+          newScript.src = `${PREFIX}${js}`;
+          newScript.type = "text/javascript";
+          newScript.setAttribute("data-hash", hash);
+          newScript.id = "finance-script";
+          newScript.crossOrigin = "anonymous";
+          newScript.onload = () => {
+            console.log(window[componentName], componentName);
+            setComp(window[componentName]);
+          };
+          document.body.appendChild(newScript);
+        } else {
           setComp(window[componentName]);
-        };
-        document.body.appendChild(script);
+        }
       })
       .catch(err => setErr(err));
   }, []);
 
   if (Component) {
-    return <Component {...props} />;
+    const ReqComp = Component[props.path];
+    console.log(ReqComp);
+    return <ReqComp hello="this is from hims" />;
   }
   if (err) {
     return <div>Error occured</div>;

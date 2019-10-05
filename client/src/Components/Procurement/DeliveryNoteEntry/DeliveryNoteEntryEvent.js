@@ -6,7 +6,7 @@ import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import DNEntry from "../../../Models/DNEntry";
 import Enumerable from "linq";
-import extend from "extend";
+// import extend from "extend";
 import _ from "lodash";
 
 let texthandlerInterval = null;
@@ -268,7 +268,7 @@ const SaveDNEnrty = $this => {
   const batchExpiryDate = Enumerable.from($this.state.receipt_entry_detail)
     .where(w => w.expiry_date === null)
     .toArray();
-  
+
   var InputObj = { ...$this.state };
 
   for (var j = 0; j < InputObj.po_entry_detail.length; j++) {

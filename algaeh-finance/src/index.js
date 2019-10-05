@@ -1,20 +1,138 @@
 import express from "express";
+import http from "http";
+import bodyParser from "body-parser";
 import cors from "cors";
 const path = require("path");
+import keys from "algaeh-keys";
+import utliites from "algaeh-utilities";
+import routes from "./routes";
+import compression from "compression";
 const app = express();
-
+app.server = http.createServer(app);
 app.use(cors());
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "/../client/build")));
-} else {
-  app.get("/", (req, res) => {
-    res.redirect("http://localhost:1315");
-  });
-}
+const PORT = process.env.PORT || 3007;
 
-app.get("/api/v1", (req, res) => {
-  console.log("accessed");
-  res.json({ message: "Hello From Api" });
+app.use(
+  bodyParser.json({
+    limit: keys.bodyLimit
+  })
+);
+
+app.use(compression());
+
+app.use((req, res, next) => {
+  const reqH = req.headers;
+  const _token = reqH["x-api-key"];
+
+  utliites
+    .AlgaehUtilities()
+    .logger()
+    .log("Xapi", _token, "debug");
+  const _verify = utliites.AlgaehUtilities().tokenVerify(_token);
+  if (_verify) {
+    let header = reqH["x-app-user-identity"];
+    if (header != null && header != "" && header != "null") {
+      header = utliites.AlgaehUtilities().decryption(header);
+      req.userIdentity = header;
+      let reqUser = utliites.AlgaehUtilities().getTokenData(_token).id;
+      utliites
+        .AlgaehUtilities()
+        .logger("res-tracking")
+        .log(
+          "",
+          {
+            dateTime: new Date().toLocaleString(),
+            requestIdentity: {
+              requestClient: reqH["x-client-ip"],
+              requestAPIUser: reqUser,
+              reqUserIdentity: req.userIdentity
+            },
+            requestUrl: req.originalUrl,
+            requestHeader: {
+              host: reqH.host,
+              "user-agent": reqH["user-agent"],
+              "cache-control": reqH["cache-control"],
+              origin: reqH.origin
+            },
+            requestMethod: req.method
+          },
+          "info"
+        );
+    }
+
+    res.setHeader("connection", "keep-alive");
+    next();
+  } else {
+    res.status(utliites.AlgaehUtilities().httpStatus().unAuthorized).json({
+      success: false,
+      message: "unauthorized access"
+    });
+  }
 });
 
-app.listen(3007);
+if (process.env.NODE_ENV === "production") {
+  console.log(path.resolve("./", "client/build"), "prod");
+  app.use(express.static(path.resolve("./", "client/build")));
+} else {
+  console.log(path.resolve("./", "client/dist"), "dev");
+  app.use(express.static(path.resolve("./", "client/dist")));
+}
+
+app.use("/api/v1", routes);
+
+process.on("warning", warning => {
+  utliites
+    .AlgaehUtilities()
+    .logger()
+    .log("warn", warning, "warn");
+});
+process.on("uncaughtException", error => {
+  utliites
+    .AlgaehUtilities()
+    .logger()
+    .log("uncatched Exception", error, "error");
+});
+process.on("unhandledRejection", (reason, promise) => {
+  utliites
+    .AlgaehUtilities()
+    .logger()
+    .log("Unhandled rejection", { reason: reason, promise: promise }, "error");
+});
+app.use((error, req, res, next) => {
+  error.status =
+    error.status || utliites.AlgaehUtilities().httpStatus().internalServer;
+  const errorMessage =
+    error.sqlMessage != null ? error.sqlMessage : error.message;
+  const reqH = req.headers;
+  utliites
+    .AlgaehUtilities()
+    .logger()
+    .log(
+      "Exception",
+      {
+        ...{
+          dateTime: new Date().toLocaleString(),
+          method: req.method,
+          ...(req.method === "GET" ? {} : { body: req.body }),
+          requestUrl: req.originalUrl,
+          requestHeader: {
+            host: reqH.host,
+            "user-agent": reqH["user-agent"],
+            "cache-control": reqH["cache-control"],
+            origin: reqH.origin
+          }
+        },
+        message: errorMessage
+      },
+      "error"
+    );
+  res.status(error.status).json({
+    success: false,
+    isSql: error.sqlMessage != null ? true : false,
+    message: errorMessage
+  });
+});
+
+app.server.listen(PORT);
+console.log(`FINANCE Server is running  on PORT  - ${PORT} *`);
+// app.listen(PORT, () => console.log("Finance server started on :", PORT));

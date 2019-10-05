@@ -11,28 +11,23 @@ function App(props) {
     <>
       <ul className="nav nav-tabs" style={{ marginBottom: 15 }}>
         <li className="nav-item">
-          <Link className="nav-link active" to="/assets">
-            Assets
+          <Link className="nav-link active" to="/accounts">
+            Accounts
           </Link>
         </li>
         <li className="nav-item">
-          <Link className="nav-link" to="/liability">
-            Liability
+          <Link className="nav-link" to="/transactions">
+            Transactions
           </Link>
         </li>
         <li className="nav-item">
-          <Link className="nav-link" to="/income">
-            Income
+          <Link className="nav-link" to="/journal">
+            Journal Ledger
           </Link>
         </li>
         <li className="nav-item">
-          <Link className="nav-link" to="/capital">
-            Capital
-          </Link>
-        </li>{" "}
-        <li className="nav-item">
-          <Link className="nav-link" to="/expense">
-            Expense
+          <Link className="nav-link" to="/reports">
+            Financial Reports
           </Link>
         </li>
       </ul>

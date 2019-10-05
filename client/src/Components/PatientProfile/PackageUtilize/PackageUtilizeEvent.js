@@ -6,7 +6,7 @@ import moment from "moment";
 export default function PackageSetupEvent() {
   return {
     onPackageChange: ($this, e) => {
-      let name = e.name || e.target.name;
+      // let name = e.name || e.target.name;
       let value = e.value || e.target.value;
 
       $this.setState({

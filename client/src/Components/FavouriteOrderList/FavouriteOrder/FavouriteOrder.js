@@ -15,6 +15,9 @@ import {
 import FavouriteOrderEvent from "./FavouriteOrderEvent";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import GlobalVariables from "../../../utils/GlobalVariables";
+import spotlightSearch from "../../../Search/spotlightSearch.json";
+import AlgaehAutoSearch from "../../Wrapper/autoSearch";
+import _ from "lodash";
 
 class FavouriteOrder extends PureComponent {
   constructor(props) {
@@ -173,7 +176,41 @@ class FavouriteOrder extends PureComponent {
                 </div>
 
                 <div className="row">
-                  <AlagehAutoComplete
+                  <AlgaehAutoSearch
+                    div={{ className: "col customServiceSearch" }}
+                    label={{ forceLabel: "Search Investigation" }}
+                    title="Search Investigation"
+                    id="service_id_search"
+                    template={({ service_name, service_type }) => {
+                      let properStyle;
+
+                      return (
+                        <div className={`row resultSecStyles`}>
+                          <div className="col-12 padd-10">
+                            <h4 className="title">
+                              {_.startCase(_.toLower(service_name))}
+                            </h4>
+                            <p className="searchMoreDetails">
+                              <span>
+                                Service Type:
+                                <b>{_.startCase(_.toLower(service_type))}</b>
+                              </span>
+                            </p>
+                          </div>
+                        </div>
+                      );
+                    }}
+                    name="s_service"
+                    columns={spotlightSearch.Services.servicemaster}
+                    displayField="service_name"
+                    value={this.state.service_name}
+                    searchName="servicemaster"
+                    onClick={this.serviceHandeler.bind(this)}
+                    ref={attReg => {
+                      this.attReg = attReg;
+                    }}
+                  />
+                  {/*  <AlagehAutoComplete
                     div={{ className: "col-lg-3" }}
                     label={{
                       forceLabel: "Select Service Type"
@@ -227,7 +264,7 @@ class FavouriteOrder extends PureComponent {
                         });
                       }
                     }}
-                  />
+                  />*/}
                   <div className="col-2 form-group">
                     <button
                       className="btn btn-primary"
