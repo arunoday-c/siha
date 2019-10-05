@@ -14,7 +14,7 @@ import "regenerator-runtime/runtime";
 import cheerio from "cheerio";
 import Excel from "exceljs/modern.browser";
 // const chromePath =
-  // chrome.default.chromePuppeteer != null ? chrome.default.chromePuppeteer : {};
+// chrome.default.chromePuppeteer != null ? chrome.default.chromePuppeteer : {};
 
 const XlsxTemplate = require("xlsx-template");
 
@@ -32,7 +32,7 @@ const compile = async function(templateName, data) {
       "algaeh_report_tool/templates",
       `${templateName}.hbs`
     );
-    console.log(filePath)
+
     const html = await fs.readFile(filePath, "utf-8");
     const comp = await hbs.compile(html)(data);
     //
@@ -343,7 +343,7 @@ export default {
                   const startGenerate = async () => {
                     const _outPath = _path + ".pdf";
                     _reportOutput.push(_outPath);
-                    const browser = await puppeteer.launch({headless: true});
+                    const browser = await puppeteer.launch({ headless: true });
                     const page = await browser.newPage();
                     const _pdfTemplating = {};
                     if (
@@ -503,7 +503,9 @@ export default {
                   };
 
                   if (fs.existsSync(_supportingJS)) {
-                    const { executePDF } = require(_supportingJS);
+                    const { executePDF } = __non_webpack_require__(
+                      _supportingJS
+                    );
                     executePDF({
                       mysql: _mysql,
                       inputs: _inputOrders,
@@ -625,7 +627,9 @@ export default {
                       const _outPath = _path + ".pdf";
                       subReportCollection.push(_outPath);
                       const startGenerate = async () => {
-                        const browser = await puppeteer.launch({headless: true});
+                        const browser = await puppeteer.launch({
+                          headless: true
+                        });
                         const page = await browser.newPage();
                         const _pdfTemplating = {};
                         if (
@@ -721,7 +725,9 @@ export default {
                       );
 
                       if (fs.existsSync(_supportingJS)) {
-                        const { executePDF } = require(_supportingJS);
+                        const { executePDF } = __non_webpack_require__(
+                          _supportingJS
+                        );
                         executePDF({
                           mysql: _mysql,
                           inputs: _inputParam,
@@ -889,10 +895,9 @@ export default {
               );
               let excelRun;
 
-              const { executePDF } = require(path.join(
-                mainPath,
-                _inputParam.reportName + ".js"
-              ));
+              const { executePDF } = __non_webpack_require__(
+                path.join(mainPath, _inputParam.reportName + ".js")
+              );
               excelRun = executePDF;
               const _input = { hospital_id: req.userIdentity["x-branch"] };
               for (let i = 0; i < _inputParam.reportParams.length; i++) {
@@ -1242,7 +1247,6 @@ export default {
                       _data.report_footer_file_name != null &&
                       _data.report_footer_file_name != ""
                     ) {
-                      console.log("before footer");
                       _pdfTemplating["footerTemplate"] = await compile(
                         _data.report_footer_file_name,
                         {
@@ -1304,7 +1308,9 @@ export default {
                   };
 
                   if (fs.existsSync(_supportingJS)) {
-                    const { executePDF } = require(_supportingJS);
+                    const { executePDF } = __non_webpack_require__(
+                      _supportingJS
+                    );
                     executePDF({
                       mysql: _mysql,
                       inputs: _inputOrders,
