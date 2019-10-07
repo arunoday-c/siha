@@ -178,8 +178,6 @@ function createHierarchy(arry) {
         created_status: item["child_created_from"]
       });
 
-      utilities.logger().log("target:", target);
-
       const data = target.find(val => {
         return val.finance_account_head_id == item.finance_account_head_id;
       });
