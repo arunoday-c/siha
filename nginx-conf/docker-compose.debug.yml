@@ -8,8 +8,10 @@ services:
       - 80:80
     volumes:
       - ./config/nginx-dev.conf:/etc/nginx/nginx.conf
+    restart: always
   algaeh-cache:
     image: redis:alpine
     network_mode: bridge
     ports:
       - 6379:6379
+    restart: always
