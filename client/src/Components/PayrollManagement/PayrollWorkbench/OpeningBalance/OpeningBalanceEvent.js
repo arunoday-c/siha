@@ -16,12 +16,104 @@ import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 
 export default function ManualAttendanceEvents() {
   return {
+    downloadExcel: $this => {
+      AlgaehLoader({ show: true });
+
+      if ($this.state.hospital_id === null) {
+        swalMessage({
+          title: "Please select the branch.",
+          type: "warning"
+        });
+        document.querySelector("[name='hospital_id']").focus();
+        return;
+      }
+      if ($this.state.year === null) {
+        swalMessage({
+          title: "Please select the year.",
+          type: "warning"
+        });
+        document.querySelector("[name='year']").focus();
+        return;
+      }
+
+      let inputObj = {
+        year: $this.state.year,
+        hospital_id: $this.state.hospital_id
+      };
+
+      if ($this.state.hims_d_employee_id !== null) {
+        inputObj.hims_d_employee_id = $this.state.hims_d_employee_id;
+      }
+
+      if ($this.state.employee_group_id !== null) {
+        inputObj.employee_group_id = $this.state.employee_group_id;
+      }
+      debugger;
+      algaehApiCall({
+        uri: "/employee/getBulkEmployeeLeaves",
+        method: "GET",
+        data: inputObj,
+        headers: {
+          Accept: "blob"
+        },
+        module: "hrManagement",
+        others: { responseType: "blob" },
+        onSuccess: res => {
+          let blob = new Blob([res.data], {
+            type: "application/octet-stream"
+          });
+          const fileName = `ManualTimeSheet-${inputObj}.xlsx`;
+          var objectUrl = URL.createObjectURL(blob);
+          var link = document.createElement("a");
+          link.setAttribute("href", objectUrl);
+          link.setAttribute("download", fileName);
+          link.click();
+          AlgaehLoader({ show: false });
+        },
+        onCatch: error => {
+          var reader = new FileReader();
+          reader.onload = function() {
+            AlgaehLoader({ show: false });
+            const parse = JSON.parse(reader.result);
+            swalMessage({
+              type: "error",
+              title: parse !== undefined ? parse.result.message : parse
+            });
+          };
+          reader.readAsText(error.response.data);
+        }
+      });
+    },
     texthandle: ($this, e) => {
       let name = e.name || e.target.name;
       let value = e.value || e.target.value;
 
       $this.setState({
         [name]: value
+      });
+    },
+    getApplicationLeaves: $this => {
+      algaehApiCall({
+        uri: "/employee/getEmployeeLeaveType",
+        module: "hrManagement",
+        method: "GET",
+        onSuccess: response => {
+          if (response.data.records.length > 0) {
+            $this.setState({
+              application_leave: response.data.records
+            });
+          } else {
+            $this.setState({
+              application_leave: []
+            });
+          }
+        },
+        onFailure: error => {
+          swalMessage({
+            title: error.message || error.response.data.message,
+            type: "error"
+          });
+        }
       });
     },
 
@@ -163,95 +255,8 @@ export default function ManualAttendanceEvents() {
               }
             },
             {
-              fieldName: "leave_days",
-              label: <AlgaehLabel label={{ forceLabel: "Leave Days" }} />,
-              editorTemplate: row => {
-                return (
-                  <AlagehFormGroup
-                    div={{ className: "col" }}
-                    textBox={{
-                      number: {
-                        allowNegative: false,
-                        thousandSeparator: ","
-                      },
-                      dontAllowKeys: ["-", "e", "."],
-                      className: "txt-fld",
-                      name: "leave_days",
-                      value: row.leave_days,
-                      events: {
-                        onChange: changeGridEditors.bind($this, $this, row)
-                      }
-                    }}
-                  />
-                );
-              },
-              others: {
-                minWidth: 200,
-                fixed: "center"
-              }
-            },
-            {
-              fieldName: "leave_salary_amount",
-              label: (
-                <AlgaehLabel label={{ forceLabel: "Leave Salary Amount" }} />
-              ),
-              others: {
-                filterable: false
-              },
-              editorTemplate: row => {
-                return (
-                  <AlagehFormGroup
-                    div={{ className: "col" }}
-                    textBox={{
-                      number: {
-                        allowNegative: false,
-                        thousandSeparator: ","
-                      },
-                      dontAllowKeys: ["-", "e", "."],
-                      className: "txt-fld",
-                      name: "leave_salary_amount",
-                      value: row.leave_salary_amount,
-                      events: {
-                        onChange: changeGridEditors.bind($this, $this, row)
-                      }
-                    }}
-                  />
-                );
-              }
-            },
-
-            {
-              fieldName: "airticket_amount",
-              label: <AlgaehLabel label={{ forceLabel: "Airticket Amount" }} />,
-              editorTemplate: row => {
-                return (
-                  <AlagehFormGroup
-                    div={{ className: "col" }}
-                    textBox={{
-                      number: {
-                        allowNegative: false,
-                        thousandSeparator: ","
-                      },
-                      dontAllowKeys: ["-", "e", "."],
-                      className: "txt-fld",
-                      name: "airticket_amount",
-                      value: row.airticket_amount,
-                      events: {
-                        onChange: changeGridEditors.bind($this, $this, row)
-                      }
-                    }}
-                  />
-                );
-              },
-              others: {
-                filterable: false
-              }
-            },
-            {
               fieldName: "balance_leave_days",
-              label: (
-                <AlgaehLabel label={{ forceLabel: "Balance Leave Days" }} />
-              ),
+              label: <AlgaehLabel label={{ forceLabel: "Leave Days" }} />,
               editorTemplate: row => {
                 return (
                   <AlagehFormGroup
@@ -273,17 +278,17 @@ export default function ManualAttendanceEvents() {
                 );
               },
               others: {
-                minWidth: 200,
-                fixed: "center"
+                filterable: false
               }
             },
             {
               fieldName: "balance_leave_salary_amount",
               label: (
-                <AlgaehLabel
-                  label={{ forceLabel: "Balance Leave Salary Amount" }}
-                />
+                <AlgaehLabel label={{ forceLabel: "Leave Salary Amount" }} />
               ),
+              others: {
+                filterable: false
+              },
               editorTemplate: row => {
                 return (
                   <AlagehFormGroup
@@ -303,18 +308,12 @@ export default function ManualAttendanceEvents() {
                     }}
                   />
                 );
-              },
-              others: {
-                filterable: false
               }
             },
+
             {
               fieldName: "balance_airticket_amount",
-              label: (
-                <AlgaehLabel
-                  label={{ forceLabel: "Balance Airticket Amount" }}
-                />
-              ),
+              label: <AlgaehLabel label={{ forceLabel: "Airticket Amount" }} />,
               editorTemplate: row => {
                 return (
                   <AlagehFormGroup
