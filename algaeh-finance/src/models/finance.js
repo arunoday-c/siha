@@ -152,12 +152,12 @@ export default {
 //   FROM finance_account_head where finance_account_head_id=10;
 function createHierarchy(arry) {
   const utilities = new algaehUtilities();
-  var roots = [],
+  let roots = [],
     children = {};
 
   // find the top level nodes and hash the children based on parent_acc_id
-  for (var i = 0, len = arry.length; i < len; ++i) {
-    var item = arry[i],
+  for (let i = 0, len = arry.length; i < len; ++i) {
+    let item = arry[i],
       p = item.parent_acc_id,
       //if it has no parent_acc_id
       //seprating roots to roots array childerens to childeren array
@@ -199,9 +199,9 @@ function createHierarchy(arry) {
   // utilities.logger().log("children:", children);
 
   // function to recursively build the tree
-  var findChildren = function(parent) {
+  let findChildren = function(parent) {
     if (children[parent.finance_account_head_id]) {
-      let tempchilds = children[parent.finance_account_head_id];
+      const tempchilds = children[parent.finance_account_head_id];
       // let child = [];
       // tempchilds.forEach((item, i) => {
       //   if (item.finance_account_head_id > 0) {
@@ -218,14 +218,14 @@ function createHierarchy(arry) {
       // });
       parent.children = tempchilds;
 
-      for (var i = 0, len = parent.children.length; i < len; ++i) {
+      for (let i = 0, len = parent.children.length; i < len; ++i) {
         findChildren(parent.children[i]);
       }
     }
   };
 
   // enumerate through to handle the case where there are multiple roots
-  for (var i = 0, len = roots.length; i < len; ++i) {
+  for (let i = 0, len = roots.length; i < len; ++i) {
     findChildren(roots[i]);
   }
 
@@ -244,11 +244,11 @@ function createHierarchy(arry) {
 // select * from cte;
 
 // function to recursively build the tree
-//  var findChildren = function(parent) {
+//  let findChildren = function(parent) {
 //   if (children[parent.finance_account_head_id]) {
 //     parent.children = children[parent.finance_account_head_id];
 
-//     for (var i = 0, len = parent.children.length; i < len; ++i) {
+//     for (let i = 0, len = parent.children.length; i < len; ++i) {
 //       findChildren(parent.children[i]);
 //     }
 //   }
