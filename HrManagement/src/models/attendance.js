@@ -899,24 +899,14 @@ export default {
 
                         //ST---- reduce include holidays and weekoff
 
-                        utilities
-                          .logger()
-                          .log(
-                            "total_week_off: befor",
-                            allEmployees[i]["defaults"].total_week_off
-                          );
+                    
 
                         allEmployees[i]["defaults"].total_holidays -=
                           allEmployees[i]["defaults"].holiday_include;
                         allEmployees[i]["defaults"].total_week_off -=
                           allEmployees[i]["defaults"].week_off_include;
 
-                        utilities
-                          .logger()
-                          .log(
-                            "total_week_off: afte",
-                            allEmployees[i]["defaults"].total_week_off
-                          );
+                   
                         //EN---- reduce include holidays and weekoff
 
                         allEmployees[i]["defaults"].present_days =
@@ -941,12 +931,7 @@ export default {
                             allEmployees[i]["defaults"].pending_leaves
                           );
 
-                        utilities
-                          .logger()
-                          .log(
-                            "total_week_off: befor",
-                            allEmployees[i]["defaults"].total_leaves
-                          );
+                      
 
                         attendanceArray.push({
                           employee_id: allEmployees[i]["hims_d_employee_id"],
@@ -3262,66 +3247,7 @@ export default {
                         );
                       }
 
-                      //ST---present month roster 10 days
-                      // for (let j = 0; j < RosterResult.length; j++) {
-
-                      //   let whichLeave=0;
-                      //   // checking which leave is on puerticular date
-                      //   for (let k = 0; k < leave_Date_range.length; k++){
-                      //     let leavData=leave_Date_range[k]["dates"].includes(RosterResult[j]["shift_date"]);
-                      //     if (leavData==true){
-                      //       whichLeave=leave_Date_range[k]["leave_type"];
-                      //       break;
-                      //     }
-
-                      //   }
-                      //   utilities.logger().log("shift_date ", RosterResult[j]["shift_date"]);
-                      //   utilities.logger().log("whichLeave: ", whichLeave);
-
-                      //   RosterAttendance.push({
-                      //     employee_id: RosterResult[j]["employee_id"],
-                      //     hospital_id: RosterResult[j]["hospital_id"],
-                      //     sub_department_id:
-                      //       RosterResult[j]["sub_department_id"],
-                      //     attendance_date: RosterResult[j]["shift_date"],
-                      //     year: moment(RosterResult[j]["shift_date"]).format(
-                      //       "YYYY"
-                      //     ),
-                      //     month: moment(RosterResult[j]["shift_date"]).format(
-                      //       "M"
-                      //     ),
-                      //     total_days: 1,
-
-                      //     weekoff_days:
-                      //     whichLeave==0  &&RosterResult[j]["weekoff"] == "Y" ? 1 : 0,
-
-                      //     holidays:  whichLeave==0&&RosterResult[j]["holiday"] == "Y" ? 1 : 0,
-                      //     present_days:
-                      //       RosterResult[j]["weekoff"] == "N" &&
-                      //       RosterResult[j]["holiday"] == "N"
-                      //         ? 1
-                      //         : 0,
-                      //     absent_days: 0,
-                      //     total_work_days:
-                      //       RosterResult[j]["weekoff"] == "N" &&
-                      //       RosterResult[j]["holiday"] == "N"
-                      //         ? 1
-                      //         : 0,
-                      //     paid_leave: whichLeave=="P"?1:0,
-                      //     unpaid_leave: whichLeave=="U"?1:0,
-                      //     total_hours: RosterResult[j]["shift_time"],
-                      //     hours: parseInt(RosterResult[j]["shift_time"]),
-                      //     minutes:
-                      //       (parseFloat(RosterResult[j]["shift_time"]) % 1) *
-                      //       100,
-                      //     working_hours: RosterResult[j]["shift_time"],
-                      //     shortage_hours: 0,
-                      //     shortage_minutes: 0,
-                      //     ot_work_hours: 0,
-                      //     ot_minutes: 0
-                      //   });
-                      // }
-                      //--ENDpresent month roster 10 days
+                      
 
                       //last month 10 days
                       for (let i = 0; i < LastTenDaysResult.length; i++) {
@@ -3567,26 +3493,7 @@ export default {
                                   )
                                   .Sum(s => s.updaid_leave_duration);
 
-                                utilities
-                                  .logger()
-                                  .log("allPendingLeaves: ", allPendingLeaves);
-
-                                utilities
-                                  .logger()
-                                  .log("pending_leaves: ", pending_leaves);
-
-                                utilities
-                                  .logger()
-                                  .log(
-                                    "shortage_hourss: ",
-                                    attResult[i]["shortage_hourss"]
-                                  );
-                                utilities
-                                  .logger()
-                                  .log(
-                                    "ot_hourss: ",
-                                    attResult[i]["ot_hourss"]
-                                  );
+                               
 
                                 insertArray.push({
                                   ...attResult[i],
@@ -6357,7 +6264,7 @@ export default {
                         });
                       });
 
-                      utilities.logger().log("final_roster: ", final_roster);
+                      
 
                       req.records = final_roster;
                       next();
@@ -6742,7 +6649,7 @@ export default {
                 });
               });
 
-              utilities.logger().log("insertArray:", insertArray);
+            
 
               if (insertArray.length > 0 && errorString == "") {
                 const insurtColumns = [
@@ -7742,7 +7649,9 @@ function insertTimeSheet(
           next(e);
         });
       });
-  } catch (e) {}
+  } catch (e) {
+    next(e);
+  }
 }
 
 //
@@ -7759,7 +7668,7 @@ function getDaysArray(start, end) {
 
     return arr;
   } catch (e) {
-    utilities.logger().log("error rr: ", e);
+   // utilities.logger().log("error rr: ", e);
   }
 }
 
