@@ -177,12 +177,21 @@ function createHierarchy(arry) {
         leafnode: "Y",
         created_status: item["child_created_from"]
       });
-      target.push({
-        ...item,
-        title: item.account_name,
-        created_status: item["head_created_from"],
-        leafnode: "N"
+
+      utilities.logger().log("target:", target);
+
+      const data = target.find(val => {
+        return val.finance_account_head_id == item.finance_account_head_id;
       });
+
+      if (!data) {
+        target.push({
+          ...item,
+          title: item.account_name,
+          created_status: item["head_created_from"],
+          leafnode: "N"
+        });
+      }
     } else {
       target.push({ ...item, title: item.account_name, leafnode: "N" });
     }
