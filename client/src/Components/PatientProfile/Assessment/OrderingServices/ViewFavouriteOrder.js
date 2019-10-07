@@ -9,15 +9,11 @@ import "./ViewFavouriteOrder.scss";
 
 import {
   AlgaehLabel,
-  AlagehFormGroup,
-  AlagehAutoComplete,
   AlgaehDataGrid,
   AlgaehModalPopUp
 } from "../../../Wrapper/algaehWrapper";
 
 import { AlgaehActions } from "../../../../actions/algaehActions";
-import GlobalVariables from "../../../../utils/GlobalVariables.json";
-import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import Enumerable from "linq";
 
 class ViewFavouriteOrder extends PureComponent {

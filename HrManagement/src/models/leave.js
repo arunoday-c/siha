@@ -2663,6 +2663,15 @@ export default {
             _mysql.releaseConnection();
             next(e);
           });
+      }else{
+
+        req.records = {
+          leave_already_exist: true,
+          message: "cant apply across year leave"
+        };
+
+        next();
+        return;
       }
     } catch (e) {
       next(e);

@@ -9,8 +9,6 @@ import {
   AlgaehLabel,
   AlgaehDataGrid,
   AlgaehDateHandler,
-  AlagehAutoComplete,
-  AlagehFormGroup,
   AlgaehModalPopUp
 } from "../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../actions/algaehActions";
@@ -20,9 +18,7 @@ import SubmitRequest from "./SubmitRequest/SubmitRequest";
 import PreApprovalStatus from "./PreApprovalStatus/PreApprovalStatus";
 import UpdateOrders from "./UpdateOrders/UpdateOrders";
 import {
-  texthandle,
   datehandle,
-  PatientSearch,
   VerifyOrderModel,
   CloseOrderModel,
   getPreAprovalList,
@@ -31,7 +27,6 @@ import {
 } from "./PreApprovalHandaler";
 import moment from "moment";
 import Options from "../../Options.json";
-import variableJson from "../../utils/GlobalVariables.json";
 
 const UcafEditor = React.lazy(() => import("../ucafEditors/ucaf"));
 const DcafEditor = React.lazy(() => import("../ucafEditors/dcaf"));

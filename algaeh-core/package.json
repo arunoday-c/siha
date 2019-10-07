@@ -21,13 +21,14 @@
     "pm2": "concurrently --kill-others  cross-env NODE_ENV=development  pm2 start  --max-memory-restart 850M \"babel-node src/internal_server.js \"  \"npm run client\"",
     "test": "export NODE_ENV=test npm run build && mocha --require babel-core/register --timeout=10000000",
     "complete-build": "concurrently  \"babel src -s -D -d ../algaeh_erp_live/Core --source-maps false \" \"babel HrManagement/src -s -D -d ../algaeh_erp_live/HrManagement --source-maps false\" \"babel DocumentManagement/src -s -D -d ../algaeh_erp_live/DocumentManagement --source-maps false\" \"babel MasterSettings/src -s -D -d ../algaeh_erp_live/MasterSettings --source-maps false\" \"babel Billing/src -s -D -d ../algaeh_erp_live/Billing --source-maps false\" \"babel FrontDesk/src -s -D -d ../algaeh_erp_live/FrontDesk --source-maps false\" \"babel Radiology/src -s -D -d ../algaeh_erp_live/Radiology --source-maps false\" \"babel Laboratory/src -s -D -d ../algaeh_erp_live/Laboratory --source-maps false\" \"babel Pharmacy/src -s -D -d ../algaeh_erp_live/Pharmacy --source-maps false\" \"babel Inventory/src -s -D -d ../algaeh_erp_live/Inventory --source-maps false\" \"babel Procurement/src -s -D -d ../algaeh_erp_live/Procurement --source-maps false\" \"babel AlgaehReporting/src -s -D -d ../algaeh_erp_live/AlgaehReporting --source-maps false\" \"babel Insurance/src -s -D -d ../algaeh_erp_live/Insurance --source-maps false\" \"babel ClinicalDesk/src -s -D -d ../algaeh_erp_live/ClinicalDesk --source-maps false\" \"babel Finanace/src -s -D -d ../algaeh_erp_live/Finanace --source-maps false\"",
-    "run-prod": "cross-env PORT=3000 NODE_ENV=production pm2 start  -i 4 build/app.js",
+    "run-prod": "cross-env PORT=3000 NODE_ENV=production pm2-runtime start  -i 4 build/app.js --name 'core'",
     "start": "run-s build run-prod",
     "start-proxy": "docker-compose -f '../nginx-conf/docker-compose.debug.yml' up --build -d"
   },
   "author": "ALGAEH Technologies Pvt Ltd",
   "license": "ISC",
   "dependencies": {
+    "@babel/runtime": "^7.6.2",
     "algaeh-mysql": "^1.2.11",
     "aws-sdk": "^2.247.1",
     "bluebird": "^3.5.1",
@@ -75,6 +76,7 @@
     "@babel/cli": "^7.6.2",
     "@babel/core": "^7.6.2",
     "@babel/node": "^7.6.2",
+    "@babel/plugin-transform-runtime": "^7.6.2",
     "@babel/preset-env": "^7.6.2",
     "babel-loader": "^8.0.6",
     "nodemon": "^1.17.3",
