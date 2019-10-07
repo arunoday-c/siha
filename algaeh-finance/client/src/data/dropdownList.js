@@ -195,3 +195,29 @@ export const currency_list = [
   { value: "ZMW", name: "Zambian Kwacha" },
   { value: "ZWL", name: "Zimbabwean Dollar" }
 ];
+
+export const incomeSource = [
+  { name: "Select Source Account", value: "" },
+  { name: "Checking Account (INR 68,990.00)", value: "checkingAccount" },
+  { name: "Checking Account (INR 68,990.00)", value: "checkingAccount" },
+  { name: "Checking Account (INR 68,990.00)", value: "checkingAccount" }
+];
+export const incomeDestination = [
+  { name: "Select Destination Account", value: "" },
+  { name: "Saving Account (INR 0.00)", value: "savingAccount" },
+  { name: "Saving Account (INR 0.00)", value: "savingAccount" },
+  { name: "Saving Account (INR 0.00)", value: "savingAccount" }
+];
+
+export const expenseSource = [
+  { name: "Select Source Account", value: "" },
+  { name: "Checking Account (INR 68,990.00)", value: "checkingAccount" },
+  { name: "Checking Account (INR 68,990.00)", value: "checkingAccount" },
+  { name: "Checking Account (INR 68,990.00)", value: "checkingAccount" }
+];
+export const expenseDestination = [
+  { name: "Select Destination Account", value: "" },
+  { name: "Saving Account (INR 0.00)", value: "savingAccount" },
+  { name: "Saving Account (INR 0.00)", value: "savingAccount" },
+  { name: "Saving Account (INR 0.00)", value: "savingAccount" }
+];

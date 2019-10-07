@@ -177,7 +177,7 @@ class RulesDetails extends PureComponent {
                     </span>
                   </label>
                 </div>
-                <AlagehFormGroup
+                {/* <AlagehFormGroup
                   div={{ className: "col-2 form-group" }}
                   label={{
                     forceLabel: "Fixed Airfrare Amount",
@@ -185,14 +185,14 @@ class RulesDetails extends PureComponent {
                   }}
                   textBox={{
                     className: "txt-fld",
-                    name: "",
+                    name: "fixed_",
                     value: "",
                     events: {},
                     option: {
                       type: "text"
                     }
                   }}
-                />
+                /> */}
               </div>
             </div>
           </div>

@@ -6060,7 +6060,6 @@ export default {
                                 isTimeSheet: "Y"
                               });
                             } else {
-                              console.log("ROSTER");
                               const ProjAssgned = emp.find(e => {
                                 return e.attendance_date == dat;
                               });

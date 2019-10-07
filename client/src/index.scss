@@ -541,10 +541,16 @@ ul.ul-legend {
     line-height: 18px;
   }
   .center {
-    text-align: center;
+    text-align: right;
   }
 }
 
+.portlet-footer {
+  text-align: center;
+  button {
+    margin-left: 10px;
+  }
+}
 .caption.caption-green .caption-subject,
 .caption.caption-green i {
   color: lighten($primary-color, 10%);

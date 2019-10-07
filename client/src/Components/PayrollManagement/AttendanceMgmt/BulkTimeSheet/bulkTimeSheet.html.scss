@@ -93,6 +93,13 @@
               display: inline-block;
               border: none;
             }
+            &:hover {
+              background: none;
+              cursor: default;
+            }
+          }
+          &:hover {
+            background: #e5fffc;
           }
         }
       }
@@ -118,5 +125,13 @@
     line-height: 1.7rem;
     margin: 0;
     padding: 0 0 0 15px;
+  }
+}
+.editBulkCellPopup {
+  .algaeh-modal {
+    width: 35vw;
+    .popupInner {
+      min-height: 50vh;
+    }
   }
 }

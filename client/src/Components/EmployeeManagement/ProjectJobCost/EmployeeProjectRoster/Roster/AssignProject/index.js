@@ -64,7 +64,7 @@ export default function(props) {
       hospital_id,
       isEditing
     } = data;
-    console.log("data", data);
+
     return new Promise((resolve, reject) => {
       try {
         if (isEditing === undefined) {
@@ -93,7 +93,8 @@ export default function(props) {
             from_date: from_date,
             to_date: to_date,
             project_id: projectID,
-            roster: rosters
+            roster: rosters,
+            hospital_id: hospital_id
           },
           onSuccess: res => {
             const { success, records } = res.data;

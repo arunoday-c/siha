@@ -49,6 +49,7 @@
     "cheerio": "^1.0.0-rc.3",
     "compression": "^1.7.3",
     "concurrently": "^3.5.1",
+    "core-js": "^3.2.1",
     "cors": "^2.8.4",
     "cross-env": "^5.1.4",
     "cryptr": "^4.0.0",
