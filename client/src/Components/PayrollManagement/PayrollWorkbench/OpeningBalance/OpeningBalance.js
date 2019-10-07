@@ -39,7 +39,8 @@ class OpeningBalance extends Component {
       selected_type: "LE",
       rerender_items: true,
       leave_balance: [],
-      year: moment().year()
+      year: moment().year(),
+      leaves_data: []
     };
     all_functions.getLeaveMaster(this);
   }
@@ -112,6 +113,7 @@ class OpeningBalance extends Component {
     debugger;
     all_functions.updateEmployeeOpeningBalance(this, row);
   }
+
   render() {
     let allYears = getYears();
 
@@ -286,23 +288,6 @@ class OpeningBalance extends Component {
               </div>
               <div className="portlet-body">
                 <div className="row">
-                  {/*<AlgaehDataGrid
-                      id="leave_opening_balance"
-                      columns={this.state.leave_dynamic_date}
-                      keyId="leave_opening"
-                      dataSource={{
-                        data: this.state.leave_balance
-                      }}
-                      filter={true}
-                      paging={{ page: 0, rowsPerPage: 20 }}
-                      forceRender={true}
-                      loading={this.state.loading}
-                      events={{
-                        onEdit: () => {},
-                        onDone: () => {},
-                        onDelete: () => {}
-                      }}
-                    />*/}
                   {this.state.selected_type === "LE" ? (
                     <div className="col-12" id="Opening_balance_Cntr">
                       <AlgaehDataGrid
@@ -317,8 +302,7 @@ class OpeningBalance extends Component {
                         forceRender={true}
                         events={{
                           onEdit: () => {},
-                          onDelete: () => {},
-                          onDone: () => {}
+                          onDone: this.updateEmployeeOpeningBalance.bind(this)
                         }}
                         actions={{
                           allowDelete: false
@@ -332,11 +316,19 @@ class OpeningBalance extends Component {
                         columns={this.state.leave_dynamic_date}
                         keyId="loan_opening"
                         dataSource={{
-                          data: []
+                          data: this.state.leave_balance
                         }}
+                        isEditable={true}
                         filter={true}
-                        paging={{ page: 0, rowsPerPage: 20 }}
                         forceRender={true}
+                        events={{
+                          onEdit: () => {},
+                          onDelete: () => {},
+                          onDone: () => {}
+                        }}
+                        actions={{
+                          allowDelete: false
+                        }}
                       />
                     </div>
                   ) : this.state.selected_type === "GR" ? (

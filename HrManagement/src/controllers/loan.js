@@ -9,7 +9,8 @@ const {
   authorizeLoan,
   getLoanLevels,
   addLoanReciept,
-  getEmployeeLoanReciept
+  getEmployeeLoanReciept,
+  getEmployeeLoanOpenBal
 } = loan;
 
 export default () => {
@@ -110,6 +111,17 @@ export default () => {
           records: req.records
         });
       }
+    }
+  );
+
+  api.get(
+    "/getEmployeeLoanOpenBal",
+    getEmployeeLoanOpenBal,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
     }
   );
 

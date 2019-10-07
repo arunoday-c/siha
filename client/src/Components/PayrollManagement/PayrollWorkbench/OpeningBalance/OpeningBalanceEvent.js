@@ -8,6 +8,7 @@ import {
   AlgaehDataGrid,
   AlagehFormGroup
 } from "../../../Wrapper/algaehWrapper";
+import _ from "lodash";
 
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
@@ -44,51 +45,7 @@ export default function ManualAttendanceEvents() {
         document.querySelector("[name='year']").focus();
         return;
       }
-      debugger;
-      let inputObj = {
-        year: $this.state.year,
-        hospital_id: $this.state.hospital_id
-      };
-
-      if ($this.state.hims_d_employee_id !== null) {
-        inputObj.hims_d_employee_id = $this.state.hims_d_employee_id;
-      }
-
-      if ($this.state.employee_group_id !== null) {
-        inputObj.employee_group_id = $this.state.employee_group_id;
-      }
-
-      debugger;
-      let selected_uri = "";
-      if ($this.state.selected_type === "LE") {
-        selected_uri = "/leave/getLeaveBalances";
-      } else if ($this.state.selected_type === "LS") {
-        selected_uri = "/employeepayments/getEmployeeLeaveSalary";
-      }
-
-      algaehApiCall({
-        uri: selected_uri,
-        module: "hrManagement",
-        data: inputObj,
-        method: "GET",
-        onSuccess: response => {
-          if (response.data.records.length > 0) {
-            $this.setState({
-              leave_balance: response.data.records
-            });
-          } else {
-            $this.setState({
-              leave_balance: []
-            });
-          }
-        },
-        onFailure: error => {
-          swalMessage({
-            title: error.message || error.response.data.message,
-            type: "error"
-          });
-        }
-      });
+      PreviewDataFull($this);
     },
 
     employeeSearch: $this => {
@@ -422,25 +379,47 @@ export default function ManualAttendanceEvents() {
     },
     updateEmployeeOpeningBalance: ($this, row) => {
       debugger;
-      if (
-        row.hims_f_employee_leave_salary_header_id === undefined ||
-        row.hims_f_employee_leave_salary_header_id === null
-      ) {
-        return;
-      }
+
       let selected_uri = "";
+      let employee_Leave_Update = [];
+      let inputData = "";
       if ($this.state.selected_type === "LE") {
-        selected_uri = "/leave/getLeaveBalances";
+        var result = Object.keys(row).map(function(key) {
+          if (row[key] !== "N" && isNaN(Number(key)) === false) {
+            return {
+              leave_id: Number(key),
+              close_balance: row[key],
+              employee_id: row.hims_d_employee_id,
+              year: $this.state.year
+            };
+          }
+        });
+        inputData = _.filter(result, f => {
+          return f !== undefined;
+        });
+
+        selected_uri = "/leave/updateEmployeeLeave";
+
+        // inputData
       } else if ($this.state.selected_type === "LS") {
-        selected_uri = "/employeepayments/updateEmployeeLeaveSalary";
+        if (
+          row.hims_f_employee_leave_salary_header_id === undefined ||
+          row.hims_f_employee_leave_salary_header_id === null
+        ) {
+          return;
+        } else {
+          selected_uri = "/employeepayments/updateEmployeeLeaveSalary";
+        }
+        inputData = row;
       }
 
       algaehApiCall({
         uri: selected_uri,
         module: "hrManagement",
-        data: row,
+        data: inputData,
         method: "PUT",
         onSuccess: response => {
+          PreviewDataFull($this);
           swalMessage({
             title: "Updated Succesfully..",
             type: "success"
@@ -458,13 +437,16 @@ export default function ManualAttendanceEvents() {
 }
 
 function changeGridEditors($this, row, e) {
+  debugger;
   let leave_balance = $this.state.leave_balance;
+
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
   let _index = leave_balance.indexOf(row);
   row[name] = value;
   leave_balance[_index] = row;
+
   $this.setState({
     leave_balance: leave_balance
   });
@@ -517,6 +499,7 @@ function getLeaveMasterData($this) {
                   : row[item.hims_d_leave_id];
               },
               editorTemplate: row => {
+                debugger;
                 return row[item.hims_d_leave_id] === "N" ? (
                   "Not Applicable"
                 ) : (
@@ -529,7 +512,7 @@ function getLeaveMasterData($this) {
                       },
                       dontAllowKeys: ["-", "e", "."],
                       className: "txt-fld",
-                      name: "close_balance",
+                      name: item.hims_d_leave_id,
                       value: row[item.hims_d_leave_id],
                       events: {
                         onChange: changeGridEditors.bind($this, $this, row)
@@ -546,7 +529,8 @@ function getLeaveMasterData($this) {
 
           leave_dynamic_date = employee_data.concat(leave_dynamic_date);
           $this.setState({
-            leave_dynamic_date: leave_dynamic_date
+            leave_dynamic_date: leave_dynamic_date,
+            leaves_data: res.data.records
           });
         }
       }
@@ -657,5 +641,55 @@ function setGratuityData($this) {
   ];
   $this.setState({
     leave_dynamic_date: leave_dynamic_date
+  });
+}
+
+function PreviewDataFull($this) {
+  let inputObj = {
+    year: $this.state.year,
+    hospital_id: $this.state.hospital_id
+  };
+
+  if ($this.state.hims_d_employee_id !== null) {
+    inputObj.hims_d_employee_id = $this.state.hims_d_employee_id;
+  }
+
+  if ($this.state.employee_group_id !== null) {
+    inputObj.employee_group_id = $this.state.employee_group_id;
+  }
+
+  let selected_uri = "";
+  if ($this.state.selected_type === "LE") {
+    selected_uri = "/leave/getLeaveBalances";
+  } else if ($this.state.selected_type === "LO") {
+    selected_uri = "/loan/getEmployeeLoanOpenBal";
+  } else if ($this.state.selected_type === "GR") {
+    selected_uri = "/gratuity/getEmployeeLeaveSalary";
+  } else if ($this.state.selected_type === "LS") {
+    selected_uri = "/employeepayments/getEmployeeLeaveSalary";
+  }
+
+  algaehApiCall({
+    uri: selected_uri,
+    module: "hrManagement",
+    data: inputObj,
+    method: "GET",
+    onSuccess: response => {
+      if (response.data.records.length > 0) {
+        $this.setState({
+          leave_balance: response.data.records
+        });
+      } else {
+        $this.setState({
+          leave_balance: []
+        });
+      }
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.message || error.response.data.message,
+        type: "error"
+      });
+    }
   });
 }

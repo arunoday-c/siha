@@ -24,6 +24,7 @@ export default function Assets() {
   const [treeData, setTreeData] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [selectedNode, setSelectedNode] = useState({});
+  const [selectHead, setSelectHead] = useState(false);
 
   useEffect(() => {
     if (treeData.length === 0) {
@@ -114,6 +115,7 @@ export default function Assets() {
             <button
               className="btn btn-primary btn-circle active"
               onClick={() => {
+                setSelectHead(true);
                 setShowPopup(true);
               }}
             >
@@ -183,6 +185,7 @@ export default function Assets() {
                               label="Add"
                               onClick={event => {
                                 debugger;
+                                setSelectHead(false);
                                 setShowPopup(true);
                                 setSelectedNode(rowInfo);
                               }}
