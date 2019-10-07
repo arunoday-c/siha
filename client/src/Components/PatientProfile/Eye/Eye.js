@@ -1,13 +1,6 @@
 import React, { Component } from "react";
 import "./Eye.scss";
-import {
-  AlagehAutoComplete,
-  AlagehFormGroup,
-  AlgaehDataGrid,
-  AlgaehModalPopUp,
-  AlgaehDateHandler,
-  AlgaehLabel
-} from "../../Wrapper/algaehWrapper";
+
 import EyeModal from "./EyeModal";
 import GlassPrescription from "./GlassPrescription";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
@@ -22,41 +15,43 @@ export default class Eye extends Component {
       openPMT: false,
       openAddIOP: false,
       openGlassPres: false,
-      PrescriptionData:[]
+      PrescriptionData: []
     };
-    this.getGlassPrescription()
+    this.getGlassPrescription();
   }
 
-  getGlassPrescription(){
+  getGlassPrescription() {
     algaehApiCall({
       uri: "/opthometry/getGlassPrescription",
       data: {
         patient_id: Window.global["current_patient"],
-        encounter_id:Window.global["encounter_id"],
-        episode_id:Window.global["episode_id"]
+        encounter_id: Window.global["encounter_id"],
+        episode_id: Window.global["episode_id"]
       },
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {
-          
-          let data = response.data.records
+          let data = response.data.records;
           for (let i = 0; i < data.length; i++) {
-
-            data[i].multi_coated=data[i].multi_coated === "Y"?true:false
-            data[i].varilux=data[i].varilux === "Y"?true:false
-            data[i].light=data[i].light === "Y"?true:false
-            data[i].aspheric=data[i].aspheric === "Y"?true:false
-            data[i].bifocal=data[i].bifocal === "Y"?true:false
-            data[i].medium=data[i].medium === "Y"?true:false
-            data[i].lenticular=data[i].lenticular === "Y"?true:false
-            data[i].single_vision=data[i].single_vision === "Y"?true:false
-            data[i].dark=data[i].dark === "Y"?true:false
-            data[i].safety_thickness=data[i].safety_thickness === "Y"?true:false
-            data[i].anti_reflecting_coating=data[i].anti_reflecting_coating === "Y"?true:false
-            data[i].photosensitive=data[i].photosensitive === "Y"?true:false
-            data[i].high_index=data[i].high_index === "Y"?true:false
-            data[i].colored=data[i].colored === "Y"?true:false
-            data[i].anti_scratch=data[i].anti_scratch === "Y"?true:false
+            data[i].multi_coated = data[i].multi_coated === "Y" ? true : false;
+            data[i].varilux = data[i].varilux === "Y" ? true : false;
+            data[i].light = data[i].light === "Y" ? true : false;
+            data[i].aspheric = data[i].aspheric === "Y" ? true : false;
+            data[i].bifocal = data[i].bifocal === "Y" ? true : false;
+            data[i].medium = data[i].medium === "Y" ? true : false;
+            data[i].lenticular = data[i].lenticular === "Y" ? true : false;
+            data[i].single_vision =
+              data[i].single_vision === "Y" ? true : false;
+            data[i].dark = data[i].dark === "Y" ? true : false;
+            data[i].safety_thickness =
+              data[i].safety_thickness === "Y" ? true : false;
+            data[i].anti_reflecting_coating =
+              data[i].anti_reflecting_coating === "Y" ? true : false;
+            data[i].photosensitive =
+              data[i].photosensitive === "Y" ? true : false;
+            data[i].high_index = data[i].high_index === "Y" ? true : false;
+            data[i].colored = data[i].colored === "Y" ? true : false;
+            data[i].anti_scratch = data[i].anti_scratch === "Y" ? true : false;
             // data[i].multi_coated = data[i].multi_coated === "Y"?true:false
             // data[i].varilux = data[i].varilux === "Y"?true:false
             // data[i].cr_39 = data[i].cr_39 === "Y"?true:false
@@ -74,8 +69,8 @@ export default class Eye extends Component {
           }
 
           this.setState({
-            PrescriptionData:data
-          })
+            PrescriptionData: data
+          });
         }
       },
       onFailure: error => {
@@ -89,7 +84,6 @@ export default class Eye extends Component {
   }
 
   showModal(openModal) {
-    
     if (openModal === "Refraction") {
       this.setState({
         openRefraction: !this.state.openRefraction

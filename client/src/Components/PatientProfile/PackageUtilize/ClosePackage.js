@@ -9,8 +9,6 @@ import "./../../../styles/site.scss";
 import {
   AlgaehLabel,
   AlagehFormGroup,
-  AlagehAutoComplete,
-  AlgaehDateHandler,
   AlgaehModalPopUp
 } from "../../Wrapper/algaehWrapper";
 import ButtonType from "../../Wrapper/algaehButton";
@@ -74,7 +72,6 @@ class ClosePackage extends PureComponent {
   };
 
   componentWillReceiveProps(newProps) {
-    
     if (newProps.package_detail !== undefined) {
       let InputObj = newProps.package_detail;
       InputObj.Cashchecked = true;
@@ -96,8 +93,6 @@ class ClosePackage extends PureComponent {
       card_type: null
     });
 
-    
-
     this.setState(
       {
         receiptdetails: obj,
@@ -116,7 +111,6 @@ class ClosePackage extends PureComponent {
   }
 
   CloseRefund(e) {
-    
     if (
       this.state.closed_remarks === null ||
       this.state.closed_remarks === ""
@@ -128,7 +122,6 @@ class ClosePackage extends PureComponent {
       return;
     }
     this.GenerateReciept($this => {
-      
       algaehApiCall({
         uri: "/billing/patientPackageAdvanceRefund",
         module: "billing",
@@ -158,7 +151,6 @@ class ClosePackage extends PureComponent {
   }
 
   ClosePackage() {
-    
     if (this.state.closed_remarks.length <= 0) {
       swalMessage({
         title: "Enter Remarks...",
