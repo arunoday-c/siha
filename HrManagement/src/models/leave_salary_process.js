@@ -34,11 +34,18 @@ export default {
                 E.hospital_id FROM hims_f_leave_application LA inner join  hims_d_employee E \
                 on E.hims_d_employee_id = LA.employee_id left join  hims_f_employee_annual_leave AL \
                 on LA.hims_f_leave_application_id = AL.leave_application_id where AL.from_normal_salary = 'N' \
-                and status='APR' and processed = 'N' and leave_id=? and LA.employee_id=?;",
+                and status='APR' and processed = 'N' and leave_id=? and LA.employee_id=?; select * from hims_d_hrms_options;",
               values: [leave_id, _leaveSalary.employee_id],
               printQuery: true
             })
-            .then(annul_leave_app => {
+            .then(annul_leave => {
+              utilities.logger().log("annul_leave: ", annul_leave);
+
+              let annul_leave_app = annul_leave[0];
+              let hrms_options = annul_leave[1][0];
+
+              utilities.logger().log("hrms_options: ", hrms_options);
+
               if (annul_leave_app.length > 0) {
                 let leave_salary_detail = [];
                 let from_date = moment(annul_leave_app[0].from_date).format(
@@ -52,32 +59,104 @@ export default {
                   "M"
                 );
 
+                to_date_month = parseFloat(to_date_month);
+
                 let from_date_month = moment(
                   annul_leave_app[0].from_date
                 ).format("M");
+
+                from_date_month = parseFloat(from_date_month);
 
                 let leave_start_date = moment(
                   annul_leave_app[0].from_date
                 ).format("YYYY-MM-DD");
 
                 while (from_date <= to_date) {
+                  console.log("from_date", from_date);
+                  console.log("to_date", to_date);
+                  console.log("to_date_month", to_date_month);
+
                   let fromDate_firstDate = null;
                   let fromDate_lastDate = null;
 
                   let date_year = moment(from_date).year();
                   let date_month = moment(from_date).format("M");
 
-                  let start_date = moment(from_date).add(-1, "days");
-                  let no_of_days = 0;
-                  fromDate_firstDate = moment(from_date)
-                    .startOf("month")
-                    .format("YYYY-MM-DD");
-                  fromDate_lastDate = moment(from_date)
-                    .endOf("month")
-                    .format("YYYY-MM-DD");
+                  date_month = parseFloat(date_month);
+                  utilities.logger().log("from_date: ", from_date);
+                  utilities.logger().log("to_date: ", to_date);
 
-                  utilities.logger().log("to_date_month: ", to_date_month);
-                  utilities.logger().log("date_month: ", date_month);
+                  let start_date = moment(from_date).add(-1, "days");
+                  utilities.logger().log("first start_date: ", start_date);
+                  let no_of_days = 0;
+
+                  if (hrms_options.attendance_starts === "PM") {
+                    let selected_year = moment(from_date).year();
+                    let selected_month = moment(from_date).format("M");
+                    let selected_day = moment(from_date).format("DD");
+                    console.log("selected_day", selected_day);
+                    console.log("at_st_date", hrms_options.at_st_date);
+
+                    if (
+                      parseFloat(selected_day) ===
+                      parseFloat(hrms_options.at_st_date)
+                    ) {
+                      date_month = date_month + 1;
+                      console.log("date_month in if con:", date_month);
+                    }
+
+                    console.log("date_month", date_month);
+                    console.log("fromDate_firstDate", fromDate_firstDate);
+                    console.log("fromDate_lastDate", fromDate_lastDate);
+
+                    if (to_date_month === date_month) {
+                      fromDate_firstDate = moment(
+                        selected_year +
+                          "-" +
+                          selected_month +
+                          "-" +
+                          hrms_options.at_st_date,
+                        "YYYY-MM-DD"
+                      ).format("YYYY-MM-DD");
+
+                      fromDate_lastDate = moment(
+                        selected_year +
+                          "-" +
+                          selected_month +
+                          "-" +
+                          hrms_options.at_end_date
+                      )
+                        .add(1, "M")
+                        .format("YYYY-MM-DD");
+                    } else {
+                      fromDate_firstDate = moment(
+                        selected_year +
+                          "-" +
+                          selected_month +
+                          "-" +
+                          hrms_options.at_st_date,
+                        "YYYY-MM-DD"
+                      )
+                        .add(-1, "M")
+                        .format("YYYY-MM-DD");
+
+                      fromDate_lastDate = moment(
+                        selected_year +
+                          "-" +
+                          selected_month +
+                          "-" +
+                          hrms_options.at_end_date
+                      ).format("YYYY-MM-DD");
+                    }
+                  } else {
+                    fromDate_firstDate = moment(from_date)
+                      .startOf("month")
+                      .format("YYYY-MM-DD");
+                    fromDate_lastDate = moment(from_date)
+                      .endOf("month")
+                      .format("YYYY-MM-DD");
+                  }
+
                   if (to_date_month == date_month) {
                     if (from_date_month == date_month) {
                       start_date = moment(from_date).add(-1, "days");
@@ -93,6 +172,7 @@ export default {
                       );
                     }
                   } else {
+                    // utilities.logger().log("start_date: ", start_date);
                     no_of_days = moment(fromDate_lastDate).diff(
                       moment(start_date),
                       "days"
@@ -102,10 +182,10 @@ export default {
                     .add(1, "days")
                     .format("YYYY-MM-DD");
 
-                  utilities.logger().log("no_of_days: ", no_of_days);
+                  // utilities.logger().log("no_of_days: ", no_of_days);
                   leave_salary_detail.push({
                     year: date_year,
-                    month: date_month,
+                    month: String(date_month).toString(),
                     start_date: fromDate_firstDate,
                     end_date: fromDate_lastDate,
                     leave_start_date: leave_start_date,

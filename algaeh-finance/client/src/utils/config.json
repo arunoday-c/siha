@@ -1,0 +1,128 @@
+{
+  "baseUrl": "/api/v1",
+  "routersAndPorts": {
+    "default": {
+      "port": 3000,
+      "url": "",
+      "path": "/core",
+      "name": "Algaeh Core"
+    },
+    "frontDesk": {
+      "port": 3001,
+      "url": "",
+      "path": "/frontdesk",
+      "name": "Front Desk"
+    },
+    "masterSettings": {
+      "port": 3003,
+      "url": "",
+      "path": "/master",
+      "name": "Master Settings"
+    },
+    "hrManagement": {
+      "port": 3004,
+      "url": "",
+      "path": "/hrserver",
+      "name": "Hr Management"
+    },
+    "documentManagement": {
+      "port": 3006,
+      "url": "",
+      "path": "/docserver",
+      "name": "Document Management"
+    },
+    "finance": {
+      "port": 3007,
+      "url": "",
+      "path": "/finance",
+      "name": "Finance"
+    },
+    "inventory": {
+      "port": 3008,
+      "url": "",
+      "path": "/inventory",
+      "name": "Inventory"
+    },
+    "pharmacy": {
+      "port": 3009,
+      "url": "",
+      "path": "/pharmacy",
+      "name": "Pharmacy"
+    },
+    "insurance": {
+      "port": 3010,
+      "url": "",
+      "path": "/insurance",
+      "name": "Insurance"
+    },
+    "clicnicalDesk": {
+      "port": 3011,
+      "url": "",
+      "path": "/clinical",
+      "name": "Clinical Desk"
+    },
+    "radiology": {
+      "port": 3012,
+      "url": "",
+      "path": "/radiology",
+      "name": "Radiology"
+    },
+    "laboratory": {
+      "port": 3013,
+      "url": "",
+      "path": "/laboratory",
+      "name": "Laboratory"
+    },
+    "billing": {
+      "port": 3014,
+      "url": "",
+      "path": "/billing",
+      "name": "Billing"
+    },
+    "procurement": {
+      "port": 3017,
+      "url": "",
+      "path": "/procurement",
+      "name": "Procurement"
+    },
+    "MRD": {
+      "port": 3016,
+      "url": "",
+      "path": "/mrd",
+      "name": "MRD"
+    },
+    "reports": {
+      "port": 3018,
+      "url": "",
+      "path": "/reports",
+      "name": "Reports"
+    }
+  },
+  "apiAuth": {
+    "user": "devteam",
+    "password": "devteam"
+  },
+  "formators": {
+    "date": "YYYY-MM-DD",
+    "time": "HH:mm"
+  },
+  "algaeh_d_formulas": {
+    "BMI": {
+      "algaeh_d_formulas_id": 1
+    }
+  },
+  "colors": {
+    "bp": {
+      "sys": { "backgroundColor": "#F5AB5C", "borderColor": "#e5c8ac" },
+      "dia": {
+        "backgroundColor": "#ED3833",
+        "borderColor": "#f27674"
+      }
+    },
+    "resp_rate": { "backgroundColor": "#48A36F", "borderColor": "#75b28f" },
+    "temperature": { "backgroundColor": "#FBD67B", "borderColor": "#ffe9b7" },
+    "heart_rate": { "backgroundColor": "#BC353C", "borderColor": "#d17b7f" },
+    "bmi": { "backgroundColor": "#7DBFE1", "borderColor": "#b8def2" },
+    "weight": { "backgroundColor": "#C8A65C", "borderColor": "#b2a079" }
+  }
+}
