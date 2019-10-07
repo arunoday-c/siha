@@ -54,7 +54,7 @@ export default function Filter(props) {
       return;
     }
     const year = moment().format("YYYY");
-    debugger;
+
     const searchYear =
       month === "01"
         ? moment()
