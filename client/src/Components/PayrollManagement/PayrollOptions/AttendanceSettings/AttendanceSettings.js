@@ -29,7 +29,8 @@ export default class AttendanceSettings extends Component {
     super(props);
     this.state = {
       earnings: [],
-      authorization_plan: "R"
+      authorization_plan: "R",
+      hims_d_hrms_options_id: null
     };
     this.getOptions();
     this.getEarnings();
@@ -104,27 +105,51 @@ export default class AttendanceSettings extends Component {
   saveOptions() {
     const isValid = this.validateData();
     if (isValid) {
-      algaehApiCall({
-        uri: "/payrollOptions/updateHrmsOptions",
-        method: "PUT",
-        module: "hrManagement",
-        data: this.state,
-        onSuccess: res => {
-          if (res.data.success) {
+      if (this.state.hims_d_hrms_options_id === null) {
+        algaehApiCall({
+          uri: "/payrollOptions/insertHrmsOptions",
+          method: "POST",
+          module: "hrManagement",
+          data: this.state,
+          onSuccess: res => {
+            if (res.data.success) {
+              swalMessage({
+                title: "Saved Successfully",
+                type: "success"
+              });
+              this.getOptions();
+            }
+          },
+          onFailure: err => {
             swalMessage({
-              title: "Updated Successfully",
-              type: "success"
+              title: err.message,
+              type: "error"
             });
-            // this.getOptions();
           }
-        },
-        onFailure: err => {
-          swalMessage({
-            title: err.message,
-            type: "error"
-          });
-        }
-      });
+        });
+      } else {
+        algaehApiCall({
+          uri: "/payrollOptions/updateHrmsOptions",
+          method: "PUT",
+          module: "hrManagement",
+          data: this.state,
+          onSuccess: res => {
+            if (res.data.success) {
+              swalMessage({
+                title: "Saved Successfully",
+                type: "success"
+              });
+              // this.getOptions();
+            }
+          },
+          onFailure: err => {
+            swalMessage({
+              title: err.message,
+              type: "error"
+            });
+          }
+        });
+      }
     }
   }
 
@@ -1072,7 +1097,7 @@ export default class AttendanceSettings extends Component {
                   onClick={this.saveOptions.bind(this)}
                 >
                   <AlgaehLabel
-                    label={{ forceLabel: "Update", returnText: true }}
+                    label={{ forceLabel: "Save", returnText: true }}
                   />
                 </button>
               </div>

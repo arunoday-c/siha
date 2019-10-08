@@ -9,7 +9,10 @@ const {
   updateEosOptions,
   getSalarySetUp,
   getLeaveSalaryOptions,
-  updateLeaveSalaryOptions
+  updateLeaveSalaryOptions,
+  InsertEosOptions,
+  insertLeaveSalaryOptions,
+  insertHrmsOptions
 } = payrollOptions;
 
 export default () => {
@@ -96,6 +99,31 @@ export default () => {
       }
     }
   );
+
+  api.post("/InsertEosOptions", InsertEosOptions, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      result: req.records
+    });
+  });
+
+  api.post(
+    "/insertLeaveSalaryOptions",
+    insertLeaveSalaryOptions,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        result: req.records
+      });
+    }
+  );
+
+  api.post("/insertHrmsOptions", insertHrmsOptions, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      result: req.records
+    });
+  });
 
   return api;
 };
