@@ -46,7 +46,6 @@ class OpeningBalance extends Component {
       leave_id: null
     };
     all_functions.getLeaveMaster(this);
-    all_functions.getApplicationLeaves(this);
   }
 
   componentDidMount() {
@@ -414,6 +413,18 @@ class OpeningBalance extends Component {
                       Opening balance for - Gratuity
                     </h3>
                   </div>
+                  <div className="actions">
+                    <button
+                      className="btn btn-primary"
+                      style={{ marginTop: 19 }}
+                      onClick={this.showModal.bind(
+                        this,
+                        "Employee Gratuity Opening Balance"
+                      )}
+                    >
+                      Add Opening Balance
+                    </button>
+                  </div>
                 </div>
                 <div className="portlet-body">
                   <div className="row">
@@ -423,11 +434,19 @@ class OpeningBalance extends Component {
                         columns={this.state.leave_dynamic_date}
                         keyId="gratuity_opening"
                         dataSource={{
-                          data: []
+                          data: this.state.leave_balance
                         }}
-                        filter={true}
+                        isEditable={true}
                         paging={{ page: 0, rowsPerPage: 20 }}
                         forceRender={true}
+                        filter={true}
+                        events={{
+                          onEdit: () => {},
+                          onDone: this.updateEmployeeOpeningBalance.bind(this)
+                        }}
+                        actions={{
+                          allowDelete: false
+                        }}
                       />
                     </div>
                   </div>
@@ -447,14 +466,21 @@ class OpeningBalance extends Component {
                   </div>
                   <div className="actions">
                     <button
-                      className="btn btn-primary btn-circle active"
+                      className="btn btn-primary"
+                      style={{ marginTop: 19 }}
                       onClick={this.showModal.bind(
                         this,
                         "Employee Leave Salary Opening Balance"
                       )}
                     >
-                      <i className="fas fa-plus" />
+                      Add Opening Balance
                     </button>
+                    {/* <button
+                      className="btn btn-primary btn-circle active"
+
+                    >
+                      <i className="fas fa-plus" />
+                    </button> */}
                   </div>
                 </div>
                 <div className="portlet-body">

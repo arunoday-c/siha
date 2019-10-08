@@ -14,31 +14,7 @@ export default function AllEvents() {
         [name]: value
       });
     },
-    getEmployeeLeaveType: ($this, row) => {
-      debugger;
-      algaehApiCall({
-        uri: "/employee/getEmployeeLeaveType",
-        module: "hrManagement",
-        method: "GET",
-        onSuccess: response => {
-          if (response.data.records.length > 0) {
-            $this.setState({
-              employee_leave: response.data.records
-            });
-          } else {
-            $this.setState({
-              employee_leave: []
-            });
-          }
-        },
-        onFailure: error => {
-          swalMessage({
-            title: error.message || error.response.data.message,
-            type: "error"
-          });
-        }
-      });
-    },
+
     employeeSearch: $this => {
       AlgaehSearch({
         searchGrid: {
@@ -62,7 +38,31 @@ export default function AllEvents() {
       let selected_uri = "";
       let inputObj = {};
       debugger;
+      if ($this.state.hims_d_employee_id === null) {
+        swalMessage({
+          title: "Please select Employee",
+          type: "warning"
+        });
+        return;
+      }
       if ($this.props.selected_type === "LS") {
+        if ($this.state.leave_days === null) {
+          swalMessage({
+            title: "Please enter Leave Days",
+            type: "warning"
+          });
+          document.querySelector("[name='leave_days']").focus();
+          return;
+        }
+        if ($this.state.leave_salary_amount === null) {
+          swalMessage({
+            title: "Please enter Amount",
+            type: "warning"
+          });
+          document.querySelector("[name='leave_salary_amount']").focus();
+          return;
+        }
+
         selected_uri = "/employee/InsertOpeningBalanceLeaveSalary";
         inputObj = {
           employee_id: $this.state.hims_d_employee_id,
@@ -72,6 +72,31 @@ export default function AllEvents() {
           airticket_amount: $this.state.airticket_amount,
           airfare_months: $this.state.airfare_months,
           hospital_id: $this.props.hospital_id
+        };
+      } else if ($this.props.selected_type === "GR") {
+        if ($this.state.month === null) {
+          swalMessage({
+            title: "Please select Month",
+            type: "warning"
+          });
+          document.querySelector("[name='month']").focus();
+          return;
+        }
+        if ($this.state.gratuity_amount === null) {
+          swalMessage({
+            title: "Please enter Amount",
+            type: "warning"
+          });
+          document.querySelector("[name='gratuity_amount']").focus();
+          return;
+        }
+
+        selected_uri = "/employee/InsertOpeningBalanceGratuity";
+        inputObj = {
+          employee_id: $this.state.hims_d_employee_id,
+          year: $this.props.year,
+          month: $this.state.month,
+          gratuity_amount: $this.state.gratuity_amount
         };
       }
       algaehApiCall({
@@ -84,14 +109,15 @@ export default function AllEvents() {
             swalMessage({ title: "Added Successfully...", type: "success" });
             $this.setState(
               {
-                employee_leave: [],
                 employee_name: null,
                 hims_d_employee_id: null,
                 close_balance: null,
                 leave_days: null,
                 airticket_amount: null,
                 leave_salary_amount: null,
-                airfare_months: null
+                airfare_months: null,
+                month: moment(new Date()).format("M"),
+                gratuity_amount: null
               },
               () => {
                 $this.props.onClose && $this.props.onClose(true);
