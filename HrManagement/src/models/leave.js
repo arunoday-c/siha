@@ -5999,7 +5999,7 @@ function projectedleaveCalc(input, _mysql) {
       .executeQuery({
         query:
           "select hims_f_salary_id,month,year,employee_id\
-          from hims_f_salary where employee_id=? and month in (?) and year=?  group by month;\
+          from hims_f_salary where employee_id=? and month in (?) and year=? and salary_processed='Y' group by month;\
           select hims_d_employee_id,coalesce(monthly_accrual_days,0) monthly_accrual_days  from hims_d_employee E left join \
           hims_d_employee_group EG on E.employee_group_id=EG.hims_d_employee_group_id \
           where  E.hims_d_employee_id=? limit 1 ; \
