@@ -26,7 +26,11 @@ const {
   addMisEarnDedcToEmployees,
   getEmployeeDepartmentsWise,
   getEmployeeDesignationWise,
-  UpdateEmployeeRejoined
+  UpdateEmployeeRejoined,
+  getEmployeeLeaveType,
+  getBulkEmployeeLeaves,
+  excelEmployeeLeaveOpenBalance,
+  InsertOpeningBalanceLeaveSalary
 } = empModels;
 
 export default () => {
@@ -41,6 +45,33 @@ export default () => {
       });
     }
   );
+
+  api.get(
+    "/getBulkEmployeeLeaves",
+    getBulkEmployeeLeaves,
+
+    (req, res, next) => {
+      if (req.records.invalid_input == true) {
+        console.log("eee:");
+        res
+          .status(utlities.AlgaehUtilities().httpStatus().internalServer)
+          .json({
+            success: false,
+            result: req.records
+          });
+      } else {
+        next();
+      }
+    },
+    excelEmployeeLeaveOpenBalance
+  );
+
+  api.get("/getEmployeeLeaveType", getEmployeeLeaveType, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
 
   api.get("/get", getEmployee, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
@@ -278,6 +309,17 @@ export default () => {
   api.put(
     "/UpdateEmployeeRejoined",
     UpdateEmployeeRejoined,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+
+  api.post(
+    "/InsertOpeningBalanceLeaveSalary",
+    InsertOpeningBalanceLeaveSalary,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,

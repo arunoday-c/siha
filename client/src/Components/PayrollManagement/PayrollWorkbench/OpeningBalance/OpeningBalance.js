@@ -22,7 +22,7 @@ import {
 import EmployeeSearch from "../../../common/EmployeeSearch";
 import OpeningBalanceEvent from "./OpeningBalanceEvent";
 import moment from "moment";
-
+import AddEmployeeOpenBalance from "./SubModals/AddEmployeeOpenBalance";
 const all_functions = OpeningBalanceEvent();
 
 class OpeningBalance extends Component {
@@ -40,9 +40,13 @@ class OpeningBalance extends Component {
       rerender_items: true,
       leave_balance: [],
       year: moment().year(),
-      leaves_data: []
+      leaves_data: [],
+      openModal: false,
+      application_leave: [],
+      leave_id: null
     };
     all_functions.getLeaveMaster(this);
+    all_functions.getApplicationLeaves(this);
   }
 
   componentDidMount() {
@@ -77,20 +81,26 @@ class OpeningBalance extends Component {
   }
 
   clearState() {
-    this.setState({
-      leave_balance: [],
-      employee_group_id: null,
-      hospital_id: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).hims_d_hospital_id,
-      employee_name: null,
-      hims_d_employee_id: null,
-      leave_dynamic_date: [],
-      selected_type: "LE",
-      rerender_items: true,
-
-      year: moment().year()
-    });
+    all_functions.getLeaveMaster(this);
+    this.setState(
+      {
+        employee_group_id: null,
+        hospital_id: JSON.parse(
+          AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+        ).hims_d_hospital_id,
+        employee_name: null,
+        hims_d_employee_id: null,
+        leave_dynamic_date: [],
+        selected_type: "LE",
+        rerender_items: true,
+        leave_id: null,
+        year: moment().year(),
+        leave_balance: []
+      },
+      () => {
+        debugger;
+      }
+    );
   }
 
   PreviewData() {
@@ -114,7 +124,25 @@ class OpeningBalance extends Component {
     all_functions.updateEmployeeOpeningBalance(this, row);
   }
 
+  CloseModal(e) {
+    this.setState({
+      openModal: !this.state.openModal
+    });
+  }
+  showModal(HeaderCaption) {
+    debugger;
+    this.setState({
+      openModal: !this.state.openModal,
+      HeaderCaption: HeaderCaption
+    });
+  }
+
+  downloadExcel() {
+    all_functions.downloadExcel(this);
+  }
+
   render() {
+    debugger;
     let allYears = getYears();
 
     return (
@@ -165,6 +193,7 @@ class OpeningBalance extends Component {
               </label>
             </div>
           </div>
+
           <AlagehAutoComplete
             div={{ className: "col-2 mandatory" }}
             label={{
@@ -245,6 +274,27 @@ class OpeningBalance extends Component {
             </h6>
           </div>
 
+          {/* {this.state.selected_type === "LE" ? (
+            <AlagehAutoComplete
+              div={{ className: "col" }}
+              label={{
+                forceLabel: "Select Leave",
+                isImp: true
+              }}
+              selector={{
+                name: "leave_id",
+                className: "select-fld",
+                value: this.state.leave_id,
+                dataSource: {
+                  textField: "leave_description",
+                  valueField: "hims_d_leave_id",
+                  data: this.state.application_leave
+                },
+                onChange: this.texthandle.bind(this)
+              }}
+            />
+          ) : null} */}
+
           <div className="col-12 form-group" style={{ textAlign: "right" }}>
             <button
               onClick={this.clearState.bind(this)}
@@ -261,7 +311,7 @@ class OpeningBalance extends Component {
               <i className="fas fa-eye"></i> Preview
             </button>
             <button
-              onClick={this.clearState.bind(this)}
+              onClick={this.downloadExcel.bind(this)}
               style={{ marginLeft: 10 }}
               className="btn btn-default btn-with-icon"
             >
@@ -276,19 +326,20 @@ class OpeningBalance extends Component {
             </button>
           </div>
         </div>
-        <div className="row">
-          <div className="col-12">
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">
-                    Opening balance for - leave
-                  </h3>
+
+        {this.state.selected_type === "LE" ? (
+          <div className="row">
+            <div className="col-12">
+              <div className="portlet portlet-bordered margin-bottom-15">
+                <div className="portlet-title">
+                  <div className="caption">
+                    <h3 className="caption-subject">
+                      Opening balance for - Leave
+                    </h3>
+                  </div>
                 </div>
-              </div>
-              <div className="portlet-body">
-                <div className="row">
-                  {this.state.selected_type === "LE" ? (
+                <div className="portlet-body">
+                  <div className="row">
                     <div className="col-12" id="Opening_balance_Cntr">
                       <AlgaehDataGrid
                         id="leave_opening_balance"
@@ -309,7 +360,24 @@ class OpeningBalance extends Component {
                         }}
                       />
                     </div>
-                  ) : this.state.selected_type === "LO" ? (
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : this.state.selected_type === "LO" ? (
+          <div className="row">
+            <div className="col-12">
+              <div className="portlet portlet-bordered margin-bottom-15">
+                <div className="portlet-title">
+                  <div className="caption">
+                    <h3 className="caption-subject">
+                      Opening balance for - Loan
+                    </h3>
+                  </div>
+                </div>
+                <div className="portlet-body">
+                  <div className="row">
                     <div className="col-12" id="Opening_balance_Cntr">
                       <AlgaehDataGrid
                         id="loan_opening_balance"
@@ -331,7 +399,24 @@ class OpeningBalance extends Component {
                         }}
                       />
                     </div>
-                  ) : this.state.selected_type === "GR" ? (
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : this.state.selected_type === "GR" ? (
+          <div className="row">
+            <div className="col-12">
+              <div className="portlet portlet-bordered margin-bottom-15">
+                <div className="portlet-title">
+                  <div className="caption">
+                    <h3 className="caption-subject">
+                      Opening balance for - Gratuity
+                    </h3>
+                  </div>
+                </div>
+                <div className="portlet-body">
+                  <div className="row">
                     <div className="col-12" id="Opening_balance_Cntr">
                       <AlgaehDataGrid
                         id="gratuity_opening_balance"
@@ -345,7 +430,35 @@ class OpeningBalance extends Component {
                         forceRender={true}
                       />
                     </div>
-                  ) : this.state.selected_type === "LS" ? (
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : this.state.selected_type === "LS" ? (
+          <div className="row">
+            <div className="col-12">
+              <div className="portlet portlet-bordered margin-bottom-15">
+                <div className="portlet-title">
+                  <div className="caption">
+                    <h3 className="caption-subject">
+                      Opening balance for - Leave Salary
+                    </h3>
+                  </div>
+                  <div className="actions">
+                    <button
+                      className="btn btn-primary btn-circle active"
+                      onClick={this.showModal.bind(
+                        this,
+                        "Employee Leave Salary Opening Balance"
+                      )}
+                    >
+                      <i className="fas fa-plus" />
+                    </button>
+                  </div>
+                </div>
+                <div className="portlet-body">
+                  <div className="row">
                     <div className="col-12" id="Opening_balance_Cntr">
                       <AlgaehDataGrid
                         id="leave_salary_opening_balance"
@@ -357,6 +470,7 @@ class OpeningBalance extends Component {
                         isEditable={true}
                         paging={{ page: 0, rowsPerPage: 20 }}
                         forceRender={true}
+                        filter={true}
                         events={{
                           onEdit: () => {},
                           onDone: this.updateEmployeeOpeningBalance.bind(this)
@@ -366,12 +480,52 @@ class OpeningBalance extends Component {
                         }}
                       />
                     </div>
-                  ) : null}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        ) : null}
+
+        {/* <div className="col-12">
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">
+                    Opening balance for - leave
+                  </h3>
+                </div>
+              </div>
+              <div className="portlet-body">
+                <div className="row">
+                  {this.state.selected_type === "LE" ? (
+                    <div className="col-12" id="Opening_balance_Cntr">
+
+                    </div>
+                  ) : this.state.selected_type === "LO" ? (
+
+                  ) : this.state.selected_type === "GR" ? (
+                    <div className="col-12" id="Opening_balance_Cntr">
+
+                    </div>
+                  ) : this.state.selected_type === "LS" ? (
+                    <div className="col-12" id="Opening_balance_Cntr">
+
+                    </div>
+                  ) : null}
+                </div>
+              </div>
+            </div>
+          </div> */}
+        <AddEmployeeOpenBalance
+          show={this.state.openModal}
+          onClose={this.CloseModal.bind(this)}
+          HeaderCaption={this.state.HeaderCaption}
+          selected_type={this.state.selected_type}
+          year={this.state.year}
+          hospital_id={this.state.hospital_id}
+        />
+        {/* </div> */}
         <div className="hptl-phase1-footer">
           <div className="row">
             <div className="col-lg-12">
