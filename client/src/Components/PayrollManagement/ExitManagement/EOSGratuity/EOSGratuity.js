@@ -193,14 +193,14 @@ class EOSGratuity extends Component {
               name: "hims_f_end_of_service_id",
               className: "select-fld",
               dataSource: {
-                textField: "end_of_service_number",
-                valueField: "hims_f_end_of_service_id",
-                data: this.state.eos
+            textField: "end_of_service_number",
+            valueField: "hims_f_end_of_service_id",
+            data: this.state.eos
               },
               onChange: this.dropDownHandler.bind(this)
             }}
-          />
-          <AlagehAutoComplete
+            />
+            <AlagehAutoComplete
             div={{ className: "col-3 form-group" }}
             label={{ forceLabel: "End of Service Type", isImp: true }}
             selector={{
@@ -208,9 +208,9 @@ class EOSGratuity extends Component {
               value: this.state.exit_type,
               className: "select-fld",
               dataSource: {
-                textField: "name",
-                valueField: "value",
-                data: GlobalVariables.EXIT_TYPE
+            textField: "name",
+            valueField: "value",
+            data: GlobalVariables.EXIT_TYPE
               },
               onChange: this.dropDownHandler.bind(this)
             }}
@@ -389,12 +389,12 @@ class EOSGratuity extends Component {
                       <div className="row">
                         {/* <ul>
                             {EosData.componentList.map((data, index) => (
-                              <li >
-                                <span>{data.short_desc}</span> ->
-                                <span>{getAmountFormart(data.amount)}</span>
-                              </li>
+                          <li >
+                          <span>{data.short_desc}</span> ->
+                          <span>{getAmountFormart(data.amount)}</span>
+                          </li>
                             ))}
-                          </ul> */}
+                        </ul> */}
                         {EosData.componentList.map((data, index) => (
                           <div
                             className="col-4"
