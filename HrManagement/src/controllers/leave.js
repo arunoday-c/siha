@@ -28,7 +28,8 @@ const {
   updateLeaveRuleMaster,
   deleteLeaveApplication,
   cancelLeave,
-  getLeaveBalances
+  getLeaveBalances,
+  updateEmployeeLeave
 } = leave;
 
 export default () => {
@@ -402,6 +403,13 @@ export default () => {
         records: req.records
       });
     }
+  });
+
+  api.put("/updateEmployeeLeave", updateEmployeeLeave, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
   });
 
   return api;

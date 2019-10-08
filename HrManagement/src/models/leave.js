@@ -378,14 +378,10 @@ export default {
                                           salary_processed == "Y" &&
                                           input.leave_type == "U"
                                         ) {
-                                          insertPendLeave = ` insert into hims_f_pending_leave (employee_id, year, month,leave_application_id,updaid_leave_duration) VALUE(${
-                                            input.employee_id
-                                          },
+                                          insertPendLeave = ` insert into hims_f_pending_leave (employee_id, year, month,leave_application_id,updaid_leave_duration) VALUE(${input.employee_id},
                                                         ${input.year},
                                                         ${month_number},
-                                                        ${
-                                                          input.hims_f_leave_application_id
-                                                        },${updaid_leave_duration});`;
+                                                        ${input.hims_f_leave_application_id},${updaid_leave_duration});`;
                                         }
 
                                         let anualLeave = "";
@@ -394,14 +390,10 @@ export default {
                                             "Y" &&
                                           input.leave_category == "A"
                                         ) {
-                                          anualLeave = ` insert into hims_f_employee_annual_leave (employee_id,year,month,leave_application_id) VALUE(${
-                                            input.employee_id
-                                          },
+                                          anualLeave = ` insert into hims_f_employee_annual_leave (employee_id,year,month,leave_application_id) VALUE(${input.employee_id},
                                                         ${input.year},
                                                         ${month_number},
-                                                        ${
-                                                          input.hims_f_leave_application_id
-                                                        });`;
+                                                        ${input.hims_f_leave_application_id});`;
                                         }
 
                                         //if he is regularizing absent to leave
@@ -586,12 +578,10 @@ export default {
         mysql: _mysql
       })
         .then(maxAuth => {
-         
           if (
             req.userIdentity.leave_authorize_privilege < maxAuth.MaxLeave ||
             input.auth_level < maxAuth.MaxLeave
           ) {
-            
             //for lower level authorize
             if (input.status == "R") {
               _mysql
@@ -666,9 +656,8 @@ export default {
             req.userIdentity.leave_authorize_privilege >= maxAuth.MaxLeave &&
             input.auth_level >= maxAuth.MaxLeave
           ) {
-           
-           // const auth_level=input.auth_level;
-           
+            // const auth_level=input.auth_level;
+
             getLeaveAuthFields(input["auth_level"]).then(authFields => {
               _mysql
                 .executeQueryWithTransaction({
@@ -689,8 +678,6 @@ export default {
                   printQuery: true
                 })
                 .then(authResult => {
-
-                
                   if (authResult[0].affectedRows > 0 && input.status == "R") {
                     _mysql
                       .executeQuery({
@@ -716,7 +703,7 @@ export default {
                     input.status == "A"
                   ) {
                     let month_number = 0;
-                    
+
                     if (
                       authResult[1][0]["attendance_starts"] == "PM" &&
                       authResult[1][0]["at_end_date"] > 0
@@ -888,38 +875,26 @@ export default {
                                           salary_processed == "Y" &&
                                           input.leave_type == "U"
                                         ) {
-                                          insertPendLeave = ` insert into hims_f_pending_leave (employee_id, year, month,leave_application_id,updaid_leave_duration) VALUE(${
-                                            input.employee_id
-                                          },
+                                          insertPendLeave = ` insert into hims_f_pending_leave (employee_id, year, month,leave_application_id,updaid_leave_duration) VALUE(${input.employee_id},
                                                     ${input.year},
                                                     ${month_number},
-                                                    ${
-                                                      input.hims_f_leave_application_id
-                                                    },${updaid_leave_duration});`;
+                                                    ${input.hims_f_leave_application_id},${updaid_leave_duration});`;
                                         }
 
                                         let anualLeave = "";
-                                    
+
                                         if (
                                           annual_leave_process_separately ==
                                             "Y" &&
                                           input.leave_category == "A"
                                         ) {
-                                          anualLeave = ` insert into hims_f_employee_annual_leave (employee_id,year,month,leave_application_id,hospital_id,from_normal_salary) VALUE(${
-                                            input.employee_id
-                                          },
+                                          anualLeave = ` insert into hims_f_employee_annual_leave (employee_id,year,month,leave_application_id,hospital_id,from_normal_salary) VALUE(${input.employee_id},
                                                     ${input.year},
                                                     ${month_number},
-                                                    ${
-                                                      input.hims_f_leave_application_id
-                                                    },
+                                                    ${input.hims_f_leave_application_id},
                                                     ${input.hospital_id},
-                                                    '${
-                                                      input.from_normal_salary
-                                                    }'
+                                                    '${input.from_normal_salary}'
                                                     );`;
-
-                                         
                                         }
 
                                         //if he is regularizing absent to leave
@@ -1281,9 +1256,7 @@ export default {
                   _mysql.releaseConnection();
                   req.records = {
                     invalid_input: true,
-                    message: `you cant apply leave,${
-                      closeBalanceResult[1][0].holiday_date
-                    } is holiday   `
+                    message: `you cant apply leave,${closeBalanceResult[1][0].holiday_date} is holiday   `
                   };
                   next();
                   return;
@@ -1928,9 +1901,7 @@ export default {
                   _mysql.releaseConnection();
                   req.records = {
                     invalid_input: true,
-                    message: `you cant apply leave on , ${
-                      isHoliday[0].holiday_date
-                    } is :( ${isHoliday[0].holiday_description} )`
+                    message: `you cant apply leave on , ${isHoliday[0].holiday_date} is :( ${isHoliday[0].holiday_description} )`
                   };
                   next();
                   return;
@@ -3552,9 +3523,7 @@ export default {
       req.query.to_date != null
     ) {
       range = ` and date(application_date)
-        between date('${req.query.from_date}') and date('${
-        req.query.to_date
-      }') `;
+        between date('${req.query.from_date}') and date('${req.query.to_date}') `;
     }
 
     const _mysql = new algaehMysql();
@@ -4647,7 +4616,7 @@ export default {
         .executeQuery({
           query: `select E.hims_d_employee_id,E.employee_code,E.full_name,ML.leave_id ,ML.total_eligible,\
               ML.availed_till_date,ML.close_balance from hims_d_employee E \
-              left join  hims_f_employee_monthly_leave ML on ML.employee_id=E.hims_d_employee_id and ML.year=?\
+              inner join  hims_f_employee_monthly_leave ML on ML.employee_id=E.hims_d_employee_id and ML.year=?\
               where  E.hospital_id=? and  E.record_status='A' ${strQry} order by hims_d_employee_id;\
               select hims_d_leave_id, leave_code, leave_description from hims_d_leave \
               where record_status='A';`,
@@ -4661,7 +4630,7 @@ export default {
           const leave_master = result[1];
 
           const outputArray = [];
-        
+
           if (employees.length > 0 && leave_master.length > 0) {
             _.chain(employees)
               .groupBy(g => g.hims_d_employee_id)
@@ -4676,22 +4645,20 @@ export default {
                     return item["leave_id"] == leave["hims_d_leave_id"];
                   });
                   if (leave_assignd != undefined) {
-                    data[''+leave["hims_d_leave_id"]+''] =
+                    data["" + leave["hims_d_leave_id"] + ""] =
                       leave_assignd["close_balance"];
                   } else {
-                    data[''+leave["hims_d_leave_id"]+''] = "N";
+                    data["" + leave["hims_d_leave_id"] + ""] = "N";
                   }
                 });
 
                 outputArray.push(data);
               })
               .value();
-          
-              req.records = outputArray;
-              next();
-          
-          
-            } else {
+
+            req.records = outputArray;
+            next();
+          } else {
             req.records = {
               invalid_input: true,
               message: `No Employees Found`
@@ -4713,21 +4680,57 @@ export default {
       next();
       return;
     }
+  },
+
+  updateEmployeeLeave: (req, res, next) => {
+    try {
+      const _mysql = new algaehMysql();
+      const input = req.body;
+      let execute_query = "";
+
+      for (let i = 0; i < input.length; i++) {
+        execute_query += _mysql.mysqlQueryFormat(
+          "UPDATE hims_f_employee_monthly_leave set close_balance=? \
+          where  employee_id=? and leave_id=? and year=?;",
+          [
+            input[i].close_balance,
+            input[i].employee_id,
+            input[i].leave_id,
+            input[i].year
+          ]
+        );
+
+        if (i == input.length - 1) {
+          _mysql
+            .executeQuery({
+              query: execute_query,
+              printQuery: true
+            })
+            .then(result => {
+              _mysql.releaseConnection();
+              req.records = result;
+              next();
+            })
+            .catch(e => {
+              next(e);
+            });
+        }
+      }
+    } catch (e) {
+      next(e);
+    }
   }
-
-
 };
 
 // finish
 
 //created by irfan: to get database field for authrzation
 function getLeaveAuthFields(auth_level) {
- 
   return new Promise((resolve, reject) => {
     let authFields;
-   
+
     switch (auth_level) {
-      case 1 :
+      case 1:
         authFields = [
           "authorized1=?",
           "authorized1_date=?",
@@ -4736,7 +4739,7 @@ function getLeaveAuthFields(auth_level) {
         ];
         break;
 
-      case 2 :
+      case 2:
         authFields = [
           "authorized2=?",
           "authorized2_date=?",
@@ -4745,7 +4748,7 @@ function getLeaveAuthFields(auth_level) {
         ];
         break;
 
-      case 3 :
+      case 3:
         authFields = [
           "authorized3=?",
           "authorized3_date=?",
@@ -4755,7 +4758,7 @@ function getLeaveAuthFields(auth_level) {
         ];
         break;
 
-      case 4 :
+      case 4:
         authFields = [
           "authorized4=?",
           "authorized4_date=?",
@@ -4764,7 +4767,7 @@ function getLeaveAuthFields(auth_level) {
           "authorized4_comment=?"
         ];
         break;
-      case 5 :
+      case 5:
         authFields = [
           "authorized5=?",
           "authorized5_date=?",

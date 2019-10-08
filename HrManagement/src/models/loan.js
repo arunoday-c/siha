@@ -11,6 +11,44 @@ import leave from "../models/leave";
 const { getMaxAuth } = leave;
 
 export default {
+  getEmployeeLoanOpenBal: (req, res, next) => {
+    try {
+      const _mysql = new algaehMysql();
+      const input = req.query;
+
+      let inputValues = [];
+
+      let strQry = "";
+      if (input.employee_group_id > 0) {
+        strQry += " and E.employee_group_id=" + input.employee_group_id;
+      }
+      if (input.hims_d_employee_id > 0) {
+        strQry += " and E.hims_d_employee_id=" + input.hims_d_employee_id;
+      }
+
+      _mysql
+        .executeQuery({
+          query:
+            "select E.employee_code, E.full_name, LA.loan_amount, LA.approved_amount, LA.start_month, LA.start_year, \
+             LA.loan_tenure, LA.pending_tenure, LA.installment_amount, LA.pending_loan from hims_d_employee E \
+             left join hims_f_loan_application LA on E.hims_d_employee_id=LA.employee_id where E.hospital_id=? " +
+            strQry,
+          values: [input.hospital_id],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(e => {
+          next(e);
+        });
+    } catch (e) {
+      next(e);
+    }
+  },
+
   //created by irfan:
   addLoanApplication: (req, res, next) => {
     const utilities = new algaehUtilities();
