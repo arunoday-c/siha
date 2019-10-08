@@ -2356,7 +2356,7 @@ const HR_Payroll_Reports = [
         pageOrentation: "landscape", //"portrait",
         reportParameters: [
           {
-            className: "col-2 mandatory",
+            className: "col-2 mandatory form-group",
             type: "dropdown",
             name: "year",
             isImp: true,
@@ -2479,7 +2479,7 @@ const HR_Payroll_Reports = [
             name: "is_local",
             initialLoad: true,
             // isImp: true,
-            label: "Type",
+            label: "Employee Type",
             dataSource: {
               textField: "name",
               valueField: "value",
