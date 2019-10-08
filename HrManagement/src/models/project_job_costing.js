@@ -976,7 +976,7 @@ export default {
     let groupBy = " PWP.employee_id ";
 
     if (input.employee_id > 0) {
-      employee = " and employee_id=" + input.employee_id;
+      employee = " and PWP.employee_id=" + input.employee_id;
       groupBy = " PWP.project_id ";
     }
 
