@@ -684,7 +684,6 @@ class LeaveEdit extends Component {
         events={{
           onClose: this.props.onClose
         }}
-        className="col-lg-12"
       >
         <div className="popupInner" data-validate="LvEdtGrd">
           <div className="col-12">

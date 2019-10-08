@@ -1202,7 +1202,7 @@ export default {
             "select E.employee_code, E.full_name, LS.hims_f_employee_leave_salary_header_id, LS.leave_days, \
             LS.leave_salary_amount, LS.airticket_amount, LS.balance_leave_days, LS.balance_leave_salary_amount, \
             LS.balance_airticket_amount, LS.airfare_months, LS.utilized_leave_days, LS.utilized_leave_salary_amount, \
-            LS.utilized_airticket_amount from hims_d_employee E left join hims_f_employee_leave_salary_header LS \
+            LS.utilized_airticket_amount from hims_d_employee E inner join hims_f_employee_leave_salary_header LS \
             on E.hims_d_employee_id=LS.employee_id where E.leave_salary_process = 'Y' and E.hospital_id=? " +
             strQry,
           values: [input.hospital_id],

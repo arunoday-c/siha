@@ -1,0 +1,191 @@
+// @flow
+import React, { useState, useEffect } from "react";
+import "./assets.scss";
+import {
+  AlgaehFormGroup,
+  AlgaehDateHandler,
+  AlgaehDropDown,
+  AlgaehModalPopUp
+} from "../../../Wrappers";
+import ButtonType from "../../../Wrappers/algaehButton";
+import { AccountType } from "../../../utils/GlobalVariables";
+import moment from "moment";
+
+export default function AddNewAccount(props) {
+  const [lodingAddtoList, setLoadingAddtoList] = useState("");
+  const [account_code, setAccountCode] = useState("");
+  const [account_name, setAccountName] = useState("");
+  const [account_type, setAccountType] = useState("G");
+  const [opening_balance, setOpeningBalance] = useState(0);
+  // const [opening_balance_date, setOpeningBalanceDate] = useState("");
+  const { showPopup, onClose, selectedNode } = props;
+
+  return (
+    <AlgaehModalPopUp
+      className="col-lg-12"
+      openPopup={showPopup}
+      title="Project Assign"
+      onClose={() => {
+        onClose();
+      }}
+    >
+      <div className="popupInner" data-validate="LvEdtGrd">
+        <div className="container-fluid assetsModuleScreen">
+          <h5 className="card-header">New Asset Account</h5>
+          <div className="card-body">
+            <div className="row">
+            <AlgaehDropDown
+              div={{
+                className: "form-group algaeh-select-fld col-xs-4 col-md-3"
+              }}
+              label={{
+                forceLabel: "Select Default Currency",
+                isImp: true
+              }}
+              selector={{
+                className: "form-control",
+                value:account_type,
+                name: "account_type",
+                onChange: e => {
+                  debugger
+                  setAccountType(e.target.value);
+                }
+              }}
+              dataSource={{
+                textField: "name",
+                valueField: "value",
+                data: AccountType
+              }}
+            />
+            <AlgaehFormGroup
+              div={{
+                className: "form-group algaeh-text-fld col-xs-4 col-md-3"
+              }}
+              label={{
+                forceLabel: "Account Code",
+                isImp: true
+              }}
+              textBox={{
+                type: "text",
+                value: account_code,
+                className: "form-control",
+                id: "name",
+                onChange: e => {
+                  setAccountCode(e.target.value);
+                },
+                placeholder: " Enter Account Code",
+                autocomplete: false
+              }}
+            />
+
+              <AlgaehFormGroup
+                div={{
+                  className: "form-group algaeh-text-fld col-xs-4 col-md-3"
+                }}
+                label={{
+                  forceLabel: "Account Name",
+                  isImp: true
+                }}
+                textBox={{
+                  type: "text",
+                  value: account_name,
+                  className: "form-control",
+                  id: "name",
+                  onChange: e => {
+                    debugger
+                    setAccountName(e.target.value);
+                  },
+                  placeholder: " Enter Account Name",
+                  autocomplete: false
+                }}
+              />
+              {account_type === "C"? <AlgaehFormGroup
+                div={{
+                  className: "form-group algaeh-text-fld col-xs-4 col-md-3"
+                }}
+                label={{
+                  forceLabel: "Opening Balance",
+                  isImp: true
+                }}
+                textBox={{
+                  type: "number",
+                  value: opening_balance,
+                  className: "form-control",
+                  id: "name",
+                  onChange: e => {
+                    debugger
+                    setOpeningBalance(e.target.value);
+                  },
+                  placeholder: " Enter Opening Balance",
+                  autocomplete: false
+                }}
+              />: null}
+
+              {/* {account_type === "C"?
+              <AlgaehDateHandler
+                div={{ className: "form-group algaeh-email-fld col-xs-4 col-md-3" }}
+                label={{
+                  forceLabel: "Opening Balance Till Date",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "form-control",
+                  name: "opening_balance_date"
+                }}
+                events={{
+                  onChange: selDate => {
+                    setOpeningBalanceDate(moment(selDate).format("YYYY-MM-DD"));
+                  }
+                }}
+                value={opening_balance_date}
+                maxDate={new Date()}
+                // minDate={new Date()}
+              />: null} */}
+
+
+            </div>
+          </div>
+        </div>
+        <div className="popupFooter">
+          <div className="col-lg-12">
+            <div className="row">
+              <div className="col-lg-4"> &nbsp;</div>
+              <ButtonType
+                classname="btn-primary"
+                loading={lodingAddtoList}
+                onClick={() => {
+                  debugger
+                  // setLoadingAddtoList(true);
+                  setAccountCode("");
+                  setAccountName("");
+                  setAccountType("G");
+                  setOpeningBalance(0);
+                  // setOpeningBalanceDate("");
+                  onClose({title:account_name, leafnode:account_type === "G"?"N":"Y", head_created_from:"U"});
+                }}
+                label={{
+                  forceLabel: "Add to List",
+                  returnText: true
+                }}
+              />
+              <button
+                onClick={() => {
+                  setAccountCode("");
+                  setAccountName("");
+                  setAccountType("G");
+                  setOpeningBalance(0);
+                  // setOpeningBalanceDate("");
+                  onClose();
+                }}
+                type="button"
+                className="btn btn-default"
+              >
+                CANCEL
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </AlgaehModalPopUp>
+  );
+}

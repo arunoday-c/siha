@@ -8,7 +8,7 @@
     "build": "webpack --config webpack.prod.js",
     "run-webpack": "webpack --watch --config webpack.dev.js",
     "dev": "npm run report_server",
-    "run-prod": "cross-env PORT=3018 NODE_ENV=production pm2 start  -i 1 build/app.js",
+    "run-prod": "cross-env PORT=3018 NODE_ENV=production pm2 start  -i 2 build/app.js --name 'reports'",
     "start": "run-s build run-prod",
     "run-dev": "cross-env PORT=3018 NODE_ENV=development nodemon --exec 'node build/app.js'"
   },

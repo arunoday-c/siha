@@ -4,6 +4,7 @@ import algaehUtilities from "algaeh-utilities/utilities";
 import moment from "moment";
 import extend from "extend";
 import mysql from "mysql";
+import Excel from "exceljs/modern.browser";
 
 export default {
   addMisEarnDedcToEmployee: (req, res, next) => {
@@ -34,9 +35,7 @@ export default {
           ],
           query:
             "insert into  hims_f_miscellaneous_earning_deduction (??) values ? ON DUPLICATE KEY UPDATE ?",
-          printQuery: query => {
-            utilities.logger().log("Query: ", Query);
-          },
+          printQuery: query => {},
           bulkInsertOrUpdate: true
         })
         .then(result => {
@@ -95,7 +94,7 @@ export default {
               " and E.hospital_id='" + req.userIdentity.hospital_id + "'";
           }
         }
-        utilities.logger().log("Query: ", _strAppend);
+
         _mysql
           .executeQuery({
             query:
@@ -352,7 +351,6 @@ export default {
           })
           .then(update_employee => {
             const utilities = new algaehUtilities();
-            utilities.logger().log("update_employee: ");
 
             let _InsertEmployeeDept = InsertEmployeeDepartment({
               req: req,
@@ -1326,6 +1324,256 @@ export default {
         _mysql.releaseConnection();
         next(e);
       });
+  },
+
+  getEmployeeLeaveType: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = req.body;
+
+    _mysql
+      .executeQuery({
+        query: "select * from hims_d_leave",
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
+
+  getBulkEmployeeLeaves: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const utilities = new algaehUtilities();
+
+    try {
+      const input = req.query;
+
+      if (input.hospital_id > 0 && input.year > 0) {
+        let strQry = "";
+        if (input.employee_group_id > 0) {
+          strQry += " and E.employee_group_id=" + input.employee_group_id;
+        }
+        if (input.hims_d_employee_id > 0) {
+          strQry += " and E.hims_d_employee_id=" + input.hims_d_employee_id;
+        }
+
+        //-------------------start
+        _mysql
+          .executeQuery({
+            query: `select E.hims_d_employee_id,E.employee_code,E.full_name,ML.leave_id ,ML.total_eligible,\
+                ML.availed_till_date,ML.close_balance from hims_d_employee E \
+                inner join  hims_f_employee_monthly_leave ML on ML.employee_id=E.hims_d_employee_id and ML.year=?\
+                where  E.hospital_id=? and  E.record_status='A' ${strQry} order by hims_d_employee_id;\
+                select hims_d_leave_id, leave_code, leave_description from hims_d_leave \
+                where record_status='A';`,
+            values: [input.year, input.hospital_id],
+            printQuery: true
+          })
+          .then(result => {
+            _mysql.releaseConnection();
+
+            const employees_leave = result[0];
+            const leave_master = result[1];
+            let outputArray = [];
+            if (employees_leave.length > 0 && leave_master.length > 0) {
+              _.chain(employees_leave)
+                .groupBy(g => g.hims_d_employee_id)
+                .forEach(emp => {
+                  let data = {
+                    employee_code: emp[0]["employee_code"],
+                    full_name: emp[0]["full_name"],
+                    employee_id: emp[0]["employee_id"]
+                  };
+                  leave_master.forEach(leave => {
+                    const leave_assignd = emp.find(item => {
+                      return item["leave_id"] == leave["hims_d_leave_id"];
+                    });
+                    if (leave_assignd != undefined) {
+                      data["" + leave["hims_d_leave_id"] + ""] =
+                        leave_assignd["close_balance"];
+                    } else {
+                      data["" + leave["hims_d_leave_id"] + ""] = "N";
+                    }
+                  });
+
+                  outputArray.push(data);
+                })
+                .value();
+
+              const utilities = new algaehUtilities();
+
+              req.records = { leaves: result[1], employee_leaves: outputArray };
+              next();
+            } else {
+              req.records = {
+                message: "No Employes Found",
+                invalid_input: true
+              };
+              next();
+              return;
+            }
+          })
+          .catch(e => {
+            _mysql.releaseConnection();
+            next(e);
+          });
+      } else {
+        req.records = {
+          message: "Please provide valid input",
+          invalid_input: true
+        };
+        next();
+      }
+    } catch (e) {
+      next(e);
+    }
+  },
+
+  excelEmployeeLeaveOpenBalance: (req, res, next) => {
+    new Promise((resolve, reject) => {
+      const query = req.query;
+      const utilities = new algaehUtilities();
+      const sheetName = "Employee Leaves";
+
+      try {
+        (async () => {
+          const columns = await generateColumns(req.records.leaves);
+
+          //Create instance of excel
+          var workbook = new Excel.Workbook();
+          workbook.creator = "Algaeh technologies private limited";
+          workbook.lastModifiedBy = "Leave Opening Balance";
+          workbook.created = new Date();
+          workbook.modified = new Date();
+          // Set workbook dates to 1904 date system
+          // workbook.properties.date1904 = true;
+
+          //Work worksheet creation
+          var worksheet = workbook.addWorksheet(sheetName, {
+            properties: { tabColor: { argb: "FFC0000" } }
+          });
+          //Adding columns
+          worksheet.columns = columns;
+
+          //Differencate headers
+          worksheet.getRow(1).fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: "000000" }
+          };
+          worksheet.getRow(1).font = {
+            name: "calibri",
+            family: 4,
+            size: 12,
+            bold: true,
+            color: { argb: "FFFFFF" }
+          };
+          worksheet.getRow(1).alignment = {
+            vertical: "middle",
+            horizontal: "center"
+          };
+
+          //To freez first column
+          worksheet.views = [
+            {
+              state: "frozen",
+              xSplit: 2,
+              ySplit: 0,
+              activeCell: "A1",
+              topLeftCell: "C1"
+            },
+            {
+              state: "frozen",
+              xSplit: 0,
+              ySplit: 1,
+              activeCell: "A1"
+            }
+          ];
+
+          const data = req.records.employee_leaves; //require("../../testDB/data.json");
+          const leave_data = req.records.leaves;
+
+          // Add a couple of Rows by key-value, after the last current row, using the column keys
+          for (let i = 0; i < data.length; i++) {
+            const rest = data[i];
+
+            let employee = {
+              full_name: rest.full_name,
+              employee_code: rest.employee_code
+            };
+
+            for (let j = 0; j < leave_data.length; j++) {
+              employee[leave_data[j].hims_d_leave_id] =
+                rest[leave_data[j].hims_d_leave_id];
+            }
+
+            worksheet.addRow(employee);
+          }
+
+          worksheet.addRow([JSON.stringify(query)]);
+          worksheet.lastRow.hidden = true;
+          await worksheet.protect("algaeh@2019", {
+            selectLockedCells: true,
+            selectUnlockedCells: true
+          });
+
+          res.setHeader(
+            "Content-Type",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+          );
+          res.setHeader(
+            "Content-Disposition",
+            "attachment; filename=" + "Report.xlsx"
+          );
+          workbook.xlsx.write(res).then(function(data) {
+            res.end();
+          });
+        })();
+      } catch (e) {
+        next(e);
+      }
+    });
+  },
+
+  InsertOpeningBalanceLeaveSalary: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = req.body;
+
+    _mysql
+      .executeQuery({
+        query:
+          "INSERT INTO `hims_f_employee_leave_salary_header` (employee_id, year, balance_leave_days, \
+          balance_leave_salary_amount, balance_airticket_amount, leave_days, leave_salary_amount, airticket_amount, \
+          airfare_months, hospital_id)\
+          VALUE(?,?,?,?,?,?,?,?,?,?)",
+        values: [
+          input.employee_id,
+          input.year,
+          input.leave_days,
+          input.leave_salary_amount,
+          input.airticket_amount,
+          input.leave_days,
+          input.leave_salary_amount,
+          input.airticket_amount,
+          input.airfare_months,
+          input.hospital_id
+        ],
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
   }
 };
 
@@ -1857,16 +2105,14 @@ function UpdateEmployeeDeduction(options) {
   return new Promise((resolve, reject) => {
     try {
       const utilities = new algaehUtilities();
-      utilities.logger().log("UpdateEmployeeDeduction: ");
+
       let req = options.req;
-      utilities.logger().log("inputParam: ", req.body.updateDeductionComp);
+
       if (req.body.updateDeductionComp.length > 0) {
         let _mysql = options._mysql;
 
         let qry = "";
         let inputParam = extend([], req.body.updateDeductionComp);
-
-        utilities.logger().log("inputParam: ", inputParam);
 
         for (let i = 0; i < req.body.updateDeductionComp.length; i++) {
           qry += mysql.format(
@@ -2373,3 +2619,31 @@ function DeleteEmployeeDependents(options) {
   });
 }
 //Employee Dependents End
+
+async function generateColumns(leaveData) {
+  // format = format || "DD-MM-YYYY";
+  let columns = [
+    {
+      header: "Emp. Code",
+      key: "employee_code",
+      horizontal: "center"
+    },
+    {
+      header: "Employee Name",
+      key: "full_name",
+      width: 40,
+      horizontal: "center"
+    }
+  ];
+
+  for (let i = 0; i < leaveData.length; i++) {
+    columns.push({
+      header: leaveData[i].leave_description,
+      key: leaveData[i].hims_d_leave_id,
+      horizontal: "center",
+      width: 10
+    });
+  }
+
+  return await columns;
+}

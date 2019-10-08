@@ -336,7 +336,7 @@ export default class AttendanceSettings extends Component {
                 <div className="col-2">
                   <label>Authorization Plan</label>
                   <div className="customRadio">
-                    <label className="radio inline">
+                    <label className="radio block">
                       <input
                         type="radio"
                         value="R"
@@ -347,7 +347,7 @@ export default class AttendanceSettings extends Component {
                       <span>Role Wise</span>
                     </label>
 
-                    <label className="radio inline">
+                    <label className="radio block">
                       <input
                         type="radio"
                         value="A"

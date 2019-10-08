@@ -10,6 +10,7 @@ label {
   text-transform: uppercase;
   font-weight: 500;
   font-size: $fontSize;
+  margin-bottom: 0.1rem;
 }
 
 .UCAF20_Report {
@@ -545,6 +546,12 @@ ul.ul-legend {
   }
 }
 
+.portlet-footer {
+  text-align: right;
+  button {
+    margin-left: 10px;
+  }
+}
 .caption.caption-green .caption-subject,
 .caption.caption-green i {
   color: lighten($primary-color, 10%);

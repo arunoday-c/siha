@@ -2,7 +2,7 @@ const cryptr = require("cryptr");
 const jwt = require("jsonwebtoken");
 // const winston = require("winston");
 const path = require("path");
-
+let winston = require("winston");
 require("winston-daily-rotate-file");
 const gracefulFs = require("graceful-fs");
 const fs = require("fs");
@@ -92,7 +92,6 @@ algaehUtilities.prototype.logger = function(reqTracker) {
     fs.mkdirSync(_logPath);
   }
 
-  let winston = require("winston");
   var _levels = process.env.NODE_ENV == "production" ? "info" : "debug";
   var transport = new winston.transports.DailyRotateFile({
     filename: `${_logPath}/%DATE%.log`,

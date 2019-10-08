@@ -54,11 +54,18 @@ export default function Filter(props) {
       return;
     }
     const year = moment().format("YYYY");
+
+    const searchYear =
+      month === "01"
+        ? moment()
+            .add(-1, "year")
+            .format("YYYY")
+        : year;
     const maxDate = `${year}-${month}-${enddtDt}`;
     let prevMonths = moment(maxDate, "YYYY-MM-DD")
       .add(-1, "months")
       .format("MM");
-    const minDate = `${year}-${prevMonths}-${starttDt}`;
+    const minDate = `${searchYear}-${prevMonths}-${starttDt}`;
     setToMax(maxDate);
     setFromMin(minDate);
     setFromMax(maxDate);
@@ -338,7 +345,7 @@ export default function Filter(props) {
         }}
       /> */}
       <div className="col-5" style={{ paddingTop: 19 }}>
-        <div className="uploadManualDiv">
+        <div className="uploadManualDiv   btn-with-icon">
           <input
             className="inputfile"
             type="file"
@@ -350,7 +357,7 @@ export default function Filter(props) {
             }}
           />
           <label onClick={() => fileInput.current.click()}>
-            Upload Attendance
+            <i className="fas fa-file-upload"></i> Upload
           </label>
         </div>
         <button
@@ -377,10 +384,13 @@ export default function Filter(props) {
             }
           }}
           style={{ marginLeft: 10, float: "right" }}
-          className="btn btn-default"
+          className="btn btn-default btn-with-icon"
         >
           {!loading ? (
-            <span>Download</span>
+            <span>
+              {" "}
+              <i className="fas fa-file-download"></i> Download
+            </span>
           ) : (
             <i className="fas fa-spinner fa-spin" />
           )}
@@ -404,10 +414,13 @@ export default function Filter(props) {
             );
           }}
           style={{ marginLeft: 10, float: "right" }}
-          className="btn btn-default"
+          className="btn btn-default  btn-with-icon"
         >
           {!loadingPriew ? (
-            <span>Preview</span>
+            <span>
+              {" "}
+              <i className="fas fa-eye"></i> Preview
+            </span>
           ) : (
             <i className="fas fa-spinner fa-spin" />
           )}
@@ -424,7 +437,7 @@ export default function Filter(props) {
             setSubDepartments([]);
           }}
           style={{ marginLeft: 10, float: "right" }}
-          className="btn btn-default"
+          className="btn btn-default  btn-with-icon"
         >
           <span>Clear</span>
         </button>

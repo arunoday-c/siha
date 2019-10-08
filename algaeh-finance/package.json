@@ -11,7 +11,7 @@
     "build": "run-p build:*",
     "build:client": "npm run build --prefix client",
     "build:server": "webpack --config webpack.prod.js",
-    "prod:server": "cross-env NODE_ENV=production PORT=3007 node build/app.js",
+    "start": "cross-env NODE_ENV=production PORT=3007 pm2 start -i 2 build/app.js --name 'finance'",
     "run-webpack": "webpack --watch --config webpack.dev.js",
     "run-dev": "cross-env PORT=3007 NODE_ENV=development nodemon --exec 'node build/app.js'"
   },
@@ -19,7 +19,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "agentkeepalive": "^4.0.2",
     "algaeh-mysql": "^1.2.11",
+    "axios": "^0.19.0",
+    "axios-cancel": "^0.2.2",
     "body-parser": "^1.18.2",
     "compression": "^1.7.3",
     "concurrently": "^3.5.1",
@@ -31,6 +34,7 @@
     "mathjs": "^5.1.2",
     "node-linq": "0.0.5",
     "semantic-ui-react": "^0.88.1",
+    "sweetalert2": "^8.18.0",
     "winston": "^3.1.0",
     "winston-daily-rotate-file": "^3.1.4"
   },

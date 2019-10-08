@@ -8,7 +8,6 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
 import MyContext from "../../utils/MyContext.js";
 import { Validations } from "./FrontdeskValidation.js";
 import AlgaehLabel from "../Wrapper/label.js";
@@ -26,11 +25,8 @@ import {
 } from "../../utils/GlobalFunctions";
 import { setGlobal } from "../../utils/GlobalFunctions";
 import { AlgaehActions } from "../../actions/algaehActions";
-import AlgaehReport from "../Wrapper/printReports";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
 import moment from "moment";
-import Options from "../../Options.json";
-import { ClearData, generateIdCard } from "./UpdatePatientDetailsEvent";
 import { SetBulkState } from "../../utils/GlobalFunctions";
 
 class UpdatePatientDetails extends Component {
