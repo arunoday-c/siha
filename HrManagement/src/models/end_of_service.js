@@ -26,7 +26,7 @@ export default {
           .executeQuery({
             query:
               "select E.date_of_joining,E.hims_d_employee_id,E.date_of_resignation,E.employee_status, E.employe_exit_type, \
-              datediff(date(date_of_resignation),date(date_of_joining))/365 endOfServiceYears,E.employee_code,E.exit_date,\
+              datediff(date(exit_date),date(date_of_joining))/365 endOfServiceYears,E.employee_code,E.exit_date,\
               E.full_name,E.arabic_name,E.sex,E.employee_type ,E.title_id,T.title ,T.arabic_title,\
               E.sub_department_id,E.employee_designation_id,E.date_of_birth,\
               SD.sub_department_name,SD.arabic_sub_department_name \
@@ -57,7 +57,7 @@ export default {
               return;
             }
 
-            utilities.logger().log("_options: ", _options);
+            // utilities.logger().log("_options: ", _options);
 
             if (_options.length == 0) {
               _mysql.releaseConnection();
@@ -181,7 +181,7 @@ export default {
               ted = _eligibleDays;
             }
 
-            utilities.logger().log("_optionsDetals: ", _optionsDetals);
+            // utilities.logger().log("_optionsDetals: ", _optionsDetals);
 
             let _componentsList_total = [];
             if (_optionsDetals.end_of_service_component1 != null) {
@@ -205,9 +205,9 @@ export default {
               );
             }
 
-            utilities
-              .logger()
-              .log("_componentsList_total: ", _componentsList_total);
+            // utilities
+            //   .logger()
+            //   .log("_componentsList_total: ", _componentsList_total);
 
             _mysql
               .executeQuery({
