@@ -42,10 +42,10 @@ class OpeningBalance extends Component {
       year: moment().year(),
       leaves_data: [],
       openModal: false,
-      application_leave: []
+      application_leave: [],
+      leave_id: null
     };
     all_functions.getLeaveMaster(this);
-    all_functions.getApplicationLeaves(this);
   }
 
   componentDidMount() {
@@ -80,20 +80,26 @@ class OpeningBalance extends Component {
   }
 
   clearState() {
-    this.setState({
-      leave_balance: [],
-      employee_group_id: null,
-      hospital_id: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      ).hims_d_hospital_id,
-      employee_name: null,
-      hims_d_employee_id: null,
-      leave_dynamic_date: [],
-      selected_type: "LE",
-      rerender_items: true,
-
-      year: moment().year()
-    });
+    all_functions.getLeaveMaster(this);
+    this.setState(
+      {
+        employee_group_id: null,
+        hospital_id: JSON.parse(
+          AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+        ).hims_d_hospital_id,
+        employee_name: null,
+        hims_d_employee_id: null,
+        leave_dynamic_date: [],
+        selected_type: "LE",
+        rerender_items: true,
+        leave_id: null,
+        year: moment().year(),
+        leave_balance: []
+      },
+      () => {
+        debugger;
+      }
+    );
   }
 
   PreviewData() {
@@ -118,16 +124,9 @@ class OpeningBalance extends Component {
   }
 
   CloseModal(e) {
-    this.setState(
-      {
-        openModal: !this.state.openModal
-      },
-      () => {
-        if (e === true) {
-          all_functions.PreviewData(this);
-        }
-      }
-    );
+    this.setState({
+      openModal: !this.state.openModal
+    });
   }
   showModal(HeaderCaption) {
     debugger;
@@ -142,6 +141,7 @@ class OpeningBalance extends Component {
   }
 
   render() {
+    debugger;
     let allYears = getYears();
 
     return (
@@ -273,7 +273,7 @@ class OpeningBalance extends Component {
             </h6>
           </div>
 
-          {this.state.selected_type === "LE" ? (
+          {/* {this.state.selected_type === "LE" ? (
             <AlagehAutoComplete
               div={{ className: "col" }}
               label={{
@@ -292,7 +292,7 @@ class OpeningBalance extends Component {
                 onChange: this.texthandle.bind(this)
               }}
             />
-          ) : null}
+          ) : null} */}
 
           <div className="col-12 form-group" style={{ textAlign: "right" }}>
             <button
@@ -325,8 +325,9 @@ class OpeningBalance extends Component {
             </button>
           </div>
         </div>
-        <div className="row">
-          {this.state.selected_type === "LE" ? (
+
+        {this.state.selected_type === "LE" ? (
+          <div className="row">
             <div className="col-12">
               <div className="portlet portlet-bordered margin-bottom-15">
                 <div className="portlet-title">
@@ -335,17 +336,6 @@ class OpeningBalance extends Component {
                       Opening balance for - Leave
                     </h3>
                   </div>
-                  {/* <div className="actions">
-                    <button
-                      className="btn btn-primary btn-circle active"
-                      onClick={this.showModal.bind(
-                        this,
-                        "Employee Leave Opening Balance"
-                      )}
-                    >
-                      <i className="fas fa-plus" />
-                    </button>
-                  </div> */}
                 </div>
                 <div className="portlet-body">
                   <div className="row">
@@ -373,7 +363,9 @@ class OpeningBalance extends Component {
                 </div>
               </div>
             </div>
-          ) : this.state.selected_type === "LO" ? (
+          </div>
+        ) : this.state.selected_type === "LO" ? (
+          <div className="row">
             <div className="col-12">
               <div className="portlet portlet-bordered margin-bottom-15">
                 <div className="portlet-title">
@@ -410,7 +402,9 @@ class OpeningBalance extends Component {
                 </div>
               </div>
             </div>
-          ) : this.state.selected_type === "GR" ? (
+          </div>
+        ) : this.state.selected_type === "GR" ? (
+          <div className="row">
             <div className="col-12">
               <div className="portlet portlet-bordered margin-bottom-15">
                 <div className="portlet-title">
@@ -418,6 +412,18 @@ class OpeningBalance extends Component {
                     <h3 className="caption-subject">
                       Opening balance for - Gratuity
                     </h3>
+                  </div>
+                  <div className="actions">
+                    <button
+                      className="btn btn-primary"
+                      style={{ marginTop: 19 }}
+                      onClick={this.showModal.bind(
+                        this,
+                        "Employee Gratuity Opening Balance"
+                      )}
+                    >
+                      Add Opening Balance
+                    </button>
                   </div>
                 </div>
                 <div className="portlet-body">
@@ -428,18 +434,28 @@ class OpeningBalance extends Component {
                         columns={this.state.leave_dynamic_date}
                         keyId="gratuity_opening"
                         dataSource={{
-                          data: []
+                          data: this.state.leave_balance
                         }}
-                        filter={true}
+                        isEditable={true}
                         paging={{ page: 0, rowsPerPage: 20 }}
                         forceRender={true}
+                        filter={true}
+                        events={{
+                          onEdit: () => {},
+                          onDone: this.updateEmployeeOpeningBalance.bind(this)
+                        }}
+                        actions={{
+                          allowDelete: false
+                        }}
                       />
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          ) : this.state.selected_type === "LS" ? (
+          </div>
+        ) : this.state.selected_type === "LS" ? (
+          <div className="row">
             <div className="col-12">
               <div className="portlet portlet-bordered margin-bottom-15">
                 <div className="portlet-title">
@@ -450,14 +466,21 @@ class OpeningBalance extends Component {
                   </div>
                   <div className="actions">
                     <button
-                      className="btn btn-primary btn-circle active"
+                      className="btn btn-primary"
+                      style={{ marginTop: 19 }}
                       onClick={this.showModal.bind(
                         this,
                         "Employee Leave Salary Opening Balance"
                       )}
                     >
-                      <i className="fas fa-plus" />
+                      Add Opening Balance
                     </button>
+                    {/* <button
+                      className="btn btn-primary btn-circle active"
+
+                    >
+                      <i className="fas fa-plus" />
+                    </button> */}
                   </div>
                 </div>
                 <div className="portlet-body">
@@ -473,7 +496,7 @@ class OpeningBalance extends Component {
                         isEditable={true}
                         paging={{ page: 0, rowsPerPage: 20 }}
                         forceRender={true}
-                        // filter={true}
+                        filter={true}
                         events={{
                           onEdit: () => {},
                           onDone: this.updateEmployeeOpeningBalance.bind(this)
@@ -487,9 +510,10 @@ class OpeningBalance extends Component {
                 </div>
               </div>
             </div>
-          ) : null}
+          </div>
+        ) : null}
 
-          {/* <div className="col-12">
+        {/* <div className="col-12">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
@@ -519,15 +543,15 @@ class OpeningBalance extends Component {
               </div>
             </div>
           </div> */}
-          <AddEmployeeOpenBalance
-            show={this.state.openModal}
-            onClose={this.CloseModal.bind(this)}
-            HeaderCaption={this.state.HeaderCaption}
-            selected_type={this.state.selected_type}
-            year={this.state.year}
-            hospital_id={this.state.hospital_id}
-          />
-        </div>
+        <AddEmployeeOpenBalance
+          show={this.state.openModal}
+          onClose={this.CloseModal.bind(this)}
+          HeaderCaption={this.state.HeaderCaption}
+          selected_type={this.state.selected_type}
+          year={this.state.year}
+          hospital_id={this.state.hospital_id}
+        />
+        {/* </div> */}
         <div className="hptl-phase1-footer">
           <div className="row">
             <div className="col-lg-12">

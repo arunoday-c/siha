@@ -14,7 +14,8 @@ export default class LeaveSalarySetup extends Component {
       airfare_factor: undefined,
       basic_earning_component: undefined,
       earningDeductionList: [],
-      airfare_percentage: 0
+      airfare_percentage: 0,
+      hims_d_hrms_options_id: null
     };
 
     this.getLeaveSalaryOptions();
@@ -40,32 +41,62 @@ export default class LeaveSalarySetup extends Component {
   }
 
   saveOptions() {
-    algaehApiCall({
-      uri: "/payrollOptions/updateLeaveSalaryOptions",
-      module: "hrManagement",
-      data: {
-        airfare_factor: this.state.airfare_factor,
-        basic_earning_component: this.state.basic_earning_component,
-        airfare_percentage: this.state.airfare_percentage,
-        annual_leave_process_separately: this.state
-          .annual_leave_process_separately
-      },
-      method: "PUT",
-      onSuccess: res => {
-        if (res.data.success) {
+    if (this.state.hims_d_hrms_options_id === null) {
+      algaehApiCall({
+        uri: "/payrollOptions/insertLeaveSalaryOptions",
+        module: "hrManagement",
+        data: {
+          airfare_factor: this.state.airfare_factor,
+          basic_earning_component: this.state.basic_earning_component,
+          airfare_percentage: this.state.airfare_percentage,
+          annual_leave_process_separately: this.state
+            .annual_leave_process_separately
+        },
+        method: "POST",
+        onSuccess: res => {
+          if (res.data.success) {
+            swalMessage({
+              title: "Saved Successfully",
+              type: "success"
+            });
+          }
+        },
+        onFailure: err => {
           swalMessage({
-            title: "Record Updated Successfully",
-            type: "success"
+            title: err.message,
+            type: "error"
           });
         }
-      },
-      onFailure: err => {
-        swalMessage({
-          title: err.message,
-          type: "error"
-        });
-      }
-    });
+      });
+    } else {
+      algaehApiCall({
+        uri: "/payrollOptions/updateLeaveSalaryOptions",
+        module: "hrManagement",
+        data: {
+          airfare_factor: this.state.airfare_factor,
+          basic_earning_component: this.state.basic_earning_component,
+          airfare_percentage: this.state.airfare_percentage,
+          annual_leave_process_separately: this.state
+            .annual_leave_process_separately,
+          hims_d_hrms_options_id: this.state.hims_d_hrms_options_id
+        },
+        method: "PUT",
+        onSuccess: res => {
+          if (res.data.success) {
+            swalMessage({
+              title: "Saved Successfully",
+              type: "success"
+            });
+          }
+        },
+        onFailure: err => {
+          swalMessage({
+            title: err.message,
+            type: "error"
+          });
+        }
+      });
+    }
   }
 
   componentDidMount() {
@@ -244,7 +275,7 @@ export default class LeaveSalarySetup extends Component {
                   onClick={this.saveOptions.bind(this)}
                 >
                   <AlgaehLabel
-                    label={{ forceLabel: "Update", returnText: true }}
+                    label={{ forceLabel: "Save", returnText: true }}
                   />
                 </button>
               </div>

@@ -29,7 +29,8 @@ const {
   deleteLeaveApplication,
   cancelLeave,
   getLeaveBalances,
-  updateEmployeeLeave
+  updateEmployeeLeave,
+  projectedleave
 } = leave;
 
 export default () => {
@@ -393,6 +394,19 @@ export default () => {
   });
   api.get("/getLeaveBalances", getLeaveBalances, (req, res, next) => {
     if (req.records.invalid_input == true) {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: false,
+        records: req.records
+      });
+    } else {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  });
+  api.post("/projectedleave", projectedleave, (req, res, next) => {
+    if (req.records) {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: false,
         records: req.records

@@ -19,6 +19,7 @@ import {
 } from "../../../../../utils/algaehApiCall.js";
 import { AlgaehActions } from "../../../../../actions/algaehActions";
 import AddEmployeeBalanceEvent from "./AddEmployeeBalanceEvent";
+import GlobalVariables from "../../../../../utils/GlobalVariables.json";
 
 const all_functions = AddEmployeeBalanceEvent();
 
@@ -26,30 +27,30 @@ class AddEmployeeOpenBalance extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      employee_leave: [],
       employee_name: null,
       hims_d_employee_id: null,
       close_balance: null,
-
       leave_days: null,
       airticket_amount: null,
       leave_salary_amount: null,
-      airfare_months: null
+      airfare_months: null,
+      month: moment(new Date()).format("M"),
+      gratuity_amount: null
     };
-    all_functions.getEmployeeLeaveType(this);
   }
 
   onClose = e => {
     this.setState(
       {
-        employee_leave: [],
         employee_name: null,
         hims_d_employee_id: null,
         close_balance: null,
         leave_days: null,
         airticket_amount: null,
         leave_salary_amount: null,
-        airfare_months: null
+        airfare_months: null,
+        month: moment(new Date()).format("M"),
+        gratuity_amount: null
       },
       () => {
         this.props.onClose && this.props.onClose(e);
@@ -81,22 +82,24 @@ class AddEmployeeOpenBalance extends PureComponent {
           openPopup={this.props.show}
         >
           <div className="col-lg-12 popupInner">
+            <div className="row">
+              <div className="col-4 globalSearchCntr">
+                <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+                <h6 onClick={this.employeeSearch.bind(this)}>
+                  {this.state.employee_name
+                    ? this.state.employee_name
+                    : "Search Employee"}
+                  <i className="fas fa-search fa-lg" />
+                </h6>
+              </div>
+            </div>
             {this.props.selected_type === "LS" ? (
               <div className="row">
-                <div className="col-2 globalSearchCntr">
-                  <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
-                  <h6 onClick={this.employeeSearch.bind(this)}>
-                    {this.state.employee_name
-                      ? this.state.employee_name
-                      : "Search Employee"}
-                    <i className="fas fa-search fa-lg" />
-                  </h6>
-                </div>
-
                 <AlagehFormGroup
                   div={{ className: "col-3" }}
                   label={{
-                    forceLabel: "Leave Balance"
+                    forceLabel: "Leave Balance",
+                    isImp: true
                   }}
                   textBox={{
                     number: {
@@ -119,7 +122,8 @@ class AddEmployeeOpenBalance extends PureComponent {
                 <AlagehFormGroup
                   div={{ className: "col-3" }}
                   label={{
-                    forceLabel: "Leave Amount"
+                    forceLabel: "Leave Amount",
+                    isImp: true
                   }}
                   textBox={{
                     number: {
@@ -180,6 +184,60 @@ class AddEmployeeOpenBalance extends PureComponent {
                     },
                     others: {
                       placeholder: "0"
+                    }
+                  }}
+                />
+              </div>
+            ) : this.props.selected_type === "GR" ? (
+              <div className="row">
+                <div className="col">
+                  <AlgaehLabel label={{ forceLabel: "Gratuity Till Year" }} />
+                  <h6>{this.props.year ? this.props.year : "----------"}</h6>
+                </div>
+                <AlagehAutoComplete
+                  div={{ className: "col-2" }}
+                  label={{
+                    forceLabel: "Gratuity Till Month.",
+                    isImp: true
+                  }}
+                  selector={{
+                    sort: "off",
+                    name: "month",
+                    className: "select-fld",
+                    value: this.state.month,
+                    dataSource: {
+                      textField: "name",
+                      valueField: "value",
+                      data: GlobalVariables.MONTHS
+                    },
+                    onChange: this.texthandle.bind(this),
+                    onClear: () => {
+                      this.setState({
+                        month: null
+                      });
+                    }
+                  }}
+                />
+                <AlagehFormGroup
+                  div={{ className: "col-3" }}
+                  label={{
+                    forceLabel: "Gratuity Amount",
+                    isImp: true
+                  }}
+                  textBox={{
+                    number: {
+                      allowNegative: false,
+                      thousandSeparator: ","
+                    },
+                    dontAllowKeys: ["-", "e"],
+                    value: this.state.gratuity_amount,
+                    className: "txt-fld",
+                    name: "gratuity_amount",
+                    events: {
+                      onChange: this.texthandle.bind(this)
+                    },
+                    others: {
+                      placeholder: "0.00"
                     }
                   }}
                 />
