@@ -81,8 +81,22 @@ export default function AllEvents() {
         method: "POST",
         onSuccess: response => {
           if (response.data.success) {
-            swalMessage({ title: "Added Successfully...", type: "error" });
-            $this.props.onClose && $this.props.onClose(true);
+            swalMessage({ title: "Added Successfully...", type: "success" });
+            $this.setState(
+              {
+                employee_leave: [],
+                employee_name: null,
+                hims_d_employee_id: null,
+                close_balance: null,
+                leave_days: null,
+                airticket_amount: null,
+                leave_salary_amount: null,
+                airfare_months: null
+              },
+              () => {
+                $this.props.onClose && $this.props.onClose(true);
+              }
+            );
           }
         },
         onFailure: error => {

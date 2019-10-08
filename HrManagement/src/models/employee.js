@@ -1548,11 +1548,15 @@ export default {
       .executeQuery({
         query:
           "INSERT INTO `hims_f_employee_leave_salary_header` (employee_id, year, balance_leave_days, \
-          balance_leave_salary_amount, balance_airticket_amount, airfare_months, hospital_id)\
-          VALUE(?,?,?,?,?,?,?)",
+          balance_leave_salary_amount, balance_airticket_amount, leave_days, leave_salary_amount, airticket_amount, \
+          airfare_months, hospital_id)\
+          VALUE(?,?,?,?,?,?,?,?,?,?)",
         values: [
           input.employee_id,
           input.year,
+          input.leave_days,
+          input.leave_salary_amount,
+          input.airticket_amount,
           input.leave_days,
           input.leave_salary_amount,
           input.airticket_amount,
