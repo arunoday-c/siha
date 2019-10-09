@@ -494,6 +494,27 @@ export default function ManualAttendanceEvents() {
           });
         }
       });
+    },
+
+    UploadTimesheet: files => {
+      debugger;
+      AlgaehLoader({ show: true });
+      const reader = new FileReader();
+      reader.readAsDataURL(files[0]);
+      reader.onload = e => {
+        const data = e.target.result.split(",")[1];
+        algaehApiCall({
+          uri: "/employee/excelEmployeeGratuityRead",
+          data:
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64," +
+            data,
+          method: "post",
+          module: "hrManagement",
+          onSuccess: response => {
+            AlgaehLoader({ show: false });
+          }
+        });
+      };
     }
   };
 }

@@ -114,6 +114,9 @@ class OpeningBalance extends Component {
     all_functions.employeeSearch(this);
   }
 
+  UploadTimesheet(files) {
+    all_functions.UploadTimesheet(files);
+  }
   changeChecks(e) {
     all_functions.changeChecks(this, e);
   }
@@ -143,6 +146,7 @@ class OpeningBalance extends Component {
   render() {
     debugger;
     let allYears = getYears();
+    let fileInput = React.createRef();
 
     return (
       <div className="openingBalanceScreen">
@@ -316,13 +320,29 @@ class OpeningBalance extends Component {
             >
               <i className="fas fa-file-download"></i> Download
             </button>
-            <button
+
+            <div className="uploadManualDiv   btn-with-icon">
+              <input
+                className="inputfile"
+                type="file"
+                name="manualTimeSheet"
+                ref={fileInput}
+                onChange={e => {
+                  if (e.target.files.length > 0)
+                    this.UploadTimesheet(e.target.files);
+                }}
+              />
+              <label onClick={() => fileInput.current.click()}>
+                <i className="fas fa-file-upload"></i> Upload
+              </label>
+            </div>
+            {/* <button
               onClick={this.clearState.bind(this)}
               style={{ marginLeft: 10 }}
               className="btn btn-primary btn-with-icon"
             >
               <i className="fas fa-file-upload"></i> Upload
-            </button>
+            </button> */}
           </div>
         </div>
 

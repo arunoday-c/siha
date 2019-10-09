@@ -181,7 +181,7 @@ function excelEmployeeLeaveSalaryOpenBalance(req, res, next) {
           }
         });
 
-        worksheet.addRow(selected_type);
+        worksheet.addRow(["", selected_type]);
         worksheet.lastRow.hidden = true;
         await worksheet.protect("algaeh@2019", {
           selectLockedCells: true,
@@ -210,7 +210,7 @@ function excelEmployeeGratuityOpenBalance(req, res, next) {
   new Promise((resolve, reject) => {
     const selected_type = req.query.selected_type;
 
-    const sheetName = "Employee Leave Salary";
+    const sheetName = "Employee Gratuity";
 
     try {
       (async () => {
@@ -344,7 +344,7 @@ function excelEmployeeGratuityOpenBalance(req, res, next) {
           }
         });
 
-        worksheet.addRow(selected_type);
+        worksheet.addRow(["", selected_type]);
         worksheet.lastRow.hidden = true;
         await worksheet.protect("algaeh@2019", {
           selectLockedCells: true,
@@ -480,7 +480,8 @@ function excelEmployeeLeaveOpenBalance(req, res, next) {
             });
           }
         });
-        worksheet.addRow(selected_type);
+        worksheet.addRow(["", selected_type]);
+
         worksheet.lastRow.hidden = true;
         await worksheet.protect("algaeh@2019", {
           selectLockedCells: true,
@@ -525,14 +526,14 @@ function excelEmployeeGratuityRead(req, res, next) {
       .load(buff)
       .then(() => {
         var worksheet = workbook.getWorksheet(1);
-        utilities.logger().log("worksheet: ", worksheet);
+        utilities.logger().log("worksheet: ");
 
         let columns = [];
         const lastRow = worksheet.lastRow;
 
         try {
-          filter = JSON.parse(lastRow.values[1]);
-          utilities.logger().log("filter: ", filter);
+          utilities.logger().log("filter: ", lastRow.values[2]);
+          filter = lastRow.values[2];
         } catch (e) {
           properFile = false;
           next(
@@ -544,24 +545,53 @@ function excelEmployeeGratuityRead(req, res, next) {
         }
 
         worksheet.eachRow(function(row, rowNumber) {
-          if (rowNumber === 1) {
-            columns = row.values;
-          } else {
-            let internal = {};
+          if (filter === "GR") {
+            if (rowNumber === 1) {
+              columns = row.values;
+            } else {
+              let internal = {};
 
-            for (let i = 0; i < columns.length; i++) {
-              if (columns[i] !== undefined) {
-                const columnName = columns[i]
-                  .replace("Emp. Id", "employee_id")
-                  .replace("Emp. Code", "employee_code")
-                  .replace("Employee Name", "full_name")
-                  .replace("Year", "year")
-                  .replace("Month", "month")
-                  .replace("Gratuity Amount", "gratuity_amount");
+              for (let i = 0; i < columns.length; i++) {
+                if (columns[i] !== undefined) {
+                  const columnName = columns[i]
+                    .replace("Emp. Id", "employee_id")
+                    .replace("Emp. Code", "employee_code")
+                    .replace("Employee Name", "full_name")
+                    .replace("Year", "year")
+                    .replace("Month", "month")
+                    .replace("Gratuity Amount", "gratuity_amount");
 
-                internal[columnName] = row.values[i];
-                if (i === columns.length - 1) {
-                  excelArray.push(internal);
+                  internal[columnName] = row.values[i];
+                  if (i === columns.length - 1) {
+                    excelArray.push(internal);
+                  }
+                }
+              }
+            }
+          } else if (filter === "LS") {
+            if (rowNumber === 1) {
+              columns = row.values;
+            } else {
+              let internal = {};
+
+              for (let i = 0; i < columns.length; i++) {
+                if (columns[i] !== undefined) {
+                  const columnName = columns[i]
+                    .replace("Emp. Id", "employee_id")
+                    .replace("Emp. Code", "employee_code")
+                    .replace("Employee Name", "full_name")
+                    .replace("Leave Days", "balance_leave_days")
+                    .replace(
+                      "Leave Salary Amount",
+                      "balance_leave_salary_amount"
+                    )
+                    .replace("Airticket Amount", "balance_airticket_amount")
+                    .replace("Airfare Months", "airfare_months");
+
+                  internal[columnName] = row.values[i];
+                  if (i === columns.length - 1) {
+                    excelArray.push(internal);
+                  }
                 }
               }
             }
@@ -571,6 +601,8 @@ function excelEmployeeGratuityRead(req, res, next) {
       .then(() => {
         if (properFile) {
           excelArray.pop();
+          console.log("excelArray", excelArray);
+          utilities.logger().log("excelArray: ", excelArray);
           req.body = excelArray;
           next();
         }
