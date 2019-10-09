@@ -1,10 +1,10 @@
-const algaehUtilities = require("algaeh-utilities/utilities");
-const utilities = new algaehUtilities();
+// const algaehUtilities = require("algaeh-utilities/utilities");
+// const utilities = new algaehUtilities();
 // utilities.logger().log("input: ", input);
 const executePDF = function executePDFMethod(options) {
   return new Promise(function(resolve, reject) {
     try {
-      utilities.logger().log("otpuuu: ", options.result);
+      // utilities.logger().log("otpuuu: ", options.result);
       resolve({
         material_requisition_number:
           options.result[0].material_requisition_number,

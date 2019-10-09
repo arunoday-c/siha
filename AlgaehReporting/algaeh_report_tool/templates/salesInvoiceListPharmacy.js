@@ -1,6 +1,6 @@
-const algaehUtilities = require("algaeh-utilities/utilities");
+// const algaehUtilities = require("algaeh-utilities/utilities");
 const executePDF = function executePDFMethod(options) {
-  const utilities = new algaehUtilities();
+  // const utilities = new algaehUtilities();
   const _ = options.loadash;
 
   return new Promise(function(resolve, reject) {
@@ -25,7 +25,7 @@ const executePDF = function executePDFMethod(options) {
           parseFloat(s.net_amount)
         ).toFixed(decimal_places)
       };
-      utilities.logger().log("output: ", output);
+      // utilities.logger().log("output: ", output);
       resolve(output);
     } catch (e) {
       reject(e);

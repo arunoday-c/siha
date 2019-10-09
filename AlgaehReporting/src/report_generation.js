@@ -10,9 +10,10 @@ import hbs from "handlebars";
 import "core-js/stable";
 import "regenerator-runtime/runtime";
 // import chrome from "algaeh-keys";
-
+import writtenForm from "written-number";
 import cheerio from "cheerio";
 import Excel from "exceljs/modern.browser";
+import utilitites from "algaeh-utilities/utilities";
 // const chromePath =
 // chrome.default.chromePuppeteer != null ? chrome.default.chromePuppeteer : {};
 
@@ -323,7 +324,7 @@ export default {
                   printQuery: true
                 };
               }
-
+              console.log("queryObject", queryObject);
               _mysql
                 .executeQuery(queryObject)
                 .then(result => {
@@ -338,6 +339,7 @@ export default {
                     "algaeh_report_tool/templates",
                     `${_data.report_name}.js`
                   );
+
                   const _header = req.headers;
 
                   const startGenerate = async () => {
@@ -513,7 +515,14 @@ export default {
                       loadash: _,
                       moment: moment,
                       mainData: data[1],
-                      result: result
+                      result: result,
+                      writtenForm: writtenForm,
+                      currencyFormat: (currency, formater) => {
+                        return new utilitites().getCurrencyFormart(
+                          currency,
+                          formater
+                        );
+                      }
                     })
                       .then(resultReq => {
                         result = resultReq;
@@ -734,7 +743,14 @@ export default {
                           loadash: _,
                           moment: moment,
                           mainData: data[1],
-                          result: result
+                          result: result,
+                          writtenForm: writtenForm,
+                          currencyFormat: (currency, formater) => {
+                            return new utilitites().getCurrencyFormart(
+                              currency,
+                              formater
+                            );
+                          }
                         })
                           .then(resultReq => {
                             result = resultReq;
@@ -1318,7 +1334,14 @@ export default {
                       loadash: _,
                       moment: moment,
                       mainData: data[1],
-                      result: result
+                      result: result,
+                      writtenForm: writtenForm,
+                      currencyFormat: (currency, formater) => {
+                        return new utilitites().getCurrencyFormart(
+                          currency,
+                          formater
+                        );
+                      }
                     })
                       .then(resultReq => {
                         result = resultReq;

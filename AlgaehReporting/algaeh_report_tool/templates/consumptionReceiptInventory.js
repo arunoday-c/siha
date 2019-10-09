@@ -1,11 +1,6 @@
-const algaehUtilities = require("algaeh-utilities/utilities");
 const executePDF = function executePDFMethod(options) {
   return new Promise(function(resolve, reject) {
     try {
-      const utilities = new algaehUtilities();
-
-      utilities.logger().log("outpoy: ", options.result);
-
       if (options.result.length > 0) {
         resolve({
           employee_code: options.result[0].employee_code,

@@ -1,11 +1,11 @@
-const algaehUtilities = require("algaeh-utilities/utilities");
+// const algaehUtilities = require("algaeh-utilities/utilities");
 
 const executePDF = function executePDFMethod(options) {
   return new Promise(function(resolve, reject) {
     try {
       const _ = options.loadash;
 
-      const utilities = new algaehUtilities();
+      // const utilities = new algaehUtilities();
 
       let input = {};
       let params = options.args.reportParams;
@@ -40,7 +40,7 @@ const executePDF = function executePDFMethod(options) {
           DP.department_name ,EG.group_description from hims_f_project_wise_payroll PWP inner join hims_d_employee  E on
           PWP.employee_id=E.hims_d_employee_id and PWP.year=? and PWP.month=?
           left join hims_d_project  P on PWP.project_id=P.hims_d_project_id
-          left join hims_d_designation d on E.employee_designation_id = d.hims_d_designation_id 
+          left join hims_d_designation d on E.employee_designation_id = d.hims_d_designation_id
           left join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id
           left join hims_d_department DP on SD.department_id=DP.hims_d_department_id
           left join hims_d_employee_group EG on E.employee_group_id=EG.hims_d_employee_group_id
@@ -105,7 +105,7 @@ const executePDF = function executePDFMethod(options) {
               });
             });
 
-            utilities.logger().log("outputArray: ", outputArray);
+            // utilities.logger().log("outputArray: ", outputArray);
             resolve({
               result: outputArray
             });

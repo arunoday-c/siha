@@ -1,11 +1,11 @@
-const algaehUtilities = require("algaeh-utilities/utilities");
+// const algaehUtilities = require("algaeh-utilities/utilities");
 const executePDF = function executePDFMethod(options) {
   const _ = options.loadash;
   return new Promise(function(resolve, reject) {
     try {
       let input = {};
       let params = options.args.reportParams;
-      const utilities = new algaehUtilities();
+      // const utilities = new algaehUtilities();
       params.forEach(para => {
         input[para["name"]] = para["value"];
       });
@@ -68,7 +68,7 @@ const executePDF = function executePDFMethod(options) {
               details: outputArray
             };
 
-            utilities.logger().log("outputArray:", result);
+            // utilities.logger().log("outputArray:", result);
             resolve(result);
           } else {
             resolve({
