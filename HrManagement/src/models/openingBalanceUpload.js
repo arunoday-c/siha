@@ -130,5 +130,49 @@ export default {
     } catch (e) {
       next(e);
     }
+  },
+  //created by irfan:
+  uploadEmployeeLeaveBalance: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const utilities = new algaehUtilities();
+
+    try {
+      const rawdata = req.body;
+
+      let strQuery = "";
+      rawdata.forEach(item => {
+        let x;
+        for (x in item) {
+          if (x > 0 && item[x] != "N") {
+            strQuery += `update hims_f_employee_monthly_leave set close_balance=${item[x]} where year=${item.year} and leave_id=${x} and employee_id=${item.employee_id};\n `;
+          }
+        }
+      });
+
+      if (strQuery == "") {
+        req.records = {
+          invalid_input: true,
+          message: `Please Provide valid input `
+        };
+        next();
+      } else {
+        _mysql
+          .executeQuery({
+            query: strQuery,
+            printQuery: false
+          })
+          .then(finalResult => {
+            _mysql.releaseConnection();
+            req.records = finalResult[0];
+            next();
+          })
+          .catch(e => {
+            _mysql.releaseConnection();
+            next(e);
+          });
+      }
+    } catch (e) {
+      next(e);
+    }
   }
 };
