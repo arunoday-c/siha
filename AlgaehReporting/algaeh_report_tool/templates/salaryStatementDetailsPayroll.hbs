@@ -4,19 +4,7 @@
     <div class="print-body">
         {{#hasElement employees}}
 
-        {{!-- <section>
-            <table class="tableForLabel" cell-padding="0">
-                <tr>
-                    <td><label class="textEnLft">Branch</label>:<span class="valueText">{{hospital_name}}</span></td>
-                    <td><label class="textEnLft">Year</label>:<span class="valueText">{{year}}</span></td>
-                    <td><label class="textEnLft">Month</label>:<span class="valueText">{{month}}</span></td>
-                    <td><label class="textEnLft">Group</label>:<span class="valueText">{{group_description}}</span></td>
-                    <td><label class="textEnLft">Type</label>:<span class="valueText">{{type}}</span></td>
-                </tr>
-            </table>
 
-
-        </section> --}}
         <section>
 
 
@@ -55,6 +43,12 @@
                         <th>Leave Provision</th>
                         <th>Airfrare Amount</th>
                         <th>Gratuity Provision</th>
+                        <th>
+                          Mode Of Payment
+                        </th>
+                        <th>
+                          Salary Payed Date
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -105,7 +99,12 @@
                         <td>{{leave_salary}}</td>
                         <td>{{airfare_amount}}</td>
                         <td>{{gratuity_amount}}</td>
-
+                        <td>
+                          {{mode_of_payment}}
+                        </td>
+                        <td>
+                          {{salary_paid_date}}
+                        </td>
                     </tr>
                     {{/each }}{{else}}
                     <tr>
@@ -114,9 +113,46 @@
                 </tbody>
             </table>
 
+
         </section>
-      
-        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
+
         {{/hasElement }}
+        <table>
+        <caption>
+          Summary
+        </caption>
+        <tr>
+          <td>
+          GRAND TOTAL EARNINGS
+          </td><td>
+          {{sum_earnings}}
+          </td>
+        </tr>
+        <tr>
+          <td>
+        GRAND TOTAL DEDUCTION
+          </td>
+          <td>
+            {{sum_deductions}}
+          </td>
+        </tr>
+        <tr>
+          <td>
+            GRAND TOTAL CONTRIBUTION
+          </td>
+          <td>
+            {{sum_contributions}}
+          </td>
+        </tr>
+        <tr>
+          <td>
+            GRAND NET SALARY
+          </td>
+          <td>
+            {{sum_net_salary}}
+          </td>
+        </tr>
+        </table>
     </div>
+
 </body>
