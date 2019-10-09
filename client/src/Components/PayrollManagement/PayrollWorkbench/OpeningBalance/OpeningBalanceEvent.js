@@ -517,6 +517,19 @@ export default function ManualAttendanceEvents() {
           module: "hrManagement",
           onSuccess: response => {
             AlgaehLoader({ show: false });
+            if (response.data.success === true) {
+              swalMessage({
+                title:
+                  "Uploded Successfully... Please Click Preview to view the data.",
+                type: "success"
+              });
+            } else {
+              $this.setState({ error_upload: response.data.result.message });
+              swalMessage({
+                title: "Error while upload",
+                type: "error"
+              });
+            }
           }
         });
       };

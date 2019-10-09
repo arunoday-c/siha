@@ -43,7 +43,8 @@ class OpeningBalance extends Component {
       leaves_data: [],
       openModal: false,
       application_leave: [],
-      leave_id: null
+      leave_id: null,
+      error_upload: null
     };
     all_functions.getLeaveMaster(this);
   }
@@ -93,7 +94,8 @@ class OpeningBalance extends Component {
       rerender_items: true,
       leave_id: null,
       year: moment().year(),
-      leave_balance: []
+      leave_balance: [],
+      error_upload: null
     });
   }
 
@@ -337,9 +339,9 @@ class OpeningBalance extends Component {
             </button> */}
           </div>
         </div>
-
-        {this.state.selected_type === "LE" ? (
-          <div className="row">
+        <div className="row">
+          {this.state.error_upload ? this.state.error_upload : ""}
+          {this.state.selected_type === "LE" ? (
             <div className="col-12">
               <div className="portlet portlet-bordered margin-bottom-15">
                 <div className="portlet-title">
@@ -375,9 +377,7 @@ class OpeningBalance extends Component {
                 </div>
               </div>
             </div>
-          </div>
-        ) : this.state.selected_type === "LO" ? (
-          <div className="row">
+          ) : this.state.selected_type === "LO" ? (
             <div className="col-12">
               <div className="portlet portlet-bordered margin-bottom-15">
                 <div className="portlet-title">
@@ -414,9 +414,7 @@ class OpeningBalance extends Component {
                 </div>
               </div>
             </div>
-          </div>
-        ) : this.state.selected_type === "GR" ? (
-          <div className="row">
+          ) : this.state.selected_type === "GR" ? (
             <div className="col-12">
               <div className="portlet portlet-bordered margin-bottom-15">
                 <div className="portlet-title">
@@ -465,9 +463,7 @@ class OpeningBalance extends Component {
                 </div>
               </div>
             </div>
-          </div>
-        ) : this.state.selected_type === "LS" ? (
-          <div className="row">
+          ) : this.state.selected_type === "LS" ? (
             <div className="col-12">
               <div className="portlet portlet-bordered margin-bottom-15">
                 <div className="portlet-title">
@@ -522,9 +518,8 @@ class OpeningBalance extends Component {
                 </div>
               </div>
             </div>
-          </div>
-        ) : null}
-
+          ) : null}
+        </div>
         {/* <div className="col-12">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
