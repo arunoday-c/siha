@@ -33,7 +33,6 @@ export default class RejoinAnnualLeave extends Component {
   }
 
   getAnnualLeaveEmployees() {
-    debugger;
     algaehApiCall({
       uri: "/selfService/getRejoinAnnualLeave",
       module: "hrManagement",
@@ -65,7 +64,6 @@ export default class RejoinAnnualLeave extends Component {
       cancelButtonText: "No"
     }).then(willProceed => {
       if (willProceed.value) {
-        debugger;
         let inputObj = {
           hims_d_employee_id: row.hims_d_employee_id,
           last_salary_process_date: row.last_salary_process_date

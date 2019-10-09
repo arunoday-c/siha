@@ -207,7 +207,6 @@ class Dental extends Component {
   }
 
   saveBill() {
-    debugger;
     let inputObj = {
       visit_id: Window.global["visit_is"],
       patient_id: Window.global["current_patient"],
@@ -285,7 +284,6 @@ class Dental extends Component {
   }
 
   addToBill(row) {
-    debugger;
     if (this.state.approval_status !== "Y") {
       swalMessage({
         title: "Please Approve the plan",
@@ -340,7 +338,6 @@ class Dental extends Component {
               }
             ],
             onSuccess: res => {
-              debugger;
               if (res.data.success) {
                 let dataOutput = res.data.records.billdetails[0];
                 if (dataOutput.pre_approval === "Y") {
@@ -543,7 +540,7 @@ class Dental extends Component {
                 title: "Added Successfully",
                 type: "success"
               });
-              debugger;
+
               let inputData = {
                 hims_f_treatment_plan_id: this.state.hims_f_treatment_plan_id,
                 approve_status: this.state.approval_status,
@@ -651,7 +648,6 @@ class Dental extends Component {
           },
           onSuccess: response => {
             if (response.data.success) {
-              debugger;
               this.setState({ approval_status: type }, () => {});
 
               this.getTreatementPlans();
@@ -1902,7 +1898,6 @@ class Dental extends Component {
       cancelButtonText: "No"
     }).then(willDelete => {
       if (willDelete.value) {
-        debugger;
         algaehApiCall({
           uri: "/dental/deleteDentalPlan",
           data: {
@@ -1911,8 +1906,6 @@ class Dental extends Component {
           method: "DELETE",
           onSuccess: res => {
             if (res.data.success) {
-              debugger;
-
               let inputData = {
                 hims_f_treatment_plan_id: this.state.hims_f_treatment_plan_id,
                 approve_status: this.state.approval_status,
@@ -2140,7 +2133,6 @@ class Dental extends Component {
   }
 
   loadDentalTreatment(data) {
-    debugger;
     data !== undefined
       ? this.setState(
           {
@@ -2155,7 +2147,6 @@ class Dental extends Component {
               },
               onSuccess: response => {
                 if (response.data.success) {
-                  debugger;
                   this.setState({
                     dentalTreatments: response.data.records,
                     selected_plan: data.plan_name,

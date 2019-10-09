@@ -222,7 +222,6 @@ class BasicSubjective extends Component {
     });
   }
   componentWillUnmount() {
-    debugger;
     const err = Validations(this);
     if (!err) {
       if (this.state.hims_f_episode_chief_complaint_id === null) {

@@ -279,7 +279,7 @@ class SalaryPayment extends Component {
                               value=""
                               name=""
                               onChange={e => {
-                                debugger;
+                                // debugger;
                               }}
                             />
                             <span>Select All</span>

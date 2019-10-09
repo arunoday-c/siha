@@ -126,7 +126,6 @@ const bankEventhandle = ($this, e) => {
 };
 
 const otEntitleHandaler = ($this, e) => {
-  debugger;
   $this.setState({
     [e.target.name]: e.target.checked ? "Y" : "N",
     overtime_group_id: null

@@ -3,7 +3,6 @@ import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import _ from "lodash";
 
 const getEmployeeDetails = $this => {
-  debugger;
   algaehApiCall({
     uri: "/employee/get",
     module: "hrManagement",

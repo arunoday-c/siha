@@ -49,7 +49,6 @@ export default function ManualAttendanceEvents() {
       if ($this.state.employee_group_id !== null) {
         inputObj.employee_group_id = $this.state.employee_group_id;
       }
-      debugger;
 
       let fileName = "";
       let selected_uri = "";
@@ -164,7 +163,6 @@ export default function ManualAttendanceEvents() {
       });
     },
     changeChecks: ($this, e) => {
-      debugger;
       let leave_dynamic_date = [];
       switch (e.target.value) {
         case "LE":
@@ -182,7 +180,6 @@ export default function ManualAttendanceEvents() {
           });
           break;
         case "GR":
-          debugger;
           leave_dynamic_date = [
             {
               fieldName: "employee_code",
@@ -447,8 +444,6 @@ export default function ManualAttendanceEvents() {
       }
     },
     updateEmployeeOpeningBalance: ($this, row) => {
-      debugger;
-
       let selected_uri = "";
       let employee_Leave_Update = [];
       let inputData = "";
@@ -497,7 +492,6 @@ export default function ManualAttendanceEvents() {
     },
 
     UploadTimesheet: ($this, files) => {
-      debugger;
       AlgaehLoader({ show: true });
       const reader = new FileReader();
       reader.readAsDataURL(files[0]);
@@ -538,7 +532,6 @@ export default function ManualAttendanceEvents() {
 }
 
 function changeGridEditors($this, row, e) {
-  debugger;
   let leave_balance = $this.state.leave_balance;
 
   let name = e.name || e.target.name;
@@ -560,7 +553,6 @@ function getLeaveMasterData($this) {
     method: "GET",
     onSuccess: res => {
       if (res.data.success) {
-        debugger;
         if (res.data.records.length > 0) {
           let employee_data = [
             {
@@ -600,7 +592,6 @@ function getLeaveMasterData($this) {
                   : row[item.hims_d_leave_id];
               },
               editorTemplate: row => {
-                debugger;
                 return row[item.hims_d_leave_id] === "N" ? (
                   "Not Applicable"
                 ) : (
@@ -652,7 +643,6 @@ function getLoanMasterData($this) {
     method: "GET",
     onSuccess: res => {
       if (res.data.success) {
-        debugger;
         if (res.data.records.length > 0) {
           let employee_data = [
             {

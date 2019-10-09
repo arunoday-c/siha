@@ -873,7 +873,6 @@ const closeViewFavouriteOrder = ($this, e) => {
   }
 };
 const getFavouriteServices = $this => {
-  // debugger;
   algaehApiCall({
     uri: "/favouriteOrders/getFavouriteServices",
     module: "masterSettings",

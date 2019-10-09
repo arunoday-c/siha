@@ -242,7 +242,6 @@ export default class MiscEarningsDeductions extends Component {
         [e.name]: e.value
       },
       () => {
-        debugger;
         const [reqDept] = this.state.allDepartments.filter(
           dept => dept.hims_d_department_id === this.state.department_id
         );

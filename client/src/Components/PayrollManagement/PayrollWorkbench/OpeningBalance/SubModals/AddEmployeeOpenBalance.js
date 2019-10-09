@@ -71,7 +71,6 @@ class AddEmployeeOpenBalance extends PureComponent {
   }
 
   render() {
-    debugger;
     return (
       <div>
         <AlgaehModalPopUp
