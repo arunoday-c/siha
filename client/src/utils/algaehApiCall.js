@@ -151,7 +151,7 @@ export function algaehApiCall(options) {
       };
     }
     const _contentType = settings.header !== undefined ? settings.header : {};
-    debugger;
+
     const headerToken = getToken();
     const x_app_user_identity = getCookie("keyResources");
     const x_branch = getCookie("HospitalId");
@@ -368,7 +368,6 @@ export function reLoginPopup({ message, username }) {
       }
     })
     .then(rest => {
-      debugger;
       const { value, dismiss } = rest;
       showOtherPopup = true;
       if (dismiss === "cancel") {

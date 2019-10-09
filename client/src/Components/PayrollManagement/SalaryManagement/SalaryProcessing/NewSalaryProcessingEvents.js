@@ -162,7 +162,7 @@ const FinalizeSalary = $this => {
           employee_id: o.employee_id
         };
       });
-      debugger;
+
       const _leave_salary_acc = _.filter(salaryprocess_header, f => {
         return f.leave_salary_accrual_amount > 0;
       });

@@ -362,7 +362,6 @@ export default function Filter(props) {
         </div>
         <button
           onClick={() => {
-            debugger;
             if (hospitalID !== "" && fromDate !== "" && toDate !== "") {
               props.downloadExcel({
                 branch_id: hospitalID,

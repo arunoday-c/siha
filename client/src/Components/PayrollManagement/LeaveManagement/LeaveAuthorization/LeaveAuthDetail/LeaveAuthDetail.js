@@ -18,7 +18,6 @@ class LeaveAuthDetail extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger;
     const hospitaldetails = JSON.parse(
       AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
     );

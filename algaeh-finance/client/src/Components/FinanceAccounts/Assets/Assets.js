@@ -35,7 +35,6 @@ export default function Assets() {
   }, [treeData]);
 
   function addNode(rowInfo, options, addedNode) {
-    debugger;
     return new Promise((resolve, reject) => {
       try {
         const { treeData } = options;
@@ -71,7 +70,6 @@ export default function Assets() {
   function removeNode(rowInfo, options) {
     return new Promise((resolve, reject) => {
       try {
-        debugger;
         const { treeData } = options;
         let { node, treeIndex, path } = rowInfo;
         console.log(path, treeIndex);
@@ -97,7 +95,6 @@ export default function Assets() {
         showPopup={showPopup}
         selectedNode={selectedNode}
         onClose={e => {
-          debugger;
           setShowPopup(false);
           if (e !== undefined) {
             addNode(selectedNode, { treeData }, e).then(newTree => {
@@ -134,11 +131,9 @@ export default function Assets() {
                   }}
                   isVirtualized={true}
                   canDrag={rowInfo => {
-                    debugger;
                     return rowInfo.node.canDrag === true ? true : false;
                   }}
                   generateNodeProps={rowInfo => {
-                    debugger;
                     return {
                       buttons: [
                         <div>
@@ -184,7 +179,6 @@ export default function Assets() {
                             <button
                               label="Add"
                               onClick={event => {
-                                debugger;
                                 setSelectHead(false);
                                 setShowPopup(true);
                                 setSelectedNode(rowInfo);

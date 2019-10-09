@@ -506,8 +506,6 @@ class NewEmployeeProjectRoster extends Component {
           },
           onSuccess: res => {
             if (res.data.success) {
-              debugger;
-
               const rosterExists = _.filter(
                 res.data.records,
                 f => f.empProject.length > 0

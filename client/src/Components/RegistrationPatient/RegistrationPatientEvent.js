@@ -537,7 +537,6 @@ const ClosePackageUtilize = ($this, e) => {
             mappingName: "PatientPackageList"
           },
           afterSuccess: data => {
-            debugger;
             if (data.length !== 0 || data.length === undefined) {
               $this.setState({
                 primary_policy_num: $this.state.primary_policy_num,

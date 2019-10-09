@@ -37,7 +37,7 @@ export default function AllEvents() {
     SaveData: $this => {
       let selected_uri = "";
       let inputObj = {};
-      debugger;
+
       if ($this.state.hims_d_employee_id === null) {
         swalMessage({
           title: "Please select Employee",
