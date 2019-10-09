@@ -35,35 +35,36 @@ const executePDF = function executePDFMethod(options) {
 
       let is_local = "";
 
-      if (input.is_local == "Y") {
+      if (input.is_local === "Y") {
         is_local = " and H.default_nationality=E.nationality ";
-      } else if (input.is_local == "N") {
+      } else if (input.is_local === "N") {
         is_local = " and H.default_nationality<>E.nationality ";
       }
+
       options.mysql
         .executeQuery({
           query: `select hims_d_earning_deduction_id,earning_deduction_description,component_category, print_order_by, \
 				nationality_id from hims_d_earning_deduction where record_status='A' and print_report='Y' order by print_order_by ;\
 				select E.employee_code,E.full_name,E.employee_designation_id,S.employee_id,E.sub_department_id,E.date_of_joining,E.nationality,E.mode_of_payment,\
 				E.hospital_id,E.employee_group_id,D.designation,EG.group_description,N.nationality,\
-				S.hims_f_salary_id,S.salary_number,S.salary_date,S.present_days,S.total_days,S.display_present_days,S.net_salary,S.total_earnings,S.total_deductions,\
+				S.hims_f_salary_id,S.salary_number,S.salary_date,S.present_days,S.total_days,S.display_present_days,S.net_salary,S.total_earnings,S.total_deductions,S.salary_paid_date,\
         S.total_contributions,coalesce(S.ot_work_hours,0.0) as ot_work_hours,    coalesce(S.ot_weekoff_hours,0.0) as ot_weekoff_hours,\
         coalesce(S.ot_holiday_hours,0.0) as ot_holiday_hours,H.hospital_name,SD.sub_department_name
 				from hims_d_employee E\
 				left join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\
-				left join hims_d_hospital H  on E.hospital_id=H.hims_d_hospital_id  ${is_local}\
+				left join hims_d_hospital H  on E.hospital_id=H.hims_d_hospital_id  \
 				left join hims_d_designation D on E.employee_designation_id=D.hims_d_designation_id\
 				left join hims_d_employee_group EG on E.employee_group_id=EG.hims_d_employee_group_id\
 				left join hims_d_nationality N on E.nationality=N.hims_d_nationality_id\
 				left join  hims_f_salary S on E.hims_d_employee_id=S.employee_id\
-				where E.hospital_id=? and E.record_status='A' and E.employee_group_id=? and S.month=? and S.year=? `,
+				where E.hospital_id=? and E.record_status='A' and E.employee_group_id=? and S.month=? and S.year=?  ${is_local}`,
           values: [
             input.hospital_id,
             input.employee_group_id,
             input.month,
             input.year
           ],
-          printQuery: false
+          printQuery: true
         })
         .then(result => {
           const components = result[0];
@@ -321,10 +322,10 @@ const executePDF = function executePDFMethod(options) {
                   contributions_component: contributions_component,
                   employees: outputArray,
                   sum_basic: sum_basic,
-                  sum_earnings: sum_earnings,
-                  sum_deductions: sum_deductions,
-                  sum_contributions: sum_contributions,
-                  sum_net_salary: sum_net_salary,
+                  sum_earnings: sum_earnings.toFixed(decimal_places),
+                  sum_deductions: sum_deductions.toFixed(decimal_places),
+                  sum_contributions: sum_contributions.toFixed(decimal_places),
+                  sum_net_salary: sum_net_salary.toFixed(decimal_places),
                   sum_employe_plus_emplyr: sum_employe_plus_emplyr,
                   sum_gratuity: sum_gratuity,
                   sum_leave_salary: sum_leave_salary,

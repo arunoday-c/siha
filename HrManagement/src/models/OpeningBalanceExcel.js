@@ -21,6 +21,12 @@ async function generateColumns(leaveData) {
       key: "full_name",
       width: 40,
       horizontal: "center"
+    },
+    {
+      header: "Year",
+      key: "year",
+      width: 40,
+      horizontal: "center"
     }
   ];
 
@@ -99,6 +105,11 @@ function excelEmployeeLeaveSalaryOpenBalance(req, res, next) {
             key: "airfare_months",
             width: 20,
             horizontal: "center"
+          },
+          {
+            header: "Hospital ID",
+            key: "hospital_id",
+            width: 0
           }
         ];
 
@@ -150,7 +161,8 @@ function excelEmployeeLeaveSalaryOpenBalance(req, res, next) {
             balance_leave_days: rest.balance_leave_days || 0,
             balance_leave_salary_amount: rest.balance_leave_salary_amount || 0,
             balance_airticket_amount: rest.balance_airticket_amount || 0,
-            airfare_months: rest.airfare_months || 0
+            airfare_months: rest.airfare_months || 0,
+            hospital_id: rest.hospital_id
           };
 
           worksheet.addRow(employee);
@@ -434,7 +446,8 @@ function excelEmployeeLeaveOpenBalance(req, res, next) {
           let employee = {
             full_name: rest.full_name,
             employee_code: rest.employee_code,
-            employee_id: rest.employee_id
+            employee_id: rest.employee_id,
+            year: rest.year
           };
 
           for (let j = 0; j < leave_data.length; j++) {
@@ -580,8 +593,8 @@ function excelEmployeeOpeningBalanceRead(req, res, next) {
                       "balance_leave_salary_amount"
                     )
                     .replace("Airticket Amount", "balance_airticket_amount")
-                    .replace("Airfare Months", "airfare_months");
-
+                    .replace("Airfare Months", "airfare_months")
+                    .replace("Hospital ID", "hospital_id");
                   internal[columnName] = row.values[i];
                   if (i === columns.length - 1) {
                     excelArray.push(internal);
@@ -600,7 +613,8 @@ function excelEmployeeOpeningBalanceRead(req, res, next) {
                   let columnName = columns[i]
                     .replace("Emp. Id", "employee_id")
                     .replace("Emp. Code", "employee_code")
-                    .replace("Employee Name", "full_name");
+                    .replace("Employee Name", "full_name")
+                    .replace("Year", "year");
 
                   for (let i = 0; i < leaves_data.length; i++) {
                     columnName = columnName.replace(
