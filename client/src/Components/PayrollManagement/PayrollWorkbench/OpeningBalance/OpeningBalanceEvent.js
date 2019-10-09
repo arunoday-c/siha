@@ -13,6 +13,7 @@ import _ from "lodash";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
+import GlobalVariables from "../../../../utils/GlobalVariables.json";
 
 export default function ManualAttendanceEvents() {
   return {
@@ -49,8 +50,32 @@ export default function ManualAttendanceEvents() {
         inputObj.employee_group_id = $this.state.employee_group_id;
       }
       debugger;
+
+      let fileName = "";
+      let selected_uri = "";
+      if ($this.state.selected_type === "LE") {
+        inputObj.selected_type = $this.state.selected_type;
+        selected_uri = "/employee/getBulkEmployeeLeaves";
+        fileName = `EmployeeLeave-${moment(new Date()).format(
+          "YYYY-MM-DD"
+        )}.xlsx`;
+      } else if ($this.state.selected_type === "LO") {
+        selected_uri = "/loan/getEmployeeLoanOpenBal";
+      } else if ($this.state.selected_type === "GR") {
+        inputObj.selected_type = $this.state.selected_type;
+        selected_uri = "/employee/getBulkEmployeeGratuity";
+        fileName = `EmployeeGratuity-${moment(new Date()).format(
+          "YYYY-MM-DD"
+        )}.xlsx`;
+      } else if ($this.state.selected_type === "LS") {
+        inputObj.selected_type = $this.state.selected_type;
+        selected_uri = "/employee/getBulkEmployeeLeaveSalary";
+        fileName = `EmployeeLeaveSalary-${moment(new Date()).format(
+          "YYYY-MM-DD"
+        )}.xlsx`;
+      }
       algaehApiCall({
-        uri: "/employee/getBulkEmployeeLeaves",
+        uri: selected_uri,
         method: "GET",
         data: inputObj,
         headers: {
@@ -62,7 +87,7 @@ export default function ManualAttendanceEvents() {
           let blob = new Blob([res.data], {
             type: "application/octet-stream"
           });
-          const fileName = `ManualTimeSheet-${inputObj}.xlsx`;
+
           var objectUrl = URL.createObjectURL(blob);
           var link = document.createElement("a");
           link.setAttribute("href", objectUrl);
@@ -90,30 +115,6 @@ export default function ManualAttendanceEvents() {
 
       $this.setState({
         [name]: value
-      });
-    },
-    getApplicationLeaves: $this => {
-      algaehApiCall({
-        uri: "/employee/getEmployeeLeaveType",
-        module: "hrManagement",
-        method: "GET",
-        onSuccess: response => {
-          if (response.data.records.length > 0) {
-            $this.setState({
-              application_leave: response.data.records
-            });
-          } else {
-            $this.setState({
-              application_leave: []
-            });
-          }
-        },
-        onFailure: error => {
-          swalMessage({
-            title: error.message || error.response.data.message,
-            type: "error"
-          });
-        }
       });
     },
 
@@ -186,6 +187,10 @@ export default function ManualAttendanceEvents() {
             {
               fieldName: "employee_code",
               label: <AlgaehLabel label={{ forceLabel: "Emp. Code" }} />,
+              disabled: true,
+              editorTemplate: row => {
+                return row.employee_code;
+              },
               others: {
                 maxWidth: 105,
                 fixed: "left"
@@ -194,6 +199,10 @@ export default function ManualAttendanceEvents() {
             {
               fieldName: "full_name",
               label: <AlgaehLabel label={{ forceLabel: "Employee Name" }} />,
+              editorTemplate: row => {
+                return row.full_name;
+              },
+              disabled: true,
               others: {
                 minWidth: 200,
                 fixed: "left"
@@ -202,15 +211,56 @@ export default function ManualAttendanceEvents() {
             {
               fieldName: "year",
               label: <AlgaehLabel label={{ forceLabel: "Year" }} />,
+              editorTemplate: row => {
+                return row.year;
+              },
+              disabled: true,
               others: {
                 filterable: false
               }
             },
+
             {
               fieldName: "month",
               label: <AlgaehLabel label={{ forceLabel: "Month" }} />,
               others: {
                 filterable: false
+              },
+              displayTemplate: row => {
+                let display = GlobalVariables.MONTHS.filter(
+                  f => f.value === row.month
+                );
+
+                return (
+                  <span>
+                    {display !== null && display.length !== 0
+                      ? display[0].name
+                      : ""}
+                  </span>
+                );
+              },
+              editorTemplate: row => {
+                return (
+                  <AlagehAutoComplete
+                    div={{ className: "col" }}
+                    selector={{
+                      sort: "off",
+                      name: "month",
+                      className: "select-fld",
+                      value: row.month,
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: GlobalVariables.MONTHS
+                      },
+                      onChange: changeGridEditors.bind($this, row),
+                      onClear: () => {
+                        row["month"] = null;
+                        row.update();
+                      }
+                    }}
+                  />
+                );
               }
             },
             {
@@ -218,6 +268,26 @@ export default function ManualAttendanceEvents() {
               label: <AlgaehLabel label={{ forceLabel: "Gratuity Amount" }} />,
               others: {
                 filterable: false
+              },
+              editorTemplate: row => {
+                return (
+                  <AlagehFormGroup
+                    div={{ className: "col" }}
+                    textBox={{
+                      number: {
+                        allowNegative: false,
+                        thousandSeparator: ","
+                      },
+                      dontAllowKeys: ["-", "e"],
+                      className: "txt-fld",
+                      name: "gratuity_amount",
+                      value: row.gratuity_amount,
+                      events: {
+                        onChange: changeGridEditors.bind($this, $this, row)
+                      }
+                    }}
+                  />
+                );
               }
             }
           ];
@@ -266,7 +336,7 @@ export default function ManualAttendanceEvents() {
                         allowNegative: false,
                         thousandSeparator: ","
                       },
-                      dontAllowKeys: ["-", "e", "."],
+                      dontAllowKeys: ["-", "e"],
                       className: "txt-fld",
                       name: "balance_leave_days",
                       value: row.balance_leave_days,
@@ -298,7 +368,7 @@ export default function ManualAttendanceEvents() {
                         allowNegative: false,
                         thousandSeparator: ","
                       },
-                      dontAllowKeys: ["-", "e", "."],
+                      dontAllowKeys: ["-", "e"],
                       className: "txt-fld",
                       name: "balance_leave_salary_amount",
                       value: row.balance_leave_salary_amount,
@@ -323,7 +393,7 @@ export default function ManualAttendanceEvents() {
                         allowNegative: false,
                         thousandSeparator: ","
                       },
-                      dontAllowKeys: ["-", "e", "."],
+                      dontAllowKeys: ["-", "e"],
                       className: "txt-fld",
                       name: "balance_airticket_amount",
                       value: row.balance_airticket_amount,
@@ -396,19 +466,12 @@ export default function ManualAttendanceEvents() {
         inputData = _.filter(result, f => {
           return f !== undefined;
         });
-
         selected_uri = "/leave/updateEmployeeLeave";
-
-        // inputData
       } else if ($this.state.selected_type === "LS") {
-        if (
-          row.hims_f_employee_leave_salary_header_id === undefined ||
-          row.hims_f_employee_leave_salary_header_id === null
-        ) {
-          return;
-        } else {
-          selected_uri = "/employeepayments/updateEmployeeLeaveSalary";
-        }
+        selected_uri = "/employeepayments/updateEmployeeLeaveSalary";
+        inputData = row;
+      } else if ($this.state.selected_type === "GR") {
+        selected_uri = "/employee/UpdateOpeningBalanceGratuity";
         inputData = row;
       }
 
@@ -431,6 +494,27 @@ export default function ManualAttendanceEvents() {
           });
         }
       });
+    },
+
+    UploadTimesheet: files => {
+      debugger;
+      AlgaehLoader({ show: true });
+      const reader = new FileReader();
+      reader.readAsDataURL(files[0]);
+      reader.onload = e => {
+        const data = e.target.result.split(",")[1];
+        algaehApiCall({
+          uri: "/employee/excelEmployeeGratuityRead",
+          data:
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64," +
+            data,
+          method: "post",
+          module: "hrManagement",
+          onSuccess: response => {
+            AlgaehLoader({ show: false });
+          }
+        });
+      };
     }
   };
 }
@@ -509,7 +593,7 @@ function getLeaveMasterData($this) {
                         allowNegative: false,
                         thousandSeparator: ","
                       },
-                      dontAllowKeys: ["-", "e", "."],
+                      dontAllowKeys: ["-", "e"],
                       className: "txt-fld",
                       name: item.hims_d_leave_id,
                       value: row[item.hims_d_leave_id],
@@ -663,7 +747,7 @@ function PreviewDataFull($this) {
   } else if ($this.state.selected_type === "LO") {
     selected_uri = "/loan/getEmployeeLoanOpenBal";
   } else if ($this.state.selected_type === "GR") {
-    selected_uri = "/gratuity/getEmployeeLeaveSalary";
+    selected_uri = "/employee/getEmployeeGratuity";
   } else if ($this.state.selected_type === "LS") {
     selected_uri = "/employeepayments/getEmployeeLeaveSalary";
   }

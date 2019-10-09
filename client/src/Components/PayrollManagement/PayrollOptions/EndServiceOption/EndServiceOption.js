@@ -16,6 +16,7 @@ export default class EndServiceOption extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      hims_d_end_of_service_options_id: null,
       earnings: [],
       deductions: [],
       deduction_ids: [],
@@ -195,39 +196,77 @@ export default class EndServiceOption extends Component {
     // console.log("Comps", JSON.stringify(this.state.earning_comp));
     // console.log("Serv Days", JSON.stringify(this.state.service_days));
 
-    algaehApiCall({
-      uri: "/payrollOptions/updateEosOptions",
-      method: "PUT",
-      module: "hrManagement",
-      data: {
-        end_of_service_calculation: this.state.end_of_service_calculation,
-        terminate_salary: this.state.terminate_salary,
-        end_of_service_payment: this.state.end_of_service_payment,
-        end_of_service_type: this.state.end_of_service_type,
-        end_of_service_years: this.state.end_of_service_years,
-        limited_years: this.state.limited_years,
-        gratuity_in_final_settle: this.state.gratuity_in_final_settle,
-        pending_salary_with_final: this.state.pending_salary_with_final,
-        round_off_nearest_year: this.state.round_off_nearest_year,
-        earning_comp: this.state.earning_comp,
-        service_days: this.state.service_days,
-        gratuity_provision: this.state.gratuity_provision
-      },
-      onSuccess: res => {
-        if (res.data.success) {
+    if (this.state.hims_d_end_of_service_options_id === null) {
+      algaehApiCall({
+        uri: "/payrollOptions/InsertEosOptions",
+        method: "POST",
+        module: "hrManagement",
+        data: {
+          end_of_service_calculation: this.state.end_of_service_calculation,
+          terminate_salary: this.state.terminate_salary,
+          end_of_service_payment: this.state.end_of_service_payment,
+          end_of_service_type: this.state.end_of_service_type,
+          end_of_service_years: this.state.end_of_service_years,
+          limited_years: this.state.limited_years,
+          gratuity_in_final_settle: this.state.gratuity_in_final_settle,
+          pending_salary_with_final: this.state.pending_salary_with_final,
+          round_off_nearest_year: this.state.round_off_nearest_year,
+          earning_comp: this.state.earning_comp,
+          service_days: this.state.service_days,
+          gratuity_provision: this.state.gratuity_provision
+        },
+        onSuccess: res => {
+          if (res.data.success) {
+            swalMessage({
+              title: "Saved Successfully...",
+              type: "success"
+            });
+          }
+        },
+        onFailure: err => {
           swalMessage({
-            title: "Updated Successfully",
-            type: "success"
+            title: err.message,
+            type: "error"
           });
         }
-      },
-      onFailure: err => {
-        swalMessage({
-          title: err.message,
-          type: "error"
-        });
-      }
-    });
+      });
+    } else {
+      algaehApiCall({
+        uri: "/payrollOptions/updateEosOptions",
+        method: "PUT",
+        module: "hrManagement",
+        data: {
+          end_of_service_calculation: this.state.end_of_service_calculation,
+          terminate_salary: this.state.terminate_salary,
+          end_of_service_payment: this.state.end_of_service_payment,
+          end_of_service_type: this.state.end_of_service_type,
+          end_of_service_years: this.state.end_of_service_years,
+          limited_years: this.state.limited_years,
+          gratuity_in_final_settle: this.state.gratuity_in_final_settle,
+          pending_salary_with_final: this.state.pending_salary_with_final,
+          round_off_nearest_year: this.state.round_off_nearest_year,
+          earning_comp: this.state.earning_comp,
+          service_days: this.state.service_days,
+          gratuity_provision: this.state.gratuity_provision,
+          hims_d_end_of_service_options_id: this.state
+            .hims_d_end_of_service_options_id
+        },
+        onSuccess: res => {
+          if (res.data.success) {
+            swalMessage({
+              title: "Saved Successfully...",
+              type: "success"
+            });
+          }
+        },
+        onFailure: err => {
+          swalMessage({
+            title: err.message,
+            type: "error"
+          });
+        }
+      });
+    }
   }
 
   getEarningDeducts() {
@@ -429,7 +468,7 @@ export default class EndServiceOption extends Component {
 
                   <AlagehAutoComplete
                     div={{ className: "col form-group" }}
-                    label={{ forceLabel: "Earnings", isImp: true }}
+                    label={{ forceLabel: "Gratuity Provision", isImp: true }}
                     selector={{
                       name: "gratuity_provision",
                       value: this.state.gratuity_provision,
@@ -1027,7 +1066,7 @@ export default class EndServiceOption extends Component {
                   onClick={this.updateEosOptions.bind(this)}
                 >
                   <AlgaehLabel
-                    label={{ forceLabel: "Update", returnText: true }}
+                    label={{ forceLabel: "Save", returnText: true }}
                   />
                 </button>
               </div>

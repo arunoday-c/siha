@@ -558,8 +558,8 @@ export default {
                                               present_days,absent_days,total_work_days,total_weekoff_days,total_holidays,total_leave,paid_leave,\
                                               unpaid_leave,total_hours, total_working_hours, ot_work_hours, ot_weekoff_hours, ot_holiday_hours, leave_salary_accrual_amount, leave_salary_days,\
                                               shortage_hours,display_present_days,loan_payable_amount,loan_due_amount,advance_due,gross_salary,total_earnings,total_deductions,\
-                                              total_contributions,net_salary, total_paid_days, hospital_id) \
-                                             VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ;",
+                                              total_contributions,net_salary, total_paid_days, salary_type, hospital_id) \
+                                             VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ;",
                                             [
                                               _salary_number,
                                               parseInt(month_number),
@@ -604,6 +604,9 @@ export default {
                                               final_contribution_amount,
                                               _net_salary,
                                               empResult[i]["total_paid_days"],
+                                              req.query.leave_salary == null
+                                                ? "NS"
+                                                : "LS",
                                               input.hospital_id
                                             ]
                                           );
@@ -1912,7 +1915,7 @@ export default {
             leave_salary_accrual_amount, leave_salary_days, emp.employee_code, emp.full_name from hims_f_salary S, \
             hims_d_employee emp, hims_d_sub_department SD where S.employee_id = emp.hims_d_employee_id and \
             emp.sub_department_id=SD.hims_d_sub_department_id \
-            and `year` = ? and `month` = ? and emp.hospital_id=? " +
+            and salary_type = 'NS' and `year` = ? and `month` = ? and emp.hospital_id=? " +
             _stringData,
           values: _.valuesIn(inputParam),
           printQuery: true

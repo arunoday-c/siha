@@ -46,7 +46,6 @@ class OpeningBalance extends Component {
       leave_id: null
     };
     all_functions.getLeaveMaster(this);
-    all_functions.getApplicationLeaves(this);
   }
 
   componentDidMount() {
@@ -115,6 +114,9 @@ class OpeningBalance extends Component {
     all_functions.employeeSearch(this);
   }
 
+  UploadTimesheet(files) {
+    all_functions.UploadTimesheet(files);
+  }
   changeChecks(e) {
     all_functions.changeChecks(this, e);
   }
@@ -144,6 +146,7 @@ class OpeningBalance extends Component {
   render() {
     debugger;
     let allYears = getYears();
+    let fileInput = React.createRef();
 
     return (
       <div className="openingBalanceScreen">
@@ -317,13 +320,29 @@ class OpeningBalance extends Component {
             >
               <i className="fas fa-file-download"></i> Download
             </button>
-            <button
+
+            <div className="uploadManualDiv   btn-with-icon">
+              <input
+                className="inputfile"
+                type="file"
+                name="manualTimeSheet"
+                ref={fileInput}
+                onChange={e => {
+                  if (e.target.files.length > 0)
+                    this.UploadTimesheet(e.target.files);
+                }}
+              />
+              <label onClick={() => fileInput.current.click()}>
+                <i className="fas fa-file-upload"></i> Upload
+              </label>
+            </div>
+            {/* <button
               onClick={this.clearState.bind(this)}
               style={{ marginLeft: 10 }}
               className="btn btn-primary btn-with-icon"
             >
               <i className="fas fa-file-upload"></i> Upload
-            </button>
+            </button> */}
           </div>
         </div>
 
@@ -414,6 +433,18 @@ class OpeningBalance extends Component {
                       Opening balance for - Gratuity
                     </h3>
                   </div>
+                  <div className="actions">
+                    <button
+                      className="btn btn-primary"
+                      style={{ marginTop: 19 }}
+                      onClick={this.showModal.bind(
+                        this,
+                        "Employee Gratuity Opening Balance"
+                      )}
+                    >
+                      Add Opening Balance
+                    </button>
+                  </div>
                 </div>
                 <div className="portlet-body">
                   <div className="row">
@@ -423,11 +454,19 @@ class OpeningBalance extends Component {
                         columns={this.state.leave_dynamic_date}
                         keyId="gratuity_opening"
                         dataSource={{
-                          data: []
+                          data: this.state.leave_balance
                         }}
-                        filter={true}
+                        isEditable={true}
                         paging={{ page: 0, rowsPerPage: 20 }}
                         forceRender={true}
+                        filter={true}
+                        events={{
+                          onEdit: () => {},
+                          onDone: this.updateEmployeeOpeningBalance.bind(this)
+                        }}
+                        actions={{
+                          allowDelete: false
+                        }}
                       />
                     </div>
                   </div>
@@ -447,14 +486,21 @@ class OpeningBalance extends Component {
                   </div>
                   <div className="actions">
                     <button
-                      className="btn btn-primary btn-circle active"
+                      className="btn btn-primary"
+                      style={{ marginTop: 19 }}
                       onClick={this.showModal.bind(
                         this,
                         "Employee Leave Salary Opening Balance"
                       )}
                     >
-                      <i className="fas fa-plus" />
+                      Add Opening Balance
                     </button>
+                    {/* <button
+                      className="btn btn-primary btn-circle active"
+
+                    >
+                      <i className="fas fa-plus" />
+                    </button> */}
                   </div>
                 </div>
                 <div className="portlet-body">

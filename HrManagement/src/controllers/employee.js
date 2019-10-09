@@ -2,6 +2,15 @@ import { Router } from "express";
 import utlities from "algaeh-utilities";
 import empModels from "../models/employee";
 
+import OpenBalExcelModels from "../models/OpeningBalanceExcel";
+
+const {
+  excelEmployeeGratuityOpenBalance,
+  excelEmployeeLeaveSalaryOpenBalance,
+  excelEmployeeLeaveOpenBalance,
+  excelEmployeeGratuityRead
+} = OpenBalExcelModels;
+
 const {
   addMisEarnDedcToEmployee,
   getEmployee,
@@ -27,10 +36,13 @@ const {
   getEmployeeDepartmentsWise,
   getEmployeeDesignationWise,
   UpdateEmployeeRejoined,
-  getEmployeeLeaveType,
   getBulkEmployeeLeaves,
-  excelEmployeeLeaveOpenBalance,
-  InsertOpeningBalanceLeaveSalary
+  InsertOpeningBalanceLeaveSalary,
+  getBulkEmployeeLeaveSalary,
+  getBulkEmployeeGratuity,
+  getEmployeeGratuity,
+  InsertOpeningBalanceGratuity,
+  UpdateOpeningBalanceGratuity
 } = empModels;
 
 export default () => {
@@ -52,7 +64,6 @@ export default () => {
 
     (req, res, next) => {
       if (req.records.invalid_input == true) {
-        console.log("eee:");
         res
           .status(utlities.AlgaehUtilities().httpStatus().internalServer)
           .json({
@@ -66,7 +77,7 @@ export default () => {
     excelEmployeeLeaveOpenBalance
   );
 
-  api.get("/getEmployeeLeaveType", getEmployeeLeaveType, (req, res, next) => {
+  api.get("/getEmployeeGratuity", getEmployeeGratuity, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
       records: req.records
@@ -317,6 +328,17 @@ export default () => {
     }
   );
 
+  api.put(
+    "/UpdateOpeningBalanceGratuity",
+    UpdateOpeningBalanceGratuity,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+
   api.post(
     "/InsertOpeningBalanceLeaveSalary",
     InsertOpeningBalanceLeaveSalary,
@@ -325,6 +347,74 @@ export default () => {
         success: true,
         records: req.records
       });
+    }
+  );
+
+  api.post(
+    "/InsertOpeningBalanceGratuity",
+    InsertOpeningBalanceGratuity,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+
+  api.get(
+    "/getBulkEmployeeLeaveSalary",
+    getBulkEmployeeLeaveSalary,
+
+    (req, res, next) => {
+      if (req.records.invalid_input == true) {
+        res
+          .status(utlities.AlgaehUtilities().httpStatus().internalServer)
+          .json({
+            success: false,
+            result: req.records
+          });
+      } else {
+        next();
+      }
+    },
+    excelEmployeeLeaveSalaryOpenBalance
+  );
+
+  api.get(
+    "/getBulkEmployeeGratuity",
+    getBulkEmployeeGratuity,
+
+    (req, res, next) => {
+      if (req.records.invalid_input == true) {
+        res
+          .status(utlities.AlgaehUtilities().httpStatus().internalServer)
+          .json({
+            success: false,
+            result: req.records
+          });
+      } else {
+        next();
+      }
+    },
+    excelEmployeeGratuityOpenBalance
+  );
+
+  api.post(
+    "/excelEmployeeGratuityRead",
+    excelEmployeeGratuityRead,
+
+    (req, res, next) => {
+      if (req.records.invalid_input == true) {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: false,
+          result: req.records
+        });
+      } else {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: true,
+          result: req.records
+        });
+      }
     }
   );
 
