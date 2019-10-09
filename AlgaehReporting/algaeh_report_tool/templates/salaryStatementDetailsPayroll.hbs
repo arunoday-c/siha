@@ -29,8 +29,8 @@
                         <th>Employee Name</th>
                         <th>Desgnation</th>
                         <th>Nationality</th>
-                        <th>Dep.</th>
-                        <th>Working Days</th>
+                        {{!-- <th>Dep.</th> --}}
+                        {{!-- <th>Working Days</th> --}}
                         <th>Present Days</th>
                         {{#hasElement earning_component}}
                         {{#each earning_component}}
@@ -55,9 +55,35 @@
                         <th>Leave Provision</th>
                         <th>Airfrare Amount</th>
                         <th>Gratuity Provision</th>
+                        <th>Date of Payment</th>
+                        <th>Mode of Payment</th>
                     </tr>
                 </thead>
                 <tbody>
+                    <tr>
+                        <td colspan="4"></td>
+                        <td class="numberFld">All Earnings
+                        </td>
+                        <td class="numberFld">Total Deduction</td>
+                        <td class="numberFld"> Total Net Salary
+                        </td>
+                        <td class="numberFld">Total Deduction</td>
+
+                        <td class="numberFld">Total Net Salary</td>
+                        <td class="numberFld">Total Contribution</td>
+                        <td class="numberFld">Total OT</td>
+                        <td class="numberFld">Total EMPLOYEE +
+                            EMPLOYER</td>
+                        <td class="numberFld">Total LEAVE
+                            PROVISION</td>
+                        <td class="numberFld">Total AIRFRARE
+                            AMOUNT</td>
+                        <td class="numberFld">Total GRATUITY
+                            PROVISION</td>
+                        <td></td>
+                        <td></td>
+
+                    </tr>
                     {{#each employees}}
                     <tr>
                         <td>{{inc @index}}</td>
@@ -65,46 +91,51 @@
                         <td>{{full_name}}</td>
                         <td>{{designation}}</td>
                         <td>{{nationality}}</td>
-                        <td>{{sub_department_name}}</td>
-                        <td>{{total_days}}</td>
+                        {{!-- <td>{{sub_department_name}}</td> --}}
+                        {{!-- <td>{{total_days}}</td> --}}
                         <td>{{display_present_days}}</td>
                         {{#hasElement ../earning_component}}
                         {{#hasElement employee_earning}}
                         {{#each ../earning_component}}
-                        <td> {{dynamicSalary hims_d_earning_deduction_id ../employee_earning "E"}}</td>
+                        <td class="numberFld"> {{dynamicSalary hims_d_earning_deduction_id ../employee_earning "E"}}
+                        </td>
                         {{/each }}
                         {{else}}
                         <td>NA</td>
                         {{/hasElement }}
                         {{/hasElement }}
-                        <td>{{total_earnings}}</td>
+                        <td class="numberFld">{{total_earnings}}</td>
                         {{#hasElement ../deduction_component}}
                         {{#hasElement employee_deduction}}
                         {{#each ../deduction_component}}
-                        <td> {{dynamicSalary hims_d_earning_deduction_id ../employee_deduction "D"}}</td>
+                        <td class="numberFld"> {{dynamicSalary hims_d_earning_deduction_id ../employee_deduction "D"}}
+                        </td>
                         {{/each }}
                         {{else}}
                         <td>NA</td>
                         {{/hasElement }}
                         {{/hasElement }}
-                        <td>{{total_deductions}}</td>
+                        <td class="numberFld">{{total_deductions}}</td>
                         {{#hasElement ../contributions_component}}
                         {{#hasElement employee_contributions}}
                         {{#each ../contributions_component}}
-                        <td> {{dynamicSalary hims_d_earning_deduction_id ../employee_contributions "C"}}</td>
+                        <td class="numberFld">
+                            {{dynamicSalary hims_d_earning_deduction_id ../employee_contributions "C"}}</td>
                         {{/each }}
                         {{else}}
                         <td>NA</td>
                         {{/hasElement }}
                         {{/hasElement }}
 
-                        <td>{{net_salary}}</td>
-                        <td>{{total_contributions}}</td>
-                        <td>{{complete_ot}}</td>
-                        <td>{{employe_plus_employr}}</td>
-                        <td>{{leave_salary}}</td>
-                        <td>{{airfare_amount}}</td>
-                        <td>{{gratuity_amount}}</td>
+                        <td class="numberFld">{{net_salary}}</td>
+                        <td class="numberFld">{{total_contributions}}</td>
+                        <td class="numberFld">{{complete_ot}}</td>
+                        <td class="numberFld">{{employe_plus_employr}}</td>
+                        <td class="numberFld">{{leave_salary}}</td>
+                        <td class="numberFld">{{airfare_amount}}</td>
+                        <td class="numberFld">{{gratuity_amount}}</td>
+                        <td>{{date_payment}}</td>
+                        <td>{{mode_payment}}</td>
 
                     </tr>
                     {{/each }}{{else}}
@@ -115,7 +146,7 @@
             </table>
 
         </section>
-      
+
         {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
         {{/hasElement }}
     </div>
