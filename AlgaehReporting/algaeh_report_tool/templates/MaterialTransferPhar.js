@@ -1,8 +1,8 @@
-const algaehUtilities = require("algaeh-utilities/utilities");
+// const algaehUtilities = require("algaeh-utilities/utilities");
 const executePDF = function executePDFMethod(options) {
   return new Promise(function(resolve, reject) {
     try {
-      const utilities = new algaehUtilities();
+      // const utilities = new algaehUtilities();
 
       const header = options.result[0][0];
       const details = options.result[1];

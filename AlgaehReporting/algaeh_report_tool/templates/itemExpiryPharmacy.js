@@ -1,8 +1,8 @@
-const algaehUtilities = require("algaeh-utilities/utilities");
+// const algaehUtilities = require("algaeh-utilities/utilities");
 
 const executePDF = function executePDFMethod(options) {
   return new Promise(function(resolve, reject) {
-    const utilities = new algaehUtilities();
+    // const utilities = new algaehUtilities();
     try {
       const _ = options.loadash;
       let str = "";
@@ -13,7 +13,7 @@ const executePDF = function executePDFMethod(options) {
         input[para["name"]] = para["value"];
       });
 
-      utilities.logger().log("input: ", input);
+      // utilities.logger().log("input: ", input);
 
       if (input.location_id > 0) {
         str += ` and IL.pharmacy_location_id= ${input.location_id}`;
@@ -33,9 +33,7 @@ const executePDF = function executePDFMethod(options) {
       if (input.expiry_status == "E") {
         str += ` and   date(expirydt)<= curdate()`;
       } else if (input.expiry_status == "EW") {
-        str += ` and  date(expirydt) between date('${
-          input.from_date
-        }') and date('${input.to_date}')`;
+        str += ` and  date(expirydt) between date('${input.from_date}') and date('${input.to_date}')`;
       } else if (input.expiry_status == "EO") {
         str += ` and date(expirydt)=date('${input.from_date}')`;
       }
@@ -57,7 +55,6 @@ const executePDF = function executePDFMethod(options) {
         })
         .catch(error => {
           options.mysql.releaseConnection();
-          
         });
     } catch (e) {
       reject(e);

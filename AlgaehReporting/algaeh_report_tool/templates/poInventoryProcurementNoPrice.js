@@ -1,12 +1,12 @@
-const algaehUtilities = require("algaeh-utilities/utilities");
+// const algaehUtilities = require("algaeh-utilities/utilities");
 const executePDF = function executePDFMethod(options) {
   return new Promise(function(resolve, reject) {
     try {
       // resolve(options.result[0]);
 
-      const utilities = new algaehUtilities();
+      // const utilities = new algaehUtilities();
 
-      utilities.logger().log("outpoy: ", options.result);
+      // utilities.logger().log("outpoy: ", options.result);
       if (options.result.length > 0) {
         resolve({
           net_payable: options.result[0]["net_payable"],

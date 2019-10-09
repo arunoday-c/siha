@@ -1,12 +1,25 @@
-const { MONTHS } = require("./GlobalVariables.json");
-const algaehUtilities = require("algaeh-utilities/utilities");
+// const { MONTHS } = require("./GlobalVariables.json");
+// const algaehUtilities = require("algaeh-utilities/utilities");
 
 const executePDF = function executePDFMethod(options) {
   return new Promise(function(resolve, reject) {
     try {
       const _ = options.loadash;
-
-      const utilities = new algaehUtilities();
+      const MONTHS = [
+        { name: "January", value: "1" },
+        { name: "February", value: "2" },
+        { name: "March", value: "3" },
+        { name: "April", value: "4" },
+        { name: "May", value: "5" },
+        { name: "June", value: "6" },
+        { name: "July", value: "7" },
+        { name: "August", value: "8" },
+        { name: "September", value: "9" },
+        { name: "October", value: "10" },
+        { name: "November", value: "11" },
+        { name: "December", value: "12" }
+      ];
+      // const utilities = new algaehUtilities();
       let input = {};
 
       const params = options.args.reportParams;
@@ -16,7 +29,7 @@ const executePDF = function executePDFMethod(options) {
         input[para["name"]] = para["value"];
       });
 
-      utilities.logger().log("input: ", input);
+      // utilities.logger().log("input: ", input);
 
       let outputArray = [];
 

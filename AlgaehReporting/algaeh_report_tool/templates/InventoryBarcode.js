@@ -1,5 +1,5 @@
-const algaehUtilities = require("algaeh-utilities/utilities");
-const utilities = new algaehUtilities();
+// const algaehUtilities = require("algaeh-utilities/utilities");
+// const utilities = new algaehUtilities();
 
 const executePDF = function executePDFMethod(options) {
   const _ = options.loadash;
@@ -14,9 +14,9 @@ const executePDF = function executePDFMethod(options) {
           barcode: header.barcode,
           sales_price: header.sales_price
         });
-        utilities.logger().log("loop: ", otherObj);
+        // utilities.logger().log("loop: ", otherObj);
       }
-      utilities.logger().log("otherObj: ", otherObj);
+      // utilities.logger().log("otherObj: ", otherObj);
       const result = {
         header: otherObj
       };

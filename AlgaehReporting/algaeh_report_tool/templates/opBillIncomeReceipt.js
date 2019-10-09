@@ -1,5 +1,5 @@
-const algaehUtilities = require("algaeh-utilities/utilities");
-const utilities = new algaehUtilities();
+// const algaehUtilities = require("algaeh-utilities/utilities");
+// const utilities = new algaehUtilities();
 const executePDF = function executePDFMethod(options) {
   const _ = options.loadash;
   return new Promise(function(resolve, reject) {
@@ -13,7 +13,7 @@ const executePDF = function executePDFMethod(options) {
         input[para["name"]] = para["value"];
       });
 
-      utilities.logger().log("input: ", input);
+      // utilities.logger().log("input: ", input);
 
       let qry = "";
 
@@ -29,19 +29,19 @@ const executePDF = function executePDFMethod(options) {
           qry = ` select A.receipt_number , date_format(receipt_date,'%d-%m-%Y') as receipt_date ,patient_code,full_name ,sub_department_code,
           sub_department_name,employee_code,doctor_name,sum(cash) as cash ,sum(card) as card,sum(cheque) as cheque,sum(amount)as total
            from(select hims_f_billing_header_id,BH.patient_id,BH.visit_id ,
-          RH.hims_f_receipt_header_id, RH.receipt_number, 
-          date(RH.receipt_date)as receipt_date ,RD.hims_f_receipt_details_id,RD.pay_type,RD.amount,    
+          RH.hims_f_receipt_header_id, RH.receipt_number,
+          date(RH.receipt_date)as receipt_date ,RD.hims_f_receipt_details_id,RD.pay_type,RD.amount,
           case RD.pay_type when 'CA' then RD.amount else '0.00' end as cash,
           case RD.pay_type when 'CD' then RD.amount else '0.00' end as card,
           case RD.pay_type when 'CH' then RD.amount else '0.00' end as cheque,
-          P.patient_code,P.full_name ,V.hims_f_patient_visit_id,SD.sub_department_code,SD.sub_department_name,  
+          P.patient_code,P.full_name ,V.hims_f_patient_visit_id,SD.sub_department_code,SD.sub_department_name,
           E.employee_code,E.full_name as doctor_name from  hims_f_billing_header BH
-          inner join hims_f_receipt_header RH on BH.receipt_header_id=RH.hims_f_receipt_header_id  
-          inner join hims_f_receipt_details RD  on RH.hims_f_receipt_header_id=RD.hims_f_receipt_header_id     
-          inner join hims_f_patient P on BH.patient_id=P.hims_d_patient_id            
+          inner join hims_f_receipt_header RH on BH.receipt_header_id=RH.hims_f_receipt_header_id
+          inner join hims_f_receipt_details RD  on RH.hims_f_receipt_header_id=RD.hims_f_receipt_header_id
+          inner join hims_f_patient P on BH.patient_id=P.hims_d_patient_id
           inner join hims_f_patient_visit V on BH.visit_id=V.hims_f_patient_visit_id
-          inner join hims_d_sub_department SD on V.sub_department_id=SD.hims_d_sub_department_id        
-          inner join hims_d_employee E on V.doctor_id=E.hims_d_employee_id           
+          inner join hims_d_sub_department SD on V.sub_department_id=SD.hims_d_sub_department_id
+          inner join hims_d_employee E on V.doctor_id=E.hims_d_employee_id
           where date(bill_date)  between date(?) and date(?) and RH.pay_type='R' and
           RH.record_status='A'    and RD.record_status='A'  and BH.hospital_id= ?  ${str}) as A
           group by hims_f_receipt_header_id`;
@@ -56,11 +56,11 @@ const executePDF = function executePDFMethod(options) {
           case RD.pay_type when 'CA' then RD.amount else '0.00' end as cash,
           case RD.pay_type when 'CD' then RD.amount else '0.00' end as card,
           case RD.pay_type when 'CH' then RD.amount else '0.00' end as cheque
-          from hims_f_patient_advance PA 
+          from hims_f_patient_advance PA
           inner join hims_f_receipt_header RH on PA.hims_f_receipt_header_id=RH.hims_f_receipt_header_id
-          inner join hims_f_receipt_details RD  on RH.hims_f_receipt_header_id=RD.hims_f_receipt_header_id 
+          inner join hims_f_receipt_details RD  on RH.hims_f_receipt_header_id=RD.hims_f_receipt_header_id
           inner join hims_f_patient P on PA.hims_f_patient_id=P.hims_d_patient_id
-          where PA.transaction_type='AD' and date(receipt_date) between date(?) and date(?)  
+          where PA.transaction_type='AD' and date(receipt_date) between date(?) and date(?)
           and PA.hospital_id=? and RH.record_status='A'  and RD.record_status='A')  as A
           group by hims_f_receipt_header_id`;
 
@@ -94,7 +94,7 @@ const executePDF = function executePDFMethod(options) {
         //       break;
 
         case "OPC":
-          qry = `select credit_number,receipt_number,date_format(receipt_date,'%d-%m-%Y') as receipt_date,pay_type,amount,patient_code ,full_name 
+          qry = `select credit_number,receipt_number,date_format(receipt_date,'%d-%m-%Y') as receipt_date,pay_type,amount,patient_code ,full_name
          ,sum(cash) as cash ,sum(card) as card,sum(cheque) as cheque,sum(amount)as total
          from ( select C.credit_number,C.patient_id ,RH.hims_f_receipt_header_id,RH.receipt_number,  receipt_date,
          RD.hims_f_receipt_details_id,RD.pay_type,RD.amount,P.patient_code,P.full_name ,
@@ -102,9 +102,9 @@ const executePDF = function executePDFMethod(options) {
          case RD.pay_type when 'CD' then RD.amount else '0.00' end as card,
          case RD.pay_type when 'CH' then RD.amount else '0.00' end as cheque
          from hims_f_credit_header C inner join hims_f_receipt_header RH on C.reciept_header_id=RH.hims_f_receipt_header_id
-         inner join hims_f_receipt_details RD  on RH.hims_f_receipt_header_id=RD.hims_f_receipt_header_id 
-         inner join hims_f_patient P on C.patient_id=P.hims_d_patient_id where  RH.pay_type='R'and 
-         date(receipt_date)   between date(?) and date(?) and C.hospital_id=? and RH.record_status='A' 
+         inner join hims_f_receipt_details RD  on RH.hims_f_receipt_header_id=RD.hims_f_receipt_header_id
+         inner join hims_f_patient P on C.patient_id=P.hims_d_patient_id where  RH.pay_type='R'and
+         date(receipt_date)   between date(?) and date(?) and C.hospital_id=? and RH.record_status='A'
          and RD.record_status='A') as A group by hims_f_receipt_header_id`;
 
           break;
@@ -173,7 +173,6 @@ const executePDF = function executePDFMethod(options) {
         })
         .catch(error => {
           options.mysql.releaseConnection();
-          
         });
     } catch (e) {
       reject(e);

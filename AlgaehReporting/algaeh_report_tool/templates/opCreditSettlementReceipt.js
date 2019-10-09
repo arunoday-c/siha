@@ -1,18 +1,18 @@
-const algaehUtilities = require("algaeh-utilities/utilities");
+// const algaehUtilities = require("algaeh-utilities/utilities");
 const executePDF = function executePDFMethod(options) {
   return new Promise(function(resolve, reject) {
     try {
       // const result = { details: options.result };
       // resolve(result);
 
-      const utilities = new algaehUtilities();
+      // const utilities = new algaehUtilities();
       const _ = options.loadash;
       const decimal_places = options.args.crypto.decimal_places;
 
       const details = options.result[0];
       const payTypeResult = options.result[1];
 
-      utilities.logger().log("outpot: ", options.result);
+      // utilities.logger().log("outpot: ", options.result);
 
       const total_cash = _.chain(payTypeResult)
         .filter(f => f.pay_type == "CA")
@@ -47,7 +47,7 @@ const executePDF = function executePDFMethod(options) {
         total_card: total_card,
         total_check: total_check
       };
-      utilities.logger().log("outpot tt: ", output);
+      // utilities.logger().log("outpot tt: ", output);
       resolve(output);
     } catch (e) {
       reject(e);

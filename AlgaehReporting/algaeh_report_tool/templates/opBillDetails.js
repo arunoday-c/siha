@@ -1,7 +1,7 @@
-const algaehUtilities = require("algaeh-utilities/utilities");
+// const algaehUtilities = require("algaeh-utilities/utilities");
 const executePDF = function executePDFMethod(options) {
   return new Promise(function(resolve, reject) {
-    const utilities = new algaehUtilities();
+    // const utilities = new algaehUtilities();
     try {
       const _ = options.loadash;
       let str = "";
@@ -24,7 +24,7 @@ const executePDF = function executePDFMethod(options) {
 			BH.hims_f_billing_header_id=BD.hims_f_billing_header_id  inner join hims_d_service_type ST
 			on BD.service_type_id=ST.hims_d_service_type_id and ST.record_status='A'
 			inner join hims_d_services S on  BD.services_id = S.hims_d_services_id and S.record_status='A'
-			where    BH.hospital_id=? and date(bill_date)   between    date(?) and  date(?) 
+			where    BH.hospital_id=? and date(bill_date)   between    date(?) and  date(?)
 			and   BH.record_status='A'  and BD.record_status='A'  ${str} group by BD.services_id;	`,
           values: [input.hospital_id, input.from_date, input.to_date],
           printQuery: true
@@ -45,13 +45,12 @@ const executePDF = function executePDFMethod(options) {
             })
             .value();
 
-          utilities.logger().log("result: ", result);
+          // utilities.logger().log("result: ", result);
 
           resolve({ detail: result });
         })
         .catch(error => {
           options.mysql.releaseConnection();
-          
         });
     } catch (e) {
       reject(e);

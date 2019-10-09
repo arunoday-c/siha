@@ -1,9 +1,9 @@
-const algaehUtilities = require("algaeh-utilities/utilities");
+// const algaehUtilities = require("algaeh-utilities/utilities");
 const executePDF = function executePDFMethod(options) {
   return new Promise(function(resolve, reject) {
     try {
       const _ = options.loadash;
-      const utilities = new algaehUtilities();
+      // const utilities = new algaehUtilities();
 
       let input = {};
       const params = options.args.reportParams;
@@ -14,30 +14,28 @@ const executePDF = function executePDFMethod(options) {
 
       options.mysql
         .executeQuery({
-          query: `select  date_format('${
-            input.invoice_date
-          }    ','%d-%m-%Y')  as invoice_date, hims_f_procurement_grn_header_id,grn_number,grn_for,date_format(grn_date,'%d-%m-%Y') as grn_date,dn_header_id
-            ,D.hims_f_procurement_grn_detail_id,H.sub_total,detail_discount ,H.net_total  ,H.total_tax ,H.net_payable 
-            from  hims_f_procurement_grn_header H inner join  hims_f_procurement_grn_detail D 
+          query: `select  date_format('${input.invoice_date}    ','%d-%m-%Y')  as invoice_date, hims_f_procurement_grn_header_id,grn_number,grn_for,date_format(grn_date,'%d-%m-%Y') as grn_date,dn_header_id
+            ,D.hims_f_procurement_grn_detail_id,H.sub_total,detail_discount ,H.net_total  ,H.total_tax ,H.net_payable
+            from  hims_f_procurement_grn_header H inner join  hims_f_procurement_grn_detail D
             on H.hims_f_procurement_grn_header_id=D.grn_header_id
             where H.hospital_id=? and H.grn_number=? and grn_for='INV';
            select  dn_from, hims_f_procurement_dn_header_id,delivery_note_number,   date_format(dn_date,'%d-%m-%Y') as dn_date,H.sub_total,H.detail_discount,H.net_total,
            H.total_tax,H.net_payable ,L.location_description  ,V.vendor_name ,PO.purchase_number,  date_format(PO.po_date,'%d-%m-%Y')as po_date
-           from hims_f_procurement_grn_header GH inner join  hims_f_procurement_grn_detail GD 
-           on GH.hims_f_procurement_grn_header_id=GD.grn_header_id  inner join 
+           from hims_f_procurement_grn_header GH inner join  hims_f_procurement_grn_detail GD
+           on GH.hims_f_procurement_grn_header_id=GD.grn_header_id  inner join
            hims_f_procurement_dn_header H  on GD.dn_header_id=H.hims_f_procurement_dn_header_id inner join hims_f_procurement_po_header PO on
            H.purchase_order_id=PO.hims_f_procurement_po_header_id
            left join hims_d_inventory_location L
            on H.inventory_location_id=L.hims_d_inventory_location_id
            left join hims_d_vendor V on H.vendor_id=V.hims_d_vendor_id
-           where GH.hospital_id=? and GH.grn_number=? and GH.grn_for='INV';          
+           where GH.hospital_id=? and GH.grn_number=? and GH.grn_for='INV';
            select D.hims_f_procurement_dn_detail_id,D.hims_f_procurement_dn_header_id,
            D.inv_item_id,IM.item_code,IM.item_description,
            D.po_quantity,D.dn_quantity,D.unit_cost,D.extended_cost,D.discount_percentage,D.discount_amount,
            D.net_extended_cost,D.quantity_recieved_todate,D.quantity_outstanding,
            D.tax_amount,D.tax_percentage,D.total_amount,U.uom_description
-           from   hims_f_procurement_grn_header GH inner join  hims_f_procurement_grn_detail GD 
-          on GH.hims_f_procurement_grn_header_id=GD.grn_header_id  inner join 
+           from   hims_f_procurement_grn_header GH inner join  hims_f_procurement_grn_detail GD
+          on GH.hims_f_procurement_grn_header_id=GD.grn_header_id  inner join
            hims_f_procurement_dn_header H  on GD.dn_header_id=H.hims_f_procurement_dn_header_id
            inner join hims_f_procurement_dn_detail D
            on H.hims_f_procurement_dn_header_id= D. hims_f_procurement_dn_header_id
@@ -46,9 +44,9 @@ const executePDF = function executePDFMethod(options) {
            where GH.hospital_id=? and GH.grn_number=? and GH.grn_for='INV';
           select B.hims_f_procurement_dn_batches_id,B.hims_f_procurement_dn_detail_id,B.barcode,B.po_quantity,B.dn_quantity,
            B.unit_cost,B.extended_cost,B.discount_percentage,B.discount_amount,B.net_extended_cost,B.quantity_recieved_todate,
-           B.quantity_outstanding,B.tax_amount,B.total_amount,B.batchno,B.sales_price from  
-            hims_f_procurement_grn_header GH inner join  hims_f_procurement_grn_detail GD 
-          on GH.hims_f_procurement_grn_header_id=GD.grn_header_id  inner join 
+           B.quantity_outstanding,B.tax_amount,B.total_amount,B.batchno,B.sales_price from
+            hims_f_procurement_grn_header GH inner join  hims_f_procurement_grn_detail GD
+          on GH.hims_f_procurement_grn_header_id=GD.grn_header_id  inner join
            hims_f_procurement_dn_header H  on GD.dn_header_id=H.hims_f_procurement_dn_header_id
            inner join hims_f_procurement_dn_detail D
            on H.hims_f_procurement_dn_header_id= D. hims_f_procurement_dn_header_id
@@ -102,7 +100,7 @@ const executePDF = function executePDFMethod(options) {
                     item["hims_f_procurement_dn_detail_id"]
                   );
                 });
-                
+
                 delivery_items.push({ ...item, batches });
               });
 
@@ -133,7 +131,6 @@ const executePDF = function executePDFMethod(options) {
         })
         .catch(error => {
           options.mysql.releaseConnection();
-          
         });
     } catch (e) {
       reject(e);

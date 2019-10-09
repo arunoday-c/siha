@@ -1,7 +1,7 @@
-const algaehUtilities = require("algaeh-utilities/utilities");
+// const algaehUtilities = require("algaeh-utilities/utilities");
 const executePDF = function executePDFMethod(options) {
   return new Promise(function(resolve, reject) {
-    const utilities = new algaehUtilities();
+    // const utilities = new algaehUtilities();
     try {
       const _ = options.loadash;
       let str = "";
@@ -12,23 +12,23 @@ const executePDF = function executePDFMethod(options) {
         input[para["name"]] = para["value"];
       });
 
-      utilities.logger().log("input: ", input);
+      // utilities.logger().log("input: ", input);
 
       options.mysql
         .executeQuery({
           query: `WITH CTE AS (
 					select hims_f_pharmacy_trans_history_id,transaction_type,from_location_id,item_code_id,
-					transaction_qty,transaction_date,case when transaction_type in ('SRT' 'INT','DNA','ST') and operation='+' then  'in' 
+					transaction_qty,transaction_date,case when transaction_type in ('SRT' 'INT','DNA','ST') and operation='+' then  'in'
 					when transaction_type in( 'ST', 'CS', 'POS') and operation='-' then  'out' end as stock_status
-					from hims_f_pharmacy_trans_history TS inner join hims_d_pharmacy_location PL on 
+					from hims_f_pharmacy_trans_history TS inner join hims_d_pharmacy_location PL on
 					TS.from_location_id=PL.hims_d_pharmacy_location_id
 					where TS.record_status='A'  and   PL.hospital_id=? and TS.from_location_id=? and TS.item_code_id=?
-					and transaction_type in( 'ST', 'CS', 'POS','SRT' 'INT','DNA') 
+					and transaction_type in( 'ST', 'CS', 'POS','SRT' 'INT','DNA')
 					and date(transaction_date) between date(?) and date(?))
 					select hims_f_pharmacy_trans_history_id,sum(transaction_qty) as transaction_qty,transaction_date ,stock_status
 					from CTE group by transaction_date,stock_status;
 					select hims_m_item_location_id ,item_id,location_description,hims_d_pharmacy_location_id,
-					sum(IL.qtyhand) as qtyhand from hims_m_item_location IL inner join hims_d_pharmacy_location PL on 
+					sum(IL.qtyhand) as qtyhand from hims_m_item_location IL inner join hims_d_pharmacy_location PL on
 					IL.pharmacy_location_id=PL.hims_d_pharmacy_location_id
 					where IL.record_status='A' and PL.hospital_id=? and IL.pharmacy_location_id=?
 					and IL.item_id=? group by IL.item_id;	`,
@@ -49,7 +49,7 @@ const executePDF = function executePDFMethod(options) {
           let qtyInHand = results[1];
 
           options.mysql.releaseConnection();
-          utilities.logger().log("qty: ", transactions);
+          // utilities.logger().log("qty: ", transactions);
 
           const data = _.chain(transactions)
             .groupBy(g => g.transaction_date)
@@ -74,7 +74,7 @@ const executePDF = function executePDFMethod(options) {
             })
             .value();
 
-          utilities.logger().log("data: ", data);
+          // utilities.logger().log("data: ", data);
 
           const total_in = _.chain(data)
 
@@ -97,7 +97,6 @@ const executePDF = function executePDFMethod(options) {
         })
         .catch(error => {
           options.mysql.releaseConnection();
-          
         });
     } catch (e) {
       reject(e);

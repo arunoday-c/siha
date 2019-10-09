@@ -1,13 +1,10 @@
-const algaehUtilities = require("algaeh-utilities/utilities");
-const moment = require("moment");
-var writtenForm = require("written-number");
-
 const executePDF = function executePDFMethod(options) {
   return new Promise(function(resolve, reject) {
     try {
       const _ = options.loadash;
       const moment = options.moment;
-      const utilities = new algaehUtilities();
+      const writtenForm = options.writtenForm;
+
       let input = options.args.reportParams;
       const month = moment(input.month, "M").format("MMMM");
       options.mysql
@@ -70,32 +67,27 @@ const executePDF = function executePDFMethod(options) {
                 }
               });
 
-              console.log("crypto:", options.args.crypto);
               outputArray.push({
                 year: employe[0].year,
                 // month: employe[0].month,
                 month: moment(employe[0].month, "MM").format("MMMM"),
-                net_salary: utilities.getCurrencyFormart(
+                net_salary: options.currencyFormat(
                   employe[0].net_salary,
                   options.args.crypto
                 ),
 
-                //writtenForm(employe[0].net_salary) + " Only",
                 salary_in_words:
                   options.args.crypto.currency_symbol +
                   " " +
                   writtenForm(employe[0].net_salary) +
                   " Only",
-                //   utilities.getCurrencyFormart(
-                //   writtenForm(employe[0].net_salary) + " Only",
-                //   options.args.crypto
-                // ),
-                total_earnings: utilities.getCurrencyFormart(
+
+                total_earnings: options.currencyFormat(
                   employe[0].total_earnings,
                   options.args.crypto
                 ),
 
-                total_deductions: utilities.getCurrencyFormart(
+                total_deductions: options.currencyFormat(
                   employe[0].total_deductions,
                   options.args.crypto
                 ),
