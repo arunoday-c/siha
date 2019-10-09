@@ -3,12 +3,15 @@ import utlities from "algaeh-utilities";
 import empModels from "../models/employee";
 
 import OpenBalExcelModels from "../models/OpeningBalanceExcel";
+import openingBalanceUpload from "../models/openingBalanceUpload";
+
+const { uploadEmployeeGratuity } = openingBalanceUpload;
 
 const {
   excelEmployeeGratuityOpenBalance,
   excelEmployeeLeaveSalaryOpenBalance,
   excelEmployeeLeaveOpenBalance,
-  excelEmployeeGratuityRead
+  excelEmployeeOpeningBalanceRead
 } = OpenBalExcelModels;
 
 const {
@@ -400,11 +403,21 @@ export default () => {
   );
 
   api.post(
-    "/excelEmployeeGratuityRead",
-    excelEmployeeGratuityRead,
+    "/excelEmployeeOpeningBalanceRead",
+    excelEmployeeOpeningBalanceRead,
+    (req, res, next) => {
+      if (req.filter == "GR") {
+        uploadEmployeeGratuity(req, res, next);
+      } else {
+        next();
+      }
+    },
 
     (req, res, next) => {
-      if (req.records.invalid_input == true) {
+      if (
+        req.records.invalid_input !== undefined &&
+        req.records.invalid_input == true
+      ) {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: false,
           result: req.records

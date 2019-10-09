@@ -81,25 +81,20 @@ class OpeningBalance extends Component {
 
   clearState() {
     all_functions.getLeaveMaster(this);
-    this.setState(
-      {
-        employee_group_id: null,
-        hospital_id: JSON.parse(
-          AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-        ).hims_d_hospital_id,
-        employee_name: null,
-        hims_d_employee_id: null,
-        leave_dynamic_date: [],
-        selected_type: "LE",
-        rerender_items: true,
-        leave_id: null,
-        year: moment().year(),
-        leave_balance: []
-      },
-      () => {
-        debugger;
-      }
-    );
+    this.setState({
+      employee_group_id: null,
+      hospital_id: JSON.parse(
+        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+      ).hims_d_hospital_id,
+      employee_name: null,
+      hims_d_employee_id: null,
+      leave_dynamic_date: [],
+      selected_type: "LE",
+      rerender_items: true,
+      leave_id: null,
+      year: moment().year(),
+      leave_balance: []
+    });
   }
 
   PreviewData() {
@@ -115,14 +110,13 @@ class OpeningBalance extends Component {
   }
 
   UploadTimesheet(files) {
-    all_functions.UploadTimesheet(files);
+    all_functions.UploadTimesheet(this, files);
   }
   changeChecks(e) {
     all_functions.changeChecks(this, e);
   }
 
   updateEmployeeOpeningBalance(row) {
-    debugger;
     all_functions.updateEmployeeOpeningBalance(this, row);
   }
 
@@ -132,7 +126,6 @@ class OpeningBalance extends Component {
     });
   }
   showModal(HeaderCaption) {
-    debugger;
     this.setState({
       openModal: !this.state.openModal,
       HeaderCaption: HeaderCaption
@@ -144,7 +137,6 @@ class OpeningBalance extends Component {
   }
 
   render() {
-    debugger;
     let allYears = getYears();
     let fileInput = React.createRef();
 
