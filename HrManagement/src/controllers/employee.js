@@ -5,7 +5,10 @@ import empModels from "../models/employee";
 import OpenBalExcelModels from "../models/OpeningBalanceExcel";
 import openingBalanceUpload from "../models/openingBalanceUpload";
 
-const { uploadEmployeeGratuity } = openingBalanceUpload;
+const {
+  uploadEmployeeGratuity,
+  uploadEmployeeLeaveSalary
+} = openingBalanceUpload;
 
 const {
   excelEmployeeGratuityOpenBalance,
@@ -412,7 +415,13 @@ export default () => {
         next();
       }
     },
-
+    (req, res, next) => {
+      if (req.filter == "LS") {
+        uploadEmployeeLeaveSalary(req, res, next);
+      } else {
+        next();
+      }
+    },
     (req, res, next) => {
       if (
         req.records.invalid_input !== undefined &&
