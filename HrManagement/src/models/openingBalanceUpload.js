@@ -63,5 +63,72 @@ export default {
     } catch (e) {
       next(e);
     }
+  },
+  //created by irfan:
+  uploadEmployeeLeaveSalary: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const utilities = new algaehUtilities();
+
+    try {
+      const rawdata = req.body;
+
+      const input = rawdata
+        .filter(item => {
+          return item.employee_id > 0;
+        })
+        .map(m => {
+          return {
+            ...m,
+            leave_days: m.balance_leave_days,
+            leave_salary_amount: m.balance_leave_salary_amount,
+            airticket_amount: m.balance_airticket_amount
+          };
+        });
+
+      if (input.length > 0) {
+        const insurtColumns = [
+          "employee_id",
+          "leave_days",
+          "leave_salary_amount",
+          "airticket_amount",
+          "balance_leave_days",
+          "balance_leave_salary_amount",
+          "balance_airticket_amount",
+          "airfare_months",
+          "hospital_id"
+        ];
+
+        _mysql
+          .executeQuery({
+            query:
+              " INSERT INTO hims_f_employee_leave_salary_header (??) VALUES ?  ON DUPLICATE KEY UPDATE \
+              leave_days=values(leave_days),leave_salary_amount=values(leave_salary_amount),\
+              airticket_amount=values(airticket_amount),balance_leave_days=values(balance_leave_days),\
+              balance_leave_salary_amount=values(balance_leave_salary_amount),\
+              balance_airticket_amount=values(balance_airticket_amount),airfare_months=values(airfare_months);",
+            values: input,
+            includeValues: insurtColumns,
+            bulkInsertOrUpdate: true,
+            printQuery: false
+          })
+          .then(finalResult => {
+            _mysql.releaseConnection();
+            req.records = finalResult;
+            next();
+          })
+          .catch(e => {
+            _mysql.releaseConnection();
+            next(e);
+          });
+      } else {
+        req.records = {
+          invalid_input: true,
+          message: `Please Provide valid input `
+        };
+        next();
+      }
+    } catch (e) {
+      next(e);
+    }
   }
 };
