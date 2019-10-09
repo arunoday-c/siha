@@ -33,17 +33,12 @@ const compile = async function(templateName, data) {
       "algaeh_report_tool/templates",
       `${templateName}.hbs`
     );
-
     const html = await fs.readFile(filePath, "utf-8");
-    const comp = await hbs.compile(html)(data);
-    //
-    return comp;
+    return await hbs.compile(html)(data);
   } catch (error) {
-    console.log("compile -data -", data);
-    return undefined;
+    console.error("Compile Data error,changing to No Records Found : ", error);
+    return "<center><b>No Records Found</b></center>";
   }
-
-  // return "رقم الفاتورة";
 };
 
 const compileExcel = async function(templateName, data) {
