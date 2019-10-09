@@ -7,7 +7,8 @@ import openingBalanceUpload from "../models/openingBalanceUpload";
 
 const {
   uploadEmployeeGratuity,
-  uploadEmployeeLeaveSalary
+  uploadEmployeeLeaveSalary,
+  uploadEmployeeLeaveBalance
 } = openingBalanceUpload;
 
 const {
@@ -422,6 +423,14 @@ export default () => {
         next();
       }
     },
+    (req, res, next) => {
+      if (req.filter == "LE") {
+        uploadEmployeeLeaveBalance(req, res, next);
+      } else {
+        next();
+      }
+    },
+
     (req, res, next) => {
       if (
         req.records.invalid_input !== undefined &&
