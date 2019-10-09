@@ -1471,7 +1471,7 @@ export default {
         _mysql
           .executeQuery({
             query:
-              "select E.employee_code, E.full_name, LS.hims_f_employee_leave_salary_header_id, LS.leave_days, \
+              "select E.employee_code, E.full_name, E.hospital_id, LS.hims_f_employee_leave_salary_header_id, LS.leave_days, \
               LS.leave_salary_amount, LS.airticket_amount, LS.balance_leave_days, LS.balance_leave_salary_amount, \
               LS.balance_airticket_amount, LS.airfare_months, LS.utilized_leave_days, LS.utilized_leave_salary_amount, \
               LS.utilized_airticket_amount, E.hims_d_employee_id as employee_id from hims_d_employee E \
@@ -1529,7 +1529,7 @@ export default {
         query:
           "select E.employee_code, E.full_name, E.hims_d_employee_id, GP.year, GP.month, GP.gratuity_amount, \
           GP.hims_f_gratuity_provision_id from hims_d_employee E inner join hims_f_gratuity_provision GP  on \
-          E.hims_d_employee_id = GP.employee_id where E.hospital_id=? ;" +
+          E.hims_d_employee_id = GP.employee_id where E.hospital_id=? " +
           strQry,
         values: [input.hospital_id],
         printQuery: true

@@ -1225,34 +1225,21 @@ export default {
       const _mysql = new algaehMysql();
       const input = req.body;
 
-      const utilized_leave_days =
-        parseFloat(input.leave_days) - parseFloat(input.balance_leave_days);
-      const utilized_leave_salary_amount =
-        parseFloat(input.leave_salary_amount) -
-        parseFloat(input.balance_leave_salary_amount);
-      const utilized_airticket_amount =
-        parseFloat(input.airticket_amount) -
-        parseFloat(input.balance_airticket_amount);
-
       _mysql
         .executeQuery({
           query:
             "UPDATE hims_f_employee_leave_salary_header set leave_days=?, leave_salary_amount=?, airticket_amount=?, \
-            balance_leave_days=?, balance_leave_salary_amount=?, balance_airticket_amount=?, airfare_months=?, \
-            utilized_leave_days = ?, utilized_leave_salary_amount=?, utilized_airticket_amount=? \
+            balance_leave_days=?, balance_leave_salary_amount=?, balance_airticket_amount=?, airfare_months=? \
             where  hims_f_employee_leave_salary_header_id=?",
 
           values: [
-            input.leave_days,
-            input.leave_salary_amount,
-            input.airticket_amount,
+            input.balance_leave_days,
+            input.balance_leave_salary_amount,
+            input.balance_airticket_amount,
             input.balance_leave_days,
             input.balance_leave_salary_amount,
             input.balance_airticket_amount,
             input.airfare_months,
-            utilized_leave_days,
-            utilized_leave_salary_amount,
-            utilized_airticket_amount,
             input.hims_f_employee_leave_salary_header_id
           ],
           printQuery: true
