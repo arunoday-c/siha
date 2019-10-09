@@ -43,7 +43,8 @@ class OpeningBalance extends Component {
       leaves_data: [],
       openModal: false,
       application_leave: [],
-      leave_id: null
+      leave_id: null,
+      error_upload: null
     };
     all_functions.getLeaveMaster(this);
   }
@@ -81,25 +82,21 @@ class OpeningBalance extends Component {
 
   clearState() {
     all_functions.getLeaveMaster(this);
-    this.setState(
-      {
-        employee_group_id: null,
-        hospital_id: JSON.parse(
-          AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-        ).hims_d_hospital_id,
-        employee_name: null,
-        hims_d_employee_id: null,
-        leave_dynamic_date: [],
-        selected_type: "LE",
-        rerender_items: true,
-        leave_id: null,
-        year: moment().year(),
-        leave_balance: []
-      },
-      () => {
-        debugger;
-      }
-    );
+    this.setState({
+      employee_group_id: null,
+      hospital_id: JSON.parse(
+        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+      ).hims_d_hospital_id,
+      employee_name: null,
+      hims_d_employee_id: null,
+      leave_dynamic_date: [],
+      selected_type: "LE",
+      rerender_items: true,
+      leave_id: null,
+      year: moment().year(),
+      leave_balance: [],
+      error_upload: null
+    });
   }
 
   PreviewData() {
@@ -115,14 +112,13 @@ class OpeningBalance extends Component {
   }
 
   UploadTimesheet(files) {
-    all_functions.UploadTimesheet(files);
+    all_functions.UploadTimesheet(this, files);
   }
   changeChecks(e) {
     all_functions.changeChecks(this, e);
   }
 
   updateEmployeeOpeningBalance(row) {
-    debugger;
     all_functions.updateEmployeeOpeningBalance(this, row);
   }
 
@@ -132,7 +128,6 @@ class OpeningBalance extends Component {
     });
   }
   showModal(HeaderCaption) {
-    debugger;
     this.setState({
       openModal: !this.state.openModal,
       HeaderCaption: HeaderCaption
@@ -144,7 +139,6 @@ class OpeningBalance extends Component {
   }
 
   render() {
-    debugger;
     let allYears = getYears();
     let fileInput = React.createRef();
 
@@ -345,9 +339,9 @@ class OpeningBalance extends Component {
             </button> */}
           </div>
         </div>
-
-        {this.state.selected_type === "LE" ? (
-          <div className="row">
+        <div className="row">
+          {this.state.error_upload ? this.state.error_upload : ""}
+          {this.state.selected_type === "LE" ? (
             <div className="col-12">
               <div className="portlet portlet-bordered margin-bottom-15">
                 <div className="portlet-title">
@@ -383,9 +377,7 @@ class OpeningBalance extends Component {
                 </div>
               </div>
             </div>
-          </div>
-        ) : this.state.selected_type === "LO" ? (
-          <div className="row">
+          ) : this.state.selected_type === "LO" ? (
             <div className="col-12">
               <div className="portlet portlet-bordered margin-bottom-15">
                 <div className="portlet-title">
@@ -422,9 +414,7 @@ class OpeningBalance extends Component {
                 </div>
               </div>
             </div>
-          </div>
-        ) : this.state.selected_type === "GR" ? (
-          <div className="row">
+          ) : this.state.selected_type === "GR" ? (
             <div className="col-12">
               <div className="portlet portlet-bordered margin-bottom-15">
                 <div className="portlet-title">
@@ -473,9 +463,7 @@ class OpeningBalance extends Component {
                 </div>
               </div>
             </div>
-          </div>
-        ) : this.state.selected_type === "LS" ? (
-          <div className="row">
+          ) : this.state.selected_type === "LS" ? (
             <div className="col-12">
               <div className="portlet portlet-bordered margin-bottom-15">
                 <div className="portlet-title">
@@ -530,9 +518,8 @@ class OpeningBalance extends Component {
                 </div>
               </div>
             </div>
-          </div>
-        ) : null}
-
+          ) : null}
+        </div>
         {/* <div className="col-12">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">

@@ -21,12 +21,6 @@ async function generateColumns(leaveData) {
       key: "full_name",
       width: 40,
       horizontal: "center"
-    },
-    {
-      header: "Year",
-      key: "year",
-      width: 20,
-      horizontal: "center"
     }
   ];
 
@@ -440,8 +434,7 @@ function excelEmployeeLeaveOpenBalance(req, res, next) {
           let employee = {
             full_name: rest.full_name,
             employee_code: rest.employee_code,
-            employee_id: rest.employee_id,
-            year: rest.year
+            employee_id: rest.employee_id
           };
 
           for (let j = 0; j < leave_data.length; j++) {
@@ -506,12 +499,13 @@ function excelEmployeeLeaveOpenBalance(req, res, next) {
   });
 }
 
-function excelEmployeeGratuityRead(req, res, next) {
+function excelEmployeeOpeningBalanceRead(req, res, next) {
   let buffer = "";
   const utilities = new algaehUtilities();
 
-  utilities.logger().log("excelEmployeeGratuityRead: ");
+  utilities.logger().log("excelEmployeeOpeningBalanceRead: ");
 
+  const leaves_data = JSON.parse(req.headers.leaves_data);
   req.on("data", chunk => {
     buffer += chunk.toString();
   });
@@ -595,6 +589,35 @@ function excelEmployeeGratuityRead(req, res, next) {
                 }
               }
             }
+          } else if (filter === "LE") {
+            if (rowNumber === 1) {
+              columns = row.values;
+            } else {
+              let internal = {};
+
+              for (let i = 0; i < columns.length; i++) {
+                if (columns[i] !== undefined) {
+                  let columnName = columns[i]
+                    .replace("Emp. Id", "employee_id")
+                    .replace("Emp. Code", "employee_code")
+                    .replace("Employee Name", "full_name");
+
+                  for (let i = 0; i < leaves_data.length; i++) {
+                    columnName = columnName.replace(
+                      leaves_data[i].leave_description,
+                      leaves_data[i].hims_d_leave_id
+                    );
+                  }
+
+                  // console.log("columnName", columnName);
+
+                  internal[columnName] = row.values[i];
+                  if (i === columns.length - 1) {
+                    excelArray.push(internal);
+                  }
+                }
+              }
+            }
           }
         });
       })
@@ -602,8 +625,8 @@ function excelEmployeeGratuityRead(req, res, next) {
         if (properFile) {
           excelArray.pop();
           console.log("excelArray", excelArray);
-          utilities.logger().log("excelArray: ", excelArray);
           req.body = excelArray;
+          req.filter = filter;
           next();
         }
       })
@@ -617,5 +640,5 @@ export default {
   excelEmployeeGratuityOpenBalance,
   excelEmployeeLeaveSalaryOpenBalance,
   excelEmployeeLeaveOpenBalance,
-  excelEmployeeGratuityRead
+  excelEmployeeOpeningBalanceRead
 };

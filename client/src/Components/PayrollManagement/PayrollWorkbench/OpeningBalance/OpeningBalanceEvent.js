@@ -496,15 +496,20 @@ export default function ManualAttendanceEvents() {
       });
     },
 
-    UploadTimesheet: files => {
+    UploadTimesheet: ($this, files) => {
       debugger;
       AlgaehLoader({ show: true });
       const reader = new FileReader();
       reader.readAsDataURL(files[0]);
       reader.onload = e => {
         const data = e.target.result.split(",")[1];
+        let leaves_data = [];
+        if ($this.state.selected_type === "LE") {
+          leaves_data = $this.state.leaves_data;
+        }
         algaehApiCall({
-          uri: "/employee/excelEmployeeGratuityRead",
+          uri: "/employee/excelEmployeeOpeningBalanceRead",
+          header: { leaves_data: JSON.stringify(leaves_data) },
           data:
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64," +
             data,
@@ -512,6 +517,19 @@ export default function ManualAttendanceEvents() {
           module: "hrManagement",
           onSuccess: response => {
             AlgaehLoader({ show: false });
+            if (response.data.success === true) {
+              swalMessage({
+                title:
+                  "Uploded Successfully... Please Click Preview to view the data.",
+                type: "success"
+              });
+            } else {
+              $this.setState({ error_upload: response.data.result.message });
+              swalMessage({
+                title: "Error while upload",
+                type: "error"
+              });
+            }
           }
         });
       };
