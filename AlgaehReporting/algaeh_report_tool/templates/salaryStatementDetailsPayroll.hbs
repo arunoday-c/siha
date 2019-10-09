@@ -44,38 +44,15 @@
                         <th>Airfrare Amount</th>
                         <th>Gratuity Provision</th>
                         <th>
-                          Mode Of Payment
+                            Mode Of Payment
                         </th>
                         <th>
-                          Salary Payed Date
+                            Salary Payed Date
                         </th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td colspan="4"></td>
-                        <td class="numberFld">All Earnings
-                        </td>
-                        <td class="numberFld">Total Deduction</td>
-                        <td class="numberFld"> Total Net Salary
-                        </td>
-                        <td class="numberFld">Total Deduction</td>
 
-                        <td class="numberFld">Total Net Salary</td>
-                        <td class="numberFld">Total Contribution</td>
-                        <td class="numberFld">Total OT</td>
-                        <td class="numberFld">Total EMPLOYEE +
-                            EMPLOYER</td>
-                        <td class="numberFld">Total LEAVE
-                            PROVISION</td>
-                        <td class="numberFld">Total AIRFRARE
-                            AMOUNT</td>
-                        <td class="numberFld">Total GRATUITY
-                            PROVISION</td>
-                        <td></td>
-                        <td></td>
-
-                    </tr>
                     {{#each employees}}
                     <tr>
                         <td>{{inc @index}}</td>
@@ -127,10 +104,10 @@
                         <td>{{airfare_amount}}</td>
                         <td>{{gratuity_amount}}</td>
                         <td>
-                          {{mode_of_payment}}
+                            {{mode_of_payment}}
                         </td>
                         <td>
-                          {{salary_paid_date}}
+                            {{salary_paid_date}}
                         </td>
                     </tr>
                     {{/each }}{{else}}
@@ -144,41 +121,43 @@
         </section>
 
         {{/hasElement }}
-        <table>
-        <caption>
-          Summary
-        </caption>
-        <tr>
-          <td>
-          GRAND TOTAL EARNINGS
-          </td><td>
-          {{sum_earnings}}
-          </td>
-        </tr>
-        <tr>
-          <td>
-        GRAND TOTAL DEDUCTION
-          </td>
-          <td>
-            {{sum_deductions}}
-          </td>
-        </tr>
-        <tr>
-          <td>
-            GRAND TOTAL CONTRIBUTION
-          </td>
-          <td>
-            {{sum_contributions}}
-          </td>
-        </tr>
-        <tr>
-          <td>
-            GRAND NET SALARY
-          </td>
-          <td>
-            {{sum_net_salary}}
-          </td>
-        </tr>
+
+
+
+
+        <table class="tableTotal">
+            <tr>
+                <td>
+                    Grand Total Earnings
+                </td>
+                <td>
+                    {{sum_earnings}}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Grand Total Deduction
+                </td>
+                <td>
+                    {{sum_deductions}}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Grand Total Contribution
+                </td>
+                <td>
+                    {{sum_contributions}}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Grand Net Salary
+                </td>
+                <td>
+                    {{sum_net_salary}}
+                </td>
+            </tr>
         </table>
     </div>
 
