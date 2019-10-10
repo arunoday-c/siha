@@ -22,19 +22,19 @@
                         <th>Present Days</th>
                         {{#hasElement earning_component}}
                         {{#each earning_component}}
-                        <th>{{earning_deduction_description}}</th>
+                        <th>{{short_desc}}</th>
                         {{/each }}
                         {{/hasElement}}
                         <th>Total Earnings</th>
                         {{#hasElement deduction_component}}
                         {{#each deduction_component}}
-                        <th>{{earning_deduction_description}}</th>
+                        <th>{{short_desc}}</th>
                         {{/each }}
                         {{/hasElement}}
                         <th>Total Deduction </th>
                         {{#hasElement contributions_component}}
                         {{#each contributions_component}}
-                        <th>{{earning_deduction_description}}</th>
+                        <th>{{short_desc}}</th>
                         {{/each }}
                         {{/hasElement}}<th>Net Salary</th>
                         <th>Total Contribution</th>
@@ -57,8 +57,8 @@
                     <tr>
                         <td>{{inc @index}}</td>
                         <td>{{employee_code}}</td>
-                        <td>{{full_name}}</td>
-                        <td>{{designation}}</td>
+                        <td class="txtFld"><span class="textTruncate" style="width: 200px;">{{full_name}}</span></td>
+                        <td class="txtFld"><span class="textTruncate" style="width: 100px;">{{designation}}</span></td>
                         <td>{{nationality}}</td>
                         {{!-- <td>{{sub_department_name}}</td> --}}
                         {{!-- <td>{{total_days}}</td> --}}
@@ -98,8 +98,8 @@
 
                         <td class="numberFld">{{net_salary}}</td>
                         <td class="numberFld">{{total_contributions}}</td>
-                        <td>{{complete_ot}}</td>
-                        <td>{{employe_plus_employr}}</td>
+                        <td class="numberFld">{{complete_ot}}</td>
+                        <td class="numberFld">{{employe_plus_employr}}</td>
                         <td class="numberFld">{{leave_salary}}</td>
                         <td class="numberFld">{{airfare_amount}}</td>
                         <td class="numberFld">{{gratuity_amount}}</td>
