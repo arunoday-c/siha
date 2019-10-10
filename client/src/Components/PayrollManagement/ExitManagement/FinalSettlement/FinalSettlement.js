@@ -489,7 +489,15 @@ class FinalSettlement extends Component {
     return (
       <div className="FinalSettlementScreen">
         <div className="row  inner-top-search">
-          <div className="col-lg-3" style={{ marginTop: 10 }}>
+          <div className="col-2 globalSearchCntr">
+            <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+            <h6 onClick={this.employeeSearch.bind(this)}>
+              {this.state.employee_name ? this.state.employee_name : "------"}
+              <i className="fas fa-search fa-lg" />
+            </h6>
+          </div>
+
+          {/* <div className="col-lg-3" style={{ marginTop: 10 }}>
             <div
               className="row"
               style={{
@@ -521,7 +529,7 @@ class FinalSettlement extends Component {
                 />
               </div>
             </div>
-          </div>
+          </div> */}
 
           <div className="col form-group">
             <button

@@ -216,7 +216,15 @@ class EOSGratuity extends Component {
             }}
           /> */}
 
-          <div className="col-lg-3" style={{ marginTop: 10 }}>
+          <div className="col-2 globalSearchCntr">
+            <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+            <h6 onClick={this.employeeSearch.bind(this)}>
+              {this.state.employee_name ? this.state.employee_name : "------"}
+              <i className="fas fa-search fa-lg" />
+            </h6>
+          </div>
+
+          {/* <div className="col-lg-3" style={{ marginTop: 10 }}>
             <div
               className="row"
               style={{
@@ -248,7 +256,7 @@ class EOSGratuity extends Component {
                 />
               </div>
             </div>
-          </div>
+          </div> */}
 
           <div className="col form-group">
             <button
@@ -347,13 +355,21 @@ class EOSGratuity extends Component {
                               : "------"}
                           </h6>
                         </div>
-
                         <div className="col-3">
-                          <label className="style_Label ">
-                            Date of Leaving
-                          </label>
+                          <label className="style_Label ">Date of Resign</label>
                           <h6>
                             {EosData.date_of_resignation
+                              ? moment(EosData.date_of_resignation).format(
+                                  "DD-MMM-YYYY"
+                                )
+                              : "------"}
+                          </h6>
+                        </div>
+
+                        <div className="col-3">
+                          <label className="style_Label ">Date of Exit</label>
+                          <h6>
+                            {EosData.exit_date
                               ? moment(EosData.exit_date).format("DD-MMM-YYYY")
                               : "------"}
                           </h6>
