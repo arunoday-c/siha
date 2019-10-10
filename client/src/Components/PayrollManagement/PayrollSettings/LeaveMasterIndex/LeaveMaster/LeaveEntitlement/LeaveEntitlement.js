@@ -395,6 +395,23 @@ function LeaveEntitlement(props) {
                 </label>
               </div>
             </div>
+            <div className="col-4  form-group">
+              <label>Avail if No Balance</label>
+              <div className="customCheckbox">
+                <label className="checkbox inline">
+                  <input
+                    type="checkbox"
+                    name="proportionate_leave"
+                    checked={
+                      myParent.state.proportionate_leave === "Y" ||
+                      myParent.state.proportionate_leave === true
+                    }
+                    onChange={e => myParent.changeChecks(e)}
+                  />
+                  <span>Yes</span>
+                </label>
+              </div>
+            </div>
           </div>
           {/*
         <div className="col form-group">
