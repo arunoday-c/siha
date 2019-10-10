@@ -113,17 +113,17 @@ hbs.registerHelper("dynamicSalary", function(searchKey, inputArray, comp_type) {
     const obj = inputArray.find(item => {
       return item.earnings_id == searchKey;
     });
-    return obj ? obj.amount : "0";
+    return obj ? obj.amount : "-";
   } else if (comp_type == "D") {
     const obj = inputArray.find(item => {
       return item.deductions_id == searchKey;
     });
-    return obj ? obj.amount : "0";
+    return obj ? obj.amount : "-";
   } else if (comp_type == "C") {
     const obj = inputArray.find(item => {
       return item.contributions_id == searchKey;
     });
-    return obj ? obj.amount : "0";
+    return obj ? obj.amount : "-";
   }
 });
 
