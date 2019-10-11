@@ -66,13 +66,13 @@ const saveImageInTemp = (req, res, next) => {
             _filePath += "/TempStore/" + _ip;
           }
 
-          const _path = path.join(__dirname, _filePath);
-          mkdirp(_path, error => {
-            if (error) throw error;
-            else {
-              next(null, _path);
-            }
-          });
+          // const _path = path.join(__dirname, _filePath);
+          // mkdirp(_path, error => {
+          //   if (error) throw error;
+          //   else {
+          //     next(null, _path);
+          //   }
+          // });
         } else {
           next(null);
         }
