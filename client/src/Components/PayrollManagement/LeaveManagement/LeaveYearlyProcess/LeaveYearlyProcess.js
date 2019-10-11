@@ -17,6 +17,7 @@ export default class LeaveYearlyProcess extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      hospital_id: null,
       year: moment().year(),
       leaves: [],
       leave_data: [],
@@ -213,9 +214,9 @@ export default class LeaveYearlyProcess extends Component {
         <div className="col-12">
           <div className="row inner-top-search">
             <AlagehAutoComplete
-              div={{ className: "col-3" }}
+              div={{ className: "col-1 form-group mandatory" }}
               label={{
-                forceLabel: "Select a Year.",
+                forceLabel: "Year",
                 isImp: true
               }}
               selector={{
@@ -235,53 +236,34 @@ export default class LeaveYearlyProcess extends Component {
                 }
               }}
             />
+            <AlagehAutoComplete
+              div={{ className: "col-2  form-group mandatory" }}
+              label={{
+                forceLabel: "Branch.",
+                isImp: true
+              }}
+              selector={{
+                name: "hospital_id",
+                className: "select-fld",
+                value: this.state.hospital_id,
+                dataSource: {
+                  textField: "hospital_name",
+                  valueField: "hims_d_hospital_id",
+                  data: this.props.organizations
+                },
+                //onChange: texthandler.bind(this, this),
+                onChange: this.dropDownHandler.bind(this),
 
-            <div className="col-2 globalSearchCntr">
-              <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
-              <h6 onClick={this.employeeSearch.bind(this)}>
-                {this.state.employee_name
-                  ? this.state.employee_name
-                  : "Search Employee"}
-                <i className="fas fa-search fa-lg"></i>
-              </h6>
-            </div>
-
-            {/* <div className="col-3" style={{ marginTop: 10 }}>
-              <div
-                className="row"
-                style={{
-                  border: " 1px solid #ced4d9",
-                  borderRadius: 5,
-                  marginLeft: 0
-                }}
-              >
-                <div className="col">
-                  <AlgaehLabel label={{ forceLabel: "Employee Name" }} />
-                  <h6>
-                    {this.state.employee_name
-                      ? this.state.employee_name
-                      : "--Select Employee--"}
-                  </h6>
-                </div>
-                <div
-                  className="col-3"
-                  style={{ borderLeft: "1px solid #ced4d8" }}
-                >
-                  <i
-                    className="fas fa-search fa-lg"
-                    style={{
-                      paddingTop: 17,
-                      paddingLeft: 3,
-                      cursor: "pointer"
-                    }}
-                    onClick={this.employeeSearch.bind(this)}
-                  />
-                </div>
-              </div>
-            </div> */}
+                onClear: () => {
+                  this.setState({
+                    hospital_id: null
+                  });
+                }
+              }}
+            />
 
             <AlagehAutoComplete
-              div={{ className: "col-3 form-group" }}
+              div={{ className: "col-2 form-group " }}
               label={{
                 forceLabel: "Select a Leave Type",
                 isImp: false
@@ -298,27 +280,61 @@ export default class LeaveYearlyProcess extends Component {
                 onChange: this.dropDownHandler.bind(this)
               }}
             />
-            {/* 
+            <AlagehAutoComplete
+              div={{ className: "col-2" }}
+              label={{
+                forceLabel: "Employee Group",
+                isImp: false
+              }}
+              selector={{
+                name: "hospital_id",
+                className: "select-fld",
+                value: this.state.hospital_id,
+                dataSource: {
+                  textField: "hospital_name",
+                  valueField: "hims_d_hospital_id",
+                  data: this.props.organizations
+                },
+                //onChange: texthandler.bind(this, this),
+                onChange: this.dropDownHandler.bind(this),
+
+                onClear: () => {
+                  this.setState({
+                    hospital_id: null
+                  });
+                }
+              }}
+            />
+            <div className="col globalSearchCntr">
+              <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
+              <h6 onClick={this.employeeSearch.bind(this)}>
+                {this.state.employee_name
+                  ? this.state.employee_name
+                  : "--Select Employee--"}
+                <i className="fas fa-search fa-lg"></i>
+              </h6>
+            </div>
+
             <div className="col form-group">
               <button
+                onClick={this.clearState.bind(this)}
+                style={{ marginTop: 19 }}
+                className="btn btn-default"
+              >
+                CLEAR
+              </button>{" "}
+              <button
                 onClick={this.processYearlyLeave.bind(this)}
-                style={{ marginTop: 21 }}
+                style={{ marginTop: 19, marginLeft: 5 }}
                 className="btn btn-primary"
               >
                 {!this.state.loading ? (
-                  "PROCESS"
+                  "Load"
                 ) : (
                   <i className="fas fa-spinner fa-spin" />
                 )}
               </button>
-              <button
-                onClick={this.clearState.bind(this)}
-                style={{ marginTop: 21, marginLeft: 5 }}
-                className="btn btn-default"
-              >
-                CLEAR
-              </button>
-            </div> */}
+            </div>
           </div>
         </div>
 
@@ -371,12 +387,10 @@ export default class LeaveYearlyProcess extends Component {
                       {
                         fieldName: "employee_code",
                         label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Employee Code" }}
-                          />
+                          <AlgaehLabel label={{ forceLabel: "Emp. Code" }} />
                         ),
                         others: {
-                          maxWidth: 250
+                          maxWidth: 120
                         }
                       },
                       {
@@ -391,10 +405,21 @@ export default class LeaveYearlyProcess extends Component {
                         }
                       },
                       {
-                        fieldName: "sub_department_code",
+                        fieldName: "employee_name",
                         label: (
                           <AlgaehLabel
-                            label={{ forceLabel: "Sub Dept. Code" }}
+                            label={{ forceLabel: "Employee Group" }}
+                          />
+                        ),
+                        others: {
+                          style: { textAlign: "left" }
+                        }
+                      },
+                      {
+                        forceLabel: "sub_department_name",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Department Name" }}
                           />
                         ),
                         others: {

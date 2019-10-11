@@ -268,7 +268,7 @@ export default class LeaveAuthorization extends Component {
         <div className="col-12">
           <div className="row inner-top-search">
             <AlagehAutoComplete
-              div={{ className: "col form-group" }}
+              div={{ className: "col-2 form-group mandatory" }}
               label={{
                 forceLabel: "Auth. Level",
                 isImp: true
@@ -287,7 +287,7 @@ export default class LeaveAuthorization extends Component {
             />
 
             <AlgaehDateHandler
-              div={{ className: "col" }}
+              div={{ className: "col form-group mandatory" }}
               label={{ forceLabel: "From Date", isImp: true }}
               textBox={{
                 className: "txt-fld",
@@ -304,7 +304,7 @@ export default class LeaveAuthorization extends Component {
               value={this.state.from_date}
             />
             <AlgaehDateHandler
-              div={{ className: "col" }}
+              div={{ className: "col form-group mandatory" }}
               label={{ forceLabel: "To Date", isImp: true }}
               textBox={{
                 className: "txt-fld",
@@ -322,9 +322,9 @@ export default class LeaveAuthorization extends Component {
             />
 
             <AlagehAutoComplete
-              div={{ className: "col form-group" }}
+              div={{ className: "col-2 form-group mandatory" }}
               label={{
-                forceLabel: "Filter by Branch",
+                forceLabel: "Branch",
                 isImp: true
               }}
               selector={{
@@ -342,7 +342,7 @@ export default class LeaveAuthorization extends Component {
             />
 
             <AlagehAutoComplete
-              div={{ className: "col form-group" }}
+              div={{ className: "col-2 form-group" }}
               label={{
                 forceLabel: "Leave Status",
                 isImp: false
@@ -360,7 +360,7 @@ export default class LeaveAuthorization extends Component {
               }}
             />
 
-            <div className="col-3 globalSearchCntr">
+            <div className="col globalSearchCntr">
               <AlgaehLabel label={{ forceLabel: "Search Employee" }} />
               <h6 onClick={this.employeeSearch.bind(this)}>
                 {/* {this.state.emp_name ? this.state.emp_name : "------"} */}
@@ -406,9 +406,17 @@ export default class LeaveAuthorization extends Component {
             </div> */}
 
             <div className="col form-group">
+              {" "}
+              <button
+                onClick={this.clearState.bind(this)}
+                style={{ marginTop: 19 }}
+                className="btn btn-default"
+              >
+                Clear
+              </button>
               <button
                 onClick={this.loadLeaveApplications.bind(this)}
-                style={{ marginTop: 21 }}
+                style={{ marginTop: 19, marginLeft: 5 }}
                 className="btn btn-primary"
               >
                 {!this.state.loading ? (
@@ -416,13 +424,6 @@ export default class LeaveAuthorization extends Component {
                 ) : (
                   <i className="fas fa-spinner fa-spin" />
                 )}
-              </button>
-              <button
-                onClick={this.clearState.bind(this)}
-                style={{ marginTop: 21, marginLeft: 5 }}
-                className="btn btn-default"
-              >
-                Clear
               </button>
             </div>
           </div>
