@@ -20,7 +20,8 @@ export default class SelfService extends Component {
     this.state = {
       pageDisplay: "AttendanceRegularization",
       regularize: {},
-      leave: {}
+      leave: {},
+      employee_details: {}
     };
     this.getEmployeeDetails();
     this.getLeaveSalaryOptions();
@@ -207,8 +208,8 @@ export default class SelfService extends Component {
                 }
               </li> */}
               <li
-                algaehtabs={"AttendanceRegularization active"}
-                className={"nav-item tab-button"}
+                algaehtabs={"AttendanceRegularization"}
+                className={"nav-item tab-button active"}
                 onClick={this.openTab.bind(this)}
                 ref={attReg => {
                   this.attReg = attReg;

@@ -13,13 +13,13 @@
                 <thead>
                     <tr>
                         <th>Sl No.</th>
-                        <th>Employee Code</th>
-                        <th>Employee Name</th>
+                        <th>Emp. Code</th>
+                        <th>Emp. Name</th>
                         <th>Desgnation</th>
                         <th>Nationality</th>
                         {{!-- <th>Dep.</th> --}}
                         {{!-- <th>Working Days</th> --}}
-                        <th>Present Days</th>
+                        <th>PR Days</th>
                         {{#hasElement earning_component}}
                         {{#each earning_component}}
                         <th>{{short_desc}}</th>
@@ -70,7 +70,7 @@
                         </td>
                         {{/each }}
                         {{else}}
-                        <td>NA</td>
+                        <td class="numberFld">-</td>
                         {{/hasElement }}
                         {{/hasElement }}
                         <td class="numberFld">{{total_earnings}}</td>
@@ -81,7 +81,7 @@
                         </td>
                         {{/each }}
                         {{else}}
-                        <td>NA</td>
+                        <td class="numberFld">-</td>
                         {{/hasElement }}
                         {{/hasElement }}
                         <td class="numberFld">{{total_deductions}}</td>
@@ -92,7 +92,7 @@
                             {{dynamicSalary hims_d_earning_deduction_id ../employee_contributions "C"}}</td>
                         {{/each }}
                         {{else}}
-                        <td>NA</td>
+                        <td class="numberFld">-</td>
                         {{/hasElement }}
                         {{/hasElement }}
 
