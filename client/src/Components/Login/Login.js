@@ -55,6 +55,7 @@ export default function() {
       title: "Already Logged In!",
       text: message,
       input: "password",
+      confirmButtonText: "Login",
       showCancelButton: true,
       inputPlaceholder: "Re-enter password",
       inputAttributes: {
