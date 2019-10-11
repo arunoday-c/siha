@@ -261,25 +261,6 @@ export default class LeaveYearlyProcess extends Component {
                 }
               }}
             />
-
-            <AlagehAutoComplete
-              div={{ className: "col-2 form-group " }}
-              label={{
-                forceLabel: "Select a Leave Type",
-                isImp: false
-              }}
-              selector={{
-                name: "leave_id",
-                value: this.state.leave_id,
-                className: "select-fld",
-                dataSource: {
-                  textField: "leave_description",
-                  valueField: "hims_d_leave_id",
-                  data: this.state.leaves
-                },
-                onChange: this.dropDownHandler.bind(this)
-              }}
-            />
             <AlagehAutoComplete
               div={{ className: "col-2" }}
               label={{
@@ -314,7 +295,6 @@ export default class LeaveYearlyProcess extends Component {
                 <i className="fas fa-search fa-lg"></i>
               </h6>
             </div>
-
             <div className="col form-group">
               <button
                 onClick={this.clearState.bind(this)}
@@ -324,12 +304,43 @@ export default class LeaveYearlyProcess extends Component {
                 CLEAR
               </button>{" "}
               <button
-                onClick={this.processYearlyLeave.bind(this)}
+                //onClick={this.processYearlyLeave.bind(this)}
                 style={{ marginTop: 19, marginLeft: 5 }}
-                className="btn btn-primary"
+                className="btn btn-default"
               >
                 {!this.state.loading ? (
                   "Load"
+                ) : (
+                  <i className="fas fa-spinner fa-spin" />
+                )}
+              </button>
+            </div>
+            <AlagehAutoComplete
+              div={{ className: "col-2 form-group " }}
+              label={{
+                forceLabel: "Select a Leave Type",
+                isImp: false
+              }}
+              selector={{
+                name: "leave_id",
+                value: this.state.leave_id,
+                className: "select-fld",
+                dataSource: {
+                  textField: "leave_description",
+                  valueField: "hims_d_leave_id",
+                  data: this.state.leaves
+                },
+                onChange: this.dropDownHandler.bind(this)
+              }}
+            />{" "}
+            <div className="col form-group">
+              <button
+                onClick={this.processYearlyLeave.bind(this)}
+                style={{ marginTop: 19 }}
+                className="btn btn-primary"
+              >
+                {!this.state.loading ? (
+                  "PROCESS"
                 ) : (
                   <i className="fas fa-spinner fa-spin" />
                 )}
@@ -449,29 +460,6 @@ export default class LeaveYearlyProcess extends Component {
                   />
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="hptl-phase1-footer">
-          <div className="row">
-            <div className="col-lg-12">
-              <button
-                onClick={this.processYearlyLeave.bind(this)}
-                className="btn btn-primary"
-              >
-                {!this.state.loading ? (
-                  "PROCESS"
-                ) : (
-                  <i className="fas fa-spinner fa-spin" />
-                )}
-              </button>
-              <button
-                onClick={this.clearState.bind(this)}
-                className="btn btn-default"
-              >
-                CLEAR
-              </button>
             </div>
           </div>
         </div>
