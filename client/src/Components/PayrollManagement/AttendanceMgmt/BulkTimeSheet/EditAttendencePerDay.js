@@ -67,7 +67,11 @@ export default function EditAttendencePerDay(props) {
                   forceLabel: "Employee Name"
                 }}
               />
-              <h6>Employee Name Here</h6>
+              <h6>
+                {project_state.employee_name
+                  ? project_state.employee_name
+                  : "--------"}
+              </h6>
             </div>
             <div className="col-4 form-group">
               <AlgaehLabel

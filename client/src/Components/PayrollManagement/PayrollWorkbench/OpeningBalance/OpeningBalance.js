@@ -426,7 +426,7 @@ class OpeningBalance extends Component {
                   <div className="actions">
                     <button
                       className="btn btn-primary"
-                      style={{ marginTop: 19 }}
+                      style={{ color: "#fff" }}
                       onClick={this.showModal.bind(
                         this,
                         "Employee Gratuity Opening Balance"
@@ -475,7 +475,7 @@ class OpeningBalance extends Component {
                   <div className="actions">
                     <button
                       className="btn btn-primary"
-                      style={{ marginTop: 19 }}
+                      style={{ color: "#fff" }}
                       onClick={this.showModal.bind(
                         this,
                         "Employee Leave Salary Opening Balance"

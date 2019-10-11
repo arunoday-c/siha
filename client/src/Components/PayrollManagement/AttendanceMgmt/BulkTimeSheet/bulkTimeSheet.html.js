@@ -32,11 +32,12 @@ function BulkTimeSheet(props) {
     projects: []
   });
   const [selectedTD, setSelectedTD] = useState({});
-  function editingProjectRoster(e) {
+  function editingProjectRoster(e, employee_name) {
     if (project_state.projects.length === 0) {
       getProjects()
         .then(result => {
           // setProjects(result);
+          debugger;
           setProjectState({
             project_id: e.project_id,
             worked_hours: e.worked_hours,
@@ -44,7 +45,8 @@ function BulkTimeSheet(props) {
             hims_f_daily_time_sheet_id: e.hims_f_daily_time_sheet_id,
             hims_f_project_roster_id: e.hims_f_project_roster_id,
             showPopup: true,
-            projects: result
+            projects: result,
+            employee_name: employee_name
           });
         })
         .catch(error => {
@@ -55,7 +57,8 @@ function BulkTimeSheet(props) {
             hims_f_daily_time_sheet_id: null,
             hims_f_project_roster_id: null,
             showPopup: false,
-            projects: []
+            projects: [],
+            employee_name: null
           });
         });
     } else {
@@ -65,7 +68,8 @@ function BulkTimeSheet(props) {
         attendance_date: e.attendance_date,
         hims_f_daily_time_sheet_id: e.hims_f_daily_time_sheet_id,
         hims_f_project_roster_id: e.hims_f_project_roster_id,
-        showPopup: true
+        showPopup: true,
+        employee_name: employee_name
       });
     }
   }
@@ -208,6 +212,7 @@ function BulkTimeSheet(props) {
                           itm={itm}
                           indx={indx}
                           key={`${item.employee_id}_${itm.attendance_date}`}
+                          employee_name={item.employee_name}
                           editingProjectRoster={editingProjectRoster}
                           setSelectedTD={selectedITD}
                         />
@@ -267,7 +272,13 @@ function BulkTimeSheet(props) {
 export default BulkTimeSheet;
 
 function TableCells(props) {
-  const { itm, indx, editingProjectRoster, setSelectedTD } = props;
+  const {
+    itm,
+    indx,
+    editingProjectRoster,
+    setSelectedTD,
+    employee_name
+  } = props;
   const [editable, setEditable] = useState({});
   const { status, worked_hours, abbreviation, attendance_date } = itm;
   useEffect(() => {
@@ -276,6 +287,7 @@ function TableCells(props) {
         ? {
             style: { cursor: "pointer" },
             onDoubleClick: e => {
+              debugger;
               const element = e.target.offsetParent;
               const rowID = element.parentElement.sectionRowIndex;
               const cellID = element.cellIndex;
@@ -285,7 +297,7 @@ function TableCells(props) {
                 cellID,
                 rowID
               });
-              editingProjectRoster(itm);
+              editingProjectRoster(itm, employee_name);
             }
           }
         : {};

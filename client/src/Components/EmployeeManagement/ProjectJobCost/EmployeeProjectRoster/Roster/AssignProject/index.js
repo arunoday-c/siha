@@ -177,7 +177,7 @@ export default function(props) {
                   setToDate(moment(selDate).format("YYYY-MM-DD"));
                 }
               }}
-              maxDate={toDate}
+              //maxDate={toDate}
               minDate={fromDate}
               value={to_dt}
             />
