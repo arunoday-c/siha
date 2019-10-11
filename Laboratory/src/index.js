@@ -6,6 +6,7 @@ import keys from "algaeh-keys";
 import utliites from "algaeh-utilities";
 import routes from "./routes";
 import compression from "compression";
+import { userSecurity } from "algaeh-utilities/checksecurity";
 const app = express();
 app.server = http.createServer(app);
 app.use(cors());
@@ -38,6 +39,22 @@ app.use((req, res, next) => {
         hospital_id: reqH["x-branch"]
       };
       let reqUser = utliites.AlgaehUtilities().getTokenData(_token).id;
+
+      const { username } = req.userIdentity;
+      userSecurity(reqH["x-client-ip"], username)
+        .then(() => {
+          res.setHeader("connection", "keep-alive");
+          next();
+        })
+        .catch(error => {
+          res.status(423).json({
+            success: false,
+            message: error,
+            username: error === "false" ? undefined : username
+          });
+          return;
+        });
+
       utliites
         .AlgaehUtilities()
         .logger("res-tracking")
@@ -62,9 +79,6 @@ app.use((req, res, next) => {
           "info"
         );
     }
-
-    res.setHeader("connection", "keep-alive");
-    next();
   } else {
     res.status(utliites.AlgaehUtilities().httpStatus().unAuthorized).json({
       success: false,
