@@ -1850,7 +1850,7 @@ export default {
           _mysql
             .executeQuery({
               query:
-                "select hims_f_employee_monthly_leave_id, total_eligible,close_balance, availed_till_date,\
+                "select hims_f_employee_monthly_leave_id, total_eligible,close_balance,processed, availed_till_date,\
             leave_id,L.leave_description,L.leave_category,L.avail_if_no_balance,include_weekoff,include_holiday from hims_f_employee_monthly_leave ML\
             inner join hims_d_leave L on ML.leave_id=L.hims_d_leave_id where employee_id=? and year=? and\
             leave_id=? and L.record_status='A';select hims_d_holiday_id,holiday_date,holiday_description,weekoff,\
@@ -1878,6 +1878,18 @@ export default {
               }
   
               if (allLeaves.length > 0) {
+
+                if(allLeaves[0].processed=="Y"){
+
+                  _mysql.releaseConnection();
+                  req.records = {
+                    invalid_input: true,
+                    message: `this leave has been closed you can apply for next year`
+                  };
+                  next();
+                  return;
+
+                }else{
                 currentClosingBal = allLeaves[0].close_balance;
                 let isHoliday = new LINQ(allHolidays)
                   .Where(
@@ -2276,7 +2288,7 @@ export default {
                     }
                   }
                 }
-              } else {
+             } } else {
                 _mysql.releaseConnection();
                 req.records = {
                   invalid_input: true,
@@ -3335,7 +3347,7 @@ export default {
   },
 
   //created by irfan: to assign leaves for all employees for a purticular year
-  processYearlyLeave: (req, res, next) => {
+  processYearlyLeave_BKP_11_oct_2019: (req, res, next) => {
     const utilities = new algaehUtilities();
 
     let year = "";
@@ -4884,196 +4896,27 @@ export default {
     }
   },
 //created by irfan:
-projectedleave: (req, res, next) => {
-  let input = req.body;
+processYearlyLeave: (req, res, next) => {
   const _mysql = new algaehMysql();
 
-
-  const from_date = input.from_date;
-  const to_date = input.to_date;
-  const year = moment(from_date, "YYYY-MM-DD").format("YYYY");
-
-  const attendance_starts = "";
-  const at_end_date = "25";
-
-  const number_of_months = [];
-  let date_start = moment(from_date);
-  let date_end = moment(to_date);
-
-  // calculating numbers of months to predict annual leave
-  //if attendance month from_date and to_date not normal
-  if (attendance_starts == "PM" && at_end_date > 0) {
-    console.log("PM");
-    let from_month = moment(date_start, "YYYY-MM-DD").format("M");
-    let to_month = moment(date_end, "YYYY-MM-DD").format("M");
-    let from_day = moment(date_start, "YYYY-MM-DD").format("D");
-    let to_day = moment(date_end, "YYYY-MM-DD").format("D");
-
-    if (from_month == to_month) {
-      if (from_day <= at_end_date && to_day <= at_end_date) {
-        number_of_months.push(parseInt(from_month));
-      } else if (from_day <= at_end_date && to_day > at_end_date) {
-        number_of_months.push(from_month, parseInt(from_month) + parseInt(1));
-      } else if (from_day > at_end_date && to_day > at_end_date) {
-        number_of_months.push(parseInt(from_month) + parseInt(1));
-      }
-    } else if (from_month < to_month) {
-      while (
-        moment(date_end, "YYYY-MM-DD").format("YYYYMM") >=
-        moment(date_start, "YYYY-MM-DD").format("YYYYMM")
-      ) {
-      
-        let cur_month = 0;
-        if (from_month == moment(date_start, "YYYY-MM-DD").format("M")) {
-          if (from_day <= at_end_date) {
-            cur_month = parseInt(from_month);
-
-            if (number_of_months.indexOf(cur_month) === -1) {
-              number_of_months.push(cur_month);
-            }
-          } else if (from_day > at_end_date) {
-            cur_month = parseInt(from_month) + parseInt(1);
-            if (number_of_months.indexOf(cur_month) === -1) {
-              number_of_months.push(cur_month);
-            }
-          }
-
-          date_start.add(1, "M");
-        } else if (to_month == moment(date_start, "YYYY-MM-DD").format("M")) {
-          if (to_day <= at_end_date) {
-            cur_month = parseInt(moment(date_start, "YYYY-MM-DD").format("M"));
-
-            if (number_of_months.indexOf(cur_month) === -1) {
-              number_of_months.push(cur_month);
-            }
-          } else if (to_day > at_end_date) {
-            cur_month = parseInt(moment(date_start, "YYYY-MM-DD").format("M"));
-
-            if (number_of_months.indexOf(cur_month) === -1) {
-              number_of_months.push(cur_month);
-            }
-
-            cur_month = parseInt(cur_month) + parseInt(1);
-
-            if (number_of_months.indexOf(cur_month) === -1) {
-              number_of_months.push(cur_month);
-            }
-          }
-          date_start.add(1, "M");
-        } else {
-          cur_month = parseInt(moment(date_start, "YYYY-MM-DD").format("M"));
-
-          if (number_of_months.indexOf(cur_month) === -1) {
-            number_of_months.push(cur_month);
-          }
-          date_start.add(1, "M");
-        }
-      }
-    }
-  } else {
-    //if attendance month from_date and to_date are normal
-    console.log("AM");
-    let from_month = moment(date_start, "YYYY-MM-DD").format("M");
-    let to_month = moment(date_end, "YYYY-MM-DD").format("M");
-
-    if (from_month == to_month) {
-      if (number_of_months.indexOf(from_month) === -1) {
-        number_of_months.push(from_month);
-      }
-    } else if (parseInt(from_month) < parseInt(to_month)) {
-      while (
-        moment(date_end, "YYYY-MM-DD").format("YYYYMM") >=
-        moment(date_start, "YYYY-MM-DD").format("YYYYMM")
-      ) {
-        let cur_month = 0;
-
-        if (from_month == moment(date_start, "YYYY-MM-DD").format("M")) {
-        
-          cur_month = parseInt(from_month);
-
-          if (number_of_months.indexOf(cur_month) === -1) {
-            number_of_months.push(cur_month);
-          }
-          date_start.add(1, "M");
-        } else if (to_month == moment(date_start, "YYYY-MM-DD").format("M")) {
-          
-          cur_month = parseInt(to_month);
-          if (number_of_months.indexOf(cur_month) === -1) {
-            number_of_months.push(cur_month);
-          }
-          date_start.add(1, "M");
-        } else {
-         
-          cur_month = parseInt(moment(date_start, "YYYY-MM-DD").format("M"));
-
-          if (number_of_months.indexOf(cur_month) === -1) {
-            number_of_months.push(cur_month);
-          }
-          date_start.add(1, "M");
-        }
-      }
-    }
-  }
-
-  _mysql
-    .executeQuery({
-      query:
-        "select hims_f_salary_id,month,year,employee_id\
-      from hims_f_salary where employee_id=? and month in (?) and year=?  group by month;\
-      select hims_d_employee_id,coalesce(monthly_accrual_days,0) monthly_accrual_days  from hims_d_employee E left join \
-      hims_d_employee_group EG on E.employee_group_id=EG.hims_d_employee_group_id \
-      where  E.hims_d_employee_id=? limit 1 ; \
-      select hims_f_employee_monthly_leave_id,projected_applied_leaves,close_balance from\
-      hims_f_employee_monthly_leave where employee_id=? and leave_id=? and \
-      year=?;    ",
-      values: [
-        input.employee_id,
-        number_of_months,
-        year,
-        input.employee_id,
-        input.employee_id,
-        4,
-        year
-      ],
-      printQuery: true
-    })
+  yearlyLeaveProcess(req.query, req, _mysql)
     .then(result => {
-      _mysql.releaseConnection();
-
-      if (result[2].length > 0) {
-        if (
-          !parseFloat(result[2][0]["projected_applied_leaves"]) > parseFloat(0)
-        ) {
-          const salary_to_be_months =
-            number_of_months.length - result[0].length;
-          const monthly_accrual_days = result[1][0]["monthly_accrual_days"];
-
-          const predicted_leave_days =
-            parseFloat(salary_to_be_months) * parseFloat(monthly_accrual_days);
-          console.log("result:", result[0].length);
-          console.log("number_of_months len:", number_of_months.length);
-          console.log("monthly_accrual_days:", monthly_accrual_days);
-          console.log("salary_to_be_months:", salary_to_be_months);
-          console.log("predicted_leave_days:", predicted_leave_days);
-          req.records = predicted_leave_days;
-          next();
-        } else {
-          req.records = {
-            invalid_input: true,
-            message: "You already availed projected leaves"
-          };
-          next();
-        }
-      } else {
-        req.records = {
-          invalid_input: true,
-          message: "You dont have this leave"
-        };
+      _mysql.commitTransaction(() => {
+        _mysql.releaseConnection();
+        req.records = result;
         next();
-      }
+      });
     })
     .catch(e => {
-      next(e);
+      if (e.invalid_input == true) {
+        _mysql.rollBackTransaction(() => {});
+        req.records = e;
+        next();
+      } else {
+        _mysql.rollBackTransaction(() => {
+          next(e);
+        });
+      }
     });
 }
 
@@ -5288,7 +5131,7 @@ function calc(db, body) {
             _mysql
               .executeQuery({
                 query:
-                  " select hims_f_employee_monthly_leave_id, total_eligible,close_balance, availed_till_date\
+                  " select hims_f_employee_monthly_leave_id, total_eligible,close_balance,processed, availed_till_date\
                   from hims_f_employee_monthly_leave where      employee_id=? and year=? and leave_id=?",
                 values: [input.employee_id, year, input.leave_id],
 
@@ -5298,10 +5141,18 @@ function calc(db, body) {
                 // _mysql.releaseConnection();
                 // req.records = result;
                 // next();
+                if(closeBalanceResult[0].processed=="Y"){
+                  resolve({
+                    invalid_input: true,
+                    message: `this leave has been closed , apply for next year`
+                  });
+                }else{
+                  currentClosingBal = closeBalanceResult[0].close_balance;
 
-                currentClosingBal = closeBalanceResult[0].close_balance;
+                  resolve({});
 
-                resolve({});
+                }
+               
               })
               .catch(e => {
                 _mysql.releaseConnection();
@@ -5857,8 +5708,6 @@ function saveF(_mysql, req, next, input, msg) {
     });
 }
 
-
-
 function projectedleaveCalc(input, _mysql) {
   console.log("input:", input);
   //let input = req.body;
@@ -6071,5 +5920,309 @@ function projectedleaveCalc(input, _mysql) {
         console.log("e:", e);
         next(e);
       });
+  });
+}
+
+
+function yearlyLeaveProcess(inputs, req, mysql) {
+  return new Promise((resolve, reject) => {
+    let input = inputs;
+    let _mysql = mysql;
+    if (input.year > 0) {
+      // const _mysql = new algaehMysql();
+
+      let employee = "";
+      let leave = "";
+
+      let strQry = "";
+      let yearlyEmployee = "";
+
+      if (input.employee_id > 0) {
+        yearlyEmployee = ` and employee_id=${input.employee_id} `;
+        employee = ` and hims_d_employee_id=${input.employee_id} `;
+        strQry += ` and employee_id=${input.employee_id} `;
+      }
+
+      if (input.leave_id > 0) {
+        leave = ` and  L.hims_d_leave_id=${input.leave_id}`;
+        strQry += ` and leave_id=${input.leave_id} `;
+      }
+
+      let insertYearlyleave = [];
+      let insertMonthlyArray = [];
+      let update_old_records = [];
+
+      _mysql
+        .executeQuery({
+          query: `select hims_d_employee_id, employee_code,full_name  as employee_name,religion_id,
+            employee_status,date_of_joining,datediff( concat(?,'-12-31'),date_of_joining) as no_days_til_eoy,
+            hospital_id,employee_type,sex from hims_d_employee where employee_status <>'I'  
+            and hospital_id=? and  record_status='A'  ${employee};          
+            select L.hims_d_leave_id,L.leave_code,L.religion_required,L.religion_id,LD.employee_type,
+            LD.gender,LD.eligible_days,L.proportionate_leave from hims_d_leave  L 
+            inner join hims_d_leave_detail LD on L.hims_d_leave_id=LD.leave_header_id 
+            and L.record_status='A' ${leave};
+            select hims_f_employee_yearly_leave_id,employee_id,year from hims_f_employee_yearly_leave
+            where  year=? and hospital_id=? and record_status='A'  ${yearlyEmployee};
+            select hims_f_employee_monthly_leave_id,employee_id,year,leave_id from
+            hims_f_employee_monthly_leave where   year=? and hospital_id=? ${strQry} ;
+            select hims_f_employee_monthly_leave_id,close_balance,employee_id,year,leave_id,leave_carry_forward,
+            carry_forward_percentage   from hims_f_employee_monthly_leave ML inner join  hims_d_leave L
+            on ML.leave_id=L.hims_d_leave_id
+            where   year=? and hospital_id=? and  ML.processed='N' ${strQry};`,
+          values: [
+            input.year,
+            req.userIdentity.hospital_id,
+            input.year,
+            req.userIdentity.hospital_id,
+            input.year,
+            req.userIdentity.hospital_id,
+            parseInt(input.year) - 1,
+            req.userIdentity.hospital_id
+          ],
+          printQuery: false
+        })
+        .then(result => {
+          const AllEmployees = result[0];
+          const AllLeaves = result[1];
+          const AllYearlyLeaves = result[2];
+          const AllMonthlyLeaves = result[3];
+          const prevoius_year_leave = result[4];
+
+          if (AllEmployees.length > 0) {
+            for (let i = 0; i < AllEmployees.length; i++) {
+              //already proccesed leaves for selected year
+              const already_processed_leaves = AllMonthlyLeaves.filter(item => {
+                return (
+                  item.employee_id == AllEmployees[i]["hims_d_employee_id"]
+                );
+              });
+
+              // fetch all the fileds of apllicable_leavs
+              const apllicable_leavs = AllLeaves.filter(w => {
+                return (
+                  w.employee_type == AllEmployees[i]["employee_type"] &&
+                  (w.gender == AllEmployees[i]["sex"] || w.gender == "BOTH") &&
+                  (w.religion_required == "N" ||
+                    (w.religion_required == "Y" &&
+                      w.religion_id == AllEmployees[i]["religion_id"]))
+                );
+              })
+                .filter(item => {
+                  const unique_leave = already_processed_leaves.find(
+                    procesd => {
+                      return item.hims_d_leave_id == procesd.leave_id;
+                    }
+                  );
+
+                  return !unique_leave;
+                })
+                .map(m => {
+                  //proportionate leave if date of joining is in between
+                  if (
+                    m.proportionate_leave == "Y" &&
+                    AllEmployees[i]["no_days_til_eoy"] < 365
+                  ) {
+                    m["eligible_days"] = Math.round(
+                      (parseFloat(m.eligible_days) / parseFloat(365)) *
+                        parseFloat(AllEmployees[i]["no_days_til_eoy"])
+                    );
+                  }
+                  return m;
+                });
+
+              //last year leave carry forwad
+              const previous_leave = prevoius_year_leave.filter(item => {
+                return (
+                  item.employee_id == AllEmployees[i]["hims_d_employee_id"]
+                );
+              });
+
+              //carry forwar previous year leaves
+              const insert_monthly_leave = apllicable_leavs.map(m => {
+                let carry_fwd_leav = previous_leave.find(p => {
+                  return p.leave_id == m.hims_d_leave_id;
+                });
+
+                if (
+                  carry_fwd_leav != undefined &&
+                  carry_fwd_leav.leave_carry_forward == "Y" &&
+                  carry_fwd_leav.carry_forward_percentage > 0
+                ) {
+                  const oldclosingBal = Math.round(
+                    (parseFloat(carry_fwd_leav.close_balance) *
+                      parseFloat(carry_fwd_leav.carry_forward_percentage)) /
+                      parseFloat(100)
+                  );
+                  m["close_balance"] = Math.round(
+                    parseFloat(oldclosingBal) + parseFloat(m["eligible_days"])
+                  );
+
+                  update_old_records.push({
+                    reduce_close_Balance: oldclosingBal,
+                    leave_id: carry_fwd_leav.leave_id,
+                    employee_id: carry_fwd_leav.employee_id,
+                    year: carry_fwd_leav.year,
+                    carry_forward_done: "Y",
+                    carry_forward_leave: oldclosingBal
+                  });
+                } else if (
+                  carry_fwd_leav != undefined &&
+                  carry_fwd_leav.leave_carry_forward == "N"
+                ) {
+                  m["close_balance"] = m["eligible_days"];
+
+                  update_old_records.push({
+                    reduce_close_Balance: 0,
+                    leave_id: carry_fwd_leav.leave_id,
+                    employee_id: carry_fwd_leav.employee_id,
+                    year: carry_fwd_leav.year,
+                    carry_forward_done: "N",
+                    carry_forward_leave: 0
+                  });
+                }
+                return {
+                  ...m,
+                  employee_id: AllEmployees[i]["hims_d_employee_id"],
+                  year: input.year,
+                  total_eligible: m["eligible_days"],
+                  leave_id: m["hims_d_leave_id"]
+                };
+              });
+
+              insertMonthlyArray.push(...insert_monthly_leave);
+
+              const yearlyLvExist = AllYearlyLeaves.find(w => {
+                return (
+                  w.employee_id == AllEmployees[i]["hims_d_employee_id"] &&
+                  w.year == input.year
+                );
+              });
+
+              if (!yearlyLvExist) {
+                insertYearlyleave.push({
+                  employee_id: AllEmployees[i]["hims_d_employee_id"],
+                  year: input.year
+                });
+              }
+            }
+
+            let updateQry = "";
+            update_old_records.forEach(item => {
+              updateQry += `update hims_f_employee_monthly_leave set close_balance= close_balance-${item.reduce_close_Balance},processed='Y',carry_forward_done='${item.carry_forward_done}',carry_forward_leave=${item.carry_forward_leave} where year=${item.year} and leave_id=${item.leave_id} and employee_id=${item.employee_id};\n `;
+            });
+
+            if (insertMonthlyArray.length > 0) {
+              //insertion procces
+              new Promise((resolve, reject) => {
+                try {
+                  if (insertYearlyleave.length > 0) {
+                    const insurtColumns = ["employee_id", "year"];
+
+                    _mysql
+                      .executeQueryWithTransaction({
+                        query:
+                          "INSERT  INTO hims_f_employee_yearly_leave(??) VALUES ?",
+                        values: insertYearlyleave,
+                        includeValues: insurtColumns,
+                        extraValues: {
+                          created_date: new Date(),
+                          updated_date: new Date(),
+                          created_by: req.userIdentity.algaeh_d_app_user_id,
+                          updated_by: req.userIdentity.algaeh_d_app_user_id,
+                          hospital_id: req.userIdentity.hospital_id
+                        },
+                        bulkInsertOrUpdate: true,
+                        printQuery: false
+                      })
+                      .then(yearResult => {
+                        resolve(yearResult);
+                      })
+                      .catch(e => {
+                        _mysql.rollBackTransaction(() => {
+                          reject(e);
+                        });
+                      });
+                  } else {
+                    resolve({});
+                  }
+                } catch (e) {
+                  reject(e);
+                }
+              }).then(resultofYearInsert => {
+                const insurtColumns = [
+                  "employee_id",
+                  "year",
+                  "leave_id",
+                  "total_eligible",
+                  "close_balance"
+                ];
+
+                _mysql
+                  .executeQuery({
+                    query:
+                      " INSERT  INTO hims_f_employee_monthly_leave(??) VALUES ?;" +
+                      updateQry,
+                    values: insertMonthlyArray,
+                    includeValues: insurtColumns,
+                    extraValues: {
+                      hospital_id: req.userIdentity.hospital_id
+                    },
+                    bulkInsertOrUpdate: true,
+                    printQuery: true
+                  })
+                  .then(monthResult => {
+                    // _mysql.commitTransaction(() => {
+                    //   _mysql.releaseConnection();
+                    //   req.records = monthResult[0];
+                    //   next();
+                    // });
+                    resolve(monthResult[0]);
+                  })
+                  .catch(e => {
+                    console.log("e:", e);
+                    _mysql.rollBackTransaction(() => {
+                      reject(e);
+                    });
+                  });
+              });
+            } else {
+              // _mysql.releaseConnection();
+              // req.records = {
+              //   invalid_input: true,
+              //   message: "Leave already processed"
+              // };
+              // next();
+              // return;
+
+              reject({
+                invalid_input: true,
+                message: "Leave already processed"
+              });
+            }
+          } else {
+            // _mysql.releaseConnection();
+            // req.records = {
+            //   invalid_input: true,
+            //   message: "No Employees found"
+            // };
+            // next();
+            // return;
+
+            reject({
+              invalid_input: true,
+              message: "No Employees found"
+            });
+          }
+        })
+        .catch(e => {
+          reject(e);
+        });
+    } else {
+      reject({
+        invalid_input: true,
+        message: "Please Provide valid year "
+      });
+    }
   });
 }
