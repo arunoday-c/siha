@@ -286,7 +286,7 @@ const executePDF = function executePDFMethod(options) {
 
                   let emp_gratuity = grat
                     ? parseFloat(grat.gratuity_amount)
-                    : parseFloat(0);
+                    : "-";
 
                   let emp_accural = accu
                     ? {
@@ -302,6 +302,8 @@ const executePDF = function executePDFMethod(options) {
 
                   //  utilities.logger().log("salary[i]: ", salary[i]);
 
+                  //console.log("outputArray: ", outputArray);
+
                   outputArray.push({
                     ...salary[i],
                     gratuity_amount: emp_gratuity,
@@ -313,7 +315,7 @@ const executePDF = function executePDFMethod(options) {
                     complete_ot: complete_ot
                   });
                 }
-
+                console.log("outputArray: ", outputArray);
                 const result = {
                   ...input,
                   components: components,

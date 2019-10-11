@@ -32,16 +32,17 @@
                         {{/each }}
                         {{/hasElement}}
                         <th>Total Deduction </th>
+                        <th>Net Salary</th>
                         {{#hasElement contributions_component}}
                         {{#each contributions_component}}
                         <th>{{short_desc}}</th>
                         {{/each }}
-                        {{/hasElement}}<th>Net Salary</th>
+                        {{/hasElement}}
                         <th>Total Contribution</th>
                         <th>Overtime</th>
                         <th>Employee + Employer</th>
-                        <th>Leave Provision</th>
-                        <th>Airfrare Amount</th>
+                        {{!-- <th>Leave Provision</th>
+                        <th>Airfrare Amount</th> --}}
                         <th>Gratuity Provision</th>
                         <th>
                             Mode Of Payment
@@ -85,6 +86,7 @@
                         {{/hasElement }}
                         {{/hasElement }}
                         <td class="numberFld">{{total_deductions}}</td>
+                        <td class="numberFld">{{net_salary}}</td>
                         {{#hasElement ../contributions_component}}
                         {{#hasElement employee_contributions}}
                         {{#each ../contributions_component}}
@@ -96,12 +98,11 @@
                         {{/hasElement }}
                         {{/hasElement }}
 
-                        <td class="numberFld">{{net_salary}}</td>
                         <td class="numberFld">{{total_contributions}}</td>
                         <td class="numberFld">{{complete_ot}}</td>
                         <td class="numberFld">{{employe_plus_employr}}</td>
-                        <td class="numberFld">{{leave_salary}}</td>
-                        <td class="numberFld">{{airfare_amount}}</td>
+                        {{!-- <td class="numberFld">{{leave_salary}}</td>
+                        <td class="numberFld">{{airfare_amount}}</td> --}}
                         <td class="numberFld">{{gratuity_amount}}</td>
                         <td>
                             {{mode_of_payment}}
