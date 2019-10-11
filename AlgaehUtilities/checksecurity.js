@@ -93,7 +93,9 @@ module.exports = {
                 resolve(result);
               } else {
                 reject(
-                  `Your services are aborted. New session started from '${identity}' for user ${user_display_name}.`
+                  // '${identity}'
+                  // ${user_display_name}.
+                  `Somebody logged-in your account from another machine, And this session will be cleared. Please re-enter your password to login.`
                 );
               }
             }
